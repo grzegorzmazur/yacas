@@ -144,6 +144,26 @@ Function("LogicVerify",{aLeft,aRight})
 ];
 
 
+
+/* LogicTest compares the truth tables of two expressions. */
+LocalSymbols(TrueFalse)
+[
+  MacroRuleBase(TrueFalse,{var,expr});
+  10 # TrueFalse(var_IsAtom,_expr) <-- `{(@expr) Where (@var)==False,(@expr) Where (@var)==True};
+  20 # TrueFalse({},_expr) <-- `(@expr);
+  30 # TrueFalse(var_IsList,_expr) <-- 
+  `[
+    Local(t,h);
+    Set(h,Head(@var));
+    Set(t,Tail(@var));
+    TrueFalse(h,TrueFalse(t,@expr));
+  ];
+
+  Macro(LogicTest,{vars,expr1,expr2}) Verify(TrueFalse((@vars),(@expr1)), TrueFalse((@vars),(@expr2)));
+];
+
+
+
 f1(x,n,m):=(x^n-1)*(x^m-1);
 f2(x,n,m):=x^(n+m)-(x^n)-(x^m)+1;
 

@@ -2,7 +2,7 @@
 
 /* Small theorem prover for propositional logic, based on the
  * resolution principle.
- * Written by Ayal Pinkus
+ * Written by Ayal Pinkus, based on the simple theorem prover from "Prolog, Ivan Bratko, chapter 20"
  * Version 0.1 initial implementation.
  *
  *
@@ -265,10 +265,8 @@ LogicCombine(_list) <--
   For(Set(i,1), i<=Length(list), Set(i,MathAdd(i,1)))
   [
     //Echo({"list[", i, "/", Length(list), "]: ", list[i], Nl()});
-    Local(redo);
-    Set(redo, False);
 
-    For(j := 1, Not(redo) And (j<=Length(list[i])), j++)
+    For(j := 1, (j<=Length(list[i])), j++)
     [
       Local(tocombine, n, k);
       Set(n, list[i][j]);
@@ -280,21 +278,9 @@ LogicCombine(_list) <--
         Local(combination);
         Check(k != -1, "k is -1");
 
-        DestructiveDelete(list[i], j);
-        DestructiveDelete(list[tocombine], k);
-
         Set(combination, LogicRemoveTautologies(Concat(list[i], list[tocombine])));
-        DestructiveDelete(list, tocombine);       // delete tocombine from the list, it's represented
-                                                  // by combination, which will be list[i]
-        DestructiveReplace(list, i, combination);
-
-        If(combination = {False},                 // false is represented as {}
-            DestructiveReplace(list, i, combination));
-
         If(combination = {},                      // the combined clause is false, so the whole thing is false
-          [Set(list, {{}}); Set(i, Length(list)+1);], [Set(i, 0);]);
-
-        Set(redo, True);                          // this signals that we should break out of the inner loop
+          [Set(list, {{}}); Set(i, Length(list)+1);], [/*Set(i, 0);*/]);
       ]);
     ];
   ];
