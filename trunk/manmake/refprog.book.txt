@@ -1818,12 +1818,13 @@ execution of the Yacas script that uses these testing commands, since they are
 meant to be used in test scripts.
 
 
-*CMD Verify, TestYacas, LogicVerify --- verifying equivalence of two expressions
+*CMD Verify, TestYacas, LogicVerify, LogicTest --- verifying equivalence of two expressions
 *STD
 *CALL
 	Verify(question,answer)
 	TestYacas(question,answer)
 	LogicVerify(question,answer)
+	LogicTest(variables,expr1,expr2)
 
 *PARMS
 
@@ -1831,9 +1832,13 @@ meant to be used in test scripts.
 
 {answer} -- expected result after evaluation
 
+{variables} -- list of variables
+
+{exprN} -- Some boolean expression
+
 *DESC
 
-The commands {Verify}, {TestYacas}, {LogicVerify} can be used to verify that an
+The commands {Verify}, {TestYacas}, {LogicVerify} and {LogicTest} can be used to verify that an
 expression is <I>equivalent</I> to  a correct answer after evaluation. All
 three commands return {True} or {False}.
 
@@ -1859,6 +1864,7 @@ multivariate polynomials, this test succeeds. {TestYacas} uses {Simplify}. Note:
 *	{LogicVerify} -- Perform a test by using {CanProve} to verify that from 
 {question} the expression {answer} follows. This test command is 
 used for testing the logic theorem prover in Yacas.
+*	{LogicTest} -- Generate a truth table for the two expressions and compare these two tables. They should be the same if the two expressions are logically the same.
 
 *E.G.
 
@@ -1882,6 +1888,19 @@ used for testing the logic theorem prover in Yacas.
 	Out> True;
 	In> LogicVerify(a And c Or b And Not c,b Or a)
 	Out> True;
+	In> LogicTest({A,B,C},Not((Not A) And (Not B)),A Or B)
+	Out> True
+	In> LogicTest({A,B,C},Not((Not A) And (Not B)),A Or C)
+	******************
+	CommandLine: 1 
+	
+	$TrueFalse4({A,B,C},Not(Not A And Not B))
+	 evaluates to 
+	{{{False,False},{True,True}},{{True,True},{True,True}}}
+	 which differs from 
+	{{{False,True},{False,True}},{{True,True},{True,True}}}
+	******************
+	Out> False
 
 *SEE Simplify, CanProve, KnownFailure
 
