@@ -486,6 +486,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         RefreshHintWindow();
         repaint(0);
       }
+/*TODO remove?
       else
       {
         int c = (int)e.getKeyChar();
@@ -496,8 +497,21 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
           RefreshHintWindow();
         }
       }
+*/
       inputDirty=true;
       repaint();//0,getHeight()-2*fontHeight,getWidth(),2*fontHeight);
+    }
+    else if (KeyEvent.KEY_TYPED == e.getID())
+    {
+      int c = (int)e.getKeyChar();
+      if (c>=32 && c < 128)
+      {
+        inputLine = new StringBuffer(inputLine).insert(cursorPos,e.getKeyChar()).toString();
+        cursorPos++;
+        RefreshHintWindow();
+        inputDirty=true;
+        repaint();//0,getHeight()-2*fontHeight,getWidth(),2*fontHeight);
+      }
     }
   }
   void PerformRequest(String outputPrompt,String inputLine)
