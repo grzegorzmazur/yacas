@@ -131,7 +131,7 @@ net/sf/yacas/BigNumber.java net/sf/yacas/BranchingUserFunction.java net/sf/yacas
 net/sf/yacas/CachedStdFileInput.java net/sf/yacas/ConsoleApplet.java net/sf/yacas/EvalFuncBase.java \
 net/sf/yacas/GenericClass.java net/sf/yacas/InfixParser.java net/sf/yacas/InfixPrinter.java \
 net/sf/yacas/InputDirectories.java net/sf/yacas/InputStatus.java net/sf/yacas/JarInputFile.java \
-JavaYacas.1 JavaYacas.xcode net/sf/yacas/LispArgList.java \
+JavaYacas.1  net/sf/yacas/LispArgList.java \
 net/sf/yacas/LispArityUserFunction.java net/sf/yacas/LispAssociatedHash.java net/sf/yacas/LispAtom.java \
 net/sf/yacas/LispDefFile.java net/sf/yacas/LispDefFiles.java \
 net/sf/yacas/LispEnvironment.java net/sf/yacas/LispError.java \
