@@ -60,7 +60,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = 
-host_triplet = powerpc-apple-darwin8.5.0
+host_triplet = powerpc-apple-darwin8.7.0
 
 EXEEXT = 
 OBJEXT = o
@@ -91,7 +91,7 @@ GSL_PLUGIN =
 INCLTDL = -I${top_srcdir}/libltdl
 INSTALL_ARCHIVE = install-archive
 INSTALL_HTML = install-html
-INSTALL_PS = 
+INSTALL_PS = install-ps
 INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
 LIBLTDL = ${top_builddir}/libltdl/libltdlc.la
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
@@ -102,13 +102,13 @@ NUMBERS_LIB_SHORT = yacasnumbers
 OBJDUMP = @OBJDUMP@
 OPENGL_PLUGIN = opengl.la
 PACKAGE = yacas
-PDF_DOCS = 
-PS_DOCS = 
+PDF_DOCS = pdf-docs
+PS_DOCS = ps-docs
 RANLIB = ranlib
 RELEASE = 1
 SCRIPTS_DAT = scripts.dat
 STRIP = strip
-VERSION = 1.0.61
+VERSION = 1.0.62
 X_CFLAGS = 
 X_EXTRA_LIBS = 
 X_LIBS =  -L/usr/X11R6/lib
@@ -131,7 +131,7 @@ net/sf/yacas/BigNumber.java net/sf/yacas/BranchingUserFunction.java net/sf/yacas
 net/sf/yacas/CachedStdFileInput.java net/sf/yacas/ConsoleApplet.java net/sf/yacas/EvalFuncBase.java \
 net/sf/yacas/GenericClass.java net/sf/yacas/InfixParser.java net/sf/yacas/InfixPrinter.java \
 net/sf/yacas/InputDirectories.java net/sf/yacas/InputStatus.java net/sf/yacas/JarInputFile.java \
-JavaYacas.1 JavaYacas.xcode net/sf/yacas/LispArgList.java \
+JavaYacas.1  net/sf/yacas/LispArgList.java \
 net/sf/yacas/LispArityUserFunction.java net/sf/yacas/LispAssociatedHash.java net/sf/yacas/LispAtom.java \
 net/sf/yacas/LispDefFile.java net/sf/yacas/LispDefFiles.java \
 net/sf/yacas/LispEnvironment.java net/sf/yacas/LispError.java \
