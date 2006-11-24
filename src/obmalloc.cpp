@@ -62,8 +62,8 @@
   #include <inttypes.h>
 #else  // HAVE_INTTYPES_H
    // Assume 32-bit, non-Unix
-   typedef unsigned int uintptr_t
-   typedef int intptr_t
+   typedef unsigned int uintptr_t;
+   typedef int intptr_t;
 #endif // HAVE_INTTYPES_H
 
 
