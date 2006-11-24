@@ -49,7 +49,7 @@ private:
     void AppendString(LispInt bin,LispString * result);
     
 private:
-    CArrayGrower<LispStringSmartPtr> iHashTable[KSymTableSize];
+    CArrayGrower<LispStringSmartPtr, ArrOpsCustomObj<LispStringSmartPtr> > iHashTable[KSymTableSize];
 	//bool m_isDirty;
 };
 
@@ -59,7 +59,7 @@ private:
 
 /** VoidGrow is a helper class for LispAssociatedHash
  */
-class VoidGrow : public CArrayGrower<void*>
+class VoidGrow : public CArrayGrower<void*, ArrOpsCustomPtr<void> >
 {
 };
 

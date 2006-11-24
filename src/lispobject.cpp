@@ -66,6 +66,9 @@ LispPtrArray::~LispPtrArray()
 }
 #endif
 
+/*PLEASECHECK TODO AYAL: Why do we do this here? I can imagine having one function somewhere where the code-comment string gets
+  constructed on the fly based on whether defines are enabled or not.
+ */
 #define STR(tokens) #tokens
 #define SHOWSTR(ctce) #ctce " = " STR(ctce)
 #if defined(YACAS_DEBUG)

@@ -5,10 +5,11 @@
 #include <stdlib.h>
 #include "grower.h"
 
-class CodeComment
+class CodeComment : public YacasBase
 {
 public:
-	typedef CArrayGrower<char *> Type;
+	typedef CArrayGrower<char *, ArrOpsCustomPtr<char> > Type;
+    
 	static Type * pCodeComments;	// scalar-pointer avoids multiple construction problem with statics
 	CodeComment(const char * aString, int aPriority = 0)
 	{
@@ -16,6 +17,15 @@ public:
 			pCodeComments = NEW Type;
 		pCodeComments->Append(strdup(aString));
 	}
+  static void Reset()
+  {
+    if (pCodeComments)
+    {
+      delete pCodeComments;
+      pCodeComments = NULL;
+    }
+  }
+  
 /*
 	CodeComment(const char * aString, int aPriority = 0)
 	{

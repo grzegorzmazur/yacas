@@ -210,7 +210,7 @@ protected:
     CArrayGrower<BranchParameter, ArrOpsPOD<BranchParameter> > iParameters;
 
     /// List of rules, sorted on precedence.
-    CDeletingArrayGrower<BranchRuleBase*>     iRules;
+    CDeletingArrayGrower<BranchRuleBase*, ArrOpsDeletingPtr<BranchRuleBase> >     iRules;
 
     /// List of arguments
     LispPtr iParamList;

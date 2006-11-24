@@ -13,12 +13,13 @@
 #define DBG_(xxx) /*xxx*/
 #endif
 
+typedef CArrayGrower<LispStringSmartPtr, ArrOpsCustomObj<LispStringSmartPtr> > LispStringSmartPtrArray;
 
 LispHashTable::~LispHashTable()
 {
     for (LispInt bin = 0; bin < KSymTableSize; bin++)
     {
-		CArrayGrower<LispStringSmartPtr> & aBin = iHashTable[bin];
+		LispStringSmartPtrArray & aBin = iHashTable[bin];
 		for (LispInt i = 0, n = aBin.Size(); i < n; i++)
         {
 			// Check that this LispHashTable is a unique pool!?
@@ -128,11 +129,11 @@ LispString * LispHashTable::LookUp(const LispChar * aString, LispBoolean aString
     LispInt bin = LispHash(aString);
 
     // Find existing version of string
-	CArrayGrower<LispStringSmartPtr> & aBin = iHashTable[bin];
+	LispStringSmartPtrArray & aBin = iHashTable[bin];
 	for (LispInt i = 0, n = aBin.Size(); i < n; i++)
     {
 		// expr ... typeof(expr)
-		// aBin ... CArrayGrower<LispStringSmartPtr>&
+		// aBin ... LispStringSmartPtrArray&
 		// aBin[i] ... LispStringSmartPtr&
 		// aBin[i].operator->() ... LispString*
 		// aBin[i].operator->()->c_str() ... LispChar*
@@ -165,7 +166,7 @@ LispString * LispHashTable::LookUp(LispString * aString)
     LispInt bin = LispHash(aString->c_str());
 
     // Find existing version of string
-	CArrayGrower<LispStringSmartPtr> & aBin = iHashTable[bin];
+	LispStringSmartPtrArray & aBin = iHashTable[bin];
 	for (LispInt i = 0, n = aBin.Size(); i < n; i++)
     {
         if (StrEqual(aBin[i]->c_str(), aString->c_str()))
@@ -203,7 +204,7 @@ LispString * LispHashTable::LookUpCounted(LispChar * aString, LispInt aLength)
     LispInt bin = LispHashCounted(aString,aLength);
 
     // Find existing version of string
-	CArrayGrower<LispStringSmartPtr> & aBin = iHashTable[bin];
+	LispStringSmartPtrArray & aBin = iHashTable[bin];
 	for (LispInt i = 0, n = aBin.Size(); i < n; i++)
     {
         if (StrEqualCounted(aBin[i]->c_str(), aString, aLength))
@@ -266,7 +267,7 @@ LispString * LispHashTable::LookUpStringify(LispChar * aString,
     LispInt bin = LispHashStringify(aString);
 
     // Find existing version of string
-	CArrayGrower<LispStringSmartPtr> & aBin = iHashTable[bin];
+	LispStringSmartPtrArray & aBin = iHashTable[bin];
 	for (LispInt i = 0, n = aBin.Size(); i < n; i++)
     {
         if (StrEqualStringified(aBin[i]->c_str(), aString))
@@ -292,7 +293,7 @@ LispString * LispHashTable::LookUpUnStringify(LispChar * aString,
     LispInt bin = LispHashUnStringify(aString);
 
     // Find existing version of string
-	CArrayGrower<LispStringSmartPtr> & aBin = iHashTable[bin];
+	LispStringSmartPtrArray & aBin = iHashTable[bin];
 	for (LispInt i = 0, n = aBin.Size(); i < n; i++)
     {
         if (StrEqualUnStringified(aBin[i]->c_str(), aString))
@@ -315,7 +316,7 @@ void LispHashTable::GarbageCollect()
 	//if (!m_isDirty) return;
     for (LispInt bin = 0; bin < KSymTableSize; bin++)
     {
-		CArrayGrower<LispStringSmartPtr> & aBin = iHashTable[bin];
+		LispStringSmartPtrArray & aBin = iHashTable[bin];
 		for (LispInt i = 0, n = aBin.Size(); i < n; i++)
         {
             if (aBin[i]->iReferenceCount != 1) continue;

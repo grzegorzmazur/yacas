@@ -40,10 +40,10 @@ public:
 };
 
 template <class T>
-class ArrOpsCustom : public ArrOps
+class ArrOpsCustomObj : public ArrOps
 {
 public:
-	ArrOpsCustom() {}
+	ArrOpsCustomObj() {}
 	inline void construct(void * buffer) const
 	{ new (buffer) T; }
 	inline void construct(void * to_obj, const void * from_obj) const
@@ -67,11 +67,11 @@ public:
 };
 
 template <class T>
-class ArrOpsCustom<T*> : public ArrOps
+class ArrOpsCustomPtr : public ArrOps
 {
 	typedef T* TY;
 public:
-	ArrOpsCustom() {}
+	ArrOpsCustomPtr() {}
 	inline void construct(void * buffer) const
 	{ *static_cast<TY*>(buffer) = 0; }
 	inline void construct(void * to_obj, const void * from_obj) const
@@ -82,10 +82,10 @@ public:
 };
 
 template <class T>
-class ArrOpsDeleting {};
+class ArrOpsDeletingObj {};
 
 template <class T>
-class ArrOpsDeleting<T*> : public ArrOpsCustom<T*>
+class ArrOpsDeletingPtr : public ArrOpsCustomPtr<T>
 {
 	typedef T* TY;
 public:
@@ -98,7 +98,7 @@ public:
  *  objects, please use pointers to the objects, and use the
  * CDeletingArrayGrower to automatically delete the objects at destruction.
  */
-template <class T, class TOps = ArrOpsCustom<T> >
+template <class T, class TOps >
 class CArrayGrower : public YacasBase
 {
 public:
@@ -286,8 +286,8 @@ private:
  * of pointers to objects.
  */
 
-template <class T>
-class CDeletingArrayGrower : public CArrayGrower<T, ArrOpsDeleting<T> >
+template <class T, class TOps >
+class CDeletingArrayGrower : public CArrayGrower<T, TOps >
 {
 public:
 	CDeletingArrayGrower() {}

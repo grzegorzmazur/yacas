@@ -111,7 +111,7 @@ private:
     void PushFrame();
     void PopFrame();
 private:
-    CArrayGrower<UserStackInformation*> objs;
+    CArrayGrower<UserStackInformation*, ArrOpsCustomPtr<UserStackInformation> > objs;
 };
 
 

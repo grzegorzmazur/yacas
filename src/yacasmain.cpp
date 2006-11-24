@@ -127,7 +127,7 @@ int compiled_plugins = 1;
 
 int stack_size = 50000;
 
-#if YACAS_DEBUG
+#ifdef YACAS_DEBUG
 int verbose_debug=0;
 #endif
 int patchload=0;
@@ -402,10 +402,12 @@ void my_exit(void)
     // deleting the Yacas environment object, at least we have a saved history
     if (commandline) delete commandline; commandline = NULL;
     if (yacas) delete yacas; yacas = NULL;
+    
+    CodeComment::Reset();
     //delete CodeComment::pCodeComments; CodeComment::pCodeComments = NULL;
     ReportNrCurrent();
 #ifdef YACAS_DEBUG
-    YacasCheckMemory();
+    CheckAllPtrs(1);
 #endif
   }
 #ifdef WIN32

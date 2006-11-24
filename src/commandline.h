@@ -63,7 +63,7 @@ public:
   LispInt NrLines();
   LispString * GetLine(LispInt aLine);
 protected:
-  CDeletingArrayGrower<LispString *> iHistory;
+  CDeletingArrayGrower<LispString *, ArrOpsDeletingPtr<LispString> > iHistory;
   LispInt history;
 };
 
