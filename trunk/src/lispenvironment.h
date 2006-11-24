@@ -24,7 +24,7 @@
 class CCompressedArchive; /* defined in archiver.h */
 
 class LispDefFiles;
-class InputDirectories : public CDeletingArrayGrower<LispString *>
+class InputDirectories : public CDeletingArrayGrower<LispString *, ArrOpsDeletingPtr<LispString> >
 {
 };
 
@@ -40,7 +40,7 @@ class BasicEvaluator;
 class LispDllBase;
 class DefaultDebugger;
 class LispEnvironment;
-class CDllArray : public CDeletingArrayGrower<LispDllBase*>
+class CDllArray : public CDeletingArrayGrower<LispDllBase*, ArrOpsDeletingPtr<LispDllBase> >
 {
 public:
     void DeleteNamed(LispChar * aName, LispEnvironment& aEnvironment);

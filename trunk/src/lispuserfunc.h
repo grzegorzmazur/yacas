@@ -87,7 +87,7 @@ public:
 
 private:
     /// Set of LispArityUserFunction's provided by this LispMultiUserFunction.
-    CDeletingArrayGrower<LispArityUserFunction*> iFunctions;
+    CDeletingArrayGrower<LispArityUserFunction*, ArrOpsDeletingPtr<LispArityUserFunction> > iFunctions;
 
 public:
     /// File to read for the definition of this function.

@@ -68,13 +68,13 @@ public:
 };
 
 
-class ForthVariables : public CArrayGrower<ForthValue>
+class ForthVariables : public CArrayGrower<ForthValue, ArrOpsCustomObj<ForthValue> >
 { 
 };
 
 #define HAS_NEW_ForthStackPop 1
 
-class ForthStack : CArrayGrower<ForthValue>
+class ForthStack : CArrayGrower<ForthValue, ArrOpsCustomObj<ForthValue> >
 {
 public:
     void Push(const ForthValue& aValue);
@@ -99,11 +99,11 @@ struct ForthCommand
     } u;
 };
 
-class ForthSubRoutine : public CArrayGrower<ForthCommand>
+class ForthSubRoutine : public CArrayGrower<ForthCommand, ArrOpsCustomObj<ForthCommand> >
 {
 };
 
-class ForthMethods : public CDeletingArrayGrower<ForthSubRoutine*>
+class ForthMethods : public CDeletingArrayGrower<ForthSubRoutine*, ArrOpsDeletingPtr<ForthSubRoutine> >
 {
 };
 

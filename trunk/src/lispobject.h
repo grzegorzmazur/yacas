@@ -56,7 +56,7 @@ private:
     LispPtr* iArray;
 };
 #elif HAS_NEW_LispPtrArray == 1
-typedef CArrayGrower<LispPtr> LispPtrArray;
+typedef CArrayGrower<LispPtr, ArrOpsCustomObj<LispPtr> > LispPtrArray;
 #endif
 
 

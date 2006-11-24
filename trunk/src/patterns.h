@@ -194,17 +194,17 @@ protected:
 
 protected:
     /// List of parameter matches, one for every parameter.
-    CDeletingArrayGrower<YacasParamMatcherBase*> iParamMatchers;
+    CDeletingArrayGrower<YacasParamMatcherBase*, ArrOpsDeletingPtr<YacasParamMatcherBase> > iParamMatchers;
 
     /// List of variables appearing in the pattern.
-    CArrayGrower<LispString *> iVariables;
+    CArrayGrower<LispString *, ArrOpsCustomPtr<LispString> > iVariables;
 
     /// List of predicates which need to be true for a match.
 #define HAS_NEW_iPredicates 1
 #if !HAS_NEW_iPredicates
-    CDeletingArrayGrower<LispPtr*> iPredicates;
+    CDeletingArrayGrower<LispPtr*, ArrOpsDeletingPtr<LispPtr> > iPredicates;
 #else
-    CArrayGrower<LispPtr> iPredicates;
+    CArrayGrower<LispPtr, ArrOpsCustomObj<LispPtr> > iPredicates;
 #endif
 };
 

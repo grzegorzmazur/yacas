@@ -53,7 +53,7 @@ public:
     void CheckStackEmpty();
 
 protected:
-    CArrayGrower<LispBase*> iObjects;
+    CArrayGrower<LispBase*, ArrOpsCustomPtr<LispBase> > iObjects;
 };
 
 /** Clean up stack that deletes objects itself when needed.
