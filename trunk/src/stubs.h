@@ -44,7 +44,7 @@ inline T * PlatAllocN(LispInt aSize) { return (T*)PlatAlloc(aSize*sizeof(T)); }
 
 #ifdef YACAS_DEBUG	// goes almost to EOF
 
-#include <new>
+
 #define NEW_THROWER throw (std::bad_alloc)
 #define DELETE_THROWER throw ()
 

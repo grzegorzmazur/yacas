@@ -219,7 +219,7 @@ public:
 	// ala TEMPLATE CLASS iterator
   //typedef forward_iterator_tag iterator_category;
 	typedef LispPtr		value_type;
-	typedef ptrdiff_t	difference_type;
+	typedef int /*ptrdiff_t*/	difference_type;
 	typedef LispPtr*	pointer;
 	typedef LispPtr&	reference;
 public:
