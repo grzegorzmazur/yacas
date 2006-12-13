@@ -12,11 +12,18 @@
 
 #include "yacasbase.h"
 #include "lispassert.h"
-#include <new>		// for placement form of new and delete
 #define HAS_memory 0
 #if HAS_memory
 #include <memory>	// for std::allocator
 #endif
+
+
+
+// Default placement versions of operator new and delete, placed here because I do not want to include <new>
+inline void* operator new(size_t, void* __p) throw() { return __p; }
+inline void* operator new[](size_t, void* __p) throw() { return __p; }
+inline void  operator delete  (void*, void*) throw() { };
+inline void  operator delete[](void*, void*) throw() { };
 
 
 template <class T>
