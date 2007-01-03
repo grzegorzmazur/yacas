@@ -172,9 +172,10 @@ The buffers are used in package and cell assembly.")
 (defun ynb-make-temp-name ()
   "Return a unique filename."
   (setq ynb-temp-suffix (+ ynb-temp-suffix 1))
-  (concat (concat (make-temp-name "#mz") "-")
-          ynb-temp-suffix
-          ".mu"))
+  (concat (make-temp-name "#mz") 
+          "-"
+          (number-to-string ynb-temp-suffix)
+          ".ys"))
 
 (defun ynb-mark-file-as-yacas-notebook ()
   "Mark the file as an Yacas-Notebook buffer.
