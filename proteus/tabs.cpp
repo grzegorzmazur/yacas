@@ -441,7 +441,7 @@ void LispNotepadAddCommand(LispEnvironment& aEnvironment,LispInt aStackTop)
   {
     if (the_out[0])
     {
-      console->AddText(the_out.String(), FL_RED,"  ",FL_COURIER,console->NotepadFontSize());
+      console->AddText(the_out.c_str(), FL_RED,"  ",FL_COURIER,console->NotepadFontSize());
     }
     if (yacas->Error()[0] != '\0')
     {

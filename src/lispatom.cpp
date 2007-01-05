@@ -183,7 +183,7 @@ BigNumber* LispNumber::Number(LispInt aBasePrecision)
   // (applies only to floats). Note that iNumber->GetPrecision() might be < 0
   else if (!iNumber->IsInt() && iNumber->GetPrecision() < (LispInt)digits_to_bits(aBasePrecision, BASE10))
   {
-    if (/*TODO remove? !! */ iString)
+    if (iString)
     {// have string representation, can extend precision
       iNumber->SetTo(iString->c_str(),aBasePrecision, BASE10);
     }

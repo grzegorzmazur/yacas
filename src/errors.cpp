@@ -24,7 +24,7 @@ void ShowStack(LispEnvironment& aEnvironment)
 }
 
 
-namespace {
+
 void ShowFunctionError(LispPtr& aArguments,
                        LispEnvironment& aEnvironment)
 {
@@ -43,7 +43,7 @@ void ShowFunctionError(LispPtr& aArguments,
     }
   }
 }
-}	// end of namespace
+
 
 void CheckNrArgs(LispInt n, LispPtr& aArguments,
                  LispEnvironment& aEnvironment)
@@ -145,6 +145,7 @@ void CheckArgType(LispInt aArgNr, LispPtr& aArguments,LispEnvironment& aEnvironm
 
 char *GenericErrorBuf()
 {
+   // PLEASECHECK TODO This is a global!
    static char theGenericErrorBuf[512];
    return theGenericErrorBuf;
 }

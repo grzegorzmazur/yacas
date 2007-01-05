@@ -23,7 +23,7 @@ void* GetVoidStruct(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt iA
 #define ListArgument(_list,_argnr) LispPtr _list; GetListArgument(_list, aEnvironment,aStackTop,_argnr)
 #define IntegerArgument(_i,_argnr) LispString * _i = GetIntegerArgument(aEnvironment,aStackTop,_argnr)
 #define ShortIntegerArgument(_i,_argnr) LispInt _i = GetShortIntegerArgument(aEnvironment,aStackTop,_argnr)
-#define InpStringArgument(_i,_argnr) LispChar * _i = GetStringArgument(aEnvironment,aStackTop,_argnr)->String()
+#define InpStringArgument(_i,_argnr) LispChar * _i = GetStringArgument(aEnvironment,aStackTop,_argnr)->c_str()
 
 #define DoubleFloatArgument(_i,_argnr) double _i = GetDoubleFloatArgument(aEnvironment,aStackTop,_argnr)
 #define VoidStructArgument(_typ,_i,_argnr,_name) _typ _i = (_typ)GetVoidStruct(aEnvironment,aStackTop,_argnr,_name)

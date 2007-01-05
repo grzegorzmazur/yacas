@@ -354,7 +354,7 @@ void FltkConsole::LoadNotePad(LispChar * aFile)
                 {
                     if (the_out[0])
                     {
-                        AddText(the_out.String(), FL_RED,printPrompt,FL_COURIER,iDefaultFontSize);
+                        AddText(the_out.c_str(), FL_RED,printPrompt,FL_COURIER,iDefaultFontSize);
                     }
 
                     if (yacas->Error()[0] != '\0')
@@ -418,7 +418,7 @@ void FltkConsole::SaveHistory()
     for (i=from;i<iHistoryList.NrLines();i++)
     {
       LispString * ptr = iHistoryList.GetLine(i);
-      fprintf(f,"%s\n",ptr->String());
+      fprintf(f,"%s\n",ptr->c_str());
     }
     fclose(f);
   }
@@ -590,7 +590,7 @@ void FltkConsole::DoLine(char* inpline)
         if (the_out[0])
         {
             if (addable)
-              AddText(the_out.String(), FL_RED,printPrompt,FL_COURIER,font_size);
+              AddText(the_out.c_str(), FL_RED,printPrompt,FL_COURIER,font_size);
             the_out.Resize(0);
             the_out.Append('\0');
         }
@@ -939,7 +939,7 @@ struct HintItem
 };
 
 
-CArrayGrower<HintItem> hintTexts;
+CArrayGrower<HintItem, ArrOpsCustomObj<HintItem> > hintTexts;
 char* htex = NULL;
 int hoffsets[256];
 
@@ -1083,9 +1083,9 @@ void FltkConsole::SetCurrentHighlighted(int i)
 
         iCurrentHighlighted = i;
 
-        LispCharPtr text = "";
+        LispChar* text = "";
         if (iCurrentHighlighted >= 0)
-        if (iCurrentHighlighted < iConsoleOut.NrItems())
+        if (iCurrentHighlighted < iConsoleOut.Size())
         if (iConsoleOut[i]->InputIsVisible())
         {
             text = iConsoleOut[iCurrentHighlighted]->input();
@@ -1453,7 +1453,7 @@ ConsoleOutBase::~ConsoleOutBase()
 
 void ConsoleFlatText::Save(FILE* f)
 {
-  fprintf(f,"Proteus'AddCommand(\"%s\");\n",iText.String());
+  fprintf(f,"Proteus'AddCommand(\"%s\");\n",iText.c_str());
 }
 
 ConsoleFlatText::ConsoleFlatText(LispChar * aText, int aColor, const char* aPrompt,
