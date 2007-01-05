@@ -50,12 +50,7 @@ private:
 public:
 	LispAtom(const LispAtom& other);
 private:
-#define HAS_NEW_AtomImpl 0	/* TODO: woof -- 0 performs better */
-#if !HAS_NEW_AtomImpl
 	LispString * iString;
-#else
-    RefPtr<LispString> iString;	// PDG
-#endif
 };
 
 //------------------------------------------------------------------------------

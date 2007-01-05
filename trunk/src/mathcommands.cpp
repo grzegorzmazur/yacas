@@ -288,17 +288,10 @@ void LispLength(LispEnvironment& aEnvironment, LispInt aStackTop)
     return;
   }
   GenericClass *gen = ARGUMENT(1)->Generic();
-#if HAS_NEW_GC_dynamic_cast
-  ArrayClass *arr = dynamic_cast<ArrayClass *>(gen);
+  DYNCAST(ArrayClass,"\"Array\"",arr,gen)
   if (arr)
   {
     LispInt size = arr->Size();
-#else
-  if (gen)
-  if (StrEqual(gen->TypeName(),"\"Array\""))
-  {
-    LispInt size=((ArrayClass*)gen)->Size();
-#endif
     LispChar s[20];
     InternalIntToAscii(s,size);
     RESULT = (LispAtom::New(aEnvironment,s));
@@ -1735,15 +1728,9 @@ void GenArraySize(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispPtr evaluated(ARGUMENT(1));
 
     GenericClass *gen = evaluated->Generic();
-#if HAS_NEW_GC_dynamic_cast
-    ArrayClass *arr = dynamic_cast<ArrayClass *>(gen);
+    DYNCAST(ArrayClass,"\"Array\"",arr,gen)
     CHK_ARG_CORE(arr,1);
     LispInt size = arr->Size();
-#else
-    CHK_ARG_CORE(gen,1);
-    CHK_ARG_CORE(StrEqual(gen->TypeName(),"\"Array\""),1);
-    LispInt size=((ArrayClass*)gen)->Size();
-#endif
     LispChar s[20];
     InternalIntToAscii(s,size);
     RESULT = (LispAtom::New(aEnvironment,s));
@@ -1755,14 +1742,8 @@ void GenArrayGet(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispPtr evaluated(ARGUMENT(1));
 
     GenericClass *gen = evaluated->Generic();
-#if HAS_NEW_GC_dynamic_cast
-    ArrayClass *arr = dynamic_cast<ArrayClass *>(gen);
+    DYNCAST(ArrayClass,"\"Array\"",arr,gen)
     CHK_ARG_CORE(arr,1);
-#else
-    CHK_ARG_CORE(gen,1);
-    CHK_ARG_CORE(StrEqual(gen->TypeName(),"\"Array\""),1);
-#endif
-
     LispPtr sizearg(ARGUMENT(2));
 
     CHK_ARG_CORE(sizearg, 2);
@@ -1770,13 +1751,8 @@ void GenArrayGet(LispEnvironment& aEnvironment,LispInt aStackTop)
 
     LispInt size = InternalAsciiToInt(sizearg->String());
 
-#if HAS_NEW_GC_dynamic_cast
     CHK_ARG_CORE(size>0 && size<=arr->Size(),2);
     LispObject* object = arr->GetElement(size);
-#else
-    CHK_ARG_CORE(size>0 && size<=((ArrayClass*)gen)->Size(),2);
-    LispObject* object = ((ArrayClass*)gen)->GetElement(size);
-#endif
     RESULT = (object->Copy());
 }
 
@@ -1787,29 +1763,19 @@ void GenArraySet(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispPtr evaluated(ARGUMENT(1));
 
     GenericClass *gen = evaluated->Generic();
-#if HAS_NEW_GC_dynamic_cast
-    ArrayClass *arr = dynamic_cast<ArrayClass *>(gen);
+    DYNCAST(ArrayClass,"\"Array\"",arr,gen)
     CHK_ARG_CORE(arr,1);
-#else
-    CHK_ARG_CORE(gen,1);
-    CHK_ARG_CORE(StrEqual(gen->TypeName(),"\"Array\""),1);
-#endif
-
     LispPtr sizearg(ARGUMENT(2));
 
     CHK_ARG_CORE(sizearg, 2);
     CHK_ARG_CORE(sizearg->String(), 2);
 
     LispInt size = InternalAsciiToInt(sizearg->String());
-#if HAS_NEW_GC_dynamic_cast
+
     CHK_ARG_CORE(size>0 && size<=arr->Size(),2);
     LispPtr obj(ARGUMENT(3));
     arr->SetElement(size,obj);
-#else
-    CHK_ARG_CORE(size>0 && size<=((ArrayClass*)gen)->Size(),2);
-    LispPtr obj(ARGUMENT(3));
-    ((ArrayClass*)gen)->SetElement(size,obj);
-#endif
+
     InternalTrue( aEnvironment, RESULT);
 }
 
@@ -2019,7 +1985,7 @@ void GenPatternCreate(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispPtr postpredicate(ARGUMENT(2));
 
     LispIterator iter(pattern);
-#if 0
+#if 0 //PLEASECHECK TODO what is this?
     CHK_ARG_CORE(iter.getObj(),1);
     CHK_ARG_CORE(iter.getObj()->SubList(),1);
     iter.GoSub();
@@ -2044,19 +2010,13 @@ void GenPatternMatches(LispEnvironment& aEnvironment,LispInt aStackTop)
     //TESTARGS(3);
     LispPtr pattern(ARGUMENT(1));
     GenericClass *gen = pattern->Generic();
-#if HAS_NEW_GC_dynamic_cast
-    PatternClass *patclass = dynamic_cast<PatternClass *>(gen);
+    DYNCAST(PatternClass,"\"Pattern\"",patclass,gen)
     CHK_ARG_CORE(patclass,1);
-#else
-    CHK_ARG_CORE(gen,1);
-    CHK_ARG_CORE(StrEqual(gen->TypeName(),"\"Pattern\""),1);
-    PatternClass *patclass = (PatternClass*)gen;
-#endif
 
     LispPtr list(ARGUMENT(2));
 
     LispIterator iter(list);
-#if 0
+#if 0 
     CHK_ARG_CORE(iter.getObj(),2);
     CHK_ARG_CORE(iter.getObj()->SubList(),2);
     iter.GoSub();

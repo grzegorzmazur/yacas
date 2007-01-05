@@ -200,12 +200,7 @@ protected:
     CArrayGrower<LispString *, ArrOpsCustomPtr<LispString> > iVariables;
 
     /// List of predicates which need to be true for a match.
-#define HAS_NEW_iPredicates 1
-#if !HAS_NEW_iPredicates
-    CDeletingArrayGrower<LispPtr*, ArrOpsDeletingPtr<LispPtr> > iPredicates;
-#else
     CArrayGrower<LispPtr, ArrOpsCustomObj<LispPtr> > iPredicates;
-#endif
 };
 
 

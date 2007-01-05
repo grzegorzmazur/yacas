@@ -1,8 +1,6 @@
 
 #include "yacasprivate.h"
 #include "lispobject.h"
-//#include "lispatom.h"	// LispAnnotatedObject
-#include "codecomment.h"
 
 #ifdef YACAS_DEBUG
 long theNrCurrent=0;
@@ -48,38 +46,4 @@ LispInt LispObject::Equal(LispObject& aOther)
     return 0;
 }
 
-#if HAS_NEW_LispPtrArray == 0
-LispPtrArray::LispPtrArray(LispInt aSize,LispObject* aInitialItem)
-{
-    iSize=aSize;
-    iArray = NEW LispPtr[aSize];
-	if (aInitialItem)
-		for (LispInt i=0;i<aSize;i++)
-		{
-			iArray[i] = (aInitialItem);
-		}
-}
 
-LispPtrArray::~LispPtrArray()
-{
-    delete [] iArray;
-}
-#endif
-
-/*PLEASECHECK TODO AYAL: Why do we do this here? I can imagine having one function somewhere where the code-comment string gets
-  constructed on the fly based on whether defines are enabled or not.
- */
-#define STR(tokens) #tokens
-#define SHOWSTR(ctce) #ctce " = " STR(ctce)
-#if defined(YACAS_DEBUG)
-namespace{CodeComment varnameA("YACAS_DEBUG");}
-#endif
-#if defined(USE_ASSERT)
-namespace{CodeComment varnameB("USE_ASSERT");}
-#endif
-#if defined(NO_EXCEPTIONS)
-namespace{CodeComment varnameC("NO_EXCEPTIONS");}
-#endif
-namespace{
-	//CodeComment varname6("ObjectHelper and no param to LispObject::Copy()");
-}

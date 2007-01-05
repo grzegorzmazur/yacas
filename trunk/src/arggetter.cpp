@@ -26,14 +26,8 @@ LispString * GetIntegerArgument(LispEnvironment& aEnvironment, LispInt aStackTop
 void* GetVoidStruct(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr, LispChar * aTypeString)
 {
   GenericClass *gen = ARGUMENT(aArgNr)->Generic();
-#if HAS_NEW_GC_dynamic_cast
-  GenericStruct *str = dynamic_cast<GenericStruct *>(gen);
+  DYNCAST(GenericStruct,aTypeString,str,gen)
   CHK_ARG_CORE(str,aArgNr);
-#else
-  CHK_ARG_CORE(gen ,aArgNr);
-  CHK_ARG_CORE(StrEqual(gen->TypeName(),aTypeString),aArgNr);
-  GenericStruct *str = (GenericStruct*)gen;
-#endif
   return str->Data();
 }
 

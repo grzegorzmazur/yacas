@@ -58,7 +58,6 @@
 
 #include "plugins_available.h"
 #include "yacas.h"
-#include "codecomment.h"
 
 #ifndef WIN32
   #include "unixcommandline.h"
@@ -403,8 +402,6 @@ void my_exit(void)
     if (commandline) delete commandline; commandline = NULL;
     if (yacas) delete yacas; yacas = NULL;
     
-    CodeComment::Reset();
-    //delete CodeComment::pCodeComments; CodeComment::pCodeComments = NULL;
     ReportNrCurrent();
 #ifdef YACAS_DEBUG
     CheckAllPtrs(1);

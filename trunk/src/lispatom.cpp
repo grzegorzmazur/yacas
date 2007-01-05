@@ -5,12 +5,6 @@
 #include "lisperror.h"
 #include "numbers.h"
 #include "standard.h"
-#include "codecomment.h"
-
-#define STR(tokens) #tokens
-#define SHOWSTR(ctce) #ctce " = " STR(ctce)
-namespace{CodeComment varname3(SHOWSTR(HAS_NEW_AtomImpl));}
-namespace{CodeComment varname4(SHOWSTR(HAS_NEW_LispPtrArray));}
 
 
 /// construct an atom from a string representation.
@@ -36,24 +30,18 @@ LispAtom::LispAtom(LispString * aString)
 {
     LISPASSERT(aString!=NULL);
     iString = aString;
-#if !HAS_NEW_AtomImpl
     ++aString->iReferenceCount;
-#endif
     CHECKPTR(iString);
 }
 
 LispAtom::LispAtom(const LispAtom& other) : ASuper(other), iString(other.iString)
 {
-#if !HAS_NEW_AtomImpl
-    ++iString->iReferenceCount;
-#endif
+  ++iString->iReferenceCount;
 }
 
 LispAtom::~LispAtom()
 {
-#if !HAS_NEW_AtomImpl
-    --iString->iReferenceCount;
-#endif
+  --iString->iReferenceCount;
 }
 
 
@@ -169,21 +157,13 @@ LispString * LispNumber::String()
 {
   if (!iString)
   {
-#if !HAS_NEW_AtomImpl
     LISPASSERT(iNumber.ptr());	// either the string is null or the number but not both
-#else
-    LISPASSERT(iNumber);	// either the string is null or the number but not both
-#endif
     LispString *str = NEW LispString;
     // export the current number to string and store it as LispNumber::iString
     iNumber->ToString(*str, bits_to_digits(MAX(1,iNumber->GetPrecision()),BASE10), BASE10);
     iString = str;	
   }
-#if !HAS_NEW_AtomImpl
   return iString;
-#else
-  return iString;
-#endif
 }
 
 /// Return a BigNumber object.
@@ -192,14 +172,9 @@ BigNumber* LispNumber::Number(LispInt aBasePrecision)
 {
   if (!iNumber)
   {	// create and store a BigNumber out of string
-#if !HAS_NEW_AtomImpl
     LISPASSERT(iString.ptr());
     RefPtr<LispString> str;
     str = iString;
-#else
-    LISPASSERT(iString);
-    RefPtr<LispString> str(iString);	// TODO: woof -- PDG -- what's going on here?
-#endif
     // aBasePrecision is in digits, not in bits, ok
     iNumber = NEW BigNumber(str->c_str(), aBasePrecision, BASE10);
   }
@@ -208,17 +183,10 @@ BigNumber* LispNumber::Number(LispInt aBasePrecision)
   // (applies only to floats). Note that iNumber->GetPrecision() might be < 0
   else if (!iNumber->IsInt() && iNumber->GetPrecision() < (LispInt)digits_to_bits(aBasePrecision, BASE10))
   {
-#if !HAS_NEW_AtomImpl
-    if (!!iString)
+    if (/*TODO remove? !! */ iString)
     {// have string representation, can extend precision
       iNumber->SetTo(iString->c_str(),aBasePrecision, BASE10);
     }
-#else
-    if (iString)
-    {// have string representation, can extend precision
-      iNumber->SetTo(iString->c_str(),aBasePrecision, BASE10);
-    }
-#endif
     else
     {
 	// do not have string representation, cannot extend precision!

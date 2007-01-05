@@ -28,7 +28,23 @@ public:
 public:
     LispInt iReferenceCount;	// TODO: woof
 };
+
+
+/* Definition of DYNCAST: either the cast succeeds, or the variable is assigned NULL.
+*/
+
 #define HAS_NEW_GC_dynamic_cast 0	/* requires RTTI if set */
+#if HAS_NEW_GC_dynamic_cast 
+#define DYNCAST(_type,_name,_var,_object) _type * _var = dynamic_cast<_type *>(_object);
+#else // HAS_NEW_GC_dynamic_cast
+#define DYNCAST(_type,_name,_var,_object) \
+    _type * _var = NULL ; \
+    if (_object != NULL) \
+    { \
+      if (StrEqual((_object)->TypeName(),_name)) _var = (_type *)(_object); \
+    }
+#endif // HAS_NEW_GC_dynamic_cast
+
 
 #endif
 
