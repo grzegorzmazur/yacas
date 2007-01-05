@@ -39,25 +39,7 @@ typedef RefPtr<LispObject> LispPtr;
 /** \class LispPtrArray is similar to LispPtr, but implements an array
  *  of pointers to objects.
  */
-#define HAS_NEW_LispPtrArray 1
-#if HAS_NEW_LispPtrArray == 0
-class LispPtrArray : public YacasBase
-{
-public: //required
-    LispPtrArray(LispInt aSize,LispObject* aInitialItem);
-    ~LispPtrArray();
-    //void GrowTo(LispInt aNewSize);
-public: //array-specific
-    inline LispInt Size();
-    inline LispPtr& GetElement(LispInt aItem);
-    inline void SetElement(LispInt aItem,LispObject* aObject);
-private:
-    LispInt iSize;
-    LispPtr* iArray;
-};
-#elif HAS_NEW_LispPtrArray == 1
 typedef CArrayGrower<LispPtr, ArrOpsCustomObj<LispPtr> > LispPtrArray;
-#endif
 
 
 #ifdef YACAS_DEBUG
@@ -252,18 +234,5 @@ public:
 
 #include "lispobject.inl"
 
-/*
-HAS_NEW_LispPtrArray = 0
-Comment = {"HAS_NEW_iPredicates = 1","ObjectHelper and no param to LispObject::Copy()","HAS_RefPtr2 = 0","HAS_NEW_AtomImpl = 0"}
-{"Total", "1.0.61pdg", "2006-01-09 23:29:19", 704.17, 673.54, 7.13, Fail},
-
-HAS_NEW_LispPtrArray = 0
-Comment = {"HAS_NEW_iPredicates = 1","ObjectHelper and no param to LispObject::Copy()","HAS_RefPtr2 = 0","HAS_NEW_AtomImpl = 1"}
-{"Total", "1.0.61pdg", "2006-01-10 00:01:01", 773.25, 735.54, 7.23, Fail},
-
-Comment = {"HAS_NEW_iPredicates = 1","HAS_NEW_AtomImpl = 0","HAS_NEW_LispPtrArray = 0"}
-{"Total", "1.0.61pdg", "2006-01-10 02:25:17", 698.6699999999, 672.3, 7.1799999999, Fail},
-
-*/
 
 #endif

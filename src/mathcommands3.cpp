@@ -22,7 +22,6 @@
 #include "patcher.h"
 #include "platdll.h"
 #include "exedll.h"
-#include "codecomment.h"
 
 #ifdef HAVE_MATH_H
   #include <math.h>
@@ -1200,33 +1199,6 @@ void LispVersion(LispEnvironment& aEnvironment, LispInt aStackTop)
     RESULT = (LispAtom::New(aEnvironment,"\"" VERSION "\""));
 }
 
-CodeComment::Type * CodeComment::pCodeComments = 0;
-
-// this function is declared in yacasapi.cpp
-void LispCodeComment(LispEnvironment& aEnvironment, LispInt aStackTop)
-{
-	LispPtr head;
-	LispIterator tail(head);
-	LispObject* pObj;
-
-	pObj = aEnvironment.iList;
-	(*tail) = pObj;
-	tail = pObj->Nixed();
-
-	CodeComment::Type * pArrStr = CodeComment::pCodeComments;
-	if (pArrStr)
-    for (int ii = 0, nn = pArrStr->Size(); ii < nn; ii++)
-	{
-		LispString orig((*pArrStr)[ii]);
-		LispString stringified;
-		InternalStringify(stringified, &orig);
-		LispObject* pObj = LispAtom::New(aEnvironment,stringified.c_str());
-		(*tail) = pObj;
-		tail = pObj->Nixed();
-	}
-    RESULT = (LispSubList::New(head));
-}
-//namespace{CodeComment varname("CodeComment support added 12/08/2005.");}
 
 /// convert bits to digits. Use the kernel function bits_to_digits. Arguments must be small integers.
 void LispBitsToDigits(LispEnvironment& aEnvironment, LispInt aStackTop)

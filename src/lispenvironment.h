@@ -303,7 +303,6 @@ private:
 public: //Well... only because I want to be able to show the stack to the outside world...
     LocalVariableFrame *iLocalsList;
     LispOutput*    iInitialOutput;
-
 private:
 
     /// Hash of core commands with associated YacasEvaluator
@@ -345,19 +344,11 @@ public:
 	class YacasArgStack
 	{
 	public:
-		//TODO appropriate constructor?
-		#if HAS_NEW_LispPtrArray == 0
-		YacasArgStack(LispInt aStackSize) : iStack(aStackSize,NULL),iStackCnt(0) 
-		{
-			//printf("STACKSIZE %d\n",aStackSize);
-		}
-		#else
 		YacasArgStack(LispInt aStackSize) : iStack(),iStackCnt(0) 
 		{
 			iStack.GrowTo(aStackSize);
 			//printf("STACKSIZE %d\n",aStackSize);
 		}
-		#endif
 		inline LispInt GetStackTop() const {return iStackCnt;}
 		inline void RaiseStackOverflowError() const
 		{
@@ -369,12 +360,8 @@ public:
 			{
 				RaiseStackOverflowError();
 			}
-			#if HAS_NEW_LispPtrArray == 0
-				iStack.SetElement(iStackCnt,aObject);
-			#else
-				//LISPASSERT(iStackCnt>=0 /*&& iStackCnt<iStack.Size()*/);
-				iStack[iStackCnt] = (aObject);
-			#endif
+      //LISPASSERT(iStackCnt>=0 /*&& iStackCnt<iStack.Size()*/);
+      iStack[iStackCnt] = (aObject);
 			iStackCnt++;
 		}
 		inline void PushNulls(LispInt aNr)
@@ -389,12 +376,8 @@ public:
 		inline LispPtr& GetElement(LispInt aPos)
 		{
 			LISPASSERT(0<=aPos && aPos<iStackCnt);
-			#if HAS_NEW_LispPtrArray == 0
-				return iStack.GetElement(aPos);
-			#else
-				//LISPASSERT(aPos>=0 && aPos<iStack.Size());
-				return iStack[aPos];
-			#endif
+      //LISPASSERT(aPos>=0 && aPos<iStack.Size());
+      return iStack[aPos];
 		}
 		inline void PopTo(LispInt aTop)
 		{
@@ -402,11 +385,7 @@ public:
 			while (iStackCnt>aTop)
 			{
 				iStackCnt--;
-				#if HAS_NEW_LispPtrArray == 0
-					iStack.SetElement(iStackCnt,NULL);
-				#else
-					iStack[iStackCnt] = (NULL);
-				#endif
+        iStack[iStackCnt] = (NULL);
 			}
 		}
 	protected:

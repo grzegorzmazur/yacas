@@ -11,7 +11,6 @@
 #include "lispobject.h"
 #include "lispeval.h"
 #include "standard.h"
-#include "codecomment.h"
 
 #define MATCH_NUMBERS
 
@@ -228,15 +227,9 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
                         last->Nixed() = (LispAtom::New(aEnvironment,second->String()->c_str()));
 
 //                        third->Nixed() = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(str)));
-#if !HAS_NEW_iPredicates
-                        LispPtr *pred = NEW LispPtr;
-                        (*pred) = (LispSubList::New(third));
-						#define LP (*pred)
-						woof
-#else
                         LispPtr pred(LispSubList::New(third));
-						#define LP pred
-#endif
+#define LP pred
+
                         DBG_( third->Nixed()->SetFileAndLine(second->iFileName,second->iLine); )
                         DBG_( LP->SetFileAndLine(head->iFileName,head->iLine); )
 //LispPtr hold(LP);
@@ -281,13 +274,8 @@ YacasPatternPredicateBase::YacasPatternPredicateBase(LispEnvironment& aEnvironme
         LISPASSERT(matcher!=NULL);
         iParamMatchers.Append(matcher);
 	}
-#if !HAS_NEW_iPredicates
-    LispPtr* post = NEW LispPtr;
-    (*post) = (aPostPredicate);
-#else
 	LispPtr post(aPostPredicate);
-#endif
-    iPredicates.Append(post);
+  iPredicates.Append(post);
 }
 
 LispBoolean YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
@@ -367,22 +355,18 @@ LispBoolean YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
 
 LispBoolean YacasPatternPredicateBase::CheckPredicates(LispEnvironment& aEnvironment)
 {
-    for (LispInt i=0;i<iPredicates.Size();i++)
+  for (LispInt i=0;i<iPredicates.Size();i++)
+  {
+    LispPtr pred;
+    InternalEval(aEnvironment, pred, iPredicates[i]);
+    if (IsFalse(aEnvironment, pred))
     {
-        LispPtr pred;
-#if !HAS_NEW_iPredicates
-        InternalEval(aEnvironment, pred, *(iPredicates[i]));
-#else
-        InternalEval(aEnvironment, pred, iPredicates[i]);
-#endif
-		if (IsFalse(aEnvironment, pred))
-        {
-            return LispFalse;
-        }
-        Check(IsTrue(aEnvironment, pred), KLispErrNonBooleanPredicateInPattern);
+      return LispFalse;
     }
-    //hier
-    return LispTrue;
+    Check(IsTrue(aEnvironment, pred), KLispErrNonBooleanPredicateInPattern);
+  }
+  //hier
+  return LispTrue;
 }
                                                 
 
@@ -401,8 +385,4 @@ void YacasPatternPredicateBase::SetPatternVariables(LispEnvironment& aEnvironmen
 YacasPatternPredicateBase::~YacasPatternPredicateBase()
 {
 }
-
-#define STR(tokens) #tokens
-#define SHOWSTR(ctce) #ctce " = " STR(ctce)
-namespace{CodeComment varname(SHOWSTR(HAS_NEW_iPredicates));}
 

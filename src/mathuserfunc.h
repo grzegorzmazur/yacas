@@ -5,11 +5,8 @@
 #include "yacasbase.h"
 #include "lispuserfunc.h"
 #include "grower.h"
-#if HAS_NEW_GC_dynamic_cast
+
 #include "patternclass.h"
-#else
-class PatternClass;
-#endif
 
 /// A mathematical function defined by several rules.
 /// This is the basic class which implements functions in Yacas.
@@ -20,240 +17,214 @@ class PatternClass;
 class BranchingUserFunction : public LispArityUserFunction
 {
 public:
+  /// Structure containing name of parameter and whether it is put on hold.
+  class BranchParameter : public YacasBase
+  {
+  public:
+    BranchParameter(LispString * aParameter = NULL, LispInt aHold=LispFalse)
+        : iParameter(aParameter), iHold(aHold) {}
+    LispString * iParameter;
+    LispInt       iHold;
+  };
 
-    /// Structure containing name of parameter and whether it is put on hold.
-    class BranchParameter : public YacasBase
+  /// Abstract base class for rules.
+  class BranchRuleBase : public YacasBase
+  {
+  public:
+    virtual ~BranchRuleBase();
+    virtual LispBoolean Matches(LispEnvironment& aEnvironment, LispPtr* aArguments) = 0;
+    virtual LispInt Precedence() const = 0;
+    virtual LispPtr& Body() = 0;
+  };
+
+  /// A rule with a predicate.
+  /// This rule matches if the predicate evaluates to #LispTrue.
+  class BranchRule : public BranchRuleBase
+  {
+  public:
+    virtual ~BranchRule();
+    BranchRule(LispInt aPrecedence,LispPtr& aPredicate,LispPtr& aBody)
     {
-    public:
-        BranchParameter(LispString * aParameter = NULL,
-                        LispInt aHold=LispFalse)
-            : iParameter(aParameter), iHold(aHold) {}
-        LispString * iParameter;
-        LispInt       iHold;
-    };
+      iPrecedence = aPrecedence;
+      iPredicate = (aPredicate);
+      iBody = (aBody);
+    }
 
-    /// Abstract base class for rules.
-    class BranchRuleBase : public YacasBase
+    /// Return true if the rule matches.
+    /// #iPredicate is evaluated in \a Environment. If the result
+    /// IsTrue(), this function returns true.
+    virtual LispBoolean Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
+
+    /// Access #iPrecedence.
+    virtual LispInt Precedence() const;
+
+    /// Access #iBody.
+    virtual LispPtr& Body();
+  protected:
+    BranchRule() {};
+  protected:
+    LispInt iPrecedence;
+    LispPtr iBody;
+    LispPtr iPredicate;
+  };
+
+  /// A rule that always matches.
+  class BranchRuleTruePredicate : public BranchRule
+  {
+  public:
+    BranchRuleTruePredicate(LispInt aPrecedence,LispPtr& aBody)
     {
-    public:
-        virtual ~BranchRuleBase();
-        virtual LispBoolean Matches(LispEnvironment& aEnvironment, LispPtr* aArguments) = 0;
-        virtual LispInt Precedence() const = 0;
-        virtual LispPtr& Body() = 0;
-    };
+      iPrecedence = aPrecedence;
+      iBody = (aBody);
+    }
+    /// Return #LispTrue, always.
+    virtual LispBoolean Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
+  };
 
-    /// A rule with a predicate.
-    /// This rule matches if the predicate evaluates to #LispTrue.
-    class BranchRule : public BranchRuleBase
-    {
-    public:
-        virtual ~BranchRule();
-        BranchRule(LispInt aPrecedence,LispPtr& aPredicate,LispPtr& aBody)
-        {
-            iPrecedence = aPrecedence;
-            iPredicate = (aPredicate);
-            iBody = (aBody);
-        }
-
-	/// Return true if the rule matches.
-	/// #iPredicate is evaluated in \a Environment. If the result
-	/// IsTrue(), this function returns true.
-        virtual LispBoolean Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
-
-	/// Access #iPrecedence.
-        virtual LispInt Precedence() const;
-
-	/// Access #iBody.
-        virtual LispPtr& Body();
-    protected:
-        BranchRule() {};
-    protected:
-        LispInt iPrecedence;
-        LispPtr iBody;
-        LispPtr iPredicate;
-    };
-
-    /// A rule that always matches.
-    class BranchRuleTruePredicate : public BranchRule
-    {
-    public:
-        BranchRuleTruePredicate(LispInt aPrecedence,LispPtr& aBody)
-        {
-            iPrecedence = aPrecedence;
-            iBody = (aBody);
-        }
-	/// Return #LispTrue, always.
-        virtual LispBoolean Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
-    };
-
-    /// A rule which matches if the corresponding PatternClass matches.
-    class BranchPattern : public BranchRuleBase
-    {
-    public:
-        /// Destructor.
-        /// This function contains no code.
-        virtual ~BranchPattern();
-
-	/// Constructor.
-	/// \param aPrecedence precedence of the rule
-	/// \param aPredicate generic object of type \c Pattern
-	/// \param aBody body of the rule
-        BranchPattern(LispInt aPrecedence,LispPtr& aPredicate,LispPtr& aBody)
-        {
-            iPatternClass = NULL;
-            iPrecedence = aPrecedence;
-            iPredicate = (aPredicate);
-
-            GenericClass *gen = aPredicate->Generic();
-#if HAS_NEW_GC_dynamic_cast
-			PatternClass *pat = dynamic_cast<PatternClass *>(gen);
-            Check(pat,KLispErrInvalidArg);
-            iPatternClass = pat;
-#else
-            Check(gen,KLispErrInvalidArg);
-            Check(StrEqual(gen->TypeName(),"\"Pattern\""),KLispErrInvalidArg);
-            iPatternClass = (PatternClass*)gen;
-#endif
-            iBody = (aBody);
-        }
-
-	/// Return true if the corresponding pattern matches.
-        virtual LispBoolean Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
-
-	/// Access #iPrecedence
-        virtual LispInt Precedence() const;
-
-	/// Access #iBody
-        virtual LispPtr& Body();
-
-    protected:
-	/// The precedence of this rule.
-        LispInt iPrecedence;
-
-	/// The body of this rule.
-        LispPtr iBody;
-
-	/// Generic object of type \c Pattern containing #iPatternClass
-        LispPtr iPredicate;
-
-	/// The pattern that decides whether this rule matches.
-        PatternClass *iPatternClass;
-    };
+  /// A rule which matches if the corresponding PatternClass matches.
+  class BranchPattern : public BranchRuleBase
+  {
+  public:
+    /// Destructor.
+    /// This function contains no code.
+    virtual ~BranchPattern();
 
     /// Constructor.
-    /// \param aParameters linked list constaining the names of the arguments
-    ///
-    /// #iParamList and #iParameters are set from \a aParameters.
-    BranchingUserFunction(LispPtr& aParameters);
+    /// \param aPrecedence precedence of the rule
+    /// \param aPredicate generic object of type \c Pattern
+    /// \param aBody body of the rule
+    BranchPattern(LispInt aPrecedence,LispPtr& aPredicate,LispPtr& aBody)
+    {
+      iPatternClass = NULL;
+      iPrecedence = aPrecedence;
+      iPredicate = (aPredicate);
 
-    /// Destructor.
-    /// There is no code inside this function.
-    virtual ~BranchingUserFunction();
+      GenericClass *gen = aPredicate->Generic();
+      DYNCAST(PatternClass,"\"Pattern\"",pat,gen)
+      Check(pat,KLispErrInvalidArg);
+      iPatternClass = pat;
+      iBody = (aBody);
+    }
 
-    /// Evaluate the function on given arguments.
-    /// \param aResult (on output) the result of the evaluation
-    /// \param aEnvironment the underlying Lisp environment
-    /// \param aArguments the arguments to the function
-    ///
-    /// First, all arguments are evaluated by the evaluator associated
-    /// to \a aEnvironment, unless the \c iHold flag of the
-    /// corresponding parameter is true. Then a new LispLocalFrame is
-    /// constructed, in which the actual arguments are assigned to the
-    /// names of the formal arguments, as stored in \c iParameter. Then
-    /// all rules in #iRules are tried one by one. The body of the
-    /// first rule that matches is evaluated, and the result is put in
-    /// \a aResult. If no rule matches, \a aResult will recieve a new
-    /// expression with evaluated arguments.
-    virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
-                  LispPtr& aArguments);
+    /// Return true if the corresponding pattern matches.
+    virtual LispBoolean Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
 
-    /// Put an argument on hold.
-    /// \param aVariable name of argument to put un hold
-    ///
-    /// The \c iHold flag of the corresponding argument is set. This
-    /// implies that this argument is not evaluated by Evaluate().
-    virtual void HoldArgument(LispString * aVariable);
+    /// Access #iPrecedence
+    virtual LispInt Precedence() const;
 
-    /// Return true if the arity of the function equals \a aArity.
-    virtual LispInt IsArity(LispInt aArity) const;
+    /// Access #iBody
+    virtual LispPtr& Body();
 
-    /// Return the arity (number of arguments) of the function.
-    LispInt Arity() const;
+  protected:
+    /// The precedence of this rule.
+    LispInt iPrecedence;
 
-    /// Add a BranchRule to the list of rules.
-    /// \sa InsertRule()
-    virtual void DeclareRule(LispInt aPrecedence, LispPtr& aPredicate,
-                             LispPtr& aBody);
+    /// The body of this rule.
+    LispPtr iBody;
 
-    /// Add a BranchRuleTruePredicate to the list of rules.
-    /// \sa InsertRule()
-    virtual void DeclareRule(LispInt aPrecedence, LispPtr& aBody);
+    /// Generic object of type \c Pattern containing #iPatternClass
+    LispPtr iPredicate;
 
-    /// Add a BranchPattern to the list of rules.
-    /// \sa InsertRule()
-    void DeclarePattern(LispInt aPrecedence, LispPtr& aPredicate,
-                        LispPtr& aBody);
+    /// The pattern that decides whether this rule matches.
+    PatternClass *iPatternClass;
+  };
 
-    /// Insert any BranchRuleBase object in the list of rules.
-    /// This function does the real work for DeclareRule() and
-    /// DeclarePattern(): it inserts the rule in #iRules, while
-    /// keeping it sorted. The algorithm is \f$O(\log n)\f$, where
-    /// \f$n\f$ denotes the number of rules.
-    void InsertRule(LispInt aPrecedence,BranchRuleBase* newRule);
+  /// Constructor.
+  /// \param aParameters linked list constaining the names of the arguments
+  ///
+  /// #iParamList and #iParameters are set from \a aParameters.
+  BranchingUserFunction(LispPtr& aParameters);
 
-    /// Return the argument list, stored in #iParamList
-    virtual LispPtr& ArgList();
+  /// Destructor.
+  /// There is no code inside this function.
+  virtual ~BranchingUserFunction();
+
+  /// Evaluate the function on given arguments.
+  /// \param aResult (on output) the result of the evaluation
+  /// \param aEnvironment the underlying Lisp environment
+  /// \param aArguments the arguments to the function
+  ///
+  /// First, all arguments are evaluated by the evaluator associated
+  /// to \a aEnvironment, unless the \c iHold flag of the
+  /// corresponding parameter is true. Then a new LispLocalFrame is
+  /// constructed, in which the actual arguments are assigned to the
+  /// names of the formal arguments, as stored in \c iParameter. Then
+  /// all rules in #iRules are tried one by one. The body of the
+  /// first rule that matches is evaluated, and the result is put in
+  /// \a aResult. If no rule matches, \a aResult will recieve a new
+  /// expression with evaluated arguments.
+  virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
+
+  /// Put an argument on hold.
+  /// \param aVariable name of argument to put un hold
+  ///
+  /// The \c iHold flag of the corresponding argument is set. This
+  /// implies that this argument is not evaluated by Evaluate().
+  virtual void HoldArgument(LispString * aVariable);
+
+  /// Return true if the arity of the function equals \a aArity.
+  virtual LispInt IsArity(LispInt aArity) const;
+
+  /// Return the arity (number of arguments) of the function.
+  LispInt Arity() const;
+
+  /// Add a BranchRule to the list of rules.
+  /// \sa InsertRule()
+  virtual void DeclareRule(LispInt aPrecedence, LispPtr& aPredicate, LispPtr& aBody);
+
+  /// Add a BranchRuleTruePredicate to the list of rules.
+  /// \sa InsertRule()
+  virtual void DeclareRule(LispInt aPrecedence, LispPtr& aBody);
+
+  /// Add a BranchPattern to the list of rules.
+  /// \sa InsertRule()
+  void DeclarePattern(LispInt aPrecedence, LispPtr& aPredicate, LispPtr& aBody);
+
+  /// Insert any BranchRuleBase object in the list of rules.
+  /// This function does the real work for DeclareRule() and
+  /// DeclarePattern(): it inserts the rule in #iRules, while
+  /// keeping it sorted. The algorithm is \f$O(\log n)\f$, where
+  /// \f$n\f$ denotes the number of rules.
+  void InsertRule(LispInt aPrecedence,BranchRuleBase* newRule);
+
+  /// Return the argument list, stored in #iParamList
+  virtual LispPtr& ArgList();
 
 protected:
-    /// List of arguments, with corresponding \c iHold property.
-	//woof
-    CArrayGrower<BranchParameter, ArrOpsPOD<BranchParameter> > iParameters;
+  /// List of arguments, with corresponding \c iHold property.
+  //TODO woof
+  CArrayGrower<BranchParameter, ArrOpsPOD<BranchParameter> > iParameters;
 
-    /// List of rules, sorted on precedence.
-    CDeletingArrayGrower<BranchRuleBase*, ArrOpsDeletingPtr<BranchRuleBase> >     iRules;
+  /// List of rules, sorted on precedence.
+  CDeletingArrayGrower<BranchRuleBase*, ArrOpsDeletingPtr<BranchRuleBase> >     iRules;
 
-    /// List of arguments
-    LispPtr iParamList;
+  /// List of arguments
+  LispPtr iParamList;
 };
 
 class ListedBranchingUserFunction : public BranchingUserFunction
 {
 public:
-    ListedBranchingUserFunction(LispPtr& aParameters);
-    virtual LispInt IsArity(LispInt aArity) const;
-    virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
-                  LispPtr& aArguments);
+  ListedBranchingUserFunction(LispPtr& aParameters);
+  virtual LispInt IsArity(LispInt aArity) const;
+  virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
 };
 
 
 class MacroUserFunction : public BranchingUserFunction
 {
 public:
-    MacroUserFunction(LispPtr& aParameters);
-    virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
-                  LispPtr& aArguments);
-/*
-    class MacroRule : public BranchRuleBase
-    {
-    public:
-        inline MacroRule(LispPtr& aBody) : iBody(aBody){}
-        virtual LispBoolean Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
-        virtual LispInt Precedence() const;
-        virtual LispPtr& Body();
-    private:
-        LispPtr iBody;
-    };
-*/
+  MacroUserFunction(LispPtr& aParameters);
+  virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
 };
 
 
 class ListedMacroUserFunction : public MacroUserFunction
 {
 public:
-    ListedMacroUserFunction(LispPtr& aParameters);
-    virtual LispInt IsArity(LispInt aArity) const;
-    virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
-                  LispPtr& aArguments);
+  ListedMacroUserFunction(LispPtr& aParameters);
+  virtual LispInt IsArity(LispInt aArity) const;
+  virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
 };
 
 

@@ -2,11 +2,6 @@
 #include "yacasprivate.h"
 #include "arrayclass.h"
 
-#if HAS_NEW_LispPtrArray == 0
-ArrayClass::ArrayClass(LispInt aSize,LispObject* aInitialItem) : iArray(aSize,aInitialItem)
-{
-}
-#else
 ArrayClass::ArrayClass(LispInt aSize,LispObject* aInitialItem) : iArray()
 {
 	iArray.GrowTo(aSize);
@@ -16,7 +11,7 @@ ArrayClass::ArrayClass(LispInt aSize,LispObject* aInitialItem) : iArray()
 			iArray[i] = (aInitialItem);
 		}
 }
-#endif
+
 
 ArrayClass::~ArrayClass()
 {
