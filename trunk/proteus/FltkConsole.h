@@ -68,7 +68,7 @@ public:
     virtual void Save(FILE* f);
     virtual int Fontsize() const;
 private:
-    CDeletingArrayGrower<ConsoleOutBase*> iConsoleOut;
+    CDeletingArrayGrower<ConsoleOutBase*, ArrOpsDeletingPtr<ConsoleOutBase> > iConsoleOut;
     int iShowInput;
     int iEnableInput;
 };
@@ -144,7 +144,7 @@ private:
     void DoLine(char* inpline);
     void UpdateHeight(int aDelta);
 public:
-    CDeletingArrayGrower<ConsoleOutBase*> iConsoleOut;
+    CDeletingArrayGrower<ConsoleOutBase*, ArrOpsDeletingPtr<ConsoleOutBase> > iConsoleOut;
     ConsoleGrouped *iLast;
 
     inline int NotepadFontSize() const { return iDefaultFontSize; }
