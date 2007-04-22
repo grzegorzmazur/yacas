@@ -674,13 +674,6 @@ int main(int argc, char **argv)
         Fl_Group::current()->resizable(console_scroll);
       }
 
-/*TODO remove, graphs are now embedded
-      {
-        Fl_Group* o = grapher = new Fl_Group(10, 20, 630, 310, "Graph");
-        drawing = new Drawer(11,23,618,285);
-        o->end();
-      }
-*/
 /*TODO editor should be separate app, with debugger*/
       {
         Fl_Group* o = new Fl_Group(10, 25, 625, 452, "Editor");

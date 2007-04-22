@@ -552,20 +552,21 @@ LispChar * LispEnvironment::ErrorString(LispInt aError)
 
 LispString * LispEnvironment::FindCachedFile(LispChar * aFileName)
 {
-    if (iArchive)
+  if (iArchive)
+  {
+    LispInt index = iArchive->iFiles.FindFile(aFileName);
+    if (index>=0)
     {
-        LispInt index = iArchive->iFiles.FindFile(aFileName);
-        if (index>=0)
-        {
-            LispChar * contents = iArchive->iFiles.Contents(index);
-            if (contents)
-            {
-                return NEW LispString(contents,LispFalse);
-            }
-//printf("File %s unsuccessfully decompressed\n",aFileName);
-        }
+      LispChar * contents = iArchive->iFiles.Contents(index);
+      if (contents)
+      {
+        LispString* result = NEW LispString(contents,LispFalse);
+        PlatFree(contents);
+        return result;
+      }
     }
-    return NULL;
+  }
+  return NULL;
 }
 
 

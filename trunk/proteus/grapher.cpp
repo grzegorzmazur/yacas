@@ -37,15 +37,6 @@ static void FlGraphStart(LispEnvironment& aEnvironment,LispInt aStackTop)
 
   cell_to_insert = new ConsoleDrawer(aEnvironment,ARGUMENT(1),width,height);
   InternalTrue(aEnvironment,RESULT);
-
-/*TODO remove?
-    graphEnvironment = &aEnvironment;
-    graph = (ARGUMENT(1));
-    extern Fl_Tabs* mainTabs;
-    extern Fl_Group* grapher;
-    mainTabs->value(grapher);
-    InternalTrue(aEnvironment,RESULT);
-*/
 }
 
 
@@ -55,11 +46,9 @@ void AddGraphingCapabilities(LispEnvironment& aEnvironment)
 {
 
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) aEnvironment.SetCommand(fname,iname,nrargs,flags)
-CORE_KERNEL_FUNCTION("FlGraphStart",FlGraphStart,3,YacasEvaluator::Function | YacasEvaluator::Fixed);
+  CORE_KERNEL_FUNCTION("FlGraphStart",FlGraphStart,3,YacasEvaluator::Function | YacasEvaluator::Fixed);
 #undef CORE_KERNEL_FUNCTION
-/*
-  aEnvironment.SetCommand(FlGraphStart, "FlGraphStart");
-*/
+
   FltkgraphPlugin fl_plugin;
   fl_plugin.Add(aEnvironment);
 }

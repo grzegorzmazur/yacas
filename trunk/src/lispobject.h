@@ -103,9 +103,7 @@ public:
     LispInt Equal(LispObject& aOther);
     inline LispInt operator==(LispObject& aOther);
     inline LispInt operator!=(LispObject& aOther);
-    inline void SetFlag(LispInt aFlag);
-    inline void ResetFlag(LispInt aFlag);
-	DBG_( LispChar * iFileName; )
+	  DBG_( LispChar * iFileName; )
     DBG_( LispInt iLine; )
     inline void SetFileAndLine(LispChar * aFileName, LispInt aLine)
     {

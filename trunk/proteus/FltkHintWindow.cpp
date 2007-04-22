@@ -55,22 +55,6 @@ void FltkHintWindow::draw(int x, int y)
     int h = height();
     iy -= (h+4);
 
-/*TODO remove?
-    fl_font(FL_HELVETICA,iTextSize);
-    iy -= iNrLines*fl_height();
-    h = iNrLines*fl_height()+2;
-
-    if (iNrDescriptions)
-    {
-      fl_font(FL_HELVETICA_BOLD,iTextSize);
-      h += iNrDescriptions*fl_height()+2;
-      iy -= iNrDescriptions*fl_height();
-
-      // space for line
-      h+=7;
-      iy -= 7; 
-    }
-*/
     fl_color(FL_YELLOW);
     fl_rectf(ix,iy,w,h);
     fl_color(FL_BLUE);

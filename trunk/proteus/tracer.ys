@@ -13,14 +13,7 @@
 
 TrIndent() :=
 [
-/*TODO remove?
-  Local(result,i);
-  Set(result,"");
-  For(Set(i,Length(traceStack)),i>=1,Set(i,i-1)) [Set(result, result:"    ");];
-  result;
-*/
   2*Length(traceStack);
-
 ];
 Last(list) := list[Length(list)];
 
@@ -28,14 +21,12 @@ Last(list) := list[Length(list)];
 10 # Dump({_expand,_expr1,_expr2}) <--
 [
       Write(expand);Space();Write(0);NewLine();
-      //TODO remove? WriteString(indent);
       WriteString(String(indent):":":"Dummy":":");
       WriteString(expr1); WriteString(expr2);NewLine();
 ];
 10 # Dump({_expand,_expr1,_expr2,_file,0}) <-- 
 [
       Write(expand);Space();Write(0);NewLine();
-      //TODO remove? WriteString(indent);
       WriteString(String(indent):":":"Dummy":":");
       WriteString(expr1); WriteString(expr2);NewLine();
 ];
@@ -43,7 +34,6 @@ Last(list) := list[Length(list)];
 [
       Write(expand);Space();Write(line);NewLine();
       WriteString(file);NewLine();
-      //TODO remove? WriteString(indent);
       WriteString(String(indent):":":"Dummy":":");
       WriteString(expr1); WriteString(expr2);NewLine();
 ];

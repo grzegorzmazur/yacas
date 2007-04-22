@@ -44,8 +44,7 @@ inline T * PlatAllocN(LispInt aSize) { return (T*)PlatAlloc(aSize*sizeof(T)); }
 
 #ifdef YACAS_DEBUG	// goes almost to EOF
 
-
-#define NEW_THROWER throw (std::bad_alloc)
+#define NEW_THROWER throw ()//(std::bad_alloc)
 #define DELETE_THROWER throw ()
 
 // TODO: woof -- why doesn't MSC itself have this problem?
