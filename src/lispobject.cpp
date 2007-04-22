@@ -39,6 +39,8 @@ LispInt LispObject::Equal(LispObject& aOther)
     {
         if (! (*iter1)->Equal(*(*iter2) ))
             return 0;
+			iter1 = &(*iter1)->Nixed();
+			iter2 = &(*iter2)->Nixed();
     }
     //One list longer than the other?
     if (!(*iter1) && !(*iter2))

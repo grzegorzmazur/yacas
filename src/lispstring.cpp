@@ -9,13 +9,13 @@
 
 void LispString::SetString(const LispChar * aString)
 {
-    LispInt length = PlatStrLen(aString);  // my own strlen
-    GrowTo(length+1);
-	value_type * aT = elements();
-    for (LispInt i = 0; i <= length; i++)
-    {
-        aT[i] = aString[i];
-    }
+  LispInt length = PlatStrLen(aString);  // my own strlen
+  GrowTo(length+1);
+  value_type * aT = elements();
+  for (LispInt i = 0; i <= length; i++)
+  {
+    aT[i] = aString[i];
+  }
 }
 
 void LispString::SetStringCounted(const LispChar * aString,LispInt aLength)

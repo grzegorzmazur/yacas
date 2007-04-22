@@ -2,26 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*
-CORE_KERNEL_FUNCTION("MathAdd",LispAdd,2,YacasEvaluator::Function | YacasEvaluator::Fixed)
-
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispAdd(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathAdd");
-
-  class LispAdd extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Yacasexception
-    {
-      //TODO FIXME
-    }
-  }
-
-
-
-#define CORE_KERNEL_FUNCTION_ALIAS(iname,fname,nrargs,flags) iEnvironment.SetCommand(fname,iname,nrargs,flags);
-
-*/
 
 void doit(FILE* fproto,FILE* fclass,char* iname,char* fname,int nrargs,char* flags)
 {
@@ -60,7 +40,7 @@ void doit(FILE* fproto,FILE* fclass,char* iname,char* fname,int nrargs,char* fla
 "  {\n"
 "    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception\n"
 "    {\n"
-"      aEnvironment.iCurrentOutput.Write(\"Function not yet implemented : %s\");//TODO FIXME\n"
+"      aEnvironment.iCurrentOutput.Write(\"Function not yet implemented : %s\");\n"
 "    }\n"
 "  }\n\n",fname,fname
 );

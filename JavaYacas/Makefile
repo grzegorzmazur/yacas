@@ -60,7 +60,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = 
-host_triplet = powerpc-apple-darwin8.8.0
+host_triplet = powerpc-apple-darwin8.9.0
 
 EXEEXT = 
 OBJEXT = o

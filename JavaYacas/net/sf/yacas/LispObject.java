@@ -67,8 +67,7 @@ abstract class LispObject
 		{
 			if (! iter1.Get().Equal(iter2.Get() ))
 				return false;
-				
-			//TODO FIXME oddly enough the following lines were not present in the C++ code!
+
 			iter1 = iter1.Get().Next();
 			iter2 = iter2.Get().Next();
 		}
@@ -77,8 +76,5 @@ abstract class LispObject
 			return true;
 		return false;
 	}
-//TODO FIXME shouldn't these be removed from the Yacas main source tree too?    void SetFlag(int aFlag);
-//TODO FIXME shouldn't these be removed from the Yacas main source tree too?    void ResetFlag(int aFlag);
-
 	LispPtr   iNext = new LispPtr();
 }
