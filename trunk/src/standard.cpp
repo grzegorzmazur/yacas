@@ -244,8 +244,7 @@ LispBoolean InternalEquals(LispEnvironment& aEnvironment,
     }
 
 
-#ifndef NO_USE_BIGFLOAT
-/*This code would be better, if BigNumber::Equals works*/
+/*TODO This code would be better, if BigNumber::Equals works*/
 
     BigNumber *n1 = aExpression1->Number(aEnvironment.Precision());
     BigNumber *n2 = aExpression2->Number(aEnvironment.Precision());
@@ -262,7 +261,6 @@ LispBoolean InternalEquals(LispEnvironment& aEnvironment,
         return LispFalse;
     }
 
-#endif
 
     //Pointers to strings should be the same
     if (aExpression1->String() != aExpression2->String())

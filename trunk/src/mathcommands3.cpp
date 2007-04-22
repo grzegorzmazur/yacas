@@ -66,7 +66,6 @@
 
 
 
-#ifndef NO_USE_BIGFLOAT
 
 /// Construct a BigNumber from one of the arguments.
 /// \param x (on output) the constructed bignumber
@@ -78,7 +77,6 @@ void GetNumber(RefPtr<BigNumber>& x, LispEnvironment& aEnvironment, LispInt aSta
     x = ARGUMENT(aArgNr)->Number(aEnvironment.Precision());
     CHK_ARG_CORE(x,aArgNr);	// was: x.Ptr()
 }
-#endif // USE_BIGFLOAT
 
 //FIXME remove these
 void LispArithmetic2(LispEnvironment& aEnvironment, LispInt aStackTop,
@@ -120,27 +118,22 @@ void LispArithmetic2(LispEnvironment& aEnvironment, LispInt aStackTop,
 
 void LispDumpBigNumberDebugInfo(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef NO_USE_BIGFLOAT
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
   x->DumpDebugInfo();
-#endif
   InternalTrue(aEnvironment,RESULT);
 }
 
 void LispMultiply(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       RefPtr<BigNumber> y;
       GetNumber(x,aEnvironment, aStackTop, 1);
       GetNumber(y,aEnvironment, aStackTop, 2);
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
-    //z->Multiply(*x.ptr(),*y.ptr(),aEnvironment.BinaryPrecision());
       z->Multiply(*x, *y, aEnvironment.BinaryPrecision());
       RESULT = (NEW LispNumber(z));
       return;
-#endif // USE_BIGFLOAT
 }
 
 //TODO we need to have Gcd in BigNumber!
@@ -163,16 +156,13 @@ void LispAdd(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispInt length = InternalListLength(ARGUMENT(0));
     if (length == 2)
     {
-#ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aStackTop, 1);
       RESULT = (NEW LispNumber(x.ptr()));
       return;
-#endif
     }
     else
     {
-#ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       RefPtr<BigNumber> y;
       GetNumber(x,aEnvironment, aStackTop, 1);
@@ -182,7 +172,6 @@ void LispAdd(LispEnvironment& aEnvironment, LispInt aStackTop)
       z->Add(*x.ptr(),*y.ptr(),aEnvironment.BinaryPrecision());
       RESULT = (NEW LispNumber(z));
       return;
-#endif // USE_BIGFLOAT
     }
 }
 
@@ -191,18 +180,15 @@ void LispSubtract(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispInt length = InternalListLength(ARGUMENT(0));
     if (length == 2)
     {
-#ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aStackTop, 1);
       BigNumber *z = NEW BigNumber(*x/*aEnvironment.BinaryPrecision()*/);
       z->Negate(*z /* *x.Ptr() */);
       RESULT = (NEW LispNumber(z));
       return;
-#endif
     }
     else
     {
-#ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       RefPtr<BigNumber> y;
       GetNumber(x,aEnvironment, aStackTop, 1);
@@ -213,40 +199,37 @@ void LispSubtract(LispEnvironment& aEnvironment, LispInt aStackTop)
       z->Add(*x,yneg,aEnvironment.BinaryPrecision());
       RESULT = (NEW LispNumber(z));
       return;
-#endif // USE_BIGFLOAT
     }
 }
 
 
 void LispDivide(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-// Serge, what was the deal again with divide, floats and integers mixed in the same function?
-//	yes, divide works differently on integers and on floats -- see new.chapt -- Serge
-#ifndef NO_USE_BIGFLOAT
-      RefPtr<BigNumber> x;
-      RefPtr<BigNumber> y;
-      GetNumber(x,aEnvironment, aStackTop, 1);
-      GetNumber(y,aEnvironment, aStackTop, 2);
-      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
-	  // if both arguments are integers, then BigNumber::Divide would perform an integer divide, but we want a float divide here.
-	  if (x->IsInt() && y->IsInt())
-	  {
-		  // why can't we just say BigNumber temp; ?
-		  BigNumber tempx(aEnvironment.BinaryPrecision());
-		  tempx.SetTo(*x);	// was: *x.Ptr()
-		  tempx.BecomeFloat(aEnvironment.BinaryPrecision());	// coerce x to float
-		  BigNumber tempy(aEnvironment.BinaryPrecision());
-		  tempy.SetTo(*y);
-		  tempy.BecomeFloat(aEnvironment.BinaryPrecision());	// coerce x to float
-      z->Divide(tempx, tempy,aEnvironment.BinaryPrecision());
-	  }
-	  else
-	  {
-		  z->Divide(*x, *y,aEnvironment.BinaryPrecision());
-	  }
-	  RESULT = (NEW LispNumber(z));
-      return;
-#endif // USE_BIGFLOAT
+  // Serge, what was the deal again with divide, floats and integers mixed in the same function?
+  //	yes, divide works differently on integers and on floats -- see new.chapt -- Serge
+  RefPtr<BigNumber> x;
+  RefPtr<BigNumber> y;
+  GetNumber(x,aEnvironment, aStackTop, 1);
+  GetNumber(y,aEnvironment, aStackTop, 2);
+  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+  // if both arguments are integers, then BigNumber::Divide would perform an integer divide, but we want a float divide here.
+  if (x->IsInt() && y->IsInt())
+  {
+    // why can't we just say BigNumber temp; ?
+    BigNumber tempx(aEnvironment.BinaryPrecision());
+    tempx.SetTo(*x);	// was: *x.Ptr()
+    tempx.BecomeFloat(aEnvironment.BinaryPrecision());	// coerce x to float
+    BigNumber tempy(aEnvironment.BinaryPrecision());
+    tempy.SetTo(*y);
+    tempy.BecomeFloat(aEnvironment.BinaryPrecision());	// coerce x to float
+    z->Divide(tempx, tempy,aEnvironment.BinaryPrecision());
+  }
+  else
+  {
+    z->Divide(*x, *y,aEnvironment.BinaryPrecision());
+  }
+  RESULT = (NEW LispNumber(z));
+  return;
 }
 
 
@@ -266,7 +249,6 @@ void LispSqrt(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 
-#ifndef NO_USE_BIGFLOAT
 #define UNARYFUNCTION(LispName, BigNumName, OldName) \
 void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 { \
@@ -287,18 +269,6 @@ void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
       z->BigNumName(*x, *y); \
       RESULT = (NEW LispNumber(z)); \
 }
-#else
-#define UNARYFUNCTION(LispName, BigNumName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
-{ \
-    LispArithmetic1(aEnvironment, aStackTop, OldName); \
-}
-#define BINARYFUNCTION(LispName, BigNumName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
-{ \
-    LispArithmetic2(aEnvironment, aStackTop, OldName); \
-}
-#endif
 
 UNARYFUNCTION(LispFloor, Floor, FloorFloat)
 UNARYFUNCTION(LispMathNegate, Negate, NegateFloat)
@@ -309,15 +279,11 @@ is used to help interface Yacas with BigNumber. Suppose we need to access a unar
 The macro produces the following equivalent code for the unary function:
 void LispFloor(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef NO_USE_BIGFLOAT
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aStackTop, 1);
       BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
       z->Floor(*x.Ptr());
       RESULT = (NEW LispNumber(z));
-#else
-    LispArithmetic1(aEnvironment, aStackTop, FloorFloat);
-#endif
 }
 */
 /* FIXME Eventually the BigNumber support will be stable and we can remove old code and simplify these macros */
@@ -325,125 +291,84 @@ void LispFloor(LispEnvironment& aEnvironment, LispInt aStackTop)
 /// obtain internal precision data on a number object.
 void LispGetExactBits(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef NO_USE_BIGFLOAT
-      RefPtr<BigNumber> x;
-      GetNumber(x,aEnvironment, aStackTop, 1);
-      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
-      z->SetTo(
-	    (x->IsInt())
-		? x->BitCount()	// for integers, return the bit count
-	  	: x->GetPrecision() 	// for floats, return the precision
-      );
-      RESULT = (NEW LispNumber(z));
-#else	// this is not defined without BigNumber, so return something
-    RaiseError("Function MathGetExactBits is not available without BigNumber support");
-    LispArithmetic1(aEnvironment, aStackTop, FloorFloat);
-#endif
+  RefPtr<BigNumber> x;
+  GetNumber(x,aEnvironment, aStackTop, 1);
+  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+  z->SetTo(
+  (x->IsInt())
+    ? x->BitCount()	// for integers, return the bit count
+    : x->GetPrecision() 	// for floats, return the precision
+  );
+  RESULT = (NEW LispNumber(z));
 }
 /// set internal precision data on a number object.
 void LispSetExactBits(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef NO_USE_BIGFLOAT
-      RefPtr<BigNumber> x;
-      RefPtr<BigNumber> y;
-      GetNumber(x,aEnvironment, aStackTop, 1);
-      GetNumber(y,aEnvironment, aStackTop, 2);
-      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
-      z->SetTo(*x);
-	  // do nothing for integers
-	  if (!(z->IsInt()))
-	    z->Precision((long)(y->Double()));	// segfaults unless y is defined?
-      RESULT = (NEW LispNumber(z));
-#else	// this is not defined without BigNumber, so return something
-    RaiseError("Function MathSetExactBits is not available without BigNumber support");
-    LispArithmetic1(aEnvironment, aStackTop, FloorFloat);
-#endif
+  RefPtr<BigNumber> x;
+  RefPtr<BigNumber> y;
+  GetNumber(x,aEnvironment, aStackTop, 1);
+  GetNumber(y,aEnvironment, aStackTop, 2);
+  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+  z->SetTo(*x);
+  // do nothing for integers
+  if (!(z->IsInt()))
+    z->Precision((long)(y->Double()));	// segfaults unless y is defined?
+  RESULT = (NEW LispNumber(z));
 }
 
 
 /// obtain the bit count of a number object.
 void LispBitCount(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef NO_USE_BIGFLOAT
-      RefPtr<BigNumber> x;
-      GetNumber(x,aEnvironment, aStackTop, 1);
-      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
-      z->SetTo(x->BitCount());
-      RESULT = (NEW LispNumber(z));
-#else	// this is not defined without BigNumber, so return something
-    RaiseError("Function MathBitCount is not available without BigNumber support");
-    LispArithmetic1(aEnvironment, aStackTop, FloorFloat);
-#endif
+  RefPtr<BigNumber> x;
+  GetNumber(x,aEnvironment, aStackTop, 1);
+  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+  z->SetTo(x->BitCount());
+  RESULT = (NEW LispNumber(z));
 }
 
 /// obtain the sign of a number object.
 void LispMathSign(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef NO_USE_BIGFLOAT
-      RefPtr<BigNumber> x;
-      GetNumber(x,aEnvironment, aStackTop, 1);
-      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
-      z->SetTo(x->Sign());
-      RESULT = (NEW LispNumber(z));
-#else	// this is not defined without BigNumber, so return something
-    RaiseError("Function MathSign is not available without BigNumber support");
-    LispArithmetic1(aEnvironment, aStackTop, FloorFloat);
-#endif
+  RefPtr<BigNumber> x;
+  GetNumber(x,aEnvironment, aStackTop, 1);
+  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+  z->SetTo(x->Sign());
+  RESULT = (NEW LispNumber(z));
 }
 
 /// check whether a number object fits into a platform type.
 void LispMathIsSmall(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef NO_USE_BIGFLOAT
-      RefPtr<BigNumber> x;
-      GetNumber(x,aEnvironment, aStackTop, 1);
-      if(x->IsSmall())
-	InternalTrue(aEnvironment,RESULT);
-      else
-	InternalFalse(aEnvironment,RESULT);      
-#else	// this is not defined without BigNumber, so return False
+  RefPtr<BigNumber> x;
+  GetNumber(x,aEnvironment, aStackTop, 1);
+  if(x->IsSmall())
+    InternalTrue(aEnvironment,RESULT);
+  else
     InternalFalse(aEnvironment,RESULT);
-#endif
 }
 
 
 void LispCeil(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef NO_USE_BIGFLOAT
-      RefPtr<BigNumber> x;
-      GetNumber(x,aEnvironment, aStackTop, 1);
-/*
-      LispInt prec = aEnvironment.Precision();
-      if (x->iNumber->TensExp > x->iNumber->iPrecision)
-      {
-        aEnvironment.SetPrecision(x->iNumber->iTensExp);
-        GetNumber(x,aEnvironment, aStackTop, 1);
-      }
-*/
-      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
-      z->Negate(*x);
-      z->Floor(*z);	// danger: possible exception raised in Floor() leads to a memory leak because z is not destroyed
-      z->Negate(*z);
-//      aEnvironment.SetPrecision(prec);
-      RESULT = (NEW LispNumber(z));
-#else
-   LispArithmetic1(aEnvironment, aStackTop, CeilFloat);
-#endif
+  RefPtr<BigNumber> x;
+  GetNumber(x,aEnvironment, aStackTop, 1);
+  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+  z->Negate(*x);
+  z->Floor(*z);	// danger: possible exception raised in Floor() leads to a memory leak because z is not destroyed
+  z->Negate(*z);
+  RESULT = (NEW LispNumber(z));
 }
 
 void LispAbs(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef NO_USE_BIGFLOAT
-      RefPtr<BigNumber> x;
-      GetNumber(x,aEnvironment, aStackTop, 1);
-      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
-      z->SetTo(*x);
-      if (x->Sign()<0)
-	      z->Negate(*x);
-      RESULT = (NEW LispNumber(z));
-#else
-   LispArithmetic1(aEnvironment, aStackTop, AbsFloat);
-#endif
+  RefPtr<BigNumber> x;
+  GetNumber(x,aEnvironment, aStackTop, 1);
+  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+  z->SetTo(*x);
+  if (x->Sign()<0)
+    z->Negate(*x);
+  RESULT = (NEW LispNumber(z));
 }
 //BINARYFUNCTION(LispMod, Mod, ModFloat)
 /* this will be gone */
@@ -455,27 +380,24 @@ void LispMod(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispDiv(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef NO_USE_BIGFLOAT
-      RefPtr<BigNumber> x;
-      RefPtr<BigNumber> y;
-      GetNumber(x,aEnvironment, aStackTop, 1);
-      GetNumber(y,aEnvironment, aStackTop, 2);
-	  if (x->IsInt() && y->IsInt())
-	  {	// both integer, perform integer division
-    	  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
-    	  z->Divide(*x,*y,aEnvironment.BinaryPrecision());
-    	  RESULT = (NEW LispNumber(z));
-    	  return;
-	  }
-	  else
-	  {// FIXME: either need to report error that one or both of the arguments are not integer, or coerce them to integers
+  RefPtr<BigNumber> x;
+  RefPtr<BigNumber> y;
+  GetNumber(x,aEnvironment, aStackTop, 1);
+  GetNumber(y,aEnvironment, aStackTop, 2);
+  if (x->IsInt() && y->IsInt())
+  {	// both integer, perform integer division
+    BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+    z->Divide(*x,*y,aEnvironment.BinaryPrecision());
+    RESULT = (NEW LispNumber(z));
+    return;
+  }
+  else
+  {//TODO FIXME: either need to report error that one or both of the arguments are not integer, or coerce them to integers
 #ifdef HAVE_STDIO_H
-	  	fprintf(stderr, "LispDiv: error: both arguments must be integer\n");
+    fprintf(stderr, "LispDiv: error: both arguments must be integer\n");
 #endif
-		  return;
-	  }
-	  
-#endif // USE_BIGFLOAT
+    return;
+  }
 }
 
 
@@ -495,21 +417,16 @@ void LispFac(LispEnvironment& aEnvironment, LispInt aStackTop)
 // platform functions, taking/returning a platform int/float
 
 void LispFastIsPrime(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME
-#ifndef NO_USE_BIGFLOAT
-      RefPtr<BigNumber> x;
-      GetNumber(x,aEnvironment, aStackTop, 1);
-      long result = primes_table_check((unsigned long)(x->Double()));
-      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
-      z->SetTo(result);
-      RESULT = (NEW LispNumber(z));
-#else
-    LispArithmetic1(aEnvironment, aStackTop, PlatIsPrime);
-#endif
+{//TODO FIXME
+  RefPtr<BigNumber> x;
+  GetNumber(x,aEnvironment, aStackTop, 1);
+  long result = primes_table_check((unsigned long)(x->Double()));
+  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+  z->SetTo(result);
+  RESULT = (NEW LispNumber(z));
 }
 
 // define a macro to replace all platform math functions
-#ifndef NO_USE_BIGFLOAT
 
   #ifndef HAVE_MATH_H
   // this warning is here just to be sure what we are compiling
@@ -547,26 +464,11 @@ void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
       RESULT = (NEW LispNumber(z)); \
 }
   #endif
-#else	// NO_USE_BIGFLOAT
-  // this warning is here just to be sure what we are compiling
-  #warning not using BigNumber:: functions
-  #define PLATFORM_UNARY(LispName, PlatformName, LispBackupName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
-{ \
-    LispArithmetic1(aEnvironment, aStackTop, OldName);
-}
-  #define PLATFORM_BINARY(LispName, PlatformName, LispBackupName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
-{ \
-    LispArithmetic2(aEnvironment, aStackTop, OldName);
-}
-#endif
 
 // now we can define all such functions, e.g.:
 //	PLATFORM_UNARY(LispFastSin, sin, LispSin, PlatSin)
 // this will generate the following equivalent code:
 /*
-
 void LispFastSin(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
 #ifndef NO_USE_BIGFLOAT
@@ -585,7 +487,6 @@ void LispFastSin(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     LispArithmetic1(aEnvironment, aStackTop, PlatSin);
 }
-
 */
 
 // some or all of these functions should be moved to scripts
@@ -1203,58 +1104,46 @@ void LispVersion(LispEnvironment& aEnvironment, LispInt aStackTop)
 /// convert bits to digits. Use the kernel function bits_to_digits. Arguments must be small integers.
 void LispBitsToDigits(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef NO_USE_BIGFLOAT
-      RefPtr<BigNumber> x;
-      RefPtr<BigNumber> y;
-      GetNumber(x,aEnvironment, aStackTop, 1);
-      GetNumber(y,aEnvironment, aStackTop, 2);
-	  long result = 0;	// initialize just in case
-	  if (x->IsInt() && x->IsSmall() && y->IsInt() && y->IsSmall())
-	  {
-		  // bits_to_digits uses unsigned long, see numbers.h
-			unsigned base = unsigned(y->Double());
-			result = bits_to_digits((unsigned long)(x->Double()), base);
-	  }
-	  else
-	  {
-		  RaiseError("BitsToDigits: error: arguments (%f, %f) must be small integers", x->Double(), y->Double());		  
-	  }
-      BigNumber *z = NEW BigNumber();
-      z->SetTo(result);
-      RESULT = (NEW LispNumber(z));
-
-#else	// this is not defined without BigNumber, so return something
-    RaiseError("Function BitsToDigits is not available without BigNumber support");
-    LispArithmetic1(aEnvironment, aStackTop, FloorFloat);
-#endif
+  RefPtr<BigNumber> x;
+  RefPtr<BigNumber> y;
+  GetNumber(x,aEnvironment, aStackTop, 1);
+  GetNumber(y,aEnvironment, aStackTop, 2);
+  long result = 0;	// initialize just in case
+  if (x->IsInt() && x->IsSmall() && y->IsInt() && y->IsSmall())
+  {
+    // bits_to_digits uses unsigned long, see numbers.h
+    unsigned base = unsigned(y->Double());
+    result = bits_to_digits((unsigned long)(x->Double()), base);
+  }
+  else
+  {
+    RaiseError("BitsToDigits: error: arguments (%f, %f) must be small integers", x->Double(), y->Double());		  
+  }
+  BigNumber *z = NEW BigNumber();
+  z->SetTo(result);
+  RESULT = (NEW LispNumber(z));
 }
 
 /// convert digits to bits. Use the kernel function digits_to_bits. Arguments must be small integers.
 void LispDigitsToBits(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef NO_USE_BIGFLOAT
-      RefPtr<BigNumber> x;
-      RefPtr<BigNumber> y;
-      GetNumber(x,aEnvironment, aStackTop, 1);
-      GetNumber(y,aEnvironment, aStackTop, 2);
-	  long result = 0;	// initialize just in case
-	  if (x->IsInt() && x->IsSmall() && y->IsInt() && y->IsSmall())
-	  {
-		  // bits_to_digits uses unsigned long, see numbers.h
-			unsigned base = unsigned(y->Double());
-			result = digits_to_bits((unsigned long)(x->Double()), base);
-	  }
-	  else
-	  {
-		  RaiseError("DigitsToBits: error: arguments (%f, %f) must be small integers", x->Double(), y->Double());
-	  }
-      BigNumber *z = NEW BigNumber();
-      z->SetTo(result);
-      RESULT = (NEW LispNumber(z));
-
-#else	// this is not defined without BigNumber, so return something
-    RaiseError("Function BitsToDigits is not available without BigNumber support");
-    LispArithmetic1(aEnvironment, aStackTop, FloorFloat);
-#endif
+  RefPtr<BigNumber> x;
+  RefPtr<BigNumber> y;
+  GetNumber(x,aEnvironment, aStackTop, 1);
+  GetNumber(y,aEnvironment, aStackTop, 2);
+  long result = 0;	// initialize just in case
+  if (x->IsInt() && x->IsSmall() && y->IsInt() && y->IsSmall())
+  {
+    // bits_to_digits uses unsigned long, see numbers.h
+    unsigned base = unsigned(y->Double());
+    result = digits_to_bits((unsigned long)(x->Double()), base);
+  }
+  else
+  {
+    RaiseError("DigitsToBits: error: arguments (%f, %f) must be small integers", x->Double(), y->Double());
+  }
+  BigNumber *z = NEW BigNumber();
+  z->SetTo(result);
+  RESULT = (NEW LispNumber(z));
 }
 

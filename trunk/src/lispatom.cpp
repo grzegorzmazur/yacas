@@ -11,14 +11,12 @@
 LispObject* LispAtom::New(LispEnvironment& aEnvironment, const LispChar * aString)
 {
   LispObject* self;
-#ifndef NO_USE_BIGFLOAT
   if (IsNumber(aString,LispTrue))	// check if aString is a number (int or float)
   {
     /// construct a number from a decimal string representation (also create a number object)
     self = NEW LispNumber(NEW LispString(aString), aEnvironment.Precision());
   }
   else
-#endif
   {
     self = NEW LispAtom(aEnvironment.HashTable().LookUp(aString));
   }
@@ -150,7 +148,6 @@ GenericClass* LispGenericClass::Generic()
 //------------------------------------------------------------------------------
 // LispNumber methods - proceed at your own risk 
 
-#ifndef NO_USE_BIGFLOAT
 
 /// return a string representation in decimal
 LispString * LispNumber::String() 
@@ -195,4 +192,3 @@ BigNumber* LispNumber::Number(LispInt aBasePrecision)
   return iNumber;
 }
 
-#endif
