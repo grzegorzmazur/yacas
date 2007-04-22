@@ -349,28 +349,28 @@ static Fl_Menu_Item menuitems[] =
    {"&new", 	FL_ALT+'n',	(Fl_Callback *)new_cb },
    {"&restart",	FL_ALT+'r',	(Fl_Callback *)restart_cb, 0, FL_MENU_DIVIDER },
    {"l&oad", 	FL_ALT+'o',	(Fl_Callback *)cb_notepad },
-//TODO   {"TODO save", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+//TODO   {"save", 0,  cb_menu_insert, (void*)"bla", 0, 0, 0, font_size, 0},
    {"s&ave as",	FL_ALT+'a',	(Fl_Callback *)cb_save_notepad },
-   {"TODO about", 0, 0, 0, FL_MENU_DIVIDER },
+   {"about", 0, 0, 0, FL_MENU_DIVIDER },
    {"&quit", 	FL_ALT+'q',  	(Fl_Callback *)quit_cb },
    {0},
-/*TODO
+/*TODO apparently I was planning on implementing a menu still... Ayal
  {"&Edit", FL_ALT+'e',  0, NULL, 64, 0, 0, font_size, 0},
-   {"TODO cut", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
-   {"TODO copy", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
-   {"TODO paste", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"cut", 0,  cb_menu_insert, (void*)"bla", 0, 0, 0, font_size, 0},
+   {"copy", 0,  cb_menu_insert, (void*)"bla", 0, 0, 0, font_size, 0},
+   {"paste", 0,  cb_menu_insert, (void*)"bla", 0, 0, 0, font_size, 0},
    {0},
  {"&Notepad", FL_ALT+'n',  0, NULL, 64, 0, 0, font_size, 0},
-   {"TODO edit code", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"edit code", 0,  cb_menu_insert, (void*)"bla", 0, 0, 0, font_size, 0},
    {"insert", 0,  0, NULL, 64, 0, 0, font_size, 0},
-     {"TODO section title", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
-     {"TODO flat text", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
-     {"TODO 2d graph", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
-     {"TODO link to other notepad", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
-     {"TODO link command", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+     {"section title", 0,  cb_menu_insert, (void*)"bla", 0, 0, 0, font_size, 0},
+     {"flat text", 0,  cb_menu_insert, (void*)"bla", 0, 0, 0, font_size, 0},
+     {"2d graph", 0,  cb_menu_insert, (void*)"bla", 0, 0, 0, font_size, 0},
+     {"link to other notepad", 0,  cb_menu_insert, (void*)"bla", 0, 0, 0, font_size, 0},
+     {"link command", 0,  cb_menu_insert, (void*)"bla", 0, 0, 0, font_size, 0},
      {0},
-   {"TODO edit", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
-   {"TODO delete", 0,  cb_menu_insert, (void*)"TODO", 0, 0, 0, font_size, 0},
+   {"edit", 0,  cb_menu_insert, (void*)"bla", 0, 0, 0, font_size, 0},
+   {"delete", 0,  cb_menu_insert, (void*)"bla", 0, 0, 0, font_size, 0},
    {0},
 */
  {"&Help", FL_ALT+'h',  0, 0, FL_SUBMENU},
@@ -485,7 +485,12 @@ void LispNotepadAddLink(LispEnvironment& aEnvironment,LispInt aStackTop)
   console->AddGroup(showinput, enableinput);
   console->AddText(&oper[0], console->NotepadFontColor(),"",console->NotepadFontType(),console->NotepadFontSize());
 
-  char* buf = (char*)malloc(text.Size()+1); //TODO check for null pointer
+  char* buf = (char*)malloc(text.Size()+1);
+  if (buf == NULL)
+  {
+    InternalFalse(aEnvironment,RESULT);
+    return;
+  }
   strcpy(buf,&text[0]);
   char*start=buf;
   char*end;
@@ -744,7 +749,6 @@ int main(int argc, char **argv)
   w->callback(quit_cb);
   w->show(1, argv);
   w->resize(50,50,800,600);
-//  w->fullscreen(); //TODO is this acceptable?
   atexit(myexit);
 
   if (argc>1)

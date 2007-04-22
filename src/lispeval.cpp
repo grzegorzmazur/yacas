@@ -12,55 +12,39 @@
 LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
                                   LispPtr* subList)
 {
-    LispObject* head = (*subList);
-    LispUserFunction* userFunc = aEnvironment.UserFunction(*subList);
-    CHECKPTR(userFunc);
-    if (userFunc)
+  LispObject* head = (*subList);
+  LispUserFunction* userFunc = aEnvironment.UserFunction(*subList);
+  if (userFunc)
+  {
+    return userFunc;
+  }
+  else if (head->String()!=NULL)
+  {
+    LispMultiUserFunction* multiUserFunc = aEnvironment.MultiUserFunction(head->String());
+    if (multiUserFunc->iFileToOpen!=NULL)
     {
-    /*this doesn't work yet...
-        LispMultiUserFunction* multiUserFunc =
-            aEnvironment.MultiUserFunction(head->String());
-        if (multiUserFunc->iFileToOpen!=NULL)
-            if (!multiUserFunc->iFileToOpen->IsLoaded())
-            {
-                printf("Function %s\n",head->String()->c_str());
-                LISPASSERT(multiUserFunc->iFileToOpen==NULL);
-            }
-            */
-        return userFunc;
-    }
-    else
-    /**/
-    if (head->String()!=NULL)
-    {
-        LispMultiUserFunction* multiUserFunc =
-           aEnvironment.MultiUserFunction(head->String());
-//      CHECKPTR(multiUserFunc);
-        if (multiUserFunc->iFileToOpen!=NULL)
-        {
-            LispDefFile* def = multiUserFunc->iFileToOpen;
-//          CHECKPTR(def);
+      LispDefFile* def = multiUserFunc->iFileToOpen;
 #ifdef YACAS_DEBUG
-            /*Show loading... */
-            {
-              extern int verbose_debug;
-              if (verbose_debug)
-              {
-                char buf[1024];
-				#ifdef HAVE_VSNPRINTF
+      /*Show loading... */
+      {
+        extern int verbose_debug;
+        if (verbose_debug)
+        {
+          char buf[1024];
+        #ifdef HAVE_VSNPRINTF
 					snprintf(buf,1024,"Debug> Loading file %s for function %s\n",def->iFileName->c_str(),head->String()->c_str());
 				#else
 					sprintf(buf,      "Debug> Loading file %s for function %s\n",def->iFileName->c_str(),head->String()->c_str());
 				#endif
-                aEnvironment.CurrentOutput()->Write(buf);
-              }
-            }
+          aEnvironment.CurrentOutput()->Write(buf);
+        }
+      }
 #endif
-            multiUserFunc->iFileToOpen=NULL;
-            InternalUse(aEnvironment,def->iFileName);
+      multiUserFunc->iFileToOpen=NULL;
+      InternalUse(aEnvironment,def->iFileName);
 
 #ifdef YACAS_DEBUG
-            {
+      {
 				extern int verbose_debug;
 				if (verbose_debug)
 				{
@@ -72,13 +56,12 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
 					#endif
 					aEnvironment.CurrentOutput()->Write(buf);
 				}
-            }
+      }
 #endif
-        }
-        userFunc = aEnvironment.UserFunction(*subList);
     }
-    CHECKPTR(userFunc);
-    return userFunc;
+    userFunc = aEnvironment.UserFunction(*subList);
+  }
+  return userFunc;
 }
 
 UserStackInformation& LispEvaluatorBase::StackInformation()
