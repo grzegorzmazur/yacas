@@ -102,94 +102,85 @@ LispEvaluatorBase::~LispEvaluatorBase()
 // be a unique (copied) element! Eg. its Nixed might be set...
 void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression)
 {
-    LISPASSERT(aExpression);
+  LISPASSERT(aExpression);
 
-    aEnvironment.iEvalDepth++;
-    if (aEnvironment.iEvalDepth>=aEnvironment.iMaxEvalDepth)
+  aEnvironment.iEvalDepth++;
+  if (aEnvironment.iEvalDepth>=aEnvironment.iMaxEvalDepth)
+  {
+    CHK2(aEnvironment.iEvalDepth<aEnvironment.iMaxEvalDepth,
+    (aEnvironment.iEvalDepth>aEnvironment.iMaxEvalDepth+20)
+    ? KLispErrUserInterrupt : KLispErrMaxRecurseDepthReached);
+  }
+
+  LispString * str = aExpression->String();
+
+  // Evaluate an atom: find the bound value (treat it as a variable)
+  if (str)
+  {
+    if (str->c_str()[0] == '\"')
     {
-		CHK2(aEnvironment.iEvalDepth<aEnvironment.iMaxEvalDepth,
-			(aEnvironment.iEvalDepth>aEnvironment.iMaxEvalDepth+20)
-			? KLispErrUserInterrupt : KLispErrMaxRecurseDepthReached);
+      aResult = (aExpression->Copy());
+      goto FINISH;
     }
 
-    LispString * str = aExpression->String();
-    CHECKPTR(str);
-
-    // Evaluate an atom: find the bound value (treat it as a variable)
-    if (str)
+    LispPtr val;
+    aEnvironment.GetVariable(str,val);
+    if (!!val)
     {
-        if (str->c_str()[0] == '\"')
-        {
-            aResult = (aExpression->Copy());
-            goto FINISH;
-        }
-
-        LispPtr val;
-        aEnvironment.GetVariable(str,val);
-        if (!!val)
-        {
-            aResult = (val->Copy());
-            goto FINISH;
-        }
-        aResult = (aExpression->Copy());
-        goto FINISH;
+      aResult = (val->Copy());
+      goto FINISH;
     }
+    aResult = (aExpression->Copy());
+    goto FINISH;
+  }
 
+  {
+    LispPtr* subList = aExpression->SubList();
+
+    if (subList)
     {
-//        EvalFuncBase* func = NULL;
-        LispPtr* subList = aExpression->SubList();
-
-//        if (func)
-//        {
-//            func->Evaluate(aResult, aEnvironment, *subList);
-//            goto FINISH;
-//        }
-        if (subList)
+      LispObject* head = (*subList);
+      if (head)
+      {
+        if (head->String())
         {
-            LispObject* head = (*subList);
-            if (head)
+          {
+            YacasEvaluator* evaluator = aEnvironment.CoreCommands().LookUp(head->String());
+            // Try to find a built-in command
+            if (evaluator)
             {
-                if (head->String())
-                {
-                  {
-                    YacasEvaluator* evaluator = aEnvironment.CoreCommands().LookUp(head->String());
-                    // Try to find a built-in command
-                    if (evaluator)
-                    {
-                        evaluator->Evaluate(aResult, aEnvironment, *subList);
-                        goto FINISH;
-                    }
-                  }
-
-//                    else // Else try to find a user-defined function
-                    {
-                        LispUserFunction* userFunc;
-                        userFunc = GetUserFunction(aEnvironment, subList);
-                        CHECKPTR(userFunc);
-                        if (userFunc)
-                        {
-                            userFunc->Evaluate(aResult,aEnvironment,*subList);
-                            goto FINISH;
-                        }
-                    }
-                }
-                else
-                {
-                    //printf("ApplyPure!\n");
-                    LispPtr oper((*subList));
-                    LispPtr args2((*subList)->Nixed());
-                    InternalApplyPure(oper,args2,aResult,aEnvironment);
-                    goto FINISH;
-                }
-                //printf("**** Undef: %s\n",head->String()->c_str());
-                ReturnUnEvaluated(aResult,*subList,aEnvironment);
-                goto FINISH;
+              evaluator->Evaluate(aResult, aEnvironment, *subList);
+              goto FINISH;
             }
+          }
+
+          {
+            LispUserFunction* userFunc;
+            userFunc = GetUserFunction(aEnvironment, subList);
+            if (userFunc)
+            {
+              userFunc->Evaluate(aResult,aEnvironment,*subList);
+              goto FINISH;
+            }
+          }
         }
-        aResult = (aExpression->Copy());
+        else
+        {
+          //printf("ApplyPure!\n");
+          LispPtr oper((*subList));
+          LispPtr args2((*subList)->Nixed());
+          InternalApplyPure(oper,args2,aResult,aEnvironment);
+          goto FINISH;
+        }
+        //printf("**** Undef: %s\n",head->String()->c_str());
+        ReturnUnEvaluated(aResult,*subList,aEnvironment);
+        goto FINISH;
+      }
     }
+    aResult = (aExpression->Copy());
+  }
 FINISH:
-    aEnvironment.iEvalDepth--;
+  aEnvironment.iEvalDepth--;
 }
 
 void ShowExpression(LispString& outString, LispEnvironment& aEnvironment,
