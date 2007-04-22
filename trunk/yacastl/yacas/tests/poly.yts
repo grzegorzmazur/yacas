@@ -1,6 +1,0 @@
-
-NextTest("Polynomials");
-TestYacas(Expand((1+x)^2),1+2*x+x^2);
-
-// We need more polynomial tests
-
