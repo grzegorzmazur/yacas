@@ -129,10 +129,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       AddLineStatic(100, "","Yacas is Free Software--Free as in Freedom--so you can redistribute Yacas or", font, c);
       AddLineStatic(100, "","modify it under certain conditions. Yacas comes with ABSOLUTELY NO WARRANTY.", font, c);
       AddLineStatic(100, "","See the GNU General Public License (GPL) for the full conditions.", font, c);
-//TODO fixme    AddLineStatic(100, "","Type ?license or ?licence to see the GPL; type ?warranty for warranty info.", font, c);
+      AddLineStatic(100, "","Type ?license or ?licence to see the GPL; type ?warranty for warranty info.", font, c);
       AddLineStatic(100, "","See http://yacas.sf.net for more information and documentation on Yacas.", font, c);
       AddLineStatic(100, "","Numeric mode: \""+BigNumber.NumericLibraryName()+"\"\n", font, c);
-//TODO fixme    AddLineStatic(100, "","To exit Yacas, enter  Exit(); or quit or Ctrl-c.\n", font, c);
       AddLineStatic(100, "","", font, c);
 
       AddLineStatic(100, "","Type '?', '??' or 'help' for help, or type '?function' for help on a function.\n", font, c);
@@ -140,6 +139,8 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       AddLineStatic(100, "","To see example commands, keep typing 'Example();'\n", font, c);
 
     }
+
+
 
     {
       String docbase = getDocumentBase().toString();
@@ -149,17 +150,15 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         String zipFileName = docbase.substring(0,pos+1)+"scripts.zip";
         try
         {
-        //  java.util.zip.ZipFile z = new java.util.zip.ZipFile(new File(new java.net.URI("file:/Users/ayalpinkus/projects/JavaYacas/tempscripts.zip")));
+          //  example docbase "file:/Users/ayalpinkus/projects/JavaYacas/tempscripts.zip"
           java.util.zip.ZipFile z = new java.util.zip.ZipFile(new File(new java.net.URI(zipFileName)));
           LispStandard.zipFile = z;
-//          out.println("Succeeded in finding "+zipFileName);
         }
         catch(Exception e)
         {
           out.println("Failed to find scripts.zip");
           out.println(""+zipFileName+" : \n");
           out.println(e.toString());
-        //  return;
         }
       }
       if (docbase.startsWith("http"))
@@ -486,20 +485,8 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         RefreshHintWindow();
         repaint(0);
       }
-/*TODO remove?
-      else
-      {
-        int c = (int)e.getKeyChar();
-        if (c>=32 && c < 128)
-        {
-          inputLine = new StringBuffer(inputLine).insert(cursorPos,e.getKeyChar()).toString();
-          cursorPos++;
-          RefreshHintWindow();
-        }
-      }
-*/
       inputDirty=true;
-      repaint();//0,getHeight()-2*fontHeight,getWidth(),2*fontHeight);
+      repaint();
     }
     else if (KeyEvent.KEY_TYPED == e.getID())
     {
@@ -510,7 +497,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         cursorPos++;
         RefreshHintWindow();
         inputDirty=true;
-        repaint();//0,getHeight()-2*fontHeight,getWidth(),2*fontHeight);
+        repaint();
       }
     }
   }
@@ -538,6 +525,17 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       try
       {
         getAppletContext().showDocument( new URL("http://yacas.sourceforge.net/manindex.html"),"help");    
+        succeed = true;
+      }
+      catch (Exception e)
+      {
+      }
+    }
+    else if (inputLine.equals("?license") || inputLine.equals("?licence") || inputLine.equals("?warranty"))
+    {
+      try
+      {
+        getAppletContext().showDocument( new URL("http://yacas.sourceforge.net/licence.html"),"license");    
         succeed = true;
       }
       catch (Exception e)

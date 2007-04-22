@@ -138,8 +138,6 @@ class BasicEvaluator extends LispEvaluatorBase
     LispUserFunction userFunc = null;
 
     userFunc = (LispUserFunction)aEnvironment.UserFunction(subList);
-//TODO remove also fromC++ code?      CHECKPTR(userFunc);
-
     if (userFunc != null)
     {
       return userFunc;
@@ -149,16 +147,13 @@ class BasicEvaluator extends LispEvaluatorBase
       LispMultiUserFunction multiUserFunc = aEnvironment.MultiUserFunction(head.String());
       if (multiUserFunc.iFileToOpen!=null)
       {
-          LispDefFile def = multiUserFunc.iFileToOpen;
-          multiUserFunc.iFileToOpen=null;
-          LispStandard.InternalUse(aEnvironment,def.iFileName);
+        LispDefFile def = multiUserFunc.iFileToOpen;
+        multiUserFunc.iFileToOpen=null;
+        LispStandard.InternalUse(aEnvironment,def.iFileName);
       }
       userFunc = aEnvironment.UserFunction(subList);
     }
-//TODO remove also fromC++ code?    CHECKPTR(userFunc);
-
     return userFunc;
   }
-
 
 }
