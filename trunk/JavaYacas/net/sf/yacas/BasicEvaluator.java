@@ -54,91 +54,81 @@ class BasicEvaluator extends LispEvaluatorBase
     }
 
     String str = aExpression.Get().String();
-//TODO remove should we remove this also in the C++ code?    CHECKPTR(str);
 
     // Evaluate an atom: find the bound value (treat it as a variable)
     if (str != null)
     {
-        if (str.charAt(0) == '\"')
-        {
-            aResult.Set(aExpression.Get().Copy(false));
-            aEnvironment.iEvalDepth--;
-            return;
-        }
-
-        LispPtr val = new LispPtr();
-        aEnvironment.GetVariable(str,val);
-        if (val.Get() != null)
-        {
-            aResult.Set(val.Get().Copy(false));
-            aEnvironment.iEvalDepth--;
-            return;
-        }
+      if (str.charAt(0) == '\"')
+      {
         aResult.Set(aExpression.Get().Copy(false));
         aEnvironment.iEvalDepth--;
         return;
+      }
+
+      LispPtr val = new LispPtr();
+      aEnvironment.GetVariable(str,val);
+      if (val.Get() != null)
+      {
+        aResult.Set(val.Get().Copy(false));
+        aEnvironment.iEvalDepth--;
+        return;
+      }
+      aResult.Set(aExpression.Get().Copy(false));
+      aEnvironment.iEvalDepth--;
+      return;
     }
 
     {
-//        EvalFuncBase* func = null;
-        LispPtr subList = aExpression.Get().SubList();
+      LispPtr subList = aExpression.Get().SubList();
 
-//        if (func)
-//        {
-//            func.Evaluate(aResult, aEnvironment, *subList);
-//            goto FINISH;
-//        }
-        if (subList != null)
+      if (subList != null)
+      {
+        LispObject head = subList.Get();
+        if (head != null)
         {
-            LispObject head = subList.Get();
-            if (head != null)
+          if (head.String() != null)
+          {
             {
-                if (head.String() != null)
-                {
-                  {
-                    YacasEvaluator evaluator = (YacasEvaluator)aEnvironment.CoreCommands().LookUp(head.String());
-                    // Try to find a built-in command
-                    if (evaluator != null)
-                    {
-                        evaluator.Evaluate(aResult, aEnvironment, subList);
-                        aEnvironment.iEvalDepth--;
-                        return;
-                    }
-                  }
-
-//                    else // Else try to find a user-defined function
-                    {
-                        LispUserFunction userFunc;
-                        userFunc = GetUserFunction(aEnvironment, subList);
-//TODO remove also from C++ code?                        CHECKPTR(userFunc);
-                        if (userFunc != null)
-                        {
-                            userFunc.Evaluate(aResult,aEnvironment,subList);
-                            aEnvironment.iEvalDepth--;
-                            return;
-                        }
-                    }
-                }
-                else
-                {
-                    //printf("ApplyPure!\n");
-                    LispPtr oper = new LispPtr();
-                    LispPtr args2 = new LispPtr();
-                    oper.Set(subList.Get());
-                    args2.Set(subList.Get().Next().Get());
-                    LispStandard.InternalApplyPure(oper,args2,aResult,aEnvironment);
-                    aEnvironment.iEvalDepth--;
-                    return;
-                }
-                //printf("**** Undef: %s\n",head.String().String());
-                LispStandard.ReturnUnEvaluated(aResult,subList,aEnvironment);
+              YacasEvaluator evaluator = (YacasEvaluator)aEnvironment.CoreCommands().LookUp(head.String());
+              // Try to find a built-in command
+              if (evaluator != null)
+              {
+                evaluator.Evaluate(aResult, aEnvironment, subList);
                 aEnvironment.iEvalDepth--;
                 return;
+              }
             }
-        }
-        aResult.Set(aExpression.Get().Copy(false));
-    }
 
+            {
+              LispUserFunction userFunc;
+              userFunc = GetUserFunction(aEnvironment, subList);
+              if (userFunc != null)
+              {
+                userFunc.Evaluate(aResult,aEnvironment,subList);
+                aEnvironment.iEvalDepth--;
+                return;
+              }
+            }
+          }
+          else
+          {
+            //printf("ApplyPure!\n");
+            LispPtr oper = new LispPtr();
+            LispPtr args2 = new LispPtr();
+            oper.Set(subList.Get());
+            args2.Set(subList.Get().Next().Get());
+            LispStandard.InternalApplyPure(oper,args2,aResult,aEnvironment);
+            aEnvironment.iEvalDepth--;
+            return;
+          }
+          //printf("**** Undef: %s\n",head.String().String());
+          LispStandard.ReturnUnEvaluated(aResult,subList,aEnvironment);
+          aEnvironment.iEvalDepth--;
+          return;
+        }
+      }
+      aResult.Set(aExpression.Get().Copy(false));
+    }
     aEnvironment.iEvalDepth--;
   }
 

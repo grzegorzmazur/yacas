@@ -2,7 +2,7 @@
 /* This file was automatically generated with cstubgen.
 */
 
-#include <stdio.h> //TODO remove, debug!
+//For debug #include <stdio.h> 
 
 #include "lisptype.h"
 #include "lispenvironment.h"
@@ -98,7 +98,7 @@ static void PcreNextToken(LispEnvironment& aEnvironment, LispInt aStackTop)
       RESULT = (LispAtom::New(aEnvironment,"EndOfFile"));
       return;
     }
-    char* resultbuf = PlatAllocN<char>(ovector[1]-ovector[0]+3); //TODO use plat allocs!
+    char* resultbuf = PlatAllocN<char>(ovector[1]-ovector[0]+3); 
     char* trg = resultbuf;
     *trg++ = '\"';
     memcpy(trg,&trav[ovector[0]],ovector[1]-ovector[0]);
@@ -107,12 +107,11 @@ static void PcreNextToken(LispEnvironment& aEnvironment, LispInt aStackTop)
 	*trg++ = '\0';
     while (aEnvironment.CurrentInput()->Position() < pos+ovector[1]) aEnvironment.CurrentInput()->Next();
 
-//TODO remove    aEnvironment.CurrentInput()->SetPosition(pos+ovector[1]);
     LispObject *res = NULL;
     res = LA(patterns[i].type)+LA(res);
     res = LA(ATOML(resultbuf)) + LA(res);
     RESULT = (LIST(LA(ATOML("List")) + LA(res)));
-    PlatFree(resultbuf); //TODO use plat allocs!
+    PlatFree(resultbuf); 
 }
 
 static void PcreLexer(LispEnvironment& aEnvironment, LispInt aStackTop)
