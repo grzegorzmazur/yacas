@@ -92,7 +92,6 @@ private:
     GenericClass* iClass;	// TODO: woof
 };
 
-#ifndef NO_USE_BIGFLOAT
 class LispHashTable;
 class LispNumber : public ObjectHelper<LispNumber>
 {
@@ -117,7 +116,6 @@ private:
     RefPtr<LispString> iString;
 };
 
-#endif
 
 #endif
 
