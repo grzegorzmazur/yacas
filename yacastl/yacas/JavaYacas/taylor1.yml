@@ -1,9 +1,0 @@
-[title:Taylor series expansion]
-
-Define a function x that is an approximation of [link:Sin(x):f(x):=Eval(Taylor(x,0,5)Sin(x));]through Taylor series expansion.
-
- 
-
-After you clicked on the link above, you can [link:view:taylor2.yml]the result.
-
-[link:Back to previous menu:approx.yml]

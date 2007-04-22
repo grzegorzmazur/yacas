@@ -1,6 +1,0 @@
-
-
-#include "forthplugin.h"
-
-
-
