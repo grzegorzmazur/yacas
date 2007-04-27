@@ -1,16 +1,6 @@
 
 
-/*
-#include <stdio.h>
-template<class T>
-inline void Thunk(T& a)
-{
-  int i;
-  for (i=0;i<a.Size();i++)
-    printf("%d ",a[i]);
-  printf("\n");  
-}
-*/
+
 
 #if 0
 #  define WordBaseTimesInt(a,n) BaseTimesInt(a,n,WordBase) 
@@ -321,7 +311,6 @@ inline void BaseAddMultiply(T& aTarget, T& x, T& y, PlatDoubleWord aBase)
     }
 }
 
-//#include <stdio.h>
 template<class T>
 inline void WordBaseAddMultiply(T& aTarget, T& x, T& y)
 {
@@ -366,256 +355,17 @@ inline void WordBaseAddMultiply(T& aTarget, T& x, T& y)
 
 
 
-#ifdef USE_KARATSUBA
-
-const int cKaratsubaCutoff = 8;
-
-/*
-#include <stdio.h>
-
-inline void BaseKaratsubaMultiply(ANumber& aTarget, ANumber& x, ANumber& y, LispInt aSize, LispInt aBase)
-{
-    LispInt halfSize = aSize/2;
-
-    ANumber F0;
-    ANumber F1;
-    ANumber G0;
-    ANumber G1;
-
-    GrowDigits(F0,halfSize);
-    GrowDigits(F1,halfSize);
-    GrowDigits(G0,halfSize);
-    GrowDigits(G1,halfSize);
-    LispInt i;
-    for (i=0;i<halfSize;i++)
-    {
-        F0[i] = x[i];
-        F1[i] = x[halfSize+i];
-        G0[i] = y[i];
-        G1[i] = y[halfSize+i];
-    }
-    
-    ANumber F0G0;
-    ANumber F1G1;
-    ANumber Fsum,Gsum;
-    ANumber combined;
-
-    Multiply(F0G0, F0, G0);
-    Multiply(F1G1, F1, G1);
-    Add(Fsum,F0,F1);
-    Add(Gsum,G0,G1);
-    Multiply(combined, Fsum, Gsum);
-    ANumber s1;
-    Subtract(s1,combined,F0G0);
-    ANumber s2;
-    Subtract(s2,s1,F1G1);
-
-    BaseShiftLeft(F1G1, aSize   *(8*sizeof(PlatWord)));
-    BaseShiftLeft(s2  , halfSize*(8*sizeof(PlatWord)));
-
-    ANumber s3;
-    Add(s3,F1G1,s2);
-    Add(aTarget,s3,F0G0);
-}
-
-inline void BaseAddMultiplyK(ANumber& aTarget, ANumber& x, ANumber& y, LispInt aBase)
-{
-    LispInt nrx=x.Size();
-    LispInt nry=y.Size();
-    LispInt i, i2;
-
-    // Too small?  Use O(n^2) multiplication
-    if (nrx+nry+1 <= cKaratsubaCutoff)
-    {
-        BaseAddMultiply(aTarget, x, y, aBase);
-        return;
-    }
-
-    LispInt max = (nrx > nry) ? nrx : nry;
-    LispInt maxtwos;
-    for (maxtwos = 1; maxtwos < max; maxtwos *= 2);
-
-    GrowDigits(aTarget,maxtwos);
-    GrowDigits(x,maxtwos);
-    GrowDigits(y,maxtwos);
-    BaseKaratsubaMultiply(aTarget, x, y, maxtwos, aBase);
-}
-*/
-
-
-/* BaseAddMultiplyK : multiply x and y, and add result to aTarget
- *					  using Karatsuba multiplication.  This function
- *					  just makes the numbers passed into even ones,
- *					  by adding zeros to the front, then multiplies.
- *
- *					  Needs enough memory to hold 4*(smallest power
- *					  of 2 bigger than operands) digits.
- *
- *					  Code based on
- *
- *			Here's a crude diagram of how the numbers are stored:
- *			(scratch space is where the x & y sums are stored)
- *
- *				 ___________ ___________ _______________________
- *				|           |           |  x & y scratch space  |
- *				|     x     |     y     |  starts on <-- side   |
- *				|___________|___________|____ and works --> ____| 
- *
- */
-
-
-template<class T>
-inline void BaseAddMultiplyK(T& aTarget, T& x, T& y, PlatDoubleWord aBase)
-{
-	LispInt nrx=x.Size();
-	LispInt nry=y.Size();
-	LispInt i, i2;
-	typename T::ElementType *iArray, *iXArray, *iYArray, *iSumArray;
-
-	// Too small?  Use O(n^2) multiplication
-	if (nrx+nry+1 <= cKaratsubaCutoff) {
-		BaseAddMultiply(aTarget, x, y, aBase);
-		return;
-	}
-
-    i = (nrx > nry) ? nrx : nry;
-    for (i2 = 1; i2 < i; i2 *= 2);
-
-	// Allocate a array of the smallest power of 2 larger than both
-	// numbers * 4 elements, clear it to zero, then copy x into the 
-	// into the start, y above it, and use the high half for recursion.
-	// ToDo: Is this portable ?!?
-	iArray = PlatAllocN<T::ElementType>(i2*4);
-	PlatMemSet(iArray, 0, i2*4*sizeof(T::ElementType));
-
-	// Split our array into x and y halves
-	iXArray = &iArray[0];
-	x.CopyToExternalArray(iXArray);
-
-	iYArray = &iArray[i2];
-	y.CopyToExternalArray(iYArray);
-
-	iSumArray = &iArray[i2*2];
-
-	BaseKaratsubaMultiply(aTarget, iXArray, iYArray, iSumArray, i2, aBase);
-
-	PlatFree(iArray);
-}
-
-
-template<class T>
-void BaseKaratsubaMultiply(T& aTarget, 
-                           typename T::ElementType* x,
-                           typename T::ElementType* y,
-                           typename T::ElementType* aScratchSpace,
-                           LispInt aSize,
-                           PlatDoubleWord aBase)
-{
-    LispInt iHalfSize = aSize/2;
-    LispInt i;
-
-    typename T::ElementType *xlow= &x[0];
-    typename T::ElementType *xsum= &aScratchSpace[0];
-    typename T::ElementType *xhigh=&x[iHalfSize];
-
-    typename T::ElementType *ylow= &y[0];
-    typename T::ElementType *ysum= &aScratchSpace[iHalfSize];
-    typename T::ElementType *yhigh=&y[iHalfSize];
-    T p1, p2, p3;
-
-    // Too small?  Use O(n^2) multiplication
-    if (aSize+1 <= cKaratsubaCutoff)
-    {
-        T iX(x, iHalfSize), iY(y, iHalfSize);
-        BaseAddMultiply(aTarget, iX, iY, aBase);
-        return;
-    }
-
-    // Compute xsum & ysum and put into the low half of the
-    // scratch space, the high half is used for recursion
-
-#if 1
-    typename T::ElementType carryx=0;
-    typename T::ElementType carryy=0;
-#endif
-    for (i = 0; i < iHalfSize; i++)
-    {
-#if 1
-        typename T::ElementType word;
-        typename T::ElementType newDigit;
-        typename T::ElementType newCarry;
-
-        word = (typename T::ElementType)xlow[i] +
-               (typename T::ElementType)xhigh[i] + carryx;
-        newDigit= (word%aBase);
-        newCarry = (word/aBase);
-        xsum[i] = newDigit;
-        carryx  = newCarry;
-
-        word = (typename T::ElementType)ylow[i] +
-               (typename T::ElementType)yhigh[i] + carryy;
-        newDigit= (word%aBase);
-        newCarry = (word/aBase);
-        ysum[i] = newDigit;
-        carryy  = newCarry;
-#endif
-
-        //xsum[i] = xlow[i] + xhigh[i];
-        //ysum[i] = ylow[i] + yhigh[i];
-    }
-#if 1
-    xsum[iHalfSize]+=carryx;
-    ysum[iHalfSize]+=carryy;
-#endif
-    
-    // ToDo: make array bigger, so we don't have to zero the
-    // scratch space after the first two calls?
-    //hier
-    BaseKaratsubaMultiply(p1, xlow, ylow, &aScratchSpace[aSize],
-                          iHalfSize, aBase);
-    PlatMemSet((LispChar *)&aScratchSpace[aSize], 0, aSize*sizeof(typename T::ElementType));
-    BaseKaratsubaMultiply(p2, xsum, ysum, &aScratchSpace[aSize],
-                          iHalfSize, aBase);
-    PlatMemSet((LispChar *)&aScratchSpace[aSize], 0, aSize*sizeof(typename T::ElementType));
-    BaseKaratsubaMultiply(p3, xhigh, yhigh, &aScratchSpace[aSize],
-                          iHalfSize, aBase);
-
-    // Have a feeling these functions are slowing down the
-    // multipication
-
-    BaseSubtract(p2, p1, 0);
-    BaseSubtract(p2, p3, 0);
-    BaseAdd(aTarget, p1, aBase);
-    BaseAdd(aTarget, p3, aBase);
-    BaseAdd(aTarget, p2, aBase);
-}
-
-#endif
 
 /* BaseMultiply : multiply x and y, and put result in aTarget
  */
 
-/*
- #ifdef USE_KARATSUBA
-inline void BaseMultiply(ANumber& aTarget, ANumber& x, ANumber& y, LispInt aBase)
-{
-    aTarget.Resize(1);
-    aTarget[0] = 0;
-    BaseAddMultiplyK(aTarget, x, y, aBase);
-}
-#endif
-*/
 
 template<class T>
 inline void BaseMultiply(T& aTarget, T& x, T& y, PlatDoubleWord aBase)
 {
     aTarget.Resize(1);
     aTarget[0] = 0;
-#ifdef USE_KARATSUBA
-    BaseAddMultiplyK(aTarget, x, y, aBase);
-#else
     BaseAddMultiply(aTarget, x, y, aBase);
-#endif
 }
 
 template<class T>
@@ -623,11 +373,7 @@ inline void WordBaseMultiply(T& aTarget, T& x, T& y)
 {
     aTarget.Resize(1);
     aTarget[0] = 0;
-#ifdef USE_KARATSUBA
-    BaseAddMultiplyK(aTarget, x, y, WordBase);
-#else
     WordBaseAddMultiply(aTarget, x, y);
-#endif
 }
 
 
@@ -643,13 +389,6 @@ inline LispBoolean IsZero(T& a)
       return LispFalse;
   }
   return LispTrue;
-/*
-  LispInt i;
-  for (i=0;i<a.Size();i++)
-      if (a[i] != 0)
-          return LispFalse;
-  return LispTrue;
-*/
 }
 
 

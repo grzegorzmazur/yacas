@@ -7,7 +7,7 @@
 #include "infixparser.h"
 
 #ifdef HAVE_STDIO_H
-  #include <stdio.h>
+  #include <stdio.h> // Safe, only included if HAVE_STDIO_H defined
 #endif
 
 #ifdef HAVE_STDARG_H

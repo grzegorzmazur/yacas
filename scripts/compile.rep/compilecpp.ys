@@ -379,7 +379,6 @@ fileBuildString:=
  * This file was generated from <?WriteString(file);?> by compilecpp.ys .
 */
 
-//#include <stdio.h>
 
 #include \"lisptype.h\"
 #include \"lispenvironment.h\"

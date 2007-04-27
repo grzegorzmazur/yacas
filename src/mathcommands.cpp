@@ -1215,141 +1215,138 @@ void LispDllDirectory(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispFromFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
-    LispPtr evaluated;
-    InternalEval(aEnvironment, evaluated, ARGUMENT(1));
+  CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
+  LispPtr evaluated;
+  InternalEval(aEnvironment, evaluated, ARGUMENT(1));
 
-    // Get file name
-    CHK_ARG_CORE(evaluated, 1);
-    LispString * orig = evaluated->String();
-    CHK_ARG_CORE(orig, 1);
+  // Get file name
+  CHK_ARG_CORE(evaluated, 1);
+  LispString * orig = evaluated->String();
+  CHK_ARG_CORE(orig, 1);
 
-    LispString * contents = aEnvironment.FindCachedFile(orig->c_str());
-    LispString * hashedname = aEnvironment.HashTable().LookUpUnStringify(orig->c_str());
+  LispString * contents = aEnvironment.FindCachedFile(orig->c_str());
+  LispString * hashedname = aEnvironment.HashTable().LookUpUnStringify(orig->c_str());
 
-    InputStatus oldstatus = aEnvironment.iInputStatus;
-    aEnvironment.iInputStatus.SetTo(hashedname->c_str());
+  InputStatus oldstatus = aEnvironment.iInputStatus;
+  aEnvironment.iInputStatus.SetTo(hashedname->c_str());
 
-    if (contents)
-    {
-        StringInput newInput(*contents,aEnvironment.iInputStatus);
-        LispLocalInput localInput(aEnvironment, &newInput);
-
-        // Evaluate the body
-        InternalEval(aEnvironment, RESULT, ARGUMENT(2));
-        delete contents;
-    }
-    else
-    {
-        //TODO make the file api platform independent!!!!
-        // Open file
-        LispLocalFile localFP(aEnvironment, hashedname->c_str(),LispTrue,
-                              aEnvironment.iInputDirectories);
-        CHK_CORE(localFP.iOpened != 0, KLispErrFileNotFound);
-        FILEINPUT newInput(localFP,aEnvironment.iInputStatus);
-        LispLocalInput localInput(aEnvironment, &newInput);
-
-        // Evaluate the body
-        InternalEval(aEnvironment, RESULT, ARGUMENT(2));
-    }
-    aEnvironment.iInputStatus.RestoreFrom(oldstatus);
-    //Return the result
-}
-
-void LispFromString(LispEnvironment& aEnvironment, LispInt aStackTop)
-{
-    LispPtr evaluated;
-    InternalEval(aEnvironment, evaluated, ARGUMENT(1));
-
-    // Get file name
-    CHK_ARG_CORE(evaluated, 1);
-    LispString * orig = evaluated->String();
-    CHK_ARG_CORE(orig, 1);
-    LispString oper;
-    InternalUnstringify(oper, orig);
-
-    InputStatus oldstatus = aEnvironment.iInputStatus;
-    aEnvironment.iInputStatus.SetTo("String");
-    StringInput newInput(oper,aEnvironment.iInputStatus);
+  if (contents)
+  {
+    StringInput newInput(*contents,aEnvironment.iInputStatus);
     LispLocalInput localInput(aEnvironment, &newInput);
 
     // Evaluate the body
     InternalEval(aEnvironment, RESULT, ARGUMENT(2));
-    aEnvironment.iInputStatus.RestoreFrom(oldstatus);
+    delete contents;
+  }
+  else
+  {
+    // Open file
+    LispLocalFile localFP(aEnvironment, hashedname->c_str(),LispTrue,
+                          aEnvironment.iInputDirectories);
+    CHK_CORE(localFP.iOpened != 0, KLispErrFileNotFound);
+    FILEINPUT newInput(localFP,aEnvironment.iInputStatus);
+    LispLocalInput localInput(aEnvironment, &newInput);
 
-    //Return the result
+    // Evaluate the body
+    InternalEval(aEnvironment, RESULT, ARGUMENT(2));
+  }
+  aEnvironment.iInputStatus.RestoreFrom(oldstatus);
+  //Return the result
+}
+
+void LispFromString(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+  LispPtr evaluated;
+  InternalEval(aEnvironment, evaluated, ARGUMENT(1));
+
+  // Get file name
+  CHK_ARG_CORE(evaluated, 1);
+  LispString * orig = evaluated->String();
+  CHK_ARG_CORE(orig, 1);
+  LispString oper;
+  InternalUnstringify(oper, orig);
+
+  InputStatus oldstatus = aEnvironment.iInputStatus;
+  aEnvironment.iInputStatus.SetTo("String");
+  StringInput newInput(oper,aEnvironment.iInputStatus);
+  LispLocalInput localInput(aEnvironment, &newInput);
+
+  // Evaluate the body
+  InternalEval(aEnvironment, RESULT, ARGUMENT(2));
+  aEnvironment.iInputStatus.RestoreFrom(oldstatus);
+
+  //Return the result
 }
 
 void LispRead(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispTokenizer &tok = *aEnvironment.iCurrentTokenizer;
-    InfixParser parser(tok,
-                       *aEnvironment.CurrentInput(),
-                       aEnvironment,
-                       aEnvironment.PreFix(),
-                       aEnvironment.InFix(),
-                       aEnvironment.PostFix(),
-                       aEnvironment.Bodied());
-    // Read expression
-    parser.Parse(RESULT);
+  LispTokenizer &tok = *aEnvironment.iCurrentTokenizer;
+  InfixParser parser(tok,
+                     *aEnvironment.CurrentInput(),
+                     aEnvironment,
+                     aEnvironment.PreFix(),
+                     aEnvironment.InFix(),
+                     aEnvironment.PostFix(),
+                     aEnvironment.Bodied());
+  // Read expression
+  parser.Parse(RESULT);
 }
 
 void LispReadToken(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispTokenizer &tok = *aEnvironment.iCurrentTokenizer;
-    LispString * result = tok.NextToken(*aEnvironment.CurrentInput(),
-                           aEnvironment.HashTable());
+  LispTokenizer &tok = *aEnvironment.iCurrentTokenizer;
+  LispString * result = tok.NextToken(*aEnvironment.CurrentInput(),
+                         aEnvironment.HashTable());
 
-    if (result->c_str()[0] == '\0')
-    {
-        RESULT = (aEnvironment.iEndOfFile->Copy());
-        return;
-    }
-    RESULT = (LispAtom::New(aEnvironment,result->c_str()));
+  if (result->c_str()[0] == '\0')
+  {
+    RESULT = (aEnvironment.iEndOfFile->Copy());
+    return;
+  }
+  RESULT = (LispAtom::New(aEnvironment,result->c_str()));
 }
 
 void LispToFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
+  CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
 
-    LispPtr evaluated;
-    InternalEval(aEnvironment, evaluated, ARGUMENT(1));
+  LispPtr evaluated;
+  InternalEval(aEnvironment, evaluated, ARGUMENT(1));
 
-    // Get file name
-    CHK_ARG_CORE(evaluated, 1);
-    LispString * orig = evaluated->String();
-    CHK_ARG_CORE(orig, 1);
-    LispString oper;
-    InternalUnstringify(oper, orig);
+  // Get file name
+  CHK_ARG_CORE(evaluated, 1);
+  LispString * orig = evaluated->String();
+  CHK_ARG_CORE(orig, 1);
+  LispString oper;
+  InternalUnstringify(oper, orig);
 
-    //TODO make the file api platform independent!!!!
-    // Open file for writing
-    LispLocalFile localFP(aEnvironment, oper.c_str(),LispFalse,
-                          aEnvironment.iInputDirectories);
-    CHK_CORE(localFP.iOpened != 0, KLispErrFileNotFound);
-    StdFileOutput newOutput(localFP);
-    LispLocalOutput localOutput(aEnvironment, &newOutput);
+  // Open file for writing
+  LispLocalFile localFP(aEnvironment, oper.c_str(),LispFalse, aEnvironment.iInputDirectories);
+  CHK_CORE(localFP.iOpened != 0, KLispErrFileNotFound);
+  StdFileOutput newOutput(localFP);
+  LispLocalOutput localOutput(aEnvironment, &newOutput);
 
-    // Evaluate the body
-    InternalEval(aEnvironment, RESULT, ARGUMENT(2));
+  // Evaluate the body
+  InternalEval(aEnvironment, RESULT, ARGUMENT(2));
 
-    //Return the result
+  //Return the result
 }
 
 void LispCheck(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(3);
-    LispPtr pred;
-    InternalEval(aEnvironment, pred, ARGUMENT(1));
-    if (!IsTrue(aEnvironment,pred))
-    {
-        LispPtr evaluated;
-        InternalEval(aEnvironment, evaluated, ARGUMENT(2));
-        CHK_ISSTRING_CORE(evaluated,2);
-        aEnvironment.SetUserError(evaluated->String()->c_str());
-        CHK_CORE(0,KLispErrUser);
-    }
-    RESULT = (pred);
+  //TESTARGS(3);
+  LispPtr pred;
+  InternalEval(aEnvironment, pred, ARGUMENT(1));
+  if (!IsTrue(aEnvironment,pred))
+  {
+    LispPtr evaluated;
+    InternalEval(aEnvironment, evaluated, ARGUMENT(2));
+    CHK_ISSTRING_CORE(evaluated,2);
+    aEnvironment.SetUserError(evaluated->String()->c_str());
+    CHK_CORE(0,KLispErrUser);
+  }
+  RESULT = (pred);
 }
 
 void LispTrapError(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -1375,27 +1372,27 @@ void LispGetCoreError(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispSystemCall(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(2);
-    CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
+  //TESTARGS(2);
+  CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
 
-    LispPtr result(ARGUMENT(1));
-    CHK_ISSTRING_CORE(result,1);
+  LispPtr result(ARGUMENT(1));
+  CHK_ISSTRING_CORE(result,1);
 
-    LispString command;
-    InternalUnstringify(command, result->String());
+  LispString command;
+  InternalUnstringify(command, result->String());
 
 // we would like to pass the exit code back to Yacas. Right now, let's pass True/False according to whether the exit code is 0 or not.
 #ifdef SystemCall
 	if(SystemCall(command.c_str()) == 0)
 	{	
-	    InternalTrue(aEnvironment,RESULT);
+    InternalTrue(aEnvironment,RESULT);
 	}
 	else
 	{
-	    InternalFalse(aEnvironment,RESULT);
+    InternalFalse(aEnvironment,RESULT);
 	}
 #else
-    InternalFalse(aEnvironment,RESULT);
+  InternalFalse(aEnvironment,RESULT);
 #endif
 }
 
@@ -1985,17 +1982,11 @@ void GenPatternCreate(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispPtr postpredicate(ARGUMENT(2));
 
     LispIterator iter(pattern);
-#if 0 //PLEASECHECK TODO what is this?
-    CHK_ARG_CORE(iter.getObj(),1);
-    CHK_ARG_CORE(iter.getObj()->SubList(),1);
-    iter.GoSub();
-#else
-	LispObject * pObj = iter.getObj();
+    LispObject * pObj = iter.getObj();
     CHK_ARG_CORE(pObj,1);	// Check(pObj,KLispErrInvalidArg);
     LispPtr * pPtr = pObj->SubList();
     CHK_ARG_CORE(pPtr,1);	// Check(pPtr,KLispErrNotList);
-	iter = *pPtr;
-#endif
+    iter = *pPtr;
     CHK_ARG_CORE(iter.getObj(),1);
     ++iter;
 

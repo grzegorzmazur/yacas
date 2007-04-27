@@ -28,7 +28,7 @@ void BaseSqrt(ANumber& aResult, ANumber& N);
 
 
 #ifdef HAVE_STDIO_H 
-#include <stdio.h>
+#include <stdio.h> // Safe, only included if HAVE_STDIO_H is defined
 #endif
 void PrintNumber(char* prefix,ANumber& aNumber)
 {
@@ -129,11 +129,13 @@ void IntToBaseString(LispString& aString,PlatDoubleWord aInt, LispInt aBase)
 void IntToAscii(LispString& aString,PlatDoubleWord aInt, LispInt aBase)
 {
 
-//TODO?    LispBoolean negative = false;
+/*TODO handle negative integers also?
+    LispBoolean negative = false;
     
-//TODO?    // Sign will be handled separately
-//TODO?    if (negative)
-//TODO?        aInt = -aInt;
+    // Sign will be handled separately
+    if (negative)
+        aInt = -aInt;
+*/
 
     IntToBaseString(aString,aInt,aBase);
     LispInt i;
@@ -148,11 +150,13 @@ void IntToAscii(LispString& aString,PlatDoubleWord aInt, LispInt aBase)
     {
         aString[(nr>>1)] = Digit(aString[(nr>>1)]);
     }
-//TODO?    if (negative)
-//TODO?    {
-//TODO?        LispChar c = '-';
-//TODO?        aString.Insert(0,c);
-//TODO?    }
+/*TODO handle negative integers also?
+    if (negative)
+    {
+        LispChar c = '-';
+        aString.Insert(0,c);
+    }
+*/
     aString.Append('\0');
 }
 

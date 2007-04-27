@@ -1,5 +1,5 @@
 
-#include <stdio.h> //TODO remove, debug!
+#include <stdio.h>
 
 #include "lisptype.h"
 #include "lispenvironment.h"
