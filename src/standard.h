@@ -56,7 +56,7 @@ void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 #define ATOML(_s) LispAtom::New(aEnvironment,_s)
 #define LIST(_c) LispSubList::New(_c)
-class LispObjectAdder : public YacasBase	// TODO: woof
+class LispObjectAdder : public YacasBase
 {
 public:
     LispObjectAdder(LispObject* aPtr)

@@ -28,11 +28,7 @@
 
 void LispLexCompare2(LispEnvironment& aEnvironment, LispInt aStackTop,
                      LispBoolean (*lexfunc)(LispChar * f1, LispChar * f2, LispHashTable& aHashTable,LispInt aPrecision),
-#ifndef NO_USE_BIGFLOAT
                      LispBoolean (*numfunc)(BigNumber& n1, BigNumber& n2)
-#else
-                     LispBoolean (*numfunc)(LispChar * f1, LispChar * f2, LispHashTable& aHashTable,LispInt aPrecision)
-#endif
                     );
 
 
@@ -119,7 +115,6 @@ static LispBoolean LexGreaterThan(LispChar * f1, LispChar * f2, LispHashTable& a
     return (StrCompare(f1, f2)>0);
 }
 
-#ifndef NO_USE_BIGFLOAT
 static LispBoolean BigLessThan(BigNumber& n1, BigNumber& n2)
 {
   return n1.LessThan(n2) && !n1.Equals(n2);
@@ -128,69 +123,39 @@ static LispBoolean BigGreaterThan(BigNumber& n1, BigNumber& n2)
 {
   return !(n1.LessThan(n2) || n1.Equals(n2));
 }
-#endif
 
 void LispLessThan(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef NO_USE_BIGFLOAT
     LispLexCompare2(aEnvironment, aStackTop, LexLessThan,BigLessThan);
-#else
-    LispLexCompare2(aEnvironment, aStackTop, LexLessThan,LessThan);
-#endif
 }
 
 void LispGreaterThan(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef NO_USE_BIGFLOAT
     LispLexCompare2(aEnvironment, aStackTop, LexGreaterThan, BigGreaterThan);
-#else
-    LispLexCompare2(aEnvironment, aStackTop, LexGreaterThan, GreaterThan);
-#endif
 }
 
 
 void LispLexCompare2(LispEnvironment& aEnvironment, LispInt aStackTop,
                      LispBoolean (*lexfunc)(LispChar * f1, LispChar * f2, LispHashTable& aHashTable,LispInt aPrecision),
-#ifndef NO_USE_BIGFLOAT
                      LispBoolean (*numfunc)(BigNumber& n1, BigNumber& n2)
-#else
-                     LispBoolean (*numfunc)(LispChar * f1, LispChar * f2, LispHashTable& aHashTable,LispInt aPrecision)
-#endif
                     )
 {
-    //TESTARGS(3);
     LispPtr result1(ARGUMENT(1));
     LispPtr result2(ARGUMENT(2));
     LispBoolean cmp;
-#ifndef NO_USE_BIGFLOAT
     RefPtr<BigNumber> n1; n1 = result1->Number(aEnvironment.Precision());
     RefPtr<BigNumber> n2; n2 = result2->Number(aEnvironment.Precision());
     if (!!n1 && !!n2)
     {
       cmp =numfunc(*n1,*n2);
     }
-#else
-    LispString * str1 = result1->String();
-    LispString * str2 = result2->String();
-    CHK_ARG_CORE(str1 ,1);
-    CHK_ARG_CORE(str2, 2);
-    if (IsNumber(str1->String(),LispTrue) &&
-        IsNumber(str2->String(),LispTrue))
-    {
-      cmp =numfunc(str1->String(),str2->String(),
-                            aEnvironment.HashTable(),
-                            aEnvironment.Precision());
-    }
-#endif
     else
     {
-#ifndef NO_USE_BIGFLOAT
       LispString * str1 = result1->String();
       LispString * str2 = result2->String();
       CHK_ARG_CORE(str1 ,1);
       CHK_ARG_CORE(str2, 2);
-#endif
-	  // the precision argument is ignored in "lex" functions
+ 	    // the precision argument is ignored in "lex" functions
       cmp = lexfunc(str1->c_str(),str2->c_str(),
                             aEnvironment.HashTable(),
                             aEnvironment.Precision());
@@ -375,7 +340,6 @@ void LispConcatenateStrings(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 static void InternalDelete(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aDestructive)
 {
-    //TESTARGS(3);
     LispPtr evaluated(ARGUMENT(1));
     CHK_ISLIST_CORE(evaluated,1);
 
@@ -426,7 +390,6 @@ void LispFlatCopy(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 static void InternalInsert(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aDestructive)
 {
-    //TESTARGS(4);
     LispPtr evaluated(ARGUMENT(1));
     CHK_ISLIST_CORE(evaluated,1);
 
@@ -466,7 +429,6 @@ void LispDestructiveInsert(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 static void InternalReplace(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aDestructive)
 {
-    //TESTARGS(4);
     LispPtr evaluated(ARGUMENT(1));
 //    CHK_ISLIST_CORE(evaluated,1);
     // Ok, so lets not check if it is a list, but it needs to be at least a 'function'
@@ -510,7 +472,6 @@ void LispDestructiveReplace(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispNot(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(2);
     LispPtr evaluated(ARGUMENT(1));
     if (IsTrue(aEnvironment, evaluated) || IsFalse(aEnvironment, evaluated))
     {
@@ -625,7 +586,6 @@ void LispLazyOr(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispEquals(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(3);
     LispPtr evaluated1(ARGUMENT(1));
     LispPtr evaluated2(ARGUMENT(2));
 
@@ -702,7 +662,6 @@ void LispNewLocal(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispWhile(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(3);
     LispPtr& arg1 = ARGUMENT(1);
     LispPtr& arg2 = ARGUMENT(2);
     
@@ -721,7 +680,6 @@ void LispWhile(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 static void MultiFix(LispEnvironment& aEnvironment, LispInt aStackTop, LispOperators& aOps)
 {
-    //TESTARGS(3);
 
     // Get operator
     CHK_ARG_CORE(ARGUMENT(1), 1);
@@ -744,8 +702,6 @@ void LispInFix(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 static void SingleFix(LispInt aPrecedence, LispEnvironment& aEnvironment, LispInt aStackTop, LispOperators& aOps)
 {
-    //TESTARGS(2);
-
     // Get operator
     CHK_ARG_CORE(ARGUMENT(1), 1);
     LispString * orig = ARGUMENT(1)->String();
@@ -790,8 +746,6 @@ void LispBodied(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispAtomize(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(2);
-
     LispPtr evaluated(ARGUMENT(1));
 
     // Get operator
@@ -803,8 +757,6 @@ void LispAtomize(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispStringify(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(2);
-
     LispPtr evaluated(ARGUMENT(1));
 
     // Get operator
@@ -835,8 +787,6 @@ void LispLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 static void InternalRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop, 
                              LispInt aListed)
 {
-    //TESTARGS(3);
-    
     // Get operator
     
     CHK_ARG_CORE(ARGUMENT(1), 1);
@@ -869,8 +819,6 @@ void LispMacroRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void InternalDefMacroRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aListed)
 {
-    //TESTARGS(3);
-    
     // Get operator
     //LispPtr body;
     
@@ -912,8 +860,6 @@ void LispMacroRuleBaseListed(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispHoldArg(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(3);
-    
     // Get operator
     CHK_ARG_CORE(ARGUMENT(1), 1);
     LispString * orig = ARGUMENT(1)->String();
@@ -929,8 +875,6 @@ void LispHoldArg(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 static void InternalNewRule(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(6);
-
     LispInt arity;
     LispInt precedence;
 
@@ -982,8 +926,6 @@ void LispMacroNewRule(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispUnFence(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(3);
-    
     // Get operator
     CHK_ARG_CORE(ARGUMENT(1), 1);
     LispString * orig = ARGUMENT(1)->String();
@@ -1003,7 +945,6 @@ void LispUnFence(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispMathLibName(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-	//TESTARGS(1);
     // can't use NumericLibraryName() inside LookUpStringify() b/c of
     // nonconstant pointer! why is it not a const char* and do I have to
     // write this?  (TODO: woof)
@@ -1017,7 +958,6 @@ void LispMathLibName(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispIsFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(2);
     LispPtr result(ARGUMENT(1));
     InternalBoolean(aEnvironment,RESULT,
                     result->SubList()!=NULL);
@@ -1025,7 +965,6 @@ void LispIsFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispIsAtom(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(2);
     LispPtr result(ARGUMENT(1));
     InternalBoolean(aEnvironment,RESULT,
                     result->String()!=NULL);
@@ -1033,10 +972,8 @@ void LispIsAtom(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispIsNumber(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(2);
     LispPtr result(ARGUMENT(1));
 
-#ifndef NO_USE_BIGFLOAT
     if (!result->Number(aEnvironment.Precision()))
     {
         InternalFalse(aEnvironment,RESULT);
@@ -1045,33 +982,12 @@ void LispIsNumber(LispEnvironment& aEnvironment,LispInt aStackTop)
     {
         InternalTrue(aEnvironment,RESULT);
     }
-#else
-    if (!result->String())
-    {
-        InternalFalse(aEnvironment,RESULT);
-    }
-    else
-    {
-        InternalBoolean(aEnvironment,RESULT,
-                        IsNumber(result->String()->c_str(),LispTrue));
-    }
-#endif
 }
 
 void LispIsInteger(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(2);
     LispPtr result(ARGUMENT(1));
 
-#ifndef NO_USE_BIGFLOAT
-/*
-//    if (result == 0)
-    {
-      LispString str;
-      PrintExpression(str, result, aEnvironment, 80);
-      printf("%s\n",str.String());
-    }
-*/
     RefPtr<BigNumber> num ; num = result->Number(aEnvironment.Precision());
     if (!num)
     {
@@ -1085,29 +1001,16 @@ void LispIsInteger(LispEnvironment& aEnvironment,LispInt aStackTop)
     {
         InternalTrue(aEnvironment,RESULT);
     }
-#else
-    if (!result->String())
-    {
-        InternalFalse(aEnvironment,RESULT);
-    }
-    else
-    {
-        InternalBoolean(aEnvironment,RESULT,
-                        IsNumber(result->String()->c_str(),LispFalse));
-    }
-#endif
 }
 
 void LispIsList(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(2);
     LispPtr result(ARGUMENT(1));
     InternalBoolean(aEnvironment,RESULT,InternalIsList(result));
 }
 
 void LispIsString(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(2);
     LispPtr result(ARGUMENT(1));
     InternalBoolean(aEnvironment,RESULT,
                     InternalIsString(result->String()));
@@ -1115,7 +1018,6 @@ void LispIsString(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispIsBound(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(2);
     LispString * str = ARGUMENT(1)->String();
     if (str)
     {
@@ -1158,8 +1060,6 @@ void LispIf(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispRetract(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(3);
-
     // Get operator
     LispPtr evaluated(ARGUMENT(1));
 
@@ -1177,8 +1077,6 @@ void LispRetract(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispPrecision(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(2);
-
     LispPtr index(ARGUMENT(1));
     CHK_ARG_CORE(index, 1);
     CHK_ARG_CORE(index->String(), 1);
@@ -1335,7 +1233,6 @@ void LispToFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispCheck(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-  //TESTARGS(3);
   LispPtr pred;
   InternalEval(aEnvironment, pred, ARGUMENT(1));
   if (!IsTrue(aEnvironment,pred))
@@ -1351,7 +1248,6 @@ void LispCheck(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispTrapError(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-  //TESTARGS(3);
   LispTrap(
   {
     InternalEval(aEnvironment, RESULT, ARGUMENT(1));
@@ -1372,7 +1268,6 @@ void LispGetCoreError(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispSystemCall(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-  //TESTARGS(2);
   CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
 
   LispPtr result(ARGUMENT(1));
@@ -1399,14 +1294,11 @@ void LispSystemCall(LispEnvironment& aEnvironment,LispInt aStackTop)
 // this function will eventually be removed
 void LispFastPi(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(1);
     RESULT = (PlatPi(aEnvironment,aEnvironment.Precision()));
 }
 
 void LispMaxEvalDepth(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(2);
-
     LispPtr index(ARGUMENT(1));
     CHK_ARG_CORE(index, 1);
     CHK_ARG_CORE(index->String(), 1);
@@ -1418,7 +1310,6 @@ void LispMaxEvalDepth(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispDefLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(2);
     CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
 
     LispPtr evaluated(ARGUMENT(1));
@@ -1434,7 +1325,6 @@ void LispDefLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispUse(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(2);
 //This one seems safe...    CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
 
     LispPtr evaluated(ARGUMENT(1));
@@ -1450,7 +1340,6 @@ void LispUse(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispRightAssociative(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(2);
     // Get operator
     CHK_ARG_CORE(ARGUMENT(1), 1);
     LispString * orig = ARGUMENT(1)->String();
@@ -1461,7 +1350,6 @@ void LispRightAssociative(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispLeftPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(3);
     // Get operator
     CHK_ARG_CORE(ARGUMENT(1), 1);
     LispString * orig = ARGUMENT(1)->String();
@@ -1479,7 +1367,6 @@ void LispLeftPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispRightPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(3);
     // Get operator
     CHK_ARG_CORE(ARGUMENT(1), 1);
     LispString * orig = ARGUMENT(1)->String();
@@ -1497,7 +1384,6 @@ void LispRightPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 static LispInFixOperator* OperatorInfo(LispEnvironment& aEnvironment,LispInt aStackTop, LispOperators& aOperators)
 {
-    //TESTARGS(2);
     // Get operator
     CHK_ARG_CORE(ARGUMENT(1), 1);
 
@@ -1623,7 +1509,6 @@ void LispIsPostFix(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispGetPrecision(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(1);
     LispChar buf[30];
 	// decimal precision
     InternalIntToAscii(buf, aEnvironment.Precision());
@@ -1653,15 +1538,12 @@ void LispToStdout(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispSecure(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(2);
     LispSecureFrame security(aEnvironment);
     InternalEval(aEnvironment, RESULT, ARGUMENT(1));
 }
 
 void LispFindFile(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(2);
-
     CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
     
     LispPtr evaluated(ARGUMENT(1));
@@ -1682,7 +1564,6 @@ void LispFindFile(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispIsGeneric(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(2);
     LispPtr evaluated(ARGUMENT(1));
 
     if (evaluated->Generic())
@@ -1693,7 +1574,6 @@ void LispIsGeneric(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispGenericTypeName(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(2);
     LispPtr evaluated(ARGUMENT(1));
 
     CHK_ARG_CORE(evaluated->Generic(),1);
@@ -1704,8 +1584,6 @@ void LispGenericTypeName(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void GenArrayCreate(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(3);
-
     LispPtr sizearg(ARGUMENT(1));
 
     CHK_ARG_CORE(sizearg, 1);
@@ -1721,7 +1599,6 @@ void GenArrayCreate(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void GenArraySize(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(2);
     LispPtr evaluated(ARGUMENT(1));
 
     GenericClass *gen = evaluated->Generic();
@@ -1735,7 +1612,6 @@ void GenArraySize(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void GenArrayGet(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(3);
     LispPtr evaluated(ARGUMENT(1));
 
     GenericClass *gen = evaluated->Generic();
@@ -1755,8 +1631,6 @@ void GenArrayGet(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void GenArraySet(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(4);
-
     LispPtr evaluated(ARGUMENT(1));
 
     GenericClass *gen = evaluated->Generic();
@@ -1778,7 +1652,6 @@ void GenArraySet(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispCustomEval(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-  //TESTARGS(5);
   if (aEnvironment.iDebugger) delete aEnvironment.iDebugger;
   aEnvironment.iDebugger = NEW DefaultDebugger(ARGUMENT(1), ARGUMENT(2),ARGUMENT(3));
   LispLocalEvaluator local(aEnvironment,NEW TracedEvaluator);
@@ -1791,7 +1664,6 @@ void LispCustomEval(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispCustomEvalExpression(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-  //TESTARGS(1);
   if (!aEnvironment.iDebugger)
   {
     RaiseError("Trying to get CustomEval results while not in custom evaluation");
@@ -1801,7 +1673,6 @@ void LispCustomEvalExpression(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispCustomEvalResult(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-  //TESTARGS(1);
   if (!aEnvironment.iDebugger)
   {
     RaiseError("Trying to get CustomEval results while not in custom evaluation");
@@ -1811,13 +1682,11 @@ void LispCustomEvalResult(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispCustomEvalLocals(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-  //TESTARGS(1);
   aEnvironment.CurrentLocals(RESULT);
 }
 
 void LispCustomEvalStop(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-  //TESTARGS(1);
   if (!aEnvironment.iDebugger)
   {
     RaiseError("Trying to get CustomEval results while not in custom evaluation");
@@ -1829,7 +1698,6 @@ void LispCustomEvalStop(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispTraceStack(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(2);
     LispLocalEvaluator local(aEnvironment,NEW TracedStackEvaluator);
     InternalEval(aEnvironment, RESULT, ARGUMENT(1));
 }
@@ -1857,7 +1725,6 @@ void LispReadLispListed(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispTraceRule(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(3);
     LispPtr *ptr = ARGUMENT(0)->Nixed()->SubList();
     LispUserFunction* userfunc=NULL;
     if (ptr)
@@ -1868,7 +1735,6 @@ void LispTraceRule(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispType(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(2);
     LispPtr evaluated(ARGUMENT(1));
     LispPtr* subList = evaluated->SubList();
     LispObject* head = NULL;
@@ -1889,7 +1755,6 @@ EMPTY:
 
 void LispStringMid(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(4);
     LispPtr evaluated(ARGUMENT(3));
     CHK_ISSTRING_CORE(evaluated,3);
     LispString * orig = evaluated->String();
@@ -1919,7 +1784,6 @@ void LispStringMid(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispSetStringMid(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(4);
     LispPtr evaluated(ARGUMENT(3));
     CHK_ISSTRING_CORE(evaluated,3);
     LispString * orig = evaluated->String();
@@ -1946,7 +1810,6 @@ void LispSetStringMid(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispFindFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(2);
     CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
     
     LispPtr evaluated(ARGUMENT(1));
@@ -1977,7 +1840,6 @@ void LispFindFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
 /// LispGenericObject. The result is set to this LispGenericObject.
 void GenPatternCreate(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(3);
     LispPtr pattern(ARGUMENT(1));
     LispPtr postpredicate(ARGUMENT(2));
 
@@ -1998,7 +1860,6 @@ void GenPatternCreate(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void GenPatternMatches(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(3);
     LispPtr pattern(ARGUMENT(1));
     GenericClass *gen = pattern->Generic();
     DYNCAST(PatternClass,"\"Pattern\"",patclass,gen)
@@ -2028,7 +1889,6 @@ void GenPatternMatches(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispRuleBaseDefined(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(3);
     LispPtr name(ARGUMENT(1));
     LispString * orig = name->String();
     CHK_ARG_CORE(orig, 1);
@@ -2047,7 +1907,6 @@ void LispRuleBaseDefined(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispDefLoadFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(2);
     LispPtr name(ARGUMENT(1));
     LispString * orig = name->String();
     CHK_ARG_CORE(orig, 1);
@@ -2079,7 +1938,6 @@ void LispDefLoadFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispRuleBaseArgList(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    //TESTARGS(3);
     LispPtr name(ARGUMENT(1));
     LispString * orig = name->String();
     CHK_ARG_CORE(orig, 1);
@@ -2103,8 +1961,6 @@ void LispRuleBaseArgList(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 static void InternalNewRulePattern(LispEnvironment& aEnvironment, LispInt aStackTop, LispBoolean aMacroMode)
 {
-    //TESTARGS(6);
-
     LispInt arity;
     LispInt precedence;
 

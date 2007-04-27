@@ -12,10 +12,6 @@
 
 #include "yacasbase.h"
 #include "lispassert.h"
-#define HAS_memory 0
-#if HAS_memory
-#include <memory>	// for std::allocator
-#endif
 
 
 
@@ -113,28 +109,11 @@ public:
      * object in the array. This is useful in templated functions that
      * work on a CArrayGrower without being part of CArrayGrower
      */
-#if HAS_memory
-	typedef typename std::allocator<T> _Alloc;
-	typedef typename _Alloc::value_type value_type;
-	//typedef typename _Alloc::size_type size_type;
-#else
 	typedef T value_type;	// almost the same, but T must be non-const
-	//typedef size_t size_type;
-#endif
-	typedef LispInt size_type;
-	typedef T ElementType;	// TODO: some better name?
 
-/*
-	typedef typename std::allocator<T> _Alloc;
-	typedef _Alloc allocator_type;
-	typedef typename _Alloc::size_type size_type;
-	typedef typename _Alloc::difference_type difference_type;
-	typedef typename _Alloc::pointer pointer;
-	typedef typename _Alloc::const_pointer const_pointer;
-	typedef typename _Alloc::reference reference;
-	typedef typename _Alloc::const_reference const_reference;
-	typedef typename _Alloc::value_type value_type;
-*/
+	typedef LispInt size_type;
+	typedef T ElementType;
+
     CArrayGrower()
 		: iArray(0)
 		, iSize(0)

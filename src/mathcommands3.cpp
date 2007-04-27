@@ -467,27 +467,6 @@ void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 
 // now we can define all such functions, e.g.:
 //	PLATFORM_UNARY(LispFastSin, sin, LispSin, PlatSin)
-// this will generate the following equivalent code:
-/*
-void LispFastSin(LispEnvironment& aEnvironment, LispInt aStackTop)
-{
-#ifndef NO_USE_BIGFLOAT
-#ifdef HAVE_MATH_H
-      RefPtr<BigNumber> x;
-      GetNumber(x,aEnvironment, aStackTop, 1);
-      double result = sin(x->Double());
-      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
-      z->SetTo(result);
-      RESULT = (NEW LispNumber(z));
-#else
-      LispSin(aEnvironment, aStackTop);
-#endif
-      return;
-#endif
-
-    LispArithmetic1(aEnvironment, aStackTop, PlatSin);
-}
-*/
 
 // some or all of these functions should be moved to scripts
 	PLATFORM_UNARY(LispFastSin, sin, LispSin, PlatSin)
@@ -505,72 +484,7 @@ void LispFastSin(LispEnvironment& aEnvironment, LispInt aStackTop)
 	PLATFORM_BINARY(LispFastPower, pow, LispPower, PlatPower)
 	PLATFORM_BINARY(LispFastMod, fmod, LispMod, PlatMod)
 
-/* this will be gone 
-void LispFastCos(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME
-    LispArithmetic1(aEnvironment, aStackTop, PlatCos);
-}
-void LispFastTan(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME
-    LispArithmetic1(aEnvironment, aStackTop, PlatTan);
-}
 
-void LispFastArcSin(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME
-    LispArithmetic1(aEnvironment, aStackTop, PlatArcSin);
-}
-void LispFastArcCos(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME
-    LispArithmetic1(aEnvironment, aStackTop, PlatArcCos);
-}
-void LispFastArcTan(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME
-    LispArithmetic1(aEnvironment, aStackTop, PlatArcTan);
-}
-void LispFastExp(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME
-    LispArithmetic1(aEnvironment, aStackTop, PlatExp);
-}
-void LispFastLog(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME
-    LispArithmetic1(aEnvironment, aStackTop, PlatLn);
-}
-
-void LispFastPower(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME
-    LispArithmetic2(aEnvironment, aStackTop, PlatPower);
-}
-
-void LispFastSqrt(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME
-    LispArithmetic1(aEnvironment, aStackTop, PlatSqrt);
-}
-
-void LispFastFloor(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME
-    LispArithmetic1(aEnvironment, aStackTop, PlatFloor);
-}
-
-void LispFastCeil(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME
-    LispArithmetic1(aEnvironment, aStackTop, PlatCeil);
-}
-
-void LispFastMod(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME
-    LispArithmetic2(aEnvironment, aStackTop, PlatMod);
-}
-
-void LispFastAbs(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME
-    LispArithmetic1(aEnvironment, aStackTop, PlatAbs);
-}
-up to here */
-
-/*
-BINARYFUNCTION(LispShiftLeft, ShiftLeft, ShiftLeft)
-BINARYFUNCTION(LispShiftRight, ShiftRight, ShiftRight)
-*/
 
 BINARYFUNCTION(LispBitAnd, BitAnd, BitAnd)
 BINARYFUNCTION(LispBitOr, BitOr, BitOr)
@@ -595,8 +509,6 @@ void LispShiftRight(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispFromBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(3);
-
     // Get the base to convert to:
     // Evaluate first argument, and store result in oper
     LispPtr oper(ARGUMENT(1));
@@ -628,8 +540,6 @@ void LispFromBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 void LispToBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(3);
-
     // Get the base to convert to:
     // Evaluate first argument, and store result in oper
     LispPtr oper(ARGUMENT(1));
@@ -662,8 +572,6 @@ void LispToBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispApplyPure(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(3);
-
     LispPtr oper(ARGUMENT(1));
     LispPtr args(ARGUMENT(2));
 
@@ -745,15 +653,12 @@ void LispGetPrettyPrinter(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispGarbageCollect(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(1);
     aEnvironment.HashTable().GarbageCollect();
-    
     InternalTrue(aEnvironment,RESULT);
 }
 
 void LispLazyGlobal(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(2);
     LispString * string = ARGUMENT(1)->String();
     CHK_ARG_CORE(string, 1);
     aEnvironment.SetGlobalEvaluates(string);
@@ -763,8 +668,6 @@ void LispLazyGlobal(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(2);
-
     LispPtr evaluated(ARGUMENT(1));
 
     LispString * string = evaluated->String();
@@ -792,8 +695,6 @@ void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(2);
-
     LispPtr evaluated(ARGUMENT(1));
     
     LispString * string = evaluated->String();
@@ -813,8 +714,6 @@ void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispDllLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-	//TESTARGS(2);
-
 	LispPtr evaluated(ARGUMENT(1));
 
 	LispString * string = evaluated->String();
@@ -852,7 +751,6 @@ void LispDllLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispDllUnload(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(2);
     LispPtr evaluated(ARGUMENT(1));
 
     LispString * string = evaluated->String();
@@ -867,7 +765,6 @@ void LispDllUnload(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispDllEnumerate(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(1);
     LispInt i;
     LispObject *res = NULL;
     for (i=aEnvironment.iDlls.Size()-1;i>=0;i--)
@@ -883,8 +780,6 @@ void LispDllEnumerate(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispSetExtraInfo(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(3);
-
     LispPtr object(ARGUMENT(1));
     LispPtr info(ARGUMENT(2));
     RESULT = ( object->SetExtraInfo(info) );
@@ -893,8 +788,6 @@ void LispSetExtraInfo(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispGetExtraInfo(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(2);
-
     LispPtr object(ARGUMENT(1));
 
     LispObject* result = object->ExtraInfo();
@@ -1028,7 +921,6 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispFastAssoc(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     // Check that we have two arguments.
-    //TESTARGS(3);
 
     // key to find
     LispPtr key(ARGUMENT(1));
@@ -1070,15 +962,11 @@ void LispFastAssoc(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispCurrentFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    // Check that we have zero arguments.
-    //TESTARGS(1);
     RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(aEnvironment.iInputStatus.FileName())->c_str()));
 }
 
 void LispCurrentLine(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    // Check that we have zero arguments.
-    //TESTARGS(1);
     LispChar s[30];
     InternalIntToAscii(s, aEnvironment.iInputStatus.LineNumber());
     RESULT = (LispAtom::New(aEnvironment,s));
@@ -1086,8 +974,6 @@ void LispCurrentLine(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispBackQuote(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    // Check that we have one argument.
-    //TESTARGS(2);
     BackQuoteBehaviour behaviour(aEnvironment);
     LispPtr result;
     InternalSubstitute(result, ARGUMENT( 1), behaviour);

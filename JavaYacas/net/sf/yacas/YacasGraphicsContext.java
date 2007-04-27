@@ -64,8 +64,6 @@ class YacasGraphicsContext
       graphics.setFont(new Font("Helvetica", Font.BOLD, aSize));
     else
       graphics.setFont(new Font("Helvetica", Font.PLAIN, aSize));
-
-    //TODO
     return 1;
   }
 };

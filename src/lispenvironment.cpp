@@ -86,21 +86,18 @@ LispEnvironment::LispEnvironment(
 
 LispEnvironment::~LispEnvironment()
 {
-    PopLocalFrame();
+  PopLocalFrame();
 
 	DBG_printf("Entered environment destructor, %d DLLs loaded\n",iDlls.Size());
 	for (LispInt i=0,nr=iDlls.Size(); i<nr; i++)
 	{
 		DBG_printf("Closing DLL \"%s\"\n",iDlls[i]->DllFileName());
 		iDlls[i]->Close(*this);
-		//delete iDlls[i]; iDlls[i] = NULL;	// TODO: not needed? right?
 	}
-	//iDlls.Clear();						// TODO: not needed? right?
-
-    LISPASSERT(!iLocalsList);
-    delete iEvaluator;
-    if (iDebugger) delete iDebugger;
-    delete iArchive;
+  LISPASSERT(!iLocalsList);
+  delete iEvaluator;
+  if (iDebugger) delete iDebugger;
+  delete iArchive;
 }
 
 void LispEnvironment::SetPrecision(LispInt aPrecision)

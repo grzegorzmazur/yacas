@@ -27,7 +27,6 @@
 
 void LispSubst(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    //TESTARGS(4);
     LispPtr from (ARGUMENT(1));
     LispPtr to   (ARGUMENT(2));
     LispPtr body (ARGUMENT(3));

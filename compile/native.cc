@@ -11,11 +11,7 @@ void LispNativeFunctions::GetPrecision_0(LispEnvironment& aEnvironment)
 
 void LispNativeFunctions::Precision_1(LispEnvironment& aEnvironment)
 {
-//TODO    TESTARGS(2);
-//TODO    CHK_ARG(TOP(0), 1);
-//TODO    CHK_ARG(TOP(0)->String(), 1);
     LispInt ind = MakeGetInteger(TOP(0));
-//TODO    CHK_ARG(ind>0,1);
     aEnvironment.SetPrecision(ind);
     POP();
     SETTRUE(TOP(0));
