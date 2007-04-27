@@ -211,17 +211,7 @@ CFormStatement(_x) <-- CForm(x) : ";" : NlIndented();
 	: CIndent() : NlIndented()
 	: CFormStatement(body) : CUndent();
 
-/*TODO test
-test:=Hold(
 
-           For(i:=1,i<=10,i:=i+1)
-             For(j:=i+1,j<=10,j:=j+1)
-             [
-               m[i][j]:=1/(1+i+j);
-             ]
-           );
-    
-*/
 
 //////////////////////////////////////////////////
 /// IsCFormable

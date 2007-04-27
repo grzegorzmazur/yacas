@@ -26,7 +26,7 @@ proteusworksheet_h_sources = FltkConsole.h \
 	HelpView.h \
 	editor.h \
 	grapher.h \
-	proteusmenu.h \
+	 \
 	tabs.h \
 	yacdefines.h
 
@@ -80,7 +80,7 @@ EXTRA_DIST = COPYING.HelpDialog FltkConsole.cpp FltkConsole.h FltkHintWindow.cpp
 	grapher.cpp grapher.h graphtest hints \
 	makefile.linux makefile.macosx makefile.tracer makeinclude                  \
 	mkbackup proteus.conf proteus.dsp proteus.dsw proteusbooks.html          \
-	proteusmenu.h readme.txt tabs.cpp tabs.h testnotes/graphtest2            \
+	readme.txt tabs.cpp tabs.h testnotes/graphtest2            \
 	testnotes/index testnotes/recursetest testnotes/testnotepad              \
 	testnotes/testnotepad2 todo.txt yacasconf yacdefines.h                   \
         WorksheetBanner tracer.cpp tracer.ys \

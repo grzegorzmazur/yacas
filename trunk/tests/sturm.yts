@@ -60,11 +60,12 @@ sl();
 ];
 sl();
 
-//TODO TryRandomRoots(3,-10,10);  sl();
-//TODO TryRandomRoots(3,-10,10);  sl();
-//TODO TryRandomRoots(5,5,1000);  sl();
-//TODO TryRandomRoots(5,5,1000);  sl();
-
+/*TODO 
+TryRandomRoots(3,-10,10);  sl();
+TryRandomRoots(3,-10,10);  sl();
+TryRandomRoots(5,5,1000);  sl();
+TryRandomRoots(5,5,1000);  sl();
+*/
 
 // Bounds on coefficients
 Verify(MinimumBound(4),-Infinity); sl();

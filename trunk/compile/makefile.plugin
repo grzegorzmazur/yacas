@@ -1,7 +1,7 @@
 
 # configurable
 
-YACAS_SOURCE = /root/myprojects/yacas
+YACAS_SOURCE = /Users/ayalpinkus/projects/yacas
 
 # static
 

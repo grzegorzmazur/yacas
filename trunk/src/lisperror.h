@@ -49,7 +49,7 @@ template<typename T>
 inline void Check(T hastobetrue, LispInt aError)
 {
     if (!hastobetrue)
-        LispThrow(aError); // TODO new LispException(aException)
+        LispThrow(aError);
 }
 
 

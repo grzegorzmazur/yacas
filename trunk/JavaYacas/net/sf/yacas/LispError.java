@@ -64,13 +64,9 @@ class LispError
           return "Could not find library";
       if (aError ==  KLispErrUserInterrupt)
           return "User interrupted calculation";
-      if (aError ==  KLispErrUser) return "User error //TODO FIXME";
-//TODO FIXME          if (theUserError != NULL) //TODO should always be true!
-//TODO FIXME              return theUserError;
-//TODO FIXME          break;
       if (aError ==  KLispErrNonBooleanPredicateInPattern)
           return "Predicate doesn't evaluate to a boolean in pattern";
-     if (aError ==  KLispErrGenericFormat) return "Generic format"; //GenericErrorBuf();
+     if (aError ==  KLispErrGenericFormat) return "Generic format";
     }
     return "Unspecified Error";
   }
@@ -230,14 +226,13 @@ class LispError
 	static int KLispErrDefFileAlreadyChosen   = 21;
 	static int KLispErrDivideByZero           = 22;
 	static int KLispErrNotAnInFixOperator     = 23;
-	static int KLispErrUser                   = 24;
-	static int KLispErrIsNotInFix             = 25;
-	static int KLispErrSecurityBreach         = 26;
-	static int KLispErrLibraryNotFound        = 27;
-	static int KLispErrUserInterrupt          = 28;
-	static int KLispErrNonBooleanPredicateInPattern = 29;
-	static int KLispErrGenericFormat          = 30;
-	static int KLispNrErrors                  = 31;
+	static int KLispErrIsNotInFix             = 24;
+	static int KLispErrSecurityBreach         = 25;
+	static int KLispErrLibraryNotFound        = 26;
+	static int KLispErrUserInterrupt          = 27;
+	static int KLispErrNonBooleanPredicateInPattern = 28;
+	static int KLispErrGenericFormat          = 29;
+	static int KLispNrErrors                  = 30;
 
 
 }

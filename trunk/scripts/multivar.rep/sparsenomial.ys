@@ -36,7 +36,6 @@ MultiNomialMultiply(MultiNomial(_vars,_x),_multi2)
 muadm(_coefs,_fact) <--
 [
   Set(result,MultiNomialMultiplyAdd(result, multi2,coefs,fact));
-//GarbageCollect(); //TODO do we really want this?
 ];
 UnFence("muadm",2);
 
