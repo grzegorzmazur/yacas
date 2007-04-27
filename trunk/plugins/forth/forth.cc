@@ -7,8 +7,7 @@
 
 void ForthStack::Push(const ForthValue& aValue)
 {
-    //TODO optimize?
-    Append(aValue);
+  Append(aValue);
 }
 
 #if HAS_NEW_ForthStackPop == 0
@@ -17,7 +16,6 @@ const ForthValue& ForthStack::Pop(void)
 	// works, but I don't like it.
 	// after the Resize, v might no longer reference the element?
     const ForthValue& v = elements()[Size()-1];
-    //TODO optimize?
     Resize(Size()-1);
     return v;
 }

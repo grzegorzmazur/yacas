@@ -1,8 +1,4 @@
 
-/*
-#include <stdio.h>
-#include "standard.h"
-*/
 
 #include "yacasprivate.h"
 #include "lispevalhash.h"

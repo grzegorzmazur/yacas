@@ -15,7 +15,7 @@
 #include "numbers.h"
 
 #ifdef YACAS_DEBUG
-#include <stdio.h>
+#include <stdio.h> // Safe, only included if YACAS_DEBUG is defined
 #endif
 
 #define InternalEval iEvaluator->Eval

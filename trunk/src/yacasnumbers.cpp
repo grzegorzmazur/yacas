@@ -18,7 +18,7 @@
 #endif
 
 #ifdef HAVE_STDIO_H
-  #include <stdio.h>
+  #include <stdio.h> // Safe, only included if HAVE_STDIO_H defined
 #endif
 
 #define BITS_TO_DIGITS(x,n) (bits_to_digits(x,n))

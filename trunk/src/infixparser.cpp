@@ -1,6 +1,4 @@
 
-//#include <stdio.h>
-
 #include "yacasprivate.h"
 #include "lispassert.h"
 #include "infixparser.h"
@@ -178,9 +176,6 @@ void ParsedObject::InsertAtom(LispString * aString)
     iResult = (ptr);
 }
 
-
-
-//#include <stdio.h>
 
 void ParsedObject::ReadExpression(LispInt depth)
 {

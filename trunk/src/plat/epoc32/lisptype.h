@@ -82,12 +82,6 @@
 // should be at least twice as big as PlatWord, to prevent overflowing
 // during multiplication.
 
-/*TODO
-#define PlatWord unsigned char
-#define PlatDoubleWord unsigned short
-#define PlatSignedDoubleWord signed short
-*/
-
 #define PlatWord unsigned short
 #define PlatDoubleWord unsigned long
 #define PlatSignedDoubleWord signed long

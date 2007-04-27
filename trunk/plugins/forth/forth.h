@@ -124,7 +124,6 @@ private:
     ForthSubRoutine* current_subroutine;
 };
 
-//TODO inline
 inline ForthCommand* ForthInterpreter::NextCommand()
 {
     return &(*current_subroutine)[program_counter++];

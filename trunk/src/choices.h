@@ -20,12 +20,6 @@
  */
 //#define NO_EXCEPTIONS
 
-/** Use Karatsuba multiplication instead of O(n^2) multiplication.
- *  WARNING! This is currently not working and not suggested unless
- *      you want to help debug it.
- */
-//#define USE_KARATSUBA
-
 /** Enable long reference counts. This makes EVERY object 2 bytes
  larger, so use only if needed.
  */

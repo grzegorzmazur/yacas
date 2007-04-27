@@ -109,11 +109,7 @@
 // should be at least twice as big as PlatWord, to prevent overflowing
 // during multiplication.
 
-/*TODO
-#define PlatWord unsigned char
-#define PlatDoubleWord unsigned short
-#define PlatSignedDoubleWord signed short
-*/
+
 
 //#define SUPPORT_LONG_LONG
 #ifdef  SUPPORT_LONG_LONG
