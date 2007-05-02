@@ -89,7 +89,7 @@ private:
 public:
 	LispGenericClass(const LispGenericClass& other) : ASuper(other), iClass(other.iClass) { iClass->iReferenceCount++; }
 private:
-    GenericClass* iClass;	// TODO: woof
+    GenericClass* iClass;
 };
 
 class LispHashTable;

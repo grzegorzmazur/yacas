@@ -29,33 +29,7 @@
 
 #undef VERSION
 
-//#define VERSION "Windows latest"
 #include "version.h"
-
-
-/*TODO
-
- - Make a separate Number object, for fast calculations.
-
- - as an alternative, I *could* implement MathFac ;-)
-
- - Add Number and CopiedNumber methods to LispObject
- - implement Number and CopiedNumber in LispAtom
- - define a LispNumber that can cache a number. This would already
-   speed up twofold.
- - implement at least addition and multiplication so they
-   can use these.
- - IsNumber and IsInteger should Check ->Number() before doing ->String()
-
- 
-
- The trick will obviously be to make sure no conversions are made to
- ascii until needed.
-
- 
- */
-
-
 
 
 

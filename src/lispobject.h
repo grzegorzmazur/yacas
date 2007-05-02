@@ -126,7 +126,7 @@ protected:
 private:
     LispPtr   iNext;
 public:
-	ReferenceCount iReferenceCount;	// TODO: woof
+	ReferenceCount iReferenceCount;	
 };
 
 
@@ -151,26 +151,7 @@ private:
 template <class T, class U = LispObject>
 class ObjectHelper : public U
 {
-#if 0
-    friend class T;
-private:
-	// Only T has access to our constructor, and we're abstract.
-	// Together, these guarantee the 'this' in SetExtraInfo actually
-	// points to a T, or something derived from it.  So the cast's okay.
-#else
-	// Would that life were so simple.
-	// The above works with MVC++.NET if you just say "friend T" (i.e., no class-key).
-	// But the standard says "Friends require an elaborated-type-specifier for a friend
-	// declaration of a class", and "If the identifier resolves to a typedef-name or a
-	// template type-parameter, the elaborated-type-specifier is ill-formed".  And, my friends,
-	// "friend class T" is the archetype of what's disallowed.
-	// We *could* use a dynamic_cast in SetExtraInfo; this requires RTTI, and
-	// only catches coding errors when SetExtraInfo is eventually called.
-	// We *could* make a (slow) dynamic_cast check in our constructor, ....
-	// Bjarne Stroustrup "The C++ Programming Language" illustrated a similar
-	// design, and we do as he did: just static_cast the sucker.
 protected:
-#endif
 	typedef ObjectHelper ASuper;	// for use by the derived class
 	ObjectHelper() {}
 	ObjectHelper(const ObjectHelper& other) : U(other) {}
@@ -208,25 +189,24 @@ public:
 	/*non-standard*/ LispIterator(reference ref) : _Ptr(&ref) {}	// construct with node reference
 	reference operator*() const { return (*(_Ptr)); }	// return designated value
 	pointer operator->() const { return (_Ptr); }	// return pointer to class object
-	LispIterator& operator++()	// preincrement
+	inline LispIterator& operator++()	// preincrement
 	{
-		//precondition: !isDone()  -- or equivalently: _Ptr != 0
+		//precondition: _Ptr != NULL
+    LISPASSERT(_Ptr != NULL);
 		//expand: _Ptr = _Nextnode(_Ptr);
 		LispObject * pObj = _Ptr->operator->();
-		//possibly: Check(pObj,KLispErrListNotLongEnough);
-		_Ptr = pObj ? &(pObj->Nixed()) : 0;	// TODO: woof -- dislike LispObject::Nixed()
+		_Ptr = pObj ? &(pObj->Nixed()) : NULL;	
 		return (*this);
 	}
 	LispIterator operator++(int) { LispIterator _Tmp = *this; ++*this; return (_Tmp); }	// postincrement
-	//LispIterator& operator--() { _Ptr = _Prevnode(_Ptr); return (*this); }	// predecrement
-	//LispIterator operator--(int) { LispIterator _Tmp = *this; --*this; return (_Tmp); }	// postdecrement
 	bool operator==(const LispIterator& other) const { return (_Ptr == other._Ptr); }	// test for iterator equality
 	bool operator!=(const LispIterator& other) const { return (!(*this == other)); }	// test for iterator inequality
+  // The following operators are not used yet, and would need to be tested before used.
+	//LispIterator& operator--() { _Ptr = _Prevnode(_Ptr); return (*this); }	// predecrement
+	//LispIterator operator--(int) { LispIterator _Tmp = *this; --*this; return (_Tmp); }	// postdecrement
 protected:
 	pointer _Ptr;	// pointer to node
 public:
-	/* TODO: woof */
-	//bool isDone() const { return !_Ptr; }
 	inline LispObject* getObj() const { return (*_Ptr).operator->(); }
 };
 

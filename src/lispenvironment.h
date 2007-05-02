@@ -398,14 +398,6 @@ public:
 	YacasArgStack iStack;
 };
 
-/* this function is now in lispenvironment.cpp
-inline void LispEnvironment::SetPrecision(LispInt aPrecision)
-{
-    iPrecision = aPrecision;
-	iBinaryPrecision = digits_to_bits(aPrecision, BASE10);
-}
-*/
-
 inline LispInt LispEnvironment::Precision(void) const
 {
     return iPrecision;
@@ -413,9 +405,6 @@ inline LispInt LispEnvironment::Precision(void) const
 
 inline LispInt LispEnvironment::BinaryPrecision(void) const
 {
-//FIXME TODO need the right place for this function definition
-//    extern unsigned long digits_to_bits(unsigned long digits, unsigned base);
-//    return digits_to_bits(iPrecision,10);
 	return iBinaryPrecision;
 }
 
@@ -544,20 +533,17 @@ private:
     LispUserFunction* iUserFunc;
 };
 
-// TODO: woof
 class LocalArgs : public YacasBase
 {
 public:
-    LocalArgs(LispPtr* aPtrs)
-        : iPtrs(aPtrs)
-    {};
-    ~LocalArgs()
-    {
-        if (iPtrs)
-            delete[] iPtrs;
-    }
+  LocalArgs(LispPtr* aPtrs) : iPtrs(aPtrs) {};
+  ~LocalArgs()
+  {
+    if (iPtrs)
+      delete[] iPtrs;
+  }
 private:
-    LispPtr* iPtrs;
+  LispPtr* iPtrs;
 };
 
 
