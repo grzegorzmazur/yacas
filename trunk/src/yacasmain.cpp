@@ -44,17 +44,9 @@
 #include <signal.h>
 #endif
 
-/*This is not the right place to define path separators. Better to define "/" as the Yacas path separator,
-  and then to handle the actual mapping at the lowest level.
-  TODO remove as soon as I get this working under Windows
-#ifdef WIN32
-  #define PATH_SEPARATOR   '\\' 
-  #define PATH_SEPARATOR_2 "\\\\" // Yes, four! Escaped once by C, then in Yacas.
-#else
-*/
-  #define PATH_SEPARATOR   '/'
-  #define PATH_SEPARATOR_2 "/"
-//#endif
+// For all platforms, assume forward slash as path separator (handle at the lowest level).
+#define PATH_SEPARATOR   '/'
+#define PATH_SEPARATOR_2 "/"
 
 #include "plugins_available.h"
 #include "yacas.h"
@@ -79,11 +71,9 @@
 #include "arggetter.h"
 #include "archiver.h"
 
-//TODO time.h and errors.h are only needed for LispTime
+//time.h and errors.h are only needed for LispTime
 #include <time.h>
 #include "errors.h"
-
-//#include "anumber.h"
 
 
 #ifndef VERSION
@@ -120,7 +110,6 @@ CCommandLine *commandline = NULL;
 int use_stdin = 0;
 int use_plain = 0;
 int show_prompt = 1;
-int trace_history = 0;
 int use_texmacs_out = 0;
 int compiled_plugins = 1;
 
@@ -167,7 +156,6 @@ int server_port = 9734;
 
 char* execute_commnd = NULL;
 
-//TODO global!!!
 static LispBoolean busy=LispTrue;
 static LispBoolean restart=LispFalse;
 
@@ -1283,8 +1271,6 @@ int main(int argc, char** argv)
             if (!strcmp(argv[fileind],"--texmacs"))
             {
                 use_texmacs_out = 1;
-//                show_prompt=0;
-                trace_history=1;
                 use_plain = 1;
                 read_eval_print = NULL;
             }
@@ -1419,7 +1405,7 @@ int main(int argc, char** argv)
                 }
                 if (strchr(argv[fileind],'t'))
                 {
-                    trace_history=1;
+                  // Not sure what we should do with -t ... it used to be trace_history
                 }
                 if (strchr(argv[fileind],'d'))
                 {
@@ -1502,9 +1488,6 @@ int main(int argc, char** argv)
     else
         commandline = NEW FANCY_COMMAND_LINE;
 #endif
-
-
-    commandline->iTraceHistory = trace_history;
 
     LoadYacas();
 

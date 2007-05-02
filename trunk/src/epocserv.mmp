@@ -8,9 +8,6 @@ epocheapsize 1024000 3145728
 epocstacksize 800000
 
 USERINCLUDE    . .\plat\epoc32
-//TODO remove
-// We don't need this any more because the files in ramscripts were moved to src/ 
-// USERINCLUDE    ..\ramscripts
 SYSTEMINCLUDE  \epoc32\include \epoc32\include\libc
 
 SOURCE			EPOCSERV.CPP

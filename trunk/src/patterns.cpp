@@ -1,8 +1,4 @@
-/*TODO
- - some bugs left:
-   - - - a not working correctly...
- - make a RetractRule with a predicate as argument.
- */
+
 #include "yacasprivate.h"
 #include "yacasbase.h"
 #include "patterns.h"
@@ -12,13 +8,7 @@
 #include "lispeval.h"
 #include "standard.h"
 
-#define MATCH_NUMBERS
 
-
-//#define YACAS_LOGGING
-#include "log.h"
-/*
-*/
 
 #define InternalEval aEnvironment.iEvaluator->Eval
 
@@ -36,17 +26,6 @@ LispBoolean MatchAtom::ArgumentMatches(LispEnvironment& aEnvironment,
                                        LispPtr& aExpression,
                                        LispPtr* arguments)
 {
-    /*
-     LogPrintf("Enter match atom\n");
-    if (aExpression->String())
-        LogPrintf("Atom match %s to %s\n",
-                  iString->String(),aExpression->String()->c_str());
-    else
-    {
-        LogPrintf("trying to match atom to list\n");
-    }
-    */
-
     // If it is a floating point, don't even bother comparing
     if (!!aExpression)
       if (aExpression->Number(0))
@@ -88,14 +67,12 @@ LispBoolean MatchVariable::ArgumentMatches(LispEnvironment& aEnvironment,
     if (!arguments[iVarIndex])
     {
         arguments[iVarIndex] = (aExpression);
-//        LogPrintf("Set var %d\n",iVarIndex);
         return LispTrue;
     }
     else
     {
         if (InternalEquals(aEnvironment, aExpression, arguments[iVarIndex]))
         {
-//            LogPrintf("Matched var %d\n",iVarIndex);
             return LispTrue;
         }
         return LispFalse;
@@ -125,31 +102,26 @@ LispBoolean MatchSubList::ArgumentMatches(LispEnvironment& aEnvironment,
                                           LispPtr& aExpression,
                                           LispPtr* arguments)
 {
-    if (!aExpression->SubList())
-        return LispFalse;
+  if (!aExpression->SubList())
+    return LispFalse;
 
-    LispIterator iter(aExpression);
-#if 0
-	iter.GoSub();
-#else
-	LispObject * pObj = iter.getObj();
-    Check(pObj,KLispErrInvalidArg);
-    LispPtr * pPtr = pObj->SubList();
-    Check(pPtr,KLispErrNotList);
-	iter = *pPtr;
-#endif
+  LispIterator iter(aExpression);
+  LispObject * pObj = iter.getObj();
+  Check(pObj,KLispErrInvalidArg);
+  LispPtr * pPtr = pObj->SubList();
+  Check(pPtr,KLispErrNotList);
+  iter = *pPtr;
 
-    for (LispInt i=0;i<iNrMatchers;i++,++iter)
-	{
-		// TODO: woof -- fix this ugliness
-        if (!iter.getObj())
-            return LispFalse;
-        if (!iMatchers[i]->ArgumentMatches(aEnvironment,*iter,arguments))
-            return LispFalse;
+  for (LispInt i=0;i<iNrMatchers;i++,++iter)
+  {
+    if (!iter.getObj())
+      return LispFalse;
+    if (!iMatchers[i]->ArgumentMatches(aEnvironment,*iter,arguments))
+      return LispFalse;
 	}
-    if (iter.getObj())
-        return LispFalse;
-    return LispTrue;
+  if (iter.getObj())
+    return LispFalse;
+  return LispTrue;
 }
 
 LispInt YacasPatternPredicateBase::LookUp(LispString * aVariable)
@@ -171,12 +143,12 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
 {
     if (!aPattern)
         return NULL;
-#ifdef MATCH_NUMBERS
+
     if (aPattern->Number(aEnvironment.Precision()))
     {
         return NEW MatchNumber(aPattern->Number(aEnvironment.Precision()));
     }
-#endif
+
     // Deal with atoms
     if (aPattern->String())
     {
@@ -218,33 +190,16 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
                             third = (second->Nixed()->Copy());
                         }
 
-						// TODO: woof
-                        //LispChar * str = second->String()->c_str();
                         LispObject* last = third;
                         while (!!last->Nixed())
                             last = last->Nixed();
 
                         last->Nixed() = (LispAtom::New(aEnvironment,second->String()->c_str()));
 
-//                        third->Nixed() = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUp(str)));
                         LispPtr pred(LispSubList::New(third));
-#define LP pred
-
                         DBG_( third->Nixed()->SetFileAndLine(second->iFileName,second->iLine); )
-                        DBG_( LP->SetFileAndLine(head->iFileName,head->iLine); )
-//LispPtr hold(LP);
-//aEnvironment.CurrentPrinter().Print(LP,
-//                                    *aEnvironment.CurrentOutput());
-						#undef LP
-#if 0	// for testing
-						LispPtr src;
-						LispPtr dst;
-						ArrOpsCustom<LispPtr> opers;
-						opers.construct(&dst, &src);
-						const LispPtr aVal(src);
-						//opers.construct(&dst, &aVal);
-#endif
-						iPredicates.Append(pred);
+                        DBG_( pred->SetFileAndLine(head->iFileName,head->iLine); )
+                        iPredicates.Append(pred);
                     }
                     return NEW MatchVariable(index);
                 }

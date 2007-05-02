@@ -61,7 +61,7 @@ private:
     inline void SetString(LispChar * aString, LispBoolean aStringOwnedExternally);
 	void SetString(const LispChar * aString);
 public:
-	ReferenceCount iReferenceCount;	// TODO: woof
+	ReferenceCount iReferenceCount;
 };
 
 
@@ -72,36 +72,37 @@ public:
 class LispStringSmartPtr
 {
 public:
-	// Default constructor (not explicit, so it auto-initializes)
-    LispStringSmartPtr() : iString(0) {}
+  // Default constructor (not explicit, so it auto-initializes)
+  LispStringSmartPtr() : iString(0) {}
 
-	// Construct from pointer to LispString
-    //LispStringSmartPtr(LispString * aString) : iString(aString) {}
+  // Construct from pointer to LispString
+  //LispStringSmartPtr(LispString * aString) : iString(aString) {}
 
-	// Copy constructor
-	LispStringSmartPtr(const LispStringSmartPtr& aOther) : iString(aOther.iString) {}
+  // Copy constructor
+  LispStringSmartPtr(const LispStringSmartPtr& aOther) : iString(aOther.iString) {}
 
-	// Destructor
-	~LispStringSmartPtr();
+  // Destructor
+  ~LispStringSmartPtr();
 
-	// Assignment from pointer.  (PDG - new method)
-	// (we return void, not *this).
-	void operator=(LispString * aString);
+  // Assignment from pointer.  (PDG - new method)
+  // (we return void, not *this).
+  void operator=(LispString * aString);
 
 	// Assignment from another (the *default* simply assigns members, not what we want).
 	// (we return void, not *this).
-	void operator=(const LispStringSmartPtr &aOther)
-	{ this->operator=(aOther.iString); }
+  void operator=(const LispStringSmartPtr &aOther) { this->operator=(aOther.iString); }
 
-	// Expected pointer behavior.  (some unused are commented out).
-    operator LispString*()    const { return  iString; }	// implicit conversion to pointer to T
-    //LispString &operator*() const { return *iString; }	// so (*smartPtr) is a reference to T
-    LispString *operator->()  const { return  iString; }	// so (smartPtr->member) accesses T's member
-    //LispString *ptr()       const { return  iString; }	// so (smartPtr.ptr()) returns the pointer to T (boost calls this method 'get')
-    //bool operator!()        const { return !iString; }	// is null pointer
+  // Expected pointer behavior.  
+  operator LispString*()    const { return  iString; }	// implicit conversion to pointer to T
+  LispString *operator->()  const { return  iString; }	// so (smartPtr->member) accesses T's member
+  
+  // Operators below are not used yet, so they are commented out. If you want to use them you need to test if they work.
+  //LispString &operator*() const { return *iString; }	// so (*smartPtr) is a reference to T
+  //LispString *ptr()       const { return  iString; }	// so (smartPtr.ptr()) returns the pointer to T (boost calls this method 'get')
+  //bool operator!()        const { return !iString; }	// is null pointer
 
 private:
-    LispString * iString;
+  LispString * iString;
 };
 
 #include "lispstring.inl"

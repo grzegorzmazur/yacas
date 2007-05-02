@@ -71,7 +71,7 @@ protected:
 class CCommandLine : public YacasBase
 {
 public:
-    CCommandLine() : iHistoryUnchanged(0), iTraceHistory(0){};
+    CCommandLine() : iHistoryUnchanged(0){};
     virtual ~CCommandLine();
     /// Call this function if the user needs to enter an expression.
     virtual void ReadLine(LispChar * prompt);
@@ -106,8 +106,6 @@ protected:
 public:
     LispString iLine;
     LispString iSubLine;
-    //TODO should we remove all occurrences of iTraceHistory? Is any one using that?
-    LispInt iTraceHistory;
 
     CConsoleHistory iHistoryList;
 };

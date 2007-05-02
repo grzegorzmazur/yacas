@@ -70,67 +70,8 @@ public:
 
 private:
    T *m_ptr;
-
-#if 0	// Apparently makes "extern RefPtr<LispObject> graph; if (graph) ..." ambiguous.
-		// TODO: woof - Try adding an "operator bool()"?
-   // prevent application of delete
-   operator void*() const;
-#endif
-
-#if 0	// useful, but not (yet) needed
-public:
-	// Construct from pointer to Y
-	template<class Y>
-    explicit RefPtr(Y *ptr) : m_ptr(ptr)
-	{ if (ptr) ++ptr->iReferenceCount; }	// should use m_ptr
-
-	// Copy constructor from RefPtr<U>
-    template<class U>
-    explicit RefPtr(const RefPtr<U> &refPtr) : m_ptr(refPtr.ptr())
-	{ if (m_ptr) ++m_ptr->iReferenceCount; }
-
-	// Assignment from pointer to U
-	template<class U>
-    RefPtr &operator=(U *ptr)
-	{ if (ptr) ++ptr->iReferenceCount; if (m_ptr && !--m_ptr->iReferenceCount) delete m_ptr; m_ptr = ptr; return *this; }
-
-	// Assignment from a RefPtr<U>
-    template<class U>
-    RefPtr &operator=(const RefPtr<U> &refPtr)
-    { return this->operator=(refPtr.ptr()); }
-#endif
 };
 
-//------------------------------------------------------------------------------
-// RefCntMixin - Mixin that implements a reference count for RefPtr.
-// Thus, the reference counts are embedded in the pointee.
-// For example, declare your class:
-//		class MyClass : public RefCntMixin,PossibilySomeBaseClass {...};
-
-#if 0
-class RefCntMixin
-{
-public:
-    typedef ReferenceType value_type;
-    RefCntMixin() : m_count(0) {}
-    void IncreaseRefCount() { LISPASSERT(m_count<ReferenceMax); m_count++; }
-    value_type DecreaseRefCount() { return --m_count; }
-    value_type ReferenceCount() const { return m_count; }
-private:
-    value_type m_count;
-};
-#endif
-
-//------------------------------------------------------------------------------
-// A reference-counted Yacas object.
-
-#if 0
-class RefCountedObject : /*public RefCntMixin,*/ public YacasBase
-{
-public:
-	ReferenceCount iReferenceCount;
-};
-#endif
 
 #endif
 

@@ -454,16 +454,22 @@ void LispEnvironment::DefineRulePattern(LispString * aOperator,LispInt aArity,
 
 void LispEnvironment::SetCommand(YacasEvalCaller aEvaluatorFunc, LispChar * aString,LispInt aNrArgs,LispInt aFlags)
 {
-	DBG_({ extern long theNrDefinedBuiltIn; theNrDefinedBuiltIn++; })
-    YacasEvaluator eval(aEvaluatorFunc,aNrArgs,aFlags);
-	// TODO: woof -- LispTrue below?
-    CoreCommands().SetAssociation(eval,HashTable().LookUp(aString,LispTrue));
+  DBG_({ extern long theNrDefinedBuiltIn; theNrDefinedBuiltIn++; })
+  YacasEvaluator eval(aEvaluatorFunc,aNrArgs,aFlags);
+  /* LispTrue below, because the string is owned externally (meaning the LispString object does not have to free it).
+   * Essentially, the string is either already in the string table, or it is some static data in the executable. Either
+   * way, destruction later on is taken care of.
+   */
+  CoreCommands().SetAssociation(eval,HashTable().LookUp(aString,LispTrue));
 }
 
 void LispEnvironment::RemoveCoreCommand(LispChar * aString)
 {
-	// TODO: woof -- LispTrue below?
-    CoreCommands().Release(HashTable().LookUp(aString,LispTrue));
+  /* LispTrue below, because the string is owned externally (meaning the LispString object does not have to free it).
+   * Essentially, the string is either already in the string table, or it is some static data in the executable. Either
+   * way, destruction later on is taken care of.
+   */
+  CoreCommands().Release(HashTable().LookUp(aString,LispTrue));
 }
 
 void LispEnvironment::SetUserError(LispChar * aErrorString)
@@ -533,8 +539,15 @@ LispChar * LispEnvironment::ErrorString(LispInt aError)
     case KLispErrUserInterrupt:
         return "User interrupted calculation";
     case KLispErrUser:
-        if (theUserError) //TODO should always be true!
+        {
+          // There should be something seriously wrong if this error were raised but no string set for it...
+          LISPASSERT(theUserError != NULL);
+          // Defensive coding, fallthrough
+          if (theUserError)
             return theUserError;
+          else
+            return "Unspecified user error (this should never happen!)";
+        }
         break;
     case KLispErrNonBooleanPredicateInPattern:
         return "Predicate doesn't evaluate to a boolean in pattern";
