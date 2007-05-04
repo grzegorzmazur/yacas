@@ -1,10 +1,10 @@
-// EUSERV.CPP
-//
-// Copyright (c) 1997-1999 Symbian Ltd.  All rights reserved.
-//
+
+//TODO move to a separate platform-dependent directory?
 
 #include "epocclsv.h"
 #include "epocserv.h"
+
+#include <stdio.h> //stdio.h is needed to read the scripts.dat file, which is currently done through fopen/fread/fclose. Non-standard EPOC32, current maintainer should have a look at this.
 
 //BEGIN DEBUG
 //RFs fs;
