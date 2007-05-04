@@ -1,5 +1,6 @@
 // epocmain.CPP
 //
+// TODO we should move this file to a platform-dependent directory.
 // yacas console exe for EPOC32.
 //
 // files belonging to this distro:
@@ -8,7 +9,7 @@
 //
 // additionally: epocfileio.cpp and the plat/epoc32 dir
 //
-// TODO:
+// items to do (is some one still maintaining the EPOC32 version?):
 //   - arrayclass: constructing LispPtr array with initial value
 //     will not work on epoc gcc.
 //   - InternalFindFile for epoc.
@@ -18,7 +19,7 @@
 
 
 #include <e32cons.h>
-#include <stdio.h> //TODO keep this?
+#include <stdio.h> //stdio.h is needed to read the scripts.dat file, which is currently done through fopen/fread/fclose. It is not standard EPOC32, and should perhaps be removed.
 #include "yacas.h"
 #include "commandline.h"
 #include "standard.h"

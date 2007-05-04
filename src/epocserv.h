@@ -9,8 +9,6 @@
 #include "standard.h"
 #include <coeutils.h>
 
-#include <stdio.h> //TODO keep this?
-
 #define HAS_YACAS
 
 // needed for creating server thread.
