@@ -8,9 +8,11 @@
 // RefPtr - Smart pointer for (intrusive) reference counting.
 // Simply, an object's reference count is the number of RefPtrs refering to it.
 // The RefPtr will delete the referenced object when the count reaches zero.
-// Note that the pointee needn't use RefCntMixin (below), it merely needs to
-// behave like it does (i.e., RefPtr<T>::setPtr(T* ptr) compiles).
-// TODO: We could someday use boost::shared_pointer, but SO much machinery....
+
+/*TODO: this might be improved a little by having RefPtr wrap the object being 
+  pointed to so the user of RefPtr does not need to add ReferenceCount explicitly.
+  One can use RefPtr on any arbitrary object from that moment on.
+ */
 
 class ReferenceCount
 {
@@ -23,17 +25,11 @@ public:
    // pre-increment/decrement only
    ReferenceCount &operator++() { ++m_count; return *this; }
    ReferenceCount &operator--() { LISPASSERT(m_count > 0); --m_count; return *this; }
-   // testing
-   //BAD IDEA! operator bool() const { return !!m_count; }	// is non-zero
    bool operator!() const { return !m_count; }	// is zero
    operator int() const { return m_count; }
-   //operator int() const  { return m_count; }
-   //bool isShared() const { return m_count > 1; }
 private:
    ReferenceType m_count;
 };
-
-//#define NOIL inline /*__declspec(noinline)*/
 
 template<class T>
 class RefPtr : public YacasBase	// derived, so we can 'NEW LispPtr[nnn]'

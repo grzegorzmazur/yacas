@@ -316,10 +316,7 @@ void LispMathIsSmall(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
-  if(x->IsSmall())
-    InternalTrue(aEnvironment,RESULT);
-  else
-    InternalFalse(aEnvironment,RESULT);
+  InternalBoolean(aEnvironment, RESULT, x->IsSmall());
 }
 
 

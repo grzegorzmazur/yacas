@@ -34,7 +34,6 @@
   #define PlatReAlloc(orig,nr) PlatObReAlloc(orig,(size_t)nr)
   #define PlatFree(orig)       PlatObFree(orig)
   #define NEW new
-  #define CheckPtr( anAllocatedPtr, file, line ) woof
   #define CHECKPTR(ptr)
 #endif	// YACAS_DEBUG
 
@@ -44,10 +43,15 @@ inline T * PlatAllocN(LispInt aSize) { return (T*)PlatAlloc(aSize*sizeof(T)); }
 
 #ifdef YACAS_DEBUG	// goes almost to EOF
 
+/* Operators new and delete are only defined globally here in debug mode. This is because
+ * the global new and delete operators should not be used. So the debug version makes sure
+ * the executable crashes if one of these are called.
+ */
+
 #define NEW_THROWER throw ()//(std::bad_alloc)
 #define DELETE_THROWER throw ()
 
-// TODO: woof -- why doesn't MSC itself have this problem?
+// TODO: why doesn't MSC itself have this problem? Perhaps wrong signature of these new and delete operators?
 #if defined(_MSC_VER) && _MSC_VER <= 1310	// getting C4290 warnings?  slowly increase number.
 #pragma warning( disable : 4290 )	// C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
 #endif

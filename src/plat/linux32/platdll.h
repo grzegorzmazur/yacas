@@ -9,7 +9,7 @@ class LtDll : public LispDllBase
 {
 public:
     LtDll() : handle(NULL) {}
-    virtual ~LtDll();	// TODO: woof -- Holy-Moly!
+    virtual ~LtDll();
     virtual LispInt Open(LispChar * aDllFile,LispEnvironment& aEnvironment);
     virtual LispInt Close(LispEnvironment& aEnvironment);
 protected:

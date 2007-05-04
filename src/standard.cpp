@@ -48,29 +48,36 @@ LispBoolean InternalIsString(LispString * aOriginal)
 }
 
 
-// TODO: woof -- why not *return* a ?
+/* TODO: in documenting the choices made in the C++ engine, perhaps document why I pass objects that should contain the
+   result by reference. Result string passed in by reference to avoid copy-constructors etcetera (allowing
+   the code to share the same LispString in different places).
+ */
 void InternalUnstringify(LispString& aResult, LispString * aOriginal)
 {
-    Check(aOriginal,KLispErrInvalidArg);
-    Check((*aOriginal)[0] == '\"',KLispErrInvalidArg);
-    LispInt nrc = aOriginal->Size()-2;
-    Check((*aOriginal)[nrc] == '\"',KLispErrInvalidArg);
+  /*TODO: should these not be checked also higher up, and should this not be an assert at this level?
+   * ideally this function should be as efficient as possible (allowing for a code generator to generate
+   * compiled code that calls this function immediately. The compiler could prove that the input is valid,
+   * so the checks would not be needed here in a non-debug run).
+   *
+   * Also do not forget to make the change in the Java version then, and find the other places where this is relevant.
+   */
+  Check(aOriginal,KLispErrInvalidArg); 
+  Check((*aOriginal)[0] == '\"',KLispErrInvalidArg);
+  LispInt nrc = aOriginal->Size()-2;
+  Check((*aOriginal)[nrc] == '\"',KLispErrInvalidArg);
 
-    aResult.GrowTo(nrc);
-    //aResult.Resize(nrc);
-    for (LispInt i = 1; i < nrc; i++)
-        aResult[i-1] = (*aOriginal)[i];
-    aResult[nrc-1]='\0';
+  aResult.GrowTo(nrc);
+  for (LispInt i = 1; i < nrc; i++)
+    aResult[i-1] = (*aOriginal)[i];
+  aResult[nrc-1]='\0';
 }
 
-// TODO: woof
 void InternalStringify(LispString& aResult, LispString * aOriginal)
 {
     Check(aOriginal,KLispErrInvalidArg);
 
     LispInt nrc=aOriginal->Size()-1;
     aResult.GrowTo(nrc+3);
-    //aResult.Resize(nrc+3);
     LispInt i;
     aResult[0] = '\"';
     for (i=0;i<nrc;i++)
@@ -110,12 +117,12 @@ void InternalIntToAscii(LispChar * aTrg,LispInt aInt)
     }
 }
 
-// TODO: woof -- pass a LispString instead?
+// TODO: we should either pass the string by reference, or use an assert to check validity of input
 LispInt InternalAsciiToInt(LispString * aString)
 {
 	LispChar * ptr = aString->c_str();
-    Check(IsNumber(ptr,LispFalse),KLispErrInvalidArg);
-    return PlatAsciiToInt(ptr);
+  Check(IsNumber(ptr,LispFalse),KLispErrInvalidArg);
+  return PlatAsciiToInt(ptr);
 }
 
 LispBoolean IsNumber(const LispChar * ptr,LispBoolean aAllowFloat)

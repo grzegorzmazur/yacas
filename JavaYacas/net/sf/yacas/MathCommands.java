@@ -2184,14 +2184,7 @@ class MathCommands
     {
       LispPtr result = new LispPtr();
       result.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
-      if (result.Get().Number(aEnvironment.Precision()) == null)
-      {
-          LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
-      }
-      else
-      {
-          LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
-      }
+      LispStandard.InternalBoolean(aEnvironment,RESULT(aEnvironment, aStackTop), result.Get().Number(aEnvironment.Precision()) != null);
     }
   }
 
@@ -2207,13 +2200,9 @@ class MathCommands
       {
         LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
       }
-      else if (!num.IsInt())
-      {
-        LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
-      }
       else
       {
-        LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
+        LispStandard.InternalBoolean(aEnvironment,RESULT(aEnvironment, aStackTop), num.IsInt());
       }
     }
   }
@@ -2463,10 +2452,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
-      if(x.IsSmall())
-        LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
-      else
-        LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));      
+      LispStandard.InternalBoolean(aEnvironment,RESULT(aEnvironment, aStackTop), x.IsSmall());
     }
   }
 
@@ -3016,10 +3002,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispInFixOperator op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iBodiedOperators);
-      if (op != null)
-        LispStandard.InternalTrue( aEnvironment, RESULT(aEnvironment, aStackTop));
-      else
-        LispStandard.InternalFalse(aEnvironment, RESULT(aEnvironment, aStackTop));
+      LispStandard.InternalBoolean(aEnvironment,RESULT(aEnvironment, aStackTop), op != null);
     }
   }
 
@@ -3028,10 +3011,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispInFixOperator op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iInfixOperators);
-      if (op != null)
-        LispStandard.InternalTrue( aEnvironment, RESULT(aEnvironment, aStackTop));
-      else
-        LispStandard.InternalFalse(aEnvironment, RESULT(aEnvironment, aStackTop));
+      LispStandard.InternalBoolean(aEnvironment,RESULT(aEnvironment, aStackTop), op != null);
     }
   }
 
@@ -3040,10 +3020,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispInFixOperator op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iPrefixOperators);
-      if (op != null)
-        LispStandard.InternalTrue( aEnvironment, RESULT(aEnvironment, aStackTop));
-      else
-        LispStandard.InternalFalse(aEnvironment, RESULT(aEnvironment, aStackTop));
+      LispStandard.InternalBoolean(aEnvironment,RESULT(aEnvironment, aStackTop), op != null);
     }
   }
 
@@ -3052,10 +3029,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispInFixOperator op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iPostfixOperators);
-      if (op != null)
-        LispStandard.InternalTrue( aEnvironment, RESULT(aEnvironment, aStackTop));
-      else
-        LispStandard.InternalFalse(aEnvironment, RESULT(aEnvironment, aStackTop));
+      LispStandard.InternalBoolean(aEnvironment,RESULT(aEnvironment, aStackTop), op != null);
     }
   }
 
@@ -3229,11 +3203,7 @@ class MathCommands
     {
       LispPtr evaluated = new LispPtr();
       evaluated.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
-
-      if (evaluated.Get().Generic() != null)
-        LispStandard.InternalTrue( aEnvironment, RESULT(aEnvironment, aStackTop));
-      else
-        LispStandard.InternalFalse(aEnvironment, RESULT(aEnvironment, aStackTop));
+      LispStandard.InternalBoolean(aEnvironment,RESULT(aEnvironment, aStackTop), evaluated.Get().Generic() != null);
     }
   }
 
