@@ -66,7 +66,7 @@ REDO:
 
         LispString content;
 
-        content.GrowTo(next-i+1);
+        content.ResizeTo(next-i+1);
         {
             LispInt j;
             for (j=0;j<next-i;j++)

@@ -59,27 +59,6 @@ LispSubList* LispSubList::New(LispObject* aSubList)
     return self;
 }
 
-/*
-LispSubList::LispSubList(LispObject* aSubList)
-{
-    iSubList = (aSubList);
-}
-*/
-
-#if 0
-LispPtr* LispSubList::SubList()
-{
-    return &iSubList;
-}
-#endif
-
-#if 0
-LispString * LispSubList::String()
-{
-    return NULL;
-}
-#endif
-
 // A destructor for lists that is less taxing for stacks :-)
 // Eg. deleting a list deletes the entire sublist also, in
 // a tail-recursive way...

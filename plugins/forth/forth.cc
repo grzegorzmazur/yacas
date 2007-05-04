@@ -16,20 +16,20 @@ const ForthValue& ForthStack::Pop(void)
 	// works, but I don't like it.
 	// after the Resize, v might no longer reference the element?
     const ForthValue& v = elements()[Size()-1];
-    Resize(Size()-1);
+    ResizeTo(Size()-1);
     return v;
 }
 #else
 double ForthStack::PopDouble(void)
 {
 	double v = elements()[Size()-1].u.d;
-	Resize(Size()-1);
+	ResizeTo(Size()-1);
 	return v;
 }
 int ForthStack::PopInt(void)
 {
 	int v = elements()[Size()-1].u.i;
-	Resize(Size()-1);
+	ResizeTo(Size()-1);
 	return v;
 }
 #endif

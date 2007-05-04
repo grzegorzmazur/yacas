@@ -799,93 +799,82 @@ void LispXmlTokenizer(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispPtr out(ARGUMENT(1));
-    CHK_ISSTRING_CORE(out,1);
+  LispPtr out(ARGUMENT(1));
+  CHK_ISSTRING_CORE(out,1);
 
-    LispChar * str = out->String()->c_str();
-    str++;
-    if (str[0] != '<')
-    {
-        RESULT = (out);
-        return;
-    }
-    str++;
-#if 0
-    LispChar * type = "\"Open\"";
-    if (str[0] == '/')
-    {
-        type = "\"Close\"";
-        str++;
-    }
-#else
+  LispChar * str = out->String()->c_str();
+  str++;
+  if (str[0] != '<')
+  {
+    RESULT = (out);
+    return;
+  }
+  str++;
 	const LispChar * type = (str[0] == '/') ? (str++, "\"Close\"") : "\"Open\"";
-#endif
-    LispString tag;
-    tag.Resize(0);
+  LispString tag;
+  tag.ResizeTo(0);
 
-    tag.Append('\"');
+  tag.Append('\"');
+  while (IsAlpha(*str))
+  {
+    LispChar c = *str++;
+    if (c >= 'a' && c <= 'z')
+      c = c + ('A'-'a');
+    tag.Append(c);
+  }
+  tag.Append('\"');
+  tag.Append('\0');
+
+  LispObject* info = NULL;
+
+  while (*str == ' ') str++;
+  while (*str != '>' && *str != '/')
+  {
+    LispString name;
+    name.ResizeTo(0);
+    name.Append('\"');
+
     while (IsAlpha(*str))
     {
-        LispChar c = *str++;
-        if (c >= 'a' && c <= 'z')
-            c = c + ('A'-'a');
-        tag.Append(c);
+      LispChar c = *str++;
+      if (c >= 'a' && c <= 'z')
+        c = c + ('A'-'a');
+      name.Append(c);
     }
-    tag.Append('\"');
-    tag.Append('\0');
+    name.Append('\"');
+    name.Append('\0');
+    CHK_ARG_CORE(str[0] == '=',1);
+    str++;
+    CHK_ARG_CORE(str[0] == '\"',1);
+    LispString value;
+    value.ResizeTo(0);
+    value.Append(*str++);
+    while (*str != '\"')
+    {
+      value.Append(*str++);
+    }
+    value.Append(*str++);
+    value.Append('\0');
 
-    LispObject* info = NULL;
-
+    info =  LIST(LA(ATOML("List")) + LA(ATOML(name.c_str())) + LA(ATOML(value.c_str()))) + LA(info);
     while (*str == ' ') str++;
-    while (*str != '>' && *str != '/')
-    {
-        LispString name;
-        name.Resize(0);
-        name.Append('\"');
-
-        while (IsAlpha(*str))
-        {
-            LispChar c = *str++;
-            if (c >= 'a' && c <= 'z')
-                c = c + ('A'-'a');
-            name.Append(c);
-        }
-        name.Append('\"');
-        name.Append('\0');
-        CHK_ARG_CORE(str[0] == '=',1);
-        str++;
-        CHK_ARG_CORE(str[0] == '\"',1);
-        LispString value;
-        value.Resize(0);
-        value.Append(*str++);
-        while (*str != '\"')
-        {
-            value.Append(*str++);
-        }
-        value.Append(*str++);
-        value.Append('\0');
-//printf("[%s], [%s]\n",name.String(),value.String());
-        info =  LIST(LA(ATOML("List")) + LA(ATOML(name.c_str())) + LA(ATOML(value.c_str()))) + LA(info);
-        while (*str == ' ') str++;
-
-//printf("End is %c\n",str[0]);
-    }
-    if (*str == '/')
-    {
-      type = "\"OpenClose\"";
-      str++;
-      while (*str == ' ') str++;
-    }
-    
-    info = LIST(LA(ATOML("List")) + LA(info));
-    RESULT = (
-                LIST(
-                     LA(ATOML("XmlTag")) +
-                     LA(ATOML(tag.c_str())) +
-                     LA(info) +
-                     LA(ATOML(type))
-                    )
-               );
+  }
+  if (*str == '/')
+  {
+    type = "\"OpenClose\"";
+    str++;
+    while (*str == ' ') str++;
+  }
+  
+  info = LIST(LA(ATOML("List")) + LA(info));
+  RESULT = (
+              LIST(
+                   LA(ATOML("XmlTag")) +
+                   LA(ATOML(tag.c_str())) +
+                   LA(info) +
+                   LA(ATOML(type))
+                  )
+             );
 }
 
 

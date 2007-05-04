@@ -346,8 +346,7 @@ public:
 	public:
 		YacasArgStack(LispInt aStackSize) : iStack(),iStackCnt(0) 
 		{
-			iStack.GrowTo(aStackSize);
-			//printf("STACKSIZE %d\n",aStackSize);
+			iStack.ResizeTo( aStackSize );
 		}
 		inline LispInt GetStackTop() const {return iStackCnt;}
 		inline void RaiseStackOverflowError() const

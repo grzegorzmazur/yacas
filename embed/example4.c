@@ -68,7 +68,7 @@ int main(int argc, char** argv)
 // yacas_link_objects(pH,pT) == pH
 #define summand( s ) \
   { \
-    void* temp = s; /* so s is expanded nly once in this macro */ \ 
+    void* temp = s; /* so s is expanded nly once in this macro */ \
     if (!stuff_to_sum) { helper = stuff_to_sum = temp; } \
     else { yacas_link_objects(helper, temp); helper = temp; }; \
   }

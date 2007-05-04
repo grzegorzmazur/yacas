@@ -3,7 +3,7 @@
 #include "../config.h"
 #endif
 
-#if 0//HAVE_DLFCN_H
+#if 0//HAVE_DLFCN_H //TODO. is elfdll used at all still?
 
 
 #include <dlfcn.h>

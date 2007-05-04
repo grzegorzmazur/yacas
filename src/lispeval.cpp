@@ -422,7 +422,7 @@ void TracedEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
     if(aEnvironment.iDebugger->Stopped()) RaiseError("");
 
 REENTER:
-    errorStr.Resize(1); errorStr[0] = '\0';
+    errorStr.ResizeTo(1); errorStr[0] = '\0';
     LispTrap(aEnvironment.iDebugger->Enter(aEnvironment, aExpression),errorOutput,aEnvironment);
     if(aEnvironment.iDebugger->Stopped()) RaiseError("");
     if (errorStr[0])
@@ -432,7 +432,7 @@ REENTER:
 		goto REENTER;
 	}
 
-	errorStr.Resize(1); errorStr[0] = '\0';
+	errorStr.ResizeTo(1); errorStr[0] = '\0';
 	LispTrap(BasicEvaluator::Eval(aEnvironment, aResult, aExpression),errorOutput,aEnvironment);
 
 	if (errorStr[0])
