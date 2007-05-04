@@ -2,13 +2,8 @@
 
 
 
-#if 0
-#  define WordBaseTimesInt(a,n) BaseTimesInt(a,n,WordBase) 
-#  define WordBaseAdd(a,b)      BaseAdd(a,b,WordBase)
-#else
-#  define WordBaseTimesInt(a,n) BaseTimesInt(a,n) 
-#  define WordBaseAdd(a,b)      BaseAdd(a,b)
-#endif
+#define WordBaseTimesInt(a,n) BaseTimesInt(a,n) 
+#define WordBaseAdd(a,b)      BaseAdd(a,b)
 
 /* BaseTimesInt : multiply a with one digit in the range 0..(aBase-1)
  */
@@ -104,8 +99,8 @@ inline void GrowDigits(T& a,LispInt aDigits)
         a.Append(0);
 */
     LispInt origSize = a.Size();
-    a.GrowTo(aDigits);
-    //a.Resize(aDigits);
+    a.ResizeTo(aDigits);
+    //a.ResizeTo(aDigits);
     if (aDigits<=origSize)
         return;
     typename T::ElementType* ptr = &a[origSize];
@@ -268,7 +263,7 @@ inline void BaseIntNumber(T& aTarget, PlatSignedDoubleWord aNumber, PlatWord aBa
 	// Assume PlatDoubleWord is an integer type.
 	// Will maximum digit (i.e., aBase-1) convert to T::ElementType right?
     //LISPASSERT( (typename T::ElementType)(aBase) == (aBase) );	// use aBase instead, to help CTCE
-    aTarget.Resize(0);
+    aTarget.ResizeTo(0);
     while (aNumber != 0)
     {
         PlatDoubleWord digit = aNumber%aBase;
@@ -363,7 +358,7 @@ inline void WordBaseAddMultiply(T& aTarget, T& x, T& y)
 template<class T>
 inline void BaseMultiply(T& aTarget, T& x, T& y, PlatDoubleWord aBase)
 {
-    aTarget.Resize(1);
+    aTarget.ResizeTo(1);
     aTarget[0] = 0;
     BaseAddMultiply(aTarget, x, y, aBase);
 }
@@ -371,7 +366,7 @@ inline void BaseMultiply(T& aTarget, T& x, T& y, PlatDoubleWord aBase)
 template<class T>
 inline void WordBaseMultiply(T& aTarget, T& x, T& y)
 {
-    aTarget.Resize(1);
+    aTarget.ResizeTo(1);
     aTarget[0] = 0;
     WordBaseAddMultiply(aTarget, x, y);
 }
@@ -406,7 +401,7 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
     m = a1.Size()-n;
     LISPASSERT(m>=0);
 
-    aQuotient.GrowTo(m+1);
+    aQuotient.ResizeTo(m+1);
     
     //D1:
     //this calculates d = base/(a2[n-1]+1);
@@ -499,7 +494,7 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
     }
 
     //D8:
-    a1.Resize(n);
+    a1.ResizeTo(n);
     PlatDoubleWord carry;
     BaseDivideInt(a1, d, WordBase,carry);
     aRemainder.CopyFrom(a1);

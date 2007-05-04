@@ -155,7 +155,7 @@ void LispHashTable::AppendString(LispInt bin,LispString * result)
 {
     LispStringSmartPtr smartptr;
     int index = iHashTable[bin].Size();
-    iHashTable[bin].GrowTo(index+1);	// change to GrowBy sometime
+    iHashTable[bin].ResizeTo(index+1);	// change to GrowBy sometime
     iHashTable[bin][index] = result;
 	//m_isDirty = true;
 }
@@ -324,7 +324,7 @@ void LispHashTable::GarbageCollect()
 			// this should be cheaper than 'aBin[i]=NULL;aBin.Delete(i)'
 			aBin[i] = aBin[n-1];
 			aBin[n-1] = (NULL);
-            aBin.Resize(n-1);
+            aBin.ResizeTo(n-1);
             i--;
             n--;
         }

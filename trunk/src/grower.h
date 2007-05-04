@@ -105,17 +105,15 @@ template <class T, class TOps >
 class CArrayGrower : public YacasBase
 {
 public:
-    /** ElementType can be used outside this class as the type of the
-     * object in the array. This is useful in templated functions that
-     * work on a CArrayGrower without being part of CArrayGrower
-     */
-	typedef T value_type;	// almost the same, but T must be non-const
-
-	typedef LispInt size_type;
+  /** ElementType can be used outside this class as the type of the
+   * object in the array. This is useful in templated functions that
+   * work on a CArrayGrower without being part of CArrayGrower
+   */
+	typedef LispInt SizeType;
 	typedef T ElementType;
 
-    CArrayGrower()
-		: iArray(0)
+  CArrayGrower()
+	  : iArray(0)
 		, iSize(0)
 		, iCapacity(0)
 		, iArrayOwnedExternally(LispFalse)
@@ -129,57 +127,65 @@ public:
 	{
 		if (iSize)
 		{
-			const TOps opers; if(!opers.isPOD())
-			while (iSize) opers.destruct(iArray + --iSize);
+			const TOps opers; 
+      if(!opers.isPOD())
+			{
+        while (iSize) 
+        opers.destruct(iArray + --iSize);
+      }
 		}
-		if (!iArrayOwnedExternally) PlatFree(iArray);
+		if (!iArrayOwnedExternally) 
+    {
+      PlatFree(iArray);
+    }
 		iArray = 0;
 		iCapacity = iSize = 0;
 		iArrayOwnedExternally = LispFalse;
 	}
-    inline size_type Size() const { return iSize; }
-	inline void Resize(size_type aSize)
-	{
-		LISPASSERT(aSize<=iCapacity);
-		iSize = aSize;
-		// TODO: woof woof -- destruct or construct as necessary?
-		// How does this differ from GrowTo?
-	}
+    inline SizeType Size() const { return iSize; }
+
 protected:
-	void moreCapacity(size_type aSize, int g)	// almost independent of T
+	void moreCapacity(SizeType aSize, int g)	// almost independent of T
 	{
+		LISPASSERT(!iArrayOwnedExternally);
+    LISPASSERT(iCapacity >= 0);
 		// Compute a new iCapacity >= aSize, with iCapacity % g == 0.
 		// We assume g is a power of 2.  (fwiw, in two's-complement, ~(g-1) == -g.
 		iCapacity = (aSize + g) & ~(g-1);
 		if (!iArray)
-			iArray = (value_type*)PlatAlloc(iCapacity*sizeof(value_type));
+			iArray = (ElementType*)PlatAlloc(iCapacity*sizeof(ElementType));
 		else
 			// we assume 'memcpy' suffices for moving the existing items.
-			iArray = (value_type*)PlatReAlloc(iArray,iCapacity*sizeof(value_type));
+			iArray = (ElementType*)PlatReAlloc(iArray,iCapacity*sizeof(ElementType));
 	}
 public:
-	inline void GrowTo(size_type aSize)
+	inline void ResizeTo(SizeType aSize)
 	{
 		LISPASSERT(!iArrayOwnedExternally);
-//void ArrOps::resize(char** pArray, const ArrOps& opers, int& iSize, int& iCapacity, int aSize, int aItemSize, int ext)
 		TOps opers;
-		if (aSize > iCapacity) moreCapacity(aSize, opers.granularity());
+		if (aSize > iCapacity) 
+    {
+      moreCapacity(aSize, opers.granularity());
+    }
 		if (!opers.isPOD())
 		{
 			if (iSize < aSize)
-				for (int ii = iSize; ii < aSize; ii++)
-					opers.construct(iArray + ii);
+			{
+        for (int ii = iSize; ii < aSize; ii++)
+          opers.construct(iArray + ii);
+      }
 			else
-				for (int ii = aSize; ii < iSize; ii++)
-					opers.destruct(iArray + ii);
+      {
+        for (int ii = aSize; ii < iSize; ii++)
+          opers.destruct(iArray + ii);
+      }
 		}
 		iSize = aSize;
 	}
-    void Delete(size_type aIndex, size_type aCount=1)
+  void Delete(SizeType aIndex, SizeType aCount=1)
 	{
 		LISPASSERT(aIndex>=0 && aIndex<iSize);
-		// TODO: woof -- in-line this?
-		ArrOps::remove((char**)&iArray, TOps(), iSize, aIndex, aCount, sizeof(value_type));
+		ArrOps::remove((char**)&iArray, TOps(), iSize, aIndex, aCount, sizeof(ElementType));
 	}
 	inline LispBoolean ArrayOwnedExternally()
 	{
@@ -187,14 +193,7 @@ public:
 	}
 public:
     /// Access to an element in the array
-	/*
-    inline value_type& At(const size_type aIndex) const
-    {
-		LISPASSERT(aIndex>=0 && aIndex<iSize);
-		return iArray[aIndex];
-    }
-	*/
-    inline value_type& operator[](const size_type aIndex) const
+    inline ElementType& operator[](const SizeType aIndex) const
     {
 		return iArray[aIndex];
     }
@@ -204,32 +203,18 @@ public:
     inline void Append(const Type& aVal)
     {
 		if (iSize >= iCapacity) moreCapacity(iSize+1, TOps().granularity());
-		new ((void *)(iArray+iSize)) value_type(aVal);
+		new ((void *)(iArray+iSize)) ElementType(aVal);
 		++iSize;
 	}
 
-	// If s > t, then circular shift right:
-	//    x[t ... s] <-- { x[s], x[t ... s-1] }
-	// If s < t, then circular shift left:
-	//    x[s ... t] <-- { x[s+1 ... t], x[s] }
-    inline void Mooove(size_type aSrcIndex, size_type aTrgIndex)
-    {
-	    LISPASSERT(!iArrayOwnedExternally);
-		LISPASSERT(aSrcIndex>=0 && aSrcIndex<iSize && aTrgIndex>=0 && aTrgIndex<iSize );
-		if (aSrcIndex > aTrgIndex)
-			rotate(iArray[aTrgIndex], iArray[aTrgIndex+1], iArray[aSrcIndex+1]);
-		else
-			rotate(iArray[aSrcIndex], iArray[aTrgIndex-1], iArray[aTrgIndex+1]);
-    }
-
-    /// Insert object aObj at aIndex, aCount times.
-    inline void Insert(size_type aIndex, const value_type& aObj, size_type aCount=1)
+  /// Insert object aObj at aIndex, aCount times.
+  inline void Insert(SizeType aIndex, const ElementType& aObj, SizeType aCount=1)
 	{
-		const size_type oldItems = iSize;
+		const SizeType oldItems = iSize;
 		LISPASSERT(aIndex <= oldItems && aCount >= 0);
-		GrowTo(iSize+aCount);
-		value_type * pOld = iArray+oldItems;
-		value_type * pEnd = iArray+iSize;
+		ResizeTo(iSize+aCount);
+		ElementType * pOld = iArray+oldItems;
+		ElementType * pEnd = iArray+iSize;
 		int i = iSize - aIndex;	// = (oldItems - aIndex) + aCount
 		for ( ; i > aCount; i--)
 			*--pEnd = *--pOld;
@@ -237,34 +222,31 @@ public:
 			*--pEnd = aObj;
 	}
 
-    /** Set the array to an external array. This means the array will
-     * not be freed at destruction time
-     */
-    inline void SetExternalArray(value_type* aArray, size_type aSize)
+  /** Set the array to an external array. This means the array will
+    * not be freed at destruction time
+    */
+  inline void SetExternalArray(ElementType* aArray, SizeType aSize)
 	{
 		LISPASSERT(!iArray || iArrayOwnedExternally == LispTrue);
 		iArray = aArray;
 		iSize = aSize;
 		iArrayOwnedExternally = LispTrue;
-	  //iCapacity = 0;	// TODO: what are implications that this is missing?
+	  iCapacity = -10000;	// Setting iCapacity should not strictly be necessary, setting it to hugely negative number will hopefully force a fail.
 	}
 
     /// Copy the array to another array
-    inline void CopyToExternalArray(value_type * aArray)
+    inline void CopyToExternalArray(ElementType * aArray)
 	{
-		PlatMemCopy(aArray,iArray,iSize*sizeof(value_type));
+		PlatMemCopy(aArray,iArray,iSize*sizeof(ElementType));
 	}
 
 protected:
-	// TODO: should we remove, and just make iArray protected?
-	inline value_type * elements() const { return iArray; }
+  inline ElementType * elements() const { return iArray; }
 private:
-    value_type * iArray;
-  //size_type iItemSize;
-    size_type iSize;
-    size_type iCapacity;
-  //size_type iGranularity;
-    LispBoolean iArrayOwnedExternally;
+  ElementType * iArray;
+  SizeType iSize;
+  SizeType iCapacity;
+  LispBoolean iArrayOwnedExternally;
 };
 
 /** \class CDeletingArrayGrower calls delete on each element in the
@@ -277,7 +259,6 @@ class CDeletingArrayGrower : public CArrayGrower<T, TOps >
 {
 public:
 	CDeletingArrayGrower() {}
-	//~CDeletingArrayGrower() {}
 };
 
 #endif

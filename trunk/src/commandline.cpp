@@ -5,7 +5,7 @@
 //TODO maybe fix the assignment operator on String?
 static inline void CopyString(LispString& aTrg, LispString& aSrc)
 {
-  aTrg.Resize(0);
+  aTrg.ResizeTo(0);
   LispInt i;
   for (i=0;i<aSrc.Size();i++)
   {
@@ -22,7 +22,7 @@ CCommandLine::~CCommandLine()
 
 void CCommandLine::GetHistory(LispInt aLine)
 {
-    iSubLine.Resize(0);
+    iSubLine.ResizeTo(0);
     LispInt i;
     LispString * line = iHistoryList.GetLine(aLine);
     for (i=0;i<line->Size();i++)
@@ -37,10 +37,10 @@ void CCommandLine::MaxHistoryLinesSaved(LispInt aNrLines)
 
 void CCommandLine::ReadLine(LispChar * prompt)
 {
-    iLine.Resize(0);
+    iLine.ResizeTo(0);
 
 NEXTLINE:
-    iSubLine.Resize(1);
+    iSubLine.ResizeTo(1);
     iSubLine[0] = '\0';
     ReadLineSub(prompt);
 
@@ -52,7 +52,7 @@ NEXTLINE:
         if (nr>0)
             if (iSubLine[nr-1] == '\\')
             {
-                iLine.Resize(iLine.Size()-1);
+                iLine.ResizeTo(iLine.Size()-1);
                 goto NEXTLINE;
             }
     }
@@ -131,7 +131,7 @@ void CCommandLine::ReadLineSub(LispChar * prompt)
             iHistoryUnchanged = 1;
             break;
         case eEscape:
-            iSubLine.Resize(1);
+            iSubLine.ResizeTo(1);
             iSubLine[0] = '\0';
             cursor = iSubLine.Size()-1;
             iFullLineDirty = 1;

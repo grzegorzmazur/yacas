@@ -66,7 +66,7 @@ void InternalUnstringify(LispString& aResult, LispString * aOriginal)
   LispInt nrc = aOriginal->Size()-2;
   Check((*aOriginal)[nrc] == '\"',KLispErrInvalidArg);
 
-  aResult.GrowTo(nrc);
+  aResult.ResizeTo(nrc);
   for (LispInt i = 1; i < nrc; i++)
     aResult[i-1] = (*aOriginal)[i];
   aResult[nrc-1]='\0';
@@ -77,7 +77,7 @@ void InternalStringify(LispString& aResult, LispString * aOriginal)
     Check(aOriginal,KLispErrInvalidArg);
 
     LispInt nrc=aOriginal->Size()-1;
-    aResult.GrowTo(nrc+3);
+    aResult.ResizeTo(nrc+3);
     LispInt i;
     aResult[0] = '\"';
     for (i=0;i<nrc;i++)
@@ -569,7 +569,7 @@ void PrintExpression(LispString& aResult, LispPtr& aExpression,
                      LispEnvironment& aEnvironment,
                      LispInt aMaxChars)
 {
-    aResult.Resize(0);
+    aResult.ResizeTo(0);
     aResult.Append('\0');
     StringOutput newOutput(aResult);
     InfixPrinter infixprinter(aEnvironment.PreFix(),
@@ -583,7 +583,7 @@ void PrintExpression(LispString& aResult, LispPtr& aExpression,
         aResult[aMaxChars-2] = '.';
         aResult[aMaxChars-1] = '.';
         aResult[aMaxChars] = '\0';
-        aResult.Resize(aMaxChars+1);
+        aResult.ResizeTo(aMaxChars+1);
     }
 }
 

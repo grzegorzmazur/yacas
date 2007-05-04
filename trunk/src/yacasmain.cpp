@@ -1127,7 +1127,7 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
    #ifdef YACAS_DEBUG
                                printf("In> %s\n",finalbuffer);
    #endif
-                               outStrings.Resize(1);
+                               outStrings.ResizeTo(1);
                                outStrings[0] = '\0';
                                used_clients[clsockindex]->Evaluate(finalbuffer);
                                free(finalbuffer);

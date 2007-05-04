@@ -23,7 +23,7 @@ void LispCleanup::Pop()
 
 void LispCleanup::Delete()
 {
-    iObjects.Resize(0);
+    iObjects.ResizeTo(0);
 }
 
 void LispCleanup::CheckStackEmpty()
@@ -38,7 +38,7 @@ void DeletingLispCleanup::Push(LispBase& aObject)
 
 void DeletingLispCleanup::Pop()
 {
-    iObjects.Resize(iObjects.Size()-1);
+    iObjects.ResizeTo(iObjects.Size()-1);
 }
 
 void DeletingLispCleanup::Delete()
@@ -48,7 +48,7 @@ void DeletingLispCleanup::Delete()
     {
         iObjects[i]->Delete();
     }
-    iObjects.Resize(0);
+    iObjects.ResizeTo(0);
 }
 
 

@@ -38,51 +38,51 @@ InputStatus::~InputStatus()
 StdFileInput::StdFileInput(FILE* aFile,InputStatus& aStatus)
     : LispInput(aStatus)
 {
-    iFile = aFile;
+  iFile = aFile;
 }
 StdFileInput::StdFileInput(LispLocalFile& aFile,InputStatus& aStatus)
     : LispInput(aStatus)
 {
-    iFile = aFile.iFile;
+  iFile = aFile.iFile;
 }
 
 
 
 LispChar StdFileInput::Next()
 {
-    LispChar c;
-    c=fgetc(iFile);
-    if (c == '\n')
-        iStatus.NextLine();
-    return c;
+  LispChar c;
+  c=fgetc(iFile);
+  if (c == '\n')
+    iStatus.NextLine();
+  return c;
 }
 
 LispChar StdFileInput::Peek() 
 {
-    LispChar c = fgetc(iFile);
-    ungetc(c,iFile);
-    return c;
+  LispChar c = fgetc(iFile);
+  ungetc(c,iFile);
+  return c;
 }
  
 void StdFileInput::Rewind()
 {
-    fseek(iFile,0,SEEK_SET);
+  fseek(iFile,0,SEEK_SET);
 }
 
 LispBoolean StdFileInput::EndOfStream() 
 {
-    return feof(iFile);
+  return feof(iFile);
 }
 
 LispChar * StdFileInput::StartPtr()
 {
-    LISPASSERT(0);
-    return NULL;
+  LISPASSERT(0);
+  return NULL;
 }
 LispInt StdFileInput::Position()
 {
     LISPASSERT(0);
-    return 0;
+  return 0;
 }
 
 void StdFileInput::SetPosition(LispInt aPosition)
@@ -242,15 +242,15 @@ LispLocalFile::LispLocalFile(LispEnvironment& aEnvironment,
 //aRead is for opening in read mode (otherwise opened in write mode)
 LispLocalFile::~LispLocalFile()
 {
-    SAFEPOP(iEnvironment);
-    Delete();
+  SAFEPOP(iEnvironment);
+  Delete();
 }
 
 void LispLocalFile::Delete()
 {
-    if (iFile)
-        fclose(iFile);
-    iFile = NULL;
+  if (iFile)
+    fclose(iFile);
+  iFile = NULL;
 }
 
 
@@ -259,50 +259,48 @@ void LispLocalFile::Delete()
 CachedStdUserInput::CachedStdUserInput(InputStatus& aStatus) :
 StdUserInput(aStatus)
 {
-//printf("CachedStdUserInput:construct\n");
-    Rewind();
+  Rewind();
 }
 LispChar CachedStdUserInput::Next()
 {
-//printf("CachedStdUserInput:Next\n");
-    LispChar c = Peek();
-    iCurrentPos++;
-    printf("%c",c);
-    return c;
+  LispChar c = Peek();
+  iCurrentPos++;
+  printf("%c",c);
+  return c;
 }
 
 LispChar CachedStdUserInput::Peek()
 {
-    if (iCurrentPos == iBuffer.Size())
-    {
-        iBuffer.Append(fgetc(iFile));
-    }
-    return iBuffer[iCurrentPos];
+  if (iCurrentPos == iBuffer.Size())
+  {
+    iBuffer.Append(fgetc(iFile));
+  }
+  return iBuffer[iCurrentPos];
 }
 
 LispBoolean CachedStdUserInput::EndOfStream()
 {
-    return LispFalse;
+  return LispFalse;
 }
 
 void CachedStdUserInput::Rewind()
 {
-    // Make sure there is a buffer to point to.
-    iBuffer.GrowTo(10);
-    iBuffer.Resize(0);
-    iCurrentPos=0;
+  // Make sure there is a buffer to point to.
+  iBuffer.ResizeTo(10);
+  iBuffer.ResizeTo(0);
+  iCurrentPos=0;
 }
 
 LispChar * CachedStdUserInput::StartPtr()
 {
-    if (iBuffer.Size() == 0)
-        Peek();
-    return &iBuffer[0];
+  if (iBuffer.Size() == 0)
+    Peek();
+  return &iBuffer[0];
 }
 
 LispInt CachedStdUserInput::Position()
 {
-    return iCurrentPos;
+  return iCurrentPos;
 }
 
 

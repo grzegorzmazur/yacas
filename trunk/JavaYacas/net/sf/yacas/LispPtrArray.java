@@ -17,11 +17,7 @@ class LispPtrArray
       iArray[i].Set(aInitialItem);
     }
   }
-  void GrowTo(int aNewSize)
-	{
-	  //TODO FIXME
-	}
-    public int Size()
+  public int Size()
 	{
 	  return iSize;
 	}
@@ -33,6 +29,6 @@ class LispPtrArray
 	{
 	  iArray[aItem].Set(aObject);
 	}
-    int iSize;
-    LispPtr iArray[];
+  int iSize;
+  LispPtr iArray[];
 }

@@ -275,8 +275,9 @@ void LispList(LispEnvironment& aEnvironment, LispInt aStackTop)
   {
     LispPtr evaluated;
     InternalEval(aEnvironment,evaluated,*iter);
-	// (*tail++) = (evaluated)	// WRONG!
-    (*tail) = (evaluated); ++tail;
+	// Ideally this would work, but it does not yet: (*tail++) = (evaluated)
+    (*tail) = (evaluated); 
+    ++tail;
   }
   RESULT = (LispSubList::New(all));
 }
@@ -298,35 +299,30 @@ void LispConcatenate(LispEnvironment& aEnvironment, LispInt aStackTop)
   RESULT = (LispSubList::New(all));
 }
 
-static void ConcatenateStrings(LispStringSmartPtr& aSmartPtr, LispEnvironment& aEnvironment, LispInt aStackTop)
+static void ConcatenateStrings(LispStringSmartPtr& aResult, LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-	// TODO: woof woof woof -- why are we passed a SmartPtr?  and why by reference?
-	if (aSmartPtr)  { LISPASSERT(aSmartPtr); }
-	if (!aSmartPtr) { LISPASSERT(aSmartPtr); }
-    aSmartPtr->Resize(0);
-    aSmartPtr->Append('\"');
-/*
-{
-LispString res;
-PrintExpression(res, ARGUMENT(1),aEnvironment,100);
-printf("%s\n",res.String());
-}
-*/
+	/* aResult passed in by reference to avoid over-application of copy-constructors, smart pointer so the result
+   * gets cleaned up automatically afterwards. aResult acts like a string buffer we can append substrings to.
+   */
+  LISPASSERT(aResult);
+  aResult->ResizeTo(0);
+  aResult->Append('\"');
+
 	LispIterator iter(*ARGUMENT(1)->SubList());
-    for (LispInt arg=1; (++iter).getObj(); arg++)
-    {
-        CHK_ISSTRING_CORE(*iter,arg);
-		// TODO: woof --- PDG -- Ooh!  Is this ugly!
-        LispInt length = iter.getObj()->String()->Size()-2;
-        LispChar * ptr = iter.getObj()->String()->c_str();
-		LispString * str = aSmartPtr;		// TODO: ugly
-        LispInt curlen = str->Size();
-        str->GrowTo(curlen+length-1);
-		LispChar * put = &(*str)[curlen-1];	// TODO: woof
+  LispInt arg;
+  for (arg=1; (++iter).getObj(); arg++)
+  {
+    CHK_ISSTRING_CORE(*iter,arg);
+    LispInt length = iter.getObj()->String()->Size()-2;
+    LispChar * ptr = iter.getObj()->String()->c_str();
+		LispString * str = aResult;
+    LispInt curlen = str->Size();
+    str->ResizeTo(curlen+length-1);
+		LispChar * put = &(*str)[curlen-1];
 		PlatMemCopy(put+1,ptr+1,length-1);
-    }
-    aSmartPtr->Append('\"');
-    aSmartPtr->Append('\0');
+  }
+  aResult->Append('\"');
+  aResult->Append('\0');
 }
 
 void LispConcatenateStrings(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1244,7 +1240,7 @@ void LispTrapError(LispEnvironment& aEnvironment,LispInt aStackTop)
   if (aEnvironment.iError[0])
   {
     InternalEval(aEnvironment, RESULT, ARGUMENT(2));
-    aEnvironment.iError.Resize(1);
+    aEnvironment.iError.ResizeTo(1);
     aEnvironment.iError[0]='\0';
   }
 }
@@ -1741,7 +1737,7 @@ void LispStringMid(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispInt count = InternalAsciiToInt(index->String());
     
     LispString str;
-    str.Resize(0);
+    str.ResizeTo(0);
     str.Append('\"');
     LispInt i;
     CHK_CORE(from+count<orig->Size()-1, KLispErrInvalidArg);
@@ -1830,31 +1826,25 @@ void GenPatternCreate(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void GenPatternMatches(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    LispPtr pattern(ARGUMENT(1));
-    GenericClass *gen = pattern->Generic();
-    DYNCAST(PatternClass,"\"Pattern\"",patclass,gen)
-    CHK_ARG_CORE(patclass,1);
+  LispPtr pattern(ARGUMENT(1));
+  GenericClass *gen = pattern->Generic();
+  DYNCAST(PatternClass,"\"Pattern\"",patclass,gen)
+  CHK_ARG_CORE(patclass,1);
 
-    LispPtr list(ARGUMENT(2));
+  LispPtr list(ARGUMENT(2));
 
-    LispIterator iter(list);
-#if 0 
-    CHK_ARG_CORE(iter.getObj(),2);
-    CHK_ARG_CORE(iter.getObj()->SubList(),2);
-    iter.GoSub();
-#else
+  LispIterator iter(list);
 	LispObject * pObj = iter.getObj();
-    CHK_ARG_CORE(pObj,2);	// Check(pObj,KLispErrInvalidArg);
-    LispPtr * pPtr = pObj->SubList();
-    CHK_ARG_CORE(pPtr,2);	// Check(pPtr,KLispErrNotList);
+  CHK_ARG_CORE(pObj,2);
+  LispPtr * pPtr = pObj->SubList();
+  CHK_ARG_CORE(pPtr,2);
 	iter = *pPtr;
-#endif
 	CHK_ARG_CORE(iter.getObj(),2);
-    ++iter;
+  ++iter;
 
-    CHK_ARG_CORE(iter.getObj(),2);
-    LispBoolean matches = patclass->Matches(aEnvironment,*iter);
-    InternalBoolean(aEnvironment,RESULT,matches);
+  CHK_ARG_CORE(iter.getObj(),2);
+  LispBoolean matches = patclass->Matches(aEnvironment,*iter);
+  InternalBoolean(aEnvironment,RESULT,matches);
 }
 
 void LispRuleBaseDefined(LispEnvironment& aEnvironment,LispInt aStackTop)

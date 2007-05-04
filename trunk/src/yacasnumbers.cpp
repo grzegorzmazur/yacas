@@ -806,7 +806,7 @@ void BigNumber::BitAnd(const BigNumber& aX, const BigNumber& aY)
     min=max;
     max=swap;
   }
-  iNumber->GrowTo(min);
+  iNumber->ResizeTo(min);
   LispInt i;
   for (i=0;i<min;i++)	(*iNumber)[i] = (*aX.iNumber)[i] & (*aY.iNumber)[i];
 }
@@ -821,7 +821,7 @@ void BigNumber::BitOr(const BigNumber& aX, const BigNumber& aY)
     max=swap;
   }
 
-  iNumber->GrowTo(max);
+  iNumber->ResizeTo(max);
 
   LispInt i;
   for (i=0;i<min;i++)		(*iNumber)[i] = (*aX.iNumber)[i] | (*aY.iNumber)[i];
@@ -839,7 +839,7 @@ void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
     max=swap;
   }
   
-  iNumber->GrowTo(max);
+  iNumber->ResizeTo(max);
 
   LispInt i;
   for (i=0;i<min;i++)	(*iNumber)[i] = (*aX.iNumber)[i] ^ (*aY.iNumber)[i];
@@ -851,7 +851,7 @@ void BigNumber::BitNot(const BigNumber& aX)
 {// FIXME?
   LispInt len=(*aX.iNumber).Size();
   
-  iNumber->GrowTo(len);
+  iNumber->ResizeTo(len);
 
   LispInt i;
   for (i=0;i<len;i++)	(*iNumber)[i] = ~((*aX.iNumber)[i]);

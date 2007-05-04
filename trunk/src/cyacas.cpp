@@ -71,7 +71,7 @@ void yacas_eval(char* expression)
 {
     if (yacas)
     {
-        stringout->Resize(0);
+        stringout->ResizeTo(0);
         stringout->Append('\0');
         yacas->Evaluate(expression);
     }

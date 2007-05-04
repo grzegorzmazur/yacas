@@ -115,7 +115,7 @@ ANumber::ANumber(const LispChar * aString,LispInt aPrecision,LispInt aBase): ASu
 void IntToBaseString(LispString& aString,PlatDoubleWord aInt, LispInt aBase)
 {
     // Build the string
-    aString.Resize(0);
+    aString.ResizeTo(0);
     LispInt i=0;
     while (aInt!=0)
     {
@@ -182,7 +182,7 @@ LispInt WordDigits(LispInt aPrecision, LispInt aBase)
 
 void ANumber::SetTo(const LispChar * aString,LispInt aBase)
 {
-    Resize(0);
+    ResizeTo(0);
     
     LISPASSERT(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
     LISPASSERT(aBase<=36);
@@ -283,8 +283,8 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
             //TODO!!! This is probably not the good way to copy!
             {
                 LispInt nrc=fraction.Size();
-                copied.GrowTo(nrc);
-              //copied.Resize(nrc);	// not needed -- GrowTo does this
+                copied.ResizeTo(nrc);
+              //copied.ResizeTo(nrc);	// not needed -- ResizeTo does this
                 PlatMemCopy(&copied[0],  &fraction[0], nrc*sizeof(LispString::ElementType));
             }
             BaseMultiply(fraction, copied, base, aBase);
@@ -299,7 +299,7 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
                     factor = factor*aBase;
                 }
             }
-            fraction.Resize(nr);
+            fraction.ResizeTo(nr);
             Insert(0,word);
             iExp++;
         }
@@ -328,8 +328,8 @@ void ANumber::CopyFrom(const ANumber& aOther)
     iTensExp   = aOther.iTensExp;
     iNegative  = aOther.iNegative;
     iPrecision = aOther.iPrecision;
-    GrowTo(aOther.Size());
-    //Resize(aOther.Size());	// not needed -- GrowTo does this
+    ResizeTo(aOther.Size());
+    //ResizeTo(aOther.Size());	// not needed -- ResizeTo does this
 
     //TODO there HAS to be a faster way to copy...
     LispInt nr = aOther.Size();
@@ -346,8 +346,8 @@ void ANumber::CopyFrom(const ANumber& aOther)
     }
     else
     {
-      GrowTo(1);
-      //Resize(1);
+      ResizeTo(1);
+      //ResizeTo(1);
       (*this)[0] = 0;
     }
 }
@@ -408,14 +408,14 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
     {
         end--;
     }
-    a1.Resize(end);
+    a1.ResizeTo(end);
 
     end=a2.Size();
     while (end>1 && a2[end-1]==0)
     {
         end--;
     }
-    a2.Resize(end);
+    a2.ResizeTo(end);
 
     // Multiply
     BaseMultiplyFull(aResult,a1,a2);
@@ -676,7 +676,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, Lisp
 {
     LispInt nr = aNumber.Size();
     while (nr>1 && aNumber[nr-1] == 0) nr--;
-    aNumber.Resize(nr);
+    aNumber.ResizeTo(nr);
 
     LispInt tensExp = aNumber.iTensExp;
 
@@ -721,7 +721,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, Lisp
 
         LISPASSERT(aBase<=36);
         // Reset number
-        aResult.Resize(0);
+        aResult.ResizeTo(0);
         aResult.Append(0);
 
         // Create the number
@@ -746,7 +746,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, Lisp
 
             {
                 LispInt nr = factor2.Size();
-                term.GrowTo(nr);
+                term.ResizeTo(nr);
                 LispInt j;
                 LispString::ElementType * fptr = &factor2[0];
                 LispString::ElementType * tptr = &term[0];
@@ -761,7 +761,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, Lisp
         //Remove trailing zeroes (most significant side)
         nr = aResult.Size();
         while (nr>1 && aResult[nr-1] == 0) nr--;
-        aResult.Resize(nr);
+        aResult.ResizeTo(nr);
 
         // swap order of the digits, and map to ascii
         {
@@ -777,7 +777,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, Lisp
         // Get the fraction
         while(number.Size()<number.iExp)
             number.Append(0);
-        number.Resize(number.iExp);
+        number.ResizeTo(number.iExp);
         if (aForceFloat || (number.iExp > 0 && !IsZero(number)))
         {
             LispInt digitPos = aResult.Size();
@@ -790,7 +790,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, Lisp
                 if (number.Size() > number.iExp)
                 {
                     aResult.Append((LispChar)(number[number.iExp]));
-                    number.Resize(number.iExp);
+                    number.ResizeTo(number.iExp);
                 }
                 else
                 {
@@ -816,7 +816,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, Lisp
                     digitPos++;
                 }
             }
-            aResult.Resize(aResult.Size()-1);
+            aResult.ResizeTo(aResult.Size()-1);
             // Insert dot
             LispChar c='.';
             aResult.Insert(digitPos,c);
@@ -829,7 +829,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, Lisp
             }
             if (aResult[nr-1] == '.' && nr == 2 && aResult[0] == 0)
                 nr--;
-            aResult.Resize(nr);
+            aResult.ResizeTo(nr);
         }
 
         // Map to ascii
@@ -1174,7 +1174,7 @@ void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a
     m = a1.Size()-n;
     LISPASSERT(m>=0);
 
-    aQuotient.GrowTo(m+1);
+    aQuotient.ResizeTo(m+1);
     
     //D1:
     PlatDoubleWord d = WordBase/(a2[n-1]+1);
@@ -1264,7 +1264,7 @@ void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a
     }
 
     //D8:
-    a1.Resize(n);
+    a1.ResizeTo(n);
     PlatDoubleWord carry;
     BaseDivideInt(a1, d, WordBase,carry);
     aRemainder.CopyFrom(a1);
@@ -1281,7 +1281,7 @@ void IntegerDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber
 //    printf("1: n=%d\n",n);
 
     while (a2[n-1] == 0) n--;
-    a2.Resize(n);
+    a2.ResizeTo(n);
 
 //    printf("1: n=%d\n",n);
 
@@ -1297,7 +1297,7 @@ void IntegerDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber
 //        printf("aQuotient.iExp = %d\n",aQuotient.iExp);
 
         BaseDivideInt(aQuotient,a2[0], WordBase, carry);
-        aRemainder.Resize(1);
+        aRemainder.ResizeTo(1);
         aRemainder[0] = (PlatWord)carry;
 
         /*
@@ -1319,7 +1319,7 @@ void IntegerDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber
     {
         aQuotient.iExp = 0;
         aQuotient.iTensExp = 0;
-        aQuotient.Resize(1);
+        aQuotient.ResizeTo(1);
         aQuotient[0] = 0;
         aRemainder.CopyFrom(a1);
     }
@@ -1362,7 +1362,7 @@ void NormalizeFloat(ANumber& a2, LispInt digitsNeeded)
     PlatDoubleWord carry = 0;
     BaseDivideInt(a2, 10, WordBase,carry);
     if (a2[a2.Size()-1] == 0)
-      a2.Resize(a2.Size()-1);
+      a2.ResizeTo(a2.Size()-1);
     a2.iTensExp++;
   }
 }
@@ -1630,7 +1630,7 @@ void ANumber::DropTrailZeroes()
   {
     LispInt nr=Size();
     while (nr>iExp+1 && (*this)[nr-1] == 0) nr--;
-    Resize(nr);
+    ResizeTo(nr);
   }
   {
     LispInt low=0;
