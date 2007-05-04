@@ -2,41 +2,39 @@
 #define __yacasbase_h__
 #include "yacasprivate.h"
 
-#define MY_ALLOCS
-
-#define STA static
+/* /class YacasBase. All other objects should derive from YacasBase so that they use the correct
+ * operators new and delete. 
+ */
 
 class YacasBase
 {
 public:
-    inline YacasBase() {};
-    inline ~YacasBase() {};
-#ifdef MY_ALLOCS
+  inline YacasBase() {};
 #ifdef YACAS_DEBUG
-    STA inline void* operator new(size_t size, char* aFile, int aLine)
-		{ return YacasMallocPrivate(size,aFile,aLine); }
-    STA inline void* operator new[](size_t size, char* aFile, int aLine)
-		{ return YacasMallocPrivate(size,aFile,aLine); }
-#if NEED_FUNNY_operator_delete || defined(_MSC_VER)	// TODO: woof woof woof
-    STA inline void operator delete(void* object, char* aFile, int aLine)
-		{ YacasFreePrivate(object); }
-    STA inline void operator delete[](void* object, char* aFile, int aLine)
-		{ YacasFreePrivate(object); }
-#endif
+  // New operators with additional debug arguments need to be handled differently
+  static inline void* operator new(size_t size, char* aFile, int aLine)
+    { return YacasMallocPrivate(size,aFile,aLine); }
+  static inline void* operator new[](size_t size, char* aFile, int aLine)
+    { return YacasMallocPrivate(size,aFile,aLine); }
 #else
-    STA inline void* operator new(size_t size)
-		{ return PlatAlloc(size); }
-    STA inline void* operator new[](size_t size)
-		{ return PlatAlloc(size); }
-#endif	// endif -- here, or two lines down? -- TODO: woof
-    STA inline void operator delete(void* object)
-		{ PlatFree(object); }
-    STA inline void operator delete[](void* object)
-		{ PlatFree(object); }
+  // Normal versions of operator new
+  static inline void* operator new(size_t size)
+    { return PlatAlloc(size); }
+  static inline void* operator new[](size_t size)
+    { return PlatAlloc(size); }
 #endif
+  /* Operators delete are shared, they behave the same whether in debug or release (as
+     PlatFree is mapped to the debug version of freeing memory any way)
+   */
+  static inline void operator delete(void* object)
+    { PlatFree(object); }
+  static inline void operator delete[](void* object)
+    { PlatFree(object); }
 	// Placement form of new and delete.
-	STA inline void* operator new(size_t, void* where) { return where; }
-	STA inline void operator delete(void*, void*) {}
+  static inline void* operator new(size_t, void* where) { return where; }
+  static inline void operator delete(void*, void*) {}
+protected: // Since other objects are derived from this one and I don't want to force vtables, one is not allowed to call the destructor of this class directly.
+  inline ~YacasBase() {};
 };
 
 #endif

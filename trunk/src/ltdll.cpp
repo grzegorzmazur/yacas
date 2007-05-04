@@ -74,43 +74,37 @@ LispInt LtDll::Close(LispEnvironment& aEnvironment)
 
 LtDll::~LtDll()
 {
-//    const char* err;
-
-    if (handle)
+  if (handle)
+  {
+    LISPASSERT(iPlugin == NULL);
+/*TODO FIXME: We want to unload the DLL, but before we can do so, we must destruct all the objects created by the DLL. Need to check this on a platform that uses ltdll.
+    const char* err;
+    if (lt_dlclose((lt_dlhandle)handle) != 0)
     {
-        LISPASSERT(iPlugin == NULL);
-/*        
-        FIXME: We want to unload the DLL, but before we can do so, we must
-               destruct all the objects created by the DLL.
-
-	if (lt_dlclose((lt_dlhandle)handle) != 0)
-    	{
-    	    err = lt_dlerror();
-    	    if (err) printf("LtDll::~LtDll: lt_dlclose says %s\n",err);
-    	}
-*/
+      err = lt_dlerror();
+      if (err) printf("LtDll::~LtDll: lt_dlclose says %s\n",err);
     }
-    handle = NULL;
+*/
+  }
+  handle = NULL;
 }
 
 LispPluginBase* LtDll::GetPlugin(LispChar * aDllFile)
 {
-    const char* err;
+  const char* err;
 
-    LISPASSERT(handle != NULL);
-    LispPluginBase* (*maker)(void);
-    char buf[1024];
-    //TODO potential buffer overflow!
-
-    sprintf(buf,"make_%s",aDllFile);
-    maker = (LispPluginBase*(*)(void))lt_dlsym((lt_dlhandle)handle,buf);
-
-//    maker = (LispPluginBase*(*)(void))lt_dlsym((lt_dlhandle)handle,"maker");
-    if (!maker)
-    {
-        err = lt_dlerror();
-	if (err) printf("LtDll::OpenGetPlugin: lt_dlsym says %s\n",err);
-    }
-    /* lt_dlexit(); */
-    return maker();
+  LISPASSERT(handle != NULL);
+  LispPluginBase* (*maker)(void);
+  char buf[1024];
+  //TODO potential buffer overflow!
+  sprintf(buf,"make_%s",aDllFile);
+  maker = (LispPluginBase*(*)(void))lt_dlsym((lt_dlhandle)handle,buf);
+  if (!maker)
+  {
+      err = lt_dlerror();
+      if (err) 
+        printf("LtDll::OpenGetPlugin: lt_dlsym says %s\n",err);
+  }
+  return maker();
 }
+

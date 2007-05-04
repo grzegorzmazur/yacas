@@ -192,7 +192,6 @@ public:
 
 protected:
   /// List of arguments, with corresponding \c iHold property.
-  //TODO woof
   CArrayGrower<BranchParameter, ArrOpsPOD<BranchParameter> > iParameters;
 
   /// List of rules, sorted on precedence.

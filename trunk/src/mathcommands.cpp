@@ -972,35 +972,23 @@ void LispIsAtom(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispIsNumber(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    LispPtr result(ARGUMENT(1));
-
-    if (!result->Number(aEnvironment.Precision()))
-    {
-        InternalFalse(aEnvironment,RESULT);
-    }
-    else
-    {
-        InternalTrue(aEnvironment,RESULT);
-    }
+  LispPtr result(ARGUMENT(1));
+  InternalBoolean(aEnvironment, RESULT, result->Number(aEnvironment.Precision()) != NULL);
 }
 
 void LispIsInteger(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    LispPtr result(ARGUMENT(1));
+  LispPtr result(ARGUMENT(1));
 
-    RefPtr<BigNumber> num ; num = result->Number(aEnvironment.Precision());
-    if (!num)
-    {
-        InternalFalse(aEnvironment,RESULT);
-    }
-    else if (!num->IsInt())
-    {
-        InternalFalse(aEnvironment,RESULT);
-    }
-    else
-    {
-        InternalTrue(aEnvironment,RESULT);
-    }
+  RefPtr<BigNumber> num ; num = result->Number(aEnvironment.Precision());
+  if (!num)
+  {
+    InternalFalse(aEnvironment,RESULT);
+  }
+  else
+  {
+    InternalBoolean(aEnvironment, RESULT, num->IsInt());
+  }
 }
 
 void LispIsList(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -1278,14 +1266,7 @@ void LispSystemCall(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 // we would like to pass the exit code back to Yacas. Right now, let's pass True/False according to whether the exit code is 0 or not.
 #ifdef SystemCall
-	if(SystemCall(command.c_str()) == 0)
-	{	
-    InternalTrue(aEnvironment,RESULT);
-	}
-	else
-	{
-    InternalFalse(aEnvironment,RESULT);
-	}
+  InternalBoolean(aEnvironment, RESULT, SystemCall(command.c_str()) == 0);
 #else
   InternalFalse(aEnvironment,RESULT);
 #endif
@@ -1400,50 +1381,47 @@ static LispInFixOperator* OperatorInfo(LispEnvironment& aEnvironment,LispInt aSt
 
 void LispIsInFix(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispInFixOperator* op = OperatorInfo(aEnvironment,
-                                         aStackTop,
-                                         aEnvironment.InFix());
-    if (op)
-        InternalTrue( aEnvironment, RESULT);
-    else
-        InternalFalse(aEnvironment, RESULT);
+  LispInFixOperator* op = OperatorInfo(aEnvironment,
+                                       aStackTop,
+                                       aEnvironment.InFix());
+  InternalBoolean(aEnvironment, RESULT, op != NULL);
 }
 
 void LispIsBodied(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispInFixOperator* op = OperatorInfo(aEnvironment,
-                                         aStackTop,
-                                         aEnvironment.Bodied());
-    if (op)
-        InternalTrue( aEnvironment, RESULT);
-    else
-        InternalFalse(aEnvironment, RESULT);
+  LispInFixOperator* op = OperatorInfo(aEnvironment,
+                                       aStackTop,
+                                       aEnvironment.Bodied());
+  InternalBoolean(aEnvironment, RESULT, op != NULL);
 }
 
 void LispGetPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispInFixOperator* op = OperatorInfo(aEnvironment,
-                                         aStackTop,
-                                         aEnvironment.InFix());
-    if (!op) {	// also need to check for a postfix or prefix operator
-	    op = OperatorInfo(aEnvironment,
+  LispInFixOperator* op = OperatorInfo(aEnvironment,
+                                       aStackTop,
+                                       aEnvironment.InFix());
+  if (!op) 
+  {	// also need to check for a postfix or prefix operator
+    op = OperatorInfo(aEnvironment,
+                      aStackTop,
+                      aEnvironment.PreFix());
+    if (!op) 
+    {
+      op = OperatorInfo(aEnvironment,
+                        aStackTop,
+                        aEnvironment.PostFix());
+	    if (!op) 
+      {	// or maybe it's a bodied function
+        op = OperatorInfo(aEnvironment,
                           aStackTop,
-                          aEnvironment.PreFix());
-        if (!op) {
-			op = OperatorInfo(aEnvironment,
-                              aStackTop,
-                              aEnvironment.PostFix());
-	        if (!op) {	// or maybe it's a bodied function
-				op = OperatorInfo(aEnvironment,
-                              aStackTop,
-                              aEnvironment.Bodied());
-    	 		CHK_CORE(op!=NULL, KLispErrIsNotInFix);
+                          aEnvironment.Bodied());
+        CHK_CORE(op!=NULL, KLispErrIsNotInFix);
 			}
 		}
 	}
-    LispChar buf[30];
-    InternalIntToAscii(buf, op->iPrecedence);
-    RESULT = (LispAtom::New(aEnvironment,buf));
+  LispChar buf[30];
+  InternalIntToAscii(buf, op->iPrecedence);
+  RESULT = (LispAtom::New(aEnvironment,buf));
 }
 
 void LispGetLeftPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1487,24 +1465,19 @@ void LispGetRightPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispIsPreFix(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispInFixOperator* op = OperatorInfo(aEnvironment,
+  LispInFixOperator* op = OperatorInfo(aEnvironment,
                                          aStackTop,
                                          aEnvironment.PreFix());
-    if (op)	// TODO: woof -- collapse ALL these InternalTrue/InternalFalse calls
-        InternalTrue( aEnvironment, RESULT);
-    else
-        InternalFalse(aEnvironment, RESULT);
+  InternalBoolean(aEnvironment, RESULT, op != NULL);
 }
 
 void LispIsPostFix(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispInFixOperator* op = OperatorInfo(aEnvironment,
-                                         aStackTop,
-                                         aEnvironment.PostFix());
-    if (op)
-        InternalTrue( aEnvironment, RESULT);
-    else
-        InternalFalse(aEnvironment, RESULT);
+  LispInFixOperator* op = OperatorInfo(aEnvironment,
+                                       aStackTop,
+                                       aEnvironment.PostFix());
+
+  InternalBoolean(aEnvironment, RESULT, op != NULL);
 }
 
 void LispGetPrecision(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1564,12 +1537,9 @@ void LispFindFile(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispIsGeneric(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    LispPtr evaluated(ARGUMENT(1));
+  LispPtr evaluated(ARGUMENT(1));
 
-    if (evaluated->Generic())
-        InternalTrue( aEnvironment, RESULT);
-    else
-        InternalFalse(aEnvironment, RESULT);
+  InternalBoolean(aEnvironment, RESULT, evaluated->Generic() != NULL);
 }
 
 void LispGenericTypeName(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -1631,23 +1601,23 @@ void GenArrayGet(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void GenArraySet(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    LispPtr evaluated(ARGUMENT(1));
+  LispPtr evaluated(ARGUMENT(1));
 
-    GenericClass *gen = evaluated->Generic();
-    DYNCAST(ArrayClass,"\"Array\"",arr,gen)
-    CHK_ARG_CORE(arr,1);
-    LispPtr sizearg(ARGUMENT(2));
+  GenericClass *gen = evaluated->Generic();
+  DYNCAST(ArrayClass,"\"Array\"",arr,gen)
+  CHK_ARG_CORE(arr,1);
+  LispPtr sizearg(ARGUMENT(2));
 
-    CHK_ARG_CORE(sizearg, 2);
-    CHK_ARG_CORE(sizearg->String(), 2);
+  CHK_ARG_CORE(sizearg, 2);
+  CHK_ARG_CORE(sizearg->String(), 2);
 
-    LispInt size = InternalAsciiToInt(sizearg->String());
+  LispInt size = InternalAsciiToInt(sizearg->String());
 
-    CHK_ARG_CORE(size>0 && size<=arr->Size(),2);
-    LispPtr obj(ARGUMENT(3));
-    arr->SetElement(size,obj);
+  CHK_ARG_CORE(size>0 && size<=arr->Size(),2);
+  LispPtr obj(ARGUMENT(3));
+  arr->SetElement(size,obj);
 
-    InternalTrue( aEnvironment, RESULT);
+  InternalTrue( aEnvironment, RESULT);
 }
 
 void LispCustomEval(LispEnvironment& aEnvironment,LispInt aStackTop)

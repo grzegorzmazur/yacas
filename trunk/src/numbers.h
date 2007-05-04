@@ -69,7 +69,7 @@ template<class T> inline T DIST(T x, T y) { return (x>=y+DIST_BITS || y>=x+DIST_
 class BigNumber : public YacasBase
 {
 public:
-	ReferenceCount iReferenceCount;	// TODO: woof
+	ReferenceCount iReferenceCount;
 public: //constructors
   BigNumber(const LispChar * aString,LispInt aPrecision,LispInt aBase=10);
 /// copy constructor
