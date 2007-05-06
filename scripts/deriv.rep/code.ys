@@ -61,7 +61,10 @@ HoldArg("D",aFunc);
 2 # (Deriv(_var)Tanh(_x)) <-- (Deriv(var)x)*Sech(x)^2;
 
 2 # (Deriv(_var)Exp(_x)) <--  (Deriv(var)x)*Exp(x);
-2 # (Deriv(_var)(_x / _y)) <--
+
+// When dividing by a constant, this is faster
+2 # (Deriv(_var)(_x / _y))_(IsFreeOf(var,y)) <-- (Deriv(var) x) / y;
+3 # (Deriv(_var)(_x / _y)) <--
     (y* (Deriv(var) x) - x* (Deriv(var) y))/ (y^2);
 
 2 # (Deriv(_var)Ln(_x)) <-- ((Deriv(var) x) / x);
