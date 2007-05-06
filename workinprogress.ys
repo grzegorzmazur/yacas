@@ -1,0 +1,35 @@
+
+
+/* Wick contraction: in a list of even number of elements {a,b,c,...} return all possible combinations of grouping 
+ * two elements. Example:
+ * 
+ * In> WickContract({1,2,3,4})
+ * Out> {{{1,4},{2,3}},{{1,3},{2,4}},{{1,2},{3,4}}}
+ *
+ * In general, if there are 2*n elements in the input list, then the output list contains (2*n-1)!! items, which is (2*n-1)*(2*n-3)*...*3*1.
+ * 
+ * Wick contraction is used in the context of quantum field theory.
+ * 
+ * The function defined below works recursively. It takes the first element of the list passed in, and combines it with every other element
+ * in the list, one at a time, removing both items from the list and doing a Wick contraction on the remaining list, combining the results afterwards. 
+ * 
+ */
+LocalSymbols(WickThread) [ // WichThread is a local macro 
+
+Macro(WickThread,{item}) {first,second}:(@item);
+
+10 # WickContract({}) <-- {};
+20 # WickContract(list_IsList)_(Length(list) = 2) <-- {{list}};
+30 # WickContract(list_IsList)_(IsEven(Length(list))) <--
+[
+  Local(first,second,i,result);
+  {result,first,list} := {{},Head(list),Tail(list)};
+  For(i:=1,i<=Length(list),i++)
+  [
+    second:=list[i];
+    result:=Concat(MapSingle(WickThread,WickContract(Delete(list,i))),result);
+  ];
+  result;
+];
+
+]; // end of accessibility to local symbol WickThread
