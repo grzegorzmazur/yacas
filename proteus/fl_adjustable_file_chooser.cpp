@@ -1,5 +1,5 @@
 //
-// "$Id: fl_adjustable_file_chooser.cpp,v 1.4 2006-03-26 12:49:13 ayalpinkus Exp $"
+// "$Id: fl_adjustable_file_chooser.cpp,v 1.5 2007-05-15 10:28:58 ayalpinkus Exp $"
 //
 // File chooser widget for the Fast Light Tool Kit (FLTK).
 //
@@ -23,7 +23,7 @@
 // Please report all bugs and problems to "fltk-bugs@easysw.com".
 //
 
-//#include <config.h> //TODO
+
   #define HAVE_DIRENT_H 1
 
 #if defined(WIN32)
@@ -680,5 +680,5 @@ char* fl_adjustable_file_chooser(const char* message, const char* pat, const cha
 }
 
 //
-// End of "$Id: fl_adjustable_file_chooser.cpp,v 1.4 2006-03-26 12:49:13 ayalpinkus Exp $".
+// End of "$Id: fl_adjustable_file_chooser.cpp,v 1.5 2007-05-15 10:28:58 ayalpinkus Exp $".
 //

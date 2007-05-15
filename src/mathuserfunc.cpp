@@ -308,30 +308,32 @@ LispInt ListedBranchingUserFunction::IsArity(LispInt aArity) const
 void ListedBranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
                                            LispPtr& aArguments)
 {
-    LispPtr newArgs;
-    LispIterator iter(aArguments);
-    LispPtr* ptr =  &newArgs;
-    LispInt arity = Arity();
-	// TODO: woof -- still crummy (ptr)
-    for (LispInt i = 0; i < arity && iter.getObj(); i++,++iter)
-    {
-        (*ptr) = (iter.getObj()->Copy());
-        ptr = &((*ptr)->Nixed());
-    }
+  LispPtr newArgs;
+  LispIterator iter(aArguments);
+  LispPtr* ptr =  &newArgs;
+  LispInt arity = Arity();
+	// Make a copy of the arguments first
+  // TODO: if we were to change the internal representation to a cons cell, this copying would not be needed
+  LispInt i;
+  for (i = 0; i < arity && iter.getObj(); i++,++iter)
+  {
+    (*ptr) = (iter.getObj()->Copy());
+    ptr = &((*ptr)->Nixed());
+  }
 	if (!iter.getObj()->Nixed())
-    {
-        (*ptr) = (iter.getObj()->Copy());
-        ptr = &((*ptr)->Nixed());
-        ++iter;
-        LISPASSERT(!iter.getObj());
-    }
-    else
-    {
-        LispPtr head(aEnvironment.iList->Copy());
-        head->Nixed() = (iter.getObj());
-        (*ptr) = (LispSubList::New(head));
-    }
-    BranchingUserFunction::Evaluate(aResult, aEnvironment, newArgs);
+  {
+    (*ptr) = (iter.getObj()->Copy());
+    ptr = &((*ptr)->Nixed());
+    ++iter;
+    LISPASSERT(!iter.getObj());
+  }
+  else
+  {
+    LispPtr head(aEnvironment.iList->Copy());
+    head->Nixed() = (iter.getObj());
+    (*ptr) = (LispSubList::New(head));
+  }
+  BranchingUserFunction::Evaluate(aResult, aEnvironment, newArgs);
 }
 
 MacroUserFunction::MacroUserFunction(LispPtr& aParameters)
@@ -349,128 +351,124 @@ MacroUserFunction::MacroUserFunction(LispPtr& aParameters)
 void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
               LispPtr& aArguments)
 {
-    LispInt arity = Arity();
-    LispInt i;
+  LispInt arity = Arity();
+  LispInt i;
 
-    //hier
-    if (Traced())
+  if (Traced())
+  {
+    LispPtr tr(LispSubList::New(aArguments));
+    TraceShowEnter(aEnvironment,tr);
+    tr = (NULL);
+  }
+
+  LispIterator iter(aArguments);
+  ++iter;
+
+  // unrollable arguments 
+  LispPtr* arguments;
+  if (arity==0)
+    arguments = NULL;
+  else
+  {
+    LISPASSERT(arity>0);
+    arguments = NEW LispPtr[arity];
+  }
+  LocalArgs args(arguments);
+
+  // Walk over all arguments, evaluating them as necessary
+  for (i=0;i<arity;i++,++iter)
+  {
+    Check(iter.getObj(), KLispErrWrongNumberOfArgs);
+    if (iParameters[i].iHold)
     {
-        LispPtr tr(LispSubList::New(aArguments));
-        TraceShowEnter(aEnvironment,tr);
-        tr = (NULL);
+      arguments[i] = (iter.getObj()->Copy());
     }
-
-    LispIterator iter(aArguments);
-    ++iter;
-
-    // unrollable arguments 
-    LispPtr* arguments;
-    if (arity==0)
-        arguments = NULL;
     else
     {
-        LISPASSERT(arity>0);
-        arguments = NEW LispPtr[arity];
+      InternalEval(aEnvironment, arguments[i], *iter);
     }
-    LocalArgs args(arguments);
-
-    // Walk over all arguments, evaluating them as necessary
-    for (i=0;i<arity;i++,++iter)
-    {
-        Check(iter.getObj(), KLispErrWrongNumberOfArgs);
-        if (iParameters[i].iHold)
-        {
-            arguments[i] = (iter.getObj()->Copy());
-        }
-        else
-        {
-            //Check(iter.getObj(), KLispErrWrongNumberOfArgs);	// checked above
-            InternalEval(aEnvironment, arguments[i], *iter);
-        }
 	}
 
-    if (Traced())
+  if (Traced())
+  {
+    LispIterator iter(aArguments);
+		// TODO: ideally we would only need an iterator here
+    ++iter;
+    for (i=0;i<arity;i++)
     {
-        LispIterator iter(aArguments);
-		// TODO: woof -- still ugly
-        ++iter;
-        for (i=0;i<arity;i++)
-        {
-            TraceShowArg(aEnvironment,*iter,arguments[i]);
-            ++iter;
-        }
+      TraceShowArg(aEnvironment,*iter,arguments[i]);
+      ++iter;
+    }
+  }
+
+  LispPtr substedBody;
+  {
+    // declare a new local stack.
+    LispLocalFrame frame(aEnvironment,LispFalse);
+
+    // define the local variables.
+    for (i=0;i<arity;i++)
+    {
+      LispString * variable = iParameters[i].iParameter;
+      // set the variable to the new value
+      aEnvironment.NewLocal(variable,arguments[i]);
     }
 
-    LispPtr substedBody;
+    // walk the rules database, returning the evaluated result if the
+    // predicate is LispTrue.
+    LispInt nrRules = iRules.Size();
+    UserStackInformation &st = aEnvironment.iEvaluator->StackInformation();
+    for (i=0;i<nrRules;i++)
     {
-      // declare a new local stack.
-      LispLocalFrame frame(aEnvironment,LispFalse);
-  
-      // define the local variables.
-      for (i=0;i<arity;i++)
-      {
-          LispString * variable = iParameters[i].iParameter;
-          // set the variable to the new value
-          aEnvironment.NewLocal(variable,arguments[i]);
-      }
-  
-      // walk the rules database, returning the evaluated result if the
-      // predicate is LispTrue.
-      LispInt nrRules = iRules.Size();
-      UserStackInformation &st = aEnvironment.iEvaluator->StackInformation();
-      for (i=0;i<nrRules;i++)
-      {
-          BranchRuleBase* thisRule = iRules[i];
-          CHECKPTR(thisRule);
-          LISPASSERT(thisRule);
-  
-          st.iRulePrecedence = thisRule->Precedence();
-          LispBoolean matches = thisRule->Matches(aEnvironment, arguments);
-          if (matches)
-          {
-              st.iSide = 1;
+      BranchRuleBase* thisRule = iRules[i];
+      CHECKPTR(thisRule);
+      LISPASSERT(thisRule);
 
-              BackQuoteBehaviour behaviour(aEnvironment);
-              InternalSubstitute(substedBody, thisRule->Body(), behaviour);
-//              InternalEval(aEnvironment, aResult, thisRule->Body());
-              break;
-          }
-  
-          // If rules got inserted, walk back
-          while (thisRule != iRules[i] && i>0) i--;
+      st.iRulePrecedence = thisRule->Precedence();
+      LispBoolean matches = thisRule->Matches(aEnvironment, arguments);
+      if (matches)
+      {
+        st.iSide = 1;
+
+        BackQuoteBehaviour behaviour(aEnvironment);
+        InternalSubstitute(substedBody, thisRule->Body(), behaviour);
+        break;
       }
+  
+      // If rules got inserted, walk back
+      while (thisRule != iRules[i] && i>0) i--;
     }
+  }
 
-    if (!!substedBody)
+  if (!!substedBody)
+  {
+    InternalEval(aEnvironment, aResult, substedBody);
+  }
+  else
+  // No predicate was LispTrue: return a new expression with the evaluated
+  // arguments.
+  {
+    LispPtr full(aArguments->Copy());
+    if (arity == 0)
     {
-        InternalEval(aEnvironment, aResult, substedBody);
+      full->Nixed() = (NULL);
     }
     else
-    // No predicate was LispTrue: return a new expression with the evaluated
-    // arguments.
     {
-        LispPtr full(aArguments->Copy());
-        if (arity == 0)
-        {
-            full->Nixed() = (NULL);
-        }
-        else
-        {
-            full->Nixed() = (arguments[0]);
-            for (i=0;i<arity-1;i++)
-            {
-                arguments[i]->Nixed() = (arguments[i+1]);
-            }
-        }
-        aResult = (LispSubList::New(full));
+      full->Nixed() = (arguments[0]);
+      for (i=0;i<arity-1;i++)
+      {
+        arguments[i]->Nixed() = (arguments[i+1]);
+      }
     }
-//FINISH:
-    if (Traced())
-    {
-        LispPtr tr(LispSubList::New(aArguments));
-        TraceShowLeave(aEnvironment, aResult,tr);
-        tr = (NULL);
-    }
+    aResult = (LispSubList::New(full));
+  }
+  if (Traced())
+  {
+    LispPtr tr(LispSubList::New(aArguments));
+    TraceShowLeave(aEnvironment, aResult,tr);
+    tr = (NULL);
+  }
 }
 
 ListedMacroUserFunction::ListedMacroUserFunction(LispPtr& aParameters)
@@ -486,32 +484,32 @@ LispInt ListedMacroUserFunction::IsArity(LispInt aArity) const
 void ListedMacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
               LispPtr& aArguments)
 {
-    LispPtr newArgs;
-    LispIterator iter(aArguments);
-    LispPtr* ptr =  &newArgs;
-    LispInt arity = Arity();
-    LispInt i=0;
-	// TODO: woof -- fix this ugliness!
-    while (i < arity && iter.getObj())
-    {
-        (*ptr) = (iter.getObj()->Copy());
-        ptr = &((*ptr)->Nixed());
-        i++;
-        ++iter;
-    }
-    if (!iter.getObj()->Nixed())
-    {
-        (*ptr) = (iter.getObj()->Copy());
-        ptr = &((*ptr)->Nixed());
-        i++;
-        ++iter;
-        LISPASSERT(!iter.getObj());
-    }
-    else
-    {
-        LispPtr head(aEnvironment.iList->Copy());
-        head->Nixed() = (iter.getObj());
-        (*ptr) = (LispSubList::New(head));
-    }
-    MacroUserFunction::Evaluate(aResult, aEnvironment, newArgs);
+  LispPtr newArgs;
+  LispIterator iter(aArguments);
+  LispPtr* ptr =  &newArgs;
+  LispInt arity = Arity();
+  LispInt i=0;
+	// TODO: the code would look a lot easier if we could do with only an iterator
+  while (i < arity && iter.getObj())
+  {
+    (*ptr) = (iter.getObj()->Copy());
+    ptr = &((*ptr)->Nixed());
+    i++;
+    ++iter;
+  }
+  if (!iter.getObj()->Nixed())
+  {
+    (*ptr) = (iter.getObj()->Copy());
+    ptr = &((*ptr)->Nixed());
+    i++;
+    ++iter;
+    LISPASSERT(!iter.getObj());
+  }
+  else
+  {
+    LispPtr head(aEnvironment.iList->Copy());
+    head->Nixed() = (iter.getObj());
+    (*ptr) = (LispSubList::New(head));
+  }
+  MacroUserFunction::Evaluate(aResult, aEnvironment, newArgs);
 }

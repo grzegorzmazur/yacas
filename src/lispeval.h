@@ -83,8 +83,9 @@ public:
   /// \note The result of this operation must be a unique (copied)
   /// element! Eg. its Next might be set... 
   ///
+  /// The LispPtr it can be stored in to is passed in as argument, so it 
+  /// does not need to be constructed by the calling environment.
   virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
-  // TODO: woof - change above to *return* the LispPtr! (or a LispObject*)
 };
 
 class TracedEvaluator : public BasicEvaluator
