@@ -239,39 +239,11 @@ LocalSymbols(intpred)
   intpred := 50;
   IntFunc(_vr,_from,_to) <--
   [
-    `((@intpred) # IntegrateMultiplicative(_var,@from,_dummy1,_dummy2)_MatchLinear(var,@vr) <-- (@to)/a);
+    `((@intpred) # IntegrateMultiplicative(_var,@from,_dummy1,_dummy2)_MatchLinear(var,@vr) <-- (@to)/Matched'a());
     intpred++;
   ];
 ];
 
-/** MatchPureSquared(variable,expression) - matches expressions
- *  of the form a*x^2+b.
- */
-10 # MatchPureSquared(var_IsAtom,_sign2,_sign0,expr_CanBeUni(var)) <--
-[
-  Set(expr,MakeUni(expr,var));
-  MatchPureSquared(expr,sign2,sign0);
-];
-20 # MatchPureSquared(_var,_sign2,_sign0,_expr) <-- False;
-
-10 # MatchPureSquared(_expr,_sign2,_sign0)_(Degree(expr,var)=2 And 
-                                    Coef(expr,1) = 0 And   
-				    IsNumber(Coef(expr,0)) And
-				    IsNumber(Coef(expr,2)) And
-				    Coef(expr,0)*sign0 > 0 And
-				    Coef(expr,2)*sign2 > 0
-				    ) <--
-[
-  Check(IsUniVar(expr),ToString()Echo({"Incorrect argument ",expr," passed to MatchLinear"}));
-  Check(Not IsBound(A), "Found bound variable which should have been unbound, in MatchLinear");
-  Check(Not IsBound(B), "Found bound variable which should have been unbound, in MatchLinear");
-  a := Coef(expr,2);
-  b := Coef(expr,0);
-  True;
-];
-20 # MatchPureSquared(_expr,_sign2,_sign0) <-- False;
-UnFence("MatchPureSquared",3);
-UnFence("MatchPureSquared",4);
 
 IntPureSquare(_vr,_from,_sign2,_sign0,_to) <--
 [
@@ -372,7 +344,7 @@ IntFunc(x,num_IsFreeOf(var)/(A_IsNumber + B_IsNumber*(_x))^2,-num/(A*b + B^2*x))
 IntFunc(x,num_IsFreeOf(var)/(n_IsNumber + m_IsNumber*Exp(p_IsNumber*(_x))),num*x/n - num*Ln(n + m*Exp(p*x))/(n*p));
 IntFunc(x,num_IsFreeOf(var)/(m_IsNumber*Exp(p_IsNumber*(_x)) + n_IsNumber),num*x/n - num*Ln(n + m*Exp(p*x))/(n*p));
 
-IntPureSquare(x,num_IsFreeOf(var)/(_x),1,1,(num/(a*Sqrt(b/a)))*ArcTan(var/Sqrt(b/a)));
+IntPureSquare(x,num_IsFreeOf(var)/(_x),1,1,(num/(a*Sqrt(Matched'b()/Matched'a())))*ArcTan(var/Sqrt(Matched'b()/Matched'a())));
 
 
 

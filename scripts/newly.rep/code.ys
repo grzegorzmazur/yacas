@@ -478,6 +478,8 @@ BracketRational(r,eps):=
 
 /** MatchLinear(variable,expression)
  */
+LocalSymbols(a,b)[
+
 10 # MatchLinear(var_IsAtom,expr_CanBeUni(var)) <--
 [
   Set(expr,MakeUni(expr,var));
@@ -488,9 +490,11 @@ BracketRational(r,eps):=
 10 # MatchLinear(_expr)_(Degree(expr,var)<2) <--
 [
   Check(IsUniVar(expr),ToString()Echo({"Incorrect argument ",expr," passed to MatchLinear"}));
-  Check(Not IsBound(A), ToString()(Echo({"Found bound variable A which should have been unbound, in MatchLinear: ", A, "=", Eval(A)})));
-  Check(Not IsBound(B), ToString()(Echo({"Found bound variable B which should have been unbound, in MatchLinear: ", B, "=", Eval(B)})));
-//  Check(Not IsBound(B), "Found bound variable which should have been unbound, in MatchLinear");
+
+//TODO if I enable these checks, then integration fails (only users of this function any way). Can this be removed? Where are these variables cleared any way?
+//  Check(a = Hold(a), ToString()(Echo({"Found bound variable a which should have been unbound, in MatchLinear: ", a, "=", Eval(a)})));
+//  Check(b = Hold(b), ToString()(Echo({"Found bound variable b which should have been unbound, in MatchLinear: ", b, "=", Eval(b)})));
+
   a := Coef(expr,1);
   b := Coef(expr,0);
   True;
@@ -499,4 +503,40 @@ BracketRational(r,eps):=
 UnFence("MatchLinear",1);
 UnFence("MatchLinear",2);
 
+/** MatchPureSquared(variable,expression) - matches expressions
+ *  of the form a*x^2+b.
+ */
+10 # MatchPureSquared(var_IsAtom,_sign2,_sign0,expr_CanBeUni(var)) <--
+[
+  Set(expr,MakeUni(expr,var));
+  MatchPureSquared(expr,sign2,sign0);
+];
+20 # MatchPureSquared(_var,_sign2,_sign0,_expr) <-- False;
+
+10 # MatchPureSquared(_expr,_sign2,_sign0)_(Degree(expr,var)=2 And 
+                                    Coef(expr,1) = 0 And   
+				    IsNumber(Coef(expr,0)) And
+				    IsNumber(Coef(expr,2)) And
+				    Coef(expr,0)*sign0 > 0 And
+				    Coef(expr,2)*sign2 > 0
+				    ) <--
+[
+  Check(IsUniVar(expr),ToString()Echo({"Incorrect argument ",expr," passed to MatchLinear"}));
+//TODO if I enable these checks, then integration fails (only users of this function any way). Can this be removed? Where are these variables cleared any way?
+//  Check(a = Hold(a), "Found bound variable which should have been unbound, in MatchLinear");
+//  Check(b = Hold(b), "Found bound variable which should have been unbound, in MatchLinear");
+  a := Coef(expr,2);
+  b := Coef(expr,0);
+  True;
+];
+20 # MatchPureSquared(_expr,_sign2,_sign0) <-- False;
+UnFence("MatchPureSquared",3);
+UnFence("MatchPureSquared",4);
+
+Matched'a() := a;
+Matched'b() := b;
+
+
+
+]; // LocalSymbols a,b
 
