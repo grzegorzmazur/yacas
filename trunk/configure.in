@@ -348,7 +348,6 @@ AC_OUTPUT(yacas.spec
 	epoc/Makefile
 	tests/Makefile
         manmake/Makefile
-        compile/Makefile
         embed/Makefile
 	src/Makefile)
 

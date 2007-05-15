@@ -539,5 +539,9 @@ Verify(Integrate(x,1,1)Sin(Exp(x^2)),0);
 Verify(TrapError(Reverse("abc"),True),True);
 Verify(TrapError(FlatCopy("abc"),True),True);
 
+// Make sure Mod works threaded
+Verify(Mod(2,Infinity),2);
+Verify(Mod({2,1},{2,2}),{0,1});
+Verify(Mod({5,1},4),{1,1});
 
 

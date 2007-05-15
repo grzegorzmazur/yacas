@@ -41,7 +41,7 @@ VERSIONF=/tmp/version-yacas-$$.ys
 LOGFILE=yacas-logfile.txt
 echo "Print(Version());" > $VERSIONF
 VERSION=`$CMD $VERSIONF`
-echo "Print(CodeComment());" > $VERSIONF
+echo "Print(OSVersion());" > $VERSIONF
 COMMENT=`$CMD $VERSIONF`
 #DATECMD="date \"+%F %T\""
 #echo "$DATECMD"
