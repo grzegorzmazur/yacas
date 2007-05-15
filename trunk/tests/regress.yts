@@ -544,4 +544,15 @@ Verify(Mod(2,Infinity),2);
 Verify(Mod({2,1},{2,2}),{0,1});
 Verify(Mod({5,1},4),{1,1});
 
-
+/* In MatchLinear and MatchPureSquare, the matched coefficients were
+ * assigned to global variables that were not protected with LocalSymbols.
+ */
+[
+  Local(a,b);
+  a:=mystr;
+  A:=mystr;
+  /* The real test here is that no error is generated due to the 
+   * fact that variables a or A are set.
+   */
+  Verify(Simplify((Integrate(x,a,b)Sin(x))-Cos(a)+Cos(b)),0);
+];

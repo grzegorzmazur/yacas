@@ -51,8 +51,8 @@ LocalSymbols(TestMatchLinearTrue,TestMatchLinearFalse) [
   [
     Local(a,b);
     Verify(MatchLinear(var,expr),True);
-    a:=Simplify(a-expected[1]);
-    b:=Simplify(b-expected[2]);
+    a:=Simplify(Matched'a()-expected[1]);
+    b:=Simplify(Matched'b()-expected[2]);
     `TestYacas(@a,0);
     `TestYacas(@b,0);
   ];

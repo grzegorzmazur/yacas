@@ -21,4 +21,5 @@ ReversePoly
 InverseTaylor
 Series
 MatchLinear
+MatchPureSquared
 }
