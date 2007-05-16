@@ -131,14 +131,40 @@ LispPtr *LispEnvironment::FindLocal(LispString * aVariable)
 
 void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue)
 {
-    LispPtr *local = FindLocal(aVariable);
-    if (local)
+  LispPtr *local = FindLocal(aVariable);
+  if (local)
+  {
+    (*local) = (aValue);
+    return;
+  }
+
+#ifdef YACAS_DEBUG
+  {
+    int warn = 1;
+    // If a variable is guarded with LocalSymbol it can not interfere with other scripts.
+    if ((*aVariable)[0] ==  '$') 
+      warn = 0;
+
+    // Lazy globals are intended to be global.
     {
-        (*local) = (aValue);
-        return;
+      LispGlobalVariable *l = iGlobals.LookUp(aVariable);
+      if (l)
+      {
+        if (l->iEvalBeforeReturn)
+        {
+          warn = 0;
+        }
+      }
     }
 
-    iGlobals.SetAssociation(LispGlobalVariable(aValue), aVariable);
+    if (warn)
+    {
+      printf("WARNING: setting global variable \"%s\" (global variables might have undesired side effects, please use Local or LocalSymbols).\n",aVariable->c_str());
+    }
+  }
+#endif // YACAS_DEBUG
+
+  iGlobals.SetAssociation(LispGlobalVariable(aValue), aVariable);
 }
 
 void LispEnvironment::GetVariable(LispString * aVariable,LispPtr& aResult)

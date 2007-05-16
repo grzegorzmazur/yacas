@@ -86,6 +86,7 @@ public:
   /// The LispPtr it can be stored in to is passed in as argument, so it 
   /// does not need to be constructed by the calling environment.
   virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
+  virtual ~BasicEvaluator();
 };
 
 class TracedEvaluator : public BasicEvaluator
@@ -102,7 +103,7 @@ protected:
 class TracedStackEvaluator : public BasicEvaluator
 {
 public:
-    ~TracedStackEvaluator();
+    virtual ~TracedStackEvaluator();
     virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
     virtual void ResetStack();
     virtual UserStackInformation& StackInformation();
