@@ -5,8 +5,8 @@
 RadSimp(_n) <--
 [
   Local(max);
-//  Set(n,N(n));
-  Set(max, MathCeil(N(n^2)));
+//  Set(n,N(Eval(n)));
+  Set(max, MathCeil(N(Eval(n^2))));
   Set(result,0);
   Set(result,RadSimpTry(n,0,1,max));
 
@@ -19,9 +19,9 @@ RadSimp(_n) <--
 
 /*Echo({"Try ",test}); */
 
-CheckRadicals(_n,_test) <-- Abs(N(n-test,20)) < 0.000001;
+CheckRadicals(_n,_test) <-- Abs(N(Eval(n-test),20)) < 0.000001;
 
-10 # ClampRadicals(_r)_(N(Abs(r), 20)<0.000001) <-- 0;
+10 # ClampRadicals(_r)_(N(Eval(Abs(r)), 20)<0.000001) <-- 0;
 20 # ClampRadicals(_r) <-- r;
 
 
@@ -29,12 +29,12 @@ CheckRadicals(_n,_test) <-- Abs(N(n-test,20)) < 0.000001;
 RadSimpTry(_n,_result,_current,_max)<--
 [
 //Echo(result," ",n," ",current);
-  if (LessThan(N(result-n), 0))
+  if (LessThan(N(Eval(result-n)), 0))
   [
     Local(i);
 
     // First, look for perfect match
-    i:=BSearch(max,Hold({{try},ClampRadicals(N((result+Sqrt(try))-n,20))}));
+    i:=BSearch(max,Hold({{try},ClampRadicals(N(Eval((result+Sqrt(try))-n),20))}));
     If(i>0,
     [
       Set(result,result+Sqrt(i));
@@ -43,7 +43,7 @@ RadSimpTry(_n,_result,_current,_max)<--
     ]);
 
     // Otherwise, search for another solution
-    if (LessThan(N(result-n), 0))
+    if (LessThan(N(Eval(result-n)), 0))
     [
       For (Set(i,current),i<=max,Set(i,MathAdd(i,1)))
       [

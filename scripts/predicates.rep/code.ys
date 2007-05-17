@@ -167,12 +167,12 @@ Function ("IsBoolean", {x})
 /* See if a number, when evaluated, would be a positive/negative real value */
 IsPositiveReal(_r) <--
 [
-  r:=N(r);
+  r:=N(Eval(r));
   (IsNumber(r) And r >= 0);
 ];
 IsNegativeReal(_r) <--
 [
-  r:=N(r);
+  r:=N(Eval(r));
   (IsNumber(r) And r <= 0);
 ];
 
@@ -224,11 +224,11 @@ IsOrthogonal(A_IsMatrix) <-- (Transpose(A)*A=Identity(Length(A)));
 IsIdempotent(A_IsMatrix) <-- (A^2 = A);
 IsUnitary(A_IsMatrix) <-- (Transpose(Conjugate(A))*A = Identity(Length(A)));
 
-IsVariable(_expr) <-- (IsAtom(expr) And Not(expr=Infinity) And Not(expr= -Infinity) And Not(expr=Undefined) And Not(IsNumber(N(expr))));
+IsVariable(_expr) <-- (IsAtom(expr) And Not(expr=Infinity) And Not(expr= -Infinity) And Not(expr=Undefined) And Not(IsNumber(N(Eval(expr)))));
 
 // check that all items in the list are numbers
 IsNumericList(_arg'list) <-- IsList(arg'list) And
-	("And" @ (MapSingle(Hold({{x},IsNumber(N(x))}), arg'list)));
+	("And" @ (MapSingle(Hold({{x},IsNumber(N(Eval(x)))}), arg'list)));
 
 //////////////////////////////////////////////////
 /// Predicates HasExpr*, HasFunc*, ListHasFunc
@@ -306,7 +306,7 @@ HasFuncArith(expr, atom) := HasFuncSome(expr, atom, {Atom("+"), Atom("-"), *, /}
 // but in fact this should be a call to BigNumber::IsIntValue()
 FloatIsInt(_x) <-- 
    [
-     x:=N(x);
+     x:=N(Eval(x));
      Local(prec,result,n);
      Set(prec,GetPrecision());
      If(IsZero(x),Set(n,2),

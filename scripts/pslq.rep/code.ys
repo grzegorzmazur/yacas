@@ -42,7 +42,7 @@ Pslq(x, precision) :=
 //Echo("Confidence is ",Confidence);
 
   gam:=N(Sqrt(4/3));
-  For (i:=1, i<=n,i++) x[i]:=N(x[i]);
+  For (i:=1, i<=n,i++) x[i]:=N(Eval(x[i]));
 
 //Echo("1...");
 

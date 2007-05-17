@@ -125,7 +125,7 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 2 # Mod(0,_m) <-- 0;
 2 # Mod(n_IsPositiveInteger,Infinity) <-- n;
 3 # Mod(n_IsInteger,m_IsInteger) <-- MathMod(n,m);
-4 # Mod(n_IsNumber,m_IsNumber) <-- Mod(Rationalize(n),Rationalize(m));
+4 # Mod(n_IsNumber,m_IsNumber) <-- NonN(Mod(Rationalize(n),Rationalize(m)));
 
 5 # Mod(n_IsRationalOrNumber,m_IsRationalOrNumber)/*_(n>0 And m>0)*/ <--
 [
@@ -269,14 +269,15 @@ Rule("Object",2,0,Apply(pred,{x})=True) x;
 10 # Floor(x_IsRationalOrNumber) 
    <-- 
    [
-     x:=N(x);
+     x:=N(Eval(x));
 //Echo("x = ",x);
      Local(prec,result,n);
      Set(prec,GetPrecision());
-     If(IsZero(x),Set(n,2),
-     If(x>0,
-       Set(n,2+MathFloor(N(FastLog(x)/FastLog(10)))),
-       Set(n,2+MathFloor(N(FastLog(-x)/FastLog(10))))
+     If(IsZero(x),
+       Set(n,2),
+       If(x>0,
+         Set(n,2+MathFloor(N(FastLog(x)/FastLog(10)))),
+         Set(n,2+MathFloor(N(FastLog(-x)/FastLog(10))))
        ));
      If(n>prec,Precision(n));
 //Echo("Before");

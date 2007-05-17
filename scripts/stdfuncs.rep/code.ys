@@ -4,7 +4,7 @@
 4 # Sin(ArcCos(_x)) <-- Sqrt(1-x^2);
 4 # Sin(ArcTan(_x)) <-- x/Sqrt(1+x^2);
 5 # Sin(- _x)_(Not IsConstant(x))                 <-- -Sin(x);
-6 # (Sin(x_IsConstant))_(IsNegativeNumber(N(x)))   <-- -Sin(-x);
+6 # (Sin(x_IsConstant))_(IsNegativeNumber(N(Eval(x))))   <-- -Sin(-x);
 
 // must prevent it from looping
 6 # Sin(x_IsInfinity) 		<-- Undefined;
@@ -38,7 +38,7 @@
 4 # Cos(ArcSin(_x)) <-- Sqrt(1-x^2);
 4 # Cos(ArcTan(_x)) <-- 1/Sqrt(1+x^2);
 5 # Cos(- _x)_(Not IsConstant(x))                 <-- Cos(x);
-6 # (Cos(x_IsConstant))_(IsNegativeNumber(N(x)))   <-- Cos(-x);
+6 # (Cos(x_IsConstant))_(IsNegativeNumber(N(Eval(x))))   <-- Cos(-x);
 // must prevent it from looping
 
 110 # Cos(Complex(_r,_i)) <--
@@ -67,7 +67,7 @@
 400 # Cos(x_IsRationalOrNumber) <-- 
     [
      Local(ll);
-     ll:= MathFloor(N(x/Pi));
+     ll:= MathFloor(N(Eval(x/Pi)));
      If(IsEven(ll),x:=(x - Pi*ll),x:=(-x + Pi*(ll+1)));
      UnList({Cos,x});
      ];
@@ -75,7 +75,7 @@
 400 # Cos(x_IsRationalOrNumber) <-- 
     [
      Local(ll);
-     ll:= MathFloor(N(Abs(x)/Pi));
+     ll:= MathFloor(N(Eval(Abs(x)/Pi)));
      If(IsEven(ll),x:=(Abs(x) - Pi*ll),x:=(-Abs(x) + Pi*(ll+1)));
      UnList({Cos,x});
      ];
@@ -86,7 +86,7 @@
 4 # Tan(ArcSin(_x)) <-- x/Sqrt(1-x^2);
 4 # Tan(ArcCos(_x)) <-- Sqrt(1-x^2)/x;
 5 # Tan(- _x)_(Not IsConstant(x))                  <-- -Tan(x);
-6 # (Tan(x_IsConstant))_(IsNegativeNumber(N(x)))   <-- -Tan(-x);
+6 # (Tan(x_IsConstant))_(IsNegativeNumber(N(Eval(x))))   <-- -Tan(-x);
 
 // must prevent it from looping
 6 # Tan(Infinity) <-- Undefined;
@@ -156,7 +156,7 @@
     (- I) * Ln((I*Complex(r,i)) + ((1-(Complex(r,i)^2))^(1/2)));
 
 150 # ArcSin(- _x)_(Not IsConstant(x))             <-- -ArcSin(x);
-160 # (ArcSin(x_IsConstant))_(IsNegativeNumber(N(x))) <-- -ArcSin(-x);
+160 # (ArcSin(x_IsConstant))_(IsNegativeNumber(N(Eval(x)))) <-- -ArcSin(-x);
 
 200 # ArcSin(0) <-- 0;
 200 # ArcSin(1/2) <-- Pi/6;
@@ -170,7 +170,7 @@
 
 2 # ArcCos(x_IsNumber)_(Numeric) <-- Pi()/2-ArcSin(x);
 4 # ArcCos(Cos(_x))           <-- x;
-5 # (ArcTan(x_IsConstant))_(IsNegativeNumber(N(x)))   <-- -ArcTan(-x);
+5 # (ArcTan(x_IsConstant))_(IsNegativeNumber(N(Eval(x))))   <-- -ArcTan(-x);
 110 # ArcCos(Complex(_r,_i)) <--
     (- I)*Ln(Complex(r,i) + (Complex(r,i)^2 - 1)^(1/2));
    /* TODO check! */
@@ -191,7 +191,7 @@
      (- I*0.5)*Ln(Complex(1,Complex(r,i))/ Complex(1, - Complex(r,i)));
 
 150 # ArcTan(- _x)_(Not IsConstant(x))             <-- -ArcTan(x);
-160 # (ArcTan(x_IsConstant))_(IsNegativeNumber(N(x))) <-- -ArcTan(-x);
+160 # (ArcTan(x_IsConstant))_(IsNegativeNumber(N(Eval(x)))) <-- -ArcTan(-x);
 
 200 # ArcTan(Sqrt(3)) <-- Pi/3;
 200 # ArcTan(-Sqrt(3)) <-- -Pi/3;
@@ -205,14 +205,14 @@
 200 # ArcSin(Undefined) <-- Undefined;
 200 # ArcCos(Undefined) <-- Undefined;
 
-2 # Sinh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N( (Exp(x)-Exp(-x))/2 );
-2 # Cosh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N( (Exp(x)+Exp(-x))/2 );
-2 # Tanh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N( Sinh(x)/Cosh(x) );
+2 # Sinh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N(Eval( (Exp(x)-Exp(-x))/2 ));
+2 # Cosh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N(Eval( (Exp(x)+Exp(-x))/2 ));
+2 # Tanh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N(Eval( Sinh(x)/Cosh(x) ));
 
 
-10 # ArcSinh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N( Ln(x+Sqrt(x^2+1)) );
-10 # ArcCosh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N( Ln(x+Sqrt(x^2-1)) );
-10 # ArcTanh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N( Ln((1+x)/(1-x))/2 );
+10 # ArcSinh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N(Eval( Ln(x+Sqrt(x^2+1)) ));
+10 # ArcCosh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N(Eval( Ln(x+Sqrt(x^2-1)) ));
+10 # ArcTanh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N(Eval( Ln((1+x)/(1-x))/2 ));
 
 200 # ArcSinh(Infinity) <-- Infinity;
 200 # ArcSinh(-Infinity) <-- -Infinity;

@@ -37,7 +37,8 @@ TestYacas(PrimitivePart(1/2*x+1/3),3*x+2);
 
 // Mod generated a stack overflow on floats.
 Verify(Mod(1.2,3.4),6/5);
-NumericEqual(N(Mod(-1.2,3.4)),2.2,GetPrecision());
+//TODO I need to understand why we need to put Eval here. Mod(-1.2,3.4)-2.2 returns 0/5 where the 0 is not an integer according to the system. Round-off error?
+NumericEqual(N(Eval(Mod(-1.2,3.4))),2.2,GetPrecision());
 Verify(Mod(-12/10,34/10),11/5);
 // just a test to see if Verify still gives correct error Verify(N(Mod(-12/10,34/10)),11/5);
 

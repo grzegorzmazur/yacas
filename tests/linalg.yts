@@ -59,7 +59,7 @@ Verify(Identity(4),
 NextTest("Check linear algebra");
 /* Normalize */
 Testing("Normalize");
-Verify(N(Normalize({3,4})),N({3/5,4/5}));
+Verify(Normalize({3,4}),{3/5,4/5});
 /* DiagonalMatrix */
 Testing("DiagonalMatrix");
 Verify(DiagonalMatrix({2,3,4}),{{2,0,0},{0,3,0},{0,0,4}});

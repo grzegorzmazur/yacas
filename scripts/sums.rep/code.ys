@@ -100,8 +100,8 @@ n1_IsRationalOrNumber *** n2_IsRationalOrNumber <--
 ];
 
 /// recursive routine to evaluate "partial factorial" a*(a+1)*...*b
-// Floor() will perform conversion to integer and a, b are numbers
-2# Factorial'partial(_a, _b) _ (b-a>=4) <-- Factorial'partial(a, a+Floor((b-a)/2)) * Factorial'partial(a+Floor((b-a)/2)+1, b);
+// TODO lets document why the >>1 as used here is allowed (rounding down? What is the idea behind this algorithm?)
+2# Factorial'partial(_a, _b) _ (b-a>=4) <-- Factorial'partial(a, a+((b-a)>>1)) * Factorial'partial(a+((b-a)>>1)+1, b);
 3# Factorial'partial(_a, _b) _ (b-a>=3) <-- a*(a+1)*(a+2)*(a+3);
 4# Factorial'partial(_a, _b) _ (b-a>=2) <-- a*(a+1)*(a+2);
 5# Factorial'partial(_a, _b) _ (b-a>=1) <-- a*(a+1);
