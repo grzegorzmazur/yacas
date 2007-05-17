@@ -70,8 +70,7 @@ public class CYacas
       env.iEvaluator.Eval(env, result, in_expr);
 
       String percent = env.HashTable().LookUp("%");
-      env.SetVariable(percent,result);
-      env.SetGlobalEvaluates(percent);
+      env.SetVariable(percent,result,true);
 
       StringBuffer string_out = new StringBuffer();
       LispOutput output = new StringOutput(string_out);

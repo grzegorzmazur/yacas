@@ -237,7 +237,7 @@ CORE_KERNEL_FUNCTION("GetPrettyReader",LispGetPrettyReader,0,YacasEvaluator::Fun
 CORE_KERNEL_FUNCTION("PrettyPrinter",LispPrettyPrinter,1,YacasEvaluator::Function | YacasEvaluator::Variable)
 CORE_KERNEL_FUNCTION("GetPrettyPrinter",LispGetPrettyPrinter,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("GarbageCollect",LispGarbageCollect,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
-CORE_KERNEL_FUNCTION("LazyGlobal",LispLazyGlobal,1,YacasEvaluator::Macro | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("SetGlobalLazyVariable",LispSetGlobalLazyVariable,2,YacasEvaluator::Macro | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("PatchLoad",LispPatchLoad,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("PatchString",LispPatchString,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("DllLoad",LispDllLoad,1,YacasEvaluator::Function | YacasEvaluator::Fixed)

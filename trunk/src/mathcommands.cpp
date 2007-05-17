@@ -47,7 +47,7 @@ void LispEval(LispEnvironment& aEnvironment,LispInt aStackTop)
 /// should be evaluated. The real work is done by
 /// LispEnvironment::SetVariable() . 
 /// \sa LispSetVar(), LispMacroSetVar()
-static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, LispBoolean aMacroMode)
+static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, LispBoolean aMacroMode, LispBoolean aGlobalLazyVariable)
 {
     LispString * varstring=NULL;
     if (aMacroMode)
@@ -65,7 +65,7 @@ static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, Lis
     
     LispPtr result;
     InternalEval(aEnvironment, result, ARGUMENT(2));
-    aEnvironment.SetVariable(varstring, result);
+    aEnvironment.SetVariable(varstring, result, aGlobalLazyVariable);
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -73,15 +73,21 @@ static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, Lis
 /// This function simply calls InternalSetVar() .
 void LispSetVar(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    InternalSetVar(aEnvironment, aStackTop, LispFalse);
+  InternalSetVar(aEnvironment, aStackTop, LispFalse,LispFalse);
 }
 
 /// Corresponds to the Yacas function \c MacroSet.
 /// This function simply calls InternalSetVar() .
 void LispMacroSetVar(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    InternalSetVar(aEnvironment, aStackTop, LispTrue);
+  InternalSetVar(aEnvironment, aStackTop, LispTrue,LispFalse);
 }
+
+void LispSetGlobalLazyVariable(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+  InternalSetVar(aEnvironment, aStackTop, LispFalse,LispTrue);
+}
+
 
 void LispClearVar(LispEnvironment& aEnvironment,LispInt aStackTop)
 {

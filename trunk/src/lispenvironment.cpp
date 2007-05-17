@@ -129,11 +129,17 @@ LispPtr *LispEnvironment::FindLocal(LispString * aVariable)
     return NULL;
 }
 
-void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue)
+void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue, LispBoolean aGlobalLazyVariable)
 {
   LispPtr *local = FindLocal(aVariable);
   if (local)
   {
+#ifdef YACAS_DEBUG
+    if (aGlobalLazyVariable)
+    {
+      printf("WARNING: setting local variable \"%s\", but doing it through a method that is trying to set a global lazy variable. This is probably unintended.\n",aVariable->c_str());
+    }
+#endif // YACAS_DEBUG
     (*local) = (aValue);
     return;
   }
@@ -145,17 +151,8 @@ void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue)
     if ((*aVariable)[0] ==  '$') 
       warn = 0;
 
-    // Lazy globals are intended to be global.
-    {
-      LispGlobalVariable *l = iGlobals.LookUp(aVariable);
-      if (l)
-      {
-        if (l->iEvalBeforeReturn)
-        {
-          warn = 0;
-        }
-      }
-    }
+    if (aGlobalLazyVariable)
+      warn = 0;
 
     if (warn)
     {
@@ -165,6 +162,13 @@ void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue)
 #endif // YACAS_DEBUG
 
   iGlobals.SetAssociation(LispGlobalVariable(aValue), aVariable);
+  if (aGlobalLazyVariable)
+  {
+    //TODO we just added the variable! We should not need to re-look it up! Optimize!
+    LispGlobalVariable *l = iGlobals.LookUp(aVariable);
+    LISPASSERT(l);
+    l->SetEvalBeforeReturn(LispTrue);
+  }
 }
 
 void LispEnvironment::GetVariable(LispString * aVariable,LispPtr& aResult)
@@ -192,13 +196,6 @@ void LispEnvironment::GetVariable(LispString * aVariable,LispPtr& aResult)
             return;
         }
     }
-}
-
-void LispEnvironment::SetGlobalEvaluates(LispString * aVariable)
-{
-    LispGlobalVariable *l = iGlobals.LookUp(aVariable);
-    Check(l,KLispErrInvalidArg);
-    l->SetEvalBeforeReturn(LispTrue);
 }
 
 void LispEnvironment::UnsetVariable(LispString * aString)

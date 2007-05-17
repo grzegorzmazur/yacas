@@ -112,17 +112,9 @@ void CYacas::Evaluate(const LispChar * aExpression)
            parser.Parse(lispexpr);
          }
 
-//LispString str;
-//PrintExpression(str, lispexpr, env, 10000);
-//printf("Read: [%s]\n",str.String());              
-
-
          env.iEvalDepth=0;
          env.iEvaluator->ResetStack();
          InternalEval(env, result, lispexpr);
-
-//PrintExpression(str, result, env, 10000);
-//printf("Result: [%s]\n",str.String());              
 
          // If no error encountered, print result
          if (env.PrettyPrinter())
@@ -143,17 +135,9 @@ void CYacas::Evaluate(const LispChar * aExpression)
              iResultOutput.Write(";");
          }
          LispString * percent = env.HashTable().LookUp("%");
-         env.SetVariable(percent,result);
-         env.SetGlobalEvaluates(percent);
-
-//printf("Finished: \n");              
-
-         
+         env.SetVariable(percent,result,LispTrue);
      },env.iErrorOutput,env);
-     
-//printf("stack top = %d (should be zero)\n",env.iStack.GetStackTop());
      env.iStack.PopTo(stackTop);
-//     LISPASSERT(env.iStack.GetStackTop() == 0);
 }
 
 LispChar * CYacas::Result()

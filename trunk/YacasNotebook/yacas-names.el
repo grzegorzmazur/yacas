@@ -278,7 +278,7 @@
 "ConcatStrings"
 "String"
 "Atom"
-"LazyGlobal"
+"SetGlobalLazyVariable"
 "Object"
 "Clear"
 "MacroClear"

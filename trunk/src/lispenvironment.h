@@ -85,7 +85,7 @@ public:
     /// LispGlobalVariable is constructed, and it is associated with
     /// \a aValue in #iGlobals.
     /// \sa FindLocal
-    void SetVariable(LispString * aString, LispPtr& aValue);
+    void SetVariable(LispString * aString, LispPtr& aValue, LispBoolean aGlobalLazyVariable);
 
     /// Get the value assigned to a variable.
     /// \param aVariable name of the variable
@@ -104,8 +104,6 @@ public:
     ///   is returned in \a aResult.
     /// - Otherwise, \a aResult is set to #NULL.
     void GetVariable(LispString * aVariable,LispPtr& aResult);
-
-    void SetGlobalEvaluates(LispString * aVariable);
 
     void UnsetVariable(LispString * aString);
     void PushLocalFrame(LispBoolean aFenced);

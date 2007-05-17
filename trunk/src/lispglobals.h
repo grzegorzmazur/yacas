@@ -17,7 +17,7 @@
 /// #iEvalBeforeReturn, which defaults to #LispFalse. If this
 /// attribute is set to #LispTrue, the value in #iValue needs to be
 /// evaluated to get the value of the Lisp variable.
-/// \sa LispEnvironment::GetVariable(), LispEnvironment::SetGlobalEvaluates()
+/// \sa LispEnvironment::GetVariable()
 
 class LispGlobalVariable : public YacasBase
 {

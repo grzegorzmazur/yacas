@@ -126,8 +126,7 @@ Rule("REP",0,1,True)
       Set(stringOut,ToString()[TrapError(Set(result,Eval(input)),Set(errorString,GetCoreError()));]);
       If(Not(stringOut = ""), WriteString(stringOut));
       If(Not(errorString = ""), WriteString(errorString));
-      Set(%,result);
-      LazyGlobal(%);
+      SetGlobalLazyVariable(%,result);
       If(GetPrettyPrinter()="",
       [
         Write(Atom("Out> "),result);

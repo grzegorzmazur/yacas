@@ -77,7 +77,7 @@ void SetShortIntegerConstant(LispEnvironment& aEnvironment,
 {
   LispPtr value;
   ReturnShortInteger(aEnvironment,value, aValue);
-  aEnvironment.SetVariable( aEnvironment.HashTable().LookUp(aName),value);
+  aEnvironment.SetVariable( aEnvironment.HashTable().LookUp(aName),value,LispFalse);
 }
 double GetDoubleFloatArgument(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {

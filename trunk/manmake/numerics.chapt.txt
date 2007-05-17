@@ -48,13 +48,13 @@ The associative list {cache} contains elements of the form {{Cname, prec, value}
 
 This mechanism is currently used by {N()} to precompute the values of $Pi$ and $gamma$.
 The name of the cache for {N()} is {CacheOfConstantsN}.
-The code in the function {N()} assigns unevaluated calls to {Pi()} and {gamma()} to the atoms {Pi} and {gamma} and declares them {LazyGlobal}.
+The code in the function {N()} assigns unevaluated calls to {Pi()} and {gamma()} to the atoms {Pi} and {gamma} and declares them to be lazy global variables through {SetGlobalLazyVariable}.
 The result is that the constants will be recalculated only when they are used in the expression under {N()}.
 In other words, the code in {N()} does the equivalent of
-	Pi := Hold(Pi());
-	gamma := Hold(gamma());
-	LazyGlobal(Pi);
-	LazyGlobal(gamma);
+
+	SetGlobalLazyVariable(mypi,Hold(Pi()));
+	SetGlobalLazyVariable(mygamma,Hold(gamma()));
+
 After this, evaluating an expression such as {1/2+gamma} will call the function {gamma()} but not the function {Pi()}.
 
 *EG notest

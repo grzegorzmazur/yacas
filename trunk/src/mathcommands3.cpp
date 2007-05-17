@@ -624,77 +624,54 @@ void LispGetPrettyPrinter(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispGarbageCollect(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    aEnvironment.HashTable().GarbageCollect();
-    InternalTrue(aEnvironment,RESULT);
-}
-
-void LispLazyGlobal(LispEnvironment& aEnvironment, LispInt aStackTop)
-{
-    LispString * string = ARGUMENT(1)->String();
-    CHK_ARG_CORE(string, 1);
-    aEnvironment.SetGlobalEvaluates(string);
-    InternalTrue(aEnvironment,RESULT);
-
+  aEnvironment.HashTable().GarbageCollect();
+  InternalTrue(aEnvironment,RESULT);
 }
 
 void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispPtr evaluated(ARGUMENT(1));
-
-    LispString * string = evaluated->String();
-    CHK_ARG_CORE(string, 1);
-
-    LispString oper;
-    InternalUnstringify(oper, string);
-    LispString * hashedname = aEnvironment.HashTable().LookUp(oper.c_str());
-
-    InputStatus oldstatus = aEnvironment.iInputStatus;
-    aEnvironment.iInputStatus.SetTo(hashedname->c_str());
-
-    
-    LispLocalFile localFP(aEnvironment, oper.c_str(), LispTrue,
-                          aEnvironment.iInputDirectories);
-    Check(localFP.iOpened != 0, KLispErrFileNotFound);
-    FILEINPUT newInput(localFP,aEnvironment.iInputStatus);
-
-    PatchLoad(newInput.StartPtr(),
-              *aEnvironment.CurrentOutput(),
-              aEnvironment);
-    aEnvironment.iInputStatus.RestoreFrom(oldstatus);
-    InternalTrue(aEnvironment,RESULT);
+  LispPtr evaluated(ARGUMENT(1));
+  LispString * string = evaluated->String();
+  CHK_ARG_CORE(string, 1);
+  LispString oper;
+  InternalUnstringify(oper, string);
+  LispString * hashedname = aEnvironment.HashTable().LookUp(oper.c_str());
+  InputStatus oldstatus = aEnvironment.iInputStatus;
+  aEnvironment.iInputStatus.SetTo(hashedname->c_str());
+  LispLocalFile localFP(aEnvironment, oper.c_str(), LispTrue,
+                        aEnvironment.iInputDirectories);
+  Check(localFP.iOpened != 0, KLispErrFileNotFound);
+  FILEINPUT newInput(localFP,aEnvironment.iInputStatus);
+  PatchLoad(newInput.StartPtr(),
+            *aEnvironment.CurrentOutput(),
+            aEnvironment);
+  aEnvironment.iInputStatus.RestoreFrom(oldstatus);
+  InternalTrue(aEnvironment,RESULT);
 }
 
 void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispPtr evaluated(ARGUMENT(1));
-    
-    LispString * string = evaluated->String();
-    CHK_ARG_CORE(string, 1);
-    LispString oper;
-    InternalUnstringify(oper, string);
-
-    LispString str;
-    StringOutput newOutput(str);
-
-    LispLocalOutput localOutput(aEnvironment, &newOutput);
-
-    PatchLoad(oper.c_str(), newOutput, aEnvironment);
-
-    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(str.c_str())->c_str()));
+  LispPtr evaluated(ARGUMENT(1));
+  LispString * string = evaluated->String();
+  CHK_ARG_CORE(string, 1);
+  LispString oper;
+  InternalUnstringify(oper, string);
+  LispString str;
+  StringOutput newOutput(str);
+  LispLocalOutput localOutput(aEnvironment, &newOutput);
+  PatchLoad(oper.c_str(), newOutput, aEnvironment);
+  RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(str.c_str())->c_str()));
 }
 
 void LispDllLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
 	LispPtr evaluated(ARGUMENT(1));
-
 	LispString * string = evaluated->String();
 	CHK_ARG_CORE(string, 1);
-
 	LispString oper;
 	InternalUnstringify(oper, string);
 	LispDllBase *dll=NULL;
 	LispInt opened = LispFalse;
-
 	ExePluginMaker maker = FindExePlugin(oper.c_str());
 	if (maker)
 	{
@@ -714,24 +691,19 @@ void LispDllLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 	DBG_printf("DLL opened, opened = %d\n", opened);
 	if (!opened) aEnvironment.iDlls.DeleteNamed(oper.c_str(), aEnvironment);
 	Check(opened,KLispErrLibraryNotFound);
-
 	DBG_printf("DLL added, %d DLLs loaded\n",aEnvironment.iDlls.Size());
-
 	InternalTrue(aEnvironment,RESULT);
 }
 
 void LispDllUnload(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispPtr evaluated(ARGUMENT(1));
-
-    LispString * string = evaluated->String();
-    CHK_ARG_CORE(string, 1);
-
-    LispString oper;
-    InternalUnstringify(oper, string);
-    aEnvironment.iDlls.DeleteNamed(oper.c_str(),aEnvironment);
-
-    InternalTrue(aEnvironment,RESULT);
+  LispPtr evaluated(ARGUMENT(1));
+  LispString * string = evaluated->String();
+  CHK_ARG_CORE(string, 1);
+  LispString oper;
+  InternalUnstringify(oper, string);
+  aEnvironment.iDlls.DeleteNamed(oper.c_str(),aEnvironment);
+  InternalTrue(aEnvironment,RESULT);
 }
 
 void LispDllEnumerate(LispEnvironment& aEnvironment, LispInt aStackTop)
