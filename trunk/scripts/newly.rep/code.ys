@@ -381,12 +381,12 @@ NearRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 	Local(x1, x2, i,  old'prec);
 	old'prec := GetPrecision();
   Precision(prec + 8);	// 8 guard digits (?)
-	x1 := ContFracList(N(x+10^(-prec)));
-	x2 := ContFracList(N(x-10^(-prec)));
+	x1 := ContFracList(N(Eval(x+10^(-prec))));
+	x2 := ContFracList(N(Eval(x-10^(-prec))));
 
-	If(Verbose, Echo("NearRational: x      = ", N(x           )));
-	If(Verbose, Echo("NearRational: xplus  = ", N(x+10^(-prec))));
-	If(Verbose, Echo("NearRational: xmin   = ", N(x-10^(-prec))));
+	If(Verbose, Echo("NearRational: x      = ", N(Eval(x           ))));
+	If(Verbose, Echo("NearRational: xplus  = ", N(Eval(x+10^(-prec)))));
+	If(Verbose, Echo("NearRational: xmin   = ", N(Eval(x-10^(-prec)))));
 
 	If(Verbose, Echo("NearRational: Length(x1) = ", Length(x1)," ",x1));
 	If(Verbose, Echo("NearRational: Length(x2) = ", Length(x2)," ",x1));
@@ -428,9 +428,9 @@ GuessRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 				cf[i] = 1,
 				If(
 					i+2<=Length(cf),	// have at least two more terms, do a full estimate
-					RoundTo(N(cf[i]+1/(cf[i+1]+1/cf[i+2])), 3),
+					RoundTo(N(Eval(cf[i]+1/(cf[i+1]+1/cf[i+2]))), 3),
 					// have only one more term
-					RoundTo(N(cf[i]+1/cf[i+1]), 3)
+					RoundTo(N(Eval(cf[i]+1/cf[i+1])), 3)
 				),
 				// term is not 1, use the simple estimate
 				cf[i]
@@ -458,7 +458,7 @@ BracketRational(r,eps):=
 	r1 := ContFracEval(Take(cflist,n));
 	r2 := -r1;
 	// find two successive approximations and check that they differ by less than |eps*r|
-	While (n<Length(cflist) And ( Abs(N(r2-r1)) > Abs(N(eps*r)) ) )
+	While (n<Length(cflist) And ( Abs(N(Eval(r2-r1))) > Abs(N(Eval(eps*r)) ) ) )
 	[
 		r2 := r1;
 		n++;
@@ -469,7 +469,7 @@ BracketRational(r,eps):=
 	If(
 		n=Length(cflist),
 		{},	// return empty list if not enough precision
-		If(N(r-r1)>0,
+		If(N(Eval(r-r1))>0,
 			{r1, r2},	// successive approximations are always bracketing, we only need to decide their order
 			{r2, r1}
 		)

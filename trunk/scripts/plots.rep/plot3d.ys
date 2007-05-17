@@ -65,11 +65,11 @@ Function() Plot3DS(func, xrange, yrange, options, ...);
 	);
 	If(
 		Type(xrange) = ":",	// simple range
-		xrange := N({xrange[1], xrange[2]})
+		xrange := N(Eval({xrange[1], xrange[2]}))
 	);
 	If(
 		Type(yrange) = ":",	// simple range
-		yrange := N({yrange[1], yrange[2]})
+		yrange := N(Eval({yrange[1], yrange[2]}))
 	);
 	// set default option values
 	If(
@@ -108,16 +108,16 @@ Function() Plot3DS(func, xrange, yrange, options, ...);
 	);
 	options'hash["used depth"] := options'hash["depth"];
 	// we will divide each subsquare in 4 parts, so divide number of points by 2 now
-	options'hash["xpoints"] := N(Div(options'hash["xpoints"]+1, 2));
-	options'hash["ypoints"] := N(Div(options'hash["ypoints"]+1, 2));
+	options'hash["xpoints"] := N(Eval(Div(options'hash["xpoints"]+1, 2)));
+	options'hash["ypoints"] := N(Eval(Div(options'hash["ypoints"]+1, 2)));
 	// in case it is not a simple number but an unevaluated expression
-	options'hash["precision"] := N(options'hash["precision"]);
+	options'hash["precision"] := N(Eval(options'hash["precision"]));
 	// store range in options
 	options'hash["xrange"] := {xrange[1], xrange[2]};
 	options'hash["yrange"] := {yrange[1], yrange[2]};
 	// compute the separation between grid points
-	xdelta := N( (xrange[2] - xrange[1]) / (options'hash["xpoints"]) );
-	ydelta := N( (yrange[2] - yrange[1]) / (options'hash["ypoints"]) );
+	xdelta := N(Eval( (xrange[2] - xrange[1]) / (options'hash["xpoints"]) ) );
+	ydelta := N(Eval( (yrange[2] - yrange[1]) / (options'hash["ypoints"]) ) );
 	// check that the input parameters are valid (all numbers)
 	Check(IsNumericList({xrange[1], xrange[2], options'hash["xpoints"], options'hash["ypoints"], options'hash["precision"]}),
 		"Plot3DS: Error: plotting ranges '"
@@ -153,7 +153,7 @@ Function() Plot3DS(func, xrange, yrange, options, ...);
 		DestructiveAppend(options'hash["zname"], ToString()Write(func));
 		// compute the first point to see if it's okay
 		cx := xrange[1]; cy := yrange[1];
-		fc := N(Apply({var, func}, {cx, cy}));
+		fc := N(Eval(Apply({var, func}, {cx, cy})));
 		Check(IsNumber(fc) Or fc=Infinity Or fc= -Infinity Or fc=Undefined,
 			"Plot3DS: Error: cannot evaluate function '"
 			:(ToString()Write(func))
@@ -193,8 +193,8 @@ Plot3DS'get'data(_func, _var, _init'values, _deltas, _options'hash) <--
 	row'cache := {init'values};
 	For(i:=1, i<=options'hash["ypoints"], i++)
 	[
-		ya := N(init'values[2]+i*deltas[2]);
-		DestructiveAppend(row'cache, {init'values[1], ya, N(Apply({var, func}, {init'values[1], ya}))});
+		ya := N(Eval(init'values[2]+i*deltas[2]));
+		DestructiveAppend(row'cache, {init'values[1], ya, N(Eval(Apply({var, func}, {init'values[1], ya})))});
 	];
 	result := row'cache;
 	// now loop over the x direction
@@ -202,9 +202,9 @@ Plot3DS'get'data(_func, _var, _init'values, _deltas, _options'hash) <--
 	[
 		// start the next row
 		// the 0th point
-		xa := N(init'values[1]+i*deltas[1]);
+		xa := N(Eval(init'values[1]+i*deltas[1]));
 		ya := init'values[2];
-		fa := N(Apply({var, func}, {xa, ya}));
+		fa := N(Eval(Apply({var, func}, {xa, ya})));
 		DestructiveAppend(result, {xa, ya, fa});
 		// now loop at each grid point in y direction
 		For(j:=1, j<=options'hash["ypoints"], j++)
@@ -212,8 +212,8 @@ Plot3DS'get'data(_func, _var, _init'values, _deltas, _options'hash) <--
 			//	p  b
 			//	r  a
 			// xa, ya, fa are the values at the point a; the points p and r are stored as row'cache[j+1] and row'cache[j]. We just need to compute the point q and update the row'cache with the value at point a, and update xa, ya, fa also with b.
-			yb := N(init'values[2] + j*deltas[2]);
-			fb := N(Apply({var, func}, {xa, yb}));
+			yb := N(Eval(init'values[2] + j*deltas[2]));
+			fb := N(Eval(Apply({var, func}, {xa, yb})));
 			result := Concat(result, Plot3DS'adaptive(func, var, {row'cache[j][1], ya, xa, yb, row'cache[j][3], row'cache[j+1][3], fa, fb}, options'hash["depth"],
 				// since we are dividing into "points" subintervals, we need to relax precision
 				options'hash["precision"] * options'hash["xpoints"] * options'hash["ypoints"], options'hash ));
@@ -248,15 +248,15 @@ Plot3DS'get'data(_func, _var, _init'values, _deltas, _options'hash) <--
 	// if we are here, it means we used one more recursion level
 	options'hash["used depth"] := depth-1;
 	// bisection
-	x3 := N((x1+x2)/2);
-	y3 := N((y1+y2)/2);
+	x3 := N(Eval((x1+x2)/2));
+	y3 := N(Eval((y1+y2)/2));
 	// compute new values
 	// use the confusing Map semantics: the list of all x's separately from the list of all y's
-	f13 := N(Apply({var, func}, {x1, y3}));
-	f31 := N(Apply({var, func}, {x3, y1}));
-	f33 := N(Apply({var, func}, {x3, y3}));
-	f32 := N(Apply({var, func}, {x3, y2}));
-	f23 := N(Apply({var, func}, {x2, y3}));
+	f13 := N(Eval(Apply({var, func}, {x1, y3})));
+	f31 := N(Eval(Apply({var, func}, {x3, y1})));
+	f33 := N(Eval(Apply({var, func}, {x3, y3})));
+	f32 := N(Eval(Apply({var, func}, {x3, y2})));
+	f23 := N(Eval(Apply({var, func}, {x2, y3})));
 	result := {{x1,y3,f13}, {x3, y1, f31}, {x3, y3, f33}, {x3, y2, f32}, {x2, y3, f23}};
 /*	
 y2	12  32  22
@@ -272,11 +272,11 @@ y1	11  31  21
 		sign'change(f11,f13,f12) + sign'change(f13,f12,f32) + sign'change(f12,f32,f22) <= 2 And sign'change(f22,f23,f21) + sign'change(f23,f21,f31) + sign'change(f21,f31,f11) <= 2
 		And
 		// condition for the values not to change too rapidly
-		N(Abs( (f11-f23)/2-(f12-f21)/3+(f22-f13)/6+2*(f32-f33)/3 ))
-			<= N( epsilon*(	// the expression here will be nonnegative because we subtract the minimum value
+		N(Eval(Abs( (f11-f23)/2-(f12-f21)/3+(f22-f13)/6+2*(f32-f33)/3 )))
+			<= N(Eval( epsilon*(	// the expression here will be nonnegative because we subtract the minimum value
 			// cubature normalized to 1
 		(f11 + f12 + f21 + f22)/12 + 2*f33/3
-		- Min({f11, f12, f21, f22, f13, f31, f33, f32, f23}) ) )
+		- Min({f11, f12, f21, f22, f13, f31, f33, f32, f23}) ) ) )
 		,
 		// okay, do not refine any more
 		result,

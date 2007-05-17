@@ -20,3 +20,4 @@ Verify(Ln(3+4*I), Ln(5)+I*ArcTan(4/3));
 
 Verify(Re(2*I-4), -4);
 Verify(Im(2*I-4), 2);
+

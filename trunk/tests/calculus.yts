@@ -42,7 +42,6 @@ Verify(D(x) (x+x),2); f();
 Verify(D(x) (x*x),2*x); f();
 Verify(D(x) D(x) Sin(x),-Sin(x)); f();
 
-
 Testing("Limits");
 Verify( Limit(x,0,Right) Ln(x)*Sin(x), 0 ); f();
 KnownFailure( Limit(k,Infinity) ((k-phi)/k)^(k+1/2) = Exp(-phi) ); f();
@@ -59,6 +58,9 @@ VerifyPslq(left,right):=
     Verify(True,True),
     `Verify(@left,-(@right)));
 ];
+
 VerifyPslq(Pslq({ Pi+2*Exp(1) , Pi , Exp(1) },20),{1,-1,-2}); f();
 VerifyPslq(Pslq({ 2*Pi+3*Exp(1) , Pi , Exp(1) },20),{1,-2,-3}); f();
+
+
 

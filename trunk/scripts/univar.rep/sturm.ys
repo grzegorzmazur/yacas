@@ -89,7 +89,7 @@ SturmVariations(_S) <--
 [
   Local(an);
   an:=Coef(p,(Degree(p)-1) .. 0)/Coef(p,Degree(p));
-  an := N(Abs(an)^(1/(1 .. Degree(p))));
+  an := N(Eval(Abs(an)^(1/(1 .. Degree(p)))));
   Rationalize(2*Max(an));
 ];
 
@@ -101,7 +101,7 @@ SturmVariations(_S) <--
 [
   Local(an,result);
   an:=Coef(p,1 .. (Degree(p)))/Coef(p,0);
-  an := N(Abs(an)^(1/(1 .. Degree(p))));
+  an := N(Eval(Abs(an)^(1/(1 .. Degree(p)))));
 
   result:=0;
   an:=2*Max(an);
@@ -236,7 +236,7 @@ FindRealRoots(_p,_Mmin,_Mmax) <--
   [
     Local(a,b,c,r);
     {a,b} := bounds[i];
-    c:=N((a+b)/2);
+    c:=N(Eval((a+b)/2));
 //Echo(a,b,c);
     r := Fail;
 //Echo("newton1",`Hold(Newton(@p,x,@c,@prec,@a,@b)));
@@ -273,7 +273,7 @@ FindRealRoots(_p,_Mmin,_Mmax) <--
       ];
       r:=c;
     ];
-    result[i] := N((r/10)*(10),requiredPrec);
+    result[i] := N(Eval((r/10)*(10)),requiredPrec);
   ];
   Precision(requiredPrec);
   result;

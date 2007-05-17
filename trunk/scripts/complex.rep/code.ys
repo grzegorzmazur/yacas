@@ -35,7 +35,7 @@ IsComplexII(_c) <-- (ImII(c) != 0);
 
 
 
-0 # Complex(_r,0) <-- r;
+0 # Complex(_r,i_IsZero) <-- r;
 2 # Complex(Complex(_r1,_i1),_i2) <-- Complex(r1,i1+i2);
 2 # Complex(_r1,Complex(_r2,_i2)) <-- Complex(r1-i2,r2);
 
@@ -84,12 +84,12 @@ IsNotComplex(x) := Not(IsComplex(x));
 
 
 // Multiplication in combination with complex numbers in the light of infinity
-250 # Complex(0,_i) * x_IsInfinity <-- Complex(0,i*x);
-250 # Complex(_r,0) * x_IsInfinity <-- Complex(r*x,0);
+250 # Complex(r_IsZero,_i) * x_IsInfinity <-- Complex(0,i*x);
+250 # Complex(_r,i_IsZero) * x_IsInfinity <-- Complex(r*x,0);
 251 # Complex(_r,_i) * x_IsInfinity <-- Complex(r*x,i*x);
 
-250 # x_IsInfinity * Complex(0,_i) <-- Complex(0,i*x);
-250 # x_IsInfinity * Complex(_r,0) <-- Complex(r*x,0);
+250 # x_IsInfinity * Complex(r_IsZero,_i) <-- Complex(0,i*x);
+250 # x_IsInfinity * Complex(_r,i_IsZero) <-- Complex(r*x,0);
 251 # x_IsInfinity * Complex(_r,_i) <-- Complex(r*x,i*x);
 
 
@@ -111,11 +111,11 @@ IsNotComplex(x) := Not(IsComplex(x));
 110 # (Complex(_r,_i) ^ x_IsRationalOrNumber)_(Not(IsInteger(x))) <-- Exp(x*Ln(Complex(r,i)));
 
 // This is commented out because it used MathPower so (2*I)^(-10) became a floating-point number. Now everything is handled by binary algorithm below
-//120 # Complex(0,_i) ^ n_IsInteger <-- {1,I,-1,-I}[1+Mod(n,4)] * i^n;
+//120 # Complex(r_IsZero,_i) ^ n_IsInteger <-- {1,I,-1,-I}[1+Mod(n,4)] * i^n;
 
 123 # Complex(_r, _i) ^ n_IsNegativeInteger <-- 1/Complex(r, i)^(-n);
 
-124 # Complex(_r, _i) ^ 0 <-- 1;	// cannot have Complex(0,0) here
+124 # Complex(_r, _i) ^ (p_IsZero) <-- 1;	// cannot have Complex(0,0) here
 
 125 # Complex(_r, _i) ^ n_IsPositiveInteger <--
 [

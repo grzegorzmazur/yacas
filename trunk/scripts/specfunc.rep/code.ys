@@ -17,8 +17,8 @@
 20 # Gamma(n_IsRationalOrNumber)_(IsPositiveInteger(n) Or FloatIsInt(2*n)) <-- Eval((n-1)!);
 20 # LnGamma(n_IsRationalOrNumber)_(IsPositiveInteger(n) Or FloatIsInt(2*n)) <-- Eval(Ln((n-1)!));
 
-30 # Gamma(x_IsConstant)_(Numeric) <-- GammaNum(N(x));
-30 # LnGamma(x_IsConstant)_(Numeric) <-- LnGammaNum(N(x));
+30 # Gamma(x_IsConstant)_(Numeric) <-- GammaNum(N(Eval(x)));
+30 # LnGamma(x_IsConstant)_(Numeric) <-- LnGammaNum(N(Eval(x)));
 
 /////////////////////////////////////////////////
 /// Riemann's Zeta function
@@ -34,7 +34,7 @@
 11 # Zeta(n_IsInfinity) <-- 1;
 
 /// compute numeric value
-20 # Zeta(s_IsConstant)_(Numeric) <-- ZetaNum(N(s));
+20 # Zeta(s_IsConstant)_(Numeric) <-- ZetaNum(N(Eval(s)));
 
 /////////////////////////////////////////////////
 /// Bernoulli numbers and polynomials
@@ -147,13 +147,13 @@ Function("ApproxInfSum",{expr,start,x,c})
 //        eps:=5*10^(-prec);
         eps:=10^(-prec);
 //Echo(expr);
-//Echo("     eps = ",N(eps));
+//Echo("     eps = ",N(Eval(eps)));
 
         term:=1;
         k:=start;
         result:=0;
         While( N(Abs(term) >= eps) )[
-                term:=N(expr);
+                term:=N(Eval(expr));
 		//Echo({"term is ",term});
                 k:=k+1;
 		result:=result+term;
@@ -164,7 +164,7 @@ Function("ApproxInfSum",{expr,start,x,c})
         // This should not round, only truncate
         // some outputs will be off by one in the last digit
 
-//Echo("lastterm = ",N(term));
+//Echo("lastterm = ",N(Eval(term)));
 
 //Echo("r1",result);
 //Echo("r2",RoundTo(result,prec));
@@ -187,12 +187,19 @@ Function("ApproxInfSum",{expr,start,x,c})
 
 LocalSymbols(k)
 [
-	40 # Erf(_x)_(Numeric And (IsNumber(x) Or IsComplex(x)) And Abs(x) <= 1) <-- 2 / MathSqrt(Pi()) * x 
+	40 # Erf(_x)_(Numeric And (IsNumber(x) Or IsComplex(x)) And Abs(x) <= 1) <-- 
+[
+  Local(prec);
+  prec := GetPrecision(); // N(...) modifies the precision
+  2 / MathSqrt(Pi()) * x 
 	* SumTaylorNum(x^2, 1, {{k}, -(2*k-1)/(2*k+1)/k},
 	// the number of terms n must satisfy n*Ln(n/Exp(1))>10^prec 
 //	Hold({{k}, [Echo(k); k;]}) @
-		N(1+87/32*Exp(LambertW(GetPrecision()*421/497)), 10)
+		N(1+87/32*Exp(LambertW(prec*421/497)), 20)
 	);
+
+];
+
 ];	// LocalSymbols(k)
 
 // asymptotic expansion, can be used only for low enough precision or large enough |x| (see predicates). Also works for complex x.
