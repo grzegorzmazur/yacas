@@ -552,8 +552,8 @@ class MathCommands
          new YacasEvaluator(new LispGarbageCollect(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "GarbageCollect");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispLazyGlobal(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "LazyGlobal");
+         new YacasEvaluator(new LispSetGlobalLazyVariable(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
+         "SetGlobalLazyVariable");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispPatchLoad(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "PatchLoad");
@@ -714,7 +714,7 @@ class MathCommands
   /// should be evaluated. The real work is done by
   /// LispEnvironment::SetVariable() . 
   /// \sa LispSetVar(), LispMacroSetVar()
-  static void InternalSetVar(LispEnvironment aEnvironment, int aStackTop, boolean aMacroMode) throws Exception
+  static void InternalSetVar(LispEnvironment aEnvironment, int aStackTop, boolean aMacroMode, boolean aGlobalLazyVariable) throws Exception
   {
     String varstring=null;
     if (aMacroMode)
@@ -732,7 +732,7 @@ class MathCommands
     
     LispPtr result = new LispPtr();
     aEnvironment.iEvaluator.Eval(aEnvironment, result, YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 2));
-    aEnvironment.SetVariable(varstring, result);
+    aEnvironment.SetVariable(varstring, result, aGlobalLazyVariable);
     LispStandard.InternalTrue(aEnvironment,YacasEvalCaller.RESULT(aEnvironment, aStackTop));
   }
 
@@ -1302,7 +1302,7 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      MathCommands.InternalSetVar(aEnvironment, aStackTop, false);
+      MathCommands.InternalSetVar(aEnvironment, aStackTop, false, false);
     }
   }
 
@@ -1310,7 +1310,15 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      MathCommands.InternalSetVar(aEnvironment, aStackTop, true);
+      MathCommands.InternalSetVar(aEnvironment, aStackTop, true, false);
+    }
+  }
+
+  class LispSetGlobalLazyVariable extends YacasEvalCaller
+  {
+    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
+    {
+      MathCommands.InternalSetVar(aEnvironment, aStackTop, false, true);
     }
   }
 
@@ -3822,17 +3830,6 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.HashTable().GarbageCollect();
-      LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
-    }
-  }
-
-  class LispLazyGlobal extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      String string = ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
-      LispError.CHK_ARG_CORE(aEnvironment,aStackTop,string != null, 1);
-      aEnvironment.SetGlobalEvaluates(string);
       LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
     }
   }

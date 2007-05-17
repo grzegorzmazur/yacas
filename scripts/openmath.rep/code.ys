@@ -29,8 +29,7 @@ Rule("OMREP",1,1,True)
       TrapError(Set(stringOut,ToString()[Secure(Set(result,Eval(input)));]),Set(errorObject,OMGetCoreError()));
       If(Not(errorObject = ""), errorObject);
       If(Not(stringOut = ""), WriteString(stringOut));
-      Set(%,result);
-      LazyGlobal(%);
+      SetGlobalLazyVariable(%,result);
       If(GetPrettyPrinter()="",
       [
         Apply("OMForm",{result});

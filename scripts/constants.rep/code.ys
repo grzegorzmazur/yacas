@@ -8,8 +8,7 @@
  * with "Complex".
  */
 
-Set(I,Complex(0,1));
-LazyGlobal(I);
+SetGlobalLazyVariable(I,Complex(0,1));
 
 //////////////////////////////////////////////////
 /// Cached constants support and definition of Pi
@@ -87,9 +86,10 @@ Function("AssignCachedConstantsN", {})
 	Local(var);
 	ForEach(var, AssocIndices(CacheOfConstantsN))
 	[
-		MacroSet(Atom(var), UnList({Atom(var)}));	// Pi:=Hold(Pi());
-		Eval(UnList({LazyGlobal, Atom(var)}));	// LazyGlobal(Pi);
-		// this way the routine Pi() will be actually called only when the variable is used
+		MacroClear(Atom(var));
+    Set(var,Atom(var));
+		// this way the routine Pi() will be actually called only when the variable 'Pi' is used, etcetera.
+    `SetGlobalLazyVariable((@var), UnList({var}));
 	];
 ];
 UnFence("AssignCachedConstantsN", 0);

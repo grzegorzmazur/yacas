@@ -11,7 +11,7 @@
 {%} evaluates to the previous result on the command line. {%} is a global
 variable that is bound to the previous result from the command line.
 Using {%} will evaluate the previous result. (This uses the functionality
-offered by the {LazyGlobal} command).
+offered by the {SetGlobalLazyVariable} command).
 
 Typical examples are {Simplify(%)} and {PrettyForm(%)} to simplify and show the result in a nice
 form respectively.
@@ -29,7 +29,7 @@ form respectively.
 	
 	
 
-*SEE LazyGlobal
+*SEE SetGlobalLazyVariable
 
 *CMD True, False --- boolean constants
 *CORE

@@ -1348,7 +1348,7 @@
 
 (defun yacas-fn-lazyglobal ()
   (interactive)
-  (insert "LazyGlobal()")
+  (insert "SetGlobalLazyVariable()")
   (forward-char -1)
   (message "Args: variable"))
 
@@ -1816,7 +1816,7 @@
   (list
    "Variables"
    ["Clear" yacas-fn-clear]
-   ["LazyGlobal" yacas-fn-lazyglobal]
+   ["SetGlobalLazyVariable" yacas-fn-lazyglobal]
    ["Local" yacas-fn-local]
    ["MacroClear" yacas-fn-macroclear]
    ["MacroLocal" yacas-fn-macrolocal]

@@ -164,16 +164,20 @@ class LispEnvironment
     return null;
   }
 
-  void SetVariable(String aVariable, LispPtr aValue) throws Exception
+  void SetVariable(String aVariable, LispPtr aValue, boolean aGlobalLazyVariable) throws Exception
   {
     LispPtr local = FindLocal(aVariable);
     if (local != null)
     {
-        local.Set(aValue.Get());
-        return;
+      local.Set(aValue.Get());
+      return;
     }
-
-    iGlobals.SetAssociation(new LispGlobalVariable(aValue), aVariable);
+    LispGlobalVariable global = new LispGlobalVariable(aValue);
+    iGlobals.SetAssociation(global, aVariable);
+    if (aGlobalLazyVariable)
+    {
+      global.SetEvalBeforeReturn(true);
+    }
   }
 
   void GetVariable(String aVariable,LispPtr aResult) throws Exception
@@ -201,13 +205,6 @@ class LispEnvironment
         return;
       }
     }
-  }
-
-  void SetGlobalEvaluates(String aVariable) throws Exception
-  {
-    LispGlobalVariable l = (LispGlobalVariable)iGlobals.LookUp(aVariable);
-    LispError.Check(l != null,LispError.KLispErrInvalidArg);
-    l.SetEvalBeforeReturn(true);
   }
 
   void UnsetVariable(String aString) throws Exception

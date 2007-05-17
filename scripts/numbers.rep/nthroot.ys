@@ -1,5 +1,5 @@
 //////
-// $Id: nthroot.ys,v 1.4 2006-03-26 12:49:14 ayalpinkus Exp $
+// $Id: nthroot.ys,v 1.5 2007-05-17 11:56:45 ayalpinkus Exp $
 // calculation/simplifaction of nth roots of nonnegative integers
 // NthRoot         - interface function
 // NthRoot'Calc    - actually calculate/simplifies
@@ -112,11 +112,11 @@ Function("NthRoot'Save",{m,n,r})
    ]);
 ];
 
-Function("NthRoot'Clear",{}) Set(NthRoot'Table,List());
+//TODO why is NthRoot'Table both lazy global and protected with LocalSymbols?
+Function("NthRoot'Clear",{}) SetGlobalLazyVariable(NthRoot'Table,List());
 
 // create empty table
 NthRoot'Clear();
-LazyGlobal(NthRoot'Table);
 
 ]; // LocalSymbols(m,n,r,NthRoot'Table);
 
