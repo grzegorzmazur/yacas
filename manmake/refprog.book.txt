@@ -873,8 +873,8 @@ The error object consists of the string {"str"} and an arbitrary
 expression {expr}. The string should be used to classify the kind of error that
 has occurred, for example "domain" or "format". The error object can be any expression that might be useful for handling the error later;
 for example, a list of erroneous values and explanations.
-The association list of error objects is currently the global
-variable {ErrorTableau}.
+The association list of error objects is currently obtainable through
+the function {GetErrorTableau()}.
 
 If the parameter {expr} is missing, {Assert} substitutes {True}. If both optional parameters {"str"} and {expr} are missing, {Assert} creates an error of class {"generic"}.
 
@@ -911,7 +911,7 @@ No more errors left:
 	In> DumpErrors()
 	Out> True;
 
-*SEE IsError, DumpErrors, Check, GetError, ClearError, ClearErrors
+*SEE IsError, DumpErrors, Check, GetError, ClearError, ClearErrors, GetErrorTableau
 
 *CMD DumpErrors, ClearErrors --- simple error handlers
 *STD
@@ -947,11 +947,12 @@ error we are interested in. It returns {True} if any errors of the given class
 *SEE GetError, ClearError, Assert, Check
 
 
-*CMD GetError, ClearError --- custom errors handlers
+*CMD GetError, ClearError, GetErrorTableau --- custom errors handlers
 *STD
 *CALL
 	GetError("str")
 	ClearError("str")
+	GetErrorTableau()
 
 *PARMS
 
@@ -969,6 +970,7 @@ reported.
 {GetError("str")}. It deletes at most one error object. It returns {True} if an
 object was found and deleted, and {False} otherwise.
 
+{GetErrorTableau()} returns the entire association list of currently reported errors.
 
 *E.G.
 

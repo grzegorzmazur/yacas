@@ -1,6 +1,7 @@
 Print
 IsError
 Assert
+GetErrorTableau
 ClearErrors
 DumpErrors
 ClearError
