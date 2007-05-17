@@ -719,10 +719,12 @@ should become apparent.
 
 *SEE Subst
 
-*CMD SetHelpBrowser --- set the HTML browser to use for help
+*CMD SetHelpBrowser, GetHelpBrowser --- set the HTML browser to use for help
 *STD
 *CALL
 	SetHelpBrowser(helpbrowser)
+
+	GetHelpBrowser()
 
 *PARMS
 
@@ -739,7 +741,9 @@ file {~/.yacasrc} and add a line to set the browser in there.
 *E.G. notest
 
 	In> SetHelpBrowser("netscape")
-	Out> "netscape";
+	Out> True
+	In> GetHelpBrowser()
+	Out> "netscape"
 	In> ??
 
 *SEE Help

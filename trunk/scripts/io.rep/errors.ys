@@ -2,30 +2,36 @@
 /// ErrorTableau, Assert, IsError --- global error reporting
 //////////////////////////////////////////////////
 
-/// global error tableau. Its entries do not have to be lists.
-Set(ErrorTableau, {});
+LocalSymbols(ErrorTableau) [
 
-ClearErrors() <-- Set(ErrorTableau, {});
+  /// global error tableau. Its entries do not have to be lists.
+  Set(ErrorTableau, {});
 
-/// aux function to check for corrupt tableau
-CheckErrorTableau() <--
-If(
-	Not IsList(ErrorTableau),
-	Set(ErrorTableau, {{"general", "corrupted ErrorTableau"}})
-);
+  GetErrorTableau() := ErrorTableau;
+
+  ClearErrors() <-- Set(ErrorTableau, {});
+
+  /// aux function to check for corrupt tableau
+  CheckErrorTableau() <--
+  If(
+    Not IsList(ErrorTableau),
+    Set(ErrorTableau, {{"general", "corrupted ErrorTableau"}})
+  );
+
+]; // LocalSymbols(ErrorTableau)
 
 /// check for errors
 IsError() <--
 [
 	CheckErrorTableau();
-	Length(ErrorTableau)>0;
+	Length(GetErrorTableau())>0;
 ];
 
 /// check for errors of a given kind
 IsError(error'class_IsString) <--
 [
 	CheckErrorTableau();
-	ErrorTableau[error'class] != Empty;
+	GetErrorTableau()[error'class] != Empty;
 ];
 
 /// post an error if assertion fails
@@ -35,7 +41,7 @@ IsError(error'class_IsString) <--
 	If(Equals(predicate, True),	// if it does not evaluate to True, it's an error
 		True,
 		[	// error occurred, need to post error'object
-			DestructiveAppend(ErrorTableau, {error'class, error'object});
+			DestructiveAppend(GetErrorTableau(), {error'class, error'object});
 			False;
 		]
 	);
@@ -52,7 +58,7 @@ DumpErrors() <--
 [
 	Local(error'object, error'word);
 	CheckErrorTableau();
-	ForEach(error'object, ErrorTableau)
+	ForEach(error'object, GetErrorTableau())
 	[	// error'object might be e.g. {"critical", {"bad bad", -1000}}
 		If(
 			IsList(error'object),
@@ -86,7 +92,7 @@ DumpErrors() <--
 GetError(error'class_IsString) <--
 [
 	Local(error);
-	error := ErrorTableau[error'class];
+	error := GetErrorTableau()[error'class];
 	If(
 		error != Empty,
 		error,
@@ -95,6 +101,8 @@ GetError(error'class_IsString) <--
 ];
 
 /// delete error
-ClearError(error'class_IsString) <-- AssocDelete(ErrorTableau, error'class);
+ClearError(error'class_IsString) <-- AssocDelete(GetErrorTableau(), error'class);
+
 
 //////////////////////////////////////////////////
+

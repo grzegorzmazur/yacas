@@ -1225,7 +1225,7 @@ for this error. The error object can be any expression, but it is
 probably a good idea to choose a short and descriptive string for the
 error type.
 
-The global variable {ErrorTableau} is an associative list that
+The function {GetErrorTableau()} returns an associative list that
 accumulates all reported error objects. When errors are "handled",
 their objects should be removed from the list. The utility function
 {DumpErrors()} is a simple error handler that prints all errors and
