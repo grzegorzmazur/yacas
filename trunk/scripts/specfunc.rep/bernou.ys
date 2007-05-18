@@ -10,7 +10,7 @@
 /// Assume n>=2
 20 # BernoulliArray(n_IsInteger) <-- [
 	Local(B, i, k, k2, bin);
-	If (Verbose, Echo({"BernoulliArray: using direct recursion, n = ", n}));
+	If (InVerboseMode(), Echo({"BernoulliArray: using direct recursion, n = ", n}));
 	B:=ArrayCreate(n+1, 0);	// array of B[k], k=1,2,... where B[1] is the 0th Bernoulli number
 	// it would be better not to store the odd elements but let's optimize this later
 	// we could also maintain a global cache of Bernoulli numbers computed so far, but it won't really speed up things at large n
@@ -63,7 +63,7 @@ Bernoulli1(n_IsEven)_(n>=2) <-- [
 	Precision(
 		Ceil(N((1/2*Ln(8*Pi*n)-n+n*Ln(n/2/Pi))/Ln(10)))+3	// 3 guard digits
 	);
-	If (Verbose, Echo({"Bernoulli: using zeta funcion, precision ", GetPrecision(), ", n = ", n}));
+	If (InVerboseMode(), Echo({"Bernoulli: using zeta funcion, precision ", GetPrecision(), ", n = ", n}));
 	B := Floor(N(	// compute integer part of B
 		If(	// use different methods to compute Zeta function
 			n>250,	// threshold is roughly right for internal math

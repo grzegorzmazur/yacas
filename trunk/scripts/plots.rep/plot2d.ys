@@ -128,7 +128,7 @@ Function() Plot2D(func, range, options, ...);
 		);
 		// compute all other data points
 		DestructiveAppend(all'values, Plot2D'get'data(func, var, c, fc, delta, options'hash));
-		If(Verbose, Echo({"Plot2D: using ", Length(all'values[Length(all'values)]), " points for function ", func}), True);
+		If(InVerboseMode(), Echo({"Plot2D: using ", Length(all'values[Length(all'values)]), " points for function ", func}), True);
 	];
 	// call the specified output backend
 	Plot2D'outputs()[options'hash["output"]] @ {all'values, options'hash};

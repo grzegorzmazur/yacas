@@ -150,7 +150,7 @@ HoldArg("TeXMathD", x);
 TeXMath(_x) <-- TeXForm(x);
 TeXMathD(_x) <-- "$" : TeXForm(x) : "$";
 // special form: punctuation at the end of a displayed equation
-TeXMathD(_x, _string) <-- "$$" : TeXForm(x, TeXFormMaxPrec) : string : "$$";
+TeXMathD(_x, _string) <-- "$$" : TeXForm(x, TeXFormMaxPrec()) : string : "$$";
 
 /* stuff for refman */
 

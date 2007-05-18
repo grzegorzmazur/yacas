@@ -165,8 +165,8 @@ Function() Plot3DS(func, xrange, yrange, options, ...);
 		);
 		// compute all other data points
 		DestructiveAppend(all'values, RemoveRepeated(HeapSort( Plot3DS'get'data(func, var, {cx, cy, fc}, {xdelta, ydelta}, options'hash), Hold({{x,y},x[1]<y[1] Or x[1] = y[1] And x[2] <= y[2] } ) )) );
-		If(Verbose, Echo({"Plot3DS: using ", Length(all'values[Length(all'values)]), " points for function ", func}), True);
-		If(Verbose, Echo({"Plot3DS: max. used ", 2^(options'hash["depth"] - options'hash["used depth"]), "subdivisions for ", func}), True);
+		If(InVerboseMode(), Echo({"Plot3DS: using ", Length(all'values[Length(all'values)]), " points for function ", func}), True);
+		If(InVerboseMode(), Echo({"Plot3DS: max. used ", 2^(options'hash["depth"] - options'hash["used depth"]), "subdivisions for ", func}), True);
 	];
 	// call the specified output backend
 	Plot3DS'outputs()[options'hash["output"]] @ {all'values, options'hash};

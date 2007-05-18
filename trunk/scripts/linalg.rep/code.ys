@@ -731,7 +731,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
         x:=ZeroVector(rowsb);
 
 	x[rowsb]:=b[rowsb]/matrix[rowsb][rowsb];
-	If(Verbose,Echo({"set x[",rowsb,"] = ",b[rowsb]/matrix[rowsb][rowsb]}));
+	If(InVerboseMode(),Echo({"set x[",rowsb,"] = ",b[rowsb]/matrix[rowsb][rowsb]}));
 
 	ForEach(i,(rowsb-1) .. 1 )[
 		s:=b[i];
@@ -739,7 +739,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 			s:= s - matrix[i][j]*x[j];
 		];
 		x[i]:= s/matrix[i][i];
-		If(Verbose,Echo({"set x[",i,"] = ",s/matrix[i][i]}));
+		If(InVerboseMode(),Echo({"set x[",i,"] = ",s/matrix[i][i]}));
 	];
         x;
 ];
@@ -754,7 +754,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	x:=ZeroVector(rowsb);
 
 	x[1]:=b[1]/matrix[1][1];
-	If(Verbose,Echo({"set x[1] = ",b[1]/matrix[1][1]}));
+	If(InVerboseMode(),Echo({"set x[1] = ",b[1]/matrix[1][1]}));
 
 	ForEach(i,2 .. rowsb )[
 		s:=b[i];
@@ -762,7 +762,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 			s:= s - matrix[i][j]*x[j];
 		];
 		x[i]:= s/matrix[i][i];
-		If(Verbose,Echo({"set x[",i,"] = ",s/matrix[i][i]}));
+		If(InVerboseMode(),Echo({"set x[",i,"] = ",s/matrix[i][i]}));
 	];
 	x;
 ];
@@ -792,7 +792,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 			Local(p,tmp);
 			p:=i+1;
 			While( aug[p][p] = 0 )[ p++; ];
-			If(Verbose, Echo({"switching row ",i,"with ",p}) );
+			If(InVerboseMode(), Echo({"switching row ",i,"with ",p}) );
 			tmp:=aug[i];
 			aug[i]:=aug[p];
 			aug[p]:=tmp;
@@ -810,7 +810,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	];
 	//PrettyForm(aug);
 	x[rowsb]:=aug[rowsb][rowsb+1]/aug[rowsb][rowsb];
-	If(Verbose,Echo({"set x[",rowsb,"] = ",x[rowsb] }));
+	If(InVerboseMode(),Echo({"set x[",rowsb,"] = ",x[rowsb] }));
 
 	ForEach(i,(rowsb-1) .. 1 )[
 		s:=aug[i][rowsb+1];
@@ -818,7 +818,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 			s := s - aug[i][j]*x[j];
 		];
 		x[i]:=s/aug[i][i];
-		If(Verbose,Echo({"set x[",i,"] = ",x[i] }));
+		If(InVerboseMode(),Echo({"set x[",i,"] = ",x[i] }));
 	];
 	x;
 

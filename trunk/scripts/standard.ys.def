@@ -20,4 +20,6 @@ else
 N
 NonN
 InNumericMode
+V
+InVerboseMode
 }

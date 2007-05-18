@@ -211,13 +211,16 @@ CyclotomicFactor(_a,_b) <--
  poly2 := {{0,1}};
  ForEach (d,divisors)
  [ 
-   If(Verbose,Echo("d=",d));
+   If(InVerboseMode(),Echo("d=",d));
    f:= CyclotomicFactor(n/d[1],n/d[2]);
    If (d[3]=1,poly1:=MultiplyTerms(poly1,f),poly2:=MultiplyTerms(poly2,f));
-   If(Verbose, [ Echo("poly1=",poly1);
-   Echo("poly2=",poly2);]);
+   If(InVerboseMode(), 
+     [ 
+       Echo("poly1=",poly1);
+       Echo("poly2=",poly2);
+     ]);
  ];
- If(Verbose,Echo("End ForEach"));
+ If(InVerboseMode(),Echo("End ForEach"));
  result := If(poly2={{0,1}},poly1,DivTermList(poly1,poly2));
  SparseUniVar(x,result); 
 ];

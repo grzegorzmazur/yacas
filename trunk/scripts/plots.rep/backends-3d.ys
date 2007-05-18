@@ -96,7 +96,7 @@ Plot3DS'datafile(values_IsList, _options'hash) <--
 		filename := options'hash["filename"]:String(func);
 		DestructiveAppend(filename'list, filename);
 		ToFile(filename) ForEach(item, values[func]) WriteDataItem(item, options'hash);
-		If(Verbose, Echo( "Plot3DS'datafile: created file '" : filename :  "'"), True);
+		If(InVerboseMode(), Echo( "Plot3DS'datafile: created file '" : filename :  "'"), True);
 	];
 	filename'list;
 ];

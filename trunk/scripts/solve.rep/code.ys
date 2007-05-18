@@ -267,7 +267,7 @@ UnFence("Solve'SimpleBackSubstitution'FindAlternativeForms",1);
  */
 10 # Solve'SimpleBackSubstitution(eq_IsList,var_IsList) <--
 [
- If(Verbose, Echo({"Entering Solve'SimpleBackSubstitution"}));
+ If(InVerboseMode(), Echo({"Entering Solve'SimpleBackSubstitution"}));
 
   Local(result,i,j,nrvar,nreq,sub,nrSet,origEq);
   eq:=FlatCopy(eq);
@@ -309,7 +309,7 @@ UnFence("Solve'SimpleBackSubstitution'FindAlternativeForms",1);
            sub := sub[2]-sub[3];
 //Echo("using ",sub);
            sub:=SuchThat(sub,var[i]);
-           If(Verbose, Echo({"From ",eq[j]," it follows that ",var[i]," = ",sub})); 
+           If(InVerboseMode(), Echo({"From ",eq[j]," it follows that ",var[i]," = ",sub})); 
            If(SolveFullSimplify=True,
              result:=Simplify(Subst(var[i],sub)result),
              result[1][i]:=sub
@@ -333,7 +333,7 @@ UnFence("Solve'SimpleBackSubstitution'FindAlternativeForms",1);
 //             eq[k]:=Simplify(eq[k]);
 //             eq[k]:=Simplify(eq[k]); //@@@??? TODO I found one example where simplifying twice gives a different result from simplifying once!
              If(original!=(0==0) And eq[k] = (0 == 0),reset:=True);
-             If(Verbose, Echo({"   ",original," simplifies to ",eq[k]}));
+             If(InVerboseMode(), Echo({"   ",original," simplifies to ",eq[k]}));
            ]);
            nreq:=Length(eq);
            vlist:=VarListAll(eq[j],`Lambda({pt},Contains(@var,pt)));
@@ -376,7 +376,7 @@ UnFence("Solve'SimpleBackSubstitution'FindAlternativeForms",1);
 
 
 /* Echo({"tested is ",tested});  */
- If(Verbose, Echo({"Leaving Solve'SimpleBackSubstitution"}));
+ If(InVerboseMode(), Echo({"Leaving Solve'SimpleBackSubstitution"}));
   tested;
 ];
 
