@@ -56,33 +56,30 @@ ZetaNumCoeffEj(j,n) := [
 
 /// fast numerical calculation of Zeta(3) using a special series
 
+
+
+
 Zeta3() :=
 [
-	Local(result, old'result, prev'prec, k, term, prev'Numeric);
-	For(
-	[
-		k:=1;
-		result := 1;
-		old'result := -1;
-		term := 1;
-		prev'Numeric := Numeric;
-		Numeric := True;
-		prev'prec := GetPrecision();
-		// need guard digits
-		Precision(prev'prec+IntLog(prev'prec,10)+1);
-	],
-	old'result!=result,
-	k++
-	)
-	[
-		old'result := result;
-		term := -term * k^2 / ((2*k+1)*(2*k));
-		result := result + term/(k+1)^2;
-	];
-	
-	result := 5/4*result;
-	Numeric := prev'Numeric;
-	Precision(prev'prec);
+	Local(result, old'result, k, term);
+  N([
+    For(
+    [
+      k:=1;
+      result := 1;
+      old'result := -1;
+      term := 1;
+    ],
+    old'result!=result,
+    k++
+    )
+    [
+      old'result := result;
+      term := -term * k^2 / ((2*k+1)*(2*k));
+      result := result + term/(k+1)^2;
+    ];
+    result := 5/4*result;
+  ], GetPrecision()+IntLog(GetPrecision(),10)+1);
 	
 	result;
 ];

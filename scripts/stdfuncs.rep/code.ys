@@ -1,5 +1,5 @@
 /* Standard analytic functions */
-2 # Sin(x_IsNumber)_(Numeric) <-- SinNum(x);
+2 # Sin(x_IsNumber)_InNumericMode() <-- SinNum(x);
 4 # Sin(ArcSin(_x))           <-- x;
 4 # Sin(ArcCos(_x)) <-- Sqrt(1-x^2);
 4 # Sin(ArcTan(_x)) <-- x/Sqrt(1+x^2);
@@ -28,12 +28,12 @@
 
 10 # SinMap(_n) <-- UnList({Atom("Sin"),n*Pi});
 
-200 # Sin(v_CanBeUni(Pi))_(Not(Numeric) And Degree(v,Pi) < 2 And Coef(v,Pi,0) = 0) <--
+200 # Sin(v_CanBeUni(Pi))_(Not(InNumericMode()) And Degree(v,Pi) < 2 And Coef(v,Pi,0) = 0) <--
 [
   SinMap(Coef(v,Pi,1));
 ];  
 
-2 # Cos(x_IsNumber)_(Numeric) <-- CosNum(x);
+2 # Cos(x_IsNumber)_InNumericMode() <-- CosNum(x);
 4 # Cos(ArcCos(_x))           <-- x;
 4 # Cos(ArcSin(_x)) <-- Sqrt(1-x^2);
 4 # Cos(ArcTan(_x)) <-- 1/Sqrt(1+x^2);
@@ -61,7 +61,7 @@
 6 # Cos(Undefined) <-- Undefined;
 10 # CosMap(_n) <-- UnList({Atom("Cos"),n*Pi});
 
-200 # Cos(v_CanBeUni(Pi))_(Not(Numeric) And Degree(v,Pi) < 2 And Coef(v,Pi,0) = 0) <--
+200 # Cos(v_CanBeUni(Pi))_(Not(InNumericMode()) And Degree(v,Pi) < 2 And Coef(v,Pi,0) = 0) <--
       CosMap(Coef(v,Pi,1));
 
 400 # Cos(x_IsRationalOrNumber) <-- 
@@ -81,7 +81,7 @@
      ];
 
 
-2 # Tan(x_IsNumber)_(Numeric) <-- TanNum(x);
+2 # Tan(x_IsNumber)_InNumericMode() <-- TanNum(x);
 4 # Tan(ArcTan(_x))           <-- x;
 4 # Tan(ArcSin(_x)) <-- x/Sqrt(1-x^2);
 4 # Tan(ArcCos(_x)) <-- Sqrt(1-x^2)/x;
@@ -107,7 +107,7 @@
 
 10 # TanMap(_n) <-- UnList({Atom("Tan"),n*Pi});
 
-200 # Tan(v_CanBeUni(Pi))_(Not(Numeric) And Degree(v,Pi) < 2 And Coef(v,Pi,0) = 0) <--
+200 # Tan(v_CanBeUni(Pi))_(Not(InNumericMode()) And Degree(v,Pi) < 2 And Coef(v,Pi,0) = 0) <--
       TanMap(Coef(v,Pi,1));
 
 
@@ -125,7 +125,7 @@
 100 # Cot(_x)		<-- 1/Tan(x);
 
 
-2 # Exp(x_IsNumber)_(Numeric) <-- ExpNum(x);
+2 # Exp(x_IsNumber)_InNumericMode() <-- ExpNum(x);
 4 # Exp(Ln(_x))           <-- x;
 110 # Exp(Complex(_r,_i)) <--  Exp(r)*(Cos(i) + I*Sin(i));
 200 # Exp(0) <-- 1;
@@ -139,18 +139,18 @@
 2 # Ln(Undefined)                   <-- Undefined;
 
 /* 2 # Ln(-Infinity)                    <-- 0; */
-2 # Ln(x_IsNegativeNumber)_(Numeric) <-- Complex(Ln(-x), Pi);
-3 # Ln(x_IsNumber)_(Numeric And x>=1) <-- LnNum(x);
+2 # Ln(x_IsNegativeNumber)_InNumericMode() <-- Complex(Ln(-x), Pi);
+3 # Ln(x_IsNumber)_(InNumericMode() And x>=1) <-- LnNum(x);
 4 # Ln(Exp(_x))              <-- x;
 
 3 # Ln(Complex(_r,_i)) <-- Complex(Ln(Abs(Complex(r,i))), Arg(Complex(r,i)));
 4 # Ln(x_IsNegativeNumber) <-- Complex(Ln(-x), Pi);
-5 # Ln(x_IsNumber)_(Numeric And x<1) <-- - LnNum(MathDivide(1, x));
+5 # Ln(x_IsNumber)_(InNumericMode() And x<1) <-- - LnNum(MathDivide(1, x));
 
 
-2 # ArcSin(x_IsNumber)_(Numeric And Abs(x)<=1) <-- ArcSinNum(x);
+2 # ArcSin(x_IsNumber)_(InNumericMode() And Abs(x)<=1) <-- ArcSinNum(x);
 /// complex ArcSin
-3 # ArcSin(x_IsNumber)_(Numeric) <-- Sign(x)*(Pi/2+I*ArcCosh(x));
+3 # ArcSin(x_IsNumber)_InNumericMode() <-- Sign(x)*(Pi/2+I*ArcCosh(x));
 4 # ArcSin(Sin(_x))           <-- x;
 110 # ArcSin(Complex(_r,_i)) <--
     (- I) * Ln((I*Complex(r,i)) + ((1-(Complex(r,i)^2))^(1/2)));
@@ -168,7 +168,7 @@
 200 # ArcSin(_n)_(-n = Sqrt(1/2)) <-- -Pi/4;
 200 # ArcSin(_n)_(-n = 1/2) <-- -Pi/6;
 
-2 # ArcCos(x_IsNumber)_(Numeric) <-- Pi()/2-ArcSin(x);
+2 # ArcCos(x_IsNumber)_InNumericMode() <-- Pi()/2-ArcSin(x);
 4 # ArcCos(Cos(_x))           <-- x;
 5 # (ArcTan(x_IsConstant))_(IsNegativeNumber(N(Eval(x))))   <-- -ArcTan(-x);
 110 # ArcCos(Complex(_r,_i)) <--
@@ -205,14 +205,14 @@
 200 # ArcSin(Undefined) <-- Undefined;
 200 # ArcCos(Undefined) <-- Undefined;
 
-2 # Sinh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N(Eval( (Exp(x)-Exp(-x))/2 ));
-2 # Cosh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N(Eval( (Exp(x)+Exp(-x))/2 ));
-2 # Tanh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N(Eval( Sinh(x)/Cosh(x) ));
+2 # Sinh(_x)_(InNumericMode() And (IsNumber(x) Or Type(x) = "Complex")) <-- N(Eval( (Exp(x)-Exp(-x))/2 ));
+2 # Cosh(_x)_(InNumericMode() And (IsNumber(x) Or Type(x) = "Complex")) <-- N(Eval( (Exp(x)+Exp(-x))/2 ));
+2 # Tanh(_x)_(InNumericMode() And (IsNumber(x) Or Type(x) = "Complex")) <-- N(Eval( Sinh(x)/Cosh(x) ));
 
 
-10 # ArcSinh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N(Eval( Ln(x+Sqrt(x^2+1)) ));
-10 # ArcCosh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N(Eval( Ln(x+Sqrt(x^2-1)) ));
-10 # ArcTanh(_x)_(Numeric And (IsNumber(x) Or Type(x) = "Complex")) <-- N(Eval( Ln((1+x)/(1-x))/2 ));
+10 # ArcSinh(_x)_(InNumericMode() And (IsNumber(x) Or Type(x) = "Complex")) <-- N(Eval( Ln(x+Sqrt(x^2+1)) ));
+10 # ArcCosh(_x)_(InNumericMode() And (IsNumber(x) Or Type(x) = "Complex")) <-- N(Eval( Ln(x+Sqrt(x^2-1)) ));
+10 # ArcTanh(_x)_(InNumericMode() And (IsNumber(x) Or Type(x) = "Complex")) <-- N(Eval( Ln((1+x)/(1-x))/2 ));
 
 200 # ArcSinh(Infinity) <-- Infinity;
 200 # ArcSinh(-Infinity) <-- -Infinity;
@@ -296,4 +296,4 @@ ArcTanh(xlist_IsList) <-- MapSingle("ArcTanh",xlist);
 Exp(xlist_IsList) <-- MapSingle("Exp",xlist);
 Ln(xlist_IsList) <-- MapSingle("Ln",xlist);
 
-2 # ArcTan(x_IsNumber)_(Numeric) <-- ArcTanNum(x);
+2 # ArcTan(x_IsNumber)_InNumericMode() <-- ArcTanNum(x);

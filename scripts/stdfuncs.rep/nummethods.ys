@@ -1,6 +1,4 @@
 /// coded by Serge Winitzki. See essays documentation for algorithms.
-/* Note: These routines do not use N() but explicitly set Numeric or use core numerical functions. So they can be used in the definition of N() itself which needs to compute cached constants (otherwise there will be an infinite loop).
-*/
 
 //////////////////////////////////////////////////
 /// Numerical method: AGM sequence
@@ -65,14 +63,13 @@ If(
 1# SumTaylorNum0(_x, _nth'term'func, {}, _n'terms) <--
 [
 	Local(sum, k);
-	GlobalPush(Numeric);
-	Numeric := True;
-	// use Horner scheme starting from the last term
-	x:=Eval(x);
-	sum := 0;
-	For(k:=n'terms, k>=0, k--)
-		sum := MathAdd(sum*x, nth'term'func @ k);
-	GlobalPop(Numeric);
+  N([
+    // use Horner scheme starting from the last term
+    x:=Eval(x);
+    sum := 0;
+    For(k:=n'terms, k>=0, k--)
+      sum := MathAdd(sum*x, nth'term'func @ k);
+  ]);
 	sum;
 ];
 
@@ -81,24 +78,24 @@ If(
 2# SumTaylorNum0(_x, _nth'term'func, _next'term'factor, _n'terms) <--
 [
 	Local(sum, k, term, delta);
-	GlobalPush(Numeric);
-	Numeric := True;
-	x:=Eval(x);	// x must be floating-point
-	If (IsConstant(nth'term'func),
-		term := nth'term'func,
-		term := (nth'term'func @ {0}),
-	);
-	sum := term;	// sum must be floating-point
-	Numeric := False;
-	delta := 1;
-	For(k:=1, k<=n'terms And delta != 0, k++)
-	[
-		term := MultiplyNum(term, next'term'factor @ {k}, x);	// want to keep exact fractions here, but the result is floating-point
-		delta := sum;
-		sum := sum + term;	// term must be floating-point
-		delta := Abs(sum-delta);	// check for underflow
-	];
-	GlobalPop(Numeric);
+  N([
+    x:=Eval(x);	// x must be floating-point
+    If (IsConstant(nth'term'func),
+      term := nth'term'func,
+      term := (nth'term'func @ {0}),
+    );
+    sum := term;	// sum must be floating-point
+  ]);
+  NonN([
+    delta := 1;
+    For(k:=1, k<=n'terms And delta != 0, k++)
+    [
+      term := MultiplyNum(term, next'term'factor @ {k}, x);	// want to keep exact fractions here, but the result is floating-point
+      delta := sum;
+      sum := sum + term;	// term must be floating-point
+      delta := Abs(sum-delta);	// check for underflow
+    ];
+  ]);
 	sum;
 ];
 
@@ -117,55 +114,55 @@ SumTaylorNum1(x, nth'term'func, next'term'factor, n'terms) :=
 [
 	// need Sqrt(n'terms/2) units of storage (rows) and Sqrt(n'terms*2) columns. Let's underestimate the storage.
 	Local(sum, rows, cols, rows'tmp, last'power, i, j, x'power, term'tmp);
-	GlobalPush(Numeric);
-	Numeric := True;	// want to keep exact fractions
-	x:=Eval(x);	// x must be floating-point
-	rows := IntNthRoot(n'terms+1, 2);
-	cols := Div(n'terms+rows, rows);	// now: rows*cols >= n'terms+1
-	Check(rows>1 And cols>1, "SumTaylorNum1: Internal error: number of Taylor sum terms must be at least 4");
-	rows'tmp := ArrayCreate(rows, 0);
-	x'power := x ^ rows;	// do not use MathPower b/c x might be complex
-	// initialize partial sums (array rows'tmp) - the 0th column (i:=0)
-	// prepare term'tmp for the first element
-	// if we are using next'term'factor, then term'tmp is x^(rows*i)*a[rows*i]
-	// if we are not using it, then term'tmp is x^(rows*i)
-	If(
-		next'term'factor = {},
-		term'tmp := 1,
-//		term'tmp := (nth'term'func @ 0)	// floating-point
-		If (IsConstant(nth'term'func),
-			term'tmp := nth'term'func,
-			term'tmp := (nth'term'func @ {0}),
-		)
-	);
-	Numeric := False;	// want to keep exact fractions below
-	// do horizontal summation using term'tmp to get the first element
-	For(i:=0, i<cols, i++)
-	[
-		// add i'th term to each row
-		For(j:=0, j<rows And (i<cols-1 Or i*rows+j<=n'terms), j++)	// do this unless we are beyond the last term in the last column
-		[
-			// if we are using next'term'factor, then term'tmp is x^(rows*i)*a[rows*i]
-			// if we are not using it, then term'tmp is x^(rows*i)
-			If(
-				next'term'factor = {},	// no next'term'factor, so nth'term'func must be given
-				[
-					rows'tmp[j+1] := rows'tmp[j+1] + MultiplyNum(term'tmp, nth'term'func @ {i*rows+j});
-				],
-				[
-					rows'tmp[j+1] := rows'tmp[j+1] + term'tmp;	// floating-point
-					term'tmp := MultiplyNum(term'tmp, next'term'factor @ {i*rows+j+1});	// arguments may be rational but the result is floating-point
-				]
-			);
-		];
-		// update term'tmp for the next column
-		term'tmp := term'tmp*x'power;	// both floating-point
-	];
-	// do vertical summation using Horner's scheme
-	// now x'power = x^cols
-	For([j:=rows; sum:=0;], j>0, j--)
-		sum := sum*x + rows'tmp[j];
-	GlobalPop(Numeric);
+  N([ // want to keep exact fractions
+    x:=Eval(x);	// x must be floating-point
+    rows := IntNthRoot(n'terms+1, 2);
+    cols := Div(n'terms+rows, rows);	// now: rows*cols >= n'terms+1
+    Check(rows>1 And cols>1, "SumTaylorNum1: Internal error: number of Taylor sum terms must be at least 4");
+    rows'tmp := ArrayCreate(rows, 0);
+    x'power := x ^ rows;	// do not use MathPower b/c x might be complex
+    // initialize partial sums (array rows'tmp) - the 0th column (i:=0)
+    // prepare term'tmp for the first element
+    // if we are using next'term'factor, then term'tmp is x^(rows*i)*a[rows*i]
+    // if we are not using it, then term'tmp is x^(rows*i)
+    If(
+      next'term'factor = {},
+      term'tmp := 1,
+  //		term'tmp := (nth'term'func @ 0)	// floating-point
+      If (IsConstant(nth'term'func),
+        term'tmp := nth'term'func,
+        term'tmp := (nth'term'func @ {0}),
+      )
+    );
+  ]);
+  NonN([ // want to keep exact fractions below
+    // do horizontal summation using term'tmp to get the first element
+    For(i:=0, i<cols, i++)
+    [
+      // add i'th term to each row
+      For(j:=0, j<rows And (i<cols-1 Or i*rows+j<=n'terms), j++)	// do this unless we are beyond the last term in the last column
+      [
+        // if we are using next'term'factor, then term'tmp is x^(rows*i)*a[rows*i]
+        // if we are not using it, then term'tmp is x^(rows*i)
+        If(
+          next'term'factor = {},	// no next'term'factor, so nth'term'func must be given
+          [
+            rows'tmp[j+1] := rows'tmp[j+1] + MultiplyNum(term'tmp, nth'term'func @ {i*rows+j});
+          ],
+          [
+            rows'tmp[j+1] := rows'tmp[j+1] + term'tmp;	// floating-point
+            term'tmp := MultiplyNum(term'tmp, next'term'factor @ {i*rows+j+1});	// arguments may be rational but the result is floating-point
+          ]
+        );
+      ];
+      // update term'tmp for the next column
+      term'tmp := term'tmp*x'power;	// both floating-point
+    ];
+    // do vertical summation using Horner's scheme
+    // now x'power = x^cols
+    For([j:=rows; sum:=0;], j>0, j--)
+      sum := sum*x + rows'tmp[j];
+  ]);
 	sum;
 ];
 
@@ -186,7 +183,7 @@ Out> 2.7182818007;
 
 /// aux function: optimized numerical multiplication. Use MathMultiply() and MathDivide().
 /// optimization consists of multiplying or dividing by integers if one of the arguments is a rational number. This is presumably always better than floating-point calculations, except if we use Rationalize() on everything.
-/// note that currently this is not a big optimization b/c of slow arithmetic but it already helps for rational numbers under Numeric:=True and it will help even more when faster math is done
+/// note that currently this is not a big optimization b/c of slow arithmetic but it already helps for rational numbers under InNumericMode() returns True and it will help even more when faster math is done
 
 Function() MultiplyNum(x, y, ...);
 Function() MultiplyNum(x);
@@ -258,50 +255,49 @@ NewtonNum(_func, _x'init, _prec0, _order) <--
 	Check(prec0>=4, "NewtonNum: Error: initial precision must be at least 4");
 	Check(IsInteger(order) And order>1, "NewtonNum: Error: convergence order must be an integer and at least 2");
 	Local(x0, x1, prec, exact'digits, int'part, initial'tries);
-	GlobalPush(Numeric);
-	Numeric := True;
-	x0 := x'init;
-	prec := GetPrecision();
-	int'part := IntLog(Ceil(Abs(x0)), 10);	// how many extra digits for numbers like 100.2223
-	// int'part must be set to 0 if we have true floating-point semantics of Precision()
-	Precision(2+prec0-int'part);	// 2 guard digits
-	x1 := (func @ x0);	// let's run one more iteration by hand
-	// first, we get prec0 exact digits
-	exact'digits := 0;
-	initial'tries := 5;	// stop the loop the the initial value is not good
-	While(exact'digits*order < prec0 And initial'tries>0)
-	[
-		initial'tries--;
-		x0 := x1;
-		x1 := (func @ x0);
-		exact'digits := Common'digits(x0, x1);
-//		If(Verbose, Echo("NewtonNum: Info: got", exact'digits, "exact digits at prec. ", GetPrecision()));
-	];
-	// need to check that the initial precision is achieved
-	If(
-		Assert("value", {"NewtonNum: Error: need a more accurate initial value than", x'init})
-			exact'digits >= 1,
-  [
-	exact'digits :=Min(exact'digits, prec0+2);
-	// run until get prec/order exact digits
-	int'part := IntLog(Ceil(Abs(x1)), 10);	// how many extra digits for numbers like 100.2223
-	While(exact'digits*order <= prec)
-	[
-		exact'digits := exact'digits*order;
-		Precision(2+Min(exact'digits, Div(prec,order)+1)-int'part);
-		x0 := x1;
-		x1 := (func @ x0);
-//		If(Verbose, Echo("NewtonNum: Info: got", Common'digits(x0, x1), "exact digits at prec. ", GetPrecision()));
-	];
-	// last iteration by hand
-	Precision(2+prec);
-	x1 := RoundTo( (func @ x1), prec);
-  ],
-  // did not get a good initial value, so return what we were given
-  x1 := x'init
-	);
-	Precision(prec);
-	GlobalPop(Numeric);
+  N([
+    x0 := x'init;
+    prec := GetPrecision();
+    int'part := IntLog(Ceil(Abs(x0)), 10);	// how many extra digits for numbers like 100.2223
+    // int'part must be set to 0 if we have true floating-point semantics of Precision()
+    Precision(2+prec0-int'part);	// 2 guard digits
+    x1 := (func @ x0);	// let's run one more iteration by hand
+    // first, we get prec0 exact digits
+    exact'digits := 0;
+    initial'tries := 5;	// stop the loop the the initial value is not good
+    While(exact'digits*order < prec0 And initial'tries>0)
+    [
+      initial'tries--;
+      x0 := x1;
+      x1 := (func @ x0);
+      exact'digits := Common'digits(x0, x1);
+  //		If(Verbose, Echo("NewtonNum: Info: got", exact'digits, "exact digits at prec. ", GetPrecision()));
+    ];
+    // need to check that the initial precision is achieved
+    If(
+      Assert("value", {"NewtonNum: Error: need a more accurate initial value than", x'init})
+        exact'digits >= 1,
+    [
+    exact'digits :=Min(exact'digits, prec0+2);
+    // run until get prec/order exact digits
+    int'part := IntLog(Ceil(Abs(x1)), 10);	// how many extra digits for numbers like 100.2223
+    While(exact'digits*order <= prec)
+    [
+      exact'digits := exact'digits*order;
+      Precision(2+Min(exact'digits, Div(prec,order)+1)-int'part);
+      x0 := x1;
+      x1 := (func @ x0);
+  //		If(Verbose, Echo("NewtonNum: Info: got", Common'digits(x0, x1), "exact digits at prec. ", GetPrecision()));
+    ];
+    // last iteration by hand
+    Precision(2+prec);
+    x1 := RoundTo( (func @ x1), prec);
+    ],
+    // did not get a good initial value, so return what we were given
+    x1 := x'init
+    );
+    Precision(prec);
+  ]);
 	x1;
 ];
 

@@ -854,7 +854,7 @@ instances. For instance, when introducing a new function {f(x)},
 one can decide to define a derivative explicitly, and a way
 to simplify it numerically:
 
-	In> f(_x)_(Numeric) <-- Exp(x)
+	In> f(_x)_InNumericMode() <-- Exp(x)
 	Out> True;
 	In> (Deriv(_x)f(_y)) <-- f(y)*(Deriv(x)y);
 	Out> True;
@@ -1102,7 +1102,7 @@ possible and evaluate to floating-point only when explicitly told so (using
 {N()}). The general evaluation strategy for numerical functions such as {Sin} or {Gamma}
 is the following:
 
-*	1. If {Numeric}={True} and the arguments are numbers (perhaps complex
+*	1. If {InNumericMode()} returns {True} and the arguments are numbers (perhaps complex
 numbers), the function should evaluate its result in floating-point to current precision.
 *	2. Otherwise, if the arguments are such that the result can be calculated exactly, it should be
 evaluated and returned. E.g. {Sin(Pi/2)} returns {1}.
@@ -1131,7 +1131,7 @@ there are {Sin} and {MathSin}, {Ln} and {LnNum}, {Gamma} and {GammaNum}. (Here
 {MathSin} happens to be a core function but it is not essential.) The "numerical"
 functions always evaluate to floating-point results. The "symbolic" function
 serves as a front-end; it evaluates when the result can be expressed exactly,
-or calls the "numerical" function if {Numeric}={True}, and otherwise returns
+or calls the "numerical" function if {InNumericMode()} returns {True}, and otherwise returns
 unevaluated.
 
 The "symbolic" function usually has multiple rules while the
@@ -1139,7 +1139,7 @@ The "symbolic" function usually has multiple rules while the
 number-crunching code.
 
 
-	    Using {N()} and {Numeric} in scripts
+	    Using {N()} and {InNumericMode()} in scripts
 
 As a rule, {N()} should be avoided in code that implements basic
 numerical algorithms. This is because {N()} itself is implemented in
@@ -1149,8 +1149,6 @@ Arbitrary-precision math can be handled by core functions such as
 your code needs to evaluate $Sqrt(Pi)$ to many digits as an
 intermediate result, it is better to write {MathSqrt(Pi())} than
 {N(Sqrt(Pi))} because it makes for faster, more reliable code.
-Alternatively, your code may just explicitly declare {Numeric}={True}
-rather than use {N()} many times.
 
 	    Using {Precision()}
 
@@ -1209,10 +1207,12 @@ The "hard" error reporting facility is the function {Check}. For example, if {x}
 will immediately halt the execution of a Yacas script and print the
 error messsage. This is implemented as a C++ exception. A drawback of
 this mechanism is that the Yacas stack unwinding is not performed by
-the Yacas interpreter, so global variables such as {Numeric},
+the Yacas interpreter, so global variables such as {InNumericMode()},
 {Verbose}, {Precision()} may keep the intermediate values they had been
 assigned just before the error occurred. Also, sometimes it is better
 for the program to be able to catch the error and continue.
+
+*REM TODO: the above will hopefully be solved soon, as we can now trap exceptions in the scripts.
 
 The "soft" error reporting is provided by the functions {Assert} and {IsError}, e.g.
 	Assert("domain", x) x>0;

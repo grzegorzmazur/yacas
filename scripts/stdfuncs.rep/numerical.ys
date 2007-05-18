@@ -1,5 +1,5 @@
 /// low-level numerical calculations of elementary functions.
-/// These are only called if Numeric=True
+/// These are only called if InNumericMode() returns True
 
 //////////////////////////////////////////////////
 /// Trigonometric functions: Sin, Cos, Tan, ...
@@ -10,18 +10,13 @@
  */
 TruncRadian(_r) <--
 [
-  Local(twopi, need'precision);
+  Local(twopi);
   // increase precision by the number of digits of r before decimal point; enough to evaluate Abs(r) with 1 digit of precision
-  GlobalPush(Numeric);
-  Numeric:=True;
-  GlobalPush(GetPrecision());
-  need'precision := GetPrecision() + IntLog(Ceil(Abs(N(Eval(r), 1))), 10);
-  Precision(need'precision);
-  r:=Eval(r);
-  twopi:=2*Pi();
-  r:=r-MathFloor(r/twopi)*twopi;
-  Precision(GlobalPop());
-  GlobalPop(Numeric);
+  N([
+    r:=Eval(r);
+    twopi:=2*Pi();
+    r:=r-MathFloor(r/twopi)*twopi;
+  ], GetPrecision() + IntLog(Ceil(Abs(N(Eval(r), 1))), 10));
   r;
 ];
 HoldArg("TruncRadian",r);
@@ -131,24 +126,23 @@ NewtonLn(x) :=
 30 # BrentLn(_x)_(GetPrecision()>85) <--
 [
 	Local(y, n, n1, k, eps);
-	GlobalPush(Numeric);
-	Numeric := True;
-	n := GetPrecision();	// decimal digits
-	// effective precision is n+Ln(n)/Ln(10)
-	n1 := n + IntLog(n,10);	// Ln(2) < 7050/10171
-	// initial power of 2
-	k := 2 + Div(n1*28738, 2*8651)	// Ln(10)/Ln(2) < 28738/8651; now 2^(2*k)>4*10^n1
-	// find how many binary digits we already have in x, and multiply by a sufficiently large power of 2 so that y=x*2^k is larger than 2*10^(n1/2)
-	- IntLog(Floor(x), 2);
-	// now we need k*Ln(2)/Ln(10) additional digits to compensate for cancellation at the final subtraction
-	Precision(n1+2+Div(k*3361, 11165));	// Ln(2)/Ln(10) < 3361/11165
-	eps := MathDivide(1, 10^(n1+1));	// precision
-	y := x*2^(k-2);	// divided already by 4
-	// initial values for AGM
-	// this is Brent's AGM times y. This way we work around the Yacas limitation of fixed precision, at cost of slightly slower initial iterations
-	y:=Pi()*y/(2*AG'Mean(1,y,eps)) - k*Ln2();
-	Precision(n);
-	GlobalPop(Numeric);
+  N([
+    n := GetPrecision();	// decimal digits
+    // effective precision is n+Ln(n)/Ln(10)
+    n1 := n + IntLog(n,10);	// Ln(2) < 7050/10171
+    // initial power of 2
+    k := 2 + Div(n1*28738, 2*8651)	// Ln(10)/Ln(2) < 28738/8651; now 2^(2*k)>4*10^n1
+    // find how many binary digits we already have in x, and multiply by a sufficiently large power of 2 so that y=x*2^k is larger than 2*10^(n1/2)
+    - IntLog(Floor(x), 2);
+    // now we need k*Ln(2)/Ln(10) additional digits to compensate for cancellation at the final subtraction
+    Precision(n1+2+Div(k*3361, 11165));	// Ln(2)/Ln(10) < 3361/11165
+    eps := MathDivide(1, 10^(n1+1));	// precision
+    y := x*2^(k-2);	// divided already by 4
+    // initial values for AGM
+    // this is Brent's AGM times y. This way we work around the Yacas limitation of fixed precision, at cost of slightly slower initial iterations
+    y:=Pi()*y/(2*AG'Mean(1,y,eps)) - k*Ln2();
+    Precision(n);
+  ]);
 	y;	// do not return a more precise number than we really have
 ];
 
@@ -174,7 +168,7 @@ ArcTanNum(x) :=
 
 /* old methods -- slower for now
 /// numerical evaluation of ArcTan using continued fractions: top level
-2 # ArcTan(x_IsNumber)_(Numeric) <--
+2 # ArcTan(x_IsNumber)_InNumericMode() <--
 Sign(x) *
 // now we need to compute ArcTan of a nonnegative number Abs(x)
 [
@@ -191,7 +185,7 @@ Sign(x) *
 	// find the required number of terms in the continued fraction
 	nterms := 1/y;	// this needs to be calculated at full precision
 	// see essays book on the choice of the number of terms (added 2 "guard terms").
-	// we need Hold() because otherwise, if Numeric=True, N(..., 5) will not avoid the full precision calculation of Ln().
+	// we need Hold() because otherwise, if InNumericMode() returns True, N(..., 5) will not avoid the full precision calculation of Ln().
 	// the value of x should not be greater than 1 here!
 	nterms := 2 + Ceil( N(Hold(Ln(10)/(Ln(4)+2*Ln(nterms))), 5) * GetPrecision() );
 	If(	// call the actual routine

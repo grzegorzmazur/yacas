@@ -19,4 +19,5 @@ if
 else
 N
 NonN
+InNumericMode
 }

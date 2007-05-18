@@ -17,8 +17,8 @@
 20 # Gamma(n_IsRationalOrNumber)_(IsPositiveInteger(n) Or FloatIsInt(2*n)) <-- Eval((n-1)!);
 20 # LnGamma(n_IsRationalOrNumber)_(IsPositiveInteger(n) Or FloatIsInt(2*n)) <-- Eval(Ln((n-1)!));
 
-30 # Gamma(x_IsConstant)_(Numeric) <-- GammaNum(N(Eval(x)));
-30 # LnGamma(x_IsConstant)_(Numeric) <-- LnGammaNum(N(Eval(x)));
+30 # Gamma(x_IsConstant)_(InNumericMode()) <-- GammaNum(N(Eval(x)));
+30 # LnGamma(x_IsConstant)_(InNumericMode()) <-- LnGammaNum(N(Eval(x)));
 
 /////////////////////////////////////////////////
 /// Riemann's Zeta function
@@ -28,13 +28,13 @@
 
 10 # Zeta(1) <-- Infinity;
 10 # Zeta(0) <-- -1/2;	// let's save time
-10 # Zeta(3)_Numeric <-- Zeta3();	// special case
+10 # Zeta(3)_InNumericMode() <-- Zeta3();	// special case
 10 # Zeta(n_IsEven)_(n>0) <-- Pi^n*(2^(n-1)/n! *Abs(Bernoulli(n)));
 10 # Zeta(n_IsInteger)_(n<0) <-- -Bernoulli(-n+1)/(-n+1);
 11 # Zeta(n_IsInfinity) <-- 1;
 
 /// compute numeric value
-20 # Zeta(s_IsConstant)_(Numeric) <-- ZetaNum(N(Eval(s)));
+20 # Zeta(s_IsConstant)_(InNumericMode()) <-- ZetaNum(N(Eval(s)));
 
 /////////////////////////////////////////////////
 /// Bernoulli numbers and polynomials
@@ -102,7 +102,7 @@ Bernoulli(n_IsInteger, _x) <-- [
 30 # BesselI(_n,_z)_(n<0 And IsInteger(n) ) <-- BesselI(-n,z);
 
 
-// When I put "And Numeric" on the next rule, I lose precision. Why ?
+// When I put "And InNumericMode()" on the next rule, I lose precision. Why ?
 // Also, if I move the the "_IsComplex" to the end with "IsComplex(x)" 
 // I lose precision.
 
@@ -122,7 +122,7 @@ ApproxInfSum((x/2)^(2*k+c[1])/(k! * Gamma(k+c[1]+1) ),0,x,{n} );
 // This is buggy
 40 # BesselY(_n,x_IsComplex)_(Abs(x)<= 2*Gamma(n) )  <-- N((Cos(n*Pi)*BesselJ(n,x) - BesselJ(-n,x))/Sin(Pi*n));
 
-50 # BesselJ(0,x_IsComplex)_(Numeric) <-- N(BesselJN0(x));
+50 # BesselJ(0,x_IsComplex)_(InNumericMode()) <-- N(BesselJN0(x));
 
 //50 # BesselJ(_n_IsPositiveNumber,_z_IsComplex) <-- BesselJN(n,z);
 
@@ -135,7 +135,7 @@ Function("ApproxInfSum",{expr,start,x})[
 	ApproxInfSum(expr,start,x,{0});
 ];
 
-/// FIXME this has a roundoff problem when Numeric=True
+/// FIXME this has a roundoff problem when InNumericMode()=True
 // Summation must be on k
 Function("ApproxInfSum",{expr,start,x,c})
 [
@@ -187,7 +187,7 @@ Function("ApproxInfSum",{expr,start,x,c})
 
 LocalSymbols(k)
 [
-	40 # Erf(_x)_(Numeric And (IsNumber(x) Or IsComplex(x)) And Abs(x) <= 1) <-- 
+	40 # Erf(_x)_(InNumericMode() And (IsNumber(x) Or IsComplex(x)) And Abs(x) <= 1) <-- 
 [
   Local(prec);
   prec := GetPrecision(); // N(...) modifies the precision
@@ -206,7 +206,7 @@ LocalSymbols(k)
 LocalSymbols(n'max, k)
 [
 
-	50 # Erf(_x)_(Numeric And (IsNumber(x) Or IsComplex(x))
+	50 # Erf(_x)_(InNumericMode() And (IsNumber(x) Or IsComplex(x))
 		And (
 			[	// strongest condition: the exp(-x^2) asymptotic is already good
 				n'max := 0;
@@ -259,7 +259,7 @@ LocalSymbols(n'max, k)
 20 # LambertW(_x * Ln(_x)) <-- Ln(x);
 20 # LambertW(Ln(_x) * _x) <-- Ln(x);
 
-30 # LambertW(x_IsConstant) _ Numeric <-- LambertWNum(Eval(x));
+30 # LambertW(x_IsConstant) _ InNumericMode() <-- LambertWNum(Eval(x));
 
 /* {LambertWNum} computes a numeric approximation of Lambert's $W$ function
 to the current precision. It uses a Halley iteration
@@ -315,7 +315,7 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 10 # PolyLog(3,1/2)		<-- (4*Ln(2)^3 - 2*Pi^2*Ln(2)+21*Zeta(3))/24;
 10 # PolyLog(2,2)		<-- Pi^2/4 - Pi*I*Ln(2);
 
-20 # PolyLog(_n,_x)_(Numeric And  x < -1 )  <-- [
+20 # PolyLog(_n,_x)_(InNumericMode() And  x < -1 )  <-- [
 	Local(prec,result);
 	prec:=GetPrecision();
 	Precision(prec+5);
@@ -326,7 +326,7 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 	Precision(prec);
 	RoundTo(N(result),prec);
 ];
-20 # PolyLog(_n,_x)_(Numeric And x>= -1 And x < 0 ) <-- [
+20 # PolyLog(_n,_x)_(InNumericMode() And x>= -1 And x < 0 ) <-- [
 	// this makes the domain [-1,0) into [0,1],
 	// so if the summation representation is used, it is monotone
         Local(prec,result);
@@ -339,7 +339,7 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 
 ];
 /* this is very slow at high precision
-20 # PolyLog(_n,_x)_(Numeric And x > 0 And x <= 1) <-- [
+20 # PolyLog(_n,_x)_(InNumericMode() And x > 0 And x <= 1) <-- [
 	Local(result,prec,term,k,eps);
 	prec:=GetPrecision();
         Precision(prec+5);
@@ -360,7 +360,7 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 ];
 */
 
-20 # PolyLog(_n,_x)_(Numeric And x > 0 And x < 1) <--
+20 # PolyLog(_n,_x)_(InNumericMode() And x > 0 And x < 1) <--
 [	// use Taylor series x^(k+1)/(k+1)^n, converges for -1<x<1
 	Local(prec, result, terms);
 	prec:=GetPrecision();
@@ -386,7 +386,7 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 ];
 
 
-10 # DirichletBeta(x_IsRationalOrNumber)_(Numeric And x>=1 ) <-- [
+10 # DirichletBeta(x_IsRationalOrNumber)_(InNumericMode() And x>=1 ) <-- [
 	Local(prec,eps,term,result,k);
 	prec:=GetPrecision();
         Precision(prec+3);

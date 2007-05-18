@@ -39,29 +39,28 @@ final result. This makes method1 the fastest for Yacas internal math. */
 PiMethod1() := [
 	Local(result, delta, deltasq, k, Epsilon, prec, curprec);
 	prec := GetPrecision();
-	GlobalPush(Numeric);
-	Numeric := True;
-	/* initial approximation */
-	curprec := 20;
-	Precision(curprec);
-	result := 3.14159265358979323846;
-	/* right now we do all but the last iteration using the 8th order scheme, and the last iteration is done using the 2nd order scheme. However it would be faster to use a very high-order scheme first, then a smaller-order scheme, etc., because it's faster to do multiplications at low precision.
-	*/
-	For(k:=0, curprec*3 < prec, k := k+1) [
-		curprec := Min(Ceil((prec/3)), curprec * 9);
-		Precision(curprec);
-		Echo("Iteration ", k, " setting precision to ", GetPrecision());
-		delta := MathSin(result);
-		deltasq := (delta*delta);
-		result := Time(result + delta*(1 + deltasq*(1/6 + deltasq*(3/40 + deltasq*5/112))));
-	];
-	// now do the last iteration
-	Precision(prec);
-	k := k+1;
-	Echo("Iteration ", k, " setting precision to ", GetPrecision());
-	result := Time(MathAdd(result, MathSin(result)));
-	Echo({"8th order Newton's method: ", k, "iterations"}); 
-	Numeric := GlobalPop();
+	N([
+    /* initial approximation */
+    curprec := 20;
+    Precision(curprec);
+    result := 3.14159265358979323846;
+    /* right now we do all but the last iteration using the 8th order scheme, and the last iteration is done using the 2nd order scheme. However it would be faster to use a very high-order scheme first, then a smaller-order scheme, etc., because it's faster to do multiplications at low precision.
+    */
+    For(k:=0, curprec*3 < prec, k := k+1) [
+      curprec := Min(Ceil((prec/3)), curprec * 9);
+      Precision(curprec);
+      Echo("Iteration ", k, " setting precision to ", GetPrecision());
+      delta := MathSin(result);
+      deltasq := (delta*delta);
+      result := Time(result + delta*(1 + deltasq*(1/6 + deltasq*(3/40 + deltasq*5/112))));
+    ];
+    // now do the last iteration
+    Precision(prec);
+    k := k+1;
+    Echo("Iteration ", k, " setting precision to ", GetPrecision());
+    result := Time(MathAdd(result, MathSin(result)));
+    Echo({"8th order Newton's method: ", k, "iterations"}); 
+  ]);
 	result;
 ];
 
@@ -71,25 +70,24 @@ PiMethod1() := [
 
 PiMethod2() := [
 	Local(result, delta, tansq, k, Epsilon);
-	GlobalPush(Numeric);
-	Numeric := True;
-	Epsilon := (2*10 ^ (-GetPrecision()));
+	N([
+    Epsilon := (2*10 ^ (-GetPrecision()));
 
-	/* initial approximation */
-	result := 3.141592653589793;
-	delta := (-Tan(result));
-	tansq := (delta^2);
-	k := 0;
-	
-	While(Abs(delta) > Epsilon) [
-//		Echo(result);
-		result := (result + delta/(2*k+1));
-//		Echo(delta, k);
-		delta := (-delta * tansq);
-		k := k+1;
-	];
-	Echo({"Brute force method 2 (ArcTan series): ", k, "iterations"}); 
-	Numeric := GlobalPop();
+    /* initial approximation */
+    result := 3.141592653589793;
+    delta := (-Tan(result));
+    tansq := (delta^2);
+    k := 0;
+    
+    While(Abs(delta) > Epsilon) [
+  //		Echo(result);
+      result := (result + delta/(2*k+1));
+  //		Echo(delta, k);
+      delta := (-delta * tansq);
+      k := k+1;
+    ];
+    Echo({"Brute force method 2 (ArcTan series): ", k, "iterations"}); 
+  ]);
 	result;
 ];
 
@@ -149,33 +147,32 @@ PiMethod3() :=
 	Local(result, delta, deltasq, k, order, prec, curprec);
 	order := 13;	// order of approximation
 	prec := GetPrecision();
-	GlobalPush(Numeric);
-	Numeric := True;
-	/* initial approximation */
-	curprec := 20;
-	Precision(curprec);
-	result := 3.14159265358979323846*0.5;
-	// find optimal initial precision
-	For(k:=prec, k>=curprec, k:=Div(k,order)+2) True;
-	If(k<5, curprec:=5, curprec:=k);
-//	Echo("initial precision", curprec);
-	// now k is the iteration counter
-	For(k:=0, curprec < prec, k := k+1) [
-	// at this iteration we know the result to curprec digits
-		curprec := Min(prec, curprec * order-2);	// 2 guard digits
-		Precision(curprec+2);
-		Echo("Iteration ", k, " setting precision to ", GetPrecision());
-//		Echo("old result=", MathCos(result));
-		Time([
-		delta := MathCos(result);
-		]);
-		Time([
-		deltasq := MathMultiply(delta,delta);
-		]);
-		result := Time(result + delta*(1 + deltasq*(1/6 + deltasq*(3/40 + deltasq*(5/112 + deltasq*(35/1152 + (deltasq*63)/2816))))));
-	];
-	Echo({"Method 3, using Pi/2 and order", order, ":", k, "iterations"});
-	Numeric := GlobalPop();
+  N([
+    /* initial approximation */
+    curprec := 20;
+    Precision(curprec);
+    result := 3.14159265358979323846*0.5;
+    // find optimal initial precision
+    For(k:=prec, k>=curprec, k:=Div(k,order)+2) True;
+    If(k<5, curprec:=5, curprec:=k);
+  //	Echo("initial precision", curprec);
+    // now k is the iteration counter
+    For(k:=0, curprec < prec, k := k+1) [
+    // at this iteration we know the result to curprec digits
+      curprec := Min(prec, curprec * order-2);	// 2 guard digits
+      Precision(curprec+2);
+      Echo("Iteration ", k, " setting precision to ", GetPrecision());
+  //		Echo("old result=", MathCos(result));
+      Time([
+      delta := MathCos(result);
+      ]);
+      Time([
+      deltasq := MathMultiply(delta,delta);
+      ]);
+      result := Time(result + delta*(1 + deltasq*(1/6 + deltasq*(3/40 + deltasq*(5/112 + deltasq*(35/1152 + (deltasq*63)/2816))))));
+    ];
+    Echo({"Method 3, using Pi/2 and order", order, ":", k, "iterations"});
+  ]);
 	result*2;
 ];
 
@@ -184,20 +181,19 @@ PiChudnovsky() :=
 	Local(A, B, C, n, result, term);
 	A:=13591409; B:=545140134; C:=640320; // black magic, Rama, Rama, Ramanujan
 	prec := GetPrecision();
-	GlobalPush(Numeric);
-	Numeric := True;
-	n:=Div(prec*479,6793)+1;	// n> P*Ln(10)/(3*Ln(C/12))
-	Echo({"Method: Chudnovsky, using ", n, " terms"});
-	Precision(prec+IntLog(n,10)+5);
-	result := (A+n*B);
-	While(n>0)
-	[
-//	Echo(n,result);
-		result := A+(n-1)*B-24*(6*n-1)*(2*n-1)*(6*n-5) /(C*n)^3 *result;
-		n--;
-	];
-	result := C/12*Sqrt(C)/Abs(result);
-	Numeric := GlobalPop();
+  N([
+    n:=Div(prec*479,6793)+1;	// n> P*Ln(10)/(3*Ln(C/12))
+    Echo({"Method: Chudnovsky, using ", n, " terms"});
+    Precision(prec+IntLog(n,10)+5);
+    result := (A+n*B);
+    While(n>0)
+    [
+  //	Echo(n,result);
+      result := A+(n-1)*B-24*(6*n-1)*(2*n-1)*(6*n-5) /(C*n)^3 *result;
+      n--;
+    ];
+    result := C/12*Sqrt(C)/Abs(result);
+  ]);
 	Precision(prec);
 	RoundTo(result,prec);
 ];

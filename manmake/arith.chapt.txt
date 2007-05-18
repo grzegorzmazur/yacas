@@ -298,12 +298,12 @@ This command returns the current precision, as set by {Precision}.
 
 *SEE Precision, N
 
-*CMD N --- compute numerical approximation
+*CMD N, InNumericMode --- compute numerical approximation
 *STD
 *CALL
 	N(expr)
 	N(expr, prec)
-
+	InNumericMode()
 *PARMS
 
 {expr} -- expression to evaluate
@@ -312,9 +312,9 @@ This command returns the current precision, as set by {Precision}.
 
 *DESC
 
-This function forces Yacas to give a numerical approximation to the
+The function {N} forces Yacas to give a numerical approximation to the
 expression "expr", using "prec" digits if the second calling
-sequence is used, and the precision as set by {SetPrecision} otherwise. This overrides the normal
+sequence is used, and the precision as set by {Precision} otherwise. This overrides the normal
 behaviour, in which expressions are kept in symbolic form (eg. {Sqrt(2)} instead of {1.41421}).
 
 Application of the {N} operator will make Yacas
@@ -322,6 +322,9 @@ calculate floating point representations of functions whenever
 possible. In addition, the variable {Pi} is bound to
 the value of $Pi$ calculated at the current precision.
 (This value is a "cached constant", so it is not recalculated each time {N} is used, unless the precision is increased.)
+
+When in numeric mode, {InNumericMode()} will return {True}, else it will
+return {False}.
 
 *E.G.
 
@@ -337,6 +340,10 @@ the value of $Pi$ calculated at the current precision.
 	Out> Pi;
 	In> N(Pi,20)
 	Out> 3.14159265358979323846;
+	In> InNumericMode()
+	Out> False
+	In> N(InNumericMode())
+	Out> True
 
 *SEE Precision, GetPrecision, Pi, CachedConstant
 
