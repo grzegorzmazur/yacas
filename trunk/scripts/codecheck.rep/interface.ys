@@ -7,7 +7,7 @@ CheckInterfaceInit():=
   Local(indef);
   Set(indef,{});
 //  ScanDefFile("standard.ys.def",FindDeclFuncs);
-  ForEach(item,DefFileList)
+  ForEach(item,DefFileList())
   [
     ScanDefFile(item:".def",FindDeclFuncs);
   ];
@@ -18,7 +18,7 @@ CheckInterfaceAllScripts():=
 [
   CheckInterface("standard.ys");
 //  CheckInterface("stdopers.ys");
-  ForEach(item,DefFileList)
+  ForEach(item,DefFileList())
   [
     CheckInterface(item);
   ];

@@ -44,19 +44,25 @@ The "RNG distribution adaptor API": calling RngCreate with distribution==SomeDis
 
 /// The idea is that options must be easy to type, but procedure names could be long.
 
-KnownRNGEngines :=
-{
-	{ "default", "RNGEngine'LCG'2"},
-	{ "advanced", "RNGEngine'L'Ecuyer"},
-};
+LocalSymbols(knownRNGEngines, knownRNGDists) [
+  knownRNGEngines :=
+  {
+    { "default", "RNGEngine'LCG'2"},
+    { "advanced", "RNGEngine'L'Ecuyer"},
+  };
 
-KnownRNGDists :=
-{
-	{"default", "FlatRNGDist"},
-	{"flat", "FlatRNGDist"},
-//	{"uniform", "FlatRNGDist"},	// we probably don't need this alias...
-	{"gauss", "GaussianRNGDist"},
-};
+  knownRNGDists :=
+  {
+    {"default", "FlatRNGDist"},
+    {"flat", "FlatRNGDist"},
+  //	{"uniform", "FlatRNGDist"},	// we probably don't need this alias...
+    {"gauss", "GaussianRNGDist"},
+  };
+
+  KnownRNGDists() := knownRNGDists;
+  KnownRNGEngines() := knownRNGEngines;
+];
+
 
 //////////////////////////////////////////////////
 /// RNG object API
@@ -92,20 +98,20 @@ RngCreate() <-- RngCreate(0);
 		options["seed"] := 76544321	// some default seed out of the blue sky
 	);
 	If(
-		options["engine"] = Empty Or Not (Assert("warning", {"RngCreate: invalid engine", options["engine"]}) KnownRNGEngines[options["engine"] ] != Empty),
+		options["engine"] = Empty Or Not (Assert("warning", {"RngCreate: invalid engine", options["engine"]}) KnownRNGEngines()[options["engine"] ] != Empty),
 		options["engine"] := "default"
 	);
 	If(
-		options["dist"] = Empty Or Not (Assert("warning", {"RngCreate: invalid distribution", options["dist"]}) KnownRNGDists[options["dist"] ] != Empty),
+		options["dist"] = Empty Or Not (Assert("warning", {"RngCreate: invalid distribution", options["dist"]}) KnownRNGDists()[options["dist"] ] != Empty),
 		options["dist"] := "default"
 	);
 	
 	// construct a new RNG object
 	// a RNG object has the form {"SomeDist", "SomeEngine", {state}}
 	{
-		KnownRNGDists[options["dist"] ], KnownRNGEngines[options["engine"] ], 
+		KnownRNGDists()[options["dist"] ], KnownRNGEngines()[options["engine"] ], 
 		// initialize object with given seed using "SomeEngine"(seed)
-		KnownRNGEngines[options["engine"] ] @ { options["seed"] }
+		KnownRNGEngines()[options["engine"] ] @ { options["seed"] }
 	};
 ];
 
@@ -255,18 +261,21 @@ Random() := Rng(GlobalRNG);
 RandomSeed(seed) := RngSeed(GlobalRNG, seed);
 */
 
-// initial seed should be nonzero
-RandSeed:=76544321;
+LocalSymbols(RandSeed) [
+  // initial seed should be nonzero
+  RandSeed:=76544321;
 
-/// assign random seed
-Function("RandomSeed", {seed}) Set(RandSeed, seed);
+  /// assign random seed
+  Function("RandomSeed", {seed}) Set(RandSeed, seed);
 
-/// Linear congruential generator
-RandomLCG(_im, _ia, _ic) <--
-[
-  RandSeed:=MathMod(RandSeed*ia+ic,im);
-  MathDivide(RandSeed,im);	// should never give 1
-];
+  /// Linear congruential generator
+  RandomLCG(_im, _ia, _ic) <--
+  [
+    RandSeed:=MathMod(RandSeed*ia+ic,im);
+    MathDivide(RandSeed,im);	// should never give 1
+  ];
+]; // LocalSymbols(RandSeed)
+
 
 Function("Random1",{}) RandomLCG(4294967296,1103515245,12345);
 Function("Random6",{}) RandomLCG(1771875,2416,374441);

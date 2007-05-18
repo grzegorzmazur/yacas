@@ -14,8 +14,8 @@ SetGlobalLazyVariable(I,Complex(0,1));
 /// Cached constants support and definition of Pi
 //////////////////////////////////////////////////
 
-/// Cache the most recently computed value of a constant and its precision in this list
-//Set(CacheOfConstantsN, {});	// format: { {"Pi", 7, 3.1415926}, ...}
+//TODO: here we wrap the entire file in LocalSymbols, this is inefficient in that it slows loading of this file. Needs optimization.
+LocalSymbols(CacheOfConstantsN) [
 
 /// declare a new cached constant C'atom and its associated function C'atom().
 /// C'atom() will call C'func() at current precision to evaluate C'atom if it has not yet been cached at that precision. (note: any arguments to C'func() must be included)
@@ -123,4 +123,4 @@ CachedConstant(CacheOfConstantsN, gamma, GammaConstNum());
 CachedConstant(CacheOfConstantsN, GoldenRatio, N( (1+Sqrt(5))/2 ) );
 CachedConstant(CacheOfConstantsN, Catalan, CatalanConstNum() );
 
-
+]; // LocalSymbols(CacheOfConstantsN)

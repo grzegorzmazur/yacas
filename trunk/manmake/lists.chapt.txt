@@ -1685,7 +1685,8 @@ printing every element in the list on a separate line.
 
 *DESC
 
-These functions operate with a global stack, currently implemented as a list {GlobalStack}.
+These functions operate with a global stack, currently implemented as a list that is not accessible externally (it is protected 
+through {LocalSymbols}).
 
 {GlobalPush} stores a value on the stack. {GlobalPop} removes the last pushed value from the stack. If a variable name is given, the variable is assigned, otherwise the popped value is returned.
 
