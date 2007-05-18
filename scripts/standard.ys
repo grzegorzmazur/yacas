@@ -114,17 +114,20 @@ LocalSymbols(Numeric) [
 
 ]; //LocalSymbols(Numeric)
 
-
-Set(Verbose,False);
-Function("V",{aNumberBody})
-[
-  Local(prevVerbose,result);
-  Set(prevVerbose,Verbose);
-  Set(Verbose,True);
-  Set(result,Eval(aNumberBody));
-  Set(Verbose,prevVerbose);
-  result;
-];
+LocalSymbols(Verbose) [
+  Set(Verbose,False);
+  Function("V",{aNumberBody})
+  [
+    Local(prevVerbose,result);
+    Set(prevVerbose,Verbose);
+    Set(Verbose,True);
+    Set(result,Eval(aNumberBody));
+    Set(Verbose,prevVerbose);
+    result;
+  ];
+  Function("InVerboseMode",{}) Verbose;
+  
+]; // LocalSymbols(Verbose)
 HoldArg("V",aNumberBody);
 UnFence("V",1);
 

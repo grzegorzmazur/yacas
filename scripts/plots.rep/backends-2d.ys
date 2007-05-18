@@ -109,7 +109,7 @@ Plot2D'datafile(values_IsList, _options'hash) <--
 		filename := options'hash["filename"]:String(func);
 		DestructiveAppend(filename'list, filename);
 		ToFile(filename) ForEach(item, values[func]) WriteDataItem(item, options'hash);
-		If(Verbose, Echo( "Plot2D'datafile: created file '" : filename :  "'"), True);
+		If(InVerboseMode(), Echo( "Plot2D'datafile: created file '" : filename :  "'"), True);
 	];
 	filename'list;
 ];

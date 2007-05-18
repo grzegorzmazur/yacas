@@ -298,11 +298,12 @@ This command returns the current precision, as set by {Precision}.
 
 *SEE Precision, N
 
-*CMD N, InNumericMode --- compute numerical approximation
+*CMD N, InNumericMode, NonN --- compute numerical approximation
 *STD
 *CALL
 	N(expr)
 	N(expr, prec)
+	NonN(expr)
 	InNumericMode()
 *PARMS
 
@@ -326,6 +327,12 @@ the value of $Pi$ calculated at the current precision.
 When in numeric mode, {InNumericMode()} will return {True}, else it will
 return {False}.
 
+When in numeric mode, NonN can be called to switch back to non-numeric
+mode temporarily.
+
+Both {N} and {NonN} are macros. Their arguments {expr} will only 
+be evaluated after the numeric mode has been set appropriately.
+
 *E.G.
 
 	In> 1/2
@@ -344,6 +351,8 @@ return {False}.
 	Out> False
 	In> N(InNumericMode())
 	Out> True
+	In> N(NonN(InNumericMode()))
+	Out> False
 
 *SEE Precision, GetPrecision, Pi, CachedConstant
 

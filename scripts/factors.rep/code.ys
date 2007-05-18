@@ -21,7 +21,7 @@
   If(n=1, Tail(small'powers),
   // if n!=1, need to factorize the remainder with Pollard Rho algorithm
 	  [
-	  	If(Verbose, Echo({"FactorizeInt: Info: remaining number ", n}));
+	  	If(InVerboseMode(), Echo({"FactorizeInt: Info: remaining number ", n}));
 		SortFactorList(
 	  	  PollardCombineLists(Tail(small'powers), PollardRhoFactorize(n))
 		);
@@ -186,10 +186,10 @@ PollardRhoPolynomial(_x) <-- x^2+1;
        	 );
 //		Echo({"debug PollardRho: gcd=",gcd," x=", x," y=", y});
    	];
-	If(Verbose And repeat<=0, Echo({"PollardRhoFactorize: Warning: stalled while factorizing ", n, "; counters ", x, y}));
+	If(InVerboseMode() And repeat<=0, Echo({"PollardRhoFactorize: Warning: stalled while factorizing ", n, "; counters ", x, y}));
   ];
   Check(restarts>0, "PollardRhoFactorize: Error: failed to factorize " : String(n));
-  If(Verbose And gcd > 1, Echo({"PollardRhoFactorize: Info: while factorizing ", n, " found factor ", gcd}));
+  If(InVerboseMode() And gcd > 1, Echo({"PollardRhoFactorize: Info: while factorizing ", n, " found factor ", gcd}));
   /* Return result found */
   PollardCombineLists(PollardRhoFactorize(gcd), PollardRhoFactorize(Div(n,gcd)));
 ];

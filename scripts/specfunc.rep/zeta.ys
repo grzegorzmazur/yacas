@@ -12,7 +12,7 @@
 /// Also $s$ must satisfy $Re(s)+n+1 > 0$
 ZetaNum(_s, n_IsInteger) <-- [
 	Local(result, j, sign);
-	If (Verbose, Echo({"ZetaNum: Borwein's method, precision ", GetPrecision(), ", n = ", n}));
+	If (InVerboseMode(), Echo({"ZetaNum: Borwein's method, precision ", GetPrecision(), ", n = ", n}));
 	result := 0;
 	sign := 1;	// flipping sign
 	For(j:=0, j<=2*n-1, j++)
@@ -26,7 +26,7 @@ ZetaNum(_s, n_IsInteger) <-- [
 /// direct method -- only good for large s
 ZetaNum1(s, limit) := [
 	Local(i, sum);
-	If (Verbose, Echo({"ZetaNum: direct method (sum), precision ", GetPrecision(), ", N = ", limit}));
+	If (InVerboseMode(), Echo({"ZetaNum: direct method (sum), precision ", GetPrecision(), ", N = ", limit}));
 	sum := 0;
 	limit := Ceil(N(limit));
 	For(i:=2, i<=limit, i++) sum := sum+N(1/MathPower(i, s));
@@ -37,7 +37,7 @@ ZetaNum1(s, limit) := [
 ZetaNum2(s, limit) := 
 [
 	Local(i, prod);
-	If (Verbose, Echo({"ZetaNum: direct method (product), precision ", GetPrecision(), ", N = ", limit}));
+	If (InVerboseMode(), Echo({"ZetaNum: direct method (product), precision ", GetPrecision(), ", N = ", limit}));
 	prod := N( (1-1/MathPower(2, s))*(1-1/MathPower(3,s)) );
 	limit := Ceil(N(limit));
 	For(i:=5, i<=limit, i:= NextPrime(i))
@@ -95,7 +95,7 @@ Zeta3() :=
 		N(Re(s)) < 0.5,
 		// call ourselves with a different argument
 		[
-			If(Verbose, Echo({"ZetaNum: using s->1-s identity, s=", s, ", precision ", prec}));
+			If(InVerboseMode(), Echo({"ZetaNum: using s->1-s identity, s=", s, ", precision ", prec}));
 			result :=  2*Exp(LnGammaNum(1-s)-(1-s)*Ln(2*Pi()))*Sin(Pi()*s/2) * ZetaNum(1-s);
 		],
 		// choose between methods

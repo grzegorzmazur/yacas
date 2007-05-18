@@ -797,10 +797,11 @@ case {L} (from "line").
 
 *SEE NewLine
 
-*CMD V, Verbose --- set verbose output mode
+*CMD V, InVerboseMode --- set verbose output mode
 *STD
 *CALL
 	V(expression)
+	InVerboseMode()
 
 *PARMS
 
@@ -812,7 +813,8 @@ The function {V(expression)} will evaluate the expression in
 verbose mode. Various parts of Yacas can show extra information
 about the work done while doing a calculation when using {V}.
 
-The function is currently implemented using a global variable {Verbose} which can be set to {True} or {False}.
+In verbose mode, {InVerboseMode()} will return {True}, otherwise
+it will return {False}.
 
 *E.G. notest
 
@@ -824,6 +826,10 @@ The function is currently implemented using a global variable {Verbose} which ca
 	   x+2==0  simplifies to  True 
 	Leaving OldSolve
 	Out> {{-2}};
+	In> InVerboseMode()
+	Out> False
+	In> V(InVerboseMode())
+	Out> True
 
 *SEE Echo, N, OldSolve
 
@@ -873,7 +879,7 @@ Use {NFunction} to overcome this difficulty.
 
 Data files are created in a temporary directory {/tmp/plot.tmp/} unless otherwise requested.
 File names
-and other information is printed if the {Verbose} option is switched on using {V()}.
+and other information is printed if {InVerboseMode()} returns {True} on using {V()}.
 
 The current algorithm uses Newton-Cotes quadratures and some heuristics for error estimation (see <*yacasdoc://Algo/3/1/*>).
 The initial grid of {points+1} points is refined between any grid points $a$, $b$ if the integral
@@ -1005,7 +1011,7 @@ Use {NFunction} to overcome this difficulty.
 
 Data files are created in a temporary directory {/tmp/plot.tmp/} unless otherwise requested.
 File names
-and other information is printed if the {Verbose} option is switched on using {V()}.
+and other information is printed if {InVerboseMode()} returns {True} on using {V()}.
 
 The current algorithm uses Newton-Cotes cubatures and some heuristics for error estimation (see <*yacasdoc://Algo/3/1/*>).
 The initial rectangular grid of {xpoints+1}*{ypoints+1} points is refined within any rectangle where the integral

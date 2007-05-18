@@ -116,7 +116,7 @@ Function("DivTermList",{a,b})
  While ((a!={}) And a[1][1]>=b[1][1])
   [
      begining := 1;
-     If(Verbose,Echo("degree=",a[1][1]));
+     If(InVerboseMode(),Echo("degree=",a[1][1]));
      nq := {a[1][1]-b[1][1],a[1][2]/b[1][2]}; // a new term of the quotient
      DestructiveAppend(q,nq);
      // We compute a:= a - nq* b

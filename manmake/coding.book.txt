@@ -1158,13 +1158,15 @@ calculations, a higher working precision is sometimes needed. In this
 case, your function should set the precision back to the original value
 at the end of the calculation and round off the result.
 
-	    Using {Verbose}
+	    Using verbose mode
 
 For routines using complicated algorithms, or when evaluation takes a
 long time, it is usually helpful to print some diagnostic information,
 so that the user can at least watch some progress. The current
-convention is that if the {Verbose} flag is set, functions may print
-diagnostic information. (But do not print too much!)
+convention is that if {InVerboseMode()} returns {True}, functions may 
+print diagnostic information. (But do not print too much!). Verbose
+mode is turned on by using the function {V(expression)}. The expression
+is evaluated in verbose mode.
 
 	    Procedural programming or rule-based programming?
 

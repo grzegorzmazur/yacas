@@ -93,7 +93,7 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 1 # Div(0  ,_m) <-- 0;
 2 # Div(n_IsRationalOrNumber,m_IsRationalOrNumber) <--
 [
-  Local(n1,n2,m1,m2,sgn1);
+  Local(n1,n2,m1,m2,sgn1,sgn2);
   n1:=Numer(n);
   n2:=Denom(n);
   m1:=Numer(m);

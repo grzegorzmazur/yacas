@@ -8,7 +8,7 @@
 AG'Mean(a, b, eps) :=
 [
 	Local(a1, b1);
-	If(Verbose, Echo("AG'Mean: Info: at prec. ", GetPrecision()));
+	If(InVerboseMode(), Echo("AG'Mean: Info: at prec. ", GetPrecision()));
 	// AGM main loop
 	While(Abs(a-b)>=eps)
 	[
@@ -271,7 +271,7 @@ NewtonNum(_func, _x'init, _prec0, _order) <--
       x0 := x1;
       x1 := (func @ x0);
       exact'digits := Common'digits(x0, x1);
-  //		If(Verbose, Echo("NewtonNum: Info: got", exact'digits, "exact digits at prec. ", GetPrecision()));
+  //		If(InVerboseMode(), Echo("NewtonNum: Info: got", exact'digits, "exact digits at prec. ", GetPrecision()));
     ];
     // need to check that the initial precision is achieved
     If(
@@ -287,7 +287,7 @@ NewtonNum(_func, _x'init, _prec0, _order) <--
       Precision(2+Min(exact'digits, Div(prec,order)+1)-int'part);
       x0 := x1;
       x1 := (func @ x0);
-  //		If(Verbose, Echo("NewtonNum: Info: got", Common'digits(x0, x1), "exact digits at prec. ", GetPrecision()));
+  //		If(InVerboseMode(), Echo("NewtonNum: Info: got", Common'digits(x0, x1), "exact digits at prec. ", GetPrecision()));
     ];
     // last iteration by hand
     Precision(2+prec);

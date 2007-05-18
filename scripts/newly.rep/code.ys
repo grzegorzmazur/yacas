@@ -383,12 +383,12 @@ NearRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 	x1 := ContFracList(N(Eval(x+10^(-prec))));
 	x2 := ContFracList(N(Eval(x-10^(-prec))));
 
-	If(Verbose, Echo("NearRational: x      = ", N(Eval(x           ))));
-	If(Verbose, Echo("NearRational: xplus  = ", N(Eval(x+10^(-prec)))));
-	If(Verbose, Echo("NearRational: xmin   = ", N(Eval(x-10^(-prec)))));
+	If(InVerboseMode(), Echo("NearRational: x      = ", N(Eval(x           ))));
+	If(InVerboseMode(), Echo("NearRational: xplus  = ", N(Eval(x+10^(-prec)))));
+	If(InVerboseMode(), Echo("NearRational: xmin   = ", N(Eval(x-10^(-prec)))));
 
-	If(Verbose, Echo("NearRational: Length(x1) = ", Length(x1)," ",x1));
-	If(Verbose, Echo("NearRational: Length(x2) = ", Length(x2)," ",x1));
+	If(InVerboseMode(), Echo("NearRational: Length(x1) = ", Length(x1)," ",x1));
+	If(InVerboseMode(), Echo("NearRational: Length(x2) = ", Length(x2)," ",x1));
 	// find where the continued fractions for "x1" and "x2" differ
 	// prepare result in "x1" and length of result in "i"
 	For (i:=1, i<=Length(x1) And i<=Length(x2) And x1[i]=x2[i], i++ ) True;
@@ -407,7 +407,7 @@ NearRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 	);
 	// recipe: x1dd 1 to the lx1st term unless it's the lx1st in the originx1l sequence
 	//Ayal added this line, i could become bigger than Length(x1)!
-	If(Verbose, Echo({"NearRational: using ", i, "terms of the continued fraction"}));
+	If(InVerboseMode(), Echo({"NearRational: using ", i, "terms of the continued fraction"}));
 	If(i>Length(x1),i:=Length(x1));
 	x1[i] := x1[i] + If(i=Length(x1), 0, 1);
 	Precision(old'prec);
@@ -436,11 +436,11 @@ GuessRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 			);
 		];
 	If (denom'estimate < 10^prec,
-		If(Verbose, Echo({"GuessRational: all ", i, "terms are within limits"})),
+		If(InVerboseMode(), Echo({"GuessRational: all ", i, "terms are within limits"})),
 		i--	// do not use the last term
 	);
 	i--;	// loop returns one more number
-	If(Verbose, Echo({"GuessRational: using ", i, "terms of the continued fraction"}));
+	If(InVerboseMode(), Echo({"GuessRational: using ", i, "terms of the continued fraction"}));
 	ContFracEval(Take(cf, i));
 ];
 
