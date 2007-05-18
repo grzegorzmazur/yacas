@@ -69,48 +69,51 @@ Function("NrArgs",{aLeft}) Length(Listify(aLeft))-1;
 1 # Denom(_x / _y)      <-- y;
 2 # Denom(x_IsNumber)   <-- 1;
 
-Set(Numeric,False);
+/* Implementation of numeric mode */
+LocalSymbols(Numeric) [
+  Set(Numeric,False);
 
+  // evaluate numerically with given precision
+  LocalSymbols(prev'Numeric, prev'digits, numeric'result) Macro("N",{expr,digits})
+  [ // we were in non-numeric mode
+      Local(prev'Numeric, prev'digits, numeric'result);
+      Set(prev'digits, GetPrecision());
+      Precision(@digits);
+      AssignCachedConstantsN();
+      Set(prev'Numeric,Numeric);
+      Set(Numeric, True);
+      Set(numeric'result, @expr);
+      Set(Numeric,prev'Numeric);
+      If(Not Numeric,[
+          // clear constants
+          ClearCachedConstantsN();
+      ]);
+      Precision(prev'digits);
+      numeric'result;
+  ];
 
-// evaluate numerically with given precision
-Macro("N",{expr,digits})
-[ // we were in non-numeric mode
-    Local(prev'Numeric, prev'digits, numeric'result);
-    Set(prev'digits, GetPrecision());
-    Precision(@digits);
-    AssignCachedConstantsN();
-    Set(prev'Numeric,Numeric);
-    Set(Numeric, True);
-    Set(numeric'result, @expr);
-    Set(Numeric,prev'Numeric);
-    If(Not Numeric,[
-        // clear constants
-        ClearCachedConstantsN();
-    ]);
-    Precision(prev'digits);
-    numeric'result;
-];
+  LocalSymbols(dig,ex) Macro("N",{expr})
+  [
+    Local(dig,ex);
+    Set(dig,GetPrecision());
+    Set(ex,Hold(@expr));
+    `N(@ex,@dig);
+  ];
 
-Macro("N",{expr})
-[
-  Local(dig,ex);
-  Set(dig,GetPrecision());
-  Set(ex,Hold(@expr));
-  `N(@ex,@dig);
-];
+  LocalSymbols(result) Macro("NonN",{expr})
+  [
+    Local(result);
+    GlobalPush(Numeric);
+    Numeric := False;
+    result := (@expr);
+    Numeric := GlobalPop();
+    result;
+  ];
 
-Macro("NonN",{expr})
-[
-  Local(result);
-	GlobalPush(Numeric);
-	Numeric := False;
-  result := (@expr);
-	Numeric := GlobalPop();
-	result;
-];
+  Function("InNumericMode",{}) Numeric;
 
+]; //LocalSymbols(Numeric)
 
-Function("NumericMode",{}) Numeric;
 
 Set(Verbose,False);
 Function("V",{aNumberBody})

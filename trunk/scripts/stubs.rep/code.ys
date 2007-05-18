@@ -70,10 +70,10 @@ n_IsInteger >> m_IsInteger <-- ShiftRight(n,m);
 0 # Sqrt(-Infinity) <-- Complex(0,Infinity);
 0 # Sqrt(Undefined) <--  Undefined;
 1 # Sqrt(x_IsPositiveInteger)_(IsInteger(MathSqrt(x))) <-- MathSqrt(x);
-2 # Sqrt(x_IsPositiveNumber)_(Numeric) <-- MathSqrt(x);
+2 # Sqrt(x_IsPositiveNumber)_InNumericMode() <-- MathSqrt(x);
 2 # Sqrt(x_IsNegativeNumber) <-- Complex(0,Sqrt(-x));
 /* 3 # Sqrt(x_IsNumber/y_IsNumber) <-- Sqrt(x)/Sqrt(y); */
-3 # Sqrt(x_IsComplex)_(Numeric) <-- x^(1/2);
+3 # Sqrt(x_IsComplex)_InNumericMode() <-- x^(1/2);
 /* Threading  */
 Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 

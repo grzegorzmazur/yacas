@@ -313,8 +313,7 @@ TRun(2+t/2-t^2,10);
 10 # ContFracList(_n, _depth)_(depth <= 0) <-- {};
 20 # ContFracList(n_IsInteger, _depth) <-- {n};
 // prevent infinite loop when in numeric mode
-30 # ContFracList(n_IsNumber, _depth) _Numeric <--
-{Numeric := False, ContFracList(Rationalize(n), depth), Numeric := True}[2];
+30 # ContFracList(n_IsNumber, _depth) _InNumericMode() <-- NonN(ContFracList(Rationalize(n), depth));
 
 40 # ContFracList(n_IsNumber, _depth) <-- ContFracList(Rationalize(n), depth);
 

@@ -327,10 +327,9 @@ Verify( Fibonacci(6,.5), 2.03125 );
 Verify( Fibonacci(3,.5), 1.25 );
 
 // Round-off errors
-a:= 77617;
-b:= 33096;
-Precision(40);
-Numeric:=True;
-// this expression gives a wrong answer on any hardware floating-point platform
-NumericEqual( 333.75*b^6 + a^2*(11*a^2*b^2-b^6-121*b^4-2)+5.5*b^8 +a/(2*b), -0.827396,6);
-
+N([
+  a:= 77617;
+  b:= 33096;
+  // this expression gives a wrong answer on any hardware floating-point platform
+  NumericEqual( 333.75*b^6 + a^2*(11*a^2*b^2-b^6-121*b^4-2)+5.5*b^8 +a/(2*b), -0.827396,6);
+],40);

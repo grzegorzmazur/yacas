@@ -236,7 +236,7 @@ LocalSymbols(x,y,xarg,yarg)
 52 # x_IsNegativeNumber / 0 <-- -Infinity;
 55 # (_x / y_IsNumber)_(IsZero(y)) <-- Undefined;
 55 # 0 / _x <-- 0;
-60 # (x_IsNumber / y_IsNumber)_((Numeric = True) /* Sorry, Serge Or
+60 # (x_IsNumber / y_IsNumber)_(InNumericMode() /* Sorry, Serge Or
                                 Not(IsInteger(x) And IsInteger(y)) */ ) <--
     MathDivide(x,y);
 
@@ -324,12 +324,12 @@ LocalSymbols(x,y,xarg,yarg)
 // integer powers are very fast
 61 # x_IsPositiveNumber ^ y_IsPositiveInteger <-- MathIntPower(x,y);
 61 # x_IsPositiveNumber ^ y_IsNegativeInteger <-- 1/MathIntPower(x,-y);
-65 # (x_IsPositiveNumber ^ y_IsNumber)_Numeric <-- Exp(y*Ln(x));
+65 # (x_IsPositiveNumber ^ y_IsNumber)_InNumericMode() <-- Exp(y*Ln(x));
 
 90 # (-_x)^m_IsEven <-- x^m;
 91 # (x_IsConstant ^ (m_IsOdd / p_IsOdd))_(IsNegativeNumber(Re(N(Eval(x))))) <--
      -((-x)^(m/p));
-92 # (x_IsNegativeNumber ^ y_IsNumber)_Numeric <-- Exp(y*Ln(x));
+92 # (x_IsNegativeNumber ^ y_IsNumber)_InNumericMode() <-- Exp(y*Ln(x));
 
 
 70  # (_x ^ m_IsRationalOrNumber) ^ n_IsRationalOrNumber <-- x^(n*m);
