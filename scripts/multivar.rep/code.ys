@@ -5,7 +5,10 @@ RuleBase("MultiNomial",{vars,terms});
 // using the sparse tree driver for multivariate polynomials
 //Use("multivar.rep/sparsenomial.ys");
 //Use("multivar.rep/partialdensenomial.ys");
-`Use(@MultiNomialDriver);
+
+If(IsBound(MultiNomialDriver),
+  `Use(@MultiNomialDriver),
+  Use("multivar.rep/sparsenomial.ys"));  
 
 // Code that can build the internal representation of a multivariate polynomial
 Use("multivar.rep/makemulti.ys");

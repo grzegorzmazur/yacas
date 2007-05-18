@@ -4,10 +4,11 @@
  * each time Yacas is started. All the basic files are loaded.
  */
 
-// Set up drivers, configurable in the .yacasrc
-Set(MultiNomialDriver,"multivar.rep/sparsenomial.ys");
-//Set(MultiNomialDriver,"multivar.rep/partialdensenomial.ys");
-
+/* Set up drivers, configurable in the .yacasrc
+ *   Set(MultiNomialDriver,"multivar.rep/sparsenomial.ys");
+ *     or
+ *   Set(MultiNomialDriver,"multivar.rep/partialdensenomial.ys");
+ */
 
 /* The truly required files (Yacas NEEDS to load). */
 // syntax must be loaded first
@@ -78,7 +79,7 @@ Rule(LoadPackages, 1, 1, True)
 ];
 
 Use("packages.ys");
-LoadPackages(DefFileList);
+LoadPackages(DefFileList());
 
 /* set the help system. This can be overridden in ~/.yacasrc */
 LocalSymbols(Browser) 

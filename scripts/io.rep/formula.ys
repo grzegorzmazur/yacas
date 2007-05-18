@@ -394,7 +394,14 @@ Rule("RenderFormula",4,6,True)
   ];
 ];
 
-FormulaMaxWidth:=60;
+LocalSymbols(formulaMaxWidth) [
+  SetFormulaMaxWidth(width):=
+  [
+    formulaMaxWidth := width;
+  ];
+  FormulaMaxWidth() := formulaMaxWidth;
+  SetFormulaMaxWidth(60);
+]; // LocalSymbols(formulaMaxWidth)
 
 Function("PrettyForm",{ff})
 [
@@ -406,7 +413,7 @@ Function("PrettyForm",{ff})
   RenderFormula(cf,f,1,1);
 
   NewLine();
-  WriteCharField(cf,FormulaMaxWidth);
+  WriteCharField(cf,FormulaMaxWidth());
   
   DumpErrors();
   True;

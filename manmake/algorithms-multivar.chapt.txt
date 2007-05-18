@@ -299,13 +299,13 @@ the default driver is chosen, but this can be overridden in the
 as long as it is done before the multivariates module is loaded (which
 loads the selected driver). Driver selection is as simple as setting
 a global variable to contain a file name of the file implementing the
-driver. In {yacasinit.ys} there is a line similar to:
+driver:
 
 	Set(MultiNomialDriver,
 	  "multivar.rep/sparsenomial.ys");
-where "multivar.rep/sparsenomial.ys" is the file implementing the driver.
-This can be overridden by setting the variable {MultiNomialDriver}
-later.
+where "multivar.rep/sparsenomial.ys" is the file implementing the 
+driver (this is also the default driver, so the above command would
+not change any thing).
 
 The choice was made for static configuration of the driver before
 the system starts up because it is expected that there will in 
