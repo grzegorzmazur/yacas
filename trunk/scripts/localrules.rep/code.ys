@@ -3,51 +3,53 @@ RuleBase("<-",{left,right});
 HoldArg("<-",left);
 HoldArg("<-",right);
 
-Set(LocResult,True);
-10 # LocPredicate(exp_IsAtom) <--
-[
-  Local(tr,result);
-  tr:=patterns;
-  result:=False;
-  While (tr != {})
+LocalSymbols(LocResult) [
+
+  Set(LocResult,True);
+  10 # LocPredicate(exp_IsAtom) <--
   [
-    If (Head(Head(tr)) = exp,
+    Local(tr,result);
+    tr:=patterns;
+    result:=False;
+    While (tr != {})
     [
-      Set(LocResult,Eval(Head(Tail(Head(tr)))));
-      result := True;
-      tr:={};
-    ],
-    [
-      tr := Tail(tr);
-    ]);
+      If (Head(Head(tr)) = exp,
+      [
+        Set(LocResult,Eval(Head(Tail(Head(tr)))));
+        result := True;
+        tr:={};
+      ],
+      [
+        tr := Tail(tr);
+      ]);
+    ];
+    result;
   ];
-  result;
-];
 
-10 # LocPredicate(exp_IsFunction) <--
-[
-  Local(tr,result,head);
-  tr:=patterns;
-  result:=False;
-  While (tr != {})
+  10 # LocPredicate(exp_IsFunction) <--
   [
-    Set(head, Head(Head(tr)));
-    If (Not(IsAtom(head)) And exp[0]=head[1] And PatternMatches(head[2], exp),
+    Local(tr,result,head);
+    tr:=patterns;
+    result:=False;
+    While (tr != {})
     [
-      Set(LocResult,Eval(Head(Tail(Head(tr)))));
-      Set(result, True);
-      Set(tr,{});
-    ],
-    [
-      Set(tr, Tail(tr));
-    ]);
+      Set(head, Head(Head(tr)));
+      If (Not(IsAtom(head)) And exp[0]=head[1] And PatternMatches(head[2], exp),
+      [
+        Set(LocResult,Eval(Head(Tail(Head(tr)))));
+        Set(result, True);
+        Set(tr,{});
+      ],
+      [
+        Set(tr, Tail(tr));
+      ]);
+    ];
+    result;
   ];
-  result;
-];
-20 # LocPredicate(_exp) <-- False;
+  20 # LocPredicate(_exp) <-- False;
 
-LocChange(_exp) <-- LocResult;
-
+  LocChange(_exp) <-- LocResult;
+]; // LocalSymbols(LocResult) 
 
 UnFence("LocPredicate",1);
 UnFence("LocChange",1);

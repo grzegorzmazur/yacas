@@ -1,6 +1,6 @@
 
 
-LocalSymbols(Lastcoef,OrdBuild, AddFoundSolutionSingle , AddFoundSolution, Fct, MkfactD)
+LocalSymbols(lastcoef,OrdBuild, AddFoundSolutionSingle , AddFoundSolution, Fct, MkfactD)
 [
 
 LastCoef(_vector,_p) <-- 
