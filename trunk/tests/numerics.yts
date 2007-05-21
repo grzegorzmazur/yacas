@@ -95,7 +95,7 @@ RoundTo(MathPower(13, -23), 50)
 , 50);
 
 NumericEqual(
-RoundTo([x:=Newton(x*Exp(x)-4,x,1,10^(-49)); N(x*Exp(x));], 49)
+RoundTo([Local(x);x:=Newton(x*Exp(x)-4,x,1,10^(-49)); N(x*Exp(x));], 49)
 , 4.
 ,49); f();
 Verify(Newton(x^2+1,x,1,0.1,-3,3), Fail); f();
@@ -328,6 +328,7 @@ Verify( Fibonacci(3,.5), 1.25 );
 
 // Round-off errors
 N([
+  Local(a,b);
   a:= 77617;
   b:= 33096;
   // this expression gives a wrong answer on any hardware floating-point platform

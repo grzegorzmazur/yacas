@@ -55,62 +55,65 @@ public:
 class LispEnvironment : public YacasBase
 {
 public:
-    /// \name Constructor and destructor
-    //@{
-    LispEnvironment(YacasCoreCommands &aCoreCommands,
-                    LispUserFunctions& aUserFunctions,
-                    LispGlobal& aGlobals,
-                    LispHashTable& aHashTable,
-                    LispOutput* aOutput,
-                    LispPrinter& aPrinter,
-                    LispOperators &aPreFixOperators,
-                    LispOperators &aInFixOperators,
-                    LispOperators &aPostFixOperators,
-                    LispOperators &aBodiedOperators,
-                    LispInput*    aCurrentInput,
-                    LispInt aStackSize);
-    ~LispEnvironment();
-    //@}
+  /// \name Constructor and destructor
+  //@{
+  LispEnvironment(YacasCoreCommands &aCoreCommands,
+                  LispUserFunctions& aUserFunctions,
+                  LispGlobal& aGlobals,
+                  LispHashTable& aHashTable,
+                  LispOutput* aOutput,
+                  LispPrinter& aPrinter,
+                  LispOperators &aPreFixOperators,
+                  LispOperators &aInFixOperators,
+                  LispOperators &aPostFixOperators,
+                  LispOperators &aBodiedOperators,
+                  LispInput*    aCurrentInput,
+                  LispInt aStackSize);
+  ~LispEnvironment();
+  //@}
 
 public:
-    /// \name Lisp variables
-    //@{
+  /// \name Lisp variables
+  //@{
 
-    /// Assign a value to a Lisp variable.
-    /// \param aString name of the variable
-    /// \param aValue value to be assigned to \a aString
-    ///
-    /// If there is a local variable with the name \a aString, the
-    /// object \a aValue is assigned to it. Otherwise, a
-    /// LispGlobalVariable is constructed, and it is associated with
-    /// \a aValue in #iGlobals.
-    /// \sa FindLocal
-    void SetVariable(LispString * aString, LispPtr& aValue, LispBoolean aGlobalLazyVariable);
+  /// Assign a value to a Lisp variable.
+  /// \param aString name of the variable
+  /// \param aValue value to be assigned to \a aString
+  ///
+  /// If there is a local variable with the name \a aString, the
+  /// object \a aValue is assigned to it. Otherwise, a
+  /// LispGlobalVariable is constructed, and it is associated with
+  /// \a aValue in #iGlobals.
+  /// \sa FindLocal
+  void SetVariable(LispString * aString, LispPtr& aValue, LispBoolean aGlobalLazyVariable);
 
-    /// Get the value assigned to a variable.
-    /// \param aVariable name of the variable
-    /// \param aResult (on exit) value of \a aVariable
-    /// 
-    /// - If there is a local variable with the name \a aString,
-    ///   \a aResult is set to point to the value assigned to this local
-    ///   variable. 
-    /// - If there is a global variable \a aString and its
-    ///   #iEvalBeforeReturn is false, its value is returned via
-    ///   \a aResult. 
-    /// - If there is a global variable \a aString and its
-    ///   #iEvalBeforeReturn is true, its value is evaluated. The
-    ///   result is assigned back to the variable, its
-    ///   #iEvalBeforeReturn is set to false, and a copy of the result
-    ///   is returned in \a aResult.
-    /// - Otherwise, \a aResult is set to #NULL.
-    void GetVariable(LispString * aVariable,LispPtr& aResult);
+  /// In debug mode, DebugModeVerifySettingGlobalVariables raises a warning if a global variable is set.
+  void DebugModeVerifySettingGlobalVariables(LispPtr & aVariable, LispBoolean aGlobalLazyVariable);
 
-    void UnsetVariable(LispString * aString);
-    void PushLocalFrame(LispBoolean aFenced);
-    void PopLocalFrame();
-    void NewLocal(LispString * aVariable,LispObject* aValue);
-    void CurrentLocals(LispPtr& aResult);
-    //@}
+  /// Get the value assigned to a variable.
+  /// \param aVariable name of the variable
+  /// \param aResult (on exit) value of \a aVariable
+  /// 
+  /// - If there is a local variable with the name \a aString,
+  ///   \a aResult is set to point to the value assigned to this local
+  ///   variable. 
+  /// - If there is a global variable \a aString and its
+  ///   #iEvalBeforeReturn is false, its value is returned via
+  ///   \a aResult. 
+  /// - If there is a global variable \a aString and its
+  ///   #iEvalBeforeReturn is true, its value is evaluated. The
+  ///   result is assigned back to the variable, its
+  ///   #iEvalBeforeReturn is set to false, and a copy of the result
+  ///   is returned in \a aResult.
+  /// - Otherwise, \a aResult is set to #NULL.
+  void GetVariable(LispString * aVariable,LispPtr& aResult);
+
+  void UnsetVariable(LispString * aString);
+  void PushLocalFrame(LispBoolean aFenced);
+  void PopLocalFrame();
+  void NewLocal(LispString * aVariable,LispObject* aValue);
+  void CurrentLocals(LispPtr& aResult);
+  //@}
 
 public:
     /// \name Lisp functions

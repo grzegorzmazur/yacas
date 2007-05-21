@@ -35,7 +35,8 @@ Function("AddTerm",{termlist,term,begining})
   If (l>=1, While ((i<=l) And (term[1]<termlist[i][1])) i++);
   If  (i>l, [DestructiveAppend(termlist,term);i++;], 
           If (term[1]=termlist[i][1],
-             [ nc:=termlist[i][2]+term[2];
+             [ Local(nc);
+               nc:=termlist[i][2]+term[2];
                  If(nc!=0,DestructiveReplace(termlist,i,{term[1],nc}),
                           [DestructiveDelete(termlist,i);i--;]);
              ],  DestructiveInsert(termlist,i,term))
@@ -110,7 +111,7 @@ Function("ExpandSparseUniVar",{s})
 
 Function("DivTermList",{a,b})
 [
- Local(q,nq,t,c);
+ Local(q,nq,t,c,begining);
  q := {};
  // a[1][1] is the degree of a, b[1][1] is the degree of b
  While ((a!={}) And a[1][1]>=b[1][1])

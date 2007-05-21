@@ -110,7 +110,8 @@ by factoring its norm */
   [
    If (p[1]=2, [ AddGaussianFactor(gfactors,z,1+I);]);
    If (Mod(p[1],4)=3, AddGaussianFactor(gfactors,z,p[1]));
-   If (Mod(p[1],4)=1, [ alpha := GaussianFactorPrime(p[1]);
+   If (Mod(p[1],4)=1, [ Local(alpha); 
+                        alpha := GaussianFactorPrime(p[1]);
                         AddGaussianFactor(gfactors,z,alpha);
                         AddGaussianFactor(gfactors,z,Conjugate(alpha));
                       ]);                    

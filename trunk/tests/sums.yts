@@ -80,7 +80,7 @@ Verify((Taylor2(x,0,10) Exp(jn(x))),
          + jn9*x^9 + (jn10+jn5^2/2)*x^10);
 
 // Some examples of power series
-
+LocalSymbols(p1,p2,p3,p4,p0,pj,pp,pju0,pj40,pj50,pj51,pj52,pj53,pj54,pc24,pc35,pc46,pc57,pc68) [
 p1 := Taylor'LPS(0, {1,1,1/2,1/6}, x, Exp(x));
 p2 := Taylor'LPS(1, {1,0,-1/6,0,1/120,0}, t, Sin(t));
 p3 := Taylor'LPS(0, {a0,a1,a2,a3}, x, foo(x));
@@ -330,4 +330,6 @@ pp := Taylor'LPS(Undefined, {}, x,
                  Taylor'LPS'Compose(FlatCopy(p1), FlatCopy(p2)));
 Verify(Taylor'LPS'Coeffs(pp, 0, 3), {1, 1, 1/2, 0});
 Verify(pp, Taylor'LPS(0, {1,1,1/2,0}, x, Taylor'LPS'Compose(p1,p2)));
+
+]; // LocalSymbols(p*)
 

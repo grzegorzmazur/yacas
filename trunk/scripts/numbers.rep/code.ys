@@ -303,7 +303,7 @@ Function("FermatNumber",{n})[
 [
 	Check(IsPositiveInteger(n),
 		"Divisors: argument must be positive integer");
-	Local(sum,factors,i);
+	Local(len,sum,factors,i);
 	sum:=1;
 	factors:=Factors(n);
 	len:=Length(factors);
@@ -590,7 +590,7 @@ IsCarmichaelNumber(n_IsList) <-- MapSingle("IsCarmichaelNumber",n);
 PartitionsP'recur(number_IsPositiveInteger) <--
 [
 	// need storage of n values PartitionsP(k) for k=1,...,n
-	Local(cache, n, k, pentagonal, P);
+	Local(sign, cache, n, k, pentagonal, P);
 	cache:=ArrayCreate(number+1,1);	// cache[n] = PartitionsP(n-1)
 	n := 1;
 	While(n<number)	// this will never execute if number=1
