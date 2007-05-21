@@ -123,7 +123,7 @@ LocalSymbols(x)
 
 20 # Solve'Context(_expr, _var) <--
 [
-  Local(lst, foundVarP, context, i);
+  Local(lst, foundVarP, context, i, res);
   lst := Listify(expr);
   foundVarP := False;
   i := 2;

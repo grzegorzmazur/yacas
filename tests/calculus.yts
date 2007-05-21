@@ -46,10 +46,14 @@ Testing("Limits");
 Verify( Limit(x,0,Right) Ln(x)*Sin(x), 0 ); f();
 KnownFailure( Limit(k,Infinity) ((k-phi)/k)^(k+1/2) = Exp(-phi) ); f();
 
-// This function satisfies Laplaces eqn: D(x,2)z + D(y,2)z = 0
-z:= ArcTan((2*x*y)/(x^2 - y^2)); f();
-// Hangs
-// Verify(Simplify((D(x,2) z) + D(y,2) z), 0 );
+[
+  Local(z);
+  // This function satisfies Laplaces eqn: D(x,2)z + D(y,2)z = 0
+  z:= ArcTan((2*x*y)/(x^2 - y^2)); f();
+  //TODO, this test is disabled, should it be re-enabled?
+  // Hangs
+  // Verify(Simplify((D(x,2) z) + D(y,2) z), 0 );
+];
 
 Testing("Pslq");
 VerifyPslq(left,right):=

@@ -38,11 +38,13 @@ Testing("VectorProducts");
 ];
 Verify(aa,Hold(aa));
 
-
-NextTest("Inproduct");
-a:={1,2,3};
-b:={3,1,5};
-Verify( a . b , 20);
+[
+  Local(a,b);
+  NextTest("Inproduct");
+  a:={1,2,3};
+  b:={3,1,5};
+  Verify( a . b , 20);
+];
 
 Verify(CrossProduct({1,2,3} , {4,2,5}) , {4,7,-6});
 Verify({1,2,3} X {4,2,5},{4,7,-6});
@@ -76,49 +78,54 @@ Verity( Determinant(ToeplitzMatrix(1 .. 10)), -2816 );
 // check that Determinant gives correct symbolic result
 TestYacas(Determinant({{a,b},{c,d}}),a*d-b*c);
 
-ll:={ {1,2,3},
-      {2,-1,4},
-      {3,4,3}
-    };
-/* CoFactor */
-Testing("CoFactor");
-Verify(N(CoFactor(ll,1,2)),6);
-/* Minor */
-Testing("Minor");
-Verify(N(Minor(ll,1,2)),-6);
-/* Inverse */
-Testing("Inverse");
-Verify(Inverse(ll)*ll,Identity(3));
-/* SolveMatrix */
-Testing("SolveMatrix");
-Verify(ll*SolveMatrix(ll,{1,2,3}),{1,2,3});
-/* Trace */
-Testing("Trace");
-Verify(Trace(ll),1-1+3);
-/* IsVector */
-Verify(IsList(ll),True);
-Verify(IsList({1,2,3}),True);
-/* IsMatrix */
-Verify(IsMatrix(ll),True);
-Clear(ll);
+[
+  Local(ll);
+  ll:={ {1,2,3},
+        {2,-1,4},
+        {3,4,3}
+      };
+  /* CoFactor */
+  Testing("CoFactor");
+  Verify(N(CoFactor(ll,1,2)),6);
+  /* Minor */
+  Testing("Minor");
+  Verify(N(Minor(ll,1,2)),-6);
+  /* Inverse */
+  Testing("Inverse");
+  Verify(Inverse(ll)*ll,Identity(3));
+  /* SolveMatrix */
+  Testing("SolveMatrix");
+  Verify(ll*SolveMatrix(ll,{1,2,3}),{1,2,3});
+  /* Trace */
+  Testing("Trace");
+  Verify(Trace(ll),1-1+3);
+  /* IsVector */
+  Verify(IsList(ll),True);
+  Verify(IsList({1,2,3}),True);
+  /* IsMatrix */
+  Verify(IsMatrix(ll),True);
+  Clear(ll);
+];
 
-Verify( IsSymmetric(Identity(10)), True ); 
-Verify( IsOrthogonal(2*Identity(10)), False );
-A := {{1,2,2},{2,1,-2},{-2,2,-1}};
-Verify( IsOrthogonal(A/3), True );
-Verity( IsSymmetric(Identity(10)), True );
-Verify( IsSymmetric({{1}}),True );
-A := {{1,0,0,0,1},{0,2,0,0,0},{0,0,3,0,0},{0,0,0,4,0},{1,0,0,0,5}};
-Verify( IsSymmetric(A),True );
-A := {{0,2,0,0,1},{0,0,3,0,0},{0,0,0,4,0},{1,0,0,0,5}};
-Verify( IsSymmetric(A),False);
-A := {{0,-1},{1,0}};
-Verify( IsSkewSymmetric(A), True );
-Verify( IsSkewSymmetric(Identity(10)), False );
-Verify( IsSkewSymmetric(ZeroMatrix(10,10)), True );
-Verify( IsIdempotent(Identity(20)), True );
-Verify( IsIdempotent(ZeroMatrix(10,10)), True );
-
+[
+  Local(A);
+  Verify( IsSymmetric(Identity(10)), True ); 
+  Verify( IsOrthogonal(2*Identity(10)), False );
+  A := {{1,2,2},{2,1,-2},{-2,2,-1}};
+  Verify( IsOrthogonal(A/3), True );
+  Verity( IsSymmetric(Identity(10)), True );
+  Verify( IsSymmetric({{1}}),True );
+  A := {{1,0,0,0,1},{0,2,0,0,0},{0,0,3,0,0},{0,0,0,4,0},{1,0,0,0,5}};
+  Verify( IsSymmetric(A),True );
+  A := {{0,2,0,0,1},{0,0,3,0,0},{0,0,0,4,0},{1,0,0,0,5}};
+  Verify( IsSymmetric(A),False);
+  A := {{0,-1},{1,0}};
+  Verify( IsSkewSymmetric(A), True );
+  Verify( IsSkewSymmetric(Identity(10)), False );
+  Verify( IsSkewSymmetric(ZeroMatrix(10,10)), True );
+  Verify( IsIdempotent(Identity(20)), True );
+  Verify( IsIdempotent(ZeroMatrix(10,10)), True );
+];
 
 Verify( VandermondeMatrix({1,2,3,4}),{{1,1,1,1},{1,2,3,4},{1,4,9,16},{1,8,27,64}});
 
@@ -143,18 +150,27 @@ Verify( OrthonormalBasis({{1,1,1},{0,1,1},{0,0,1}}),
 	{-Sqrt(2/3),Sqrt(1/6),Sqrt(1/6)},
 	{0,-Sqrt(1/2),Sqrt(1/2)}} );
 
-A:={{1,2,4},{1,3,9},{1,4,16}};
-b:={2,4,7};
-Verify( MatrixSolve(A,b) , {1,(-1)/2,1/2} );
-A:={{2,4,-2,-2},{1,2,4,-3},{-3,-3,8,-2},{-1,1,6,-3}};
-b:={-4,5,7,7};
-Verify( MatrixSolve(A,b), {1,2,3,4} );
+[
+  Local(A,b);
+  A:={{1,2,4},{1,3,9},{1,4,16}};
+  b:={2,4,7};
+  Verify( MatrixSolve(A,b) , {1,(-1)/2,1/2} );
+  A:={{2,4,-2,-2},{1,2,4,-3},{-3,-3,8,-2},{-1,1,6,-3}};
+  b:={-4,5,7,7};
+  Verify( MatrixSolve(A,b), {1,2,3,4} );
+];
 
-A:={{4,-2,4,2},{-2,10,-2,-7},{4,-2,8,4},{2,-7,4,7}};
-R:=Cholesky(A);
-Verify( R, {{2,-1,2,1},{0,3,0,-2},{0,0,2,1},{0,0,0,1}} );
-Verify( A, Transpose(R)*R );
+[
+  Local(A,R);
+  A:={{4,-2,4,2},{-2,10,-2,-7},{4,-2,8,4},{2,-7,4,7}};
+  R:=Cholesky(A);
+  Verify( R, {{2,-1,2,1},{0,3,0,-2},{0,0,2,1},{0,0,0,1}} );
+  Verify( A, Transpose(R)*R );
+];
 
-A:={{2,1,1},{2,2,-1},{4,-1,6}};
-{L,U} := LU(A);
-Verify( L*U, A );
+[
+  Local(A,L,U);
+  A:={{2,1,1},{2,2,-1},{4,-1,6}};
+  {L,U} := LU(A);
+  Verify( L*U, A );
+];

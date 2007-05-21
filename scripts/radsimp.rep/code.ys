@@ -4,8 +4,7 @@
 
 RadSimp(_n) <--
 [
-  Local(max);
-//  Set(n,N(Eval(n)));
+  Local(max, result);
   Set(max, MathCeil(N(Eval(n^2))));
   Set(result,0);
   Set(result,RadSimpTry(n,0,1,max));

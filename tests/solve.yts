@@ -168,10 +168,13 @@ VerifySolve(PSolve(x^2-3*x+2,x), {1,2});
 VerifySolve(PSolve(x^3,x), {0,0,0});
 VerifySolve(PSolve(x^3-1,x), {1, Exp(2/3*Pi*I), Exp(-2/3*Pi*I)});
 VerifySolve(PSolve(x^3+1,x), {-1, Exp(1/3*Pi*I), Exp(-1/3*Pi*I)});
-roots := BubbleSort(N(PSolve(x^3-3*x^2+2*x,x)), "<");
-NumericEqual(roots[1], 0, 10);
-NumericEqual(roots[2], 1, 10);
-NumericEqual(roots[3], 2, 10);
+[
+  Local(roots);
+  roots := BubbleSort(N(PSolve(x^3-3*x^2+2*x,x)), "<");
+  NumericEqual(roots[1], 0, 10);
+  NumericEqual(roots[2], 1, 10);
+  NumericEqual(roots[3], 2, 10);
+];
 /* Ideally, we want yacas to simplify the result of
  * PSolve(x^3-3*x^2+2*x,x) to {0,1,2}, but that does not seem feasible,
  * so we just test for numerical equality. */

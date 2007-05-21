@@ -129,37 +129,46 @@ LispPtr *LispEnvironment::FindLocal(LispString * aVariable)
     return NULL;
 }
 
+
+#ifdef YACAS_DEBUG
+void LispEnvironment::DebugModeVerifySettingGlobalVariables(LispPtr & aVariable, LispBoolean aGlobalLazyVariable)
+{
+  LispString *varString = aVariable->String();
+  LispPtr *local = FindLocal(varString);
+  if (local)
+  {
+    if (aGlobalLazyVariable)
+    {
+      printf("WARNING: setting local variable \"%s\" (file %s, line %d), but doing it through a method that is trying to set a global lazy variable. This is probably unintended.\n",
+        varString->c_str(),
+        aVariable->iFileName,
+        aVariable->iLine);
+    }
+    return;
+  }
+
+  {
+    int warn = 1;
+    // If a variable is guarded with LocalSymbol it can not interfere with other scripts.
+    if ((*varString)[0] ==  '$') warn = 0;
+    if (aGlobalLazyVariable) warn = 0;
+    if (warn) 
+      printf("WARNING: setting global variable \"%s\" (file %s, line %d) (global variables might have undesired side effects, please use Local or LocalSymbols).\n",
+        varString->c_str(),
+        aVariable->iFileName,
+        aVariable->iLine);
+  }
+}
+#endif // YACAS_DEBUG
+
 void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue, LispBoolean aGlobalLazyVariable)
 {
   LispPtr *local = FindLocal(aVariable);
   if (local)
   {
-#ifdef YACAS_DEBUG
-    if (aGlobalLazyVariable)
-    {
-      printf("WARNING: setting local variable \"%s\", but doing it through a method that is trying to set a global lazy variable. This is probably unintended.\n",aVariable->c_str());
-    }
-#endif // YACAS_DEBUG
     (*local) = (aValue);
     return;
   }
-
-#ifdef YACAS_DEBUG
-  {
-    int warn = 1;
-    // If a variable is guarded with LocalSymbol it can not interfere with other scripts.
-    if ((*aVariable)[0] ==  '$') 
-      warn = 0;
-
-    if (aGlobalLazyVariable)
-      warn = 0;
-
-    if (warn)
-    {
-      printf("WARNING: setting global variable \"%s\" (global variables might have undesired side effects, please use Local or LocalSymbols).\n",aVariable->c_str());
-    }
-  }
-#endif // YACAS_DEBUG
 
   iGlobals.SetAssociation(LispGlobalVariable(aValue), aVariable);
   if (aGlobalLazyVariable)

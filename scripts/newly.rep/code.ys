@@ -206,7 +206,7 @@ LagrangeInterpolant(list_IsList,_values,_var) <--
 
 ReversePoly(_f,_g,_var,_newvar,_degree) <--
 [
-  Local(orig,origg,V,W,U,n,initval,firstder,k,newsum);
+  Local(orig,origg,G,V,W,U,n,initval,firstder,j,k,newsum);
   orig:=MakeUni(f,var);
   origg:=MakeUni(g,var);
   initval:=Coef(orig,0);

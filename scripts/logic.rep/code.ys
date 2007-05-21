@@ -304,7 +304,7 @@ LogicCombine(_list) <--
 // a boolean indicated whether there was a change is returned
 DoUnitSubsumptionAndResolution(_list) <--
 [
-    Local(i, isFalse, isTrue, changed);
+    Local(i, j, k, isFalse, isTrue, changed);
     Set(isFalse, False);
     Set(isTrue,  False);
     Set(changed, True);

@@ -1,19 +1,20 @@
 
 NextTest("Checking comment syntax supported");
+[
+  Local(a);
+  /* something here */
+  a:= 3;
+  // test 1
 
-/* something here */
-a:= 3;
-// test 1
+  // /* test2 */
 
-// /* test2 */
+  /* // test3 */
 
-/* // test3 */
+  //Echo({a, Nl()});
 
-//Echo({a, Nl()});
-
-// Check parsing
-a==-b; // This would generate a parse error in Yacas versions 1.0.54 and earlier
-
+  // Check parsing
+  a==-b; // This would generate a parse error in Yacas versions 1.0.54 and earlier
+];
 
 
 [

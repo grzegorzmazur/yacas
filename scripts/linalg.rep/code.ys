@@ -402,7 +402,7 @@ x X y := CrossProduct(x,y);
 Commutator(x,y):=x*y-y*x;
 
 Function("VandermondeMatrix",{vector})[
-	Local(len,i,j,item,result);
+	Local(len,i,j,item,matrix);
 	len:=Length(vector);	
 	matrix:=ZeroMatrix(len,len);
 

@@ -54,10 +54,16 @@ static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, Lis
     {
         LispPtr result;
         InternalEval(aEnvironment, result, ARGUMENT(1));
+#ifdef YACAS_DEBUG
+        aEnvironment.DebugModeVerifySettingGlobalVariables(result, aGlobalLazyVariable);
+#endif // YACAS_DEBUG
         varstring = result->String();
     }
     else
     {
+#ifdef YACAS_DEBUG
+        aEnvironment.DebugModeVerifySettingGlobalVariables(ARGUMENT(1), aGlobalLazyVariable);
+#endif // YACAS_DEBUG
         varstring = ARGUMENT(1)->String();
     }
     CHK_ARG_CORE(varstring,1);

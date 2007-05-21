@@ -549,7 +549,7 @@ Verify(Mod({5,1},4),{1,1});
  * assigned to global variables that were not protected with LocalSymbols.
  */
 [
-  Local(a,b);
+  Local(a,b,A);
   a:=mystr;
   A:=mystr;
   /* The real test here is that no error is generated due to the 

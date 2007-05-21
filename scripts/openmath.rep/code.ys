@@ -41,13 +41,24 @@ Rule("OMREP",1,1,True)
 ];
 
 
+LocalSymbols(omindent) [
+  // Function definitions
+  OMIndent() := [omindent := omindent + 2;];
+  OMUndent() := [omindent := omindent - 2;];
+  OMClearIndent() := [omindent := 0;];
+  OMIndentSpace() := Space(omindent);
+
+  // Initialization of indentation
+  OMClearIndent();
+]; // LocalSymbols(omindent)
+
 ///////////////////////////////////////////////////////////////////////
 // Output
 
 10 # OMForm(_expression)
      <--
      [
-     omindent := 0;
+     OMClearIndent();
      OMEcho("<OMOBJ>");
      OMIndent();
      If(IsAtom(expression),
@@ -63,15 +74,15 @@ Rule("OMREP",1,1,True)
 10 # OMFormExpression(i_IsString)  <-- OMEcho("<OMSTR>":i:"</OMSTR>");
 11 # OMFormExpression(i_IsInteger) <-- OMEcho("<OMI>":String(i):"</OMI>");
 12 # OMFormExpression(i_IsNumber)  <-- OMEcho("<OMF dec=\"":String(i):"\"/>");
-13 # OMFormExpression(i_IsConstant)_(OMSymbol[ String(i) ] != Empty)
-     <-- OMEcho("<OMS cd=\"":OMSymbol[ String(i) ][1]
-                :"\" name=\"":OMSymbol[ String(i) ][2]:"\"/>"
+13 # OMFormExpression(i_IsConstant)_(OMSymbol()[ String(i) ] != Empty)
+     <-- OMEcho("<OMS cd=\"":OMSymbol()[ String(i) ][1]
+                :"\" name=\"":OMSymbol()[ String(i) ][2]:"\"/>"
                 );
 14 # OMFormExpression(i_IsConstant)// Should we rather evaluate it?
      <-- OMEcho("<OMV name=\"":String(i):"\"/>");
-15 # OMFormExpression(i_IsVariable)_(OMSymbol[ String(i) ] != Empty)
-     <-- OMEcho("<OMS cd=\"":OMSymbol[ String(i) ][1]
-                :"\" name=\"":OMSymbol[ String(i) ][2]:"\"/>"
+15 # OMFormExpression(i_IsVariable)_(OMSymbol()[ String(i) ] != Empty)
+     <-- OMEcho("<OMS cd=\"":OMSymbol()[ String(i) ][1]
+                :"\" name=\"":OMSymbol()[ String(i) ][2]:"\"/>"
                 );
 16 # OMFormExpression(i_IsVariable)
      <-- OMEcho("<OMV name=\"":String(i):"\"/>");
@@ -150,15 +161,15 @@ Rule("OMREP",1,1,True)
      OMEcho("<OMS cd=\"yacas\" name=\"":Type(function):"\"/>");
      If(arity > 0, ForEach(arg, function) OMFormExpression(arg));
      ];
-10 # OMFormFunction(function_IsFunction)_(OMSymbol[ Type(function) ] != Empty)
+10 # OMFormFunction(function_IsFunction)_(OMSymbol()[ Type(function) ] != Empty)
      <--
      [
      Local(symbolDef);
      // [20051016 AGP] The "signature" feature is an old attempt at pattern
      // matching, but now that we have real predicates in the mappings it's
      // probably obsolete. I'll think about removing it.
-     symbolDef := OMSymbol[ OMSignature(function) ];
-     If(symbolDef = Empty, symbolDef := OMSymbol[ Type(function) ] );
+     symbolDef := OMSymbol()[ OMSignature(function) ];
+     If(symbolDef = Empty, symbolDef := OMSymbol()[ Type(function) ] );
      If(symbolDef = Empty Or Length(symbolDef) < 3 Or symbolDef[3] = {},
         [
         OMEcho("<OMS cd=\"":symbolDef[1]:"\" name=\"":symbolDef[2]:"\"/>");
@@ -183,11 +194,6 @@ Rule("OMREP",1,1,True)
        );
      ];
 
-omindent := 0;
-OMIndentSpace() :=
-[
-  Space(omindent);
-];
 
 OMWrite(_expression) <--
 [
@@ -251,8 +257,7 @@ OMEchoEscape(expression_IsList) <--
   WriteString("]]>");
   NewLine();
 ];
-OMIndent() := [omindent := omindent + 2;];
-OMUndent() := [omindent := omindent - 2;];
+
 
 HoldArgNr("OMForm",1,1);
 //HoldArgNr("OMFormExpression",1,1);
@@ -293,10 +298,13 @@ HoldArgNr("OMSignature", 1, 1);
 // "encodingError:unexpected closing brace": this happens in the ReadOMOBJ
 //      rules. It means that you forgot to call OMNextToken() from your rule.
 
-OMNextToken() :=
-[
-  OMToken := XmlExplodeTag(String(ReadToken()));
-];
+LocalSymbols(omtoken) [
+  OMNextToken() :=
+  [
+    omtoken := XmlExplodeTag(String(ReadToken()));
+  ];
+  OMToken() := omtoken;
+]; // LocalSymbols(omtoken)
 
 OMRead():=
 [
@@ -305,7 +313,7 @@ OMRead():=
   [
     XmlTokenizer();
     OMNextToken();
-    result := MatchOMOBJ(OMToken);
+    result := MatchOMOBJ(OMToken());
     DefaultTokenizer();
   ],
   [
@@ -322,9 +330,9 @@ FromString(str:" EndOfFile")
   Local(result);
   XmlTokenizer();
   OMNextToken();
-  While(OMToken != "EndOfFile")
+  While(OMToken() != "EndOfFile")
   [
-    Echo("Exploded ",OMToken);
+    Echo("Exploded ",OMToken());
     OMNextToken();
   ];
   DefaultTokenizer();
@@ -333,7 +341,7 @@ FromString(str:" EndOfFile")
 
 
 
-10 # MatchClose(_x)_(x = OMToken) <-- [OMNextToken();True;];
+10 # MatchClose(_x)_(x = OMToken()) <-- [OMNextToken();True;];
 20 # MatchClose(_x) <-- Check(False,ToString()Echo("encodingError:unexpected closing brace")); //@@@ TODO better error reporting
 
 10 # MatchOMOBJ(XmlTag("OMOBJ",_attributes,"Open")) <--
@@ -341,7 +349,7 @@ FromString(str:" EndOfFile")
   // Any attributes are ignored.
   Local(result);
   OMNextToken();
-  result := ReadOMOBJ(OMToken);
+  result := ReadOMOBJ(OMToken());
   MatchClose(XmlTag("OMOBJ",{},"Close"));
   result;
 ];
@@ -364,7 +372,7 @@ FromString(str:" EndOfFile")
 [
   Local(result);
   OMNextToken();
-  result := Atom(OMToken);
+  result := Atom(OMToken());
   OMNextToken();
   MatchClose(XmlTag("OMI",{},"Close"));
   result;
@@ -386,7 +394,7 @@ FromString(str:" EndOfFile")
 [
   Local(result);
   OMNextToken();
-  If(IsString(OMToken), [result := OMToken; OMNextToken();], result := "");
+  If(IsString(OMToken()), [result := OMToken(); OMNextToken();], result := "");
   MatchClose(XmlTag("OMSTR",{},"Close"));
   result;
 ];
@@ -401,9 +409,9 @@ FromString(str:" EndOfFile")
   Local(result, new);
   result:={};
   OMNextToken();
-  While (OMToken != XmlTag("OMA",{},"Close"))
+  While (OMToken() != XmlTag("OMA",{},"Close"))
   [
-    new:=ReadOMOBJ(OMToken);
+    new:=ReadOMOBJ(OMToken());
     DestructiveAppend(result,new);
   ];
   MatchClose(XmlTag("OMA",{},"Close"));
@@ -415,9 +423,9 @@ FromString(str:" EndOfFile")
   Local(result, new);
   result:={};
   OMNextToken();
-  While (OMToken != XmlTag("OMBIND",{},"Close"))
+  While (OMToken() != XmlTag("OMBIND",{},"Close"))
   [
-    new:=ReadOMOBJ(OMToken);
+    new:=ReadOMOBJ(OMToken());
     DestructiveAppend(result,new);
   ];
   MatchClose(XmlTag("OMBIND",{},"Close"));
@@ -428,9 +436,9 @@ FromString(str:" EndOfFile")
   Local(result, new);
   result:={};
   OMNextToken();
-  While (OMToken != XmlTag("OMBVAR",{},"Close"))
+  While (OMToken() != XmlTag("OMBVAR",{},"Close"))
   [
-    new:=ReadOMOBJ(OMToken);
+    new:=ReadOMOBJ(OMToken());
     DestructiveAppend(result,new);
   ];
   MatchClose(XmlTag("OMBVAR",{},"Close"));
@@ -438,11 +446,11 @@ FromString(str:" EndOfFile")
 ];
 
 10 # OMApplyReverseMapping(yacasExp_IsFunction) <-- yacasExp;
-10 # OMApplyReverseMapping(yacasExp_IsFunction)_(OMSymbol[ Type(yacasExp) ] != Empty)
+10 # OMApplyReverseMapping(yacasExp_IsFunction)_(OMSymbol()[ Type(yacasExp) ] != Empty)
      <--
      [
-     Local(symbolDef);
-     symbolDef := OMSymbol[ Type(yacasExp) ];
+     Local(symbolDef, result);
+     symbolDef := OMSymbol()[ Type(yacasExp) ];
      If(symbolDef[4] = {},
         result := yacasExp,
         [
@@ -531,7 +539,7 @@ HoldArgNr("OMPathSelect", 2, 2);
      OMCheck(False,OMError({"moreerrors", "encodingError"}, ToString()Echo("missing \"cd\" or \"name\" attribute: ",attributes))),
      [
      Local(cdTable, yacasform);
-     cdTable := OMSymbolReverse[ omcd ];
+     cdTable := OMSymbolReverse()[ omcd ];
      If(cdTable != Empty, yacasform := cdTable[ omname ]);
      // We can not optimize here by checking first whether the CD is "yacas"
      // and avoiding the table lookup then, because for some symbols the
@@ -577,18 +585,26 @@ OMGetCoreError():=
 ///////////////////////////////////////////////////////////////////////
 // Symbol mapping tables
 
-OMSymbol := {};
-OMSymbolReverse := {};
+LocalSymbols(omsymbol, omsymbolreverse) [
+  // Initialization of the openmath symbol dictionaries
+  omsymbol := {};
+  omsymbolreverse := {};
+
+  // Access to the dictionaries
+  OMSymbol() := omsymbol;
+  OMSymbolReverse() := omsymbolreverse;
+
+]; // LocalSymbols(omsymbol, omsymbolreverse)
 
 OMDef(_yacasform, omcd_IsString, omname_IsString, _directMapping, _reverseMapping) <--
 [
   Local(cdTable);
   If(IsString(yacasform),
-     OMSymbol[ yacasform ] := {omcd, omname, directMapping, reverseMapping}
+     OMSymbol()[ yacasform ] := {omcd, omname, directMapping, reverseMapping}
      );
-  cdTable := OMSymbolReverse[ omcd ];
+  cdTable := OMSymbolReverse()[ omcd ];
   If(cdTable = Empty,
-     OMSymbolReverse[ omcd ] := {{omname, yacasform}},
+     OMSymbolReverse()[ omcd ] := {{omname, yacasform}},
      [
        Local(oldYacasform);
        oldYacasform := cdTable[ omname ];
@@ -616,7 +632,7 @@ OMDef(_yacasform, omcd_IsString, omname_IsString)
 
 OMDef(yacasalias_IsString, yacasname_IsString) <--
 [
-  OMSymbol[ yacasalias ] := OMSymbol[ yacasname ];
+  OMSymbol()[ yacasalias ] := OMSymbol()[ yacasname ];
 ];
 HoldArgNr("OMDef", 5, 4);
 HoldArgNr("OMDef", 5, 5);
