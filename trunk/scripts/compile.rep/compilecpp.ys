@@ -36,6 +36,23 @@ HoldArg("CountRegisters",expression);
    <-- Add(MapSingle("CountRegisters",Tail(Listify(expression))));
 
 
+LocalSymbols(instructionCount) [
+  ResetInstructionCount() := [Set(instructionCount,0);];
+  InstructionCount() := instructionCount;
+  IncrementInstructionCount(n) := [instructionCount := instructionCount+n;];
+  ResetInstructionCount();
+]; // LocalSymbols(instructionCount)
+
+LocalSymbols(currentLastRegister) [
+  CurrentLastRegister() := currentLastRegister;
+  SetCurrentLastRegister(value) := [ currentLastRegister := value;];
+]; // LocalSymbols(currentLastRegister)
+
+LocalSymbols(funcPrototypes) [
+  ResetFuncPrototypes() := [funcPrototypes := "";];
+  FuncPrototypes() := funcPrototypes;
+  AppendFuncPrototype(string) := [funcPrototypes := funcPrototypes:string;];
+]; // LocalSymbols(funcPrototypes)
 
 CompileStatement(Defun(_cn,_ag) (_body)) <--
 [
@@ -51,15 +68,15 @@ CompileStatement(Defun(_cn,_ag) (_body)) <--
 //  funcDecls[(@cn)] := {compiledName,Function,Fixed,nrArgs};
 
   
-Echo("VmFunction(",@cn,")"); Set(instructionCount,0);
+Echo("VmFunction(",@cn,")"); ResetInstructionCount();
   If(nrRegisters>0,
     [
-      Echo("  VmPushNulls(",nrRegisters,")"); instructionCount:=instructionCount+2;
+      Echo("  VmPushNulls(",nrRegisters,")"); IncrementInstructionCount(2);
     ]);
 //  Echo("void ",compiledName,"(LispEnvironment& aEnvironment,LispInt aStackTop)");
 //  Echo("VmFunctionBegin();");
 
-  Set(currentLastRegister,nrArgs+1);
+  SetCurrentLastRegister(nrArgs+1);
   Set(stack,NewStack());
   PushStackFrame(stack,fenced);
   For(i:=1,i<=nrArgs,i++)
@@ -69,9 +86,9 @@ Echo("VmFunction(",@cn,")"); Set(instructionCount,0);
   ];  
   CompileBody(Hold(@body),stack);
   PopStackFrame(stack);
-  Echo("  VmSetRegister(0/*RESULT*/)"); instructionCount:=instructionCount+2;
-  Echo("  VmPop(",nrRegisters+1,")"); instructionCount:=instructionCount+2;
-  Echo("VmFunctionEnd() /* ",instructionCount," bytes in byte code mode. */");
+  Echo("  VmSetRegister(0/*RESULT*/)"); IncrementInstructionCount(2);
+  Echo("  VmPop(",nrRegisters+1,")"); IncrementInstructionCount(2);
+  Echo("VmFunctionEnd() /* ",InstructionCount()," bytes in byte code mode. */");
   Echo("");
   Echo("");
 ];
@@ -92,9 +109,9 @@ ForwardDeclareFixedFunction(name,nrArgs):=
   If (funcDecls[name] = Empty,
     [
       funcDecls[name] := newEntry;
-funcPrototypes := funcPrototypes:
+AppendFuncPrototype(
 "extern void ":compiledName:"(LispEnvironment& aEnvironment,LispInt aStackTop);
-";
+");
 
     ]);
   Check(funcDecls[name] = newEntry,
@@ -116,7 +133,7 @@ CompileStatement(f_IsFunction := _body) <--
   Set(args,Tail(Listify(@f)));
   Set(compiledName,"Compiled_":Type(@f));
   Set(nrArgs,NrArgs(@f));  
-  Set(currentLastRegister,nrArgs+1);
+  SetCurrentLastRegister(nrArgs+1);
 
 //  Echo("CORE_KERNEL_FUNCTION(\"",Type(@f),"\",",compiledName,",",nrArgs,",YacasEvaluator::Function | YacasEvaluator::Fixed)");
 
@@ -124,10 +141,10 @@ CompileStatement(f_IsFunction := _body) <--
   ForwardDeclareFixedFunction(Type(@f),nrArgs);
 
   Set(nrRegisters,CountRegisters(Hold(@body)));
-Echo("VmFunction(",callName,")"); Set(instructionCount,0);
+Echo("VmFunction(",callName,")"); ResetInstructionCount();
   If(nrRegisters>0,
     [
-      Echo("  VmPushNulls(",nrRegisters,")"); instructionCount:=instructionCount+2;
+      Echo("  VmPushNulls(",nrRegisters,")"); IncrementInstructionCount(2);
     ]);
 
 //  Echo("void ",compiledName,"(LispEnvironment& aEnvironment,LispInt aStackTop)");
@@ -141,8 +158,8 @@ Echo("VmFunction(",callName,")"); Set(instructionCount,0);
   ];  
   CompileBody(Hold(@body),stack);
   PopStackFrame(stack);
-  Echo("  VmSetRegister(/*RESULT*/)"); instructionCount:=instructionCount+2;
-  Echo("  VmPop(",nrRegisters+1,")"); instructionCount:=instructionCount+2;
+  Echo("  VmSetRegister(/*RESULT*/)"); IncrementInstructionCount(2);
+  Echo("  VmPop(",nrRegisters+1,")"); IncrementInstructionCount(2);
   Echo("VmFunctionEnd()");
 ];
 
@@ -165,28 +182,28 @@ Use("corefunctions.ys");
 10 # CompileBody(body_IsNumber,_stack) <--
 [
   Echo("/* number : ",body," */");
-  Echo("  VmPushConstant(",CompiledConstant(String(body)),")"); instructionCount:=instructionCount+3;
+  Echo("  VmPushConstant(",CompiledConstant(String(body)),")"); IncrementInstructionCount(3);
 //  Echo("  PUSH(ATOM(",String(String(body)),"));");
 ];
 
 10 # CompileBody(body_IsString,_stack) <--
 [
   Echo("/* string : ",body," */");
-  Echo("  VmPushConstant(",CompiledConstant("\\\"":body:"\\\""),")");  instructionCount:=instructionCount+3;
+  Echo("  VmPushConstant(",CompiledConstant("\\\"":body:"\\\""),")");  IncrementInstructionCount(3);
 //  Echo("  PUSH(ATOM(\"\\\"",body,"\\\"\"));");
 ];
 
 11 # CompileBody(body_IsAtom,_stack)_(IsOnStack(stack,String(body))) <--
 [
   Echo("/* local : ",body," */");
-  Echo("  VmPush(",FindOnStack(stack,String(body))["call"],")"); instructionCount:=instructionCount+2;
+  Echo("  VmPush(",FindOnStack(stack,String(body))["call"],")"); IncrementInstructionCount(2);
 ];
 
 //TODO handle global variables
 12 # CompileBody(body_IsAtom,_stack) <--
 [
   Echo("/* atom : ",body," */");
-  Echo("  VmPushConstant(",CompiledConstant(String(body)),")");  instructionCount:=instructionCount+3;
+  Echo("  VmPushConstant(",CompiledConstant(String(body)),")");  IncrementInstructionCount(3);
 //  Echo("  PUSH(ATOM(",String(String(body)),"));");
 ];
 
@@ -209,15 +226,15 @@ Use("corefunctions.ys");
 
     AddToStack(stack,String(body[i]));
 //    FindOnStack(stack,String(body[i]))["call"] := String(body[i]);
-    FindOnStack(stack,String(body[i]))["call"] := "/*ARGUMENT*/(":String(currentLastRegister):")";
+    FindOnStack(stack,String(body[i]))["call"] := "/*ARGUMENT*/(":String(CurrentLastRegister()):")";
 //hier
-    Echo("  VmInitRegister(/*ARGUMENT*/(",currentLastRegister,"), ",CompiledConstant(String(body[i])),")"); instructionCount:=instructionCount+4;
-//    Echo("REGISTER(":String(currentLastRegister):")/*.Set*/=(",CompiledConstant(String(body[i])),");");
-    currentLastRegister++;
+    Echo("  VmInitRegister(/*ARGUMENT*/(",CurrentLastRegister(),"), ",CompiledConstant(String(body[i])),")"); IncrementInstructionCount(4);
+//    Echo("REGISTER(":String(CurrentLastRegister()):")/*.Set*/=(",CompiledConstant(String(body[i])),");");
+    SetCurrentLastRegister(CurrentLastRegister()+1);
 //    Echo("LispPtr ",body[i],"; ",body[i],"/*.Set*/=",CompiledConstant(String(body[i])),");");
 
   ];
-  Echo("  VmPushConstant(",CompiledConstant("True"),")");  instructionCount:=instructionCount+3;
+  Echo("  VmPushConstant(",CompiledConstant("True"),")");  IncrementInstructionCount(3);
 ];
   
 
@@ -226,7 +243,7 @@ Use("corefunctions.ys");
   Echo("/* ",body," */");
   Set(body,Tail(Listify(body)));
   CompileBody(body[2],stack);
-  Echo("  VmSetRegister(",FindOnStack(stack,String(body[1]))["call"],")"); instructionCount:=instructionCount+2;
+  Echo("  VmSetRegister(",FindOnStack(stack,String(body[1]))["call"],")"); IncrementInstructionCount(2);
 ];
 
 20 # CompileBody(body_IsFunction,_stack)_(Type(body) = "Prog") <--
@@ -241,7 +258,7 @@ Use("corefunctions.ys");
     Set(body,Tail(body));
     If(Length(body)>0,
       [
-        Echo("  VmPop(1)");  instructionCount:=instructionCount+2;
+        Echo("  VmPop(1)");  IncrementInstructionCount(2);
       ]);
   ];
   PopStackFrame();
@@ -254,17 +271,17 @@ Use("corefunctions.ys");
   breakLabel:=UniqueConstant();
   Set(body,Tail(Listify(body)));
   Echo("/* While (",body[1],") */");
-  Echo("VmLabel(",loopLabel,")"); labelDefs[String(loopLabel)] := instructionCount;
+  Echo("VmLabel(",loopLabel,")"); labelDefs[String(loopLabel)] := InstructionCount();
 //  Echo("   for(;;)");
 //  Echo("{");
   CompileBody(body[1],stack);
-  Echo("  VmJumpIfFalse(",breakLabel,")"); instructionCount := instructionCount+3;
+  Echo("  VmJumpIfFalse(",breakLabel,")"); IncrementInstructionCount(3);
 //  Echo("   if (ISFALSE(STACK(STACKTOP()-1))) break;");
   CompileBody(body[2],stack);
-  Echo("  VmPop(2)"); instructionCount:=instructionCount+2;
+  Echo("  VmPop(2)"); IncrementInstructionCount(2);
 //  Echo("}");
-  Echo("  VmJump(",loopLabel,")"); instructionCount := instructionCount+3;
-  Echo("VmLabel(",breakLabel,")"); labelDefs[String(breakLabel)] := instructionCount;
+  Echo("  VmJump(",loopLabel,")"); IncrementInstructionCount(3);
+  Echo("VmLabel(",breakLabel,")"); labelDefs[String(breakLabel)] := InstructionCount();
 ];
 
 
@@ -278,33 +295,33 @@ Use("corefunctions.ys");
 Local(elseClause,pastClause);
 elseClause:=UniqueConstant();
 pastClause:=UniqueConstant();
-Echo("  VmJumpIfFalse(",elseClause,")"); instructionCount := instructionCount+3;
+Echo("  VmJumpIfFalse(",elseClause,")"); IncrementInstructionCount(3);
 //  Echo("   if (ISTRUE(STACK(STACKTOP()-1)))");
 //  Echo("  {");
-  Echo("  VmPop(1)"); instructionCount:=instructionCount+2;
+  Echo("  VmPop(1)"); IncrementInstructionCount(2);
   CompileBody(body[2],stack);
-Echo("  VmJump(",pastClause,")"); instructionCount := instructionCount+3;
+Echo("  VmJump(",pastClause,")"); IncrementInstructionCount(3);
 //  Echo("  }");
-Echo("VmLabel(",elseClause,")"); labelDefs[String(elseClause)] := instructionCount;
+Echo("VmLabel(",elseClause,")"); labelDefs[String(elseClause)] := InstructionCount();
   If(Length(body) = 3,
   [
 //    Echo("  else");
 //    Echo("  {");
-    Echo("  VmPop(1)"); instructionCount:=instructionCount+2;
+    Echo("  VmPop(1)"); IncrementInstructionCount(2);
     CompileBody(body[3],stack);
 //    Echo("  }");
   ]);
-Echo("VmLabel(",pastClause,")"); labelDefs[String(pastClause)] := instructionCount;
+Echo("VmLabel(",pastClause,")"); labelDefs[String(pastClause)] := InstructionCount();
 ];
 
 30 # CompileBody(body_IsList,_stack) <--
 [
-  Echo("  VmPushConstant(",CompiledConstant("List"),")"); instructionCount:=instructionCount+3;
+  Echo("  VmPushConstant(",CompiledConstant("List"),")"); IncrementInstructionCount(3);
   ForEach(item,body)
   [
     CompileBody(item,stack);
   ];
-  Echo("  VmConsList(",Length(body),")"); instructionCount:=instructionCount+2;
+  Echo("  VmConsList(",Length(body),")"); IncrementInstructionCount(2);
 ];
 
 LocalSymbols(cFn)
@@ -317,7 +334,7 @@ LocalSymbols(cFn)
   [
     Local(compileFn);
     Set(compileFn,cFn);
-    Echo("  VmPushNulls(1)"); instructionCount:=instructionCount+2;
+    Echo("  VmPushNulls(1)"); IncrementInstructionCount(2);
 //    Echo("  {");
   
     Local(i,args,nrArgs);
@@ -337,11 +354,11 @@ LocalSymbols(cFn)
   //  Echo("    void ",compileFn,"(LispEnvironment& aEnvironment,LispInt aStackTop);");
 
 
-    Echo("  VmCall(",compileFn[1],", ",nrArgs,")"); instructionCount:=instructionCount+2+(BitsPerLong/8);
+    Echo("  VmCall(",compileFn[1],", ",nrArgs,")"); IncrementInstructionCount(2+(BitsPerLong/8));
 //    Echo("    ",compileFn[1],"(aEnvironment,STACKTOP()-",(nrArgs+1),");");
     If(nrArgs != 0,
       [
-        Echo("  VmPop(",nrArgs,")"); instructionCount:=instructionCount+2;
+        Echo("  VmPop(",nrArgs,")"); IncrementInstructionCount(2);
       ]);
 //    Echo("  }");
   ];
@@ -354,7 +371,7 @@ LocalSymbols(cFn)
 ];
 
 
-fileCompileString:=
+FileCompileString():=
 "
 <?
 LocalSymbols(expression)
@@ -373,7 +390,7 @@ FromFile(file)
 ?>
 ";
 
-fileBuildString:=
+FileBuildString():=
 "
 /* <?WriteString(pluginName:\".cpp\");?>
  * This file was generated from <?WriteString(file);?> by compilecpp.ys .
@@ -500,7 +517,7 @@ static RefPtr<LispObject> CONSTANTS[<?Write(Length(constDefs));?>];
 #endif // OPTIMIZE_COMPILED_PLUGIN_SIZE
 
 <?
-  Echo(funcPrototypes);
+  Echo(FuncPrototypes());
 ?>
 
 <?
@@ -588,13 +605,20 @@ LispPluginBase* <?WriteString(\"make_\":pluginName);?>(void)
 ";
 //{cname,fname,nrargs}
 
+LocalSymbols(constCount) [
+  ResetConstCount() := [constCount := 0;];
+  ConstCountString() := String(constCount);
+  IncConstCount() := [constCount := constCount+1;];
+  
+]; // LocalSymbols(constCount)
+
 10 # CompiledConstant(string_IsString)_(constDefs[string] = Empty) 
    <--
    [
      Local(cst);
-     Set(cst,String(constCount));
+     Set(cst,ConstCountString());
      constDefs[string] := cst;
-     constCount++;
+     IncConstCount();
      cst;
    ];
 20 # CompiledConstant(string_IsString) <-- constDefs[string];
@@ -605,9 +629,9 @@ LispPluginBase* <?WriteString(\"make_\":pluginName);?>(void)
 Macro("CompileExpression",{expression})
 [
   Set(funcDecls,{});
-  Set(funcPrototypes,"");
+  ResetFuncPrototypes();
   Set(constDefs,{});
-  Set(constCount,0);
+  ResetConstCount();
   Set(labelDefs,{});
   CompileStatement(@expression);
 ];
@@ -616,14 +640,14 @@ CompileCpp(file_IsString,pluginName_IsString)<--
 [
   Local(funcDefs);
   Set(funcDecls,{});
-  Set(funcPrototypes,"");
+  ResetFuncPrototypes();
   Set(constDefs,{});
-  Set(constCount,0);
+  ResetConstCount();
   Set(labelDefs,{});
   Echo("Converting ",file," to C++ code");
-  Set(funcDefs,PatchString(fileCompileString));
+  Set(funcDefs,PatchString(FileCompileString()));
   Echo("Generating C++ file ",pluginName,".cpp");
-  ToFile(pluginName:".cpp")WriteString(PatchString(fileBuildString));
+  ToFile(pluginName:".cpp")WriteString(PatchString(FileBuildString()));
 ];
 
 CcMacOSX(file_IsString,pluginName_IsString)<--
