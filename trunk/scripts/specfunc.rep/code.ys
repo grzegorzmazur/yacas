@@ -47,11 +47,17 @@
 30 # Bernoulli(n_IsOdd) <-- 0;
 
 /// numerical computations of Bernulli numbers use two different methods, one good for small numbers and one good only for very large numbers (using Zeta function)
-20 # Bernoulli(n_IsEven)_(n<=Bernoulli1Threshold) <-- BernoulliArray(n)[n+1];
-20 # Bernoulli(n_IsEven)_(n>Bernoulli1Threshold) <-- Bernoulli1(n);
+20 # Bernoulli(n_IsEven)_(n<=Bernoulli1Threshold()) <-- BernoulliArray(n)[n+1];
+20 # Bernoulli(n_IsEven)_(n>Bernoulli1Threshold()) <-- Bernoulli1(n);
 
-/// Bernoulli1Threshold could in principle be set by the user
-If(Not IsBound(Bernoulli1Threshold), Bernoulli1Threshold := 20);
+LocalSymbols(bernoulli1Threshold) [
+  /// Bernoulli1Threshold could in principle be set by the user
+  If(Not IsBound(bernoulli1Threshold), bernoulli1Threshold := 20);
+
+  Bernoulli1Threshold() := bernoulli1Threshold;
+  SetBernoulli1Threshold(threshold) := [ bernoulli1Threshold := threshold;];
+
+] ; // LocalSymbols(bernoulli1Threshold)
 
 /// Bernoulli polynomials of degree n in variable x
 Bernoulli(n_IsInteger, _x) <-- [

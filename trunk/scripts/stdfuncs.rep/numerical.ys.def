@@ -5,6 +5,8 @@ TanNum
 ArcSinNum
 ArcTanNum
 ExpNum
+MathExpThreshold
+SetMathExpThreshold 
 MathLog
 LnNum
 BrentLn

@@ -26,7 +26,7 @@ NullFileName() := "/dev/null";
 TemporaryFile() :=
 [
 	Local(cludgefile, filename);
-	cludgefile := TemporaryDirectory() : FilePathSeparator : "yacas-tmpfile";
+	cludgefile := TemporaryDirectory() : FilePathSeparator() : "yacas-tmpfile";
 	SystemCall("echo \\\"" : cludgefile : "-$$\\\" ';' > " : cludgefile);
 	filename := FromFile(cludgefile) Read();
 	SystemCall(DeleteFile(cludgefile));

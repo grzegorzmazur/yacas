@@ -29,12 +29,12 @@ Requires: a Unix shell.
 {expr} -- any expression (not evaluated)
 
 *DESC
-Exports a Yacas expression to $LaTeX$, generates a Postscript file and shows it in a viewer. The free Postscript viewer {gv} must be available on the Unix shell path. An alternative viewer can be specified by assigning to the global variable PSViewCommand.
+Exports a Yacas expression to $LaTeX$, generates a Postscript file and shows it in a viewer. The free Postscript viewer {gv} must be available on the Unix shell path. An alternative viewer can be specified by callign the function {SetPSViewCommand(command)}. The current value can be obtained through {PSViewCommand()}.
 
 Requires: a Unix shell, {latex}, {dvips}, {gv} or another Postscript viewer.
 
 *EG notest
-	In> [ PSViewCommand := "ghostview"; \
+	In> [ SetPSViewCommand("ghostview"); \
 	  ShowPS(x+2*Sin(x)); ]
 	Expression exported as /tmp/yacas-tmp
 	file-28802.tex
@@ -182,7 +182,7 @@ In that case, {FindFunction()} will return the filename under that directory. Ot
 *CMD PlatformOS, OSVersion, FilePathSeparator --- OS-dependent constants
 *STD
 *CALL
-	FilePathSeparator
+	FilePathSeparator()
 	PlatformOS()
 	OSVersion()
 
@@ -203,7 +203,7 @@ Thus the library is able to override the platform-specific value.
 The scripts should use {PlatformOS()} to distinguish between broad classes of systems.
 The currently supported values are {"Unix"} and {"Win32"}.
 
-The constant {FilePathSeparator} is the string that separates directories in the file system tree. This is the forward slash "{/}" on Unix and the backslash "{\}" on Windows.
+The function {FilePathSeparator()} returns the string that separates directories in the file system tree. This is the forward slash "{/}" on Unix and the backslash "{\}" on Windows.
 
 *E.G. notest
 
@@ -239,7 +239,7 @@ These functions provide a platform-independent interface to file operations on t
 *	{DeleteDir} will delete one or more directories
 <i>with all their contents</i>. (No warnings or questions are printed,---use with caution!) If a directory does not exist, no error is generated on Unix.
 *	{MakeDir} will create new directories. Under Windows, all intermediate subdirectories must exist for this to work. Under Unix, any intermediate subdirectories will be created automatically if needed.
-*	{MakeFilePath} returns a string which is the file path to the given file under given subdirectories. It uses the global variable {FilePathSeparator}.
+*	{MakeFilePath} returns a string which is the file path to the given file under given subdirectories. It uses the function {FilePathSeparator()}.
 *	{TemporaryDir} and {TemporaryFile} return the names of a temporary directory and a temporary file. (These names are OS-dependent.)
 
 Absolute file paths or relative file paths can be given (the current directory is the directory where Yacas was started).

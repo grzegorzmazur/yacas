@@ -26,7 +26,7 @@ section entitled ``GNU Free Documentation License''.
 <DATE>
 <FONT FAMILY=\"csc\">Yacas<\FONT> version: " : Version() : "
 </DATE>
-<BLURB>" : BlurbText : "</BLURB>
+<BLURB>" : BlurbText() : "</BLURB>
 ");
 ];
 
@@ -273,13 +273,18 @@ CloseDiv("paragraph", "subsubsection")
 );
 Bodied("Topical",60000);
 
-BlurbText := "";
+LocalSymbols(blurbText) [
+  blurbText := "";
 
-Blurb(string) :=
-[
-	BlurbText := string;
-	True;
-];
+  Blurb(string) :=
+  [
+    blurbText := string;
+    True;
+  ];
+
+  BlurbText() := blurbText;
+
+]; // LocalSymbols(blurbText)
 
 Bodied("Blurb",60000);
 // special escapes

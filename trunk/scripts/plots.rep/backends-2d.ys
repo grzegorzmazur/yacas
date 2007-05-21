@@ -118,7 +118,7 @@ Plot2D'datafile(values_IsList, _options'hash) <--
 Plot2D'gmt(values_IsList, _options'hash) <--
 [
   Local(dirBase, filename'list, script'file, ps'file);
-  Use("addons/unix.ys");	// need PSViewCommand
+  Use("addons/unix.ys");	// need PSViewCommand()
   dirBase := make'plotting'dir(options'hash);
   // use a special shell script file for plotting
   script'file := FindFile("yacas-gmtplot2d.sh");
@@ -133,7 +133,7 @@ Plot2D'gmt(values_IsList, _options'hash) <--
 	  , "")
     : " " : PrintList(filename'list, " ") );
   Echo("Displaying PS file");
-  SystemCall(PSViewCommand : " " : ps'file : " &");
+  SystemCall(PSViewCommand() : " " : ps'file : " &");
 
 ];
 

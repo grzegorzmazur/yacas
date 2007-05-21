@@ -12,20 +12,32 @@ PlatformOS() := Eval(
    If(OSVersion() = "cygwin",  "Unix", 
    /* otherwise */             Check(False, "Unsupported platform ":OSVersion()))))))));
 
-// this lists the available OS-specific modules
-SupportedOSes :=
-{
-	{"Unix", "unix.ys"}, // Unix defaults will probably work on MacOSX and BeOS
-	{"Win32", "win32.ys"},
-    {"Unknown","unix.ys"}
-};
 
-// it seems that we need this here because otherwise we won't be able to load the module... or will we?
-FilePathSeparators :=
-{
-	{"Unix", "/"},
-	{"Win32", "\\"},
-};
+LocalSymbols(FilePathSeparators) [
+
+  // it seems that we need this here because otherwise we won't be able to load the module... or will we?
+  FilePathSeparators :=
+  {
+    {"Unix", "/"},
+    {"Win32", "\\"},
+  };
+
+  FilePathSeparator() := FilePathSeparators[PlatformOS()];
+  // convert a path in current OS convention to use separators of the given another OS
+  10 # ConvertOSPath(path_IsString, OSname_IsString) _ (FilePathSeparators[OSname]=Empty) <-- path;
+  20 # ConvertOSPath(path_IsString, OSname_IsString) <--
+  [
+    Local(i);
+    For(i:=1, i<=Length(path), i++)
+    [
+      If(
+        StringMid(i, 1, path) = FilePathSeparator(),
+        path:=SetStringMid(i, FilePathSeparators[OSname], path)
+      );
+    ];
+    path;
+  ];
+]; // LocalSymbols(FilePathSeparators)
 
 /** The string PlatformOS() determines which module we should load.
 It can be set in yacasinit.ys or here, to override OSVersion(), e.g.:
@@ -36,8 +48,6 @@ PlatformOS(), because it might have been set differently by the user's yacasinit
 Currently the only supported variants of PlatformOS()  are "Win32" and "Unix".
 
 */
-
-FilePathSeparator := FilePathSeparators[PlatformOS()];
 
 // definitions of variable-argument functions
 
@@ -50,7 +60,7 @@ CopyFile(file1, file2) := SystemCall(CopyFileCmd(file1, file2));
 
 10 # MakeFilePath(file_IsString) <-- file;
 10 # MakeFilePath({file_IsString}) <-- file;
-20 # MakeFilePath(files_IsList) <-- ConcatStrings(files[1], FilePathSeparator, MakeFilePath(Tail(files)));
+20 # MakeFilePath(files_IsList) <-- ConcatStrings(files[1], FilePathSeparator(), MakeFilePath(Tail(files)));
 
 10 # MakeDir(dir_IsString) <-- SystemCall(MakeDirCmd(dir));
 10 # MakeDir({dir_IsString}) <-- MakeDir(dir);
@@ -66,30 +76,25 @@ CopyFile(file1, file2) := SystemCall(CopyFileCmd(file1, file2));
 
 SystemCallBg(command) := SystemCall(BackgroundCmd(command));
 
-// convert a path in current OS convention to use separators of the given another OS
-10 # ConvertOSPath(path_IsString, OSname_IsString) _ (FilePathSeparators[OSname]=Empty) <-- path;
-20 # ConvertOSPath(path_IsString, OSname_IsString) <--
-[
-	Local(i);
-	For(i:=1, i<=Length(path), i++)
-	[
-		If(
-			StringMid(i, 1, path) = FilePathSeparator,
-			path:=SetStringMid(i, FilePathSeparators[OSname], path)
-		);
-	];
-	path;
-		
-];
 
-// this function should be called once when one of the OS-dependent functions is requested
-LoadOSDependentModule() := Use(
-  ConcatStrings(
-	"osdep.rep/",
-// use this file path separator because it works on Windows and on Unix, and for other platforms we can use the archive
-	SupportedOSes[PlatformOS()]
-  )
-);
+LocalSymbols(SupportedOSes) [
+  // this lists the available OS-specific modules
+  SupportedOSes :=
+  {
+    {"Unix", "unix.ys"}, // Unix defaults will probably work on MacOSX and BeOS
+    {"Win32", "win32.ys"},
+      {"Unknown","unix.ys"}
+  };
 
+  // this function should be called once when one of the OS-dependent functions is requested
+  LoadOSDependentModule() := Use(
+    ConcatStrings(
+    "osdep.rep/",
+  // use this file path separator because it works on Windows and on Unix, and for other platforms we can use the archive
+    SupportedOSes[PlatformOS()]
+    )
+  );
+
+]; // LocalSymbols(SupportedOSes)
 
 LoadOSDependentModule();

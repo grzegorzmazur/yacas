@@ -99,14 +99,18 @@ The database "KnownOrthoPoly" contains closures that return coefficients for the
 
 */
 
-KnownOrthoPoly := Hold({
-	{"Jacobi", {{n, p}, {{(p[1]-p[2])/2, 1+(p[1]+p[2])/2}, {(2*n+p[1]+p[2]-1)*((p[1])^2-(p[2])^2)/(2*n*(n+p[1]+p[2])*(2*n+p[1]+p[2]-2)), (2*n+p[1]+p[2]-1)*(2*n+p[1]+p[2])/(2*n*(n+p[1]+p[2])), -(n+p[1]-1)*(n+p[2]-1)*(2*n+p[1]+p[2])/(n*(n+p[1]+p[2])*(2*n+p[1]+p[2]-2))}}}},
-	{"Gegenbauer", {{n, p}, {{0, 2*p[1]}, {0, 2+2*(p[1]-1)/n, -1-2*(p[1]-1)/n}}}},
-	{"Laguerre", {{n, p}, {{p[1]+1, -1}, {2+(p[1]-1)/n, -1/n, -1-(p[1]-1)/n}}}},
-	{"Hermite", {{n, p}, {{0,2}, {0, 2, -2*(n-1)}}}},
-	{"Tscheb1", {{n, p}, {{0,1}, {0,2,-1}}}},
-	{"Tscheb2", {{n, p}, {{0,2}, {0,2,-1}}}}
-});
+LocalSymbols(knownOrthoPoly) [
+  knownOrthoPoly := Hold({
+    {"Jacobi", {{n, p}, {{(p[1]-p[2])/2, 1+(p[1]+p[2])/2}, {(2*n+p[1]+p[2]-1)*((p[1])^2-(p[2])^2)/(2*n*(n+p[1]+p[2])*(2*n+p[1]+p[2]-2)), (2*n+p[1]+p[2]-1)*(2*n+p[1]+p[2])/(2*n*(n+p[1]+p[2])), -(n+p[1]-1)*(n+p[2]-1)*(2*n+p[1]+p[2])/(n*(n+p[1]+p[2])*(2*n+p[1]+p[2]-2))}}}},
+    {"Gegenbauer", {{n, p}, {{0, 2*p[1]}, {0, 2+2*(p[1]-1)/n, -1-2*(p[1]-1)/n}}}},
+    {"Laguerre", {{n, p}, {{p[1]+1, -1}, {2+(p[1]-1)/n, -1/n, -1-(p[1]-1)/n}}}},
+    {"Hermite", {{n, p}, {{0,2}, {0, 2, -2*(n-1)}}}},
+    {"Tscheb1", {{n, p}, {{0,1}, {0,2,-1}}}},
+    {"Tscheb2", {{n, p}, {{0,2}, {0,2,-1}}}}
+  });
+  KnownOrthoPoly() := knownOrthoPoly;
+
+]; // LocalSymbols(knownOrthoPoly)
 
 /*
 For efficiency, polynomials are represented by lists of coefficients rather than by Yacas expressions. Polynomials are evaluated using the explicit Horner scheme. On numerical arguments, the polynomial coefficients are not computed, only the resulting value.
@@ -119,11 +123,11 @@ Sums of series of orthogonal polynomials are found using the Clenshaw-Smith recu
 
 /* Numeric arguments are processed by a faster routine */
 
-10 # OrthoPoly(name_IsString, _n, p_IsList, x_IsRationalOrNumber) _ (KnownOrthoPoly[name] != Empty) <-- OrthoPolyNumeric(name, n, p, x);
-20 # OrthoPoly(name_IsString, _n, p_IsList, _x) _ (KnownOrthoPoly[name] != Empty) <-- EvaluateHornerScheme(OrthoPolyCoeffs(name, n, p), x);
+10 # OrthoPoly(name_IsString, _n, p_IsList, x_IsRationalOrNumber) _ (KnownOrthoPoly()[name] != Empty) <-- OrthoPolyNumeric(name, n, p, x);
+20 # OrthoPoly(name_IsString, _n, p_IsList, _x) _ (KnownOrthoPoly()[name] != Empty) <-- EvaluateHornerScheme(OrthoPolyCoeffs(name, n, p), x);
 
-10 # OrthoPolySum(name_IsString, c_IsList, p_IsList, x_IsRationalOrNumber) _ (KnownOrthoPoly[name] != Empty) <-- OrthoPolySumNumeric(name, c, p, x);
-20 # OrthoPolySum(name_IsString, c_IsList, p_IsList, _x) _ (KnownOrthoPoly[name] != Empty) <-- EvaluateHornerScheme(OrthoPolySumCoeffs(name, c, p), x);
+10 # OrthoPolySum(name_IsString, c_IsList, p_IsList, x_IsRationalOrNumber) _ (KnownOrthoPoly()[name] != Empty) <-- OrthoPolySumNumeric(name, c, p, x);
+20 # OrthoPolySum(name_IsString, c_IsList, p_IsList, _x) _ (KnownOrthoPoly()[name] != Empty) <-- EvaluateHornerScheme(OrthoPolySumCoeffs(name, c, p), x);
 
 /*
 OrthoPolyNumeric computes the value of the polynomial from recurrence relations directly. Do not use with non-numeric arguments, except for testing!
@@ -131,13 +135,13 @@ OrthoPolyNumeric computes the value of the polynomial from recurrence relations 
 OrthoPolyNumeric(name_IsString, n_IsInteger, p_IsList, _x) <-- [
 	Local(value1, value2, value3, ruleCoeffs, index);
 	value1 := 1;
-	ruleCoeffs := Apply(KnownOrthoPoly[name], {n, p})[1];
+	ruleCoeffs := Apply(KnownOrthoPoly()[name], {n, p})[1];
 	value2 := ruleCoeffs[1] + x*ruleCoeffs[2];
 	index := 1;
 	/* value1, value2, value3 is the same as P_{n-2}, P_{n-1}, P_n where n = index */
 	While(index<n) [
 		index := index + 1;
-		ruleCoeffs := Apply(KnownOrthoPoly[name], {index, p})[2];
+		ruleCoeffs := Apply(KnownOrthoPoly()[name], {index, p})[2];
 		value3 := (ruleCoeffs[1] + x*ruleCoeffs[2])*value2 + ruleCoeffs[3]*value1;
 		value1 := value2;
 		value2 := value3;
@@ -154,16 +158,16 @@ OrthoPolySumNumeric(name_IsString, c_IsList, p_IsList, _x) <-- [
 	index := Length(c) - 1;
 	/* value1, value2, value3 is the same as X_{n+2}, X_{n+1}, X_n where n = index */
 	While(index>=1) [
-		ruleCoeffs := Apply(KnownOrthoPoly[name], {index+1, p})[2];
-		ruleCoeffs1 := Apply(KnownOrthoPoly[name], {index+2, p})[2];
+		ruleCoeffs := Apply(KnownOrthoPoly()[name], {index+1, p})[2];
+		ruleCoeffs1 := Apply(KnownOrthoPoly()[name], {index+2, p})[2];
 		value3 := (ruleCoeffs[1] + x*ruleCoeffs[2])*value2 + ruleCoeffs1[3]*value1 + c[index+1];
 		value1 := value2;
 		value2 := value3;
 		index := index - 1;
 	];
 	/* Last iteration by hand: works correctly also if c has only 1 element */
-	ruleCoeffs := Apply(KnownOrthoPoly[name], {1, p})[1];
-	ruleCoeffs1 := Apply(KnownOrthoPoly[name], {2, p})[2];
+	ruleCoeffs := Apply(KnownOrthoPoly()[name], {1, p})[1];
+	ruleCoeffs1 := Apply(KnownOrthoPoly()[name], {2, p})[2];
 	value2 := (ruleCoeffs[1] + x*ruleCoeffs[2])*value2 + ruleCoeffs1[3]*value1 + c[1];
 	value2;
 ];
@@ -173,19 +177,19 @@ OrthoPolyCoeffs(name, n, p) returns the list of coefficients for orthogonal poly
 */
 
 10 # OrthoPolyCoeffs(name_IsString, 0, p_IsList) <-- {1};
-10 # OrthoPolyCoeffs(name_IsString, 1, p_IsList) <-- Apply(KnownOrthoPoly[name], {1, p})[1];
+10 # OrthoPolyCoeffs(name_IsString, 1, p_IsList) <-- Apply(KnownOrthoPoly()[name], {1, p})[1];
 
 /* Simple implementation, very slow, for testing only: recursive rule matches, no loops
 20 # OrthoPolyCoeffs(name_IsString, n_IsInteger, p_IsList)_(n>1) <-- [
 	Local(ruleCoeffs, newCoeffs);
-	ruleCoeffs := Apply(KnownOrthoPoly[name], {n, p})[2];
+	ruleCoeffs := Apply(KnownOrthoPoly()[name], {n, p})[2];
 	newCoeffs := OrthoPolyCoeffs(name, n-1, p);
 	Concat(newCoeffs,{0})*ruleCoeffs[1] + Concat(OrthoPolyCoeffs(name, n-2, p),{0,0})*ruleCoeffs[3] + Concat({0}, newCoeffs)*ruleCoeffs[2];
 ];
 */
 
 /* A fast implementation that works directly with lists and saves memory. Same recurrence as in OrthoPolyNumeric() */
-/* note: here we pass "name" instead of "KnownOrthoPoly[name]" for efficiency, but strictly speaking we don't need to use this global constant */
+/* note: here we pass "name" instead of "KnownOrthoPoly()[name]" for efficiency, but strictly speaking we don't need to use this global constant */
 
 20 # OrthoPolyCoeffs(name_IsString, n_IsInteger, p_IsList)_(n>1) <-- [
 	Local(ruleCoeffs, tmpCoeffs, newCoeffs, prevCoeffs, index, jndex, tmptmpCoeffs, prevCoeffsA, newCoeffsA, tmpCoeffsA);
@@ -199,7 +203,7 @@ OrthoPolyCoeffs(name, n, p) returns the list of coefficients for orthogonal poly
 	tmpCoeffs := tmpCoeffsA;
 	/* Initialize: n=0 and n=1 */
 	prevCoeffs[1] := 1;
-	ruleCoeffs := Apply(KnownOrthoPoly[name], {n, p})[1];
+	ruleCoeffs := Apply(KnownOrthoPoly()[name], {n, p})[1];
 	newCoeffs[1] := ruleCoeffs[1];
 	newCoeffs[2] := ruleCoeffs[2];
 	/* Invariant: answer ready in "newCoeffs" at value of index */
@@ -208,7 +212,7 @@ OrthoPolyCoeffs(name, n, p) returns the list of coefficients for orthogonal poly
 	While(index < n) [
 		index := index + 1;
 		/* Echo({"index ", index}); */ /* in case this is slow */
-		ruleCoeffs := Apply(KnownOrthoPoly[name], {index, p})[2];
+		ruleCoeffs := Apply(KnownOrthoPoly()[name], {index, p})[2];
 		tmpCoeffs[1] := ruleCoeffs[1]*newCoeffs[1] + ruleCoeffs[3]*prevCoeffs[1];
 		/* The polynomial tmpCoeffs must have (index+1) coefficients now */
 		For(jndex:=2, jndex <= index, jndex:=jndex+1) [
@@ -248,8 +252,8 @@ OrthoPolySumCoeffs(name_IsString, c_IsList, p_IsList) <-- [
 	/* main loop */
 	For(index:=n, index >= 1, index:=index-1) [
 		/* Echo({"index ", index}); */ /* in case this is slow */
-		ruleCoeffs := Apply(KnownOrthoPoly[name], {index+1, p})[2];
-		ruleCoeffs1 := Apply(KnownOrthoPoly[name], {index+2, p})[2];
+		ruleCoeffs := Apply(KnownOrthoPoly()[name], {index+1, p})[2];
+		ruleCoeffs1 := Apply(KnownOrthoPoly()[name], {index+2, p})[2];
 		tmpCoeffs[1] := c[index+1] + ruleCoeffs[1]*newCoeffs[1] + ruleCoeffs1[3]*prevCoeffs[1];
 		/* The polynomial tmpCoeffs must have (n-index+1) coefficients now */
 		For(jndex:=2, jndex <= n-index, jndex:=jndex+1) [
@@ -268,8 +272,8 @@ OrthoPolySumCoeffs(name_IsString, c_IsList, p_IsList) <-- [
 	];
 	/* Last iteration by hand: works correctly also if c has only 1 element */
 	index:=0;
-	ruleCoeffs := Apply(KnownOrthoPoly[name], {index+1, p})[1];
-	ruleCoeffs1 := Apply(KnownOrthoPoly[name], {index+2, p})[2];
+	ruleCoeffs := Apply(KnownOrthoPoly()[name], {index+1, p})[1];
+	ruleCoeffs1 := Apply(KnownOrthoPoly()[name], {index+2, p})[2];
 	tmpCoeffs[1] := c[index+1] + ruleCoeffs[1]*newCoeffs[1] + ruleCoeffs1[3]*prevCoeffs[1];
 	/* The polynomial tmpCoeffs must have (n-index+1) coefficients now */
 	For(jndex:=2, jndex <= n-index, jndex:=jndex+1) [

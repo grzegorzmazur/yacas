@@ -765,7 +765,7 @@ This is exactly the Bernoulli number $B[20]$.
 
 *A {Bernoulli1}
 
-All these steps are implemented in the routine {Bernoulli1}. The variable {Bernoulli1Threshold} determines the smallest $n$ for which $B[n]$ is to be computed via this routine instead of the recursion relation. Its current value is 20. 
+All these steps are implemented in the routine {Bernoulli1}. The function {Bernoulli1Threshold()} returns the smallest $n$ for which $B[n]$ is to be computed via this routine instead of the recursion relation. Its current default value is 20. This value can be set with {SetBernoulli1Threshold(threshold)}.
 
 The complexity of {Bernoulli1} is estimated as the complexity of finding all primes up to $n$ plus the complexity of computing the factorial, the power and the Zeta function. Finding the prime numbers up to $n$ by checking all potential divisors up to $Sqrt(n)$ requires $O(n^(3/2)*M(Ln(n)))$ operations with precision $O(Ln(n))$ digits. For the second step we need to evaluate $n!$, $Pi^n$ and $zeta(n)$ with precision of $P=O(n*Ln(n))$ digits. The factorial is found in $n$ short multiplications with $P$-digit numbers (giving $O(n*P)$), the power of $pi$ in $Ln(n)$ long multiplications (giving $O(M(P)*Ln(n))$), and {ZetaNum2(n)} (the asymptotically faster algorithm) requires $O(n*M(P))$ operations. The Zeta function calculation dominates the total cost because $M(P)$ is slower than $O(P)$. So the total complexity of {Bernoulli1} is $O(n*M(P))$ with $P <> n*Ln(n)$.
 

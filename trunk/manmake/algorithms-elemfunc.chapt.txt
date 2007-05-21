@@ -733,7 +733,7 @@ The computational cost of that is $O(M(P*Ln(P))*Ln(P))$.
 
 A speed-up trick used for large $x$ is to divide the argument by some power of 2 and then square the result several times, i.e.
 $$Exp(x) = (Exp(2^(-k)*x))^(2^k)$$,
-where $k$ is chosen sufficiently large so that the Taylor series converges quickly at $2^(-k)*x$ [Smith 1985]. The threshold value for $x$ is in the variable {MathExpThreshold} in {stdfuncs}.
+where $k$ is chosen sufficiently large so that the Taylor series converges quickly at $2^(-k)*x$ [Smith 1985]. The threshold value for $x$ can be obtained through {MathExpThreshold()}, and set through {SetMathExpThreshold(threshold)} in {stdfuncs}.
 
 *REM FIXME: round-off error for squaring. How many times to square. How many terms to take.
 
