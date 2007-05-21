@@ -6,11 +6,25 @@ document:
 */
 
 WriteYacasName(s) := 
-[ WriteString("\""); 
+[ 
+  Local(i);
+  WriteString("\""); 
   For(i:=1, i<=Length(s), i++) WriteString(If(s[i]="_","'",s[i]));
   WriteString("\"");
 ];
-  
+
+//TODO split up so that not the entire file is encapsulated in this LocalSymbols
+LocalSymbols(cconsts, cfuncs, cadders, cremovers, cincludes, cremarks, prelog, postlog, pluginname, plugin'pretty'name, cstructs, plugin'purpose, funcstring, cadderstring, cremoverstring, fileapi) [
+
+prelog'value() := prelog;
+cincludes'value() := cincludes;
+cfuncs'value() := cfuncs;
+pluginname'value() := pluginname;
+cconsts'value() := cconsts;
+cadders'value() := cadders;
+cremovers'value() := cremovers;
+postlog'value() := postlog;
+
 StubApiCStart(s_IsString) <--
 [
   cconsts := "";
@@ -228,49 +242,49 @@ fileapi:=
 #include \"genericstructs.h\"
 
 <?
-WriteString(prelog);
+WriteString(prelog'value());
 ?>
 
 <?
-WriteString(cincludes);
+WriteString(cincludes'value());
 ?>
 <?
-WriteString(cfuncs);
+WriteString(cfuncs'value());
 ?> 
 
 
-class <? WriteString(pluginname); ?> : public LispPluginBase
+class <? WriteString(pluginname'value()); ?> : public LispPluginBase
 {
 public:
     virtual void Add(LispEnvironment& aEnvironment);
     virtual void Remove(LispEnvironment& aEnvironment);
 };
-void <? WriteString(pluginname); ?>::Add(LispEnvironment& aEnvironment)
+void <? WriteString(pluginname'value()); ?>::Add(LispEnvironment& aEnvironment)
 {
 <?
-WriteString(cconsts);
+WriteString(cconsts'value());
 ?>
 <?
-WriteString(cadders);
+WriteString(cadders'value());
 ?>}
 
-void <? WriteString(pluginname); ?>::Remove(LispEnvironment& aEnvironment)
+void <? WriteString(pluginname'value()); ?>::Remove(LispEnvironment& aEnvironment)
 {
 //printf(\"CLOSED DLL!!!\\n\");
 <?
-WriteString(cremovers);
+WriteString(cremovers'value());
 ?>}
 
 extern \"C\" {
 LispPluginBase* <?Echo(\"make_\":plfname);?>(void) 
 {
-    return NEW <? WriteString(pluginname); ?>;
+    return NEW <? WriteString(pluginname'value()); ?>;
 }
 
 }
 
 <?
-WriteString(postlog);
+WriteString(postlog'value());
 ?>
 
 
@@ -326,3 +340,5 @@ StubApiCFile(plfname,file):=
   ToFile(file:".cc")WriteString(PatchString(fileapi));
   ToFile(file:".man.txt")WriteString(ConcatStrings(StubMakeTitle(), cremarks));
 ];
+
+]; // LocalSymbols(cconsts, cfuncs, cadders, cremovers, cincludes, cremarks, prelog, postlog, pluginname, plugin'pretty'name, cstructs)
