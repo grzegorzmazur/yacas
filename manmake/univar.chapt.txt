@@ -729,7 +729,7 @@ This function is used internally to construct orthogonal
 polynomials. It returns the {n}-th polynomial from the family
 {name} with parameters {par} at the point {x}.
 
-All known families are stored in the association list {KnownOrthoPoly}. The name serves as key. At the moment
+All known families are stored in the association list returned by the function {KnownOrthoPoly()}. The name serves as key. At the moment
 the following names are known to Yacas: {"Jacobi"}, {"Gegenbauer"}, {"Laguerre"}, {"Hermite"}, {"Tscheb1"},
 and {"Tscheb2"}. The value associated to the key
 is a pure function that takes two arguments: the order {n} and the

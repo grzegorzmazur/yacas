@@ -52,14 +52,19 @@ ArcSinNum(x) :=
 /// Exponent
 //////////////////////////////////////////////////
 
-// improve convergence of Exp(x) for large x
-MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
+LocalSymbols(mathExpThreshold) [
+  // improve convergence of Exp(x) for large x
+  mathExpThreshold := If(Not IsBound(mathExpThreshold), 500);
+
+  MathExpThreshold() := mathExpThreshold;
+  SetMathExpThreshold(threshold) := [mathExpThreshold:= threshold; ]; 
+];
 
 // large positive x
-10 # ExpNum(x_IsNumber) _ (x > MathExpThreshold) <-- [
+10 # ExpNum(x_IsNumber) _ (x > MathExpThreshold()) <-- [
 	Local(i, y);
 	i:=0;
-	For(i:=0, x > MathExpThreshold, i++)
+	For(i:=0, x > MathExpThreshold(), i++)
 		x := MathDivide(x, 2.);
 	For(y:= MathExp(x), i>0, i--)
 		y := MathMultiply(y, y);
@@ -67,7 +72,7 @@ MathExpThreshold := If(Not IsBound(MathExpThreshold), 500);
 	
 ];
 // large negative x
-20 # ExpNum(x_IsNumber) _ (2*x < -MathExpThreshold) <-- MathDivide(1, ExpNum(-x));
+20 # ExpNum(x_IsNumber) _ (2*x < -MathExpThreshold()) <-- MathDivide(1, ExpNum(-x));
 // other values of x
 30 # ExpNum(x_IsNumber) <-- MathExp(x);
 

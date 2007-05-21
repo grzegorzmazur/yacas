@@ -1,8 +1,6 @@
 /* book2TeX - convert Yacas docs back to TeX format (Serge Winitzki)
 	version 0.3 */
 
-/* If one of these occurs inside an HtmlTerm block, it must be made \\verb| | or escaped with a backslash */
-TexCharsToEscape := { "{", "}", "#", "_", "&", "\\", "^", "%", "$", "~"};
 
 Book(x) := [	/* this is the first declaration in a file */
 	AddBody("
@@ -34,7 +32,7 @@ section entitled ``GNU Free Documentation License''.
 \\date{\\textsc{Yacas} version: " : Version() : "
 \\\\
 generated on \\today
-\\vskip 3cm " : BlurbText : "}
+\\vskip 3cm " : BlurbText() : "}
 \\maketitle
 \\tableofcontents
 ");
@@ -80,11 +78,29 @@ HtmlEmphasis(x) := "\\emph{" : x : "}";
 
 /* decide whether to use "verb" or "texttt" based on whether the string contains any of the special characters #, _, \, &, {, }, ~ */
 
-HasTexChars(x) := [
-	Local(i);
-	For (i:=1, i<=Length(x) And Not Contains(TexCharsToEscape, x[i]), i:=i+1) [];
-	i<=Length(x);
-];
+LocalSymbols(TexCharsToEscape) [
+  /* If one of these occurs inside an HtmlTerm block, it must be made \\verb| | or escaped with a backslash */
+  TexCharsToEscape := { "{", "}", "#", "_", "&", "\\", "^", "%", "$", "~"};
+
+  HasTexChars(x) := [
+    Local(i);
+    For (i:=1, i<=Length(x) And Not Contains(TexCharsToEscape, x[i]), i:=i+1) [];
+    i<=Length(x);
+  ];
+
+  TexEscapeTT(x) := [
+    Local(i, result);
+    For ([i:=1; result:="";], i<=Length(x), i:=i+1) [
+      result := result : If (Contains(TexCharsToEscape, x[i]),
+        "\\" : x[i] : "",
+        x[i]
+      );
+    ];
+    result;
+  ];
+
+]; // LocalSymbols(TexCharsToEscape)
+
 
 HtmlTerm(x) :=
 If(x = "Yacas",
@@ -97,16 +113,6 @@ If(x = "Yacas",
 	)
 );
 
-TexEscapeTT(x) := [
-	Local(i, result);
-	For ([i:=1; result:="";], i<=Length(x), i:=i+1) [
-		result := result : If (Contains(TexCharsToEscape, x[i]),
-			"\\" : x[i] : "",
-			x[i]
-		);
-	];
-	result;
-];
 
 /* this will escape TeX symbols so that the result can be put into a section heading, i.e. cannot use \verb|| */
 HtmlTermHeading(x) := "\\texttt{" : TexEscapeTT(x) : "}";
@@ -223,13 +229,18 @@ Topical(string) := If(string = "See also:", "",
 );
 Bodied("Topical",60000);
 
-BlurbText := "";
+LocalSymbols(blurbText) [
+  blurbText := "";
 
-Blurb(string) :=
-[
-	BlurbText := string;
-	True;
-];
+  Blurb(string) :=
+  [
+    blurbText := string;
+    True;
+  ];
+
+  BlurbText() := blurbText;
+
+]; // LocalSymbols(blurbText)
 
 Bodied("Blurb",60000);
 // special escapes

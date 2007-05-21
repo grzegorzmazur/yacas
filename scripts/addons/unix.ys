@@ -113,7 +113,13 @@ GetYacasPID() := [
 
 /* show a Yacas expression graphically in a PS file */
 /* The following global variable will define the available PS viewer */
-If(Not(IsBound(PSViewCommand)), PSViewCommand := "gv");
+
+LocalSymbols(psviewCommand) [
+  If(Not(IsBound(psviewCommand)), psviewCommand := "gv");
+  PSViewCommand() := psviewCommand;
+  SetPSViewCommand(command) := [ psviewCommand := command;];
+]; // LocalSymbols(psviewCommand)
+
 
 ShowPS(expr) := [
 	Check(PlatformOS()="Unix", "ShowPS: error: need a Unix OS.");
@@ -130,5 +136,5 @@ ShowPS(expr) := [
 	/* Make PS file */
 	SystemCall("cd /tmp; latex " : filename : " > /dev/null; dvips -E -q -T 22in,17in -o " : filename : ".ps " : filename : ".dvi");
 	/* Show PS file */
-	SystemCall(PSViewCommand : " " : filename : ".ps; rm -f " : filename : ".*");
+	SystemCall(PSViewCommand() : " " : filename : ".ps; rm -f " : filename : ".*");
 ];

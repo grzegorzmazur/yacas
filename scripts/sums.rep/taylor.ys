@@ -95,13 +95,12 @@
  * given power series is zero */
 
 
-/*COMMENT FROM AYAL: I would wrap this code in a LocalSymbols, with Taylor'LPS'Param1 a local symbol.
- */
-/*COMMENT FROM AYAL: This parameter, 15, seems to be a bit arbitrary. This implies that there is an input
+
+/*TODO COMMENT FROM AYAL: This parameter, 15, seems to be a bit arbitrary. This implies that there is an input
    with more than 15 zeroes, and then a non-zero coefficient, that this would fail on. Correct? Is there not
    a more accurate estimation of this parameter?
  */
-Taylor'LPS'Param1 := 15;
+Taylor'LPS'Param1() := 15;
 
 /**********************************************************************
  *
@@ -257,7 +256,7 @@ Taylor'LPS'Coeffs(_lps, _n1, _n2) <--
 	    order := Taylor'LPS'GetOrder(lps[4][1])[1];
 	    n := order;
 	    c1 := Taylor'LPS'Coeffs(lps[4][1], n, n)[1];
-	    While (c1 = 0 And n < order + Taylor'LPS'Param1)
+	    While (c1 = 0 And n < order + Taylor'LPS'Param1())
             [
 	       n := n + 1;
  	       c1 := Taylor'LPS'Coeffs(lps[4][1], n, n)[1];
@@ -627,7 +626,7 @@ Taylor'LPS'AcceptDeriv(_expr) <--
 //      0; //generic case, assume zeroeth coefficient is non-zero.
       Local(n);
       n:=0;
-      While ((Limit(x,0)expr) = 0 And n<Taylor'LPS'Param1)
+      While ((Limit(x,0)expr) = 0 And n<Taylor'LPS'Param1())
       [
         expr := Deriv(x)expr;
         n++;
@@ -733,7 +732,7 @@ Echo(expr," ",n," ",result);
 	    Local(c, n);
 	    n := res[1];
 	    c := Taylor'LPS'Coeffs(lps[4][1], res[1], res[1])[1];
-	    While (c = 0 And res[1] < n + Taylor'LPS'Param1)
+	    While (c = 0 And res[1] < n + Taylor'LPS'Param1())
             [
 	       res[1] := res[1] + 1;
  	       c := Taylor'LPS'Coeffs(lps[4][1], res[1], res[1])[1];

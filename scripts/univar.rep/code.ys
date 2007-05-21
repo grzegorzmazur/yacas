@@ -215,10 +215,6 @@ Rule("Degree",1,0, IsUniVar(expr))
   UniVariate(var,first,coefs/factor);
 
 
-MaxUniOrder:=3000;
-Function("SetOrder",{order}) MaxUniOrder:=order;
-
-
 ShiftUniVar(UniVariate(_var,_first,_coefs),_fact,_shift)
    <-- 
    [
