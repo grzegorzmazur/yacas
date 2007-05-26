@@ -224,8 +224,9 @@ Function(Fct,{poly,var})
   // If the polynom is not one, it is a polynomial which is not reducible any further
   // with this algorithm, return as is.
   Set(poly,poly*an^(0 .. (Length(poly)-1)));
-  Set(poly,gcd*anmul*poly/(unrat * andiv ));
-
+  Set(poly,gcd*anmul*poly);
+  //TODO had to add this if statement, what was andiv again, and why would it become zero? This happens with for example Factor(2*x^2)
+  If(Not IsZero(unrat * andiv ),Set(poly,poly/(unrat * andiv )));
   If(poly != {1},
   [
     result:={(Add(poly*var^(0 .. (Length(poly)-1)))),1}:result;

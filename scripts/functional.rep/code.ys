@@ -24,9 +24,9 @@ Rule("@",2,2,True       ) Apply(func,{arg});
 
 Function("/@",{func,lst}) Apply("MapSingle",{func,lst});
 
-10 # (_count'from .. _count'to)_(count'from <= count'to) 
+10 # (count'from_IsInteger .. count'to_IsInteger)_(count'from <= count'to) 
    <-- Table(i,i,count'from,count'to,1);
-20 # (_count'from .. _count'to) 
+20 # (count'from_IsInteger .. count'to_IsInteger) 
    <-- Table(i,i,count'from,count'to,-1);
 
 /* NFunction("new'func", "old'func" {arg'list}) will define a wrapper function
