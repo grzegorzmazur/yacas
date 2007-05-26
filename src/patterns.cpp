@@ -1,4 +1,6 @@
 
+
+
 #include "yacasprivate.h"
 #include "yacasbase.h"
 #include "patterns.h"
@@ -8,6 +10,9 @@
 #include "lispeval.h"
 #include "standard.h"
 
+#ifdef YACAS_DEBUG
+#include <stdio.h>
+#endif // YACAS_DEBUG
 
 
 #define InternalEval aEnvironment.iEvaluator->Eval
@@ -318,9 +323,33 @@ LispBoolean YacasPatternPredicateBase::CheckPredicates(LispEnvironment& aEnviron
     {
       return LispFalse;
     }
-    Check(IsTrue(aEnvironment, pred), KLispErrNonBooleanPredicateInPattern);
+    // If the result is not False, it should be True, else probably something is wrong (the expression returned unevaluated)
+    LispBoolean isTrue = IsTrue(aEnvironment, pred);
+    if (!isTrue)
+    {
+#define LIM_AL 60
+      LispString strout;
+
+#ifdef YACAS_DEBUG
+        if (iPredicates[i]->iFileName)
+        {
+          printf("File %s, line %d\n",iPredicates[i]->iFileName, iPredicates[i]->iLine);
+        }
+#endif
+
+
+      aEnvironment.iErrorOutput.Write("The predicate\n\t");
+      PrintExpression(strout, iPredicates[i], aEnvironment, LIM_AL);
+      aEnvironment.iErrorOutput.Write(strout.c_str());
+      aEnvironment.iErrorOutput.Write("\nevaluated to\n\t");
+      PrintExpression(strout, pred, aEnvironment, LIM_AL);
+      aEnvironment.iErrorOutput.Write(strout.c_str());
+      aEnvironment.iErrorOutput.Write("\n");
+
+
+      CHK2(isTrue,KLispErrNonBooleanPredicateInPattern);
+    }
   }
-  //hier
   return LispTrue;
 }
                                                 

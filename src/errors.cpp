@@ -116,7 +116,7 @@ void CheckArgType(LispInt aArgNr, LispPtr& aArguments,LispEnvironment& aEnvironm
         aEnvironment.iErrorOutput.Write(str);
         aEnvironment.iErrorOutput.Write(" (counting from 1)\n");
   
-  #define LIM_AL 60
+#define LIM_AL 60
         LispPtr& arg = Argument(aArguments,aArgNr);
         LispString strout;
   
