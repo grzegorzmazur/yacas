@@ -313,15 +313,31 @@ class YacasPatternPredicateBase
     int i;
     for (i=0;i<iPredicates.size();i++)
     {
-        LispPtr pred = new LispPtr();
-        aEnvironment.iEvaluator.Eval(aEnvironment, pred, ((LispPtr)iPredicates.get(i)));
-        if (LispStandard.IsFalse(aEnvironment, pred))
-        {
-            return false;
-        }
-        LispError.Check(LispStandard.IsTrue(aEnvironment, pred), LispError.KLispErrNonBooleanPredicateInPattern);
+      LispPtr pred = new LispPtr();
+      aEnvironment.iEvaluator.Eval(aEnvironment, pred, ((LispPtr)iPredicates.get(i)));
+      if (LispStandard.IsFalse(aEnvironment, pred))
+      {
+        return false;
+      }
+
+
+      // If the result is not False, it should be True, else probably something is wrong (the expression returned unevaluated)
+      boolean isTrue = LispStandard.IsTrue(aEnvironment, pred);
+      if (!isTrue)
+      {
+        //TODO this is probably not the right way to generate an error, should we perhaps do a full throw new YacasException here?
+        String strout;
+        aEnvironment.iCurrentOutput.Write("The predicate\n\t");
+        strout = LispStandard.PrintExpression(((LispPtr)iPredicates.get(i)), aEnvironment, 60);
+        aEnvironment.iCurrentOutput.Write(strout);
+        aEnvironment.iCurrentOutput.Write("\nevaluated to\n\t");
+        strout = LispStandard.PrintExpression(pred, aEnvironment, 60);
+        aEnvironment.iCurrentOutput.Write(strout);
+        aEnvironment.iCurrentOutput.Write("\n");
+
+        LispError.Check(isTrue,LispError.KLispErrNonBooleanPredicateInPattern);
+      }
     }
-    //hier
     return true;
   }
 

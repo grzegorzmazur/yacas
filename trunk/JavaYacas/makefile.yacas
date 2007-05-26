@@ -14,7 +14,7 @@ CLASSES = net/sf/yacas/CVersion.class net/sf/yacas/InputStatus.class net/sf/yaca
   net/sf/yacas/StringInput.class net/sf/yacas/StringOutput.class \
    net/sf/yacas/InfixParser.class  net/sf/yacas/LispEvaluatorBase.class net/sf/yacas/BigNumber.class \
   net/sf/yacas/YacasEvaluator.class net/sf/yacas/YacasEvalCaller.class net/sf/yacas/YacasCoreCommands.class net/sf/yacas/UserStackInformation.class \
-  net/sf/yacas/BasicEvaluator.class net/sf/yacas/EvalFuncBase.class net/sf/yacas/LispOperators.class net/sf/yacas/LispUserFunction.class net/sf/yacas/LispPtrArray.class net/sf/yacas/LispLocalFrame.class net/sf/yacas/LispIterator.class net/sf/yacas/InfixPrinter.class net/sf/yacas/LispEnvironment.class net/sf/yacas/MathCommands.class \
+  net/sf/yacas/BasicEvaluator.class net/sf/yacas/EvalFuncBase.class net/sf/yacas/LispOperators.class net/sf/yacas/LispUserFunction.class net/sf/yacas/LispPtrArray.class net/sf/yacas/LispLocalFrame.class net/sf/yacas/LispIterator.class net/sf/yacas/InfixPrinter.class net/sf/yacas/LispEnvironment.class net/sf/yacas/MathCommands.class net/sf/yacas/YacasPatternPredicateBase.class \
 net/sf/yacas/CYacas.class net/sf/yacas/YacasConsole.class net/sf/yacas/ConsoleApplet.class \
 net/sf/yacas/CDataReader.class net/sf/yacas/HintItem.class \
 net/sf/yacas/HintWindow.class net/sf/yacas/Hints.class net/sf/yacas/SelectSymbol.class net/sf/yacas/TResult.class \
