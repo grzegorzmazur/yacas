@@ -18,10 +18,12 @@ void InternalEval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExp
 class UserStackInformation : public YacasBase
 {
 public:
-    UserStackInformation() : iRulePrecedence(-1),iSide(0)
+    UserStackInformation()
+      : iOperator(),iExpression(),iRulePrecedence(-1),iSide(0)
+#ifdef YACAS_DEBUG
+      , iFileName("(no file)"),iLine(0)
+#endif // YACAS_DEBUG
     {
-        DBG_( iFileName = "(no file)"; )
-        DBG_( iLine = 0; )
     }
     LispPtr iOperator;
     LispPtr iExpression;
@@ -38,13 +40,14 @@ public:
 class LispEvaluatorBase : public YacasBase
 {
 public:
-    virtual ~LispEvaluatorBase();
-    virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression)=0;
-    virtual void ResetStack();
-    virtual UserStackInformation& StackInformation();
-    virtual void ShowStack(LispEnvironment& aEnvironment, LispOutput& aOutput);
+  LispEvaluatorBase() : iBasicInfo() {}
+  virtual ~LispEvaluatorBase();
+  virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression)=0;
+  virtual void ResetStack();
+  virtual UserStackInformation& StackInformation();
+  virtual void ShowStack(LispEnvironment& aEnvironment, LispOutput& aOutput);
 private:
-    UserStackInformation iBasicInfo;
+  UserStackInformation iBasicInfo;
 };
 
 /// The basic evaluator for Lisp expressions.
@@ -92,7 +95,7 @@ public:
 class TracedEvaluator : public BasicEvaluator
 {
 public:
-  TracedEvaluator() :  errorOutput(errorStr){}
+  TracedEvaluator() :  BasicEvaluator(),errorStr(),errorOutput(errorStr){}
   virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
 protected:
   LispString errorStr;
@@ -103,17 +106,17 @@ protected:
 class TracedStackEvaluator : public BasicEvaluator
 {
 public:
-    virtual ~TracedStackEvaluator();
-    virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
-    virtual void ResetStack();
-    virtual UserStackInformation& StackInformation();
-    virtual void ShowStack(LispEnvironment& aEnvironment, LispOutput& aOutput);
-
+  TracedStackEvaluator() : objs() {}
+  virtual ~TracedStackEvaluator();
+  virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
+  virtual void ResetStack();
+  virtual UserStackInformation& StackInformation();
+  virtual void ShowStack(LispEnvironment& aEnvironment, LispOutput& aOutput);
 private:
-    void PushFrame();
-    void PopFrame();
+  void PushFrame();
+  void PopFrame();
 private:
-    CArrayGrower<UserStackInformation*, ArrOpsCustomPtr<UserStackInformation> > objs;
+  CArrayGrower<UserStackInformation*, ArrOpsCustomPtr<UserStackInformation> > objs;
 };
 
 
@@ -140,22 +143,22 @@ void ShowExpression(LispString& outString, LispEnvironment& aEnvironment,
 class YacasDebuggerBase : public YacasBase
 {
 public:
-    virtual ~YacasDebuggerBase();
-    virtual void Start() = 0;
-    virtual void Finish() = 0;
-    virtual void Enter(LispEnvironment& aEnvironment, 
-                       LispPtr& aExpression) = 0;
-    virtual void Leave(LispEnvironment& aEnvironment, LispPtr& aResult,
-                       LispPtr& aExpression) = 0;
-    virtual void Error(LispEnvironment& aEnvironment) = 0;
-    virtual LispBoolean Stopped() = 0;
+  virtual ~YacasDebuggerBase();
+  virtual void Start() = 0;
+  virtual void Finish() = 0;
+  virtual void Enter(LispEnvironment& aEnvironment, 
+                     LispPtr& aExpression) = 0;
+  virtual void Leave(LispEnvironment& aEnvironment, LispPtr& aResult,
+                     LispPtr& aExpression) = 0;
+  virtual void Error(LispEnvironment& aEnvironment) = 0;
+  virtual LispBoolean Stopped() = 0;
 };
 
 class DefaultDebugger : public YacasDebuggerBase
 {
 public:
   inline DefaultDebugger(LispPtr& aEnter, LispPtr& aLeave, LispPtr& aError) 
-    : iEnter(aEnter), iLeave(aLeave), iError(aError), iStopped(LispFalse) {};
+    : iEnter(aEnter), iLeave(aLeave), iError(aError), iTopExpr(),iTopResult(),iStopped(LispFalse),defaultEval() {};
   virtual void Start();
   virtual void Finish();
   virtual void Enter(LispEnvironment& aEnvironment, 

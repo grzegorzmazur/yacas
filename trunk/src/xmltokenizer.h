@@ -7,14 +7,13 @@
 
 class XmlTokenizer : public LispTokenizer
 {
-    
 public:
-    XmlTokenizer() {}
-    /// NextToken returns a string representing the next token,
-    /// or an empty list.
-    virtual LispString * NextToken(LispInput& aInput,
-                                    LispHashTable& aHashTable);
-    virtual ~XmlTokenizer();
+  XmlTokenizer() {}
+  /// NextToken returns a string representing the next token,
+  /// or an empty list.
+  virtual LispString * NextToken(LispInput& aInput,
+                                  LispHashTable& aHashTable);
+  virtual ~XmlTokenizer();
 };
 
 #endif

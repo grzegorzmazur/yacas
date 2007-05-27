@@ -41,12 +41,18 @@ class LispEnvironment;
 class LispAtom : public ObjectHelper<LispAtom>
 {
 public:
-    static LispObject* New(LispEnvironment& aEnvironment, const LispChar * aString);
-    virtual ~LispAtom();
-    virtual LispString * String();
+  static LispObject* New(LispEnvironment& aEnvironment, const LispChar * aString);
+  virtual ~LispAtom();
+  virtual LispString * String();
 	virtual LispObject* Copy() { return NEW LispAtom(*this); }
 private:
-    LispAtom(LispString * aString);
+  LispAtom(LispString * aString);
+  LispAtom& operator=(const LispAtom& aOther)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+    return *this;
+  }
 public:
 	LispAtom(const LispAtom& other);
 private:
@@ -88,6 +94,13 @@ private:
     LispGenericClass(GenericClass* aClass);
 public:
 	LispGenericClass(const LispGenericClass& other) : ASuper(other), iClass(other.iClass) { iClass->iReferenceCount++; }
+private:
+  LispGenericClass& operator=(const LispGenericClass& other)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+    return *this;
+  }
 private:
     GenericClass* iClass;
 };

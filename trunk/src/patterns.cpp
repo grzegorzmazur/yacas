@@ -226,6 +226,7 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
 
 YacasPatternPredicateBase::YacasPatternPredicateBase(LispEnvironment& aEnvironment, LispPtr& aPattern,
                                                      LispPtr& aPostPredicate)
+  : iParamMatchers(),iVariables(),iPredicates()
 {
     LispIterator iter(aPattern);
     for ( ; iter.getObj(); ++iter)

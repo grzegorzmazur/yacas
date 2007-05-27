@@ -13,18 +13,31 @@
 class PatternClass : public GenericClass
 {
 public:
-    PatternClass(YacasPatternPredicateBase* aPatternMatcher);
-    ~PatternClass();
+  PatternClass(YacasPatternPredicateBase* aPatternMatcher);
+  ~PatternClass();
 
-    LispBoolean Matches(LispEnvironment& aEnvironment,
-                        LispPtr& aArguments);
-    LispBoolean Matches(LispEnvironment& aEnvironment,
-                        LispPtr* aArguments);
+  LispBoolean Matches(LispEnvironment& aEnvironment,
+                      LispPtr& aArguments);
+  LispBoolean Matches(LispEnvironment& aEnvironment,
+                      LispPtr* aArguments);
 public: //From GenericClass
-    virtual LispChar * Send(LispArgList& aArgList);
-    virtual LispChar * TypeName();
+  virtual LispChar * Send(LispArgList& aArgList);
+  virtual LispChar * TypeName();
+
+private:
+  PatternClass(const PatternClass& aOther): iPatternMatcher(NULL)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+  }
+  PatternClass& operator=(const PatternClass& aOther)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+    return *this;
+  }
 protected:
-    YacasPatternPredicateBase* iPatternMatcher;
+  YacasPatternPredicateBase* iPatternMatcher;
 };
 
 

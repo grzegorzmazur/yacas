@@ -33,14 +33,13 @@ public:
 	// Placement form of new and delete.
   static inline void* operator new(size_t, void* where) { return where; }
   static inline void operator delete(void*, void*) {}
-protected: 
-  /** Since other objects are derived from this one and I don't want to force vtables, 
-   *  one is not allowed to call the destructor of this class directly. Classes will be
-   *  derived from this class, and they will have destructors that can be called, and
-   *  as a consequence this destructor is called. The method is put here so that it can
-   *  be explicitly made protected.
+ 
+  /** If we don't want to force vtables, we can make the destructor inline and protected.
+   *  The following might cause a little bit of overhead but has the advantage that even
+   *  the compiler can see that this is safe (thus no unnecessary warnings). Preferrably
+   *  though this class has a protected inline destructor.
    */
-  inline ~YacasBase() {};
+  virtual ~YacasBase() {};
 };
 
 #endif

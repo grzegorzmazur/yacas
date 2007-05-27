@@ -144,6 +144,14 @@ public:/// Bitwise operations, return result in *this.
 
 public:
   inline LispInt GetPrecision() const {return iPrecision;};
+
+private:
+  BigNumber& operator=(const BigNumber& aOther)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+    return *this;
+  }
 private: 
   LispInt iPrecision;
 

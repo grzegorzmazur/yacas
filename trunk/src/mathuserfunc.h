@@ -43,11 +43,8 @@ public:
   {
   public:
     virtual ~BranchRule();
-    BranchRule(LispInt aPrecedence,LispPtr& aPredicate,LispPtr& aBody)
+    BranchRule(LispInt aPrecedence,LispPtr& aPredicate,LispPtr& aBody) : iPrecedence(aPrecedence),iBody(aBody),iPredicate(aPredicate)
     {
-      iPrecedence = aPrecedence;
-      iPredicate = (aPredicate);
-      iBody = (aBody);
     }
 
     /// Return true if the rule matches.
@@ -61,7 +58,7 @@ public:
     /// Access #iBody.
     virtual LispPtr& Body();
   protected:
-    BranchRule() {};
+    BranchRule() : iPrecedence(0),iBody(),iPredicate() {};
   protected:
     LispInt iPrecedence;
     LispPtr iBody;
@@ -93,17 +90,12 @@ public:
     /// \param aPrecedence precedence of the rule
     /// \param aPredicate generic object of type \c Pattern
     /// \param aBody body of the rule
-    BranchPattern(LispInt aPrecedence,LispPtr& aPredicate,LispPtr& aBody)
+    BranchPattern(LispInt aPrecedence,LispPtr& aPredicate,LispPtr& aBody) : iPrecedence(aPrecedence),iBody(aBody),iPredicate(aPredicate),iPatternClass(NULL)
     {
-      iPatternClass = NULL;
-      iPrecedence = aPrecedence;
-      iPredicate = (aPredicate);
-
       GenericClass *gen = aPredicate->Generic();
       DYNCAST(PatternClass,"\"Pattern\"",pat,gen)
       Check(pat,KLispErrInvalidArg);
       iPatternClass = pat;
-      iBody = (aBody);
     }
 
     /// Return true if the corresponding pattern matches.
@@ -114,6 +106,19 @@ public:
 
     /// Access #iBody
     virtual LispPtr& Body();
+
+  private:
+    BranchPattern(const BranchPattern& aOther) : iPrecedence(0),iBody(),iPredicate(),iPatternClass(NULL)
+    {
+      // copy constructor not written yet, hence the assert
+      LISPASSERT(0);
+    }
+    BranchPattern& operator=(const BranchPattern& aOther)
+    {
+      // copy constructor not written yet, hence the assert
+      LISPASSERT(0);
+      return *this;
+    }
 
   protected:
     /// The precedence of this rule.

@@ -36,20 +36,41 @@ LispEnvironment::LispEnvironment(
                     LispInt aStackSize)
     : 
     iPrecision(10),	// default user precision of 10 decimal digits
-	iBinaryPrecision(34),	// same as 34 bits
+	  iBinaryPrecision(34),	// same as 34 bits
+    iInputDirectories(),
+    iDllDirectories(),
+    iCleanup(),
     iEvalDepth(0),
     iMaxEvalDepth(1000),
     iArchive(NULL),
     iEvaluator(NEW BasicEvaluator),
+    iInputStatus(),
     iSecure(0),
+    iTrue(),
+    iFalse(),
+    iEndOfFile(),
+    iEndStatement(),
+    iProgOpen(),
+    iProgClose(),
+    iNth(),
+    iBracketOpen(),
+    iBracketClose(),
+    iListOpen(),
+    iListClose(),
+    iComma(),
+    iList(),
+    iProg(),
     iLastUniqueId(1),
+    iError(),
     iErrorOutput(iError),
+    iDlls(),
     iDebugger(NULL),
     iLocalsList(NULL),
     iInitialOutput(aOutput),
     iCoreCommands(aCoreCommands),
     iUserFunctions(aUserFunctions),
     iHashTable(aHashTable),
+    iDefFiles(),
     iPrinter(aPrinter),
     iCurrentOutput(aOutput),
     iGlobals(aGlobals),
@@ -61,6 +82,10 @@ LispEnvironment::LispEnvironment(
     theUserError(NULL),
     iPrettyReader(NULL),
     iPrettyPrinter(NULL),
+    iDefaultTokenizer(),
+    iCommonLispTokenizer(),
+    iCTokenizer(),
+    iXmlTokenizer(),
     iCurrentTokenizer(&iDefaultTokenizer),
     iStack(aStackSize)
 {
@@ -636,10 +661,9 @@ void LispLocalOutput::Delete()
 
 
 LispLocalEvaluator::LispLocalEvaluator(LispEnvironment& aEnvironment,LispEvaluatorBase* aNewEvaluator)
-: iEnvironment(aEnvironment)
+  : iPreviousEvaluator(aEnvironment.iEvaluator),iEnvironment(aEnvironment)
 {
-    iPreviousEvaluator = aEnvironment.iEvaluator;
-    aEnvironment.iEvaluator = aNewEvaluator;
+  aEnvironment.iEvaluator = aNewEvaluator;
 }
 LispLocalEvaluator::~LispLocalEvaluator()
 {
@@ -647,16 +671,15 @@ LispLocalEvaluator::~LispLocalEvaluator()
     iEnvironment.iEvaluator = iPreviousEvaluator;
 }
 
-LispLocalTrace::LispLocalTrace(LispUserFunction* aUserFunc)
+LispLocalTrace::LispLocalTrace(LispUserFunction* aUserFunc) : iUserFunc(aUserFunc)
 {
-    iUserFunc = aUserFunc;
-    if (iUserFunc!=NULL)
-        iUserFunc->Trace();
+  if (iUserFunc!=NULL)
+    iUserFunc->Trace();
 }
 LispLocalTrace::~LispLocalTrace()
 {
-    if (iUserFunc!=NULL)
-        iUserFunc->UnTrace();
+  if (iUserFunc!=NULL)
+    iUserFunc->UnTrace();
 }
 
 

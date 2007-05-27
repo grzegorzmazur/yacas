@@ -4,15 +4,27 @@
 class LispLocalFile : public LispBase
 {
 public:
-    LispLocalFile(LispEnvironment& aEnvironment,
-                  LispChar * aFileName, LispBoolean aRead,
-                  InputDirectories& aInputDirectories);
-    virtual ~LispLocalFile();
-    virtual void Delete();
-
-    FILE* iFile;
-    LispEnvironment& iEnvironment;
-    LispInt iOpened;
+  LispLocalFile(LispEnvironment& aEnvironment,
+                LispChar * aFileName, LispBoolean aRead,
+                InputDirectories& aInputDirectories);
+  virtual ~LispLocalFile();
+  virtual void Delete();
+private:
+  LispLocalFile(const LispLocalFile& aOther) : iFile(NULL),iEnvironment(aOther.iEnvironment),iOpened(LispFalse)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+  }
+  LispLocalFile& operator=(const LispLocalFile& aOther)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+    return *this;
+  }
+public:
+  FILE* iFile;
+  LispEnvironment& iEnvironment;
+  LispInt iOpened;
 };
 
 
@@ -40,20 +52,32 @@ protected:
 class CachedStdFileInput : public StdFileInput
 {
 public:
-    CachedStdFileInput(LispLocalFile& aFile,InputStatus& aStatus);
-    ~CachedStdFileInput() ;
-    virtual LispChar Next();
-    virtual LispChar Peek();
-    virtual LispBoolean EndOfStream();
-    void Rewind();
-    virtual LispChar * StartPtr();
-    virtual LispInt Position();
-    virtual void SetPosition(LispInt aPosition);
+  CachedStdFileInput(LispLocalFile& aFile,InputStatus& aStatus);
+  ~CachedStdFileInput() ;
+  virtual LispChar Next();
+  virtual LispChar Peek();
+  virtual LispBoolean EndOfStream();
+  void Rewind();
+  virtual LispChar * StartPtr();
+  virtual LispInt Position();
+  virtual void SetPosition(LispInt aPosition);
+private:
+  inline CachedStdFileInput(const CachedStdFileInput& aOther) : StdFileInput(aOther),iBuffer(NULL),iCurrentPos(0),iNrBytes(0)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+  }
+  inline CachedStdFileInput& operator=(const CachedStdFileInput& aOther)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+    return *this;
+  }
     
 private:
-    LispChar * iBuffer;
-    LispInt iCurrentPos;
-    LispInt iNrBytes;
+  LispChar * iBuffer;
+  LispInt iCurrentPos;
+  LispInt iNrBytes;
 };
 
 #define FILEINPUT CachedStdFileInput

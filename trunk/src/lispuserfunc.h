@@ -68,7 +68,7 @@ class LispMultiUserFunction : public YacasBase
 {
 public:
   /// Constructor.
-  LispMultiUserFunction() : iFileToOpen(NULL) {};
+  LispMultiUserFunction() : iFunctions(),iFileToOpen(NULL) {};
 
   /** When adding a multi-user function to the association hash table, the copy constructor is used.
    *  We should at least make sure that iFunctions is empty, so there is no copying needed (for efficiency).
@@ -78,7 +78,17 @@ public:
   inline LispMultiUserFunction(const LispMultiUserFunction& aOther) : iFunctions(), iFileToOpen(NULL)
   {
     LISPASSERT(aOther.iFileToOpen == 0);
+    LISPASSERT(aOther.iFunctions.Size() == 0);
+  }
+  inline LispMultiUserFunction& operator=(const LispMultiUserFunction& aOther)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(aOther.iFileToOpen == 0);
+    LISPASSERT(aOther.iFunctions.Size() == 0);
+
+    LISPASSERT(iFileToOpen == 0);
     LISPASSERT(iFunctions.Size() == 0);
+    return *this;
   }
 
   /// Return user function with given arity.

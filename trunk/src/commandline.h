@@ -53,7 +53,7 @@ enum ESpecialChars
 class CConsoleHistory
 {
 public:
-  CConsoleHistory() : history(0) {}
+  CConsoleHistory() : iHistory(),history(0) {}
   void ResetHistoryPosition();
   void AddLine(LispString& aString);
   void Append(LispString * aString);
@@ -67,47 +67,49 @@ protected:
   LispInt history;
 };
 
+  
+
 
 class CCommandLine : public YacasBase
 {
 public:
-    CCommandLine() : iHistoryUnchanged(0){};
-    virtual ~CCommandLine();
-    /// Call this function if the user needs to enter an expression.
-    virtual void ReadLine(LispChar * prompt);
+  CCommandLine() : iFullLineDirty(LispFalse),iHistoryUnchanged(0),iLine(),iSubLine(),iHistoryList() {};
+  virtual ~CCommandLine();
+  /// Call this function if the user needs to enter an expression.
+  virtual void ReadLine(LispChar * prompt);
 public: //platform stuff
-    /** return a key press, which is either an ascii value, or one
-     * of the values specified in ESpecialChars
-     */
-    virtual LispInt GetKey() = 0;
-    /// Go to the next line on the console (carriage return/line feed).
-    virtual void NewLine()   = 0;
-    /** Show the current line (in iSubLine), with the required prompt,
-     *  and the cursor position at cursor (starting from the prompt).
-     */
-    virtual void ShowLine(LispChar * prompt,
-                          LispInt promptlen,LispInt cursor) = 0;
-    /// Pause for a short while. Used when matching brackets.
-    virtual void Pause() = 0;
+  /** return a key press, which is either an ascii value, or one
+   * of the values specified in ESpecialChars
+   */
+  virtual LispInt GetKey() = 0;
+  /// Go to the next line on the console (carriage return/line feed).
+  virtual void NewLine()   = 0;
+  /** Show the current line (in iSubLine), with the required prompt,
+   *  and the cursor position at cursor (starting from the prompt).
+   */
+  virtual void ShowLine(LispChar * prompt,
+                        LispInt promptlen,LispInt cursor) = 0;
+  /// Pause for a short while. Used when matching brackets.
+  virtual void Pause() = 0;
 
-    /// Maximum number of history lines to be saved (-1 is all)
-    virtual void MaxHistoryLinesSaved(LispInt aNrLines);
+  /// Maximum number of history lines to be saved (-1 is all)
+  virtual void MaxHistoryLinesSaved(LispInt aNrLines);
 
 protected:
-    virtual void ReadLineSub(LispChar * prompt);
+  virtual void ReadLineSub(LispChar * prompt);
 private:
-    void GetHistory(LispInt aLine);
-    void ShowOpen(LispChar * prompt,LispInt promptlen,
-                  LispChar aOpen, LispChar aClose, LispInt aCurPos);
+  void GetHistory(LispInt aLine);
+  void ShowOpen(LispChar * prompt,LispInt promptlen,
+                LispChar aOpen, LispChar aClose, LispInt aCurPos);
 protected:
-    LispInt iFullLineDirty;
-    LispInt iHistoryUnchanged;
+  LispInt iFullLineDirty;
+  LispInt iHistoryUnchanged;
 
 public:
-    LispString iLine;
-    LispString iSubLine;
+  LispString iLine;
+  LispString iSubLine;
 
-    CConsoleHistory iHistoryList;
+  CConsoleHistory iHistoryList;
 };
 
 #endif

@@ -10,11 +10,10 @@
 
 
 
+
 CompressedFiles::CompressedFiles(unsigned char * aBuffer, LispInt aFullSize, LispInt aCompressed)
-: iFullBuffer(aBuffer), iCompressed(aCompressed),iFullSize(aFullSize)
+: iFullBuffer(aBuffer),iCompressed(aCompressed),iFullSize(aFullSize),iIndex(NULL),iNrFiles(0),iIndexSize(0),iIsValid(LispFalse)
 {
-    iIndex = NULL;
-    iIsValid = LispFalse;
     if (!iFullBuffer) return;
 
     // the archive cannot possibly be less than 8 bytes

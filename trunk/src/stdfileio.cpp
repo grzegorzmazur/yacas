@@ -36,14 +36,12 @@ InputStatus::~InputStatus()
 
 
 StdFileInput::StdFileInput(FILE* aFile,InputStatus& aStatus)
-    : LispInput(aStatus)
+    : LispInput(aStatus),  iFile(aFile)
 {
-  iFile = aFile;
 }
 StdFileInput::StdFileInput(LispLocalFile& aFile,InputStatus& aStatus)
-    : LispInput(aStatus)
+    : LispInput(aStatus),iFile(aFile.iFile)
 {
-  iFile = aFile.iFile;
 }
 
 
@@ -113,19 +111,18 @@ CachedStdFileInput::~CachedStdFileInput()
     PlatFree(iBuffer);
 }
 
-CachedStdFileInput::CachedStdFileInput(LispLocalFile& aFile,InputStatus& aStatus) : StdFileInput(aFile,aStatus)
+CachedStdFileInput::CachedStdFileInput(LispLocalFile& aFile,InputStatus& aStatus) : StdFileInput(aFile,aStatus),iBuffer(NULL),iCurrentPos(0),iNrBytes(0)
 {
-    // Get size of file
-    fseek(iFile,0,SEEK_END);
-    iNrBytes = ftell(iFile);
-    fseek(iFile,0,SEEK_SET);
-    // Read in the full buffer
-    char * ptr = PlatAllocN<char>(iNrBytes+1);      // sizeof(char) == 1
-    iBuffer = (LispChar *)ptr;                                        // sizeof(LispChar) == not so sure
-    Check(ptr!=NULL,KLispErrNotEnoughMemory);
-    iCurrentPos = 0;
-    fread(ptr,iNrBytes,1,iFile);
-    ptr[iNrBytes] = '\0';
+  // Get size of file
+  fseek(iFile,0,SEEK_END);
+  iNrBytes = ftell(iFile);
+  fseek(iFile,0,SEEK_SET);
+  // Read in the full buffer
+  char * ptr = PlatAllocN<char>(iNrBytes+1);      // sizeof(char) == 1
+  iBuffer = (LispChar *)ptr;                                        // sizeof(LispChar) == not so sure
+  Check(ptr!=NULL,KLispErrNotEnoughMemory);
+  fread(ptr,iNrBytes,1,iFile);
+  ptr[iNrBytes] = '\0';
 }
 
 LispChar CachedStdFileInput::Next()
@@ -205,38 +202,38 @@ void InternalFindFile(LispChar * aFileName, InputDirectories& aInputDirectories,
 LispLocalFile::LispLocalFile(LispEnvironment& aEnvironment,
                              LispChar * aFileName, LispBoolean aRead,
                              InputDirectories& aInputDirectories)
-: iEnvironment(aEnvironment)
+  : iFile(NULL),iEnvironment(aEnvironment),iOpened(LispFalse)
 {
-    LispChar othername[1024];//TODO
-    if (aRead)
-    {
-        strcpy(othername,aFileName);
-        MapPathSeparators(othername);
+  LispChar othername[1024];//TODO
+  if (aRead)
+  {
+    strcpy(othername,aFileName);
+    MapPathSeparators(othername);
 
-        iFile = fopen(othername,"rb");
-        LispInt i=0;
-        while (!iFile && i<aInputDirectories.Size())
-        {
-            strcpy(othername,aInputDirectories[i]->c_str());
-            strcat(othername,aFileName);
-            MapPathSeparators(othername);
-            iFile = fopen(othername,"rb");
-            i++;
-        }
-    }
-    else
+    iFile = fopen(othername,"rb");
+    LispInt i=0;
+    while (!iFile && i<aInputDirectories.Size())
     {
-      strcpy(othername,aFileName);
+      strcpy(othername,aInputDirectories[i]->c_str());
+      strcat(othername,aFileName);
       MapPathSeparators(othername);
-      iFile = fopen(othername,"w");
+      iFile = fopen(othername,"rb");
+      i++;
     }
+  }
+  else
+  {
+    strcpy(othername,aFileName);
+    MapPathSeparators(othername);
+    iFile = fopen(othername,"w");
+  }
 
-    if (!iFile)
-        iOpened=0;
-    else
-        iOpened=1;
+  if (!iFile)
+    iOpened=0;
+  else
+    iOpened=1;
 
-    SAFEPUSH(iEnvironment,*this);
+  SAFEPUSH(iEnvironment,*this);
 }
 
 //aRead is for opening in read mode (otherwise opened in write mode)
@@ -257,7 +254,7 @@ void LispLocalFile::Delete()
 
 
 CachedStdUserInput::CachedStdUserInput(InputStatus& aStatus) :
-StdUserInput(aStatus)
+StdUserInput(aStatus),iBuffer(),iCurrentPos(0)
 {
   Rewind();
 }

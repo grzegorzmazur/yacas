@@ -67,14 +67,26 @@ protected:
 class MatchSubList : public YacasParamMatcherBase
 {
 public:
-    MatchSubList(YacasParamMatcherBase** aMatchers, LispInt aNrMatchers);
-    ~MatchSubList();
-    virtual LispBoolean ArgumentMatches(LispEnvironment& aEnvironment,
-                                        LispPtr& aExpression,
-                                        LispPtr* arguments);
+  MatchSubList(YacasParamMatcherBase** aMatchers, LispInt aNrMatchers);
+  ~MatchSubList();
+  virtual LispBoolean ArgumentMatches(LispEnvironment& aEnvironment,
+                                      LispPtr& aExpression,
+                                      LispPtr* arguments);
+private:
+  MatchSubList(const MatchSubList& aOther) : iMatchers(NULL),iNrMatchers(0)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+  }
+  MatchSubList& operator=(const MatchSubList& aOther)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+    return *this;
+  }
 protected:
-    YacasParamMatcherBase** iMatchers;
-    LispInt iNrMatchers;
+  YacasParamMatcherBase** iMatchers;
+  LispInt iNrMatchers;
 };
 
 /// Class for matching against a pattern variable.
@@ -99,9 +111,6 @@ public:
 protected:
     /// Index of variable in YacasPatternPredicateBase::iVariables.
     LispInt iVarIndex;
-
-    /// Not used.
-    LispString * iString;
 };
 
 

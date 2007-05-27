@@ -80,7 +80,7 @@ public:
         : iParser(aParser),
           iError(LispFalse),
           iEndOfFile(LispFalse),
-          iLookAhead(NULL)  {};
+          iLookAhead(NULL),iResult()  {};
     void Parse();
 private:
     void ReadToken();
@@ -116,7 +116,7 @@ public:
           iInfixOperators(aInfixOperators),
           iPostfixOperators(aPostfixOperators),
           iBodiedOperators(aBodiedOperators),
-          iPrevLastChar(0){}
+          iPrevLastChar(0),iCurrentEnvironment(NULL){}
 
     virtual void Print(LispPtr& aExpression, LispOutput& aOutput,
                        LispEnvironment& aEnvironment);

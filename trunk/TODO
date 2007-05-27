@@ -11,6 +11,7 @@ TODAY:
     Problem occurred at lists.rep/code.ys(628)
     Problem occurred at regress.yts(541)
 - Bug: Factor(0) returns 1
+- write a little C++ program that checks spacing (no tabs, no spaces at ends of lines, etcetera). 
 
 ######################################################
 
@@ -34,6 +35,8 @@ Bugs:
 - Global variables are still used in the scripts that build the manuals
 - Global variables are still used in the scripts that create the plugin stubs
 - Global variables are still used in the scripts that compile/create for example libmath.cpp
+
+- Is there not enough in common between the different files platfileio.h that we should perhaps consider merging them?
 
 - There is a function "gamma" that should be "Gamma".
 

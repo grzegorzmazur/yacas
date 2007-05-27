@@ -6,9 +6,8 @@
 #include "lispplugin.h"
 
 
-LispDllBase::LispDllBase()
+LispDllBase::LispDllBase() : iPlugin(NULL),iDllFileName()
 {
-    iPlugin = NULL;
 }
 
 LispDllBase::~LispDllBase()

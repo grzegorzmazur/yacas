@@ -5,6 +5,7 @@
 
 #include "yacasbase.h"
 #include "genericobject.h"
+#include "lispassert.h"
 
 /** \class GenericStruct This class maintains a pointer to some arbitrary
  *  object (which can be any thing). The plugin is responsible for supplying
@@ -20,15 +21,27 @@
 class GenericStruct : public GenericClass
 {
 public:
-    GenericStruct(LispChar * aTypeName, void* aData, void (*aDestructor)(void*));
-    virtual ~GenericStruct();
-    virtual LispChar * Send(LispArgList& aArgList);
-    virtual LispChar * TypeName();
-    inline void* Data() {return iData;}
+  GenericStruct(LispChar * aTypeName, void* aData, void (*aDestructor)(void*));
+  virtual ~GenericStruct();
+  virtual LispChar * Send(LispArgList& aArgList);
+  virtual LispChar * TypeName();
+  inline void* Data() {return iData;}
+private:
+  GenericStruct(const GenericStruct& aOther) : iData(NULL),iTypeName(NULL),iDestructor(NULL)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+  }
+  GenericStruct& operator=(const GenericStruct& aOther)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+    return *this;
+  }
 public:
-    void* iData;
-    LispChar * iTypeName;
-    void (*iDestructor)(void* data);
+  void* iData;
+  LispChar * iTypeName;
+  void (*iDestructor)(void* data);
 };
 
 

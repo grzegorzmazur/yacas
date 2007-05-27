@@ -9,122 +9,123 @@
 #include "tokenizer.h"
 #include "stringio.h"
 
-
-LispDefFile::LispDefFile(const LispDefFile& aOther)
+//TODO there is some weird interaction here. If we initialize iFileName in the initialization list then the refcount of the strings relating to def files is not valid more (visible in debug build)
+LispDefFile::LispDefFile(const LispDefFile& aOther) /*: iFileName(aOther.iFileName),iIsLoaded(aOther.iIsLoaded) */
 {
-    iFileName = (aOther.iFileName);
-	iIsLoaded=aOther.iIsLoaded;
+  iFileName = (aOther.iFileName);
+  iIsLoaded = aOther.iIsLoaded;
+//printf("1... %s\n",iFileName->c_str());
 }
 
-LispDefFile::LispDefFile(LispString * aFileName)
+LispDefFile::LispDefFile(LispString * aFileName) : /*iFileName(),*/iIsLoaded(0)
 {
-    iFileName = (aFileName);
-    iIsLoaded=0;
+  iFileName = aFileName;
+//printf("2... %s\n",iFileName->c_str());
 }
 
 
 LispDefFile::~LispDefFile()
 {
-    iFileName = (NULL);
+  iFileName = (NULL);
 }
 
 void LispDefFile::SetLoaded()
 {
-    iIsLoaded=1;
+  iIsLoaded=1;
 }
 
 LispDefFile* LispDefFiles::File(LispString * aFileName)
 {
-    // Create a new entry
-    LispDefFile* file = LookUp(aFileName);
-    if (!file)
-    {
-        LispDefFile newfile(aFileName);
-        // Add the new entry to the hash table
-        SetAssociation(newfile, aFileName);
-        file = LookUp(aFileName);
-    }
-    return file;
+  // Create a new entry
+  LispDefFile* file = LookUp(aFileName);
+  if (!file)
+  {
+    LispDefFile newfile(aFileName);
+    // Add the new entry to the hash table
+    SetAssociation(newfile, aFileName);
+    file = LookUp(aFileName);
+  }
+  return file;
 }
 
 static void DoLoadDefFile(LispEnvironment& aEnvironment, LispInput* aInput,
                           LispDefFile* def)
 {
-    LispLocalInput localInput(aEnvironment, aInput);
+  LispLocalInput localInput(aEnvironment, aInput);
 
-    LispString * eof = aEnvironment.HashTable().LookUp("EndOfFile");
-    LispString * end = aEnvironment.HashTable().LookUp("}");
-    LispBoolean endoffile = LispFalse;
+  LispString * eof = aEnvironment.HashTable().LookUp("EndOfFile");
+  LispString * end = aEnvironment.HashTable().LookUp("}");
+  LispBoolean endoffile = LispFalse;
 
-    LispTokenizer tok;
+  LispTokenizer tok;
 
-    while (!endoffile)
+  while (!endoffile)
+  {
+    // Read expression
+    LispString * token = tok.NextToken(*aEnvironment.CurrentInput(),
+                          aEnvironment.HashTable());
+
+    // Check for end of file
+    if (token == eof || token == end)
     {
-        // Read expression
-        LispString * token = tok.NextToken(*aEnvironment.CurrentInput(),
-                              aEnvironment.HashTable());
-
-        // Check for end of file
-        if (token == eof || token == end)
-        {
-            endoffile = LispTrue;
-        }
-        // Else evaluate
-        else
-        {
-            LispString * str = token;
-            LispMultiUserFunction* multiUser = aEnvironment.MultiUserFunction(str);
-            if (multiUser->iFileToOpen!=NULL)
-            {
-                aEnvironment.CurrentOutput()->Write("[");
-                aEnvironment.CurrentOutput()->Write(&(*str)[0]);
-                aEnvironment.CurrentOutput()->Write("]\n");
-                Check(multiUser->iFileToOpen==NULL,KLispErrDefFileAlreadyChosen);
-            }
-            multiUser->iFileToOpen = def;
-        }
+      endoffile = LispTrue;
     }
+    // Else evaluate
+    else
+    {
+      LispString * str = token;
+      LispMultiUserFunction* multiUser = aEnvironment.MultiUserFunction(str);
+      if (multiUser->iFileToOpen!=NULL)
+      {
+        aEnvironment.CurrentOutput()->Write("[");
+        aEnvironment.CurrentOutput()->Write(&(*str)[0]);
+        aEnvironment.CurrentOutput()->Write("]\n");
+        Check(multiUser->iFileToOpen==NULL,KLispErrDefFileAlreadyChosen);
+      }
+      multiUser->iFileToOpen = def;
+    }
+  }
 }
 
 
 
 void LoadDefFile(LispEnvironment& aEnvironment, LispString * aFileName)
 {
-    LISPASSERT(aFileName!=NULL);
+  LISPASSERT(aFileName!=NULL);
 
-    LispString flatfile;
-    InternalUnstringify(flatfile, aFileName);
-    flatfile[flatfile.Size()-1]='.';
-    flatfile.Append('d');
-    flatfile.Append('e');
-    flatfile.Append('f');
-    flatfile.Append('\0');
+  LispString flatfile;
+  InternalUnstringify(flatfile, aFileName);
+  flatfile[flatfile.Size()-1]='.';
+  flatfile.Append('d');
+  flatfile.Append('e');
+  flatfile.Append('f');
+  flatfile.Append('\0');
 
-    LispDefFile* def = aEnvironment.DefFiles().File(aFileName);
+  LispDefFile* def = aEnvironment.DefFiles().File(aFileName);
 
-    LispString * contents = aEnvironment.FindCachedFile(flatfile.c_str());
+  LispString * contents = aEnvironment.FindCachedFile(flatfile.c_str());
 
-    
-    LispString * hashedname = aEnvironment.HashTable().LookUp(flatfile.c_str());
+  
+  LispString * hashedname = aEnvironment.HashTable().LookUp(flatfile.c_str());
 
-    InputStatus oldstatus = aEnvironment.iInputStatus;
-    aEnvironment.iInputStatus.SetTo(hashedname->c_str());
+  InputStatus oldstatus = aEnvironment.iInputStatus;
+  aEnvironment.iInputStatus.SetTo(hashedname->c_str());
 
-    if (contents)
-    {
-        StringInput newInput(*contents,aEnvironment.iInputStatus);
-        DoLoadDefFile(aEnvironment, &newInput,def);
-        delete contents;
-    }
-    else
-    {
-        LispLocalFile localFP(aEnvironment, hashedname->c_str(),LispTrue,
-                              aEnvironment.iInputDirectories);
-        Check(localFP.iOpened != 0, KLispErrFileNotFound);
-        FILEINPUT newInput(localFP,aEnvironment.iInputStatus);
-        DoLoadDefFile(aEnvironment, &newInput,def);
-    }
-    aEnvironment.iInputStatus.RestoreFrom(oldstatus);
+  if (contents)
+  {
+    StringInput newInput(*contents,aEnvironment.iInputStatus);
+    DoLoadDefFile(aEnvironment, &newInput,def);
+    delete contents;
+  }
+  else
+  {
+    LispLocalFile localFP(aEnvironment, hashedname->c_str(),LispTrue,
+                          aEnvironment.iInputDirectories);
+    Check(localFP.iOpened != 0, KLispErrFileNotFound);
+    FILEINPUT newInput(localFP,aEnvironment.iInputStatus);
+    DoLoadDefFile(aEnvironment, &newInput,def);
+  }
+  aEnvironment.iInputStatus.RestoreFrom(oldstatus);
 }
 
 
