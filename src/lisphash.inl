@@ -7,20 +7,20 @@ template<class T>
 class LAssoc : public YacasBase
 {
 public:
-    inline LAssoc(LispString * aString,const T& aData);
-    inline ~LAssoc();
-    LispStringSmartPtr iString;
-    T iData;
+  inline LAssoc(LispString * aString,const T& aData);
+  inline ~LAssoc();
+  LispStringSmartPtr iString;
+  T iData;
 private: //Functions no one is allowed to use
-    inline LAssoc(const LAssoc& aOther);
-    inline LAssoc& operator=(const LAssoc& aOther);
+  inline LAssoc(const LAssoc& aOther);
+  inline LAssoc& operator=(const LAssoc& aOther);
 };
 template<class T>
 inline LAssoc<T>::LAssoc(LispString * aString,const T& aData)
 : iData(aData)
 {
-    LISPASSERT(aString);
-    iString = (aString);
+  LISPASSERT((LispBoolean)(aString != NULL));
+  iString = (aString);
 }
 
 template<class T>

@@ -90,7 +90,7 @@ public:
 
 	// Assignment from another (the *default* simply assigns members, not what we want).
 	// (we return void, not *this).
-  void operator=(const LispStringSmartPtr &aOther) { this->operator=(aOther.iString); }
+  LispStringSmartPtr& operator=(const LispStringSmartPtr &aOther) { this->operator=(aOther.iString); return *this; }
 
   // Expected pointer behavior.  
   operator LispString*()    const { return  iString; }	// implicit conversion to pointer to T

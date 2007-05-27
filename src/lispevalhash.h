@@ -37,7 +37,9 @@ private:
   LispInt iFlags;
 };
 
-typedef LispAssociatedHash<YacasEvaluator> YacasCoreCommands;
+class YacasCoreCommands : public LispAssociatedHash<YacasEvaluator>
+{
+};
 
 
 

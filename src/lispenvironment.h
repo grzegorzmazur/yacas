@@ -268,6 +268,12 @@ private:
         {
             --iVariable->iReferenceCount;
         }
+    private:
+        LispLocalVariable(const LispLocalVariable& aOther)
+        {
+          // copy constructor not written yet, hence the assert
+          LISPASSERT(0);
+        }
     public:
         LispLocalVariable* iNext;
         LispString * iVariable;
