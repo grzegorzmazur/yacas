@@ -40,6 +40,7 @@ public:
 class LispCleanup : public YacasBase
 {
 public:
+   inline LispCleanup() : iObjects() {}
     virtual ~LispCleanup();
     /// Push an object onto the cleanup stack for guarding
     virtual void Push(LispBase& aObject);

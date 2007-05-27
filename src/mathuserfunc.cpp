@@ -55,17 +55,15 @@ BranchingUserFunction::BranchPattern::~BranchPattern()
 
 
 BranchingUserFunction::BranchingUserFunction(LispPtr& aParameters)
-    
+  : iParameters(),iRules(),iParamList(aParameters)
 {
-    iParamList = (aParameters);
-
-    LispIterator iter(aParameters);
-    for ( ; iter.getObj(); ++iter)
+  LispIterator iter(aParameters);
+  for ( ; iter.getObj(); ++iter)
 	{
-        Check(iter.getObj()->String(),KLispErrCreatingUserFunction);
-        BranchParameter param(iter.getObj()->String());
-        iParameters.Append(param);
-    }
+    Check(iter.getObj()->String(),KLispErrCreatingUserFunction);
+    BranchParameter param(iter.getObj()->String());
+    iParameters.Append(param);
+  }
 }
 
 BranchingUserFunction::~BranchingUserFunction()

@@ -8,14 +8,14 @@
 class LtDll : public LispDllBase
 {
 public:
-    LtDll() : handle(NULL) {}
-    virtual ~LtDll();
-    virtual LispInt Open(LispChar * aDllFile,LispEnvironment& aEnvironment);
-    virtual LispInt Close(LispEnvironment& aEnvironment);
+  LtDll() : handle(NULL) {}
+  virtual ~LtDll();
+  virtual LispInt Open(LispChar * aDllFile,LispEnvironment& aEnvironment);
+  virtual LispInt Close(LispEnvironment& aEnvironment);
 protected:
-    virtual LispPluginBase* GetPlugin(LispChar * aDllFile);
+  virtual LispPluginBase* GetPlugin(LispChar * aDllFile);
 private:
-    void *handle;
+  void *handle;
 };
 
 #endif

@@ -5,10 +5,8 @@
 
 
 StringInput::StringInput(LispString& aString,InputStatus& aStatus)
-    : LispInput(aStatus),
-      iString(aString.c_str(),LispFalse)
+    : LispInput(aStatus),iString(aString.c_str(),LispFalse),  iCurrent(0)
 {
-  iCurrent = 0;
 }
 
 LispChar StringInput::Next()

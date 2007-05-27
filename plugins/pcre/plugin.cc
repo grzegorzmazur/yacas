@@ -20,6 +20,7 @@
 #include "pcre.h"
 struct TPattern
 {
+  TPattern() : re(NULL),pe(NULL),type() { }
   pcre *re;
   pcre_extra *pe;
   LispPtr type;

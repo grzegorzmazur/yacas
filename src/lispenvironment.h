@@ -116,233 +116,250 @@ public:
   //@}
 
 public:
-    /// \name Lisp functions
-    //@{
+  /// \name Lisp functions
+  //@{
 
-    /// Return the #iCoreCommands attribute.
-    inline YacasCoreCommands& CoreCommands();
+  /// Return the #iCoreCommands attribute.
+  inline YacasCoreCommands& CoreCommands();
 
-    /// Add a command to the list of core commands.
-    /// \param aEvaluatorFunc C function evaluating the core command
-    /// \param aString name of the command
-    /// \param aNrArgs number of arguments
-    /// \param aFlags flags, see YacasEvaluator::FunctionFlags
-    void SetCommand(YacasEvalCaller aEvaluatorFunc, LispChar * aString,LispInt aNrArgs,LispInt aFlags);
+  /// Add a command to the list of core commands.
+  /// \param aEvaluatorFunc C function evaluating the core command
+  /// \param aString name of the command
+  /// \param aNrArgs number of arguments
+  /// \param aFlags flags, see YacasEvaluator::FunctionFlags
+  void SetCommand(YacasEvalCaller aEvaluatorFunc, LispChar * aString,LispInt aNrArgs,LispInt aFlags);
 
-    void RemoveCommand(LispChar * aString);
-    void RemoveCoreCommand(LispChar * aString);
+  void RemoveCommand(LispChar * aString);
+  void RemoveCoreCommand(LispChar * aString);
 
-    inline  LispHashTable& HashTable();
-    LispUserFunction* UserFunction(LispPtr& aArguments);
-    LispUserFunction* UserFunction(LispString * aName,LispInt aArity);
+  inline  LispHashTable& HashTable();
+  LispUserFunction* UserFunction(LispPtr& aArguments);
+  LispUserFunction* UserFunction(LispString * aName,LispInt aArity);
 
-    /// Return LispMultiUserFunction with given name.
-    /// \param aArguments name of the multi user function
-    ///
-    /// The table of user functions, #iUserFunctions, is consulted. If
-    /// a user function with the given name exists, it is returned. 
-    /// Otherwise, a new LispMultiUserFunction is constructed, added
-    /// to #iUserFunctions, and returned. 
-    LispMultiUserFunction* MultiUserFunction(LispString * aArguments);
+  /// Return LispMultiUserFunction with given name.
+  /// \param aArguments name of the multi user function
+  ///
+  /// The table of user functions, #iUserFunctions, is consulted. If
+  /// a user function with the given name exists, it is returned. 
+  /// Otherwise, a new LispMultiUserFunction is constructed, added
+  /// to #iUserFunctions, and returned. 
+  LispMultiUserFunction* MultiUserFunction(LispString * aArguments);
 
-    LispDefFiles& DefFiles();
-    void DeclareRuleBase(LispString * aOperator, LispPtr& aParameters,
-                         LispInt aListed);
-    void DeclareMacroRuleBase(LispString * aOperator, LispPtr& aParameters, 
-                         LispInt aListed);
-    void DefineRule(LispString * aOperator,LispInt aArity,
-                            LispInt aPrecedence, LispPtr& aPredicate,
-                            LispPtr& aBody);
-    void DefineRulePattern(LispString * aOperator,LispInt aArity,
-                            LispInt aPrecedence, LispPtr& aPredicate,
-                            LispPtr& aBody);
+  LispDefFiles& DefFiles();
+  void DeclareRuleBase(LispString * aOperator, LispPtr& aParameters,
+                       LispInt aListed);
+  void DeclareMacroRuleBase(LispString * aOperator, LispPtr& aParameters, 
+                       LispInt aListed);
+  void DefineRule(LispString * aOperator,LispInt aArity,
+                          LispInt aPrecedence, LispPtr& aPredicate,
+                          LispPtr& aBody);
+  void DefineRulePattern(LispString * aOperator,LispInt aArity,
+                          LispInt aPrecedence, LispPtr& aPredicate,
+                          LispPtr& aBody);
 
 
-    void UnFenceRule(LispString * aOperator,LispInt aArity);
-    void Retract(LispString * aOperator,LispInt aArity);
-    void HoldArgument(LispString *  aOperator,LispString * aVariable);
-    //@}
+  void UnFenceRule(LispString * aOperator,LispInt aArity);
+  void Retract(LispString * aOperator,LispInt aArity);
+  void HoldArgument(LispString *  aOperator,LispString * aVariable);
+  //@}
 
-    LispString * FindCachedFile(LispChar * aFileName);
-    
+  LispString * FindCachedFile(LispChar * aFileName);
+  
 public:
-    /// \name Precision
-    //@{
+  /// \name Precision
+  //@{
 
-    /// set precision to a given number of decimal digits
-    void SetPrecision(LispInt aPrecision);
-    inline LispInt Precision(void) const;
-    inline LispInt BinaryPrecision(void) const;
-    //@}
-
-public:
-    inline void SetPrettyPrinter(LispString * aPrettyPrinter);
-    inline LispString * PrettyPrinter(void);
-    
-    inline void SetPrettyReader(LispString * aPrettyReader);
-    inline LispString * PrettyReader(void);
-    
-public:
-    LispInt GetUniqueId();
-public:
-    LispPrinter& CurrentPrinter();
+  /// set precision to a given number of decimal digits
+  void SetPrecision(LispInt aPrecision);
+  inline LispInt Precision(void) const;
+  inline LispInt BinaryPrecision(void) const;
+  //@}
 
 public:
-    /// \name Operators
-    //@{
-    LispOperators& PreFix();
-    LispOperators& InFix();
-    LispOperators& PostFix();
-    LispOperators& Bodied();
-    //@}
+  inline void SetPrettyPrinter(LispString * aPrettyPrinter);
+  inline LispString * PrettyPrinter(void);
+  
+  inline void SetPrettyReader(LispString * aPrettyReader);
+  inline LispString * PrettyReader(void);
+  
+public:
+  LispInt GetUniqueId();
+public:
+  LispPrinter& CurrentPrinter();
 
 public:
-    /// \name Input and output
-    //@{
-    LispInput* CurrentInput();
-    void SetCurrentInput(LispInput* aInput);
+  /// \name Operators
+  //@{
+  LispOperators& PreFix();
+  LispOperators& InFix();
+  LispOperators& PostFix();
+  LispOperators& Bodied();
+  //@}
+
 public:
-    LispOutput* CurrentOutput();
-    void SetCurrentOutput(LispOutput* aOutput);
+  /// \name Input and output
+  //@{
+  LispInput* CurrentInput();
+  void SetCurrentInput(LispInput* aInput);
 public:
-    void SetUserError(LispChar * aErrorString);
-    LispChar * ErrorString(LispInt aError);
-    //@}
+  LispOutput* CurrentOutput();
+  void SetCurrentOutput(LispOutput* aOutput);
+public:
+  void SetUserError(LispChar * aErrorString);
+  LispChar * ErrorString(LispInt aError);
+  //@}
 
 protected:
-		/// current precision for user interaction, in decimal and in binary
-    LispInt iPrecision;
+  /// current precision for user interaction, in decimal and in binary
+  LispInt iPrecision;
 	LispInt iBinaryPrecision;
 public:
-    InputDirectories iInputDirectories;
-    InputDirectories iDllDirectories;
-    DeletingLispCleanup iCleanup;
-    LispInt iEvalDepth;
-    LispInt iMaxEvalDepth;
-    CCompressedArchive *iArchive;
-    LispEvaluatorBase* iEvaluator;
+  InputDirectories iInputDirectories;
+  InputDirectories iDllDirectories;
+  DeletingLispCleanup iCleanup;
+  LispInt iEvalDepth;
+  LispInt iMaxEvalDepth;
+  CCompressedArchive *iArchive;
+  LispEvaluatorBase* iEvaluator;
 
 public: // Error information when some error occurs.
-    InputStatus iInputStatus;
-    LispInt iSecure;
+  InputStatus iInputStatus;
+  LispInt iSecure;
 public: // pre-found
-    RefPtr<LispObject> iTrue;
-    RefPtr<LispObject> iFalse;
+  RefPtr<LispObject> iTrue;
+  RefPtr<LispObject> iFalse;
 
-    RefPtr<LispObject> iEndOfFile;
-    RefPtr<LispObject> iEndStatement;
-    RefPtr<LispObject> iProgOpen;
-    RefPtr<LispObject> iProgClose;
-    RefPtr<LispObject> iNth;
-    RefPtr<LispObject> iBracketOpen;
-    RefPtr<LispObject> iBracketClose;
-    RefPtr<LispObject> iListOpen;
-    RefPtr<LispObject> iListClose;
-    RefPtr<LispObject> iComma;
-    RefPtr<LispObject> iList;
-    RefPtr<LispObject> iProg;
+  RefPtr<LispObject> iEndOfFile;
+  RefPtr<LispObject> iEndStatement;
+  RefPtr<LispObject> iProgOpen;
+  RefPtr<LispObject> iProgClose;
+  RefPtr<LispObject> iNth;
+  RefPtr<LispObject> iBracketOpen;
+  RefPtr<LispObject> iBracketClose;
+  RefPtr<LispObject> iListOpen;
+  RefPtr<LispObject> iListClose;
+  RefPtr<LispObject> iComma;
+  RefPtr<LispObject> iList;
+  RefPtr<LispObject> iProg;
 
-    LispInt iLastUniqueId;
+  LispInt iLastUniqueId;
 
 public: // Error reporting
-    LispString iError;
-    StringOutput iErrorOutput;
-    CDllArray iDlls;
-    DefaultDebugger* iDebugger;
+  LispString iError;
+  StringOutput iErrorOutput;
+  CDllArray iDlls;
+  DefaultDebugger* iDebugger;
     
 private:
-    LispPtr *FindLocal(LispString * aVariable);
+  LispPtr *FindLocal(LispString * aVariable);
 
 private:
 
-    class LispLocalVariable : public YacasBase
+  class LispLocalVariable : public YacasBase
+  {
+  public:
+    LispLocalVariable(LispString * aVariable,
+                      LispObject* aValue)
+      : iNext(NULL), iVariable(aVariable),iValue(aValue)
     {
-    public:
-        LispLocalVariable(LispString * aVariable,
-                          LispObject* aValue)
-            : iNext(NULL), iVariable(aVariable),iValue(aValue)
-        {
-            ++aVariable->iReferenceCount;
-        };
-        ~LispLocalVariable()
-        {
-            --iVariable->iReferenceCount;
-        }
-    private:
-        LispLocalVariable(const LispLocalVariable& aOther)
-        {
-          // copy constructor not written yet, hence the assert
-          LISPASSERT(0);
-        }
-    public:
-        LispLocalVariable* iNext;
-        LispString * iVariable;
-        LispPtr iValue;
+      ++aVariable->iReferenceCount;
     };
-    class LocalVariableFrame : public YacasBase
+    ~LispLocalVariable()
     {
-    public:
-        LocalVariableFrame(LocalVariableFrame *aNext,
-                           LispLocalVariable* aFirst)
-            : iNext(aNext), iFirst(aFirst), iLast(aFirst) { }
-        void Add(LispLocalVariable* aNew)
-        {
-            aNew->iNext = iFirst;
-            iFirst = aNew;
-        }
-        ~LocalVariableFrame()
-        {
-            LispLocalVariable* t = iFirst;
-            LispLocalVariable* next;
-            while (t != iLast)
-            {
-                next = t->iNext;
-                delete t;
-                t = next;
-            }
-        }
-        
-    public:
-        LocalVariableFrame *iNext;
-        LispLocalVariable* iFirst;
-        LispLocalVariable* iLast;
-    };
+      --iVariable->iReferenceCount;
+    }
+  private:
+    LispLocalVariable(const LispLocalVariable& aOther) : iNext(NULL), iVariable(NULL),iValue(NULL)
+    {
+      // copy constructor not written yet, hence the assert
+      LISPASSERT(0);
+    }
+    LispLocalVariable& operator=(const LispLocalVariable& aOther)
+    {
+      // copy constructor not written yet, hence the assert
+      LISPASSERT(0);
+      return *this;
+    }
+
+  public:
+    LispLocalVariable* iNext;
+    LispString * iVariable;
+    LispPtr iValue;
+  };
+  class LocalVariableFrame : public YacasBase
+  {
+  public:
+    LocalVariableFrame(LocalVariableFrame *aNext,
+                       LispLocalVariable* aFirst)
+        : iNext(aNext), iFirst(aFirst), iLast(aFirst) { }
+    void Add(LispLocalVariable* aNew)
+    {
+      aNew->iNext = iFirst;
+      iFirst = aNew;
+    }
+    ~LocalVariableFrame()
+    {
+      LispLocalVariable* t = iFirst;
+      LispLocalVariable* next;
+      while (t != iLast)
+      {
+        next = t->iNext;
+        delete t;
+        t = next;
+      }
+    }
+
+  private:
+    LocalVariableFrame(const LocalVariableFrame& aOther) : iNext(NULL),iFirst(NULL),iLast(NULL)
+    {
+      // copy constructor not written yet, hence the assert
+      LISPASSERT(0);
+    }
+    LocalVariableFrame& operator=(const LocalVariableFrame& aOther)
+    {
+      // copy constructor not written yet, hence the assert
+      LISPASSERT(0);
+      return *this;
+    }
+  public:
+    LocalVariableFrame *iNext;
+    LispLocalVariable* iFirst;
+    LispLocalVariable* iLast;
+  };
 public: //Well... only because I want to be able to show the stack to the outside world...
-    LocalVariableFrame *iLocalsList;
-    LispOutput*    iInitialOutput;
+  LocalVariableFrame *iLocalsList;
+  LispOutput*    iInitialOutput;
 private:
 
-    /// Hash of core commands with associated YacasEvaluator
-    YacasCoreCommands& iCoreCommands;
+  /// Hash of core commands with associated YacasEvaluator
+  YacasCoreCommands& iCoreCommands;
 
-    LispUserFunctions& iUserFunctions;
-    LispHashTable& iHashTable;
-    LispDefFiles   iDefFiles;
-    LispPrinter&   iPrinter;
-    LispOutput*    iCurrentOutput;
+  LispUserFunctions& iUserFunctions;
+  LispHashTable& iHashTable;
+  LispDefFiles   iDefFiles;
+  LispPrinter&   iPrinter;
+  LispOutput*    iCurrentOutput;
 
-    /// Hash of global variables with their values
-    LispGlobal&    iGlobals;
+  /// Hash of global variables with their values
+  LispGlobal&    iGlobals;
 
-//    LispPtr        iLocals;
+  LispOperators& iPreFixOperators;
+  LispOperators& iInFixOperators;
+  LispOperators& iPostFixOperators;
+  LispOperators& iBodiedOperators;
 
-    LispOperators& iPreFixOperators;
-    LispOperators& iInFixOperators;
-    LispOperators& iPostFixOperators;
-    LispOperators& iBodiedOperators;
+  LispInput* iCurrentInput;
 
-    LispInput* iCurrentInput;
+  LispChar * theUserError;
 
-    LispChar * theUserError;
-
-    LispString * iPrettyReader;
-    LispString * iPrettyPrinter;
+  LispString * iPrettyReader;
+  LispString * iPrettyPrinter;
 public:
-    LispTokenizer iDefaultTokenizer;
-    CommonLispTokenizer iCommonLispTokenizer;
-    CTokenizer    iCTokenizer;
-    XmlTokenizer  iXmlTokenizer;
-    LispTokenizer* iCurrentTokenizer;
+  LispTokenizer iDefaultTokenizer;
+  CommonLispTokenizer iCommonLispTokenizer;
+  CTokenizer    iCTokenizer;
+  XmlTokenizer  iXmlTokenizer;
+  LispTokenizer* iCurrentTokenizer;
 
 public:
 	/** YacasArgStack implements a stack of pointers to objects that can be used to pass
@@ -402,6 +419,75 @@ public:
 		LispInt iStackCnt;		// number of items on the stack
 	};
 	YacasArgStack iStack;
+
+private:
+	
+  inline LispEnvironment(const LispEnvironment& aOther)
+    : 
+    iPrecision(0),	// default user precision of 10 decimal digits
+	  iBinaryPrecision(0),	// same as 34 bits
+    iInputDirectories(),
+    iDllDirectories(),
+    iCleanup(),
+    iEvalDepth(0),
+    iMaxEvalDepth(0),
+    iArchive(NULL),
+    iEvaluator(NULL),
+    iInputStatus(),
+    iSecure(0),
+    iTrue(),
+    iFalse(),
+    iEndOfFile(),
+    iEndStatement(),
+    iProgOpen(),
+    iProgClose(),
+    iNth(),
+    iBracketOpen(),
+    iBracketClose(),
+    iListOpen(),
+    iListClose(),
+    iComma(),
+    iList(),
+    iProg(),
+    iLastUniqueId(0),
+    iError(),
+    iErrorOutput(aOther.iErrorOutput),
+    iDlls(),
+    iDebugger(NULL),
+    iLocalsList(NULL),
+    iInitialOutput(aOther.iInitialOutput),
+    iCoreCommands(aOther.iCoreCommands),
+    iUserFunctions(aOther.iUserFunctions),
+    iHashTable(aOther.iHashTable),
+    iDefFiles(),
+    iPrinter(aOther.iPrinter),
+    iCurrentOutput(aOther.iCurrentOutput),
+    iGlobals(aOther.iGlobals),
+    iPreFixOperators(aOther.iPreFixOperators),
+    iInFixOperators(aOther.iInFixOperators),
+    iPostFixOperators(aOther.iPostFixOperators),
+    iBodiedOperators(aOther.iBodiedOperators),
+    iCurrentInput(aOther.iCurrentInput),
+    theUserError(NULL),
+    iPrettyReader(NULL),
+    iPrettyPrinter(NULL),
+    iDefaultTokenizer(),
+    iCommonLispTokenizer(),
+    iCTokenizer(),
+    iXmlTokenizer(),
+    iCurrentTokenizer(NULL),
+    iStack(0)
+  {
+    // copy constructor has not been made yet, hence the assert
+    LISPASSERT(0);
+  }
+  LispEnvironment& operator=(const LispEnvironment& aOther)
+  {
+    // copy constructor has not been made yet, hence the assert
+    LISPASSERT(0);
+    return *this;
+  }
+
 };
 
 inline LispInt LispEnvironment::Precision(void) const
@@ -454,22 +540,21 @@ private:
 class LispSecureFrame : public LispBase
 {
 public:
-    LispSecureFrame(LispEnvironment& aEnvironment)
-        : iEnvironment(aEnvironment)
-    {
-        iPreviousSecure = iEnvironment.iSecure;
-        iEnvironment.iSecure = 1;
-        SAFEPUSH(iEnvironment,*this);
-    };
-    virtual ~LispSecureFrame()
-    {
-        SAFEPOP(iEnvironment);
-        Delete();
-    };
-    virtual void Delete();
+  LispSecureFrame(LispEnvironment& aEnvironment)
+      : iEnvironment(aEnvironment),iPreviousSecure(aEnvironment.iSecure)
+  {
+    iEnvironment.iSecure = 1;
+    SAFEPUSH(iEnvironment,*this);
+  };
+  virtual ~LispSecureFrame()
+  {
+    SAFEPOP(iEnvironment);
+    Delete();
+  };
+  virtual void Delete();
 private:
-    LispEnvironment& iEnvironment;
-    LispInt iPreviousSecure;
+  LispEnvironment& iEnvironment;
+  LispInt iPreviousSecure;
 };
 
 
@@ -477,22 +562,34 @@ private:
 class LispLocalInput : public LispBase
 {
 public:
-    LispLocalInput(LispEnvironment& aEnvironment, LispInput* aInput)
-        : iEnvironment(aEnvironment)
-    {
-        iPreviousInput = iEnvironment.CurrentInput();
-        iEnvironment.SetCurrentInput(aInput);
-        SAFEPUSH(iEnvironment,*this);
-    };
-    virtual ~LispLocalInput()
-    {
-        SAFEPOP(iEnvironment);
-        Delete();
-    };
-    virtual void Delete();
+  LispLocalInput(LispEnvironment& aEnvironment, LispInput* aInput)
+      : iEnvironment(aEnvironment),iPreviousInput(iEnvironment.CurrentInput())
+  {
+    iEnvironment.SetCurrentInput(aInput);
+    SAFEPUSH(iEnvironment,*this);
+  };
+  virtual ~LispLocalInput()
+  {
+    SAFEPOP(iEnvironment);
+    Delete();
+  };
+  virtual void Delete();
 private:
-    LispEnvironment& iEnvironment;
-    LispInput* iPreviousInput;
+  LispLocalInput(const LispLocalInput& aOther): iEnvironment(aOther.iEnvironment),iPreviousInput(iEnvironment.CurrentInput())
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+  };
+  LispLocalInput& operator=(const LispLocalInput& aOther)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+    return *this;
+  };
+
+private:
+  LispEnvironment& iEnvironment;
+  LispInput* iPreviousInput;
 };
 
 
@@ -500,43 +597,80 @@ private:
 class LispLocalOutput : public LispBase
 {
 public:
-    LispLocalOutput(LispEnvironment& aEnvironment, LispOutput* aOutput)
-        : iEnvironment(aEnvironment)
-    {
-        iPreviousOutput = iEnvironment.CurrentOutput();
-        iEnvironment.SetCurrentOutput(aOutput);
-        SAFEPUSH(iEnvironment,*this);
-    };
-    virtual ~LispLocalOutput()
-    {
-        SAFEPOP(iEnvironment);
-        Delete();
-    };
-    virtual void Delete();
+  LispLocalOutput(LispEnvironment& aEnvironment, LispOutput* aOutput)
+      : iEnvironment(aEnvironment), iPreviousOutput(iEnvironment.CurrentOutput())
+  {
+    iPreviousOutput = iEnvironment.CurrentOutput();
+    iEnvironment.SetCurrentOutput(aOutput);
+    SAFEPUSH(iEnvironment,*this);
+  };
+  virtual ~LispLocalOutput()
+  {
+    SAFEPOP(iEnvironment);
+    Delete();
+  };
+  virtual void Delete();
 private:
-    LispEnvironment& iEnvironment;
-    LispOutput* iPreviousOutput;
+  LispLocalOutput(const LispLocalOutput& aOther): iEnvironment(aOther.iEnvironment), iPreviousOutput(iEnvironment.CurrentOutput())
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+  }
+  LispLocalOutput& operator=(const LispLocalOutput& aOther)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+    return *this;
+  }
+private:
+  LispEnvironment& iEnvironment;
+  LispOutput* iPreviousOutput;
 };
 
 
 class LispLocalEvaluator : public YacasBase
 {
 public:
-    LispLocalEvaluator(LispEnvironment& aEnvironment,LispEvaluatorBase* aNewEvaluator);
-    ~LispLocalEvaluator();
-    
+  LispLocalEvaluator(LispEnvironment& aEnvironment,LispEvaluatorBase* aNewEvaluator);
+  ~LispLocalEvaluator();
+
 private:
-    LispEvaluatorBase* iPreviousEvaluator;
-    LispEnvironment& iEnvironment;
+  LispLocalEvaluator(const LispLocalEvaluator& aOther) : iPreviousEvaluator(NULL), iEnvironment(aOther.iEnvironment)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+  }
+  LispLocalEvaluator& operator=(const LispLocalEvaluator& aOther)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+    return *this;
+  }
+  
+private:
+  LispEvaluatorBase* iPreviousEvaluator;
+  LispEnvironment& iEnvironment;
 };
 
 class LispLocalTrace : public YacasBase
 {
 public:
-    LispLocalTrace(LispUserFunction* aUserFunc);
-    ~LispLocalTrace();
+  LispLocalTrace(LispUserFunction* aUserFunc);
+  ~LispLocalTrace();
 private:
-    LispUserFunction* iUserFunc;
+  LispLocalTrace(const LispLocalTrace& aOther) : iUserFunc(NULL)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+  }
+  LispLocalTrace& operator=(const LispLocalTrace& aOther)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+    return *this;
+  }
+private:
+  LispUserFunction* iUserFunc;
 };
 
 class LocalArgs : public YacasBase
@@ -547,6 +681,18 @@ public:
   {
     if (iPtrs)
       delete[] iPtrs;
+  }
+private:
+  LocalArgs(const LocalArgs& aOther) : iPtrs(NULL)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+  }
+  LocalArgs& operator=(const LocalArgs& aOther)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+    return *this;
   }
 private:
   LispPtr* iPtrs;
@@ -574,4 +720,5 @@ inline LispString * LispEnvironment::PrettyPrinter(void)
 
 
 #endif
+
 

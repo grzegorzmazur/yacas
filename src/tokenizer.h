@@ -12,15 +12,15 @@
 #include "lisphash.h"
 class LispTokenizer : public YacasBase
 {
-    
 public:
-    /// NextToken returns a string representing the next token,
-    /// or an empty list.
-    virtual LispString * NextToken(LispInput& aInput,
-                                    LispHashTable& aHashTable);
-    virtual ~LispTokenizer(){}
-private:
-    LispString iToken; //Can be used as a token container.
+  LispTokenizer() : iToken() {}
+  /// NextToken returns a string representing the next token,
+  /// or an empty list.
+  virtual LispString * NextToken(LispInput& aInput,
+                                  LispHashTable& aHashTable);
+  virtual ~LispTokenizer(){}
+protected:
+  LispString iToken; //Can be used as a token container.
 };
 
 class CommonLispTokenizer : public LispTokenizer

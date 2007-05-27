@@ -111,18 +111,36 @@ public:
     DBG_( iLine = aLine; )
   }
 protected:
-  inline LispObject() : iNext(),iReferenceCount()
+  inline LispObject() : 
+#ifdef YACAS_DEBUG
+   iFileName(NULL),iLine(0), 
+#endif // YACAS_DEBUG
+   iNext(),iReferenceCount()
   {
     IncNrObjects();
     DBG_( iFileName = NULL; )
     DBG_( iLine = 0; )
   }
-	inline LispObject(const LispObject& other) : iNext(),iReferenceCount()
+	inline LispObject(const LispObject& other) : 
+#ifdef YACAS_DEBUG
+  iFileName(other.iFileName),iLine(other.iLine), 
+#endif // YACAS_DEBUG
+  iNext(),iReferenceCount()
   {
     IncNrObjects();
-    DBG_( iFileName = other.iFileName; )
-    DBG_( iLine = other.iLine; )
   }
+
+	inline LispObject& operator=(const LispObject& other)
+  {
+#ifdef YACAS_DEBUG
+    iFileName = other.iFileName;
+    iLine     = other.iLine;
+#endif // YACAS_DEBUG
+    IncNrObjects();
+    return *this;
+  }
+
+
 private:
   LispPtr   iNext;
 public:

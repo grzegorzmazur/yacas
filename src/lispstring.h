@@ -86,7 +86,7 @@ public:
 
   // Assignment from pointer.  (PDG - new method)
   // (we return void, not *this).
-  void operator=(LispString * aString);
+  LispStringSmartPtr& operator=(LispString * aString);
 
 	// Assignment from another (the *default* simply assigns members, not what we want).
 	// (we return void, not *this).

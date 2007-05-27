@@ -20,53 +20,65 @@
 #endif //HAVE_DIRENT_H
 
 #include <string.h>
+#include "lispassert.h"
 
 class CFileNode
 {
 public:
-    inline CFileNode(){};
-    inline void Set(int aIsDir,char* aName)
-    {
-        iIsDir = aIsDir;
-        iName  = aName;
-        strcpy(iFullName,iDir);
-        if (strlen(iDir))
-            strcat(iFullName,DIRSEP);
-        strcat(iFullName,aName);
-    }
-    inline int IsDirectory() {return iIsDir;};
-    inline char* FullName() {return iFullName;};
-    inline void SetRoot(char* aDir) {iDir=aDir;};
+  inline CFileNode() : iIsDir(0),iName(""),iDir("") {};
+  inline void Set(int aIsDir,char* aName)
+  {
+    iIsDir = aIsDir;
+    iName  = aName;
+    strcpy(iFullName,iDir);
+    if (strlen(iDir))
+      strcat(iFullName,DIRSEP);
+    strcat(iFullName,aName);
+  }
+  inline int IsDirectory() {return iIsDir;};
+  inline char* FullName() {return iFullName;};
+  inline void SetRoot(char* aDir) {iDir=aDir;};
 private:
-    int iIsDir;
-    char *iName;
-    char iFullName[500];
-    char* iDir;
-
+  int iIsDir;
+  char *iName;
+  char iFullName[500];
+  char* iDir;
 };
     
 class CFileScanner
 {
 public:
-    CFileScanner();
-    ~CFileScanner();
-    CFileNode* First(char* base,char* dir);
-    CFileNode* Next();
+  CFileScanner();
+  ~CFileScanner();
+  CFileNode* First(char* base,char* dir);
+  CFileNode* Next();
 private:
-    CFileNode iCurNode;
+  CFileScanner(const CFileScanner& aFileScanner)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+  }
+  CFileScanner& operator=(const CFileScanner& aFileScanner)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+    return *this;
+  }
+private:
+  CFileNode iCurNode;
 
-    char fulldir[500];
+  char fulldir[500];
 
 #ifdef _GCC_BUILD_
-    DIR *dp;
-    struct dirent* entry;
-    struct stat statbuf;
+  DIR *dp;
+  struct dirent* entry;
+  struct stat statbuf;
 #endif
 
 #ifdef WIN32
-    long handle;
-    struct _finddata_t info;
-    int first;
+  long handle;
+  struct _finddata_t info;
+  int first;
 #endif
 };
 

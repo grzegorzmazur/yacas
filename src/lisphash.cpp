@@ -17,23 +17,34 @@ typedef CArrayGrower<LispStringSmartPtr, ArrOpsCustomObj<LispStringSmartPtr> > L
 
 LispHashTable::~LispHashTable()
 {
-    for (LispInt bin = 0; bin < KSymTableSize; bin++)
-    {
-		LispStringSmartPtrArray & aBin = iHashTable[bin];
-		for (LispInt i = 0, n = aBin.Size(); i < n; i++)
-        {
-			// Check that this LispHashTable is a unique pool!?
+  LispInt bin,i,n;
 #ifdef YACAS_DEBUG
-			if (aBin[i]->iReferenceCount != 1)
-			{
-				printf("ERROR: string objects with invalid reference counts during destruction of the hashtable!\n");
-				printf("%d:%s\n", (int)(aBin[i]->iReferenceCount), aBin[i]->c_str());
-			}
-#endif
-            LISPASSERT(aBin[i]->iReferenceCount == 1);
-            aBin[i] = (NULL);
-        }
+  LispBoolean fault = LispFalse;
+  for (bin = 0; bin < KSymTableSize; bin++)
+  {
+    LispStringSmartPtrArray & aBin = iHashTable[bin];
+    for (i = 0, n = aBin.Size(); i < n; i++)
+    {
+      if (aBin[i]->iReferenceCount != 1)
+      {
+        if (!fault) printf("ERROR: string objects with invalid reference counts during destruction of the hashtable!\n");
+        fault = LispTrue;
+        printf("refcount = %d, string = \"%s\"\n", (int)(aBin[i]->iReferenceCount), aBin[i]->c_str());
+      }
     }
+  }
+  LISPASSERT(!fault);
+#endif // YACAS_DEBUG
+  for (bin = 0; bin < KSymTableSize; bin++)
+  {
+    LispStringSmartPtrArray & aBin = iHashTable[bin];
+    for (i = 0, n = aBin.Size(); i < n; i++)
+    {
+      // Check that this LispHashTable is a unique pool!?
+      aBin[i] = (NULL);
+    }
+  }
+  LISPASSERT(!fault);
 }
 
 LispInt  LispHash( const char *s )

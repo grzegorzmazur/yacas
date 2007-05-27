@@ -52,10 +52,16 @@ public:
 protected:
   virtual LispPluginBase* GetPlugin(LispChar * aDllFile);
 private:
-  LispDllBase(const LispDllBase& aOther)
+  LispDllBase(const LispDllBase& aOther) : iPlugin(NULL),iDllFileName()
   {
     // copy constructor has not been made yet, hence the assert
     LISPASSERT(0);
+  }
+  LispDllBase& operator=(const LispDllBase& aOther)
+  {
+    // copy constructor has not been made yet, hence the assert
+    LISPASSERT(0);
+    return *this;
   }
 protected:
   LispPluginBase* iPlugin;

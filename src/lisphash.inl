@@ -17,7 +17,7 @@ private: //Functions no one is allowed to use
 };
 template<class T>
 inline LAssoc<T>::LAssoc(LispString * aString,const T& aData)
-: iData(aData)
+: iString(),iData(aData)
 {
   LISPASSERT((LispBoolean)(aString != NULL));
   iString = (aString);

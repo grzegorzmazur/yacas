@@ -21,11 +21,17 @@ public:
   inline LispChar * FileName();
   inline void NextLine();
 
-  inline InputStatus(const InputStatus& aOther)
+  inline InputStatus(const InputStatus& aOther) : iFileName(aOther.iFileName) , iLineNumber(aOther.iLineNumber)
   {
-    iFileName = aOther.iFileName;
-    iLineNumber = aOther.iLineNumber;
   }
+
+  inline InputStatus& operator=(const InputStatus& aOther)
+  {
+    iFileName   = aOther.iFileName;
+    iLineNumber = aOther.iLineNumber;
+    return *this;
+  }
+
 private:
   LispChar * iFileName;
   LispInt	iLineNumber;
@@ -33,15 +39,15 @@ private:
 
 inline LispInt InputStatus::LineNumber()
 {
-    return iLineNumber;
+  return iLineNumber;
 }
 inline LispChar * InputStatus::FileName()
 {
-    return iFileName;
+  return iFileName;
 }
 inline void InputStatus::NextLine()
 {
-    iLineNumber++;
+  iLineNumber++;
 }
 
 /** \class LispInput : pure abstract class declaring the interface
@@ -51,39 +57,39 @@ inline void InputStatus::NextLine()
 class LispInput : public YacasBase
 {
 public:
-    /** Constructor with InputStatus. InputStatus retains the information
-     * needed when an error occurred, and the file has already been
-     * closed.
-     */
-    LispInput(InputStatus& aStatus) : iStatus(aStatus) {};
-    virtual ~LispInput();
+  /** Constructor with InputStatus. InputStatus retains the information
+   * needed when an error occurred, and the file has already been
+   * closed.
+   */
+  LispInput(InputStatus& aStatus) : iStatus(aStatus) {};
+  virtual ~LispInput();
 
-    /// Return the next character in the file
-    virtual LispChar Next() = 0;
+  /// Return the next character in the file
+  virtual LispChar Next() = 0;
 
-    /** Peek at the next character in the file, without advancing the file
-     *  pointer.
-     */
-    virtual LispChar Peek() = 0;
+  /** Peek at the next character in the file, without advancing the file
+   *  pointer.
+   */
+  virtual LispChar Peek() = 0;
 
-    virtual InputStatus& Status() const {return iStatus;};
+  virtual InputStatus& Status() const {return iStatus;};
 
-    /// Check if the file position is past the end of the file.
-    virtual LispBoolean EndOfStream() = 0;
-    /** StartPtr returns the start of a buffer, if there is one.
-     * Implementations of this class can keep the file in memory
-     * as a whole, and return the start pointer and current position.
-     * Especially the parsing code requires this, because it can then
-     * efficiently look up a symbol in the hash table without having to
-     * first create a buffer to hold the symbol in. If StartPtr is supported,
-     * the whole file should be in memory for the whole period the file
-     * is being read.
-     */
-    virtual LispChar * StartPtr() = 0;
-    virtual LispInt Position() = 0;
-    virtual void SetPosition(LispInt aPosition) = 0;
+  /// Check if the file position is past the end of the file.
+  virtual LispBoolean EndOfStream() = 0;
+  /** StartPtr returns the start of a buffer, if there is one.
+   * Implementations of this class can keep the file in memory
+   * as a whole, and return the start pointer and current position.
+   * Especially the parsing code requires this, because it can then
+   * efficiently look up a symbol in the hash table without having to
+   * first create a buffer to hold the symbol in. If StartPtr is supported,
+   * the whole file should be in memory for the whole period the file
+   * is being read.
+   */
+  virtual LispChar * StartPtr() = 0;
+  virtual LispInt Position() = 0;
+  virtual void SetPosition(LispInt aPosition) = 0;
 protected:
-    InputStatus& iStatus;
+  InputStatus& iStatus;
 };
 
 /** \class LispOutput : interface an output object should adhere to.

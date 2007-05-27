@@ -6,16 +6,29 @@
 class LispLocalFile : public LispBase
 {
 public:
-    LispLocalFile(LispEnvironment& aEnvironment,
-                  LispChar * aFileName, LispBoolean aRead,
-                  InputDirectories& aInputDirectories);
-    virtual ~LispLocalFile();
-    virtual void Delete();
+  LispLocalFile(LispEnvironment& aEnvironment,
+                LispChar * aFileName, LispBoolean aRead,
+                InputDirectories& aInputDirectories);
+  virtual ~LispLocalFile();
+  virtual void Delete();
+private:
+  LispLocalFile(const LispLocalFile& aOther) : iEnvironment(aOther.iEnvironment),iOpened(LispFalse)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+  }
+  LispLocalFile& operator=(const LispLocalFile& aOther)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+    return *this;
+  }
+public:
 
-    RFs fs;
-    RFile iFile;
-    LispEnvironment& iEnvironment;
-    LispInt iOpened;
+  RFs fs;
+  RFile iFile;
+  LispEnvironment& iEnvironment;
+  LispInt iOpened;
 };
 
 

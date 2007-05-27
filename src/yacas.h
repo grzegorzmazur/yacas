@@ -29,32 +29,51 @@
 class DefaultYacasEnvironment : public YacasBase
 {
 public:
-    DefaultYacasEnvironment();
-    DefaultYacasEnvironment(LispOutput* aOutput, LispInt aStackSize);
-    virtual ~DefaultYacasEnvironment();
-	LispEnvironment& getEnv() {return iEnvironment;}
+  DefaultYacasEnvironment();
+  DefaultYacasEnvironment(LispOutput* aOutput, LispInt aStackSize);
+  virtual ~DefaultYacasEnvironment();
+  LispEnvironment& getEnv() {return iEnvironment;}
 
 private:
-    LispOutput* output;
-    LispHashTable hash;
-    LispPrinter printer;
+  DefaultYacasEnvironment(const DefaultYacasEnvironment& aOther) 
+    : output(NULL),hash(),printer(),coreCommands(),globals(),prefixoperators(),infixoperators(),postfixoperators(),bodiedoperators(),infixprinter(aOther.infixprinter),userFunctions(),
+      iEnvironment(coreCommands,userFunctions,
+                 globals,hash,output,infixprinter,
+                 prefixoperators,infixoperators,
+                 postfixoperators,bodiedoperators,&input,0),
+    input(aOther.input.Status())
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+  }
+  DefaultYacasEnvironment& operator=(const DefaultYacasEnvironment& aOther)
+  {
+    // copy constructor not written yet, hence the assert
+    LISPASSERT(0);
+    return *this;
+  }
 
-    YacasCoreCommands coreCommands;
-    LispGlobal globals;
+private:
+  LispOutput* output;
+  LispHashTable hash;
+  LispPrinter printer;
 
-    //Define the default operators.
-    LispOperators prefixoperators;
-    LispOperators infixoperators;
-    LispOperators postfixoperators;
-    LispOperators bodiedoperators;
-    InfixPrinter infixprinter;
+  YacasCoreCommands coreCommands;
+  LispGlobal globals;
 
-    LispUserFunctions userFunctions;
+  //Define the default operators.
+  LispOperators prefixoperators;
+  LispOperators infixoperators;
+  LispOperators postfixoperators;
+  LispOperators bodiedoperators;
+  InfixPrinter infixprinter;
 
-    LispEnvironment iEnvironment;
+  LispUserFunctions userFunctions;
+
+  LispEnvironment iEnvironment;
 
 public:
-    CachedStdUserInput input;
+  CachedStdUserInput input;
 };
 
 

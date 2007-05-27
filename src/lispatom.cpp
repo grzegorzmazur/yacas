@@ -24,10 +24,9 @@ LispObject* LispAtom::New(LispEnvironment& aEnvironment, const LispChar * aStrin
   return self;
 }
 
-LispAtom::LispAtom(LispString * aString)
+LispAtom::LispAtom(LispString * aString) : iString(aString)
 {
     LISPASSERT(aString!=NULL);
-    iString = aString;
     ++aString->iReferenceCount;
     CHECKPTR(iString);
 }
@@ -102,10 +101,9 @@ LispGenericClass* LispGenericClass::New(GenericClass* aClass)
     return self;
 }
 
-LispGenericClass::LispGenericClass(GenericClass* aClass)
+LispGenericClass::LispGenericClass(GenericClass* aClass) : iClass(aClass)
 {
     LISPASSERT(aClass!=NULL);
-    iClass = aClass;
     aClass->iReferenceCount++;
 }
 

@@ -23,7 +23,7 @@ class LispGlobalVariable : public YacasBase
 {
 public:
     inline LispGlobalVariable(const LispGlobalVariable& aOther);
-    LispGlobalVariable(LispPtr& aValue): iValue(aValue) {}
+    LispGlobalVariable(LispPtr& aValue): iValue(aValue), iEvalBeforeReturn(LispFalse) {}
     inline LispGlobalVariable& operator=(const LispGlobalVariable& aOther);
 
     inline void SetEvalBeforeReturn(LispBoolean aEval);
