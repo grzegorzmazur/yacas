@@ -38,22 +38,22 @@ class LispGlobal : public LispAssociatedHash<LispGlobalVariable>
 };
 
 
-inline LispGlobalVariable::LispGlobalVariable(const LispGlobalVariable& aOther)
+
+
+inline LispGlobalVariable::LispGlobalVariable(const LispGlobalVariable& aOther) : iValue(aOther.iValue), iEvalBeforeReturn(LispFalse)
 {
-    iValue = (aOther.iValue);
-    iEvalBeforeReturn = LispFalse;
 }
 
 inline void LispGlobalVariable::SetEvalBeforeReturn(LispBoolean aEval)
 {
-    iEvalBeforeReturn = aEval;
+  iEvalBeforeReturn = aEval;
 }
 
 
 inline LispGlobalVariable& LispGlobalVariable::operator=(const LispGlobalVariable& aOther)
 {
-    iValue = (aOther.iValue);
-    return *this;
+  iValue = (aOther.iValue);
+  return *this;
 }
 
 

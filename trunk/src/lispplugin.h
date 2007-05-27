@@ -43,17 +43,23 @@ public:
 class LispDllBase : public YacasBase
 {
 public:
-    LispDllBase();
-    virtual LispInt Open(LispChar * aDllFile,LispEnvironment& aEnvironment);
-    virtual LispInt Close(LispEnvironment& aEnvironment);
-    LispPluginBase* Plugin(void);
-    virtual ~LispDllBase();
-    LispChar * DllFileName() const;
+  LispDllBase();
+  virtual LispInt Open(LispChar * aDllFile,LispEnvironment& aEnvironment);
+  virtual LispInt Close(LispEnvironment& aEnvironment);
+  LispPluginBase* Plugin(void);
+  virtual ~LispDllBase();
+  LispChar * DllFileName() const;
 protected:
-    virtual LispPluginBase* GetPlugin(LispChar * aDllFile);
+  virtual LispPluginBase* GetPlugin(LispChar * aDllFile);
+private:
+  LispDllBase(const LispDllBase& aOther)
+  {
+    // copy constructor has not been made yet, hence the assert
+    LISPASSERT(0);
+  }
 protected:
-    LispPluginBase* iPlugin;
-    LispString iDllFileName;
+  LispPluginBase* iPlugin;
+  LispString iDllFileName;
 };
 
 #endif

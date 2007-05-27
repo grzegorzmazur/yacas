@@ -13,16 +13,22 @@ class InputDirectories;
 class InputStatus : public YacasBase
 {
 public:
-    InputStatus() : iFileName("none") , iLineNumber(-1)  {};
-	~InputStatus();
-    void SetTo(LispChar * aFileName);
-    void RestoreFrom(InputStatus& aPreviousStatus);
-    inline LispInt LineNumber();
-    inline LispChar * FileName();
-    inline void NextLine();
+  InputStatus() : iFileName("none") , iLineNumber(-1)  {};
+  ~InputStatus();
+  void SetTo(LispChar * aFileName);
+  void RestoreFrom(InputStatus& aPreviousStatus);
+  inline LispInt LineNumber();
+  inline LispChar * FileName();
+  inline void NextLine();
+
+  inline InputStatus(const InputStatus& aOther)
+  {
+    iFileName = aOther.iFileName;
+    iLineNumber = aOther.iLineNumber;
+  }
 private:
-    LispChar * iFileName;
-    LispInt	iLineNumber;
+  LispChar * iFileName;
+  LispInt	iLineNumber;
 };
 
 inline LispInt InputStatus::LineNumber()

@@ -27,7 +27,7 @@ LispHashTable::~LispHashTable()
 			if (aBin[i]->iReferenceCount != 1)
 			{
 				printf("ERROR: string objects with invalid reference counts during destruction of the hashtable!\n");
-				printf("%d:%s\n", aBin[i]->iReferenceCount, aBin[i]->c_str());
+				printf("%d:%s\n", (int)(aBin[i]->iReferenceCount), aBin[i]->c_str());
 			}
 #endif
             LISPASSERT(aBin[i]->iReferenceCount == 1);

@@ -67,31 +67,42 @@ class LispDefFile;
 class LispMultiUserFunction : public YacasBase
 {
 public:
-    /// Constructor.
-    LispMultiUserFunction() : iFileToOpen(NULL) {};
-  
-    /// Return user function with given arity.
-    LispUserFunction* UserFunc(LispInt aArity);
+  /// Constructor.
+  LispMultiUserFunction() : iFileToOpen(NULL) {};
 
-    /// Destructor.
-    virtual ~LispMultiUserFunction();
+  /** When adding a multi-user function to the association hash table, the copy constructor is used.
+   *  We should at least make sure that iFunctions is empty, so there is no copying needed (for efficiency).
+   *  Casually having a copy-constructor on CDeletingArrayGrower should be avoided, to make sure it is
+   *  not used accidentally.
+   */
+  inline LispMultiUserFunction(const LispMultiUserFunction& aOther) : iFunctions(), iFileToOpen(NULL)
+  {
+    LISPASSERT(aOther.iFileToOpen == 0);
+    LISPASSERT(iFunctions.Size() == 0);
+  }
 
-    /// Specify that some argument should be held.
-    virtual void HoldArgument(LispString * aVariable);
+  /// Return user function with given arity.
+  LispUserFunction* UserFunc(LispInt aArity);
 
-    /// Add another LispArityUserFunction to #iFunctions.
-    virtual void DefineRuleBase(LispArityUserFunction* aNewFunction);
+  /// Destructor.
+  virtual ~LispMultiUserFunction();
 
-    /// Delete tuser function with given arity.
-    virtual void DeleteBase(LispInt aArity);
+  /// Specify that some argument should be held.
+  virtual void HoldArgument(LispString * aVariable);
+
+  /// Add another LispArityUserFunction to #iFunctions.
+  virtual void DefineRuleBase(LispArityUserFunction* aNewFunction);
+
+  /// Delete tuser function with given arity.
+  virtual void DeleteBase(LispInt aArity);
 
 private:
-    /// Set of LispArityUserFunction's provided by this LispMultiUserFunction.
-    CDeletingArrayGrower<LispArityUserFunction*, ArrOpsDeletingPtr<LispArityUserFunction> > iFunctions;
+  /// Set of LispArityUserFunction's provided by this LispMultiUserFunction.
+  CDeletingArrayGrower<LispArityUserFunction*, ArrOpsDeletingPtr<LispArityUserFunction> > iFunctions;
 
 public:
-    /// File to read for the definition of this function.
-    LispDefFile* iFileToOpen;
+  /// File to read for the definition of this function.
+  LispDefFile* iFileToOpen;
 };
 
 

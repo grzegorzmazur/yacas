@@ -39,7 +39,10 @@ public:
     ANumber(const LispChar * aString,LispInt aPrecision,LispInt aBase=10);
     ANumber(LispInt aPrecision);
     ANumber(PlatWord *aArray, LispInt aSize, LispInt aPrecision);
-    inline ANumber(ANumber& aOther) {CopyFrom(aOther);}
+    inline ANumber(ANumber& aOther) : ASuper(),iExp(0),iNegative(LispFalse),iPrecision(0),iTensExp(0)
+    {
+      CopyFrom(aOther);
+    }
     ~ANumber();
     void CopyFrom(const ANumber& aOther);
     LispBoolean ExactlyEqual(const ANumber& aOther);

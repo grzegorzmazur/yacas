@@ -21,7 +21,7 @@ long theNrDefinedUser=0;
 
 DefaultYacasEnvironment::~DefaultYacasEnvironment()
 {
-    delete output;
+  delete output;
 }
 
 

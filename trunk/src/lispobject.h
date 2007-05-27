@@ -71,60 +71,60 @@ template <> struct Undefined<1>{};
 class LispObject : public YacasBase
 {
 public:
-    inline LispPtr& Nixed();
+  inline LispPtr& Nixed();
 
 public: //Derivables
-    virtual ~LispObject();
+  virtual ~LispObject();
 
-    /** Return string representation, or NULL if the object doesn't have one.
-     *  the string representation is only relevant if the object is a
-     *  simple atom. This method returns NULL by default.
-     */
+  /** Return string representation, or NULL if the object doesn't have one.
+   *  the string representation is only relevant if the object is a
+   *  simple atom. This method returns NULL by default.
+   */
 	virtual LispString * String()  { return NULL; }
-    /** If this object is a list, return a pointer to it.
-     *  Default behaviour is to return NULL.
-     */
+  /** If this object is a list, return a pointer to it.
+   *  Default behaviour is to return NULL.
+   */
 	virtual LispPtr* SubList()      { return NULL; }
 	virtual GenericClass* Generic() { return NULL; }
 
-    /** If this is a number, return a BigNumber representation
-     */
+  /** If this is a number, return a BigNumber representation
+   */
 	virtual BigNumber* Number(LispInt aPrecision) { return NULL; }
 
-    virtual LispObject* Copy() = 0;
+  virtual LispObject* Copy() = 0;
 
-    /** Return a pointer to extra info. This allows for annotating
-	*  an object. Returns NULL by default.
-	*  LispObject's implementation of this handles almost all derived classes.
-	*/
+ /** Return a pointer to extra info. This allows for annotating
+  *  an object. Returns NULL by default.
+  *  LispObject's implementation of this handles almost all derived classes.
+  */
 	virtual LispObject* ExtraInfo() { return NULL; }
 	virtual LispObject* SetExtraInfo(LispObject* aData) = 0;
 public:
-    LispInt Equal(LispObject& aOther);
-    inline LispInt operator==(LispObject& aOther);
-    inline LispInt operator!=(LispObject& aOther);
-	  DBG_( LispChar * iFileName; )
-    DBG_( LispInt iLine; )
-    inline void SetFileAndLine(LispChar * aFileName, LispInt aLine)
-    {
-        DBG_( iFileName = aFileName; )
-        DBG_( iLine = aLine; )
-    }
+  LispInt Equal(LispObject& aOther);
+  inline LispInt operator==(LispObject& aOther);
+  inline LispInt operator!=(LispObject& aOther);
+  DBG_( LispChar * iFileName; )
+  DBG_( LispInt iLine; )
+  inline void SetFileAndLine(LispChar * aFileName, LispInt aLine)
+  {
+    DBG_( iFileName = aFileName; )
+    DBG_( iLine = aLine; )
+  }
 protected:
-    inline LispObject()
-    {
-        IncNrObjects();
-        DBG_( iFileName = NULL; )
-        DBG_( iLine = 0; )
-    }
-	inline LispObject(const LispObject& other)
-    {
-        IncNrObjects();
-        DBG_( iFileName = other.iFileName; )
-        DBG_( iLine = other.iLine; )
-    }
+  inline LispObject() : iNext(),iReferenceCount()
+  {
+    IncNrObjects();
+    DBG_( iFileName = NULL; )
+    DBG_( iLine = 0; )
+  }
+	inline LispObject(const LispObject& other) : iNext(),iReferenceCount()
+  {
+    IncNrObjects();
+    DBG_( iFileName = other.iFileName; )
+    DBG_( iLine = other.iLine; )
+  }
 private:
-    LispPtr   iNext;
+  LispPtr   iNext;
 public:
 	ReferenceCount iReferenceCount;	
 };

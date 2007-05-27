@@ -84,29 +84,21 @@ ANumber::~ANumber()
 {
 }
 
-ANumber::ANumber(LispInt aPrecision) : ASuper()
+ANumber::ANumber(LispInt aPrecision) : ASuper(),iExp(0),iNegative(LispFalse),iPrecision(aPrecision),iTensExp(0)
 {
-    LISPASSERT(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
-    iPrecision = aPrecision;
-    iNegative=LispFalse;
-    iExp = 0;
-    iTensExp = 0;
-    Append(0);
+  LISPASSERT(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
+  Append(0);
 }
 
 /* Allow use of external arrays */
-ANumber::ANumber(PlatWord *aArray, LispInt aSize, LispInt aPrecision): ASuper()
+ANumber::ANumber(PlatWord *aArray, LispInt aSize, LispInt aPrecision): ASuper(),iExp(0),iNegative(LispFalse),iPrecision(aPrecision),iTensExp(0)
 {
-    LISPASSERT(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
-    iPrecision = aPrecision;
-    iNegative=LispFalse;
-    iExp = 0;
-    iTensExp = 0;
-    SetExternalArray(aArray, aSize);
+  LISPASSERT(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
+  SetExternalArray(aArray, aSize);
 }
 
 /* ANumber: Constructor for an arbitrary precision number. */
-ANumber::ANumber(const LispChar * aString,LispInt aPrecision,LispInt aBase): ASuper()
+ANumber::ANumber(const LispChar * aString,LispInt aPrecision,LispInt aBase): ASuper(),iExp(0),iNegative(LispFalse),iPrecision(aPrecision),iTensExp(0)
 {
     SetPrecision(aPrecision);
     SetTo(aString,aBase);

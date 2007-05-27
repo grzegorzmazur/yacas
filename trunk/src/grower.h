@@ -142,9 +142,34 @@ public:
 		iCapacity = iSize = 0;
 		iArrayOwnedExternally = LispFalse;
 	}
-    inline SizeType Size() const { return iSize; }
+  inline SizeType Size() const { return iSize; }
 
-protected:
+  inline CArrayGrower(const CArrayGrower<T,TOps>& aOther)
+    : iArray(0)
+		, iSize(0)
+		, iCapacity(0)
+		, iArrayOwnedExternally(LispFalse)
+  {
+    // Make sure we're not accidentally copying a huge array. We want this system to stay efficient...
+    LISPASSERT(aOther.iSize == 0);
+    LISPASSERT(aOther.iArrayOwnedExternally == LispFalse);
+  }
+
+  inline const CArrayGrower<T,TOps>& operator=(const CArrayGrower<T,TOps>& aOther)
+  {
+    // Make sure we're not accidentally copying a huge array. We want this system to stay efficient...
+    LISPASSERT(iArray == 0);
+		LISPASSERT(iSize == 0);
+		LISPASSERT(iCapacity == 0);
+		LISPASSERT(iArrayOwnedExternally == LispFalse);
+
+    LISPASSERT(aOther.iSize == 0);
+    LISPASSERT(aOther.iArrayOwnedExternally == LispFalse);
+    return *this;
+  }
+
+private:
+ 
 	void moreCapacity(SizeType aSize, int g)	// almost independent of T
 	{
 		LISPASSERT(!iArrayOwnedExternally);
@@ -153,10 +178,14 @@ protected:
 		// We assume g is a power of 2.  (fwiw, in two's-complement, ~(g-1) == -g.
 		iCapacity = (aSize + g) & ~(g-1);
 		if (!iArray)
-			iArray = (ElementType*)PlatAlloc(iCapacity*sizeof(ElementType));
+    {
+      iArray = (ElementType*)PlatAlloc(iCapacity*sizeof(ElementType));
+    }
 		else
-			// we assume 'memcpy' suffices for moving the existing items.
-			iArray = (ElementType*)PlatReAlloc(iArray,iCapacity*sizeof(ElementType));
+    {
+      // we assume 'memcpy' suffices for moving the existing items.
+      iArray = (ElementType*)PlatReAlloc(iArray,iCapacity*sizeof(ElementType));
+    }
 	}
 public:
 	inline void ResizeTo(SizeType aSize)
@@ -195,7 +224,7 @@ public:
     /// Access to an element in the array
     inline ElementType& operator[](const SizeType aIndex) const
     {
-		return iArray[aIndex];
+      return iArray[aIndex];
     }
 
     /// Append an element to an array
@@ -234,8 +263,8 @@ public:
 	  iCapacity = -10000;	// Setting iCapacity should not strictly be necessary, setting it to hugely negative number will hopefully force a fail.
 	}
 
-    /// Copy the array to another array
-    inline void CopyToExternalArray(ElementType * aArray)
+  /// Copy the array to another array
+  inline void CopyToExternalArray(ElementType * aArray)
 	{
 		PlatMemCopy(aArray,iArray,iSize*sizeof(ElementType));
 	}
