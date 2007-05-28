@@ -30,7 +30,7 @@ void CUnixCommandLine::ShowLine(LispChar * prompt,LispInt promptlen,LispInt curs
 }
 
 
-CUnixCommandLine::CUnixCommandLine()
+CUnixCommandLine::CUnixCommandLine() : orig_termio(), rl_termio(), iMaxLines(1024)
 {
     /* set termio so we can do our own input processing */
     tcgetattr(0, &orig_termio);

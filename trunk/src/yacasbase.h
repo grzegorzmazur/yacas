@@ -38,9 +38,21 @@ public:
    *  The following might cause a little bit of overhead but has the advantage that even
    *  the compiler can see that this is safe (thus no unnecessary warnings). Preferrably
    *  though this class has a protected inline destructor.
+   *
+   *  When I use Xcode on the MacOSX, I would prefer to not see the warnings that the
+   *  destructor of this class is not virtual, and speed is not the primary concern in
+   *  that build (as that build is used mostly for debugging).
+   *
+   *  HIDE_UNIMPORTANT_COMPILER_WARNINGS can be defined in case one wants to get rid of 
+   *  compiler warnings, as opposed to having maximum running speed.
    */
 protected:
-  inline ~YacasBase() {};
+#ifdef HIDE_UNIMPORTANT_COMPILER_WARNINGS
+  virtual
+#else // HIDE_UNIMPORTANT_COMPILER_WARNINGS
+  inline
+#endif // HIDE_UNIMPORTANT_COMPILER_WARNINGS
+     ~YacasBase() {};
 };
 
 #endif

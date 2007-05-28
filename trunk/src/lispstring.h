@@ -73,13 +73,19 @@ class LispStringSmartPtr
 {
 public:
   // Default constructor (not explicit, so it auto-initializes)
-  LispStringSmartPtr() : iString(0) {}
+  LispStringSmartPtr() : iString(NULL) {}
 
   // Construct from pointer to LispString
-  //LispStringSmartPtr(LispString * aString) : iString(aString) {}
+  LispStringSmartPtr(LispString * aString) : iString(NULL) 
+  {
+    this->operator=(aString);
+  }
 
   // Copy constructor
-  LispStringSmartPtr(const LispStringSmartPtr& aOther) : iString(aOther.iString) {}
+  LispStringSmartPtr(const LispStringSmartPtr& aOther) : iString() 
+  {
+    this->operator=(aOther.iString);
+  }
 
   // Destructor
   ~LispStringSmartPtr();

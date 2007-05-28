@@ -20,7 +20,9 @@
 #include "substitute.h"
 #include "errors.h"
 #include "patcher.h"
+#ifndef DISABLE_DYNAMIC
 #include "platdll.h"
+#endif // DISABLE_DYNAMIC
 #include "exedll.h"
 
 #ifdef HAVE_MATH_H

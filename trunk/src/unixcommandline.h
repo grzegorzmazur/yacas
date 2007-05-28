@@ -20,19 +20,19 @@
 class CUnixCommandLine : public CCommandLine
 {
 public:
-    CUnixCommandLine();
-    ~CUnixCommandLine();
+  CUnixCommandLine();
+  ~CUnixCommandLine();
 public:
-    virtual LispInt GetKey();
-    virtual void NewLine();
-    virtual void ShowLine(LispChar * prompt,LispInt promptlen,LispInt cursor);
-    virtual void Pause();
-    virtual void MaxHistoryLinesSaved(LispInt aNrLines);
+  virtual LispInt GetKey();
+  virtual void NewLine();
+  virtual void ShowLine(LispChar * prompt,LispInt promptlen,LispInt cursor);
+  virtual void Pause();
+  virtual void MaxHistoryLinesSaved(LispInt aNrLines);
 private:
-    unsigned char term_chars[NCCS];
-    struct termios orig_termio, rl_termio;
+  unsigned char term_chars[NCCS];
+  struct termios orig_termio, rl_termio;
 public:
-    LispInt iMaxLines;
+  LispInt iMaxLines;
 };
 
 
