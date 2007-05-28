@@ -73,8 +73,11 @@ LispStringSmartPtr& LispStringSmartPtr::operator=(LispString * aString)
 	// Increment first.
   if (aString)
     ++aString->iReferenceCount;
-  if (iString && !--iString->iReferenceCount)
-    delete iString;
+  if (iString)
+  {
+    --iString->iReferenceCount;
+    if (iString->iReferenceCount == 0) delete iString;
+  }
   iString = aString;
   return *this;
 }

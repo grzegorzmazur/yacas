@@ -502,19 +502,44 @@ LispString * LispFactorial(LispChar * int1, LispHashTable& aHashTable,LispInt aP
 
 
 BigNumber::BigNumber(const LispChar * aString,LispInt aBasePrecision,LispInt aBase)
+ : iReferenceCount(),iPrecision(0)
+#ifdef USE_NATIVE
+#else 
+  #ifdef USE_GMP
+  #else
+    ,iType(KInt),iNumber(NULL)
+  /// Internal library wrapper ends here.
+  #endif	// USE_GMP
+#endif	// USE_NATIVE
 {
   iNumber = NULL;
   SetTo(aString, aBasePrecision, aBase);
 }
 BigNumber::BigNumber(const BigNumber& aOther)
+ : iReferenceCount(),iPrecision(aOther.GetPrecision())
+#ifdef USE_NATIVE
+#else 
+  #ifdef USE_GMP
+  #else
+    ,iType(KInt),iNumber(NULL)
+  /// Internal library wrapper ends here.
+  #endif	// USE_GMP
+#endif	// USE_NATIVE
 {
-  iPrecision = aOther.GetPrecision();
   iNumber = NEW ANumber(*aOther.iNumber);
   SetIsInteger(aOther.IsInt());
 }
 BigNumber::BigNumber(LispInt aPrecision)
+ : iReferenceCount(),iPrecision(aPrecision)
+#ifdef USE_NATIVE
+#else 
+  #ifdef USE_GMP
+  #else
+    ,iType(KInt),iNumber(NULL)
+  /// Internal library wrapper ends here.
+  #endif	// USE_GMP
+#endif	// USE_NATIVE
 {
-  iPrecision = aPrecision;
   iNumber = NEW ANumber(BITS_TO_DIGITS(aPrecision,10));
   SetIsInteger(LispTrue);
 }
@@ -1342,7 +1367,7 @@ void BigNumber::SetTo(const LispChar * aString,LispInt aBasePrecision,LispInt aB
 }
 
 
-#endif	// ifndef USE_NATIVE
+#endif	// USE_NATIVE
 
 
 

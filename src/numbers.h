@@ -68,8 +68,6 @@ template<class T> inline T DIST(T x, T y) { return (x>=y+DIST_BITS || y>=x+DIST_
 /// All calculations are done at given precision. Integers grow as needed, floats don't grow beyond given precision.
 class BigNumber : public YacasBase
 {
-public:
-	ReferenceCount iReferenceCount;
 public: //constructors
   BigNumber(const LispChar * aString,LispInt aPrecision,LispInt aBase=10);
 /// copy constructor
@@ -152,6 +150,8 @@ private:
     LISPASSERT(0);
     return *this;
   }
+public:
+	ReferenceCount iReferenceCount;
 private: 
   LispInt iPrecision;
 

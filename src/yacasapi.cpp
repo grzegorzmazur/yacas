@@ -27,15 +27,18 @@ DefaultYacasEnvironment::~DefaultYacasEnvironment()
 
 
 DefaultYacasEnvironment::DefaultYacasEnvironment(LispOutput* aOutput, LispInt aStackSize)
-:output(aOutput),infixprinter(prefixoperators,
-             infixoperators,
-             postfixoperators,
-              bodiedoperators),
-iEnvironment(coreCommands,userFunctions,
+  : output(aOutput),hash(),printer(),coreCommands(),globals(),
+    prefixoperators(),infixoperators(),postfixoperators(),bodiedoperators(),
+    infixprinter(prefixoperators,
+                 infixoperators,
+                 postfixoperators,
+                 bodiedoperators),
+    userFunctions(),
+    iEnvironment(coreCommands,userFunctions,
                  globals,hash,output,infixprinter,
                  prefixoperators,infixoperators,
                  postfixoperators,bodiedoperators,&input,aStackSize),
-input(iEnvironment.iInputStatus)
+     input(iEnvironment.iInputStatus)
 {
     // Define the built-in functions by tying their string representation
     // to a kernel callable routine.
@@ -61,7 +64,7 @@ LISPEXPORT CYacas::~CYacas()
 
 
 CYacas::CYacas(LispOutput* aOutput,LispInt aStackSize)
-: environment(aOutput,aStackSize),iResultOutput(iResult)
+: environment(aOutput,aStackSize),iResult(),iResultOutput(iResult)
 {
 }
 

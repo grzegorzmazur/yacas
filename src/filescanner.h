@@ -54,6 +54,10 @@ public:
   CFileNode* Next();
 private:
   CFileScanner(const CFileScanner& aFileScanner)
+    : iCurNode()
+#ifdef _GCC_BUILD_
+  ,dp(NULL),entry(NULL),statbuf()
+#endif
   {
     // copy constructor not written yet, hence the assert
     LISPASSERT(0);

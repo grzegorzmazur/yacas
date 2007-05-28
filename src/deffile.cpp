@@ -9,18 +9,19 @@
 #include "tokenizer.h"
 #include "stringio.h"
 
-//TODO there is some weird interaction here. If we initialize iFileName in the initialization list then the refcount of the strings relating to def files is not valid more (visible in debug build)
-LispDefFile::LispDefFile(const LispDefFile& aOther) /*: iFileName(aOther.iFileName),iIsLoaded(aOther.iIsLoaded) */
+LispDefFile::LispDefFile(const LispDefFile& aOther) : iFileName(aOther.iFileName),iIsLoaded(aOther.iIsLoaded)
 {
-  iFileName = (aOther.iFileName);
-  iIsLoaded = aOther.iIsLoaded;
-//printf("1... %s\n",iFileName->c_str());
+//  iFileName = (aOther.iFileName);
+//  iIsLoaded = aOther.iIsLoaded;
+//printf("1... %s ",iFileName->c_str());
+//printf("refcount = %d\n",(int)iFileName->iReferenceCount);
 }
 
-LispDefFile::LispDefFile(LispString * aFileName) : /*iFileName(),*/iIsLoaded(0)
+LispDefFile::LispDefFile(LispString * aFileName) : iFileName(aFileName),iIsLoaded(0)
 {
-  iFileName = aFileName;
-//printf("2... %s\n",iFileName->c_str());
+//  iFileName = aFileName;
+//printf("2... %s ",iFileName->c_str());
+//printf("refcount = %d\n",(int)iFileName->iReferenceCount);
 }
 
 

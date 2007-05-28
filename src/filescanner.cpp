@@ -5,14 +5,14 @@
 
 
 CFileScanner::CFileScanner()
-{
+    : iCurNode()
 #ifdef _GCC_BUILD_
-    dp = NULL;
+  ,dp(NULL),entry(NULL),statbuf()
 #endif
-
+{
 #ifdef WIN32
-    handle = -1;
-    first = 1;
+  handle = -1;
+  first = 1;
 #endif
 }
 
