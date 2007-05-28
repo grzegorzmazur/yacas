@@ -20,7 +20,7 @@ class MatchSubList extends YacasParamMatcherBase
 
     LispIterator iter = new LispIterator(aExpression);
     iter.GoSub();
-    
+ 
     for (i=0;i<iNrMatchers;i++)
     {
         LispPtr  ptr = iter.Ptr();

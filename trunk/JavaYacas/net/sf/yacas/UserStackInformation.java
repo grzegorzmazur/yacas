@@ -1,7 +1,7 @@
 package net.sf.yacas;
 
 
-class UserStackInformation 
+class UserStackInformation
 {
   public UserStackInformation()
   {

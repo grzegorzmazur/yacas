@@ -13,7 +13,7 @@ class MatchVariable extends YacasParamMatcherBase
   /// \param aEnvironment the underlying Lisp environment.
   /// \param aExpression the expression to test.
   /// \param arguments (input/output) actual values of the pattern
-  /// variables for \a aExpression. 
+  /// variables for \a aExpression.
   ///
   /// If entry #iVarIndex in \a arguments is still empty, the
   /// pattern matches and \a aExpression is stored in this

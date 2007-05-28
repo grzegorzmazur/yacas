@@ -20,24 +20,24 @@ abstract class LispUserFunction extends EvalFuncBase
     public abstract void DeclarePattern(int aPrecedence, LispPtr aPredicate, LispPtr aBody) throws Exception;
     public abstract LispPtr ArgList();
 
-    public void UnFence() 
+    public void UnFence()
     {
       iFenced = false;
     }
-    public boolean Fenced() 
+    public boolean Fenced()
     {
       return iFenced;
     }
 
-    public void Trace() 
+    public void Trace()
     {
       iTraced = true;
     }
-    public void UnTrace() 
+    public void UnTrace()
     {
       iTraced = false;
     }
-    public boolean Traced() 
+    public boolean Traced()
     {
       return iTraced;
     }

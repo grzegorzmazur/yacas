@@ -82,9 +82,9 @@ class BigNumber
   {
     SetTo(""+value,iPrecision,10);
   }
-  public void SetTo(int value) 
-  { 
-    SetTo((long)value); 
+  public void SetTo(int value)
+  {
+    SetTo((long)value);
   }
   public void SetTo(double value)
   {
@@ -92,7 +92,7 @@ class BigNumber
   }
   // Convert back to other types
   /// ToString : return string representation of number in aResult to given precision (base digits)
-  public String ToString(int aPrecision, int aBase/*=10*/) 
+  public String ToString(int aPrecision, int aBase/*=10*/)
   {
     if (integer != null)
       return integer.toString(aBase);
@@ -118,14 +118,14 @@ class BigNumber
   {
     if (integer != null)
       return integer.doubleValue();
-    else 
+    else
       return decimal.doubleValue();
   }
   public long Long()
   {
     if (integer != null)
       return integer.longValue();
-    else 
+    else
       return decimal.longValue();
   }
 
@@ -191,8 +191,8 @@ class BigNumber
       if (tensExp<0)tensExp = -tensExp;
       return
       (
-        iNumber->iPrecision <= 53	// standard float is 53 bits
-        && tensExp<1021 // 306	// 1021 bits is about 306 decimals
+        iNumber->iPrecision <= 53  // standard float is 53 bits
+        && tensExp<1021 // 306  // 1021 bits is about 306 decimals
       );
       // standard range of double precision is about 53 bits of mantissa and binary exponent of about 1021
 */
@@ -394,7 +394,7 @@ class BigNumber
     decimal = null;
     integer = aX.integer.shiftRight(aNrToShift);
   }
-  
+ 
   void Gcd( BigNumber aX,  BigNumber aY) throws Exception
   {
     LispError.LISPASSERT(aX.integer != null);
@@ -452,7 +452,7 @@ class BigNumber
       if (d.compareTo(zero) == 0)
         return 0;
       int bitCount = 0;
-      
+ 
       //TODO OPTIMIZE
       d = d.multiply(two);
       while (d.compareTo(one)<0)
@@ -463,7 +463,7 @@ class BigNumber
       return bitCount;
     }
   }
-  
+ 
   /// Give sign (-1, 0, 1)
   public int Sign()
   {
@@ -475,7 +475,7 @@ class BigNumber
     return 0;
   }
 
-  public int GetPrecision()  
+  public int GetPrecision()
   {
     return iPrecision;
   }

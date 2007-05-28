@@ -50,9 +50,9 @@ class SelectSymbol
     aGraphicsContext.FillRect(xpos,ypos,iwidth*ispacing,iheight*aGraphicsContext.FontHeight());
     aGraphicsContext.SetColor(0,0,0);
     aGraphicsContext.DrawRect(xpos,ypos,iwidth*ispacing,iheight*aGraphicsContext.FontHeight());
-  
+ 
     int x,y;
-  
+ 
     aGraphicsContext.SetColor(128,128,128);
     for (y=0;y<iheight;y++)
     {

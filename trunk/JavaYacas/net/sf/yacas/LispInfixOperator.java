@@ -4,8 +4,8 @@ package net.sf.yacas;
 class LispInFixOperator
 {
   public LispInFixOperator(int aPrecedence)
-	{
-	  iPrecedence = aPrecedence;
+  {
+    iPrecedence = aPrecedence;
     iLeftPrecedence = aPrecedence;
     iRightPrecedence = aPrecedence;
     iRightAssociative = 0;

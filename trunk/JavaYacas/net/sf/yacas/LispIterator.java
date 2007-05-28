@@ -6,7 +6,7 @@ package net.sf.yacas;
  * should be used in stead of LispPtr if you are going to traverse
  * a lisp expression in a non-destructive way.
  */
-class LispIterator 
+class LispIterator
 {
   public LispIterator(LispPtr aPtr)
   {

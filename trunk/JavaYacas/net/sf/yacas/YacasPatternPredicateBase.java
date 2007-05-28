@@ -1,7 +1,7 @@
 package net.sf.yacas;
 
 
-/// \file 
+/// \file
 /// Pattern matching code.
 ///
 /// General idea: have a class that can match function parameters
@@ -21,7 +21,7 @@ import java.util.*;
 /// function parameters to a pattern, check for predicates on the
 /// arguments, and return whether there was a match.
 
-class YacasPatternPredicateBase 
+class YacasPatternPredicateBase
 {
   /// Constructor.
   /// \param aEnvironment the underlying Lisp environment
@@ -38,7 +38,7 @@ class YacasPatternPredicateBase
                             LispPtr  aPostPredicate) throws Exception
   {
     LispIterator iter = new LispIterator(aPattern);
-    
+ 
     while (iter.GetObject() != null)
     {
         YacasParamMatcherBase matcher = MakeParamMatcher(aEnvironment,iter.GetObject());
@@ -61,7 +61,7 @@ class YacasPatternPredicateBase
   /// immediately deleted. If CheckPredicates() returns false, this
   /// function also returns false. Otherwise, SetPatternVariables()
   /// is called again, but now in the current LispLocalFrame, and
-  /// this function returns true. 
+  /// this function returns true.
   public boolean Matches(LispEnvironment  aEnvironment, LispPtr  aArguments) throws Exception
   {
     int i;
@@ -74,7 +74,7 @@ class YacasPatternPredicateBase
         {
           arguments[i] = new LispPtr();
         }
-      
+ 
     }
     LispIterator iter = new LispIterator(aArguments);
 
@@ -117,12 +117,12 @@ class YacasPatternPredicateBase
 
     // set the local variables for sure now
     SetPatternVariables(aEnvironment,arguments);
-    
+ 
     return true;
   }
 
   /// Try to match the pattern against \a aArguments.
-  /// This function does the same as Matches(LispEnvironment ,LispPtr ), 
+  /// This function does the same as Matches(LispEnvironment ,LispPtr ),
   /// but differs in the type of the arguments.
   boolean Matches(LispEnvironment  aEnvironment, LispPtr[]  aArguments) throws Exception
   {
@@ -171,7 +171,7 @@ class YacasPatternPredicateBase
   }
 
   /// Construct a pattern matcher out of a Lisp expression.
-  /// The result of this function depends on the value of \a aPattern:  
+  /// The result of this function depends on the value of \a aPattern:
   /// - If \a aPattern is a number, the corresponding MatchNumber is
   ///   constructed and returned.
   /// - If \a aPattern is an atom, the corresponding MatchAtom is
@@ -182,7 +182,7 @@ class YacasPatternPredicateBase
   /// - If \a aPattern is a list of the form <tt>( _ var expr )<tt>,
   ///   where \c var is an atom, LookUp() is called on \c var. Then,
   ///   \a expr is appended to #iPredicates. Finally, the
-  ///   correspoding MatchVariable is constructed and returned. 
+  ///   correspoding MatchVariable is constructed and returned.
   /// - If \a aPattern is a list of another form, this function
   ///   calls itself on any of the entries in this list. The
   ///   resulting YacasParamMatcherBase objects are collected in a
@@ -241,7 +241,7 @@ class YacasPatternPredicateBase
                         LispObject last = third.Get();
                         while (last.Next().Get() != null)
                             last = last.Next().Get();
-                        
+ 
                         last.Next().Set(LispAtom.New(aEnvironment,str));
 
                         LispPtr pred = new LispPtr();
@@ -253,7 +253,7 @@ class YacasPatternPredicateBase
                 }
             }
         }
-        
+ 
         YacasParamMatcherBase[] matchers = new YacasParamMatcherBase[num];
 
         int i;
@@ -266,7 +266,7 @@ class YacasPatternPredicateBase
         }
         return new MatchSubList(matchers, num);
     }
-    
+ 
     return null;
   }
 
@@ -345,7 +345,7 @@ class YacasPatternPredicateBase
   protected ArrayList iParamMatchers = new ArrayList(); //CDeletingArrayGrower<YacasParamMatcherBase*> iParamMatchers;
 
   /// List of variables appearing in the pattern.
-  protected ArrayList iVariables = new ArrayList(); //CArrayGrower<String> 
+  protected ArrayList iVariables = new ArrayList(); //CArrayGrower<String>
 
   /// List of predicates which need to be true for a match.
   protected ArrayList iPredicates = new ArrayList(); //CDeletingArrayGrower<LispPtr[] >

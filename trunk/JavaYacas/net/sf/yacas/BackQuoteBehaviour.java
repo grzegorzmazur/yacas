@@ -12,8 +12,8 @@ class BackQuoteBehaviour implements SubstBehaviourBase
 {
 
     public BackQuoteBehaviour(LispEnvironment aEnvironment)
-    { 
-      iEnvironment = aEnvironment; 
+    {
+      iEnvironment = aEnvironment;
     }
     public boolean Matches(LispPtr aResult, LispPtr aElement) throws Exception
     {
@@ -22,16 +22,16 @@ class BackQuoteBehaviour implements SubstBehaviourBase
       if (ptr == null) return false;
       if (ptr.String() == null) return false;
 
-      if (ptr.String().equals("`")) 
+      if (ptr.String().equals("`"))
       {
         aResult.Set(aElement.Get());
         return true;
       }
 
-      if (!ptr.String().equals("@")) 
+      if (!ptr.String().equals("@"))
         return false;
       ptr = ptr.Next().Get();
-      if (ptr == null) 
+      if (ptr == null)
         return false;
       if (ptr.String() != null)
       {

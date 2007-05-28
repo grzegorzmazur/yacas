@@ -12,7 +12,7 @@ import java.util.*;
 class BranchingUserFunction extends LispArityUserFunction
 {
   /// Structure containing name of parameter and whether it is put on hold.
-  class BranchParameter 
+  class BranchParameter
   {
     public BranchParameter(String aParameter, boolean aHold /*=false*/)
     {
@@ -186,7 +186,7 @@ class BranchingUserFunction extends LispArityUserFunction
     LispIterator iter = new LispIterator(aArguments);
     iter.GoNext();
 
-    // unrollable arguments 
+    // unrollable arguments
     LispPtr[] arguments;
     if (arity==0)
         arguments = null;
@@ -226,7 +226,7 @@ class BranchingUserFunction extends LispArityUserFunction
             iter.GoNext();
         }
     }
-*/    
+*/
     // declare a new local stack.
     aEnvironment.PushLocalFrame(Fenced());
     try
@@ -269,7 +269,7 @@ class BranchingUserFunction extends LispArityUserFunction
           // If rules got inserted, walk back
           while (thisRule != ((BranchRuleBase)iRules.get(i)) && i>0) i--;
       }
-      
+ 
       // No predicate was true: return a new expression with the evaluated
       // arguments.
 
@@ -436,10 +436,10 @@ class BranchingUserFunction extends LispArityUserFunction
   }
 
   /// List of arguments, with corresponding \c iHold property.
-  protected Vector iParameters = new Vector(); //CArrayGrower<BranchParameter> 
+  protected Vector iParameters = new Vector(); //CArrayGrower<BranchParameter>
 
   /// List of rules, sorted on precedence.
-  protected Vector iRules = new Vector();//CDeletingArrayGrower<BranchRuleBase*>     
+  protected Vector iRules = new Vector();//CDeletingArrayGrower<BranchRuleBase*>
 
   /// List of arguments
   LispPtr iParamList = new LispPtr();

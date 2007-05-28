@@ -13,19 +13,19 @@ package net.sf.yacas;
  * @author av
  */
 public class YacasInterpreter {
-    
+ 
     private CYacas yacas;
-    
+ 
     /** Creates a new instance of YacasInterpreter */
     public YacasInterpreter() {
         yacas = new CYacas(new StringOutput(new StringBuffer()));
         boolean scripts_found = loadScripts();
-        
+ 
         if (!scripts_found) System.err.println("Yacas error: Unable to load scripts.zip");
         yacas.Evaluate("Load(\"yacasinit.ys\");");
-        
+ 
     }
-    
+ 
     /** Searches for the file scripts.zip and passes its absolute path to the Yacas interpreter.
      * This method searches in the classpath (declared i.e. in MANIFEST.MF) for the file yacasinit.ys.
      * yacasinit.ys is inside scripts.zip.
@@ -34,10 +34,10 @@ public class YacasInterpreter {
         java.net.URL detectURL = java.lang.ClassLoader.getSystemResource("yacasinit.ys");
         // if yacasinit.ys not found:
         if (detectURL == null) return false;
-        
+ 
         String detect = detectURL.getPath(); // file:/home/av/src/lib/scripts.zip!/yacasinit.ys
         String archive = detect.substring(0, detect.lastIndexOf('!')); // file:/home/av/src/lib/scripts.zip
-        
+ 
         java.util.zip.ZipFile z;
         try {
             z = new java.util.zip.ZipFile(new java.io.File(new java.net.URI(archive)));
@@ -45,13 +45,13 @@ public class YacasInterpreter {
             System.err.println(e.toString());
             return false;
         }
-        
+ 
         // Pass the absolute path of scripts.zip to Yacas.
         LispStandard.zipFile = z;
-        
+ 
         return true;
     }
-    
+ 
     /** Use this method to pass an expression to the Yacas interpreter.
      *  Returns the output of the interpreter.
      */

@@ -80,9 +80,9 @@ class LispEnvironment
   */
   class YacasArgStack
   {
-  
+ 
     //TODO appropriate constructor?
-    public YacasArgStack(int aStackSize) 
+    public YacasArgStack(int aStackSize)
     {
       iStack = new LispPtrArray(aStackSize,null);
       iStackTop = 0;
@@ -249,7 +249,7 @@ class LispEnvironment
   }
 
 
-  class LispLocalVariable 
+  class LispLocalVariable
   {
     public LispLocalVariable(String aVariable, LispObject aValue)
     {
@@ -262,11 +262,11 @@ class LispEnvironment
     String iVariable;
     LispPtr iValue = new LispPtr();
   }
-  class LocalVariableFrame 
+  class LocalVariableFrame
   {
-  
+ 
       public LocalVariableFrame(LocalVariableFrame aNext, LispLocalVariable aFirst)
-      { 
+      {
         iNext = aNext;
         iFirst = aFirst;
         iLast = aFirst;
@@ -286,7 +286,7 @@ class LispEnvironment
           t = next;
         }
       }
-      
+ 
 
       LocalVariableFrame iNext;
       LispLocalVariable iFirst;
@@ -315,9 +315,9 @@ class LispEnvironment
   LispTokenizer iXmlTokenizer = new XmlTokenizer();
 
   LispUserFunctions iUserFunctions = new LispUserFunctions();
-  
+ 
   String iError = null;
-  
+ 
   public void HoldArgument(String  aOperator, String aVariable) throws Exception
   {
     LispMultiUserFunction multiUserFunc = (LispMultiUserFunction)iUserFunctions.LookUp(aOperator);
@@ -364,7 +364,7 @@ class LispEnvironment
     LispError.Check(userFunc != null, LispError.KLispErrInvalidArg);
     userFunc.UnFence();
   }
-  
+ 
   public LispMultiUserFunction MultiUserFunction(String aOperator) throws Exception
   {
     // Find existing multiuser func.
@@ -381,11 +381,11 @@ class LispEnvironment
     return multiUserFunc;
   }
 
-  
+ 
   public void DeclareRuleBase(String aOperator, LispPtr aParameters, boolean aListed) throws Exception
   {
     LispMultiUserFunction multiUserFunc = MultiUserFunction(aOperator);
-        
+ 
     // add an operator with this arity to the multiuserfunc.
     BranchingUserFunction newFunc;
     if (aListed)
@@ -411,9 +411,9 @@ class LispEnvironment
     // Get the specific user function with the right arity
     LispUserFunction userFunc = (LispUserFunction)multiUserFunc.UserFunc(aArity);
     LispError.Check(userFunc != null, LispError.KLispErrCreatingRule);
-    
+ 
     // Declare a new evaluation rule
-    
+ 
 
     if (LispStandard.IsTrue(this, aPredicate))
     {
@@ -448,7 +448,7 @@ class LispEnvironment
     // Get the specific user function with the right arity
     LispUserFunction userFunc = multiUserFunc.UserFunc(aArity);
     LispError.Check(userFunc != null, LispError.KLispErrCreatingRule);
-    
+ 
     // Declare a new evaluation rule
     userFunc.DeclarePattern(aPrecedence, aPredicate,aBody);
   }

@@ -98,7 +98,7 @@ class YacasNotebookComponent // extends java.awt.Component
       dirty=true;
     }
   }
-  
+ 
   void InsertSpace()
   {
     iSentence.search_start = 0;
@@ -124,9 +124,9 @@ class YacasNotebookComponent // extends java.awt.Component
     Dimension d = getSize();
 System.out.println("size = "+d.getWidth()+" by "+d.getHeight());
     g.setColor(new Color(224,224,224));
-		g.fillRect(0,0,(int)d.getWidth(),(int)d.getHeight());
+    g.fillRect(0,0,(int)d.getWidth(),(int)d.getHeight());
     g.setColor(Color.black);
-		g.drawRect(0,0,(int)d.getWidth()-1,(int)d.getHeight()-1);
+    g.drawRect(0,0,(int)d.getWidth()-1,(int)d.getHeight()-1);
 
 */
 
@@ -135,12 +135,12 @@ System.out.println("Draw called");
     Dimension d = getSize();
 System.out.println("size = "+d.getWidth()+" by "+d.getHeight());
     g.setColor(new Color(224,224,224));
-		g.fillRect(topLeft.x,topLeft.y,(int)d.getWidth(),(int)d.getHeight());
+    g.fillRect(topLeft.x,topLeft.y,(int)d.getWidth(),(int)d.getHeight());
     g.setColor(Color.black);
-		g.drawRect(topLeft.x,topLeft.y,(int)d.getWidth()-1,(int)d.getHeight()-1);
+    g.drawRect(topLeft.x,topLeft.y,(int)d.getWidth()-1,(int)d.getHeight()-1);
     int progress = 0;
     int i;
-    context.SetFontSize(1,12);  
+    context.SetFontSize(1,12);
     {
       int ypos = (int)d.getHeight()-((int)iSentence.NrLines(context,(int)d.getWidth()))*(int)context.FontHeight();
       for (i=iNrRows-1;i>=0;i--)
@@ -152,10 +152,10 @@ System.out.println("size = "+d.getWidth()+" by "+d.getHeight());
         ypos -= (iRows[i].NrLines(context,(int)d.getWidth()))*context.FontHeight();
       }
     }
-  
+ 
     int nr_lines = iSentence.NrLines(context,(int)d.getWidth())-1;
     int nr_total_lines = nr_lines;
-    
+ 
     iSentence.draw(context,current_word,(int)d.getWidth(),(int)d.getHeight(),0,0,0);
     if (symbolWindow != null)
     {
@@ -175,15 +175,15 @@ System.out.println("size = "+d.getWidth()+" by "+d.getHeight());
   {
     return new HintWindow(fontsize);
   }
-  
+ 
   void AddHintLine(HintWindow hints, String aText, String aDescription)
   {
       hints.AddLine(aText);
       if (aDescription.length() > 0)
         hints.AddDescription(aDescription);
   }
-  
-  
+ 
+ 
   HintWindow TryToHint(String text, int length)
   {
     HintWindow hints = null;
@@ -226,7 +226,7 @@ System.out.println("size = "+d.getWidth()+" by "+d.getHeight());
       hintWindow = TryToHint(iSentence.words[current_word].word, iSentence.words[current_word].word.length());
     }
   }
-  
+ 
   void AppendDigit(char digit)
   {
 System.out.println("enter AppendDigit");
@@ -234,7 +234,7 @@ System.out.println("enter AppendDigit");
     {
       FindWord();
     }
-    dirty=true;  
+    dirty=true;
   }
 
 
@@ -243,9 +243,9 @@ System.out.println("enter AppendDigit");
 System.out.println("hints file : ["+filename+"]");
     CDataReader file = new CDataReader();
     int opened = 0;
-    try 
+    try
     {
-  
+ 
   //System.out.println("code base "+iApplet.getCodeBase().getFile());
   //System.out.println("doc base "+iApplet.getDocumentBase().toString());
   //iApplet.getDocumentBase().toString()+".lev"
@@ -300,13 +300,13 @@ System.out.println("could not read hints");
 //TODO
   }
 
-	/* This method is called whenever a numeric button (0-9) is pushed. */
-	public void button_0(char c) 
-	{
+  /* This method is called whenever a numeric button (0-9) is pushed. */
+  public void button_0(char c)
+  {
 
 System.out.println("enter button_0");
     int next_word = 0;
-    if (c == '1' || 
+    if (c == '1' ||
        (iSentence.words[current_word].digits.length()>0 && iSentence.words[current_word].digits.charAt(0) == '1'))
     {
       if (iSentence.words[current_word].digits.length() > 0 && iSentence.words[current_word].digits.charAt(0) != c)
@@ -319,14 +319,14 @@ System.out.println("enter button_0");
       current_word++;
       InsertSpace();
     }
-    AppendDigit(c); 
-	}
-	public void button_clear() 
-	{
+    AppendDigit(c);
+  }
+  public void button_clear()
+  {
     DeleteLastDigit();
-	}
-	public void button_left() 
-	{
+  }
+  public void button_left()
+  {
     if (symbolWindow != null)
     {
       symbolWindow.ix--;
@@ -340,9 +340,9 @@ System.out.println("enter button_0");
       hintWindow = TryToHint(iSentence.words[current_word].word, iSentence.words[current_word].word.length());
       dirty=true;
     }
-	}
-	public void button_right() 
-	{
+  }
+  public void button_right()
+  {
     if (symbolWindow != null)
     {
       if (symbolWindow.iy<symbolWindow.iwidth-1)
@@ -368,9 +368,9 @@ System.out.println("enter button_0");
       }
       dirty=true;
     }
-	}
-	public void button_up() 
-	{
+  }
+  public void button_up()
+  {
     if (symbolWindow != null)
     {
       symbolWindow.iy--;
@@ -387,9 +387,9 @@ System.out.println("enter button_0");
         dirty=true;
       }
     }
-	}
-	public void button_down() 
-	{
+  }
+  public void button_down()
+  {
     if (symbolWindow != null)
     {
       symbolWindow.iy++;
@@ -405,8 +405,8 @@ System.out.println("enter button_0");
         dirty=true;
       }
     }
-	}
-  
+  }
+ 
   int chtype(char c)
   {
     if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))
@@ -440,9 +440,9 @@ System.out.println("enter button_0");
     return current_word;
   }
 
-  
-	public void button_center() 
-	{
+ 
+  public void button_center()
+  {
     if (symbolWindow != null)
     {
       if (symbolWindow.symbols[symbolWindow.iy*symbolWindow.iwidth+symbolWindow.ix].equals("1"))
@@ -477,9 +477,9 @@ System.out.println("enter button_0");
         dirty=true;
       }
     }
-	}
-	public void button_space() 
-	{
+  }
+  public void button_space()
+  {
     if (iSentence.words[current_word].word.charAt(0) >= '0' && iSentence.words[current_word].word.charAt(0) <= '9')
     {
       AppendDigit('0');
@@ -492,9 +492,9 @@ System.out.println("enter button_0");
       InsertSpace();
     }
     dirty=true;
-	}
-	public void button_symbol() 
-	{
+  }
+  public void button_symbol()
+  {
     if (symbolWindow != null)
     {
       symbolWindow = null;
@@ -504,9 +504,9 @@ System.out.println("enter button_0");
       symbolWindow = new SelectSymbol(11,16);
     }
     dirty=true;
-	}
-	public void button_enter() 
-	{
+  }
+  public void button_enter()
+  {
     if (iNrRows == MAX_ROWS)
     {
       int i;
@@ -533,7 +533,7 @@ System.out.println("enter button_0");
     AppendSentence(resultStr,result,0);
 //      result.words[0].word = new String("Result");
 
-  
+ 
     iNrRows++;
     iSentence.nr_words = 0;
     current_word = 0;
@@ -541,15 +541,15 @@ System.out.println("enter button_0");
     hintWindow = null;
     symbolWindow = null;
     dirty=true;
-	}
-	public void button_nextword() 
-	{
+  }
+  public void button_nextword()
+  {
     iSentence.search_start++;
     while (iSentence.search_start < the_hints.nrHintTexts && iSentence.words[current_word].word.equals(the_hints.hintTexts[iSentence.search_start].base))
       iSentence.search_start++;
     FindWord();
     dirty=true;
-	}
+  }
 
 
 
@@ -586,7 +586,7 @@ System.out.println("enter button_0");
       succeed = true;
     }
     {
-      if (!succeed) 
+      if (!succeed)
       {
         result = result+"Request failed";
       }

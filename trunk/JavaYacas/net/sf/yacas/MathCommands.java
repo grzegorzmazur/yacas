@@ -675,7 +675,7 @@ class MathCommands
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get() != null, 1);
     String orig = YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,orig != null, 1);
-    
+ 
     LispPtr precedence = new LispPtr();
     aEnvironment.iEvaluator.Eval(aEnvironment, precedence, YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 2));
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,precedence.Get().String() != null, 2);
@@ -712,7 +712,7 @@ class MathCommands
   /// Execute the Yacas commands \c Set and \c MacroSet.
   /// The argument \a aMacroMode determines whether the first argument
   /// should be evaluated. The real work is done by
-  /// LispEnvironment::SetVariable() . 
+  /// LispEnvironment::SetVariable() .
   /// \sa LispSetVar(), LispMacroSetVar()
   static void InternalSetVar(LispEnvironment aEnvironment, int aStackTop, boolean aMacroMode, boolean aGlobalLazyVariable) throws Exception
   {
@@ -729,7 +729,7 @@ class MathCommands
     }
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,varstring != null,1);
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,!LispStandard.IsNumber(varstring,true),1);
-    
+ 
     LispPtr result = new LispPtr();
     aEnvironment.iEvaluator.Eval(aEnvironment, result, YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 2));
     aEnvironment.SetVariable(varstring, result, aGlobalLazyVariable);
@@ -788,7 +788,7 @@ class MathCommands
     {
         LispStandard.InternalFlatCopy(copied,evaluated.Get().SubList());
     }
-    
+ 
     LispPtr index = new LispPtr();
     index.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 2).Get());
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,index.Get() != null, 2);
@@ -861,23 +861,23 @@ class MathCommands
   public static void InternalRuleBase(LispEnvironment aEnvironment, int aStackTop,  boolean aListed) throws Exception
   {
     //TESTARGS(3);
-    
+ 
     // Get operator
     LispPtr args = new LispPtr();
     String orig=null;
-    
+ 
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get() != null, 1);
     orig = YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,orig != null, 1);
     args.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 2).Get());
-    
+ 
     // The arguments
     LispError.CHK_ISLIST_CORE(aEnvironment,aStackTop,args,2);
 
     // Finally define the rule base
     aEnvironment.DeclareRuleBase(LispStandard.SymbolName(aEnvironment,orig),
                                  args.Get().SubList().Get().Next(),aListed);
-    
+ 
     // Return true
     LispStandard.InternalTrue(aEnvironment,YacasEvalCaller.RESULT(aEnvironment, aStackTop));
   }
@@ -894,7 +894,7 @@ class MathCommands
     LispPtr predicate = new LispPtr();
     LispPtr body = new LispPtr();
     String orig=null;
-    
+ 
     // Get operator
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get() != null, 1);
     orig = YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
@@ -903,7 +903,7 @@ class MathCommands
     pr.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 3).Get());
     predicate.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 4).Get());
     body.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 5).Get());
-    
+ 
     // The arity
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,ar.Get() != null, 2);
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,ar.Get().String() != null, 2);
@@ -913,7 +913,7 @@ class MathCommands
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,pr.Get() != null, 3);
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,pr.Get().String() != null, 3);
     precedence = Integer.parseInt(pr.Get().String(),10);
-    
+ 
     // Finally define the rule base
     aEnvironment.DefineRule(LispStandard.SymbolName(aEnvironment,orig),
                             arity,
@@ -934,7 +934,7 @@ class MathCommands
     LispPtr args = new LispPtr();
     LispPtr body = new LispPtr();
     String orig=null;
-    
+ 
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get() != null, 1);
     orig = YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,orig != null, 1);
@@ -946,7 +946,7 @@ class MathCommands
     // Finally define the rule base
     aEnvironment.DeclareMacroRuleBase(LispStandard.SymbolName(aEnvironment,orig),
                                  args.Get().SubList().Get().Next(),aListed);
-    
+ 
     // Return true
     LispStandard.InternalTrue(aEnvironment,YacasEvalCaller.RESULT(aEnvironment, aStackTop));
   }
@@ -964,7 +964,7 @@ class MathCommands
     LispPtr predicate = new LispPtr();
     LispPtr body = new LispPtr();
     String orig=null;
-    
+ 
     // Get operator
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get() != null, 1);
     orig = YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
@@ -973,7 +973,7 @@ class MathCommands
     pr.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 3).Get());
     predicate.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 4).Get());
     body.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 5).Get());
-    
+ 
     // The arity
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,ar.Get() != null, 2);
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,ar.Get().String() != null, 2);
@@ -983,7 +983,7 @@ class MathCommands
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,pr.Get() != null, 3);
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,pr.Get().String() != null, 3);
     precedence = Integer.parseInt(pr.Get().String(),10);
-    
+ 
     // Finally define the rule base
     aEnvironment.DefineRulePattern(LispStandard.SymbolName(aEnvironment,orig),
                             arity,
@@ -1050,7 +1050,7 @@ class MathCommands
         aEnvironment.iCurrentOutput.PutChar(str.charAt(i));
       }
       // pass last printed character to the current printer
-      aEnvironment.iCurrentPrinter.RememberLastChar(str.charAt(nr-1));	// hacky hacky
+      aEnvironment.iCurrentPrinter.RememberLastChar(str.charAt(nr-1));  // hacky hacky
       LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
     }
   }
@@ -1230,7 +1230,7 @@ class MathCommands
         aEnvironment.iEvaluator.Eval(aEnvironment, RESULT(aEnvironment, aStackTop), ARGUMENT(aEnvironment, aStackTop, 2));
       }
       catch (Exception e) { throw e; }
-      finally 
+      finally
       {
         aEnvironment.iCurrentOutput = previous;
       }
@@ -1254,7 +1254,7 @@ class MathCommands
         RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,aEnvironment.HashTable().LookUpStringify(oper.toString())));
       }
       catch (Exception e) { throw e; }
-      finally 
+      finally
       {
         aEnvironment.iCurrentOutput = previous;
       }
@@ -1272,7 +1272,7 @@ class MathCommands
         aEnvironment.iEvaluator.Eval(aEnvironment, RESULT(aEnvironment, aStackTop), ARGUMENT(aEnvironment, aStackTop, 1));
       }
       catch (Exception e) { throw e; }
-      finally 
+      finally
       {
         aEnvironment.iCurrentOutput = previous;
       }
@@ -1525,7 +1525,7 @@ class MathCommands
     {
       aStringBuffer.append('\"');
       int arg=1;
-       
+ 
       LispIterator iter = new LispIterator(ARGUMENT(aEnvironment, aStackTop, 1).Get().SubList());
       iter.GoNext();
       while (iter.GetObject() != null)
@@ -1658,7 +1658,7 @@ class MathCommands
       try
       {
         LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
-        
+ 
         // Evaluate args one by one.
 
         LispIterator iter = new LispIterator(ARGUMENT(aEnvironment, aStackTop, 1).Get().SubList());
@@ -1670,7 +1670,7 @@ class MathCommands
         }
       }
       catch (Exception e) { throw e; }
-      finally 
+      finally
       {
         aEnvironment.PopLocalFrame();
       }
@@ -1683,7 +1683,7 @@ class MathCommands
     {
       LispPtr arg1 = ARGUMENT(aEnvironment, aStackTop, 1);
       LispPtr arg2 = ARGUMENT(aEnvironment, aStackTop, 2);
-      
+ 
       LispPtr predicate = new LispPtr();
       aEnvironment.iEvaluator.Eval(aEnvironment, predicate, arg1);
 
@@ -1907,7 +1907,7 @@ class MathCommands
       int arity = Integer.parseInt(ARGUMENT(aEnvironment, aStackTop, 2).Get().String(),10);
 
       aEnvironment.UnFenceRule(LispStandard.SymbolName(aEnvironment,orig), arity);
-      
+ 
       // Return true
       LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
     }
@@ -1925,7 +1925,7 @@ class MathCommands
       String orig = evaluated.Get().String();
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,orig != null, 1);
       String oper = LispStandard.SymbolName(aEnvironment,orig);
-      
+ 
       LispPtr arity = new LispPtr();
       arity.Set(ARGUMENT(aEnvironment, aStackTop, 2).Get());
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,arity.Get().String() != null, 2);
@@ -1981,7 +1981,7 @@ class MathCommands
               ptr.Get().Next().Set(nogos.Get());
               nogos.Set(ptr.Get());
           }
-          
+ 
           iter.GoNext();
       }
 
@@ -2116,7 +2116,7 @@ class MathCommands
                               aEnvironment.HashTable(),
                               aEnvironment.Precision());
       }
-      
+ 
       LispStandard.InternalBoolean(aEnvironment,YacasEvalCaller.RESULT(aEnvironment, aStackTop), cmp);
     }
   }
@@ -2144,7 +2144,7 @@ class MathCommands
       return !(n1.LessThan(n2) || n1.Equals(n2));
     }
   }
-  
+ 
 
   class LispLessThan extends YacasEvalCaller
   {
@@ -2338,10 +2338,10 @@ class MathCommands
         // why can't we just say BigNumber temp; ?
         BigNumber tempx = new BigNumber(aEnvironment.Precision());
         tempx.SetTo(x);
-        tempx.BecomeFloat(aEnvironment.Precision());	// coerce x to float
+        tempx.BecomeFloat(aEnvironment.Precision());  // coerce x to float
         BigNumber tempy = new BigNumber(aEnvironment.Precision());
         tempy.SetTo(y);
-        tempy.BecomeFloat(aEnvironment.Precision());	// coerce x to float
+        tempy.BecomeFloat(aEnvironment.Precision());  // coerce x to float
         z.Divide(tempx, tempy,aEnvironment.Precision());
       }
       else
@@ -2357,7 +2357,7 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      /* TODO fixme this is wrong in the C++ version too, we need to have this in 
+      /* TODO fixme this is wrong in the C++ version too, we need to have this in
        * arbitrary-precision format, defined in the scripts.
        */
       BigNumber x;
@@ -2373,7 +2373,7 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      /* TODO fixme this is wrong in the C++ version too, we need to have this in 
+      /* TODO fixme this is wrong in the C++ version too, we need to have this in
        * arbitrary-precision format, defined in the scripts.
        */
       BigNumber x;
@@ -2409,13 +2409,13 @@ class MathCommands
       BigNumber z = new BigNumber(aEnvironment.Precision());
       z.SetTo(
         (x.IsInt())
-      ? x.BitCount()	// for integers, return the bit count
-        : LispStandard.digits_to_bits((long)(x.GetPrecision()), 10) 	// for floats, return the precision
+      ? x.BitCount()  // for integers, return the bit count
+        : LispStandard.digits_to_bits((long)(x.GetPrecision()), 10)   // for floats, return the precision
         );
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
-     
+ 
 
   class LispSetExactBits extends YacasEvalCaller
   {
@@ -2425,10 +2425,10 @@ class MathCommands
       BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
       BigNumber z = new BigNumber(aEnvironment.Precision());
       z.SetTo(x);
-      
-	  // do nothing for integers
-	  if (!(z.IsInt()))
-	    z.Precision((int)(LispStandard.bits_to_digits((long)(y.Double()), 10)));	
+ 
+    // do nothing for integers
+    if (!(z.IsInt()))
+      z.Precision((int)(LispStandard.bits_to_digits((long)(y.Double()), 10)));
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
@@ -2481,7 +2481,7 @@ class MathCommands
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
       BigNumber z = new BigNumber(aEnvironment.Precision());
-      z.Floor(x);	
+      z.Floor(x);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
@@ -2493,7 +2493,7 @@ class MathCommands
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
       BigNumber z = new BigNumber(aEnvironment.Precision());
       z.Negate(x);
-      z.Floor(z);	
+      z.Floor(z);
       z.Negate(z);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2507,7 +2507,7 @@ class MathCommands
       BigNumber z = new BigNumber(aEnvironment.Precision());
       z.SetTo(x);
       if (x.Sign()<0)
-	      z.Negate(x);
+        z.Negate(x);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
@@ -2531,7 +2531,7 @@ class MathCommands
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
       BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
       if (x.IsInt() && y.IsInt())
-      {	// both integer, perform integer division
+      {  // both integer, perform integer division
           BigNumber z = new BigNumber(aEnvironment.Precision());
           z.Divide(x,y,aEnvironment.Precision());
           RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
@@ -2550,7 +2550,7 @@ class MathCommands
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
       BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
-      long result = 0;	// initialize just in case
+      long result = 0;  // initialize just in case
       if (x.IsInt() && x.IsSmall() && y.IsInt() && y.IsSmall())
       {
         // bits_to_digits uses unsigned long, see numbers.h
@@ -2559,7 +2559,7 @@ class MathCommands
       }
       else
       {
-        throw new Yacasexception("BitsToDigits: error: arguments ("+x.Double()+", "+y.Double()+") must be small integers");		  
+        throw new Yacasexception("BitsToDigits: error: arguments ("+x.Double()+", "+y.Double()+") must be small integers");
       }
       BigNumber z = new BigNumber(aEnvironment.Precision());
       z.SetTo((long)result);
@@ -2573,7 +2573,7 @@ class MathCommands
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
       BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
-      long result = 0;	// initialize just in case
+      long result = 0;  // initialize just in case
       if (x.IsInt() && x.IsSmall() && y.IsInt() && y.IsSmall())
       {
         // bits_to_digits uses unsigned long, see numbers.h
@@ -2582,7 +2582,7 @@ class MathCommands
       }
       else
       {
-        throw new Yacasexception("BitsToDigits: error: arguments ("+x.Double()+", "+y.Double()+") must be small integers");		  
+        throw new Yacasexception("BitsToDigits: error: arguments ("+x.Double()+", "+y.Double()+") must be small integers");
       }
       BigNumber z = new BigNumber(aEnvironment.Precision());
       z.SetTo((long)result);
@@ -2614,7 +2614,7 @@ class MathCommands
       Process ls_proc = Runtime.getRuntime().exec(oper);
       // get its output (your input) stream
       DataInputStream ls_in = new DataInputStream(ls_proc.getInputStream());
-      while ((ls_str = ls_in.readLine()) != null) 
+      while ((ls_str = ls_in.readLine()) != null)
       {
         aEnvironment.iCurrentOutput.Write(ls_str);
         aEnvironment.iCurrentOutput.Write("\n");
@@ -3046,14 +3046,14 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispInFixOperator op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iInfixOperators);
-      if (op == null) 
-      {	// also need to check for a postfix or prefix operator
+      if (op == null)
+      {  // also need to check for a postfix or prefix operator
         op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iPrefixOperators);
-        if (op == null) 
+        if (op == null)
         {
           op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iPostfixOperators);
-          if (op == null) 
-          {	// or maybe it's a bodied function
+          if (op == null)
+          {  // or maybe it's a bodied function
             op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iBodiedOperators);
             LispError.CHK_CORE(aEnvironment,aStackTop,op!=null, LispError.KLispErrIsNotInFix);
           }
@@ -3068,8 +3068,8 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispInFixOperator op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iInfixOperators);
-      if (op == null) 
-      {	// infix and postfix operators have left precedence
+      if (op == null)
+      {  // infix and postfix operators have left precedence
         op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iPostfixOperators);
         LispError.CHK_CORE(aEnvironment,aStackTop,op!=null, LispError.KLispErrIsNotInFix);
       }
@@ -3082,10 +3082,10 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispInFixOperator op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iInfixOperators);
-      if (op == null) 
+      if (op == null)
       {   // bodied, infix and prefix operators have right precedence
         op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iPrefixOperators);
-        if (op == null) 
+        if (op == null)
         {   // or maybe it's a bodied function
           op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iBodiedOperators);
           LispError.CHK_CORE(aEnvironment,aStackTop,op!=null, LispError.KLispErrIsNotInFix);
@@ -3160,7 +3160,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispError.CHK_CORE(aEnvironment, aStackTop,aEnvironment.iSecure == false, LispError.KLispErrSecurityBreach);
-      
+ 
       LispPtr evaluated = new LispPtr();
       evaluated.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
 
@@ -3180,7 +3180,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispError.CHK_CORE(aEnvironment, aStackTop,aEnvironment.iSecure == false, LispError.KLispErrSecurityBreach);
-      
+ 
       LispPtr evaluated = new LispPtr();
       evaluated.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
 
@@ -3240,7 +3240,7 @@ class MathCommands
 
       LispPtr initarg = new LispPtr();
       initarg.Set(ARGUMENT(aEnvironment, aStackTop, 2).Get());
-       
+ 
       ArrayClass array = new ArrayClass(size,initarg.Get());
       RESULT(aEnvironment, aStackTop).Set(LispGenericClass.New(array));
     }
@@ -3434,20 +3434,20 @@ class MathCommands
       evaluated.Set(ARGUMENT(aEnvironment, aStackTop, 3).Get());
       LispError.CHK_ISSTRING_CORE(aEnvironment,aStackTop,evaluated,3);
       String orig = evaluated.Get().String();
-      
+ 
       LispPtr index = new LispPtr();
       index.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,index.Get() != null, 1);
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,index.Get().String() != null, 1);
       int from = Integer.parseInt(index.Get().String(),10);
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,from>0,1);
-      
+ 
       index.Set(ARGUMENT(aEnvironment, aStackTop, 2).Get());
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,index.Get() != null, 2);
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,index.Get().String() != null, 2);
       int count = Integer.parseInt(index.Get().String(),10);
 
-      
+ 
       String str = "\""+orig.substring(from,from+count)+"\"";
       RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,str));
     }
@@ -3468,7 +3468,7 @@ class MathCommands
       int from = Integer.parseInt(index.Get().String(),10);
 
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,from>0,1);
-      
+ 
       LispPtr ev2 = new LispPtr();
       ev2.Set(ARGUMENT(aEnvironment, aStackTop, 2).Get());
       LispError.CHK_ISSTRING_CORE(aEnvironment,aStackTop,ev2,2);
@@ -3685,10 +3685,10 @@ class MathCommands
       long n = x.Long();
       long result = 1;
 
-      // We only want people to pass in small integers      
+      // We only want people to pass in small integers
       if (n>65538)
         result = 0;
-      
+ 
       int i=2;
       int max = (int)(1+Math.sqrt(n));
 //System.out.println("n = "+n+" max = "+max);
@@ -3699,7 +3699,7 @@ class MathCommands
           result = 0;
         i++;
       }
-      
+ 
       BigNumber z = new BigNumber(aEnvironment.Precision());
       z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
@@ -3712,7 +3712,7 @@ class MathCommands
     {
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,ARGUMENT(aEnvironment, aStackTop, 1).Get().Number(0) != null,1);
       LispPtr arg = ARGUMENT(aEnvironment, aStackTop, 1);
-     
+ 
       //TODO fixme I am sure this can be optimized still
       int nr = (int)arg.Get().Number(0).Long();
       LispError.Check(nr>=0,LispError.KLispErrInvalidArg);
@@ -3876,7 +3876,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Warning: Function not yet implemented : DllEnumerate\n");////TODO fixme
-      
+ 
       LispObject ls = LispAtom.New(aEnvironment,"List");
       LispObject newinfo =  LispSubList.New(ls);
       RESULT(aEnvironment, aStackTop).Set(newinfo);
@@ -3982,7 +3982,7 @@ class MathCommands
         strInd++;
       }
       String tag = new String();
-    
+ 
       tag = tag + "\"";
       while (LispTokenizer.IsAlpha(str.charAt(strInd)))
       {
@@ -4047,7 +4047,7 @@ class MathCommands
       strInd++;
       while (str.charAt(strInd) == ' ') strInd++;
     }
-    
+ 
     {
       LispObject ls = LispAtom.New(aEnvironment,"List");
       ls.Next().Set(info);
@@ -4072,7 +4072,7 @@ class MathCommands
       // key to find
       LispPtr key = new LispPtr();
       key.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
-      
+ 
       // assoc-list to find it in
       LispPtr list = new LispPtr();
       list.Set(ARGUMENT(aEnvironment, aStackTop, 2).Get());
@@ -4288,7 +4288,7 @@ class MathCommands
         // Open file
         LispInput newInput = // new StdFileInput(hashedname, aEnvironment.iInputStatus);
             LispStandard.OpenInputFile(aEnvironment, aEnvironment.iInputDirectories, hashedname, aEnvironment.iInputStatus);
-        
+ 
         LispError.Check(newInput != null, LispError.KLispErrFileNotFound);
         fileSize = newInput.StartPtr().length();
       }

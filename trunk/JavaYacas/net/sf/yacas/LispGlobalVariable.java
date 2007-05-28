@@ -8,7 +8,7 @@ package net.sf.yacas;
 /// evaluated to get the value of the Lisp variable.
 /// \sa LispEnvironment::GetVariable()
 
-class LispGlobalVariable 
+class LispGlobalVariable
 {
   public LispGlobalVariable(LispGlobalVariable aOther)
   {

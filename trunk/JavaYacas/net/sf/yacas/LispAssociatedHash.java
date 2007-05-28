@@ -16,29 +16,29 @@ class LispAssociatedHash
     /// If \a aString is not stored in the hash table, this function
     /// returns #NULL.
     Object LookUp(String aString)
-	{
-	  if (iHashtable.containsKey(aString))
-		return iHashtable.get(aString);
-	  return null;
+  {
+    if (iHashtable.containsKey(aString))
+    return iHashtable.get(aString);
+    return null;
     }
 
     /// Add an association to the hash table.
-    /// If \a aString is already stored in the hash table, its 
+    /// If \a aString is already stored in the hash table, its
     /// association is changed to \a aData. Otherwise, a new
     /// association is added.
     void SetAssociation(Object aData, String aString)
-	{
-	  if (iHashtable.containsKey(aString))
-		iHashtable.remove(aString);
-  	  iHashtable.put(aString, aData);
-	}
+  {
+    if (iHashtable.containsKey(aString))
+    iHashtable.remove(aString);
+      iHashtable.put(aString, aData);
+  }
 
     /// Delete an association from the hash table.
     void Release(String aString)
-	{
-	  if (iHashtable.containsKey(aString))
-		iHashtable.remove(aString);
-	}
-	java.util.Hashtable iHashtable = new java.util.Hashtable();
+  {
+    if (iHashtable.containsKey(aString))
+    iHashtable.remove(aString);
+  }
+  java.util.Hashtable iHashtable = new java.util.Hashtable();
 }
 

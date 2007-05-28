@@ -96,7 +96,7 @@ printf("after %s\n",res.String());
     }
   }
 
-  iCaller.Eval(aEnvironment,stacktop);  
+  iCaller.Eval(aEnvironment,stacktop);
   aResult.Set(aEnvironment.iStack.GetElement(stacktop).Get());
   aEnvironment.iStack.PopTo(stacktop);
   }

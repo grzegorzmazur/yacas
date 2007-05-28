@@ -47,7 +47,7 @@ class LispStandard
         if (pos+index == ptr.length())
           return true;
         if (ptr.charAt(pos+index) == '-' || ptr.charAt(pos+index) == '+') index++;
-        while(ptr.charAt(pos+index) >= '0' && ptr.charAt(pos+index) <= '9') 
+        while(ptr.charAt(pos+index) >= '0' && ptr.charAt(pos+index) <= '9')
         {
           index++;
           if (pos+index == ptr.length())
@@ -75,7 +75,7 @@ class LispStandard
     LispPtr previous = new LispPtr();
     LispPtr tail = new LispPtr();
     tail.Set(aOriginal.Get());
-    
+ 
     while (iter.Get() != null)
     {
       tail.Set(iter.Get().Next().Get());
@@ -158,11 +158,11 @@ class LispStandard
       }
       catch (Yacasexception e) { throw e; }
       finally { aEnvironment.PopLocalFrame(); }
-      
+ 
   }
 
   public static void InternalTrue(LispEnvironment aEnvironment, LispPtr aResult) throws Exception
-  {               
+  {
     aResult.Set(aEnvironment.iTrue.Copy(false));
   }
 
@@ -335,7 +335,7 @@ class LispStandard
             {
                 return false;
             }
-                
+ 
             // Step to next
             iter1.GoNext();
             iter2.GoNext();
@@ -453,7 +453,7 @@ class LispStandard
       // Open file
       LispInput newInput = // new StdFileInput(hashedname, aEnvironment.iInputStatus);
           OpenInputFile(aEnvironment, aEnvironment.iInputDirectories, hashedname, aEnvironment.iInputStatus);
-      
+ 
       LispError.Check(newInput != null, LispError.KLispErrFileNotFound);
       DoInternalLoad(aEnvironment,newInput);
     }
@@ -466,7 +466,7 @@ class LispStandard
       aEnvironment.iInputStatus.RestoreFrom(oldstatus);
     }
   }
-    
+ 
   public static void InternalUse(LispEnvironment aEnvironment,String aFileName) throws Exception
   {
     LispDefFile def = aEnvironment.iDefFiles.File(aFileName);

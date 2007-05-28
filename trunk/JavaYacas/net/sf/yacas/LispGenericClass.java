@@ -30,7 +30,7 @@ class LispGenericClass extends LispObject
       return null;
     }
 
-    LispGenericClass(GenericClass aClass) 
+    LispGenericClass(GenericClass aClass)
     {
       iClass = aClass;
     }

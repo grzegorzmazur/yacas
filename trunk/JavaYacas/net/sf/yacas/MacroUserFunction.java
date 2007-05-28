@@ -36,7 +36,7 @@ class MacroUserFunction extends BranchingUserFunction
     LispIterator iter = new LispIterator(aArguments);
     iter.GoNext();
 
-    // unrollable arguments 
+    // unrollable arguments
     LispPtr[] arguments;
     if (arity==0)
         arguments = null;
@@ -89,7 +89,7 @@ class MacroUserFunction extends BranchingUserFunction
             // set the variable to the new value
             aEnvironment.NewLocal(variable,arguments[i].Get());
         }
-    
+ 
         // walk the rules database, returning the evaluated result if the
         // predicate is true.
         int nrRules = iRules.size();
@@ -99,7 +99,7 @@ class MacroUserFunction extends BranchingUserFunction
             BranchRuleBase thisRule = ((BranchRuleBase)iRules.get(i));
 //TODO remove            CHECKPTR(thisRule);
             LispError.LISPASSERT(thisRule != null);
-    
+ 
             st.iRulePrecedence = thisRule.Precedence();
             boolean matches = thisRule.Matches(aEnvironment, arguments);
             if (matches)
@@ -111,7 +111,7 @@ class MacroUserFunction extends BranchingUserFunction
   //              aEnvironment.iEvaluator.Eval(aEnvironment, aResult, thisRule.Body());
                 break;
             }
-    
+ 
             // If rules got inserted, walk back
             while (thisRule != ((BranchRuleBase)iRules.get(i)) && i>0) i--;
         }
@@ -125,7 +125,7 @@ class MacroUserFunction extends BranchingUserFunction
         aEnvironment.PopLocalFrame();
       }
     }
-      
+ 
 
     if (substedBody.Get() != null)
     {

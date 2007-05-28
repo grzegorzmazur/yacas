@@ -5,7 +5,7 @@ package net.sf.yacas;
 
 class TSentence implements TResult
 {
-  public  TSentence() 
+  public  TSentence()
   {
     nr_words = 0;
     iResult=null;
@@ -36,7 +36,7 @@ class TSentence implements TResult
             }
             words[j] = null;
           }
-        
+ 
 //          memmove(&words[current_word],&words[current_word+1],(nr_words-current_word-1)*sizeof(TWord));
           nr_words--;
           if (current_word > 0)
@@ -81,7 +81,7 @@ class TSentence implements TResult
       {
         for (i=search_start;i<aHints.nrHintTexts;i++)
         {
-          if (nr <= (aHints.hintTexts[i].digits).length()-1 && 
+          if (nr <= (aHints.hintTexts[i].digits).length()-1 &&
               words[current_word].digits.substring(0,nr).equals(aHints.hintTexts[i].digits.substring(0,nr)))
           {
             search_start = i;
@@ -194,7 +194,7 @@ class TSentence implements TResult
         {
           aGraphicsContext.DrawText(5+progress,height-5-nr_lines*aGraphicsContext.FontHeight(),words[i].word);
         }
-  
+ 
         aGraphicsContext.SetColor(0, 0, 0);
         aGraphicsContext.DrawLine(
                5+progress, height-5-nr_lines*aGraphicsContext.FontHeight(),
@@ -210,13 +210,13 @@ class TSentence implements TResult
   public  void DebugPrint(YacasGraphicsContext  aGraphicsContext, int width)
   {
   }
-  
+ 
   public  TWord [] words = new TWord[32];
   public  TResult iResult;
   public  int nr_words;
   public  int search_start;
 };
-  
+ 
 
 
 
