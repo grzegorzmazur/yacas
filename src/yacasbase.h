@@ -39,7 +39,8 @@ public:
    *  the compiler can see that this is safe (thus no unnecessary warnings). Preferrably
    *  though this class has a protected inline destructor.
    */
-  virtual ~YacasBase() {};
+protected:
+  inline ~YacasBase() {};
 };
 
 #endif
