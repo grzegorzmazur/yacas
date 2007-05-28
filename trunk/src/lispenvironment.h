@@ -44,7 +44,7 @@ class CDllArray : public CDeletingArrayGrower<LispDllBase*, ArrOpsDeletingPtr<Li
 {
 public:
     void DeleteNamed(LispChar * aName, LispEnvironment& aEnvironment);
-	//~CDllArray();
+  //~CDllArray();
 };
 
 
@@ -93,13 +93,13 @@ public:
   /// Get the value assigned to a variable.
   /// \param aVariable name of the variable
   /// \param aResult (on exit) value of \a aVariable
-  /// 
+  ///
   /// - If there is a local variable with the name \a aString,
   ///   \a aResult is set to point to the value assigned to this local
-  ///   variable. 
+  ///   variable.
   /// - If there is a global variable \a aString and its
   ///   #iEvalBeforeReturn is false, its value is returned via
-  ///   \a aResult. 
+  ///   \a aResult.
   /// - If there is a global variable \a aString and its
   ///   #iEvalBeforeReturn is true, its value is evaluated. The
   ///   result is assigned back to the variable, its
@@ -140,15 +140,15 @@ public:
   /// \param aArguments name of the multi user function
   ///
   /// The table of user functions, #iUserFunctions, is consulted. If
-  /// a user function with the given name exists, it is returned. 
+  /// a user function with the given name exists, it is returned.
   /// Otherwise, a new LispMultiUserFunction is constructed, added
-  /// to #iUserFunctions, and returned. 
+  /// to #iUserFunctions, and returned.
   LispMultiUserFunction* MultiUserFunction(LispString * aArguments);
 
   LispDefFiles& DefFiles();
   void DeclareRuleBase(LispString * aOperator, LispPtr& aParameters,
                        LispInt aListed);
-  void DeclareMacroRuleBase(LispString * aOperator, LispPtr& aParameters, 
+  void DeclareMacroRuleBase(LispString * aOperator, LispPtr& aParameters,
                        LispInt aListed);
   void DefineRule(LispString * aOperator,LispInt aArity,
                           LispInt aPrecedence, LispPtr& aPredicate,
@@ -164,7 +164,7 @@ public:
   //@}
 
   LispString * FindCachedFile(LispChar * aFileName);
-  
+
 public:
   /// \name Precision
   //@{
@@ -178,10 +178,10 @@ public:
 public:
   inline void SetPrettyPrinter(LispString * aPrettyPrinter);
   inline LispString * PrettyPrinter(void);
-  
+
   inline void SetPrettyReader(LispString * aPrettyReader);
   inline LispString * PrettyReader(void);
-  
+
 public:
   LispInt GetUniqueId();
 public:
@@ -212,7 +212,7 @@ public:
 protected:
   /// current precision for user interaction, in decimal and in binary
   LispInt iPrecision;
-	LispInt iBinaryPrecision;
+  LispInt iBinaryPrecision;
 public:
   InputDirectories iInputDirectories;
   InputDirectories iDllDirectories;
@@ -249,7 +249,7 @@ public: // Error reporting
   StringOutput iErrorOutput;
   CDllArray iDlls;
   DefaultDebugger* iDebugger;
-    
+
 private:
   LispPtr *FindLocal(LispString * aVariable);
 
@@ -362,70 +362,70 @@ public:
   LispTokenizer* iCurrentTokenizer;
 
 public:
-	/** YacasArgStack implements a stack of pointers to objects that can be used to pass
-	*  arguments to functions, and receive results back.
-	*/
-	class YacasArgStack
-	{
-	public:
-		YacasArgStack(LispInt aStackSize) : iStack(),iStackCnt(0) 
-		{
-			iStack.ResizeTo( aStackSize );
-		}
-		inline LispInt GetStackTop() const {return iStackCnt;}
-		inline void RaiseStackOverflowError() const
-		{
-			RaiseError("Argument stack reached maximum. Please extend argument stack with --stack argument on the command line.");
-		}
-		inline void PushArgOnStack(LispObject* aObject) 
-		{
-			if (iStackCnt >= iStack.Size())
-			{
-				RaiseStackOverflowError();
-			}
+  /** YacasArgStack implements a stack of pointers to objects that can be used to pass
+  *  arguments to functions, and receive results back.
+  */
+  class YacasArgStack
+  {
+  public:
+    YacasArgStack(LispInt aStackSize) : iStack(),iStackCnt(0)
+    {
+      iStack.ResizeTo( aStackSize );
+    }
+    inline LispInt GetStackTop() const {return iStackCnt;}
+    inline void RaiseStackOverflowError() const
+    {
+      RaiseError("Argument stack reached maximum. Please extend argument stack with --stack argument on the command line.");
+    }
+    inline void PushArgOnStack(LispObject* aObject)
+    {
+      if (iStackCnt >= iStack.Size())
+      {
+        RaiseStackOverflowError();
+      }
       //LISPASSERT(iStackCnt>=0 /*&& iStackCnt<iStack.Size()*/);
       iStack[iStackCnt] = (aObject);
-			iStackCnt++;
-		}
-		inline void PushNulls(LispInt aNr)
-		{
-			LispInt aStackCnt = iStackCnt + aNr;
-			if (aStackCnt > iStack.Size() || aStackCnt < 0)
-			{
-				RaiseStackOverflowError();
-			}
-			iStackCnt = aStackCnt;
-		}
-		inline LispPtr& GetElement(LispInt aPos)
-		{
-			LISPASSERT(0<=aPos && aPos<iStackCnt);
+      iStackCnt++;
+    }
+    inline void PushNulls(LispInt aNr)
+    {
+      LispInt aStackCnt = iStackCnt + aNr;
+      if (aStackCnt > iStack.Size() || aStackCnt < 0)
+      {
+        RaiseStackOverflowError();
+      }
+      iStackCnt = aStackCnt;
+    }
+    inline LispPtr& GetElement(LispInt aPos)
+    {
+      LISPASSERT(0<=aPos && aPos<iStackCnt);
       //LISPASSERT(aPos>=0 && aPos<iStack.Size());
       return iStack[aPos];
-		}
-		inline void PopTo(LispInt aTop)
-		{
-			LISPASSERT(0<=aTop && aTop<=iStackCnt);
-			while (iStackCnt>aTop)
-			{
-				iStackCnt--;
+    }
+    inline void PopTo(LispInt aTop)
+    {
+      LISPASSERT(0<=aTop && aTop<=iStackCnt);
+      while (iStackCnt>aTop)
+      {
+        iStackCnt--;
         iStack[iStackCnt] = (NULL);
-			}
-		}
-	protected:
-		// Invariants:
-		//		0 <= iStackCnt <= iStack.Size()
-		//		iStack[iStackCnt..iStack.Size()-1] = NULL
-		LispPtrArray iStack;
-		LispInt iStackCnt;		// number of items on the stack
-	};
-	YacasArgStack iStack;
+      }
+    }
+  protected:
+    // Invariants:
+    //    0 <= iStackCnt <= iStack.Size()
+    //    iStack[iStackCnt..iStack.Size()-1] = NULL
+    LispPtrArray iStack;
+    LispInt iStackCnt;    // number of items on the stack
+  };
+  YacasArgStack iStack;
 
 private:
-	
+  
   inline LispEnvironment(const LispEnvironment& aOther)
-    : 
-    iPrecision(0),	// default user precision of 10 decimal digits
-	  iBinaryPrecision(0),	// same as 34 bits
+    :
+    iPrecision(0),  // default user precision of 10 decimal digits
+    iBinaryPrecision(0),  // same as 34 bits
     iInputDirectories(),
     iDllDirectories(),
     iCleanup(),
@@ -497,7 +497,7 @@ inline LispInt LispEnvironment::Precision(void) const
 
 inline LispInt LispEnvironment::BinaryPrecision(void) const
 {
-	return iBinaryPrecision;
+  return iBinaryPrecision;
 }
 
 
@@ -646,7 +646,7 @@ private:
     LISPASSERT(0);
     return *this;
   }
-  
+
 private:
   LispEvaluatorBase* iPreviousEvaluator;
   LispEnvironment& iEnvironment;

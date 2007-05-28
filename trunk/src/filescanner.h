@@ -44,7 +44,7 @@ private:
   char iFullName[500];
   char* iDir;
 };
-    
+
 class CFileScanner
 {
 public:

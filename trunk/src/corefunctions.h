@@ -199,7 +199,7 @@ CORE_KERNEL_FUNCTION("BitXor",LispBitXor,2,YacasEvaluator::Function | YacasEvalu
 CORE_KERNEL_FUNCTION("Secure",LispSecure,1,YacasEvaluator::Macro | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("FindFile",LispFindFile,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("FindFunction",LispFindFunction,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
-// Generic object support 
+// Generic object support
 CORE_KERNEL_FUNCTION("IsGeneric",LispIsGeneric,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("GenericTypeName",LispGenericTypeName,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("ArrayCreate",GenArrayCreate,2,YacasEvaluator::Function | YacasEvaluator::Fixed)
@@ -219,7 +219,7 @@ CORE_KERNEL_FUNCTION("LispReadListed",LispReadLispListed,0,YacasEvaluator::Funct
 CORE_KERNEL_FUNCTION("Type",LispType,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("StringMid",LispStringMid,3,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("SetStringMid",LispSetStringMid,3,YacasEvaluator::Function | YacasEvaluator::Fixed)
-// Pattern matching 
+// Pattern matching
 CORE_KERNEL_FUNCTION("PatternCreate",GenPatternCreate,2,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("PatternMatches",GenPatternMatches,2,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("RuleBaseDefined",LispRuleBaseDefined,2,YacasEvaluator::Function | YacasEvaluator::Fixed)
