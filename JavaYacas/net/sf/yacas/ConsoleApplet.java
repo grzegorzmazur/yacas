@@ -13,7 +13,7 @@ just random thoughts for now.
 
 
 <B>Note:</B> to allow supporting copy-pasting from and to this applet, you need to enable
-access to the clip board on your computer. On Unix-style computers this can be done 
+access to the clip board on your computer. On Unix-style computers this can be done
 by appending the following lines to the file ~/.java.policy (create the file if it does
 not exist yet):
 <p>
@@ -47,7 +47,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   AppletOutput out;
 
   /// Applet initialization
-  public void init() 
+  public void init()
   {
     setBackground(Color.white);
     setLayout (null);
@@ -58,12 +58,12 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
     out = new AppletOutput(this);
     ResetInput();
-    
+ 
     String hintsfilename = getDocumentBase().toString() + ".hints";
     LoadHints(hintsfilename);
   }
   boolean focusGained = false;
-  public void focusGained(FocusEvent evt) 
+  public void focusGained(FocusEvent evt)
   {
     focusGained = true;
     inputDirty = true;
@@ -72,7 +72,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   }
 
 
-  public void focusLost(FocusEvent evt) 
+  public void focusLost(FocusEvent evt)
   {
   }
 
@@ -169,7 +169,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 //        AddLineStatic(100, ""," '" + scriptBase + "'.", font, Color.red);
         yacas.Evaluate("DefaultDirectory(\""+scriptBase+"\");");
       }
-      
+ 
     }
 
 
@@ -181,7 +181,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     catch (Exception e)
     {
       out.println(e);
-    } 
+    }
 
     int i;
     i=1;
@@ -259,7 +259,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   }
 
   /// Applet destruction
-	public void destroy()
+  public void destroy()
   {
   }
 
@@ -283,7 +283,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
     clipboard.setContents( stringSelection, this );
   }
-  public String getClipboardContents() 
+  public String getClipboardContents()
   {
     String result = "";
     Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -291,9 +291,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     Transferable contents = clipboard.getContents(null);
     boolean hasTransferableText = (contents != null) &&
                                   contents.isDataFlavorSupported(DataFlavor.stringFlavor);
-    if ( hasTransferableText ) 
+    if ( hasTransferableText )
     {
-      try 
+      try
       {
         result = (String)contents.getTransferData(DataFlavor.stringFlavor);
       }
@@ -302,7 +302,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         //highly unlikely since we are using a standard DataFlavor
         System.out.println(ex);
       }
-      catch (IOException ex) 
+      catch (IOException ex)
       {
         System.out.println(ex);
       }
@@ -363,14 +363,14 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
     }
 
-    if (KeyEvent.KEY_PRESSED == e.getID())    
+    if (KeyEvent.KEY_PRESSED == e.getID())
     {
       if (e.VK_SHIFT == e.getKeyCode()) {return;}
       if (e.VK_CONTROL == e.getKeyCode()) {return;}
       if (e.VK_ALT == e.getKeyCode()) {return;}
       else if (e.VK_HOME == e.getKeyCode())
       {
-        cursorPos = 0;  
+        cursorPos = 0;
       }
 /*Does not seem to work?
       else if (e.VK_COPY == e.getKeyCode())
@@ -384,13 +384,13 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 */
       else if (e.VK_END == e.getKeyCode())
       {
-        cursorPos = inputLine.length();  
+        cursorPos = inputLine.length();
       }
       else if (e.VK_LEFT == e.getKeyCode())
       {
-        if (cursorPos>0) 
+        if (cursorPos>0)
         {
-          cursorPos--;  
+          cursorPos--;
           RefreshHintWindow();
           repaint();
           return;
@@ -398,9 +398,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
       else if (e.VK_BACK_SPACE == e.getKeyCode())
       {
-        if (cursorPos>0) 
+        if (cursorPos>0)
         {
-          cursorPos--;  
+          cursorPos--;
           inputLine = new StringBuffer(inputLine).delete(cursorPos,cursorPos+1).toString();
           RefreshHintWindow();
           repaint();
@@ -454,7 +454,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
             historyBrowse = i;
             inputLine = history[historyBrowse];
           }
-          else 
+          else
           {
             int pos = cursorPos;
             ResetInput();
@@ -465,9 +465,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
       else if (e.VK_RIGHT == e.getKeyCode())
       {
-        if (cursorPos<inputLine.length()) 
+        if (cursorPos<inputLine.length())
         {
-          cursorPos++;  
+          cursorPos++;
           RefreshHintWindow();
           repaint();
           return;
@@ -524,7 +524,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     {
       try
       {
-        getAppletContext().showDocument( new URL("http://yacas.sourceforge.net/manindex.html"),"help");    
+        getAppletContext().showDocument( new URL("http://yacas.sourceforge.net/manindex.html"),"help");
         succeed = true;
       }
       catch (Exception e)
@@ -535,7 +535,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     {
       try
       {
-        getAppletContext().showDocument( new URL("http://yacas.sourceforge.net/licence.html"),"license");    
+        getAppletContext().showDocument( new URL("http://yacas.sourceforge.net/licence.html"),"license");
         succeed = true;
       }
       catch (Exception e)
@@ -546,7 +546,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     {
       try
       {
-        getAppletContext().showDocument( new URL("http://yacas.sourceforge.net/ref.html#"+inputLine.substring(1,inputLine.length())),"help");    
+        getAppletContext().showDocument( new URL("http://yacas.sourceforge.net/ref.html#"+inputLine.substring(1,inputLine.length())),"help");
         succeed = true;
       }
       catch (Exception e)
@@ -569,7 +569,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       succeed = true;
     }
     {
-      if (!succeed) 
+      if (!succeed)
       {
         out.println("Request failed");
       }
@@ -704,7 +704,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   {
     AddLineStatic(indent, "",text,  font, Color.black);
   }
-  
+ 
   Color iPromptColor = new Color(128,128,128);
   Font iPromptFont = new Font("helvetica", Font.PLAIN, 12);
   void AddLineStatic(int indent, String prompt, String text,  Font aFont, Color aColor)
@@ -718,12 +718,12 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   Image yacasLogo = null;
   Image offImg = null;
   Graphics offGra = null;
-	public void update(Graphics g) 
+  public void update(Graphics g)
   {
     paint(g);
   }
 
-	public void paint(Graphics g) 
+  public void paint(Graphics g)
   {
     // draw an offScreen drawing
     Dimension dim = getSize();
@@ -732,7 +732,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       offImg = createImage(dim.width, dim.height);
       offGra = offImg.getGraphics();
     }
-    
+ 
     // Render image
     paintToBitmap(offGra);
 
@@ -741,14 +741,14 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     if (hintWindow != null)
     {
       YacasGraphicsContext context = new YacasGraphicsContext(g,0,0);
-      context.SetFontSize(1,fontHeight/*12*/);  
+      context.SetFontSize(1,fontHeight/*12*/);
       int nr_total_lines = 1; //nrLines;
       Dimension d = getSize();
       hintWindow.draw(5,(int)(d.getHeight()-context.FontHeight()-nr_total_lines*context.FontHeight()),context);
     }
   }
-  
-	public void paintToBitmap(Graphics g) 
+ 
+  public void paintToBitmap(Graphics g)
   {
     if ( g instanceof Graphics2D )
     {
@@ -778,33 +778,33 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       g.drawString(str, x, y);
       return;
     }
-    
+ 
     FontMetrics metrics = getFontMetrics(font);
 
-		g.setColor(Color.white);
+    g.setColor(Color.white);
     int yfrom = 0;
-    
-		g.setFont(font);
+ 
+    g.setFont(font);
     int inHeight = fontHeight;
-    
+ 
     int yto = getHeight()-1;
     if (!outputDirty)
       yfrom += getHeight()-inHeight;
     if (!inputDirty)
       yto -= inHeight;
-      
+ 
     g.clearRect(0,yfrom,getWidth(),yto);
-		g.setColor(Color.black);
+    g.setColor(Color.black);
 
     int i;
-    int y=getHeight()-inHeight-g.getFontMetrics().getDescent(); 
-    
+    int y=getHeight()-inHeight-g.getFontMetrics().getDescent();
+ 
     if (outputDirty)
     {
       for (i=0;i<nrLines;i++)
       {
         int index = (currentLine+i)%nrLines;
-        if (lines[index] != null) 
+        if (lines[index] != null)
         {
           y-=lines[index].height(g);
         }
@@ -812,7 +812,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       for (i=0;i<nrLines;i++)
       {
         int index = (currentLine+i)%nrLines;
-        if (lines[index] != null) 
+        if (lines[index] != null)
         {
           if (y+lines[index].height(g)>0)
           {
@@ -849,7 +849,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
   int cursorPos = 0;
   final int inset = 5;
-  
+ 
   final static String inputPrompt = "In> ";
   final static String outputPrompt = "Out> ";
 
@@ -857,7 +857,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   private Font font = new Font("courier", Font.BOLD, fontHeight);
 
   private static final int nrHistoryLines = 50;
-  public String history[] = new String[nrHistoryLines]; 
+  public String history[] = new String[nrHistoryLines];
   public int currentHistoryLine = 0;
   int historyBrowse = 0;
 
@@ -865,7 +865,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   boolean outputDirty = true;
 
 
-  class AppletOutput 
+  class AppletOutput
   {
     public AppletOutput(ConsoleApplet aApplet)
     {
@@ -884,7 +884,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         buffer.append((char)c);
       }
     }
-    public void print(String s) 
+    public void print(String s)
     {
       try
       {
@@ -899,11 +899,11 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       {
       }
     }
-    public void println(Exception e) 
+    public void println(Exception e)
     {
       println(e.getMessage());
     }
-    public void println(String s) 
+    public void println(String s)
     {
       print(s);
       print("\n");
@@ -919,7 +919,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   {
     CDataReader file = new CDataReader();
     int opened = 0;
-    try 
+    try
     {
       URL url = new URL(filename);
       opened = file.Open(url);
@@ -973,15 +973,15 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     hw.iAllowSelection = false;
     return hw;
   }
-  
+ 
   void AddHintLine(HintWindow hints, String aText, String aDescription)
   {
       hints.AddLine(aText);
       if (aDescription.length() > 0)
         hints.AddDescription(aDescription);
   }
-  
-  
+ 
+ 
   HintWindow TryToHint(String text, int length)
   {
     HintWindow hints = null;
@@ -1025,7 +1025,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       {
         for (i=search_start;i<aHints.nrHintTexts;i++)
         {
-          if (nr <= (aHints.hintTexts[i].digits).length()-1 && 
+          if (nr <= (aHints.hintTexts[i].digits).length()-1 &&
               current_word.equals(aHints.hintTexts[i].base.substring(0,nr)))
           {
             search_start = i;
@@ -1064,7 +1064,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       if (c == ',' || c == ')')
       {
         int braces = -1;
-        if (c == ')')  
+        if (c == ')')
         {
           ito--;
           braces = -2;

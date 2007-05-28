@@ -5,16 +5,16 @@ package net.sf.yacas;
  *  that needs to be implemented by a file (something that expressions
  *  can be read from).
  */
-abstract class LispInput 
+abstract class LispInput
 {
     /** Constructor with InputStatus. InputStatus retains the information
      * needed when an error occurred, and the file has already been
      * closed.
      */
     public LispInput(InputStatus aStatus)
-	{ 
-	  iStatus = aStatus;
-	}
+  {
+    iStatus = aStatus;
+  }
 
     /// Return the next character in the file
     public abstract char Next() throws Exception;
@@ -25,9 +25,9 @@ abstract class LispInput
     public abstract char Peek() throws Exception;
 
     public InputStatus Status()
-	{
-	  return iStatus;
-	}
+  {
+    return iStatus;
+  }
 
     /// Check if the file position is past the end of the file.
     public abstract boolean EndOfStream();

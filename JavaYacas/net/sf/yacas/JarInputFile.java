@@ -9,8 +9,8 @@ class JarInputFile extends StringInput
   public JarInputFile(String aFileName, InputStatus aStatus) throws Exception
   {
     super(new StringBuffer(),aStatus);
-	URL url = new URL(aFileName);
-	JarURLConnection con = (JarURLConnection) url.openConnection();
+  URL url = new URL(aFileName);
+  JarURLConnection con = (JarURLConnection) url.openConnection();
     InputStream stream = con.getInputStream();
     int c;
     while (true)

@@ -7,27 +7,27 @@ import java.util.*;
 public class YacasConsole extends Thread
 {
     static String readLine(InputStream aStream)
-	{
-	  StringBuffer line = new StringBuffer();
-	  try
-	  {
-		  int c = aStream.read();
-		  while (c != '\n')
-		  {
-			line.append((char)c);
-			c = aStream.read();
-		  }
-	  }
-	  catch (Exception e)
-	  {
-	    System.out.println(e.toString());
-	  }
-	  return line.toString();
-	}
-	static boolean quitting = false;
+  {
+    StringBuffer line = new StringBuffer();
+    try
+    {
+      int c = aStream.read();
+      while (c != '\n')
+      {
+      line.append((char)c);
+      c = aStream.read();
+      }
+    }
+    catch (Exception e)
+    {
+      System.out.println(e.toString());
+    }
+    return line.toString();
+  }
+  static boolean quitting = false;
 
-	public static void main(String[] argv)
-	{
+  public static void main(String[] argv)
+  {
 /*
 try
 {
@@ -74,12 +74,12 @@ catch(Exception e)
     // Search the file scripts.zip. It contains yacasinit.ys
     {
       java.net.URL detectURL = java.lang.ClassLoader.getSystemResource("yacasinit.ys");
-      if (detectURL != null) 
+      if (detectURL != null)
       {
         String detect = detectURL.getPath(); // file:/home/av/src/lib/scripts.zip!/yacasinit.ys
         archive = detect.substring(0, detect.lastIndexOf('!')); // file:/home/av/src/lib/scripts.zip
 //System.out.println("Found archive ["+archive+"]");
-      }    
+      }
       else
       {
 //System.out.println("Archive not found!!!!");
@@ -158,7 +158,7 @@ catch(Exception e)
 
     System.out.println("Numeric mode: \""+BigNumber.NumericLibraryName()+"\"\n");
     System.out.println("To exit Yacas, enter  Exit(); or quit or Ctrl-c.\n");
-/*TODO fixme    
+/*TODO fixme
     System.out.println("Type ?? for help. Or type ?function for help on a function.\n");
     System.out.println("Type 'restart' to restart Yacas.\n");
 */
@@ -166,17 +166,17 @@ catch(Exception e)
 
 //yacas.Evaluate("BubbleSort(N(PSolve(x^3-3*x^2+2*x,x)), \"<\");");
 
-	  System.out.println("Yacas in Java");
-	  while (!quitting)
-	  {
-		  System.out.print("In> ");
+    System.out.println("Yacas in Java");
+    while (!quitting)
+    {
+      System.out.print("In> ");
 
 //      String input = "Sin(a*Pi);";//"MathAdd(1.0e4,1.0e-3);";//"a:=-2;";//"[Precision(40);1.0;];";//"[Set(pat,PatternCreate(foo(_a,_b),True));PatternMatches(pat,bar(x,y));];";//"[Local(a);Set(a,2);MathAdd(a,1);];";//"Set(a,2);";//"1.0e3";//"MathNegate(1.1);";//"IsAtom({a,b,c});";// readLine(System.in);
-		  String input =  readLine(System.in);
+      String input =  readLine(System.in);
 
       String rs = yacas.Evaluate(input);
-		  System.out.println("Out> "+rs);
-		  if (input.equals("quit")) quitting = true;
-	  }
-	}
+      System.out.println("Out> "+rs);
+      if (input.equals("quit")) quitting = true;
+    }
+  }
 }

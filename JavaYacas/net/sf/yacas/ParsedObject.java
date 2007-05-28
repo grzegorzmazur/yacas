@@ -50,7 +50,7 @@ class ParsedObject
   void MatchToken(String aToken) throws Exception
   {
     if (aToken != iLookAhead)
-      Fail(); 
+      Fail();
     ReadToken();
   }
   void ReadExpression(int depth) throws Exception
@@ -69,7 +69,7 @@ class ParsedObject
             // Match closing bracket
             if (iLookAhead != iParser.iEnvironment.iProgClose.String())
             {
-                LispError.RaiseError("Expecting a ] close bracket for program block, but got "+iLookAhead+" instead"); 
+                LispError.RaiseError("Expecting a ] close bracket for program block, but got "+iLookAhead+" instead");
                 return;
             }
             MatchToken(iLookAhead);
@@ -179,7 +179,7 @@ String toLookUp = iLookAhead.substring(len,origlen);
             }
             else if (iLookAhead != iParser.iEnvironment.iListClose.String())
             {
-                LispError.RaiseError("Expecting a } close bracket for a list, but got "+iLookAhead+" instead"); 
+                LispError.RaiseError("Expecting a } close bracket for a list, but got "+iLookAhead+" instead");
                 return;
             }
         }
@@ -206,7 +206,7 @@ String toLookUp = iLookAhead.substring(len,origlen);
             }
             else
             {
-                LispError.RaiseError("Expecting ; end of statement in program block, but got "+iLookAhead+" instead"); 
+                LispError.RaiseError("Expecting ; end of statement in program block, but got "+iLookAhead+" instead");
                 return;
             }
         }
@@ -284,14 +284,14 @@ String toLookUp = iLookAhead.substring(len,origlen);
     {
       if (iter.GetObject() == null)
       {
-        Fail(); 
+        Fail();
         return;
       }
       iter.GoNext();
     }
     if (iter.GetObject() == null)
     {
-      Fail(); 
+      Fail();
       return;
     }
     subList.Get().Next().Set(iter.GetObject().Next().Get());
@@ -310,12 +310,12 @@ String toLookUp = iLookAhead.substring(len,origlen);
   }
   void Fail()  throws Exception // called when parsing fails, raising an exception
   {
-    iError = true; 
+    iError = true;
     if (iLookAhead != null)
     {
-      LispError.RaiseError("Error parsing expression, near token "+iLookAhead); 
+      LispError.RaiseError("Error parsing expression, near token "+iLookAhead);
     }
-    LispError.RaiseError("Error parsing expression"); 
+    LispError.RaiseError("Error parsing expression");
   }
 
   InfixParser iParser;

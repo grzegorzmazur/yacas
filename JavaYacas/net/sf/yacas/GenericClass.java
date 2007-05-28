@@ -5,8 +5,8 @@ package net.sf.yacas;
 abstract class GenericClass
 {
     public  GenericClass()
-	{
-	}
+  {
+  }
     public abstract String Send(LispArgList aArgList);
     public abstract String TypeName();
 }

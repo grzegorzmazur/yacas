@@ -184,7 +184,7 @@ class LispError
           error = error + ShowFunctionError(arguments, aEnvironment) + "\nbad argument number "+aArgNr+"(counting from 1) : \n"+aErrorDescription + "\n";
           LispPtr arg = YacasEvalCaller.Argument(arguments,aArgNr);
           String strout;
-  
+ 
           error = error + "The offending argument ";
           strout = LispStandard.PrintExpression(arg, aEnvironment, 60);
           error = error + strout;
@@ -202,37 +202,37 @@ class LispError
   }
 
 
-	static int KLispErrNone                   = 0;
-	static int KLispErrInvalidArg             = 1;
-	static int KLispErrWrongNumberOfArgs      = 2;
-	static int KLispErrNotList                = 3;
-	static int KLispErrListNotLongEnough      = 4;
-	static int KLispErrInvalidStack           = 5;
-	static int KQuitting                      = 6;
-	static int KLispErrNotEnoughMemory        = 7;
-	static int KInvalidToken                  = 8;
-	static int KLispErrInvalidExpression      = 9;
-	static int KLispErrUnprintableToken       = 10;
-	static int KLispErrFileNotFound           = 11;
-	static int KLispErrReadingFile            = 12;
-	static int KLispErrCreatingUserFunction   = 13;
-	static int KLispErrCreatingRule           = 14;
-	static int KLispErrArityAlreadyDefined    = 15;
-	static int KLispErrCommentToEndOfFile     = 16;
-	static int KLispErrNotString              = 17;
-	static int KLispErrNotInteger             = 18;
-	static int KLispErrParsingInput           = 19;
-	static int KLispErrMaxRecurseDepthReached = 20;
-	static int KLispErrDefFileAlreadyChosen   = 21;
-	static int KLispErrDivideByZero           = 22;
-	static int KLispErrNotAnInFixOperator     = 23;
-	static int KLispErrIsNotInFix             = 24;
-	static int KLispErrSecurityBreach         = 25;
-	static int KLispErrLibraryNotFound        = 26;
-	static int KLispErrUserInterrupt          = 27;
-	static int KLispErrNonBooleanPredicateInPattern = 28;
-	static int KLispErrGenericFormat          = 29;
-	static int KLispNrErrors                  = 30;
+  static int KLispErrNone                   = 0;
+  static int KLispErrInvalidArg             = 1;
+  static int KLispErrWrongNumberOfArgs      = 2;
+  static int KLispErrNotList                = 3;
+  static int KLispErrListNotLongEnough      = 4;
+  static int KLispErrInvalidStack           = 5;
+  static int KQuitting                      = 6;
+  static int KLispErrNotEnoughMemory        = 7;
+  static int KInvalidToken                  = 8;
+  static int KLispErrInvalidExpression      = 9;
+  static int KLispErrUnprintableToken       = 10;
+  static int KLispErrFileNotFound           = 11;
+  static int KLispErrReadingFile            = 12;
+  static int KLispErrCreatingUserFunction   = 13;
+  static int KLispErrCreatingRule           = 14;
+  static int KLispErrArityAlreadyDefined    = 15;
+  static int KLispErrCommentToEndOfFile     = 16;
+  static int KLispErrNotString              = 17;
+  static int KLispErrNotInteger             = 18;
+  static int KLispErrParsingInput           = 19;
+  static int KLispErrMaxRecurseDepthReached = 20;
+  static int KLispErrDefFileAlreadyChosen   = 21;
+  static int KLispErrDivideByZero           = 22;
+  static int KLispErrNotAnInFixOperator     = 23;
+  static int KLispErrIsNotInFix             = 24;
+  static int KLispErrSecurityBreach         = 25;
+  static int KLispErrLibraryNotFound        = 26;
+  static int KLispErrUserInterrupt          = 27;
+  static int KLispErrNonBooleanPredicateInPattern = 28;
+  static int KLispErrGenericFormat          = 29;
+  static int KLispNrErrors                  = 30;
 
 
 }

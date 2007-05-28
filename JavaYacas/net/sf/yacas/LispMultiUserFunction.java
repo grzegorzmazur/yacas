@@ -9,14 +9,14 @@ import java.util.*;
 /// can be selected by providing its name. Additionally, the name of
 /// the file in which the function is defined, can be specified.
 
-class LispMultiUserFunction 
+class LispMultiUserFunction
 {
     /// Constructor.
     public LispMultiUserFunction()
     {
-      iFileToOpen = null; 
+      iFileToOpen = null;
     }
-  
+ 
     /// Return user function with given arity.
     public LispUserFunction UserFunc(int aArity) throws Exception
     {

@@ -65,7 +65,7 @@ class HintWindow
     aGraphicsContext.DrawRoundRect(ix,iy,w,h,8);
 
     int i;
-    
+ 
 //System.out.println("iTextSize = "+iTextSize);
 //System.out.println("aGraphicsContext.FontHeight() = "+aGraphicsContext.FontHeight());
 
@@ -94,9 +94,9 @@ class HintWindow
     if (iNrDescriptions>0)
     {
       int offset = (iNrLines+1)*aGraphicsContext.FontHeight()+7;
-      
+ 
       aGraphicsContext.DrawLine(ix+6,iy+offset-4-aGraphicsContext.FontHeight(),ix+w-6,iy+offset-4-aGraphicsContext.FontHeight());
-      
+ 
       aGraphicsContext.SetFontSize(1,iTextSize);
       for (i=0;i<iNrDescriptions;i++)
       {
@@ -112,7 +112,7 @@ class HintWindow
     int h;
     aGraphicsContext.SetFontSize(0,iTextSize);
     h = iNrLines*aGraphicsContext.FontHeight()+2;
-  
+ 
     if (iNrDescriptions>0)
     {
       aGraphicsContext.SetFontSize(1,iTextSize);

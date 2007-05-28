@@ -54,8 +54,8 @@ void CheckFileForTabs(char* fileName)
   int line = 0;
   while (!feof(f))
   {
-    fgets(line_read_buffer,MAX_LINE_LENGTH-1,f);
-    if (feof(f)) break;
+    if (!fgets(line_read_buffer,MAX_LINE_LENGTH-1,f))
+      break;
     line++;
     int i,length=strlen(line_read_buffer);
     for (i=0;i<length;i++)
@@ -108,8 +108,8 @@ void CheckFileForWhiteSpacesAtEol(char* fileName)
   int line = 0;
   while (!feof(f))
   {
-    fgets(line_read_buffer,MAX_LINE_LENGTH-1,f);
-    if (feof(f)) break;
+    if (!fgets(line_read_buffer,MAX_LINE_LENGTH-1,f))
+      break;
     line++;
     int i,length=strlen(line_read_buffer);
     for (i=0;i<length;i++)

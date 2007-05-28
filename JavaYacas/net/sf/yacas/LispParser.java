@@ -1,47 +1,47 @@
 package net.sf.yacas;
 
 
-class LispParser 
+class LispParser
 {
    public LispParser(LispTokenizer aTokenizer, LispInput aInput,
               LispEnvironment aEnvironment)
    {
      iTokenizer = aTokenizer;
-	 iInput = aInput;
-	 iEnvironment = aEnvironment;
+   iInput = aInput;
+   iEnvironment = aEnvironment;
      iListed = false;
    }
    public void Parse(LispPtr aResult ) throws Exception
    {
-	aResult.Set(null);
+  aResult.Set(null);
 
-	String token;
-	// Get token.
-	token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());
-	if (token.length() == 0) //TODO FIXME either token == null or token.length() == 0?
-	{
-		aResult.Set(LispAtom.New(iEnvironment,"EndOfFile"));
-		return;
-	}
-	ParseAtom(aResult,token);
+  String token;
+  // Get token.
+  token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());
+  if (token.length() == 0) //TODO FIXME either token == null or token.length() == 0?
+  {
+    aResult.Set(LispAtom.New(iEnvironment,"EndOfFile"));
+    return;
+  }
+  ParseAtom(aResult,token);
    }
 
    void ParseList(LispPtr aResult) throws Exception
    {
     String token;
 
-    LispPtr iter = aResult; 
+    LispPtr iter = aResult;
     if (iListed)
     {
         aResult.Set(LispAtom.New(iEnvironment,"List"));
-        iter  = (aResult.Get().Next()); //TODO FIXME 
+        iter  = (aResult.Get().Next()); //TODO FIXME
     }
     for (;;)
     {
         //Get token.
         token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());
         // if token is empty string, error!
-        LispError.Check(token.length() > 0,LispError.KInvalidToken); //TODO FIXME 
+        LispError.Check(token.length() > 0,LispError.KInvalidToken); //TODO FIXME
         // if token is ")" return result.
         if (token == iEnvironment.HashTable().LookUp(")"))
         {
@@ -50,8 +50,8 @@ class LispParser
         // else parse simple atom with Parse, and append it to the
         // results list.
 
-        ParseAtom(iter,token); 
-        iter = (iter.Get().Next()); //TODO FIXME 
+        ParseAtom(iter,token);
+        iter = (iter.Get().Next()); //TODO FIXME
     }
    }
 

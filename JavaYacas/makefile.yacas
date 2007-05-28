@@ -62,6 +62,6 @@ yacasconsole.html.hints:
 include ../tests/includetestfiles
 
 test:
+	../src/codereviewer j net/sf/yacas/*.java
 	../tests/test-yacas "java -jar ../JavaYacas/yacas.jar" ../tests/ $(TESTFILES)
-
 

@@ -21,7 +21,7 @@ class InfixPrinter extends LispPrinter
     iCurrentEnvironment = aEnvironment;
     Print(aExpression, aOutput, KMaxPrecedence);
   }
-	public void RememberLastChar(char aChar)
+  public void RememberLastChar(char aChar)
   {
     iPrevLastChar = aChar;
   }
@@ -157,7 +157,7 @@ class InfixPrinter extends LispPrinter
                 if (bodied != null)
                 {
 //printf("%d > %d\n",iPrecedence, bodied.iPrecedence);
-                  if (iPrecedence < bodied.iPrecedence) 
+                  if (iPrecedence < bodied.iPrecedence)
                     bracket = true;
                 }
                 if (bracket) WriteToken(aOutput,"(");

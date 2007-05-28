@@ -5,7 +5,7 @@ import java.io.*;
 
 class CDataReader
 {
-  
+ 
   public CDataReader()
   {
   }
@@ -21,7 +21,7 @@ class CDataReader
 //      while(null != (aLine = in.readLine()))
 //        System.out.println(aLine);
     }
-    catch(Exception e) 
+    catch(Exception e)
     {
       in = null;
 //       e.printStackTrace();
@@ -44,7 +44,7 @@ class CDataReader
     }
     return null;
   }
-  
+ 
   public void Close()
   {
     try

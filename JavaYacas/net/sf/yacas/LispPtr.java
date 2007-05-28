@@ -8,35 +8,35 @@ package net.sf.yacas;
  *  to the next object, and in diverse parts of the built-in internal
  *  functions to hold temporary values.
  */
-class LispPtr 
+class LispPtr
 {
     public LispPtr()
-	{
-		iNext = null;
-	}
+  {
+    iNext = null;
+  }
     public LispPtr(LispPtr aOther)
-	{
-		iNext = aOther.iNext;
-	}
+  {
+    iNext = aOther.iNext;
+  }
     public LispPtr(LispObject aOther)
-	{
-		iNext = aOther;
-	}
+  {
+    iNext = aOther;
+  }
     public void Set(LispObject aNext)
-	{
-		iNext = aNext;
-	}
+  {
+    iNext = aNext;
+  }
     public LispObject Get()
-	{
-		return iNext;
-	}
+  {
+    return iNext;
+  }
     public void GoNext()
-	{
-		iNext = iNext.iNext.iNext;
-	}
+  {
+    iNext = iNext.iNext.iNext;
+  }
     void DoSet(LispObject aNext)
-	{
-		iNext = aNext;
-	}
+  {
+    iNext = aNext;
+  }
     LispObject iNext;
 };

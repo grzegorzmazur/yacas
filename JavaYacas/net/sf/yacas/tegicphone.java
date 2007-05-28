@@ -16,11 +16,11 @@ public class tegicphone extends Applet {
 
     static final String message = "Hello World!";
     private Font font = new Font("serif", Font.ITALIC + Font.BOLD, 36);
-	
+ 
     public void init() {
         setLayout (null);
     }
-	
+ 
     public void paint (Graphics g) {
         g.setColor(Color.blue);
         g.setFont(font);

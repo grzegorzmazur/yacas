@@ -48,7 +48,7 @@ import java.net.*;
 
 public class WizardApplet extends Applet implements KeyListener, FocusListener, ClipboardOwner, MouseListener, MouseMotionListener
 {
-  public void init() 
+  public void init()
   {
     setBackground(Color.white);
     setLayout (null);
@@ -75,10 +75,10 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
 
   static Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
   static Cursor clickCursor = new Cursor(Cursor.HAND_CURSOR);
-  public void	mouseDragged(MouseEvent e) 
+  public void  mouseDragged(MouseEvent e)
   {
   }
-  public void	mouseMoved(MouseEvent e) 
+  public void  mouseMoved(MouseEvent e)
   {
     int x = e.getX();
     int y = e.getY();
@@ -116,7 +116,7 @@ public class WizardApplet extends Applet implements KeyListener, FocusListener, 
       }
       else
         text = "";
-      AddWord(font, underlined, color, word, link); 
+      AddWord(font, underlined, color, word, link);
       if (c == '\n')
         AddWord(null, false, null, null, null);
     }
@@ -230,12 +230,12 @@ System.out.println("Succeeded in finding "+zipFileName);
   public void stop()
   {
   }
-  public void focusGained(FocusEvent evt) 
+  public void focusGained(FocusEvent evt)
   {
     repaint();
   }
 
-  public void focusLost(FocusEvent evt) 
+  public void focusLost(FocusEvent evt)
   {
   }
 
@@ -258,17 +258,17 @@ System.out.println("Succeeded in finding "+zipFileName);
   public void keyReleased(KeyEvent e)
   {
   }
-  
-	public void update(Graphics g) 
+ 
+  public void update(Graphics g)
   {
     paint(g);
   }
-  
+ 
   Image yacasLogo = null;
   Image offImg = null;
   Graphics offGra = null;
 
-	public void paint(Graphics g) 
+  public void paint(Graphics g)
   {
     // draw an offScreen drawing
     Dimension dim = getSize();
@@ -277,11 +277,11 @@ System.out.println("Succeeded in finding "+zipFileName);
       offImg = createImage(dim.width, dim.height);
       offGra = offImg.getGraphics();
     }
-    
+ 
     // Render image
     paintToBitmap(offGra);
     g.drawImage(offImg,0,0,null);
-  }  
+  }
 
   boolean outputDirty = true;
   void paintToBitmap(Graphics g)
@@ -334,7 +334,7 @@ System.out.println("Succeeded in finding "+zipFileName);
                 lineWidth+=5;
             g.drawLine(x,y,x+lineWidth,y);
           }
-          
+ 
           if (words[i].link != null)
           if (words[i].link.length() > 0)
           {
@@ -346,7 +346,7 @@ System.out.println("Succeeded in finding "+zipFileName);
             r.word = i;
             links[nrlinks++] = r;
           }
-          
+ 
           x+=pixWidth+5;
         }
       }
@@ -364,7 +364,7 @@ System.out.println("Succeeded in finding "+zipFileName);
     public String link;
   }
   static int MAX_WORDS = 1024;
-  CWizardWord words[] = new CWizardWord[MAX_WORDS];  
+  CWizardWord words[] = new CWizardWord[MAX_WORDS];
   int nrWords = 0;
   int xCur = 0;
   int yCur = 0;
@@ -396,7 +396,7 @@ System.out.println("Succeeded in finding "+zipFileName);
 
 
   // Invoked when the mouse button has been clicked (pressed and released) on a component.
-  public void	mouseClicked(MouseEvent e) 
+  public void  mouseClicked(MouseEvent e)
   {
     int x = e.getX();
     int y = e.getY();
@@ -432,22 +432,22 @@ System.out.println("link pressed was "+link);
   }
 
   // Invoked when the mouse enters a component.
-  public void	mouseEntered(MouseEvent e) 
+  public void  mouseEntered(MouseEvent e)
   {
   }
-  
+ 
   // Invoked when the mouse exits a component.
-  public void	mouseExited(MouseEvent e) 
+  public void  mouseExited(MouseEvent e)
   {
   }
-  
+ 
   // Invoked when a mouse button has been pressed on a component.
-  public void	mousePressed(MouseEvent e) 
+  public void  mousePressed(MouseEvent e)
   {
   }
-  
+ 
   // Invoked when a mouse button has been released on a component.
-  public void	mouseReleased(MouseEvent e) 
+  public void  mouseReleased(MouseEvent e)
   {
   }
 

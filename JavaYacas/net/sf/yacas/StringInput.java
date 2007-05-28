@@ -10,37 +10,37 @@ class StringInput extends LispInput
     iCurrent = 0;
   }
   public char Next() throws Exception
-	{
-	  if (iCurrent == iString.length())
-	    return '\0';
-	  iCurrent++;
+  {
+    if (iCurrent == iString.length())
+      return '\0';
+    iCurrent++;
     char c = iString.charAt(iCurrent-1);
     if (c == '\n')
       iStatus.NextLine();
-	  return c;
-	}
-	public char Peek() throws Exception
-	{
-	  if (iCurrent == iString.length())
-	    return '\0';
-	  return iString.charAt(iCurrent);
-	}
+    return c;
+  }
+  public char Peek() throws Exception
+  {
+    if (iCurrent == iString.length())
+      return '\0';
+    return iString.charAt(iCurrent);
+  }
   public boolean EndOfStream()
-	{
-	  return (iCurrent == iString.length());
-	}
+  {
+    return (iCurrent == iString.length());
+  }
   public StringBuffer StartPtr()
-	{
-	  return iString;
-	}
+  {
+    return iString;
+  }
   public int Position()
-	{
-	  return iCurrent;
-	}
+  {
+    return iCurrent;
+  }
   public void SetPosition(int aPosition)
-	{
-	  iCurrent = aPosition;
-	}
+  {
+    iCurrent = aPosition;
+  }
 
   StringBuffer iString;
   int iCurrent;
