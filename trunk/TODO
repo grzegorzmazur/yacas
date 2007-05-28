@@ -38,6 +38,8 @@ Bugs:
 
 - Is there not enough in common between the different files platfileio.h that we should perhaps consider merging them?
 
+- We should perhaps only compile testnum if we are running 'make test'
+
 - There is a function "gamma" that should be "Gamma".
 
 - When exception thrown within N(...) then reset all globals that were changed.

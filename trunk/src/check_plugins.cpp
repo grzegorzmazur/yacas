@@ -29,7 +29,7 @@ int main(int argc, char** argv)
 #endif // DISABLE_DYNAMIC
 
   char new_buf[1024];
-  sprintf(new_buf,"#ifndef __plugins_available_h__\n#define __plugins_available_h__\n%s EXE_DLL_PLUGINS\n#endif // __plugins_available_h__\n",define);
+  sprintf(new_buf,"#ifndef __plugins_available_h__\n#define __plugins_available_h__\n%s EXE_DLL_PLUGINS\n#endif /* __plugins_available_h__ */\n",define);
 
   // To stop recursive recompiles, only write the file if it did not yet exist, or if it changed.
   int do_save = 1;	// equivalent to "changed"

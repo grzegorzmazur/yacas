@@ -83,7 +83,7 @@ void CheckAllPtrs(int final /*=0*/)
 
     for (YacasMemBlock * p = iFirst; p; p = p->iNEXT)
     {
-        if (final) printf("%s(%d) : error C6666: memory leak! (0x%p)\n",p->iFile,p->iLine,p+1);
+        if (final) printf("%s(%d) : error C6666: memory leak! (0x%p)\n",p->iFile,p->iLine,(void*)(p+1));
         CheckPtr(p + 1, __FILE__, __LINE__);
     }
     if (final && iFirst!= NULL)
