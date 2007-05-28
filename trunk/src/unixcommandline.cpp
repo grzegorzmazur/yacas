@@ -73,7 +73,7 @@ CUnixCommandLine::CUnixCommandLine() : orig_termio(), rl_termio(), iMaxLines(102
                 buff[i++] = '\0';
                 LispString * ptr = NEW LispString(buff);
                 iHistoryList.Append(ptr);
-                
+ 
             }
             fclose(f);
         }
@@ -90,7 +90,7 @@ CUnixCommandLine::~CUnixCommandLine()
 #else
     sprintf(fname,"%s/.yacas_history",getenv("HOME"));
 #endif
-    
+ 
     FILE*f=fopen(fname,"w");
     if (f)
     {
@@ -146,13 +146,13 @@ if (feof(stdin))
         case 10:        /* Enter */
             c = eEnter;
             break;
-        case 001:		/* ^A  (unix home) */
+        case 001:    /* ^A  (unix home) */
             c = eHome;
             break;
-        case 005:		/* ^E  (unix end) */
+        case 005:    /* ^E  (unix end) */
             c = eEnd;
             break;
-        case 004:		/* ^D  (unix delete) */
+        case 004:    /* ^D  (unix delete) */
         case 127:
             c = eDelete;
             break;

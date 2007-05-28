@@ -24,7 +24,6 @@ char line_read_buffer[MAX_LINE_LENGTH];
 void ShowCharacter(int startPos, int nr)
 {
   fprintf(stderr,"%s",line_read_buffer);
-  fprintf(stderr,"");
   int i;
   for (i=0;i<startPos;i++)
     fprintf(stderr," ");
@@ -33,7 +32,9 @@ void ShowCharacter(int startPos, int nr)
   fprintf(stderr,"\n");
 }
 
-void CheckFileForWhiteSpaces(char* fileName)
+#define START_WARN {fprintf(stderr,"%s:%d: ",fileName,line);}
+
+void CheckFileForTabs(char* fileName)
 {
   FILE*f = fopen(fileName,"rb");
   if (!f)
@@ -49,13 +50,12 @@ void CheckFileForWhiteSpaces(char* fileName)
   char* result = NULL;
   int result_pos = 0;
   result = (char*)malloc(2*size+10); // This should definitely be enough
-
-#define START_WARN {fprintf(stderr,"%s:%d: ",fileName,line);}
-  
+ 
   int line = 0;
   while (!feof(f))
   {
     fgets(line_read_buffer,MAX_LINE_LENGTH-1,f);
+    if (feof(f)) break;
     line++;
     int i,length=strlen(line_read_buffer);
     for (i=0;i<length;i++)
@@ -76,16 +76,56 @@ void CheckFileForWhiteSpaces(char* fileName)
         result[result_pos++] = line_read_buffer[i];
       }
     }
+  }
+  fclose(f);
+  // Now fix, if so required
+  if (warned && fix_mode)
+  {
+    FILE*f=fopen(fileName,"wb");
+    fwrite(result,1,result_pos,f);
+    fclose(f);
+  }
+  free(result);
+}
+
+void CheckFileForWhiteSpacesAtEol(char* fileName)
+{
+  FILE*f = fopen(fileName,"rb");
+  if (!f)
+  {
+    fprintf(stderr,"Warning: could not open file %s\n",fileName);
+    return;
+  }
+  int warned = 0;
+
+  fseek(f,0,SEEK_END);
+  long size = ftell(f);
+  fseek(f,0,SEEK_SET);
+  char* result = NULL;
+  int result_pos = 0;
+  result = (char*)malloc(2*size+10); // This should definitely be enough
+ 
+  int line = 0;
+  while (!feof(f))
+  {
+    fgets(line_read_buffer,MAX_LINE_LENGTH-1,f);
+    if (feof(f)) break;
+    line++;
+    int i,length=strlen(line_read_buffer);
+    for (i=0;i<length;i++)
+    {
+      result[result_pos++] = line_read_buffer[i];
+    }
     int j = length-1;
     while (j > 0 && (line_read_buffer[j] == '\r' || line_read_buffer[j] == '\n')) j--;
-    
+ 
     if (j > 0 && isspace(line_read_buffer[j]))
     {
       warned=1;
       nr_warnings_reported++;
       START_WARN;
       fprintf(stderr,"line ends with space:\n");
-      ShowCharacter(i, 1);
+      ShowCharacter(j, 1);
 
       // Now fix it
       i=j;
@@ -93,7 +133,7 @@ void CheckFileForWhiteSpaces(char* fileName)
 
       int nr_spaces_to_remove = j-i;
       int nr_eol_chars = (length-1)-j;
-      
+ 
       result_pos = result_pos - (nr_spaces_to_remove+nr_eol_chars);
       for (i=0;i<nr_eol_chars;i++)
       {
@@ -114,9 +154,11 @@ void CheckFileForWhiteSpaces(char* fileName)
   free(result);
 }
 
+
 void CheckFile(char* fileName)
 {
-  CheckFileForWhiteSpaces(fileName);
+  CheckFileForTabs(fileName);
+  CheckFileForWhiteSpacesAtEol(fileName);
 }
 
 void PrintBanner()
@@ -128,7 +170,7 @@ void PrintBanner()
 
 void PrintUsage(char* exeName)
 {
-  printf("Usage: %s [jcf] [list of files]\n");
+  printf("Usage: %s [jcf] [list of files]\n",exeName);
   printf("The tool will run over the files provided and do its work, one at a time.\n");
   printf("The first argument is a list of command flags:\n");
   printf("j - assume this is a Java source file\n");
@@ -161,7 +203,7 @@ int main(int argc, char** argv)
   {
     CheckFile(argv[i]);
   }
-  
+ 
   printf("%d warnings generated.\n",nr_warnings_reported);
   if (fix_mode) printf("%d warnings fixed.\n",nr_warnings_fixed);
   return 0;

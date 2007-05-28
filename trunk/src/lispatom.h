@@ -113,7 +113,7 @@ public:
     /// construct from another LispNumber
   LispNumber(BigNumber* aNumber, LispString * aString = NULL) : iNumber(aNumber), iString(aString) {}
   LispNumber(const LispNumber& other) : ASuper(other), iNumber(other.iNumber), iString(other.iString) {}
-  /// construct from a decimal string representation (also create a number object) and use aBasePrecision decimal digits 
+  /// construct from a decimal string representation (also create a number object) and use aBasePrecision decimal digits
   LispNumber(LispString * aString, LispInt aBasePrecision) : iNumber(NULL), iString(aString) { Number(aBasePrecision); }
 
   virtual ~LispNumber() {}

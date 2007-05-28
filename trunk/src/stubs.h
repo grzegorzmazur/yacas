@@ -15,9 +15,9 @@
   #define PlatAlloc malloc
   #define PlatReAlloc realloc
   #define PlatFree free
-  #define NEW new 
+  #define NEW new
   #define CHECKPTR(ptr)
-#else	// NO_GLOBALS -- goes almost to EOF
+#else  // NO_GLOBALS -- goes almost to EOF
   void *PlatObAlloc(size_t nbytes);
   void PlatObFree(void *p);
   void *PlatObReAlloc(void *p, size_t nbytes);
@@ -29,19 +29,19 @@
   #define PlatFree(orig)       YacasFreePrivate(orig)
   #define NEW new (__FILE__,__LINE__)
   #define CHECKPTR(ptr) CheckPtr(ptr,__FILE__,__LINE__)
-#else	// YACAS_DEBUG
+#else  // YACAS_DEBUG
   #define PlatAlloc(nr)        PlatObAlloc((size_t)nr)
   #define PlatReAlloc(orig,nr) PlatObReAlloc(orig,(size_t)nr)
   #define PlatFree(orig)       PlatObFree(orig)
   #define NEW new
   #define CHECKPTR(ptr)
-#endif	// YACAS_DEBUG
+#endif  // YACAS_DEBUG
 
 template <class T>
 inline T * PlatAllocN(LispInt aSize) { return (T*)PlatAlloc(aSize*sizeof(T)); }
 
 
-#ifdef YACAS_DEBUG	// goes almost to EOF
+#ifdef YACAS_DEBUG  // goes almost to EOF
 
 /* Operators new and delete are only defined globally here in debug mode. This is because
  * the global new and delete operators should not be used. So the debug version makes sure
@@ -52,8 +52,8 @@ inline T * PlatAllocN(LispInt aSize) { return (T*)PlatAlloc(aSize*sizeof(T)); }
 #define DELETE_THROWER throw ()
 
 // TODO: why doesn't MSC itself have this problem? Perhaps wrong signature of these new and delete operators?
-#if defined(_MSC_VER) && _MSC_VER <= 1310	// getting C4290 warnings?  slowly increase number.
-#pragma warning( disable : 4290 )	// C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
+#if defined(_MSC_VER) && _MSC_VER <= 1310  // getting C4290 warnings?  slowly increase number.
+#pragma warning( disable : 4290 )  // C4290: C++ exception specification ignored except to indicate a function is not __declspec(nothrow)
 #endif
 
 void* operator new(size_t size) NEW_THROWER;
@@ -61,10 +61,10 @@ void* operator new[](size_t size) NEW_THROWER;
 void operator delete(void* object) DELETE_THROWER;
 void operator delete[](void* object) DELETE_THROWER;
 
-#endif	// YACAS_DEBUG
+#endif  // YACAS_DEBUG
 
-#endif	// NO_GLOBALS
+#endif  // NO_GLOBALS
 
 #include "stubs.inl"
 
-#endif	// __stubs_h__
+#endif  // __stubs_h__

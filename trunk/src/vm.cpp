@@ -28,7 +28,7 @@ void RunFunction(LispEnvironment& aEnvironment,LispInt aStackTop,
             const unsigned char* code, LispObject* aConstants[])
 {
 //printf("1...\n");
-  register LispEnvironment::YacasArgStack& _this_stack = aEnvironment.iStack; 
+  register LispEnvironment::YacasArgStack& _this_stack = aEnvironment.iStack;
 //printf("2...\n");
 
   const unsigned char* ptr = code;
@@ -100,7 +100,7 @@ void RunFunction(LispEnvironment& aEnvironment,LispInt aStackTop,
 //printf("CodeVmCall\n");
         {
           int nrargs;
-          index = *ptr++; 
+          index = *ptr++;
           index <<= 8; index |= *ptr++;
           index <<= 8; index |= *ptr++;
           index <<= 8; index |= *ptr++;

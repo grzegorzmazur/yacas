@@ -21,15 +21,15 @@ int  compressedsize[MAXFILES];
 //
 // lzo specific
 //
-#define IN_LEN		(128*1024L)
-#define OUT_LEN		(IN_LEN + IN_LEN / 64 + 16 + 3)
+#define IN_LEN    (128*1024L)
+#define OUT_LEN    (IN_LEN + IN_LEN / 64 + 16 + 3)
 static lzo_byte in  [ IN_LEN ];
 static lzo_byte out [ OUT_LEN ];
 /* Work-memory needed for compression. Allocate memory in units
  * of `long' (instead of `char') to make sure it is properly aligned.
  */
 #define HEAP_ALLOC(var,size) \
-	long __LZO_MMODEL var [ ((size) + (sizeof(long) - 1)) / sizeof(long) ]
+  long __LZO_MMODEL var [ ((size) + (sizeof(long) - 1)) / sizeof(long) ]
 static HEAP_ALLOC(wrkmem,LZO1X_1_MEM_COMPRESS);
 
 
@@ -78,7 +78,7 @@ void StripScript(char *contents,int &stripsize)
           contents[trg++] = c;
           while (contents[src] != '\"')
           {
-            if (contents[src] == '\\') 
+            if (contents[src] == '\\')
               contents[trg++] = contents[src++];
             contents[trg++] = contents[src++];
           }
@@ -176,7 +176,7 @@ void PostProcessFile(FILE* tmpfilef,char* base,int index)
         fwrite(contents,1,stripsize,tmpfilef);
         offset[index] = totalsize;
         compressedsize[index] = stripsize;
-        
+ 
         totalsize+=stripsize;
         printf("%d:\t",stripsize);
         printf("%s\n",filename[index]);
@@ -228,14 +228,14 @@ void  putint(char*&indptr,int n)
     *indptr++ = n&0xff; n>>=8;
     *indptr++ = n&0xff; n>>=8;
     *indptr++ = n&0xff; n>>=8;
-    *indptr++ = n&0xff; 
+    *indptr++ = n&0xff;
 }
 void  putint(FILE*fout,int n)
 {
     fputc(n&0xff,fout); n>>=8;
     fputc(n&0xff,fout); n>>=8;
     fputc(n&0xff,fout); n>>=8;
-    fputc(n&0xff,fout); 
+    fputc(n&0xff,fout);
 }
 
 void makeindex(char* indexbuf,char*&indptr,int offs)
@@ -294,7 +294,7 @@ int main(int argc, char** argv)
     fclose(tmpfilef);
 
 
-    
+ 
     printf("%d files, %d bytes packed.\n",totalfiles,totalsize);
 
     printf("Writing to file %s...\n",argv[3]);
@@ -307,7 +307,7 @@ int main(int argc, char** argv)
         makeindex(indexbuf,indptr,0);
         int indexlength = indptr-indexbuf;
         makeindex(indexbuf,indptr,2*sizeof(int)+indexlength);
-	printf("%d bytes uncompressed index\n",2*sizeof(int)+indexlength);
+  printf("%d bytes uncompressed index\n",2*sizeof(int)+indexlength);
         putint(fout,totalfiles);
         putint(fout,indexlength);
         fwrite(indexbuf,1,indexlength,fout);
@@ -323,7 +323,7 @@ int main(int argc, char** argv)
             free(buf);
         }
 
-        
+ 
 //        putint(fout,totalfiles);
     }
     {

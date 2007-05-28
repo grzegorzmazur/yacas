@@ -92,7 +92,7 @@ LispBoolean BackQuoteBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
     if (!ptr) return LispFalse;
     if (!ptr->String()) return LispFalse;
 
-    if (StrEqual("`", ptr->String()->c_str())) 
+    if (StrEqual("`", ptr->String()->c_str()))
     {
       aResult = (aElement);
       return LispTrue;

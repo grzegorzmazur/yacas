@@ -50,11 +50,11 @@ void CheckNrArgs(LispInt n, LispPtr& aArguments,
 {
     LispInt nrArguments = InternalListLength(aArguments);
     if (nrArguments == n) return;
-	
-	LispInt needed = n-1;
-	LispInt passed = nrArguments-1;
+ 
+  LispInt needed = n-1;
+  LispInt passed = nrArguments-1;
 
-	if (!aArguments)
+  if (!aArguments)
     {
       aEnvironment.iErrorOutput.Write("Error in compiled code\n");
     }
@@ -101,7 +101,7 @@ void CheckFuncGeneric(LispInt aError,
 void CheckArgType(LispInt aArgNr, LispPtr& aArguments,LispEnvironment& aEnvironment,
                   LispInt aError)
 {
-	if (!aArguments)
+  if (!aArguments)
     {
         aEnvironment.iErrorOutput.Write("Error in compiled code\n");
     }
@@ -109,26 +109,26 @@ void CheckArgType(LispInt aArgNr, LispPtr& aArguments,LispEnvironment& aEnvironm
     {
         ShowStack(aEnvironment);
         ShowFunctionError(aArguments, aEnvironment);
-  
+ 
         aEnvironment.iErrorOutput.Write("bad argument number ");
         LispChar str[20];
         InternalIntToAscii(str,aArgNr);
         aEnvironment.iErrorOutput.Write(str);
         aEnvironment.iErrorOutput.Write(" (counting from 1)\n");
-  
+ 
 #define LIM_AL 60
         LispPtr& arg = Argument(aArguments,aArgNr);
         LispString strout;
-  
+ 
         aEnvironment.iErrorOutput.Write("The offending argument ");
         PrintExpression(strout, arg, aEnvironment, LIM_AL);
         aEnvironment.iErrorOutput.Write(strout.c_str());
   //        aEnvironment.iErrorOutput.Write("\n");
-  
+ 
   //        aEnvironment.iErrorOutput.Write("Argument ");
   //        PrintExpression(strout, arg, aEnvironment, LIM_AL);
   //        aEnvironment.iErrorOutput.Write(strout.String());
-  
+ 
         LispPtr eval;
         InternalEval(aEnvironment, eval, arg);
         aEnvironment.iErrorOutput.Write(" evaluated to ");
@@ -137,8 +137,8 @@ void CheckArgType(LispInt aArgNr, LispPtr& aArguments,LispEnvironment& aEnvironm
         aEnvironment.iErrorOutput.Write("\n");
 
         DBG_( printf("Problem occurred at %s(%d)\n",
-			aArguments->iFileName,
-			aArguments->iLine ); )
+      aArguments->iFileName,
+      aArguments->iLine ); )
     }
     Check(0,aError);
 }
@@ -160,7 +160,7 @@ void RaiseError(char* str,...)
  #else
   /* Just cross fingers and hope the buffer is large enough */
   vsprintf (GenericErrorBuf(), str, arg);
- #endif  
+ #endif
   va_end (arg);
 #else
   PlatMemCopy(GenericErrorBuf(), str, PlatStrLen(str));

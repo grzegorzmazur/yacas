@@ -15,7 +15,7 @@
 
 
 // Insert your headers here
-#define WIN32_LEAN_AND_MEAN		// Exclude rarely-used stuff from Windows headers
+#define WIN32_LEAN_AND_MEAN    // Exclude rarely-used stuff from Windows headers
 
 #include <windows.h>
 
@@ -29,19 +29,19 @@
 #include "win32yacasdll.h"
 
 HANDLE hThisModule = NULL;
-BOOL APIENTRY DllMain( HANDLE hModule, 
-                       DWORD  ul_reason_for_call, 
+BOOL APIENTRY DllMain( HANDLE hModule,
+                       DWORD  ul_reason_for_call,
                        LPVOID lpReserved
-					 )
+           )
 {
   hThisModule = hModule;
   switch (ul_reason_for_call)
-	{
-		case DLL_PROCESS_ATTACH:
-		case DLL_THREAD_ATTACH:
-		case DLL_THREAD_DETACH:
-		case DLL_PROCESS_DETACH:
-			break;
+  {
+    case DLL_PROCESS_ATTACH:
+    case DLL_THREAD_ATTACH:
+    case DLL_THREAD_DETACH:
+    case DLL_PROCESS_DETACH:
+      break;
     }
     return TRUE;
 }
@@ -49,7 +49,7 @@ BOOL APIENTRY DllMain( HANDLE hModule,
 // This is the constructor of a class that has been exported.
 // see yacasdll.h for the class definition
 CYacasdll::CYacasdll()
-{ 
-	return; 
+{
+  return;
 }
 

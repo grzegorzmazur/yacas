@@ -21,12 +21,12 @@ LispChar StringInput::Next()
     return result;
 }
 
-LispChar StringInput::Peek() 
+LispChar StringInput::Peek()
 {
     return iString[ iCurrent ];
 }
 
-LispBoolean StringInput::EndOfStream() 
+LispBoolean StringInput::EndOfStream()
 {
     return (iString[ iCurrent ] == '\0');
 }

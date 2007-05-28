@@ -78,9 +78,9 @@ static void Trigonometry(ANumber& x,ANumber& i,ANumber& sum,ANumber& term)
 //    printf("[%d,%d]:",x.Size()-x.iExp,x.iExp);
 
     // While (term>epsilon)
-    while (1 /* Significant(term)*/)      
+    while (1 /* Significant(term)*/)
     {
-    
+ 
 #ifdef CORRECT_DIVISION
 
 /*
@@ -166,7 +166,7 @@ LispObject* SinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPr
 {
 //PrintNumber("Sin input: %s\n",*int1->Number(aPrecision)->iNumber);
   ANumber sum(aPrecision);
-  ANumber x(*int1->Number(aPrecision)->iNumber);	// woof
+  ANumber x(*int1->Number(aPrecision)->iNumber);  // woof
   x.ChangePrecision(aPrecision);
   SinFloat(sum, x);
   return FloatToString(sum, aEnvironment);
@@ -210,24 +210,24 @@ LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt 
 {
 //PrintNumber("ArcSin input: \n",*int1->Number(aPrecision)->iNumber);
 
-	// Use Newton's method to solve sin(x) = y by iteration:
+  // Use Newton's method to solve sin(x) = y by iteration:
     // x := x - (Sin(x) - y) / Cos(x)
-	// this is similar to PiFloat()
-	// we are using PlatArcSin() as the initial guess
-	// maybe, for y very close to 1 or to -1 convergence will
-	// suffer but seems okay in some tests
+  // this is similar to PiFloat()
+  // we are using PlatArcSin() as the initial guess
+  // maybe, for y very close to 1 or to -1 convergence will
+  // suffer but seems okay in some tests
 //printf("%s(%d)\n",__FILE__,__LINE__);
 //printf("input: %s\n",int1->String()->c_str());
 //PrintNumber("digits ",*int1->Number(aPrecision)->iNumber);
   RefPtr<LispObject> iResult(PlatArcSin(aEnvironment, int1,  0));
-	ANumber result(*iResult->Number(aPrecision)->iNumber);	// hack, hack, hack
+  ANumber result(*iResult->Number(aPrecision)->iNumber);  // hack, hack, hack
   result.ChangePrecision(aPrecision);
 
-	// how else do I get an ANumber from the result of PlatArcSin()?
-  ANumber x(aPrecision);	// dummy variable
-//  ANumber q("10", aPrecision);	// initial value must be "significant"
-  
-  ANumber q( aPrecision);	// initial value must be "significant"
+  // how else do I get an ANumber from the result of PlatArcSin()?
+  ANumber x(aPrecision);  // dummy variable
+//  ANumber q("10", aPrecision);  // initial value must be "significant"
+ 
+  ANumber q( aPrecision);  // initial value must be "significant"
   {
     ANumber x(aPrecision);
     ANumber s(aPrecision);
@@ -241,21 +241,21 @@ LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt 
 
   ANumber s(aPrecision);
   ANumber c(aPrecision);
-	
-	while (Significant(q))
+ 
+  while (Significant(q))
   {
     x.CopyFrom(result);
     SinFloat(s, x);
-		Negate(s);
+    Negate(s);
     x.CopyFrom(s);
-		ANumber y(*int1->Number(aPrecision)->iNumber);
+    ANumber y(*int1->Number(aPrecision)->iNumber);
 //PrintNumber("y = ",y);
-		Add(s, x, y);
+    Add(s, x, y);
     // now s = y - Sin(x)
-		x.CopyFrom(result);
+    x.CopyFrom(result);
     CosFloat(c, x);
     Divide(q,x,s,c);
-		// now q = (y - Sin(x)) / Cos(x)
+    // now q = (y - Sin(x)) / Cos(x)
 
     // Calculate result:=result+q;
     x.CopyFrom(result);
@@ -284,18 +284,18 @@ static void ExpFloat(ANumber& aResult, ANumber& x)
     //
     ANumber one("1",aResult.iPrecision);
     // i <- 0
-    ANumber i("0",aResult.iPrecision);     
+    ANumber i("0",aResult.iPrecision);
     // sum <- 1
     aResult.SetTo("1");
     // term <- 1
-    ANumber term("1",aResult.iPrecision);  
+    ANumber term("1",aResult.iPrecision);
     ANumber dummy(10);
 
     LispInt requiredDigits = WordDigits(aResult.iPrecision, 10)+
         x.Size()-x.iExp+1;
 
     // While (term>epsilon)
-    while (Significant(term))      
+    while (Significant(term))
     {
         ANumber orig(aResult.iPrecision);
 
@@ -308,9 +308,9 @@ static void ExpFloat(ANumber& aResult, ANumber& x)
             }
         }
 
-        
+ 
         //   i <- i+1
-        BaseAdd(i, one, WordBase);     
+        BaseAdd(i, one, WordBase);
 
         //   term <- term*x/(i)
         orig.CopyFrom(term);
@@ -345,7 +345,7 @@ LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnv
         ANumber y(*int2->Number(aPrecision)->iNumber);
         LispBoolean neg = y.iNegative;
         y.iNegative=LispFalse;
-        
+ 
         // result <- 1
         ANumber result("1",aPrecision);
         // base <- x
@@ -378,12 +378,12 @@ LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnv
             copy.CopyFrom(result);
             Divide(result,dummy,one,copy);
         }
-        
+ 
         // result
         return FloatToString(result, aEnvironment);
     }
     Check(LispFalse, KLispErrNotInteger);
-	return 0;
+  return 0;
 }
 
 
@@ -420,12 +420,12 @@ LispObject* ShiftRight( LispObject* int1, LispObject* int2, LispEnvironment& aEn
 }
 
 static void DivideInteger( ANumber& aQuotient, ANumber& aRemainder,
-                        LispChar * int1, LispChar * int2, 
+                        LispChar * int1, LispChar * int2,
                         LispInt aPrecision)
 {
     ANumber a1(int1,aPrecision);
     ANumber a2(int2,aPrecision);
-    
+ 
     Check(a1.iExp == 0, KLispErrNotInteger);
     Check(a2.iExp == 0, KLispErrNotInteger);
     Check(!IsZero(a2),KLispErrInvalidArg);
@@ -470,25 +470,25 @@ LispObject* LispFactorial(LispObject* int1, LispEnvironment& aEnvironment,LispIn
 // return old result*product of all integers from iLeft to iRight
 void tree_factorial(ANumber& result, LispInt iLeft, LispInt iRight, LispInt aPrecision)
 {
-	if (iRight == iLeft) BaseTimesInt(result, iLeft, WordBase);
-	else if (iRight == iLeft + 1) BaseTimesInt(result, iLeft*iRight, WordBase);
-	else if (iRight == iLeft + 2) BaseTimesInt(result, iLeft*iRight*(iLeft+1), WordBase);
-	else
-	{
-	    ANumber fac1("1", aPrecision), fac2("1", aPrecision);
-	    LispInt i = (iLeft+iRight)>>1;
-		tree_factorial(fac1, iLeft, i, aPrecision);
-		tree_factorial(fac2, i+1, iRight, aPrecision);
-		Multiply(result, fac1, fac2);
-	}
+  if (iRight == iLeft) BaseTimesInt(result, iLeft, WordBase);
+  else if (iRight == iLeft + 1) BaseTimesInt(result, iLeft*iRight, WordBase);
+  else if (iRight == iLeft + 2) BaseTimesInt(result, iLeft*iRight*(iLeft+1), WordBase);
+  else
+  {
+      ANumber fac1("1", aPrecision), fac2("1", aPrecision);
+      LispInt i = (iLeft+iRight)>>1;
+    tree_factorial(fac1, iLeft, i, aPrecision);
+    tree_factorial(fac2, i+1, iRight, aPrecision);
+    Multiply(result, fac1, fac2);
+  }
 }
 
 LispString * LispFactorial(LispChar * int1, LispHashTable& aHashTable,LispInt aPrecision)
 {
     LispInt nr = InternalAsciiToInt(int1);
     Check(nr>=0,KLispErrInvalidArg);
-	ANumber fac("1",aPrecision);
-	tree_factorial(fac, 1, nr, aPrecision);
+  ANumber fac("1",aPrecision);
+  tree_factorial(fac, 1, nr, aPrecision);
     return FloatToString(fac, aEnvironment);
 }
 
@@ -504,13 +504,13 @@ LispString * LispFactorial(LispChar * int1, LispHashTable& aHashTable,LispInt aP
 BigNumber::BigNumber(const LispChar * aString,LispInt aBasePrecision,LispInt aBase)
  : iReferenceCount(),iPrecision(0)
 #ifdef USE_NATIVE
-#else 
+#else
   #ifdef USE_GMP
   #else
     ,iType(KInt),iNumber(NULL)
   /// Internal library wrapper ends here.
-  #endif	// USE_GMP
-#endif	// USE_NATIVE
+  #endif  // USE_GMP
+#endif  // USE_NATIVE
 {
   iNumber = NULL;
   SetTo(aString, aBasePrecision, aBase);
@@ -518,13 +518,13 @@ BigNumber::BigNumber(const LispChar * aString,LispInt aBasePrecision,LispInt aBa
 BigNumber::BigNumber(const BigNumber& aOther)
  : iReferenceCount(),iPrecision(aOther.GetPrecision())
 #ifdef USE_NATIVE
-#else 
+#else
   #ifdef USE_GMP
   #else
     ,iType(KInt),iNumber(NULL)
   /// Internal library wrapper ends here.
-  #endif	// USE_GMP
-#endif	// USE_NATIVE
+  #endif  // USE_GMP
+#endif  // USE_NATIVE
 {
   iNumber = NEW ANumber(*aOther.iNumber);
   SetIsInteger(aOther.IsInt());
@@ -532,13 +532,13 @@ BigNumber::BigNumber(const BigNumber& aOther)
 BigNumber::BigNumber(LispInt aPrecision)
  : iReferenceCount(),iPrecision(aPrecision)
 #ifdef USE_NATIVE
-#else 
+#else
   #ifdef USE_GMP
   #else
     ,iType(KInt),iNumber(NULL)
   /// Internal library wrapper ends here.
-  #endif	// USE_GMP
-#endif	// USE_NATIVE
+  #endif  // USE_GMP
+#endif  // USE_NATIVE
 {
   iNumber = NEW ANumber(BITS_TO_DIGITS(aPrecision,10));
   SetIsInteger(LispTrue);
@@ -552,7 +552,7 @@ BigNumber::~BigNumber()
 void BigNumber::SetTo(const BigNumber& aOther)
 {
   iPrecision = aOther.GetPrecision();
-  if (!iNumber) 
+  if (!iNumber)
   {
     iNumber = NEW ANumber(*aOther.iNumber);
   }
@@ -569,7 +569,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aBasePrecision, LispInt aB
 {
   ANumber num(*iNumber);
 //  num.CopyFrom(*iNumber);
-  
+ 
   //TODO this round-off code is not correct yet, but will work in most cases
   // This is a bit of a messy way to round off numbers. It is probably incorrect,
   // even. When precision drops one digit, it rounds off the last ten digits.
@@ -593,7 +593,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aBasePrecision, LispInt aB
       if (num.iExp >= num.Size()) break;
       for (i=num.iExp;i<num.Size();i++)
       {
-        if (num[i] != 0) 
+        if (num[i] != 0)
         {
           if (!(i==num.iExp && num[i]<10000 && num.iTensExp == 0))
           {
@@ -718,39 +718,39 @@ LispInt DividePrecision(const BigNumber& aX, const BigNumber& aY, LispInt aPreci
 {
   LispInt p=1;
   if (aY.Sign()==0)
-  {	// zero division, report and do nothing
-  	RaiseError("BigNumber::Divide: zero division request ignored\n");
+  {  // zero division, report and do nothing
+    RaiseError("BigNumber::Divide: zero division request ignored\n");
     p=0;
   }
   if (aX.IsInt())
   {
     // check for zero
     if (aX.Sign()==0)
-    {	// divide 0 by something, set result to integer 0
+    {  // divide 0 by something, set result to integer 0
       p = 1;
     }
     else if (aY.IsInt())
     {
     }
     else
-    {	// divide nonzero integer by nonzero float, precision is unmodified
+    {  // divide nonzero integer by nonzero float, precision is unmodified
       p = MIN(aPrecision, aY.GetPrecision());
     }
   }
-  else	// aX is a float, aY is nonzero
+  else  // aX is a float, aY is nonzero
   {
-	// check for a floating zero
-	if (aX.Sign()==0)
-	{
-		// result is 0. with precision m-B(y)+1
-		p = aX.GetPrecision()-aY.BitCount()+1;
-	}
+  // check for a floating zero
+  if (aX.Sign()==0)
+  {
+    // result is 0. with precision m-B(y)+1
+    p = aX.GetPrecision()-aY.BitCount()+1;
+  }
     else if (aY.IsInt())
-    {	// aY is integer, must be promoted to float
+    {  // aY is integer, must be promoted to float
       p = (MIN(aPrecision, aX.GetPrecision()));
     }
     else
-    {	// both aX and aY are nonzero floats
+    {  // both aX and aY are nonzero floats
       p = MIN(aX.GetPrecision(), aY.GetPrecision()) - DIST(aX.GetPrecision(), aY.GetPrecision());
       p = MIN((LispInt)aPrecision, p);
 
@@ -793,7 +793,7 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
 
   Check(!IsZero(a2),KLispErrInvalidArg);
   if (aX.IsInt() && aY.IsInt())
-  { 
+  {
     Check(a1.iExp == 0, KLispErrNotInteger);
     Check(a2.iExp == 0, KLispErrNotInteger);
     SetIsInteger(LispTrue);
@@ -833,7 +833,7 @@ void BigNumber::BitAnd(const BigNumber& aX, const BigNumber& aY)
   }
   iNumber->ResizeTo(min);
   LispInt i;
-  for (i=0;i<min;i++)	(*iNumber)[i] = (*aX.iNumber)[i] & (*aY.iNumber)[i];
+  for (i=0;i<min;i++)  (*iNumber)[i] = (*aX.iNumber)[i] & (*aY.iNumber)[i];
 }
 void BigNumber::BitOr(const BigNumber& aX, const BigNumber& aY)
 {
@@ -849,9 +849,9 @@ void BigNumber::BitOr(const BigNumber& aX, const BigNumber& aY)
   iNumber->ResizeTo(max);
 
   LispInt i;
-  for (i=0;i<min;i++)		(*iNumber)[i] = (*aX.iNumber)[i] | (*aY.iNumber)[i];
-  for (;i<lenY;i++)			(*iNumber)[i] = (*aY.iNumber)[i];
-  for (;i<lenX;i++)			(*iNumber)[i] = (*aX.iNumber)[i];
+  for (i=0;i<min;i++)    (*iNumber)[i] = (*aX.iNumber)[i] | (*aY.iNumber)[i];
+  for (;i<lenY;i++)      (*iNumber)[i] = (*aY.iNumber)[i];
+  for (;i<lenX;i++)      (*iNumber)[i] = (*aX.iNumber)[i];
 }
 void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
 {
@@ -863,23 +863,23 @@ void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
     min=max;
     max=swap;
   }
-  
+ 
   iNumber->ResizeTo(max);
 
   LispInt i;
-  for (i=0;i<min;i++)	(*iNumber)[i] = (*aX.iNumber)[i] ^ (*aY.iNumber)[i];
-  for (;i<lenY;i++)		(*iNumber)[i] = (*aY.iNumber)[i];
-  for (;i<lenX;i++)		(*iNumber)[i] = (*aX.iNumber)[i];
+  for (i=0;i<min;i++)  (*iNumber)[i] = (*aX.iNumber)[i] ^ (*aY.iNumber)[i];
+  for (;i<lenY;i++)    (*iNumber)[i] = (*aY.iNumber)[i];
+  for (;i<lenX;i++)    (*iNumber)[i] = (*aX.iNumber)[i];
 }
 
 void BigNumber::BitNot(const BigNumber& aX)
 {// FIXME?
   LispInt len=(*aX.iNumber).Size();
-  
+ 
   iNumber->ResizeTo(len);
 
   LispInt i;
-  for (i=0;i<len;i++)	(*iNumber)[i] = ~((*aX.iNumber)[i]);
+  for (i=0;i<len;i++)  (*iNumber)[i] = ~((*aX.iNumber)[i]);
 }
 
 
@@ -931,7 +931,7 @@ signed long BigNumber::BitCount() const
   }
 
   LispInt i,nr=num.Size();
-  for (i=nr-1;i>=0;i--) 
+  for (i=nr-1;i>=0;i--)
   {
     if (num[i] != 0) break;
   }
@@ -939,7 +939,7 @@ signed long BigNumber::BitCount() const
   if (i>=0)
   {
     PlatWord w=num[i];
-    while (w) 
+    while (w)
     {
       w>>=1;
       bits++;
@@ -957,7 +957,7 @@ LispInt BigNumber::Sign() const
 
 void BigNumber::DumpDebugInfo()
 {
-#ifdef HAVE_STDIO_H 
+#ifdef HAVE_STDIO_H
   if (!iNumber)
   {
     printf("No number representation\n");
@@ -997,10 +997,10 @@ void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
 void BigNumber::Floor(const BigNumber& aX)
 {
     iNumber->CopyFrom(*aX.iNumber);
-    //  If iExp is zero, then we can not look at the decimals and determine the floor. 
+    //  If iExp is zero, then we can not look at the decimals and determine the floor.
     // This number has to have digits (see code later in this routine that does a division).
-    // Not extending the digits caused the MathFloor function to fail on n*10-m where n was an 
-    // integer. The code below divides away the 10^-m, but since iExp was zero, this resulted in a 
+    // Not extending the digits caused the MathFloor function to fail on n*10-m where n was an
+    // integer. The code below divides away the 10^-m, but since iExp was zero, this resulted in a
     // premature truncation (seen when n<0)
     if (iNumber->iExp == 0)
       iNumber->ChangePrecision(iNumber->iPrecision);
@@ -1073,7 +1073,7 @@ LispBoolean BigNumber::Equals(const BigNumber& aOther) const
   {
     iNumber->DropTrailZeroes();
     aOther.iNumber->DropTrailZeroes();
-  
+ 
     if (IsZero(*iNumber))
         iNumber->iNegative = LispFalse;
     if (IsZero(*aOther.iNumber))
@@ -1131,7 +1131,7 @@ LispBoolean BigNumber::IsIntValue() const
 //FIXME I need to round first to get more reliable results.
   if (IsInt()) return LispTrue;
   iNumber->DropTrailZeroes();
-  if (iNumber->iExp == 0 && iNumber->iTensExp == 0) return LispTrue;  
+  if (iNumber->iExp == 0 && iNumber->iTensExp == 0) return LispTrue;
   BigNumber num(iPrecision);
   num.Floor(*this);
   return Equals(num);
@@ -1155,8 +1155,8 @@ LispBoolean BigNumber::IsSmall() const
     if (tensExp<0)tensExp = -tensExp;
     return
     (
-      iNumber->iPrecision <= 53	// standard float is 53 bits
-      && tensExp<1021 // 306	// 1021 bits is about 306 decimals
+      iNumber->iPrecision <= 53  // standard float is 53 bits
+      && tensExp<1021 // 306  // 1021 bits is about 306 decimals
     );
     // standard range of double precision is about 53 bits of mantissa and binary exponent of about 1021
   }
@@ -1176,7 +1176,7 @@ void BigNumber::BecomeInt()
     BaseDivideInt(*iNumber,10, WordBase, carry);
     iNumber->iTensExp++;
   }
-  
+ 
   iNumber->ChangePrecision(0);
   SetIsInteger(LispTrue);
 }
@@ -1190,7 +1190,7 @@ void BigNumber::BecomeFloat(LispInt aPrecision)
     LispInt precision = aPrecision;
     if (iPrecision > aPrecision)
       precision = iPrecision;
-    iNumber->ChangePrecision(BITS_TO_DIGITS(precision,10));	// is this OK or ChangePrecision means floating-point precision?
+    iNumber->ChangePrecision(BITS_TO_DIGITS(precision,10));  // is this OK or ChangePrecision means floating-point precision?
     SetIsInteger(LispFalse);
   }
 }
@@ -1202,7 +1202,7 @@ LispBoolean BigNumber::LessThan(const BigNumber& aOther) const
 //  a1.CopyFrom(*this->iNumber);
   ANumber a2(*aOther.iNumber);
 //  a2.CopyFrom(*aOther.iNumber);
-	return ::LessThan(a1, a2);
+  return ::LessThan(a1, a2);
 }
 
 
@@ -1231,7 +1231,7 @@ void BigNumber::SetTo(long aValue)
 void BigNumber::SetTo(double aValue)
 {
 #ifdef HAVE_STDIO_H
-  iPrecision = 53;	// standard double has 53 bits
+  iPrecision = 53;  // standard double has 53 bits
   char dummy[150];
   //FIXME platform code
   char format[20];
@@ -1267,21 +1267,21 @@ LispInt CalculatePrecision(const LispChar * aString,LispInt aBasePrecision,LispI
         break;
     }
     ptr++;
-  }  
+  }
 FOUND_FLOAT_INDICATOR:
-	// decide whether the string is an integer or a float
+  // decide whether the string is an integer or a float
   if (*ptr)
-  {	
+  {
     // converting to a float
     // estimate the number of bits we need to have
-	  // find the first significant digit:
+    // find the first significant digit:
     // initial zeros are not significant
     ptr = aString;
     while (*ptr == '.' || *ptr == '-' || *ptr == '0') ptr++;
-	  LispInt digit1 = ptr-aString;
+    LispInt digit1 = ptr-aString;
     // find the number of significant base digits (sig_digits)
     // trailing zeros and . *are* significant, do not include them in the sets
-	  LispInt sig_digits;// = strcspn(aString+digit1, (aBase<=10) ? "-eE@" : "-@"); 
+    LispInt sig_digits;// = strcspn(aString+digit1, (aBase<=10) ? "-eE@" : "-@");
 
       while (*ptr)
       {
@@ -1289,7 +1289,7 @@ FOUND_FLOAT_INDICATOR:
         {
           case '@': case '-':
             goto FND_1;
-          case 'e': case 'E': 
+          case 'e': case 'E':
             if (aBase<=10) goto FND_1;
         }
         ptr++;
@@ -1299,13 +1299,13 @@ FND_1:
 
 
 
-	  if (sig_digits<=0)
-	  {	// this is when we have "0." in various forms
-		  // the number of digits is the number of trailing 0s after .
+    if (sig_digits<=0)
+    {  // this is when we have "0." in various forms
+      // the number of digits is the number of trailing 0s after .
 
       // the string cannot consist of only 0 and -, it must contain at least one of ".eE@"
-		  // for example, -0000000.000e10 has 4 significant digits
-		  // counting . as one of the digits, so that "0" will have 1 digit
+      // for example, -0000000.000e10 has 4 significant digits
+      // counting . as one of the digits, so that "0" will have 1 digit
       ptr = aString;
       while (*ptr == '-' || *ptr == '0') ptr++;
       sig_digits = ptr-aString;
@@ -1322,18 +1322,18 @@ FND_1:
 FND_2:
       sig_digits = ptr - (aString+sig_digits);
 
-//		  sig_digits = strcspn(aString+sig_digits, "eE@");
-	  }
-	  else
-	  {	// our number is nonzero
+//      sig_digits = strcspn(aString+sig_digits, "eE@");
+    }
+    else
+    {  // our number is nonzero
       ptr = aString+digit1;
       while (*ptr && *ptr != '.') ptr++;
-		  if (*ptr == '.')
-			  -- sig_digits;	// this is when we have "1.000001" where "." is not a digit, so need to decrement
-	  }
-	  // ok, so we need to represent MAX(aPrecision,sig_digits) digits in base aBase
+      if (*ptr == '.')
+        -- sig_digits;  // this is when we have "1.000001" where "." is not a digit, so need to decrement
+    }
+    // ok, so we need to represent MAX(aPrecision,sig_digits) digits in base aBase
     aIsFloat = LispTrue;
-	  return (LispInt) digits_to_bits(MAX(aBasePrecision,sig_digits), aBase);
+    return (LispInt) digits_to_bits(MAX(aBasePrecision,sig_digits), aBase);
   }
   else
   {
@@ -1362,12 +1362,12 @@ void BigNumber::SetTo(const LispChar * aString,LispInt aBasePrecision,LispInt aB
   if (!iNumber)   iNumber = NEW ANumber(digits);
   iNumber->SetPrecision(digits);
   iNumber->SetTo(aString,aBase);
-  
+ 
   SetIsInteger(!isFloat && iNumber->iExp == 0 && iNumber->iTensExp == 0);
 }
 
 
-#endif	// USE_NATIVE
+#endif  // USE_NATIVE
 
 
 

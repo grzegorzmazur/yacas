@@ -40,9 +40,9 @@ public:
     virtual void Print(LispPtr& aExpression, LispOutput& aOutput, LispEnvironment& aEnvironment);
     virtual void RememberLastChar(LispChar aChar);
 private:
-    void PrintExpression(LispPtr& aExpression, LispOutput& aOutput, 
-    	                 LispEnvironment& aEnvironment,
-			 LispInt aDepth=0);
+    void PrintExpression(LispPtr& aExpression, LispOutput& aOutput,
+                       LispEnvironment& aEnvironment,
+       LispInt aDepth=0);
 
     void Indent(LispOutput& aOutput, LispInt aDepth);
 };

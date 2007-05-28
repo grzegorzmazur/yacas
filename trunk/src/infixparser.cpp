@@ -17,12 +17,12 @@ void ParsedObject::Fail()
    if (iLookAhead && iLookAhead->c_str())
    {
 //    if (IsSymbolic(iLookAhead->c_str()[0]))
-//       RaiseError("Error parsing expression, near token %s (maybe you forgot a space between two operators?)",iLookAhead->c_str()); 
-      RaiseError("Error parsing expression, near token %s",iLookAhead->c_str()); 
+//       RaiseError("Error parsing expression, near token %s (maybe you forgot a space between two operators?)",iLookAhead->c_str());
+      RaiseError("Error parsing expression, near token %s",iLookAhead->c_str());
    }
-   RaiseError("Error parsing expression"); 
+   RaiseError("Error parsing expression");
 }
-#define RAISE_PARSE_ERROR Fail() 
+#define RAISE_PARSE_ERROR Fail()
 
 InfixParser::InfixParser(LispTokenizer& aTokenizer, LispInput& aInput,
                          LispEnvironment& aEnvironment,
@@ -138,21 +138,21 @@ void ParsedObject::Combine(LispInt aNrArgsToCombine)
 {
     LispPtr subList(LispSubList::New(iResult));
     DBG_( subList->SetFileAndLine(
-		iParser.iInput.Status().FileName(),
-		iParser.iInput.Status().LineNumber() ); )
+    iParser.iInput.Status().FileName(),
+    iParser.iInput.Status().LineNumber() ); )
 
-	// TODO: woof -- such ugliness!
+  // TODO: woof -- such ugliness!
 
     LispIterator iter(iResult);
     for (LispInt i=0; i<aNrArgsToCombine; i++, ++iter)
     {
-		if (!iter.getObj()) { RAISE_PARSE_ERROR; return; } // iError = LispTrue;
-	}
-	if (!iter.getObj()) { RAISE_PARSE_ERROR; return; } // iError = LispTrue;
+    if (!iter.getObj()) { RAISE_PARSE_ERROR; return; } // iError = LispTrue;
+  }
+  if (!iter.getObj()) { RAISE_PARSE_ERROR; return; } // iError = LispTrue;
     subList->Nixed() = (*++iter);
     *iter = (NULL);
 
-	InternalReverseList((*subList->SubList())->Nixed(),	// TODO: woof
+  InternalReverseList((*subList->SubList())->Nixed(),  // TODO: woof
                      (*subList->SubList())->Nixed());
     iResult = subList;
 }
@@ -170,8 +170,8 @@ void ParsedObject::InsertAtom(LispString * aString)
 {
     LispPtr ptr(LispAtom::New(iParser.iEnvironment,aString->c_str()));
     DBG_( ptr->SetFileAndLine(
-		iParser.iInput.Status().FileName(),
-		iParser.iInput.Status().LineNumber() ); )
+    iParser.iInput.Status().FileName(),
+    iParser.iInput.Status().LineNumber() ); )
     ptr->Nixed() = (iResult);
     iResult = (ptr);
 }
@@ -349,8 +349,8 @@ void ParsedObject::ReadAtom()
         Combine(nrargs);
         // Set the line to the beginning of the prog
         DBG_( iResult->SetFileAndLine(
-			iParser.iInput.Status().FileName(),
-			startLine ); )
+      iParser.iInput.Status().FileName(),
+      startLine ); )
     }
     // Else we have an atom.
     else
@@ -415,12 +415,12 @@ void InfixPrinter::WriteToken(LispOutput& aOutput,LispChar * aString)
         aOutput.Write(" ");
     }
     aOutput.Write(aString);
-	RememberLastChar(aString[PlatStrLen(aString)-1]);
+  RememberLastChar(aString[PlatStrLen(aString)-1]);
 }
 
 void InfixPrinter::RememberLastChar(LispChar aChar)
 {
-	iPrevLastChar = aChar;
+  iPrevLastChar = aChar;
 }
 
 void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
@@ -529,8 +529,8 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
             {
                 WriteToken(aOutput,"{");
                 for (int ii = 0; iter.getObj(); ii++, ++iter)
-				{
-					if (ii) WriteToken(aOutput,",");
+        {
+          if (ii) WriteToken(aOutput,",");
                     Print(*iter, aOutput, KMaxPrecedence);
                 }
                 WriteToken(aOutput,"}");
@@ -560,7 +560,7 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
                 if (bodied)
                 {
 //printf("%d > %d\n",iPrecedence, bodied->iPrecedence);
-                  if (iPrecedence < bodied->iPrecedence) 
+                  if (iPrecedence < bodied->iPrecedence)
                     bracket = LispTrue;
                 }
                 if (bracket) WriteToken(aOutput,"(");

@@ -30,7 +30,7 @@ public:
     { PlatFree(object); }
   static inline void operator delete[](void* object)
     { PlatFree(object); }
-	// Placement form of new and delete.
+  // Placement form of new and delete.
   static inline void* operator new(size_t, void* where) { return where; }
   static inline void operator delete(void*, void*) {}
  
@@ -43,7 +43,7 @@ public:
    *  destructor of this class is not virtual, and speed is not the primary concern in
    *  that build (as that build is used mostly for debugging).
    *
-   *  HIDE_UNIMPORTANT_COMPILER_WARNINGS can be defined in case one wants to get rid of 
+   *  HIDE_UNIMPORTANT_COMPILER_WARNINGS can be defined in case one wants to get rid of
    *  compiler warnings, as opposed to having maximum running speed.
    */
 protected:

@@ -13,17 +13,17 @@
 int main(int argc, char** argv)
 {
   char* define = "//#define";
-#ifdef DISABLE_DYNAMIC 
+#ifdef DISABLE_DYNAMIC
   {
 //printf("1...\n");
     FILE* f=fopen("libmath.cpp","rb");
-	if (f)
-	{
+  if (f)
+  {
 //printf("2...\n");
-	  // DISABLE_DYNAMIC is defined, but the plugin files are available, so compile them in statically
+    // DISABLE_DYNAMIC is defined, but the plugin files are available, so compile them in statically
       define = "#define";
-	  fclose(f);
-	}
+    fclose(f);
+  }
 //printf("3...\n");
   }
 #endif // DISABLE_DYNAMIC
@@ -32,43 +32,43 @@ int main(int argc, char** argv)
   sprintf(new_buf,"#ifndef __plugins_available_h__\n#define __plugins_available_h__\n%s EXE_DLL_PLUGINS\n#endif /* __plugins_available_h__ */\n",define);
 
   // To stop recursive recompiles, only write the file if it did not yet exist, or if it changed.
-  int do_save = 1;	// equivalent to "changed"
+  int do_save = 1;  // equivalent to "changed"
   char old_buf[1024];
   old_buf[0] = '\0';
   {
     FILE*f = fopen("plugins_available.h","rb");
-	if (f)
-	{
-	  fseek(f,0,SEEK_END);
-	  int size = ftell(f);
-	  fseek(f,0,SEEK_SET);
-	  fread(old_buf,1,size,f);
-	  old_buf[size] = '\0';
-	  fclose(f);
-	  if (!strcmp(old_buf,new_buf))
-	  {
-	    do_save = 0;
-		printf("plugins_available.h already up to date, not resaving\n");
-	  }
-	}
-	else
-	{
-	  fprintf(stderr,"plugins_available.h did not yet exist, creating it now\n");
-	}
+  if (f)
+  {
+    fseek(f,0,SEEK_END);
+    int size = ftell(f);
+    fseek(f,0,SEEK_SET);
+    fread(old_buf,1,size,f);
+    old_buf[size] = '\0';
+    fclose(f);
+    if (!strcmp(old_buf,new_buf))
+    {
+      do_save = 0;
+    printf("plugins_available.h already up to date, not resaving\n");
+    }
+  }
+  else
+  {
+    fprintf(stderr,"plugins_available.h did not yet exist, creating it now\n");
+  }
   }
   if (do_save)
   {
     printf("Saving plugins_available.h\n");
     FILE*f = fopen("plugins_available.h","wb");
-	if (f)
-	{
+  if (f)
+  {
       fprintf(f,"%s",new_buf);
-	  fclose(f);
-	}
-	else
-	{
-	  printf("warning: could not create file plugins_available.h\n");
-	}
+    fclose(f);
+  }
+  else
+  {
+    printf("warning: could not create file plugins_available.h\n");
+  }
   }
   return do_save;
 }

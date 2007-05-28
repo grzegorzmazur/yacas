@@ -83,21 +83,21 @@ inline void BigInteger::AddWord(PlatWord aTerm)
 
   {
     DoubleElementType accu;
-	  accu = digits[0];
-	  accu += aTerm;
-	  accu += carry;
+    accu = digits[0];
+    accu += aTerm;
+    accu += carry;
     digits[0] = (ElementType)(accu);
-	  carry = (accu >> WordBits);
+    carry = (accu >> WordBits);
   }
   int i=1;
   while (carry)
   {
     DoubleElementType accu;
-	  accu = digits[i];
-	  accu += carry;
+    accu = digits[i];
+    accu += carry;
     digits[i] = (ElementType)(accu);
-	  carry = (accu >> WordBits);
-	  i++;
+    carry = (accu >> WordBits);
+    i++;
   }
   Normalize();
 }
@@ -110,11 +110,11 @@ inline void BigInteger::MultWord(PlatWord aFactor)
   for (i=0;i<digits.size();i++)
   {
     DoubleElementType accu;
-	  accu = digits[i];
-	  accu *= aFactor;
-	  accu += carry;
+    accu = digits[i];
+    accu *= aFactor;
+    accu += carry;
     digits[i] = (ElementType)(accu);
-	  carry = (accu >> WordBits);
+    carry = (accu >> WordBits);
   }
   assert(carry == 0);
   Normalize();
@@ -150,20 +150,20 @@ inline void BigInteger::Add(const BigInteger& aSource)
   for (i=0;i<aSource.digits.size();i++)
   {
     DoubleElementType accu;
-	  accu = digits[i];
-	  accu += aSource.digits[i];
-	  accu += carry;
+    accu = digits[i];
+    accu += aSource.digits[i];
+    accu += carry;
     digits[i] = (ElementType)(accu);
-	  carry = (accu>>WordBits);
+    carry = (accu>>WordBits);
   }
   while (carry)
   {
     DoubleElementType accu;
-	  accu = digits[i];
-	  accu += carry;
+    accu = digits[i];
+    accu += carry;
     digits[i] = (ElementType)(accu);
-	  carry = (accu>>WordBits);
-	  i++;
+    carry = (accu>>WordBits);
+    i++;
   }
   Normalize();
 }
@@ -182,19 +182,19 @@ inline void BigInteger::MultiplyAdd(const BigInteger& aX, const BigInteger& aY)
     for (j=0;j<aY.digits.size();j++)
     {
       DoubleElementType accu;
-	    accu = digits[i+j]
+      accu = digits[i+j]
          + ((DoubleElementType)aY.digits[j])*factor
          + carry;
       digits[i+j] = (ElementType)(accu);
-	    carry = (accu>>WordBits);
+      carry = (accu>>WordBits);
     }
 
     while (carry)
     {
       DoubleElementType accu;
-	    accu = digits[i+j] + carry;
+      accu = digits[i+j] + carry;
       digits[i+j] = (ElementType)(accu);
-	    carry = (accu>>WordBits);
+      carry = (accu>>WordBits);
       j++;
     }
     assert(carry == 0);

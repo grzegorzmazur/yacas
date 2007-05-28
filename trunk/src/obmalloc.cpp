@@ -71,8 +71,8 @@
 #define SIZEOF_LONG   (BITS_PER_LONG/8)
 #define SIZEOF_VOID_P (BITS_PER_LONG/8)
 
-/* #undef WITH_MEMORY_LIMITS */		/* disable mem limit checks  */
- #define WITH_MALLOC_HOOKS		/* for profiling & debugging */
+/* #undef WITH_MEMORY_LIMITS */    /* disable mem limit checks  */
+ #define WITH_MALLOC_HOOKS    /* for profiling & debugging */
 
 /*==========================================================================*/
 
@@ -81,10 +81,10 @@
  *
  * -- Define and use these names in your code to obtain or release memory --
  */
-#define _THIS_MALLOC		PlatObAlloc
-#define _THIS_CALLOC		/* unused */
-#define _THIS_REALLOC		PlatObReAlloc
-#define _THIS_FREE		PlatObFree
+#define _THIS_MALLOC    PlatObAlloc
+#define _THIS_CALLOC    /* unused */
+#define _THIS_REALLOC    PlatObReAlloc
+#define _THIS_FREE    PlatObFree
 
 /*
  * Underlying allocator's functions called by this allocator.
@@ -97,17 +97,17 @@
  * malloc, calloc, realloc, free.
  */
 #define _SYSTEM_MALLOC          malloc
-#define _SYSTEM_CALLOC		/* unused */
-#define _SYSTEM_REALLOC		realloc
-#define _SYSTEM_FREE		free
+#define _SYSTEM_CALLOC    /* unused */
+#define _SYSTEM_REALLOC    realloc
+#define _SYSTEM_FREE    free
 
 /*
  * If malloc hooks are needed, names of the hooks' set & fetch
  * functions exported by this allocator.
  */
 #ifdef WITH_MALLOC_HOOKS
-#define _SET_HOOKS		Malloc_SetHooks
-#define _FETCH_HOOKS		Malloc_FetchHooks
+#define _SET_HOOKS    Malloc_SetHooks
+#define _FETCH_HOOKS    Malloc_FetchHooks
 #endif
 
 /*==========================================================================*/
@@ -117,7 +117,7 @@
  *
  * For small requests, the allocator sub-allocates <Big> blocks of memory.
  * Requests greater than 256 bytes are routed to the system's allocator.
- *    
+ *
  * Small requests are grouped in size classes spaced 8 bytes apart, due
  * to the required valid alignment of the returned address. Requests of
  * a particular size are serviced from memory pools of 4K (one VMM page).
@@ -136,22 +136,22 @@
  *
  * For small requests we have the following table:
  *
- * Request in bytes	Size of allocated block      Size class idx
+ * Request in bytes  Size of allocated block      Size class idx
  * ----------------------------------------------------------------
  *        1-8                     8                       0
- *	  9-16                   16                       1
- *	 17-24                   24                       2
- *	 25-32                   32                       3
- *	 33-40                   40                       4
- *	 41-48                   48                       5
- *	 49-56                   56                       6
- *	 57-64                   64                       7
- *	 65-72                   72                       8
- *	  ...                   ...                     ...
- *	241-248                 248                      30
- *	249-256                 256                      31
- *	
- *	0, 257 and up: routed to the underlying allocator.
+ *    9-16                   16                       1
+ *   17-24                   24                       2
+ *   25-32                   32                       3
+ *   33-40                   40                       4
+ *   41-48                   48                       5
+ *   49-56                   56                       6
+ *   57-64                   64                       7
+ *   65-72                   72                       8
+ *    ...                   ...                     ...
+ *  241-248                 248                      30
+ *  249-256                 256                      31
+ *
+ *  0, 257 and up: routed to the underlying allocator.
  */
 
 /*==========================================================================*/
@@ -169,9 +169,9 @@
  * You shouldn't change this unless you know what you are doing.
  */
 
-#define ALIGNMENT		8		/* must be 2^N */
-#define ALIGNMENT_SHIFT		3
-#define ALIGNMENT_MASK		(ALIGNMENT - 1)
+#define ALIGNMENT    8    /* must be 2^N */
+#define ALIGNMENT_SHIFT    3
+#define ALIGNMENT_MASK    (ALIGNMENT - 1)
 
 /*
  * Max size threshold below which malloc requests are considered to be
@@ -179,8 +179,8 @@
  * this value according to your application behaviour and memory needs.
  *
  * The following invariants must hold:
- *	1) ALIGNMENT <= SMALL_REQUEST_THRESHOLD <= 256
- *	2) SMALL_REQUEST_THRESHOLD == N * ALIGNMENT
+ *  1) ALIGNMENT <= SMALL_REQUEST_THRESHOLD <= 256
+ *  2) SMALL_REQUEST_THRESHOLD == N * ALIGNMENT
  *
  * Although not required, for better performance and space efficiency,
  * it is recommended that SMALL_REQUEST_THRESHOLD is set to a power of 2.
@@ -195,11 +195,11 @@
  * which is expected to be 8, 12 or 16 bytes.
  */
 
-#define _PYOBJECT_THRESHOLD	((SIZEOF_LONG + SIZEOF_VOID_P) * ALIGNMENT)
+#define _PYOBJECT_THRESHOLD  ((SIZEOF_LONG + SIZEOF_VOID_P) * ALIGNMENT)
 
-#define SMALL_REQUEST_THRESHOLD	_PYOBJECT_THRESHOLD /* must be N * ALIGNMENT */
+#define SMALL_REQUEST_THRESHOLD  _PYOBJECT_THRESHOLD /* must be N * ALIGNMENT */
 
-#define NB_SMALL_SIZE_CLASSES	(SMALL_REQUEST_THRESHOLD / ALIGNMENT)
+#define NB_SMALL_SIZE_CLASSES  (SMALL_REQUEST_THRESHOLD / ALIGNMENT)
 
 /*
  * The system's VMM page size can be obtained on most unices with a
@@ -209,8 +209,8 @@
  * have to be.
  */
 
-#define SYSTEM_PAGE_SIZE	(4 * 1024)
-#define SYSTEM_PAGE_SIZE_MASK	(SYSTEM_PAGE_SIZE - 1)
+#define SYSTEM_PAGE_SIZE  (4 * 1024)
+#define SYSTEM_PAGE_SIZE_MASK  (SYSTEM_PAGE_SIZE - 1)
 
 /*
  * Maximum amount of memory managed by the allocator for small requests.
@@ -218,7 +218,7 @@
 
 #ifdef WITH_MEMORY_LIMITS
 #ifndef SMALL_MEMORY_LIMIT
-#define SMALL_MEMORY_LIMIT	(64 * 1024 * 1024)	/* 64 MB -- more? */
+#define SMALL_MEMORY_LIMIT  (64 * 1024 * 1024)  /* 64 MB -- more? */
 #endif
 #endif
 
@@ -236,10 +236,10 @@
  * memory from the system accross various platforms.
  */
 
-#define ARENA_SIZE		(256 * 1024 - SYSTEM_PAGE_SIZE)	/* 256k - 1p */
+#define ARENA_SIZE    (256 * 1024 - SYSTEM_PAGE_SIZE)  /* 256k - 1p */
 
 #ifdef WITH_MEMORY_LIMITS
-#define MAX_ARENAS		(SMALL_MEMORY_LIMIT / ARENA_SIZE)
+#define MAX_ARENAS    (SMALL_MEMORY_LIMIT / ARENA_SIZE)
 #endif
 
 /*
@@ -247,12 +247,12 @@
  * between 1K and SYSTEM_PAGE_SIZE, that is: 1k, 2k, 4k, eventually 8k.
  */
 
-#define POOL_SIZE		SYSTEM_PAGE_SIZE	/* must be 2^N */
-#define POOL_SIZE_MASK		SYSTEM_PAGE_SIZE_MASK
-#define POOL_MAGIC		0x74D3A651		/* authentication id */
+#define POOL_SIZE    SYSTEM_PAGE_SIZE  /* must be 2^N */
+#define POOL_SIZE_MASK    SYSTEM_PAGE_SIZE_MASK
+#define POOL_MAGIC    0x74D3A651    /* authentication id */
 
-#define ARENA_NB_POOLS		(ARENA_SIZE / POOL_SIZE)
-#define ARENA_NB_PAGES		(ARENA_SIZE / SYSTEM_PAGE_SIZE)
+#define ARENA_NB_POOLS    (ARENA_SIZE / POOL_SIZE)
+#define ARENA_NB_PAGES    (ARENA_SIZE / SYSTEM_PAGE_SIZE)
 
 /*
  * -- End of tunable settings section --
@@ -278,11 +278,11 @@
 /*
  * Python's threads are serialized, so object malloc locking is disabled.
  */
-#define SIMPLELOCK_DECL(lock)	/* simple lock declaration		*/
-#define SIMPLELOCK_INIT(lock)	/* allocate (if needed) and initialize	*/
-#define SIMPLELOCK_FINI(lock)	/* free/destroy an existing lock 	*/
-#define SIMPLELOCK_LOCK(lock)	/* acquire released lock */
-#define SIMPLELOCK_UNLOCK(lock)	/* release acquired lock */
+#define SIMPLELOCK_DECL(lock)  /* simple lock declaration    */
+#define SIMPLELOCK_INIT(lock)  /* allocate (if needed) and initialize  */
+#define SIMPLELOCK_FINI(lock)  /* free/destroy an existing lock   */
+#define SIMPLELOCK_LOCK(lock)  /* acquire released lock */
+#define SIMPLELOCK_UNLOCK(lock)  /* release acquired lock */
 
 /*
  * Basic types
@@ -290,43 +290,43 @@
  */
 
 #undef  uchar
-#define uchar			unsigned char	/* assuming == 8 bits  */
+#define uchar      unsigned char  /* assuming == 8 bits  */
 
 #undef  ushort
-#define ushort			unsigned short	/* assuming >= 16 bits */
+#define ushort      unsigned short  /* assuming >= 16 bits */
 
 #undef  uint
-#define uint			unsigned int	/* assuming >= 16 bits */
+#define uint      unsigned int  /* assuming >= 16 bits */
 
 #undef  ulong
-#define ulong			unsigned long	/* assuming >= 32 bits */
+#define ulong      unsigned long  /* assuming >= 32 bits */
 
 #undef  off_t
-#define off_t 			uintptr_t   /* 16 bits <= off_t <= 64 bits */
+#define off_t       uintptr_t   /* 16 bits <= off_t <= 64 bits */
 
 /* When you say memory, my mind reasons in terms of (pointers to) blocks */
 typedef uchar block;
 
 /* Pool for small blocks */
 struct pool_header {
-	union { block *_padding;
-		uint count; } ref;	/* number of allocated blocks    */
-	block *freeblock;		/* pool's free list head         */
-	struct pool_header *nextpool;	/* next pool of this size class  */
-	struct pool_header *prevpool;	/* previous pool       ""        */
-	struct pool_header *pooladdr;	/* pool address (always aligned) */
-	uint magic;			/* pool magic number		 */
-	uint szidx;			/* block size class index	 */
-	uint capacity;			/* pool capacity in # of blocks  */
+  union { block *_padding;
+    uint count; } ref;  /* number of allocated blocks    */
+  block *freeblock;    /* pool's free list head         */
+  struct pool_header *nextpool;  /* next pool of this size class  */
+  struct pool_header *prevpool;  /* previous pool       ""        */
+  struct pool_header *pooladdr;  /* pool address (always aligned) */
+  uint magic;      /* pool magic number     */
+  uint szidx;      /* block size class index   */
+  uint capacity;      /* pool capacity in # of blocks  */
 };
 
 typedef struct pool_header *poolp;
 
 #undef  ROUNDUP
-#define ROUNDUP(x)		(((x) + ALIGNMENT_MASK) & ~ALIGNMENT_MASK)
-#define POOL_OVERHEAD		ROUNDUP(sizeof(struct pool_header))
+#define ROUNDUP(x)    (((x) + ALIGNMENT_MASK) & ~ALIGNMENT_MASK)
+#define POOL_OVERHEAD    ROUNDUP(sizeof(struct pool_header))
 
-#define DUMMY_SIZE_IDX		0xffff	/* size class of newly cached pools */
+#define DUMMY_SIZE_IDX    0xffff  /* size class of newly cached pools */
 
 /*==========================================================================*/
 
@@ -334,33 +334,33 @@ typedef struct pool_header *poolp;
  * This malloc lock
  */
 SIMPLELOCK_DECL(_malloc_lock)
-#define LOCK()		SIMPLELOCK_LOCK(_malloc_lock)
-#define UNLOCK()	SIMPLELOCK_UNLOCK(_malloc_lock)
-#define LOCK_INIT()	SIMPLELOCK_INIT(_malloc_lock)
-#define LOCK_FINI()	SIMPLELOCK_FINI(_malloc_lock)
+#define LOCK()    SIMPLELOCK_LOCK(_malloc_lock)
+#define UNLOCK()  SIMPLELOCK_UNLOCK(_malloc_lock)
+#define LOCK_INIT()  SIMPLELOCK_INIT(_malloc_lock)
+#define LOCK_FINI()  SIMPLELOCK_FINI(_malloc_lock)
 
 /*
  * Pool table -- doubly linked lists of partially used pools
  */
-#define PTA(x)	((poolp )((uchar *)&(usedpools[2*(x)]) - 2*sizeof(block *)))
-#define PT(x)	PTA(x), PTA(x)
+#define PTA(x)  ((poolp )((uchar *)&(usedpools[2*(x)]) - 2*sizeof(block *)))
+#define PT(x)  PTA(x), PTA(x)
 
 static poolp usedpools[2 * ((NB_SMALL_SIZE_CLASSES + 7) / 8) * 8] = {
-	PT(0), PT(1), PT(2), PT(3), PT(4), PT(5), PT(6), PT(7)
+  PT(0), PT(1), PT(2), PT(3), PT(4), PT(5), PT(6), PT(7)
 #if NB_SMALL_SIZE_CLASSES > 8
-	, PT(8), PT(9), PT(10), PT(11), PT(12), PT(13), PT(14), PT(15)
+  , PT(8), PT(9), PT(10), PT(11), PT(12), PT(13), PT(14), PT(15)
 #if NB_SMALL_SIZE_CLASSES > 16
-	, PT(16), PT(17), PT(18), PT(19), PT(20), PT(21), PT(22), PT(23)
+  , PT(16), PT(17), PT(18), PT(19), PT(20), PT(21), PT(22), PT(23)
 #if NB_SMALL_SIZE_CLASSES > 24
-	, PT(24), PT(25), PT(26), PT(27), PT(28), PT(29), PT(30), PT(31)
+  , PT(24), PT(25), PT(26), PT(27), PT(28), PT(29), PT(30), PT(31)
 #if NB_SMALL_SIZE_CLASSES > 32
-	, PT(32), PT(33), PT(34), PT(35), PT(36), PT(37), PT(38), PT(39)
+  , PT(32), PT(33), PT(34), PT(35), PT(36), PT(37), PT(38), PT(39)
 #if NB_SMALL_SIZE_CLASSES > 40
-	, PT(40), PT(41), PT(42), PT(43), PT(44), PT(45), PT(46), PT(47)
+  , PT(40), PT(41), PT(42), PT(43), PT(44), PT(45), PT(46), PT(47)
 #if NB_SMALL_SIZE_CLASSES > 48
-	, PT(48), PT(49), PT(50), PT(51), PT(52), PT(53), PT(54), PT(55)
+  , PT(48), PT(49), PT(50), PT(51), PT(52), PT(53), PT(54), PT(55)
 #if NB_SMALL_SIZE_CLASSES > 56
-	, PT(56), PT(57), PT(58), PT(59), PT(60), PT(61), PT(62), PT(63)
+  , PT(56), PT(57), PT(58), PT(59), PT(60), PT(61), PT(62), PT(63)
 #endif /* NB_SMALL_SIZE_CLASSES > 56 */
 #endif /* NB_SMALL_SIZE_CLASSES > 48 */
 #endif /* NB_SMALL_SIZE_CLASSES > 40 */
@@ -373,17 +373,17 @@ static poolp usedpools[2 * ((NB_SMALL_SIZE_CLASSES + 7) / 8) * 8] = {
 /*
  * Free (cached) pools
  */
-static poolp freepools = NULL;		/* free list for cached pools */
+static poolp freepools = NULL;    /* free list for cached pools */
 
 /*
  * Arenas
  */
-static uint arenacnt = 0;		/* number of allocated arenas */
-static uint watermark = ARENA_NB_POOLS;	/* number of pools allocated from
-					   the current arena */
-static block *arenalist = NULL;		/* list of allocated arenas */
-static block *arenabase = NULL;		/* free space start address in
-					   current arena */
+static uint arenacnt = 0;    /* number of allocated arenas */
+static uint watermark = ARENA_NB_POOLS;  /* number of pools allocated from
+             the current arena */
+static block *arenalist = NULL;    /* list of allocated arenas */
+static block *arenabase = NULL;    /* free space start address in
+             current arena */
 
 /*
  * Hooks
@@ -410,166 +410,166 @@ static void (*free_hook)(void *) = NULL;
 void *
 _THIS_MALLOC(size_t nbytes)
 {
-	block *bp;
-	poolp pool;
-	poolp next;
-	uint size;
+  block *bp;
+  poolp pool;
+  poolp next;
+  uint size;
 
-#ifdef WITH_MALLOC_HOOKS	
-	if (malloc_hook)
-		return (*malloc_hook)(nbytes);
+#ifdef WITH_MALLOC_HOOKS
+  if (malloc_hook)
+    return (*malloc_hook)(nbytes);
 #endif
 
-	/*
-	 * This implicitly redirects malloc(0)
-	 */
-	if ((nbytes - 1) < SMALL_REQUEST_THRESHOLD) {
-		LOCK();
-		/*
-		 * Most frequent paths first
-		 */
-		size = (uint )(nbytes - 1) >> ALIGNMENT_SHIFT;
-		pool = usedpools[size + size];
-		if (pool != pool->nextpool) {
-			/*
-			 * There is a used pool for this size class.
-			 * Pick up the head block of its free list.
-			 */
-			++pool->ref.count;
-			bp = pool->freeblock;
-			if ((pool->freeblock = *(block **)bp)) {
-				UNLOCK();
-				return (void *)bp;
-			}
-			/*
-			 * Reached the end of the free list, try to extend it
-			 */
-			if (pool->ref.count < pool->capacity) {
-				/*
-				 * There is room for another block
-				 */
-				size++;
-				size <<= ALIGNMENT_SHIFT; /* block size */
-				pool->freeblock = (block *)pool + \
-						  POOL_OVERHEAD + \
-						  pool->ref.count * size;
-				*(block **)(pool->freeblock) = NULL;
-				UNLOCK();
-				return (void *)bp;
-			}
-			/*
-			 * Pool is full, unlink from used pools
-			 */
-			next = pool->nextpool;
-			pool = pool->prevpool;
-			next->prevpool = pool;
-			pool->nextpool = next;
-			UNLOCK();
-			return (void *)bp;
-		}
-		/*
-		 * Try to get a cached free pool
-		 */
-		pool = freepools;
-		if (pool) {
-			/*
-			 * Unlink from cached pools
-			 */
-			freepools = pool->nextpool;
-		init_pool:
-			/*
-			 * Frontlink to used pools
-			 */
-			next = usedpools[size + size]; /* == prev */
-			pool->nextpool = next;
-			pool->prevpool = next;
-			next->nextpool = pool;
-			next->prevpool = pool;
-			pool->ref.count = 1;
-			if (pool->szidx == size) {
-				/*
-				 * Luckily, this pool last contained blocks
-				 * of the same size class, so its header
-				 * and free list are already initialized.
-				 */
-				bp = pool->freeblock;
-				pool->freeblock = *(block **)bp;
-				UNLOCK();
-				return (void *)bp;
-			}
-			/*
-			 * Initialize the pool header and free list
-			 * then return the first block.
-			 */
-			pool->szidx = size;
-			size++;
-			size <<= ALIGNMENT_SHIFT; /* block size */
-			bp = (block *)pool + POOL_OVERHEAD;
-			pool->freeblock = bp + size;
-			*(block **)(pool->freeblock) = NULL;
-			pool->capacity = (POOL_SIZE - POOL_OVERHEAD) / size;
-			UNLOCK();
-			return (void *)bp;
-		}
+  /*
+   * This implicitly redirects malloc(0)
+   */
+  if ((nbytes - 1) < SMALL_REQUEST_THRESHOLD) {
+    LOCK();
+    /*
+     * Most frequent paths first
+     */
+    size = (uint )(nbytes - 1) >> ALIGNMENT_SHIFT;
+    pool = usedpools[size + size];
+    if (pool != pool->nextpool) {
+      /*
+       * There is a used pool for this size class.
+       * Pick up the head block of its free list.
+       */
+      ++pool->ref.count;
+      bp = pool->freeblock;
+      if ((pool->freeblock = *(block **)bp)) {
+        UNLOCK();
+        return (void *)bp;
+      }
+      /*
+       * Reached the end of the free list, try to extend it
+       */
+      if (pool->ref.count < pool->capacity) {
+        /*
+         * There is room for another block
+         */
+        size++;
+        size <<= ALIGNMENT_SHIFT; /* block size */
+        pool->freeblock = (block *)pool + \
+              POOL_OVERHEAD + \
+              pool->ref.count * size;
+        *(block **)(pool->freeblock) = NULL;
+        UNLOCK();
+        return (void *)bp;
+      }
+      /*
+       * Pool is full, unlink from used pools
+       */
+      next = pool->nextpool;
+      pool = pool->prevpool;
+      next->prevpool = pool;
+      pool->nextpool = next;
+      UNLOCK();
+      return (void *)bp;
+    }
+    /*
+     * Try to get a cached free pool
+     */
+    pool = freepools;
+    if (pool) {
+      /*
+       * Unlink from cached pools
+       */
+      freepools = pool->nextpool;
+    init_pool:
+      /*
+       * Frontlink to used pools
+       */
+      next = usedpools[size + size]; /* == prev */
+      pool->nextpool = next;
+      pool->prevpool = next;
+      next->nextpool = pool;
+      next->prevpool = pool;
+      pool->ref.count = 1;
+      if (pool->szidx == size) {
+        /*
+         * Luckily, this pool last contained blocks
+         * of the same size class, so its header
+         * and free list are already initialized.
+         */
+        bp = pool->freeblock;
+        pool->freeblock = *(block **)bp;
+        UNLOCK();
+        return (void *)bp;
+      }
+      /*
+       * Initialize the pool header and free list
+       * then return the first block.
+       */
+      pool->szidx = size;
+      size++;
+      size <<= ALIGNMENT_SHIFT; /* block size */
+      bp = (block *)pool + POOL_OVERHEAD;
+      pool->freeblock = bp + size;
+      *(block **)(pool->freeblock) = NULL;
+      pool->capacity = (POOL_SIZE - POOL_OVERHEAD) / size;
+      UNLOCK();
+      return (void *)bp;
+    }
                 /*
                  * Allocate new pool
                  */
-		if (watermark < ARENA_NB_POOLS) {
-			/* commit malloc(POOL_SIZE) from the current arena */
-		commit_pool:
-			watermark++;
-			pool = (poolp )arenabase;
-			arenabase += POOL_SIZE;
-			pool->pooladdr = pool;
-			pool->magic = (uint )POOL_MAGIC;
-			pool->szidx = DUMMY_SIZE_IDX;
-			goto init_pool;
-		}
+    if (watermark < ARENA_NB_POOLS) {
+      /* commit malloc(POOL_SIZE) from the current arena */
+    commit_pool:
+      watermark++;
+      pool = (poolp )arenabase;
+      arenabase += POOL_SIZE;
+      pool->pooladdr = pool;
+      pool->magic = (uint )POOL_MAGIC;
+      pool->szidx = DUMMY_SIZE_IDX;
+      goto init_pool;
+    }
                 /*
                  * Allocate new arena
                  */
 #ifdef WITH_MEMORY_LIMITS
-		if (!(arenacnt < MAX_ARENAS)) {
-			UNLOCK();
-			goto redirect;
-		}
+    if (!(arenacnt < MAX_ARENAS)) {
+      UNLOCK();
+      goto redirect;
+    }
 #endif
-		/*
-		 * With malloc, we can't avoid loosing one page address space
-		 * per arena due to the required alignment on page boundaries.
-		 */
-		bp = (block *)_SYSTEM_MALLOC(ARENA_SIZE + SYSTEM_PAGE_SIZE);
-		if (!bp) {
-			UNLOCK();
-			goto redirect;
-		}
-		/* 
-		 * Keep a reference in the list of allocated arenas. We might
-		 * want to release (some of) them in the future. The first
-		 * word is never used, no matter whether the returned address
-		 * is page-aligned or not, so we safely store a pointer in it.
-		 */
-		*(block **)bp = arenalist;
-		arenalist = bp;
-		arenacnt++;
-		watermark = 0;
-		/* Page-round up */
-		arenabase = bp + (SYSTEM_PAGE_SIZE -
-				  ((off_t )bp & SYSTEM_PAGE_SIZE_MASK));
-		goto commit_pool;
-	}
+    /*
+     * With malloc, we can't avoid loosing one page address space
+     * per arena due to the required alignment on page boundaries.
+     */
+    bp = (block *)_SYSTEM_MALLOC(ARENA_SIZE + SYSTEM_PAGE_SIZE);
+    if (!bp) {
+      UNLOCK();
+      goto redirect;
+    }
+    /*
+     * Keep a reference in the list of allocated arenas. We might
+     * want to release (some of) them in the future. The first
+     * word is never used, no matter whether the returned address
+     * is page-aligned or not, so we safely store a pointer in it.
+     */
+    *(block **)bp = arenalist;
+    arenalist = bp;
+    arenacnt++;
+    watermark = 0;
+    /* Page-round up */
+    arenabase = bp + (SYSTEM_PAGE_SIZE -
+          ((off_t )bp & SYSTEM_PAGE_SIZE_MASK));
+    goto commit_pool;
+  }
 
         /* The small block allocator ends here. */
 
-	redirect:
-	
-	/*
-	 * Redirect the original request to the underlying (libc) allocator.
-	 * We jump here on bigger requests, on error in the code above (as a
-	 * last chance to serve the request) or when the max memory limit
-	 * has been reached.
-	 */
-	return (void *)_SYSTEM_MALLOC(nbytes);
+  redirect:
+ 
+  /*
+   * Redirect the original request to the underlying (libc) allocator.
+   * We jump here on bigger requests, on error in the code above (as a
+   * last chance to serve the request) or when the max memory limit
+   * has been reached.
+   */
+  return (void *)_SYSTEM_MALLOC(nbytes);
 }
 
 /* free */
@@ -577,78 +577,78 @@ _THIS_MALLOC(size_t nbytes)
 void
 _THIS_FREE(void *p)
 {
-	poolp pool;
-	poolp next, prev;
-	uint size;
-	off_t offset;
+  poolp pool;
+  poolp next, prev;
+  uint size;
+  off_t offset;
 
 #ifdef WITH_MALLOC_HOOKS
-	if (free_hook) {
-		(*free_hook)(p);
-		return;
-	}
+  if (free_hook) {
+    (*free_hook)(p);
+    return;
+  }
 #endif
 
-	if (!p)	/* free(NULL) has no effect */
-		return;
+  if (!p)  /* free(NULL) has no effect */
+    return;
 
-	offset = (off_t )p & POOL_SIZE_MASK;
-	pool = (poolp )((block *)p - offset);
-	if (pool->pooladdr != pool || pool->magic != (uint )POOL_MAGIC) {
-		_SYSTEM_FREE(p);
-		return;
-	}
+  offset = (off_t )p & POOL_SIZE_MASK;
+  pool = (poolp )((block *)p - offset);
+  if (pool->pooladdr != pool || pool->magic != (uint )POOL_MAGIC) {
+    _SYSTEM_FREE(p);
+    return;
+  }
 
-	LOCK();
-	/*
-	 * At this point, the pool is not empty
-	 */
-	if (!(*(block **)p = pool->freeblock)) {
-		/*
-		 * Pool was full
-		 */
-		pool->freeblock = (block *)p;
-		--pool->ref.count;
-		/*
-		 * Frontlink to used pools
-		 * This mimics LRU pool usage for new allocations and
-		 * targets optimal filling when several pools contain
-		 * blocks of the same size class.
-		 */
-		size = pool->szidx;
-		next = usedpools[size + size];
-		prev = next->prevpool;
-		pool->nextpool = next;
-		pool->prevpool = prev;
-		next->prevpool = pool;
-		prev->nextpool = pool;
-		UNLOCK();
-		return;
-	}
-	/*
-	 * Pool was not full
-	 */
-	pool->freeblock = (block *)p;
-	if (--pool->ref.count != 0) {
-		UNLOCK();
-		return;
-	}
-	/*
-	 * Pool is now empty, unlink from used pools
-	 */
-	next = pool->nextpool;
-	prev = pool->prevpool;
-	next->prevpool = prev;
-	prev->nextpool = next;
-	/*
-	 * Frontlink to free pools
-	 * This ensures that previously freed pools will be allocated
-	 * later (being not referenced, they are perhaps paged out).
-	 */
-	pool->nextpool = freepools;
-	freepools = pool;
-	UNLOCK();
-	return;
+  LOCK();
+  /*
+   * At this point, the pool is not empty
+   */
+  if (!(*(block **)p = pool->freeblock)) {
+    /*
+     * Pool was full
+     */
+    pool->freeblock = (block *)p;
+    --pool->ref.count;
+    /*
+     * Frontlink to used pools
+     * This mimics LRU pool usage for new allocations and
+     * targets optimal filling when several pools contain
+     * blocks of the same size class.
+     */
+    size = pool->szidx;
+    next = usedpools[size + size];
+    prev = next->prevpool;
+    pool->nextpool = next;
+    pool->prevpool = prev;
+    next->prevpool = pool;
+    prev->nextpool = pool;
+    UNLOCK();
+    return;
+  }
+  /*
+   * Pool was not full
+   */
+  pool->freeblock = (block *)p;
+  if (--pool->ref.count != 0) {
+    UNLOCK();
+    return;
+  }
+  /*
+   * Pool is now empty, unlink from used pools
+   */
+  next = pool->nextpool;
+  prev = pool->prevpool;
+  next->prevpool = prev;
+  prev->nextpool = next;
+  /*
+   * Frontlink to free pools
+   * This ensures that previously freed pools will be allocated
+   * later (being not referenced, they are perhaps paged out).
+   */
+  pool->nextpool = freepools;
+  freepools = pool;
+  UNLOCK();
+  return;
 }
 
 /* realloc */
@@ -656,54 +656,54 @@ _THIS_FREE(void *p)
 void *
 _THIS_REALLOC(void *p, size_t nbytes)
 {
-	block *bp;
-	poolp pool;
-	uint size;
+  block *bp;
+  poolp pool;
+  uint size;
 
 #ifdef WITH_MALLOC_HOOKS
-	if (realloc_hook)
-		return (*realloc_hook)(p, nbytes);
+  if (realloc_hook)
+    return (*realloc_hook)(p, nbytes);
 #endif
 
-	if (!p)
-		return _THIS_MALLOC(nbytes);
+  if (!p)
+    return _THIS_MALLOC(nbytes);
 
-	/* realloc(p, 0) on big blocks is redirected. */
-	pool = (poolp )((block *)p - ((off_t )p & POOL_SIZE_MASK));
-	if (pool->pooladdr != pool || pool->magic != (uint )POOL_MAGIC) {
-		/* We haven't allocated this block */
-		if (!(nbytes > SMALL_REQUEST_THRESHOLD) && nbytes) {
-			/* small request */
-			size = nbytes;
-			goto malloc_copy_free;
-		}
-		bp = (block *)_SYSTEM_REALLOC(p, nbytes);
-	}
-	else {
-		/* We're in charge of this block */
-		size = (pool->szidx + 1) << ALIGNMENT_SHIFT; /* block size */
-		if (size >= nbytes) {
-			/* Don't bother if a smaller size was requested
-			   except for realloc(p, 0) == free(p), ret NULL */
-			if (nbytes == 0) {
-				_THIS_FREE(p);
-				bp = NULL;
-			}
-			else
-				bp = (block *)p;
-		}
-		else {
+  /* realloc(p, 0) on big blocks is redirected. */
+  pool = (poolp )((block *)p - ((off_t )p & POOL_SIZE_MASK));
+  if (pool->pooladdr != pool || pool->magic != (uint )POOL_MAGIC) {
+    /* We haven't allocated this block */
+    if (!(nbytes > SMALL_REQUEST_THRESHOLD) && nbytes) {
+      /* small request */
+      size = nbytes;
+      goto malloc_copy_free;
+    }
+    bp = (block *)_SYSTEM_REALLOC(p, nbytes);
+  }
+  else {
+    /* We're in charge of this block */
+    size = (pool->szidx + 1) << ALIGNMENT_SHIFT; /* block size */
+    if (size >= nbytes) {
+      /* Don't bother if a smaller size was requested
+         except for realloc(p, 0) == free(p), ret NULL */
+      if (nbytes == 0) {
+        _THIS_FREE(p);
+        bp = NULL;
+      }
+      else
+        bp = (block *)p;
+    }
+    else {
 
-		malloc_copy_free:
+    malloc_copy_free:
 
-			bp = (block *)_THIS_MALLOC(nbytes);
-			if (bp) {
-				PlatMemCopy(bp, p, size);
-				_THIS_FREE(p);
-			}
-		}
-	}
-	return (void *)bp;
+      bp = (block *)_THIS_MALLOC(nbytes);
+      if (bp) {
+        PlatMemCopy(bp, p, size);
+        _THIS_FREE(p);
+      }
+    }
+  }
+  return (void *)bp;
 }
 
 /* calloc */
@@ -713,18 +713,18 @@ void *
 _THIS_CALLOC(size_t nbel, size_t elsz)
 {
         void *p;
-	size_t nbytes;
+  size_t nbytes;
 
 #ifdef WITH_MALLOC_HOOKS
-	if (calloc_hook)
-		return (*calloc_hook)(nbel, elsz);
+  if (calloc_hook)
+    return (*calloc_hook)(nbel, elsz);
 #endif
 
-	nbytes = nbel * elsz;
-	p = _THIS_MALLOC(nbytes);
-	if (p)
-		memset(p, 0, nbytes);
-	return p;
+  nbytes = nbel * elsz;
+  p = _THIS_MALLOC(nbytes);
+  if (p)
+    memset(p, 0, nbytes);
+  return p;
 }
 */
 
@@ -738,30 +738,30 @@ _THIS_CALLOC(size_t nbel, size_t elsz)
 
 void
 _SET_HOOKS( void *(*malloc_func)(size_t),
-	    void *(*calloc_func)(size_t, size_t),
-	    void *(*realloc_func)(void *, size_t),
-	    void (*free_func)(void *) )
+      void *(*calloc_func)(size_t, size_t),
+      void *(*realloc_func)(void *, size_t),
+      void (*free_func)(void *) )
 {
-	LOCK();
-	malloc_hook = malloc_func;
-	calloc_hook = calloc_func;
-	realloc_hook = realloc_func;
-	free_hook = free_func;
-	UNLOCK();
+  LOCK();
+  malloc_hook = malloc_func;
+  calloc_hook = calloc_func;
+  realloc_hook = realloc_func;
+  free_hook = free_func;
+  UNLOCK();
 }
 
 void
 _FETCH_HOOKS( void *(**malloc_funcp)(size_t),
-	      void *(**calloc_funcp)(size_t, size_t),
+        void *(**calloc_funcp)(size_t, size_t),
               void *(**realloc_funcp)(void *, size_t),
               void (**free_funcp)(void *) )
 {
-	LOCK();
-	*malloc_funcp = malloc_hook;
-	*calloc_funcp = calloc_hook;
-	*realloc_funcp = realloc_hook;
-	*free_funcp = free_hook;
-	UNLOCK();
+  LOCK();
+  *malloc_funcp = malloc_hook;
+  *calloc_funcp = calloc_hook;
+  *realloc_funcp = realloc_hook;
+  *free_funcp = free_hook;
+  UNLOCK();
 }
 #endif /* !WITH_MALLOC_HOOKS */
 

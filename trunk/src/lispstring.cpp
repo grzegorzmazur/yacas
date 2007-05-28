@@ -21,7 +21,7 @@ void LispString::SetString(const LispChar * aString)
 void LispString::SetStringCounted(const LispChar * aString,LispInt aLength)
 {
   ResizeTo(aLength+1);
-	ElementType * aT = elements();
+  ElementType * aT = elements();
   for (LispInt i = 0; i < aLength; i++)
   {
     aT[i] = aString[i];
@@ -33,7 +33,7 @@ void LispString::SetStringStringified(const LispChar * aString)
 {
   LispInt length = PlatStrLen(aString);  // my own strlen
   ResizeTo(length+1 + 2);
-	ElementType * aT = elements();
+  ElementType * aT = elements();
   aT[0] = '\"';
   for (LispInt i = 0; i < length; i++)
   {
@@ -70,7 +70,7 @@ LispString::~LispString()
 
 LispStringSmartPtr& LispStringSmartPtr::operator=(LispString * aString)
 {
-	// Increment first.
+  // Increment first.
   if (aString)
     ++aString->iReferenceCount;
   if (iString)

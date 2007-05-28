@@ -14,7 +14,7 @@ long theNrDefinedUser=0;
 #define InternalEval env.iEvaluator->Eval
 
 #define OPERATOR(kind,prec,name) \
-	kind##operators.SetOperator(prec,hash.LookUp(#name));
+  kind##operators.SetOperator(prec,hash.LookUp(#name));
 // for example: OPERATOR(bodied,KMaxPrecedence,While) produces:
 //    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("While"));
 
@@ -53,9 +53,9 @@ DefaultYacasEnvironment::DefaultYacasEnvironment(LispOutput* aOutput, LispInt aS
 
 LISPEXPORT CYacas* CYacas::NewL(LispOutput* aOutput,LispInt aStackSize)
 {
-	CYacas* self = NEW CYacas(
-		aOutput ? aOutput : NEW StdUserOutput(), aStackSize);
-	return self;
+  CYacas* self = NEW CYacas(
+    aOutput ? aOutput : NEW StdUserOutput(), aStackSize);
+  return self;
 }
 
 LISPEXPORT CYacas::~CYacas()
@@ -79,7 +79,7 @@ void CYacas::Evaluate(const LispChar * aExpression)
   iResult[0]='\0';
   env.iError.ResizeTo(1);
   env.iError[0]='\0';
-  
+ 
     LispPtr result;
     LispTrap(
      {
@@ -88,7 +88,7 @@ void CYacas::Evaluate(const LispChar * aExpression)
          if (env.PrettyReader())
          {
             LispString * prettyReader = env.PrettyReader();
-            LispString full(const_cast<LispChar *>(aExpression));	// TODO: woof
+            LispString full(const_cast<LispChar *>(aExpression));  // TODO: woof
             full[full.Size()-1] = ';';
             full.Append('\0');
             StringInput input(full,env.iInputStatus);

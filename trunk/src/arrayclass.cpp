@@ -4,13 +4,13 @@
 
 ArrayClass::ArrayClass(LispInt aSize,LispObject* aInitialItem) : iArray()
 {
-	iArray.ResizeTo(aSize);
-	if (aInitialItem)
+  iArray.ResizeTo(aSize);
+  if (aInitialItem)
   {
-		for (LispInt i=0;i<aSize;i++)
-		{
-			iArray[i] = (aInitialItem);
-		}
+    for (LispInt i=0;i<aSize;i++)
+    {
+      iArray[i] = (aInitialItem);
+    }
   }
 }
 

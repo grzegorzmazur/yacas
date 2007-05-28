@@ -52,8 +52,8 @@ void DecNrObjects();
 
 // Should we DecNrObjects by the delete, or in the destructor?
 // Put a DecNrObjects_xxx() macro in both places, and CHOOSE here.
-#define DecNrObjects_delete()		DECNROBJECTS_CHOOSE(DecNrObjects(),)
-#define DecNrObjects_destructor()	DECNROBJECTS_CHOOSE(,DecNrObjects())
+#define DecNrObjects_delete()    DECNROBJECTS_CHOOSE(DecNrObjects(),)
+#define DecNrObjects_destructor()  DECNROBJECTS_CHOOSE(,DecNrObjects())
 #define DECNROBJECTS_CHOOSE(bydelete,bydestructor) bydestructor
 
 
@@ -80,16 +80,16 @@ public: //Derivables
    *  the string representation is only relevant if the object is a
    *  simple atom. This method returns NULL by default.
    */
-	virtual LispString * String()  { return NULL; }
+  virtual LispString * String()  { return NULL; }
   /** If this object is a list, return a pointer to it.
    *  Default behaviour is to return NULL.
    */
-	virtual LispPtr* SubList()      { return NULL; }
-	virtual GenericClass* Generic() { return NULL; }
+  virtual LispPtr* SubList()      { return NULL; }
+  virtual GenericClass* Generic() { return NULL; }
 
   /** If this is a number, return a BigNumber representation
    */
-	virtual BigNumber* Number(LispInt aPrecision) { return NULL; }
+  virtual BigNumber* Number(LispInt aPrecision) { return NULL; }
 
   virtual LispObject* Copy() = 0;
 
@@ -97,8 +97,8 @@ public: //Derivables
   *  an object. Returns NULL by default.
   *  LispObject's implementation of this handles almost all derived classes.
   */
-	virtual LispObject* ExtraInfo() { return NULL; }
-	virtual LispObject* SetExtraInfo(LispObject* aData) = 0;
+  virtual LispObject* ExtraInfo() { return NULL; }
+  virtual LispObject* SetExtraInfo(LispObject* aData) = 0;
 public:
   LispInt Equal(LispObject& aOther);
   inline LispInt operator==(LispObject& aOther);
@@ -111,9 +111,9 @@ public:
     DBG_( iLine = aLine; )
   }
 protected:
-  inline LispObject() : 
+  inline LispObject() :
 #ifdef YACAS_DEBUG
-   iFileName(NULL),iLine(0), 
+   iFileName(NULL),iLine(0),
 #endif // YACAS_DEBUG
    iNext(),iReferenceCount()
   {
@@ -121,16 +121,16 @@ protected:
     DBG_( iFileName = NULL; )
     DBG_( iLine = 0; )
   }
-	inline LispObject(const LispObject& other) : 
+  inline LispObject(const LispObject& other) :
 #ifdef YACAS_DEBUG
-  iFileName(other.iFileName),iLine(other.iLine), 
+  iFileName(other.iFileName),iLine(other.iLine),
 #endif // YACAS_DEBUG
   iNext(),iReferenceCount()
   {
     IncNrObjects();
   }
 
-	inline LispObject& operator=(const LispObject& other)
+  inline LispObject& operator=(const LispObject& other)
   {
 #ifdef YACAS_DEBUG
     iFileName = other.iFileName;
@@ -144,7 +144,7 @@ protected:
 private:
   LispPtr   iNext;
 public:
-	ReferenceCount iReferenceCount;	
+  ReferenceCount iReferenceCount;
 };
 
 
@@ -152,17 +152,17 @@ template <class T>
 class WithExtraInfo : public T
 {
 public:
-	WithExtraInfo(T& aT, LispObject* aData = 0) : T(aT), iExtraInfo(aData) {}
-	WithExtraInfo(const WithExtraInfo& other) : T(other), iExtraInfo(other.iExtraInfo) {}
+  WithExtraInfo(T& aT, LispObject* aData = 0) : T(aT), iExtraInfo(aData) {}
+  WithExtraInfo(const WithExtraInfo& other) : T(other), iExtraInfo(other.iExtraInfo) {}
     virtual LispObject* ExtraInfo() { return iExtraInfo; }
-	virtual LispObject* SetExtraInfo(LispObject* aData) { iExtraInfo = aData; return this; }
-	virtual LispObject* Copy()
-	{
-		if (!iExtraInfo.ptr()) return T::Copy();
+  virtual LispObject* SetExtraInfo(LispObject* aData) { iExtraInfo = aData; return this; }
+  virtual LispObject* Copy()
+  {
+    if (!iExtraInfo.ptr()) return T::Copy();
         return NEW WithExtraInfo(*this, iExtraInfo->Copy());
-	}
+  }
 private:
-	LispPtr iExtraInfo;
+  LispPtr iExtraInfo;
 };
 
 
@@ -170,17 +170,17 @@ template <class T, class U = LispObject>
 class ObjectHelper : public U
 {
 protected:
-	typedef ObjectHelper ASuper;	// for use by the derived class
-	ObjectHelper() {}
-	ObjectHelper(const ObjectHelper& other) : U(other) {}
-	virtual ~ObjectHelper() = 0;	// so we're abstract
-	virtual LispObject* SetExtraInfo(LispObject* aData)
-	{
-		if (!aData) return this;
-		//T * pT = dynamic_cast<T*>(this); LISPASSERT(pT);
-		LispObject * pObject = NEW WithExtraInfo<T>(*static_cast<T*>(this), aData);
-		return pObject;
-	}
+  typedef ObjectHelper ASuper;  // for use by the derived class
+  ObjectHelper() {}
+  ObjectHelper(const ObjectHelper& other) : U(other) {}
+  virtual ~ObjectHelper() = 0;  // so we're abstract
+  virtual LispObject* SetExtraInfo(LispObject* aData)
+  {
+    if (!aData) return this;
+    //T * pT = dynamic_cast<T*>(this); LISPASSERT(pT);
+    LispObject * pObject = NEW WithExtraInfo<T>(*static_cast<T*>(this), aData);
+    return pObject;
+  }
 };
 
 template <typename T, class U>
@@ -195,37 +195,37 @@ inline ObjectHelper<T,U>::~ObjectHelper() {}
 class LispIterator : public YacasBase
 {
 public:
-	// ala TEMPLATE CLASS iterator
+  // ala TEMPLATE CLASS iterator
   //typedef forward_iterator_tag iterator_category;
-	typedef LispPtr		value_type;
-	typedef int /*ptrdiff_t*/	difference_type;
-	typedef LispPtr*	pointer;
-	typedef LispPtr&	reference;
+  typedef LispPtr    value_type;
+  typedef int /*ptrdiff_t*/  difference_type;
+  typedef LispPtr*  pointer;
+  typedef LispPtr&  reference;
 public:
-	LispIterator() : _Ptr(0) {}	// construct with null node pointer
-	LispIterator(pointer ptr) : _Ptr(ptr) {}	// construct with node pointer
-	/*non-standard*/ LispIterator(reference ref) : _Ptr(&ref) {}	// construct with node reference
-	reference operator*() const { return (*(_Ptr)); }	// return designated value
-	pointer operator->() const { return (_Ptr); }	// return pointer to class object
-	inline LispIterator& operator++()	// preincrement
-	{
-		//precondition: _Ptr != NULL
+  LispIterator() : _Ptr(0) {}  // construct with null node pointer
+  LispIterator(pointer ptr) : _Ptr(ptr) {}  // construct with node pointer
+  /*non-standard*/ LispIterator(reference ref) : _Ptr(&ref) {}  // construct with node reference
+  reference operator*() const { return (*(_Ptr)); }  // return designated value
+  pointer operator->() const { return (_Ptr); }  // return pointer to class object
+  inline LispIterator& operator++()  // preincrement
+  {
+    //precondition: _Ptr != NULL
     LISPASSERT(_Ptr != NULL);
-		//expand: _Ptr = _Nextnode(_Ptr);
-		LispObject * pObj = _Ptr->operator->();
-		_Ptr = pObj ? &(pObj->Nixed()) : NULL;	
-		return (*this);
-	}
-	LispIterator operator++(int) { LispIterator _Tmp = *this; ++*this; return (_Tmp); }	// postincrement
-	bool operator==(const LispIterator& other) const { return (_Ptr == other._Ptr); }	// test for iterator equality
-	bool operator!=(const LispIterator& other) const { return (!(*this == other)); }	// test for iterator inequality
+    //expand: _Ptr = _Nextnode(_Ptr);
+    LispObject * pObj = _Ptr->operator->();
+    _Ptr = pObj ? &(pObj->Nixed()) : NULL;
+    return (*this);
+  }
+  LispIterator operator++(int) { LispIterator _Tmp = *this; ++*this; return (_Tmp); }  // postincrement
+  bool operator==(const LispIterator& other) const { return (_Ptr == other._Ptr); }  // test for iterator equality
+  bool operator!=(const LispIterator& other) const { return (!(*this == other)); }  // test for iterator inequality
   // The following operators are not used yet, and would need to be tested before used.
-	//LispIterator& operator--() { _Ptr = _Prevnode(_Ptr); return (*this); }	// predecrement
-	//LispIterator operator--(int) { LispIterator _Tmp = *this; --*this; return (_Tmp); }	// postdecrement
+  //LispIterator& operator--() { _Ptr = _Prevnode(_Ptr); return (*this); }  // predecrement
+  //LispIterator operator--(int) { LispIterator _Tmp = *this; --*this; return (_Tmp); }  // postdecrement
 protected:
-	pointer _Ptr;	// pointer to node
+  pointer _Ptr;  // pointer to node
 public:
-	inline LispObject* getObj() const { return (*_Ptr).operator->(); }
+  inline LispObject* getObj() const { return (*_Ptr).operator->(); }
 };
 
 #include "lispobject.inl"

@@ -29,8 +29,8 @@
 
 // this is the only platform where we cannot have globals...
 #define noNO_GLOBALS
-    
-    
+ 
+ 
 // Number of bits to use for reference-counting. This can actually
 // grow significantly, when sub-expressions are copied (in which
 // case a LispSubList references the same sequence of LispObjects!)
@@ -47,11 +47,11 @@
 // Platform-independent booleans
 #define LispFalse 0
 #define LispTrue 1
-    
+ 
 // Dynamic link library loader class
 #define DLLCLASS    LispDllBase
 #define EXE_DLL_PLUGINS // Enable plugins inside the exe by default
-    
+ 
 #include <E32STD.H>
 
 // Exception handling. At the time of writing this was not yet
@@ -75,8 +75,8 @@
 
 #define SystemCall // system
 
-    
-    
+ 
+ 
 // These define the internal types for the arbitrary precision
 // number module. The larger they are the better. PlatDoubleWord
 // should be at least twice as big as PlatWord, to prevent overflowing

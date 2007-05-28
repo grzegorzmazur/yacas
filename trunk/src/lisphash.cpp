@@ -127,7 +127,7 @@ LispInt LispHashPtr(const LispString * aString)
     break;
     default:
         LISPASSERT(0); //Extend it then...
-        
+ 
     }
     return (HASHBIN(h));
 }
@@ -140,23 +140,23 @@ LispString * LispHashTable::LookUp(const LispChar * aString, LispBoolean aString
     LispInt bin = LispHash(aString);
 
     // Find existing version of string
-	LispStringSmartPtrArray & aBin = iHashTable[bin];
-	for (LispInt i = 0, n = aBin.Size(); i < n; i++)
+  LispStringSmartPtrArray & aBin = iHashTable[bin];
+  for (LispInt i = 0, n = aBin.Size(); i < n; i++)
     {
-		// expr ... typeof(expr)
-		// aBin ... LispStringSmartPtrArray&
-		// aBin[i] ... LispStringSmartPtr&
-		// aBin[i].operator->() ... LispString*
-		// aBin[i].operator->()->c_str() ... LispChar*
+    // expr ... typeof(expr)
+    // aBin ... LispStringSmartPtrArray&
+    // aBin[i] ... LispStringSmartPtr&
+    // aBin[i].operator->() ... LispString*
+    // aBin[i].operator->()->c_str() ... LispChar*
         if (StrEqual(aBin[i]->c_str(), aString))
-		{
+    {
             return aBin[i];
         }
     }
 
     // Append a new string
-	DBG_( theNrTokens++; )
-	// The const_cast is tacky, but nearly correct.  'ownedexternally' bites.
+  DBG_( theNrTokens++; )
+  // The const_cast is tacky, but nearly correct.  'ownedexternally' bites.
     LispString * result = NEW LispString(const_cast<LispChar*>(aString),aStringOwnedExternally);
     AppendString(bin,result);
     return result;
@@ -166,9 +166,9 @@ void LispHashTable::AppendString(LispInt bin,LispString * result)
 {
     LispStringSmartPtr smartptr;
     int index = iHashTable[bin].Size();
-    iHashTable[bin].ResizeTo(index+1);	// change to GrowBy sometime
+    iHashTable[bin].ResizeTo(index+1);  // change to GrowBy sometime
     iHashTable[bin][index] = result;
-	//m_isDirty = true;
+  //m_isDirty = true;
 }
 
 // If string not yet in table, insert. Afterwards return the string.
@@ -177,22 +177,22 @@ LispString * LispHashTable::LookUp(LispString * aString)
     LispInt bin = LispHash(aString->c_str());
 
     // Find existing version of string
-	LispStringSmartPtrArray & aBin = iHashTable[bin];
-	for (LispInt i = 0, n = aBin.Size(); i < n; i++)
+  LispStringSmartPtrArray & aBin = iHashTable[bin];
+  for (LispInt i = 0, n = aBin.Size(); i < n; i++)
     {
         if (StrEqual(aBin[i]->c_str(), aString->c_str()))
-		{
+    {
             //TODO we shouldn't be doing refcounting here???
             if (!aString->iReferenceCount)
             {
                 delete aString;
             }
             return aBin[i];
-		}
+    }
     }
 
     // Append a new string
-	DBG_( theNrTokens++; )
+  DBG_( theNrTokens++; )
     AppendString(bin,aString);
     return aString;
 }
@@ -215,8 +215,8 @@ LispString * LispHashTable::LookUpCounted(LispChar * aString, LispInt aLength)
     LispInt bin = LispHashCounted(aString,aLength);
 
     // Find existing version of string
-	LispStringSmartPtrArray & aBin = iHashTable[bin];
-	for (LispInt i = 0, n = aBin.Size(); i < n; i++)
+  LispStringSmartPtrArray & aBin = iHashTable[bin];
+  for (LispInt i = 0, n = aBin.Size(); i < n; i++)
     {
         if (StrEqualCounted(aBin[i]->c_str(), aString, aLength))
         {
@@ -225,7 +225,7 @@ LispString * LispHashTable::LookUpCounted(LispChar * aString, LispInt aLength)
     }
 
     // Append a new string
-	DBG_( theNrTokens++; )
+  DBG_( theNrTokens++; )
     LispString * str = NEW LispString();
     str->SetStringCounted(aString,aLength);
 
@@ -278,8 +278,8 @@ LispString * LispHashTable::LookUpStringify(LispChar * aString,
     LispInt bin = LispHashStringify(aString);
 
     // Find existing version of string
-	LispStringSmartPtrArray & aBin = iHashTable[bin];
-	for (LispInt i = 0, n = aBin.Size(); i < n; i++)
+  LispStringSmartPtrArray & aBin = iHashTable[bin];
+  for (LispInt i = 0, n = aBin.Size(); i < n; i++)
     {
         if (StrEqualStringified(aBin[i]->c_str(), aString))
         {
@@ -288,7 +288,7 @@ LispString * LispHashTable::LookUpStringify(LispChar * aString,
     }
 
     // Append a new string
-	DBG_( theNrTokens++; )
+  DBG_( theNrTokens++; )
     LispString * str = NEW LispString();
     str->SetStringStringified(aString);
 
@@ -304,17 +304,17 @@ LispString * LispHashTable::LookUpUnStringify(LispChar * aString,
     LispInt bin = LispHashUnStringify(aString);
 
     // Find existing version of string
-	LispStringSmartPtrArray & aBin = iHashTable[bin];
-	for (LispInt i = 0, n = aBin.Size(); i < n; i++)
+  LispStringSmartPtrArray & aBin = iHashTable[bin];
+  for (LispInt i = 0, n = aBin.Size(); i < n; i++)
     {
         if (StrEqualUnStringified(aBin[i]->c_str(), aString))
         {
             return aBin[i];
         }
-	}
+  }
 
     // Append a new string
-	DBG_( theNrTokens++; )
+  DBG_( theNrTokens++; )
     LispString * str = NEW LispString();
     str->SetStringUnStringified(aString);
     AppendString(bin,str);
@@ -324,21 +324,21 @@ LispString * LispHashTable::LookUpUnStringify(LispChar * aString,
 // GarbageCollect
 void LispHashTable::GarbageCollect()
 {
-	//if (!m_isDirty) return;
+  //if (!m_isDirty) return;
     for (LispInt bin = 0; bin < KSymTableSize; bin++)
     {
-		LispStringSmartPtrArray & aBin = iHashTable[bin];
-		for (LispInt i = 0, n = aBin.Size(); i < n; i++)
+    LispStringSmartPtrArray & aBin = iHashTable[bin];
+    for (LispInt i = 0, n = aBin.Size(); i < n; i++)
         {
             if (aBin[i]->iReferenceCount != 1) continue;
             //printf("deleting [%s]\n",aBin[i]->String());
-			// this should be cheaper than 'aBin[i]=NULL;aBin.Delete(i)'
-			aBin[i] = aBin[n-1];
-			aBin[n-1] = (NULL);
+      // this should be cheaper than 'aBin[i]=NULL;aBin.Delete(i)'
+      aBin[i] = aBin[n-1];
+      aBin[n-1] = (NULL);
             aBin.ResizeTo(n-1);
             i--;
             n--;
         }
     }
-	//m_isDirty = false;
+  //m_isDirty = false;
 }

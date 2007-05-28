@@ -17,7 +17,7 @@ LispInt LispHash( const char *s );
 LispInt LispHashCounted( const char *s, LispInt length );
 LispInt LispHashStringify( const char *s );
 LispInt LispHashUnStringify( const char *s );
-LispInt LispHashPtr(const LispString * aString);	// hash the *address*!
+LispInt LispHashPtr(const LispString * aString);  // hash the *address*!
 
 /**
  * This is the symbol table, implemented as a hash table for fast
@@ -29,9 +29,9 @@ LispInt LispHashPtr(const LispString * aString);	// hash the *address*!
 class LispHashTable : public YacasBase
 {
 public:
-	LispHashTable()
-		//: m_isDirty(false)
-	{}
+  LispHashTable()
+    //: m_isDirty(false)
+  {}
     ~LispHashTable();
     // If string not yet in table, insert. Afterwards return the string.
     LispString * LookUp(const LispChar * aString, LispBoolean aStringOwnedExternally=LispFalse);
@@ -47,10 +47,10 @@ public:
     void GarbageCollect();
 private:
     void AppendString(LispInt bin,LispString * result);
-    
+ 
 private:
     CArrayGrower<LispStringSmartPtr, ArrOpsCustomObj<LispStringSmartPtr> > iHashTable[KSymTableSize];
-	//bool m_isDirty;
+  //bool m_isDirty;
 };
 
 
@@ -82,7 +82,7 @@ public:
   inline T* LookUp(LispString * aString);
 
   /// Add an association to the hash table.
-  /// If \a aString is already stored in the hash table, its 
+  /// If \a aString is already stored in the hash table, its
   /// association is changed to \a aData. Otherwise, a new
   /// association is added.
   inline void SetAssociation(const T& aData, LispString * aString);

@@ -11,7 +11,7 @@
 LispObject* LispAtom::New(LispEnvironment& aEnvironment, const LispChar * aString)
 {
   LispObject* self;
-  if (IsNumber(aString,LispTrue))	// check if aString is a number (int or float)
+  if (IsNumber(aString,LispTrue))  // check if aString is a number (int or float)
   {
     /// construct a number from a decimal string representation (also create a number object)
     self = NEW LispNumber(NEW LispString(aString), aEnvironment.Precision());
@@ -42,7 +42,7 @@ LispAtom::~LispAtom()
 }
 
 
-LispString * LispAtom::String() 
+LispString * LispAtom::String()
 {
     CHECKPTR(iString);
     return iString;
@@ -70,7 +70,7 @@ LispSubList::~LispSubList()
         LispBoolean busy = (iter.getObj()->iReferenceCount == 1);
         while (busy) // while there are things to delete...
         {
-			// TODO: woof -- fix this ugliness!
+      // TODO: woof -- fix this ugliness!
             LispPtr nextToDelete;
             // Make sure "next" holds the tail of the list
             nextToDelete = (iter.getObj()->Nixed());
@@ -123,19 +123,19 @@ GenericClass* LispGenericClass::Generic()
 }
 
 //------------------------------------------------------------------------------
-// LispNumber methods - proceed at your own risk 
+// LispNumber methods - proceed at your own risk
 
 
 /// return a string representation in decimal
-LispString * LispNumber::String() 
+LispString * LispNumber::String()
 {
   if (!iString)
   {
-    LISPASSERT(iNumber.ptr());	// either the string is null or the number but not both
+    LISPASSERT(iNumber.ptr());  // either the string is null or the number but not both
     LispString *str = NEW LispString;
     // export the current number to string and store it as LispNumber::iString
     iNumber->ToString(*str, bits_to_digits(MAX(1,iNumber->GetPrecision()),BASE10), BASE10);
-    iString = str;	
+    iString = str;
   }
   return iString;
 }
@@ -145,7 +145,7 @@ LispString * LispNumber::String()
 BigNumber* LispNumber::Number(LispInt aBasePrecision)
 {
   if (!iNumber)
-  {	// create and store a BigNumber out of string
+  {  // create and store a BigNumber out of string
     LISPASSERT(iString.ptr());
     RefPtr<LispString> str;
     str = iString;
@@ -163,7 +163,7 @@ BigNumber* LispNumber::Number(LispInt aBasePrecision)
     }
     else
     {
-	// do not have string representation, cannot extend precision!
+  // do not have string representation, cannot extend precision!
     }
   }
   return iNumber;

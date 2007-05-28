@@ -105,22 +105,22 @@ void LispInDebugMode(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispDebugFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
 #ifndef YACAS_DEBUG
-	RaiseError("Cannot call DebugFile in non-debug version of Yacas");
+  RaiseError("Cannot call DebugFile in non-debug version of Yacas");
 #else
-	LispChar * file = ARGUMENT(1)->iFileName;
-	if (!file) file = "";
-	LispString * str = aEnvironment.HashTable().LookUpStringify(file);
-	RESULT = (LispAtom::New(aEnvironment,str->c_str()));
+  LispChar * file = ARGUMENT(1)->iFileName;
+  if (!file) file = "";
+  LispString * str = aEnvironment.HashTable().LookUpStringify(file);
+  RESULT = (LispAtom::New(aEnvironment,str->c_str()));
 #endif
 }
 
 void LispDebugLine(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
 #ifndef YACAS_DEBUG
-	RaiseError("Cannot call DebugLine in non-debug version of Yacas");
+  RaiseError("Cannot call DebugLine in non-debug version of Yacas");
 #else
-	LispChar number[30];
-	InternalIntToAscii(number,ARGUMENT(1)->iLine);
-	RESULT = (LispAtom::New(aEnvironment,number));
+  LispChar number[30];
+  InternalIntToAscii(number,ARGUMENT(1)->iLine);
+  RESULT = (LispAtom::New(aEnvironment,number));
 #endif
 }

@@ -23,7 +23,7 @@ LispInt LtDll::Open(LispChar * aDllFile,LispEnvironment& aEnvironment)
     if (lt_dlinit() != 0)
     {
         err = lt_dlerror();
-        if (err) 
+        if (err)
         {
           RaiseError("LtDll::Open: lt_dlinit says %s\n",err);
         }
@@ -48,11 +48,11 @@ LispInt LtDll::Open(LispChar * aDllFile,LispEnvironment& aEnvironment)
 #endif
           iPlugin->Add(aEnvironment);
         }
-    } 
+    }
     else
     {
         err = lt_dlerror();
-        if (err) 
+        if (err)
         {
           RaiseError("LtDll::Open: lt_dlopen says %s\n",err);
         }
@@ -102,7 +102,7 @@ LispPluginBase* LtDll::GetPlugin(LispChar * aDllFile)
   if (!maker)
   {
       err = lt_dlerror();
-      if (err) 
+      if (err)
         printf("LtDll::OpenGetPlugin: lt_dlsym says %s\n",err);
   }
   return maker();

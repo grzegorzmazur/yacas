@@ -59,7 +59,7 @@ BranchingUserFunction::BranchingUserFunction(LispPtr& aParameters)
 {
   LispIterator iter(aParameters);
   for ( ; iter.getObj(); ++iter)
-	{
+  {
     Check(iter.getObj()->String(),KLispErrCreatingUserFunction);
     BranchParameter param(iter.getObj()->String());
     iParameters.Append(param);
@@ -87,20 +87,20 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
     LispIterator iter(aArguments);
     ++iter;
 
-    // unrollable arguments 
+    // unrollable arguments
     LispPtr* arguments;
     if (arity==0)
         arguments = NULL;
     else
     {
         LISPASSERT(arity>0);
-		arguments = NEW LispPtr[arity];
+    arguments = NEW LispPtr[arity];
     }
     LocalArgs args(arguments);
 
     // Walk over all arguments, evaluating them as necessary
-	for (i=0;i<arity;i++,++iter)
-	{
+  for (i=0;i<arity;i++,++iter)
+  {
         Check(iter.getObj(), KLispErrWrongNumberOfArgs);
         if (iParameters[i].iHold)
         {
@@ -108,10 +108,10 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
         }
         else
         {
-            //Check(iter.getObj(), KLispErrWrongNumberOfArgs);	// checked above
+            //Check(iter.getObj(), KLispErrWrongNumberOfArgs);  // checked above
             InternalEval(aEnvironment, arguments[i], *iter);
         }
-	}
+  }
 
     if (Traced())
     {
@@ -120,8 +120,8 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
         {
             TraceShowArg(aEnvironment,*++iter,arguments[i]);
         }
-	}
-    
+  }
+ 
     // declare a new local stack.
     LispLocalFrame frame(aEnvironment,Fenced());
 
@@ -155,7 +155,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
         // If rules got inserted, walk back
         while (thisRule != iRules[i] && i>0) i--;
     }
-    
+ 
     // No predicate was LispTrue: return a new expression with the evaluated
     // arguments.
 
@@ -310,7 +310,7 @@ void ListedBranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEn
   LispIterator iter(aArguments);
   LispPtr* ptr =  &newArgs;
   LispInt arity = Arity();
-	// Make a copy of the arguments first
+  // Make a copy of the arguments first
   // TODO: if we were to change the internal representation to a cons cell, this copying would not be needed
   LispInt i;
   for (i = 0; i < arity && iter.getObj(); i++,++iter)
@@ -318,7 +318,7 @@ void ListedBranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEn
     (*ptr) = (iter.getObj()->Copy());
     ptr = &((*ptr)->Nixed());
   }
-	if (!iter.getObj()->Nixed())
+  if (!iter.getObj()->Nixed())
   {
     (*ptr) = (iter.getObj()->Copy());
     ptr = &((*ptr)->Nixed());
@@ -343,7 +343,7 @@ MacroUserFunction::MacroUserFunction(LispPtr& aParameters)
         Check(iter.getObj()->String(),KLispErrCreatingUserFunction);
         iParameters[i].iHold = LispTrue;
     }
-	UnFence();
+  UnFence();
 }
 
 void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
@@ -362,7 +362,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
   LispIterator iter(aArguments);
   ++iter;
 
-  // unrollable arguments 
+  // unrollable arguments
   LispPtr* arguments;
   if (arity==0)
     arguments = NULL;
@@ -385,12 +385,12 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
     {
       InternalEval(aEnvironment, arguments[i], *iter);
     }
-	}
+  }
 
   if (Traced())
   {
     LispIterator iter(aArguments);
-		// TODO: ideally we would only need an iterator here
+    // TODO: ideally we would only need an iterator here
     ++iter;
     for (i=0;i<arity;i++)
     {
@@ -432,7 +432,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
         InternalSubstitute(substedBody, thisRule->Body(), behaviour);
         break;
       }
-  
+ 
       // If rules got inserted, walk back
       while (thisRule != iRules[i] && i>0) i--;
     }
@@ -487,7 +487,7 @@ void ListedMacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnviro
   LispPtr* ptr =  &newArgs;
   LispInt arity = Arity();
   LispInt i=0;
-	// TODO: the code would look a lot easier if we could do with only an iterator
+  // TODO: the code would look a lot easier if we could do with only an iterator
   while (i < arity && iter.getObj())
   {
     (*ptr) = (iter.getObj()->Copy());

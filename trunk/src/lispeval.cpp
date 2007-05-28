@@ -32,10 +32,10 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
         {
           char buf[1024];
         #ifdef HAVE_VSNPRINTF
-					snprintf(buf,1024,"Debug> Loading file %s for function %s\n",def->iFileName->c_str(),head->String()->c_str());
-				#else
-					sprintf(buf,      "Debug> Loading file %s for function %s\n",def->iFileName->c_str(),head->String()->c_str());
-				#endif
+          snprintf(buf,1024,"Debug> Loading file %s for function %s\n",def->iFileName->c_str(),head->String()->c_str());
+        #else
+          sprintf(buf,      "Debug> Loading file %s for function %s\n",def->iFileName->c_str(),head->String()->c_str());
+        #endif
           aEnvironment.CurrentOutput()->Write(buf);
         }
       }
@@ -45,17 +45,17 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
 
 #ifdef YACAS_DEBUG
       {
-				extern int verbose_debug;
-				if (verbose_debug)
-				{
-					char buf[1024];
-					#ifdef HAVE_VSNPRINTF
-						snprintf(buf,1024,"Debug> Finished loading file %s\n",def->iFileName->c_str());
-					#else
-						sprintf(buf,      "Debug> Finished loading file %s\n",def->iFileName->c_str());
-					#endif
-					aEnvironment.CurrentOutput()->Write(buf);
-				}
+        extern int verbose_debug;
+        if (verbose_debug)
+        {
+          char buf[1024];
+          #ifdef HAVE_VSNPRINTF
+            snprintf(buf,1024,"Debug> Finished loading file %s\n",def->iFileName->c_str());
+          #else
+            sprintf(buf,      "Debug> Finished loading file %s\n",def->iFileName->c_str());
+          #endif
+          aEnvironment.CurrentOutput()->Write(buf);
+        }
       }
 #endif
     }
@@ -298,7 +298,7 @@ void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, LispOutput& 
   LispInt i;
   LispInt from=0;
   LispInt upto = objs.Size();
-  
+ 
   for (i=from;i<upto;i++)
   {
     LispChar str[20];
@@ -414,26 +414,26 @@ REENTER:
   if(aEnvironment.iDebugger->Stopped()) RaiseError("");
   if (errorStr[0])
   {
-		aEnvironment.CurrentOutput()->Write(errorStr.c_str());
-		aEnvironment.iEvalDepth=0;
-		goto REENTER;
-	}
+    aEnvironment.CurrentOutput()->Write(errorStr.c_str());
+    aEnvironment.iEvalDepth=0;
+    goto REENTER;
+  }
 
-	errorStr.ResizeTo(1); errorStr[0] = '\0';
-	LispTrap(BasicEvaluator::Eval(aEnvironment, aResult, aExpression),errorOutput,aEnvironment);
+  errorStr.ResizeTo(1); errorStr[0] = '\0';
+  LispTrap(BasicEvaluator::Eval(aEnvironment, aResult, aExpression),errorOutput,aEnvironment);
 
-	if (errorStr[0])
-	{
-		aEnvironment.CurrentOutput()->Write(errorStr.c_str());
-		aEnvironment.iEvalDepth=0;
-		aEnvironment.iDebugger->Error(aEnvironment);
-		goto REENTER;
-	}
+  if (errorStr[0])
+  {
+    aEnvironment.CurrentOutput()->Write(errorStr.c_str());
+    aEnvironment.iEvalDepth=0;
+    aEnvironment.iDebugger->Error(aEnvironment);
+    goto REENTER;
+  }
 
-	if(aEnvironment.iDebugger->Stopped()) RaiseError("");
+  if(aEnvironment.iDebugger->Stopped()) RaiseError("");
 
-	aEnvironment.iDebugger->Leave(aEnvironment, aResult, aExpression);
-	if(aEnvironment.iDebugger->Stopped()) RaiseError("");
+  aEnvironment.iDebugger->Leave(aEnvironment, aResult, aExpression);
+  if(aEnvironment.iDebugger->Stopped()) RaiseError("");
 }
 
 YacasDebuggerBase::~YacasDebuggerBase()
@@ -448,33 +448,33 @@ void DefaultDebugger::Finish()
 {
 }
 
-void DefaultDebugger::Enter(LispEnvironment& aEnvironment, 
+void DefaultDebugger::Enter(LispEnvironment& aEnvironment,
                                     LispPtr& aExpression)
 {
-	LispLocalEvaluator local(aEnvironment,NEW BasicEvaluator);
-	iTopExpr = (aExpression->Copy());
-	LispPtr result;
-	defaultEval.Eval(aEnvironment, result, iEnter);
+  LispLocalEvaluator local(aEnvironment,NEW BasicEvaluator);
+  iTopExpr = (aExpression->Copy());
+  LispPtr result;
+  defaultEval.Eval(aEnvironment, result, iEnter);
 }
 
 void DefaultDebugger::Leave(LispEnvironment& aEnvironment, LispPtr& aResult,
                                     LispPtr& aExpression)
 {
-	LispLocalEvaluator local(aEnvironment,NEW BasicEvaluator);
-	LispPtr result;
-	iTopExpr = (aExpression->Copy());
-	iTopResult = (aResult);
-	defaultEval.Eval(aEnvironment, result, iLeave);
+  LispLocalEvaluator local(aEnvironment,NEW BasicEvaluator);
+  LispPtr result;
+  iTopExpr = (aExpression->Copy());
+  iTopResult = (aResult);
+  defaultEval.Eval(aEnvironment, result, iLeave);
 }
 
 LispBoolean DefaultDebugger::Stopped()
 {
-	return iStopped;
+  return iStopped;
 }
 
 void DefaultDebugger::Error(LispEnvironment& aEnvironment)
 {
-	LispLocalEvaluator local(aEnvironment,NEW BasicEvaluator);
-	LispPtr result;
-	defaultEval.Eval(aEnvironment, result, iError);
+  LispLocalEvaluator local(aEnvironment,NEW BasicEvaluator);
+  LispPtr result;
+  defaultEval.Eval(aEnvironment, result, iError);
 }

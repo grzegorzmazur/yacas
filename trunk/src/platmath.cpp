@@ -118,16 +118,16 @@ LispObject* PlatAbs(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPre
 /* subroutine returns 1 if p is in the table of prime numbers up to primes_table_limit */
 unsigned primes_table_check(unsigned long p)
 {
-	unsigned long index;
-	unsigned field;
-	if (p==0) return primes_table_limit;
-	if (p==2) return 1;
-	if (p<2 || p>primes_table_limit || (p & 1) == 0) return 0;
-	p >>= 1;
-	// get index in 8-bit chunks
-	index = p >> 3;
-	field = p & 7;
-	return ((primes_table[index] & (1 << field))==0) ? 0 : 1;
+  unsigned long index;
+  unsigned field;
+  if (p==0) return primes_table_limit;
+  if (p==2) return 1;
+  if (p<2 || p>primes_table_limit || (p & 1) == 0) return 0;
+  p >>= 1;
+  // get index in 8-bit chunks
+  index = p >> 3;
+  field = p & 7;
+  return ((primes_table[index] & (1 << field))==0) ? 0 : 1;
 }
 
 LispObject* PlatIsPrime(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)

@@ -60,7 +60,7 @@ public:
                 LispOperators& aPostfixOperators,
                 LispOperators& aBodiedOperators);
     ~InfixParser();
-    
+ 
     virtual void Parse(LispPtr& aResult);
 //private:
     void ParseCont(LispPtr& aResult);

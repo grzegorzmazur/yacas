@@ -262,7 +262,8 @@ compressor_SOURCES = compressor.cpp filescanner.cpp minilzo.c filescanner.h mini
 scripts.dat: compressor
 	./compressor - $(top_srcdir)/scripts/ scripts.dat 
 
-check: @CHECK_ARCHIVE@ check-testnum check-codereviewer
+# doing testnum first because that test program still generates errors. This way we can also see the warnings from the other tests
+check: check-testnum @CHECK_ARCHIVE@ check-codereviewer
 
 check-archive: scripts.dat 
 	../src/yacas -pc --archive scripts.dat $(top_srcdir)/tests/arithmetic.yts
@@ -271,7 +272,7 @@ check-testnum: testnum
 	./testnum
 
 check-codereviewer: codereviewer
-	./codereviewer c *.h
+	./codereviewer c *.h *.inl *.cpp plat/*/*.h
 
 ## We need a bit of a hack to install the 'scripts.dat' file.
 ## Ideally, we would like to declare it as lib_LIBRARY, but then automake

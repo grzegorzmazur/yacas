@@ -36,7 +36,7 @@ LispBoolean MatchAtom::ArgumentMatches(LispEnvironment& aEnvironment,
       if (aExpression->Number(0))
         if (!aExpression->Number(0)->IsInt())
           return LispFalse;
-      
+ 
     return (iString == aExpression->String());
 }
 
@@ -123,7 +123,7 @@ LispBoolean MatchSubList::ArgumentMatches(LispEnvironment& aEnvironment,
       return LispFalse;
     if (!iMatchers[i]->ArgumentMatches(aEnvironment,*iter,arguments))
       return LispFalse;
-	}
+  }
   if (iter.getObj())
     return LispFalse;
   return LispTrue;
@@ -218,9 +218,9 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
             matchers[i] = MakeParamMatcher(aEnvironment,iter.getObj());
             LISPASSERT(matchers[i]);
         }
-		return NEW MatchSubList(matchers, num);
+    return NEW MatchSubList(matchers, num);
     }
-    
+ 
     return NULL;
 }
 
@@ -230,12 +230,12 @@ YacasPatternPredicateBase::YacasPatternPredicateBase(LispEnvironment& aEnvironme
 {
     LispIterator iter(aPattern);
     for ( ; iter.getObj(); ++iter)
-	{
+  {
         YacasParamMatcherBase* matcher = MakeParamMatcher(aEnvironment,iter.getObj());
         LISPASSERT(matcher!=NULL);
         iParamMatchers.Append(matcher);
-	}
-	LispPtr post(aPostPredicate);
+  }
+  LispPtr post(aPostPredicate);
   iPredicates.Append(post);
 }
 
@@ -244,18 +244,18 @@ LispBoolean YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
 {
     LispPtr* arguments = NULL;
     if (iVariables.Size() > 0)
-		arguments = NEW LispPtr[iVariables.Size()];
+    arguments = NEW LispPtr[iVariables.Size()];
     LocalArgs args(arguments); //Deal with destruction
     LispIterator iter(aArguments);
     for (LispInt i=0;i<iParamMatchers.Size();i++,++iter)
-	{
+  {
         if (!iter.getObj())
             return LispFalse;
         if (!iParamMatchers[i]->ArgumentMatches(aEnvironment,*iter,arguments))
         {
             return LispFalse;
         }
-	}
+  }
     if (iter.getObj())
         return LispFalse;
 
@@ -272,7 +272,7 @@ LispBoolean YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
 
     // set the local variables for sure now
     SetPatternVariables(aEnvironment,arguments);
-    
+ 
     return LispTrue;
 }
 
@@ -353,7 +353,7 @@ LispBoolean YacasPatternPredicateBase::CheckPredicates(LispEnvironment& aEnviron
   }
   return LispTrue;
 }
-                                                
+ 
 
 void YacasPatternPredicateBase::SetPatternVariables(LispEnvironment& aEnvironment,
                                                     LispPtr* arguments)

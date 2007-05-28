@@ -77,7 +77,7 @@
 // a segfault on following commands!
 //            _o.Write(_e.iInputStatus.Line(_e.iInputDirectories));
 //            _o.Write("]\nLine error occurred on:\n>>>");
-//	    _o.Write("\n");
+//      _o.Write("\n");
 //
 
 #endif
