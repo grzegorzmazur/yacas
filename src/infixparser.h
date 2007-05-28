@@ -120,13 +120,12 @@ public:
 
     virtual void Print(LispPtr& aExpression, LispOutput& aOutput,
                        LispEnvironment& aEnvironment);
-	virtual void RememberLastChar(LispChar aChar);
+  virtual void RememberLastChar(LispChar aChar);
 private:
     void Print(LispPtr& aExpression, LispOutput& aOutput,
                LispInt iPrecedence);
     void WriteToken(LispOutput& aOutput,LispChar * aString);
 private:
-    
     LispOperators& iPrefixOperators;
     LispOperators& iInfixOperators;
     LispOperators& iPostfixOperators;

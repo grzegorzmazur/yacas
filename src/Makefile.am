@@ -3,8 +3,8 @@
 INCLUDES = @INCLTDL@ -I$(srcdir)/plat/linux32
 
 bin_PROGRAMS =  yacas
-noinst_PROGRAMS = mkfastprimes check_plugins plugin_stub_gen testnum gencorefunctions @COMPRESSOR_PRG@
-EXTRA_PROGRAMS = compressor
+noinst_PROGRAMS = mkfastprimes check_plugins plugin_stub_gen gencorefunctions @COMPRESSOR_PRG@
+EXTRA_PROGRAMS = compressor testnum codereviewer
 libmath_USES = yacas$(EXEEXT) check_plugins$(EXEEXT)
 
 lib_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la @NUMBERS_LIB@ 
@@ -33,6 +33,11 @@ yacas_DEPENDENCIES = $(srcdir)/plugins_available.h @NUMBERS_LIB@ libyacas.la lib
 testnum_SOURCES = testnum.cpp 
 testnum_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS_LDFLAGS@
 testnum_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la
+
+codereviewer_SOURCES = codereviewer.cpp 
+codereviewer_LDADD = 
+codereviewer_DEPENDENCIES = 
+
 
 # the program 'gencorefunctions' will prepare a listing of all core functions
 gencorefunctions_SOURCES = gencorefunctions.cpp 
@@ -257,11 +262,16 @@ compressor_SOURCES = compressor.cpp filescanner.cpp minilzo.c filescanner.h mini
 scripts.dat: compressor
 	./compressor - $(top_srcdir)/scripts/ scripts.dat 
 
-check: @CHECK_ARCHIVE@
+check: @CHECK_ARCHIVE@ check-testnum check-codereviewer
 
 check-archive: scripts.dat 
 	../src/yacas -pc --archive scripts.dat $(top_srcdir)/tests/arithmetic.yts
 
+check-testnum: testnum
+	./testnum
+
+check-codereviewer: codereviewer
+	./codereviewer c *.h
 
 ## We need a bit of a hack to install the 'scripts.dat' file.
 ## Ideally, we would like to declare it as lib_LIBRARY, but then automake

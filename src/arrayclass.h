@@ -15,7 +15,7 @@ public: //required
     virtual LispChar * TypeName();
 public: //array-specific
     inline LispInt Size();
-    inline LispObject* GetElement(LispInt aItem);	// TODO: 1-based, ...
+    inline LispObject* GetElement(LispInt aItem); // TODO: 1-based, ...
     inline void SetElement(LispInt aItem,LispObject* aObject);
 
 private:

@@ -22,8 +22,8 @@
 class ANumberOps : public ArrOpsPOD<PlatWord>
 {
 public:
-	ANumberOps() {}
-	inline int granularity() const { return 2; }
+  ANumberOps() {}
+  inline int granularity() const { return 2; }
 };
 
 
@@ -34,7 +34,7 @@ public:
 class ANumber : public CArrayGrower<PlatWord,ANumberOps>
 {
 public:
-	typedef CArrayGrower<PlatWord,ANumberOps> ASuper;
+  typedef CArrayGrower<PlatWord,ANumberOps> ASuper;
 public:
     ANumber(const LispChar * aString,LispInt aPrecision,LispInt aBase=10);
     ANumber(LispInt aPrecision);

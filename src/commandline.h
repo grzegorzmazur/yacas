@@ -67,9 +67,6 @@ protected:
   LispInt history;
 };
 
-  
-
-
 class CCommandLine : public YacasBase
 {
 public:

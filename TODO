@@ -39,6 +39,12 @@ Bugs:
 
 - We should perhaps only compile testnum if we are running 'make test'
 
+- Should we perhaps get rid of proteus? I don't want to be maintaining that forever...
+
+- Document the program codereviewer
+- Expand on codereviewer, so that it checks all coding standards rules
+- define the coding standards in the documentation
+
 - There is a function "gamma" that should be "Gamma".
 
 - When exception thrown within N(...) then reset all globals that were changed.

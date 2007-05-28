@@ -9,7 +9,6 @@
 
 class CTokenizer : public LispTokenizer
 {
-    
 public:
   CTokenizer() : LispTokenizer(),iPreProcessLine(0), iEnvironment(NULL),iFunction() {}
   inline void SetRemarkReceiver(LispEnvironment& aEnvironment);

@@ -435,7 +435,9 @@ distributed with Yacas) with the {with-numlib} option of the
 <*yacasdoc://essays/3/4/*>) is built.
 *	Building the executables. Besides the Yacas executables, we
 also build {mkfastprimes} and {gencorefunctions} (which are needed to
-generate some source files) and the {testnum} executable.
+generate some source files), the {testnum} executable, and the {codereviewer} executable (which does a static analysis of code 
+and can in some circumstances also fix the code where the coding
+style is not adhered to).
 
 At installation time, not only the {yacas} executable is installed but
 also the static libraries and the header files. This is also to enable

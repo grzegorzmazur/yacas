@@ -23,8 +23,8 @@ private:
   // copy constructor not implemented yet, so an assert is in order
   CompressedFiles(const CompressedFiles& aOther)
     : iFullBuffer(NULL),iCompressed(0),iFullSize(0),iIndex(NULL),iNrFiles(0),iIndexSize(0),iIsValid(LispFalse)
-  { 
-    LISPASSERT(0); 
+  {
+    LISPASSERT(0);
   }
   inline CompressedFiles& operator=(const CompressedFiles& aOther)
   {
@@ -35,8 +35,8 @@ private:
     iNrFiles = 0;
     iIndexSize = 0;
     iIsValid = LispFalse;
-    LISPASSERT(0); 
-    return *this; 
+    LISPASSERT(0);
+    return *this;
   }
 private:
   unsigned char * iFullBuffer;
