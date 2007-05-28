@@ -34,9 +34,9 @@ LispEnvironment::LispEnvironment(
                     LispOperators &aBodiedOperators,
                     LispInput*    aCurrentInput,
                     LispInt aStackSize)
-    : 
-    iPrecision(10),	// default user precision of 10 decimal digits
-	  iBinaryPrecision(34),	// same as 34 bits
+    :
+    iPrecision(10),  // default user precision of 10 decimal digits
+    iBinaryPrecision(34),  // same as 34 bits
     iInputDirectories(),
     iDllDirectories(),
     iCleanup(),
@@ -113,12 +113,12 @@ LispEnvironment::~LispEnvironment()
 {
   PopLocalFrame();
 
-	DBG_printf("Entered environment destructor, %d DLLs loaded\n",iDlls.Size());
-	for (LispInt i=0,nr=iDlls.Size(); i<nr; i++)
-	{
-		DBG_printf("Closing DLL \"%s\"\n",iDlls[i]->DllFileName());
-		iDlls[i]->Close(*this);
-	}
+  DBG_printf("Entered environment destructor, %d DLLs loaded\n",iDlls.Size());
+  for (LispInt i=0,nr=iDlls.Size(); i<nr; i++)
+  {
+    DBG_printf("Closing DLL \"%s\"\n",iDlls[i]->DllFileName());
+    iDlls[i]->Close(*this);
+  }
   LISPASSERT(!iLocalsList);
   delete iEvaluator;
   if (iDebugger) delete iDebugger;
@@ -127,8 +127,8 @@ LispEnvironment::~LispEnvironment()
 
 void LispEnvironment::SetPrecision(LispInt aPrecision)
 {
-    iPrecision = aPrecision;	// precision in decimal digits
-	iBinaryPrecision = digits_to_bits(aPrecision, BASE10);	// in bits
+    iPrecision = aPrecision;  // precision in decimal digits
+  iBinaryPrecision = digits_to_bits(aPrecision, BASE10);  // in bits
 }
 
 LispInt LispEnvironment::GetUniqueId()
@@ -177,7 +177,7 @@ void LispEnvironment::DebugModeVerifySettingGlobalVariables(LispPtr & aVariable,
     // If a variable is guarded with LocalSymbol it can not interfere with other scripts.
     if ((*varString)[0] ==  '$') warn = 0;
     if (aGlobalLazyVariable) warn = 0;
-    if (warn) 
+    if (warn)
       printf("WARNING: setting global variable \"%s\" (file %s, line %d) (global variables might have undesired side effects, please use Local or LocalSymbols).\n",
         varString->c_str(),
         aVariable->iFileName,
@@ -286,7 +286,7 @@ void LispEnvironment::CurrentLocals(LispPtr& aResult)
 //    printf("%s ",ptr->iVariable->c_str());
     ptr = ptr->iNext;
   }
-  aResult = (LIST(LA(ATOML("List")) + LA(locals)));  
+  aResult = (LIST(LA(ATOML("List")) + LA(locals)));
 }
 
 
@@ -399,7 +399,7 @@ void LispEnvironment::DeclareRuleBase(LispString * aOperator,
         LISPASSERT(multiUserFunc->iFileToOpen->iIsLoaded);
         }
         */
-        
+ 
     // add an operator with this arity to the multiuserfunc.
     BranchingUserFunction *newFunc;
     if (aListed)
@@ -412,7 +412,7 @@ void LispEnvironment::DeclareRuleBase(LispString * aOperator,
     }
     multiUserFunc->DefineRuleBase(newFunc);
 
-	DBG_({ extern long theNrDefinedUser; theNrDefinedUser++; })
+  DBG_({ extern long theNrDefinedUser; theNrDefinedUser++; })
 }
 
 void LispEnvironment::DeclareMacroRuleBase(LispString * aOperator, LispPtr& aParameters, LispInt aListed)
@@ -429,7 +429,7 @@ void LispEnvironment::DeclareMacroRuleBase(LispString * aOperator, LispPtr& aPar
     }
     multiUserFunc->DefineRuleBase(newFunc);
 
-	DBG_({ extern long theNrDefinedUser; theNrDefinedUser++; })
+  DBG_({ extern long theNrDefinedUser; theNrDefinedUser++; })
 }
 
 
@@ -479,9 +479,9 @@ void LispEnvironment::DefineRule(LispString * aOperator,LispInt aArity,
     // Get the specific user function with the right arity
     LispUserFunction* userFunc = multiUserFunc->UserFunc(aArity);
     Check(userFunc, KLispErrCreatingRule);
-    
+ 
     // Declare a new evaluation rule
-    
+ 
 
     if (IsTrue(*this, aPredicate))
     {
@@ -504,7 +504,7 @@ void LispEnvironment::DefineRulePattern(LispString * aOperator,LispInt aArity,
     // Get the specific user function with the right arity
     LispUserFunction* userFunc = multiUserFunc->UserFunc(aArity);
     Check(userFunc, KLispErrCreatingRule);
-    
+ 
     // Declare a new evaluation rule
     userFunc->DeclarePattern(aPrecedence, aPredicate,aBody);
 }

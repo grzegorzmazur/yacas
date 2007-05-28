@@ -27,41 +27,41 @@ class LispStringSmartPtr;
 class LispString : public CArrayGrower<LispChar,ArrOpsPOD<LispChar> >
 {
 public:
-	// Constructors
+  // Constructors
     // The constructors allow the caller to specify whether the storage is owned externally.
-	// Use the assignment operators to set the string after this.
+  // Use the assignment operators to set the string after this.
     inline LispString(LispBoolean aStringOwnedExternally=LispFalse);
     inline LispString(LispString &aString, LispBoolean aStringOwnedExternally=LispFalse);
     inline LispString(LispChar * aString, LispBoolean aStringOwnedExternally);
     inline LispString(const LispChar * aString);
 
-	// Assignment
-	// This assignment abides by earlier functions setting the string as owned externally.
+  // Assignment
+  // This assignment abides by earlier functions setting the string as owned externally.
     inline LispString& operator=(LispChar * aString);
 
-	// Assignments (with modifications).  This string cannot be owned externally.
-    // Set string by taking part of another string. 
+  // Assignments (with modifications).  This string cannot be owned externally.
+    // Set string by taking part of another string.
     void SetStringCounted(const LispChar * aString, LispInt aLength);
     // Set string from other string, adding quotes around the string.
     void SetStringUnStringified(const LispChar * aString);
     // Set string from other string, removing quotes around the string.
     void SetStringStringified(const LispChar * aString);
 
-	// Access
-    inline LispChar * c_str() const;	// pointer to asciz 'C-string'
+  // Access
+    inline LispChar * c_str() const;  // pointer to asciz 'C-string'
 
     // Comparison
-	// If the string is in the hash table it is faster to compare the pointers to the strings
-	// (instead of calling this routine), since in that case if they
+  // If the string is in the hash table it is faster to compare the pointers to the strings
+  // (instead of calling this routine), since in that case if they
     // are equal they should in fact be literally the same object.
     LispInt operator==(const LispString& aString);
 
     ~LispString();
 private:
     inline void SetString(LispChar * aString, LispBoolean aStringOwnedExternally);
-	void SetString(const LispChar * aString);
+  void SetString(const LispChar * aString);
 public:
-	ReferenceCount iReferenceCount;
+  ReferenceCount iReferenceCount;
 };
 
 
@@ -76,13 +76,13 @@ public:
   LispStringSmartPtr() : iString(NULL) {}
 
   // Construct from pointer to LispString
-  LispStringSmartPtr(LispString * aString) : iString(NULL) 
+  LispStringSmartPtr(LispString * aString) : iString(NULL)
   {
     this->operator=(aString);
   }
 
   // Copy constructor
-  LispStringSmartPtr(const LispStringSmartPtr& aOther) : iString() 
+  LispStringSmartPtr(const LispStringSmartPtr& aOther) : iString()
   {
     this->operator=(aOther.iString);
   }
@@ -94,18 +94,18 @@ public:
   // (we return void, not *this).
   LispStringSmartPtr& operator=(LispString * aString);
 
-	// Assignment from another (the *default* simply assigns members, not what we want).
-	// (we return void, not *this).
+  // Assignment from another (the *default* simply assigns members, not what we want).
+  // (we return void, not *this).
   LispStringSmartPtr& operator=(const LispStringSmartPtr &aOther) { this->operator=(aOther.iString); return *this; }
 
-  // Expected pointer behavior.  
-  operator LispString*()    const { return  iString; }	// implicit conversion to pointer to T
-  LispString *operator->()  const { return  iString; }	// so (smartPtr->member) accesses T's member
-  
+  // Expected pointer behavior.
+  operator LispString*()    const { return  iString; }  // implicit conversion to pointer to T
+  LispString *operator->()  const { return  iString; }  // so (smartPtr->member) accesses T's member
+ 
   // Operators below are not used yet, so they are commented out. If you want to use them you need to test if they work.
-  //LispString &operator*() const { return *iString; }	// so (*smartPtr) is a reference to T
-  //LispString *ptr()       const { return  iString; }	// so (smartPtr.ptr()) returns the pointer to T (boost calls this method 'get')
-  //bool operator!()        const { return !iString; }	// is null pointer
+  //LispString &operator*() const { return *iString; }  // so (*smartPtr) is a reference to T
+  //LispString *ptr()       const { return  iString; }  // so (smartPtr.ptr()) returns the pointer to T (boost calls this method 'get')
+  //bool operator!()        const { return !iString; }  // is null pointer
 
 private:
   LispString * iString;

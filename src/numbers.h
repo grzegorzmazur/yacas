@@ -37,18 +37,18 @@ LispObject* LispFactorial(LispObject* int1, LispEnvironment& aEnvironment,LispIn
 
 
 // methods generally useful for all numeric libraries
-const unsigned GUARD_BITS = 8;	// we leave this many guard bits untruncated in various situations when we need to truncate precision by hand
+const unsigned GUARD_BITS = 8;  // we leave this many guard bits untruncated in various situations when we need to truncate precision by hand
 
 template<class T> inline T MAX(T x, T y) { if (x<y) return y; else return x; }
 template<class T> inline T MIN(T x, T y) { if (x>y) return y; else return x; }
 
-const long DIST_BITS = 1;	// at least this many bits of difference - used in precision tracking
+const long DIST_BITS = 1;  // at least this many bits of difference - used in precision tracking
 
 /// DIST(x, y) returns 1 if abs(x-y) >= DIST_BITS. See documentation for precision tracking.
 template<class T> inline T DIST(T x, T y) { return (x>=y+DIST_BITS || y>=x+DIST_BITS) ? 0 : 1; }
 
 
-/** Base number class. 
+/** Base number class.
  */
  
 // You can enable this define to have a BigNumber implementation based on 'double' and 'long'
@@ -56,14 +56,14 @@ template<class T> inline T DIST(T x, T y) { return (x>=y+DIST_BITS || y>=x+DIST_
 
 #ifndef USE_NATIVE
   #ifdef USE_GMP
-	#include <gmp.h>
+  #include <gmp.h>
   #else
     class ANumber;
   #endif
 #endif
 
 
-		
+ 
 /// Main class for multiple-precision arithmetic.
 /// All calculations are done at given precision. Integers grow as needed, floats don't grow beyond given precision.
 class BigNumber : public YacasBase
@@ -136,7 +136,7 @@ public:/// Bitwise operations, return result in *this.
   /// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
   /// give bit count as a platform integer
   signed long BitCount() const;
-  
+ 
   /// Give sign (-1, 0, 1)
   LispInt Sign() const;
 
@@ -151,8 +151,8 @@ private:
     return *this;
   }
 public:
-	ReferenceCount iReferenceCount;
-private: 
+  ReferenceCount iReferenceCount;
+private:
   LispInt iPrecision;
 
 #ifdef USE_NATIVE
@@ -171,7 +171,7 @@ private:
   EType type;
   UValue value;
 
-#else 
+#else
   #ifdef USE_GMP
   /// direct GMP wrapper starts here
   public:
@@ -192,15 +192,15 @@ private:
   /// This type gives masks to check the current type of the BigNumber.
   enum EType
   { /// bit masks: KFloatNAN includes KFloat.
-	  KInt = 1,
-	  KFloat = 2,
-	  KFloatNAN =  2 | 4
+    KInt = 1,
+    KFloat = 2,
+    KFloatNAN =  2 | 4
   };
-  mpz_t int_;	// these two are not in a union
-  mpf_t float_;	// because we want to avoid excessive memory reallocation.
+  mpz_t int_;  // these two are not in a union
+  mpf_t float_;  // because we want to avoid excessive memory reallocation.
   /// Type flag (a bit mask).
   unsigned type_;
-  
+ 
   /// direct GMP wrapper ends here.
   #else
   public:
@@ -214,8 +214,8 @@ private:
     ENumType iType;
     ANumber* iNumber;
   /// Internal library wrapper ends here.
-  #endif	// USE_GMP
-#endif	// USE_NATIVE
+  #endif  // USE_GMP
+#endif  // USE_NATIVE
 };
 
 /// bits_to_digits and digits_to_bits, utility functions

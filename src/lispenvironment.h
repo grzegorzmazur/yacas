@@ -421,7 +421,7 @@ public:
   YacasArgStack iStack;
 
 private:
-  
+ 
   inline LispEnvironment(const LispEnvironment& aOther)
     :
     iPrecision(0),  // default user precision of 10 decimal digits

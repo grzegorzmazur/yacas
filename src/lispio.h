@@ -34,7 +34,7 @@ public:
 
 private:
   LispChar * iFileName;
-  LispInt	iLineNumber;
+  LispInt  iLineNumber;
 };
 
 inline LispInt InputStatus::LineNumber()

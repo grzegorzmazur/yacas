@@ -74,7 +74,7 @@ private:
     LISPASSERT(0);
     return *this;
   }
-    
+ 
 private:
   LispChar * iBuffer;
   LispInt iCurrentPos;

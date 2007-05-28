@@ -17,7 +17,7 @@ const unsigned log2_table_size = 32;
 // report the table size
 unsigned log2_table_range()
 {
-	return log2_table_size;
+  return log2_table_size;
 }
 
 #ifdef HAVE_MATH_H
@@ -64,43 +64,43 @@ const double log2_table[log2_table_size] =
 // table look-up of small integer logarithms, for converting the number of digits to binary and back
 double log2_table_lookup(unsigned n)
 {
-		if (n<=log2_table_size && n>=BASE2)
-			return log2_table[n-1];
-		else
-		{
-			RaiseError("log2_table_lookup: error: invalid argument %d\n", n);
-			return 0;
-		}
+    if (n<=log2_table_size && n>=BASE2)
+      return log2_table[n-1];
+    else
+    {
+      RaiseError("log2_table_lookup: error: invalid argument %d\n", n);
+      return 0;
+    }
 }
 // convert the number of digits in given base to the number of bits, and back.
 // need to round the number of digits.
 // to make sure that there is no hysteresis, we round upwards on digits_to_bits but round down on bits_to_digits
 unsigned long digits_to_bits(unsigned long digits, unsigned base)
 {
-	return (unsigned long)ceil(double(digits)*log2_table_lookup(base));
+  return (unsigned long)ceil(double(digits)*log2_table_lookup(base));
 }
 
 unsigned long bits_to_digits(unsigned long bits, unsigned base)
 {
-	return (unsigned long)floor(double(bits)/log2_table_lookup(base));
+  return (unsigned long)floor(double(bits)/log2_table_lookup(base));
 }
 
-#else	// if have no math.h
+#else  // if have no math.h
 // on platforms without math.h we don't expect much serious math but we do need at least some precision in digit conversions.
 // so we approximate logs by best rational fractions.
 struct RationalFrac
-{	// this represents p/q with integer p, q and q>0
-	long p, q;
+{  // this represents p/q with integer p, q and q>0
+  long p, q;
 };
 
 // need tables of both Ln(n)/Ln(2) and of Ln(2)/Ln(n).
 // table of Ln(n)/Ln(2)
-const RationalFrac log2_table_l[log2_table_size] = 
+const RationalFrac log2_table_l[log2_table_size] =
 {
 {0, 1}, {1, 1}, {24727, 15601}, {2, 1}, {1493, 643}, {40328, 15601}, {1603, 571}, {3, 1}, {23673, 7468}, {2136, 643}, {3411, 986}, {55929, 15601}, {840, 227}, {2174, 571}, {13721, 3512}, {4, 1}, {1402, 343}, {31141, 7468}, {5637, 1327}, {2779, 643}, {3202, 729}, {4397, 986}, {13055, 2886}, {71530, 15601}, {2986, 643}, {1067, 227}, {22619, 4757}, {2745, 571}, {4139, 852}, {17233, 3512}, {157375, 31766}, {5, 1}
 };
 // table of Ln(2)/Ln(n)
-const RationalFrac log2_table_linv[log2_table_size] = 
+const RationalFrac log2_table_linv[log2_table_size] =
 {
 {0, 1}, {1, 1}, {665, 1054}, {1, 2}, {4004, 9297}, {665, 1719}, {2393, 6718}, {1, 3}, {665, 2108}, {4004, 13301}, {1935, 6694}, {665, 2384}, {5231, 19357}, {2393, 9111}, {4049, 15819}, {1, 4}, {4036, 16497}, {665, 2773}, {1206, 5123}, {4004, 17305}, {1588, 6975}, {1935, 8629}, {3077, 13919}, {665, 3049}, {2002, 9297}, {5231, 24588}, {665, 3162}, {2393, 11504}, {4943, 24013}, {537, 2635}, {3515, 17414}, {1, 5}};
 
@@ -108,52 +108,52 @@ const RationalFrac log2_table_linv[log2_table_size] =
 // need lookup of both Ln(n)/Ln(2) and of Ln(2)/Ln(n)
 const RationalFrac& log2_table_lookup(const RationalFrac* table, unsigned n)
 {
-	if (n<=log2_table_size && n>=BASE2)
-		return table[n-1];
-	else
-	{
-		RaiseError("log2_table_fake_lookup: error: invalid argument %d\n", n);
-		return table[0];
-	}
+  if (n<=log2_table_size && n>=BASE2)
+    return table[n-1];
+  else
+  {
+    RaiseError("log2_table_fake_lookup: error: invalid argument %d\n", n);
+    return table[0];
+  }
 };
 const RationalFrac& log2_table_lookup_l(unsigned n)
 {
-	return log2_table_lookup(log2_table_l, n);
+  return log2_table_lookup(log2_table_l, n);
 }
 const RationalFrac& log2_table_lookup_linv(unsigned n)
 {
-	return log2_table_lookup(log2_table_linv, n);
+  return log2_table_lookup(log2_table_linv, n);
 }
 
 // multiply aF by aX and round up to the nearest integer
 unsigned long fake_multiply_ceil(const RationalFrac& aF, unsigned long aX)
 {
-	// compute aX * aF.p / aF.q carefully to avoid overflow and to not undershoot: (maximum number we need to support is p*q, not p*x)
-	// result = p*Div(x,q) + Div(Mod(x, q)*p+q-1, q)
-	return aF.p*(((unsigned long)aX)/((unsigned long)aF.q))
-	+ ((aX % ((unsigned long)aF.q))*aF.p+aF.q-1)/((unsigned long)aF.q);
+  // compute aX * aF.p / aF.q carefully to avoid overflow and to not undershoot: (maximum number we need to support is p*q, not p*x)
+  // result = p*Div(x,q) + Div(Mod(x, q)*p+q-1, q)
+  return aF.p*(((unsigned long)aX)/((unsigned long)aF.q))
+  + ((aX % ((unsigned long)aF.q))*aF.p+aF.q-1)/((unsigned long)aF.q);
 }
 
 
 // multiply aF by aX and round down to the nearest integer
 unsigned long fake_multiply_floor(const RationalFrac& aF, unsigned long aX)
 {
-	// compute aX * aF.p / aF.q carefully to avoid overflow and to not undershoot: (maximum number we need to support is p*q, not p*x)
-	// result = p*Div(x,q) + Div(Mod(x, q)*p, q)
-	return aF.p*(((unsigned long)aX)/((unsigned long)aF.q))
-	+ ((aX % ((unsigned long)aF.q))*aF.p)/((unsigned long)aF.q);
+  // compute aX * aF.p / aF.q carefully to avoid overflow and to not undershoot: (maximum number we need to support is p*q, not p*x)
+  // result = p*Div(x,q) + Div(Mod(x, q)*p, q)
+  return aF.p*(((unsigned long)aX)/((unsigned long)aF.q))
+  + ((aX % ((unsigned long)aF.q))*aF.p)/((unsigned long)aF.q);
 }
 
 
 // convert the number of digits in given base to the number of bits, and back
 unsigned long digits_to_bits(unsigned long digits, unsigned base)
 {
-	return fake_multiply_ceil(log2_table_lookup_l(base), digits);
+  return fake_multiply_ceil(log2_table_lookup_l(base), digits);
 }
 
 unsigned long bits_to_digits(unsigned long bits, unsigned base)
 {
-	return fake_multiply_floor(log2_table_lookup_linv(base), bits);
+  return fake_multiply_floor(log2_table_lookup_linv(base), bits);
 }
 
 #endif // HAVE_MATH_H

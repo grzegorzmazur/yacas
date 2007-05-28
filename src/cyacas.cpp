@@ -17,7 +17,7 @@ LispString *stringout = NULL;
 StringOutput *output = NULL;
 
 #ifdef WIN32
-HANDLE hResInfo, hRes; 
+HANDLE hResInfo, hRes;
 #endif
 
 void yacas_init()
@@ -28,11 +28,11 @@ void yacas_init()
 #ifdef WIN32
 
 /* */
-  { 
+  {
     // Find the wave resource.
     extern HANDLE hThisModule;
     HMODULE hmod = (HMODULE)hThisModule;
-    hResInfo = FindResource (hmod, "RC_DATA1", RT_RCDATA); 
+    hResInfo = FindResource (hmod, "RC_DATA1", RT_RCDATA);
 
     if (!hResInfo)
     {
@@ -40,15 +40,15 @@ void yacas_init()
     }
 
     int fullsize = 0;
-    if (hResInfo) 
+    if (hResInfo)
     {
       fullsize = SizeofResource(hmod, (HRSRC)hResInfo);
-      // Load the wave resource. 
-      hRes = LoadResource (hmod, (HRSRC)hResInfo); 
+      // Load the wave resource.
+      hRes = LoadResource (hmod, (HRSRC)hResInfo);
 
-      if (hRes) 
+      if (hRes)
       {
-        // Lock the wave resource and play it. 
+        // Lock the wave resource and play it.
         unsigned char* buffer = PlatAllocN<unsigned char>(fullsize);
         if (buffer)
         {
@@ -194,7 +194,7 @@ void* yacas_execute(void* object)
 void* yacas_get_sublist(void* object)
 {
   //return ((LispObject*)object)->SubList()->Get();
-	return (void*)&(*(*((LispObject*)object)->SubList()));
+  return (void*)&(*(*((LispObject*)object)->SubList()));
 }
 char* yacas_get_atom(void* object)
 {

@@ -30,7 +30,7 @@ LispString * XmlTokenizer::NextToken(LispInput& aInput,
     //skipping spaces
     while (IsSpace(aInput.Peek())) aInput.Next();
     firstpos = aInput.Position();
-    
+ 
     c = aInput.Next();
     if (c == '<')
     {

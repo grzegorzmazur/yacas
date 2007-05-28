@@ -139,7 +139,7 @@ StdFileInput::StdFileInput(LispLocalFile& aFile,InputStatus& aStatus)
 
     iFile.Seek(ESeekStart,fp);
 
-    
+ 
 
     // Read in the full buffer
 
@@ -265,7 +265,7 @@ LispLocalFile::LispLocalFile(LispEnvironment& aEnvironment,
 
       iOpened = 0;
 
-    
+ 
 
     SAFEPUSH(iEnvironment,*this);
 

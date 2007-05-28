@@ -12,7 +12,7 @@ inline LispPtr& Argument(LispPtr& cur, LispInt n)
 
 // Boolean operations
 inline void InternalTrue(LispEnvironment& aEnvironment, LispPtr& aResult)
-{               
+{
     aResult = (aEnvironment.iTrue->Copy());
 }
 

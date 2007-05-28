@@ -35,7 +35,7 @@ public:
   LispEnvironment& getEnv() {return iEnvironment;}
 
 private:
-  DefaultYacasEnvironment(const DefaultYacasEnvironment& aOther) 
+  DefaultYacasEnvironment(const DefaultYacasEnvironment& aOther)
     : output(NULL),hash(),printer(),coreCommands(),globals(),prefixoperators(),infixoperators(),postfixoperators(),bodiedoperators(),infixprinter(aOther.infixprinter),userFunctions(),
       iEnvironment(coreCommands,userFunctions,
                  globals,hash,output,infixprinter,
@@ -91,7 +91,7 @@ public:
     /// Pseudo-constructor.
     /// \return A new instance of CYacas, with output connected to \p aOutput.
     /// If aOutput is NULL, connect to a new instance of  StdUserOutput.
-    LISPIMPORT static CYacas* NewL(LispOutput* aOutput=0, LispInt aStackSize=50000); 
+    LISPIMPORT static CYacas* NewL(LispOutput* aOutput=0, LispInt aStackSize=50000);
 
     /// Destructor.
     LISPIMPORT virtual ~CYacas();
@@ -118,14 +118,14 @@ public:
     inline LispBoolean IsError();
 
 private:
-    
+ 
     /// Constructor.
     /// The output of #environment is directed to \p aOutput.
     CYacas(LispOutput* aOutput,LispInt aStackSize);
 
 private:
 
-    /// The underlying Yacas environment  
+    /// The underlying Yacas environment
     DefaultYacasEnvironment environment;
 
     /// String containing the result of the last evaluation

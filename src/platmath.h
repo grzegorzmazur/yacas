@@ -42,13 +42,13 @@ public: //constructors
 public: //constructors
   virtual void SetTo(LispEnvironment& aEnvironment,const NumberBase&);
   virtual void ToString(LispEnvironment& aEnvironment,LispString& aResult, LispInt aBase) const;
-public: //information retrieval on library used  
+public: //information retrieval on library used
   virtual const LispChar * NumericLibraryName(LispEnvironment& aEnvironment,) const;
 public://arithmetic
   virtual void Multiply(LispEnvironment& aEnvironment,const NumberBase& aX, const NumberBase& aY, LispInt aPrecision);
   virtual void MultiplyAdd(LispEnvironment& aEnvironment,NumberBase& aResult,
-                const NumberBase& aX, 
-                const NumberBase& aY, 
+                const NumberBase& aX,
+                const NumberBase& aY,
                 LispInt aPrecision);
   virtual void Add(LispEnvironment& aEnvironment,const NumberBase& aX, const NumberBase& aY, LispInt aPrecision);
   virtual void Negate(LispEnvironment& aEnvironment,const NumberBase& aX);
@@ -56,7 +56,7 @@ public://arithmetic
   virtual LispInt BitCount(LispEnvironment& aEnvironment,) const;
   virtual double Double(LispEnvironment& aEnvironment,) const;
   virtual LispInt Sign(LispEnvironment& aEnvironment,) const;
-public://bitwise operations  
+public://bitwise operations
   virtual void ShiftLeft(LispEnvironment& aEnvironment, const NumberBase& aX, LispInt aNrToShift);
   virtual void ShiftRight(LispEnvironment& aEnvironment, const NumberBase& aX, LispInt aNrToShift);
   virtual void BitAnd(LispEnvironment& aEnvironment,const NumberBase& aX, const NumberBase& aY);

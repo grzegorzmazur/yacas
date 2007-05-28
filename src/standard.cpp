@@ -61,7 +61,7 @@ void InternalUnstringify(LispString& aResult, LispString * aOriginal)
    *
    * Also do not forget to make the change in the Java version then, and find the other places where this is relevant.
    */
-  Check(aOriginal,KLispErrInvalidArg); 
+  Check(aOriginal,KLispErrInvalidArg);
   Check((*aOriginal)[0] == '\"',KLispErrInvalidArg);
   LispInt nrc = aOriginal->Size()-2;
   Check((*aOriginal)[nrc] == '\"',KLispErrInvalidArg);
@@ -120,7 +120,7 @@ void InternalIntToAscii(LispChar * aTrg,LispInt aInt)
 // TODO: we should either pass the string by reference, or use an assert to check validity of input
 LispInt InternalAsciiToInt(LispString * aString)
 {
-	LispChar * ptr = aString->c_str();
+  LispChar * ptr = aString->c_str();
   Check(IsNumber(ptr,LispFalse),KLispErrInvalidArg);
   return PlatAsciiToInt(ptr);
 }
@@ -200,7 +200,7 @@ void InternalReverseList(LispPtr& aResult, LispPtr& aOriginal)
     LispPtr iter(aOriginal);
     LispPtr previous;
     LispPtr tail(aOriginal);
-    
+ 
     while (!!iter)
     {
         tail = iter->Nixed();
@@ -245,7 +245,7 @@ LispBoolean InternalEquals(LispEnvironment& aEnvironment,
                            LispPtr& aExpression2)
 {
     // Handle pointers to same, or NULL
-    if (aExpression1.ptr() == aExpression2.ptr())	// compare pointers to LispObject  
+    if (aExpression1.ptr() == aExpression2.ptr())  // compare pointers to LispObject
     {
         return LispTrue;
     }
@@ -298,7 +298,7 @@ LispBoolean InternalEquals(LispEnvironment& aEnvironment,
             {
                 return LispFalse;
             }
-                
+ 
             // Step to next
             ++iter1;
             ++iter2;
@@ -314,7 +314,7 @@ LispBoolean InternalEquals(LispEnvironment& aEnvironment,
     // expressions sublists are not the same!
     return LispFalse;
 }
-                           
+ 
 void DoInternalLoad(LispEnvironment& aEnvironment,LispInput* aInput)
 {
     LispLocalInput localInput(aEnvironment, aInput);
@@ -383,7 +383,7 @@ void InternalLoad(LispEnvironment& aEnvironment,LispString * aFileName)
     }
     aEnvironment.iInputStatus.RestoreFrom(oldstatus);
 }
-    
+ 
 void InternalUse(LispEnvironment& aEnvironment,LispString * aFileName)
 {
     LispDefFile* def = aEnvironment.DefFiles().File(aFileName);
@@ -415,7 +415,7 @@ void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnviron
 //
 //    }
 //printf("0...\n");
-	LispPtr * chk1 = oper->SubList();
+  LispPtr * chk1 = oper->SubList();
     Check(chk1,KLispErrInvalidArg);
     Check(!!(*chk1),KLispErrInvalidArg);
     LispPtr oper2((*chk1)->Nixed());
@@ -426,7 +426,7 @@ void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnviron
     Check(!!body,KLispErrInvalidArg);
 
 //printf("2...\n");
-	LispPtr * chk2 = oper2->SubList();
+  LispPtr * chk2 = oper2->SubList();
     Check(chk2,KLispErrInvalidArg);
     Check(!!(*chk2),KLispErrInvalidArg);
     oper2 = ((*chk2)->Nixed());
@@ -497,7 +497,7 @@ LispInt PlatStrCompare(LispChar * f1, LispChar * f2)
 {
     while (*f1)
     {
-        // f1 > f2  
+        // f1 > f2
         if ( (*f2) == '\0')
             return 1;
         if (*f1 < *f2)
@@ -508,10 +508,10 @@ LispInt PlatStrCompare(LispChar * f1, LispChar * f2)
         f2++;
     }
 
-    // f1 < f2  
+    // f1 < f2
     if (*f2)
         return -1;
-    // f1 = f2 
+    // f1 = f2
     return 0;
 }
 */

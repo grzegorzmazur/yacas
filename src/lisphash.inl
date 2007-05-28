@@ -55,7 +55,7 @@ inline void LispAssociatedHash<T>::SetAssociation(const T& aData, LispString * a
 {
   LispInt bin = LH;
   LispInt i;
-    
+ 
   // Find existing version of string
   for (i=0;i<iHashTable[bin].Size();i++)
   {
@@ -78,7 +78,7 @@ inline void LispAssociatedHash<T>::Release(LispString * aString)
 {
   LispInt bin = LH;
   LispInt i;
-    
+ 
   // Find existing version of string
   for (i=0;i<iHashTable[bin].Size();i++)
   {

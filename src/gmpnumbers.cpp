@@ -23,7 +23,7 @@
 #include "errors.h"
 
 // RaiseError causes trouble (crashing). Try this for debugging now:
-//#define RaiseError printf 
+//#define RaiseError printf
 
 // we still need some of these functions but it will eventually all be removed
 
@@ -39,16 +39,16 @@ static void initGMPNumber(GMPNumber& x, mpz_t mpz);
 static void clearGMPNumber(GMPNumber& x);
 static void ConvToGMPNumber(GMPNumber& r, mpf_t x, long prec=0);
 static char* getstrGMPNumber(GMPNumber& x, long prec=0);
-static LispString * GMPNumberToString(GMPNumber& x, LispHashTable& h, 
+static LispString * GMPNumberToString(GMPNumber& x, LispHashTable& h,
                                        LispInt prec=0);
 static void GMPNumberCopy(GMPNumber& x, GMPNumber& y);
 static void GMPNumberZeroFill(GMPNumber& r, GMPNumber& x);
 static void GMPNumberTrunc(GMPNumber& r, GMPNumber& x, long prec);
 static void GMPNumberAdd(GMPNumber& r, GMPNumber& x, GMPNumber& y);
-static void GMPNumberSubtract(GMPNumber& r, GMPNumber& x, GMPNumber& y); 
-static void GMPNumberMultiply(GMPNumber& r, GMPNumber& x, 
+static void GMPNumberSubtract(GMPNumber& r, GMPNumber& x, GMPNumber& y);
+static void GMPNumberMultiply(GMPNumber& r, GMPNumber& x,
                               GMPNumber& y, long prec);
-static void GMPNumberDivide(GMPNumber& r, GMPNumber& x, 
+static void GMPNumberDivide(GMPNumber& r, GMPNumber& x,
                                  GMPNumber& y, long prec);
 static void GMPNumberInvert(GMPNumber& r, GMPNumber& x, long prec);
 static void GMPNumberPower(GMPNumber& r, GMPNumber& x, long e, long prec);
@@ -68,7 +68,7 @@ static void GMPNumberShiftRight(GMPNumber& r, GMPNumber& x, unsigned long d);
 static void SetMPFPrecision(LispInt aPrecision);
 
 static LispString * IntegerToString(mpz_t& aInt, LispHashTable& aHashTable);
-static LispString * FloatToString(mpf_t& aInt, LispHashTable& aHashTable, 
+static LispString * FloatToString(mpf_t& aInt, LispHashTable& aHashTable,
                                    LispInt aBase = 10);
 
 LispInt NumericSupportForMantissa()
@@ -140,7 +140,7 @@ void initGMPNumber(GMPNumber& x, char* str)
       exp--;
       if(*s=='E'||*s=='e'){s++;enot=1;break;}
     }
-  }  
+  }
   if (enot) exp+=atol(s);
   *m='\0';
   m--;
@@ -241,7 +241,7 @@ char* getstrGMPNumber(GMPNumber& x, long prec=0)
   return str;
 }
 
-static LispString * GMPNumberToString(GMPNumber& x, LispHashTable& h, 
+static LispString * GMPNumberToString(GMPNumber& x, LispHashTable& h,
                                        LispInt prec=0)
 {
   char* result = getstrGMPNumber(x, prec);
@@ -433,7 +433,7 @@ void GMPNumberInvert(GMPNumber& r, GMPNumber& x, long prec)
 {
   GMPNumber one;
   initGMPNumber(one, 1);
-  GMPNumberDivide(r,one,x,prec); 
+  GMPNumberDivide(r,one,x,prec);
   clearGMPNumber(one);
 }
 
@@ -715,7 +715,7 @@ LispString * AddFloat(LispChar * int1, LispChar * int2,
   initGMPNumber(r);
   initGMPNumber(x,int1);
   initGMPNumber(y,int2);
-  GMPNumberAdd(r,x,y);        
+  GMPNumberAdd(r,x,y);
   LispString * result = GMPNumberToString(r, aHashTable, aPrecision);
   clearGMPNumber(r);
   clearGMPNumber(x);
@@ -742,7 +742,7 @@ LispString * SubtractFloat(LispChar * int1, LispChar * int2,
   initGMPNumber(r);
   initGMPNumber(x,int1);
   initGMPNumber(y,int2);
-  GMPNumberSubtract(r,x,y);        
+  GMPNumberSubtract(r,x,y);
   LispString * result = GMPNumberToString(r, aHashTable, aPrecision);
   clearGMPNumber(r);
   clearGMPNumber(x);
@@ -768,7 +768,7 @@ LispString * DivideFloat(LispChar * int1, LispChar * int2,
   initGMPNumber(r);
   initGMPNumber(x,int1);
   initGMPNumber(y,int2);
-  GMPNumberDivide(r,x,y,aPrecision);        
+  GMPNumberDivide(r,x,y,aPrecision);
   LispString * result = GMPNumberToString(r, aHashTable, aPrecision);
   clearGMPNumber(r);
   clearGMPNumber(x);
@@ -783,7 +783,7 @@ LispString * MultiplyFloat(LispChar * int1, LispChar * int2,
   initGMPNumber(r);
   initGMPNumber(x,int1);
   initGMPNumber(y,int2);
-  GMPNumberMultiply(r,x,y,aPrecision);        
+  GMPNumberMultiply(r,x,y,aPrecision);
   LispString * result = GMPNumberToString(r, aHashTable, aPrecision);
   clearGMPNumber(r);
   clearGMPNumber(x);
@@ -798,7 +798,7 @@ LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnv
   long y = atol(int2->String()->String());
   initGMPNumber(r);
   initGMPNumber(x,int1->String()->String());
-  GMPNumberPower(r,x,y,aPrecision);        
+  GMPNumberPower(r,x,y,aPrecision);
   LispString * result = GMPNumberToString(r, aEnvironment.HashTable(), aPrecision);
   clearGMPNumber(r);
   clearGMPNumber(x);
@@ -1003,7 +1003,7 @@ LispObject* ModFloat( LispObject* int1, LispObject* int2, LispEnvironment& aEnvi
   initGMPNumber(r);
   initGMPNumber(x,int1->String()->String());
   initGMPNumber(y,int2->String()->String());
-  GMPNumberMod(r,x,y);        
+  GMPNumberMod(r,x,y);
   LispString * result = GMPNumberToString(r, aEnvironment.HashTable(), aPrecision);
   clearGMPNumber(r);
   clearGMPNumber(x);
@@ -1018,7 +1018,7 @@ LispString * DivFloat( LispChar * int1, LispChar * int2, LispHashTable& aHashTab
   initGMPNumber(r);
   initGMPNumber(x,int1);
   initGMPNumber(y,int2);
-  GMPNumberDiv(r,x,y);        
+  GMPNumberDiv(r,x,y);
   LispString * result = GMPNumberToString(r, aHashTable, aPrecision);
   clearGMPNumber(r);
   clearGMPNumber(x);
@@ -1063,7 +1063,7 @@ static LispString * FloatToString(mpf_t& aInt,
     printable.Resize(0);
     char* ptr=result;
     LispInt i;
-    
+ 
     // Allow for sign
     if (*ptr == '-')
     {
@@ -1123,7 +1123,7 @@ static LispString * FloatToString(mpf_t& aInt,
         }
         printable.Append('\0');
     }
-    
+ 
     free(result);
 
     return aHashTable.LookUp(printable.String());
@@ -1201,7 +1201,7 @@ LispString * BitXor(LispChar * int1, LispChar * int2,
     mpz_clear(res);
     return result;
 
-//  FOR THIS YOU NEED GMP >= 3.0  
+//  FOR THIS YOU NEED GMP >= 3.0
 /*    mpz_t i1;
     mpz_t i2;
     mpz_init(i1);
@@ -1248,39 +1248,39 @@ const LispChar * NumericLibraryName()
 
 
 // precision is in bits, not in digits!
-BigNumber::BigNumber(LispInt aPrecision) 
-{ 
-	init(); 
-	iPrecision = aPrecision; 
+BigNumber::BigNumber(LispInt aPrecision)
+{
+  init();
+  iPrecision = aPrecision;
 }
 
 void BigNumber::init()
 {// this function should be called only from constructors because it is not recommended to re-initialize a non-cleared gmp object
-	turn_int();	// by default all numbers are created integer
-	mpz_init2(int_, 32);	// default precision
-	mpf_init2(float_, 32);
-	iPrecision = 32;
+  turn_int();  // by default all numbers are created integer
+  mpz_init2(int_, 32);  // default precision
+  mpf_init2(float_, 32);
+  iPrecision = 32;
 }
 
 BigNumber::~BigNumber()
 {
-	mpz_clear(int_);
-	mpf_clear(float_);
+  mpz_clear(int_);
+  mpf_clear(float_);
 }
 // construct from string
 BigNumber::BigNumber(const LispChar * aString,LispInt aPrecision,LispInt aBase)
 {
 // iPrecision is going to be set in SetTo
-	init();
-	SetTo(aString, aPrecision, aBase);
+  init();
+  SetTo(aString, aPrecision, aBase);
 }
 
 
 /// copy constructor
 BigNumber::BigNumber(const BigNumber& aOther)
 {
-	init();
-	SetTo(aOther);
+  init();
+  SetTo(aOther);
 }
 
 
@@ -1288,21 +1288,21 @@ BigNumber::BigNumber(const BigNumber& aOther)
 void BigNumber::SetTo(const BigNumber& aOther)
 {
   if (this == &aOther)
-	return;
+  return;
   else
   if (aOther.IsInt())
   {
-	turn_int();
-	mpz_set(int_, aOther.int_);
+  turn_int();
+  mpz_set(int_, aOther.int_);
   }
   else
   {
-	turn_float();
-	iPrecision = aOther.GetPrecision();
-	mpf_set_d(float_, 1.);	// otherwise gmp doesn't really set the precision? FIXME
+  turn_float();
+  iPrecision = aOther.GetPrecision();
+  mpf_set_d(float_, 1.);  // otherwise gmp doesn't really set the precision? FIXME
 
-	mpf_set_prec(float_, mpf_get_prec(aOther.float_));
-	mpf_set(float_, aOther.float_);
+  mpf_set_prec(float_, mpf_get_prec(aOther.float_));
+  mpf_set(float_, aOther.float_);
   }
   type_ = aOther.type_;
 }
@@ -1312,53 +1312,53 @@ void BigNumber::SetTo(const LispChar * aString,LispInt aPrecision,LispInt aBase)
 {
   if (aBase<2 || aBase>32)
   {
-  	RaiseError("BigNumber::SetTo(string): error: aBase should be between 2 and 32, not '%d'\n", aBase);
-  	return;
+    RaiseError("BigNumber::SetTo(string): error: aBase should be between 2 and 32, not '%d'\n", aBase);
+    return;
   }
-	// decide whether the string is an integer or a float
+  // decide whether the string is an integer or a float
   if (strchr(aString, '.') || aBase<=10 && (strchr(aString, 'e') || strchr(aString,'E')) || strchr(aString, '@'))
-  {	// converting to a float
-	// estimate the number of bits we need to have
-	  // find the first significant digit:
-	  LispInt digit1 = strspn(aString, ".-0");	// initial zeros are not significant
-	 // find the number of significant base digits (sig_digits)
-	  LispInt sig_digits = strcspn(aString+digit1, (aBase<=10) ? "-eE@" : "-@"); // trailing zeros and . *are* significant, do not include them in the sets
-	  if (sig_digits<=0)
-	  {	// this is when we have "0." in various forms
-		  // the number of digits is the number of trailing 0s after .
-		  sig_digits = strspn(aString, "-0");	// the string cannot consist of only 0 and -, it must contain at least one of ".eE@"
-		  // for example, -0000000.000e10 has 4 significant digits
-		  // counting . as one of the digits, so that "0" will have 1 digit
-		  sig_digits = strcspn(aString+sig_digits, "eE@");
-	  }
-	  else
-	  {	// our number is nonzero
-		  if (strchr(aString+digit1, '.'))
-			  -- sig_digits;	// this is when we have "1.000001" where "." is not a digit, so need to decrement
-	  }
-	  // ok, so we need to represent MAX(aPrecision,sig_digits) digits in base aBase
-	  iPrecision=(LispInt) digits_to_bits(MAX(aPrecision,sig_digits), aBase);
+  {  // converting to a float
+  // estimate the number of bits we need to have
+    // find the first significant digit:
+    LispInt digit1 = strspn(aString, ".-0");  // initial zeros are not significant
+   // find the number of significant base digits (sig_digits)
+    LispInt sig_digits = strcspn(aString+digit1, (aBase<=10) ? "-eE@" : "-@"); // trailing zeros and . *are* significant, do not include them in the sets
+    if (sig_digits<=0)
+    {  // this is when we have "0." in various forms
+      // the number of digits is the number of trailing 0s after .
+      sig_digits = strspn(aString, "-0");  // the string cannot consist of only 0 and -, it must contain at least one of ".eE@"
+      // for example, -0000000.000e10 has 4 significant digits
+      // counting . as one of the digits, so that "0" will have 1 digit
+      sig_digits = strcspn(aString+sig_digits, "eE@");
+    }
+    else
+    {  // our number is nonzero
+      if (strchr(aString+digit1, '.'))
+        -- sig_digits;  // this is when we have "1.000001" where "." is not a digit, so need to decrement
+    }
+    // ok, so we need to represent MAX(aPrecision,sig_digits) digits in base aBase
+    iPrecision=(LispInt) digits_to_bits(MAX(aPrecision,sig_digits), aBase);
 
-	  turn_float();
-//	mpf_set_d(float_, 1.);	// otherwise gmp doesn't really set the precision? FIXME
-	  // GMP does NOT read all digits from the string unless the precision is preset to the right number of bits.
-	  mpf_set_prec(float_, iPrecision+GUARD_BITS);
-	
-	if (mpf_set_str(float_, aString, aBase)!=0)
-	{// FIXME: this clause is executed when there is an error in the string (GMP couldn't read it). Need to signal the error somehow.
-	    RaiseError("BigNumber::SetTo: Error reading a float from string '%s'\n", aString);
-	    SetTo(0.);
-		iPrecision = 0;
-	}
+    turn_float();
+//  mpf_set_d(float_, 1.);  // otherwise gmp doesn't really set the precision? FIXME
+    // GMP does NOT read all digits from the string unless the precision is preset to the right number of bits.
+    mpf_set_prec(float_, iPrecision+GUARD_BITS);
+ 
+  if (mpf_set_str(float_, aString, aBase)!=0)
+  {// FIXME: this clause is executed when there is an error in the string (GMP couldn't read it). Need to signal the error somehow.
+      RaiseError("BigNumber::SetTo: Error reading a float from string '%s'\n", aString);
+      SetTo(0.);
+    iPrecision = 0;
+  }
   }
   else
-  {	// converting to an integer, aPrecision is ignored
+  {  // converting to an integer, aPrecision is ignored
     turn_int();
-  	if (mpz_set_str(int_, aString, aBase)!=0)
-	{
-	    RaiseError("BigNumber::SetTo: Error reading an integer from string '%s'\n", aString);
-	    SetTo(0);
-	}
+    if (mpz_set_str(int_, aString, aBase)!=0)
+  {
+      RaiseError("BigNumber::SetTo: Error reading an integer from string '%s'\n", aString);
+      SetTo(0);
+  }
   }
 }
 
@@ -1376,7 +1376,7 @@ void BigNumber::SetTo(double value)
   turn_float();
   mpf_set_prec(float_, 53);
   mpf_set_d(float_, value);
-  iPrecision = 53;	// standard double has 53 bits
+  iPrecision = 53;  // standard double has 53 bits
 }
 
 
@@ -1387,122 +1387,122 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
 {
   if (aBase<2 || aBase>32)
   {
-  	RaiseError("BigNumber::ToString: error: aBase should be between 2 and 32, not %d\n", aBase);
-  	return;
+    RaiseError("BigNumber::ToString: error: aBase should be between 2 and 32, not %d\n", aBase);
+    return;
   }
   if (IsInt())
-  {	// find how many chars we need
-	LispInt size=mpz_sizeinbase(int_, aBase);
-	char* buffer=(char*)malloc(size+2);
-	mpz_get_str(buffer, aBase, int_);
-	// assign result
-	aResult.SetStringCounted(buffer, strlen(buffer));
-	free(buffer);
+  {  // find how many chars we need
+  LispInt size=mpz_sizeinbase(int_, aBase);
+  char* buffer=(char*)malloc(size+2);
+  mpz_get_str(buffer, aBase, int_);
+  // assign result
+  aResult.SetStringCounted(buffer, strlen(buffer));
+  free(buffer);
   }
   else
-  {	// we have a floating-point number.
-	// note: aPrecision means *base digits* here
-	LISPASSERT(aPrecision>=0);
-	if (aPrecision <=0)
-		aPrecision = 1;	// refuse to print with 0 or fewer digits
+  {  // we have a floating-point number.
+  // note: aPrecision means *base digits* here
+  LISPASSERT(aPrecision>=0);
+  if (aPrecision <=0)
+    aPrecision = 1;  // refuse to print with 0 or fewer digits
     unsigned long size=(unsigned long)aPrecision;
     // how many base digits to print
     unsigned long print_prec = bits_to_digits((unsigned long)iPrecision, aBase);
-	print_prec = MIN(print_prec, (unsigned long)aPrecision);
+  print_prec = MIN(print_prec, (unsigned long)aPrecision);
     // the size needed to print the exponent cannot be more than 200 chars since we refuse to print exp-floats
     size += 200;
     char* buffer=(char*)malloc(size);
     if (!buffer)
     {
-	    RaiseError("BigNumber::ToString: out of memory printing %e (prec. %d) to %d digits, need %ld chars", this->Double(), this->GetPrecision(), aPrecision, size);
-	    return;
+      RaiseError("BigNumber::ToString: out of memory printing %e (prec. %d) to %d digits, need %ld chars", this->Double(), this->GetPrecision(), aPrecision, size);
+      return;
     }
     char* offset = buffer;
     if (Sign()==0)
     {    // print zero - note that gmp does not print "0.", it prints nothing at all.
     // according to the latest revelations, the floating-point zero must be printed as "0."
-	    strcpy(offset, "0."); // end of string is here too
+      strcpy(offset, "0."); // end of string is here too
     }
     else
     {
-	// print a number using fixed point if the exponent is between -4 and +8
-	const long lower_exp=-4, upper_exp=8;
-//	gmp_snprintf(buffer, size-1, "%*g", float_, aPrecision);
+  // print a number using fixed point if the exponent is between -4 and +8
+  const long lower_exp=-4, upper_exp=8;
+//  gmp_snprintf(buffer, size-1, "%*g", float_, aPrecision);
 // cannot use gmp_printf because we need to print in a given base
-	long exp_small;
-	// get the exponent in given base and print the string at the same time
-	// string is printed starting at an offset to allow for leading zeros/decimal point
-	offset += 2-lower_exp;
-	(void) mpf_get_str(offset, &exp_small, aBase, print_prec, float_);
-	if (lower_exp <= exp_small && exp_small <= upper_exp)
-	{	// print in fixed point.
-		if (exp_small>0)
-		{	// Insert a point somewhere in the middle. Uses memmove() if needed
-			// *offset contains something like "-123" and exp_small is 2, then we need to get "-12.3". Or perhaps we had "-123" and exp_small=5, then we need to get "-12300."
-			// point position
-			char* point_pos = offset + exp_small;
-			if (Sign()<0) ++point_pos;
-			// decide if the point is within the printed part of the string
-			size=strlen(offset);
-			if (point_pos-offset>=(signed)size) // ok here because point_pos-offset is always positive if exp_small>0
-			{	// no moving required, but perhaps need to pad with zeros, and we need to add the point
-				int i=size;
-				for(; i<point_pos-offset; ++i)
-				  offset[i] = '0';
-				strcpy(offset+i, ".");	// end of string
-			}
-			else
-			{	// need to insert the point and shift the rest of the string
-				memmove(point_pos+1, point_pos, size-(point_pos-offset)+1);
-				*point_pos = '.';
-			}
-		}
-		else
-		{// add leading zeros and decimal point, handle sign
-		// we need to add (1-exp_small) zeros total
-			if (Sign()<0)
-			{	// *offset contains something like "-123..."
-				// and instead we need -0.00123... (if small_exp=-2)
-				// final offset:
-				offset = offset-(2-exp_small);
-				memcpy(offset, "-0.",3);	// 3 chars added
-				// fill more zeros
-				for (int i=3; i<3-exp_small; ++i)
-				  offset[i] = '0';
-				// done printing
-			}
-			else	// the number is surely nonzero.
-			{	// *offset contains something like "123..."
-				// and instead we need 0.00123... (if small_exp=-2)
-				// final offset:
-				offset = offset-(2-exp_small);
-				memcpy(offset, "0.",2);	// 2 chars added
-				// fill more zeros
-				for (int i=2; i<2-exp_small; ++i)
-				  offset[i] = '0';
-				// done printing to buffer
-			}
-		}	// end of printing numbers < 1
-	}	// end of printing in fixed point
-	else
-	{ // printing in floating point
-		// if the number is negative, need to handle the - sign
-		offset -= 2;	// final offset already known
-		if (Sign()<0)
-			memcpy(offset, "-0.", 3);
-		else
-			memcpy(offset, "0.", 2);
-		
-		// now print the exponent: either "e" or "@" and then the long integer
-		size = strlen(offset);
-		offset[size] = (aBase<=10) ? 'e' : '@';	// one character there, start exponent at offset size+1. Printing as per GMP instructions.
-		// compute the total exponent
-		BigNumber exp_total;
-		exp_total.SetTo((LispInt)exp_small);
-		mpz_get_str(offset+size+1, aBase, exp_total.int_);
-	}
-	// assign result
-     }	// finished printing a float
+  long exp_small;
+  // get the exponent in given base and print the string at the same time
+  // string is printed starting at an offset to allow for leading zeros/decimal point
+  offset += 2-lower_exp;
+  (void) mpf_get_str(offset, &exp_small, aBase, print_prec, float_);
+  if (lower_exp <= exp_small && exp_small <= upper_exp)
+  {  // print in fixed point.
+    if (exp_small>0)
+    {  // Insert a point somewhere in the middle. Uses memmove() if needed
+      // *offset contains something like "-123" and exp_small is 2, then we need to get "-12.3". Or perhaps we had "-123" and exp_small=5, then we need to get "-12300."
+      // point position
+      char* point_pos = offset + exp_small;
+      if (Sign()<0) ++point_pos;
+      // decide if the point is within the printed part of the string
+      size=strlen(offset);
+      if (point_pos-offset>=(signed)size) // ok here because point_pos-offset is always positive if exp_small>0
+      {  // no moving required, but perhaps need to pad with zeros, and we need to add the point
+        int i=size;
+        for(; i<point_pos-offset; ++i)
+          offset[i] = '0';
+        strcpy(offset+i, ".");  // end of string
+      }
+      else
+      {  // need to insert the point and shift the rest of the string
+        memmove(point_pos+1, point_pos, size-(point_pos-offset)+1);
+        *point_pos = '.';
+      }
+    }
+    else
+    {// add leading zeros and decimal point, handle sign
+    // we need to add (1-exp_small) zeros total
+      if (Sign()<0)
+      {  // *offset contains something like "-123..."
+        // and instead we need -0.00123... (if small_exp=-2)
+        // final offset:
+        offset = offset-(2-exp_small);
+        memcpy(offset, "-0.",3);  // 3 chars added
+        // fill more zeros
+        for (int i=3; i<3-exp_small; ++i)
+          offset[i] = '0';
+        // done printing
+      }
+      else  // the number is surely nonzero.
+      {  // *offset contains something like "123..."
+        // and instead we need 0.00123... (if small_exp=-2)
+        // final offset:
+        offset = offset-(2-exp_small);
+        memcpy(offset, "0.",2);  // 2 chars added
+        // fill more zeros
+        for (int i=2; i<2-exp_small; ++i)
+          offset[i] = '0';
+        // done printing to buffer
+      }
+    }  // end of printing numbers < 1
+  }  // end of printing in fixed point
+  else
+  { // printing in floating point
+    // if the number is negative, need to handle the - sign
+    offset -= 2;  // final offset already known
+    if (Sign()<0)
+      memcpy(offset, "-0.", 3);
+    else
+      memcpy(offset, "0.", 2);
+ 
+    // now print the exponent: either "e" or "@" and then the long integer
+    size = strlen(offset);
+    offset[size] = (aBase<=10) ? 'e' : '@';  // one character there, start exponent at offset size+1. Printing as per GMP instructions.
+    // compute the total exponent
+    BigNumber exp_total;
+    exp_total.SetTo((LispInt)exp_small);
+    mpz_get_str(offset+size+1, aBase, exp_total.int_);
+  }
+  // assign result
+     }  // finished printing a float
      aResult.SetStringCounted(offset, strlen(offset));
      free(buffer);
    } // finished printing a nonzero number
@@ -1511,18 +1511,18 @@ void BigNumber::ToString(LispString& aResult, LispInt aPrecision, LispInt aBase)
 /// Give approximate representation as a double number
 double BigNumber::Double() const
 {
-  if(IsInt())	// FIXME: need to check that the number is representable as a double, and raise an error otherwise!
-	return mpz_get_d(int_);
+  if(IsInt())  // FIXME: need to check that the number is representable as a double, and raise an error otherwise!
+  return mpz_get_d(int_);
   else
-	return mpf_get_d(float_);
+  return mpf_get_d(float_);
 }
 
 /// get library name
 const LispChar * BigNumber::NumericLibraryName()
 {
-	static char buf[20];
-	snprintf(buf, 18, "GMP %s", gmp_version); 
-	return buf;
+  static char buf[20];
+  snprintf(buf, 18, "GMP %s", gmp_version);
+  return buf;
 }
 
 
@@ -1533,85 +1533,85 @@ LispBoolean BigNumber::Equals(const BigNumber& aOther) const
 // the signs must not be opposite; also, if at least one is nonzero, the bit counts should be equal; if not equal, the numbers are surely different and we can return false now
   long B_x = this->BitCount(), B_y = aOther.BitCount();
   if (this->Sign() * aOther.Sign() == -1 || this->Sign() * aOther.Sign() == 1 && B_x != B_y)
-  	return LispFalse;
+    return LispFalse;
 
   // at this point, the bit counts and signs are equal. Check for zeros.
   // Note: any two zeros are equal.
   // also check for zero compared with nonzero
-  	// note that GetPrecision() returns absolute error for zeros
+    // note that GetPrecision() returns absolute error for zeros
   if (this->Sign() == 0)
-	  return (aOther.Sign() == 0 || (!this->IsInt()) && B_y < - this->GetPrecision());
+    return (aOther.Sign() == 0 || (!this->IsInt()) && B_y < - this->GetPrecision());
   if (aOther.Sign() == 0)
-	  return (this->Sign() == 0 || (!aOther.IsInt()) && B_x < - aOther.GetPrecision());
+    return (this->Sign() == 0 || (!aOther.IsInt()) && B_x < - aOther.GetPrecision());
   // now both numbers are nonzero
   if (this->IsInt())
     if (aOther.IsInt())
-    	return mpz_cmp(int_, aOther.int_)==0;
-    else	// comparing integers with floats: must convert both to floats
-    {	// *this is integer, aOther is float
-		// convert *this to a float and compare as floats
-    	BigNumber temp(*this);
-		temp.BecomeFloat(MAX(0L, aOther.GetPrecision() - aOther.BitCount() + this->BitCount() + 1));
-		return temp.Equals(aOther);
+      return mpz_cmp(int_, aOther.int_)==0;
+    else  // comparing integers with floats: must convert both to floats
+    {  // *this is integer, aOther is float
+    // convert *this to a float and compare as floats
+      BigNumber temp(*this);
+    temp.BecomeFloat(MAX(0L, aOther.GetPrecision() - aOther.BitCount() + this->BitCount() + 1));
+    return temp.Equals(aOther);
     }
   else
     if (aOther.IsInt())
-    {	// *this is float, aOther is integer
-	return aOther.Equals(*this);
+    {  // *this is float, aOther is integer
+  return aOther.Equals(*this);
     }
-    else	// comparing float with float, both nonzero
+    else  // comparing float with float, both nonzero
     // two floats x, y are equal if |x-y| < max(Delta x, Delta y), where Delta x is the absolute error of x
     {
-    	BigNumber x_minus_y(*this);
-	// compute min(m,n)
-	long min_prec = MAX(1, MIN(this->GetPrecision(), aOther.GetPrecision()));
-	// compute x-y
-	x_minus_y.Negate(x_minus_y);
-	LISPASSERT(x_minus_y.Sign()!=0 && x_minus_y.Double() != 0);
-	x_minus_y.Add(x_minus_y, aOther, min_prec);
-	// compute Abs(x-y)
-	if (x_minus_y.Sign()<0) x_minus_y.Negate(x_minus_y);
-	long B_x_minus_y = x_minus_y.BitCount();
-	// perform quick checks on signs and bit counts
-	if (x_minus_y.Sign()==0)	// got "exact" float 0, bit count will be wrong
-		return LispTrue;
-	if (B_x_minus_y <= B_y-min_prec-1)
-		return LispTrue;
-	if (B_x_minus_y > B_y-min_prec+1)
-		return LispFalse;
-	// quick checks didn't work, compute Abs(x)*2^(-m) and Abs(y)*2^(-n)
-	BigNumber abs_x(*this);
-	if (abs_x.Sign()<0) abs_x.Negate(abs_x);
-	abs_x.ShiftRight(abs_x, this->GetPrecision());
-	BigNumber abs_y(aOther);
-	if (abs_y.Sign()<0) abs_y.Negate(abs_y);
-	abs_y.ShiftRight(abs_y, aOther.GetPrecision());
-	// return true if Abs(x-y) < Abs(x)*2^(-m) or if Abs(x-y) < Abs(y)*2^(-n)
-	return (mpf_cmp(x_minus_y.float_, abs_x.float_) < 0) || (mpf_cmp(x_minus_y.float_, abs_y.float_) < 0);
+      BigNumber x_minus_y(*this);
+  // compute min(m,n)
+  long min_prec = MAX(1, MIN(this->GetPrecision(), aOther.GetPrecision()));
+  // compute x-y
+  x_minus_y.Negate(x_minus_y);
+  LISPASSERT(x_minus_y.Sign()!=0 && x_minus_y.Double() != 0);
+  x_minus_y.Add(x_minus_y, aOther, min_prec);
+  // compute Abs(x-y)
+  if (x_minus_y.Sign()<0) x_minus_y.Negate(x_minus_y);
+  long B_x_minus_y = x_minus_y.BitCount();
+  // perform quick checks on signs and bit counts
+  if (x_minus_y.Sign()==0)  // got "exact" float 0, bit count will be wrong
+    return LispTrue;
+  if (B_x_minus_y <= B_y-min_prec-1)
+    return LispTrue;
+  if (B_x_minus_y > B_y-min_prec+1)
+    return LispFalse;
+  // quick checks didn't work, compute Abs(x)*2^(-m) and Abs(y)*2^(-n)
+  BigNumber abs_x(*this);
+  if (abs_x.Sign()<0) abs_x.Negate(abs_x);
+  abs_x.ShiftRight(abs_x, this->GetPrecision());
+  BigNumber abs_y(aOther);
+  if (abs_y.Sign()<0) abs_y.Negate(abs_y);
+  abs_y.ShiftRight(abs_y, aOther.GetPrecision());
+  // return true if Abs(x-y) < Abs(x)*2^(-m) or if Abs(x-y) < Abs(y)*2^(-n)
+  return (mpf_cmp(x_minus_y.float_, abs_x.float_) < 0) || (mpf_cmp(x_minus_y.float_, abs_y.float_) < 0);
     }
 }
 
 
 LispBoolean BigNumber::IsInt() const
 {
-	return (type_ & KInt)!=0;
+  return (type_ & KInt)!=0;
 }
 
 
 LispBoolean BigNumber::IsIntValue() const
 {
-	// *this has integer value if it's an integer or if it does not have enough digits to be non-integer, or if it's exactly equal to an integer
+  // *this has integer value if it's an integer or if it does not have enough digits to be non-integer, or if it's exactly equal to an integer
   if (IsInt() || GetPrecision() < BitCount() || mpf_integer_p(float_))
-	  return LispTrue;
+    return LispTrue;
   else
   {
   // check if the number is integer within its precision
-  	BigNumber temp;
-	temp.Floor(*this);
-	if (temp.Equals(*this))
-	  	return LispTrue;
-	else
-		return LispFalse;
+    BigNumber temp;
+  temp.Floor(*this);
+  if (temp.Equals(*this))
+      return LispTrue;
+  else
+    return LispFalse;
   }
 }
 
@@ -1619,19 +1619,19 @@ LispBoolean BigNumber::IsIntValue() const
 LispBoolean BigNumber::IsSmall() const
 {
   if (IsInt())
-  	return mpz_fits_slong_p(int_);
+    return mpz_fits_slong_p(int_);
   else
   // a function to test smallness of a float is not present in GMP, need to code a workaround to determine whether a mpf_t fits into double.
   {
-	long exp_small;
-	(void) mpf_get_d_2exp(&exp_small, float_);
-	return
-	(
-		//iPrecision <= 53	// standard float is 53 bits
-			// the function should return true even if the number has many digits but is representable as a double
-		fabs(exp_small)<1021
-	);
-	// standard range of double precision is about 53 bits of mantissa and binary exponent of about 1021
+  long exp_small;
+  (void) mpf_get_d_2exp(&exp_small, float_);
+  return
+  (
+    //iPrecision <= 53  // standard float is 53 bits
+      // the function should return true even if the number has many digits but is representable as a double
+    fabs(exp_small)<1021
+  );
+  // standard range of double precision is about 53 bits of mantissa and binary exponent of about 1021
   }
 
 }
@@ -1641,9 +1641,9 @@ void BigNumber::BecomeInt()
 {
   if (!IsInt())
   {
-	iPrecision = 0;	// arbitrary but nonnegative
-	turn_int();
-	mpz_set_f(int_, float_);
+  iPrecision = 0;  // arbitrary but nonnegative
+  turn_int();
+  mpz_set_f(int_, float_);
   }
 }
 
@@ -1654,13 +1654,13 @@ void BigNumber::BecomeInt()
 void BigNumber::BecomeFloat(LispInt aPrecision)
 {
   if (Sign()!=0 && aPrecision<0)
-	  RaiseError("BigNumber::BecomeFloat: negative precision %d requested on nonzero number %e", aPrecision, this->Double());
+    RaiseError("BigNumber::BecomeFloat: negative precision %d requested on nonzero number %e", aPrecision, this->Double());
   if (IsInt())
-  {	// the precision of the resulting float is at least the number of bits in the int_, i.e. its bit count
-	iPrecision = MAX((LispInt)BitCount(), aPrecision)+GUARD_BITS;
-	mpf_set_prec(float_, iPrecision);
-	mpf_set_z(float_, int_);	// we test in testnum.cpp that all digits are preserved after this
-  	turn_float();
+  {  // the precision of the resulting float is at least the number of bits in the int_, i.e. its bit count
+  iPrecision = MAX((LispInt)BitCount(), aPrecision)+GUARD_BITS;
+  mpf_set_prec(float_, iPrecision);
+  mpf_set_z(float_, int_);  // we test in testnum.cpp that all digits are preserved after this
+    turn_float();
   }
 }
 
@@ -1668,36 +1668,36 @@ void BigNumber::BecomeFloat(LispInt aPrecision)
 LispBoolean BigNumber::LessThan(const BigNumber& aOther) const
 { // first check whether the two numbers are equal up to precision
   if (this->Equals(aOther))
-  	return LispFalse;
+    return LispFalse;
   // not equal, now we can simply compare the values using the GMP comparison
   // but first check the signs and the bit counts
   if (this->Sign() < aOther.Sign())
-	  return LispTrue;
+    return LispTrue;
   if (this->Sign() > aOther.Sign())
-	  return LispFalse;
+    return LispFalse;
   // now the signs are equal, need to compare bit counts
   if(this->Sign() * this->BitCount() < aOther.Sign()*aOther.BitCount())
-	return LispTrue;
+  return LispTrue;
   if(this->Sign() * this->BitCount() > aOther.Sign()*aOther.BitCount())
-	return LispFalse;
+  return LispFalse;
   if (IsInt())
     if (aOther.IsInt())
-  	return mpz_cmp(int_, aOther.int_)<0;
+    return mpz_cmp(int_, aOther.int_)<0;
     else
-    {	// need to temporarily convert *this to a float
-    	BigNumber temp(*this);
-		// caution: the new float number should have enough digits for correct comparison in lieu of the integer!
-    	temp.BecomeFloat(MAX(0L, aOther.GetPrecision() - aOther.BitCount() + this->BitCount() + 1)); 
-    	return temp.LessThan(aOther);
+    {  // need to temporarily convert *this to a float
+      BigNumber temp(*this);
+    // caution: the new float number should have enough digits for correct comparison in lieu of the integer!
+      temp.BecomeFloat(MAX(0L, aOther.GetPrecision() - aOther.BitCount() + this->BitCount() + 1));
+      return temp.LessThan(aOther);
     }
-  else	// *this is float
+  else  // *this is float
     if (aOther.IsInt())
-    {	// the case when *this equals aOther is already excluded
-		// warning: changing the order of comparison
-    	return !aOther.LessThan(*this);
-	}
-	else	// compare two floats
-		return mpf_cmp(float_, aOther.float_)<0;
+    {  // the case when *this equals aOther is already excluded
+    // warning: changing the order of comparison
+      return !aOther.LessThan(*this);
+  }
+  else  // compare two floats
+    return mpf_cmp(float_, aOther.float_)<0;
 }
 
 
@@ -1706,62 +1706,62 @@ LispBoolean BigNumber::LessThan(const BigNumber& aOther) const
 void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
   if (aX.IsInt())
-    if (aY.IsInt())	// both integer
+    if (aY.IsInt())  // both integer
     {
       if (!(this->IsInt())) turn_int(); // if we are float, then we are not aX or aY, can clear our values
       mpz_mul(int_, aX.int_, aY.int_);
     }
-    else	// int + float, need to promote to float
+    else  // int + float, need to promote to float
     {
-		if (aX.Sign()==0)
-		{	// multiplying by integer 0, set result to integer 0
-			this->SetTo(0);
-		}
-		else
-		{	// multiplying by nonzero integer, precision is unmodified
-    	  BigNumber temp(aX);
-    	  temp.BecomeFloat(aY.GetPrecision());	// enough digits here
-    	  this->Multiply(temp, aY, aPrecision);
-		  iPrecision = MIN(aPrecision, aY.GetPrecision());
-		}
+    if (aX.Sign()==0)
+    {  // multiplying by integer 0, set result to integer 0
+      this->SetTo(0);
+    }
+    else
+    {  // multiplying by nonzero integer, precision is unmodified
+        BigNumber temp(aX);
+        temp.BecomeFloat(aY.GetPrecision());  // enough digits here
+        this->Multiply(temp, aY, aPrecision);
+      iPrecision = MIN(aPrecision, aY.GetPrecision());
+    }
     }
   else
-    if (aY.IsInt())	// float + int, need to promote to float
+    if (aY.IsInt())  // float + int, need to promote to float
     {
       this->Multiply(aY, aX, aPrecision);
     }
-    else	// float + float
+    else  // float + float
     {
-	  if (aPrecision<=0) RaiseError("BigNumber::Multiply: nonpositive precision %d requested on floats", aPrecision);
+    if (aPrecision<=0) RaiseError("BigNumber::Multiply: nonpositive precision %d requested on floats", aPrecision);
       if (this->IsInt()) turn_float(); // if we are int, then we are not aX or aY, can clear our values
-	  if (aX.Sign() == 0 || aY.Sign() == 0)
-	  {	// one or both are zero, setting the result to floating zero
-		// use a modified definition of BitCount now
-		long B_x = (aX.Sign()==0) ? 1-aX.GetPrecision() : aX.BitCount();
-		long B_y = (aY.Sign()==0) ? 1-aY.GetPrecision() : aY.BitCount();
-		long xy_prec = 2-B_x-B_y;
-		this->SetTo(0.);
-		iPrecision = xy_prec;
-	  }
-	  else
-	  {
-		// both aX and aY are nonzero
-		  // determine the precision needed for the multiplication
-		long xy_prec = MIN(aX.GetPrecision(), aY.GetPrecision()) - DIST(aX.GetPrecision(), aY.GetPrecision());
-		xy_prec = MIN(xy_prec, long(aPrecision+GUARD_BITS));
-		// set our new precision
-		mpf_set_prec(float_, xy_prec);	// GMP does calculations in target precision
-		mpf_mul(float_, aX.float_, aY.float_);
-		// this will be the precision of the resulting number
-		iPrecision = MIN(xy_prec, (long)aPrecision);
-		if (iPrecision<=0)
-		{
-			// this is a critical loss of precision such that we don't know even a single correct digit of the result. May happen e.g. if we square a float number n times with n > that number.GetPrecision().
-			// we should at least set ourselves to zero and maybe signal error
-			mpf_set_d(float_, 0);
-	//		RaiseError("BigNumber::Multiply: loss of precision with arguments %e (%d bits), %e (%d bits)", aX.Double(), aX.GetPrecision(), aY.Double(), aY.GetPrecision());
-		}
-	  }
+    if (aX.Sign() == 0 || aY.Sign() == 0)
+    {  // one or both are zero, setting the result to floating zero
+    // use a modified definition of BitCount now
+    long B_x = (aX.Sign()==0) ? 1-aX.GetPrecision() : aX.BitCount();
+    long B_y = (aY.Sign()==0) ? 1-aY.GetPrecision() : aY.BitCount();
+    long xy_prec = 2-B_x-B_y;
+    this->SetTo(0.);
+    iPrecision = xy_prec;
+    }
+    else
+    {
+    // both aX and aY are nonzero
+      // determine the precision needed for the multiplication
+    long xy_prec = MIN(aX.GetPrecision(), aY.GetPrecision()) - DIST(aX.GetPrecision(), aY.GetPrecision());
+    xy_prec = MIN(xy_prec, long(aPrecision+GUARD_BITS));
+    // set our new precision
+    mpf_set_prec(float_, xy_prec);  // GMP does calculations in target precision
+    mpf_mul(float_, aX.float_, aY.float_);
+    // this will be the precision of the resulting number
+    iPrecision = MIN(xy_prec, (long)aPrecision);
+    if (iPrecision<=0)
+    {
+      // this is a critical loss of precision such that we don't know even a single correct digit of the result. May happen e.g. if we square a float number n times with n > that number.GetPrecision().
+      // we should at least set ourselves to zero and maybe signal error
+      mpf_set_d(float_, 0);
+  //    RaiseError("BigNumber::Multiply: loss of precision with arguments %e (%d bits), %e (%d bits)", aX.Double(), aX.GetPrecision(), aY.Double(), aY.GetPrecision());
+    }
+    }
     }
 }
 
@@ -1772,36 +1772,36 @@ void BigNumber::MultiplyAdd(const BigNumber& aX, const BigNumber& aY, LispInt aP
 {
   if (aX.IsInt() && aY.IsInt() && IsInt())
   {// all three are integers
-	mpz_addmul(int_, aX.int_, aY.int_);
+  mpz_addmul(int_, aX.int_, aY.int_);
   }
   else
   if (!aX.IsInt() && !aY.IsInt() && !IsInt())
   {// all three are floats
   // there is no addmul for floats in GMP, so let's not reinvent the wheel.
-	  BigNumber temp;
-	  temp.Multiply(aX, aY, aPrecision);
-	  this->Add(*this, temp, aPrecision);
+    BigNumber temp;
+    temp.Multiply(aX, aY, aPrecision);
+    this->Add(*this, temp, aPrecision);
   }
   else
-  {	// some are integers and some are floats. Need to promote all to floats and then call MultiplyAdd again
+  {  // some are integers and some are floats. Need to promote all to floats and then call MultiplyAdd again
     if (IsInt())
     {
-    	this->BecomeFloat(aPrecision);
-	MultiplyAdd(aX, aY, aPrecision);
+      this->BecomeFloat(aPrecision);
+  MultiplyAdd(aX, aY, aPrecision);
     }
     else
     if (aX.IsInt())
     {
-    	BigNumber temp(aX);
-	temp.BecomeFloat(aPrecision);
-	MultiplyAdd(temp, aY, aPrecision);
+      BigNumber temp(aX);
+  temp.BecomeFloat(aPrecision);
+  MultiplyAdd(temp, aY, aPrecision);
     }
     else
     if (aY.IsInt())
-    {	// need to promote both aX and aY to floats
-      	BigNumber temp(aY);
-	temp.BecomeFloat(aPrecision);
-	MultiplyAdd(aX, temp, aPrecision);
+    {  // need to promote both aX and aY to floats
+        BigNumber temp(aY);
+  temp.BecomeFloat(aPrecision);
+  MultiplyAdd(aX, temp, aPrecision);
     }
   }
 }
@@ -1813,98 +1813,98 @@ void BigNumber::MultiplyAdd(const BigNumber& aX, const BigNumber& aY, LispInt aP
 void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
   if (aX.IsInt())
-    if (aY.IsInt())	// both integer
+    if (aY.IsInt())  // both integer
     {
       if (!IsInt())
-		  turn_int(); // if we are float, then we are not aX or aY
+      turn_int(); // if we are float, then we are not aX or aY
       mpz_add(int_, aX.int_, aY.int_);
     }
-    else	// int + float, need to promote to float
+    else  // int + float, need to promote to float
     {
       BigNumber temp(aX);
       // avoid negative precision
-      temp.BecomeFloat(MAX(0L, 1 + aY.GetPrecision()+aX.BitCount()-aY.BitCount()) +4);	// 4 guard bits here
+      temp.BecomeFloat(MAX(0L, 1 + aY.GetPrecision()+aX.BitCount()-aY.BitCount()) +4);  // 4 guard bits here
       Add(temp, aY, aPrecision);
     }
   else
-    if (aY.IsInt())	// float + int, need to promote to float
+    if (aY.IsInt())  // float + int, need to promote to float
     {
       Add(aY, aX, aPrecision);
     }
-    else	// float + float
+    else  // float + float
     {
-	  if (aPrecision<0) RaiseError("BigNumber::Add: nonpositive precision %d requested", aPrecision);
+    if (aPrecision<0) RaiseError("BigNumber::Add: nonpositive precision %d requested", aPrecision);
       if (this->IsInt()) turn_float(); // if we are int, then we are not aX or aY, can clear our values
-	  // bit counts of aX, aY, and of absolute errors DeltaX, DeltaY
-	  long B_x = aX.BitCount();
-	  long B_y = aY.BitCount();
-	  long B_Dx = B_x-aX.GetPrecision();
-	  long B_Dy = B_y-aY.GetPrecision();
-	  // check for apriori underflow
-	  if (B_x<=B_Dy-1)
-	  {	// neglect x, assign z=y, set precision
-		  if (this!= &aY)
-		  {	// this->SetTo(aY)
-			  mpf_set_prec(float_, mpf_get_prec(aY.float_));
-			  mpf_set(float_, aY.float_);
-		  }
-		  iPrecision = MIN((long)aPrecision, aY.GetPrecision()-DIST(B_x, B_Dy-1));
-//REMOVE		  printf("debug: apriori underflow with (%d,%d,%d,%d), resulting precision %d\n", B_x, B_y, B_Dx, B_Dy, iPrecision);
-		  if (iPrecision<=0)
-		  {	// underflow, set ourselves to 0
-			  mpf_set_d(float_, 0);
-//REMOVE			RaiseError("BigNumber::Add: apriori loss of precision with arguments %e (%d bits), %e (%d bits)", aX.Double(), aX.GetPrecision(), aY.Double(), aY.GetPrecision());
-		  }
-	  }
-	  else
-	  if (B_y<=B_Dx-1)
-	  {	// neglect y, assign z=x, set precision
-		  Add(aY, aX, aPrecision);
-	  }
-	  else	 // no apriori underflow
-	  {
-		  // precision needed for computing x+y
-		  long xy_prec = 1+MAX(B_x, B_y)-MAX(B_Dx, B_Dy);
-		  // precision with which we shall actually be performing the addition
-		  long real_xy_prec = xy_prec+GUARD_BITS;
-		  // need to introduce a temporary here, because otherwise we might wrongly truncate float_ (*this may coincide with aX or aY!)
-		  mpf_t result;
-    	  // GMP performs all calculations in target precision, need to set it here
-		  mpf_init2(result, real_xy_prec);
-		  mpf_add(result, aX.float_, aY.float_);
-		  long B_z = 0;
-		  (void) mpf_get_d_2exp(&B_z, result);	// bit count of z=x+y
-		  
-		  // compute the actual precision p of the result (z)
-		  // not always optimal but a good lower bound on precision:
-		  long p = B_z - MAX(B_Dx, B_Dy) - DIST(B_Dx, B_Dy);
-		// the following optimization seems to be unnecessary now that we don't subtract 1 from B_z above
-		  //  if (B_Dx > B_Dy && B_x > B_y || B_Dx < B_Dy && B_x < B_y)
-		//  {	// optimization 1: the error of x dominates and the value of x also dominates, or ditto for y
-		//	  p++;
-		//  }
-		  // optimization 2: check for minimum roundoff (when both arguments are of the same sign)
-		  if (aX.Sign()*aY.Sign()==1)
-		  {
-			  p = MAX(p, (long)MIN(aX.GetPrecision(), aY.GetPrecision()));
-		  }
-		  // do not make the result more precise than asked
-		  p = MIN((long)aPrecision, p);
-		  // check for underflow again
-		  if (p <= 0 && mpf_sgn(result)!=0)
-		  {	// underflow, set result to zero and reset precision
-			  p = p-B_z;
-			  mpf_set_d(result, 0);
-		  }
-		  this->import_gmp(result);	// at this point aX or aY could be changed if they were the same as *this! so should not print any diagnostics based on aX or aY any more.
-		  mpf_clear(result);
-		  iPrecision = p;
+    // bit counts of aX, aY, and of absolute errors DeltaX, DeltaY
+    long B_x = aX.BitCount();
+    long B_y = aY.BitCount();
+    long B_Dx = B_x-aX.GetPrecision();
+    long B_Dy = B_y-aY.GetPrecision();
+    // check for apriori underflow
+    if (B_x<=B_Dy-1)
+    {  // neglect x, assign z=y, set precision
+      if (this!= &aY)
+      {  // this->SetTo(aY)
+        mpf_set_prec(float_, mpf_get_prec(aY.float_));
+        mpf_set(float_, aY.float_);
+      }
+      iPrecision = MIN((long)aPrecision, aY.GetPrecision()-DIST(B_x, B_Dy-1));
+//REMOVE      printf("debug: apriori underflow with (%d,%d,%d,%d), resulting precision %d\n", B_x, B_y, B_Dx, B_Dy, iPrecision);
+      if (iPrecision<=0)
+      {  // underflow, set ourselves to 0
+        mpf_set_d(float_, 0);
+//REMOVE      RaiseError("BigNumber::Add: apriori loss of precision with arguments %e (%d bits), %e (%d bits)", aX.Double(), aX.GetPrecision(), aY.Double(), aY.GetPrecision());
+      }
+    }
+    else
+    if (B_y<=B_Dx-1)
+    {  // neglect y, assign z=x, set precision
+      Add(aY, aX, aPrecision);
+    }
+    else   // no apriori underflow
+    {
+      // precision needed for computing x+y
+      long xy_prec = 1+MAX(B_x, B_y)-MAX(B_Dx, B_Dy);
+      // precision with which we shall actually be performing the addition
+      long real_xy_prec = xy_prec+GUARD_BITS;
+      // need to introduce a temporary here, because otherwise we might wrongly truncate float_ (*this may coincide with aX or aY!)
+      mpf_t result;
+        // GMP performs all calculations in target precision, need to set it here
+      mpf_init2(result, real_xy_prec);
+      mpf_add(result, aX.float_, aY.float_);
+      long B_z = 0;
+      (void) mpf_get_d_2exp(&B_z, result);  // bit count of z=x+y
+ 
+      // compute the actual precision p of the result (z)
+      // not always optimal but a good lower bound on precision:
+      long p = B_z - MAX(B_Dx, B_Dy) - DIST(B_Dx, B_Dy);
+    // the following optimization seems to be unnecessary now that we don't subtract 1 from B_z above
+      //  if (B_Dx > B_Dy && B_x > B_y || B_Dx < B_Dy && B_x < B_y)
+    //  {  // optimization 1: the error of x dominates and the value of x also dominates, or ditto for y
+    //    p++;
+    //  }
+      // optimization 2: check for minimum roundoff (when both arguments are of the same sign)
+      if (aX.Sign()*aY.Sign()==1)
+      {
+        p = MAX(p, (long)MIN(aX.GetPrecision(), aY.GetPrecision()));
+      }
+      // do not make the result more precise than asked
+      p = MIN((long)aPrecision, p);
+      // check for underflow again
+      if (p <= 0 && mpf_sgn(result)!=0)
+      {  // underflow, set result to zero and reset precision
+        p = p-B_z;
+        mpf_set_d(result, 0);
+      }
+      this->import_gmp(result);  // at this point aX or aY could be changed if they were the same as *this! so should not print any diagnostics based on aX or aY any more.
+      mpf_clear(result);
+      iPrecision = p;
 /**/
-//	 	  if (iPrecision<=0)
-//			RaiseError("BigNumber::Add: loss of precision with arguments %e (%d bits), %e (%d bits)", aX.Double(), aX.GetPrecision(), aY.Double(), aY.GetPrecision());	// this diagnostic would be wrong if aX = *this or aY = *this!
+//       if (iPrecision<=0)
+//      RaiseError("BigNumber::Add: loss of precision with arguments %e (%d bits), %e (%d bits)", aX.Double(), aX.GetPrecision(), aY.Double(), aY.GetPrecision());  // this diagnostic would be wrong if aX = *this or aY = *this!
 /**/
-	  }	// handled no apriori underflow
-    }	// handled float + float
+    }  // handled no apriori underflow
+    }  // handled float + float
 }
 
 
@@ -1918,8 +1918,8 @@ void BigNumber::Negate(const BigNumber& aX)
   }
   else
   {
-    if (IsInt()) turn_float();	// we are not aX
-	mpf_set_prec(float_, mpf_get_prec(aX.float_));
+    if (IsInt()) turn_float();  // we are not aX
+  mpf_set_prec(float_, mpf_get_prec(aX.float_));
     mpf_neg(float_, aX.float_);
   }
   iPrecision = aX.GetPrecision();
@@ -1930,58 +1930,58 @@ void BigNumber::Negate(const BigNumber& aX)
 void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
   if (aY.Sign()==0)
-  {	// zero division, report and do nothing
-  	RaiseError("BigNumber::Divide: zero division request ignored\n");
-	return;
+  {  // zero division, report and do nothing
+    RaiseError("BigNumber::Divide: zero division request ignored\n");
+  return;
   }
   if (aX.IsInt())
   {
-	// check for zero
-	if (aX.Sign()==0)
-	{	// divide 0 by something, set result to integer 0
-		SetTo(0);
-	}
-	else if (aY.IsInt())
+  // check for zero
+  if (aX.Sign()==0)
+  {  // divide 0 by something, set result to integer 0
+    SetTo(0);
+  }
+  else if (aY.IsInt())
     {
-    	if (!IsInt()) turn_int();
-		mpz_tdiv_q(int_, aX.int_, aY.int_);	// e.g. divide -5/3 = -1
+      if (!IsInt()) turn_int();
+    mpz_tdiv_q(int_, aX.int_, aY.int_);  // e.g. divide -5/3 = -1
     }
     else
-	{	// divide nonzero integer by nonzero float, precision is unmodified
-   	  BigNumber temp(aX);
-   	  temp.BecomeFloat(aY.GetPrecision());	// enough digits here
-	  long p = MIN(aPrecision, aY.GetPrecision());
-   	  Divide(temp, aY, p);
-	  iPrecision = p;
+  {  // divide nonzero integer by nonzero float, precision is unmodified
+       BigNumber temp(aX);
+       temp.BecomeFloat(aY.GetPrecision());  // enough digits here
+    long p = MIN(aPrecision, aY.GetPrecision());
+       Divide(temp, aY, p);
+    iPrecision = p;
     }
   }
-  else	// aX is a float, aY is nonzero
+  else  // aX is a float, aY is nonzero
   {
-	// check for a floating zero
-	if (aX.Sign()==0)
-	{
-		// result is 0. with precision m-B(y)+1
-		long p = aX.GetPrecision()-aY.BitCount()+1;
-		SetTo(0.);
-		iPrecision = p;
-	}
+  // check for a floating zero
+  if (aX.Sign()==0)
+  {
+    // result is 0. with precision m-B(y)+1
+    long p = aX.GetPrecision()-aY.BitCount()+1;
+    SetTo(0.);
+    iPrecision = p;
+  }
     else if (aY.IsInt())
-    {	// aY is integer, must be promoted to float
+    {  // aY is integer, must be promoted to float
       BigNumber temp(aY);
       temp.BecomeFloat(MIN(aPrecision, aX.GetPrecision()));
       Divide(aX, temp, aPrecision);
     }
     else
-    {	// both aX and aY are nonzero floats
-		if (IsInt()) turn_float();	// we are not aX or aY
-		long p = MIN(aX.GetPrecision(), aY.GetPrecision()) - DIST(aX.GetPrecision(), aY.GetPrecision());
-		p = MIN((long)aPrecision, p);
-		mpf_set_prec(float_, p+GUARD_BITS);
-		mpf_div(float_, aX.float_, aY.float_);
-		iPrecision = p;
+    {  // both aX and aY are nonzero floats
+    if (IsInt()) turn_float();  // we are not aX or aY
+    long p = MIN(aX.GetPrecision(), aY.GetPrecision()) - DIST(aX.GetPrecision(), aY.GetPrecision());
+    p = MIN((long)aPrecision, p);
+    mpf_set_prec(float_, p+GUARD_BITS);
+    mpf_div(float_, aX.float_, aY.float_);
+    iPrecision = p;
 /**/
-		if (iPrecision<=0)
-			RaiseError("BigNumber::Divide: loss of precision with arguments %e (%d bits), %e (%d bits)", aX.Double(), aX.GetPrecision(), aY.Double(), aY.GetPrecision());
+    if (iPrecision<=0)
+      RaiseError("BigNumber::Divide: loss of precision with arguments %e (%d bits), %e (%d bits)", aX.Double(), aX.GetPrecision(), aY.Double(), aY.GetPrecision());
 /**/
     }
   }
@@ -1990,7 +1990,7 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
 void BigNumber::DumpDebugInfo()
 {//FIXME
 #ifdef HAVE_STDIO_H
-	printf("Type: %s, exact bits: %d\n", (this->IsInt() ? "int" : "float"), iPrecision);
+  printf("Type: %s, exact bits: %d\n", (this->IsInt() ? "int" : "float"), iPrecision);
 #endif
 }
 
@@ -2000,13 +2000,13 @@ void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
 {
   if (aY.IsInt() && aZ.IsInt())
   {
-  	if (!IsInt()) turn_int();
-  	mpz_mod(int_, aY.int_, aZ.int_);
+    if (!IsInt()) turn_int();
+    mpz_mod(int_, aY.int_, aZ.int_);
   }
-  else	// at least one is float, generate error
+  else  // at least one is float, generate error
   {
-  	RaiseError("BigNumber::Mod: called with noninteger parameters, %f, %f", aY.Double(), aZ.Double());
-	this->SetTo(0);
+    RaiseError("BigNumber::Mod: called with noninteger parameters, %f, %f", aY.Double(), aZ.Double());
+  this->SetTo(0);
   }
 }
 
@@ -2016,7 +2016,7 @@ void BigNumber::PowerMod(const BigNumber& aX, const BigNumber& aY, const BigNumb
 {
   if (aX.IsInt() && aY.IsInt() && aZ.IsInt())
   {
-  	mpz_powm(int_, aX.int_, aY.int_, aZ.int_);
+    mpz_powm(int_, aX.int_, aY.int_, aZ.int_);
   }
 }
 */
@@ -2026,39 +2026,39 @@ void BigNumber::Floor(const BigNumber& aX)
   if (!aX.IsInt())
   {
     if(aX.GetPrecision() >= aX.BitCount())
-    {	// now aX is a float for which we can evaluate Floor()
-	// note: if aX has integer value, then Floor(aX) = aX, even though the gmp floor function might return aX-1
-	// but we can't use IsIntValue() here because IsIntValue() uses Floor()
-	// aX has integer value when mpf_floor(aX)=aX or aX-1
-	  BigNumber temp(aX);
-	  mpf_floor(temp.float_, aX.float_);
-	  temp.BecomeInt();	// temp is the first approximation to floor(aX)
-	  if (temp.Equals(aX))	// try whether mpf_floor(aX) is close to aX
-		  this->SetTo(temp);	// aX has integer value
-	  else
-	  {	// try whether mpf_floor(aX)+1 is close to aX
-	  	BigNumber one, temp_plus_1;
-		one.SetTo(1);
-		temp_plus_1.Add(temp, one, 0);	// both integers, so precision is unimportant
-		if (temp_plus_1.Equals(aX))
-			this->SetTo(temp_plus_1);	// aX has integer value
-		else
-			this->SetTo(temp);
-	  }
+    {  // now aX is a float for which we can evaluate Floor()
+  // note: if aX has integer value, then Floor(aX) = aX, even though the gmp floor function might return aX-1
+  // but we can't use IsIntValue() here because IsIntValue() uses Floor()
+  // aX has integer value when mpf_floor(aX)=aX or aX-1
+    BigNumber temp(aX);
+    mpf_floor(temp.float_, aX.float_);
+    temp.BecomeInt();  // temp is the first approximation to floor(aX)
+    if (temp.Equals(aX))  // try whether mpf_floor(aX) is close to aX
+      this->SetTo(temp);  // aX has integer value
+    else
+    {  // try whether mpf_floor(aX)+1 is close to aX
+      BigNumber one, temp_plus_1;
+    one.SetTo(1);
+    temp_plus_1.Add(temp, one, 0);  // both integers, so precision is unimportant
+    if (temp_plus_1.Equals(aX))
+      this->SetTo(temp_plus_1);  // aX has integer value
+    else
+      this->SetTo(temp);
+    }
     }
     else
     {
       SetTo(aX);
-	  BecomeInt();
-	// aX does not have enough precision to distinguish its Floor() part uniquely
-	// this situation typically occurs in RoundTo() calls
+    BecomeInt();
+  // aX does not have enough precision to distinguish its Floor() part uniquely
+  // this situation typically occurs in RoundTo() calls
 //      printf("BigNumber::Floor: error: not enough precision of argument %e (%d bits)", aX.Double(), aX.GetPrecision());
     }
   }
   // aX is integer now
   else if (this != &aX) // no change for integers, just assign the value
   {
-	SetTo(aX);
+  SetTo(aX);
   }
 }
 
@@ -2066,32 +2066,32 @@ void BigNumber::Floor(const BigNumber& aX)
 void BigNumber::Precision(LispInt aPrecision)
 {
   if (!IsInt())
-  {	// set precision flags
+  {  // set precision flags
   // we allow negative precision only on floating zeros
-//	if (Sign()!=0) LISPASSERT(aPrecision >= 0);
-	if (Sign()!=0 && aPrecision < 0) RaiseError("BigNumber::Precision: negative precision %d requested, allowed only on zero", aPrecision);
-	iPrecision = aPrecision;
-	aPrecision = MAX(aPrecision + (LispInt)GUARD_BITS, 1);	// pretend that the requested precision is actually larger, to avoid too much rounding
-  	mpf_set_prec(float_, aPrecision);
-  	long int exp_small = 0, shift_amount = 0;
-	// determine the binary exponent
-	(void) mpf_get_d_2exp(&exp_small, float_);
-	// determine the shift amount
-	shift_amount = exp_small - aPrecision;
-	// truncate at aPrecision bits
-	if (shift_amount >= 0)
-	{
-		mpf_div_2exp(float_, float_, (unsigned) shift_amount);
-		mpf_trunc(float_, float_);
-		mpf_mul_2exp(float_, float_, (unsigned) shift_amount);
-	}
-	else if (shift_amount < 0)
-	{
-		mpf_mul_2exp(float_, float_, (unsigned) (-shift_amount));
-		mpf_trunc(float_, float_);
-		mpf_div_2exp(float_, float_, (unsigned) (-shift_amount));
-	}
-  }	// do nothing if integer
+//  if (Sign()!=0) LISPASSERT(aPrecision >= 0);
+  if (Sign()!=0 && aPrecision < 0) RaiseError("BigNumber::Precision: negative precision %d requested, allowed only on zero", aPrecision);
+  iPrecision = aPrecision;
+  aPrecision = MAX(aPrecision + (LispInt)GUARD_BITS, 1);  // pretend that the requested precision is actually larger, to avoid too much rounding
+    mpf_set_prec(float_, aPrecision);
+    long int exp_small = 0, shift_amount = 0;
+  // determine the binary exponent
+  (void) mpf_get_d_2exp(&exp_small, float_);
+  // determine the shift amount
+  shift_amount = exp_small - aPrecision;
+  // truncate at aPrecision bits
+  if (shift_amount >= 0)
+  {
+    mpf_div_2exp(float_, float_, (unsigned) shift_amount);
+    mpf_trunc(float_, float_);
+    mpf_mul_2exp(float_, float_, (unsigned) shift_amount);
+  }
+  else if (shift_amount < 0)
+  {
+    mpf_mul_2exp(float_, float_, (unsigned) (-shift_amount));
+    mpf_trunc(float_, float_);
+    mpf_div_2exp(float_, float_, (unsigned) (-shift_amount));
+  }
+  }  // do nothing if integer
 }
 
 
@@ -2103,15 +2103,15 @@ void BigNumber::ShiftLeft(const BigNumber& aX, LispInt aNrToShift)
   {
     if (aX.IsInt() && aNrToShift >= 0)
     {
-  	if (!IsInt()) turn_int();
-	mpz_mul_2exp(int_, aX.int_, aNrToShift);
+    if (!IsInt()) turn_int();
+  mpz_mul_2exp(int_, aX.int_, aNrToShift);
     }
     else
     {
-  	if (IsInt()) turn_float();	// we are not aX
-	mpf_mul_2exp(float_, aX.float_, aNrToShift);
+    if (IsInt()) turn_float();  // we are not aX
+  mpf_mul_2exp(float_, aX.float_, aNrToShift);
     }
-  }	// do nothing if the shift amount is negative
+  }  // do nothing if the shift amount is negative
 }
 
 
@@ -2121,15 +2121,15 @@ void BigNumber::ShiftRight(const BigNumber& aX, LispInt aNrToShift)
   {
     if (aX.IsInt() && aNrToShift >= 0)
     {
-  	if (!IsInt()) turn_int();
-	mpz_tdiv_q_2exp(int_, aX.int_, aNrToShift);
+    if (!IsInt()) turn_int();
+  mpz_tdiv_q_2exp(int_, aX.int_, aNrToShift);
     }
     else
     {
-  	if (IsInt()) turn_float();	// we are not aX
-	mpf_div_2exp(float_, aX.float_, aNrToShift);
+    if (IsInt()) turn_float();  // we are not aX
+  mpf_div_2exp(float_, aX.float_, aNrToShift);
     }
-  }	// do nothing if the shift amount is negative
+  }  // do nothing if the shift amount is negative
 }
 
 
@@ -2137,9 +2137,9 @@ void BigNumber::BitAnd(const BigNumber& aX, const BigNumber& aY)
 {
   if (aX.IsInt() && aY.IsInt())
   {
-  	if (!IsInt()) turn_int();
-	mpz_and(int_, aX.int_, aY.int_);
-  }	// do nothing if the arguments are not integer
+    if (!IsInt()) turn_int();
+  mpz_and(int_, aX.int_, aY.int_);
+  }  // do nothing if the arguments are not integer
 }
 
 
@@ -2147,8 +2147,8 @@ void BigNumber::BitOr(const BigNumber& aX, const BigNumber& aY)
 {
   if (aX.IsInt() && aY.IsInt())
   {
-  	if (!IsInt()) turn_int();
-	mpz_ior(int_, aX.int_, aY.int_);
+    if (!IsInt()) turn_int();
+  mpz_ior(int_, aX.int_, aY.int_);
   }
 }
 
@@ -2157,8 +2157,8 @@ void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
 {
   if (aX.IsInt() && aY.IsInt())
   {
-  	if (!IsInt()) turn_int();
-	mpz_xor(int_, aX.int_, aY.int_);
+    if (!IsInt()) turn_int();
+  mpz_xor(int_, aX.int_, aY.int_);
   }
 }
 
@@ -2167,8 +2167,8 @@ void BigNumber::BitNot(const BigNumber& aX)
 {
   if (aX.IsInt())
   {
-  	if (!IsInt()) turn_int();
-	mpz_com(int_, aX.int_);
+    if (!IsInt()) turn_int();
+  mpz_com(int_, aX.int_);
   }
 }
 
@@ -2179,15 +2179,15 @@ signed long BigNumber::BitCount() const
   long bit_count;
   if (IsInt())
   {
-	  if (Sign()==0)
-	  	return 1;	// BitCount(0)=1
-  	(void) mpz_get_d_2exp(&bit_count, int_);	// find the # of digits in base 2
+    if (Sign()==0)
+      return 1;  // BitCount(0)=1
+    (void) mpz_get_d_2exp(&bit_count, int_);  // find the # of digits in base 2
   }
   else
   {
-	  if (Sign()==0)
-	 	 return 0;	// BitCount(0.)=0
-  	(void) mpf_get_d_2exp(&bit_count, float_);
+    if (Sign()==0)
+      return 0;  // BitCount(0.)=0
+    (void) mpf_get_d_2exp(&bit_count, float_);
   }
   return bit_count;
 }
@@ -2199,11 +2199,11 @@ LispInt BigNumber::Sign() const
 {
   if (IsInt())
   {
-  	return mpz_sgn(int_);
+    return mpz_sgn(int_);
   }
   else
   {
-  	return mpf_sgn(float_);
+    return mpf_sgn(float_);
   }
 }
 
@@ -2227,24 +2227,24 @@ void BigNumber::turn_int()
 // copy from gmp objects
 void BigNumber::import_gmp(mpz_t gmp_int)
 {
-	turn_int();
-	mpz_set(int_, gmp_int);
+  turn_int();
+  mpz_set(int_, gmp_int);
 }
 void BigNumber::import_gmp(mpf_t gmp_float)
 {
-	turn_float();
-	mpf_set_prec(float_, iPrecision = mpf_get_prec(gmp_float));
-	mpf_set(float_, gmp_float);
+  turn_float();
+  mpf_set_prec(float_, iPrecision = mpf_get_prec(gmp_float));
+  mpf_set(float_, gmp_float);
 }
 // copy to gmp objects
 void BigNumber::export_gmp(mpz_t gmp_int) const
 {
-	mpz_set(gmp_int, int_);
+  mpz_set(gmp_int, int_);
 }
 void BigNumber::export_gmp(mpf_t gmp_float) const
 {
-	mpf_set_prec(gmp_float, mpf_get_prec(float_));
-	mpf_set(gmp_float, float_);
+  mpf_set_prec(gmp_float, mpf_get_prec(float_));
+  mpf_set(gmp_float, float_);
 }
 
 
@@ -2264,73 +2264,73 @@ void BigNumber::export_gmp(mpf_t gmp_float) const
 /// Square root (return float for an integer result).
 void math_sqrt(BigNumber& result, const BigNumber& x)
 {
-	if(x.IsInt())
-	{
-		mpz_t temp_int;
-		mpz_init(temp_int);
-		x.export_gmp(temp_int);
-		mpf_t temp_float;
-		mpf_init2(temp_float,32);
-		mpf_set_z(temp_float, temp_int);
-		mpf_sqrt(temp_float, temp_float);
-		result.BecomeFloat();
-		result.import_gmp(temp_float);
-		mpz_clear(temp_int);
-		mpf_clear(temp_float);
-	}
-	else
-	{
-		mpf_t temp_float;
-		mpf_init2(temp_float,32);
-		x.export_gmp(temp_float);
-		mpf_sqrt(temp_float, temp_float);
-		result.BecomeFloat();
-		result.import_gmp(temp_float);
-		mpf_clear(temp_float);
-	}
+  if(x.IsInt())
+  {
+    mpz_t temp_int;
+    mpz_init(temp_int);
+    x.export_gmp(temp_int);
+    mpf_t temp_float;
+    mpf_init2(temp_float,32);
+    mpf_set_z(temp_float, temp_int);
+    mpf_sqrt(temp_float, temp_float);
+    result.BecomeFloat();
+    result.import_gmp(temp_float);
+    mpz_clear(temp_int);
+    mpf_clear(temp_float);
+  }
+  else
+  {
+    mpf_t temp_float;
+    mpf_init2(temp_float,32);
+    x.export_gmp(temp_float);
+    mpf_sqrt(temp_float, temp_float);
+    result.BecomeFloat();
+    result.import_gmp(temp_float);
+    mpf_clear(temp_float);
+  }
 }
 
 /// Compute the GCD of two integers, result is an integer.
 /// If arguments are floats, do nothing (FIXME: should signal error).
 void math_gcd(BigNumber& result, const BigNumber& x, const BigNumber& y)
 {
-	if (x.IsInt() && y.IsInt())
-	{
-		mpz_t temp_int, temp1, temp2;
-		mpz_init(temp_int);
-		mpz_init(temp1);
-		mpz_init(temp2);
-		x.export_gmp(temp1);
-		y.export_gmp(temp2);
-		mpz_gcd(temp_int, temp1, temp2);
-		result.BecomeInt();
-		result.import_gmp(temp_int);
-		mpz_clear(temp_int);
-	}
-	else
-	{
+  if (x.IsInt() && y.IsInt())
+  {
+    mpz_t temp_int, temp1, temp2;
+    mpz_init(temp_int);
+    mpz_init(temp1);
+    mpz_init(temp2);
+    x.export_gmp(temp1);
+    y.export_gmp(temp2);
+    mpz_gcd(temp_int, temp1, temp2);
+    result.BecomeInt();
+    result.import_gmp(temp_int);
+    mpz_clear(temp_int);
+  }
+  else
+  {
 /// If one of the arguments is a float, do nothing (FIXME: should signal error).
-	}
+  }
 }
 
 /// Compute factorial of a number x, when x is integer and fits into unsigned long.
 /// (Otherwise need to signal error.)
 void math_factorial(BigNumber& result, const BigNumber& x)
 {
-	if (x.IsInt() && x.IsSmall())
-	{
-		mpz_t temp_int;
-		mpz_init(temp_int);
-		unsigned long arg = (unsigned long) x.Double();
-		mpz_fac_ui(temp_int, arg);
-		result.BecomeInt();
-		result.import_gmp(temp_int);
-		mpz_clear(temp_int);
-	}
-	else
-	{
+  if (x.IsInt() && x.IsSmall())
+  {
+    mpz_t temp_int;
+    mpz_init(temp_int);
+    unsigned long arg = (unsigned long) x.Double();
+    mpz_fac_ui(temp_int, arg);
+    result.BecomeInt();
+    result.import_gmp(temp_int);
+    mpz_clear(temp_int);
+  }
+  else
+  {
 /// FIXME: should signal error
-	}
+  }
 }
 
 

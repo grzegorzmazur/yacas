@@ -39,31 +39,31 @@ enum TMessageControlFontStyle
     EStyleElementColor=EMenuCommandColor
     };
 
-// 
+//
 // CSimpleConsole
 //
 
-  
+ 
 class CSimpleDocument : public CEikDocument
-	{
+  {
 public:
-	CSimpleDocument(CEikApplication& aApp): CEikDocument(aApp) { }
+  CSimpleDocument(CEikApplication& aApp): CEikDocument(aApp) { }
 private: // from CApaDocument
-	CEikAppUi* CreateAppUiL();
-	};
+  CEikAppUi* CreateAppUiL();
+  };
 
 
 class CConsoleControl : public CCoeControl
-	{
+  {
 public:
   CConsoleControl(const TDes& aAppFullName) : iAppFullName(aAppFullName){}
-	~CConsoleControl();
-	void ConstructL(TInt aFlags);
-	void ConstructL(TPoint aLeftTop,const TSize& aSize,TInt aFlags);
+  ~CConsoleControl();
+  void ConstructL(TInt aFlags);
+  void ConstructL(TPoint aLeftTop,const TSize& aSize,TInt aFlags);
   void ConstructYacas();
     TKeyResponse OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType);
     void HandlePointerEventL(const TPointerEvent& aPointerEvent);
-	void DynInitMenuPaneL(TInt aMenuId,CEikMenuPane* aMenuPane);
+  void DynInitMenuPaneL(TInt aMenuId,CEikMenuPane* aMenuPane);
     void HandleCommandL(TInt aCommand);
     void ActivateL();
 
@@ -78,11 +78,11 @@ protected:
 private:
     void ToggleFontStyleAndRedrawL(TMessageControlFontStyle aStyleElement);
 private:
-	CEikConsoleScreen* iConsole;
+  CEikConsoleScreen* iConsole;
   TInt iAllPrintable,iScrollLock,iIgnoreCursor,iHideCursor;
-	TDesC* iSelBufPtr;
-	TInt iSmallScreen;
-	TInt iHighCursor;
+  TDesC* iSelBufPtr;
+  TInt iSmallScreen;
+  TInt iHighCursor;
 
 //#ifdef HAS_YACAS
   CYacas* iYacas;
@@ -96,8 +96,8 @@ private:
   CDeletingArrayGrower<LispString *> iHistory;
   TInt history;
   LispString stringOutput;
-  StringOutput *theOutput; 
-	};
+  StringOutput *theOutput;
+  };
 
 
 
@@ -125,7 +125,7 @@ void CConsoleControl::LoadHistory()
         iHistory.Append(string);
       }
     }
-    
+ 
     hist.Close();
   }
   history=iHistory.Size();
@@ -149,7 +149,7 @@ void CConsoleControl::SaveHistory()
     }
     hist.Close();
   }
-}  
+}
 
 
 void CConsoleControl::ConstructYacas()
@@ -157,7 +157,7 @@ void CConsoleControl::ConstructYacas()
 
   TFileName name;
 
-  
+ 
   {
     TFileName base;
     base.Format(_L("yacasinit"));
@@ -167,7 +167,7 @@ void CConsoleControl::ConstructYacas()
     parser.AddDir(_L("scripts"));
     name = parser.DriveAndPath();
     name.ZeroTerminate();
-  }    
+  }
 
   theOutput = new StringOutput(stringOutput);
   iYacas = CYacas::NewL(theOutput);
@@ -190,10 +190,10 @@ void CConsoleControl::ConstructYacas()
         buf2.Append(buf[i]);
       }
     }
-    
-    
+ 
+ 
     buf2.ZeroTerminate();
-   
+ 
     iYacas->Evaluate((char*)buf2.Ptr());
     iYacas->Evaluate("Load(\"yacasinit.ys\");");
     ShowResult("");
@@ -225,7 +225,7 @@ void CConsoleControl::ShowResult(char *prompt)
 }
 
 CConsoleControl::~CConsoleControl()
-	{
+  {
   SaveHistory();
 
 //#ifdef HAS_YACAS
@@ -233,300 +233,300 @@ CConsoleControl::~CConsoleControl()
 //#endif
   delete iSelBufPtr; // forget selection
   delete iConsole;
-	}
+  }
 
 
 void CConsoleControl::ConstructL(TInt aFlags)
-	{
+  {
   CreateWindowL();
     Window().SetShadowDisabled(ETrue);
     Window().SetBackgroundColor(KRgbGray);
     EnableDragEvents();
     SetExtentToWholeScreenL();
-	SetBlank();
+  SetBlank();
   LoadHistory();
 
   iConsole=new(ELeave) CEikConsoleScreen;
 
-    
+ 
     iConsole->ConstructL(_L("Yacas"),aFlags);
-	iConsole->SetHistorySizeL(10,10);
+  iConsole->SetHistorySizeL(10,10);
   iLine.Zero();
   ConstructYacas();
-	}
+  }
 
 void CConsoleControl::ConstructL(TPoint aTopLeft,const TSize& aSize,TInt aFlags)
-	{
+  {
     CreateWindowL();
     Window().SetShadowDisabled(ETrue);
     Window().SetBackgroundColor(KRgbGray);
     EnableDragEvents();
     SetExtentToWholeScreenL();
-	SetBlank();
+  SetBlank();
   LoadHistory();
 
   iConsole=new(ELeave) CEikConsoleScreen;
-	iConsole->ConstructL(_L("Yacas"),aTopLeft,aSize,aFlags,EEikConsWinInChars);
-	iConsole->SetHistorySizeL(10,10);
+  iConsole->ConstructL(_L("Yacas"),aTopLeft,aSize,aFlags,EEikConsWinInChars);
+  iConsole->SetHistorySizeL(10,10);
   iLine.Zero();
     ConstructYacas();
-	}
+  }
 
 void CConsoleControl::DrawInPrompt()
 {
   iConsole->Printf(_L("In> "));
-  
+ 
   iCursorPos = 0;
   iConsole->SetPos(iCursorPos+4);
-	iConsole->FlushChars();
-	iConsole->DrawCursor();
+  iConsole->FlushChars();
+  iConsole->DrawCursor();
 }
 
 void CConsoleControl::ActivateL()
-	{
-	CCoeControl::ActivateL();
-	iConsole->SetKeepCursorInSight(TRUE);
+  {
+  CCoeControl::ActivateL();
+  iConsole->SetKeepCursorInSight(TRUE);
 
   iConsole->SetAtt(4,15);
 
   iConsole->Printf(_L("Yacas for EPOC32\r\n"));
   DrawInPrompt();
-	iConsole->FlushChars();
-	iConsole->DrawCursor();
-	iConsole->SetAtt(ATT_NORMAL);
-	iConsole->DrawCursor();
-	}
+  iConsole->FlushChars();
+  iConsole->DrawCursor();
+  iConsole->SetAtt(ATT_NORMAL);
+  iConsole->DrawCursor();
+  }
 
 void CConsoleControl::DynInitMenuPaneL(TInt aMenuId,CEikMenuPane* aMenuPane)
-	{
-	if (aMenuId==R_CONS_OPTIONS_MENU)
-		{
-		if ( iConsole->Att() & ATT_COLORMASK )
-			aMenuPane->SetItemButtonState(EMenuCommandColor,EEikMenuItemSymbolOn);
-		else
-			{
-			if ( iConsole->Att() & ATT_BOLD )
-				aMenuPane->SetItemButtonState(EMenuCommandBold,EEikMenuItemSymbolOn);
-			if ( iConsole->Att() & ATT_INVERSE )
-				aMenuPane->SetItemButtonState(EMenuCommandInverse,EEikMenuItemSymbolOn);
-			if ( iConsole->Att() & ATT_ITALIC )
-				aMenuPane->SetItemButtonState(EMenuCommandItalic,EEikMenuItemSymbolOn);
-			if ( iConsole->Att() & ATT_UNDERLINE )
-				aMenuPane->SetItemButtonState(EMenuCommandUnderline,EEikMenuItemSymbolOn);
-			}
-		}
-	
-	if (aMenuId==R_CONS_SPECIAL_MENU)
-		{
-		if (iHighCursor)
-			aMenuPane->SetItemButtonState(EMenuCursorSize,EEikMenuItemSymbolOn);
-		if (iSmallScreen)
-			aMenuPane->SetItemButtonState(EMenuScreenSize,EEikMenuItemSymbolOn);
-		}
+  {
+  if (aMenuId==R_CONS_OPTIONS_MENU)
+    {
+    if ( iConsole->Att() & ATT_COLORMASK )
+      aMenuPane->SetItemButtonState(EMenuCommandColor,EEikMenuItemSymbolOn);
+    else
+      {
+      if ( iConsole->Att() & ATT_BOLD )
+        aMenuPane->SetItemButtonState(EMenuCommandBold,EEikMenuItemSymbolOn);
+      if ( iConsole->Att() & ATT_INVERSE )
+        aMenuPane->SetItemButtonState(EMenuCommandInverse,EEikMenuItemSymbolOn);
+      if ( iConsole->Att() & ATT_ITALIC )
+        aMenuPane->SetItemButtonState(EMenuCommandItalic,EEikMenuItemSymbolOn);
+      if ( iConsole->Att() & ATT_UNDERLINE )
+        aMenuPane->SetItemButtonState(EMenuCommandUnderline,EEikMenuItemSymbolOn);
+      }
+    }
+ 
+  if (aMenuId==R_CONS_SPECIAL_MENU)
+    {
+    if (iHighCursor)
+      aMenuPane->SetItemButtonState(EMenuCursorSize,EEikMenuItemSymbolOn);
+    if (iSmallScreen)
+      aMenuPane->SetItemButtonState(EMenuScreenSize,EEikMenuItemSymbolOn);
+    }
 
-	if (aMenuId==R_CONS_TOOLS_MENU)
-		{
-		if (iHideCursor)
-			aMenuPane->SetItemButtonState(EMenuCommandHideCursor,EEikMenuItemSymbolOn);
-		if (iIgnoreCursor)
-			aMenuPane->SetItemButtonState(EMenuCommandIgnoreCursor,EEikMenuItemSymbolOn);
-		if (iScrollLock)
-			aMenuPane->SetItemButtonState(EMenuCommandScrollLock,EEikMenuItemSymbolOn);
-		if (iAllPrintable)
-			aMenuPane->SetItemButtonState(EMenuCommandPrintable,EEikMenuItemSymbolOn);
-		}
+  if (aMenuId==R_CONS_TOOLS_MENU)
+    {
+    if (iHideCursor)
+      aMenuPane->SetItemButtonState(EMenuCommandHideCursor,EEikMenuItemSymbolOn);
+    if (iIgnoreCursor)
+      aMenuPane->SetItemButtonState(EMenuCommandIgnoreCursor,EEikMenuItemSymbolOn);
+    if (iScrollLock)
+      aMenuPane->SetItemButtonState(EMenuCommandScrollLock,EEikMenuItemSymbolOn);
+    if (iAllPrintable)
+      aMenuPane->SetItemButtonState(EMenuCommandPrintable,EEikMenuItemSymbolOn);
+    }
 
-	}
+  }
 
 void CConsoleControl::HandleCommandL(TInt aCommand)
     {
     switch (aCommand)
         {
-    
-	case EMenuCommandFileExit:
-		CBaActiveScheduler::Exit();
+ 
+  case EMenuCommandFileExit:
+    CBaActiveScheduler::Exit();
 
-	case EMenuCommandEditCopy			:
-		{
-		TRect range = iConsole->Selection();	// get current selected range		
-		if (iSelBufPtr) delete iSelBufPtr;		// forget previous selection
-		iSelBufPtr = iConsole->RetrieveL(range);
-		if (iSelBufPtr)
-			{
-			TBuf<32> msg;
-			msg.Format(_L("%d bytes copied"),iSelBufPtr->Length());
-			iEikonEnv->InfoMsg(msg);
-			}
-		else 
-			iEikonEnv->InfoMsg(_L("Nothing to copy..."));
-		}
-		break;
-	case EMenuCommandEditPaste			:
-		iConsole->SelectCursor(); // forget current selection...
-		if (iSelBufPtr)
-			{
-			iConsole->Write(*iSelBufPtr);
-			iConsole->FlushChars();
-			TBuf<32> msg;
-			msg.Format(_L("%d bytes pasted"),iSelBufPtr->Length());
-			iEikonEnv->InfoMsg(msg);
-			}
-		else
-			{
-			iEikonEnv->InfoMsg(_L("Nothing to paste..."));
-			}
-		break;
-		
-	case EMenuCommandBold:
+  case EMenuCommandEditCopy      :
+    {
+    TRect range = iConsole->Selection();  // get current selected range
+    if (iSelBufPtr) delete iSelBufPtr;    // forget previous selection
+    iSelBufPtr = iConsole->RetrieveL(range);
+    if (iSelBufPtr)
+      {
+      TBuf<32> msg;
+      msg.Format(_L("%d bytes copied"),iSelBufPtr->Length());
+      iEikonEnv->InfoMsg(msg);
+      }
+    else
+      iEikonEnv->InfoMsg(_L("Nothing to copy..."));
+    }
+    break;
+  case EMenuCommandEditPaste      :
+    iConsole->SelectCursor(); // forget current selection...
+    if (iSelBufPtr)
+      {
+      iConsole->Write(*iSelBufPtr);
+      iConsole->FlushChars();
+      TBuf<32> msg;
+      msg.Format(_L("%d bytes pasted"),iSelBufPtr->Length());
+      iEikonEnv->InfoMsg(msg);
+      }
+    else
+      {
+      iEikonEnv->InfoMsg(_L("Nothing to paste..."));
+      }
+    break;
+ 
+  case EMenuCommandBold:
     case EMenuCommandItalic:
     case EMenuCommandUnderline:
-	case EMenuCommandInverse:
+  case EMenuCommandInverse:
     case EMenuCommandColor:
         ToggleFontStyleAndRedrawL((TMessageControlFontStyle)aCommand);
         break;
 
-	case EMenuScreenSize:
-		{
-		  iSmallScreen = !iSmallScreen;
-		  if (iSmallScreen)
+  case EMenuScreenSize:
+    {
+      iSmallScreen = !iSmallScreen;
+      if (iSmallScreen)
       {
         iConsole->ConsoleControl()->SetExtentL( TPoint(40,20), TSize(560,200) );
       }
-		  else
+      else
       {
 //        iConsole->ConsoleControl()->SetExtentL( TPoint(0,0), TSize(640,240) );
         iConsole->ConsoleControl()->SetExtentToWholeScreenL();
       }
-		}
-		break;
-	case EMenuCursorSize:
-		{
-		iHighCursor = !iHighCursor;
-		if (iHighCursor)
-			iConsole->SetCursorHeight(100);
-		else
-			iConsole->SetCursorHeight(20);
-		}
-		break;
+    }
+    break;
+  case EMenuCursorSize:
+    {
+    iHighCursor = !iHighCursor;
+    if (iHighCursor)
+      iConsole->SetCursorHeight(100);
+    else
+      iConsole->SetCursorHeight(20);
+    }
+    break;
 
-	case EMenuFontDialog:
-		{
-		TCharFormat charFormat;
-		charFormat.iFontSpec = iConsole->Font();
-		TCharFormatMask dummy;
-		CEikFontDialog* dialog=new(ELeave) CEikFontDialog(charFormat,dummy);
-		if (dialog->ExecuteLD(R_EIK_DIALOG_FONT))
-			{
-			charFormat.iFontSpec.iTypeface.SetIsProportional(EFalse);
-			iConsole->SetFontL(charFormat.iFontSpec);
-			}
-		}
+  case EMenuFontDialog:
+    {
+    TCharFormat charFormat;
+    charFormat.iFontSpec = iConsole->Font();
+    TCharFormatMask dummy;
+    CEikFontDialog* dialog=new(ELeave) CEikFontDialog(charFormat,dummy);
+    if (dialog->ExecuteLD(R_EIK_DIALOG_FONT))
+      {
+      charFormat.iFontSpec.iTypeface.SetIsProportional(EFalse);
+      iConsole->SetFontL(charFormat.iFontSpec);
+      }
+    }
         break;
 
-	case EMenuCommandHideCursor:
-		iHideCursor=!iHideCursor;
-		if (iHideCursor)
-			iConsole->HideCursor();
-		else
-			iConsole->DrawCursor();
-		break;
+  case EMenuCommandHideCursor:
+    iHideCursor=!iHideCursor;
+    if (iHideCursor)
+      iConsole->HideCursor();
+    else
+      iConsole->DrawCursor();
+    break;
     case EMenuCommandIgnoreCursor:
-		iConsole->SetKeepCursorInSight(iIgnoreCursor);
-		iIgnoreCursor=!iIgnoreCursor;
-		break;
+    iConsole->SetKeepCursorInSight(iIgnoreCursor);
+    iIgnoreCursor=!iIgnoreCursor;
+    break;
     case EMenuCommandScrollLock:
-		iScrollLock=!iScrollLock;
-		iConsole->SetScrollLock(iScrollLock);
-		break;
+    iScrollLock=!iScrollLock;
+    iConsole->SetScrollLock(iScrollLock);
+    break;
     case EMenuCommandPrintable:
-		iAllPrintable=!iAllPrintable;
-		iConsole->SetAllPrintable(iAllPrintable);
-		break;
-		
+    iAllPrintable=!iAllPrintable;
+    iConsole->SetAllPrintable(iAllPrintable);
+    break;
+ 
 
     case EMenuScrollNone:
-		iConsole->SetScrollBarVisibilityL(CEikScrollBarFrame::EOff,CEikScrollBarFrame::EOff);
+    iConsole->SetScrollBarVisibilityL(CEikScrollBarFrame::EOff,CEikScrollBarFrame::EOff);
         break;
     case EMenuScrollHor:
-		iConsole->SetScrollBarVisibilityL(CEikScrollBarFrame::EAuto,CEikScrollBarFrame::EOff);
+    iConsole->SetScrollBarVisibilityL(CEikScrollBarFrame::EAuto,CEikScrollBarFrame::EOff);
         break;
     case EMenuScrollVert:
-		iConsole->SetScrollBarVisibilityL(CEikScrollBarFrame::EOff,CEikScrollBarFrame::EAuto);
+    iConsole->SetScrollBarVisibilityL(CEikScrollBarFrame::EOff,CEikScrollBarFrame::EAuto);
         break;
-   	case EMenuScrollBoth:
-		iConsole->SetScrollBarVisibilityL(CEikScrollBarFrame::EAuto,CEikScrollBarFrame::EAuto);
+     case EMenuScrollBoth:
+    iConsole->SetScrollBarVisibilityL(CEikScrollBarFrame::EAuto,CEikScrollBarFrame::EAuto);
         break;
 
-	case EMenuCommandLongLine			:
-		TBuf<256> str;
-		for (TInt i=0; i<9; i++)
-			{
-			TBuf<32> tmp;
-			tmp.Format(_L("%d abcdefghijklmnopqrstuvwxyz"),i);
-			str+=tmp;
-			}
-		iConsole->Write(str);
-		iConsole->FlushChars();
+  case EMenuCommandLongLine      :
+    TBuf<256> str;
+    for (TInt i=0; i<9; i++)
+      {
+      TBuf<32> tmp;
+      tmp.Format(_L("%d abcdefghijklmnopqrstuvwxyz"),i);
+      str+=tmp;
+      }
+    iConsole->Write(str);
+    iConsole->FlushChars();
         break;
-		}
+    }
     }
 
 void CConsoleControl::FocusChanged(TDrawNow aDrawNow)
-	{
-	iConsole->ConsoleControl()->SetFocus(IsFocused(), aDrawNow); 
-	}
+  {
+  iConsole->ConsoleControl()->SetFocus(IsFocused(), aDrawNow);
+  }
 
 void CConsoleControl::ToggleFontStyleAndRedrawL(TMessageControlFontStyle aStyleElement)
     {
     switch (aStyleElement)
         {
     case EStyleElementColor:
-		if ( iConsole->Att() & ATT_COLORMASK )	// color?
-			iConsole->SetAtt(ATT_NORMAL);	// then set normal
-		else								// else
-			iConsole->SetAtt(4,11);			// set 4 (darkgray) on 11 (lightgray)
+    if ( iConsole->Att() & ATT_COLORMASK )  // color?
+      iConsole->SetAtt(ATT_NORMAL);  // then set normal
+    else                // else
+      iConsole->SetAtt(4,11);      // set 4 (darkgray) on 11 (lightgray)
         break;
     case EStyleElementBold:
-		// clear color flag (just to be sure) and switch bold flag
-		iConsole->SetAtt( (iConsole->Att()&(~ATT_COLORMASK)) ^ ATT_BOLD );
+    // clear color flag (just to be sure) and switch bold flag
+    iConsole->SetAtt( (iConsole->Att()&(~ATT_COLORMASK)) ^ ATT_BOLD );
         break;
     case EStyleElementItalic:
-		// clear color flag (just to be sure) and switch italic flag
-		iConsole->SetAtt( (iConsole->Att()&(~ATT_COLORMASK)) ^ ATT_ITALIC );
+    // clear color flag (just to be sure) and switch italic flag
+    iConsole->SetAtt( (iConsole->Att()&(~ATT_COLORMASK)) ^ ATT_ITALIC );
         break;
     case EStyleElementInverse:
-		// clear color flag (just to be sure) and switch inverse flag
-		iConsole->SetAtt( (iConsole->Att()&(~ATT_COLORMASK)) ^ ATT_INVERSE );
+    // clear color flag (just to be sure) and switch inverse flag
+    iConsole->SetAtt( (iConsole->Att()&(~ATT_COLORMASK)) ^ ATT_INVERSE );
         break;
     case EStyleElementUnderline:
-		// clear color flag (just to be sure) and switch underline flag
-		iConsole->SetAtt( (iConsole->Att()&(~ATT_COLORMASK)) ^ ATT_UNDERLINE );
+    // clear color flag (just to be sure) and switch underline flag
+    iConsole->SetAtt( (iConsole->Att()&(~ATT_COLORMASK)) ^ ATT_UNDERLINE );
         break;
         }
     }
 
 void CConsoleControl::HandlePointerEventL(const TPointerEvent& aPointerEvent)
     {
-	TBuf<128> iMessage;
+  TBuf<128> iMessage;
     iEikonEnv->Format128(iMessage,R_CONS_POINTER_EVENT,aPointerEvent.iType,aPointerEvent.iPosition.iX,aPointerEvent.iPosition.iY);
-	iConsole->Write(iMessage);
-	iConsole->FlushChars();
+  iConsole->Write(iMessage);
+  iConsole->FlushChars();
     }
 
 TKeyResponse CConsoleControl::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCode aType)
     {
-	if (aType!=EEventKey)
-		return(EKeyWasConsumed);
+  if (aType!=EEventKey)
+    return(EKeyWasConsumed);
 //    TInt modifiers=aKeyEvent.iModifiers;
     TInt code=aKeyEvent.iCode;
     if (code==CTRL('e'))
         CBaActiveScheduler::Exit();
 
 
-	TRect range = iConsole->Selection(); // get current selected range
-	switch (code)
-		{
-		case EKeyUpArrow:
+  TRect range = iConsole->Selection(); // get current selected range
+  switch (code)
+    {
+    case EKeyUpArrow:
       if (history>0)
       {
         history--;
@@ -536,7 +536,7 @@ TKeyResponse CConsoleControl::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCo
       iConsole->SetPos(0);
       iConsole->ClearToEndOfLine();
       break;
-		case EKeyDownArrow:
+    case EKeyDownArrow:
       if (history<iHistory.Size())
       {
         history++;
@@ -555,22 +555,22 @@ TKeyResponse CConsoleControl::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCo
       iConsole->ClearToEndOfLine();
 
       break;
-		case EKeyLeftArrow:
-//			iConsole->Left();
+    case EKeyLeftArrow:
+//      iConsole->Left();
       if (iCursorPos>0)
         iCursorPos--;
 
       break;
-		case EKeyRightArrow:
+    case EKeyRightArrow:
       if (iCursorPos<iLine.Length())
         iCursorPos++;
       break;
-		case EKeyEnter: 
-				{
+    case EKeyEnter:
+        {
           if (iLine.Length()>0)
           {
             iConsole->Cr();
-				    iConsole->Lf();
+            iConsole->Lf();
             iLine.ZeroTerminate();
             LispString * ptr = new LispString;
             *ptr = (LispChar *)iLine.Ptr();
@@ -579,7 +579,7 @@ TKeyResponse CConsoleControl::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCo
 
             iLine.Append(';');
             iLine.ZeroTerminate();
-          
+ 
 #ifdef HAS_YACAS
             iYacas->Evaluate((char*)iLine.Ptr());
             ShowResult("Out> ");
@@ -588,8 +588,8 @@ TKeyResponse CConsoleControl::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCo
             iLine.ZeroTerminate();
             DrawInPrompt();
           }
-				}
-			break;
+        }
+      break;
 
     case EKeyBackspace:
       if (iCursorPos>0)
@@ -602,7 +602,7 @@ TKeyResponse CConsoleControl::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCo
       iLine.Delete(iCursorPos,1);
       break;
     case EKeyTab:
-      {      
+      {
         LispInt prevhistory=history;
         history = iHistory.Size()-1;
         while (history>=0)
@@ -626,12 +626,12 @@ TKeyResponse CConsoleControl::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCo
         }
         if (history<0)
             history = prevhistory;
-      }      
+      }
       break;
-    
+ 
     default:
-			{
-        iConsole->SelectCursor();	// forget previous selection
+      {
+        iConsole->SelectCursor();  // forget previous selection
         if (iCursorPos == iLine.Length())
           iLine.Append(code);
         else
@@ -642,19 +642,19 @@ TKeyResponse CConsoleControl::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCo
         }
         iCursorPos++;
         iLine.ZeroTerminate();
-			}
-			break;
-		}
+      }
+      break;
+    }
 
     iConsole->SetPos(0);
     iConsole->ClearToEndOfLine();
-  	iConsole->FlushChars();
+    iConsole->FlushChars();
     iConsole->SetPos(0);
     iLine.ZeroTerminate();
     iConsole->Printf(_L("In> %s "),iLine.Ptr());
     iConsole->SetPos(iCursorPos+4);
-  	iConsole->FlushChars();
-  
+    iConsole->FlushChars();
+ 
   return(EKeyWasConsumed);
     }
 
@@ -666,73 +666,73 @@ class CSimpleAppUi : public CEikAppUi
     {
 public:
     void ConstructL();
-	void CreateConsoleL(TInt aFlags);
-	~CSimpleAppUi();
+  void CreateConsoleL(TInt aFlags);
+  ~CSimpleAppUi();
 private: // framework
     void HandleCommandL(TInt aCommand);
-	void DynInitMenuPaneL(TInt aMenuId,CEikMenuPane* aMenuPane);
+  void DynInitMenuPaneL(TInt aMenuId,CEikMenuPane* aMenuPane);
 private:
-	CConsoleControl* iConsole;
- 	TInt iBackedUp;
-	};
+  CConsoleControl* iConsole;
+   TInt iBackedUp;
+  };
 
 void CSimpleAppUi::ConstructL()
     {
     BaseConstructL();
-	CreateConsoleL(CEikConsoleScreen::ENoInitialCursor);
+  CreateConsoleL(CEikConsoleScreen::ENoInitialCursor);
     }
 
 void CSimpleAppUi::CreateConsoleL(TInt aFlags)
-	{
+  {
 /*
-	TBuf<30> msg;
-	if (iBackedUp)
-		msg=_L("Using a backed up window");
-	else
-		msg=_L("Using a normal window");
-	iEikonEnv->InfoMsg(msg);
+  TBuf<30> msg;
+  if (iBackedUp)
+    msg=_L("Using a backed up window");
+  else
+    msg=_L("Using a normal window");
+  iEikonEnv->InfoMsg(msg);
 */
   iConsole=new(ELeave) CConsoleControl(((CSimpleDocument*)iDocument)->Application()->AppFullName());
-	iConsole->ConstructL(aFlags);
-//	iConsole->ConstructL(TPoint(4,4),TSize(60,16),aFlags);
+  iConsole->ConstructL(aFlags);
+//  iConsole->ConstructL(TPoint(4,4),TSize(60,16),aFlags);
     AddToStackL(iConsole);
-	iConsole->ActivateL();
-	}
+  iConsole->ActivateL();
+  }
 
 CSimpleAppUi::~CSimpleAppUi()
-	{
+  {
     delete(iConsole);
-	}
+  }
 
 void CSimpleAppUi::DynInitMenuPaneL(TInt aMenuId,CEikMenuPane* aMenuPane)
-	{
-	if (aMenuId==R_CONS_SPECIAL_MENU)
-		{
-		if (iBackedUp)
-			aMenuPane->SetItemButtonState(EMenuWindowType,EEikMenuItemSymbolOn);
-		}
-	iConsole->DynInitMenuPaneL(aMenuId, aMenuPane);
+  {
+  if (aMenuId==R_CONS_SPECIAL_MENU)
+    {
+    if (iBackedUp)
+      aMenuPane->SetItemButtonState(EMenuWindowType,EEikMenuItemSymbolOn);
+    }
+  iConsole->DynInitMenuPaneL(aMenuId, aMenuPane);
     }
 
 void CSimpleAppUi::HandleCommandL(TInt aCommand)
-	{
-	switch (aCommand)
-		{
-	case EMenuWindowType:
-		{
-		iBackedUp = !iBackedUp;
-		RemoveFromStack(iConsole);
-		delete iConsole;
-		TInt flags=0;
-		if (iBackedUp)
-			flags|=CEikConsoleScreen::EUseBackedUpWindow;
-		CreateConsoleL(flags);
-		}
-		break;
-	default:
-		iConsole->HandleCommandL(aCommand);
-		}
-	}
+  {
+  switch (aCommand)
+    {
+  case EMenuWindowType:
+    {
+    iBackedUp = !iBackedUp;
+    RemoveFromStack(iConsole);
+    delete iConsole;
+    TInt flags=0;
+    if (iBackedUp)
+      flags|=CEikConsoleScreen::EUseBackedUpWindow;
+    CreateConsoleL(flags);
+    }
+    break;
+  default:
+    iConsole->HandleCommandL(aCommand);
+    }
+  }
 
 //
 // CSimpleDocument
@@ -740,43 +740,43 @@ void CSimpleAppUi::HandleCommandL(TInt aCommand)
 
 
 CEikAppUi* CSimpleDocument::CreateAppUiL()
-	{
+  {
     return(new(ELeave) CSimpleAppUi);
-	}
+  }
 
 //
 // CSimpleApplication
 //
 
 class CSimpleApplication : public CEikApplication
-	{
+  {
 private: // from CApaApplication
-	CApaDocument* CreateDocumentL();
-	TUid AppDllUid() const;
-	};
+  CApaDocument* CreateDocumentL();
+  TUid AppDllUid() const;
+  };
 
 const TUid KUidSimpleApp={227};
 
 TUid CSimpleApplication::AppDllUid() const
-	{
-	return(KUidSimpleApp);
-	}
+  {
+  return(KUidSimpleApp);
+  }
 
 CApaDocument* CSimpleApplication::CreateDocumentL()
-	{
-	return(new(ELeave) CSimpleDocument(*this));
-	}
+  {
+  return(new(ELeave) CSimpleDocument(*this));
+  }
 
 //
 // EXPORTed functions
 //
 
 EXPORT_C CApaApplication* NewApplication()
-	{
-	return(new CSimpleApplication);
-	}
+  {
+  return(new CSimpleApplication);
+  }
 
 GLDEF_C TInt E32Dll(TDllReason)
-	{
-	return(KErrNone);
-	}
+  {
+  return(KErrNone);
+  }

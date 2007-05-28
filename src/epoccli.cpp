@@ -154,7 +154,7 @@ void CConsoleControl::LoadYacasRC()
   TBuf<KMaxYacasStringLength> input;
   TBuf<KMaxYacasStringLength> result;
   TInt ret;
-	RFs fs;
+  RFs fs;
   fs.Connect();
   RFile yacasrcfile;
   if (yacasrcfile.Open(fs,KYacasRCFile,EFileRead) == KErrNone)
@@ -527,13 +527,13 @@ TKeyResponse CConsoleControl::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCo
 
       break;
     case EKeyLeftArrow:
-//			if (modifiers & EModifierShift)
-//				{
-//				range.iTl = iConsole->CursorPos();
-//				iConsole->SetSelection(range);
-//				}
-//			else
-			{
+//      if (modifiers & EModifierShift)
+//        {
+//        range.iTl = iConsole->CursorPos();
+//        iConsole->SetSelection(range);
+//        }
+//      else
+      {
         if (iCursorPos>0)
           iCursorPos--;
       }
@@ -541,13 +541,13 @@ TKeyResponse CConsoleControl::OfferKeyEventL(const TKeyEvent& aKeyEvent,TEventCo
       break;
     case EKeyRightArrow:
 //      iConsole->Right();
-//			if (modifiers & EModifierShift)
-//				{
-//				range.iTl = iConsole->CursorPos();
-//				iConsole->SetSelection(range);
-//				}
-//			else
-			{
+//      if (modifiers & EModifierShift)
+//        {
+//        range.iTl = iConsole->CursorPos();
+//        iConsole->SetSelection(range);
+//        }
+//      else
+      {
       if (iCursorPos<iLine.Length())
         iCursorPos++;
       break;

@@ -26,7 +26,7 @@
 //      - t : follow history when entering on the command line
 //      - w : hides the console window in Windows
 //   4)
-//	-i <command> : execute <command>
+//  -i <command> : execute <command>
 //
 // Example: 'yacas -pc' will use minimal command line interaction,
 //          showing no prompts, and with no readline functionality.
@@ -55,10 +55,10 @@
   #include "unixcommandline.h"
   #define FANCY_COMMAND_LINE CUnixCommandLine
   /* PLATFORM_OS is defined in config.h */
-#else  
-  #define _WINSOCKAPI_            // Prevent inclusion of winsock.h in windows.h 
-  #define _WIN32_WINDOWS 0x0410      // Make sure that Waitable Timer functions are declared in winbase.h 
-  #include "win32commandline.h"      
+#else
+  #define _WINSOCKAPI_            // Prevent inclusion of winsock.h in windows.h
+  #define _WIN32_WINDOWS 0x0410      // Make sure that Waitable Timer functions are declared in winbase.h
+  #include "win32commandline.h"
   #define FANCY_COMMAND_LINE CWin32CommandLine
   #define SCRIPT_DIR ""
   #define PLUGIN_DIR ""
@@ -165,7 +165,7 @@ static LispBoolean Busy()
 }
 
 
-  
+ 
 void ReportNrCurrent()
 {
 #ifdef YACAS_DEBUG
@@ -206,9 +206,9 @@ void LispExit(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispPluginsCanBeLoaded(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef DISABLE_DYNAMIC 
+#ifndef DISABLE_DYNAMIC
   InternalTrue(aEnvironment, RESULT);
-#else // DISABLE_DYNAMIC 
+#else // DISABLE_DYNAMIC
 
 #ifdef EXE_DLL_PLUGINS
   InternalTrue(aEnvironment, RESULT);
@@ -216,7 +216,7 @@ void LispPluginsCanBeLoaded(LispEnvironment& aEnvironment, LispInt aStackTop)
   InternalFalse(aEnvironment, RESULT);
 #endif // EXE_DLL_PLUGINS
 
-#endif // DISABLE_DYNAMIC 
+#endif // DISABLE_DYNAMIC
 }
 
 
@@ -359,9 +359,9 @@ void LispFileSize(LispEnvironment& aEnvironment, LispInt aStackTop)
     else
     {
       printf("[[%s]]\n",fname.c_str());
-    }    
+    }
     char buf[100];
-    
+ 
 #ifdef HAVE_VSNPRINTF
     snprintf(buf,100,"%ld",fileSize);
 #else
@@ -389,7 +389,7 @@ void my_exit(void)
     // deleting the Yacas environment object, at least we have a saved history
     if (commandline) delete commandline; commandline = NULL;
     if (yacas) delete yacas; yacas = NULL;
-    
+ 
     ReportNrCurrent();
 #ifdef YACAS_DEBUG
     CheckAllPtrs(1);
@@ -557,7 +557,7 @@ CORE_KERNEL_FUNCTION("PluginsCanBeLoaded",LispPluginsCanBeLoaded,0,YacasEvaluato
 
 
 #undef CORE_KERNEL_FUNCTION
-    
+ 
 
     if (archive)
     {
@@ -596,7 +596,7 @@ CORE_KERNEL_FUNCTION("PluginsCanBeLoaded",LispPluginsCanBeLoaded,0,YacasEvaluato
     }
 
     {
-        /* Split up root_dir in pieces separated by colons, and run 
+        /* Split up root_dir in pieces separated by colons, and run
            DefaultDirectory on each of them. */
         char *ptr1, *ptr2;
         ptr1 = ptr2 = root_dir;
@@ -614,7 +614,7 @@ CORE_KERNEL_FUNCTION("PluginsCanBeLoaded",LispPluginsCanBeLoaded,0,YacasEvaluato
         {
           yacas->Evaluate("Set(LoadPlugIns,False);");
         }
-        
+ 
         char buf[1000];
 #ifdef HAVE_VSNPRINTF
         snprintf(buf,1000,"Load(\"%s\");",init_script);
@@ -630,7 +630,7 @@ CORE_KERNEL_FUNCTION("PluginsCanBeLoaded",LispPluginsCanBeLoaded,0,YacasEvaluato
     }
 
     {
-        /* Split up dll_dir in pieces separated by colons, and run 
+        /* Split up dll_dir in pieces separated by colons, and run
            DllDirectory on each of them. */
         char *ptr1, *ptr2;
         ptr1 = ptr2 = dll_dir;
@@ -831,7 +831,7 @@ int runserver(int argc,char** argv)
    if (hideconsolewindow)
    {
       // format a "unique" newWindowTitle
-      char newWindowTitle[256];   
+      char newWindowTitle[256];
       wsprintf(newWindowTitle,"%d/%d", GetTickCount(), GetCurrentProcessId());
       // change current window title
       SetConsoleTitle(newWindowTitle);
@@ -846,7 +846,7 @@ int runserver(int argc,char** argv)
       }
    }
 #endif
-   
+ 
    int server_sockfd, client_sockfd;
     SOCKLEN_T server_len, client_len;
     struct sockaddr_in server_address;
@@ -876,7 +876,7 @@ int runserver(int argc,char** argv)
     WSADATA wsadata;
 
     if (WSAStartup(0x101, &wsadata))
-    {  
+    {
        perror("YacasServer Could not initiate Winsock DLL\n");
        exit(1);
     }
@@ -895,7 +895,7 @@ int runserver(int argc,char** argv)
         if (setsockopt(server_sockfd,SOL_SOCKET,SO_REUSEADDR,(const char *)&rsp,sizeof(int)))
 #endif
         {
-            perror("YacasServer Could not set socket options\n");            
+            perror("YacasServer Could not set socket options\n");
             exit(1);
         }
     }
@@ -909,15 +909,15 @@ int runserver(int argc,char** argv)
 
     if (bind(server_sockfd, (struct sockaddr *)&server_address, server_len))
     {
-        perror("YacasServer Could not bind to the socket\n");        
+        perror("YacasServer Could not bind to the socket\n");
         exit(1);
     }
     if (listen(server_sockfd, maxConnections))
     {
-        perror("YacasServer Could not listen to the socket\n");        
+        perror("YacasServer Could not listen to the socket\n");
         exit(1);
     }
-    
+ 
     {
       int i;
       for (i=0;i<MAX_CONNECTIONS;i++)
@@ -934,20 +934,20 @@ int runserver(int argc,char** argv)
         int nread;
         testfds = readfds;
 
-        result = select(FD_SETSIZE, &testfds, (fd_set *)0, 
+        result = select(FD_SETSIZE, &testfds, (fd_set *)0,
                         (fd_set *)0, (struct timeval *) 0);
 
         if(result < 1)
         {
-            perror("server5");            
+            perror("server5");
             exit(1);
         }
-        
+ 
 #ifndef WIN32
         int socketcount = FD_SETSIZE;
 #else
         int socketcount = readfds.fd_count;
-#endif        
+#endif
         for(int sockindex = 0; sockindex < socketcount; sockindex++)
         {
 #ifndef WIN32
@@ -990,20 +990,20 @@ int runserver(int argc,char** argv)
                     {
 #ifndef WIN32
                         close(fd);
-#else   
+#else
                         closesocket(fd);
 #endif
                         FD_CLR(fd, &readfds);
                         delete used_clients[clsockindex];
                         used_clients[clsockindex] = NULL;
                         nrSessions--;
-                        
+ 
                         if (server_single_user && nrSessions == 0)
                         {
                           exit(0);
                         }
 
-                        
+ 
 #ifdef YACAS_DEBUG
                         printf("Removing client on %d\n",fd);
 #endif
@@ -1013,34 +1013,34 @@ int runserver(int argc,char** argv)
 //                        LispString cmd;
 //                        cmd.SetNrItems(0);
                         char* buffer = (char*)malloc(nread+1);
-                        if (!buffer) 
+                        if (!buffer)
                         {
-                          printf("Error: seem to have run out of memory\n");                          
+                          printf("Error: seem to have run out of memory\n");
                           exit(-1);
                         }
-                        
+ 
                         int finalbuffersize = BUFFER_CHUNKSIZE;
                         char* finalbuffer = (char*)malloc(finalbuffersize);
-                        if (!finalbuffer) 
+                        if (!finalbuffer)
                         {
-                          printf("Error: seem to have run out of memory\n");                          
+                          printf("Error: seem to have run out of memory\n");
                           exit(-1);
-                        }                
-                        
+                        }
+ 
                         finalbuffer[0] = '\0';
 
                         int bytesread;
                         int totalbytesread = 0;
-                        
+ 
 #ifndef WIN32
                         while((bytesread = read(fd, buffer, nread)) != 0)
-#else                        
+#else
                         while(bytesread = recv(fd, buffer, nread, 0))
-#endif                   
-	                     {
+#endif
+                       {
                            buffer[bytesread] = '\0';
                            totalbytesread += bytesread;
-                           
+ 
                            if (totalbytesread >= finalbuffersize)
                            {
                               // If input string has exeeded the buffer size reallocate the buffer
@@ -1049,48 +1049,48 @@ int runserver(int argc,char** argv)
                                 finalbuffersize = totalbytesread;
 //                              finalbuffersize = max(totalbytesread, finalbuffersize + BUFFER_CHUNKSIZE);
                               char* newfinalbuffer = (char*)malloc(finalbuffersize);
-                              if (!newfinalbuffer) 
+                              if (!newfinalbuffer)
                               {
-                                printf("Error: seem to have run out of memory\n");                          
+                                printf("Error: seem to have run out of memory\n");
                                 exit(-1);
                               }
 
-                              strcpy(newfinalbuffer, finalbuffer); 
+                              strcpy(newfinalbuffer, finalbuffer);
 
                               free(finalbuffer);
                               finalbuffer = newfinalbuffer;
                            }
-                           
+ 
                            // Append current buffer to finalbuffer string
                            strncat(finalbuffer, buffer, bytesread);
 
                            // Check for semicolon terminator
                            char * ptr;
                            if ((ptr = strchr(finalbuffer, ';')) != NULL)
-                           {                              
+                           {
                               *ptr = '\0';
                               break;
                            }
-                        }                        
+                        }
                         free(buffer);
 /*
                         int i;
-                        for (i=0;i<nread;i++) 
+                        for (i=0;i<nread;i++)
                         {
                           cmd.Append(buffer[i]);
                         }
                         free(buffer);
-                        cmd.Append('\0');                        
+                        cmd.Append('\0');
 
 */
 #ifdef YACAS_DEBUG
 printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
 #endif
-                            
+ 
                             if (clsockindex < maxConnections)
                             {
                                if (used_clients[clsockindex] == NULL)
-                               {                                                                                      
+                               {
 
    #ifdef YACAS_DEBUG
      printf("Loading new Yacas environment\n");
@@ -1106,7 +1106,7 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
    //                        if (fork() == 0)
                            {
                                char* response = finalbuffer;
-                               if (!server_single_user) 
+                               if (!server_single_user)
                                {
                                  used_clients[clsockindex]->getDefEnv().getEnv().iSecure = 1;
                                }
@@ -1119,10 +1119,10 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
    #else
                                    LARGE_INTEGER timedue;
                                    timedue.QuadPart = seconds  * -10000000;
-                                
+ 
                                    htimer = CreateWaitableTimer(NULL, true, "WaitableTimer");
                                    SetWaitableTimer(htimer, &timedue, 0, stopClient, NULL, 0);
-   #endif                                
+   #endif
                                }
    #ifdef YACAS_DEBUG
                                printf("In> %s\n",finalbuffer);
@@ -1185,7 +1185,7 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
                                  send(fd,"]\r\n",3, 0);
    #endif
                                }
-                           }                        
+                           }
 
    // enable if fork needed
    //                            exit(0);
@@ -1201,7 +1201,7 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
                            send(fd,"]\r\n",3, 0);
                            send(fd, limtxt, strlen(limtxt), 0);
                            send(fd,"]\r\n",3, 0);
-#endif                          
+#endif
                         }
                     }
                 }
@@ -1245,12 +1245,12 @@ int main(int argc, char** argv)
   }
 #endif
 
-    
+ 
 #ifdef YACAS_DEBUG
 //        PlatAlloc(100); // test the alloc memory leak checker
     CHECKPTR(NULL);
 #endif
-    
+ 
 /*
     printf("sizeof(LispAtom) = %d\n",sizeof(LispAtom));
     printf("sizeof(LispSubList) = %d\n",sizeof(LispSubList));
@@ -1259,7 +1259,7 @@ int main(int argc, char** argv)
 
 #define USE_TEXMACS_OUT yacas->getDefEnv().getEnv().SetPrettyPrinter(yacas->getDefEnv().getEnv().HashTable().LookUp("\"TexForm\""));
 //  yacas->Evaluate("ToString()PrettyPrinter(\"TexForm\");");
-    
+ 
     char* file_to_load=NULL;
     bool exit_after_files = false;
 
@@ -1306,7 +1306,7 @@ int main(int argc, char** argv)
             }
             else if (!strcmp(argv[fileind],"--rootdir"))
             {
-                archive = NULL; 
+                archive = NULL;
                 fileind++;
                 if (fileind<argc)
                   root_dir = argv[fileind];
@@ -1324,33 +1324,33 @@ int main(int argc, char** argv)
                   archive = argv[fileind];
             }
             else if (!strcmp(argv[fileind],"--server"))
-            {    
+            {
                 fileind++;
                 if (fileind<argc)
                 {
                     server_mode=1;
                     server_port = atoi(argv[fileind]);
-                }                
+                }
             }
             else if (!strcmp(argv[fileind],"--single-user-server"))
-            {    
+            {
                 server_single_user = 1;
             }
             else if (!strcmp(argv[fileind],"--stacksize"))
-            {    
+            {
                 fileind++;
                 if (fileind<argc)
                 {
                   stack_size = atoi(argv[fileind]);
-                }                
+                }
             }
             else if (!strcmp(argv[fileind],"--execute"))
-            {    
+            {
                 fileind++;
                 if (fileind<argc)
                 {
                   execute_commnd = argv[fileind];
-                }                
+                }
             }
             else if (!strcmp(argv[fileind],"--uncompressed-archive"))
             {
@@ -1369,25 +1369,25 @@ int main(int argc, char** argv)
             {
               compiled_plugins = 0;
             }
-			else if (!strcmp(argv[fileind],"-i"))
-			{
-				fileind++;
-				if (fileind<argc)
-				{
-					char* immediate = argv[fileind];
-					if (immediate)
-					{
-						LoadYacas();
-						if (use_texmacs_out) USE_TEXMACS_OUT;
-						yacas->Evaluate(immediate);
-						if (yacas->IsError())
-						{
-							printf("Error in immediate command %s:\n",immediate);
-							printf("%s\n",yacas->Error());
-						}
-						exit_after_files = true;
-					}
-				}
+      else if (!strcmp(argv[fileind],"-i"))
+      {
+        fileind++;
+        if (fileind<argc)
+        {
+          char* immediate = argv[fileind];
+          if (immediate)
+          {
+            LoadYacas();
+            if (use_texmacs_out) USE_TEXMACS_OUT;
+            yacas->Evaluate(immediate);
+            if (yacas->IsError())
+            {
+              printf("Error in immediate command %s:\n",immediate);
+              printf("%s\n",yacas->Error());
+            }
+            exit_after_files = true;
+          }
+        }
             }
             else
             {
@@ -1416,7 +1416,7 @@ int main(int argc, char** argv)
                 {
                     hideconsolewindow=1;
                 }
-              
+ 
 #ifdef HAVE_CONFIG_H
                 if (strchr(argv[fileind],'v'))
                 {
@@ -1504,7 +1504,7 @@ int main(int argc, char** argv)
         USE_TEXMACS_OUT;
     }
 
-    
+ 
     {
         for ( ; fileind<argc; fileind++)
         {
@@ -1532,15 +1532,15 @@ int main(int argc, char** argv)
                 printf("Error in file %s:\n",argv[fileind]);
                 printf("%s\n",yacas->Error());
             }
-			exit_after_files = true;
+      exit_after_files = true;
         }
     }
 
     if (exit_after_files)
-	{
-		my_exit();
+  {
+    my_exit();
         exit(0);
-	}
+  }
 
     if (show_prompt && (!use_texmacs_out))
         ShowResult("");
@@ -1583,7 +1583,7 @@ RESTART:
             printf(GPL_blurb_nohelp);
             printf("%c",TEXMACS_DATA_END);
         }
-        else 
+        else
         {
             printf("This is Yacas version '" VERSION "'.\n");
 #ifdef WIN32
@@ -1621,7 +1621,7 @@ RESTART:
 #ifdef YACAS_DEBUG
         LispLocalEvaluator local(yacas->getDefEnv().getEnv(),NEW TracedStackEvaluator);
 #endif
-        
+ 
 #ifdef PROMPT_SHOW_FREE_MEMORY
         char full_prompt[30];
         if (show_prompt)

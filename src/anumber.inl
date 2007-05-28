@@ -2,7 +2,7 @@
 
 
 
-#define WordBaseTimesInt(a,n) BaseTimesInt(a,n) 
+#define WordBaseTimesInt(a,n) BaseTimesInt(a,n)
 #define WordBaseAdd(a,b)      BaseAdd(a,b)
 
 /* BaseTimesInt : multiply a with one digit in the range 0..(aBase-1)
@@ -91,7 +91,7 @@ inline void GrowDigits(T& a,LispInt aDigits)
 
     if (aDigits <= a.Size())
         return;
-    
+ 
     /*
      LispInt nrToAdd = aDigits-a.Size();
 
@@ -117,7 +117,7 @@ inline void BaseAdd(T& aTarget, const T& aSource, PlatDoubleWord aBase)
 
     GrowDigits(aTarget,aSource.Size());
     aTarget.Append(0);
-    
+ 
     LispInt nr1 = aTarget.Size();
     LispInt nr2 = aSource.Size();
     LispInt nr;
@@ -127,7 +127,7 @@ inline void BaseAdd(T& aTarget, const T& aSource, PlatDoubleWord aBase)
         nr=nr2;
     else
         nr=nr1;
-    
+ 
     PlatDoubleWord carry=0;
     LispInt digit;
 
@@ -147,7 +147,7 @@ inline void BaseAdd(T& aTarget, const T& aSource, PlatDoubleWord aBase)
     {
         PlatSignedDoubleWord ww = targetPtr[nr];
         ww+=carry;
-        targetPtr[nr] = (typename T::ElementType)(ww%aBase);	// PDG - cast to avoid compile-time warning
+        targetPtr[nr] = (typename T::ElementType)(ww%aBase);  // PDG - cast to avoid compile-time warning
         carry = ww/aBase;
         nr++;
     }
@@ -161,7 +161,7 @@ inline void BaseAdd(T& aTarget, const T& aSource)
 
     GrowDigits(aTarget,aSource.Size());
     aTarget.Append(0);
-    
+ 
     LispInt nr1 = aTarget.Size();
     LispInt nr2 = aSource.Size();
     LispInt nr;
@@ -171,7 +171,7 @@ inline void BaseAdd(T& aTarget, const T& aSource)
         nr=nr2;
     else
         nr=nr1;
-    
+ 
     PlatDoubleWord carry=0;
     LispInt digit;
 
@@ -191,7 +191,7 @@ inline void BaseAdd(T& aTarget, const T& aSource)
     {
         PlatSignedDoubleWord ww = targetPtr[nr];
         ww+=carry;
-        targetPtr[nr] = (typename T::ElementType)ww;	// PDG - cast to avoid compile-time warning
+        targetPtr[nr] = (typename T::ElementType)ww;  // PDG - cast to avoid compile-time warning
         carry = ww >> WordBits;
         nr++;
     }
@@ -258,16 +258,16 @@ inline void BaseSubtract(T& aResult, T& a2, LispInt offset)
 template<class T>
 inline void BaseIntNumber(T& aTarget, PlatSignedDoubleWord aNumber, PlatWord aBase)
 {
-	// Assume aBase is an integer > 0.
-	// Assume aNumber is an integer > 0.
-	// Assume PlatDoubleWord is an integer type.
-	// Will maximum digit (i.e., aBase-1) convert to T::ElementType right?
-    //LISPASSERT( (typename T::ElementType)(aBase) == (aBase) );	// use aBase instead, to help CTCE
+  // Assume aBase is an integer > 0.
+  // Assume aNumber is an integer > 0.
+  // Assume PlatDoubleWord is an integer type.
+  // Will maximum digit (i.e., aBase-1) convert to T::ElementType right?
+    //LISPASSERT( (typename T::ElementType)(aBase) == (aBase) );  // use aBase instead, to help CTCE
     aTarget.ResizeTo(0);
     while (aNumber != 0)
     {
         PlatDoubleWord digit = aNumber%aBase;
-		aTarget.Append((typename T::ElementType)(digit));	// PDG - cast to avoid compile-time warning
+    aTarget.Append((typename T::ElementType)(digit));  // PDG - cast to avoid compile-time warning
         aNumber/=aBase;
     }
     if (aTarget.Size() == 0)
@@ -396,13 +396,13 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
     n=a2.Size();
     LISPASSERT(n>0);
     LISPASSERT(a2[n-1] != 0);
-    
+ 
     //a1.Size() = m+n => m = a1.Size()-n
     m = a1.Size()-n;
     LISPASSERT(m>=0);
 
     aQuotient.ResizeTo(m+1);
-    
+ 
     //D1:
     //this calculates d = base/(a2[n-1]+1);
     PlatDoubleWord d = WordBase/(static_cast<PlatDoubleWord>(a2[n-1])+1);
@@ -412,7 +412,7 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
     WordBaseTimesInt(a2, d);
     a1.Append(0);
     a2.Append(0);
-    
+ 
     //D2:
     LispInt j = m;
 
@@ -467,7 +467,7 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
                 WordBaseTimesInt(sub, q);
                 sub.Append(0);
             }
-            
+ 
             carry = 0;
             for (digit=0;digit<=n;digit++)
             {
@@ -485,12 +485,12 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
             }
         }
         LISPASSERT(carry == 0);
-            
+ 
         //D5:
         aQuotient[j] = (typename T::ElementType)q;
         //D7:
         j--;
-        
+ 
     }
 
     //D8:

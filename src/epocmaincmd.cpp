@@ -68,7 +68,7 @@ CEpocCommandLine::CEpocCommandLine()
         iHistory.Append(string);
       }
     }
-    
+ 
     hist.Close();
   }
     history=iHistory.Size();
@@ -93,7 +93,7 @@ CEpocCommandLine::~CEpocCommandLine()
     }
     hist.Close();
   }
-  
+ 
 }
 
 LispInt CEpocCommandLine::GetKey()
@@ -103,7 +103,7 @@ LispInt CEpocCommandLine::GetKey()
   {
   case 8: //  8   backspace
     return eBackSpace;
-  case 9: //  9   tab 
+  case 9: //  9   tab
       return eTab;
   case 13: // 13   enter
     return eEnter;
@@ -159,49 +159,49 @@ void SetupConsoleL();
 GLDEF_C TInt E32Main() // main function called by E32
     {
   //There is *sometines* a memory leak. Not at construction though...
-//	__UHEAP_MARK;
-	CTrapCleanup* cleanup=CTrapCleanup::New(); // get clean-up stack
-	TRAPD(error,SetupConsoleL()); // more initialization, then do example
-	__ASSERT_ALWAYS(!error,User::Panic(_L("Yacas"),error));
-	delete cleanup; // destroy clean-up stack
-//	__UHEAP_MARKEND;
-	return 0; // and return
+//  __UHEAP_MARK;
+  CTrapCleanup* cleanup=CTrapCleanup::New(); // get clean-up stack
+  TRAPD(error,SetupConsoleL()); // more initialization, then do example
+  __ASSERT_ALWAYS(!error,User::Panic(_L("Yacas"),error));
+  delete cleanup; // destroy clean-up stack
+//  __UHEAP_MARKEND;
+  return 0; // and return
     }
 
 void SetupConsoleL() // initialize and call example code under cleanup stack
     {
-	//constant declarations
-#define KConsoleTitle	_L("Yacas console")
-#define KFailedLeaveCode	_L("failed: leave code=%d")
-#define KTextOK	_L("ok")
+  //constant declarations
+#define KConsoleTitle  _L("Yacas console")
+#define KFailedLeaveCode  _L("failed: leave code=%d")
+#define KTextOK  _L("ok")
 
-	CActiveScheduler* scheduler=new CActiveScheduler;
-	CActiveScheduler::Install(scheduler);
+  CActiveScheduler* scheduler=new CActiveScheduler;
+  CActiveScheduler::Install(scheduler);
 
-	// setup console code
-	console=Console::NewL(KConsoleTitle,
-		TSize(KDefaultConsWidth,KDefaultConsHeight));
-	CleanupStack::PushL(console);
-	TRAPD(error,DriveEngineL()); // perform example function
-	if (error) 
+  // setup console code
+  console=Console::NewL(KConsoleTitle,
+    TSize(KDefaultConsWidth,KDefaultConsHeight));
+  CleanupStack::PushL(console);
+  TRAPD(error,DriveEngineL()); // perform example function
+  if (error)
   {
 //hier    console->Printf(KFailedLeaveCode, error);
   }
-	else 
+  else
   {
 //hier    console->Printf(KTextOK);
   }
-	CleanupStack::PopAndDestroy(); // close console
+  CleanupStack::PopAndDestroy(); // close console
   delete scheduler;
     }
 
 /*
-	ok, real stuff starts here
+  ok, real stuff starts here
 */
 
 // important codes:
 //  8   backspace
-//  9   tab 
+//  9   tab
 // 13   enter
 //127   delete
 //4098 home
@@ -255,7 +255,7 @@ REDO:
 
   (*yacas)()().Commands().SetAssociation(LispEvaluator(LispExit),
        (*yacas)()().HashTable().LookUp("Exit"));
-  
+ 
 
 //    yacas->Evaluate("DefaultDirectory(\"c:\\\\Yacas\\\\\");");
 
@@ -306,13 +306,13 @@ REDO:
   console->Write(_L("To exit Yacas, enter  Exit(); Type 'restart' to restart Yacas.\r\n"));
   console->Write(_L("To see example commands, keep typing Example();\r\n"));
 
-  
+ 
   while (busy)
   {
 
     TBuf<20> prompt;
     prompt = _L("In> ");
-    prompt.ZeroTerminate();    
+    prompt.ZeroTerminate();
     cmd.ReadLine((char*)&prompt[0]);
 
     if (cmd.iLine == "restart")
@@ -320,10 +320,10 @@ REDO:
       delete yacas;
       goto REDO;
     }
-    
+ 
     yacas->Evaluate(cmd.iLine.String());
     prompt = _L("Out> ");
-    prompt.ZeroTerminate();    
+    prompt.ZeroTerminate();
     ShowResult((char*)&prompt[0]);
     line++;
   }

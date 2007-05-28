@@ -54,7 +54,7 @@ void LispParser::ParseList(LispPtr& aResult)
     for (;;)
     {
         //Get token.
-	    LispString * token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());
+      LispString * token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());
         // if token is empty string, error!
         Check(token->c_str()[0],KInvalidToken);
         // if token is ")" return result.
@@ -89,9 +89,9 @@ void LispPrinter::Indent(LispOutput& aOutput, LispInt aDepth)
   }
 }
 
-void LispPrinter::PrintExpression(LispPtr& aExpression, LispOutput& aOutput, 
+void LispPrinter::PrintExpression(LispPtr& aExpression, LispOutput& aOutput,
                      LispEnvironment& aEnvironment,
-    	             LispInt aDepth)
+                   LispInt aDepth)
 {
     LispPtr* iter = &aExpression;
     LispInt item = 0;
@@ -108,21 +108,21 @@ void LispPrinter::PrintExpression(LispPtr& aExpression, LispOutput& aOutput,
         // else print "(", print sublist, and print ")"
         else if ((*iter)->SubList())
         {
-	    if (item != 0)
-	    {
-	      Indent(aOutput,aDepth+1);
-	    }
+      if (item != 0)
+      {
+        Indent(aOutput,aDepth+1);
+      }
             aOutput.Write("(");
             PrintExpression(*((*iter)->SubList()),aOutput, aEnvironment,aDepth+1);
             aOutput.Write(")");
-	    item=0;
+      item=0;
         }
         else
         {
             aOutput.Write("[GenericObject]");
         }
         iter = &((*iter)->Nixed());
-	item++;
+  item++;
     } // print next element
 }
 

@@ -63,7 +63,7 @@ void CCommandLine::ReadLineSub(LispChar * prompt)
 {
     LispInt cursor=0;
     int promptlen = PlatStrLen(prompt);
-    
+ 
     iHistoryList.ResetHistoryPosition();
     iHistoryUnchanged = 0;
 
@@ -117,7 +117,7 @@ void CCommandLine::ReadLineSub(LispChar * prompt)
             iFullLineDirty = 1;
             iHistoryUnchanged = 1;
           }
-          else 
+          else
           {
             iFullLineDirty = 1;
             iHistoryUnchanged = 1;
@@ -149,7 +149,7 @@ void CCommandLine::ReadLineSub(LispChar * prompt)
             {
               NewLine();
               iHistoryList.AddLine(iSubLine);
-              return; 
+              return;
             }
             iFullLineDirty = 1;
             break;
@@ -210,7 +210,7 @@ void CConsoleHistory::AddLine(LispString& aString)
 
 
   LispInt historyChanged = 0;
-  if (!(history<iHistory.Size())) 
+  if (!(history<iHistory.Size()))
   {
     historyChanged=1;
     history++;
@@ -219,16 +219,16 @@ void CConsoleHistory::AddLine(LispString& aString)
   {
     historyChanged = 1;
   }
-  
+ 
 
   if (historyChanged)
   {
     LispString * ptr = NEW LispString();
     CopyString(*ptr, aString);
     iHistory.Append(ptr);
-    return; 
+    return;
   }
-  else 
+  else
   {
     LispString * orig = iHistory[history];
     LispInt i;
@@ -237,7 +237,7 @@ void CConsoleHistory::AddLine(LispString& aString)
       iHistory[i] = iHistory[i+1];
     }
     iHistory[iHistory.Size()-1] = orig;
-    return; 
+    return;
   }
 }
 

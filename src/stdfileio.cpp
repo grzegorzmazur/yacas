@@ -55,7 +55,7 @@ LispChar StdFileInput::Next()
   return c;
 }
 
-LispChar StdFileInput::Peek() 
+LispChar StdFileInput::Peek()
 {
   LispChar c = fgetc(iFile);
   ungetc(c,iFile);
@@ -67,7 +67,7 @@ void StdFileInput::Rewind()
   fseek(iFile,0,SEEK_SET);
 }
 
-LispBoolean StdFileInput::EndOfStream() 
+LispBoolean StdFileInput::EndOfStream()
 {
   return feof(iFile);
 }
@@ -147,7 +147,7 @@ LispChar CachedStdFileInput::Peek()
 
 void CachedStdFileInput::Rewind()
 {
-	iCurrentPos = 0;
+  iCurrentPos = 0;
 }
 
 LispBoolean CachedStdFileInput::EndOfStream()

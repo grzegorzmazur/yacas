@@ -44,7 +44,7 @@
 #ifndef PLUGIN_HANDLER
   #define DLLCLASS    LtDll // LispDllBase // ElfDll
 #else
-  #define DLLCLASS    LispDllBase 
+  #define DLLCLASS    LispDllBase
 #endif
 
 // System calls
@@ -88,14 +88,14 @@
 //            _o.Write(linenum);
 //            _o.Write(" in file [");
 //            _o.Write(_e.iInputStatus.FileName());
-//            _o.Write("]\n"); 
+//            _o.Write("]\n");
 
 
 // The following line should also be printed. BUT: it causes
 // a segfault on following commands!
 //            _o.Write(_e.iInputStatus.Line(_e.iInputDirectories));
 //            _o.Write("]\nLine error occurred on:\n>>>");
-//	    _o.Write("\n");
+//      _o.Write("\n");
 //
 
 #endif

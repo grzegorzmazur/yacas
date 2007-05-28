@@ -14,8 +14,8 @@ const char* REFMAN_PREFIX = "*\t";
  
 void Emit(char* iname,char* fname, int flags, int nrargs, int do_refman)
 {
-// 
- if (do_refman == 1)	// print the information for the ref manual
+//
+ if (do_refman == 1)  // print the information for the ref manual
  {
  // e.g. CORE_KERNEL_FUNCTION("Write", LispWrite, 1, YacasEvaluator::Function | YacasEvaluator::Variable);
  // prints
@@ -26,16 +26,16 @@ void Emit(char* iname,char* fname, int flags, int nrargs, int do_refman)
  // {`} -- prefix operator, prec. {0}
 
     printf("%s{%s} -- %s%d%s argument%s\n"
-			, REFMAN_PREFIX
-			, iname
-			, (flags & YacasEvaluator::Macro) ? "macro, " : "function, " 
-			, nrargs
-			, (flags & YacasEvaluator::Variable) ? " or more" : ""
-			, (nrargs != 1 || flags & YacasEvaluator::Variable ) ? "s" : ""
-	);
+      , REFMAN_PREFIX
+      , iname
+      , (flags & YacasEvaluator::Macro) ? "macro, " : "function, "
+      , nrargs
+      , (flags & YacasEvaluator::Variable) ? " or more" : ""
+      , (nrargs != 1 || flags & YacasEvaluator::Variable ) ? "s" : ""
+  );
 
  }
- else if (do_refman == 0)	// print the information for the compiler
+ else if (do_refman == 0)  // print the information for the compiler
  {
   printf("coreFunctions[\"%s\"] := {\"%s\",%s,%s,%d};\n",
          iname,
@@ -53,11 +53,11 @@ void Emit(char* iname,char* fname, int flags, int nrargs, int do_refman)
 
 void print_operator_info(const char* kind, const char* prec, const char* yacas_name, int do_refman)
 {
-	if (do_refman == 1)
-	{
-		printf("%s{%s} -- %s operator, prec. {%s}\n", REFMAN_PREFIX, yacas_name, kind, prec);
-	}
-	
+  if (do_refman == 1)
+  {
+    printf("%s{%s} -- %s operator, prec. {%s}\n", REFMAN_PREFIX, yacas_name, kind, prec);
+  }
+ 
 }
 
 int main(int number_of_main_args, char**)
@@ -73,7 +73,7 @@ int main(int number_of_main_args, char**)
 
 #include "corefunctions.h"
 
-	// this file is generated from core_yacasmain.h
+  // this file is generated from core_yacasmain.h
 #include "core_yacasmain.h"
 
 #undef CORE_KERNEL_FUNCTION

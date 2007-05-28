@@ -18,8 +18,8 @@
 #define LispShort short
 #define LispBoolean int
 
-#define LISPEXPORT	//__declspec(dllexport)
-#define LISPIMPORT	//__declspec(dllimport)
+#define LISPEXPORT  //__declspec(dllexport)
+#define LISPIMPORT  //__declspec(dllimport)
 
 // Number of bits in long for GMP mode
 #define BITS_PER_LONG 32
@@ -55,7 +55,7 @@
 #define LispThrow(_e) throw(_e)
 
 #define LispTrap(_a,_o,_e) \
-	try \
+  try \
     { \
        _a; \
     } \

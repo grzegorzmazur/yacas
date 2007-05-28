@@ -2,7 +2,7 @@
 #ifndef __patterns_h__
 #define __patterns_h__
 
-/// \file 
+/// \file
 /// Pattern matching code.
 ///
 /// General idea: have a class that can match function parameters
@@ -33,7 +33,7 @@ public:
     /// \param aEnvironment the underlying Lisp environment.
     /// \param aExpression the expression to test.
     /// \param arguments (input/output) actual values of the pattern
-    /// variables for \a aExpression. 
+    /// variables for \a aExpression.
     virtual LispBoolean ArgumentMatches(LispEnvironment& aEnvironment,
                                         LispPtr& aExpression,
                                         LispPtr* arguments)=0;
@@ -99,7 +99,7 @@ public:
     /// \param aEnvironment the underlying Lisp environment.
     /// \param aExpression the expression to test.
     /// \param arguments (input/output) actual values of the pattern
-    /// variables for \a aExpression. 
+    /// variables for \a aExpression.
     ///
     /// If entry #iVarIndex in \a arguments is still empty, the
     /// pattern matches and \a aExpression is stored in this
@@ -149,19 +149,19 @@ public:
     /// immediately deleted. If CheckPredicates() returns false, this
     /// function also returns false. Otherwise, SetPatternVariables()
     /// is called again, but now in the current LispLocalFrame, and
-    /// this function returns true. 
+    /// this function returns true.
     LispBoolean Matches(LispEnvironment& aEnvironment,
                         LispPtr& aArguments);
 
     /// Try to match the pattern against \a aArguments.
-    /// This function does the same as Matches(LispEnvironment&,LispPtr&), 
+    /// This function does the same as Matches(LispEnvironment&,LispPtr&),
     /// but differs in the type of the arguments.
     LispBoolean Matches(LispEnvironment& aEnvironment,
                         LispPtr* aArguments);
 
 protected:
     /// Construct a pattern matcher out of a Lisp expression.
-    /// The result of this function depends on the value of \a aPattern:  
+    /// The result of this function depends on the value of \a aPattern:
     /// - If \a aPattern is a number, the corresponding MatchNumber is
     ///   constructed and returned.
     /// - If \a aPattern is an atom, the corresponding MatchAtom is
@@ -172,7 +172,7 @@ protected:
     /// - If \a aPattern is a list of the form <tt>( _ var expr )<tt>,
     ///   where \c var is an atom, LookUp() is called on \c var. Then,
     ///   \a expr is appended to #iPredicates. Finally, the
-    ///   correspoding MatchVariable is constructed and returned. 
+    ///   correspoding MatchVariable is constructed and returned.
     /// - If \a aPattern is a list of another form, this function
     ///   calls itself on any of the entries in this list. The
     ///   resulting YacasParamMatcherBase objects are collected in a

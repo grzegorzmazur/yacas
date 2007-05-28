@@ -45,7 +45,7 @@ void LispEval(LispEnvironment& aEnvironment,LispInt aStackTop)
 /// Execute the Yacas commands \c Set and \c MacroSet.
 /// The argument \a aMacroMode determines whether the first argument
 /// should be evaluated. The real work is done by
-/// LispEnvironment::SetVariable() . 
+/// LispEnvironment::SetVariable() .
 /// \sa LispSetVar(), LispMacroSetVar()
 static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, LispBoolean aMacroMode, LispBoolean aGlobalLazyVariable)
 {
@@ -68,7 +68,7 @@ static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, Lis
     }
     CHK_ARG_CORE(varstring,1);
     CHK_ARG_CORE(!IsNumber(varstring->c_str(),LispTrue),1);
-    
+ 
     LispPtr result;
     InternalEval(aEnvironment, result, ARGUMENT(2));
     aEnvironment.SetVariable(varstring, result, aGlobalLazyVariable);
@@ -167,12 +167,12 @@ void LispLexCompare2(LispEnvironment& aEnvironment, LispInt aStackTop,
       LispString * str2 = result2->String();
       CHK_ARG_CORE(str1 ,1);
       CHK_ARG_CORE(str2, 2);
- 	    // the precision argument is ignored in "lex" functions
+       // the precision argument is ignored in "lex" functions
       cmp = lexfunc(str1->c_str(),str2->c_str(),
                             aEnvironment.HashTable(),
                             aEnvironment.Precision());
     }
-    
+ 
     InternalBoolean(aEnvironment,RESULT, cmp);
 }
 
@@ -287,8 +287,8 @@ void LispList(LispEnvironment& aEnvironment, LispInt aStackTop)
   {
     LispPtr evaluated;
     InternalEval(aEnvironment,evaluated,*iter);
-	// Ideally this would work, but it does not yet: (*tail++) = (evaluated)
-    (*tail) = (evaluated); 
+  // Ideally this would work, but it does not yet: (*tail++) = (evaluated)
+    (*tail) = (evaluated);
     ++tail;
   }
   RESULT = (LispSubList::New(all));
@@ -304,7 +304,7 @@ void LispConcatenate(LispEnvironment& aEnvironment, LispInt aStackTop)
   for (LispInt arg = 1; (++iter).getObj(); arg++)
   {
     CHK_ISLIST_CORE(*iter,arg);
-    InternalFlatCopy(*tail,(*(*iter)->SubList())->Nixed());	// TODO: woof -- prefer below
+    InternalFlatCopy(*tail,(*(*iter)->SubList())->Nixed());  // TODO: woof -- prefer below
     //InternalFlatCopy(*tail,iter.getObj()->Nixed());
     while (tail.getObj()) ++tail;
   }
@@ -313,25 +313,25 @@ void LispConcatenate(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 static void ConcatenateStrings(LispStringSmartPtr& aResult, LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-	/* aResult passed in by reference to avoid over-application of copy-constructors, smart pointer so the result
+  /* aResult passed in by reference to avoid over-application of copy-constructors, smart pointer so the result
    * gets cleaned up automatically afterwards. aResult acts like a string buffer we can append substrings to.
    */
   LISPASSERT(aResult);
   aResult->ResizeTo(0);
   aResult->Append('\"');
 
-	LispIterator iter(*ARGUMENT(1)->SubList());
+  LispIterator iter(*ARGUMENT(1)->SubList());
   LispInt arg;
   for (arg=1; (++iter).getObj(); arg++)
   {
     CHK_ISSTRING_CORE(*iter,arg);
     LispInt length = iter.getObj()->String()->Size()-2;
     LispChar * ptr = iter.getObj()->String()->c_str();
-		LispString * str = aResult;
+    LispString * str = aResult;
     LispInt curlen = str->Size();
     str->ResizeTo(curlen+length-1);
-		LispChar * put = &(*str)[curlen-1];
-		PlatMemCopy(put+1,ptr+1,length-1);
+    LispChar * put = &(*str)[curlen-1];
+    PlatMemCopy(put+1,ptr+1,length-1);
   }
   aResult->Append('\"');
   aResult->Append('\0');
@@ -368,9 +368,9 @@ static void InternalDelete(LispEnvironment& aEnvironment, LispInt aStackTop, Lis
     CHK_ARG_CORE(ind>0,2);
 
     LispIterator iter(copied);
-	while (--ind>=0) ++iter;
-	CHK_CORE(iter.getObj(), KLispErrListNotLongEnough);
-	LispIterator temp = iter++;
+  while (--ind>=0) ++iter;
+  CHK_CORE(iter.getObj(), KLispErrListNotLongEnough);
+  LispIterator temp = iter++;
     (*temp) = (*iter);
     RESULT = (LispSubList::New(copied));
 }
@@ -410,7 +410,7 @@ static void InternalInsert(LispEnvironment& aEnvironment, LispInt aStackTop, Lis
     {
         InternalFlatCopy(copied,*evaluated->SubList());
     }
-    
+ 
     LispPtr index(ARGUMENT(2));
     CHK_ARG_CORE(index, 2);
     CHK_ARG_CORE(index->String(), 2);
@@ -459,10 +459,10 @@ static void InternalReplace(LispEnvironment& aEnvironment, LispInt aStackTop, Li
     CHK_ARG_CORE(ind>0,2);
 
     LispIterator iter(copied);
-	while (--ind>=0) ++iter;
+  while (--ind>=0) ++iter;
     LispPtr toInsert(ARGUMENT(3));
     CHK_ARG_CORE(iter.getObj(), 2);
-	LispIterator temp = iter++;
+  LispIterator temp = iter++;
     toInsert->Nixed() = (*iter);
     (*temp) = (toInsert);
     RESULT = (LispSubList::New(copied));
@@ -500,7 +500,7 @@ void LispLazyAnd(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispPtr evaluated;
 
     LispIterator iter(*ARGUMENT(1)->SubList());
-	while ((++iter).getObj())
+  while ((++iter).getObj())
     {
         InternalEval(aEnvironment, evaluated, *iter);
         if (IsFalse(aEnvironment, evaluated))
@@ -517,7 +517,7 @@ void LispLazyAnd(LispEnvironment& aEnvironment, LispInt aStackTop)
         }
     }
 
-	if (!!nogos)
+  if (!!nogos)
     {
         if (nrnogos == 1)
         {
@@ -567,7 +567,7 @@ void LispLazyOr(LispEnvironment& aEnvironment, LispInt aStackTop)
         }
     }
 
-	if (!!nogos)
+  if (!!nogos)
     {
         if (nrnogos == 1)
         {
@@ -630,8 +630,8 @@ void LispWriteString(LispEnvironment& aEnvironment, LispInt aStackTop)
   {
     aEnvironment.CurrentOutput()->PutChar((*str)[i]);
   }
-	// pass last printed character to the current printer
-	aEnvironment.CurrentPrinter().RememberLastChar((*str)[nr-1]);	// hacky hacky
+  // pass last printed character to the current printer
+  aEnvironment.CurrentPrinter().RememberLastChar((*str)[nr-1]);  // hacky hacky
   InternalTrue(aEnvironment,RESULT);
 }
 
@@ -641,7 +641,7 @@ void LispProgBody(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispLocalFrame frame(aEnvironment,LispFalse);
 
   InternalTrue(aEnvironment,RESULT);
-  
+ 
   // Evaluate args one by one.
 
   LispIterator iter(*ARGUMENT(1)->SubList());
@@ -672,7 +672,7 @@ void LispWhile(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispPtr& arg1 = ARGUMENT(1);
     LispPtr& arg2 = ARGUMENT(2);
-    
+ 
     LispPtr predicate;
     InternalEval(aEnvironment, predicate, arg1);
 
@@ -693,7 +693,7 @@ static void MultiFix(LispEnvironment& aEnvironment, LispInt aStackTop, LispOpera
     CHK_ARG_CORE(ARGUMENT(1), 1);
     LispString * orig = ARGUMENT(1)->String();
     CHK_ARG_CORE(orig, 1);
-    
+ 
     LispPtr precedence;
     InternalEval(aEnvironment, precedence, ARGUMENT(2));
     CHK_ARG_CORE(precedence->String(), 2);
@@ -792,23 +792,23 @@ void LispLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 /// Implements the Yacas functions \c RuleBase and \c MacroRuleBase .
 /// The real work is done by LispEnvironment::DeclareRuleBase().
-static void InternalRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop, 
+static void InternalRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop,
                              LispInt aListed)
 {
     // Get operator
-    
+ 
     CHK_ARG_CORE(ARGUMENT(1), 1);
     LispString * orig = ARGUMENT(1)->String();
     CHK_ARG_CORE(orig, 1);
     LispPtr args(ARGUMENT(2));
-    
+ 
     // The arguments
     CHK_ISLIST_CORE(args,2);
 
     // Finally define the rule base
     aEnvironment.DeclareRuleBase(SymbolName(aEnvironment,orig->c_str()),
                                  (*args->SubList())->Nixed(),aListed);
-    
+ 
     // Return LispTrue
     InternalTrue(aEnvironment,RESULT);
 }
@@ -829,7 +829,7 @@ void InternalDefMacroRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop, 
 {
     // Get operator
     //LispPtr body;
-    
+ 
     CHK_ARG_CORE(ARGUMENT(1), 1);
     LispString * orig = ARGUMENT(1)->String();
     CHK_ARG_CORE(orig, 1);
@@ -841,7 +841,7 @@ void InternalDefMacroRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop, 
     // Finally define the rule base
     aEnvironment.DeclareMacroRuleBase(SymbolName(aEnvironment,orig->c_str()),
                                  (*args->SubList())->Nixed(),aListed);
-    
+ 
     // Return LispTrue
     InternalTrue(aEnvironment,RESULT);
 }
@@ -891,7 +891,7 @@ static void InternalNewRule(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispPtr predicate;
     LispPtr body;
     LispString * orig=NULL;
-    
+ 
     // Get operator
     CHK_ARG_CORE(ARGUMENT(1), 1);
     orig = ARGUMENT(1)->String();
@@ -900,7 +900,7 @@ static void InternalNewRule(LispEnvironment& aEnvironment, LispInt aStackTop)
     pr = (ARGUMENT(3));
     predicate = (ARGUMENT(4));
     body = (ARGUMENT(5));
-    
+ 
     // The arity
     CHK_ARG_CORE(ar, 2);
     CHK_ARG_CORE(ar->String(), 2);
@@ -910,7 +910,7 @@ static void InternalNewRule(LispEnvironment& aEnvironment, LispInt aStackTop)
     CHK_ARG_CORE(pr, 3);
     CHK_ARG_CORE(pr->String(), 3);
     precedence = InternalAsciiToInt(pr->String());
-    
+ 
     // Finally define the rule base
     aEnvironment.DefineRule(SymbolName(aEnvironment,orig->c_str()),
                             arity,
@@ -946,7 +946,7 @@ void LispUnFence(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     aEnvironment.UnFenceRule(SymbolName(aEnvironment,orig->c_str()),
                             arity);
-    
+ 
     // Return LispTrue
     InternalTrue(aEnvironment,RESULT);
 }
@@ -959,9 +959,9 @@ void LispMathLibName(LispEnvironment& aEnvironment,LispInt aStackTop)
     // const_cast removes const-ness... ;-)
     char* library_name = const_cast<char*>(NumericLibraryName());
     RESULT = (LispAtom::New(
-		aEnvironment,
-		aEnvironment.HashTable().LookUpStringify(library_name)->c_str()
-	));
+    aEnvironment,
+    aEnvironment.HashTable().LookUpStringify(library_name)->c_str()
+  ));
 }
 
 void LispIsFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -1063,7 +1063,7 @@ void LispRetract(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispString * orig = evaluated->String();
     CHK_ARG_CORE(orig, 1);
     LispString * oper = SymbolName(aEnvironment,orig->c_str());
-    
+ 
     LispPtr arity(ARGUMENT(2));
     CHK_ARG_CORE(arity->String(), 2);
     LispInt ar = InternalAsciiToInt(arity->String());
@@ -1408,25 +1408,25 @@ void LispGetPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispInFixOperator* op = OperatorInfo(aEnvironment,
                                        aStackTop,
                                        aEnvironment.InFix());
-  if (!op) 
-  {	// also need to check for a postfix or prefix operator
+  if (!op)
+  {  // also need to check for a postfix or prefix operator
     op = OperatorInfo(aEnvironment,
                       aStackTop,
                       aEnvironment.PreFix());
-    if (!op) 
+    if (!op)
     {
       op = OperatorInfo(aEnvironment,
                         aStackTop,
                         aEnvironment.PostFix());
-	    if (!op) 
-      {	// or maybe it's a bodied function
+      if (!op)
+      {  // or maybe it's a bodied function
         op = OperatorInfo(aEnvironment,
                           aStackTop,
                           aEnvironment.Bodied());
         CHK_CORE(op!=NULL, KLispErrIsNotInFix);
-			}
-		}
-	}
+      }
+    }
+  }
   LispChar buf[30];
   InternalIntToAscii(buf, op->iPrecedence);
   RESULT = (LispAtom::New(aEnvironment,buf));
@@ -1437,12 +1437,12 @@ void LispGetLeftPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispInFixOperator* op = OperatorInfo(aEnvironment,
                                          aStackTop,
                                          aEnvironment.InFix());
-    if (!op) {	// infix and postfix operators have left precedence
-	    op = OperatorInfo(aEnvironment,
+    if (!op) {  // infix and postfix operators have left precedence
+      op = OperatorInfo(aEnvironment,
                           aStackTop,
                           aEnvironment.PostFix());
-   	 	CHK_CORE(op!=NULL, KLispErrIsNotInFix);
-	}
+        CHK_CORE(op!=NULL, KLispErrIsNotInFix);
+  }
 
     LispChar buf[30];
     InternalIntToAscii(buf, op->iLeftPrecedence);
@@ -1491,7 +1491,7 @@ void LispIsPostFix(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispGetPrecision(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispChar buf[30];
-	// decimal precision
+  // decimal precision
     InternalIntToAscii(buf, aEnvironment.Precision());
     RESULT = (LispAtom::New(aEnvironment,buf));
 }
@@ -1526,7 +1526,7 @@ void LispSecure(LispEnvironment& aEnvironment,LispInt aStackTop)
 void LispFindFile(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
     CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
-    
+ 
     LispPtr evaluated(ARGUMENT(1));
 
     // Get file name
@@ -1570,7 +1570,7 @@ void GenArrayCreate(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispInt size = InternalAsciiToInt(sizearg->String());
 
     LispPtr initarg(ARGUMENT(2));
-     
+ 
     ArrayClass *array = NEW ArrayClass(size,initarg);
     RESULT = (LispGenericClass::New(array));
 }
@@ -1646,7 +1646,7 @@ void LispCustomEvalExpression(LispEnvironment& aEnvironment,LispInt aStackTop)
   {
     RaiseError("Trying to get CustomEval results while not in custom evaluation");
   }
-  RESULT = (aEnvironment.iDebugger->iTopExpr); 
+  RESULT = (aEnvironment.iDebugger->iTopExpr);
 }
 
 void LispCustomEvalResult(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -1655,7 +1655,7 @@ void LispCustomEvalResult(LispEnvironment& aEnvironment,LispInt aStackTop)
   {
     RaiseError("Trying to get CustomEval results while not in custom evaluation");
   }
-  RESULT = (aEnvironment.iDebugger->iTopResult); 
+  RESULT = (aEnvironment.iDebugger->iTopResult);
 }
 
 void LispCustomEvalLocals(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -1725,7 +1725,7 @@ void LispType(LispEnvironment& aEnvironment,LispInt aStackTop)
         goto EMPTY;
     RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(head->String()->c_str())->c_str()));
     return;
-    
+ 
 EMPTY:
     RESULT = (LispAtom::New(aEnvironment,"\"\""));
     return;
@@ -1736,18 +1736,18 @@ void LispStringMid(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispPtr evaluated(ARGUMENT(3));
     CHK_ISSTRING_CORE(evaluated,3);
     LispString * orig = evaluated->String();
-    
+ 
     LispPtr index(ARGUMENT(1));
     CHK_ARG_CORE(index, 1);
     CHK_ARG_CORE(index->String(), 1);
     LispInt from = InternalAsciiToInt(index->String());
     CHK_ARG_CORE(from>0,1);
-    
+ 
     index = (ARGUMENT(2));
     CHK_ARG_CORE(index, 2);
     CHK_ARG_CORE(index->String(), 2);
     LispInt count = InternalAsciiToInt(index->String());
-    
+ 
     LispString str;
     str.ResizeTo(0);
     str.Append('\"');
@@ -1771,7 +1771,7 @@ void LispSetStringMid(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispInt from = InternalAsciiToInt(index->String());
 
     CHK_ARG_CORE(from>0,1);
-    
+ 
     LispPtr ev2(ARGUMENT(2));
     CHK_ISSTRING_CORE(ev2,2);
     LispString * replace = ev2->String();
@@ -1789,7 +1789,7 @@ void LispSetStringMid(LispEnvironment& aEnvironment,LispInt aStackTop)
 void LispFindFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
     CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
-    
+ 
     LispPtr evaluated(ARGUMENT(1));
 
     // Get file name
@@ -1807,7 +1807,7 @@ void LispFindFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
         if (def)
         {
             RESULT = (LispAtom::New(aEnvironment,def->iFileName->c_str()));
-			return;
+      return;
         }
     }
     RESULT = (LispAtom::New(aEnvironment,"\"\""));
@@ -1823,9 +1823,9 @@ void GenPatternCreate(LispEnvironment& aEnvironment,LispInt aStackTop)
 
     LispIterator iter(pattern);
     LispObject * pObj = iter.getObj();
-    CHK_ARG_CORE(pObj,1);	// Check(pObj,KLispErrInvalidArg);
+    CHK_ARG_CORE(pObj,1);  // Check(pObj,KLispErrInvalidArg);
     LispPtr * pPtr = pObj->SubList();
-    CHK_ARG_CORE(pPtr,1);	// Check(pPtr,KLispErrNotList);
+    CHK_ARG_CORE(pPtr,1);  // Check(pPtr,KLispErrNotList);
     iter = *pPtr;
     CHK_ARG_CORE(iter.getObj(),1);
     ++iter;
@@ -1846,12 +1846,12 @@ void GenPatternMatches(LispEnvironment& aEnvironment,LispInt aStackTop)
   LispPtr list(ARGUMENT(2));
 
   LispIterator iter(list);
-	LispObject * pObj = iter.getObj();
+  LispObject * pObj = iter.getObj();
   CHK_ARG_CORE(pObj,2);
   LispPtr * pPtr = pObj->SubList();
   CHK_ARG_CORE(pPtr,2);
-	iter = *pPtr;
-	CHK_ARG_CORE(iter.getObj(),2);
+  iter = *pPtr;
+  CHK_ARG_CORE(iter.getObj(),2);
   ++iter;
 
   CHK_ARG_CORE(iter.getObj(),2);
@@ -1902,7 +1902,7 @@ void LispDefLoadFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
 #endif
                 multiUserFunc->iFileToOpen=NULL;
                 InternalUse(aEnvironment,def->iFileName);
-			}
+      }
         }
     }
     InternalTrue(aEnvironment,RESULT);
@@ -1941,7 +1941,7 @@ static void InternalNewRulePattern(LispEnvironment& aEnvironment, LispInt aStack
     LispPtr predicate;
     LispPtr body;
     LispString * orig = NULL;
-    
+ 
     // Get operator
     CHK_ARG_CORE(ARGUMENT(1), 1);
     orig = ARGUMENT(1)->String();
@@ -1950,7 +1950,7 @@ static void InternalNewRulePattern(LispEnvironment& aEnvironment, LispInt aStack
     pr = (ARGUMENT(3));
     predicate = (ARGUMENT(4));
     body = (ARGUMENT(5));
-    
+ 
     // The arity
     CHK_ARG_CORE(ar, 2);
     CHK_ARG_CORE(ar->String(), 2);
@@ -1960,7 +1960,7 @@ static void InternalNewRulePattern(LispEnvironment& aEnvironment, LispInt aStack
     CHK_ARG_CORE(pr, 3);
     CHK_ARG_CORE(pr->String(), 3);
     precedence = InternalAsciiToInt(pr->String());
-    
+ 
     // Finally define the rule base
     aEnvironment.DefineRulePattern(SymbolName(aEnvironment,orig->c_str()),
                             arity,

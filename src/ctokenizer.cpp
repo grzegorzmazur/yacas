@@ -64,7 +64,7 @@ REDO:
 //        if (iPreProcessLine)
 //        {
 //        }
-        
+ 
     }
     else if (c == '.' && !IsDigit(aInput.Peek()) )
     {

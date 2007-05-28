@@ -18,7 +18,7 @@ CompressedFiles::CompressedFiles(unsigned char * aBuffer, LispInt aFullSize, Lis
 
     // the archive cannot possibly be less than 8 bytes
     if (iFullSize < 8) return;
-    
+ 
     unsigned char * ptr=iFullBuffer;
     iNrFiles   = GetInt(ptr);
     iIndexSize = GetInt(ptr);
@@ -33,7 +33,7 @@ CompressedFiles::CompressedFiles(unsigned char * aBuffer, LispInt aFullSize, Lis
     // 1000 is just an arbitrary size, to disallow this tool
     // from allocating too much memory
     if (iNrFiles>1000) return;
-    
+ 
     iIndex = PlatAllocN<unsigned char *>(iNrFiles);
     if (!iIndex) return;
 
@@ -48,7 +48,7 @@ CompressedFiles::CompressedFiles(unsigned char * aBuffer, LispInt aFullSize, Lis
 
             if (offset<=iIndexSize) return;
             if (offset+compressedsize > iFullSize) return;
-            
+ 
             ptr+=PlatStrLen((LispChar *)ptr)+1;
 
             if ((ptr-iFullBuffer)>8+iIndexSize) return;

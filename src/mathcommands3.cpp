@@ -51,7 +51,7 @@
 void GetNumber(RefPtr<BigNumber>& x, LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
     x = ARGUMENT(aArgNr)->Number(aEnvironment.Precision());
-    CHK_ARG_CORE(x,aArgNr);	// was: x.Ptr()
+    CHK_ARG_CORE(x,aArgNr);  // was: x.Ptr()
 }
 
 //FIXME remove these
@@ -72,7 +72,7 @@ void LispArithmetic1(LispEnvironment& aEnvironment, LispInt aStackTop,
                      LispObject* (*func)(LispObject* f1, LispEnvironment& aEnvironment,LispInt aPrecision))
 {
     CHK_ARG_CORE(ARGUMENT(1)->Number(0) != NULL,1);
-    RESULT = (func(ARGUMENT(1), aEnvironment, aEnvironment.Precision())); 
+    RESULT = (func(ARGUMENT(1), aEnvironment, aEnvironment.Precision()));
 }
 
 
@@ -88,7 +88,7 @@ void LispArithmetic2(LispEnvironment& aEnvironment, LispInt aStackTop,
     }
     RESULT = (func(ARGUMENT(1),ARGUMENT(2),
                                    aEnvironment,
-                                   aEnvironment.Precision())); 
+                                   aEnvironment.Precision()));
 }
 
 
@@ -182,7 +182,7 @@ void LispSubtract(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispDivide(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   // Serge, what was the deal again with divide, floats and integers mixed in the same function?
-  //	yes, divide works differently on integers and on floats -- see new.chapt -- Serge
+  //  yes, divide works differently on integers and on floats -- see new.chapt -- Serge
   RefPtr<BigNumber> x;
   RefPtr<BigNumber> y;
   GetNumber(x,aEnvironment, aStackTop, 1);
@@ -193,11 +193,11 @@ void LispDivide(LispEnvironment& aEnvironment, LispInt aStackTop)
   {
     // why can't we just say BigNumber temp; ?
     BigNumber tempx(aEnvironment.BinaryPrecision());
-    tempx.SetTo(*x);	// was: *x.Ptr()
-    tempx.BecomeFloat(aEnvironment.BinaryPrecision());	// coerce x to float
+    tempx.SetTo(*x);  // was: *x.Ptr()
+    tempx.BecomeFloat(aEnvironment.BinaryPrecision());  // coerce x to float
     BigNumber tempy(aEnvironment.BinaryPrecision());
     tempy.SetTo(*y);
-    tempy.BecomeFloat(aEnvironment.BinaryPrecision());	// coerce x to float
+    tempy.BecomeFloat(aEnvironment.BinaryPrecision());  // coerce x to float
     z->Divide(tempx, tempy,aEnvironment.BinaryPrecision());
   }
   else
@@ -250,7 +250,7 @@ UNARYFUNCTION(LispFloor, Floor, FloorFloat)
 UNARYFUNCTION(LispMathNegate, Negate, NegateFloat)
 
 /** the macro
-	UNARYFUNCTION(LispFloor, Floor, FloorFloat)
+  UNARYFUNCTION(LispFloor, Floor, FloorFloat)
 is used to help interface Yacas with BigNumber. Suppose we need to access a unary function named 'Floor' in BigNumber and 'LispFloor' here, with 'FloorFloat' the backup function for no BigNumber support.
 The macro produces the following equivalent code for the unary function:
 void LispFloor(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -272,8 +272,8 @@ void LispGetExactBits(LispEnvironment& aEnvironment, LispInt aStackTop)
   BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
   z->SetTo(
   (x->IsInt())
-    ? x->BitCount()	// for integers, return the bit count
-    : x->GetPrecision() 	// for floats, return the precision
+    ? x->BitCount()  // for integers, return the bit count
+    : x->GetPrecision()   // for floats, return the precision
   );
   RESULT = (NEW LispNumber(z));
 }
@@ -288,7 +288,7 @@ void LispSetExactBits(LispEnvironment& aEnvironment, LispInt aStackTop)
   z->SetTo(*x);
   // do nothing for integers
   if (!(z->IsInt()))
-    z->Precision((long)(y->Double()));	// segfaults unless y is defined?
+    z->Precision((long)(y->Double()));  // segfaults unless y is defined?
   RESULT = (NEW LispNumber(z));
 }
 
@@ -328,7 +328,7 @@ void LispCeil(LispEnvironment& aEnvironment, LispInt aStackTop)
   GetNumber(x,aEnvironment, aStackTop, 1);
   BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
   z->Negate(*x);
-  z->Floor(*z);	// danger: possible exception raised in Floor() leads to a memory leak because z is not destroyed
+  z->Floor(*z);  // danger: possible exception raised in Floor() leads to a memory leak because z is not destroyed
   z->Negate(*z);
   RESULT = (NEW LispNumber(z));
 }
@@ -358,7 +358,7 @@ void LispDiv(LispEnvironment& aEnvironment, LispInt aStackTop)
   GetNumber(x,aEnvironment, aStackTop, 1);
   GetNumber(y,aEnvironment, aStackTop, 2);
   if (x->IsInt() && y->IsInt())
-  {	// both integer, perform integer division
+  {  // both integer, perform integer division
     BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
     z->Divide(*x,*y,aEnvironment.BinaryPrecision());
     RESULT = (NEW LispNumber(z));
@@ -414,7 +414,7 @@ void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 { \
       LispBackupName(aEnvironment, aStackTop); \
 }
-  #else	// HAVE_MATH_H
+  #else  // HAVE_MATH_H
     #define PLATFORM_UNARY(LispName, PlatformName, LispBackupName, OldName) \
 void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 { \
@@ -439,23 +439,23 @@ void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
   #endif
 
 // now we can define all such functions, e.g.:
-//	PLATFORM_UNARY(LispFastSin, sin, LispSin, PlatSin)
+//  PLATFORM_UNARY(LispFastSin, sin, LispSin, PlatSin)
 
 // some or all of these functions should be moved to scripts
-	PLATFORM_UNARY(LispFastSin, sin, LispSin, PlatSin)
-	PLATFORM_UNARY(LispFastCos, cos, LispCos, PlatCos)
-	PLATFORM_UNARY(LispFastTan, tan, LispTan, PlatTan)
-	PLATFORM_UNARY(LispFastArcSin, asin, LispArcSin, PlatArcSin)
-	PLATFORM_UNARY(LispFastArcCos, acos, LispArcCos, PlatArcCos)
-	PLATFORM_UNARY(LispFastArcTan, atan, LispArcTan, PlatArcTan)
-	PLATFORM_UNARY(LispFastExp, exp, LispExp, PlatExp)
-	PLATFORM_UNARY(LispFastLog, log, LispLn, PlatLn)
-	PLATFORM_UNARY(LispFastAbs, fabs, LispAbs, PlatAbs)
-	PLATFORM_UNARY(LispFastFloor, floor, LispFloor, PlatFloor)
-	PLATFORM_UNARY(LispFastCeil, ceil, LispCeil, PlatCeil)
-	PLATFORM_UNARY(LispFastSqrt, sqrt, LispSqrt, PlatSqrt)
-	PLATFORM_BINARY(LispFastPower, pow, LispPower, PlatPower)
-	PLATFORM_BINARY(LispFastMod, fmod, LispMod, PlatMod)
+  PLATFORM_UNARY(LispFastSin, sin, LispSin, PlatSin)
+  PLATFORM_UNARY(LispFastCos, cos, LispCos, PlatCos)
+  PLATFORM_UNARY(LispFastTan, tan, LispTan, PlatTan)
+  PLATFORM_UNARY(LispFastArcSin, asin, LispArcSin, PlatArcSin)
+  PLATFORM_UNARY(LispFastArcCos, acos, LispArcCos, PlatArcCos)
+  PLATFORM_UNARY(LispFastArcTan, atan, LispArcTan, PlatArcTan)
+  PLATFORM_UNARY(LispFastExp, exp, LispExp, PlatExp)
+  PLATFORM_UNARY(LispFastLog, log, LispLn, PlatLn)
+  PLATFORM_UNARY(LispFastAbs, fabs, LispAbs, PlatAbs)
+  PLATFORM_UNARY(LispFastFloor, floor, LispFloor, PlatFloor)
+  PLATFORM_UNARY(LispFastCeil, ceil, LispCeil, PlatCeil)
+  PLATFORM_UNARY(LispFastSqrt, sqrt, LispSqrt, PlatSqrt)
+  PLATFORM_BINARY(LispFastPower, pow, LispPower, PlatPower)
+  PLATFORM_BINARY(LispFastMod, fmod, LispMod, PlatMod)
 
 
 
@@ -487,8 +487,8 @@ void LispFromBase(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispPtr oper(ARGUMENT(1));
     // Check that result is a number, and that it is in fact an integer
     RefPtr<BigNumber> num; num = oper->Number(aEnvironment.BinaryPrecision());
-    CHK_ARG_CORE(num,1);	// was: num.Ptr()
-	// check that the base is an integer between 2 and 32
+    CHK_ARG_CORE(num,1);  // was: num.Ptr()
+  // check that the base is an integer between 2 and 32
     CHK_ARG_CORE(num->IsInt()
         && num->Double() >= BASE2 && num->Double() <= log2_table_range(), 1);
 
@@ -505,9 +505,9 @@ void LispFromBase(LispEnvironment& aEnvironment, LispInt aStackTop)
     str2 = aEnvironment.HashTable().LookUpUnStringify(str2->c_str());
 
     // convert using correct base
-	// FIXME: API breach, must pass precision in base digits and not in bits!
-	// if converting an integer, the precision argument is ignored,
-	// but if converting a float, need to use bits_to_digits(BinaryPrecision, base)
+  // FIXME: API breach, must pass precision in base digits and not in bits!
+  // if converting an integer, the precision argument is ignored,
+  // but if converting a float, need to use bits_to_digits(BinaryPrecision, base)
     BigNumber *z = NEW BigNumber(str2->c_str(),aEnvironment.BinaryPrecision(),base);
     RESULT = (NEW LispNumber(z));
 }
@@ -519,7 +519,7 @@ void LispToBase(LispEnvironment& aEnvironment, LispInt aStackTop)
     // Check that result is a number, and that it is in fact an integer
     RefPtr<BigNumber> num; num = oper->Number(aEnvironment.BinaryPrecision());
     CHK_ARG_CORE(num,1);
-	// check that the base is an integer between 2 and 32
+  // check that the base is an integer between 2 and 32
     CHK_ARG_CORE(num->IsInt()
         && num->Double() >= BASE2 && num->Double() <= log2_table_range(), 1);
 
@@ -532,9 +532,9 @@ void LispToBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     // convert using correct base
     LispString str;
-	// FIXME: API breach, must pass precision in base digits and not in bits!
-	// if converting an integer, the precision argument is ignored,
-	// but if converting a float, need to use bits_to_digits(BinaryPrecision, base)
+  // FIXME: API breach, must pass precision in base digits and not in bits!
+  // if converting an integer, the precision argument is ignored,
+  // but if converting a float, need to use bits_to_digits(BinaryPrecision, base)
     x->ToString(str,aEnvironment.BinaryPrecision(),base);
     // Get unique string from hash table, and create an atom from it.
 
@@ -551,7 +551,7 @@ void LispApplyPure(LispEnvironment& aEnvironment, LispInt aStackTop)
     CHK_ARG_CORE(args->SubList(),2);
     CHK_CORE((*args->SubList()),2);
 
-    
+ 
 
     // Apply a pure string
     if (oper->String())
@@ -582,7 +582,7 @@ void LispPrettyReader(LispEnvironment& aEnvironment, LispInt aStackTop)
   {
     CHK_CORE(nrArguments == 2,KLispErrWrongNumberOfArgs);
     LispPtr oper(ARGUMENT(0));
-    oper = oper->Nixed(); // oper.GoNext();	// woof woof woof
+    oper = oper->Nixed(); // oper.GoNext();  // woof woof woof
     CHK_ISSTRING_CORE(oper,1);
     aEnvironment.SetPrettyReader(oper->String());
   }
@@ -609,7 +609,7 @@ void LispPrettyPrinter(LispEnvironment& aEnvironment, LispInt aStackTop)
   {
     CHK_CORE(nrArguments == 2,KLispErrWrongNumberOfArgs);
     LispPtr oper(ARGUMENT(0));
-    oper = oper->Nixed(); // oper.GoNext();	// woof woof woof
+    oper = oper->Nixed(); // oper.GoNext();  // woof woof woof
     CHK_ISSTRING_CORE(oper,1);
     aEnvironment.SetPrettyPrinter(oper->String());
   }
@@ -667,34 +667,34 @@ void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispDllLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-	LispPtr evaluated(ARGUMENT(1));
-	LispString * string = evaluated->String();
-	CHK_ARG_CORE(string, 1);
-	LispString oper;
-	InternalUnstringify(oper, string);
-	LispDllBase *dll=NULL;
-	LispInt opened = LispFalse;
-	ExePluginMaker maker = FindExePlugin(oper.c_str());
-	if (maker)
-	{
-		dll  = NEW ExeDll(maker);
-	}
-	#ifndef DISABLE_DYNAMIC
-	else
-	{
-		dll  = NEW DLLCLASS;
-	}
-	#endif	// DISABLE_DYNAMIC
-	Check(dll,KLispErrNotEnoughMemory);
+  LispPtr evaluated(ARGUMENT(1));
+  LispString * string = evaluated->String();
+  CHK_ARG_CORE(string, 1);
+  LispString oper;
+  InternalUnstringify(oper, string);
+  LispDllBase *dll=NULL;
+  LispInt opened = LispFalse;
+  ExePluginMaker maker = FindExePlugin(oper.c_str());
+  if (maker)
+  {
+    dll  = NEW ExeDll(maker);
+  }
+  #ifndef DISABLE_DYNAMIC
+  else
+  {
+    dll  = NEW DLLCLASS;
+  }
+  #endif  // DISABLE_DYNAMIC
+  Check(dll,KLispErrNotEnoughMemory);
 
-	DBG_printf("DLL allocated -- %s\n",oper.c_str());
-	aEnvironment.iDlls.Append(dll);	// store ptr now, in case Open never returns!
-	opened = dll->Open(oper.c_str(),aEnvironment);
-	DBG_printf("DLL opened, opened = %d\n", opened);
-	if (!opened) aEnvironment.iDlls.DeleteNamed(oper.c_str(), aEnvironment);
-	Check(opened,KLispErrLibraryNotFound);
-	DBG_printf("DLL added, %d DLLs loaded\n",aEnvironment.iDlls.Size());
-	InternalTrue(aEnvironment,RESULT);
+  DBG_printf("DLL allocated -- %s\n",oper.c_str());
+  aEnvironment.iDlls.Append(dll);  // store ptr now, in case Open never returns!
+  opened = dll->Open(oper.c_str(),aEnvironment);
+  DBG_printf("DLL opened, opened = %d\n", opened);
+  if (!opened) aEnvironment.iDlls.DeleteNamed(oper.c_str(), aEnvironment);
+  Check(opened,KLispErrLibraryNotFound);
+  DBG_printf("DLL added, %d DLLs loaded\n",aEnvironment.iDlls.Size());
+  InternalTrue(aEnvironment,RESULT);
 }
 
 void LispDllUnload(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -784,7 +784,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
     return;
   }
   str++;
-	const LispChar * type = (str[0] == '/') ? (str++, "\"Close\"") : "\"Open\"";
+  const LispChar * type = (str[0] == '/') ? (str++, "\"Close\"") : "\"Open\"";
   LispString tag;
   tag.ResizeTo(0);
 
@@ -839,7 +839,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
     str++;
     while (*str == ' ') str++;
   }
-  
+ 
   info = LIST(LA(ATOML("List")) + LA(info));
   RESULT = (
               LIST(
@@ -858,7 +858,7 @@ void LispFastAssoc(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     // key to find
     LispPtr key(ARGUMENT(1));
-    
+ 
     // assoc-list to find it in
     LispPtr list(ARGUMENT(2));
 
@@ -884,13 +884,13 @@ void LispFastAssoc(LispEnvironment& aEnvironment, LispInt aStackTop)
                     RESULT = (t);
                     return;
                 }
-                
+ 
             }
         }
         t = t->Nixed();
     }
 
-    
+ 
     RESULT = (ATOML("Empty"));
 }
 
@@ -928,7 +928,7 @@ void LispBitsToDigits(LispEnvironment& aEnvironment, LispInt aStackTop)
   RefPtr<BigNumber> y;
   GetNumber(x,aEnvironment, aStackTop, 1);
   GetNumber(y,aEnvironment, aStackTop, 2);
-  long result = 0;	// initialize just in case
+  long result = 0;  // initialize just in case
   if (x->IsInt() && x->IsSmall() && y->IsInt() && y->IsSmall())
   {
     // bits_to_digits uses unsigned long, see numbers.h
@@ -937,7 +937,7 @@ void LispBitsToDigits(LispEnvironment& aEnvironment, LispInt aStackTop)
   }
   else
   {
-    RaiseError("BitsToDigits: error: arguments (%f, %f) must be small integers", x->Double(), y->Double());		  
+    RaiseError("BitsToDigits: error: arguments (%f, %f) must be small integers", x->Double(), y->Double());
   }
   BigNumber *z = NEW BigNumber();
   z->SetTo(result);
@@ -951,7 +951,7 @@ void LispDigitsToBits(LispEnvironment& aEnvironment, LispInt aStackTop)
   RefPtr<BigNumber> y;
   GetNumber(x,aEnvironment, aStackTop, 1);
   GetNumber(y,aEnvironment, aStackTop, 2);
-  long result = 0;	// initialize just in case
+  long result = 0;  // initialize just in case
   if (x->IsInt() && x->IsSmall() && y->IsInt() && y->IsSmall())
   {
     // bits_to_digits uses unsigned long, see numbers.h

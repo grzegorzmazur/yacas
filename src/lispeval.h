@@ -62,7 +62,7 @@ public:
   /// \param aExpression the expression to evaluate.
   ///
   /// First, the evaluation depth is checked. An error is raised if
-  /// the maximum evaluation depth is exceeded. 
+  /// the maximum evaluation depth is exceeded.
   ///
   /// The next step is the actual evaluation. \a aExpression is a
   /// LispObject, so we can distinguish three cases.
@@ -79,14 +79,14 @@ public:
   ///     evaluator is called. Then it is checked agaist the list of
   ///     user function with GetUserFunction() . Again, the
   ///     corresponding evaluator is called if there is a check. If
-  ///     all fails, ReturnUnEvaluated() is called. 
+  ///     all fails, ReturnUnEvaluated() is called.
   ///   - Otherwise (ie. if \a aExpression is a generic object), it is
   ///     copied in \a aResult.
   ///
   /// \note The result of this operation must be a unique (copied)
-  /// element! Eg. its Next might be set... 
+  /// element! Eg. its Next might be set...
   ///
-  /// The LispPtr it can be stored in to is passed in as argument, so it 
+  /// The LispPtr it can be stored in to is passed in as argument, so it
   /// does not need to be constructed by the calling environment.
   virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
   virtual ~BasicEvaluator();
@@ -146,7 +146,7 @@ public:
   virtual ~YacasDebuggerBase();
   virtual void Start() = 0;
   virtual void Finish() = 0;
-  virtual void Enter(LispEnvironment& aEnvironment, 
+  virtual void Enter(LispEnvironment& aEnvironment,
                      LispPtr& aExpression) = 0;
   virtual void Leave(LispEnvironment& aEnvironment, LispPtr& aResult,
                      LispPtr& aExpression) = 0;
@@ -157,11 +157,11 @@ public:
 class DefaultDebugger : public YacasDebuggerBase
 {
 public:
-  inline DefaultDebugger(LispPtr& aEnter, LispPtr& aLeave, LispPtr& aError) 
+  inline DefaultDebugger(LispPtr& aEnter, LispPtr& aLeave, LispPtr& aError)
     : iEnter(aEnter), iLeave(aLeave), iError(aError), iTopExpr(),iTopResult(),iStopped(LispFalse),defaultEval() {};
   virtual void Start();
   virtual void Finish();
-  virtual void Enter(LispEnvironment& aEnvironment, 
+  virtual void Enter(LispEnvironment& aEnvironment,
                       LispPtr& aExpression);
   virtual void Leave(LispEnvironment& aEnvironment, LispPtr& aResult,
                       LispPtr& aExpression);

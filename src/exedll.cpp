@@ -14,7 +14,7 @@
 struct ExeDllEntry
 {
   char *name;
-  LispPluginBase* (*maker)(void);  
+  LispPluginBase* (*maker)(void);
 };
 
 #ifdef EXE_DLL_PLUGINS
@@ -36,7 +36,7 @@ static const ExeDllEntry exeDllentries[] =
 };
 
 /*TODO here we should have code that checks, at least in debug mode, that the
-  exedll entries are sorted alphabetically! 
+  exedll entries are sorted alphabetically!
 */
 
 ExePluginMaker FindExePlugin(char* aName)
