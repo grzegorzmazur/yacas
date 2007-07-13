@@ -86,7 +86,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   public void start()
   {
 
-    if (yacasLogo == null)
+    if (false /*TODO remove loading the logo yacasLogo == null*/)
     {
       try
       {
@@ -124,17 +124,17 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
       AddLineStatic(100, "","This is Yacas version '" + CVersion.VERSION + "'.", font, c);
 
-      AddLineStatic(100, "","Running from location '" + getDocumentBase() + "'.", font, c);
+//      AddLineStatic(100, "","Running from location '" + getDocumentBase() + "'.", font, c);
 
-      AddLineStatic(100, "","Yacas is Free Software--Free as in Freedom--so you can redistribute Yacas or", font, c);
-      AddLineStatic(100, "","modify it under certain conditions. Yacas comes with ABSOLUTELY NO WARRANTY.", font, c);
-      AddLineStatic(100, "","See the GNU General Public License (GPL) for the full conditions.", font, c);
-      AddLineStatic(100, "","Type ?license or ?licence to see the GPL; type ?warranty for warranty info.", font, c);
-      AddLineStatic(100, "","See http://yacas.sf.net for more information and documentation on Yacas.", font, c);
-      AddLineStatic(100, "","Numeric mode: \""+BigNumber.NumericLibraryName()+"\"\n", font, c);
-      AddLineStatic(100, "","", font, c);
+//      AddLineStatic(100, "","Yacas is Free Software--Free as in Freedom--so you can redistribute Yacas or", font, c);
+//      AddLineStatic(100, "","modify it under certain conditions. Yacas comes with ABSOLUTELY NO WARRANTY.", font, c);
+//      AddLineStatic(100, "","See the GNU General Public License (GPL) for the full conditions.", font, c);
+//      AddLineStatic(100, "","Type ?license or ?licence to see the GPL; type ?warranty for warranty info.", font, c);
+//      AddLineStatic(100, "","See http://yacas.sf.net for more information and documentation on Yacas.", font, c);
+//      AddLineStatic(100, "","Numeric mode: \""+BigNumber.NumericLibraryName()+"\"\n", font, c);
+//      AddLineStatic(100, "","", font, c);
 
-      AddLineStatic(100, "","Type '?', '??' or 'help' for help, or type '?function' for help on a function.\n", font, c);
+//      AddLineStatic(100, "","Type '?', '??' or 'help' for help, or type '?function' for help on a function.\n", font, c);
       AddLineStatic(100, "","Type 'restart' to restart Yacas, or 'cls' to clear screen.\n", font, c);
       AddLineStatic(100, "","To see example commands, keep typing 'Example();'\n", font, c);
 
@@ -194,6 +194,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       yacas.Evaluate(s);
       i++;
     }
+
+//    String programContentsToLoad = "[True;];";
+//    InvokeCalculationSilent(programContentsToLoad);
 
     i=1;
     while (true)
@@ -765,10 +768,12 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       g.setColor(Color.white);
       g.clearRect(0,0,getWidth(),getHeight());
       String str = "Tap here to start";
+/*
       if (yacasLogo != null)
         g.drawImage(yacasLogo,(d.width-yacasLogo.getWidth(this))/2,0,Color.WHITE,this);
       else
         str = getDocumentBase().toString();
+*/
       Font font = new Font("times", Font.BOLD + Font.PLAIN, 18);
       java.awt.geom.Rectangle2D m = g.getFontMetrics().getStringBounds(str,g);
       int x = (int)((d.width-m.getWidth())/2);
@@ -1132,6 +1137,19 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     outputDirty = true;
     repaint(0);
   }
+
+  public void InvokeCalculationSilent(String expression)
+  {
+    PerformRequest("Out> ",expression);
+    ResetInput();
+    RefreshHintWindow();
+    focusGained = true;
+    inputDirty = true;
+    outputDirty = true;
+    repaint(0);
+  }
+
+
 
 }
 
