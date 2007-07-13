@@ -3,7 +3,6 @@ Ideas on future development are documented in "docs/todo.html".
 Below Ayals short-list
 
 TODAY:
-- write a little C++ program that checks spacing (no tabs, no spaces at ends of lines, etcetera). 
 - Have a look at the inprogress/ directory (can the contents be removed?
 - When you run regress.yts, you see the following pass on screen:
     Problem occurred at regress.yts(343)
@@ -22,6 +21,12 @@ Bugs:
 
 - Have Java version handle the same command line flags
 - Search for defines I want to remove
+
+- Coding standards: use 
+	http://www.joelonsoftware.com/articles/Wrong.html
+  and
+	http://www.ibm.com/developerworks/linux/library/l-clear-code/?ca=dgr-FClnxw01linuxcodetips
+
 
 - Document TeXFormMaxPrec()
 - Document DefFileList()

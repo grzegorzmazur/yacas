@@ -343,7 +343,6 @@ AC_OUTPUT(yacas.spec
 	plugins/filescanner/Makefile
 	scripts/Makefile
 	colorcode/Makefile
-	JavaConsole/Makefile
 	JavaYacas/Makefile
 	epoc/Makefile
 	tests/Makefile
