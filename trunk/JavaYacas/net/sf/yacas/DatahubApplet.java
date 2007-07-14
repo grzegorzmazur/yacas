@@ -23,6 +23,7 @@ public class DatahubApplet extends Applet
   {
     programToLoad = p;
   }
-  static String programToLoad = "f(x):=a*x;";
+  // Empty program by default
+  static String programToLoad = "True;";
 }
  
