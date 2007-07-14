@@ -59,7 +59,13 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     out = new AppletOutput(this);
     ResetInput();
  
-    String hintsfilename = getDocumentBase().toString() + ".hints";
+    String hintsfilename = getDocumentBase().toString();
+    int slash = hintsfilename.lastIndexOf('/');
+    if (slash >= 0)
+    {
+      hintsfilename = hintsfilename.substring(0,slash+1);
+    }
+    hintsfilename = hintsfilename + "hints.txt";
     LoadHints(hintsfilename);
   }
   boolean focusGained = false;
@@ -195,8 +201,18 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       i++;
     }
 
-//    String programContentsToLoad = "[True;];";
-//    InvokeCalculationSilent(programContentsToLoad);
+
+    {
+      Applet dataHub = getAppletContext().getApplet( "datahub");
+      if (dataHub != null)
+      {
+        net.sf.yacas.DatahubApplet cons = (net.sf.yacas.DatahubApplet)dataHub;
+        String programContentsToLoad = "["+cons.getProgramToLoad()+"];";
+        InvokeCalculationSilent(programContentsToLoad);
+      }
+    }
+
+
 
     i=1;
     while (true)
