@@ -57,12 +57,12 @@ class HintWindow
     iy -= (h+4);
 
     if (!iAllowSelection)
-      aGraphicsContext.SetColor(128,128,128);
+      aGraphicsContext.SetColor(221,221,238);
     else
-      aGraphicsContext.SetColor(192,192,192);
-    aGraphicsContext.FillRoundRect(ix,iy,w,h,8);
+      aGraphicsContext.SetColor(221,221,238);
+    aGraphicsContext.FillRect(ix,iy,w,h);
     aGraphicsContext.SetColor(0,0,0);
-    aGraphicsContext.DrawRoundRect(ix,iy,w,h,8);
+    aGraphicsContext.DrawRect(ix,iy,w,h);
 
     int i;
  
@@ -73,19 +73,19 @@ class HintWindow
     {
       if (!iAllowSelection)
       {
-        aGraphicsContext.SetColor(255,255,255);
+        aGraphicsContext.SetColor(0,0,0);
       }
       else
       {
         if (i == iCurrentPos)
         {
-          aGraphicsContext.SetColor(128,128,128);
+          aGraphicsContext.SetColor(0,0,0);
           aGraphicsContext.FillRect(ix,iy+(i)*aGraphicsContext.FontHeight(),w,aGraphicsContext.FontHeight());
-          aGraphicsContext.SetColor(255,255,255);
+          aGraphicsContext.SetColor(0,0,0);
         }
         else
         {
-          aGraphicsContext.SetColor(255,255,255);
+          aGraphicsContext.SetColor(0,0,0);
         }
       }
         aGraphicsContext.DrawText(ix+2,iy+(i+1)*aGraphicsContext.FontHeight()-aGraphicsContext.FontDescent(),iText[i]);

@@ -1,7 +1,7 @@
 
 .SUFFIXES: .java .class 
 
-all: net/sf/yacas/CVersion.java yacas.jar scripts.zip calc.html.hints yacasconsole.html.hints wizard.zip
+all: net/sf/yacas/CVersion.java yacas.jar scripts.zip calc.html.hints hints.txt wizard.zip
 
 clean:
 	rm net/sf/yacas/*.class *.jar *.tgz *.zip
@@ -15,12 +15,12 @@ CLASSES = net/sf/yacas/CVersion.class net/sf/yacas/InputStatus.class net/sf/yaca
    net/sf/yacas/InfixParser.class  net/sf/yacas/LispEvaluatorBase.class net/sf/yacas/BigNumber.class \
   net/sf/yacas/YacasEvaluator.class net/sf/yacas/YacasEvalCaller.class net/sf/yacas/YacasCoreCommands.class net/sf/yacas/UserStackInformation.class \
   net/sf/yacas/BasicEvaluator.class net/sf/yacas/EvalFuncBase.class net/sf/yacas/LispOperators.class net/sf/yacas/LispUserFunction.class net/sf/yacas/LispPtrArray.class net/sf/yacas/LispLocalFrame.class net/sf/yacas/LispIterator.class net/sf/yacas/InfixPrinter.class net/sf/yacas/LispEnvironment.class net/sf/yacas/MathCommands.class net/sf/yacas/YacasPatternPredicateBase.class \
-net/sf/yacas/CYacas.class net/sf/yacas/YacasConsole.class net/sf/yacas/ConsoleApplet.class \
+net/sf/yacas/CYacas.class net/sf/yacas/YacasConsole.class net/sf/yacas/ConsoleApplet.class net/sf/yacas/DatahubApplet.class \
 net/sf/yacas/CDataReader.class net/sf/yacas/HintItem.class \
 net/sf/yacas/HintWindow.class net/sf/yacas/Hints.class net/sf/yacas/SelectSymbol.class net/sf/yacas/TResult.class \
 net/sf/yacas/TSentence.class net/sf/yacas/YacasInterpreter.class \
 net/sf/yacas/TWord.class net/sf/yacas/YacasGraphicsContext.class \
-net/sf/yacas/YacasNotebookComponent.class net/sf/yacas/calc.class net/sf/yacas/tegicphone.class net/sf/yacas/WizardApplet.class
+net/sf/yacas/YacasNotebookComponent.class net/sf/yacas/calc.class net/sf/yacas/tegicphone.class net/sf/yacas/WizardApplet.class 
 
 
 yacas.jar: $(CLASSES)
@@ -50,14 +50,14 @@ calc.html.hints:
 	cat calc.html.hints.sorted tail.txt > calc.html.hints
 
 
-yacasconsole.html.hints:
-	-rm yacasconsole.html.hints.unsorted 
-	touch yacasconsole.html.hints.unsorted 
+hints.txt:
+	-rm hints.txt.unsorted 
+	touch hints.txt.unsorted 
 	g++ tegicadd.cpp -o tegicadd.a
-	./tegicadd.a < ../manmake/hints.singlesorted >> yacasconsole.html.hints.unsorted
-	sort -n -t "~" yacasconsole.html.hints.unsorted > yacasconsole.html.hints.sorted
+	./tegicadd.a < ../manmake/hints.singlesorted >> hints.txt.unsorted
+	sort -n -t "~" hints.txt.unsorted > hints.txt.sorted
 	echo "~~~~~~~" > tail.txt
-	cat yacasconsole.html.hints.sorted tail.txt > yacasconsole.html.hints
+	cat hints.txt.sorted tail.txt > hints.txt
 
 include ../tests/includetestfiles
 

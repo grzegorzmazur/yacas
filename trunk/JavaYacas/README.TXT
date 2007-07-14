@@ -20,7 +20,7 @@ for the Java version are:
 1) yacas.jar - the Java class files in one jar file.
 2) scripts.zip - all the scripts compressed in to one zip file.
 3) yacasconsole.html - the file that launches the applet.
-4) yacasconsole.html.hints - the hints that are shown in the applet
+4) hints.txt - the hints that are shown in the applet
    (the grey box with commands that match what you are typing in 
    at that moment).
 5) yacas.gif - the logo shown in the applet version.
