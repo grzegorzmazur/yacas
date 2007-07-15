@@ -49,7 +49,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   /// Applet initialization
   public void init()
   {
-    setBackground(Color.white);
+    setBackground(bkColor);
     setLayout (null);
     addKeyListener(this);
     addFocusListener(this);
@@ -80,6 +80,10 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
   public void focusLost(FocusEvent evt)
   {
+    focusGained = false;
+    inputDirty = true;
+    outputDirty = true;
+    repaint();
   }
 
   public void lostOwnership(Clipboard clipboard, Transferable contents)
@@ -122,13 +126,25 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
 
     {
+      String s;
+      int bkred=255;
+      int bkgrn=255;
+      int bkblu=255;
+      s = getParameter("bkred"); if (s != null) bkred = Integer.parseInt(s);
+      s = getParameter("bkgrn"); if (s != null) bkgrn = Integer.parseInt(s);
+      s = getParameter("bkblu"); if (s != null) bkblu = Integer.parseInt(s);
+      bkColor = new Color(bkred,bkgrn,bkblu);
+      setBackground(bkColor);
+    }
+
+    {
       Font font = new Font("helvetica", Font.PLAIN, 12);
       Color c = new Color(96,96,96);
 
       AddLineStatic(100, "","", font, c);
       AddLineStatic(100, "","", font, c);
 
-      AddLineStatic(100, "","This is Yacas version '" + CVersion.VERSION + "'.", font, c);
+      AddLineStatic(100, "","Yacas version '" + CVersion.VERSION + "'.", font, c);
 
 //      AddLineStatic(100, "","Running from location '" + getDocumentBase() + "'.", font, c);
 
@@ -207,6 +223,8 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       if (dataHub != null)
       {
         net.sf.yacas.DatahubApplet cons = (net.sf.yacas.DatahubApplet)dataHub;
+//cons.setProgramMode("journal");
+cons.setProgramToLoadFromFile("test.ys");
         String programContentsToLoad = "["+cons.getProgramToLoad()+"];";
         InvokeCalculationSilent(programContentsToLoad);
       }
@@ -698,7 +716,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       if (iImage != null)
       {
         Dimension d = iApplet.getSize();
-        g.drawImage(iImage,(d.width-iImage.getWidth(iApplet))/2,y,Color.WHITE,iApplet);
+        g.drawImage(iImage,(d.width-iImage.getWidth(iApplet))/2,y,bkColor,iApplet);
       }
     }
     public int height(Graphics g)
@@ -767,6 +785,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
   }
  
+  Color bkColor = new Color(255,255,255);
   public void paintToBitmap(Graphics g)
   {
     if ( g instanceof Graphics2D )
@@ -777,32 +796,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
                                               RenderingHints.VALUE_ANTIALIAS_ON ));
     }
 
-
-    if (!focusGained)
-    {
-      Dimension d = getSize();
-      g.setColor(Color.white);
-      g.clearRect(0,0,getWidth(),getHeight());
-      String str = "Tap here to start";
-/*
-      if (yacasLogo != null)
-        g.drawImage(yacasLogo,(d.width-yacasLogo.getWidth(this))/2,0,Color.WHITE,this);
-      else
-        str = getDocumentBase().toString();
-*/
-      Font font = new Font("times", Font.BOLD + Font.PLAIN, 18);
-      java.awt.geom.Rectangle2D m = g.getFontMetrics().getStringBounds(str,g);
-      int x = (int)((d.width-m.getWidth())/2);
-      int y = (d.height-18)/2;
-      g.setColor(Color.blue);
-      g.setFont(font);
-      g.drawString(str, x, y);
-      return;
-    }
- 
     FontMetrics metrics = getFontMetrics(font);
 
-    g.setColor(Color.white);
+    g.setColor(bkColor);
     int yfrom = 0;
  
     g.setFont(font);
@@ -818,7 +814,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     g.setColor(Color.black);
 
     int i;
-    int y=getHeight()-inHeight-g.getFontMetrics().getDescent();
+    int y=getHeight()-inHeight-g.getFontMetrics().getHeight();
  
     if (outputDirty)
     {
@@ -845,23 +841,37 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
     y=getHeight()-g.getFontMetrics().getDescent();//-fontHeight;
     outputDirty = false;
-    if (inputDirty)
+    if (focusGained)
     {
-      if (y+fontHeight>0)
+      if (inputDirty)
       {
-        int promptLength = metrics.stringWidth(inputPrompt);
-        g.setColor(Color.red);
-        g.setFont(font);
-        g.drawString(inputPrompt, inset, y);
-        g.drawString(inputLine, inset+promptLength, y);
-        int cursorLocation = promptLength;
-        for (i=0;i<cursorPos;i++)
+        if (y+fontHeight>0)
         {
-          cursorLocation += metrics.charWidth(inputLine.charAt(i));
+          int promptLength = metrics.stringWidth(inputPrompt);
+          g.setColor(Color.red);
+          g.setFont(font);
+
+          g.drawString(inputPrompt, inset, y);
+          g.drawString(inputLine, inset+promptLength, y);
+          int cursorLocation = promptLength;
+          for (i=0;i<cursorPos;i++)
+          {
+            cursorLocation += metrics.charWidth(inputLine.charAt(i));
+          }
+          y+=g.getFontMetrics().getDescent();
+          g.drawLine(inset+cursorLocation,y,inset+cursorLocation,y-fontHeight);
         }
-        y+=g.getFontMetrics().getDescent();
-        g.drawLine(inset+cursorLocation,y,inset+cursorLocation,y-fontHeight);
       }
+    }
+    else
+    {
+      String toPrint = "Click here to enter an expression";
+      int promptLength = metrics.stringWidth(toPrint);
+      g.setColor(Color.blue);
+      g.setFont(font);
+
+      g.drawString(toPrint, inset, y);
+      y+=g.getFontMetrics().getDescent();
     }
     inputDirty=false;
   }
@@ -1148,7 +1158,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     PerformRequest("Out> ",expression);
     ResetInput();
     RefreshHintWindow();
-    focusGained = true;
     inputDirty = true;
     outputDirty = true;
     repaint(0);
@@ -1159,7 +1168,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     PerformRequest("Out> ",expression);
     ResetInput();
     RefreshHintWindow();
-    focusGained = true;
     inputDirty = true;
     outputDirty = true;
     repaint(0);
