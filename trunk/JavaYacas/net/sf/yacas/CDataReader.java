@@ -16,7 +16,10 @@ class CDataReader
     try
     {
 //      URL source = new URL(getCodeBase(), fileName);
-      in = new DataInputStream(source.openStream());
+//TODO remove?      in = new DataInputStream(source.openStream());
+      in = new BufferedReader(new InputStreamReader(source.openStream()));
+ 
+
       mark = in.readLine();
 //      while(null != (aLine = in.readLine()))
 //        System.out.println(aLine);
@@ -59,5 +62,5 @@ class CDataReader
     }
     in = null;
   }
-  DataInputStream in;
+  BufferedReader in;
 };

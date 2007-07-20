@@ -232,20 +232,6 @@ public class calc extends Applet implements ActionListener //, Runnable
      }
   }//end of actionPerformed method
 
-/****************************************************************************
- *
- * The following method handles all of the key events that occurs when a user
- * enters values from the keyboard. It accepts an Event object and an integer
- * representing the key pressed as arguments.
- *
- * It should be noted that in order to accept keys entered to the lcdDisplay,
- * the applet must be in focus.
- *
- ***************************************************************************/
-  public boolean keyDown(Event evt, int key)
-  {
-    return true;        //indicate successful operation
-  }
  
 /****************************************************************************
  *

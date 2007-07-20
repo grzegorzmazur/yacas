@@ -71,7 +71,9 @@ public class DatahubApplet extends Applet
     try
     {
       URL url = new URL(docbase);
-      DataInputStream in = new DataInputStream(url.openStream());
+//TODO remove?      DataInputStream in = new DataInputStream(url.openStream());
+     BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+ 
       if (in != null)
       {
         String prog = "";

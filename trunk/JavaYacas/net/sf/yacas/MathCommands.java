@@ -2613,7 +2613,9 @@ class MathCommands
       String ls_str;
       Process ls_proc = Runtime.getRuntime().exec(oper);
       // get its output (your input) stream
-      DataInputStream ls_in = new DataInputStream(ls_proc.getInputStream());
+//TODO remove?      DataInputStream ls_in = new DataInputStream(ls_proc.getInputStream());
+      BufferedReader ls_in = new BufferedReader(new InputStreamReader(ls_proc.getInputStream()));
+
       while ((ls_str = ls_in.readLine()) != null)
       {
         aEnvironment.iCurrentOutput.Write(ls_str);
