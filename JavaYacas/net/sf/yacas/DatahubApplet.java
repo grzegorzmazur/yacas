@@ -83,7 +83,7 @@ public class DatahubApplet extends Applet
             String mark = in.readLine();
             if (mark == null)
               break;
-            prog = prog + mark;
+            prog = prog + mark + "\n";
           }
           catch (Exception e)
           {
