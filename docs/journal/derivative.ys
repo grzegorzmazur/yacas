@@ -1,0 +1,16 @@
+
+
+dd(_x,_x) <-- 1;
+dd(_x,y_IsFreeOf(x)) <-- 0;
+dd(_x,_a + _b)  <-- dd(x,a)+dd(x,b);
+dd(_x,_a - _b)  <-- dd(x,a)-dd(x,b);
+dd(_x,   - _b)  <--        -dd(x,b);
+dd(_x,_a * _b)  <-- a*dd(x,b)+dd(x,a)*b;
+dd(_x,_y ^ z_IsFreeOf(x)) <-- dd(x,y)*z*y^(z-1);
+dd(x,_y / _z) <-- (z*dd(x,y)-y*dd(x,z))/z^2;
+dd(_x,Sin(_y)) <--  dd(x,y)*Cos(y);
+dd(_x,Cos(_y)) <-- -dd(x,y)*Sin(y);
+dd(_x,Exp(_y)) <--  dd(x,y)*Exp(y);
+
+
+
