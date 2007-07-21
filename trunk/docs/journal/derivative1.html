@@ -6,40 +6,61 @@
   </head>
   <body>
     <h1>Fun with derivatives part 1: defining the concept of a derivative in <i>Yacas</i></h1>
+    <h2>Introduction</h2>
     <p>
-      You can start using the code developed in the accompanying article by calling the function dd.
-      Here is a list with examples:
+      On this page you can use the code developed for the accompanying article, which defines a function dd that can take
+      the derivative of a function. The function dd takes as first argument a variable, and as second argument an expression
+      to determine the derivative of. Clicking on <a class="commandlink">dd(x,Sin(x))</a> should readily give you the answer
+      Cos(x) in the Yacas calculation center on the right half of this page. You can also type in expressions yourself in the
+      calculation center. For that you have to click on that part of the page so the calculation center starts receiving your
+      key input.
+    </p>
+    <h2>Examples</h2>
+    <p>
+      Here are a few more simple examples. 
+      <ul>
+        <li><a class="commandlink">dd(x,x)</a></li>
+        <li><a class="commandlink">dd(x,a)</a></li>
+        <li><a class="commandlink">dd(x,a*x)</a></li>
+        <li><a class="commandlink">dd(x,a*x^2)</a></li>
+        <li><a class="commandlink">dd(x,Sin(x)+x)</a></li>
+      </ul>
+    </p>
+    <p>
+      The beauty of derivatives is that you can make the expressions arbitrarily complex, and still take its derivative, although 
+      this might start to take up a lot of time from the computer (but probably still less time than if you did it yourself by hand). 
       <ul>
         <li><a class="commandlink">dd(x,a*x^n)</a></li>
         <li><a class="commandlink">dd(x,Sin(a*x))</a></li>
         <li><a class="commandlink">dd(x,1-a*x^Sqrt(2))</a></li>
         <li><a class="commandlink">dd(x,Exp(1+Sin(a*x)))</a></li>
       </ul>
-      etcetera.
     </p>
     <p>
       You can verify that the above examples return the same result as the function D built in to <i>Yacas</i>.
-      For example, <a class="commandlink">dd(x,Exp(1+Sin(a*x)))</a> and <a class="commandlink">D(x) Exp(1+Sin(a*x))</a>
+      For example
+      <ul>
+        <li><a class="commandlink">dd(x,Exp(1+Sin(a*x)))</a></li>
+      </ul>
+      and
+      <ul>
+        <li><a class="commandlink"><a class="commandlink">D(x) Exp(1+Sin(a*x))</a></a></li>
+      </ul>
       should give the same results.
     </p>
-
+    <h2>Extending the program</h2>
     <p>
       You can extend the code yourself to handle other functions not covered yet, by going to <a class="editexample">this page.</a>
-    </p>
-    <p>
-      You could for example define the derivative of Sqrt(x) with
-      <br />
-      <a class="commandlink">dd(_x,Sqrt(_y)) <-- dd(x,y)/Sqrt(y);</a>.
-    </p>
-    <p>
-      Alternatively you can <a class="commandlink">restart</a> the console (so it forgets the previous transformation rule for taking
-      the derivative of a square root), and define the derivative of the square root as
-      <br>
-      <a class="commandlink">dd(_x,Sqrt(_y)) <-- (1/2)*y^(1/2-1)*dd(x,y);</a>
-      See the difference the two methods make when repeatedly taking derivatives: 
-      <br />
-      <a class="commandlink">dd(x,dd(x,dd(x,dd(x,dd(x,Sqrt(x))))))</a>.
-      <br />
+      An interesting example is the derivative of Sqrt(x) (the square root of x), which can be defined as:
+      <pre>
+dd(_x,Sqrt(_y)) <-- dd(x,y)/Sqrt(y);
+      </pre>
+but also as
+      <pre>
+dd(_x,Sqrt(_y)) <-- (1/2)*y^(1/2-1)*dd(x,y);
+      </pre>
+      If you were to try these out with dd(x,Sqrt(x));, and then repeatedly calling dd(x,%), you would see the size of the resulting
+      expressions grow much faster when using the first transformation rule than when using the second one.
     </p>
   </body>
 </html>

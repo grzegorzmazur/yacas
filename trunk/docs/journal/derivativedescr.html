@@ -1,22 +1,26 @@
 <html>
   <head>
     <link rel="stylesheet" href="../yacas.css" TYPE="text/css" MEDIA="screen">
+    <script type="text/javascript" src="../datahub.js"></script>
     <script type="text/javascript" src="../yacas.js"></script>
     <title>Fun with derivatives part 1: defining the concept of a derivative in Yacas</title>
   </head>
   <body>
     <h1>Fun with derivatives part 1: defining the concept of a derivative in <i>Yacas</i></h1>
     <p>
-      <i>Yacas</i> offers the possibility of defining transformation rules. Taking a derivative of a function is 
-      a process that can be easily explained through such transformation rules (although not a necessary constraint,
-      one can define the same operation easily in other languages also). You need surprisingly few lines of code
-      to actually define the operation of taking a derivative. We will develop the code that can be used in <i>Yacas</i>
-      in this article.
+      This is the first article in a series of articles on doing calculations involving derivatives in <i>Yacas</i>.
+      Defining a function that can determine the derivative of a function has been a classic example of something
+      you can do easily in languages similar to <i>Yacas</i>, and provides a good starting point to show off
+      the capabilities <i>Yacas</i> has with respect to defining transformation rules.
     </p>
     <p>
-      <i>Yacas</i> of course already has similar functionality. One can take a derivative through the D function.
-      But it is still a good example for showing how to use transformation rules in <i>Yacas</i>, as very few lines
-      of code are needed and most people readily know the transformation rules by heart.
+      You need surprisingly few lines of code to actually define the operation of taking a derivative. We will develop 
+      the code that can be used in <i>Yacas</i> in this article for instructional purposes. <i>Yacas</i> naturally already
+      knows how to take the derivative of a function. One can take a derivative through the D function.
+      But it is still a good example that demonstrates how to use transformation rules in <i>Yacas</i>, as very few lines
+      of code are needed and most people readily know the transformation rules by heart (the transformation rules lend themselves
+      quite well to implementation in a computer program). It is also an example of a function
+      where the answer is not a number but a more complex thing, another function.
     </p>
     <p>
       We will define the function dd, which will take two arguments. The first is the variable, the second the function 
@@ -87,6 +91,9 @@ dd(_x,Exp(_y)) &lt;--  dd(x,y)*Exp(y);
     <p>
       <a href="../recent.html">Go back to the news page</a>.
     </p>
+    <script type="text/javascript">
+      addDatahubInJournal();
+    </script>
   </body>
 </html>
 
