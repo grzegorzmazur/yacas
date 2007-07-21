@@ -1,7 +1,7 @@
 
 .SUFFIXES: .java .class 
 
-all: net/sf/yacas/CVersion.java yacas.jar scripts.zip calc.html.hints hints.txt wizard.zip
+all: net/sf/yacas/CVersion.java yacas.jar scripts.zip calc.html.hints hints.txt 
 
 clean:
 	rm net/sf/yacas/*.class *.jar *.tgz *.zip
@@ -20,7 +20,7 @@ net/sf/yacas/CDataReader.class net/sf/yacas/HintItem.class \
 net/sf/yacas/HintWindow.class net/sf/yacas/Hints.class net/sf/yacas/SelectSymbol.class net/sf/yacas/TResult.class \
 net/sf/yacas/TSentence.class net/sf/yacas/YacasInterpreter.class \
 net/sf/yacas/TWord.class net/sf/yacas/YacasGraphicsContext.class \
-net/sf/yacas/YacasNotebookComponent.class net/sf/yacas/calc.class net/sf/yacas/tegicphone.class net/sf/yacas/WizardApplet.class 
+net/sf/yacas/YacasNotebookComponent.class net/sf/yacas/calc.class net/sf/yacas/tegicphone.class  
 
 
 yacas.jar: $(CLASSES)
@@ -29,12 +29,8 @@ yacas.jar: $(CLASSES)
 scripts.zip:
 	cd ../scripts/ ; zip ../JavaYacas/scripts.zip * */* ; cd ../JavaYacas
 
-wizard.zip:
-	zip wizard.zip *.yml
-
 .java.class:
 	javac $*.java 
-
 
 net/sf/yacas/CVersion.java: ../config.h dumpversion.cpp
 	g++ dumpversion.cpp -o dumpversion

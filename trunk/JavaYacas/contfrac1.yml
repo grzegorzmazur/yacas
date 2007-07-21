@@ -1,7 +1,0 @@
-[title:Continued fraction expansion]
-
-Approximating Exp(1) through a [link:continued fraction expansion:contfrac:=ContFrac(N(Exp(1),20),9);].
-
-After clicking the link above, you can [link:view:contfrac2.yml]the result.
-
-[link:Back to previous menu:approx.yml]

@@ -1,8 +1,0 @@
-[title:Basic analytic functions]
-
-- Simplifying [link:by grouping like terms:Simplify(2*x^2+b*x+3*x^2);].
-- Simplifying [link:trigonometric:TrigSimpCombine(Cos(x)^2+Sin(x)^2);]expressions. This is useful if an expression contains terms with trigonometric factors. TrigSimpCombine tries to convert it to an expression with only additions (and no multiplications) of trigonometric functions.
-- Simplifying [link:logic expressions:CanProve(a And (b Or Not a));].
-- Simplifying expressions with [link:factorials:FactorialSimplify((n+2)! / (n!));].
-
-[link:Back to main menu:start.yml]
