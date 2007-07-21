@@ -104,11 +104,29 @@ function initPage()
       {
         if (object.className == "codeEditor")
         {
-          if (parent.document.datahub)
+          var datahub;
+          if (parent)
+            if (parent.document)
+              if (parent.document.all)
+                if (parent.document.all.datahub)
+                  datahub = parent.document.all.datahub;
+
+          if (!datahub)
+            if (parent)
+              if (parent.document)
+                if (parent.document.datahub)
+                  datahub = parent.document.datahub;
+
+          if (!datahub)
+            if (document.datahub)
+              datahub = document.datahub;
+
+
+          if (datahub)
           {
             try
             {
-              object.value = parent.document.datahub.getProgramToLoad();
+              object.value = datahub.getProgramToLoad();
             }
             catch (e) 
             {
@@ -170,6 +188,10 @@ function editExampleLinkClick()
           if (parent.document.datahub)
             datahub = parent.document.datahub;
 
+    if (!datahub)
+      if (document.datahub)
+        datahub = document.datahub;
+
     if (datahub)
     {
       try 
@@ -206,18 +228,38 @@ function commandEdit(base)
 }
 function commandView(base)
 {
-  if (parent.document.datahub)
+  var datahub;
+  if (parent)
+    if (parent.document)
+      if (parent.document.all)
+        if (parent.document.all.datahub)
+          datahub = parent.document.all.datahub;
+
+  if (!datahub)
+    if (parent)
+      if (parent.document)
+        if (parent.document.datahub)
+          datahub = parent.document.datahub;
+
+  if (!datahub)
+    if (document.datahub)
+      datahub = document.datahub;
+
+  if (datahub)
   {
     var elem = document.getElementById('codeText');
     if (elem)
     {
-      try 
+      if (datahub)
       {
-        parent.document.datahub.setProgramToLoad(elem.value);
-      } 
-      catch (e) 
-      {
+        try 
+        {
+          datahub.setProgramToLoad(elem.value);
+        } 
+        catch (e) 
+        {
         alert("Something seems to be wrong with Java support, the Yacas calculation center does not seem to be available. You can probably fix this by downloading a newer version of Java for your system from http://www.java.com/ .");
+        }
       }
     }
   }
