@@ -4,7 +4,7 @@
 
 Name: yacas
 Version: 1.0.63
-Release: 1
+Release: 2
 Group: Applications/Math
 License: GPL
 URL: http://www.xs4all.nl/~apinkus/yacas.html
