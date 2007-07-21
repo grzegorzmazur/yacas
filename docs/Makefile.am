@@ -6,7 +6,7 @@
 # These files make up the home page. 
 
 EXTRA_DIST = \
-	about.html basicindex.html books.html changes.html \
+	about.html basicindex.html changes.html \
 	consoleedit.html consoleview.html credits.html faq.html \
 	gpl.html homepage.html jslog.js links.html pager.css \
 	pager.js placeholder.html plain.html recent.html \
