@@ -12,5 +12,7 @@ dd(_x,Sin(_y)) <--  dd(x,y)*Cos(y);
 dd(_x,Cos(_y)) <-- -dd(x,y)*Sin(y);
 dd(_x,Exp(_y)) <--  dd(x,y)*Exp(y);
 
+/* Calling function here to force the system to pre-load scripts. */
+[dd(x,Sin(x)); True;];
 
 

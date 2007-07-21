@@ -61,10 +61,17 @@ function initPage()
         }
         else if (object.className == "yacasConsole")
         {
-          var height = 240;
+          var width = 900;
+          var height = 390;
           if (object.id)
           {
-            height = object.id;
+            if (object.id == "full")
+            {
+            }
+            else
+            {
+              width = 450;
+            }
           }
           object.innerHTML = 
 
@@ -76,7 +83,7 @@ function initPage()
 '      <\/tr>' + 
 '      <tr>' + 
 '        <td style="border-color:black; border-style:solid; border-width:thin;">' + 
-'          <APPLET id="consoleApplet" name="consoleApplet" archive="yacas.jar" code="net.sf.yacas.ConsoleApplet" width=750 height='+height+' alt="Java support seems to be disabled in your browser, so the console is not available. If you want to be able to use Yacas online, please enable Java support. Alternatively, you can go to the About Yacas tab to download Yacas and run it locally.">' + 
+'          <APPLET id="consoleApplet" name="consoleApplet" archive="yacas.jar" code="net.sf.yacas.ConsoleApplet" width='+width+' height='+height+' alt="Java support seems to be disabled in your browser, so the console is not available. If you want to be able to use Yacas online, please enable Java support. Alternatively, you can go to the About Yacas tab to download Yacas and run it locally.">' + 
 '            <PARAM name="progressbar" value="true" \/>' + 
 '            <PARAM name="boxmessage" value="Loading Yacas..." \/>' + 
 '            <PARAM NAME="init1" value="Load(\'\'yacasinit.ys\'\')" \/>' + 
@@ -174,14 +181,18 @@ function editExampleLinkClick()
       }
     }
     var elem;
-    elem = parent.document.getElementById('LibraryFrame');
+    elem = document.getElementById('LibraryFrame');
+    if (elem == null)
+    {
+      elem = parent.document.getElementById('LibraryFrame');
+    }
     if (elem == null)
     {
       elem = parent.parent.document.getElementById('LibraryFrame');
     }
     if (elem)
     {
-      elem.contentWindow.document.location.href = "../consoleedit.html";//+document.location.search;
+      elem.contentWindow.document.location.href = "../consoleedit.html";
     }
   }
 }
