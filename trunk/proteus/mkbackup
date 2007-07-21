@@ -1,8 +1,0 @@
-#! /bin/bash
-rm -rf proteus*.tar.gz
-rm -rf core proteuscalculator proteusworksheet
-rm -rf *~ plat/*/*~
-make clean -f makefile.linux
-cd .. ; tar -zcvf backup.tar.gz proteus/*
-mv backup.tar.gz proteus/proteus-$(date +%d%b%y).tar.gz
-

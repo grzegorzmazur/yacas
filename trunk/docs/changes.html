@@ -7,6 +7,13 @@
 
 <h1>Release of version 1.0.64 (???, 2007)</h1>
 <ul>
+  <li> Serious cleanup (work in progress but this was the low hanging fruit). I removed the directories "colorcode" (which contained
+       the code I had once started on to show the scripts in colorcoded way, We could now use regular expressions and such),
+       proteus (I have opted for one UI that works on all platforms and does not require people to download Yacas, eg. the Java version,
+       proteus was a nightmare to support as the interface to the proteus libraries was not sourcecode-compatible between versions, every
+       almost any new version broke the build), the directory "compile" which contained an experimental start at writing a compiler,
+       "essays" directory, which will now become the directory "journal" in the web site, and "inprogress" which must have contained experimental
+       code from eight years ago or so.
   <li> Rick Grehan sent a fix for a memory leak related to the use of the script archive (file). The decompressed contents of the file were not freed.
   <li> I am in the process of doing a large clean-up of the code (it is better to base new developments off a clean base, as it makes you more productive).
 </ul>
