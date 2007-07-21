@@ -217,17 +217,21 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       i++;
     }
 
-
     {
       Applet dataHub = getAppletContext().getApplet( "datahub");
       if (dataHub != null)
       {
-        net.sf.yacas.DatahubApplet cons = (net.sf.yacas.DatahubApplet)dataHub;
-        String programContentsToLoad = "["+cons.getProgramToLoad()+"];";
-        InvokeCalculationSilent(programContentsToLoad);
+        try
+        {
+          net.sf.yacas.DatahubApplet cons = (net.sf.yacas.DatahubApplet)dataHub;
+          String programContentsToLoad = "["+cons.getProgramToLoad()+"];";
+          InvokeCalculationSilent(programContentsToLoad);
+        }
+        catch (Exception e)
+        {
+        }
       }
     }
-
 
 
     i=1;
