@@ -51,57 +51,6 @@
               {
                 lnk.style.textDecoration="none";
                 lnk.style.color="#AAE";
-//TODO remove?                lnk.style.cursor = "none";
-              }
-            }
-            elem.contentWindow.document.location.href = ""+this.id+".html";
-          }
-        }
-      }
-
-      var prevLibraryView = "recent";
-      function clickToLibraryFrame()
-      {
-        if (this.id)
-        {
-          try 
-          {
-            if (this.id == "consoleview")
-            {
-              document.datahub.setProgramMode("console");
-            }
-            if (this.id == "tutorials")
-            {
-              document.datahub.setProgramMode("journal");
-              document.datahub.setProgramToLoad("");
-            }
-          } 
-          catch (e) 
-          {
-            alert("Something seems to be wrong with Java support, the Yacas calculation center does not seem to be available. You can probably fix this by downloading a newer version of Java for your system from http://www.java.com/ .");
-          }
-          var elem = document.getElementById('LibraryFrame');
-          if (elem)
-          {
-            if (prevLibraryView)
-            {
-              var lnk = document.getElementById(prevLibraryView);
-              if (lnk)
-              {
-                lnk.style.textDecoration="underline";
-                lnk.style.color="#000000";
-                lnk.style.cursor = "pointer";
-              }
-            }
-            prevLibraryView = this.id;
-            if (prevLibraryView)
-            {
-              var lnk = document.getElementById(prevLibraryView);
-              if (lnk)
-              {
-                lnk.style.textDecoration="none";
-                lnk.style.color="#AAE";
-//TODO remove?                lnk.style.cursor = "none";
               }
             }
             elem.contentWindow.document.location.href = ""+this.id+".html";
@@ -137,27 +86,12 @@
                 {
                   object.style.textDecoration="none";
                   object.style.color="#AAE";
-//TODO remove?                  object.style.cursor = "none";
                 }
                 else
                 {
                   object.style.cursor = "pointer";
                 }
                 object.onclick=clickToAboutFrame;
-              }
-              else if (object.className == "librarylink")
-              {
-                if (object.id == "recent")
-                {
-                  object.style.textDecoration="none";
-                  object.style.color="#AAE";
-//TODO remove?                  object.style.cursor = "none";
-                }
-                else
-                {
-                  object.style.cursor = "pointer";
-                }
-                object.onclick=clickToLibraryFrame;
               }
             }
           }

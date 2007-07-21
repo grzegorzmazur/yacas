@@ -104,23 +104,7 @@ function initPage()
       {
         if (object.className == "codeEditor")
         {
-          var datahub;
-          if (parent)
-            if (parent.document)
-              if (parent.document.all)
-                if (parent.document.all.datahub)
-                  datahub = parent.document.all.datahub;
-
-          if (!datahub)
-            if (parent)
-              if (parent.document)
-                if (parent.document.datahub)
-                  datahub = parent.document.datahub;
-
-          if (!datahub)
-            if (document.datahub)
-              datahub = document.datahub;
-
+          var datahub = getDatahub();
 
           if (datahub)
           {
@@ -174,24 +158,8 @@ function editExampleLinkClick()
 {
   if (confirm("This operation will throw away a previous program you had written. Is that ok?"))
   {
-    var datahub;
+    var datahub = getDatahub();
     
-    if (parent)
-      if (parent.document)
-        if (parent.document.all)
-          if (parent.document.all.datahub)
-            datahub = parent.document.all.datahub;
-
-    if (!datahub)
-      if (parent)
-        if (parent.document)
-          if (parent.document.datahub)
-            datahub = parent.document.datahub;
-
-    if (!datahub)
-      if (document.datahub)
-        datahub = document.datahub;
-
     if (datahub)
     {
       try 
@@ -228,22 +196,7 @@ function commandEdit(base)
 }
 function commandView(base)
 {
-  var datahub;
-  if (parent)
-    if (parent.document)
-      if (parent.document.all)
-        if (parent.document.all.datahub)
-          datahub = parent.document.all.datahub;
-
-  if (!datahub)
-    if (parent)
-      if (parent.document)
-        if (parent.document.datahub)
-          datahub = parent.document.datahub;
-
-  if (!datahub)
-    if (document.datahub)
-      datahub = document.datahub;
+  var datahub = getDatahub();
 
   if (datahub)
   {

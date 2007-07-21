@@ -1,15 +1,16 @@
 <html>
   <head>
     <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen" />
+    <script type="text/javascript" src="datahub.js"></script>
     
     <script type="text/javascript">
-    var prevOnLoadTutorial = window.onload;
+    var prevOnLoadRecent = window.onload;
     window.onload = initPage;
 
     function initPage()
     {
-      if (prevOnLoadTutorial)
-        prevOnLoadTutorial();
+      if (prevOnLoadRecent)
+        prevOnLoadRecent();
       initThisPage();
     }
     function initThisPage()
@@ -53,7 +54,7 @@
     {
       try 
       {
-        document.datahub.setProgramMode("journal");
+        getDatahub().setProgramMode("journal");
       } 
       catch (e) 
       {
@@ -69,7 +70,7 @@
           base = base.substring(0,pos);
           try 
           {
-            document.datahub.setProgramToLoadFromFile("journal/"+base+".ys");
+            getDatahub().setProgramToLoadFromFile("journal/"+base+".ys");
           } 
           catch (e) 
           {
@@ -94,7 +95,9 @@
       Taking a derivative is one of the mathematical operations that is easily explained to a computer. This article shows how it can be done with a few
       lines of code in <i>Yacas</i>. You can also directly try it out, or extend the code to handle more complex cases.
     </p>
-    <APPLET name="datahub" archive="yacas.jar" code="net.sf.yacas.DatahubApplet" width=1 height=1></APPLET>
+<script type="text/javascript">
+  addDatahub();
+</script>
   </body>
 </html>
 

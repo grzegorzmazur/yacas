@@ -11,7 +11,7 @@ EXTRA_DIST = \
 	gpl.html homepage.html jslog.js links.html pager.css \
 	pager.js placeholder.html plain.html recent.html \
 	tabber.css tabber.js tutorials.html yacas.css yacas.html \
-	yacas.js yacaslogo.gif \
+	yacas.js datahub.js yacaslogo.gif \
 	tutorials/tutorialtext1.html \
 	journal/derivative.ys journal/derivative1.html journal/derivativedescr.html \
 	yacas-screenshot.png \
