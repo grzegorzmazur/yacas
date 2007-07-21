@@ -168,49 +168,21 @@
   <body bgcolor="#FFFFFF">
     <div class="tabber">
       <div class="tabbertab">
-        <h2>Yacas library</h2>
-        <br/>
-        <p>          
-          <table>
-            <tr>
-              <td>
-                <img src="yacaslogo.gif" width="144" height="50" align="middle" /><br />
-                Easily doing calculations with a computer.
-              </td>
-              <td rowspan=2>
-                <iframe name="LibraryFrame" id="LibraryFrame" frameborder="0" width="800" height="480" src="recent.html" width="100%"></iframe>
-                <APPLET name="datahub" archive="yacas.jar" code="net.sf.yacas.DatahubApplet" width=1 height=1></APPLET>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <br />
-                <a class="librarylink" id="recent">Yacas Journal</a>
-                <br />
-                <a class="librarylink" id="tutorials">Tutorial</a>
-                <br />
-                <a class="librarylink" id="books">Read the manual</a>
-                <br />
-                <a class="librarylink" id="consoleview">Do your calculations</a>
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-              </td>
-            </tr>
-          </table>
-        </p>
+        <h2>New articles</h2>
+        <img src="yacaslogo.gif" width="144" height="50" align="middle" /> Easily doing calculations with a computer.
+        <iframe name="LibraryFrame" id="LibraryFrame" frameborder="0" width="800" height="480" src="recent.html" width="100%"></iframe>
+      </div>
+      <div class="tabbertab">
+        <h2>Tutorial</h2>
+        <iframe name="TutorialFrame" id="TutorialFrame" frameborder="0" width="800" height="480" src="tutorials.html" width="100%"></iframe>
+      </div>
+      <div class="tabbertab">
+        <h2>Manual</h2>
+        <iframe name="ManualFrame" id="ManualFrame" frameborder="0" width="800" height="480" src="books.html" width="100%"></iframe>
+      </div>
+      <div class="tabbertab">
+        <h2>Calculate</h2>
+        <iframe name="ConsoleFrame" id="ConsoleFrame" frameborder="0" width="800" height="480" src="consoleview.html" width="100%"></iframe>
       </div>
       <div class="tabbertab">
         <h2>About Yacas</h2>
@@ -267,5 +239,6 @@
         </p>
       </div>
     </div>
+    <APPLET name="datahub" archive="yacas.jar" code="net.sf.yacas.DatahubApplet" width=1 height=1></APPLET>
   </body>
 </html>

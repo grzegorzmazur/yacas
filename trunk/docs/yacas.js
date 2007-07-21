@@ -198,7 +198,7 @@ function editExampleLinkClick()
 
 function commandEdit(base)
 {
-  var elem = parent.document.getElementById('LibraryFrame');
+  var elem = parent.document.getElementById('ConsoleFrame');
   if (elem)
   {
     elem.contentWindow.document.location.href = base+"edit.html"+document.location.search;
@@ -222,7 +222,7 @@ function commandView(base)
     }
   }
   {
-    var elem = parent.document.getElementById('LibraryFrame');
+    var elem = parent.document.getElementById('ConsoleFrame');
     if (elem)
     {
       elem.contentWindow.document.location.href = base+"view.html"+document.location.search;
