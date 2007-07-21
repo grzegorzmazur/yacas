@@ -31,15 +31,20 @@ tar -zcvf manual.ps.tar.gz *.ps
 tar -zcvf manual.pdf.tar.gz *.pdf
 rm *.ps *.pdf
 
-cp ../docs/*.gif ../docs/*.png ../docs/*.html .
+cp ../docs/*.gif ../docs/*.png ../docs/*.html ../docs/*.js ../docs/*.css .
 cp yacas.html index.html
 yacas --patchload -pc ../docs/downloads.html.in > downloads.html
 
 cp ../JavaYacas/yacas.jar .
 cp ../JavaYacas/yacasconsole.html .
-cp ../JavaYacas/yacasconsole.html.hints .
+cp ../JavaYacas/hints.txt .
 cp ../JavaYacas/scripts.zip .
-cp ../JavaYacas/wizard.zip .
+
+mkdir tutorials
+mkdir journal
+cp ../docs/tutorials/* tutorials/
+cp ../docs/journal/* journal/
+
 
 if [ -d backups ] ; then : ; else  mkdir backups ; fi; 
 mv manual.html.tar.gz backups
