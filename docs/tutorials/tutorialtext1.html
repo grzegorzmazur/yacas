@@ -555,7 +555,8 @@
     L := Append(L,i);
     i := i + 2;
   ];
-  /* Now calculate the product of all of these numbers that are not divisible by 3 */
+  /* Now calculate the product of all of 
+     these numbers that are not divisible by 3 */
   answer := 1;
   ForEach(i,L)
     If (Mod(i, 3)!=0, answer := answer * i);
