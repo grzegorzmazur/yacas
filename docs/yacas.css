@@ -1,0 +1,47 @@
+body 
+{
+	background-color:White;
+	font-family:Verdana, Arial, Helvetica, sans-serif;	
+}
+
+.codeEditor 
+{
+	width: 750px; 
+	height: 380px; 
+	background-color: #FFFFFF;	
+	border-style:none;
+}
+
+.aboutlink
+{
+	text-decoration:underline;
+	color:#000000;
+}
+
+.librarylink
+{
+	text-decoration:underline;
+	color:#000000;
+	cursor:pointer;
+}
+
+.commandlink 
+{
+	color:#AAE;
+	text-decoration:underline;
+	cursor:pointer;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+}
+
+.linkcalc
+{
+	text-decoration:underline;
+	background-color:#DDDDEE;
+}
+
+.editexample
+{
+	color:Blue;
+	text-decoration:underline;
+	cursor:pointer;
+}
