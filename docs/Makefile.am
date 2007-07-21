@@ -5,19 +5,10 @@
 
 # These files make up the home page. 
 
-EXTRA_DIST = balk.gif cha1.gif cha2.gif changes.html cred1.gif cred2.gif \
-	info1.gif info2.gif infobalk.html infoindex.html \
-        informatie.html lice1.gif lice2.gif licence.html \
-        mail1.gif mail2.gif manicon.html mybench2.html \
-	navbalk.html navinform.html rel1.gif rel2.gif stat1.gif \
-	stat2.gif yacas.gif yacas.html yacaslogo.gif yacas-screenshot.png \
-        navman.html manindex.html todo.html links.html downloads.html.in \
+EXTRA_DIST = yacas-screenshot.png \
+        todo.html downloads.html.in \
 	bugs.txt README \
-	paper1.tex paper2.tex \
-	winitzki01-fig01.eps    winitzki01-fig04.eps    winitzki03.tex \
-	winitzki01-fig02.eps    winitzki01.tex \
-	winitzki01-fig03.eps    winitzki02.tex
-
+	paper1.tex paper2.tex 
 
 ## The file "yacaslogo.gif" is used in the HTML documentation
 
