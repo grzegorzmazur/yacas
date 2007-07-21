@@ -9,8 +9,8 @@
 ## suite in "tests". In addition, one of the tests to be run is generated in
 ## "manmake".
 
-SUBDIRS = . docs inprogress YacasNotebook libltdl src scripts \
-	essays colorcode plugins proteus manmake tests embed \
+SUBDIRS = . docs YacasNotebook libltdl src scripts \
+	plugins manmake tests embed \
 	JavaYacas epoc
 
 ## A script to be installed in the directory for binaries
