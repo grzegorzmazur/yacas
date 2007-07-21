@@ -1,0 +1,271 @@
+<html>
+  <head>
+    <title>The Yacas computer algebra system</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen" />
+
+    <script type="text/javascript" src="tabber.js"></script>
+
+    <link rel="stylesheet" href="tabber.css" TYPE="text/css" MEDIA="screen">
+    <script type="text/javascript">
+      document.write('<style type="text/css">.tabber{display:none;}<\/style>');
+    </script>
+
+
+    <script type="text/javascript">
+
+      function linkOver()
+      {
+        this.style.cursor='pointer';
+        this.style.color="#AAE";
+      }
+      function linkOut()
+      {
+        this.style.cursor='pointer';
+        this.style.color="#000";
+      }
+
+      var prevAboutView = "about";
+      function clickToAboutFrame()
+      {
+        if (this.id)
+        {
+          var elem = document.getElementById('AboutFrame');
+          if (elem)
+          {
+            if (prevAboutView)
+            {
+              var lnk = document.getElementById(prevAboutView);
+              if (lnk)
+              {
+                lnk.style.textDecoration="underline";
+                lnk.style.color="#000000";
+                lnk.style.cursor = "pointer";
+              }
+            }
+            prevAboutView = this.id;
+            if (prevAboutView)
+            {
+              var lnk = document.getElementById(prevAboutView);
+              if (lnk)
+              {
+                lnk.style.textDecoration="none";
+                lnk.style.color="#AAE";
+//TODO remove?                lnk.style.cursor = "none";
+              }
+            }
+            elem.contentWindow.document.location.href = ""+this.id+".html";
+          }
+        }
+      }
+
+      var prevLibraryView = "recent";
+      function clickToLibraryFrame()
+      {
+        if (this.id)
+        {
+          try 
+          {
+            if (this.id == "consoleview")
+            {
+              document.datahub.setProgramMode("console");
+            }
+            if (this.id == "tutorials")
+            {
+              document.datahub.setProgramMode("journal");
+              document.datahub.setProgramToLoad("");
+            }
+          } 
+          catch (e) 
+          {
+            alert("Something seems to be wrong with Java support, the Yacas calculation center does not seem to be available. You can probably fix this by downloading a newer version of Java for your system from http://www.java.com/ .");
+          }
+          var elem = document.getElementById('LibraryFrame');
+          if (elem)
+          {
+            if (prevLibraryView)
+            {
+              var lnk = document.getElementById(prevLibraryView);
+              if (lnk)
+              {
+                lnk.style.textDecoration="underline";
+                lnk.style.color="#000000";
+                lnk.style.cursor = "pointer";
+              }
+            }
+            prevLibraryView = this.id;
+            if (prevLibraryView)
+            {
+              var lnk = document.getElementById(prevLibraryView);
+              if (lnk)
+              {
+                lnk.style.textDecoration="none";
+                lnk.style.color="#AAE";
+//TODO remove?                lnk.style.cursor = "none";
+              }
+            }
+            elem.contentWindow.document.location.href = ""+this.id+".html";
+          }
+        }
+      }
+
+      var prevOnLoadAbout = window.onload;
+      window.onload = initPage;
+
+      function initPage()
+      {
+        prevOnLoadAbout();
+
+        if (!document.getElementsByTagName)
+        { 
+          return; 
+        }
+        var links = document.getElementsByTagName("a");
+
+        // loop through all links
+        for (var i=0; i<links.length; i++)
+        {
+          var object = links[i];
+          if (object.className)
+          {
+            if (object.id)
+            {
+              if (object.className == "aboutlink")
+              {
+
+                if (object.id == "about")
+                {
+                  object.style.textDecoration="none";
+                  object.style.color="#AAE";
+//TODO remove?                  object.style.cursor = "none";
+                }
+                else
+                {
+                  object.style.cursor = "pointer";
+                }
+                object.onclick=clickToAboutFrame;
+              }
+              else if (object.className == "librarylink")
+              {
+                if (object.id == "recent")
+                {
+                  object.style.textDecoration="none";
+                  object.style.color="#AAE";
+//TODO remove?                  object.style.cursor = "none";
+                }
+                else
+                {
+                  object.style.cursor = "pointer";
+                }
+                object.onclick=clickToLibraryFrame;
+              }
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body bgcolor="#FFFFFF">
+    <div class="tabber">
+      <div class="tabbertab">
+        <h2>Yacas library</h2>
+        <br/>
+        <p>          
+          <table>
+            <tr>
+              <td>
+                <img src="yacaslogo.gif" width="144" height="50" align="middle" /><br />
+                Easily doing calculations with a computer.
+              </td>
+              <td rowspan=2>
+                <iframe name="LibraryFrame" id="LibraryFrame" frameborder="0" width="800" height="480" src="recent.html" width="100%"></iframe>
+                <APPLET name="datahub" archive="yacas.jar" code="net.sf.yacas.DatahubApplet" width=1 height=1></APPLET>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <br />
+                <a class="librarylink" id="recent">Yacas Journal</a>
+                <br />
+                <a class="librarylink" id="tutorials">Tutorial</a>
+                <br />
+                <a class="librarylink" id="books">Read the manual</a>
+                <br />
+                <a class="librarylink" id="consoleview">Do your calculations</a>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+              </td>
+            </tr>
+          </table>
+        </p>
+      </div>
+      <div class="tabbertab">
+        <h2>About Yacas</h2>
+        <p>
+          <table>
+            <tr>
+              <td>
+                <img src="yacaslogo.gif" width="144" height="50" align="middle" /><br />
+              </td>
+              <td>
+                Easily doing calculations with a computer.
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <br />
+                <a class="aboutlink" id="about">About</a>
+                <br />
+                <a class="aboutlink" id="gpl">Licence (GPL)</a>
+                <br />
+                <a class="aboutlink" id="downloads">Download Yacas</a>
+                <br />
+                <a class="aboutlink" id="faq">Frequently asked questions</a>
+                <br />
+                <a class="aboutlink" id="changes">Change log</a>
+                <br />
+                <a class="aboutlink" id="credits">Credits</a>
+                <br />
+                <a class="aboutlink" id="links">Related links</a>
+                <br />
+                <a href="mailto:yacas-develATlistsDOTsourceforgeDOTnet">Email us</a>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+              </td>
+              <td>
+                <iframe name="AboutFrame" id="AboutFrame" frameborder="0" width="800" height="470" src="about.html" width="100%"></iframe>
+              </td>
+            </tr>
+          </table>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,100 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen" />
+    
+    <script type="text/javascript">
+    var prevOnLoadTutorial = window.onload;
+    window.onload = initPage;
+
+    function initPage()
+    {
+      if (prevOnLoadTutorial)
+        prevOnLoadTutorial();
+      initThisPage();
+    }
+    function initThisPage()
+    {
+      if (!document.getElementsByTagName)
+      { 
+        return; 
+      }
+      var links = document.getElementsByTagName("a");
+
+      // loop through all links
+      for (var i=0; i<links.length; i++)
+      {
+        var object = links[i];
+        if (object.className)
+        {
+          if (object.id)
+          {
+            if (object.className == "linkcalc")
+            {
+              object.onmouseover=calcLinkOver;
+              object.onmouseout=calcLinkOut;
+              object.onclick=calcLinkClick;
+            }
+          }
+        }
+      }
+    }
+
+    function calcLinkOver()
+    {
+      this.style.cursor='pointer';
+      this.style.color="#AAE";
+    }
+    function calcLinkOut()
+    {
+      this.style.cursor='pointer';
+      this.style.color="#000";
+    }
+    function calcLinkClick()
+    {
+      try 
+      {
+        parent.document.datahub.setProgramMode("journal");
+      } 
+      catch (e) 
+      {
+        alert("Something seems to be wrong with Java support, the Yacas calculation center does not seem to be available. You can probably fix this by downloading a newer version of Java for your system from http://www.java.com/ .");
+      }
+      var elem = parent.document.getElementById('LibraryFrame');
+      if (elem)
+      {
+        var base = this.id;
+        var pos = base.indexOf(":");
+        if (pos > -1)
+        {
+          base = base.substring(0,pos);
+          try 
+          {
+            parent.document.datahub.setProgramToLoadFromFile("journal/"+base+".ys");
+          } 
+          catch (e) 
+          {
+          }
+        }
+        elem.contentWindow.document.location.href = "journal/"+base+"descr.html";
+      }
+    }
+
+    </script>
+  </head>
+  <body>
+    
+    <h1>Yacas Journal</h1>
+    <i>pilot edition, July 2007</i>
+    <br />
+    <a class="linkcalc" id="derivative:1">Fun with derivatives part 1: defining the concept of a derivative in <i>Yacas</i></a>
+    <br />
+    <i>2007-07-20, by Ayal Pinkus</i>
+    <br />
+    <p>
+      Taking a derivative is one of the mathematical operations that is easily explained to a computer. This article shows how it can be done with a few
+      lines of code in <i>Yacas</i>. You can also directly try it out, or extend the code to handle more complex cases.
+    </p>
+
+  </body>
+</html>
+
