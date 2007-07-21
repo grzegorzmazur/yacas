@@ -1,0 +1,87 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../yacas.css" TYPE="text/css" MEDIA="screen">
+    <script type="text/javascript" src="../yacas.js"></script>
+    <title>Fun with derivatives part 1: defining the concept of a derivative in Yacas</title>
+  </head>
+  <body>
+    <h1>Fun with derivatives part 1: defining the concept of a derivative in <i>Yacas</i></h1>
+    <p>
+      <i>Yacas</i> offers the possibility of defining transformation rules. Taking a derivative of a function is 
+      a process that can be easily explained through such transformation rules (although not a necessary constraint,
+      one can define the same operation easily in other languages also). You need surprisingly few lines of code
+      to actually define the operation of taking a derivative. We will develop the code that can be used in <i>Yacas</i>
+      in this article.
+    </p>
+    <p>
+      <i>Yacas</i> of course already has similar functionality. One can take a derivative through the D function.
+      But it is still a good example for showing how to use transformation rules in <i>Yacas</i>, as very few lines
+      of code are needed and most people readily know the transformation rules by heart.
+    </p>
+    <p>
+      We will define the function dd, which will take two arguments. The first is the variable, the second the function 
+      to take the derivative off (with respect to the variable given as first argument).
+    </p>
+    <p>
+      First we can tell the system that taking the derivative of a variable with respect to itself (eg. taking the derivative of
+      x with respect to x) is one:
+<pre>
+dd(_x,_x) &lt;-- 1;
+</pre>
+      The pattern on the left side has two matchable places named _x. This instructs <i>Yacas</i> to check that they are the same.
+    </p>
+    <p>
+      Next we tell the system that if you take a derivative of a function with respect to a variable that that function does not depend
+      on, the result is zero. Taking the derivative of say f(y) with respect to x would yield the result zero, assuming that f(y) does
+      not depend on x.
+<pre>
+dd(_x,y_IsFreeOf(x)) &lt;-- 0;
+</pre>
+      Note the construct y_IsFreeOf(x). <i>Yacas</i> internally transforms that construct to mean IsFreeOf(x,y). So this pattern matches only
+      if the expression to take the derivative off does not depend on the variable to take the derivative with respect of. The result is 
+      zero in that case.
+    </p>
+    <p>
+      Taking derivatives is a linear operation. The derivative of an expression that adds two expressions is the derivative of the one plus
+      the derivative of the other. This is summarized in the following rules:
+<pre>
+dd(_x,_a + _b)  &lt;-- dd(x,a)+dd(x,b);
+dd(_x,_a - _b)  &lt;-- dd(x,a)-dd(x,b);
+dd(_x,   - _b)  &lt;--        -dd(x,b);
+</pre>
+    </p>
+    <p>
+      Taking the derivative of a function to the power of a constant is also a well-known transform. Taking the derivative of x^n with respect to
+      x yields n*x^(n-1). This can be generalized to taking the derivative of f(x)^n by applying the chain rule: d(x,f(g(x))) is d(x,g)*d(g,f),
+      symbolically. We will embed the chain rule within the transformation rules:
+<pre>
+dd(_x,_y ^ z_IsFreeOf(x)) &lt;-- dd(x,y)*z*y^(z-1);
+</pre>
+    </p>
+    <p>
+      Taking the derivative of an expression that consists of one expression multiplied by the other also has a commonly known transformation rule:
+<pre>
+dd(_x,_a * _b)  &lt;-- a*dd(x,b)+dd(x,a)*b;
+</pre>
+      And so does division:
+<pre>
+dd(x,_y / _z) &lt;-- (z*dd(x,y)-y*dd(x,z))/z^2;
+</pre>
+    </p>
+    <p>
+      Finally we add the derivatives of a few well-known analytic functions:
+<pre>
+dd(_x,Sin(_y)) &lt;--  dd(x,y)*Cos(y);
+dd(_x,Cos(_y)) &lt;-- -dd(x,y)*Sin(y);
+dd(_x,Exp(_y)) &lt;--  dd(x,y)*Exp(y);
+</pre>
+      This list can be expanded further of course.
+    </p>
+    <p>
+      We invite you to try it out online. 
+      You can <a href="../tutorials.html?derivative:1">try out</a> the code developed in this article, or you can go 
+      directly to <a class="editexample">editing and extending</a> the code.
+    </p>
+  </body>
+</html>
+
