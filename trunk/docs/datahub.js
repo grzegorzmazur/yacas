@@ -12,6 +12,8 @@ function addDatahubInJournal()
 
 function getDatahub()
 {
+  return document.datahub;
+/*TODO remove
   var datahub;
   
   if (parent)
@@ -30,4 +32,6 @@ function getDatahub()
     if (document.datahub)
       datahub = document.datahub;
   return datahub;  
+*/
 }
+

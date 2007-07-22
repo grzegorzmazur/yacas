@@ -340,10 +340,6 @@ Yacas scripts in compressed form.
 *	{enable-server}. Build a version of the Yacas executable which
 accepts the {--server} flag, which puts Yacas in server mode (see
 <*"Command-line options"|yacasdoc://intro/3/1/*>) 
-*	{enable-proteus}. Build Proteus as well. Proteus is a
-graphical user interface (GUI) for Yacas based on the fltk toolkit.
-Building Proteus requires the presence of the fltk development
-libraries. 
 
 The following three options pertain to the extensive documentation
 that comes with Yacas. By default, only HTML documentation is
@@ -621,23 +617,6 @@ created by compiling the Yacas script file {scripts/base.rep/math.ys}.
 If Yacas is run, and finds this plugin, then it will use it instead of
 the script file. This improves the performance.
 
-
-	    Proteus
-
-*A build system!Proteus
-*A Proteus!building
-
-The directory {proteus} contains an experimental implementation of a
-graphical interface to Yacas.
-
-The executable is called {proteusworksheet}. It is only built if the
-{build-proteus} option was given to the {configure} script, and if the
-fltk development libraries are present. If this is the case, the
-executable is built by linking three libraries from the {src}
-directory with the object files in the {proteus} directory.
-
-The {install} target installs the executable and some auxiliary data
-files that Proteus needs to function.
 
 
 	    Other components
