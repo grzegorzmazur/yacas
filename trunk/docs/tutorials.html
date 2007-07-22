@@ -16,7 +16,11 @@
 //TODO remove jslog.debug("search = "+document.location.search);
 //TODO remove jslog.debug("ended here");
         prevOnLoad();
-        getDatahub().setProgramMode("journal");
+        var datahub = getDatahub();
+        if (datahub)
+        {
+          datahub.setProgramMode("journal");
+        }
       }
     </script>
   </head>

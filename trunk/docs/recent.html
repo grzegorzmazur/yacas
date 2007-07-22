@@ -54,7 +54,11 @@
     {
       try 
       {
-        getDatahub().setProgramMode("journal");
+        var datahub = getDatahub();
+        if (datahub)
+        {
+          datahub.setProgramMode("journal");
+        }
       } 
       catch (e) 
       {
@@ -70,7 +74,11 @@
           base = base.substring(0,pos);
           try 
           {
-            getDatahub().setProgramToLoadFromFile("journal/"+base+".ys");
+            var datahub = getDatahub();
+            if (datahub)
+            {
+              datahub.setProgramToLoadFromFile("journal/"+base+".ys");
+            }
           } 
           catch (e) 
           {
