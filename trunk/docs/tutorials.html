@@ -19,7 +19,13 @@
         var datahub = getDatahub();
         if (datahub)
         {
-          datahub.setProgramMode("journal");
+          try
+          {
+            datahub.setProgramMode("journal");
+          }
+          catch (e)
+          {
+          }
         }
       }
     </script>
