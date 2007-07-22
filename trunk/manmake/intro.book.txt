@@ -2,9 +2,9 @@
 This document gives a short introduction to Yacas.
 Included is a brief tutorial on the syntax and some
 commands to get you started using Yacas. There are also some examples.
-				Introduction to Yacas: tutorial and examples
+				Introduction to the off-line version of Yacas
 
-			Getting started with {Yacas}
+			Getting started with Yacas off-line
 
 		Introduction
 
@@ -23,7 +23,8 @@ Currently, the {Yacas} programming language is stable and seems powerful enough 
 This section describes how to get started with {Yacas} locally by downloading and compiling the
 program. However, this is not strictly necessary. You can also go online to our web site and
 use {Yacas} in there inside your browser. The web page contains tutorials, example calculations 
-and lots of documentation. 
+and lots of documentation. This document is only useful if you plan to build and install {Yacas}
+yourself.
 
 
 
