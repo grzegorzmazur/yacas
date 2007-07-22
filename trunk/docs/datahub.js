@@ -13,25 +13,5 @@ function addDatahubInJournal()
 function getDatahub()
 {
   return document.datahub;
-/*TODO remove
-  var datahub;
-  
-  if (parent)
-    if (parent.document)
-      if (parent.document.all)
-        if (parent.document.all.datahub)
-          datahub = parent.document.all.datahub;
-
-  if (!datahub)
-    if (parent)
-      if (parent.document)
-        if (parent.document.datahub)
-          datahub = parent.document.datahub;
-
-  if (!datahub)
-    if (document.datahub)
-      datahub = document.datahub;
-  return datahub;  
-*/
 }
 

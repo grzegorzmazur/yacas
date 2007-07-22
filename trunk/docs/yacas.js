@@ -66,7 +66,7 @@ function initPage()
         else if (object.className == "yacasConsole")
         {
           var width = 900;
-          var height = 390;
+          var height = 350;
           if (object.id)
           {
             if (object.id == "full")
@@ -189,13 +189,6 @@ function tryExampleLinkClick()
   if (elem)
   {
     elem.contentWindow.document.location.href = this.id;
-
-//elem.contentWindow.document.location.href = "../tutorials.html?derivative:1";
-//elem.location.href = "../tutorials.html?derivative:1";
-
-//   elem = document.getElementById("tutorials/tutorialtext");
-//   elem.id="journal/derivative";
-
   }
 }
 
