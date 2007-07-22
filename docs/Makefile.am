@@ -14,6 +14,7 @@ EXTRA_DIST = \
 	yacas.js datahub.js yacaslogo.gif \
 	tutorials/tutorialtext1.html \
 	journal/derivative.ys journal/derivative1.html journal/derivativedescr.html \
+	journal/foreword001descr.html \
 	yacas-screenshot.png \
         todo.html downloads.html.in \
 	bugs.txt README \
