@@ -31,6 +31,10 @@ function initPage()
         {
           object.onclick=editExampleLinkClick;
         }
+        if (object.className == "tryexample")
+        {
+          object.onclick=tryExampleLinkClick;
+        }
       }
     }
   }
@@ -161,6 +165,33 @@ function commandLinkClick()
   }
 }
 
+function tryExampleLinkClick()
+{
+  {
+    var elem = parent.document.getElementById("theTabs");
+    if (elem)
+    if (elem.tabber)
+    {
+      elem.tabber.tabShow(1);
+    }
+  }
+
+  var elem;
+  elem = document.getElementById('ConsoleFrame');
+  if (elem == null)
+  {
+    elem = parent.document.getElementById('TutorialFrame');
+  }
+  if (elem == null)
+  {
+    elem = parent.parent.document.getElementById('TutorialFrame');
+  }
+  if (elem)
+  {
+    elem.contentWindow.document.location.href = this.id;
+  }
+}
+
 function editExampleLinkClick()
 {
   if (confirm("This operation will throw away a previous program you had written. Is that ok?"))
@@ -180,15 +211,25 @@ function editExampleLinkClick()
         alert("Something seems to be wrong with Java support, the Yacas calculation center does not seem to be available. You can probably fix this by downloading a newer version of Java for your system from http://www.java.com/ .");
       }
     }
+
+    {
+      var elem = parent.document.getElementById("theTabs");
+      if (elem)
+      if (elem.tabber)
+      {
+        elem.tabber.tabShow(3);
+      }
+    }
+
     var elem;
-    elem = document.getElementById('LibraryFrame');
+    elem = document.getElementById('ConsoleFrame');
     if (elem == null)
     {
-      elem = parent.document.getElementById('LibraryFrame');
+      elem = parent.document.getElementById('ConsoleFrame');
     }
     if (elem == null)
     {
-      elem = parent.parent.document.getElementById('LibraryFrame');
+      elem = parent.parent.document.getElementById('ConsoleFrame');
     }
     if (elem)
     {

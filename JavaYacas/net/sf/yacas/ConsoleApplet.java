@@ -197,7 +197,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
     try
     {
-//      PerformRequest("Connected: version of engine is ","Atom(Version())");
       out.println("");
     }
     catch (Exception e)
@@ -389,8 +388,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
             repaint();
             return;
           }
-          //  out.println("Paste");
-//          out.println(toInsert);
         }
         catch (Exception ex)
         {
@@ -1167,7 +1164,21 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
   public void InvokeCalculationSilent(String expression)
   {
+    outp.delete(0,outp.length());
+    String response = yacas.Evaluate(expression);
+    if (outp.length() > 0)
+    {
+      AddLinesStatic(48,"",outp.toString());
+    }
+    if (yacas.iError != null)
+    {
+      AddLinesStatic(48,"Error> ",yacas.iError);
+    }
+//TODO remove    AddLinesStatic(48, outputPrompt,response);
+
+/*TODO remove
     PerformRequest("Out> ",expression);
+*/
     ResetInput();
     RefreshHintWindow();
     inputDirty = true;
