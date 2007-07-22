@@ -2,6 +2,7 @@
   <head>
     <link rel="stylesheet" href="../yacas.css" TYPE="text/css" MEDIA="screen">
     <script type="text/javascript" src="../yacas.js"></script>
+    <script type="text/javascript" src="../datahub.js"></script>
     <title>Fun with derivatives part 1: defining the concept of a derivative in Yacas</title>
   </head>
   <body>
@@ -50,18 +51,21 @@
     </p>
     <h2>Extending the program</h2>
     <p>
-      You can extend the code yourself to handle other functions not covered yet, by going to <a class="editexample">this page.</a>
+      You can extend the code yourself to handle other functions not covered yet.
       An interesting example is the derivative of Sqrt(x) (the square root of x), which can be defined as:
       <pre>
-dd(_x,Sqrt(_y)) <-- dd(x,y)/Sqrt(y);
+dd(_x,Sqrt(_y)) <-- dd(x,y)/(2*Sqrt(y));
       </pre>
 but also as
       <pre>
-dd(_x,Sqrt(_y)) <-- (1/2)*y^(1/2-1)*dd(x,y);
+dd(_x,Sqrt(_y)) <-- (1/2)*y^(-1/2)*dd(x,y);
       </pre>
       If you were to try these out with dd(x,Sqrt(x));, and then repeatedly calling dd(x,%), you would see the size of the resulting
       expressions grow much faster when using the first transformation rule than when using the second one.
     </p>
+    <script type="text/javascript">
+      addDatahubInJournal();
+    </script>
   </body>
 </html>
 

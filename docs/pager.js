@@ -47,7 +47,7 @@
 
         endPageIndex = spn.innerHTML;
 
-        var height = 350;
+        var height = 380;
         var buttonSrc = 
 '              <tr>' +
 '                <td align="left"><a id="prevLink" class="pagerButton">Previous page<\/a><\/td>' +
@@ -65,7 +65,7 @@
         spn.innerHTML=
 '            <table cellpadding="3">' +
 '              <tr>' +
-'                <td colspan=3>' +
+'                <td colspan=3 style="border-color:black; border-style:solid; border-width:thin;">' +
 '                  <iframe frameborder="0" id="pagerText" width="450" height="'+height+'" src="'+spn.id+'1.html"><\/iframe>' +
 '                <\/td>' +
 '              <\/tr>' +
