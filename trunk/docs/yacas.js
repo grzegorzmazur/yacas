@@ -189,8 +189,16 @@ function tryExampleLinkClick()
   if (elem)
   {
     elem.contentWindow.document.location.href = this.id;
+
+//elem.contentWindow.document.location.href = "../tutorials.html?derivative:1";
+//elem.location.href = "../tutorials.html?derivative:1";
+
+//   elem = document.getElementById("tutorials/tutorialtext");
+//   elem.id="journal/derivative";
+
   }
 }
+
 
 function editExampleLinkClick()
 {
