@@ -6,18 +6,24 @@
     <script type="text/javascript" src="../journal.js"></script>
 
     <script type="text/javascript">
-      try 
+      var prevOnLoad = window.onload;
+      window.onload = initPage;
+      function initPage()
       {
-        var datahub = getDatahub();
-        if (datahub)
+        prevOnLoad();
+        try 
         {
-          datahub.setProgramMode("journal");
-          datahub.setProgramToLoadFromFile("journal/derivative.ys");
+          var datahub = getDatahub();
+          if (datahub)
+          {
+            datahub.setProgramMode("journal");
+            datahub.setProgramToLoadFromFile("journal/derivative.ys");
+          }
+        } 
+        catch (e) 
+        {
+          alertUpgradeJava();
         }
-      } 
-      catch (e) 
-      {
-        alertUpgradeJava();
       }
     </script>
 
