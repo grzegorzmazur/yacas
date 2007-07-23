@@ -79,7 +79,7 @@ class HintWindow
       {
         if (i == iCurrentPos)
         {
-          aGraphicsContext.SetColor(0,0,0);
+          aGraphicsContext.SetColor(190,190,200);
           aGraphicsContext.FillRect(ix,iy+(i)*aGraphicsContext.FontHeight(),w,aGraphicsContext.FontHeight());
           aGraphicsContext.SetColor(0,0,0);
         }

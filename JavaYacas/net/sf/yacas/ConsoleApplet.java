@@ -458,7 +458,23 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
       else if (e.VK_UP == e.getKeyCode())
       {
+        boolean handled = false;
+        if (hintWindow != null)
         {
+          if (hintWindow.iAllowSelection)
+          {
+            handled = true;
+            if (hintWindow.iCurrentPos > 0)
+            {
+              hintWindow.iCurrentPos--;
+              repaint();
+            }
+          }
+        }
+      
+        if (!handled)
+        {
+          handled = true;
           String prefix = inputLine.substring(0,cursorPos);
           int i = historyBrowse - 1;
           while (i > 0)
@@ -476,6 +492,21 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
       else if (e.VK_DOWN == e.getKeyCode())
       {
+        boolean handled = false;
+        if (hintWindow != null)
+        {
+          if (hintWindow.iAllowSelection)
+          {
+            handled = true;
+            if (hintWindow.iCurrentPos < hintWindow.iNrLines-1)
+            {
+              hintWindow.iCurrentPos++;
+              repaint();
+            }
+          }
+        }
+      
+        if (!handled)
         {
           String prefix = inputLine.substring(0,cursorPos);
           int i = historyBrowse + 1;
@@ -501,25 +532,61 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
       else if (e.VK_RIGHT == e.getKeyCode())
       {
-        if (cursorPos<inputLine.length())
+        boolean handled = false;
+
+        if (!handled)
         {
-          cursorPos++;
-          RefreshHintWindow();
-          repaint();
-          return;
+          handled = true;
+          if (cursorPos<inputLine.length())
+          {
+            cursorPos++;
+            RefreshHintWindow();
+            repaint();
+            return;
+          }
         }
       }
       else if (e.VK_ENTER == e.getKeyCode())
       {
-        AppendHistoryLine(inputLine);
-        AddLinesStatic(48,inputPrompt,inputLine);
-        if (inputLine.charAt(inputLine.length()-1) == '\\')
-          gatheredMultiLine = gatheredMultiLine + inputLine.substring(0,inputLine.length()-1);
-        else
-          PerformRequest("Out> ",gatheredMultiLine+inputLine);
-        ResetInput();
-        RefreshHintWindow();
-        repaint(0);
+        boolean handled = false;
+        if (!handled)
+        {
+          if (hintWindow != null)
+          {
+            if (hintWindow.iAllowSelection)
+            {
+              String item = hintWindow.iText[hintWindow.iCurrentPos];
+              if (lastMatchedWord.equals(item))
+              {
+                item = "(";
+              }
+              else
+              {
+                item = item.substring(lastMatchedWord.length(),item.length());
+              }
+              inputLine = inputLine.substring(0,ito) + item + inputLine.substring(ito,inputLine.length());
+              cursorPos += item.length();
+              RefreshHintWindow();
+              repaint();
+              return;
+            }
+          }
+        }
+        if (!handled)
+        {
+          if (inputLine.length() > 0)
+          {
+            AppendHistoryLine(inputLine);
+            AddLinesStatic(48,inputPrompt,inputLine);
+            if (inputLine.charAt(inputLine.length()-1) == '\\')
+              gatheredMultiLine = gatheredMultiLine + inputLine.substring(0,inputLine.length()-1);
+            else
+              PerformRequest("Out> ",gatheredMultiLine+inputLine);
+            ResetInput();
+            RefreshHintWindow();
+            repaint(0);
+          }
+        }
       }
       inputDirty=true;
       repaint();
@@ -1000,7 +1067,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   HintWindow CreateHints(int fontsize)
   {
     HintWindow hw = new HintWindow(fontsize);
-    hw.iAllowSelection = false;
     return hw;
   }
  
@@ -1036,7 +1102,10 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         if (text.substring(0,baselen).equals(the_hints.hintTexts[i].base))
         {
           if (hints == null)
-              hints = CreateHints(12 /*iDefaultFontSize*/);
+          {
+            hints = CreateHints(12 /*iDefaultFontSize*/);
+            hints.iAllowSelection = false;
+          }
           AddHintLine(hints, the_hints.hintTexts[i].hint,the_hints.hintTexts[i].description);
         }
       }
@@ -1044,41 +1113,11 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     return hints;
   }
 
-  int search_start = 0;
-  private String FindWord(Hints aHints, String current_word)
-  {
-    int nr = current_word.length();
-    if (nr>0)
-    {
-      int i;
-      while (true)
-      {
-        for (i=search_start;i<aHints.nrHintTexts;i++)
-        {
-          if (nr <= (aHints.hintTexts[i].digits).length()-1 &&
-              current_word.equals(aHints.hintTexts[i].base.substring(0,nr)))
-          {
-            search_start = i;
-            return aHints.hintTexts[i].base;
-          }
-        }
-        if (i == aHints.nrHintTexts && search_start != 0)
-        {
-          search_start = 0;
-//          goto REDO;
-        }
-        else
-        {
-          break;
-        }
-      }
-    }
-    return "";
-  }
-
+  String lastMatchedWord = "";
+  int ito=-1;
   void RefreshHintWindow()
   {
-    int ito = cursorPos;
+    ito = cursorPos;
 
     while (true)
     {
@@ -1137,17 +1176,67 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       ifrom--;
     }
 
-    String word = "";//inputLine.toString();
+    lastMatchedWord = "";
     if (ito>ifrom)
     {
-      word = inputLine.substring(ifrom,ito);
+      lastMatchedWord = inputLine.substring(ifrom,ito);
     }
 
-    String str = FindWord(the_hints, word);
-    if (str.length()>0)
-      hintWindow = TryToHint(str, str.length());
-    else
-      hintWindow = null;
+    hintWindow = null;
+    if (lastMatchedWord.length() > 0)
+    {
+//System.out.println("word is "+word);
+
+      int nr = lastMatchedWord.length();
+      int maxHintLines = 18;
+      String texts[] = new String[maxHintLines+1];
+      int nrHintLines = 0;
+
+      int i;
+      for (i=0;i<the_hints.nrHintTexts;i++)
+      {
+        if (nrHintLines == maxHintLines)
+          break;
+
+        if (nr <= (the_hints.hintTexts[i].base).length() &&
+            lastMatchedWord.equals(the_hints.hintTexts[i].base.substring(0,nr)))
+        {
+          boolean add = true;
+          if (nrHintLines > 0)
+          {
+            if (texts[nrHintLines-1].equals(the_hints.hintTexts[i].base))
+              add = false;
+          }
+          if (add)
+          {
+            texts[nrHintLines++] = the_hints.hintTexts[i].base;
+          }
+          if (nrHintLines == 1 && ito != cursorPos && lastMatchedWord.equals(the_hints.hintTexts[i].base))
+          {
+            break;
+          }
+        }
+      }
+
+      if (nrHintLines == maxHintLines)
+      {
+        texts[nrHintLines++] = "...";
+      }
+      if (nrHintLines == 1)
+      {
+        hintWindow = TryToHint(texts[0],texts[0].length());
+      }
+      else if (nrHintLines > 1)
+      {
+        hintWindow = CreateHints(12);
+        hintWindow.iAllowSelection = true;
+
+        for (i=0;i<nrHintLines;i++)
+        {
+          AddHintLine(hintWindow, texts[i],"");
+        }
+      }
+    }
   }
 
   public void InvokeCalculation(String expression)
