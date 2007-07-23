@@ -4,7 +4,6 @@
     <link rel="stylesheet" href="pager.css" TYPE="text/css" MEDIA="screen">
     <script type="text/javascript" src="datahub.js"></script>
     <script type="text/javascript" src="yacas.js"></script>
-    <script type="text/javascript" src="pager.js"></script>
     <script type="text/javascript">
       var prevOnLoad = window.onload;
       window.onload = initPage;
@@ -23,6 +22,22 @@
           {
           }
         }
+
+        if (document.location.search)
+        {
+          var bse = document.location.search;
+          if (bse.indexOf("?") == 0)
+          {
+            bse = bse.substring(1);
+          }
+          var elem = document.getElementById("tuttext");
+          if (elem)
+          {
+            elem.contentWindow.document.location.href = "journal/"+bse+"1.html";
+          }
+        }
+
+
       }
     </script>
   </head>
@@ -30,7 +45,7 @@
     <table cellpadding="3">
       <tr>
         <td>
-          <iframe width=450 height=410 frameborder=0 src="tutorials/tutorialtext1.html"></iframe>
+          <iframe id="tuttext" width=450 height=410 frameborder=0 src="tutorials/tutorialtext1.html"></iframe>
         </td>
         <td>
           <span class="yacasConsole" id="half"></span>
