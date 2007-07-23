@@ -209,7 +209,7 @@ function editExampleLinkClick()
       } 
       catch (e) 
       {
-        alert("Something seems to be wrong with Java support, the Yacas calculation center does not seem to be available. You can probably fix this by downloading a newer version of Java for your system from http://www.java.com/ .");
+        alertUpgradeJava();
       }
     }
 
@@ -264,7 +264,7 @@ function commandView(base)
         } 
         catch (e) 
         {
-        alert("Something seems to be wrong with Java support, the Yacas calculation center does not seem to be available. You can probably fix this by downloading a newer version of Java for your system from http://www.java.com/ .");
+          alertUpgradeJava();
         }
       }
     }
