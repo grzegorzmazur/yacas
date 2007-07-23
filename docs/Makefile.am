@@ -8,10 +8,10 @@
 EXTRA_DIST = \
 	about.html basicindex.html changes.html \
 	consoleedit.html consoleview.html credits.html faq.html \
-	gpl.html homepage.html jslog.js links.html pager.css \
+	gpl.html homepage.html jslog.js links.html \
 	placeholder.html plain.html recent.html \
 	tabber.css tabber.js tutorials.html yacas.css yacas.html \
-	yacas.js datahub.js yacaslogo.gif \
+	yacas.js datahub.js yacaslogo.gif journal.js \
 	tutorials/tutorialtext1.html \
 	journal/derivative.ys journal/derivative1.html journal/derivativedescr.html \
 	journal/foreword001descr.html \

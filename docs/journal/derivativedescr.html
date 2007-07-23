@@ -3,6 +3,24 @@
     <link rel="stylesheet" href="../yacas.css" TYPE="text/css" MEDIA="screen">
     <script type="text/javascript" src="../datahub.js"></script>
     <script type="text/javascript" src="../yacas.js"></script>
+    <script type="text/javascript" src="../journal.js"></script>
+
+    <script type="text/javascript">
+      try 
+      {
+        var datahub = getDatahub();
+        if (datahub)
+        {
+          datahub.setProgramMode("journal");
+          datahub.setProgramToLoadFromFile("journal/derivative.ys");
+        }
+      } 
+      catch (e) 
+      {
+        alertUpgradeJava();
+      }
+    </script>
+
     <title>Yacas journal</title>
   </head>
   <body>

@@ -1,122 +1,28 @@
 <html>
   <head>
     <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen" />
-    <script type="text/javascript" src="datahub.js"></script>
-    
     <script type="text/javascript">
-    var prevOnLoadRecent = window.onload;
-    window.onload = initPage;
-
-    function initPage()
+    if (top.location == self.location)
     {
-      if (prevOnLoadRecent)
-        prevOnLoadRecent();
-      initThisPage();
+      self.location.replace("homepage.html?"+self.location.href);
     }
-    function initThisPage()
-    {
-      if (!document.getElementsByTagName)
-      { 
-        return; 
-      }
-      var links = document.getElementsByTagName("a");
-
-      // loop through all links
-      for (var i=0; i<links.length; i++)
-      {
-        var object = links[i];
-        if (object.className)
-        {
-          if (object.id)
-          {
-            if (object.className == "linkcalc")
-            {
-              object.onmouseover=calcLinkOver;
-              object.onmouseout=calcLinkOut;
-              object.onclick=calcLinkClick;
-            }
-          }
-        }
-      }
-    }
-
-    function calcLinkOver()
-    {
-      this.style.cursor='pointer';
-      this.style.color="#AAE";
-    }
-    function calcLinkOut()
-    {
-      this.style.cursor='pointer';
-      this.style.color="#000";
-    }
-    function calcLinkClick()
-    {
-      try 
-      {
-        var datahub = getDatahub();
-        if (datahub)
-        {
-          datahub.setProgramMode("journal");
-        }
-      } 
-      catch (e) 
-      {
-        alertUpgradeJava();
-      }
-      var elem = parent.document.getElementById('LibraryFrame');
-      if (elem)
-      {
-        var base = this.id;
-        var pos = base.indexOf(":");
-        if (pos > -1)
-        {
-          base = base.substring(0,pos);
-          try 
-          {
-            var datahub = getDatahub();
-            if (datahub)
-            {
-              datahub.setProgramToLoadFromFile("journal/"+base+".ys");
-            }
-          } 
-          catch (e) 
-          {
-          }
-        }
-        elem.contentWindow.document.location.href = "journal/"+base+"descr.html";
-      }
-    }
-
     </script>
   </head>
   <body>
-    
     <h1>Yacas Journal</h1>
     <h2>Pilot edition, August 2007</h2>
-    <br />
-
-    <a class="linkcalc" id="foreword001:0">Foreword</a>
-    <br />
-    <i>2007-07-22, by Ayal Pinkus</i>
-    <br />
     <p>
+    <i>2007-07-22, by Ayal Pinkus</i><br />
+    <a href="journal/foreword001descr.html">Foreword</a> - 
       What you see here is the first version of the <i>Yacas</i> journal, which is part of the new and improved <i>Yacas</i> 
       web site. This foreword goes a little deeper in to the how and why of the redesign.
     </p>
-
-    <br />
-    <a class="linkcalc" id="derivative:1">Fun with derivatives part 1: defining the concept of a derivative in <i>Yacas</i></a>
-    <br />
-    <i>2007-07-20, by Ayal Pinkus</i>
-    <br />
     <p>
+    <i>2007-07-20, by Ayal Pinkus</i><br />
+    <a href="journal/derivativedescr.html">Fun with derivatives part 1: defining the concept of a derivative in <i>Yacas</i></a> - 
       Taking a derivative is one of the mathematical operations that is easily explained to a computer. This article shows how it can be done with a few
       lines of code in <i>Yacas</i>. You can also directly try it out, or extend the code to handle more complex cases.
     </p>
-<script type="text/javascript">
-  addDatahub();
-</script>
   </body>
 </html>
 
