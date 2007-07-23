@@ -6,25 +6,33 @@
     <script type="text/javascript" src="../journal.js"></script>
 
     <script type="text/javascript">
+/*
       var prevOnLoad = window.onload;
       window.onload = initPage;
       function initPage()
       {
         prevOnLoad();
-        try 
+        var datahub = getDatahub();
+        if (datahub)
         {
-          var datahub = getDatahub();
-          if (datahub)
+          try 
           {
             datahub.setProgramMode("journal");
+          }
+          catch (e) 
+          {
+          }
+          try 
+          {
             datahub.setProgramToLoadFromFile("journal/derivative.ys");
           }
+          catch (e) 
+          {
+            alertUpgradeJava();
+          }
         } 
-        catch (e) 
-        {
-          alertUpgradeJava();
-        }
       }
+*/
     </script>
 
     <title>Yacas journal</title>
