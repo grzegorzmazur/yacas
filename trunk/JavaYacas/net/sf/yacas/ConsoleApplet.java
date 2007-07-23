@@ -549,12 +549,26 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       else if (e.VK_ENTER == e.getKeyCode())
       {
         boolean handled = false;
+
+        if (!handled)
+        {
+          if (matchToInsert.length() > 0)
+          {
+            handled = true;
+            inputLine = inputLine.substring(0,ito) + matchToInsert + inputLine.substring(ito,inputLine.length());
+            cursorPos += matchToInsert.length();
+            RefreshHintWindow();
+            repaint();
+            return;
+          }
+        }
         if (!handled)
         {
           if (hintWindow != null)
           {
             if (hintWindow.iAllowSelection)
             {
+              handled = true;
               String item = hintWindow.iText[hintWindow.iCurrentPos];
               if (lastMatchedWord.equals(item))
               {
@@ -1114,6 +1128,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   }
 
   String lastMatchedWord = "";
+  String matchToInsert = "";
   int ito=-1;
   void RefreshHintWindow()
   {
@@ -1176,6 +1191,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       ifrom--;
     }
 
+    matchToInsert = "";
     lastMatchedWord = "";
     if (ito>ifrom)
     {
@@ -1211,6 +1227,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
           {
             texts[nrHintLines++] = the_hints.hintTexts[i].base;
           }
+          // Exact match, keep this one line
           if (nrHintLines == 1 && ito != cursorPos && lastMatchedWord.equals(the_hints.hintTexts[i].base))
           {
             break;
@@ -1224,6 +1241,10 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
       if (nrHintLines == 1)
       {
+        if (lastMatchedWord.length() < texts[0].length())
+        {
+          matchToInsert = texts[0].substring(lastMatchedWord.length(),texts[0].length());
+        }
         hintWindow = TryToHint(texts[0],texts[0].length());
       }
       else if (nrHintLines > 1)

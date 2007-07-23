@@ -80,7 +80,7 @@ class HintWindow
         if (i == iCurrentPos)
         {
           aGraphicsContext.SetColor(190,190,200);
-          aGraphicsContext.FillRect(ix,iy+(i)*aGraphicsContext.FontHeight(),w,aGraphicsContext.FontHeight());
+          aGraphicsContext.FillRect(1+ix,1+iy+(i)*aGraphicsContext.FontHeight(),w-2,aGraphicsContext.FontHeight()-2);
           aGraphicsContext.SetColor(0,0,0);
         }
         else
@@ -125,8 +125,8 @@ class HintWindow
   public  int iNrLines;
 
 
-  public  String[] iText = new String[20];
-  public  String[] iDescription = new String[20];
+  public  String[] iText = new String[64];
+  public  String[] iDescription = new String[64];
 
   public  boolean iAllowSelection = true;
   public  int iNrDescriptions;

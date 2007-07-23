@@ -58,17 +58,28 @@
         }
       }
 
-      var prevOnLoadAbout = window.onload;
+      var prevOnLoad = window.onload;
       window.onload = initPage;
 
       function initPage()
       {
-        prevOnLoadAbout();
+        prevOnLoad();
 
-        if (!document.getElementsByTagName)
-        { 
-          return; 
+        if (document.location.search)
+        {
+          var base = document.location.search;
+          if (base.indexOf("?") == 0)
+          {
+            base = base.substring(1);
+          }
+          var elem = document.getElementById("LibraryFrame");
+
+          if (elem)
+          {
+            elem.src = base;
+          }
         }
+
         var links = document.getElementsByTagName("a");
 
         // loop through all links
