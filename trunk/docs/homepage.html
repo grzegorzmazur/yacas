@@ -16,16 +16,13 @@
 
       function linkOver()
       {
-        this.style.cursor='pointer';
         this.style.color="#AAE";
       }
       function linkOut()
       {
-        this.style.cursor='pointer';
-        this.style.color="#000";
+        this.style.color="#0000ff";
       }
 
-      var prevAboutView = "about";
       function clickToAboutFrame()
       {
         if (this.id)
@@ -33,29 +30,21 @@
           var elem = document.getElementById('AboutFrame');
           if (elem)
           {
-            if (prevAboutView)
-            {
-              var lnk = document.getElementById(prevAboutView);
-              if (lnk)
-              {
-                lnk.style.textDecoration="underline";
-                lnk.style.color="#000000";
-                lnk.style.cursor = "pointer";
-              }
-            }
-            prevAboutView = this.id;
-            if (prevAboutView)
-            {
-              var lnk = document.getElementById(prevAboutView);
-              if (lnk)
-              {
-                lnk.style.textDecoration="none";
-                lnk.style.color="#AAE";
-              }
-            }
             elem.contentWindow.document.location.href = ""+this.id+".html";
           }
         }
+      }
+
+      function calcLinkOver()
+      {
+        this.style.cursor='pointer';
+        this.style.color="#AAE";
+      }
+
+      function calcLinkOut()
+      {
+        this.style.cursor='pointer';
+        this.style.color="#0000ff";
       }
 
       var prevOnLoad = window.onload;
@@ -88,22 +77,16 @@
           var object = links[i];
           if (object.className)
           {
-            if (object.id)
+            if (object.className == "aboutlink")
             {
-              if (object.className == "aboutlink")
-              {
-
-                if (object.id == "about")
-                {
-                  object.style.textDecoration="none";
-                  object.style.color="#AAE";
-                }
-                else
-                {
-                  object.style.cursor = "pointer";
-                }
-                object.onclick=clickToAboutFrame;
-              }
+              object.style.cursor = "pointer";
+              object.onclick=clickToAboutFrame;
+            }
+            if (object.className == "linkcalc")
+            {
+//              object.style.textDecoration = "none";
+              object.onmouseover=calcLinkOver;
+              object.onmouseout=calcLinkOut;
             }
           }
         }
@@ -149,19 +132,19 @@
             <tr>
               <td>
                 <br />
-                <a class="aboutlink" id="about">About</a>
+                <a class="linkcalc" href="about.html" target="AboutFrame">About</a>
                 <br />
-                <a class="aboutlink" id="gpl">Licence (GPL)</a>
+                <a class="linkcalc" href="gpl.html" target="AboutFrame">Licence (GPL)</a>
                 <br />
-                <a class="aboutlink" id="downloads">Download Yacas</a>
+                <a class="linkcalc" href="downloads.html" target="AboutFrame">Download Yacas</a>
                 <br />
-                <a class="aboutlink" id="faq">Frequently asked questions</a>
+                <a class="linkcalc" href="faq.html" target="AboutFrame">Frequently asked questions</a>
                 <br />
-                <a class="aboutlink" id="changes">Change log</a>
+                <a class="linkcalc" href="changes.html" target="AboutFrame">Change log</a>
                 <br />
-                <a class="aboutlink" id="credits">Credits</a>
+                <a class="linkcalc" href="credits.html" target="AboutFrame">Credits</a>
                 <br />
-                <a class="aboutlink" id="links">Related links</a>
+                <a class="linkcalc" href="links.html" target="AboutFrame">Related links</a>
                 <br />
                 <br />
     <script type="text/javascript">

@@ -91,9 +91,7 @@ BookList():=
 
     bl:= bl : 
      "<tr>" : "<td bgcolor=e0e0e0>
-     " : HtmlLink(bookinfo["Title"],book:"manual.html","","_top") :
-     " (here is a " : HtmlLink("no-frames version", bookinfo["BaseName"]:".html", "", "_top") : "in a single file)
-" :
+     " : HtmlLink(bookinfo["Title"],book:"manual.html","","") :
      "</tr><tr>" : "<td bgcolor=ffffff>
      " : bookinfo["Blurb"] :"</tr>";
     // this line prevents a crash :)
@@ -140,7 +138,7 @@ GenerateIndex() :=
 	ToFile("manicon.html")
 	WriteString("<html>
 	<body>
-	<a href=\"books.html\">
+	<a href=\"books.html\" target=\"ManualFrame\">
 	  <img src=\"yacaslogo.gif\" border=0>
 	</a>
 	</body>

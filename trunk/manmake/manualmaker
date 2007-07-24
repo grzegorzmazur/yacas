@@ -283,9 +283,6 @@ FramedChapterIndex(chapters):=
   bl;
 ];
 
-
-/* hier */
-
 GroupBooks(first,second):=
 [
   site["Books"][first]["Chapters"] :=
@@ -293,40 +290,6 @@ GroupBooks(first,second):=
 ];
 
 
-EmitHtmlSimple():=
-[
-  Local(filename);
-  filename:=plain["BaseName"] : ".html";
-
-WriteString("Writing ");
-WriteString(filename);
-NewLine();
-
-  ToFile(HtmlFile(filename))
-  [
-    Local(bodytext,chapter,chapters,pcc);
-    bodytext:="";
-    chapters:=AssocIndices(plain["Chapters"]);
-    bodytext:=bodytext : HtmlTag(book,plain["Title"]);
-  
-    bodytext:= bodytext : HtmlTag(bullets,SimpleChapterIndex(filename,chapters));
-  
-    ForEach(chapter,chapters)
-    [
-      pcc := plain["Chapters"][chapter];	
-      bodytext:=bodytext : (HtmlAnchor() ChapterTag(pcc["Index"]))
-                : ChapterHeader(pcc["Commands"]) : pcc["Intro"] : pcc["Body"] 
-                : "<p>  </P><HR>";
-      GarbageCollect();
-    ];
-
-    WriteString(
-      HtmlTag(html,
-              HtmlTitle(plain["Title"]) :
-              HtmlTag(body,bodytext)
-             ) );
-  ];
-];
 
 EmitHtmlFramed():=
 [
@@ -421,8 +384,8 @@ BookList():=
 
     bl:= bl : 
      "<tr>" : "<td bgcolor=e0e0e0>
-     " : HtmlLink(bookinfo["Title"],book:"manual.html","","_top") :
-/*     " or " : HtmlLink(" (single file) ",bookinfo["BaseName"]:".html","","_top") : */
+     " : HtmlLink(bookinfo["Title"],book:"manual.html","","") :
+/*     " or " : HtmlLink(" (single file) ",bookinfo["BaseName"]:".html","","") : */
      "</tr><tr>" : "<td bgcolor=ffffff>
      " : bookinfo["Blurb"] :"</tr>";
   ];
@@ -610,8 +573,6 @@ GenerateBook(BaseName) :=
 	GarbageCollect();
 	SelectBook(BaseName);
 	EmitHtmlFramed();
-// we don't really need any non-framed HTML any more, but we need this for the Makefile
-	EmitHtmlSimple();
 ];
 
 // create a combined HTML of two books as well as separate HTML files
@@ -619,7 +580,9 @@ GenerateBook(BaseName) :=
 
 GenerateTwoBooks(BaseName1, BaseName2) :=
 [
-	InitBooks();        /* Initialize book building */
+/* Initialize book building */
+/*
+	InitBooks();        
 	InitBook(BaseName1);
 	Load(BaseName1:".book");
 	GarbageCollect();
@@ -630,12 +593,9 @@ GenerateTwoBooks(BaseName1, BaseName2) :=
 	EmitHtmlFramed();
 	SelectBook(BaseName2);
 	EmitHtmlFramed();
-// we don't really need non-framed refprog.html but let's do it anyway
-	EmitHtmlSimple();
 	GroupBooks(BaseName1, BaseName2);
 	SelectBook(BaseName1);
-	EmitHtmlSimple();
-
+*/
 ];
 
 

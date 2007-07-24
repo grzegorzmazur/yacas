@@ -45,8 +45,8 @@ PDF_DOCS = intro.book.pdf coding.book.pdf essays.book.pdf ref.book.pdf \
 	refprog.book.pdf Algo.book.pdf 
 
 # refprog.html is not listed because it is generated together with ref.html
-HTMLBOOKS = intro.html coding.html essays.html ref.html \
-	Algo.html 
+HTMLBOOKS = intromanual.html codingmanual.html essaysmanual.html refmanual.html \
+	Algomanual.html 
 
 INTROCHAPTERS = FDL.chapt cl-options.chapt
 
@@ -216,19 +216,19 @@ manicon.html:  books.html $(HTMLBOOKS)
 books.html:  $(BOOKS) $(srcdir)/indexmaker $(srcdir)/styleplain
 	-echo '[DefaultDirectory("$(srcdir)/"); Use("indexmaker"); GenerateIndex();];' | $(ouryacas) -fpc
 
-intro.html : intro.book $(INTROCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
+intromanual.html : intro.book $(INTROCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("intro");];' | $(ouryacas) -fpc
 
-coding.html : coding.book $(CODINGCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
+codingmanual.html : coding.book $(CODINGCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("coding");];' | $(ouryacas) -fpc
 
-essays.html : essays.book $(ESSAYCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
+essaysmanual.html : essays.book $(ESSAYCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("essays");];' | $(ouryacas) -fpc
 
-ref.html : ref.book $(REFCHAPTERS) refprog.book $(REFPROGCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
+refmanual.html : ref.book $(REFCHAPTERS) refprog.book $(REFPROGCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateTwoBooks("ref","refprog");];' | $(ouryacas) -fpc
 
-Algo.html : Algo.book $(ALGOCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
+Algomanual.html : Algo.book $(ALGOCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("Algo");];' | $(ouryacas) -fpc
 
 ## Hook to install documentation

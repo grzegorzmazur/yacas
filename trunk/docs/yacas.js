@@ -137,12 +137,12 @@ function initPage()
 function commandLinkOver()
 {
   this.style.cursor='pointer';
-  this.style.color="#000000";
+  this.style.color="#AAE";
 }
 
 function commandLinkOut()
 {
-  this.style.color="#AAE";
+  this.style.color="#0000FF";
 }
 
 function getPlainText(text)

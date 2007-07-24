@@ -51,7 +51,9 @@ This will install the binaries to {/usr/local/bin} and the library files to {/us
 *A compiling for Mac OS X 10.4
 A note for MacOS X 10.4 users; for now loading dynamic link libraries does not work well (December 2005). So in order to build Yacas properly on Mac OS X the collowing configure command can be used:
 
-	./configure CFLAGS="-O9 -DDISABLE_DYNAMIC" CXXFLAGS="-O9 -DDISABLE_DYNAMIC" --enable-server --disable-shared
+	./configure CFLAGS="-O9 -DDISABLE_DYNAMIC" \
+	    CXXFLAGS="-O9 -DDISABLE_DYNAMIC" \
+	    --enable-server --disable-shared
 
 
 
