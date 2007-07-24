@@ -45,7 +45,7 @@ PDF_DOCS = intro.book.pdf coding.book.pdf essays.book.pdf ref.book.pdf \
 	refprog.book.pdf Algo.book.pdf 
 
 # refprog.html is not listed because it is generated together with ref.html
-HTMLBOOKS = intromanual.html codingmanual.html essaysmanual.html refmanual.html \
+HTMLBOOKS = intromanual.html codingmanual.html essaysmanual.html refmanual.html refprogmanual.html \
 	Algomanual.html 
 
 INTROCHAPTERS = FDL.chapt cl-options.chapt
@@ -226,7 +226,10 @@ essaysmanual.html : essays.book $(ESSAYCHAPTERS) $(srcdir)/manualmaker $(srcdir)
 	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("essays");];' | $(ouryacas) -fpc
 
 refmanual.html : ref.book $(REFCHAPTERS) refprog.book $(REFPROGCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
-	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateTwoBooks("ref","refprog");];' | $(ouryacas) -fpc
+	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("ref");];'    | $(ouryacas) -fpc
+
+refprogmanual.html : ref.book $(REFCHAPTERS) refprog.book $(REFPROGCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
+	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("refprog");];' | $(ouryacas) -fpc
 
 Algomanual.html : Algo.book $(ALGOCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("Algo");];' | $(ouryacas) -fpc

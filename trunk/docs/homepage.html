@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen" />
 
     <script type="text/javascript" src="tabber.js"></script>
+    <script type="text/javascript" src="yacas.js"></script>
 
     <link rel="stylesheet" href="tabber.css" TYPE="text/css" MEDIA="screen">
     <script type="text/javascript">
@@ -33,18 +34,6 @@
             elem.contentWindow.document.location.href = ""+this.id+".html";
           }
         }
-      }
-
-      function calcLinkOver()
-      {
-        this.style.cursor='pointer';
-        this.style.color="#AAE";
-      }
-
-      function calcLinkOut()
-      {
-        this.style.cursor='pointer';
-        this.style.color="#0000ff";
       }
 
       var prevOnLoad = window.onload;
@@ -81,12 +70,6 @@
             {
               object.style.cursor = "pointer";
               object.onclick=clickToAboutFrame;
-            }
-            if (object.className == "linkcalc")
-            {
-//              object.style.textDecoration = "none";
-              object.onmouseover=calcLinkOver;
-              object.onmouseout=calcLinkOut;
             }
           }
         }

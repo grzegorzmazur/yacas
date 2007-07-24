@@ -35,6 +35,11 @@ function initPage()
         {
           object.onclick=tryExampleLinkClick;
         }
+        if (object.className == "linkcalc")
+        {
+          object.onmouseover=calcLinkOver;
+          object.onmouseout=calcLinkOut;
+        }
       }
     }
   }
@@ -144,6 +149,18 @@ function commandLinkOut()
 {
   this.style.color="#0000FF";
 }
+
+function calcLinkOver()
+{
+  this.style.cursor='pointer';
+  this.style.color="#AAE";
+}
+function calcLinkOut()
+{
+  this.style.cursor='pointer';
+  this.style.color="#0000ff";
+}
+
 
 function getPlainText(text)
 {
