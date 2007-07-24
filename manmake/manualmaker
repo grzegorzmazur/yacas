@@ -567,35 +567,12 @@ YacasDocLink(bookname, text, url) :=
 // create an HTML version of a book
 GenerateBook(BaseName) :=
 [
-	InitBooks();        /* Initialize book building */
-	InitBook(BaseName);
-	Load(BaseName:".book");
-	GarbageCollect();
-	SelectBook(BaseName);
-	EmitHtmlFramed();
-];
-
-// create a combined HTML of two books as well as separate HTML files
-// -- used to prepare online help from the ref and refprog books
-
-GenerateTwoBooks(BaseName1, BaseName2) :=
-[
-/* Initialize book building */
-/*
-	InitBooks();        
-	InitBook(BaseName1);
-	Load(BaseName1:".book");
-	GarbageCollect();
-	InitBook(BaseName2);
-	Load(BaseName2:".book");
-	GarbageCollect();
-	SelectBook(BaseName1);
-	EmitHtmlFramed();
-	SelectBook(BaseName2);
-	EmitHtmlFramed();
-	GroupBooks(BaseName1, BaseName2);
-	SelectBook(BaseName1);
-*/
+  InitBooks();        /* Initialize book building */
+  InitBook(BaseName);
+  Load(BaseName:".book");
+  GarbageCollect();
+  SelectBook(BaseName);
+  EmitHtmlFramed();
 ];
 
 
