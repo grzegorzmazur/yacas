@@ -1,36 +1,26 @@
 
 html:={};
-html["0"]:="HTML";
+html["0"]:="html";
 
 book:={};
-book["0"]:="H1";
+book["0"]:="h1";
 
 chapter:={};
-chapter["0"]:="H1";
+chapter["0"]:="h1";
 
 section:={};
-section["0"]:="H2";
+section["0"]:="h2";
 
 subsection:={};
-subsection["0"]:="H3";
+subsection["0"]:="h3";
 
 topical:={};
-topical["0"]:="H5";
+topical["0"]:="h5";
 
 body:={};
-body["0"]:="BODY";
-body["BGCOLOR"]:="ffffff";
-body["LINK"]:="0000ff";
-body["VLINK"]:="0000ff";
+body["0"]:="body";
 
 indexbody:={};
-indexbody["0"]:="BODY";
-indexbody["BGCOLOR"]:="ffffff";
-indexbody["LINK"]:="000000";
-indexbody["VLINK"]:="000000";
+indexbody["0"]:="body";
 
-font:={};
-font["0"]:="FONT";
-font["FACE"]:="Verdana, Arial, Helvetica, sans-serif";
-font["SIZE"] := "3";
 

@@ -4,45 +4,45 @@
 
 /* Global defines */
 anchor:={};
-anchor["0"]:="A";
-anchor["NAME"]:="";
+anchor["0"]:="a";
+anchor["name"]:="";
 
 link:={};
-link["0"]:="A";
-link["HREF"]:="";
+link["0"]:="a";
+link["href"]:="";
 
 frameset:={};
-frameset["0"]:="FRAMESET";
-frameset["BORDER"]:="0";
+frameset["0"]:="frameset";
+frameset["border"]:="0";
 
 frame:={};
-frame["0"]:="FRAME";
+frame["0"]:="frame";
 
 caption:={};
-caption["0"]:="CAPTION";
+caption["0"]:="caption";
 
 table:={};
-table["0"]:="TABLE";
+table["0"]:="table";
 
 form:={};
-form["0"]:="FORM";
+form["0"]:="form";
 
 textarea:={};
-textarea["0"]:="TEXTAREA";
+textarea["0"]:="textarea";
 
 textfield:={};
-textfield["0"]:="INPUT";
-textfield["TYPE"]:="TEXT";
+textfield["0"]:="input";
+textfield["TYPE"]:="text";
 
 button:={};
-button["0"]:="INPUT";
-button["TYPE"]:="SUBMIT";
+button["0"]:="input";
+button["TYPE"]:="submit";
 
 bullets:={};
-bullets["0"]:="UL";
+bullets["0"]:="ul";
 
 bullet:={};
-bullet["0"]:="LI";
+bullet["0"]:="li";
 
 newline:="
 ";
@@ -52,24 +52,27 @@ Lt():="&lt;";
 
 
 
-HtmlNewParagraph():= (newline : "<P>" : newline);
+HtmlNewParagraph():= (newline : "<p>" : newline);
 
 HtmlTitle(title):=
 [
-  "<HEAD><TITLE>" : title : "</TITLE></HEAD>";
+"<head>
+  <title>" : title : "</title>
+  <link rel=\"stylesheet\" href=\"yacas.css\" TYPE=\"text/css\" MEDIA=\"screen\">
+</head>";
 ];
 
 HtmlAnchor(name):=
 [
-  anchor["NAME"]:=name;
+  anchor["name"]:=name;
   HtmlTag(anchor,"");
 ];
 Bodied("HtmlAnchor",60000);
 
 HtmlTable(cellpadding,width,body):=
 [
-  table["CELLPADDING"]:=String(cellpadding);
-  table["WIDTH"]:=width;
+  table["cellpadding"]:=String(cellpadding);
+  table["width"]:=width;
   HtmlTag(table,body);
 ];
 
@@ -84,32 +87,32 @@ HtmlCaption(title):=
 
 HtmlForm(action,body):=
 [
-  form["METHOD"]:="GET";
-  form["ACTION"]:=action;
+  form["method"]:="get";
+  form["action"]:=action;
   HtmlTag(form,body);
 ];
 
 
 HtmlTextArea(name,width,height,body) :=
 [
-  textarea["NAME"]:=name;
-  textarea["COLS"]:=String(width);
-  textarea["ROWS"]:=String(height);
+  textarea["name"]:=name;
+  textarea["cols"]:=String(width);
+  textarea["rows"]:=String(height);
   HtmlTag(textarea,body);
 ];
 
 HtmlTextField(name,size,value):=
 [
-  textfield["NAME"]:=name;
-  textfield["SIZE"]:=String(size);
-  textfield["VALUE"]:=value;
+  textfield["name"]:=name;
+  textfield["size"]:=String(size);
+  textfield["value"]:=value;
   HtmlTag(textfield,"");
 ];
 
 HtmlSubmitButton(name,value):=
 [
-  button["NAME"]:=name;
-  button["VALUE"]:=value;
+  button["name"]:=name;
+  button["value"]:=value;
   HtmlTag(button,"");
 ];
 
@@ -117,31 +120,31 @@ HtmlSubmitButton(name,value):=
 HtmlLink(description,file,tag,target):=
 [
   If(tag != "",
-    link["HREF"]:= file : "#" : tag,
-    link["HREF"]:= file);
+    link["href"]:= file : "#" : tag,
+    link["href"]:= file);
     
-  link["TARGET"] :=target;
+  link["target"] :=target;
   HtmlTag(link,description);
 ];
 
 HtmlFrameSetRows(columns,body):=
 [
-  frameset["COLS"]:="";
-  frameset["ROWS"]:=columns;
+  frameset["cols"]:="";
+  frameset["rows"]:=columns;
   HtmlTag(frameset,body);
 ];
 
 HtmlFrameSetCols(columns,body):=
 [
-  frameset["COLS"]:=columns;
-  frameset["ROWS"]:="";
+  frameset["cols"]:=columns;
+  frameset["rows"]:="";
   HtmlTag(frameset,body);
 ];
 
 HtmlFrame(source,name):=
 [
-  frame["SRC"]:=source;
-  frame["NAME"]:=name;
+  frame["src"]:=source;
+  frame["name"]:=name;
   HtmlTag(frame,"");
 ];
 
