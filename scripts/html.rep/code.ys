@@ -123,7 +123,7 @@ HtmlLink(description,file,tag,target):=
     link["href"]:= file : "#" : tag,
     link["href"]:= file);
     
-  link["target"] :=target;
+  If(target != "",link["target"] :=target);
   HtmlTag(link,description);
 ];
 

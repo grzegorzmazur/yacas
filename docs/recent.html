@@ -2,7 +2,6 @@
   <head>
     <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen" />
     <script type="text/javascript" src="datahub.js"></script>
-    
 
     <script type="text/javascript">
     if (top.location == self.location)
@@ -23,26 +22,17 @@
     }
     function initThisPage()
     {
-      if (!document.getElementsByTagName)
-      { 
-        return; 
-      }
       var links = document.getElementsByTagName("a");
-
-      // loop through all links
       for (var i=0; i<links.length; i++)
       {
         var object = links[i];
         if (object.className)
         {
-          if (object.id)
+          if (object.className == "linkcalc")
           {
-            if (object.className == "linkcalc")
-            {
-              object.onmouseover=calcLinkOver;
-              object.onmouseout=calcLinkOut;
-              object.onclick=calcLinkClick;
-            }
+            object.onmouseover=calcLinkOver;
+            object.onmouseout=calcLinkOut;
+            object.onclick=calcLinkClick;
           }
         }
       }
@@ -56,7 +46,7 @@
     function calcLinkOut()
     {
       this.style.cursor='pointer';
-      this.style.color="#000";
+      this.style.color="#0000ff";
     }
     function calcLinkClick()
     {

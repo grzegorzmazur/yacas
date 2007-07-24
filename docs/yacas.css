@@ -2,6 +2,7 @@ body
 {
 	background-color:White;
 	font-family:Verdana, Arial, Helvetica, sans-serif;	
+	font-size:12;
 }
 
 .codeEditor 
@@ -14,42 +15,42 @@ body
 
 .aboutlink
 {
-	text-decoration:underline;
-	color:#000000;
+	color:#0000ff;
+	font-family:Verdana, Arial, Helvetica, sans-serif;	
+	font-size:12;
 }
 
 .librarylink
 {
-	text-decoration:underline;
 	color:#000000;
 	cursor:pointer;
 }
 
 .commandlink 
 {
-	color:#AAE;
-	text-decoration:underline;
+	color:#0000ff;
 	cursor:pointer;
 	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:12;
 }
 
 .linkcalc
 {
-	text-decoration:underline;
-	background-color:#DDDDEE;
+	text-decoration:none;
+	color:#0000ff;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:12;
 }
 
 .editexample
 {
 	color:Blue;
-	text-decoration:underline;
 	cursor:pointer;
 }
 
 .tryexample
 {
 	color:Blue;
-	text-decoration:underline;
 	cursor:pointer;
 }
 
