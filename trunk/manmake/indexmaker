@@ -89,13 +89,6 @@ BookList():=
     Local(bookinfo);
     bookinfo:=site["Books"][book];
 
-/*TODO remove?
-    bl:= bl : 
-     "<tr>" : "<td bgcolor=e0e0e0>
-     " : HtmlLink(bookinfo["Title"],book:"manual.html","","") :
-     "</tr><tr>" : "<td bgcolor=ffffff>
-     " : bookinfo["Blurb"] :"</tr>";
-*/
     bl := bl : 
 "<p>
 <a class=\"linkcalc\" href=\"":book:"manual.html\">":bookinfo["Title"]:"</a> - ":bookinfo["Blurb"]:"
