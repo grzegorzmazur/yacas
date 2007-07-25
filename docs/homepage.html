@@ -76,8 +76,9 @@
       }
       function goToJournal()
       {
-        var elem = document.getElementById("LibraryFrame");
-        elem.contentWindow.document.location.href = "recent.html";
+        top.location.href = "yacas.html";
+//        var elem = document.getElementById("LibraryFrame");
+//        elem.contentWindow.document.location.href = "recent.html";
       }
     </script>
   </head>
@@ -85,12 +86,12 @@
     <script type="text/javascript" src="wz_tooltip.js"></script>
     <script type="text/javascript" src="tip_balloon.js"></script>
     <script type="text/javascript" src="tip_drag.js"></script>
+ <img style="cursor:pointer;" onclick="goToJournal();" src="yacaslogo.gif" width="144" height="50" align="middle" onmouseover="Tip('Home');" /> Computer calculations made easy.
 
     <div class="tabber" id="theTabs">
       <div class="tabbertab">
         <h2>Home</h2>
-        <img style="cursor:pointer;" onclick="goToJournal();" src="yacaslogo.gif" width="144" height="50" align="middle" onmouseover="Tip('Home');" /> Computer calculations made easy.
-        <iframe name="LibraryFrame" id="LibraryFrame" frameborder="0" width="800" height=3800 src="recent.html"></iframe>
+               <iframe name="LibraryFrame" id="LibraryFrame" frameborder="0" width="800" height=3800 src="recent.html"></iframe>
         <br />
       </div>
       <div class="tabbertab">
@@ -110,15 +111,7 @@
         <p>
           <table>
             <tr>
-              <td>
-                <img src="yacaslogo.gif" width="144" height="50" align="middle" /><br />
-              </td>
-              <td>
-                Computer calculations made easy.
-              </td>
-            </tr>
-            <tr>
-              <td>
+              <td valign=top>
                 <br />
                 <a class="linkcalc" href="about.html" target="AboutFrame">About</a>
                 <br />
@@ -139,22 +132,11 @@
 document.write(unescape('%3C%61%20%68%72%65%66%3D%22%6D%61%69%6C%74%6F%3A%79%61%63%61%73%2D%64%65%76%65%6C%40%6C%69%73%74%73%2E%73%6F%75%72%63%65%66%6F%72%67%65%2E%6E%65%74%22%3E%45%6D%61%69%6C%20%75%73%3C%2F%61%3E'));
     </script>
                 <br />
-                <br />
                 <A href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=2528" width="88" height="31" border="0" alt="SourceForge Logo"></A>
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
                 <br />
               </td>
               <td>
-                <iframe name="AboutFrame" id="AboutFrame" frameborder="0" width="600" height="500" src="about.html" width="100%"></iframe>
+                <iframe name="AboutFrame" id="AboutFrame" frameborder="0" width="600" height="3700" src="about.html" width="100%"></iframe>
               </td>
             </tr>
           </table>
