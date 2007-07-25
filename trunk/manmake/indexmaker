@@ -89,12 +89,19 @@ BookList():=
     Local(bookinfo);
     bookinfo:=site["Books"][book];
 
+/*TODO remove?
     bl:= bl : 
      "<tr>" : "<td bgcolor=e0e0e0>
      " : HtmlLink(bookinfo["Title"],book:"manual.html","","") :
      "</tr><tr>" : "<td bgcolor=ffffff>
      " : bookinfo["Blurb"] :"</tr>";
-    // this line prevents a crash :)
+*/
+    bl := bl : 
+"<p>
+<a class=\"linkcalc\" href=\"":book:"manual.html\">":bookinfo["Title"]:"</a> - ":bookinfo["Blurb"]:"
+</p>
+";
+
   ];
   bl;
 ];
@@ -108,7 +115,7 @@ WriteString("Creating book index"); NewLine();
     WriteString(
       HtmlTag(html,
               HtmlTitle("Yacas documentation") :
-              "<center><h1>Yacas documentation</h1></center>":
+              "<h1>Yacas documentation</h1>":
               HtmlTag(body,HtmlTable(3,"",
               BookList()))
              )
