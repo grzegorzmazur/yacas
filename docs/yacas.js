@@ -70,16 +70,17 @@ function initPage()
         }
         else if (object.className == "yacasConsole")
         {
-          var width = 900;
-          var height = 350;
+          var width = 750;
+          var height = 400;
+          var jarFile = "yacas.jar";
           if (object.id)
           {
             if (object.id == "full")
             {
             }
-            else
+            else if (object.id == "half")
             {
-              width = 450;
+              height = 200;
             }
           }
           object.innerHTML = 
@@ -180,7 +181,24 @@ function commandLinkClick()
   {
     parent.document.consoleApplet.InvokeCalculation(getPlainText(this.innerHTML));
   }
+  else if (document.consoleApplet)
+  {
+    document.consoleApplet.InvokeCalculation(getPlainText(this.innerHTML));
+  }
 }
+
+function yacasEval(expression)
+{
+  if (parent.document.consoleApplet)
+  {
+    parent.document.consoleApplet.InvokeCalculation(getPlainText(expression));
+  }
+  else if (document.consoleApplet)
+  {
+    document.consoleApplet.InvokeCalculation(getPlainText(expression));
+  }
+}
+
 
 function tryExampleLinkClick()
 {
@@ -264,7 +282,7 @@ function commandEdit(base)
     elem.contentWindow.document.location.href = base+"edit.html"+document.location.search;
   }
 }
-function commandView(base)
+function commandView(frame,base)
 {
   var datahub = getDatahub();
 
@@ -287,7 +305,7 @@ function commandView(base)
     }
   }
   {
-    var elem = parent.document.getElementById('ConsoleFrame');
+    var elem = parent.document.getElementById(frame);
     if (elem)
     {
       elem.contentWindow.document.location.href = base+"view.html"+document.location.search;

@@ -7,13 +7,19 @@
     <script type="text/javascript" src="yacas.js"></script>
   </head>
   <body>
+    <script type="text/javascript" src="wz_tooltip.js"></script>
+    <script type="text/javascript" src="tip_balloon.js"></script>
+    <script type="text/javascript" src="tip_drag.js"></script>
+
     <p>
-      <input type=button value="Run" onclick="commandView('console')" />(to save and run this code in the console)<br />
+      <input type=button value="Run" onclick="commandView('ConsoleFrame','console')" onmouseover="Tip('Save and run this code in the calculation center (note that this is a local copy of the program below).');" /><br />
       <span class="codeEdit"></span>
     </p>
-<script type="text/javascript">
-  addDatahub();
-</script>
+    <br />
+    <A href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=2528" width="88" height="31" border="0" alt="SourceForge Logo"></A>
+    <script type="text/javascript">
+      addDatahub();
+    </script>
   </body>
 </html>
 

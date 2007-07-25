@@ -12,9 +12,10 @@ EXTRA_DIST = \
 	placeholder.html plain.html recent.html \
 	tabber.css tabber.js tutorials.html yacas.css yacas.html \
 	yacas.js datahub.js yacaslogo.gif journal.js \
+	wz_tooltip.js tip_centerwindow.js tip_followscroll.js \
 	tutorials/tutorialtext1.html \
-	journal/derivative.ys journal/derivative1.html journal/derivativedescr.html \
-	journal/foreword001descr.html \
+	derivative.ys derivativeview.html derivativedescr.html derivativeframe.html derivativeedit.html \
+	foreword001descr.html \
 	yacas-screenshot.png \
         todo.html downloads.html.in \
 	bugs.txt README \

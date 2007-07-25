@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
+    <script type="text/javascript" src="yacas.js"></script>
+    <script type="text/javascript" src="datahub.js"></script>
+    <title>Fun with derivatives part 1: defining the concept of a derivative in Yacas</title>
+
+    <script type="text/javascript">
+      function gotoHREF(href) { document.location.href = href; }
+
+      var lastExample = 0;
+      function generateExample()
+      {
+        switch (lastExample)
+        {
+          case  0: yacasEval('dd(x,x);'); break;
+          case  1: yacasEval('dd(x,Sin(x))'); break;
+          case  2: yacasEval('dd(x,x)'); break;
+          case  3: yacasEval('dd(x,a)'); break;
+          case  4: yacasEval('dd(x,a*x)'); break;
+          case  5: yacasEval('dd(x,a*x^2)'); break;
+          case  6: yacasEval('dd(x,Sin(x)+x)'); break;
+          case  7: yacasEval('dd(x,a*x^n)'); break;
+          case  8: yacasEval('dd(x,Sin(a*x))'); break;
+          case  9: yacasEval('dd(x,1-a*x^Sqrt(2))'); break;
+          case 10: yacasEval('dd(x,Exp(1+Sin(a*x)))'); lastExample = -1; break;
+        }
+        lastExample = lastExample + 1;
+      }
+    </script>
+
+  </head>
+  <body>
+    <script type="text/javascript" src="wz_tooltip.js"></script>
+    <script type="text/javascript" src="tip_balloon.js"></script>
+    <script type="text/javascript" src="tip_drag.js"></script>
+
+    <input type=button value="Example" onmouseover="Tip('Generate example')" onclick="generateExample();" onclick="gotoHREF('derivativeedit.html');" />
+    <input type=button value="Edit" onmouseover="Tip('Edit the code accompanying this example')" onclick="gotoHREF('derivativeedit.html');" />
+    <input type=button value="Explain" onmouseover="Tip('Return to the accompanying article')" onclick="gotoHREF('derivativedescr.html');" />
+
+    <span class="yacasConsole" id="full"></span>
+
+    <br />
+    <A href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=2528" width="88" height="31" border="0" alt="SourceForge Logo"></A>
+
+    <script type="text/javascript">
+      addDatahub();
+    </script>
+  </body>
+</html>
+
+
