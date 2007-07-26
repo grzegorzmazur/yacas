@@ -120,8 +120,8 @@ Blurb(text):=
 
 HtmlCommand(command):=
 [
-HtmlTable(3,"90%",
-"<tr>" : "<td width=100% bgcolor=e0e0e0>" : "<pre>" : EscapeLtGt(command) : "</pre></tr>"
+HtmlTable(0,"100%",
+"<tr>" : "<td width=100% bgcolor=#DDE>" : "<pre>" : EscapeLtGt(command) : "</pre></tr>"
          );
 ];
 

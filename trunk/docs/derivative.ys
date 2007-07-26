@@ -11,6 +11,10 @@ dd(x,_y / _z) <-- (z*dd(x,y)-y*dd(x,z))/z^2;
 dd(_x,Sin(_y)) <--  dd(x,y)*Cos(y);
 dd(_x,Cos(_y)) <-- -dd(x,y)*Sin(y);
 dd(_x,Exp(_y)) <--  dd(x,y)*Exp(y);
+dd(_x,Sqrt(_y)) <--  dd(x,y)/(2*Sqrt(y));
+
+dd(_x,0,_f) <-- f;
+dd(_x,n_IsPositiveInteger,_f) <-- dd(x,n-1,dd(x,f));
 
 /* Calling function here to force the system to pre-load scripts. */
 [dd(x,Sin(x)); True;];
