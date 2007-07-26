@@ -23,18 +23,6 @@
         this.style.color="#0000ff";
       }
 
-      function clickToAboutFrame()
-      {
-        if (this.id)
-        {
-          var elem = document.getElementById('AboutFrame');
-          if (elem)
-          {
-            elem.contentWindow.document.location.href = ""+this.id+".html";
-          }
-        }
-      }
-
       var prevOnLoad = window.onload;
       window.onload = initPage;
 
@@ -56,28 +44,10 @@
             elem.src = base;
           }
         }
-
-        var links = document.getElementsByTagName("a");
-
-        // loop through all links
-        for (var i=0; i<links.length; i++)
-        {
-          var object = links[i];
-          if (object.className)
-          {
-            if (object.className == "aboutlink")
-            {
-              object.style.cursor = "pointer";
-              object.onclick=clickToAboutFrame;
-            }
-          }
-        }
       }
       function goToJournal()
       {
         top.location.href = "yacas.html";
-//        var elem = document.getElementById("LibraryFrame");
-//        elem.contentWindow.document.location.href = "recent.html";
       }
     </script>
   </head>
@@ -85,13 +55,28 @@
     <script type="text/javascript" src="wz_tooltip.js"></script>
     <script type="text/javascript" src="tip_balloon.js"></script>
     <script type="text/javascript" src="tip_drag.js"></script>
- <img style="cursor:pointer;" onclick="goToJournal();" src="yacaslogo.gif" width="144" height="50" align="middle" onmouseover="Tip('Home');" /> Computer calculations made easy.
+<table width="830" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>
+ <img style="cursor:pointer;" onclick="goToJournal();" src="yacaslogo.gif" width="144" height="50" align="middle" onmouseover="Tip('Home');" /> 
+    </td>
+    <td valign="top">
+      Computer calculations made easy.<br />
+    </td>
+    <td valign="top" align="right">
+      <a class="linkcalc" href="javascript:window.open('plain.html');">Get Yacas</a> | 
+    <script type="text/javascript">
+document.write(unescape('%3C%61%20%63%6C%61%73%73%3D%22%6C%69%6E%6B%63%61%6C%63%22%20%68%72%65%66%3D%22%6D%61%69%6C%74%6F%3A%79%61%63%61%73%2D%64%65%76%65%6C%40%6C%69%73%74%73%2E%73%6F%75%72%63%65%66%6F%72%67%65%2E%6E%65%74%22%3E%43%6F%6E%74%61%63%74%20%75%73%3C%2F%61%3E'));
+    </script>
 
+    </td>
+  <tr>
+</table>
 
     <div class="tabber" id="theTabs">
       <div class="tabbertab">
-        <h2>Home</h2>
-               <iframe name="LibraryFrame" id="LibraryFrame" frameborder="0" width="800" height=3800 src="recent.html"></iframe>
+        <h2>Articles</h2>
+               <iframe name="LibraryFrame" id="LibraryFrame" frameborder="0" width="800" height=600 src="recent.html"></iframe>
         <br />
       </div>
       <div class="tabbertab">
@@ -105,42 +90,6 @@
       <div class="tabbertab">
         <h2>Manual</h2>
         <iframe name="ManualFrame" id="ManualFrame" frameborder="0" width="800" height=600 src="books.html"></iframe>
-      </div>
-      <div class="tabbertab">
-        <h2>About Yacas</h2>
-        <p>
-          <table>
-            <tr>
-              <td valign=top>
-                <br />
-                <a class="linkcalc" href="about.html" target="AboutFrame">About</a>
-                <br />
-                <a class="linkcalc" href="gpl.html" target="AboutFrame">Licence (GPL)</a>
-                <br />
-                <a class="linkcalc" href="downloads.html" target="AboutFrame">Download Yacas</a>
-                <br />
-                <a class="linkcalc" href="faq.html" target="AboutFrame">Frequently asked questions</a>
-                <br />
-                <a class="linkcalc" href="changes.html" target="AboutFrame">Change log</a>
-                <br />
-                <a class="linkcalc" href="credits.html" target="AboutFrame">Credits</a>
-                <br />
-                <a class="linkcalc" href="links.html" target="AboutFrame">Related links</a>
-                <br />
-                <br />
-    <script type="text/javascript">
-document.write(unescape('%3C%61%20%68%72%65%66%3D%22%6D%61%69%6C%74%6F%3A%79%61%63%61%73%2D%64%65%76%65%6C%40%6C%69%73%74%73%2E%73%6F%75%72%63%65%66%6F%72%67%65%2E%6E%65%74%22%3E%45%6D%61%69%6C%20%75%73%3C%2F%61%3E'));
-    </script>
-                <br />
-                <A href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=2528" width="88" height="31" border="0" alt="SourceForge Logo"></A>
-                <br />
-              </td>
-              <td>
-                <iframe name="AboutFrame" id="AboutFrame" frameborder="0" width="600" height="3700" src="about.html" width="100%"></iframe>
-              </td>
-            </tr>
-          </table>
-        </p>
       </div>
     </div>
   </body>

@@ -106,7 +106,7 @@ function initPage()
         {
           object.innerHTML = 
 '<table width="100%">' +
-'<tr><td width=100% bgcolor=#DDE><pre>' +
+'<tr><td width=100% bgcolor="#DDDDEE"><pre>' +
 object.innerHTML +
 '</pre></tr>' +
 '</table>';

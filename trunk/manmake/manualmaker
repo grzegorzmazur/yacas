@@ -121,7 +121,7 @@ Blurb(text):=
 HtmlCommand(command):=
 [
 HtmlTable(0,"100%",
-"<tr>" : "<td width=100% bgcolor=#DDE>" : "<pre>" : EscapeLtGt(command) : "</pre></tr>"
+"<tr>" : "<td width=100% bgcolor=\"#DDDDEE\">" : "<pre>" : EscapeLtGt(command) : "</pre></tr>"
          );
 ];
 
