@@ -10,18 +10,6 @@
       function initPage()
       {
         prevOnLoad();
-        var datahub = getDatahub();
-        if (datahub)
-        {
-          try
-          {
-            datahub.setProgramMode("journal");
-          }
-          catch (e)
-          {
-          }
-        }
-
         if (document.location.search)
         {
           var bse = document.location.search;
@@ -49,7 +37,7 @@
       </tr>
       <tr>
         <td>
-          <span class="yacasConsole" id="half"></span>
+          <span class="yacasConsole" id="tutorial"></span>
 <script type="text/javascript">
   addDatahub();
 </script>

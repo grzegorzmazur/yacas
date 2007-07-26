@@ -223,6 +223,13 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         try
         {
           net.sf.yacas.DatahubApplet cons = (net.sf.yacas.DatahubApplet)dataHub;
+
+          String programMode = getParameter("programMode");
+          if (programMode != null)
+          {
+            cons.setProgramMode(programMode);
+          }
+
           String programContentsToLoad = "["+cons.getProgramToLoad()+"];";
           InvokeCalculationSilent(programContentsToLoad);
         }

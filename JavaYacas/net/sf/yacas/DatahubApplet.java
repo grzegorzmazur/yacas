@@ -21,6 +21,8 @@ public class DatahubApplet extends Applet
   {
     switch (currentProgram)
     {
+    case 2:
+      return tutorialProgram;
     case 1:
       return journalProgram;
     case 0:
@@ -32,6 +34,8 @@ public class DatahubApplet extends Applet
   {
     switch (currentProgram)
     {
+    case 2:
+      tutorialProgram = p; break;
     case 1:
       journalProgram = p; break;
     case 0:
@@ -50,11 +54,15 @@ public class DatahubApplet extends Applet
     {
       currentProgram = 1;
     }
+    else if (mode.equals("tutorial"))
+    {
+      currentProgram = 2;
+    }
   }
 
   public void setProgramToLoadFromFile(String urlStr)
   {
-    setProgramToLoad("/* Program was not loaded */\nWriteString(\"Program was not loaded.\");");
+    setProgramToLoad("/* Program was not loaded: "+urlStr+" */\n\nWriteString(\"Program was not loaded.\");\n");
 
     String docbase = getDocumentBase().toString();
     int pos = docbase.lastIndexOf('/');
@@ -71,7 +79,6 @@ public class DatahubApplet extends Applet
     try
     {
       URL url = new URL(docbase);
-//TODO remove?      DataInputStream in = new DataInputStream(url.openStream());
      BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
  
       if (in != null)
@@ -102,6 +109,7 @@ public class DatahubApplet extends Applet
   }
   static String consoleProgram = "/* You can start typing here to enter your own program. \nAfter you are done you can go back to the console with \nthe \"Run\" button. The code in this editor then gets loaded at startup. */\n";
   static String journalProgram = "";
+  static String tutorialProgram = "Echo(\"Welcome to the tutorial!\");";
   static int currentProgram = 0;
 }
  

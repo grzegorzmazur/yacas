@@ -27,14 +27,6 @@ function initPage()
           object.onmouseout=commandLinkOut;
           object.onclick=commandLinkClick;
         }
-        if (object.className == "editexample")
-        {
-          object.onclick=editExampleLinkClick;
-        }
-        if (object.className == "tryexample")
-        {
-          object.onclick=tryExampleLinkClick;
-        }
         if (object.className == "linkcalc")
         {
           object.onmouseover=calcLinkOver;
@@ -73,12 +65,11 @@ function initPage()
           var width = 750;
           var height = 400;
           var jarFile = "yacas.jar";
+          var programMode = "console";
           if (object.id)
           {
-            if (object.id == "full")
-            {
-            }
-            else if (object.id == "half")
+            programMode = object.id;
+            if (object.id == "tutorial")
             {
               height = 200;
             }
@@ -94,6 +85,7 @@ function initPage()
 '      <tr>' + 
 '        <td style="border-color:black; border-style:solid; border-width:thin;">' + 
 '          <APPLET id="consoleApplet" name="consoleApplet" archive="yacas.jar" code="net.sf.yacas.ConsoleApplet" width='+width+' height='+height+' alt="Java support seems to be disabled in your browser, so the console is not available. If you want to be able to use Yacas online, please enable Java support. Alternatively, you can go to the About Yacas tab to download Yacas and run it locally.">' + 
+'            <PARAM name="programMode" value="'+programMode+'"' + 
 '            <PARAM name="progressbar" value="true" \/>' + 
 '            <PARAM name="boxmessage" value="Loading Yacas..." \/>' + 
 '            <PARAM NAME="init1" value="Load(\'\'yacasinit.ys\'\')" \/>' + 
@@ -196,81 +188,6 @@ function yacasEval(expression)
   else if (document.consoleApplet)
   {
     document.consoleApplet.InvokeCalculation(getPlainText(expression));
-  }
-}
-
-
-function tryExampleLinkClick()
-{
-  {
-    var elem = parent.document.getElementById("theTabs");
-    if (elem)
-    if (elem.tabber)
-    {
-      elem.tabber.tabShow(1);
-    }
-  }
-
-  var elem;
-  elem = document.getElementById('ConsoleFrame');
-  if (elem == null)
-  {
-    elem = parent.document.getElementById('TutorialFrame');
-  }
-  if (elem == null)
-  {
-    elem = parent.parent.document.getElementById('TutorialFrame');
-  }
-  if (elem)
-  {
-    elem.contentWindow.document.location.href = this.id;
-  }
-}
-
-
-function editExampleLinkClick()
-{
-  if (confirm("This operation will throw away a previous program you had written. Is that ok?"))
-  {
-    var datahub = getDatahub();
-    
-    if (datahub)
-    {
-      try 
-      {
-        var program = datahub.getProgramToLoad();
-        datahub.setProgramMode("console");
-        datahub.setProgramToLoad(program);
-      } 
-      catch (e) 
-      {
-        alertUpgradeJava();
-      }
-    }
-
-    {
-      var elem = parent.document.getElementById("theTabs");
-      if (elem)
-      if (elem.tabber)
-      {
-        elem.tabber.tabShow(3);
-      }
-    }
-
-    var elem;
-    elem = document.getElementById('ConsoleFrame');
-    if (elem == null)
-    {
-      elem = parent.document.getElementById('ConsoleFrame');
-    }
-    if (elem == null)
-    {
-      elem = parent.parent.document.getElementById('ConsoleFrame');
-    }
-    if (elem)
-    {
-      elem.contentWindow.document.location.href = "../consoleedit.html";
-    }
   }
 }
 
