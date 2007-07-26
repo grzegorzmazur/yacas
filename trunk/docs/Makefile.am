@@ -15,7 +15,6 @@ EXTRA_DIST = \
 	wz_tooltip.js tip_centerwindow.js tip_followscroll.js \
 	tutorials/tutorialtext1.html \
 	derivative.ys derivativeview.html derivativedescr.html derivativeframe.html derivativeedit.html \
-	foreword001descr.html \
 	yacas-screenshot.png \
         todo.html downloads.html.in \
 	bugs.txt README \

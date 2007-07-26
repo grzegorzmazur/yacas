@@ -35,6 +35,33 @@
           }
         }
       }
+      var javaGood = true;
+      try 
+      {
+        var datahub = getDatahub();
+        if (datahub)
+        {
+          datahub.setProgramMode("journal");
+        }
+      } 
+      catch (e) 
+      {
+        javaGood = false;
+      }
+
+      if (!javaGood)
+      {
+        var element = document.getElementById("javawarn");
+        if (element)
+        {
+          element.innerHTML = 
+'<p style="color:#FF0000;">' + 
+'  Your browser does not have an up to date Java system installed. This web site uses Java ' + 
+'  to allow you to do calculations immediately online. Please visit <a href="http://www.java.com/">www.java.com</a>' + 
+'  to download and install the latest version for free.' + 
+'</p>';
+        }
+      }
     }
     function calcLinkClick()
     {
@@ -55,20 +82,16 @@
       {
         var base = this.id;
         var pos = base.indexOf(":");
-        if (pos > -1)
+        try 
         {
-          base = base.substring(0,pos);
-          try 
+          var datahub = getDatahub();
+          if (datahub)
           {
-            var datahub = getDatahub();
-            if (datahub)
-            {
-              datahub.setProgramToLoadFromFile(base+".ys");
-            }
-          } 
-          catch (e) 
-          {
+            datahub.setProgramToLoadFromFile(base+".ys");
           }
+        } 
+        catch (e) 
+        {
         }
         elem.contentWindow.document.location.href = base+"descr.html";
       }
@@ -77,23 +100,15 @@
     </script>
   </head>
   <body>
-    
-    <h1>Yacas Journal</h1>
-    <h2>Pilot edition, August 2007</h2>
-    <br />
 
-    <p>
-    <i>2007-07-22, by Ayal Pinkus</i>
-    <br />
-    <a class="linkcalc" id="foreword001:0">Foreword</a> - 
-      What you see here is the first version of the <i>Yacas</i> journal, which is part of the new and improved <i>Yacas</i> 
-      web site. This foreword goes a little deeper in to the how and why of the redesign.
-    </p>
+    <h1>Yacas Journal</h1>
+
+<span class="javawarn" id="javawarn"></span>
 
     <p>
     <i>2007-07-20, by Ayal Pinkus</i>
     <br />
-    <a class="linkcalc" id="derivative:1">Fun with derivatives part 1: defining the concept of a derivative in <i>Yacas</i></a> - 
+    <a class="linkcalc" id="derivative">Fun with derivatives part 1: defining the concept of a derivative in <i>Yacas</i></a> - 
       Taking a derivative is one of the mathematical operations that is easily explained to a computer. This article shows how it can be done with a few
       lines of code in <i>Yacas</i>. You can also directly try it out, or extend the code to handle more complex cases.
     </p>

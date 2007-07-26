@@ -234,6 +234,7 @@ SimpleChapterIndex(filename,chapters):=
     HtmlLink(chapter,filename,
        ChapterTag(plain["Chapters"][chapter]["Index"]),""));
       );
+
     sections:=AssocIndices(plain["Chapters"][chapter]["Sections"]);
     if (sections != {})
     [
@@ -248,14 +249,18 @@ FramedSectionsIndex(filename,chapter,sections):=
 [
   Local(bl,section,index);
   bl:="";
-/*  sections:=AssocIndices(plain["Chapters"][chapter]["Sections"]); */
   index:=plain["Chapters"][chapter]["Index"];
 
   ForEach(section,sections)
   [
+/*TODO remove?
     bl := bl:HtmlTag(bullet,
                      HtmlLink(section,filename,SectionTag(index,
     plain["Chapters"][chapter]["Sections"][section]),"Chapters"));
+*/
+    bl := bl : "<a href=\"":filename:"#":SectionTag(index,plain["Chapters"][chapter]["Sections"][section]):"\" target=\"Chapters\">":String(index):".":String(plain["Chapters"][chapter]["Sections"][section]):" ":section:"</a><br />";
+
+
   ];
   bl;
 ];
@@ -269,16 +274,22 @@ FramedChapterIndex(chapters):=
     Local(file,index);
     index:=plain["Chapters"][chapter]["Index"];
     file:=plain["BaseName"] : "chapter" : String(index) : ".html";
+/*TODO remove?
     bl := bl:HtmlTag(bullet,
     HtmlLink(chapter,file,
        ChapterTag(plain["Chapters"][chapter]["Index"]),"Chapters"));
       );
+*/
+    bl := bl : 
+      "<a href=\"":file:"#":ChapterTag(plain["Chapters"][chapter]["Index"]):"\" target=\"Chapters\">":String(plain["Chapters"][chapter]["Index"]):". ":chapter:"</a><br />";
+
 
     sections:=AssocIndices(plain["Chapters"][chapter]["Sections"]);
     if (sections != {})
     [
-      bl:=bl : HtmlTag(bullets,FramedSectionsIndex(file,chapter,sections));
+      bl:=bl : FramedSectionsIndex(file,chapter,sections);
     ];
+    bl:=bl:"<br />";
   ];
   bl;
 ];
