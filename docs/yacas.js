@@ -98,6 +98,23 @@ function initPage()
 '    <\/table>';
 
         }
+        else if (object.className == "yacasExpression")
+        {
+          object.innerHTML = "<tt><b>"+object.innerHTML+"</b><tt>";
+        }
+        else if (object.className == "yacasCodeSnippet")
+        {
+          object.innerHTML = 
+'<table width="100%">' +
+'<tr><td width=100% bgcolor=#DDE><pre>' +
+object.innerHTML +
+'</pre></tr>' +
+'</table>';
+        }
+
+
+
+
       }
     }
   }
