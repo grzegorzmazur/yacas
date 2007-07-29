@@ -719,34 +719,6 @@ should become apparent.
 
 *SEE Subst
 
-*CMD SetHelpBrowser, GetHelpBrowser --- set the HTML browser to use for help
-*STD
-*CALL
-	SetHelpBrowser(helpbrowser)
-
-	GetHelpBrowser()
-
-*PARMS
-
-{helpbrowser} -- string containing a html browser to use for help
-
-*DESC
-
-This function sets the help browser you want to use to
-browse the help online. It calls the help browser with the html
-page as first argument. The default value is {lynx}. If you want to
-use a different browser by default it suffices to create a
-file {~/.yacasrc} and add a line to set the browser in there.
-
-*E.G. notest
-
-	In> SetHelpBrowser("netscape")
-	Out> True
-	In> GetHelpBrowser()
-	Out> "netscape"
-	In> ??
-
-*SEE Help
 
 *CMD TraceStack --- show calling stack after an error occurs
 *CORE

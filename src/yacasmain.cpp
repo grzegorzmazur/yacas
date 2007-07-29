@@ -244,7 +244,6 @@ char* ReadInputString(char* prompt)
 {
   if (!commandline) return "False";
   char *inpline;
-REDO:
   readmode = 1;
   commandline->ReadLine(prompt);
   readmode = 0;
@@ -254,39 +253,14 @@ REDO:
   {
     if(*inpline)
     {
-      if (inpline[0] == '?')
+      if (!strncmp(inpline,"restart",7))
       {
-        if (inpline[1] == '?')
-        {
-          yacas->Evaluate("Help()");
-          goto REDO;
-        }
-        else
-        {
-          if (strlen(&inpline[1]) < 100)
-          {
-            char buf[120];
-#ifdef HAVE_VSNPRINTF
-            snprintf(buf,120,"Help(\"%s\")",&inpline[1]);
-#else
-            sprintf(buf,"Help(\"%s\")",&inpline[1]);
-#endif
-            yacas->Evaluate(buf);
-            goto REDO;
-          }
-        }
+        restart=LispTrue;
+        busy=LispFalse;
       }
-      else
+      else if (!strncmp(inpline,"quit",4))
       {
-        if (!strncmp(inpline,"restart",7))
-        {
-          restart=LispTrue;
-          busy=LispFalse;
-        }
-        else if (!strncmp(inpline,"quit",4))
-        {
-          busy=LispFalse;
-        }
+        busy=LispFalse;
       }
     }
   }
@@ -1592,8 +1566,7 @@ RESTART:
             printf(GPL_blurb);
 #endif
             printf("Numeric mode: \"%s\"\n",NumericLibraryName());
-            printf("To exit Yacas, enter  Exit(); or quit or Ctrl-c. Type ?? for help.\n");
-            printf("Or type ?function for help on a function.\n");
+            printf("To exit Yacas, enter  Exit(); or quit or Ctrl-c.\n");
             printf("Type 'restart' to restart Yacas.\n");
             printf("To see example commands, keep typing Example();\n");
         }

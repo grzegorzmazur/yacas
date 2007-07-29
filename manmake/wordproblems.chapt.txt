@@ -26,8 +26,6 @@ The full source of this example is in the file {examples/wordproblems.ys}. In th
 	True;
 	Numeric mode: "Internal"
 	To exit Yacas, enter  Exit(); or quit or Ctrl-c.
-	  Type ?? for help.
-	Or type ?function for help on a function.
 	Type 'restart' to restart Yacas.
 	To see example commands, keep typing Example();
 	In> Load("wordproblems.ys")

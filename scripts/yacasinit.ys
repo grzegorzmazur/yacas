@@ -81,31 +81,6 @@ Rule(LoadPackages, 1, 1, True)
 Use("packages.ys");
 LoadPackages(DefFileList());
 
-/* set the help system. This can be overridden in ~/.yacasrc */
-LocalSymbols(Browser) 
-[
-  RuleBase("SetHelpBrowser",{browser});
-  Rule("SetHelpBrowser",1,1,True)
-  [
-    Set(Browser,browser);
-  ];
-  RuleBase("GetHelpBrowser",{});
-  Rule("GetHelpBrowser",0,0,True) Browser;
-]; //LocalSymbols(Browser)
-
-RuleBase("Help",{f});
-RuleBase("Help",{});
-Rule("Help",1,1,True)
-[
-  SystemCall(GetHelpBrowser():" \"file://":FindFile("documentation/ref.html"):"#":f:"\"");
-];
-Rule("Help",0,1,True)
-[
-  SystemCall(GetHelpBrowser():" \"file://":FindFile("documentation/books.html"):"\"");
-];
-
-
-SetHelpBrowser("lynx");
 
 /* The read-eval-print loop */
 RuleBase("REP",{});

@@ -148,15 +148,6 @@ Statements should end with a semicolon ({;}) although this is not required
 in interactive sessions
 ({Yacas} will append a semicolon at end of line to finish the statement).
 
-*A online help
-*A {??}
-All documentation is accessible from the {Yacas} prompt. If you type
-
-	In> ??
-you should be able to read all available manuals; {Yacas} will run {lynx} or another browser to show you the HTML documentation. You can also get help on individual functions: to read about the function {Sum()}, type
-*A {?}
-	In> ?Sum
-
 *A {Example}
 Type {Example();} to get some random examples of {Yacas} calculations.
 

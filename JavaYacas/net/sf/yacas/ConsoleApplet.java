@@ -644,33 +644,11 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       outputDirty = true;
       succeed = true;
     }
-    else if (inputLine.equals("help") || inputLine.equals("?") || inputLine.equals("??"))
-    {
-      try
-      {
-        getAppletContext().showDocument( new URL("http://yacas.sourceforge.net/manindex.html"),"help");
-        succeed = true;
-      }
-      catch (Exception e)
-      {
-      }
-    }
     else if (inputLine.equals("?license") || inputLine.equals("?licence") || inputLine.equals("?warranty"))
     {
       try
       {
-        getAppletContext().showDocument( new URL("http://yacas.sourceforge.net/licence.html"),"license");
-        succeed = true;
-      }
-      catch (Exception e)
-      {
-      }
-    }
-    else if (inputLine.charAt(0) == '?')
-    {
-      try
-      {
-        getAppletContext().showDocument( new URL("http://yacas.sourceforge.net/ref.html#"+inputLine.substring(1,inputLine.length())),"help");
+        getAppletContext().showDocument( new URL("gpl.html"),"license");
         succeed = true;
       }
       catch (Exception e)
