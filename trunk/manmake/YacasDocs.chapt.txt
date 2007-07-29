@@ -36,8 +36,6 @@ If you add a new documentation book to Yacas, please include the file {FDL.chapt
 The documentation books are meant to be stand-alone
 texts, except the two "reference manual" books which are meant to be used
 together because they share a common hyperlinked table of contents.
-The Yacas {Help()} command will show a reference article from either
-of the two reference books.
 
 Stand-alone books are free-form, but reference books must be written with a
 certain template that allows online hyperlinking. The file
@@ -392,9 +390,7 @@ separate index topics, which may conflict with Yacas commands. In other
 words, document index must be tested and sometimes debugged.
 
 In the HTML docs, the index is currently not generated on a separate
-page, although HTML anchors are inserted in the text. The reference
-manual uses the HTML anchors to provide online help through the {?}
-command.
+page, although HTML anchors are inserted in the text. 
 
 An index entry may be a "topic" with "subtopics", which usually appears in book indices like this:
 	gnus, 51

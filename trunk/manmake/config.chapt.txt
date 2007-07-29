@@ -4,48 +4,10 @@
 
 *INTRO
 This section describes the special commands for the Yacas interactive sessions (for example, to restart or to exit the interpreter).
-These commands are not functions but special directives
-that only apply while running Yacas interactively.
+These commands are not functions but special directives that only apply while running Yacas interactively.
 They should not be used in scripts.
 
 
-*CMD ?, ?? --- get online help
-*CORE
-*CALL
-	?function
-	??
-*PARMS
-
-{function} -- name of function or keyword to request help on
-
-*DESC
-
-The directive {?} is used to request online help while running an interactive session. A name of a function or a help keyword can be specified.
-The corresponding reference manual section will be shown.
-(There is a special glossary section that contains keywords and explains some of the Yacas terminology.)
-
-Function names should be given without quotes.
-Note that function names are case-sensitive in Yacas but the {?} facility will also respond to all lowercase names.
-
-The directive {??} displays the index to all documentation.
-
-Documentation is displayed in a Web browser of your choice. The default choice is {lynx}.
-An alternative browser can be set using the {SetHelpBrowser} function.
-
-*E.G.
-
-Get help on a function:
-	In> ?Random
-The function name can be given in all lowercase:
-	In> ?makefunctionplugin
-
-Get help on a keyword:
-	In> ?arity
-
-Browse all documentation:
-	In> ??
-
-*SEE Help, SetHelpBrowser
 
 *CMD quit, restart, Ctrl-C --- basic session control
 *CORE
@@ -251,35 +213,6 @@ an empty string if the default pretty printer is used.
 Sets the maximum depth of recursive function call. An error message is printed when too many recursive calls are executed, and this function can be used to increase or decrease the limit as necessary.
 
 
-
-*CMD Help --- get documentation for some command
-*STD
-*CALL
-	Help()
-	Help(function)
-
-*PARMS
-
-{function} -- a string containing the name of a function to show help for
-
-*DESC
-
-When help is requested by the user, by typing {?}function or {??}, the functions {Help()} (for {??}) and {Help(}function{)} (for {?}function) are called.  By default, {lynx} is used as a
-browser (another recommended text-only browser is {links}). The help resides in the subdirectory {documentation/} under the directory the math scripts
-were installed in. So the help files can be found using {FindFile}.
-
-The function {Help} is auxiliary and should not be used to actually get online help.
-
-*E.G.
-
-To use {netscape} for browsing help, enter the following commands:
-
-	Help(_f) <-- SystemCall("netscape " :
-	  FindFile("documentation/ref.html"):"#":f);
-	Help() := SystemCall("netscape " :
-	  FindFile("documentation/books.html"));
-
-*SEE SystemCall, FindFile, ?
 
 *CMD HistorySize --- set size of history file
 *CORE

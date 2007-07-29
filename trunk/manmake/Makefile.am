@@ -258,5 +258,7 @@ install-ps: ps-docs
 	$(mkinstalldirs) $(DESTDIR)$(psdir)/
 	-for file in $(PS_DOCS); do \
 	   $(INSTALL_DATA) $$file $(DESTDIR)$(psdir)/$$file; \
-	   gzip $(DESTDIR)$(psdir)/$$file; \
 	done
+
+#	   gzip $(DESTDIR)$(psdir)/$$file; 
+
