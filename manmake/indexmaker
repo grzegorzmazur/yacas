@@ -139,7 +139,7 @@ GenerateIndex() :=
 	WriteString("<html>
 	<body>
 	<a href=\"books.html\" target=\"ManualFrame\">
-	  <img src=\"yacaslogo.gif\" border=0>
+	  Back to index of manual documents
 	</a>
 	</body>
 	</html>

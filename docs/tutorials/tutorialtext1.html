@@ -553,6 +553,15 @@
       value of a number).
     </p>
     <p>
+      Variables can also be made to be local to a small set of functions, with  <span class="yacasExpression">LocalSymbols(variables) body</span>. For example, the following code snippet:
+      <a class="commandlink">LocalSymbols(a,b) [a:=0;b:=0; inc():=[a:=a+1;b:=b-1;]; show():=Echo("a = ",a," b = ",b); ];</a> defines two functions, <span class="yacasExpression">inc</span>
+      and <span class="yacasExpression">show</span>. Calling <a class="commandlink">inc()</a> repeatedly increments <span class="yacasExpression">a</span> and decrements
+      <span class="yacasExpression">b</span>, and calling <a class="commandlink">show()</a> then shows the result. The variables are local to these two functions, as you can see
+      by evaluating <a class="commandlink">a</a> and <a class="commandlink">b</a> outside the scope of these two functions. This feature is very important when writing a larger body
+      of code, where you want to be able to guarantee that there are no unintended side-effects due to two bits of code defined in different files accidentally using the same global
+      variable.
+    </p>
+    <p>
       To illustrate these features, let us create a list of all even integers from 2 to 20 and compute the product of all those integers except 
       those divisible by 3. (What follows is not necessarily the most economical way to do it in <i>Yacas</i>.)
     </p>
