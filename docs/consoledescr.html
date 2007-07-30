@@ -17,27 +17,12 @@
 
       function initThisPage()
       {
-        if (document.location.search)
+        var elem;
+        elem = document.getElementById("thetext");
+        if (elem)
         {
-          var seach = getBase();
-          var elem;
-          elem = document.getElementById("thetext");
-          if (elem)
-          {
-            var text=datahub.getArticleBody();
-            elem.innerHTML = text;
-          }
-
-          elem = document.getElementById("therunbutton");
-          if (elem)
-          {
-            elem.onclick = tryItOut;
-          }
-          elem = document.getElementById("theeditbutton");
-          if (elem)
-          {
-            elem.onclick=goEdit;
-          }
+          var text=datahub.getArticleBody();
+          elem.innerHTML = text;
         }
       }
 
@@ -51,15 +36,6 @@
         }
         return seach;
       }
-
-      function tryItOut()
-      {
-	gotoHREF("journalview.html?"+getBase());
-      }
-      function goEdit()
-      {
-        gotoHREF('journaledit.html?'+getBase());
-      }
     </script>
   </head>
   <body>
@@ -68,8 +44,8 @@
     <table>
       <tr>
         <td>
-          <input type=button id="therunbutton" value="Try out" onmouseover="Tip('Try this example out online')" />
-          <input type=button id="theeditbutton" value="Edit article" onmouseover="Tip('Edit the code accompanying this example')" />
+          <input type=button value="Run" onclick="commandView('ConsoleFrame','console')" onmouseover="Tip('Save and run this code in the calculation center (note that this is a local copy of the program below).');" />
+          <input type=button value="Edit" onclick="gotoHREF('consoleedit.html');" onmouseover="Tip('Edit the code that gets loaded at start-up in this calculation center')" />
         </td>
       </tr>
       <tr height=50>

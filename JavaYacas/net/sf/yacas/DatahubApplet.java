@@ -30,6 +30,22 @@ public class DatahubApplet extends Applet
       return consoleProgram.codeBody;
     }
   }
+
+  public String getExample()
+  {
+    switch (currentProgram)
+    {
+    case 2:
+      return tutorialProgram.getExample();
+    case 1:
+      return journalProgram.getExample();
+    case 0:
+    default:
+      return consoleProgram.getExample();
+    }
+  }
+
+
   public String getArticle()
   {
     switch (currentProgram)
@@ -136,9 +152,9 @@ public class DatahubApplet extends Applet
     setArticle(readArticleFromFile(urlStr));
   }
   
-  static Article consoleProgram = new Article();
-  static Article journalProgram = new Article();
-  static Article tutorialProgram = new Article();
+  static Article consoleProgram = new Article("You can start entering your own program between the code delimiters below.\n\n{{code:\n:code}}\n");
+  static Article journalProgram = new Article("No article loaded yet.");
+  static Article tutorialProgram = new Article("{{code: Echo(\"Welcome to the Yacas tutorial!\"); :code}}");
   static int currentProgram = 0;
 }
  

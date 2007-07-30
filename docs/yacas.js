@@ -216,7 +216,8 @@ function commandEdit(base)
     elem.contentWindow.document.location.href = base+"edit.html"+document.location.search;
   }
 }
-function commandView(frame,base)
+
+function keepArticle()
 {
   var datahub = getDatahub();
   if (datahub)
@@ -237,11 +238,18 @@ function commandView(frame,base)
       }
     }
   }
+}
+function commandView(frame,base)
+{
+  keepArticle();
   {
     var elem = parent.document.getElementById(frame);
     if (elem)
     {
-      elem.contentWindow.document.location.href = "journalview.html"+document.location.search;
+      if (frame == 'ConsoleFrame')
+        elem.contentWindow.document.location.href = "consoleview.html";
+      else
+        elem.contentWindow.document.location.href = "journalview.html"+document.location.search;
     }
   }
 }

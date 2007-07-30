@@ -18,24 +18,14 @@
         return seach;
       }
 
-      var lastExample = 0;
       function generateExample()
       {
-        switch (lastExample)
+	var datahub = getDatahub();
+        if (datahub)
         {
-          case  0: yacasEval('dd(x,x);'); break;
-          case  1: yacasEval('dd(x,Sin(x))'); break;
-          case  2: yacasEval('dd(x,x-1)'); break;
-          case  3: yacasEval('dd(x,a)'); break;
-          case  4: yacasEval('dd(x,a*x)'); break;
-          case  5: yacasEval('dd(x,a*x^2)'); break;
-          case  6: yacasEval('dd(x,Sin(x)+x)'); break;
-          case  7: yacasEval('dd(x,a*x^n)'); break;
-          case  8: yacasEval('dd(x,Sin(a*x))'); break;
-          case  9: yacasEval('dd(x,1-a*x^Sqrt(2))'); break;
-          case 10: yacasEval('dd(x,Exp(1+Sin(a*x)))'); lastExample = -1; break;
+          var text = datahub.getExample();
+          yacasEval(""+text);
         }
-        lastExample = lastExample + 1;
       }
 
       var prevOnLoad = window.onload;
@@ -77,8 +67,8 @@
     <script type="text/javascript" src="wz_tooltip.js"></script>
 
     <input type=button value="Example" onmouseover="Tip('Generate example')" onclick="generateExample();" />
-    <input type=button id="theeditbutton" value="Edit" onmouseover="Tip('Edit the code accompanying this example')" />
-    <input type=button id="theexplainbutton" value="Explain" onmouseover="Tip('Return to the accompanying article')" />
+    <input type=button id="theeditbutton" value="Edit article" onmouseover="Tip('Edit the code accompanying this example')" />
+    <input type=button id="theexplainbutton" value="Read article" onmouseover="Tip('Return to the accompanying article')" />
 
     <span class="yacasConsole" id="journal"></span>
 

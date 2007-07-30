@@ -6,14 +6,34 @@
 
     <script type="text/javascript">
       function gotoHREF(href) { document.location.href = href; }
+
+
+      var prevOnLoad = window.onload;
+      window.onload = initPage;
+
+      function initPage()
+      {
+        if (prevOnLoad)
+          prevOnLoad();
+        elem = document.getElementById("theexplainbutton");
+        if (elem)
+        {
+          elem.onclick=goExplain;
+        }
+      }
+      function goExplain()
+      {
+        gotoHREF('consoledescr.html');
+      }
+
     </script>
   </head>
   <body>
-
     <script type="text/javascript" src="wz_tooltip.js"></script>
+    <input type=button value="Edit" onclick="gotoHREF('consoleedit.html');" onmouseover="Tip('Edit the code that gets loaded at start-up in this calculation center')" />
+    <input type=button id="theexplainbutton" value="Proof-read" onmouseover="Tip('Read article that comes with this code')" />
 
-
-    <input type=button value="Edit" onclick="gotoHREF('consoleedit.html');" onmouseover="Tip('Edit the code that gets loaded at start-up in this calculation center')" /><br />
+    <br />
     <span class="yacasConsole" id="console"></span>
     <br />
     <A href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=2528" width="88" height="31" border="0" alt="SourceForge Logo"></A>
