@@ -1,0 +1,80 @@
+<html>
+  <head>
+    <script type="text/javascript" src="datahub.js"></script>
+    <script type="text/javascript" src="yacas.js"></script>
+    <script type="text/javascript">
+      function gotoHREF(href) { document.location.href = href; }
+
+      var prevOnLoad = window.onload;
+      window.onload = initPage;
+
+      function initPage()
+      {
+        if (prevOnLoad)
+          prevOnLoad();
+        initThisPage();
+      }
+
+      function initThisPage()
+      {
+        if (document.location.search)
+        {
+          var seach = getBase();
+          var elem;
+          elem = document.getElementById("thetext");
+          if (elem)
+          {
+            elem.innerHTML = articleToHTML(datahub.currentArticle());
+          }
+
+          elem = document.getElementById("thebutton");
+          if (elem)
+          {
+            elem.onclick = tryItOut;
+          }
+        }
+      }
+
+      function getBase()
+      {
+        var seach;
+        seach = document.location.search;
+        if (seach.indexOf("?") == 0)
+        {
+          seach = seach.substring(1);
+        }
+        return seach;
+      }
+
+      function tryItOut()
+      {
+        var seach = getBase();
+	gotoHREF("journalview.html?"+seach);
+      }
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript" src="wz_tooltip.js"></script>
+
+    <table>
+      <tr>
+        <td>
+          <input type=button id="thebutton" value="Try it out" onmouseover="Tip('Try this example out online')" />
+        </td>
+      </tr>
+      <tr height=50>
+        <td>
+          <span class="dummy" id="thetext" ></span>
+          <br />
+          <A href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=2528" width="88" height="31" border="0" alt="SourceForge Logo"></A>
+        </td>
+      </tr>
+    </table>
+    <script type="text/javascript">
+      addDatahub();
+    </script>
+  </body>
+</html>
+
+
+

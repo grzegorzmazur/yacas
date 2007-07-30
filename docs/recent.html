@@ -87,13 +87,14 @@
           var datahub = getDatahub();
           if (datahub)
           {
+            datahub.readArticleFromFile(base+".txt");
             datahub.setProgramToLoadFromFile(base+".ys");
           }
         } 
         catch (e) 
         {
         }
-        elem.contentWindow.document.location.href = base+"descr.html";
+        elem.contentWindow.document.location.href = "journaldescr.html?"+base;
       }
     }
 

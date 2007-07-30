@@ -14,7 +14,8 @@ EXTRA_DIST = \
 	yacas.js datahub.js yacaslogo.gif journal.js \
 	wz_tooltip.js \
 	tutorials/tutorialtext1.html \
-	derivative.ys derivativeview.html derivativedescr.html derivativeframe.html derivativeedit.html \
+	derivative.ys derivativeframe.html derivative.txt \
+	journaldescr.html journalview.html journaledit.html \
 	yacas-screenshot.png \
         todo.html downloads.html.in \
 	bugs.txt README \
