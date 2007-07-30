@@ -24,10 +24,7 @@
           elem = document.getElementById("thetext");
           if (elem)
           {
-            var text=datahub.currentArticle();
-//alert(text);
-            text = articleToHTML(text);
-//alert(text);
+            var text=datahub.getArticleBody();
             elem.innerHTML = text;
           }
 

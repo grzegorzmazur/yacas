@@ -136,7 +136,7 @@ object.innerHTML +
           {
             try
             {
-              object.value = datahub.getProgramToLoad();
+              object.value = datahub.getArticle();
             }
             catch (e) 
             {
@@ -228,7 +228,7 @@ function commandView(frame,base)
       {
         try 
         {
-          datahub.setProgramToLoad(elem.value);
+          datahub.setArticle(elem.value);
         } 
         catch (e) 
         {
@@ -247,15 +247,6 @@ function commandView(frame,base)
 }
 
 
-function articleToHTML(text)
-{
-  text = text.replace(/!!(.+)\n/g,'<h1>$1</h1>');
-  text = text.replace(/\n\n/g,"<br /><br />");
-  text = text.replace(/\{\{/g,'<table width="100%"><tr><td width=100% bgcolor="#DDDDEE"><pre>');
-  text = text.replace(/\}\}/g,'</pre></tr></table>');
-  text = text.replace(/\{(.+)\}/g,'<tt><b>$1</b><tt>');
-  return text;
-}
 
 
 

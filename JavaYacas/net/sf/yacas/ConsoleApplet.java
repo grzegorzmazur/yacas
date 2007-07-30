@@ -230,7 +230,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
             cons.setProgramMode(programMode);
           }
 
-          String programContentsToLoad = "["+cons.getProgramToLoad()+"];";
+          String programContentsToLoad = "["+cons.getProgram()+"];";
           InvokeCalculationSilent(programContentsToLoad);
         }
         catch (Exception e)

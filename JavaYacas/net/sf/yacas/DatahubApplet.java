@@ -17,30 +17,57 @@ import java.io.*;
  
 public class DatahubApplet extends Applet
 {
-  public String getProgramToLoad()
+  public String getProgram()
   {
     switch (currentProgram)
     {
     case 2:
-      return tutorialProgram;
+      return tutorialProgram.codeBody;
     case 1:
-      return journalProgram;
+      return journalProgram.codeBody;
     case 0:
     default:
-      return consoleProgram;
+      return consoleProgram.codeBody;
     }
   }
-  public void setProgramToLoad(String p)
+  public String getArticle()
   {
     switch (currentProgram)
     {
     case 2:
-      tutorialProgram = p; break;
+      return tutorialProgram.iArticle;
     case 1:
-      journalProgram = p; break;
+      return journalProgram.iArticle;
     case 0:
     default:
-      consoleProgram = p; break;
+      return consoleProgram.iArticle;
+    }
+  }
+  public String getArticleBody()
+  {
+    switch (currentProgram)
+    {
+    case 2:
+      return tutorialProgram.articleBody;
+    case 1:
+      return journalProgram.articleBody;
+    case 0:
+    default:
+      return consoleProgram.articleBody;
+    }
+  }
+  
+  public void setArticle(String p)
+  {
+    switch (currentProgram)
+    {
+    case 2:
+      tutorialProgram.SetArticle(p); break;
+    case 1:
+      journalProgram.SetArticle(p); break;
+    case 0:
+    default:
+      consoleProgram.SetArticle(p); break;
     }
   }
 
@@ -60,7 +87,7 @@ public class DatahubApplet extends Applet
     }
   }
 
-  String readProgramFromFile(String urlStr)
+  String readArticleFromFile(String urlStr)
   {
     String docbase = getDocumentBase().toString();
     int pos = docbase.lastIndexOf('/');
@@ -82,7 +109,6 @@ public class DatahubApplet extends Applet
  
       if (in != null)
       {
-        setProgramToLoad(prog);
         while (true)
         {
           try
@@ -105,24 +131,14 @@ public class DatahubApplet extends Applet
     return prog;
   }
 
-  public void setProgramToLoadFromFile(String urlStr)
+  public void setArticleFromFile(String urlStr)
   {
-    setProgramToLoad("/* Program was not loaded: "+urlStr+" */\n\nWriteString(\"Program was not loaded.\");\n");
-    setProgramToLoad(readProgramFromFile(urlStr));
+    setArticle(readArticleFromFile(urlStr));
   }
   
-  public void readArticleFromFile(String urlStr)
-  {
-    currentArticle = readProgramFromFile(urlStr);
-  }
-  public String currentArticle()
-  {
-    return currentArticle;
-  }
-  static String consoleProgram = "/* You can start typing here to enter your own program. \nAfter you are done you can go back to the console with \nthe \"Run\" button. The code in this editor then gets loaded at startup. */\n";
-  static String journalProgram = "";
-  static String tutorialProgram = "Echo(\"Welcome to the tutorial!\");";
+  static Article consoleProgram = new Article();
+  static Article journalProgram = new Article();
+  static Article tutorialProgram = new Article();
   static int currentProgram = 0;
-  static String currentArticle = "";
 }
  

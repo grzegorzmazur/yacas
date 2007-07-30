@@ -20,7 +20,7 @@ net/sf/yacas/CDataReader.class net/sf/yacas/HintItem.class \
 net/sf/yacas/HintWindow.class net/sf/yacas/Hints.class net/sf/yacas/SelectSymbol.class net/sf/yacas/TResult.class \
 net/sf/yacas/TSentence.class net/sf/yacas/YacasInterpreter.class \
 net/sf/yacas/TWord.class net/sf/yacas/YacasGraphicsContext.class \
-net/sf/yacas/YacasNotebookComponent.class net/sf/yacas/calc.class net/sf/yacas/tegicphone.class net/sf/yacas/DatahubApplet.class
+net/sf/yacas/YacasNotebookComponent.class net/sf/yacas/calc.class net/sf/yacas/tegicphone.class net/sf/yacas/Article.class net/sf/yacas/DatahubApplet.class
 
 yacas.jar: $(CLASSES)
 	jar cvmf MANIFEST.MF yacas.jar net/sf/yacas/*.class 
