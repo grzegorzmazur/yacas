@@ -21,20 +21,34 @@
         {
           elem.onclick=goExplain;
         }
+
+      }
+      function keepCookie()
+      {
+        var elem = document.getElementById('codeText');
+        if (elem)
+        {
+//TODO store program in a cookie here
+        }
       }
       function goExplain()
       {
+        keepCookie();
         keepArticle();
         gotoHREF('consoledescr.html');
       }
-
+      function goRun()
+      {
+        keepCookie();
+	commandView('ConsoleFrame','console');
+      }
 
     </script>
   </head>
   <body>
     <script type="text/javascript" src="wz_tooltip.js"></script>
     <p>
-      <input type=button value="Run" onclick="commandView('ConsoleFrame','console')" onmouseover="Tip('Save and run this code in the calculation center (note that this is a local copy of the program below).');" />
+      <input type=button id="therunbutton" value="Run" onmouseover="Tip('Save and run this code in the calculation center (note that this is a local copy of the program below).');" />
       <input type=button id="theexplainbutton" value="Proof-read" onmouseover="Tip('Read article that comes with this code')" />
      <br />
       <span class="codeEdit"></span>
