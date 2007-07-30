@@ -2,6 +2,10 @@ package net.sf.yacas;
 
 class Article
 {
+  public Article(String aArticle)
+  {
+    SetArticle(aArticle);
+  }
   public void SetArticle(String aArticle)
   {
     iArticle = aArticle;
@@ -17,6 +21,21 @@ class Article
   public String articleBody = "";
   public String[] examples = new String[100];
   public int nrExamples = 0;
+  int currentExample = 0;
+  public String getExample()
+  {
+    String result = "\"No example defined\"";
+    if (nrExamples>0)
+    {
+      result = examples[currentExample];
+      currentExample++;
+      if (currentExample == nrExamples)
+      {
+        currentExample = 0;
+      }
+    }
+    return result;
+  }
   void processText(String aString)
   {
     int pos = aString.indexOf("\n\n");
@@ -27,7 +46,7 @@ class Article
     }
     else
     {
-      articleBody = articleBody + aString.substring(0, pos) + "\n<br />\n";
+      articleBody = articleBody + aString.substring(0, pos) + "\n<br /><br />\n";
       processText(aString.substring(pos + 2));
     }
   }

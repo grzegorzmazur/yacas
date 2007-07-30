@@ -7,7 +7,7 @@
 
 EXTRA_DIST = \
 	about.html basicindex.html changes.html \
-	consoleedit.html consoleview.html credits.html faq.html \
+	consoleedit.html consoleview.html consoledescr.html credits.html faq.html \
 	gpl.html homepage.html jslog.js links.html \
 	placeholder.html plain.html recent.html \
 	tabber.css tabber.js tutorials.html yacas.css yacas.html \

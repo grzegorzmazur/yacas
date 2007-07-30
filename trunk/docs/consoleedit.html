@@ -5,13 +5,38 @@
     <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
     <script type="text/javascript" src="datahub.js"></script>
     <script type="text/javascript" src="yacas.js"></script>
+    <script type="text/javascript">
+      function gotoHREF(href) { document.location.href = href; }
 
+
+      var prevOnLoad = window.onload;
+      window.onload = initPage;
+
+      function initPage()
+      {
+        if (prevOnLoad)
+          prevOnLoad();
+        elem = document.getElementById("theexplainbutton");
+        if (elem)
+        {
+          elem.onclick=goExplain;
+        }
+      }
+      function goExplain()
+      {
+        keepArticle();
+        gotoHREF('consoledescr.html');
+      }
+
+
+    </script>
   </head>
   <body>
     <script type="text/javascript" src="wz_tooltip.js"></script>
-
     <p>
-      <input type=button value="Run" onclick="commandView('ConsoleFrame','console')" onmouseover="Tip('Save and run this code in the calculation center (note that this is a local copy of the program below).');" /><br />
+      <input type=button value="Run" onclick="commandView('ConsoleFrame','console')" onmouseover="Tip('Save and run this code in the calculation center (note that this is a local copy of the program below).');" />
+      <input type=button id="theexplainbutton" value="Proof-read" onmouseover="Tip('Read article that comes with this code')" />
+     <br />
       <span class="codeEdit"></span>
     </p>
     <br />
