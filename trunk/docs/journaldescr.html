@@ -24,7 +24,11 @@
           elem = document.getElementById("thetext");
           if (elem)
           {
-            elem.innerHTML = articleToHTML(datahub.currentArticle());
+            var text=datahub.currentArticle();
+//alert(text);
+            text = articleToHTML(text);
+//alert(text);
+            elem.innerHTML = text;
           }
 
           elem = document.getElementById("thebutton");
