@@ -1,0 +1,38 @@
+
+/*
+ * This file contains tests to check constructs used in the 
+ * tutorials and journal entries.
+ */
+
+Verify(1+1,2);
+Verify("This text","This text");
+Verify(2+3,5);
+Verify(3*4,12);
+Verify(-(3*4),-12);
+Verify(2+3*4,14);
+Verify(6/3,2);
+Verify(1/3,1/3);
+Verify(IsNumber(N(1/3)),True);
+Verify(Sin(Pi),0);
+Verify(Min(5,1,3,-5,10),-5);
+Verify(Sqrt(2),Sqrt(2));
+Verify({1,2,3},{1,2,3});
+Verify({a,b,c}[2],b);
+Verify("abc"[2],"b");
+
+
+// Etcetera.... PLEASECHECK TODO fill out this file
+
+
+
+
+/* From derivatives example, I am using ^0.5 there because of the
+ * fact that Yacas replaces x^(1/2) with Sqrt(x).
+ */
+Verify(x^(1/2),Sqrt(x));
+
+
+
+
+
+
