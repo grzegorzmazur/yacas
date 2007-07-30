@@ -60,10 +60,8 @@ public class DatahubApplet extends Applet
     }
   }
 
-  public void setProgramToLoadFromFile(String urlStr)
+  String readProgramFromFile(String urlStr)
   {
-    setProgramToLoad("/* Program was not loaded: "+urlStr+" */\n\nWriteString(\"Program was not loaded.\");\n");
-
     String docbase = getDocumentBase().toString();
     int pos = docbase.lastIndexOf('/');
     if (pos > -1)
@@ -76,14 +74,14 @@ public class DatahubApplet extends Applet
     }
     docbase = docbase+urlStr;
 
+    String prog = "";
     try
     {
       URL url = new URL(docbase);
-     BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+      BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
  
       if (in != null)
       {
-        String prog = "";
         setProgramToLoad(prog);
         while (true)
         {
@@ -98,18 +96,33 @@ public class DatahubApplet extends Applet
           {
           }
         }
-        setProgramToLoad(prog);
         in.close();
       }
-
     }
     catch(Exception e) 
     {
     }
+    return prog;
+  }
+
+  public void setProgramToLoadFromFile(String urlStr)
+  {
+    setProgramToLoad("/* Program was not loaded: "+urlStr+" */\n\nWriteString(\"Program was not loaded.\");\n");
+    setProgramToLoad(readProgramFromFile(urlStr));
+  }
+  
+  public void readArticleFromFile(String urlStr)
+  {
+    currentArticle = readProgramFromFile(urlStr);
+  }
+  public String currentArticle()
+  {
+    return currentArticle;
   }
   static String consoleProgram = "/* You can start typing here to enter your own program. \nAfter you are done you can go back to the console with \nthe \"Run\" button. The code in this editor then gets loaded at startup. */\n";
   static String journalProgram = "";
   static String tutorialProgram = "Echo(\"Welcome to the tutorial!\");";
   static int currentProgram = 0;
+  static String currentArticle = "";
 }
  
