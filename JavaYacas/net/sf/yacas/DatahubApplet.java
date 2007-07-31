@@ -19,87 +19,105 @@ public class DatahubApplet extends Applet
 {
   public String getProgram()
   {
-    switch (currentProgram)
+    synchronized(consoleProgram)
     {
-    case 2:
-      return tutorialProgram.codeBody;
-    case 1:
-      return journalProgram.codeBody;
-    case 0:
-    default:
-      return consoleProgram.codeBody;
+      switch (currentProgram)
+      {
+      case 2:
+        return tutorialProgram.codeBody;
+      case 1:
+        return journalProgram.codeBody;
+      case 0:
+      default:
+        return consoleProgram.codeBody;
+      }
     }
   }
 
   public String getExample()
   {
-    switch (currentProgram)
+    synchronized(consoleProgram)
     {
-    case 2:
-      return tutorialProgram.getExample();
-    case 1:
-      return journalProgram.getExample();
-    case 0:
-    default:
-      return consoleProgram.getExample();
+      switch (currentProgram)
+      {
+      case 2:
+        return tutorialProgram.getExample();
+      case 1:
+        return journalProgram.getExample();
+      case 0:
+      default:
+        return consoleProgram.getExample();
+      }
     }
   }
 
 
   public String getArticle()
   {
-    switch (currentProgram)
+    synchronized(consoleProgram)
     {
-    case 2:
-      return tutorialProgram.iArticle;
-    case 1:
-      return journalProgram.iArticle;
-    case 0:
-    default:
-      return consoleProgram.iArticle;
+      switch (currentProgram)
+      {
+      case 2:
+        return tutorialProgram.iArticle;
+      case 1:
+        return journalProgram.iArticle;
+      case 0:
+      default:
+        return consoleProgram.iArticle;
+      }
     }
   }
   public String getArticleBody()
   {
-    switch (currentProgram)
+    synchronized(consoleProgram)
     {
-    case 2:
-      return tutorialProgram.articleBody;
-    case 1:
-      return journalProgram.articleBody;
-    case 0:
-    default:
-      return consoleProgram.articleBody;
+      switch (currentProgram)
+      {
+      case 2:
+        return tutorialProgram.articleBody;
+      case 1:
+        return journalProgram.articleBody;
+      case 0:
+      default:
+        return consoleProgram.articleBody;
+      }
     }
   }
   
   public void setArticle(String p)
   {
-    switch (currentProgram)
+    synchronized(consoleProgram)
     {
-    case 2:
-      tutorialProgram.SetArticle(p); break;
-    case 1:
-      journalProgram.SetArticle(p); break;
-    case 0:
-    default:
-      consoleProgram.SetArticle(p); break;
+      switch (currentProgram)
+      {
+      case 2:
+        tutorialProgram.SetArticle(p); break;
+      case 1:
+        journalProgram.SetArticle(p); break;
+      case 0:
+      default:
+        consoleProgram.SetArticle(p); break;
+      }
     }
   }
 
   public void setProgramMode(String mode)
   {
-    if (mode.equals("console"))
+    synchronized(consoleProgram)
     {
-      currentProgram = 0;
-    }
-    else if (mode.equals("journal"))
-    {
-      currentProgram = 1;
-    }
-    else if (mode.equals("tutorial"))
-    {
-      currentProgram = 2;
+      if (mode.equals("console"))
+      {
+        currentProgram = 0;
+      }
+      else if (mode.equals("journal"))
+      {
+        currentProgram = 1;
+      }
+      else if (mode.equals("tutorial"))
+      {
+        currentProgram = 2;
+      }
     }
   }
 
@@ -149,7 +167,10 @@ public class DatahubApplet extends Applet
 
   public void setArticleFromFile(String urlStr)
   {
-    setArticle(readArticleFromFile(urlStr));
+    synchronized(consoleProgram)
+    {
+      setArticle(readArticleFromFile(urlStr));
+    }
   }
   
   static Article consoleProgram = new Article("You can start entering your own program between the code delimiters below.\n\n{{code:\n:code}}\n");

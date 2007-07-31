@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
     <script type="text/javascript" src="datahub.js"></script>
     <script type="text/javascript" src="yacas.js"></script>
+    <script type="text/javascript" src="cookie.js"></script>
     <script type="text/javascript">
       function gotoHREF(href) { document.location.href = href; }
 
@@ -28,7 +29,7 @@
         var elem = document.getElementById('codeText');
         if (elem)
         {
-//TODO store program in a cookie here
+          setCookie("currentArticle",""+elem.value);
         }
       }
       function goExplain()
