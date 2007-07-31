@@ -22,6 +22,16 @@
         {
           elem.onclick=goExplain;
         }
+        elem = document.getElementById("therunbutton");
+        if (elem)
+        {
+          elem.onclick=goRun;
+        }
+        elem = document.getElementById("thesavebutton");
+        if (elem)
+        {
+          elem.onclick=goSave;
+        }
 
       }
       function keepCookie()
@@ -43,6 +53,11 @@
         keepCookie();
 	commandView('ConsoleFrame','console');
       }
+      function goSave()
+      {
+        keepCookie();
+	alert("Article saved. Next time you enter this site you should have this article back.");
+      }
 
     </script>
   </head>
@@ -51,6 +66,7 @@
     <p>
       <input type=button id="therunbutton" value="Run" onmouseover="Tip('Save and run this code in the calculation center (note that this is a local copy of the program below).');" />
       <input type=button id="theexplainbutton" value="Proof-read" onmouseover="Tip('Read article that comes with this code')" />
+      <input type=button id="thesavebutton" value="Save (in cookie)" onmouseover="Tip('Make sure this article is stored in a cookie (just in case).')" />
      <br />
       <span class="codeEdit"></span>
     </p>
