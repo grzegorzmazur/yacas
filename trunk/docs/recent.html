@@ -41,6 +41,7 @@
       try 
       {
         var datahub = getDatahub();
+        checkDatahubAvailable(datahub);
         if (datahub)
         {
           var pr = getCookie("currentArticle","false");
@@ -79,6 +80,7 @@
       try 
       {
         var datahub = getDatahub();
+        checkDatahubAvailable(datahub);
         if (datahub)
         {
           datahub.setProgramMode("journal");
@@ -96,6 +98,7 @@
         try 
         {
           var datahub = getDatahub();
+          checkDatahubAvailable(datahub);
           if (datahub)
           {
             datahub.setArticleFromFile(base+".yart");

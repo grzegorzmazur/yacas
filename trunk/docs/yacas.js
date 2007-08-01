@@ -131,7 +131,7 @@ object.innerHTML +
         if (object.className == "codeEditor")
         {
           var datahub = getDatahub();
-
+          checkDatahubAvailable(datahub);
           if (datahub)
           {
             try
@@ -197,14 +197,20 @@ function commandLinkClick()
 }
 
 function yacasEval(expression)
-{
-  if (parent.document.consoleApplet)
+{ 
+  var consoleApplet = document.consoleApplet;
+  if (!consoleApplet)
+    consoleApplet = parent.document.consoleApplet;
+  if (consoleApplet)
   {
-    parent.document.consoleApplet.InvokeCalculation(getPlainText(expression));
-  }
-  else if (document.consoleApplet)
-  {
-    document.consoleApplet.InvokeCalculation(getPlainText(expression));
+    if (!consoleApplet.isActive())
+    {
+      alert("Trying to execute an expression while the calculation center has not been initialized yet");
+    }
+    else
+    {
+      consoleApplet.InvokeCalculation(getPlainText(expression));
+    }
   }
 }
 
@@ -217,9 +223,21 @@ function commandEdit(base)
   }
 }
 
+function checkDatahubAvailable(datahub)
+{
+  if (datahub)
+  {
+    if (!datahub.isActive())
+    {
+      alert("Data hub not yet initialized");
+    }
+  }
+}
+
 function keepArticle()
 {
   var datahub = getDatahub();
+  checkDatahubAvailable(datahub);
   if (datahub)
   {
     var elem = document.getElementById('codeText');

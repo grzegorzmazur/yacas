@@ -28,6 +28,7 @@
       function generateExample()
       {
 	var datahub = getDatahub();
+        checkDatahubAvailable(datahub);
         if (datahub)
         {
           var text = datahub.getExample();
