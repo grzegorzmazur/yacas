@@ -6,6 +6,13 @@
     <title>Fun with derivatives part 1: defining the concept of a derivative in Yacas</title>
 
     <script type="text/javascript">
+
+      /* When deep link found, redirect to the tabbified main page */
+      if (top.location == self.location)
+      {
+        self.location.replace("yacas.html");
+      }
+
       function gotoHREF(href) { document.location.href = href; }
       function getBase()
       {
@@ -69,12 +76,7 @@
     <input type=button value="Example" onmouseover="Tip('Generate example')" onclick="generateExample();" />
     <input type=button id="theeditbutton" value="Edit article (locally)" onmouseover="Tip('Edit the code accompanying this example. Note you will only edit a local copy, so you can not accidentally destroy anything.',WIDTH,300)" />
     <input type=button id="theexplainbutton" value="Read article" onmouseover="Tip('Return to the accompanying article')" />
-
     <span class="yacasConsole" id="journal"></span>
-
-    <br />
-    <A href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=2528" width="88" height="31" border="0" alt="SourceForge Logo"></A>
-
     <script type="text/javascript">
       addDatahub();
     </script>

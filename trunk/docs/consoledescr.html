@@ -5,6 +5,12 @@
     <script type="text/javascript">
       function gotoHREF(href) { document.location.href = href; }
 
+      /* When deep link found, redirect to the tabbified main page */
+      if (top.location == self.location)
+      {
+        self.location.replace("yacas.html");
+      }
+
       var prevOnLoad = window.onload;
       window.onload = initPage;
 
@@ -51,8 +57,6 @@
       <tr height=50>
         <td>
           <span class="dummy" id="thetext" ></span>
-          <br />
-          <A href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=2528" width="88" height="31" border="0" alt="SourceForge Logo"></A>
         </td>
       </tr>
     </table>
