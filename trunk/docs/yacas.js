@@ -120,7 +120,13 @@ object.innerHTML +
   }
 
 
+  initCodeEditors();
+}
 
+function initCodeEditors()
+{
+  var datahub = getDatahub();
+  if (datahub.isActive())
   {
     var links = document.getElementsByTagName("textarea");
     for (var i=0; i<links.length; i++)
@@ -130,8 +136,7 @@ object.innerHTML +
       {
         if (object.className == "codeEditor")
         {
-          var datahub = getDatahub();
-          checkDatahubAvailable(datahub);
+          checkDatahubAvailable(datahub,"Init code editor");
           if (datahub)
           {
             try
@@ -147,7 +152,12 @@ object.innerHTML +
       }
     }
   }
+  else
+  {
+    setTimeout(initCodeEditors(),1000);
+  }
 }
+
 
 function commandLinkOver()
 {
@@ -223,13 +233,13 @@ function commandEdit(base)
   }
 }
 
-function checkDatahubAvailable(datahub)
+function checkDatahubAvailable(datahub,loc)
 {
   if (datahub)
   {
     if (!datahub.isActive())
     {
-      alert("Data hub not yet initialized");
+      alert("Data hub not yet initialized: "+loc);
     }
   }
 }
@@ -237,7 +247,7 @@ function checkDatahubAvailable(datahub)
 function keepArticle()
 {
   var datahub = getDatahub();
-  checkDatahubAvailable(datahub);
+  checkDatahubAvailable(datahub,"keepArticle");
   if (datahub)
   {
     var elem = document.getElementById('codeText');
