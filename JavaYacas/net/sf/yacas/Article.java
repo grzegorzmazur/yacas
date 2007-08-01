@@ -41,6 +41,10 @@ class Article
     int pos = aString.indexOf("\n\n");
     if (pos == -1)
     {
+      pos = aString.indexOf("\r\n\r\n");
+    }
+    if (pos == -1)
+    {
       articleBody = articleBody + aString;
       return;
     }
