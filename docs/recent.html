@@ -6,10 +6,11 @@
     <script type="text/javascript" src="cookie.js"></script>
 
     <script type="text/javascript">
-    if (top.location == self.location)
-    {
-      self.location.replace("homepage.html?"+self.location.href);
-    }
+      /* When deep link found, redirect to the tabbified main page */
+      if (top.location == self.location)
+      {
+        self.location.replace("yacas.html");
+      }
     </script>
 
     <script type="text/javascript">
@@ -130,9 +131,6 @@
       </td>
     </tr>
     </table>
-
-    <A href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=2528" width="88" height="31" border="0" alt="SourceForge Logo"></A>
-
     <script type="text/javascript">
       addDatahub();
     </script>

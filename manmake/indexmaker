@@ -139,7 +139,7 @@ GenerateIndex() :=
 	WriteString("<html>
 	<body>
 	<a href=\"books.html\" target=\"ManualFrame\">
-	  Back to index of manual documents
+	  Back to manuals
 	</a>
 	</body>
 	</html>

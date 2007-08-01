@@ -4,6 +4,13 @@
     <script type="text/javascript" src="datahub.js"></script>
     <script type="text/javascript" src="yacas.js"></script>
     <script type="text/javascript">
+
+      /* When deep link found, redirect to the tabbified main page */
+      if (top.location == self.location)
+      {
+        self.location.replace("yacas.html");
+      }
+
       var prevOnLoad = window.onload;
       window.onload = initPage;
 
