@@ -1257,6 +1257,11 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     repaint(0);
   }
 
+  public String calculate(String expression)
+  {
+    return yacas.Evaluate(expression);
+  }
+
   public void InvokeCalculationSilent(String expression)
   {
     outp.delete(0,outp.length());

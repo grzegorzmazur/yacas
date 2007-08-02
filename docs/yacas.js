@@ -59,6 +59,8 @@ function initPage()
 '        <\/tr>' +
 '      <\/table>';
 
+          if (object.id)
+            initCodeEditors(object.id);
         }
         else if (object.className == "yacasConsole")
         {
@@ -118,15 +120,12 @@ object.innerHTML +
       }
     }
   }
-
-
-  initCodeEditors();
 }
 
-function initCodeEditors()
+var initCodeEditors_count = 0;
+function initCodeEditors(area)
 {
   var datahub = getDatahub();
-  if (datahub.isActive())
   {
     var links = document.getElementsByTagName("textarea");
     for (var i=0; i<links.length; i++)
@@ -136,25 +135,26 @@ function initCodeEditors()
       {
         if (object.className == "codeEditor")
         {
-          checkDatahubAvailable(datahub,"Init code editor");
           if (datahub)
           {
             try
             {
+              datahub.setProgramMode(area);
               object.value = datahub.getArticle();
             }
             catch (e) 
             {
+              initCodeEditors_count = initCodeEditors_count + 1;
+              if (initCodeEditors_count < 10)
+              {
+                setTimeout("initCodeEditors('"+area+"')",1000);
+              }
             }
             object.focus();
           }
         }
       }
     }
-  }
-  else
-  {
-    setTimeout(initCodeEditors(),1000);
   }
 }
 
@@ -213,16 +213,29 @@ function yacasEval(expression)
     consoleApplet = parent.document.consoleApplet;
   if (consoleApplet)
   {
-    if (!consoleApplet.isActive())
-    {
-      alert("Trying to execute an expression while the calculation center has not been initialized yet");
-    }
-    else
-    {
-      consoleApplet.InvokeCalculation(getPlainText(expression));
-    }
+    if (consoleApplet.isActive)
+      if (!consoleApplet.isActive())
+        alert("Trying to execute an expression while the calculation center has not been initialized yet");
+    consoleApplet.InvokeCalculation(getPlainText(expression));
   }
 }
+
+// Do a calculation, returning the result as a string
+function calculate(expression)
+{ 
+  var consoleApplet = document.consoleApplet;
+  if (!consoleApplet)
+    consoleApplet = parent.document.consoleApplet;
+  if (consoleApplet)
+  {
+    if (consoleApplet.isActive)
+      if (!consoleApplet.isActive())
+        alert("Trying to execute an expression while the calculation center has not been initialized yet");
+    return consoleApplet.calculate(getPlainText(expression));
+  }
+  return "False";
+}
+
 
 function commandEdit(base)
 {
@@ -237,9 +250,12 @@ function checkDatahubAvailable(datahub,loc)
 {
   if (datahub)
   {
-    if (!datahub.isActive())
+    if (datahub.isActive)
     {
-      alert("Data hub not yet initialized: "+loc);
+      if (!datahub.isActive())
+      {
+        alert("Data hub not yet initialized: "+loc);
+      }
     }
   }
 }
