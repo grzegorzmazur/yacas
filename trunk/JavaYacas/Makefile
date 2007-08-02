@@ -151,6 +151,7 @@ net/sf/yacas/SubstBehaviour.java net/sf/yacas/SubstBehaviourBase.java net/sf/yac
 net/sf/yacas/YacasConsole.java net/sf/yacas/YacasCoreCommands.java \
 net/sf/yacas/YacasEvalCaller.java net/sf/yacas/YacasEvaluator.java net/sf/yacas/YacasParamMatcherBase.java \
 net/sf/yacas/YacasPatternPredicateBase.java net/sf/yacas/Yacasexception.java net/sf/yacas/CommonLispTokenizer.java \
+net/sf/yacas/GraphicsPrimitives.java net/sf/yacas/SBox.java net/sf/yacas/SBoxBuilder.java net/sf/yacas/TeXParser.java net/sf/yacas/FormulaViewApplet.java \
 convertfns.cpp makefile.yacas net/sf/yacas/tmp.java  net/sf/yacas/Article.java \
 todo.txt yacasconsole.html \
 net/sf/yacas/CDataReader.java net/sf/yacas/HintItem.java \

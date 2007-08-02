@@ -6,38 +6,111 @@ You need surprisingly few lines of code to actually define the operation of taki
 
 We will define the function dd, which will take two arguments. The first is the variable, the second the function to take the derivative off (with respect to the variable given as first argument).
 
-First we can tell the system that taking the derivative of a variable with respect to itself (eg. taking the derivative of {{expr:x:expr}} with respect to {{expr:x:expr}}) is one:
+First we can tell the system that taking the derivative of a variable with respect to itself yields one, 
+
+{{math:
+\frac{d}{dx} x = 1
+:math}}
+
+or in code:
+
 {{code:
 dd(_x,_x) <-- 1;
 :code}}
 The pattern on the left side has two matchable places named {{expr:_x:expr}}. This instructs <i>Yacas</i> to check that they are the same.
 
-Next we tell the system that if you take a derivative of a function with respect to a variable that that function does not depend on, the result is zero. Taking the derivative of say {{expr:f(y):expr}} with respect to {{expr:x:expr}} would yield the result zero, assuming that {{expr:f(y):expr}} does not depend on {{expr:x:expr}}.
+Next we tell the system that if you take a derivative of a function with respect to a variable that that function does not depend on, the result is zero. 
+
+Taking the derivative of an expression {{expr:y:expr}} with respect to {{expr:x:expr}} would yield the result zero, assuming that {{expr:y:expr}} does not depend on {{expr:x:expr}}, or:
+
+{{math:
+\frac{d}{dx} y = 0
+:math}}
+
+and in code:
+
 {{code:
 dd(_x,y_IsFreeOf(x)) <-- 0;
 :code}}
 Note the construct {{expr:y_IsFreeOf(x):expr}}. <i>Yacas</i> internally transforms that construct to mean {{expr:IsFreeOf(x,y):expr}}. So this pattern matches only if the expression to take the derivative off does not depend on the variable to take the derivative with respect of. The result is zero in that case.
 
 Taking derivatives is a linear operation. The derivative of an expression that adds two expressions is the derivative of the one plus the derivative of the other. This is summarized in the following rules:
+
+{{math:
+\frac{d}{dx} \left( a + b \right) = \frac{d}{dx} a + \frac{d}{dx} b
+:math}}
+{{math:
+\frac{d}{dx} \left( a - b \right) = \frac{d}{dx} a - \frac{d}{dx} b
+:math}}
+
+or in code:
+
 {{code:
 dd(_x,_a + _b)  <-- dd(x,a)+dd(x,b);
 dd(_x,_a - _b)  <-- dd(x,a)-dd(x,b);
 dd(_x,   - _b)  <--        -dd(x,b);
 :code}}
 
-Taking the derivative of a function to the power of a constant is also a well-known transform. Taking the derivative of {{expr:x^n:expr}} with respect to {{expr:x:expr}} yields {{expr:n*x^(n-1):expr}}. This can be generalized to taking the derivative of {{expr:f(x)^n:expr}} by applying the chain rule: {{expr:d(x,f(g(x))):expr}} is {{expr:d(x,g)*d(g,f):expr}}, symbolically. We will embed the chain rule within the transformation rules:
+Taking the derivative of a function to the power of a constant is also a well-known transform. 
+
+{{math:
+\frac{d}{dx} x ^ n = n x ^ \left( n - 1 \right)
+:math}}
+
+if n does not depend on x.
+
+Most transformation rules given here can be generalized by applying the chain rule: 
+
+{{math:
+\frac{d}{dx} f \left( g \left( x \right) \right) = \frac{d f \left( g \left( x \right) \right) }{dg \left( x \right) } \frac{d g \left( x \right) } {dx}
+:math}}
+
+We will embed the chain rule within the transformation rules.
+
 {{code:
 dd(_x,_y ^ z_IsFreeOf(x)) <-- dd(x,y)*z*y^(z-1);
 :code}}
 Taking the derivative of an expression that consists of one expression multiplied by the other also has a commonly known transformation rule:
+
+{{math:
+\frac{d}{dx} \left( a b \right) = a \frac{d}{dx} b + b \frac{d}{dx} a
+:math}}
+
+or in code:
 {{code:
 dd(_x,_a * _b)  <-- a*dd(x,b)+dd(x,a)*b;
 :code}}
 And so does division:
+
+{{math:
+\frac{d}{dx} \left( \frac y z \right) = \frac{z \frac{d}{dx} y - y \frac{d}{dx} z}{z ^ 2}
+:math}}
+
 {{code:
 dd(x,_y / _z) <-- (z*dd(x,y)-y*dd(x,z))/z^2;
 :code}}
 Finally we add the derivatives of a few well-known analytic functions:
+
+{{math:
+\frac{d}{dx} sin x = cos x
+:math}}
+
+{{math:
+\frac{d}{dx} cos x = - sin x
+:math}}
+
+{{math:
+\frac{d}{dx} e ^ x = e ^ x
+:math}}
+
+{{math:
+\frac{d}{dx} \sqrt x = \frac{1}{2 \sqrt x}
+:math}}
+
+
+
+and in code:
+
 {{code:
 dd(_x,Sin(_y)) <--  dd(x,y)*Cos(y);
 dd(_x,Cos(_y)) <-- -dd(x,y)*Sin(y);

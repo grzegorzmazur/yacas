@@ -221,7 +221,7 @@ function yacasEval(expression)
 }
 
 // Do a calculation, returning the result as a string
-function calculate(expression)
+function yacas_calculate(expression)
 { 
   var consoleApplet = document.consoleApplet;
   if (!consoleApplet)
@@ -236,6 +236,17 @@ function calculate(expression)
   return "False";
 }
 
+function yacas_getlasterror()
+{ 
+  var consoleApplet = document.consoleApplet;
+  if (!consoleApplet)
+    consoleApplet = parent.document.consoleApplet;
+  if (consoleApplet)
+  {
+    return consoleApplet.getLastError();
+  }
+  return "";
+}
 
 function commandEdit(base)
 {

@@ -6,8 +6,10 @@ all: net/sf/yacas/CVersion.java yacas.jar scripts.zip calc.html.hints hints.txt
 clean:
 	rm net/sf/yacas/*.class net/sf/datahub/*.class *.jar *.tgz *.zip
 
-CLASSES = net/sf/yacas/CVersion.class net/sf/yacas/InputStatus.class net/sf/yacas/LispInput.class net/sf/yacas/LispOutput.class \
-          net/sf/yacas/LispHashTable.class net/sf/yacas/LispAssociatedHash.class \
+CLASSES = \
+  net/sf/yacas/GraphicsPrimitives.class net/sf/yacas/SBox.class net/sf/yacas/SBoxBuilder.class net/sf/yacas/TeXParser.class net/sf/yacas/FormulaViewApplet.class \
+  net/sf/yacas/CVersion.class net/sf/yacas/InputStatus.class net/sf/yacas/LispInput.class net/sf/yacas/LispOutput.class \
+  net/sf/yacas/LispHashTable.class net/sf/yacas/LispAssociatedHash.class \
   net/sf/yacas/LispArgList.class net/sf/yacas/GenericClass.class net/sf/yacas/LispInfixOperator.class net/sf/yacas/LispPtr.class net/sf/yacas/LispObject.class \
   net/sf/yacas/LispPrinter.class net/sf/yacas/LispError.class net/sf/yacas/LispTokenizer.class \
    net/sf/yacas/LispParser.class net/sf/yacas/LispAtom.class net/sf/yacas/LispNumber.class net/sf/yacas/LispSubList.class net/sf/yacas/LispStandard.class \

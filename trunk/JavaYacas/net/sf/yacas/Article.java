@@ -90,6 +90,11 @@ class Article
       {
         articleBody = articleBody + "<tt><b>" + data + "</b></tt>";
       }
+
+      else if (name.equals("math"))
+      {
+        articleBody = articleBody + "<applet code=net.sf.yacas.FormulaViewApplet archive=\"yacas.jar\" width=400 height=70><param name=\"expression\" value=\""+data+"\" /></applet><br />";
+      }
       else if (name.equals("example"))
       {
         if (nrExamples < 100)
