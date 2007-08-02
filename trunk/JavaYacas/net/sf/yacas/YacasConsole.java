@@ -28,56 +28,15 @@ public class YacasConsole extends Thread
 
   public static void main(String[] argv)
   {
-/*
-try
-{
-  java.util.zip.ZipFile z = new java.util.zip.ZipFile(new File(new java.net.URI("file:/Users/ayalpinkus/projects/JavaYacas/tempscripts.zip")));
-  java.util.zip.ZipEntry e = z.getEntry("tempscripts/init.ys");
-  InputStream s = z.getInputStream(e);
-  int i;
-  char c;
-  for (i=0;i<5;i++)
-  {
-    c = (char)s.read();
-  }
-}
-catch(Exception e)
-{
-  System.out.println(e.toString());
-  return;
-}
-*/
-/*
-try
-{
-  java.net.URL url = new java.net.URL("jar:file:/Users/ayalpinkus/projects/JavaYacas/temp.zip!/temp/test.ys");
-  java.net.JarURLConnection jarConnection = (java.net.JarURLConnection)url.openConnection();
-  InputStream s = jarConnection.getInputStream();
-  int i;
-  char c;
-  for (i=0;i<5;i++)
-  {
-    c = (char)s.read();
-  }
-}
-catch(Exception e)
-{
-  System.out.println(e.toString());
-}
-*/
-
-
-
     String defaultDirectory = null;
     String archive = "";
 
-    // Search the file scripts.zip. It contains yacasinit.ys
     {
       java.net.URL detectURL = java.lang.ClassLoader.getSystemResource("yacasinit.ys");
       if (detectURL != null)
       {
-        String detect = detectURL.getPath(); // file:/home/av/src/lib/scripts.zip!/yacasinit.ys
-        archive = detect.substring(0, detect.lastIndexOf('!')); // file:/home/av/src/lib/scripts.zip
+        String detect = detectURL.getPath(); // file:/home/av/src/lib/yacas.jar!/yacasinit.ys
+        archive = detect.substring(0, detect.lastIndexOf('!')); // file:/home/av/src/lib/yacas.jar
 //System.out.println("Found archive ["+archive+"]");
       }
       else
@@ -113,16 +72,13 @@ catch(Exception e)
 
     try
     {
-    //  java.util.zip.ZipFile z = new java.util.zip.ZipFile(new File(new java.net.URI("file:/Users/ayalpinkus/projects/JavaYacas/tempscripts.zip")));
-      String zipFileName = archive;//"file:/Users/ayalpinkus/projects/JavaYacas/scripts.zip";
+      String zipFileName = archive;//"file:/Users/ayalpinkus/projects/JavaYacas/yacas.jar";
       java.util.zip.ZipFile z = new java.util.zip.ZipFile(new File(new java.net.URI(zipFileName)));
       LispStandard.zipFile = z;
-//      System.out.println("Succeeded in finding "+zipFileName);
     }
     catch(Exception e)
     {
-      System.out.println("Failed to find scripts.zip"+e.toString());
-    //  return;
+      System.out.println("Failed to find yacas.jar"+e.toString());
     }
 
 

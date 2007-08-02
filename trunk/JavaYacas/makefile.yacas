@@ -1,7 +1,7 @@
 
 .SUFFIXES: .java .class 
 
-all: net/sf/yacas/CVersion.java yacas.jar scripts.zip calc.html.hints hints.txt 
+all: net/sf/yacas/CVersion.java yacas.jar calc.html.hints hints.txt 
 
 clean:
 	rm net/sf/yacas/*.class net/sf/datahub/*.class *.jar *.tgz *.zip
@@ -26,9 +26,7 @@ net/sf/yacas/YacasNotebookComponent.class net/sf/yacas/calc.class net/sf/yacas/t
 
 yacas.jar: $(CLASSES)
 	jar cvmf MANIFEST.MF yacas.jar net/sf/yacas/*.class 
-
-scripts.zip:
-	cd ../scripts/ ; zip ../JavaYacas/scripts.zip * */* ; cd ../JavaYacas
+	cd ../scripts/ ; jar uvf ../JavaYacas/yacas.jar *
 
 .java.class:
 	javac $*.java 
