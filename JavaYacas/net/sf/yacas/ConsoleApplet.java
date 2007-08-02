@@ -1257,9 +1257,19 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     repaint(0);
   }
 
+  String lastError;
   public String calculate(String expression)
   {
-    return yacas.Evaluate(expression);
+    String result = yacas.Evaluate(expression);
+    lastError = yacas.iError;
+    return result;
+  }
+  public String getLastError()
+  {
+    if (lastError != null)
+      return lastError;
+    else
+      return "";
   }
 
   public void InvokeCalculationSilent(String expression)
