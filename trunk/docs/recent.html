@@ -40,15 +40,15 @@
       initializeApplet();
     }
 
+    var count=0;
+
     function initializeApplet()
     {
       var datahub = getDatahub();
-      if (datahub.isActive())
       {
         var javaGood = true;
         try 
         {
-          checkDatahubAvailable(datahub,"initializeApplet(recent.html)");
           if (datahub)
           {
             var pr = getCookie("currentArticle","false");
@@ -66,24 +66,28 @@
         }
         if (!javaGood)
         {
-          var element = document.getElementById("javawarn");
-          if (element)
+          count = count+1;
+          if (count < 10)
           {
-            element.innerHTML = 
-'<p style="color:#FF0000;">' + 
-'  Your browser does not have an up to date Java system installed. This web site uses Java ' + 
-'  to allow you to do calculations immediately online. Please visit <a href="http://www.java.com/">www.java.com</a>' + 
-'  to download and install the latest version for free.' + 
-'</p>' +
-'<p style="color:#FF0000;">' + 
-'  Alternatively you can go to the <a href="plain.html">simplified</a> part of our web site and download <i>yacas</i> for use off-line.' + 
-'</p>';
+            setTimeout("initializeApplet()",1000);
+          }
+          else
+          {
+              var element = document.getElementById("javawarn");
+              if (element)
+              {
+                element.innerHTML = 
+    '<p style="color:#FF0000;">' + 
+    '  Your browser does not have an up to date Java system installed. This web site uses Java ' + 
+    '  to allow you to do calculations immediately online. Please visit <a href="http://www.java.com/">www.java.com</a>' + 
+    '  to download and install the latest version for free.' + 
+    '</p>' +
+    '<p style="color:#FF0000;">' + 
+    '  Alternatively you can go to the <a href="plain.html">simplified</a> part of our web site and download <i>yacas</i> for use off-line.' + 
+    '</p>';
+              }
           }
         }
-      }
-      else
-      {
-        setTimeout(initializeApplet(),1000);
       }
     }
 
