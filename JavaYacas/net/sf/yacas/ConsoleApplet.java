@@ -166,28 +166,31 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
     {
       String docbase = getDocumentBase().toString();
+  
+//      AddLineStatic(100, ""," '" + docbase + "'.", font, Color.red);
+
       if (docbase.substring(0,4).equals("file"))
       {
         int pos = docbase.lastIndexOf("/");
-        String zipFileName = docbase.substring(0,pos+1)+"scripts.zip";
+        String zipFileName = docbase.substring(0,pos+1)+"yacas.jar";
+//        AddLineStatic(100, ""," '" + zipFileName + "'.", font, Color.red);
         try
         {
-          //  example docbase "file:/Users/ayalpinkus/projects/JavaYacas/tempscripts.zip"
           java.util.zip.ZipFile z = new java.util.zip.ZipFile(new File(new java.net.URI(zipFileName)));
           LispStandard.zipFile = z;
         }
         catch(Exception e)
         {
-          out.println("Failed to find scripts.zip");
+          out.println("Failed to find yacas.jar");
           out.println(""+zipFileName+" : \n");
           out.println(e.toString());
         }
       }
       if (docbase.startsWith("http"))
       {
-        //jar:http://www.xs4all.nl/~apinkus/scripts.zip!/
+        //jar:http://www.xs4all.nl/~apinkus/yacas.jar!/
         int pos = docbase.lastIndexOf("/");
-        String scriptBase = "jar:"+ docbase.substring(0,pos+1)+"scripts.zip!/";
+        String scriptBase = "jar:"+ docbase.substring(0,pos+1)+"yacas.jar!/";
 //        AddLineStatic(100, ""," '" + scriptBase + "'.", font, Color.red);
         yacas.Evaluate("DefaultDirectory(\""+scriptBase+"\");");
       }

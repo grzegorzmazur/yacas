@@ -21,22 +21,22 @@ public class YacasInterpreter {
         yacas = new CYacas(new StringOutput(new StringBuffer()));
         boolean scripts_found = loadScripts();
  
-        if (!scripts_found) System.err.println("Yacas error: Unable to load scripts.zip");
+        if (!scripts_found) System.err.println("Yacas error: Unable to load yacas.jar");
         yacas.Evaluate("Load(\"yacasinit.ys\");");
  
     }
  
-    /** Searches for the file scripts.zip and passes its absolute path to the Yacas interpreter.
+    /** Searches for the file yacas.jar and passes its absolute path to the Yacas interpreter.
      * This method searches in the classpath (declared i.e. in MANIFEST.MF) for the file yacasinit.ys.
-     * yacasinit.ys is inside scripts.zip.
+     * yacasinit.ys is inside yacas.jar.
      * Returns true if successful.*/
     private boolean loadScripts() {
         java.net.URL detectURL = java.lang.ClassLoader.getSystemResource("yacasinit.ys");
         // if yacasinit.ys not found:
         if (detectURL == null) return false;
  
-        String detect = detectURL.getPath(); // file:/home/av/src/lib/scripts.zip!/yacasinit.ys
-        String archive = detect.substring(0, detect.lastIndexOf('!')); // file:/home/av/src/lib/scripts.zip
+        String detect = detectURL.getPath(); // file:/home/av/src/lib/yacas.yar!/yacasinit.ys
+        String archive = detect.substring(0, detect.lastIndexOf('!')); // file:/home/av/src/lib/yacas.jar
  
         java.util.zip.ZipFile z;
         try {
@@ -46,7 +46,7 @@ public class YacasInterpreter {
             return false;
         }
  
-        // Pass the absolute path of scripts.zip to Yacas.
+        // Pass the absolute path of yacas.jar to Yacas.
         LispStandard.zipFile = z;
  
         return true;

@@ -18,12 +18,11 @@ The binary files that comprise the entire binary release
 for the Java version are:
 
 1) yacas.jar - the Java class files in one jar file.
-2) scripts.zip - all the scripts compressed in to one zip file.
-3) yacasconsole.html - the file that launches the applet.
-4) hints.txt - the hints that are shown in the applet
+2) yacasconsole.html - the file that launches the applet.
+3) hints.txt - the hints that are shown in the applet
    (the grey box with commands that match what you are typing in 
    at that moment).
-5) yacas.gif - the logo shown in the applet version.
+4) yacas.gif - the logo shown in the applet version.
 
 To get copy-pasting to work in the applet version, you need
 to tell the Java virtual machine that you trust this applet

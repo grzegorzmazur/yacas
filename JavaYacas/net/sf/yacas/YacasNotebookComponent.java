@@ -40,20 +40,15 @@ class YacasNotebookComponent // extends java.awt.Component
       if (docbase.substring(0,4).equals("file"))
       {
         int pos = docbase.lastIndexOf("/");
-        String zipFileName = docbase.substring(0,pos+1)+"scripts.zip";
+        String zipFileName = docbase.substring(0,pos+1)+"yacas.jar";
         try
         {
-        //  java.util.zip.ZipFile z = new java.util.zip.ZipFile(new File(new java.net.URI("file:/Users/ayalpinkus/projects/JavaYacas/tempscripts.zip")));
           java.util.zip.ZipFile z = new java.util.zip.ZipFile(new File(new java.net.URI(zipFileName)));
           LispStandard.zipFile = z;
           //out.println("Succeeded in finding "+zipFileName);
         }
         catch(Exception e)
         {
-          //out.println("Failed to find scripts.zip");
-          //out.println(""+zipFileName+" : \n");
-          //out.println(e.toString());
-        //  return;
         }
       }
     }

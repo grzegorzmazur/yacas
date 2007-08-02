@@ -11,7 +11,6 @@ make
 make # make a second time, for adding statically linked libraries
 sudo make install
 cd JavaYacas
-rm scripts.zip
 make -f makefile.yacas
 cd ..
 make dist
@@ -38,7 +37,6 @@ yacas --patchload -pc ../docs/downloads.html.in > downloads.html
 cp ../JavaYacas/yacas.jar .
 cp ../JavaYacas/yacasconsole.html .
 cp ../JavaYacas/hints.txt .
-cp ../JavaYacas/scripts.zip .
 
 mkdir tutorials
 mkdir journal
