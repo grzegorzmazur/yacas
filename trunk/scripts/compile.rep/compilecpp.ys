@@ -439,9 +439,9 @@ FileBuildString():=
         RunFunction(aEnvironment,aStackTop, Code_##name, CONSTANTS); \\
       } \\
       const unsigned char Code_##name[] = {
-  
+
   #define VmFunctionEnd()        CodeVmReturn};
-  
+
   #define VmJumpIfTrue(label)   CodeVmJumpIfTrue,  ((label)>>8)&0xff, (label)&0xff,
   #define VmJumpIfFalse(label)  CodeVmJumpIfFalse, ((label)>>8)&0xff, (label)&0xff,
   #define VmJump(label)         CodeVmJump,        ((label)>>8)&0xff, (label)&0xff,
@@ -462,29 +462,29 @@ FileBuildString():=
                                       (((long)fname)>>24)&0xff, (((long)fname)>>16)&0xff, \\
                                       (((long)fname)>>8)&0xff, ((long)fname)&0xff,nrargs,
   #endif
-  
+
   #define VmConsList(_n)          CodeVmConsList,_n,
 
 #else
 
-  #define VmFunction(name)    void Compiled_##name(LispEnvironment& aEnvironment,LispInt aStackTop) { register LispEnvironment::YacasArgStack& _this_stack = aEnvironment.iStack; 
+  #define VmFunction(name)    void Compiled_##name(LispEnvironment& aEnvironment,LispInt aStackTop) { register LispEnvironment::YacasArgStack& _this_stack = aEnvironment.iStack;
   #define VmFunctionEnd()        }
-  
+
   #define VmJumpIfTrue(_label)   if (ISTRUE (STACK(STACKTOP()-1))) goto _label;
   #define VmJumpIfFalse(_label)  if (ISFALSE(STACK(STACKTOP()-1))) goto _label;
   #define VmJump(_label)         goto _label;
   #define VmLabel(_label)          _label:;
-  
+
   #define VmPushNulls(_nr)            _this_stack.PushNulls(_nr);
   #define VmPush(_index)          PUSH(ARGUMENT(_index)/*.Get()*/);
   #define VmPushConstant(_constnt) PUSH(CONSTANTS[_constnt]);
-  
+
   #define VmInitRegister(_index,_constant) ARGUMENT(_index)/*.Set*/=(CONSTANTS[_constant]);
   #define VmSetRegister(_index) ARGUMENT(_index)/*.Set*/=(STACK(STACKTOP()-1)/*.Get()*/);
 
   #define VmPop(_i)               _this_stack.PopTo(_this_stack.GetStackTop() - _i);
   #define VmCall(fname,nargs)     fname(aEnvironment,STACKTOP()-(nargs+1) );
-  
+
   #define VmConsList(_n)                                                     \\
     {                                                                       \\
       LispInt i,stacktop = STACKTOP();                                      \\
@@ -510,7 +510,7 @@ static RefPtr<LispObject> CONSTANTS[<?Write(Length(constDefs));?>];
 <?
   ForEach(item,labelDefs)
   [
-    Echo(\"#define \",item[1],\" \",item[2]);
+    Echo(\"#define \",item[1],\" \",item[2],\"// constant\");
 //    Echo(\"LispObject * \",item[2],\";\");
   ];
 ?>
@@ -567,7 +567,7 @@ void <?WriteString(\"Plugin_\":pluginName);?>::Remove(LispEnvironment& aEnvironm
 {
    for (int ii = (sizeof(CONSTANTS)/sizeof(CONSTANTS[0]))-1; ii >= 0; --ii)
    {
-	  #if !HAS_NEW_CONSTANTS_IMPL
+      #if !HAS_NEW_CONSTANTS_IMPL
          if (!--CONSTANTS[ii]->iReferenceCount) delete CONSTANTS[ii];
       #else
          CONSTANTS[ii] = 0;
