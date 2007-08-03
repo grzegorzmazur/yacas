@@ -332,7 +332,7 @@ NewLine();
     WriteString(
       HtmlTag(html,
       HtmlTitle("") : newline :HtmlTag(indexbody,
-                HtmlTag(bullets,FramedChapterIndex(chapters)))
+                FramedChapterIndex(chapters))
                ) );
 
   ForEach(chapter,chapters)
