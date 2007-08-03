@@ -200,7 +200,10 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       {
         int pos = docbase.lastIndexOf("/");
         String zipFileName = docbase.substring(0,pos+1)+"yacas.jar";
-//        AddLineStatic(100, ""," '" + zipFileName + "'.", font, Color.red);
+        if (getParameter("debug") != null)
+        {
+          AddLineStatic(100, ""," '" + zipFileName + "'.", font, Color.red);
+        }
         try
         {
           java.util.zip.ZipFile z = new java.util.zip.ZipFile(new File(new java.net.URI(zipFileName)));
@@ -218,10 +221,12 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         //jar:http://www.xs4all.nl/~apinkus/yacas.jar!/
         int pos = docbase.lastIndexOf("/");
         String scriptBase = "jar:"+ docbase.substring(0,pos+1)+"yacas.jar!/";
-//        AddLineStatic(100, ""," '" + scriptBase + "'.", font, Color.red);
+        if (getParameter("debug") != null)
+        {
+          AddLineStatic(100, ""," '" + scriptBase + "'.", font, Color.red);
+        }
         yacas.Evaluate("DefaultDirectory(\""+scriptBase+"\");");
       }
- 
     }
 
 
