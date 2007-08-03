@@ -36,6 +36,11 @@ class Article
     }
     return result;
   }
+
+  public String getTestcode()
+  {
+    return testCode;
+  }
   
   public String getNrExamples()
   {

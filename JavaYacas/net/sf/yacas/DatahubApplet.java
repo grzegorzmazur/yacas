@@ -46,6 +46,14 @@ public class DatahubApplet extends Applet
     }
   }
 
+  public String getTestcode()
+  {
+    synchronized(consoleProgram)
+    {
+      return currentArticle().getTestcode();
+    }
+  }
+
 
   public String getNrExamples()
   {
