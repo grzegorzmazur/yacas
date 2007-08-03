@@ -36,6 +36,12 @@ class Article
     }
     return result;
   }
+  
+  public String getNrExamples()
+  {
+    return ""+nrExamples;
+  }
+  
   void processText(String aString)
   {
     int pos = aString.indexOf("\n\n");

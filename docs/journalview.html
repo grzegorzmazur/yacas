@@ -13,17 +13,6 @@
         self.location.replace("yacas.html");
       }
 
-      function generateExample()
-      {
-	var datahub = getDatahub();
-        checkDatahubAvailable(datahub,"generateExample");
-        if (datahub)
-        {
-          var text = datahub.getExample();
-          yacasEval(""+text);
-        }
-      }
-
       var prevOnLoad = window.onload;
       window.onload = initPage;
 
