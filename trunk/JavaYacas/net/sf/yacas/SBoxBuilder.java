@@ -309,7 +309,7 @@ class SBoxBuilder
         Dimension ndim = iExpressions[0].getDimension();
         Dimension ddim = iExpressions[1].getDimension();
         
-        int ynumer = aPosition.y-SBoxBuilder.FontForSize(iSize)/2-2;
+        int ynumer = aPosition.y-ndim.height + SBoxBuilder.FontForSize(iSize)/2-2;
         int ydenom = aPosition.y+iExpressions[1].getCalculatedAscent()-SBoxBuilder.FontForSize(iSize)/2+6-2;
         iExpressions[0].calculatePositions(g,aSize,new java.awt.Point(aPosition.x + (iDimension.width-ndim.width)/2,ynumer));
         iExpressions[1].calculatePositions(g,aSize,new java.awt.Point(aPosition.x + (iDimension.width-ddim.width)/2,ydenom));

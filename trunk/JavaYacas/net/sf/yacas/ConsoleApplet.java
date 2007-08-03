@@ -42,7 +42,7 @@ import java.applet.*;
 import java.io.*;
 import java.net.*;
 
-public class ConsoleApplet extends Applet implements KeyListener, FocusListener, ClipboardOwner
+public class ConsoleApplet extends Applet implements KeyListener, FocusListener, ClipboardOwner, MouseListener
 {
   AppletOutput out;
 
@@ -54,7 +54,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     addKeyListener(this);
     addFocusListener(this);
 
-//    addMouseListener(this);
+    addMouseListener(this);
 
     out = new AppletOutput(this);
     ResetInput();
@@ -84,6 +84,33 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     inputDirty = true;
     outputDirty = true;
     repaint();
+  }
+
+  public void mouseClicked(MouseEvent event) 
+  {
+  }
+  public void mouseEntered(MouseEvent event) 
+  {
+  }
+  public void mouseExited(MouseEvent event) 
+  {
+  }
+  public void mousePressed(MouseEvent event) 
+  {
+  }
+  public void mouseReleased(MouseEvent event) 
+  {
+    if (hintWindow != null)
+    {
+      if (matchToInsert.length() > 0)
+      {
+        inputLine = inputLine.substring(0,ito) + matchToInsert + inputLine.substring(ito,inputLine.length());
+        cursorPos += matchToInsert.length();
+        RefreshHintWindow();
+        repaint();
+        return;
+      }
+    }
   }
 
   public void lostOwnership(Clipboard clipboard, Transferable contents)
