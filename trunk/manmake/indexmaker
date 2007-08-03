@@ -136,14 +136,18 @@ GenerateIndex() :=
 	Use("styleplain");
 	
 	ToFile("manicon.html")
-	WriteString("<html>
-	<body>
-	<a href=\"books.html\" target=\"ManualFrame\">
-	  Back to manuals
-	</a>
-	</body>
-	</html>
-	");
+	WriteString("
+<html>
+  <head>
+    <link rel=\"stylesheet\" href=\"yacas.css\" TYPE=\"text/css\" MEDIA=\"screen\">
+  </head>
+  <body>
+    <a href=\"books.html\" target=\"ManualFrame\">
+      Back to manuals
+    </a>
+  </body>
+</html>
+");
 
 	SetHtmlDirectory("");
 	Use("styleplain");  /* style sheet for the documentation */

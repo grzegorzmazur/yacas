@@ -50,4 +50,29 @@ table
 	font-size:12;
 }
 
+a
+{
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a:link
+{
+  color:#0000FF;
+}
+
+a:visited
+{
+  color:#FF00FF;
+}
+
+a:hover
+{
+  color:#AAAAEE;
+}
+
+a:active
+{
+  color:#FF0000;
+}
 
