@@ -17,20 +17,24 @@ import java.io.*;
  
 public class DatahubApplet extends Applet
 {
+  Article currentArticle()
+  {
+    switch (currentProgram)
+    {
+    case 2:
+      return tutorialProgram;
+    case 1:
+      return journalProgram;
+    case 0:
+    default:
+      return consoleProgram;
+    }
+  }
   public String getProgram()
   {
     synchronized(consoleProgram)
     {
-      switch (currentProgram)
-      {
-      case 2:
-        return tutorialProgram.codeBody;
-      case 1:
-        return journalProgram.codeBody;
-      case 0:
-      default:
-        return consoleProgram.codeBody;
-      }
+      return currentArticle().codeBody;
     }
   }
 
@@ -38,16 +42,16 @@ public class DatahubApplet extends Applet
   {
     synchronized(consoleProgram)
     {
-      switch (currentProgram)
-      {
-      case 2:
-        return tutorialProgram.getExample();
-      case 1:
-        return journalProgram.getExample();
-      case 0:
-      default:
-        return consoleProgram.getExample();
-      }
+      return currentArticle().getExample();
+    }
+  }
+
+
+  public String getNrExamples()
+  {
+    synchronized(consoleProgram)
+    {
+      return currentArticle().getNrExamples();
     }
   }
 
@@ -56,32 +60,14 @@ public class DatahubApplet extends Applet
   {
     synchronized(consoleProgram)
     {
-      switch (currentProgram)
-      {
-      case 2:
-        return tutorialProgram.iArticle;
-      case 1:
-        return journalProgram.iArticle;
-      case 0:
-      default:
-        return consoleProgram.iArticle;
-      }
+      return currentArticle().iArticle;
     }
   }
   public String getArticleBody()
   {
     synchronized(consoleProgram)
     {
-      switch (currentProgram)
-      {
-      case 2:
-        return tutorialProgram.articleBody;
-      case 1:
-        return journalProgram.articleBody;
-      case 0:
-      default:
-        return consoleProgram.articleBody;
-      }
+      return currentArticle().articleBody;
     }
   }
   
@@ -89,16 +75,7 @@ public class DatahubApplet extends Applet
   {
     synchronized(consoleProgram)
     {
-      switch (currentProgram)
-      {
-      case 2:
-        tutorialProgram.SetArticle(p); break;
-      case 1:
-        journalProgram.SetArticle(p); break;
-      case 0:
-      default:
-        consoleProgram.SetArticle(p); break;
-      }
+      currentArticle().SetArticle(p);
     }
   }
 

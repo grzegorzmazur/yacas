@@ -326,6 +326,24 @@ function getBase()
 }
 
 
+function generateExample()
+{
+  var datahub = getDatahub();
+  checkDatahubAvailable(datahub,"generateExample");
+  if (datahub)
+  {
+    if (datahub.getNrExamples() == "0")
+    {
+      alert("No examples defined yet. You can define examples in the article by adding entries of the form {{example: ...example... :example}}");
+    }
+    else
+    {
+      var text = datahub.getExample();
+      yacasEval(""+text);
+    }
+  }
+}
+
 
 
 
