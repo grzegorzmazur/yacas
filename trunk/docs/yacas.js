@@ -345,5 +345,16 @@ function generateExample()
 }
 
 
+function runTest()
+{
+  var datahub = getDatahub();
+  checkDatahubAvailable(datahub,"generateExample");
+  if (datahub)
+  {
+    var text = datahub.getTestcode();
+    yacasEval("["+text+"];");
+  }
+}
+
 
 
