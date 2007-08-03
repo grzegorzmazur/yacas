@@ -309,6 +309,22 @@ function commandView(frame,base)
   }
 }
 
+function gotoHREF(href) 
+{
+  document.location.href = href;
+}
+
+function getBase()
+{
+  var seach;
+  seach = document.location.search;
+  if (seach.indexOf("?") == 0)
+  {
+    seach = seach.substring(1);
+  }
+  return seach;
+}
+
 
 
 

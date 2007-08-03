@@ -69,10 +69,20 @@ class Article
       pos = aString.indexOf(":");
       String name = aString.substring(0, pos);
       aString = aString.substring(pos + 1);
+
+      String toProcess = null;
+      pos = name.indexOf(",");
+      if (pos > -1)
+      {
+        toProcess = name.substring(pos+1);
+        name = name.substring(0,pos);
+      }
+
       String close = ":" + name + "}}";
       pos = aString.indexOf(close);
       String data = aString.substring(0, pos);
       aString = aString.substring(pos + close.length());
+
       if (name.equals("title"))
       {
         articleBody = articleBody + "<h1>" + data + "</h1>";
@@ -90,10 +100,44 @@ class Article
       {
         articleBody = articleBody + "<tt><b>" + data + "</b></tt>";
       }
-
-      else if (name.equals("math"))
+      else if (name.length() >= 4 && name.substring(0,4).equals("math"))
       {
-        articleBody = articleBody + "<applet code=net.sf.yacas.FormulaViewApplet archive=\"yacas.jar\" width=400 height=70><param name=\"expression\" value=\""+data+"\" /></applet><br />";
+        // Example:
+        // {{math,heightPixels.120,widthPixels.700: ... :math}}
+        int height=70;
+        if (toProcess != null)
+        {
+          int pos3 = toProcess.indexOf(",");
+          if (pos3 == -1)
+            pos3 = toProcess.length();
+          while (pos3>=0)
+          {
+            int pos2 = toProcess.indexOf(".");
+            if (pos2 != -1)
+            {
+              String key = toProcess.substring(0,pos2);
+              String value = toProcess.substring(pos2+1,pos3);
+              if (key.equals("heightPixels"))
+              {
+                height = Integer.parseInt(value);
+
+              }
+            }
+            if (pos3 < toProcess.length())
+            {
+              toProcess = toProcess.substring(pos3+1);
+              pos3 = toProcess.indexOf(",");
+              if (pos3 == -1)
+                pos3 = toProcess.length();
+            }
+            else
+            {
+              toProcess = "";
+              pos3 = -1;
+            }
+          }
+        }
+        articleBody = articleBody + "<applet code=net.sf.yacas.FormulaViewApplet archive=\"yacas.jar\" width=800 height="+height+"><param name=\"expression\" value=\""+data+"\" /></applet><br />";
       }
       else if (name.equals("example"))
       {

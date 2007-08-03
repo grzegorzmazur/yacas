@@ -82,7 +82,7 @@ dd(_x,_a * _b)  <-- a*dd(x,b)+dd(x,a)*b;
 :code}}
 And so does division:
 
-{{math:
+{{math,heightPixels.120:
 \frac{d}{dx} \left( \frac y z \right) = \frac{z \frac{d}{dx} y - y \frac{d}{dx} z}{z ^ 2}
 :math}}
 
