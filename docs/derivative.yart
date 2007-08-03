@@ -143,6 +143,10 @@ There are sometimes different ways of representing the same result. Compare for 
 {{example: dd(x,1-a*x^Sqrt(2)) :example}}
 {{example: dd(x,Exp(1+Sin(a*x))) :example}}
 
-
+{{test:
+Verify(dd(x,x),1);
+Verify(dd(x,Sin(x)),Cos(x));
+Verify(dd(x,a),0);
+:test}}
 
 

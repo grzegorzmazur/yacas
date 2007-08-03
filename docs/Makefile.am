@@ -3,6 +3,11 @@
 ## EXTRA_DIST contains the files automake does not know about, 
 ## that need to go in the distribution.
 
+noinst_PROGRAMS = riptestfromyart
+
+riptestfromyart_SOURCES = riptestfromyart.cpp
+
+
 # These files make up the home page. 
 
 EXTRA_DIST = \
@@ -14,16 +19,21 @@ EXTRA_DIST = \
 	yacas.js datahub.js yacaslogo.gif journal.js \
 	wz_tooltip.js cookie.js \
 	tutorials/tutorialtext1.html \
-	derivative.yart \
+	$(YART_FILES) \
 	journaldescr.html journalview.html journaledit.html \
 	yacas-screenshot.png \
         todo.html downloads.html.in \
 	bugs.txt README \
 	paper1.tex paper2.tex 
 
+YART_FILES = derivative.yart
+
 ## The file "yacaslogo.gif" is used in the HTML documentation
 
 htmldir = $(scriptdir)/documentation
 html_DATA = yacaslogo.gif
 
+
+check: riptestfromyart
+	for file in $(YART_FILES) ; do ./riptestfromyart $$file temp.yts ; ../src/yacas -pc --rootdir ../scripts temp.yts ; done
 
