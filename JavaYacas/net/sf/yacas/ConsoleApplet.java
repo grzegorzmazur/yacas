@@ -122,6 +122,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   StringBuffer outp = new StringBuffer();
   public void start()
   {
+    int i;
+    for (i=0;i<nrLines;i++) lines[i] = null;
+    outputDirty = true;
 
     if (false /*TODO remove loading the logo yacasLogo == null*/)
     {
@@ -229,7 +232,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
     }
 
-
     try
     {
       out.println("");
@@ -239,7 +241,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       out.println(e);
     }
 
-    int i;
     i=1;
     while (true)
     {
@@ -251,44 +252,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       i++;
     }
 
-    {
-      String programMode = getParameter("programMode");
-      if (programMode != null)
-      {
-        int tryCount = 10;
-        while (tryCount>0)
-        {
-          try
-          {
-            Applet dataHub = getAppletContext().getApplet( "datahub");
-            if (dataHub != null)
-            {
-              net.sf.yacas.DatahubApplet cons = (net.sf.yacas.DatahubApplet)dataHub;
-              cons.setProgramMode(programMode);
-              String programContentsToLoad = "["+cons.getProgram()+"];";
-              tryCount=0; // We're already satisfied here, as we got the contents from the datahub.
-              InvokeCalculationSilent(programContentsToLoad);
-            }
-          }
-          catch (Exception e)
-          {
-          }
-          tryCount--;
-          if (tryCount > 0)
-          {
-            try
-            {
-              Thread.sleep(1000);
-            }
-            catch (Exception e)
-            {
-            }
-          }
-        }
-      }
-    }
-
-
+    gotDatahubInit = false;
+    TryInitThroughDatahub();
+  
     i=1;
     while (true)
     {
@@ -301,8 +267,35 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
 
     ResetInput();
-
   }
+
+  boolean gotDatahubInit = false;
+  void TryInitThroughDatahub()
+  {
+    if (!gotDatahubInit)
+    {
+      String programMode = getParameter("programMode");
+      if (programMode != null)
+      {
+        try
+        {
+          Applet dataHub = getAppletContext().getApplet( "datahub");
+          if (dataHub != null)
+          {
+            net.sf.yacas.DatahubApplet cons = (net.sf.yacas.DatahubApplet)dataHub;
+            cons.setProgramMode(programMode);
+            String programContentsToLoad = "["+cons.getProgram()+"];";
+            gotDatahubInit = true; // We're already satisfied here, as we got the contents from the datahub.
+            InvokeCalculationSilent(programContentsToLoad);
+          }
+        }
+        catch (Exception e)
+        {
+        }
+      }
+    }
+  }
+  
   public void stop()
   {
   }
@@ -680,9 +673,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     if (inputLine.equals("restart"))
     {
       stop();
-      int i;
-      for (i=0;i<nrLines;i++) lines[i] = null;
-      outputDirty = true;
       start();
       return;
     }
@@ -1296,6 +1286,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
   public void InvokeCalculation(String expression)
   {
+    if (!gotDatahubInit) start();
     AppendHistoryLine(expression);
     AddLinesStatic(48,"In> ",expression);
     PerformRequest("Out> ",expression);
@@ -1309,6 +1300,8 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   String lastError;
   public String calculate(String expression)
   {
+    if (!gotDatahubInit) start();
+
     String result = yacas.Evaluate(expression);
     lastError = yacas.iError;
     return result;
