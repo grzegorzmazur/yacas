@@ -252,24 +252,38 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
 
     {
-      Applet dataHub = getAppletContext().getApplet( "datahub");
-      if (dataHub != null)
+      String programMode = getParameter("programMode");
+      if (programMode != null)
       {
-        try
+        int tryCount = 10;
+        while (tryCount>0)
         {
-          net.sf.yacas.DatahubApplet cons = (net.sf.yacas.DatahubApplet)dataHub;
-
-          String programMode = getParameter("programMode");
-          if (programMode != null)
+          try
           {
-            cons.setProgramMode(programMode);
+            Applet dataHub = getAppletContext().getApplet( "datahub");
+            if (dataHub != null)
+            {
+              net.sf.yacas.DatahubApplet cons = (net.sf.yacas.DatahubApplet)dataHub;
+              cons.setProgramMode(programMode);
+              String programContentsToLoad = "["+cons.getProgram()+"];";
+              tryCount=0; // We're already satisfied here, as we got the contents from the datahub.
+              InvokeCalculationSilent(programContentsToLoad);
+            }
           }
-
-          String programContentsToLoad = "["+cons.getProgram()+"];";
-          InvokeCalculationSilent(programContentsToLoad);
-        }
-        catch (Exception e)
-        {
+          catch (Exception e)
+          {
+          }
+          tryCount--;
+          if (tryCount > 0)
+          {
+            try
+            {
+              Thread.sleep(1000);
+            }
+            catch (Exception e)
+            {
+            }
+          }
         }
       }
     }

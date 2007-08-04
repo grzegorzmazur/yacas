@@ -330,6 +330,9 @@ function generateExample()
 {
   var datahub = getDatahub();
   checkDatahubAvailable(datahub,"generateExample");
+
+//alert("1+1 = "+yacas_calculate("1+1;"));
+
   if (datahub)
   {
     if (datahub.getNrExamples() == "0")
