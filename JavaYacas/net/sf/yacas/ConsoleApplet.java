@@ -74,6 +74,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     focusGained = true;
     inputDirty = true;
     outputDirty = true;
+    if (!gotDatahubInit) start();
     repaint();
   }
 
