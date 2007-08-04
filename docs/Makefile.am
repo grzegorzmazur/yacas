@@ -35,5 +35,5 @@ html_DATA = yacaslogo.gif
 
 
 check: riptestfromyart
-	for file in $(YART_FILES) ; do ./riptestfromyart $$file temp.yts ; ../src/yacas -pc --rootdir ../scripts temp.yts ; done
+	for file in $(YART_FILES) ; do echo "Running test code from $$file..." ; ./riptestfromyart $$file temp.yts ; ../src/yacas -pc --rootdir ../scripts temp.yts ; done
 

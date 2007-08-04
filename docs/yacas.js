@@ -87,7 +87,7 @@ function initPage()
 '      <tr>' + 
 '        <td style="border-color:black; border-style:solid; border-width:thin;">' + 
 '          <APPLET id="consoleApplet" name="consoleApplet" archive="yacas.jar" code="net.sf.yacas.ConsoleApplet" width='+width+' height='+height+' alt="Java support seems to be disabled in your browser, so the console is not available. If you want to be able to use Yacas online, please enable Java support. Alternatively, you can go to the About Yacas tab to download Yacas and run it locally.">' + 
-'            <PARAM name="programMode" value="'+programMode+'"' + 
+'            <PARAM name="programMode" value="'+programMode+'" \/>' + 
 '            <PARAM name="progressbar" value="true" \/>' + 
 '            <PARAM name="boxmessage" value="Loading Yacas..." \/>' + 
 '            <PARAM NAME="init1" value="Load(\'\'yacasinit.ys\'\')" \/>' + 

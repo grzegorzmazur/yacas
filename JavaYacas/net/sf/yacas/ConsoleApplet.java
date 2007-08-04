@@ -276,7 +276,11 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     if (!gotDatahubInit)
     {
       String programMode = getParameter("programMode");
-      if (programMode != null)
+      if (programMode == null)
+      {
+        gotDatahubInit = true;
+      }
+      else
       {
         try
         {
