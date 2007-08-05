@@ -51,7 +51,7 @@ If you go to the calculation center by pressing the "Run" button at the top of t
 immediately run, and try to approximate {{expr:1/Sqrt(2):expr}} iteratively. You will again see it converge exponentially,
 as this time the number of digits precision doubles with each iteration.
 
-{{code:
+{{code,article.true:
 answer := N(1/Sqrt(2),100);
 Echo("1/Sqrt(2) = ",answer);
 iterate():=
@@ -62,14 +62,7 @@ iterate():=
 ];
 
 y := 1;
-iterate();
-iterate();
-iterate();
-iterate();
-iterate();
-iterate();
-iterate();
-iterate();
+For (i:=1,i<=8,i++) iterate();
 
 :code}}
 

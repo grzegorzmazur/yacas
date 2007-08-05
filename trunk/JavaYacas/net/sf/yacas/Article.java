@@ -67,6 +67,10 @@ class Article
   }
   void processBody(String aString)
   {
+    int maxNrEntries = 10;
+    String keys[] = new String[maxNrEntries];
+    String values[] = new String[maxNrEntries];
+    int nrEntries = 0;
     while (aString.length() > 0)
     {
       int pos = aString.indexOf("{{");
@@ -94,14 +98,60 @@ class Article
       String data = aString.substring(0, pos);
       aString = aString.substring(pos + close.length());
 
+      nrEntries = 0;
+      if (toProcess != null)
+      {
+        int pos3 = toProcess.indexOf(",");
+        if (pos3 == -1)
+          pos3 = toProcess.length();
+        while (pos3>=0)
+        {
+          int pos2 = toProcess.indexOf(".");
+          if (pos2 != -1)
+          {
+            keys[nrEntries] = toProcess.substring(0,pos2);
+            values[nrEntries] = toProcess.substring(pos2+1,pos3);
+            nrEntries++;
+            if (nrEntries == maxNrEntries)
+              break;
+          }
+          if (pos3 < toProcess.length())
+          {
+            toProcess = toProcess.substring(pos3+1);
+            pos3 = toProcess.indexOf(",");
+            if (pos3 == -1)
+              pos3 = toProcess.length();
+          }
+          else
+          {
+            toProcess = "";
+            pos3 = -1;
+          }
+        }
+      }
+      
       if (name.equals("title"))
       {
         articleBody = articleBody + "<h1>" + data + "</h1>";
       }
       else if (name.equals("code"))
       {
+        boolean addToArticle = true;
+
+        int i;
+        for (i=0;i<nrEntries;i++)
+        {
+          if (keys[i].equals("article"))
+          {
+            addToArticle = values[i].equals("true");
+          }
+        }
+
         codeBody = codeBody + data;
-        articleBody = articleBody + "<table width=\"100%\"><tr><td width=100% bgcolor=\"#DDDDEE\"><pre>" + data + "</pre></tr></table>";
+        if (addToArticle)
+        {
+          articleBody = articleBody + "<table width=\"100%\"><tr><td width=100% bgcolor=\"#DDDDEE\"><pre>" + data + "</pre></tr></table>";
+        }
       }
       else if (name.equals("test"))
       {
@@ -111,41 +161,17 @@ class Article
       {
         articleBody = articleBody + "<tt><b>" + data + "</b></tt>";
       }
-      else if (name.length() >= 4 && name.substring(0,4).equals("math"))
+      else if (name.equals("math"))
       {
         // Example:
         // {{math,heightPixels.120,widthPixels.700: ... :math}}
         int height=70;
-        if (toProcess != null)
+        int i;
+        for (i=0;i<nrEntries;i++)
         {
-          int pos3 = toProcess.indexOf(",");
-          if (pos3 == -1)
-            pos3 = toProcess.length();
-          while (pos3>=0)
+          if (keys[i].equals("heightPixels"))
           {
-            int pos2 = toProcess.indexOf(".");
-            if (pos2 != -1)
-            {
-              String key = toProcess.substring(0,pos2);
-              String value = toProcess.substring(pos2+1,pos3);
-              if (key.equals("heightPixels"))
-              {
-                height = Integer.parseInt(value);
-
-              }
-            }
-            if (pos3 < toProcess.length())
-            {
-              toProcess = toProcess.substring(pos3+1);
-              pos3 = toProcess.indexOf(",");
-              if (pos3 == -1)
-                pos3 = toProcess.length();
-            }
-            else
-            {
-              toProcess = "";
-              pos3 = -1;
-            }
+            height = Integer.parseInt(values[i]);
           }
         }
         articleBody = articleBody + "<applet code=net.sf.yacas.FormulaViewApplet archive=\"yacas.jar\" width=800 height="+height+"><param name=\"expression\" value=\""+data+"\" /></applet><br />";
