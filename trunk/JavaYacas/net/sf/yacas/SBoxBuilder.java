@@ -45,7 +45,8 @@ class SBoxBuilder
       int i;
       for (i=0;i<iExpressions.length;i++)
       {
-        iExpressions[i].render(g);
+        if (iExpressions[i] != null)
+          iExpressions[i].render(g);
       }
     }
 
@@ -68,13 +69,22 @@ class SBoxBuilder
     }
   }
 
-  class SBoxSuperfix extends SBoxCompoundExpression
+  class SBoxSubSuperfix extends SBoxCompoundExpression
   {
-    SBoxSuperfix(SBox aExpr, SBox aSuperfix)
+    SBoxSubSuperfix(SBox aExpr, SBox aSuperfix, SBox aSubfix)
     {
-      super(2);
+      super(3);
       iExpressions[0] = aExpr;
       iExpressions[1] = aSuperfix;
+      iExpressions[2] = aSubfix;
+    }
+    void setSuperfix(SBox aExpression)
+    {
+      iExpressions[1] = aExpression;
+    }
+    void setSubfix(SBox aExpression)
+    {
+      iExpressions[2] = aExpression;
     }
     public void calculatePositions(GraphicsPrimitives g, int aSize, java.awt.Point aPosition)
     {
@@ -84,24 +94,60 @@ class SBoxBuilder
       // Get dimensions first
       if (iDimension == null)
       {
+        Dimension dsfix = new Dimension(0,0);
+        Dimension dlfix = new Dimension(0,0);
         iExpressions[0].calculatePositions(g, aSize, null);
-        iExpressions[1].calculatePositions(g, aSize-1, null);
+        if (iExpressions[1] != null) iExpressions[1].calculatePositions(g, aSize-1, null);
+        if (iExpressions[2] != null) iExpressions[2].calculatePositions(g, aSize-1, null);
         Dimension dexpr = iExpressions[0].getDimension();
-        Dimension dsfix = iExpressions[1].getDimension();
-        iExtent = dsfix.height - dexpr.height/2;
-        if (iExtent<0) iExtent=0;
-        iDimension = new Dimension(dexpr.width+dsfix.width,dexpr.height+iExtent);
+        if (iExpressions[1] != null) dsfix = iExpressions[1].getDimension();
+        if (iExpressions[2] != null) dlfix = iExpressions[2].getDimension();
+        
+
+        int iExtent = 0;
+        
+        if (iExpressions[0] instanceof SBoxSum)
+        {
+          if (iExpressions[1] != null) iExtent = iExtent + iExpressions[1].iAscent;
+          if (iExpressions[2] != null) iExtent = iExtent + iExpressions[2].iAscent;
+
+          int fixMaxWidth = dsfix.width;
+          if (dlfix.width > fixMaxWidth) fixMaxWidth = dlfix.width;
+          if (dexpr.width > fixMaxWidth) fixMaxWidth = dexpr.width;
+          iDimension = new Dimension(fixMaxWidth,dexpr.height+iExtent);
+        }
+        else
+        {
+          if (iExpressions[1] != null) iExtent = iExtent + iExpressions[1].iAscent/2;
+          if (iExpressions[2] != null) iExtent = iExtent + iExpressions[2].iAscent/2;
+
+          int fixMaxWidth = dsfix.width;
+          if (dlfix.width > fixMaxWidth) fixMaxWidth = dlfix.width;
+          iDimension = new Dimension(dexpr.width+fixMaxWidth,dexpr.height+iExtent);
+        }
         iAscent = iExpressions[0].getCalculatedAscent()+iExtent;
       }
       if (aPosition != null)
       {
+        Dimension dsfix = new Dimension(0,0);
+        Dimension dlfix = new Dimension(0,0);
         Dimension dexpr = iExpressions[0].getDimension();
-        Dimension dsfix = iExpressions[1].getDimension();
+        if (iExpressions[1] != null) dsfix = iExpressions[1].getDimension();
+        if (iExpressions[2] != null) dlfix = iExpressions[2].getDimension();
         iExpressions[0].calculatePositions(g, aSize, new Point(aPosition.x,aPosition.y));
-        iExpressions[1].calculatePositions(g, aSize-1, new Point(aPosition.x+dexpr.width,aPosition.y-iExtent));
+
+        if (iExpressions[0] instanceof SBoxSum)
+        {
+          if (iExpressions[1] != null) iExpressions[1].calculatePositions(g, aSize-1, new Point(aPosition.x,aPosition.y-iExpressions[0].iAscent-dsfix.height));
+          if (iExpressions[2] != null) iExpressions[2].calculatePositions(g, aSize-1, new Point(aPosition.x,aPosition.y + iExpressions[2].iAscent+dlfix.height));
+        }
+        else
+        {
+          if (iExpressions[1] != null) iExpressions[1].calculatePositions(g, aSize-1, new Point(aPosition.x+dexpr.width,aPosition.y-iExpressions[0].iAscent + iExpressions[1].iAscent/2));
+          if (iExpressions[2] != null) iExpressions[2].calculatePositions(g, aSize-1, new Point(aPosition.x+dexpr.width,aPosition.y + iExpressions[2].iAscent/2));
+        }
       }
     }
-    int iExtent;
   }
 
 
@@ -331,6 +377,40 @@ class SBoxBuilder
   }
 
 
+  class SBoxSum extends SBox
+  {
+    public void calculatePositions(GraphicsPrimitives g, int aSize, java.awt.Point aPosition)
+    {
+      int height = SBoxBuilder.FontForSize(aSize);
+      g.SetFontSize(height);
+      iSize = aSize;
+      iPosition = aPosition;
+      iAscent = height/2+g.GetAscent();
+      iDimension = new Dimension((4*height)/3,2*height);
+    }
+
+    public void render(GraphicsPrimitives g)
+    {
+      int height = SBoxBuilder.FontForSize(iSize);
+      g.SetLineThickness(2);
+      int x0 = iPosition.x;
+      int y0 = iPosition.y-iAscent;
+      int x1 = x0+iDimension.width;
+      int y1 = y0+iDimension.height;
+      g.DrawLine(x1,y0,x0,y0);
+      g.DrawLine(x0,y0,x0+(2*height)/4,(int)(y0+y1)/2);
+      g.DrawLine(x0+(2*height)/4,(int)(y0+y1)/2,x0,y1);
+      g.DrawLine(x0,y1,x1,y1);
+    }
+  }
+
+
+
+
+
+
+
+
   class SBoxSquareRoot extends SBoxCompoundExpression
   {
     SBoxSquareRoot(SBox aExpression)
@@ -370,13 +450,6 @@ class SBoxBuilder
       g.DrawLine(x0+6,y0+1,x1,y0+1);
     }
   }
-
-
-
-
-
-
-
 
   class SBoxBracket extends SBoxCompoundExpression
   {
@@ -525,12 +598,40 @@ class SBoxBuilder
     {
       SBox right = pop();
       SBox left = pop();
-      push(new SBoxSuperfix(left,right));
+      if (left instanceof SBoxSubSuperfix)
+      {
+        SBoxSubSuperfix sbox = (SBoxSubSuperfix)left;
+        sbox.setSuperfix(right);
+        push(sbox);
+      }
+      else
+      {
+        push(new SBoxSubSuperfix(left,right,null));
+      }
+    }
+    else if (aType.equals("_"))
+    {
+      SBox right = pop();
+      SBox left = pop();
+      if (left instanceof SBoxSubSuperfix)
+      {
+        SBoxSubSuperfix sbox = (SBoxSubSuperfix)left;
+        sbox.setSubfix(right);
+        push(sbox);
+      }
+      else
+      {
+        push(new SBoxSubSuperfix(left,null,right));
+      }
     }
     else if (aType.equals("[sqrt]"))
     {
       SBox left = pop();
       push(new SBoxSquareRoot(left));
+    }
+    else if (aType.equals("[sum]"))
+    {
+      push(new SBoxSum());
     }
     else if (aType.equals("[roundBracket]"))
     {

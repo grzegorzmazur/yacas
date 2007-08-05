@@ -3,7 +3,7 @@ package net.sf.yacas;
 
 public class TeXParser
 {
-  static String singleOps = "^+=,";
+  static String singleOps = "^_+=,";
   String iCurrentExpression;
   int currentPos;
   String nextToken;
@@ -104,6 +104,10 @@ public class TeXParser
       parseOneExpression(builder);
       builder.process("[sqrt]");
     }
+    else if (nextToken.equals("\\sum"))
+    {
+      builder.process("[sum]");
+    }
     else if (nextToken.equals("\\frac"))
     {
       NextToken();
@@ -151,6 +155,7 @@ public class TeXParser
     else if (
    nextToken.equals("+")
 || nextToken.equals("^")
+|| nextToken.equals("_")
 || nextToken.equals("=")
 || nextToken.equals(",")
      )

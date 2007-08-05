@@ -62,7 +62,13 @@ if n does not depend on x.
 Most transformation rules given here can be generalized by applying the chain rule: 
 
 {{math:
-\frac{d}{dx} f \left( g \left( x \right) \right) = \frac{d f \left( g \left( x \right) \right) }{dg \left( x \right) } \frac{d g \left( x \right) } {dx}
+\frac{d}{dx} f \left( g \left( x \right) \right) = 
+    \left(
+    \frac{d f \left( g \left( x \right) \right) }{dg \left( x \right) }
+    \right)
+    \left(
+    \frac{d g \left( x \right) } {dx}
+    \right)
 :math}}
 
 We will embed the chain rule within the transformation rules.
