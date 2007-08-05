@@ -561,5 +561,7 @@ Verify(Mod({5,1},4),{1,1});
 // Factoring 2*x^2 used to generate an error
 Verify(Factor(2*x^2),x^2);
 
+/* Bug report from Magnus Petursson regarding determinants of matrices that have symbolic entries */
+Verify(CanBeUni(Determinant({{a,b},{c,d}})),True);
 
 
