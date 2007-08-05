@@ -132,7 +132,7 @@ dd(_x,0,_f) <-- f;
 dd(_x,n_IsPositiveInteger,_f) <-- dd(x,n-1,dd(x,f));
 :code}}
 
-If you click on the button labeled "Try out" above this text you will be directed to the <i>Yacas</i> calculation center. Here you can try out the function {{expr:dd(x,f):expr}} that is developed here. Clicking on the button labeled "Example" will result in a pre-determined example being typed in for you. The "Edit" button allows you to edit the code, modifying it before re-running the code.
+If you click on the button labeled "Run" above this text you will be directed to the <i>Yacas</i> calculation center. Here you can try out the function {{expr:dd(x,f):expr}} that is developed here. Clicking on the button labeled "Example" will result in a pre-determined example being typed in for you. The "Edit" button allows you to edit the code, modifying it before re-running the code.
 
 There are sometimes different ways of representing the same result. Compare for example the result of calculating {{expr:dd(x,n,Sqrt(x)):expr}} with {{expr:dd(x,n,x^0.5):expr}} (we use {{expr:0.5:expr}} here and not {{expr:(1/2):expr}}, because <i>Yacas</i> does some standard simplifications, one of which is converting {{expr:x^(1/2):expr}} to {{expr:Sqrt(x):expr}}, something we don't want for this example). The length of the one result is much longer than the other, although mathematically they are identical. 
 
