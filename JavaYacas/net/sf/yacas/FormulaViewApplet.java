@@ -41,10 +41,9 @@ public class FormulaViewApplet extends Applet
       offDimension = d;
       offImage = createImage(d.width, d.height);
       offGraphics = offImage.getGraphics();
+      // Paint the frame into the image
+      paintFrame(offGraphics);
     }
-
-    // Paint the frame into the image
-    paintFrame(offGraphics);
 
     // Paint the image onto the screen
     g.drawImage(offImage, 0, 0, null);
@@ -100,9 +99,10 @@ public class FormulaViewApplet extends Applet
     String s = getParameter("expression");
     if (s != null)
     {
+System.out.println("re-rendering the whole formula!");
       TeXParser parser = new TeXParser();
       SBox expression = parser.parse(s);
-      expression.calculatePositions(gp, 5, new java.awt.Point(1, d.height/2));
+      expression.calculatePositions(gp, 3, new java.awt.Point(1, d.height/2));
       expression.render(gp);
     }
   }
