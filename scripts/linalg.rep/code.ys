@@ -244,6 +244,9 @@ FrobeniusNorm(matrix_IsMatrix) <--
 //
 15 # Determinant(_matrix)_(Length(Select("IsZero",Diagonal(matrix))) > 0) <-- SymbolicDeterminant(matrix);
 
+// Not numeric entries, so lets treat it symbolically.
+16 # Determinant(_matrix)_(VarList(matrix) != {}) <-- SymbolicDeterminant(matrix);
+
 20 # Determinant(_matrix) <-- GaussianDeterminant(matrix);
 
 GaussianDeterminant(matrix):=
