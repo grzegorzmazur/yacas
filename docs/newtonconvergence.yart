@@ -60,9 +60,7 @@ You will see the number of digits precision roughly triple for each iteration! T
 
 Please note that we explicitly state that we do not want to use more than 100 digits in the calculations, so the accuracy of the approximation to pi will never be better than that in this example.
 
-Note on how to run this example:
-
-{{code:
+{{code,article.false:
 Echo("Type start() to start the iteration");
 Echo("Type iterate() to do the next iteration step");
 :code}}
