@@ -47,7 +47,7 @@ This can be applied repeatedly of course to arrive at better approximations. We 
 of optimizing this further to run on a computer (although it is an interesting subject! See the link given above
 for more information), we will put the iteration in motion here. 
 
-If you go to the calculation center by pressing the "Run" button at the top of this document, the code below will
+If you go to the calculation center by pressing the "Run" button, the code below will
 immediately run, and try to approximate {{expr:1/Sqrt(2):expr}} iteratively. You will again see it converge exponentially,
 as this time the number of digits precision doubles with each iteration.
 
