@@ -34,16 +34,28 @@
             elem.innerHTML = text;
           }
 
-          elem = document.getElementById("therunbutton");
+          elem = document.getElementById("therunbutton1");
           if (elem)
           {
             elem.onclick = tryItOut;
           }
-          elem = document.getElementById("theeditbutton");
+          elem = document.getElementById("theeditbutton1");
           if (elem)
           {
             elem.onclick=goEdit;
           }
+
+          elem = document.getElementById("therunbutton2");
+          if (elem)
+          {
+            elem.onclick = tryItOut;
+          }
+          elem = document.getElementById("theeditbutton2");
+          if (elem)
+          {
+            elem.onclick=goEdit;
+          }
+
         }
       }
 
@@ -61,14 +73,20 @@
     <table>
       <tr>
         <td>
-          <input type=button id="therunbutton" value="Run" title="Try this example out online" />
-          <input type=button id="theeditbutton" value="Edit article (locally)" title="Edit the code accompanying this example. Note you will only edit a local copy, so you can not accidentally destroy anything." />
+          <input type=button id="therunbutton1" value="Run" title="Try this example out online" />
+          <input type=button id="theeditbutton1" value="Edit article (locally)" title="Edit the code accompanying this example. Note you will only edit a local copy, so you can not accidentally destroy anything." />
         </td>
       </tr>
       <tr height=50>
         <td>
           <span class="dummy" id="thetext" ></span>
           <br />
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input type=button id="therunbutton2" value="Run" title="Try this example out online" />
+          <input type=button id="theeditbutton2" value="Edit article (locally)" title="Edit the code accompanying this example. Note you will only edit a local copy, so you can not accidentally destroy anything." />
         </td>
       </tr>
     </table>

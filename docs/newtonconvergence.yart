@@ -63,9 +63,10 @@ Please note that we explicitly state that we do not want to use more than 100 di
 {{code,article.false:
 Echo("Type start() to start the iteration");
 Echo("Type iterate() to do the next iteration step");
+Echo("Clicking on the \"Example\" button will automatically do this for you");
 :code}}
 
-To try this out, click on the button labeled "Run" at the top of the page.
+To try this out, click on the button labeled "Run".
 
 {{example:start():example}}
 {{example:iterate():example}}

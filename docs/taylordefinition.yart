@@ -62,7 +62,7 @@ the built-in version might be optimized some more).
 
 The equivalent for the calculation above would be to call {{expr:Taylor(x,0,8)Sin(x):expr}}. You can try both examples
 out by going to the calculation center. There you can verify that the two methods return the same result.
-If you click on the "Run" button at the top of this page you can click on the "Example" button,
+If you click on the "Run" button you can click on the "Example" button,
 which will call the two different ways of calculating a Taylor series expansion. You are free
 to modify these lines a bit. Enjoy!
 
