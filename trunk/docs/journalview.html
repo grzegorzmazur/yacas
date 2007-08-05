@@ -49,12 +49,10 @@
 
   </head>
   <body>
-    <script type="text/javascript" src="wz_tooltip.js"></script>
-
-    <input type=button value="Example" onmouseover="Tip('Generate example')" onclick="generateExample();" />
-    <input type=button id="theeditbutton" value="Edit article (locally)" onmouseover="Tip('Edit the code accompanying this example. Note you will only edit a local copy, so you can not accidentally destroy anything.')" />
-    <input type=button id="theexplainbutton" value="Read article" onmouseover="Tip('Return to the accompanying article')" />
-    <input type=button value="Test" onmouseover="Tip('Run the test code that comes with this article')" onclick="runTest();" />
+    <input type=button value="Example" title="Generate example" onclick="generateExample();" />
+    <input type=button id="theeditbutton" value="Edit article (locally)" title="Edit the code accompanying this example. Note you will only edit a local copy, so you can not accidentally destroy anything." />
+    <input type=button id="theexplainbutton" value="Read article" title="Return to the accompanying article." />
+    <input type=button value="Test" title="Run the test code that comes with this article." onclick="runTest();" />
 
     <span class="yacasConsole" id="journal"></span>
     <script type="text/javascript">
