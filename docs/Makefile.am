@@ -26,7 +26,7 @@ EXTRA_DIST = \
 	bugs.txt README \
 	paper1.tex paper2.tex 
 
-YART_FILES = derivative.yart
+YART_FILES = derivative.yart newtonsqrt.yart newtonconvergence.yart taylordefinition.yart 
 
 ## The file "yacaslogo.gif" is used in the HTML documentation
 

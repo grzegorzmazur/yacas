@@ -1,0 +1,79 @@
+
+{{title:Fun with derivatives part 3: fast convergence of Newton iteration:title}}
+
+In the first part we showed how to define derivatives with a few lines of code in Yacas. In the second part we showed how to define a Taylor series expansion (a polynomial approximating a function) by using derivatives. In this section we will use it to look at the amazingly fast convergence that Newton iteration (which is based on derivatives) can exhibit.
+
+One common way of finding something is by a bisection method. This method is similar to guessing a number, where for each guess you get an answer "lower" or "higher". You guess in the middle of the possible range, and when you get the answer you know whether it is in the upper or in the lower range. You are thus left with a new range which is half the original range. This is sometimes also called binary search. When no other information is present, this is the fastest way to get at an answer, to find something. 
+
+One example of "finding something" is finding the zero of a function. The interesting thing here is that for a continuous function we <i>do</i> have more information. Newton iteration makes use of this additional information and as a consequence it converges to the answer much faster than a binary search would.
+
+Here is the math behind it; we start with a function {{expr:f(x):expr}}, and start at some value {{expr:x0:expr}}, and take a first-order Taylor series expansion as an approximation of the function:
+
+{{math:
+f \left( x \right) = f \left( x_0 \right) + \left( x - x_0 \right) \frac{d f(x)}{dx}
+:math}}
+
+We thus effectively approximate the function with a straight line. The shorter the distance (the nearer x is to x0), the more correct that approximation will be. This method thus only works well when the initial guess x0 is close to the real answer.
+
+We want the function f(x1) to be zero, so setting it to zero yields:
+
+{{math:
+f \left( x_0 \right) + \left( x_1 - x_0 \right) \frac{d f(x)}{dx} = 0
+:math}}
+
+Or:
+
+{{math,heightPixels.120:
+x_1 = x_0 - \frac{f \left( x_0 \right) }{ \left[ \frac{d f \left( x_0 \right) }{dx} \right] }
+:math}}
+
+Repeating this for x1 to x2 and so on should yield more and more accurate answers. 
+
+We will now try this out on a simple example. We will try to get the zero 
+{{expr:Sin(x)=0:expr}} for x at pi (thus effectively approximating the value of pi). The derivative of {{expr:Sin(x):expr}} with respect to x is {{expr:Cos(x):expr}}, so the above expression becomes:
+
+{{math:
+x_1 = x_0 - \frac{sin \left( x_0 \right) }{cos \left( x_0 \right) }
+:math}}
+
+Or
+
+{{math:
+x_1 = x_0 - tan \left( x_0 \right)
+:math}}
+
+We can set this in motion by starting with the following code.
+
+{{code:
+start():= [ x:=3; ];
+iterate() := 
+[ 
+  x := N(x-Tan(x),100); 
+  Echo("The new approximation to pi is ",x);
+  Echo("The number of digits precision is ",-N(Ln(Abs(x-Pi))/Ln(10),100));
+];
+:code}}
+
+You can type {{expr:start():expr}} to start the iteration. Then calling {{expr:iterate():expr}} repeatedly will increase the precision of the estimation. 
+
+You will see the number of digits precision roughly triple for each iteration! That is an exponential convergence (after n iterations one has approximately 3^n digits precision), whereas a binary search would have given a convergence which was only linear, growing roughly as fast as n. 
+
+Please note that we explicitly state that we do not want to use more than 100 digits in the calculations, so the accuracy of the approximation to pi will never be better than that in this example.
+
+Note on how to run this example:
+
+{{code:
+Echo("Type start() to start the iteration");
+Echo("Type iterate() to do the next iteration step");
+:code}}
+
+To try this out, click on the button labeled "Run" at the top of the page.
+
+{{example:start():example}}
+{{example:iterate():example}}
+{{example:iterate():example}}
+{{example:iterate():example}}
+{{example:iterate():example}}
+
+
+
