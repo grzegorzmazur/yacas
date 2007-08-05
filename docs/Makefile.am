@@ -17,7 +17,7 @@ EXTRA_DIST = \
 	placeholder.html plain.html recent.html \
 	tabber.css tabber.js tutorials.html yacas.css yacas.html \
 	yacas.js datahub.js yacaslogo.gif journal.js \
-	wz_tooltip.js cookie.js \
+	cookie.js \
 	tutorials/tutorialtext1.html \
 	$(YART_FILES) \
 	journaldescr.html journalview.html journaledit.html \
