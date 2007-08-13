@@ -1,0 +1,12 @@
+
+
+.suggestions {
+  background-color:#EEEEFF;
+  border: 1px solid #AAAAEE;
+  z-index:2;
+}
+
+#popups 
+{
+  position:absolute;
+}
