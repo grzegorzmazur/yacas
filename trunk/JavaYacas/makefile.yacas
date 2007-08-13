@@ -1,7 +1,7 @@
 
 .SUFFIXES: .java .class 
 
-all: net/sf/yacas/CVersion.java yacas.jar calc.html.hints hints.txt 
+all: net/sf/yacas/CVersion.java yacas.jar hints.txt 
 
 clean:
 	rm net/sf/yacas/*.class net/sf/datahub/*.class *.jar *.tgz *.zip
@@ -20,9 +20,9 @@ CLASSES = \
 net/sf/yacas/CYacas.class net/sf/yacas/YacasConsole.class net/sf/yacas/ConsoleApplet.class \
 net/sf/yacas/CDataReader.class net/sf/yacas/HintItem.class \
 net/sf/yacas/HintWindow.class net/sf/yacas/Hints.class net/sf/yacas/SelectSymbol.class net/sf/yacas/TResult.class \
-net/sf/yacas/TSentence.class net/sf/yacas/YacasInterpreter.class \
+net/sf/yacas/YacasInterpreter.class \
 net/sf/yacas/TWord.class net/sf/yacas/YacasGraphicsContext.class \
-net/sf/yacas/YacasNotebookComponent.class net/sf/yacas/calc.class net/sf/yacas/tegicphone.class net/sf/yacas/Article.class net/sf/yacas/DatahubApplet.class
+net/sf/yacas/Article.class net/sf/yacas/DatahubApplet.class
 
 yacas.jar: $(CLASSES)
 	jar cvmf MANIFEST.MF yacas.jar net/sf/yacas/*.class 
@@ -36,22 +36,9 @@ net/sf/yacas/CVersion.java: ../config.h dumpversion.cpp
 	./dumpversion
 
 
-calc.html.hints:
-	cp operators.txt calc.html.hints.unsorted 
-	g++ tegicadd.cpp -o tegicadd.a
-	./tegicadd.a < ../manmake/hints.singlesorted >> calc.html.hints.unsorted
-	sort -n -t "~" calc.html.hints.unsorted > calc.html.hints.sorted
-	echo "~~~~~~~" > tail.txt
-	cat calc.html.hints.sorted tail.txt > calc.html.hints
-
-
 hints.txt:
-	-rm hints.txt.unsorted 
-	touch hints.txt.unsorted 
-	g++ tegicadd.cpp -o tegicadd.a
-	./tegicadd.a < ../manmake/hints.singlesorted >> hints.txt.unsorted
-	sort -n -t "~" hints.txt.unsorted > hints.txt.sorted
-	echo "~~~~~~~" > tail.txt
+	sort -n -t ":" ../manmake/hints.singlesorted > hints.txt.sorted
+	echo ":::::::" > tail.txt
 	cat hints.txt.sorted tail.txt > hints.txt
 
 include ../tests/includetestfiles

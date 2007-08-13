@@ -1074,25 +1074,24 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       int nrTokens = 0;
       while (line != null)
       {
-        if (line.substring(0,2).equals("~~"))
+        if (line.substring(0,2).equals("::"))
           break;
         int i=0;
         nrTokens = 0;
         while (i<line.length())
         {
           int start = i;
-          while (line.charAt(i) != '~') i++;
+          while (line.charAt(i) != ':') i++;
           tokens[nrTokens] = line.substring(start,i);
           nrTokens++;
           i++;
         }
-        if (nrTokens>4)
+        if (nrTokens>3)
         {
           HintItem hi = new HintItem();
-          hi.digits = tokens[1];
-          hi.base = tokens[2];
-          hi.hint = tokens[3];
-          hi.description = tokens[4];
+          hi.base = tokens[1];
+          hi.hint = tokens[2];
+          hi.description = tokens[3];
           the_hints.hintTexts[the_hints.nrHintTexts] = hi;
           the_hints.nrHintTexts++;
         }

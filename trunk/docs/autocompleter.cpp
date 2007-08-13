@@ -112,49 +112,49 @@ int main(int argc, char** argv)
     items[nrItems++] = ptr;
     while (*ptr)
     {
-      while (*ptr && *ptr != '~') ptr++;
+      while (*ptr && *ptr != ':') ptr++;
       if (*ptr)
       {
         *ptr++ = '\0';
         items[nrItems++] = ptr;    
       }
     }
-    if (nrItems>4)
+    if (nrItems>3)
     {
-      if (strcmp(lastKey,items[2]))
+      if (strcmp(lastKey,items[1]))
       {
         WriteLine();
-        strcpy(lastKey,items[2]);
+        strcpy(lastKey,items[1]);
         strcpy(lastVal,"");
-        if (!strncmp(lastKey,items[3],strlen(lastKey)))
+        if (!strncmp(lastKey,items[2],strlen(lastKey)))
         {
           strcat(lastVal,"<b>");
           strcat(lastVal,lastKey);
           strcat(lastVal,"</b>");
-          strcat(lastVal,&items[3][strlen(lastKey)]);
+          strcat(lastVal,&items[2][strlen(lastKey)]);
         }
         else
         {
-          strcat(lastVal,items[3]);
+          strcat(lastVal,items[2]);
         }
         strcat(lastVal,"<br />");
-        strcpy(lastDes,items[4]);
+        strcpy(lastDes,items[3]);
       }
       else
       {
-        if (!strncmp(lastKey,items[3],strlen(lastKey)))
+        if (!strncmp(lastKey,items[2],strlen(lastKey)))
         {
           strcat(lastVal,"<b>");
           strcat(lastVal,lastKey);
           strcat(lastVal,"</b>");
-          strcat(lastVal,&items[3][strlen(lastKey)]);
+          strcat(lastVal,&items[2][strlen(lastKey)]);
         }
         else
         {
-          strcat(lastVal,items[3]);
+          strcat(lastVal,items[2]);
         }
         strcat(lastVal,"</br>");
-        strcat(lastDes,items[4]);
+        strcat(lastDes,items[3]);
       }
     }
     fgets(buffer,16384,fin);
