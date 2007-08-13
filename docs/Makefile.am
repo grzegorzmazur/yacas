@@ -3,9 +3,11 @@
 ## EXTRA_DIST contains the files automake does not know about, 
 ## that need to go in the distribution.
 
-noinst_PROGRAMS = riptestfromyart
+noinst_PROGRAMS = riptestfromyart autocompleter
 
 riptestfromyart_SOURCES = riptestfromyart.cpp
+
+autocompleter_SOURCES = autocompleter.cpp
 
 
 # These files make up the home page. 
@@ -17,7 +19,7 @@ EXTRA_DIST = \
 	placeholder.html plain.html recent.html \
 	tabber.css tabber.js tutorials.html yacas.css yacas.html \
 	yacas.js datahub.js yacaslogo.gif journal.js \
-	cookie.js \
+	cookie.js autocompleter.css \
 	tutorials/tutorialtext1.html \
 	$(YART_FILES) \
 	journaldescr.html journalview.html journaledit.html \
@@ -33,6 +35,9 @@ YART_FILES = derivative.yart newtonsqrt.yart newtonconvergence.yart taylordefini
 htmldir = $(scriptdir)/documentation
 html_DATA = yacaslogo.gif
 
+autocompleter.js: autocompleter
+	cd ../JavaYacas ; make hints.txt ; cd ../docs/
+	./autocompleter ../JavaYacas/hints.txt autocompleter.js
 
 check: riptestfromyart
 	for file in $(YART_FILES) ; do echo "Running test code from $$file..." ; ./riptestfromyart $$file temp.yts ; ../src/yacas -pc --rootdir ../scripts temp.yts ; done
