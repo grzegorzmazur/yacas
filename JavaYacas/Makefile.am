@@ -32,10 +32,10 @@ net/sf/yacas/GraphicsPrimitives.java net/sf/yacas/SBox.java net/sf/yacas/SBoxBui
 convertfns.cpp makefile.yacas net/sf/yacas/tmp.java  net/sf/yacas/Article.java \
 todo.txt yacasconsole.html \
 net/sf/yacas/CDataReader.java net/sf/yacas/HintItem.java \
-net/sf/yacas/HintWindow.java net/sf/yacas/Hints.java net/sf/yacas/SelectSymbol.java net/sf/yacas/TResult.java net/sf/yacas/TSentence.java \
+net/sf/yacas/HintWindow.java net/sf/yacas/Hints.java net/sf/yacas/SelectSymbol.java net/sf/yacas/TResult.java  \
 net/sf/yacas/TWord.java net/sf/yacas/YacasGraphicsContext.java \
-net/sf/yacas/YacasNotebookComponent.java net/sf/yacas/calc.java net/sf/yacas/tegicphone.java calc.html net/sf/yacas/TempMathUtils.java net/sf/yacas/XmlTokenizer.java README.TXT \
-tegicadd.cpp operators.txt dumpversion.cpp \
+net/sf/yacas/TempMathUtils.java net/sf/yacas/XmlTokenizer.java README.TXT \
+dumpversion.cpp \
 net/sf/yacas/CVersion.java net/sf/yacas/YacasInterpreter.java net/sf/yacas/DatahubApplet.java 
 
 

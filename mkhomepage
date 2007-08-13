@@ -13,6 +13,11 @@ sudo make install
 cd JavaYacas
 make -f makefile.yacas
 cd ..
+
+cd docs
+make autocompleter.js
+cd ..
+
 make dist
 # make distcheck
 
