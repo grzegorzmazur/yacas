@@ -313,7 +313,7 @@ EmitHtmlFramed():=
 
     HtmlTag(html,
         HtmlFrameSetCols("240,*",
-          HtmlFrameSetRows("110,*",
+          HtmlFrameSetRows("80,*",
             HtmlFrame("manicon.html","") : 
             HtmlFrame(plain["BaseName"] : "chapters.html","")
                   ) :
