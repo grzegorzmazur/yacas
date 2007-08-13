@@ -3,6 +3,8 @@
     <title>The Yacas computer algebra system</title>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
+    <link rel="stylesheet" href="autocompleter.css" TYPE="text/css" MEDIA="screen">
+    <script type="text/javascript" src="autocompleter.js"></script>
     <script type="text/javascript" src="datahub.js"></script>
     <script type="text/javascript" src="yacas.js"></script>
     <script type="text/javascript" src="cookie.js"></script>
@@ -84,11 +86,12 @@
   </head>
   <body>
     <p>
+      Look up: <input type="text" id="funcLookup"/>
       <input type=button id="therunbutton" value="Run" title="Save and run this code in the calculation center (note that this is a local copy of the program below)." />
       <input type=button id="theexplainbutton" value="Proof-read" title="Read article that comes with this code." />
       <input type=button id="thesavebutton" value="Save (in cookie)" title="Make sure this article is stored in a cookie (just in case)." />
       <input type=button id="thecleanbutton" value="Clean" title="Start with a clean slate." />
-     <br />
+      <div id="popups" style="width:320;"></div>
       <span class="codeEdit" id="console"></span>
     </p>
     <script type="text/javascript">
