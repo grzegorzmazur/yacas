@@ -261,8 +261,8 @@ class SBoxBuilder
       {
         Dimension dleft = iExpressions[0].getDimension();
         Dimension dright = iExpressions[1].getDimension();
-        iExpressions[0].calculatePositions(g,aSize,new Point(aPosition.x,aPosition.y+(iAscent-iExpressions[0].getCalculatedAscent())));
-        iExpressions[1].calculatePositions(g,aSize,new Point(aPosition.x+dleft.width+2,aPosition.y+(iAscent-iExpressions[1].getCalculatedAscent())));
+        iExpressions[0].calculatePositions(g,aSize,new Point(aPosition.x,aPosition.y/*+(iAscent-iExpressions[0].getCalculatedAscent())*/));
+        iExpressions[1].calculatePositions(g,aSize,new Point(aPosition.x+dleft.width+2,aPosition.y/*+(iAscent-iExpressions[1].getCalculatedAscent())*/));
       }
     }
   }

@@ -33,7 +33,7 @@
         {
           if (object.className == "linkcalc")
           {
-            object.onclick=calcLinkClick;
+//TODO remove?            object.onclick=calcLinkClick;
           }
         }
       }
@@ -91,7 +91,7 @@
       }
     }
 
-    function calcLinkClick()
+    function calcLinkClick(base)
     {
       try 
       {
@@ -109,8 +109,7 @@
       var elem = parent.document.getElementById('LibraryFrame');
       if (elem)
       {
-        var base = this.id;
-        var pos = base.indexOf(":");
+//TODO remove?        var base = this.id;
         try 
         {
           var datahub = getDatahub();
@@ -118,7 +117,6 @@
           if (datahub)
           {
             datahub.setArticleFromFile(base+".yart");
-//TODO remove            datahub.setProgramToLoadFromFile(base+".ys");
           }
         } 
         catch (e) 
@@ -141,7 +139,7 @@
         <p>
         <i>2007-08-05, by Ayal Pinkus</i>
         <br />
-        <a class="linkcalc" id="newtonsqrt">Fun with derivatives part 4: Newton iteration to determine the inverse square root</a> - 
+        <a href="javascript:calcLinkClick('newtonsqrt')" >Fun with derivatives part 4: Newton iteration to determine the inverse square root</a> - 
           A while back I came across the trick used in Quake to efficiently approximate the inverse square root (which is 
           probably needed in a 3D engine to normalize vectors). It is also a nice demonstration on how one could go about 
           approximating a function by using Newton iteration. That is the subject of this article.
@@ -150,7 +148,7 @@
         <p>
         <i>2007-08-05, by Ayal Pinkus</i>
         <br />
-        <a class="linkcalc" id="newtonconvergence">Fun with derivatives part 3: fast convergence of Newton iteration</a> - 
+        <a href="javascript:calcLinkClick('newtonconvergence')" >Fun with derivatives part 3: fast convergence of Newton iteration</a> - 
           Newton iteration is a natural fit for computer algebra systems because you can use the symbolic facilities first
           to take the derivative of a function, and then later on use the arbitrary-precision numeric support to get a very
           accurate numeric approximation (starting from a sufficiently close guess). Newton iteration can converge very fast,
@@ -160,7 +158,7 @@
         <p>
         <i>2007-08-05, by Ayal Pinkus</i>
         <br />
-        <a class="linkcalc" id="taylordefinition">Fun with derivatives part 2: Taylor series expansions</a> - 
+        <a href="javascript:calcLinkClick('taylordefinition')" >Fun with derivatives part 2: Taylor series expansions</a> - 
           This short article shows how you one would go about writing one line of code  that generates a Taylor series
           expansion of a function in <i>Yacas</i> (without using the built-in function). 
         </p>
@@ -168,7 +166,7 @@
         <p>
         <i>2007-07-20, by Ayal Pinkus</i>
         <br />
-        <a class="linkcalc" id="derivative">Fun with derivatives part 1: defining the concept of a derivative in <i>Yacas</i></a> - 
+        <a href="javascript:calcLinkClick('derivative')" >Fun with derivatives part 1: defining the concept of a derivative in <i>Yacas</i></a> - 
           Taking a derivative is one of the mathematical operations that is easily explained to a computer. This article shows how 
           it can be done with a few lines of code in <i>Yacas</i>. You can also directly try it out, or extend the code to handle 
           more complex cases.
