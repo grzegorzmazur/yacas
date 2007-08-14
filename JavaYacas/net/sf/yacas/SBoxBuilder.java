@@ -42,11 +42,15 @@ class SBoxBuilder
     
     public void render(GraphicsPrimitives g)
     {
+//drawBoundingBox(g);
       int i;
       for (i=0;i<iExpressions.length;i++)
       {
         if (iExpressions[i] != null)
+        {
           iExpressions[i].render(g);
+//iExpressions[i].drawBoundingBox(g);
+        }
       }
     }
 
@@ -165,6 +169,8 @@ class SBoxBuilder
     }
     public void calculatePositions(GraphicsPrimitives g, int aSize, java.awt.Point aPosition)
     {
+      int spacing = 12;
+
       iSize = aSize;
       iPosition = aPosition;
 
@@ -205,7 +211,7 @@ class SBoxBuilder
         {
           totalHeight = totalHeight+iHeights[j];
         }
-        iDimension = new Dimension(totalWidth+6*(iWidth-1),totalHeight+6*(iHeight-1));
+        iDimension = new Dimension(totalWidth+spacing*(iWidth-1),totalHeight+spacing*(iHeight-1));
         iAscent = iDimension.height/2;
       }
       if (aPosition != null)
@@ -214,13 +220,13 @@ class SBoxBuilder
         int w = 0;
         for (i=0;i<iWidth;i++)
         {
-          int h=0;
+          int h=-iAscent;
           for (j=0;j<iHeight;j++)
           {
             iExpressions[i+j*iWidth].calculatePositions(g, aSize, new Point(aPosition.x+w,aPosition.y+h));
-            h+=iHeights[j]+6;
+            h+=iHeights[j]+spacing;
           }
-          w+=iWidths[i]+6;
+          w+=iWidths[i]+spacing;
         }
       }
     }
@@ -654,14 +660,16 @@ class SBoxBuilder
       SBox heightBox = pop();
       int width = Integer.parseInt(((SBoxSymbolName)widthBox).iSymbol);
       int height = Integer.parseInt(((SBoxSymbolName)heightBox).iSymbol);
+
       SBoxGrid grid = new SBoxGrid(width,height);
 
       int i,j;
-      for (i=0;i<width;i++)
+      for (j=height-1;j>=0;j--)
       {
-        for (j=0;j<height;j++)
+        for (i=width-1;i>=0;i--)
         {
-          grid.SetSBox(i, j, pop());      
+          SBox value = pop();
+          grid.SetSBox(i, j, value);      
         }
       }
       push(grid);

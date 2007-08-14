@@ -63,15 +63,25 @@ public class TeXParser
     }
     else if (c == '\\')
     {
-      currentPos++;
-      NextToken();
-      nextToken = "\\"+nextToken;
+      int startPos = currentPos;
+      while (currentPos < iCurrentExpression.length() && (IsAlNum(iCurrentExpression.charAt(currentPos)) || iCurrentExpression.charAt(currentPos) == '\\'))
+      {
+        currentPos++;
+      }
+      nextToken = iCurrentExpression.substring(startPos,currentPos);
 //showToken();
       return;
     }
 //showToken();
   }
   
+  boolean matchToken(String token)
+  {
+    if (nextToken.equals(token))
+      return true;
+    System.out.println("Found "+nextToken+", expected "+token);
+    return false;
+  }
   public SBox parse(String aExpression)
   {
     iCurrentExpression = aExpression;
@@ -83,15 +93,7 @@ public class TeXParser
   SBox parseTopExpression()
   {
     SBoxBuilder builder = new SBoxBuilder();
-    while (nextToken.length() > 0)
-    {
-      parseOneExpression10(builder);
-      NextToken();
-    }
-    while (builder.StackDepth() > 1)
-    {
-      builder.process("*");
-    }
+    parseOneExpression10(builder);
     SBox expression = builder.pop();
     return expression;
   }
@@ -133,13 +135,19 @@ public class TeXParser
           !nextToken.equals("-") && 
           !nextToken.equals("=") && 
           !nextToken.equals("}") && 
+          !nextToken.equals("&") && 
+          !nextToken.equals("\\end") && 
+          !nextToken.equals("\\\\") && 
           !nextToken.equals("\\right)") && 
           !nextToken.equals("\\right]") && 
           !nextToken.equals(",") 
           )
     {
+
+//System.out.println("nextToken = "+nextToken);
       String token = "*";
       parseOneExpression30(builder);
+//System.out.println("After: nextToken = "+nextToken);
       builder.process(token);
     }
   }
@@ -242,6 +250,50 @@ public class TeXParser
       parseOneExpression40(builder);
       builder.process("/");
       return;
+    }
+    else if (nextToken.equals("\\begin"))
+    {
+      NextToken(); if (!matchToken("{")) return;
+      NextToken(); String name = nextToken;
+      NextToken(); if (!matchToken("}")) return;
+      if (name.equals("array"))
+      {
+        int nrColumns = 0;
+        int nrRows    = 0;
+        NextToken(); if (!matchToken("{")) return;
+        NextToken(); String coldef = nextToken;
+        NextToken(); if (!matchToken("}")) return;
+        nrColumns = coldef.length();
+        nrRows = 1;
+        NextToken();
+        while (!nextToken.equals("\\end"))
+        {
+          parseOneExpression10(builder);
+
+          if (nextToken.equals("\\\\"))
+          {
+            nrRows++;
+            NextToken();
+          }
+          else if (nextToken.equals("&"))
+          {
+            NextToken();
+          }
+          else
+          {
+  //  System.out.println("END? "+nextToken);
+          }
+        }
+        NextToken(); if (!matchToken("{")) return;
+        NextToken(); String name2 = nextToken;
+        NextToken(); if (!matchToken("}")) return;
+        if (name2.equals("array"))
+        {
+          builder.process(""+nrRows);
+          builder.process(""+nrColumns);
+          builder.process("[grid]");
+        }
+      }
     }
     else if (nextToken.charAt(0) == '\\')
     {
