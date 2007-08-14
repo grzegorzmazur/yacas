@@ -704,9 +704,20 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     {
       outp.delete(0,outp.length());
       String response = yacas.Evaluate(inputLine);
+
       if (outp.length() > 0)
       {
-        AddLinesStatic(48,"",outp.toString());
+        if (outp.charAt(0) == '$' && outp.charAt(outp.length()-1) == '$')
+        {
+//  System.out.println("outp["+outp.substring(1,outp.length()-1)+"]");
+          lines[currentLine] = new FormulaLine(outp.substring(1,outp.length()-1));
+          currentLine = (currentLine+1)%nrLines;
+          outputDirty = true;
+        }
+        else
+        {
+          AddLinesStatic(48,"",outp.toString());
+        }
       }
       if (yacas.iError != null)
       {
@@ -763,6 +774,37 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     private String iText;
     private Font   iFont;
     private Color  iColor;
+  }
+
+
+  class FormulaLine extends MOutputLine
+  {
+    FormulaLine(String aLine)
+    {
+      TeXParser parser = new TeXParser();
+      expression = parser.parse(aLine);
+    }
+    SBox expression;
+    public void draw(Graphics g, int x,int y)
+    {
+      int hgt = height(g);
+      g.setColor(Color.black);
+      GraphicsPrimitives gp = new GraphicsPrimitives(g);
+      gp.SetLineThickness(0);
+      expression.calculatePositions(gp, 3, new java.awt.Point(x+1, y+expression.getCalculatedAscent()+10));
+      expression.render(gp);
+    }
+    public int height(Graphics g)
+    {
+      if (height == -1)
+      {
+        GraphicsPrimitives gp = new GraphicsPrimitives(g);
+        expression.calculatePositions(gp, 3, new java.awt.Point(0,0));
+        height = expression.getDimension().height+20;
+      }
+      return height;      
+    }
+    int height = -1;
   }
 
 
@@ -1325,17 +1367,27 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     String response = yacas.Evaluate(expression);
     if (outp.length() > 0)
     {
-      AddLinesStatic(48,"",outp.toString());
+      if (outp.charAt(0) == '$' && outp.charAt(outp.length()-1) == '$')
+      {
+        lines[currentLine] = new FormulaLine(outp.substring(1,outp.length()-1));
+        currentLine = (currentLine+1)%nrLines;
+        outputDirty = true;
+      }
+      else
+      {
+        int dollarPos = outp.indexOf("$");
+        if (dollarPos > 0)
+        {
+          outp.delete(dollarPos,outp.length());
+        }
+        AddLinesStatic(48,"",outp.toString());
+      }
     }
     if (yacas.iError != null)
     {
       AddLinesStatic(48,"Error> ",yacas.iError);
     }
-//TODO remove    AddLinesStatic(48, outputPrompt,response);
 
-/*TODO remove
-    PerformRequest("Out> ",expression);
-*/
     ResetInput();
     RefreshHintWindow();
     inputDirty = true;

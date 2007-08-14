@@ -7,17 +7,25 @@ public class TeXParser
   String iCurrentExpression;
   int currentPos;
   String nextToken;
+
+  private void showToken()
+  {
+    System.out.println("["+nextToken+"]");
+  }
+
   void NextToken()
   {
     nextToken = "";
     if (currentPos == iCurrentExpression.length())
     {
+//showToken();
       return;
     }
     while (currentPos < iCurrentExpression.length() && IsSpace(iCurrentExpression.charAt(currentPos))) 
       currentPos++;
     if (currentPos == iCurrentExpression.length())
     {
+//showToken();
       return;
     }
     else if (IsAlNum(iCurrentExpression.charAt(currentPos)))
@@ -28,6 +36,7 @@ public class TeXParser
         currentPos++;
       }
       nextToken = iCurrentExpression.substring(startPos,currentPos);
+//showToken();
       return;
     }
     int c = iCurrentExpression.charAt(currentPos);
@@ -35,18 +44,21 @@ public class TeXParser
     {
       nextToken = "{";
       currentPos++;
+//showToken();
       return;
     }
     else if (c == '}')
     {
       nextToken = "}";
       currentPos++;
+//showToken();
       return;
     }
     else if (singleOps.indexOf(c)>=0)
     {
       nextToken = ""+((char)c);
       currentPos++;
+//showToken();
       return;
     }
     else if (c == '\\')
@@ -54,8 +66,10 @@ public class TeXParser
       currentPos++;
       NextToken();
       nextToken = "\\"+nextToken;
+//showToken();
       return;
     }
+//showToken();
   }
   
   public SBox parse(String aExpression)
@@ -188,8 +202,27 @@ public class TeXParser
     else if (nextToken.equals("\\sqrt"))
     {
       NextToken();
-      parseOneExpression40(builder);
+      parseOneExpression25(builder);
       builder.process("[sqrt]");
+      return;
+    }
+    else if (nextToken.equals("\\exp"))
+    {
+      NextToken();
+      builder.process("e");
+      parseOneExpression25(builder);
+      builder.process("^");
+      return;
+    }
+    else if (nextToken.equals("\\imath"))
+    {
+      builder.process("i");
+    }
+    else if (nextToken.equals("\\mathrm"))
+    {
+      NextToken();
+      parseOneExpression25(builder);
+      return;
     }
     else if (nextToken.equals("-"))
     {
@@ -209,6 +242,11 @@ public class TeXParser
       parseOneExpression40(builder);
       builder.process("/");
       return;
+    }
+    else if (nextToken.charAt(0) == '\\')
+    {
+      nextToken = nextToken.substring(1);
+      builder.process(nextToken);
     }
     else
     {
@@ -231,6 +269,8 @@ public class TeXParser
     if (c == '{') 
       return false;
     if (c == '}')
+      return false;
+    if (c == '\\')
       return false;
     if (singleOps.indexOf(c) >= 0)
       return false;
