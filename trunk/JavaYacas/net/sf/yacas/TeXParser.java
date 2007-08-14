@@ -11,7 +11,9 @@ public class TeXParser
   {
     nextToken = "";
     if (currentPos == iCurrentExpression.length())
+    {
       return;
+    }
     while (currentPos < iCurrentExpression.length() && IsSpace(iCurrentExpression.charAt(currentPos))) 
       currentPos++;
     if (currentPos == iCurrentExpression.length())
@@ -60,7 +62,6 @@ public class TeXParser
   {
     iCurrentExpression = aExpression;
     currentPos = 0;
-
     NextToken();
     return parseTopExpression();
   }
@@ -70,7 +71,7 @@ public class TeXParser
     SBoxBuilder builder = new SBoxBuilder();
     while (nextToken.length() > 0)
     {
-      parseOneExpression(builder);
+      parseOneExpression10(builder);
       NextToken();
     }
     while (builder.StackDepth() > 1)
@@ -80,29 +81,122 @@ public class TeXParser
     SBox expression = builder.pop();
     return expression;
   }
-  void parseOneExpression(SBoxBuilder builder)
+
+  void parseOneExpression10(SBoxBuilder builder)
   {
-    if (nextToken.equals("{"))
+    parseOneExpression20(builder);
+    // = ,
+    while (nextToken.equals("=") || nextToken.equals(","))
     {
-      SBoxBuilder builder2 = new SBoxBuilder();
+      String token = nextToken;
       NextToken();
-      while (!nextToken.equals("}"))
+      parseOneExpression20(builder);
+      builder.process(token);
+    }
+  }
+
+  void parseOneExpression20(SBoxBuilder builder)
+  {
+    parseOneExpression25(builder);
+    // +, -
+    while (nextToken.equals("+") || nextToken.equals("-"))
+    {
+      String token = nextToken;
+      if (token.equals("-"))
+        token = "-/2";
+      NextToken();
+      parseOneExpression25(builder);
+      builder.process(token);
+    }
+  }
+
+  void parseOneExpression25(SBoxBuilder builder)
+  {
+    parseOneExpression30(builder);
+    // implicit *
+    while (nextToken.length() > 0 && 
+          !nextToken.equals("+") && 
+          !nextToken.equals("-") && 
+          !nextToken.equals("=") && 
+          !nextToken.equals("}") && 
+          !nextToken.equals("\\right)") && 
+          !nextToken.equals("\\right]") && 
+          !nextToken.equals(",") 
+          )
+    {
+      String token = "*";
+      parseOneExpression30(builder);
+      builder.process(token);
+    }
+  }
+
+  void parseOneExpression30(SBoxBuilder builder)
+  {
+    parseOneExpression40(builder);
+    // _, ^
+    while (nextToken.equals("_") || nextToken.equals("^") || nextToken.equals("!"))
+    {
+      if (nextToken.equals("!"))
       {
-        parseOneExpression(builder2);
+        builder.process(nextToken);
         NextToken();
       }
-      while (builder2.StackDepth() > 1)
+      else
       {
-        builder2.process("*");
+        String token = nextToken;
+        NextToken();
+        parseOneExpression40(builder);
+        builder.process(token);
       }
-      SBox expression = builder2.pop();
-      builder.push(expression);
+    }
+  }
+  void parseOneExpression40(SBoxBuilder builder)
+  {
+    // atom
+    if (nextToken.equals("{"))
+    {
+      NextToken();
+      parseOneExpression10(builder);
+      if (!nextToken.equals("}"))
+      {
+        System.out.println("Got "+nextToken+", expected }");
+        return;
+      }
+    }
+    else if (nextToken.equals("\\left("))
+    {
+      NextToken();
+      parseOneExpression10(builder);
+      if (!nextToken.equals("\\right)"))
+      {
+        System.out.println("Got "+nextToken+", expected \\right)");
+        return;
+      }
+      builder.process("[roundBracket]");
+    }
+    else if (nextToken.equals("\\left["))
+    {
+      NextToken();
+      parseOneExpression10(builder);
+      if (!nextToken.equals("\\right]"))
+      {
+        System.out.println("Got "+nextToken+", expected \\right]");
+        return;
+      }
+      builder.process("[squareBracket]");
     }
     else if (nextToken.equals("\\sqrt"))
     {
       NextToken();
-      parseOneExpression(builder);
+      parseOneExpression40(builder);
       builder.process("[sqrt]");
+    }
+    else if (nextToken.equals("-"))
+    {
+      NextToken();
+      parseOneExpression30(builder);
+      builder.process("-/1");
+      return;
     }
     else if (nextToken.equals("\\sum"))
     {
@@ -111,67 +205,17 @@ public class TeXParser
     else if (nextToken.equals("\\frac"))
     {
       NextToken();
-      parseOneExpression(builder);
-      NextToken();
-      parseOneExpression(builder);
+      parseOneExpression40(builder);
+      parseOneExpression40(builder);
       builder.process("/");
-    }
-    else if (nextToken.equals("\\left("))
-    {
-      SBoxBuilder builder2 = new SBoxBuilder();
-      NextToken();
-      while (!nextToken.equals("\\right)"))
-      {
-        parseOneExpression(builder2);
-        NextToken();
-      }
-      while (builder2.StackDepth() > 1)
-      {
-        builder2.process("*");
-      }
-      SBox expression = builder2.pop();
-      builder.push(expression);
-      builder.process("[roundBracket]");
-    }
-    else if (nextToken.equals("\\left["))
-    {
-      SBoxBuilder builder2 = new SBoxBuilder();
-      NextToken();
-      while (!nextToken.equals("\\right]"))
-      {
-        parseOneExpression(builder2);
-        NextToken();
-      }
-      while (builder2.StackDepth() > 1)
-      {
-        builder2.process("*");
-      }
-      SBox expression = builder2.pop();
-      builder.push(expression);
-      builder.process("[squareBracket]");
-    }
-
-    
-    else if (
-   nextToken.equals("+")
-|| nextToken.equals("^")
-|| nextToken.equals("_")
-|| nextToken.equals("=")
-|| nextToken.equals(",")
-     )
-    {
-      String token = nextToken;
-      NextToken();
-      parseOneExpression(builder);
-      builder.process(token);
+      return;
     }
     else
     {
       builder.process(nextToken);
     }
+    NextToken();
   }
-
-
 
   boolean IsSpace(int c)
   {

@@ -289,6 +289,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
           {
             net.sf.yacas.DatahubApplet cons = (net.sf.yacas.DatahubApplet)dataHub;
             cons.setProgramMode(programMode);
+
             String programContentsToLoad = "["+cons.getProgram()+"];";
             gotDatahubInit = true; // We're already satisfied here, as we got the contents from the datahub.
             InvokeCalculationSilent(programContentsToLoad);
@@ -996,10 +997,10 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   static final int fontHeight = 14;
   private Font font = new Font("courier", Font.BOLD, fontHeight);
 
-  private static final int nrHistoryLines = 50;
-  public String history[] = new String[nrHistoryLines];
-  public int currentHistoryLine = 0;
-  int historyBrowse = 0;
+  private static final int nrHistoryLines = 100;
+  public  static String history[] = new String[nrHistoryLines];
+  public  static int currentHistoryLine = 0;
+          static int historyBrowse = 0;
 
   boolean inputDirty = true;
   boolean outputDirty = true;
