@@ -96,16 +96,23 @@ public class FormulaViewApplet extends Applet
 
     gp.SetLineThickness(0);
 
-    String s = getParameter("expression");
-    if (s != null)
+    if (expression == null)
     {
+      String s = getParameter("expression");
+      if (s != null)
+      {
 System.out.println("re-rendering the whole formula!");
-      TeXParser parser = new TeXParser();
-      SBox expression = parser.parse(s);
+        TeXParser parser = new TeXParser();
+        expression = parser.parse(s);
+      }
+    }
+    if (expression != null)
+    {
       expression.calculatePositions(gp, 3, new java.awt.Point(1, d.height/2));
       expression.render(gp);
     }
   }
+  SBox expression = null;
 }
 
 
