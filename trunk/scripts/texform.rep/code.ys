@@ -94,7 +94,7 @@ TeXFormMaxPrec() := 60000;	 /* This precedence will never be bracketed. It is eq
 
 	/* generic unary ops here */
 	/* prefix */
-120 # TeXForm(expr_IsFunction, _p)_(NrArgs(expr)=1 And IsPrefix(Type(expr))) <-- TeXFormBracketIf(p<OpRightPrecedence(Type(expr)), ConcatStrings(
+120 # TeXForm(expr_IsFunction, _p)_(NrArgs(expr)=1 And IsPrefix(Type(expr))) <-- TeXFormBracketIf(p<OpPrecedence(Type(expr)), ConcatStrings(
 	TeXFormTeXify(Type(expr)),
 	TeXForm(Listify(expr)[2], OpRightPrecedence(Type(expr)))
 ) );
