@@ -137,6 +137,7 @@ class SBoxBuilder
 
             int delta = iSubOffset + (iExpressions[2].getDimension().height-iExpressions[2].iAscent) - (iExpressions[0].getDimension().height-iExpressions[0].iAscent);
             iExtent = iExtent + delta;
+
           }
 
           int fixMaxWidth = dsfix.width;
@@ -144,6 +145,11 @@ class SBoxBuilder
           iDimension = new Dimension(dexpr.width+fixMaxWidth,dexpr.height+iExtent);
         }
         iAscent = iExpressions[0].getCalculatedAscent()+iExtent;
+
+if (iExpressions[2] != null)
+{
+  iAscent = iAscent - iExpressions[2].getDimension().height; 
+}
       }
       if (aPosition != null)
       {

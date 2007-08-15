@@ -33,7 +33,7 @@ so the closer {{expr:y:expr}} is to the solution the smaller the error function 
 
 Using the newton iteration step:
 
-{{math,heightPixels.120:
+{{math,heightPixels.180:
 y_1 = y_0 + \frac{error \left( y_0 \right) }{ \left[ \frac{d error \left( y_0 \right) }{dy_0}  \right] }
 :math}}
 
