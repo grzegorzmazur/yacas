@@ -49,7 +49,6 @@ class SBoxBuilder
         if (iExpressions[i] != null)
         {
           iExpressions[i].render(g);
-//iExpressions[i].drawBoundingBox(g);
         }
       }
     }
@@ -68,7 +67,8 @@ class SBoxBuilder
       int i;
       for (i=0;i<iExpressions.length;i++)
       {
-        iExpressions[i].drawBoundingBox(g);
+        if (iExpressions[i] != null) 
+          iExpressions[i].drawBoundingBox(g);
       }
     }
   }
@@ -90,6 +90,11 @@ class SBoxBuilder
     {
       iExpressions[2] = aExpression;
     }
+
+    int iExtent = 0;
+    int iSuperOffset = 0;
+    int iSubOffset = 0;
+
     public void calculatePositions(GraphicsPrimitives g, int aSize, java.awt.Point aPosition)
     {
       iSize = aSize;
@@ -106,12 +111,11 @@ class SBoxBuilder
         Dimension dexpr = iExpressions[0].getDimension();
         if (iExpressions[1] != null) dsfix = iExpressions[1].getDimension();
         if (iExpressions[2] != null) dlfix = iExpressions[2].getDimension();
-        
-
-        int iExtent = 0;
-        
+                
         if (iExpressions[0] instanceof SBoxSum)
         {
+          iSuperOffset = 0;
+          iSubOffset = 0;
           if (iExpressions[1] != null) iExtent = iExtent + iExpressions[1].iAscent;
           if (iExpressions[2] != null) iExtent = iExtent + iExpressions[2].iAscent;
 
@@ -122,8 +126,18 @@ class SBoxBuilder
         }
         else
         {
-          if (iExpressions[1] != null) iExtent = iExtent + iExpressions[1].iAscent/2;
-          if (iExpressions[2] != null) iExtent = iExtent + iExpressions[2].iAscent/2;
+          if (iExpressions[1] != null) 
+          {
+            iSuperOffset = iExpressions[1].getDimension().height-iExpressions[1].iAscent-iExpressions[0].getDimension().height/4;
+            iExtent = iExtent + iSuperOffset + iExpressions[1].iAscent;
+          }
+          if (iExpressions[2] != null) 
+          {
+            iSubOffset = iExpressions[2].iAscent;
+
+            int delta = iSubOffset + (iExpressions[2].getDimension().height-iExpressions[2].iAscent) - (iExpressions[0].getDimension().height-iExpressions[0].iAscent);
+            iExtent = iExtent + delta;
+          }
 
           int fixMaxWidth = dsfix.width;
           if (dlfix.width > fixMaxWidth) fixMaxWidth = dlfix.width;
@@ -147,8 +161,8 @@ class SBoxBuilder
         }
         else
         {
-          if (iExpressions[1] != null) iExpressions[1].calculatePositions(g, aSize-1, new Point(aPosition.x+dexpr.width,aPosition.y-iExpressions[0].iAscent + iExpressions[1].iAscent/2));
-          if (iExpressions[2] != null) iExpressions[2].calculatePositions(g, aSize-1, new Point(aPosition.x+dexpr.width,aPosition.y + iExpressions[2].iAscent/2));
+          if (iExpressions[1] != null) iExpressions[1].calculatePositions(g, aSize-1, new Point(aPosition.x+dexpr.width,aPosition.y-iExpressions[0].iAscent - iSuperOffset));
+          if (iExpressions[2] != null) iExpressions[2].calculatePositions(g, aSize-1, new Point(aPosition.x+dexpr.width,aPosition.y + iSubOffset));
         }
       }
     }
@@ -199,7 +213,6 @@ class SBoxBuilder
             if (iHeights[j] < d.height) iHeights[j] = d.height;
           }
         }
-
         int totalWidth = 0;
         for (i=0;i<iWidth;i++)
         {
@@ -211,22 +224,30 @@ class SBoxBuilder
         {
           totalHeight = totalHeight+iHeights[j];
         }
-        iDimension = new Dimension(totalWidth+spacing*(iWidth-1),totalHeight+spacing*(iHeight-1));
+        iDimension = new Dimension(totalWidth+spacing*(iWidth),totalHeight+spacing*(iHeight));
         iAscent = iDimension.height/2;
       }
       if (aPosition != null)
       {
         int i,j;
-        int w = 0;
-        for (i=0;i<iWidth;i++)
+        int h = -iAscent;
+        for (j=0;j<iHeight;j++)
         {
-          int h=-iAscent;
-          for (j=0;j<iHeight;j++)
+          int maxAscent = -10000;
+          for (i=0;i<iWidth;i++)
+          {
+            if (maxAscent < iExpressions[i+j*iWidth].iAscent)
+              maxAscent = iExpressions[i+j*iWidth].iAscent;
+          }
+          h = h + maxAscent;
+          int w = 0;
+          for (i=0;i<iWidth;i++)
           {
             iExpressions[i+j*iWidth].calculatePositions(g, aSize, new Point(aPosition.x+w,aPosition.y+h));
-            h+=iHeights[j]+spacing;
+            w+=iWidths[i]+spacing;
           }
-          w+=iWidths[i]+spacing;
+          h = h - maxAscent;
+          h = h + iHeights[j]+spacing;
         }
       }
     }
@@ -272,20 +293,6 @@ class SBoxBuilder
       }
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   class SBoxInfixOperator extends SBoxCompoundExpression
   {
@@ -340,10 +347,13 @@ class SBoxBuilder
       iExpressions[0] = aNumerator;
       iExpressions[1] = aDenominator;
     }
+    int iDashheight = 0;
     public void calculatePositions(GraphicsPrimitives g, int aSize, java.awt.Point aPosition)
     {
       iSize = aSize;
       iPosition = aPosition;
+
+      iDashheight = SBoxBuilder.FontForSize(iSize);
 
       if (iDimension == null)
       {
@@ -353,16 +363,16 @@ class SBoxBuilder
         Dimension ddim = iExpressions[1].getDimension();
         int width = ndim.width;
         if (width < ddim.width) width = ddim.width;
-        iDimension = new Dimension(width,ndim.height + ddim.height + 6);
-        iAscent = ndim.height+SBoxBuilder.FontForSize(iSize)/2;
+        iDimension = new Dimension(width,ndim.height + ddim.height + iDashheight);
+        iAscent = ndim.height+iDashheight;
       }
       if (aPosition != null)
       {
         Dimension ndim = iExpressions[0].getDimension();
         Dimension ddim = iExpressions[1].getDimension();
-        
-        int ynumer = aPosition.y-ndim.height + SBoxBuilder.FontForSize(iSize)/2-2;
-        int ydenom = aPosition.y+iExpressions[1].getCalculatedAscent()-SBoxBuilder.FontForSize(iSize)/2+6-2;
+
+        int ynumer = aPosition.y-ndim.height +iExpressions[0].getCalculatedAscent()-iDashheight;
+        int ydenom = aPosition.y+iExpressions[1].getCalculatedAscent();
         iExpressions[0].calculatePositions(g,aSize,new java.awt.Point(aPosition.x + (iDimension.width-ndim.width)/2,ynumer));
         iExpressions[1].calculatePositions(g,aSize,new java.awt.Point(aPosition.x + (iDimension.width-ddim.width)/2,ydenom));
       }
@@ -378,7 +388,7 @@ class SBoxBuilder
       if (width < ddim.width) width = ddim.width;
 
       g.SetLineThickness(1);
-      g.DrawLine(iPosition.x,iPosition.y+2-SBoxBuilder.FontForSize(iSize)/2,iPosition.x+width,iPosition.y+2-SBoxBuilder.FontForSize(iSize)/2);
+      g.DrawLine(iPosition.x,iPosition.y-iDashheight/2+2,iPosition.x+width,iPosition.y-iDashheight/2+2);
     }
   }
 
@@ -477,8 +487,7 @@ class SBoxBuilder
         Dimension dim = iExpressions[0].getDimension();
         iFontSize = dim.height;
         g.SetFontSize(dim.height);
-        iBracketWidth = g.TextWidth(iOpen);
-        
+        iBracketWidth = SBoxBuilder.FontForSize(aSize)/2;
         iDimension = new Dimension(dim.width+2*iBracketWidth,dim.height);
         iAscent = iExpressions[0].getCalculatedAscent();
       }
@@ -492,13 +501,67 @@ class SBoxBuilder
     {
       super.render(g);
       Dimension dim = iExpressions[0].getDimension();
-      g.SetFontSize(iFontSize);
-//  System.out.println("iFontSize = "+iFontSize+", iAscent = "+iAscent+", gasc = "+g.GetAscent()+", dimh = "+dim.height);
-      int offset = (iFontSize-iAscent)/2;
-      g.DrawText(iOpen, iPosition.x, iPosition.y+offset);
-      g.DrawText(iClose, iPosition.x+dim.width+iBracketWidth, iPosition.y+offset);
-
+      drawBracket(g, iOpen , iPosition.x                        , iPosition.y-getCalculatedAscent() );
+      drawBracket(g, iClose, iPosition.x+dim.width+iBracketWidth, iPosition.y-getCalculatedAscent() );
     }
+
+    void drawBracket(GraphicsPrimitives g, String bracket, int x, int y)
+    {
+      Dimension dim = iExpressions[0].getDimension();
+      if (bracket.equals("[") || bracket.equals("]"))
+      {
+        int margin = 2;
+        g.SetLineThickness(2);
+        if (bracket.equals("["))
+        {
+          g.DrawLine(x+margin,y,x+margin,y+dim.height);
+        }
+        else
+        {
+          g.DrawLine(x+iBracketWidth-margin,y,x+iBracketWidth-margin,y+dim.height);
+        }
+        g.SetLineThickness(1);
+        g.DrawLine(x+iBracketWidth-margin,y,x+margin,y);
+        g.DrawLine(x+margin,y+dim.height,x+iBracketWidth-margin,y+dim.height);
+      }
+      else if (bracket.equals("(") || bracket.equals(")"))
+      {
+        int xstart;
+        int xend; 
+        if (bracket.equals("("))
+        {
+          xstart = x+iBracketWidth;
+          xend = x;
+        }
+        else
+        {
+          xstart = x;
+          xend = x+iBracketWidth;
+        }
+        int delta = xend-xstart;
+        float steps[] = new float[3];
+        steps[0] = 0.2f;
+        steps[1] = 0.6f;
+        steps[2] = 0.8f;
+        g.SetLineThickness(1f);
+        g.DrawLine((int)(xstart+(delta*steps[0])),y+(0*dim.height)/6,(int)(xstart+(delta*steps[1])),y+(1*dim.height)/6);
+        g.SetLineThickness(1.3f);
+        g.DrawLine((int)(xstart+(delta*steps[1])),y+(1*dim.height)/6,(int)(xstart+(delta*steps[2])),y+(2*dim.height)/6);
+        g.SetLineThickness(1.6f);
+        g.DrawLine((int)(xstart+(delta*steps[2])),y+(2*dim.height)/6,(int)(xstart+(delta*steps[2])),y+(4*dim.height)/6);
+        g.SetLineThickness(1.3f);
+        g.DrawLine((int)(xstart+(delta*steps[2])),y+(4*dim.height)/6,(int)(xstart+(delta*steps[1])),y+(5*dim.height)/6);
+        g.SetLineThickness(1f);
+        g.DrawLine((int)(xstart+(delta*steps[1])),y+(5*dim.height)/6,(int)(xstart+(delta*steps[0])),y+(6*dim.height)/6);      
+      }
+      else
+      {
+        g.SetFontSize(iFontSize);
+        int offset = (iFontSize-iAscent)/2;
+        g.DrawText(bracket, x, y+offset);
+      }
+    }
+
     int iFontSize;
     int iBracketWidth;
     String iOpen;
@@ -515,8 +578,8 @@ class SBoxBuilder
     
     switch (aSize)
     {
-      case 0: return 8;
-      case 1: return 10;
+      case 0: return 6;
+      case 1: return 8;
       case 2: return 12;
       case 3: return 16;
       default: return 16;
