@@ -42,7 +42,7 @@ import java.applet.*;
 import java.io.*;
 import java.net.*;
 
-public class ConsoleApplet extends Applet implements KeyListener, FocusListener, ClipboardOwner, MouseListener
+public class ConsoleApplet extends Applet implements KeyListener, FocusListener, ClipboardOwner, MouseListener, MouseMotionListener
 {
   AppletOutput out;
 
@@ -53,8 +53,8 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     setLayout (null);
     addKeyListener(this);
     addFocusListener(this);
-
     addMouseListener(this);
+    addMouseMotionListener(this);
 
     out = new AppletOutput(this);
     ResetInput();
@@ -96,12 +96,48 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   public void mouseExited(MouseEvent event) 
   {
   }
+  
+  boolean scrolling = false;
+  int yDown = 0;
+  int yStart = 0;
   public void mousePressed(MouseEvent event) 
   {
+    scrolling = false;
+    int th = calcThumbHeight();
+    int canvasHeight = getHeight()-fontHeight-1;
+    int w=getWidth();
+    if (canvasHeight < totalLinesHeight)
+    {
+      int x = event.getX();
+      int y = event.getY();
+      if (x > w-scrollWidth && y < canvasHeight)
+      {
+
+        if (y >= thumbPos+2 && y <= thumbPos+2+th)
+        {
+          yDown = y;
+          yStart = thumbPos;
+        }
+        else
+        {
+          thumbPos = y-2;
+          clipThumbPos();
+        }
+        scrolling = true;
+        thumbMoused = true;
+        outputDirty = true;
+        repaint();
+      }
+    }
   }
   public void mouseReleased(MouseEvent event) 
   {
-    if (hintWindow != null)
+    if (scrolling)
+    {
+      scrolling = false;
+      return;
+    }
+    else if (hintWindow != null)
     {
       if (matchToInsert.length() > 0)
       {
@@ -114,19 +150,65 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
   }
 
+  public void mouseMoved(MouseEvent event) 
+  {
+    boolean newthumbMoused = false;
+    int canvasHeight = getHeight()-fontHeight-1;
+    int w=getWidth();
+    if (canvasHeight < totalLinesHeight)
+    {
+      int x = event.getX();
+      int y = event.getY();
+      if (x > getWidth()-scrollWidth && y < canvasHeight)
+      {
+        newthumbMoused = true;
+      }
+    }
+    if (thumbMoused != newthumbMoused)
+    {
+      thumbMoused = newthumbMoused;
+      outputDirty = true;
+      repaint();
+    }
+  }
+
+  void clipThumbPos()
+  {
+    int th = calcThumbHeight();
+    int canvasHeight = getHeight()-fontHeight-1;
+    if (thumbPos < 0)
+      thumbPos = 0;
+    if (thumbPos > canvasHeight-th-4)
+      thumbPos = canvasHeight-th-4;
+  }
+
+  public void mouseDragged(MouseEvent event) 
+  {
+    int th = calcThumbHeight();
+    int canvasHeight = getHeight()-fontHeight-1;
+    int w=getWidth();
+    if (scrolling)
+    {
+      int x = event.getX();
+      int y = event.getY();
+      thumbPos = yStart + (y-yDown);
+      clipThumbPos();
+      outputDirty = true;
+      repaint();
+    }
+  }
+
   public void lostOwnership(Clipboard clipboard, Transferable contents)
   {
   }
+
 
   LispOutput stdoutput = null;
   CYacas yacas = null;
   StringBuffer outp = new StringBuffer();
   public void start()
   {
-    int i;
-    for (i=0;i<nrLines;i++) lines[i] = null;
-    outputDirty = true;
-
+    clearOutputLines();
     if (false /*TODO remove loading the logo yacasLogo == null*/)
     {
       try
@@ -152,8 +234,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
     if (yacasLogo != null)
     {
-      lines[currentLine] = new ImageLine(yacasLogo,this);
-      currentLine = (currentLine+1)%nrLines;
+      addLine(new ImageLine(yacasLogo,this));
     }
 
     {
@@ -241,8 +322,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     {
       out.println(e);
     }
-
-    i=1;
+    int i=1;
     while (true)
     {
       String argn = "init"+i;
@@ -684,9 +764,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
     else if (inputLine.equals("cls"))
     {
-      int i;
-      for (i=0;i<nrLines;i++) lines[i] = null;
-      outputDirty = true;
+      clearOutputLines();
       succeed = true;
     }
     else if (inputLine.equals("?license") || inputLine.equals("?licence") || inputLine.equals("?warranty"))
@@ -710,9 +788,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         if (outp.charAt(0) == '$' && outp.charAt(outp.length()-1) == '$')
         {
 //  System.out.println("outp["+outp.substring(1,outp.length()-1)+"]");
-          lines[currentLine] = new FormulaLine(outp.substring(1,outp.length()-1));
-          currentLine = (currentLine+1)%nrLines;
-          outputDirty = true;
+          addLine(new FormulaLine(outp.substring(1,outp.length()-1)));
         }
         else
         {
@@ -880,9 +956,44 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   }
 
 
-  final static int nrLines =  60;
+  final static int nrLines =  100;
   MOutputLine lines[] = new MOutputLine[nrLines];
   int currentLine=0;
+  int totalLinesHeight = 0;
+
+  void clearOutputLines()
+  {
+    int i;
+    for (i=0;i<nrLines;i++) 
+    {
+      lines[i] = null;
+    }
+    totalLinesHeight = 0;
+    thumbPos = 0;
+    outputDirty = true;
+  }
+  void addLine(MOutputLine aLine)
+  {
+    CreateOffscreenImage();
+    if (lines[currentLine] != null)
+      totalLinesHeight -= lines[currentLine].height(offGra);
+    lines[currentLine] = aLine;
+    if (lines[currentLine] != null)
+      totalLinesHeight += lines[currentLine].height(offGra);
+    currentLine = (currentLine+1)%nrLines;
+
+    {
+      int canvasHeight = getHeight()-fontHeight-1;
+      if (canvasHeight < totalLinesHeight)
+      {
+        int th = calcThumbHeight();
+        thumbPos = canvasHeight-th-4;
+      }
+    }
+    outputDirty = true;
+  }
+
+
   void AddLine(int index, String text)
   {
     AddLineStatic(index, text);
@@ -898,8 +1009,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   Font iPromptFont = new Font("helvetica", Font.PLAIN, 12);
   void AddLineStatic(int indent, String prompt, String text,  Font aFont, Color aColor)
   {
-    lines[currentLine] = new PromptedStringLine(indent, prompt,text,iPromptFont, aFont,iPromptColor, aColor);
-    currentLine = (currentLine+1)%nrLines;
+    addLine(new PromptedStringLine(indent, prompt,text,iPromptFont, aFont,iPromptColor, aColor));
     outputDirty = true;
   }
 
@@ -912,7 +1022,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     paint(g);
   }
 
-  public void paint(Graphics g)
+  void CreateOffscreenImage()
   {
     // draw an offScreen drawing
     Dimension dim = getSize();
@@ -921,6 +1031,11 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       offImg = createImage(dim.width, dim.height);
       offGra = offImg.getGraphics();
     }
+  }
+
+  public void paint(Graphics g)
+  {
+    CreateOffscreenImage();
  
     // Render image
     paintToBitmap(offGra);
@@ -931,12 +1046,26 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     {
       YacasGraphicsContext context = new YacasGraphicsContext(g,0,0);
       context.SetFontSize(1,fontHeight/*12*/);
-      int nr_total_lines = 1; //nrLines;
+      int nr_total_lines = 1;
       Dimension d = getSize();
       hintWindow.draw(5,(int)(d.getHeight()-context.FontHeight()-nr_total_lines*context.FontHeight()),context);
     }
   }
  
+  boolean thumbMoused = false;
+  int scrollWidth = 16;
+  int thumbPos = 0;
+
+  int calcThumbHeight()
+  {
+    int canvasHeight = getHeight()-fontHeight-1;
+    int hgt = ((canvasHeight-4)*canvasHeight)/totalLinesHeight;
+    if (hgt < 16) 
+      hgt = 16;
+    return hgt;
+  }
+
+
   Color bkColor = new Color(255,255,255);
   public void paintToBitmap(Graphics g)
   {
@@ -967,17 +1096,18 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
     int i;
     int y=getHeight()-inHeight-g.getFontMetrics().getHeight();
- 
+
+      int canvasHeight = getHeight()-fontHeight-1;
     if (outputDirty)
     {
-      for (i=0;i<nrLines;i++)
+      y -= totalLinesHeight;
+      if (canvasHeight < totalLinesHeight)
       {
-        int index = (currentLine+i)%nrLines;
-        if (lines[index] != null)
-        {
-          y-=lines[index].height(g);
-        }
+        int th = calcThumbHeight();
+        double scale = (1.0*thumbPos)/(canvasHeight-th-4);
+        y += (int)((1-scale)*(totalLinesHeight-canvasHeight));
       }
+      g.setClip(0,0,getWidth(),getHeight()-fontHeight-1);
       for (i=0;i<nrLines;i++)
       {
         int index = (currentLine+i)%nrLines;
@@ -990,8 +1120,29 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
           y+=lines[index].height(g);
         }
       }
+      g.setClip(0,0,getWidth(),getHeight());
+      int w=getWidth();
+//System.out.println("height = "+totalLinesHeight+", screen = "+(canvasHeight));
+      if (canvasHeight < totalLinesHeight)
+      {
+        int thumbHeight = calcThumbHeight();
+        g.setColor(Color.white);
+        g.fillRect(w-scrollWidth,0,scrollWidth,canvasHeight);
+
+        if (thumbMoused)
+          g.setColor(new Color(192,192,240));
+        else
+          g.setColor(new Color(124,124,224));
+        
+        g.fillRect(w-scrollWidth+2,thumbPos+2,scrollWidth-4,thumbHeight);
+
+        g.setColor(Color.black);
+        g.drawRect(w-scrollWidth,0,scrollWidth,canvasHeight);
+
+        g.drawRect(w-scrollWidth+2,thumbPos+2,scrollWidth-4,thumbHeight);
+      }
     }
-    y=getHeight()-g.getFontMetrics().getDescent();//-fontHeight;
+    y=getHeight()-g.getFontMetrics().getDescent();
     outputDirty = false;
     if (focusGained)
     {
@@ -1369,9 +1520,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     {
       if (outp.charAt(0) == '$' && outp.charAt(outp.length()-1) == '$')
       {
-        lines[currentLine] = new FormulaLine(outp.substring(1,outp.length()-1));
-        currentLine = (currentLine+1)%nrLines;
-        outputDirty = true;
+        addLine(new FormulaLine(outp.substring(1,outp.length()-1)));
       }
       else
       {
