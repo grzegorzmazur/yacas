@@ -20,16 +20,19 @@ AddBody(text):=
 Chapter(title):=
 [
 GarbageCollect();
-WriteString("  Creating Chapter ");
-WriteString(title);NewLine();
-  currentChapter:=title;
   currentChapterIndex++;
   currentSectionIndex:=0;
+
+  currentChapter:=title;
+
+  title := String(currentChapterIndex):". ":title;
+  WriteString("  Creating Chapter ");
+  WriteString(title);NewLine();
   plain["Chapters"][currentChapter]:={};
   plain["Chapters"][currentChapter]["Sections"]:={};
   plain["Chapters"][currentChapter]["Body"]:="";
 
-currentBody := Assoc("Body",plain["Chapters"][currentChapter]);
+  currentBody := Assoc("Body",plain["Chapters"][currentChapter]);
 
   plain["Chapters"][currentChapter]["Index"]:=currentChapterIndex;
   plain["Chapters"][currentChapter]["Intro"]:=HtmlTag(chapter, title);
@@ -59,18 +62,21 @@ AddAnchor(aAnchor) := (HtmlAnchor()aAnchor);
 SectionTag(chapterIndex,sectionIndex):=
   "c" : String(chapterIndex) : "s" : String(sectionIndex) ;
 
-ChapterTag(chapterIndex):=
-  "c" : String(chapterIndex) ;
+ChapterTag(chapterIndex):= ("c" : String(chapterIndex));
 
 Section(title):=
 [
+
+  currentSectionIndex++;
+
+
+  plain["Chapters"][currentChapter]["Sections"][title]:=currentSectionIndex;
+  AddBody(HtmlAnchor()SectionTag(currentChapterIndex,currentSectionIndex));
+
+  title := String(currentChapterIndex):".":String(currentSectionIndex):" ":title;
 WriteString("    Creating Section ");
 WriteString(title);NewLine();
 
-  currentSectionIndex++;
-  plain["Chapters"][currentChapter]["Sections"][title]:=
-    currentSectionIndex;
-  AddBody(HtmlAnchor()SectionTag(currentChapterIndex,currentSectionIndex));
   AddBody(HtmlTag(section,"<hr>":title));
 ];
 
