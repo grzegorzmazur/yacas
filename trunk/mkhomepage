@@ -40,13 +40,7 @@ cp yacas.html index.html
 yacas --patchload -pc ../docs/downloads.html.in > downloads.html
 
 cp ../JavaYacas/yacas.jar .
-cp ../JavaYacas/yacasconsole.html .
 cp ../JavaYacas/hints.txt .
-
-mkdir tutorials
-mkdir journal
-cp ../docs/tutorials/* tutorials/
-
 
 if [ -d backups ] ; then : ; else  mkdir backups ; fi; 
 mv manual.html.tar.gz backups
