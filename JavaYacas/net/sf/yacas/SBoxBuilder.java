@@ -10,6 +10,14 @@ class SBoxBuilder
     SBoxSymbolName(String aSymbol)
     {
       iSymbol = aSymbol;
+      if (iSymbol.indexOf("\\") == 0)
+      {
+        if (iSymbol.equals("\\pi")) {}
+        else
+        {
+          iSymbol = iSymbol.substring(1);
+        }
+      }
     }
 
     public void calculatePositions(GraphicsPrimitives g, int aSize, java.awt.Point aPosition)
@@ -19,14 +27,36 @@ class SBoxBuilder
       
       iSize = aSize;
       iPosition = aPosition;
-      iAscent = g.GetAscent();
-      iDimension = new Dimension(g.TextWidth(iSymbol),height);
+      if (iSymbol.equals("\\pi")) 
+      {
+        iDimension = new Dimension(g.TextWidth("M"),height);
+        double deltay = 0.2*iDimension.height;
+        iAscent = g.GetAscent();
+      }
+      else
+      {
+        iAscent = g.GetAscent();
+        iDimension = new Dimension(g.TextWidth(iSymbol),height);
+      }
     }
 
     public void render(GraphicsPrimitives g)
     {
-      g.SetFontSize(SBoxBuilder.FontForSize(iSize));
-      g.DrawText(iSymbol, iPosition.x, iPosition.y);
+      if (iSymbol.equals("\\pi")) 
+      {
+        double deltax = 0.15*iDimension.width;
+        double deltay = 0.2*iDimension.height;
+
+        g.DrawLine((int)(iPosition.x                 +1*deltax),(int)(iPosition.y-iAscent+2*deltay),(int)(iPosition.x+iDimension.width-1*deltax),(int)(iPosition.y-iAscent                  +2*deltay));
+        g.DrawLine((int)(iPosition.x                 +2*deltax),(int)(iPosition.y-iAscent+2*deltay),(int)(iPosition.x                 +2*deltax),(int)(iPosition.y-iAscent+iDimension.height+0*deltay));
+        g.DrawLine((int)(iPosition.x+iDimension.width-2*deltax),(int)(iPosition.y-iAscent+2*deltay),(int)(iPosition.x+iDimension.width-2*deltax),(int)(iPosition.y-iAscent+iDimension.height+0*deltay));
+
+      }
+      else
+      {
+        g.SetFontSize(SBoxBuilder.FontForSize(iSize));
+        g.DrawText(iSymbol, iPosition.x, iPosition.y);
+      }
     }
     public String iSymbol;
   }
@@ -89,6 +119,11 @@ class SBoxBuilder
     void setSubfix(SBox aExpression)
     {
       iExpressions[2] = aExpression;
+    }
+
+    boolean hasSuperfix()
+    {
+      return (iExpressions[1] != null);
     }
 
     int iExtent = 0;
@@ -611,8 +646,6 @@ if (iExpressions[2] != null)
 		return stackDepth;
 	}
 
-
-  //TODO remove    Font font = new Font(fontName, Font.BOLD, 36);
   void process(String aType)
   {
     if (aType.equals("="))
@@ -644,6 +677,11 @@ if (iExpressions[2] != null)
       SBox right = pop();
       push(new SBoxPrefixOperator(new SBoxSymbolName("-"),right));
     }
+    else if (aType.equals("~"))
+    {
+      SBox right = pop();
+      push(new SBoxPrefixOperator(new SBoxSymbolName("~"),right));
+    }
     else if (aType.equals("!"))
     {
       SBox left = pop();
@@ -673,7 +711,15 @@ if (iExpressions[2] != null)
     {
       SBox right = pop();
       SBox left = pop();
+      boolean appendToExisting = false;
+      
       if (left instanceof SBoxSubSuperfix)
+      {
+        SBoxSubSuperfix sbox = (SBoxSubSuperfix)left;
+        if (!sbox.hasSuperfix())
+          appendToExisting = true;
+      }
+      if (appendToExisting)
       {
         SBoxSubSuperfix sbox = (SBoxSubSuperfix)left;
         sbox.setSuperfix(right);

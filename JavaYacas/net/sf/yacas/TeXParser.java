@@ -239,6 +239,13 @@ public class TeXParser
       builder.process("-/1");
       return;
     }
+    else if (nextToken.equals("\\neg"))
+    {
+      NextToken();
+      parseOneExpression30(builder);
+      builder.process("~");
+      return;
+    }
     else if (nextToken.equals("\\sum"))
     {
       builder.process("[sum]");
@@ -294,11 +301,6 @@ public class TeXParser
           builder.process("[grid]");
         }
       }
-    }
-    else if (nextToken.charAt(0) == '\\')
-    {
-      nextToken = nextToken.substring(1);
-      builder.process(nextToken);
     }
     else
     {
