@@ -24,8 +24,8 @@ EXTRA_DIST = \
 	$(YART_FILES) \
 	journaldescr.html journalview.html journaledit.html \
 	yacas-screenshot.png \
-        todo.html downloads.html.in \
-	bugs.txt README \
+        downloads.html.in \
+	README \
 	paper1.tex paper2.tex 
 
 YART_FILES = derivative.yart newtonsqrt.yart newtonconvergence.yart taylordefinition.yart 
