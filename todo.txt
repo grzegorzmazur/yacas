@@ -2,9 +2,7 @@
 TODO:
 
 1) Documentation improvements
-- what is Yacas? How did it come into existence? Why did I write it? Who
-is it for?
-- document ~/.yacas_history and ~/.yacasrc
+- what is Yacas? How did it come into existence? Why did I write it? Who is it for?
 - mention  the use of lists for passing multiple arguments.
 ============================================================================================================
 - document the algorithms used, and expand on all of the functions
@@ -60,14 +58,10 @@ useful. Show for example Select.
 - change the style of the scrollbar
 - allow saving multiple programs in cookies
 - work through mommies feedback
-  - computer calculations made easy zou ik in lijn met het logo plaatsen
-liefst in lijn met de groene balletjes. Nu zweeft het een beetje los.
-  - Get Yacas en contact us is goed, maar ik zou het wat lager plaatsen in
-lijn met de tabs, maar wel zo laten als tekst links.
-- autocompleter should also make it easier to go to the manual (preview
-part of the section on that function?)
-- Explain that a connection to the server is not needed, and that Yacas
-can be run off-line (with a link to a download of the Yacas web site).
+  - computer calculations made easy zou ik in lijn met het logo plaatsen liefst in lijn met de groene balletjes. Nu zweeft het een beetje los.
+  - Get Yacas en contact us is goed, maar ik zou het wat lager plaatsen in lijn met de tabs, maar wel zo laten als tekst links.
+- autocompleter should also make it easier to go to the manual (preview part of the section on that function?)
+- Explain that a connection to the server is not needed, and that Yacas can be run off-line (with a link to a download of the Yacas web site).
 ============================================================================================================
 - When user clicks on a tab he should go back to the starting page of that
 tab (does not work on IE).
@@ -99,9 +93,7 @@ more and editing it also not.
 to say Feynman diagrams?
 
 4) Applet improvements
-- text rendered in console seems to be rendered slightly off, shifted, on
-Windows (not on my PowerBook).
-- hint box does not render anti-aliased.
+?- text rendered in console seems to be rendered slightly off, shifted, on Windows (not on my PowerBook).
 - clicking on the hint box should do the same as pressing enter
 - Error in Yacas console should be shorter: drop the
 net.sf.yacas.YacasException as it does not really add anything.
@@ -192,5 +184,19 @@ negative moduli bases, but the answer should in any case be non-negative.
 Mod(a,b) is defined as the smallest non-negative number c such that a-c is
 divisible by b.
 
+
+
+
+
+
+
+
+
+
+
+
+Done:
+
+x hint box does not render anti-aliased.
 
 
