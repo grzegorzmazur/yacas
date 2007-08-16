@@ -7,43 +7,29 @@ TODO:
 ============================================================================================================
 - document the algorithms used, and expand on all of the functions
 currently implemented.
-- separate manual chapter on tensors. (Serge? Is it going to change?).
-TSimplify and TExplicitSum, TD, X
+- separate manual chapter on tensors. (Serge? Is it going to change?). TSimplify and TExplicitSum, TD, X
 - document the source code.
-- document HoldArg in combination with <-- (or actually remove HoldArg? I
-want to depreciate UnFence/HoldArg in favor of macros)
+- document HoldArg in combination with <-- (or actually remove HoldArg? I want to depreciate UnFence/HoldArg in favor of macros)
 - document II, ReII, ImII, IsComplexII
-- document ExpressionDepth, PAdicExpandInternal, GetPrimeFactors, Rem,
-Roots, Apart, Together
-- document UnHoldable, GcdReduce, ApplyPure, DestructiveAppendList,
-PatternMatches, PatternCreate, RuleBaseDefined, Lambda (in combination
-with Apply), Primes, MapArgs, Substitute,
+- document ExpressionDepth, PAdicExpandInternal, GetPrimeFactors, Rem, Roots, Apart, Together
+- document UnHoldable, GcdReduce, ApplyPure, DestructiveAppendList, PatternMatches, PatternCreate, RuleBaseDefined, Lambda (in combination with Apply), Primes, MapArgs, Substitute,
 - document %, |, &, ^, if, else (else binds to the last if)
 - document DivPoly, RootsWithMultiples,
 - document OdeSolve
 - document Dimensions, IsSquareMatrix, Tr.
 - document Deriv, Berlekamp, ExtendedEuclidean, ExtendedEuclideanMonic
 - document IsVariable
-- document the fact that VarList can also be called with a second
-argument, a filter predicate.
-- document Extended predicates in the pattern matcher (needs to be
-explained).
+- document the fact that VarList can also be called with a second argument, a filter predicate.
+- document Extended predicates in the pattern matcher (needs to be explained).
 - document CTokenizer(), DefaultTokenizer()
 - document XmlTokenizer, XmlExplodeTag
-- document BSearch, FindIsq Search for a zero in a monotonously growing
-function. BSearch returns -1 if not found, FindIsq returns the insertion
-point.
+- document BSearch, FindIsq Search for a zero in a monotonously growing function. BSearch returns -1 if not found, FindIsq returns the insertion point.
 - document MultiDivide, MultiGcd, Groebner
 - document DefLoadFunction
-- document CharString (input integer, output a string with one char, using
-the ascii code passed in).
+- document CharString (input integer, output a string with one char, using the ascii code passed in).
 - document FloatIsInt
-- document --server <port> , and its associated --enable-server to the
-./configure script
-- document Explain what is destructive about the Destructive... routines,
-why they are there, and when to use them.
-- document Do slightly more on pure functions, to show why they are
-useful. Show for example Select.
+- document Explain what is destructive about the Destructive... routines, why they are there, and when to use them.
+- document Do slightly more on pure functions, to show why they are useful. Show for example Select.
 - document Explain what Simplify currently does (internal algorithm).
 - document The PcreLexer and PcreNextToken functions
 - document Small summary of regular expressions syntax accepted.
@@ -63,8 +49,7 @@ useful. Show for example Select.
 - autocompleter should also make it easier to go to the manual (preview part of the section on that function?)
 - Explain that a connection to the server is not needed, and that Yacas can be run off-line (with a link to a download of the Yacas web site).
 ============================================================================================================
-- When user clicks on a tab he should go back to the starting page of that
-tab (does not work on IE).
+- When user clicks on a tab he should go back to the starting page of that tab (does not work on IE).
 - Set up proper mailing lists
 - should I reconsider the way things are compressed? tgz? Why not zip?
 - when leaving codeedit page, ask to remember code?
@@ -102,8 +87,8 @@ net.sf.yacas.YacasException as it does not really add anything.
 ============================================================================================================
 - optimize the code that finds matching hints
 - hints.txt in the yacas.jar.
-- tex parse: \lim, \Rightarrow, \max, \min, \zeta, {":=","\\equiv"},{"<>",
-"\\sim "},{"<=>", "\\approx "},{"=>", "\\Rightarrow "},{"%","\\bmod "},
+- tex parse: \lim, \Rightarrow, \max, \min, \zeta, {":=","\\equiv"},{"<>","\\sim "},{"<=>", "\\approx "},{"=>", "\\Rightarrow "},{"%","\\bmod "},
+- Store history also in cookies, so you have access to the history next time.
 
 5) Math improvements
 ============================================================================================================
