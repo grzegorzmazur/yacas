@@ -811,7 +811,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   }
   void AddLinesStatic(int indent, String prompt,String str)
   {
-    String err = yacas.iError;
+//TODO remove?    String err = yacas.iError;
     int pos;
     while ((pos = str.indexOf('\n')) >=0)
     {
@@ -902,7 +902,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         g.setColor(iPromptColor);
         g.setFont(iPromptFont);
         FontMetrics fontMetrics = g.getFontMetrics();
-        g.drawString(iPrompt, x, y+fontMetrics.getHeight());
+        g.drawString(iPrompt, x, y+fontMetrics.getAscent());
         if (iIndent != 0)
           x+=iIndent;
         else
@@ -912,7 +912,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         g.setColor(iColor);
         g.setFont(iFont);
         FontMetrics fontMetrics = g.getFontMetrics();
-        g.drawString(iText, x, y+fontMetrics.getHeight());
+        g.drawString(iText, x, y+fontMetrics.getAscent());
       }
     }
     public int height(Graphics g)
@@ -1044,6 +1044,12 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     g.drawImage(offImg,0,0,null);
     if (hintWindow != null)
     {
+      if ( g instanceof Graphics2D )
+      {
+        Graphics2D g2d = null;
+        g2d = (Graphics2D)g;
+        g2d.addRenderingHints( new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON ));
+      }
       YacasGraphicsContext context = new YacasGraphicsContext(g,0,0);
       context.SetFontSize(1,fontHeight/*12*/);
       int nr_total_lines = 1;
@@ -1073,8 +1079,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     {
       Graphics2D g2d = null;
       g2d = (Graphics2D)g;
-      g2d.addRenderingHints( new RenderingHints( RenderingHints.KEY_ANTIALIASING ,
-                                              RenderingHints.VALUE_ANTIALIAS_ON ));
+      g2d.addRenderingHints( new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON ));
     }
 
     FontMetrics metrics = getFontMetrics(font);
