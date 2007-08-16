@@ -102,7 +102,7 @@ public class TeXParser
   {
     parseOneExpression20(builder);
     // = ,
-    while (nextToken.equals("=") || nextToken.equals(","))
+    while (nextToken.equals("=") || nextToken.equals("\\neq") || nextToken.equals(","))
     {
       String token = nextToken;
       NextToken();
@@ -115,11 +115,19 @@ public class TeXParser
   {
     parseOneExpression25(builder);
     // +, -
-    while (nextToken.equals("+") || nextToken.equals("-"))
+    while (nextToken.equals("+") || nextToken.equals("-") || 
+           nextToken.equals("\\wedge") || nextToken.equals("\\vee") ||
+           nextToken.equals("<") || nextToken.equals(">") ||
+           nextToken.equals("\\leq") || nextToken.equals("\\geq")
+           )
     {
       String token = nextToken;
       if (token.equals("-"))
         token = "-/2";
+      else if (token.equals("\\leq"))
+        token = "<=";
+      else if (token.equals("\\geq"))
+        token = ">=";
       NextToken();
       parseOneExpression25(builder);
       builder.process(token);
@@ -134,8 +142,17 @@ public class TeXParser
           !nextToken.equals("+") && 
           !nextToken.equals("-") && 
           !nextToken.equals("=") && 
+          !nextToken.equals("\\neq") && 
           !nextToken.equals("}") && 
           !nextToken.equals("&") && 
+          !nextToken.equals("\\wedge") &&
+          !nextToken.equals("\\vee") &&
+
+          !nextToken.equals("<") &&
+          !nextToken.equals(">") &&
+          !nextToken.equals("\\leq") && 
+          !nextToken.equals("\\geq") &&
+
           !nextToken.equals("\\end") && 
           !nextToken.equals("\\\\") && 
           !nextToken.equals("\\right)") && 
@@ -218,7 +235,7 @@ public class TeXParser
     {
       NextToken();
       builder.process("e");
-      parseOneExpression25(builder);
+      parseOneExpression40(builder);
       builder.process("^");
       return;
     }
@@ -249,6 +266,10 @@ public class TeXParser
     else if (nextToken.equals("\\sum"))
     {
       builder.process("[sum]");
+    }
+    else if (nextToken.equals("\\int"))
+    {
+      builder.process("[int]");
     }
     else if (nextToken.equals("\\frac"))
     {
