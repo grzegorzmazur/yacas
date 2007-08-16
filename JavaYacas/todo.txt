@@ -3,20 +3,6 @@
 
 - fill in analytical functions
 - extend examples
-  x arithmetic
-    x larger numbers
-    x bit shift/bitwise operations
-  x analytic functions:
-   x- sin/cos/exp/ln/tan/arctan/sqrt
-  x simplifying expressions
-    x Simplify
-    x TrigSimpCombine
-    x CanProve
-    x FactorialSimplify
-  x approximating 
-    x Newton
-    x Taylor
-    x LagrangeInterpolant
   - programming
     - assigning variables
     - defining functions
@@ -42,20 +28,6 @@
     - factorials/binomials/factorialsimplify
     - complex numbers
       - creation, real, imaginary parts
-
-x changing mouse cursor on mouse going over?
-
-
-
-
-x add the files:
-  x special.yml
-  x differentiate.yml
-  x integrate.yml
-  x analytic.yml
-
-
-
 
 Yacas helper:
 x commands specific to the Java console
@@ -97,7 +69,7 @@ x commands specific to the Java console
 
 
 TODO:
--xEmbed Yacas in the web site somehow.
+xEmbed Yacas in the web site somehow.
 - test: FromBase to also work with real numbers
 - test: ToBase to also work with real numbers
 - real fix for the sockets in yacasmain.cpp
@@ -108,19 +80,6 @@ TODO:
 - implement plots from Java
 - implement plugins from Java
 - add the filescanner and pcre plugins
-
-x Document the Java version (how to compile, how it works, how to invoke, which files are output, etcetera).
-x Remove BinaryPrecision from the environment (Java)
-x Systemcall seems to be available from "Runtime" class.
-x Find out why Sqrt is not precise enough
-x update changes.html
-x check that all files are checked in
-x fix for plugins_available.h not being available at the beginning
-x one failing test, in numerics.yts:269: NearRational of Pi() is off quite a bit.
-x IsSmallPrime(65539) returns True, should apparently be false!
-  Probably just make FastIsPrime return 0 if number larger than 65535
-x Floor, Ceil, do not take iTensExp in to account!
-x Equals does not take iTensExp in to account
 
 - run test scripts, and fix problems accordingly
 - LispFastMod

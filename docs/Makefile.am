@@ -13,14 +13,14 @@ autocompleter_SOURCES = autocompleter.cpp
 # These files make up the home page. 
 
 EXTRA_DIST = \
-	about.html basicindex.html changes.html \
+	about.html basicindex.html \
 	consoleedit.html consoleview.html consoledescr.html credits.html faq.html \
 	gpl.html homepage.html jslog.js links.html \
 	placeholder.html plain.html recent.html \
 	tabber.css tabber.js tutorials.html yacas.css yacas.html \
 	yacas.js datahub.js yacaslogo.gif journal.js \
 	cookie.js autocompleter.css \
-	tutorials/tutorialtext1.html \
+	tutorialtext1.html \
 	$(YART_FILES) \
 	journaldescr.html journalview.html journaledit.html \
 	yacas-screenshot.png \
