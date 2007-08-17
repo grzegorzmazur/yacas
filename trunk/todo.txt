@@ -1,12 +1,8 @@
 
 TODO:
-
-0) Feedback from Google Analytics
-  - about 50% do not go past first page
-    - ACTION: to check, does loading program from cookie in "My Yacas" still work? Do I need to escape the code, and then have the java applet unescape it? Try it out with programs with quotes in them.
-    - ACTION: make first screen more sexy (nice banner?). Has to lure visitor in.
-  - almost every one who does not bounce goes to "My Yacas" first.
-    - ACTION: make console page more enticing, with suggestions on what the visitor can do on the big white spot.
+  - to check, does loading program from cookie in "My Yacas" still work? Do I need to escape the code, and then have the java applet unescape it? Try it out with programs with quotes in them.
+  - make first screen more sexy (nice banner?). Has to lure visitor in.
+  - make console page more enticing, with suggestions on what the visitor can do on the big white spot.
 
 1) Documentation improvements
 - what is Yacas? How did it come into existence? Why did I write it? Who is it for?
