@@ -12,121 +12,6 @@
         self.location.replace("yacas.html");
       }
     </script>
-
-    <script type="text/javascript">
-    var prevOnLoad = window.onload;
-    window.onload = initPage;
-
-    function initPage()
-    {
-      if (prevOnLoad)
-        prevOnLoad();
-      initThisPage();
-    }
-    function initThisPage()
-    {
-      var links = document.getElementsByTagName("a");
-      for (var i=0; i<links.length; i++)
-      {
-        var object = links[i];
-        if (object.className)
-        {
-          if (object.className == "linkcalc")
-          {
-//TODO remove?            object.onclick=calcLinkClick;
-          }
-        }
-      }
-      initializeApplet();
-    }
-
-    var count=0;
-
-    function initializeApplet()
-    {
-      var datahub = getDatahub();
-      {
-        var javaGood = true;
-        try 
-        {
-          if (datahub)
-          {
-            var pr = getCookie("currentArticle","false");
-            if (pr != "false")
-            {
-              datahub.setProgramMode("console");
-              datahub.setArticle(pr);
-            }
-            datahub.setProgramMode("journal");
-          }
-        } 
-        catch (e) 
-        {
-          javaGood = false;
-        }
-        if (!javaGood)
-        {
-          count = count+1;
-          if (count < 10)
-          {
-            setTimeout("initializeApplet()",1000);
-          }
-          else
-          {
-              var element = document.getElementById("javawarn");
-              if (element)
-              {
-                element.innerHTML = 
-    '<p style="color:#FF0000;">' + 
-    '  Your browser does not have an up to date Java system installed. This web site uses Java ' + 
-    '  to allow you to do calculations immediately online. Please visit <a href="http://www.java.com/">www.java.com</a>' + 
-    '  to download and install the latest version for free.' + 
-    '</p>' +
-    '<p style="color:#FF0000;">' + 
-    '  Alternatively you can go to the <a href="plain.html">simplified</a> part of our web site and download <i>yacas</i> for use off-line.' + 
-    '</p>';
-              }
-          }
-        }
-      }
-    }
-
-    function calcLinkClick(base)
-    {
-      try 
-      {
-        var datahub = getDatahub();
-        checkDatahubAvailable(datahub,"calcLinkClick");
-        if (datahub)
-        {
-          datahub.setProgramMode("journal");
-        }
-      } 
-      catch (e) 
-      {
-        alertUpgradeJava();
-      }
-      var elem = parent.document.getElementById('LibraryFrame');
-      if (elem)
-      {
-//TODO remove?        var base = this.id;
-        try 
-        {
-          var datahub = getDatahub();
-          checkDatahubAvailable(datahub,"calcLinkClick2");
-          if (datahub)
-          {
-            datahub.setArticleFromFile(base+".yart");
-          }
-        } 
-        catch (e) 
-        {
-        }
-        elem.contentWindow.document.location.href = "journaldescr.html?"+base;
-      }
-    }
-
-    </script>
   </head>
   <body>
 
@@ -134,12 +19,10 @@
     <table border=0>
     <tr>
       <td valign="top">
-        <span class="javawarn" id="javawarn"></span>
-
         <p>
         <i>2007-08-05, by Ayal Pinkus</i>
         <br />
-        <a href="javascript:calcLinkClick('newtonsqrt')" >Fun with derivatives part 4: Newton iteration to determine the inverse square root</a> - 
+        <a target="LibraryFrame" href="journaldescr.html?newtonsqrt" >Fun with derivatives part 4: Newton iteration to determine the inverse square root</a> - 
           A while back I came across the trick used in Quake to efficiently approximate the inverse square root (which is 
           probably needed in a 3D engine to normalize vectors). It is also a nice demonstration on how one could go about 
           approximating a function by using Newton iteration. That is the subject of this article.
@@ -148,7 +31,7 @@
         <p>
         <i>2007-08-05, by Ayal Pinkus</i>
         <br />
-        <a href="javascript:calcLinkClick('newtonconvergence')" >Fun with derivatives part 3: fast convergence of Newton iteration</a> - 
+        <a target="LibraryFrame" href="journaldescr.html?newtonconvergence" >Fun with derivatives part 3: fast convergence of Newton iteration</a> - 
           Newton iteration is a natural fit for computer algebra systems because you can use the symbolic facilities first
           to take the derivative of a function, and then later on use the arbitrary-precision numeric support to get a very
           accurate numeric approximation (starting from a sufficiently close guess). Newton iteration can converge very fast,
@@ -158,7 +41,7 @@
         <p>
         <i>2007-08-05, by Ayal Pinkus</i>
         <br />
-        <a href="javascript:calcLinkClick('taylordefinition')" >Fun with derivatives part 2: Taylor series expansions</a> - 
+        <a target="LibraryFrame" href="journaldescr.html?taylordefinition" >Fun with derivatives part 2: Taylor series expansions</a> - 
           This short article shows how you one would go about writing one line of code  that generates a Taylor series
           expansion of a function in <i>Yacas</i> (without using the built-in function). 
         </p>
@@ -166,7 +49,7 @@
         <p>
         <i>2007-07-20, by Ayal Pinkus</i>
         <br />
-        <a href="javascript:calcLinkClick('derivative')" >Fun with derivatives part 1: defining the concept of a derivative in <i>Yacas</i></a> - 
+        <a target="LibraryFrame" href="journaldescr.html?derivative" >Fun with derivatives part 1: defining the concept of a derivative in <i>Yacas</i></a> - 
           Taking a derivative is one of the mathematical operations that is easily explained to a computer. This article shows how 
           it can be done with a few lines of code in <i>Yacas</i>. You can also directly try it out, or extend the code to handle 
           more complex cases.
@@ -178,9 +61,6 @@
       </td>
     </tr>
     </table>
-    <script type="text/javascript">
-      addDatahub();
-    </script>
 
 <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
 </script>
