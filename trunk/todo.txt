@@ -3,7 +3,7 @@ TODO:
 
 0) Feedback from Google Analytics
   - about 50% do not go past first page
-    - ACTION: make site faster to load
+    - ACTION: to check, does loading program from cookie in "My Yacas" still work? Do I need to escape the code, and then have the java applet unescape it? Try it out with programs with quotes in them.
     - ACTION: make first screen more sexy (nice banner?). Has to lure visitor in.
   - almost every one who does not bounce goes to "My Yacas" first.
     - ACTION: make console page more enticing, with suggestions on what the visitor can do on the big white spot.
@@ -101,6 +101,7 @@ net.sf.yacas.YacasException as it does not really add anything.
 
 5) Math improvements
 ============================================================================================================
+- bumping up a version number seems to force a recompile of all the C++ files, config.h rewritten or so?
 - make all the code more consistent, assuming that variables are real-valued.
 - remove use of UnFence/HoldArg in favor of macros
 - after use of UnFence/HoldArg has been removed, remove support for it
