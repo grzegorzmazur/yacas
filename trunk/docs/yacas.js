@@ -43,7 +43,21 @@ function initPage()
       var object = links[i];
       if (object.className)
       {
-        if (object.className == "codeEdit")
+
+        if (object.className == "javawarn")
+        {
+          object.innerHTML = 
+    '<p style="color:#FF0000;">' + 
+    '  Your browser does not have an up to date Java system installed. This web site uses Java ' + 
+    '  to allow you to do calculations immediately online. Please visit <a href="http://www.java.com/">www.java.com</a>' + 
+    '  to download and install the latest version for free.' + 
+    '</p>' +
+    '<p style="color:#FF0000;">' + 
+    '  Alternatively you can go to the <a href="plain.html">simplified</a> part of our web site and download <i>yacas</i> for use off-line.' + 
+    '</p>';
+
+        }
+        else if (object.className == "codeEdit")
         {
           object.innerHTML = 
 '      <table cellspacing=0>' +
@@ -344,6 +358,7 @@ function generateExample()
     else
     {
       var text = datahub.getExample();
+//alert("got from datahub: "+text);
       yacasEval(""+text);
     }
   }

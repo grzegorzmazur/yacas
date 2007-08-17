@@ -17,6 +17,33 @@ import java.io.*;
  
 public class DatahubApplet extends Applet
 {
+  public void init()
+  {
+    String programMode = getParameter("programMode");
+    if (programMode != null)
+    {
+      setProgramMode(programMode);
+//System.out.println("Setting program mode "+programMode);
+      String articleFromFile = getParameter("articleFromFile");
+      if (articleFromFile != null)
+      {
+//System.out.println("Loading article "+articleFromFile);
+        setArticleFromFile(articleFromFile);
+      }
+
+      String article = getParameter("article");
+      if (article != null)
+      {
+//System.out.println("Loading article "+articleFromFile);
+        setArticle(article);
+      }
+
+
+//setArticle
+
+    }
+  }
+
   Article currentArticle()
   {
     switch (currentProgram)
@@ -81,6 +108,7 @@ public class DatahubApplet extends Applet
   
   public void setArticle(String p)
   {
+//System.out.println("article:\n"+p);
     synchronized(consoleProgram)
     {
       currentArticle().SetArticle(p);
@@ -150,11 +178,18 @@ public class DatahubApplet extends Applet
     return prog;
   }
 
+  // To make sure it is not reloaded each time
+  static String prevLoadedArticle = "";
+
   public void setArticleFromFile(String urlStr)
   {
-    synchronized(consoleProgram)
+    if (!prevLoadedArticle.equals(urlStr))
     {
-      setArticle(readArticleFromFile(urlStr));
+      prevLoadedArticle = urlStr;
+      synchronized(consoleProgram)
+      {
+        setArticle(readArticleFromFile(urlStr));
+      }
     }
   }
   

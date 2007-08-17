@@ -362,11 +362,14 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
       else
       {
+//AddLineStatic(100, "","programMode = "+programMode, font, Color.black);
+
         try
         {
           Applet dataHub = getAppletContext().getApplet( "datahub");
           if (dataHub != null)
           {
+//AddLineStatic(100, "","dataHub != null", font, Color.black);
             net.sf.yacas.DatahubApplet cons = (net.sf.yacas.DatahubApplet)dataHub;
             cons.setProgramMode(programMode);
 

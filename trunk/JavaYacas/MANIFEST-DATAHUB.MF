@@ -1,0 +1,3 @@
+Main-Class: net/sf/yacas/DatahubApplet
+Class-Path: datahub.jar
+

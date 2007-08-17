@@ -141,8 +141,8 @@ net/sf/yacas/LispPrinter.java net/sf/yacas/LispPtr.java net/sf/yacas/LispPtrArra
 net/sf/yacas/LispStandard.java net/sf/yacas/LispSubList.java net/sf/yacas/LispTokenizer.java \
 net/sf/yacas/LispUserFunction.java net/sf/yacas/LispUserFunctions.java \
 net/sf/yacas/ListedBranchingUserFunction.java net/sf/yacas/ListedMacroUserFunction.java \
-net/sf/yacas/LocalSymbolBehaviour.java MANIFEST.MF \
-net/sf/yacas/MacroUserFunction.java Makefile.am Manifest net/sf/yacas/MatchAtom.java \
+net/sf/yacas/LocalSymbolBehaviour.java MANIFEST.MF  \
+net/sf/yacas/MacroUserFunction.java Makefile.am net/sf/yacas/MatchAtom.java \
 net/sf/yacas/MatchNumber.java net/sf/yacas/MatchSubList.java \
 net/sf/yacas/MatchVariable.java net/sf/yacas/MathCommands.java net/sf/yacas/ParsedObject.java \
 net/sf/yacas/PatternClass.java net/sf/yacas/StdFileInput.java \

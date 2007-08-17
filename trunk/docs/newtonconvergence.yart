@@ -23,7 +23,7 @@ f \left( x_0 \right) + \left( x_1 - x_0 \right) \frac{d f(x)}{dx} = 0
 
 Or:
 
-{{math,heightPixels.120:
+{{math,heightPixels.160:
 x_1 = x_0 - \frac{f \left( x_0 \right) }{ \left[ \frac{d f \left( x_0 \right) }{dx} \right] }
 :math}}
 

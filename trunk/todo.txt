@@ -1,6 +1,13 @@
 
 TODO:
 
+0) Feedback from Google Analytics
+  - about 50% do not go past first page
+    - ACTION: make site faster to load
+    - ACTION: make first screen more sexy (nice banner?). Has to lure visitor in.
+  - almost every one who does not bounce goes to "My Yacas" first.
+    - ACTION: make console page more enticing, with suggestions on what the visitor can do on the big white spot.
+
 1) Documentation improvements
 - what is Yacas? How did it come into existence? Why did I write it? Who is it for?
 - mention  the use of lists for passing multiple arguments.
@@ -42,6 +49,7 @@ currently implemented.
 
 2) Web site improvements
 - change the style of the scrollbar
+    scrollbar-base-color:#AAAAEE;
 - allow saving multiple programs in cookies
 - work through mommies feedback
   - computer calculations made easy zou ik in lijn met het logo plaatsen liefst in lijn met de groene balletjes. Nu zweeft het een beetje los.
@@ -49,6 +57,7 @@ currently implemented.
 - autocompleter should also make it easier to go to the manual (preview part of the section on that function?)
 - Explain that a connection to the server is not needed, and that Yacas can be run off-line (with a link to a download of the Yacas web site).
 ============================================================================================================
+- have the Java version available as a separate install.
 - When user clicks on a tab he should go back to the starting page of that tab (does not work on IE).
 - Set up proper mailing lists
 - should I reconsider the way things are compressed? tgz? Why not zip?
@@ -184,4 +193,77 @@ Done:
 
 x hint box does not render anti-aliased.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<PARAM name="programMode" value="'+programMode+'">
+<PARAM name="articleFromFile" value="'+articleFromFile+'">
+
+
+
+
+    var count=0;
+    function initializeApplet()
+    {
+      var datahub = getDatahub();
+      {
+        var javaGood = true;
+        try 
+        {
+          if (datahub)
+          {
+            var pr = getCookie("currentArticle","false");
+            if (pr != "false")
+            {
+              datahub.setProgramMode("console");
+              datahub.setArticle(pr);
+            }
+            datahub.setProgramMode("journal");
+          }
+          else
+          {
+            javaGood = false;
+          }
+        } 
+        catch (e) 
+        {
+          javaGood = false;
+        }
+        if (!javaGood)
+        {
+          count = count+1;
+          if (count < 10)
+          {
+            setTimeout("initializeApplet()",1000);
+          }
+          else
+          {
+              var element = document.getElementById("javawarn");
+              if (element)
+              {
+                element.innerHTML = 
+    '<p style="color:#FF0000;">' + 
+    '  Your browser does not have an up to date Java system installed. This web site uses Java ' + 
+    '  to allow you to do calculations immediately online. Please visit <a href="http://www.java.com/">www.java.com</a>' + 
+    '  to download and install the latest version for free.' + 
+    '</p>' +
+    '<p style="color:#FF0000;">' + 
+    '  Alternatively you can go to the <a href="plain.html">simplified</a> part of our web site and download <i>yacas</i> for use off-line.' + 
+    '</p>';
+              }
+          }
+        }
+      }
+    }
 
