@@ -384,6 +384,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
     }
   }
+
   
   public void stop()
   {
@@ -769,6 +770,23 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     {
       clearOutputLines();
       succeed = true;
+    }
+    else if (inputLine.equals(":test"))
+    {
+      try
+      {
+        Applet dataHub = getAppletContext().getApplet( "datahub");
+        if (dataHub != null)
+        {
+          net.sf.yacas.DatahubApplet cons = (net.sf.yacas.DatahubApplet)dataHub;
+          String programContentsToLoad = "["+cons.getTestcode()+"];";
+          succeed = true;
+          InvokeCalculationSilent(programContentsToLoad);
+        }
+      }
+      catch (Exception e)
+      {
+      }
     }
     else if (inputLine.equals("?license") || inputLine.equals("?licence") || inputLine.equals("?warranty"))
     {

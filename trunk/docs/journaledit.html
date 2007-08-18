@@ -54,11 +54,33 @@
   <body>
 
     <p>
-      Find: <input type="text" id="funcLookup"/>
+
+  <table>
+    <tr>
+      <td valign="top">
+        <table>
+          <tr>
+            <td valign="top">
+
       <input type=button id="therunbutton" value="Run code" title="Save and run this code (note that this is a local copy of the program below)." />
       <input type=button id="theexplainbutton" value="Read article" title="Return to the accompanying article." />
-      <div id="popups" style="width:320;"></div>
+      Find function: <input type="text" id="funcLookup"/>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">
       <span class="codeEdit" id="journal"></span>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td valign="top">
+      <div id="popups" style="width:320;"></div>
+      </td>
+    </tr>
+  </table>
+
+
     </p>
     <APPLET name="datahub" archive="yacas.jar" code="net.sf.yacas.DatahubApplet" width=1 height=1></APPLET>
 

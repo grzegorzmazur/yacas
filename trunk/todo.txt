@@ -1,11 +1,13 @@
 
 TODO:
-  - put "Find function" autocompleter also on the console pages.
+  - remove "Test" button, and have the test performed if the user types :test
   - autocompleter should also offer "example" link in the console views (can we rip examples from the manual?)
   - make first screen more sexy (nice banner?). Has to lure visitor in.
-  - make console page more enticing, with suggestions on what the visitor can do on the big white spot.
 
 1) Documentation improvements
+- document the article mark-up language
+- document ":test" to run test code from article
+- link to mark-up documentation from the editors.
 - what is Yacas? How did it come into existence? Why did I write it? Who is it for?
 - mention  the use of lists for passing multiple arguments.
 ============================================================================================================
