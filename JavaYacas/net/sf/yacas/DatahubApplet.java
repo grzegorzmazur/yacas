@@ -227,7 +227,8 @@ public class DatahubApplet extends Applet
     }
   }
   
-  static Article consoleProgram = new Article("You can start entering your own program between the code delimiters below.\n\n{{code:\n:code}}\n");
+  static Article consoleProgram = new Article("You can start entering your own program between the code delimiters below.\n\n{{code:\n:code}}\n"+
+      "\n\n{{example:Example();:example}}");
   static Article journalProgram = new Article("No article loaded yet.");
   static Article tutorialProgram = new Article("{{code: Echo(\"Welcome to the Yacas tutorial!\"); :code}}");
   static int currentProgram = 0;
