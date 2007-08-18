@@ -1,8 +1,6 @@
 
 TODO:
-  - remove "Test" button, and have the test performed if the user types :test
   - autocompleter should also offer "example" link in the console views (can we rip examples from the manual?)
-  - make first screen more sexy (nice banner?). Has to lure visitor in.
 
 1) Documentation improvements
 - document the article mark-up language
