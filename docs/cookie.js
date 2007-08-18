@@ -6,13 +6,23 @@ function setCookie(name,value)
 }
 function getCookie(name,defaultValue)
 {
+  var result = getCookieEscaped(name,defaultValue);
+  if (result != defaultValue)
+  {
+    result = unescape(result);
+  }
+  return result;
+}
+
+function getCookieEscaped(name,defaultValue)
+{
   var cookies = document.cookie.split(";");
   for (var i = 0 ; i < cookies.length ; i++)
   {
     var pair = cookies[i].split("=");
     if (pair[0].indexOf("["+name+"]") != -1)
     {
-      return unescape(pair[1]);
+      return pair[1];
     }
   }
   return defaultValue;

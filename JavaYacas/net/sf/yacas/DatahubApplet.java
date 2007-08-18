@@ -23,24 +23,17 @@ public class DatahubApplet extends Applet
     if (programMode != null)
     {
       setProgramMode(programMode);
-//System.out.println("Setting program mode "+programMode);
       String articleFromFile = getParameter("articleFromFile");
       if (articleFromFile != null)
       {
-//System.out.println("Loading article "+articleFromFile);
         setArticleFromFile(articleFromFile);
       }
 
       String article = getParameter("article");
       if (article != null)
       {
-//System.out.println("Loading article "+articleFromFile);
         setArticle(article);
       }
-
-
-//setArticle
-
     }
   }
 
@@ -111,6 +104,7 @@ public class DatahubApplet extends Applet
 //System.out.println("article:\n"+p);
     synchronized(consoleProgram)
     {
+      p = unescape(p);
       currentArticle().SetArticle(p);
     }
   }
@@ -177,6 +171,46 @@ public class DatahubApplet extends Applet
     }
     return prog;
   }
+
+
+  private int unhex(int c)
+  {
+    if (c>='0' && c <= '9')
+    {
+      return (c-'0');
+    }
+    if (c>='a' && c <= 'f')
+    {
+      return 10 + (c-'a');
+    }
+    if (c>='A' && c <= 'F')
+    {
+      return 10 + (c-'A');
+    }
+    return 65;
+  }
+  private String unescape(String s)
+  {
+    StringBuffer buf = new StringBuffer();
+    int i,nr=s.length();
+    for(i=0;i<nr;i++)
+    {
+      if (s.charAt(i) == '%')
+      {
+        int high = s.charAt(i+1);
+        int low = s.charAt(i+2);
+        i+=2;
+        int c = 16*unhex(high)+unhex(low);
+        buf.append((char)c);
+      }
+      else
+      {
+        buf.append(s.charAt(i));
+      }
+    }
+    return buf.toString();
+  }
+
 
   // To make sure it is not reloaded each time
   static String prevLoadedArticle = "";
