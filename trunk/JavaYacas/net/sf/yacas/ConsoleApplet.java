@@ -786,18 +786,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       outp.delete(0,outp.length());
       String response = yacas.Evaluate(inputLine);
 
-      if (outp.length() > 0)
-      {
-        if (outp.charAt(0) == '$' && outp.charAt(outp.length()-1) == '$')
-        {
-//  System.out.println("outp["+outp.substring(1,outp.length()-1)+"]");
-          addLine(new FormulaLine(outp.substring(1,outp.length()-1)));
-        }
-        else
-        {
-          AddLinesStatic(48,"",outp.toString());
-        }
-      }
+      AddOutputLine(outp.toString());
       if (yacas.iError != null)
       {
         AddLinesStatic(48,"Error> ",yacas.iError);
@@ -1520,26 +1509,33 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       return "";
   }
 
+  private void AddOutputLine(String outp)
+  {
+    if (outp.length() > 0)
+    {
+      if (outp.charAt(outp.length()-1) == '$')
+      {
+        int dollarPos = outp.indexOf("$");
+
+        if (dollarPos > 0)
+        {
+          AddLinesStatic(48,"",outp.substring(0,dollarPos));
+        }
+        addLine(new FormulaLine(outp.substring(dollarPos+1,outp.length()-1)));
+      }
+      else
+      {
+        AddLinesStatic(48,"",outp.toString());
+      }
+    }
+  }
+
+
   public void InvokeCalculationSilent(String expression)
   {
     outp.delete(0,outp.length());
     String response = yacas.Evaluate(expression);
-    if (outp.length() > 0)
-    {
-      if (outp.charAt(0) == '$' && outp.charAt(outp.length()-1) == '$')
-      {
-        addLine(new FormulaLine(outp.substring(1,outp.length()-1)));
-      }
-      else
-      {
-        int dollarPos = outp.indexOf("$");
-        if (dollarPos > 0)
-        {
-          outp.delete(dollarPos,outp.length());
-        }
-        AddLinesStatic(48,"",outp.toString());
-      }
-    }
+    AddOutputLine(outp.toString());
     if (yacas.iError != null)
     {
       AddLinesStatic(48,"Error> ",yacas.iError);

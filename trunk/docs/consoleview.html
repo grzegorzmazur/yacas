@@ -2,6 +2,8 @@
   <head>
     <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
     <script type="text/javascript" src="cookie.js"></script>
+    <link rel="stylesheet" href="autocompleter.css" TYPE="text/css" MEDIA="screen">
+    <script type="text/javascript" src="autocompleter.js"></script>
     <script type="text/javascript" src="datahub.js"></script>
     <script type="text/javascript" src="yacas.js"></script>
 
@@ -36,13 +38,35 @@
   </head>
   <body>
 
+  <table>
+    <tr>
+      <td valign="top">
+        <table>
+          <tr>
+            <td valign="top">
+
     <input type=button value="Example" title="Generate example" onclick="generateExample();" />
     <input type=button value="Edit (locally)" onclick="gotoHREF('consoleedit.html');" title="Edit the code that gets loaded at start-up in this calculation center. Note you will only edit a local copy, so you can not accidentally destroy anything." />
     <input type=button id="theexplainbutton" value="Proof-read" title="Read article that comes with this code." />
     <input type=button value="Test" title="Run the test code that comes with this article." onclick="runTest();" />
+    Find: <input type="text" id="funcLookup"/>
+            </td>
+          </tr>
+          <tr>
+            <td valign="top">
+              <span class="yacasConsole" id="console"></span>
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td valign="top">
+      <div id="popups" style="width:320;"></div>
+      </td>
+    </tr>
+  </table>
 
-    <br />
-    <span class="yacasConsole" id="console"></span>
+
+
 
     <script type="text/javascript">
 
