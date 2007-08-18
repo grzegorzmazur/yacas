@@ -1,6 +1,7 @@
 
 TODO:
   - autocompleter should also offer "example" link in the console views (can we rip examples from the manual?)
+  - center everything, with the back.gif on the sides.
 
 1) Documentation improvements
 - document the article mark-up language
