@@ -20,7 +20,7 @@ EXTRA_DIST = \
 	tabber.css tabber.js tutorials.html yacas.css yacas.html \
 	yacas.js datahub.js yacaslogo.gif journal.js \
 	cookie.js autocompleter.css \
-	tutorialtext1.html \
+	tutorialtext1.html back-dark.gif back.gif back.texhtml \
 	$(YART_FILES) \
 	journaldescr.html journalview.html journaledit.html \
 	yacas-screenshot.png \
