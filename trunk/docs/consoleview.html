@@ -1,6 +1,7 @@
 <html>
   <head>
     <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
+    <script type="text/javascript" src="cookie.js"></script>
     <script type="text/javascript" src="datahub.js"></script>
     <script type="text/javascript" src="yacas.js"></script>
 
@@ -42,23 +43,22 @@
 
     <br />
     <span class="yacasConsole" id="console"></span>
-    <APPLET name="datahub" archive="yacas.jar" code="net.sf.yacas.DatahubApplet" width=1 height=1>
-    </APPLET>
 
     <script type="text/javascript">
+
       var art="";
-      var pr = getCookie("currentArticle","false");
+      var pr = getCookieEscaped("untitled.yart","false");
       if (pr != "false")
       {
         art = '<PARAM name="article" value="'+pr+'">';
       }
-
   document.write(
   '<APPLET name="datahub" archive="yacas.jar" code="net.sf.yacas.DatahubApplet" width=1 height=1>'+
   '<PARAM name="programMode" value="console">' +
   art +
   '</APPLET>'
   );
+
     </script>
 
 
