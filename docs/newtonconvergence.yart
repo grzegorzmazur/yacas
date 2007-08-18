@@ -32,7 +32,7 @@ Repeating this for x1 to x2 and so on should yield more and more accurate answer
 We will now try this out on a simple example. We will try to get the zero 
 {{expr:Sin(x)=0:expr}} for x at pi (thus effectively approximating the value of pi). The derivative of {{expr:Sin(x):expr}} with respect to x is {{expr:Cos(x):expr}}, so the above expression becomes:
 
-{{math:
+{{math,heightPixels.140:
 x_1 = x_0 - \frac{sin \left( x_0 \right) }{cos \left( x_0 \right) }
 :math}}
 
