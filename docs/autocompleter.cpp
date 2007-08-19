@@ -59,47 +59,20 @@ int main(int argc, char** argv)
   fout=fopen(outName,"wb");
   if (!fout)exit(-1);
 
-  fprintf(fout,"var prevOnLoadAutocompl = window.onload;\n");
-  fprintf(fout,"window.onload = initPage;\n");
-  fprintf(fout,"function initPage()\n");
-  fprintf(fout,"{\n");
-  fprintf(fout,"  if (prevOnLoadAutocompl) prevOnLoadAutocompl();\n");
-  fprintf(fout,"  if (document.getElementById(\"funcLookup\")) document.getElementById(\"funcLookup\").onkeyup = searchSuggest;\n");
-  fprintf(fout,"}\n");
-  fprintf(fout,"function searchSuggest()\n");
-  fprintf(fout,"{\n");
-  fprintf(fout,"  var searchString = this.value;\n");
-  fprintf(fout,"  updateHints(searchString)\n");
-  fprintf(fout,"}\n");
-  fprintf(fout,"function updateHints(searchString)\n");
-  fprintf(fout,"{\n");
-  fprintf(fout,"  var popups = document.getElementById(\"popups\");\n");
-  fprintf(fout,"  popups.innerHTML = \"\";\n");
-  fprintf(fout,"  if (searchString != \"\")\n");
-  fprintf(fout,"  {\n");
-  fprintf(fout,"    var match1 = \"\";\n");
-  fprintf(fout,"    var match2 = \"\";\n");
-  fprintf(fout,"    var match3 = \"\";\n");
-  fprintf(fout,"    var lwr = searchString.toLowerCase();\n");
-  fprintf(fout,"    for (var i=0;i<hints.length;i=i+2)\n");
-  fprintf(fout,"    {\n");
-  fprintf(fout,"      var line = '<div class=\"suggestions\">'+hints[i+1]+'<\\/div>';\n");
-  fprintf(fout,"      if (hints[i].indexOf(searchString) == 0)\n");
-  fprintf(fout,"      {\n");
-  fprintf(fout,"        match1 = match1 + line;\n");
-  fprintf(fout,"      }\n");
-  fprintf(fout,"      else if (hints[i].indexOf(searchString) > 0)\n");
-  fprintf(fout,"      {\n");
-  fprintf(fout,"        match2 = match2 + line;\n");
-  fprintf(fout,"      }\n");
-  fprintf(fout,"      else if (hints[i].toLowerCase().indexOf(lwr) > -1)\n");
-  fprintf(fout,"      {\n");
-  fprintf(fout,"        match3 = match3 + line;\n");
-  fprintf(fout,"      }\n");
-  fprintf(fout,"    }\n");
-  fprintf(fout,"    popups.innerHTML = match1+match2+match3;\n");
-  fprintf(fout,"  }\n");
-  fprintf(fout,"}\n");
+  {
+    FILE* fin2 = fopen("autocompleterheader.txt","rb");
+    if (!fin2)
+      exit(-1);
+    fseek(fin2,0,SEEK_END);
+    int size = ftell(fin2);
+    fseek(fin2,0,SEEK_SET);
+    char* inbuffer = (char*)malloc(size);
+    fread(inbuffer,1,size,fin2);
+    fwrite(inbuffer,1,size,fout);
+    free(inbuffer);
+    fclose(fin2);
+  }
+
   fprintf(fout,"var hints = new Array(\n");
 
   char buffer[16384];
