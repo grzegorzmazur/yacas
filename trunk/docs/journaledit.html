@@ -4,7 +4,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
     <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
     <link rel="stylesheet" href="autocompleter.css" TYPE="text/css" MEDIA="screen">
-    <script type="text/javascript" src="autocompleter.js"></script>
+    <script type="text/javascript" src="autocompleteraccess.js"></script>
+    <script type="text/javascript" src="autocompleterarray.js"></script>
     <script type="text/javascript" src="datahub.js"></script>
     <script type="text/javascript" src="yacas.js"></script>
     <script type="text/javascript">
@@ -53,35 +54,29 @@
   </head>
   <body style="background-image:url('back.gif'); ">
 
-    <p>
+    <center>
 
-  <table>
-    <tr>
-      <td valign="top">
         <table>
           <tr>
             <td valign="top">
-
       <input type=button id="therunbutton" value="Run code" title="Save and run this code (note that this is a local copy of the program below)." />
       <input type=button id="theexplainbutton" value="Read article" title="Return to the accompanying article." />
             </td>
+            <td>
+              Find function: <input type="text" id="funcLookup"/>
+            <td>
           </tr>
           <tr>
             <td valign="top">
               <span class="codeEdit" id="journal"></span>
             </td>
+            <td valign="top" style="background-image:url('back.gif'); ">
+              <div id="popups"></div>
+            </td>
           </tr>
         </table>
-      </td>
-      <td valign="top" style="background-image:url('back.gif'); ">
-        Find function: <input type="text" id="funcLookup"/>
-        <div id="popups"></div>
-      </td>
-    </tr>
-  </table>
 
-
-    </p>
+    </center>
     <APPLET name="datahub" archive="yacas.jar" code="net.sf.yacas.DatahubApplet" width=1 height=1></APPLET>
 
 

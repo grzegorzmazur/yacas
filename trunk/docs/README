@@ -6,8 +6,6 @@ other *.html, *.gif - used for the Yacas web site
 
 downloads.html.in - source file for downloads.html
 
-yacas-screenshot.png - an example screenshot
-
 paper1.tex - the source file of the paper:
 
 A.Z. Pinkus and S. Winitzki, "YACAS: A Do-it-yourself Symbolic Algebra Environment" (LNCS 2385 p. 332, Springer-Verlag, 2002)
