@@ -1458,7 +1458,9 @@ that would lead to an error.
 
 *SEE Type, Length
 
-*CMD VarList, VarListArith, VarListSome --- list of variables appearing in an expression
+*CMD VarList --- list of variables appearing in an expression
+*CMD VarListArith --- list of variables appearing in an expression
+*CMD VarListSome --- list of variables appearing in an expression
 *STD
 *CALL
 	VarList(expr)
@@ -1503,7 +1505,9 @@ Note that since the operators "{+}" and "{-}" are prefix as well as infix operat
 *SEE IsFreeOf, IsVariable, FuncList, HasExpr, HasFunc
 
 
-*CMD FuncList, FuncListArith, FuncListSome --- list of functions used in an expression
+*CMD FuncList --- list of functions used in an expression
+*CMD FuncListArith --- list of functions used in an expression
+*CMD FuncListSome --- list of functions used in an expression
 *STD
 *CALL
 	FuncList(expr)
@@ -1539,7 +1543,8 @@ Note that since the operators "{+}" and "{-}" are prefix as well as infix operat
 
 *SEE VarList, HasExpr, HasFunc
 
-*CMD BubbleSort, HeapSort --- sort a list
+*CMD BubbleSort --- sort a list
+*CMD HeapSort --- sort a list
 *STD
 *CALL
 	BubbleSort(list, compare)
@@ -1670,7 +1675,8 @@ printing every element in the list on a separate line.
 
 *SEE PrettyForm, Echo, Table
 
-*CMD GlobalPop, GlobalPush --- save/restore variables using a global stack
+*CMD GlobalPop --- restore variables using a global stack
+*CMD GlobalPush --- save variables using a global stack
 *STD
 *CALL
 	GlobalPop(var)

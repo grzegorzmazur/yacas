@@ -31,7 +31,8 @@ form respectively.
 
 *SEE SetGlobalLazyVariable
 
-*CMD True, False --- boolean constants
+*CMD True --- boolean constant representing true
+*CMD False --- boolean constant representing false
 *CORE
 *CALL
 	True

@@ -6,7 +6,9 @@ described. These include functions implementing differentiation,
 integration, standard mathematical functions, and solving of
 equations.
 
-*CMD Sin, Cos, Tan --- trigonometric functions
+*CMD Sin --- trigonometric sine function
+*CMD Cos --- trigonometric cosine function
+*CMD Tan --- trigonometric tangent function
 *STD
 *CALL
 	Sin(x)
@@ -42,7 +44,9 @@ list, the function is applied to all entries in the list.
 
 *SEE ArcSin, ArcCos, ArcTan, N, Pi
 
-*CMD ArcSin, ArcCos, ArcTan --- inverse trigonometric functions
+*CMD ArcSin --- inverse trigonometric function arc-sine
+*CMD ArcCos --- inverse trigonometric function arc-cosine
+*CMD ArcTan --- inverse trigonometric function arc-tangent
 *STD
 *CALL
 	ArcSin(x)
@@ -429,7 +433,10 @@ element of this list is the primitive $n$-th root of unity, and the last element
 *SEE I, Complex 
 
 
-*CMD !, !!, ***, Subfactorial  --- factorial and related functions
+*CMD !  --- factorial
+*CMD !!  --- factorial and related functions
+*CMD ***  --- factorial and related functions
+*CMD Subfactorial  --- factorial and related functions
 *STD
 *CALL
 	n!
@@ -1728,7 +1735,9 @@ Each seed value will result in the same sequence of pseudo-random numbers.
 *SEE RandomInteger, RandomPoly, Rng
 
 
-*CMD RngCreate, RngSeed, Rng --- manipulate random number generators as objects
+*CMD RngCreate --- manipulate random number generators as objects
+*CMD RngSeed --- manipulate random number generators as objects
+*CMD Rng --- manipulate random number generators as objects
 *STD
 *CALL
 	RngCreate()
@@ -1984,7 +1993,8 @@ denotes the $n$-th Fibonacci number.
 
 *INTRO In this chapter, special and transcendental mathematical functions are described.
 
-*CMD Gamma, GammaNum --- Euler's Gamma function
+*CMD Gamma --- Euler's Gamma function
+*CMD GammaNum --- Euler's Gamma function
 *STD
 *CALL
 	Gamma(x)
@@ -2017,7 +2027,8 @@ Note that Euler's constant $gamma<=>0.57722$ is the lowercase {gamma} in Yacas.
 
 *SEE !, N, gamma
 
-*CMD Zeta, ZetaNum --- Riemann's Zeta function
+*CMD Zeta --- Riemann's Zeta function
+*CMD ZetaNum --- Riemann's Zeta function
 *STD
 *CALL
 	Zeta(x)
@@ -2051,7 +2062,8 @@ Note that Euler's constant $gamma<=>0.57722$ is the lowercase {gamma} in Yacas.
 *SEE !, N
 
 
-*CMD Bernoulli, BernoulliArray --- Bernoulli numbers and polynomials
+*CMD Bernoulli --- Bernoulli numbers and polynomials
+*CMD BernoulliArray --- Bernoulli numbers and polynomials
 *STD
 *CALL
 	Bernoulli(index)
@@ -2107,7 +2119,8 @@ An auxiliary function {BernoulliArray(n)} might be useful too: it returns an arr
 *SEE Bin
 
 
-*CMD LambertW, LambertWNum --- Lambert's $W$ function
+*CMD LambertW --- Lambert's $W$ function
+*CMD LambertWNum --- Lambert's $W$ function
 *STD
 *CALL
 	LambertW(x)

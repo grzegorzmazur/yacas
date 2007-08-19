@@ -6,7 +6,8 @@
 These functions typically operate on integers.
 Some of these functions work quite slowly.
 
-*CMD IsPrime, IsSmallPrime --- test for a prime number
+*CMD IsPrime --- test for a prime number
+*CMD IsSmallPrime --- test for a (small) prime number
 *STD
 *CALL
 	IsPrime(n)
@@ -768,7 +769,9 @@ same type.
 *SEE Mod, ContFrac, FromBase, ToBase
 
 
-*CMD IsQuadraticResidue, LegendreSymbol, JacobiSymbol --- functions related to finite groups
+*CMD IsQuadraticResidue --- functions related to finite groups
+*CMD LegendreSymbol --- functions related to finite groups
+*CMD JacobiSymbol --- functions related to finite groups
 *STD
 *CALL
 	IsQuadraticResidue(m,n)

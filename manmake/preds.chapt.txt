@@ -1000,7 +1000,9 @@ with "{a}" and "{b}" not depending on {x} if {x} is given as the variable.
 *SEE Integrate
 
 
-*CMD HasExpr, HasExprArith, HasExprSome --- check for expression containing a subexpression
+*CMD HasExpr --- check for expression containing a subexpression
+*CMD HasExprArith --- check for expression containing a subexpression
+*CMD HasExprSome --- check for expression containing a subexpression
 *STD
 *CALL
 	HasExpr(expr, x)
@@ -1042,7 +1044,9 @@ Note that since the operators "{+}" and "{-}" are prefix as well as infix operat
 
 *SEE FuncList, VarList, HasFunc
 
-*CMD HasFunc, HasFuncArith, HasFuncSome --- check for expression containing a function
+*CMD HasFunc --- check for expression containing a function
+*CMD HasFuncArith --- check for expression containing a function
+*CMD HasFuncSome --- check for expression containing a function
 *STD
 *CALL
 	HasFunc(expr, func)

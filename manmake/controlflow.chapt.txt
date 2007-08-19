@@ -655,7 +655,8 @@ to the second variable, etc.
 
 *SEE Subst, /:
 
-*CMD /:, /:: --- local simplification rules
+*CMD /: --- local simplification rules
+*CMD /:: --- local simplification rules
 *STD
 *CALL
 	expression /: patterns

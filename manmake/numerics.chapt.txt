@@ -235,7 +235,9 @@ Compute $Mod(3^100,7)$:
 
 *SEE MultiplyNum, MathPower, MatrixPower
 
-*CMD BinSplitNum, BinSplitData, BinSplitFinal --- computations of series by the binary splitting method
+*CMD BinSplitNum --- computations of series by the binary splitting method
+*CMD BinSplitData --- computations of series by the binary splitting method
+*CMD BinSplitFinal --- computations of series by the binary splitting method
 *STD
 *CALL
 	BinSplitNum(n1, n2, a, b, c, d)
@@ -292,7 +294,8 @@ Compute the series for $e=Exp(1)$ using binary splitting.
 
 *SEE SumTaylorNum
 
-*CMD MathSetExactBits, MathGetExactBits --- manipulate precision of floating-point numbers
+*CMD MathSetExactBits --- manipulate precision of floating-point numbers
+*CMD MathGetExactBits --- manipulate precision of floating-point numbers
 *CORE
 *CALL
 	MathGetExactBits(x)

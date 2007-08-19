@@ -179,7 +179,9 @@ In that case, {FindFunction()} will return the filename under that directory. Ot
 *SEE FindFunction
 
 
-*CMD PlatformOS, OSVersion, FilePathSeparator --- OS-dependent constants
+*CMD PlatformOS --- OS-dependent constants
+*CMD OSVersion --- OS-dependent constants
+*CMD FilePathSeparator --- OS-dependent constants
 *STD
 *CALL
 	FilePathSeparator()
@@ -215,7 +217,13 @@ The function {FilePathSeparator()} returns the string that separates directories
 
 *SEE MakeFilePath
 
-*CMD CopyFile, DeleteFile, DeleteDir, MakeDir, MakeFilePath, TemporaryDir, TemporaryFile --- manipulate files and directories
+*CMD CopyFile --- manipulate files and directories
+*CMD DeleteFile --- manipulate files and directories
+*CMD DeleteDir --- manipulate files and directories
+*CMD MakeDir --- manipulate files and directories
+*CMD MakeFilePath --- manipulate files and directories
+*CMD TemporaryDir --- manipulate files and directories
+*CMD TemporaryFile --- manipulate files and directories
 *STD
 *CALL
 	CopyFile("src","dest")
