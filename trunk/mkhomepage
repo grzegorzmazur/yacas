@@ -26,6 +26,7 @@ make dist
 if [ -d homepage ] ; then : ; else  mkdir homepage ; fi; 
 cd homepage
 
+cp ../manmake/ref.funcs.js ../manmake/refprog.funcs.js .
 cp ../manmake/*.html .
 cp ../docs/yacaslogo.gif .
 tar -zcvf manual.html.tar.gz *
@@ -36,6 +37,7 @@ tar -zcvf manual.pdf.tar.gz *.pdf
 rm *.ps *.pdf
 
 cp ../docs/*.gif ../docs/*.png ../docs/*.html ../docs/*.js ../docs/*.yart ../docs/*.css .
+rm back-dark.gif
 cp yacas.html index.html
 yacas --patchload -pc ../docs/downloads.html.in > downloads.html
 
