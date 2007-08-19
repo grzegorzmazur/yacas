@@ -10,9 +10,9 @@ function initPage()
   }
 }
 
-function getYacasHelpOnFunction(name)
+function getYacasExampleOnFunction(name)
 {
-  alert("This is work in progress, in the future you will see help and examples on "+name+" here.");
+  alert("This is work in progress, in the near future you will see help and examples on "+name+" here.");
 }
 
 function searchSuggest()
@@ -41,7 +41,8 @@ function updateHints(searchString)
       var line = 
         '<div class="suggestions">'+
            hints[i+1]+
-           '<br><a href="javascript:getYacasHelpOnFunction(\''+hints[i]+'\')">more...<\/a>' + 
+           '<br><a target="newwin" href="ref.html?'+hints[i]+'">Manual<\/a>' + 
+           '|   <a href="javascript:getYacasExampleOnFunction(\''+hints[i]+'\')">Example<\/a>' + 
         '<\/div>';
       if (hints[i].indexOf(searchString) == 0)
       {

@@ -201,7 +201,7 @@ forth.chapt: ../plugins/forth/forthpluginapi.man.txt
 ps-docs: $(PS_DOCS)
 pdf-docs: $(PDF_DOCS)
 
-CLEANFILES = books.html *.tex *.dvi *.aux *.idx *.ind *.ilg *.toc *.log *.ps *.pdf \
+CLEANFILES = books.html *.tex *.dvi *.aux *.idx *.ind *.ilg *.toc *.log *.ps *.pdf *.funcs.js \
 	coding*.html intro*.html ref*.html essays*.html Algo*.html  *.o core *~ texdocs.c \
 	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) $(CODINGCHAPTERS)  \
 	$(TESTCODESNIPPETS) $(ALGOCHAPTERS) yacasapi.chapt.txt $(BOOKS) manicon.html \

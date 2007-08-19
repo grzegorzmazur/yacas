@@ -102,7 +102,7 @@ BookList():=
 
 EmitBookIndex():=
 [
-WriteString("Creating book index"); NewLine();
+  WriteString("Creating book index"); NewLine();
   ToFile(HtmlFile("books.html"))
   [
     WriteString(
@@ -115,6 +115,58 @@ WriteString("Creating book index"); NewLine();
              )
     );
   ];
+  WriteString("Creating ref.html (full function reference index)"); 
+  NewLine();
+  ToFile(HtmlFile("ref.html"))
+  [
+WriteString("
+<html>
+  <head>
+    <script type=\"text/javascript\" src=\"ref.funcs.js\"></script>
+    <script type=\"text/javascript\" src=\"refprog.funcs.js\"></script>
+    <script type=\"text/javascript\">
+    <!-- 
+var seach = document.location.search;
+if (seach.indexOf(\"?\") == 0)
+{
+  seach = seach.substring(1);
+  var file = findFileForFunction(seach);
+  if (file != \"\")
+  {
+    self.location.replace(file+\"#\"+seach);
+  }
+}
+
+function findFileForFunction(seach)
+{
+  var file = \"\";
+  if (file == \"\")
+    file = findFileForFunctionInref(seach);
+  if (file == \"\")
+    file = findFileForFunctionInrefprog(seach);
+  return file;
+}
+
+function containsFunc(chapter,func)
+{
+  for (var i=0;i<chapter.length;i++)
+  {
+    if (chapter[i] == func)
+      return true;
+  }
+  return false;
+}
+
+    //   end script hiding -->
+    </script>
+
+  </head>
+  <body>
+  </body>
+</html>
+");
+  ];
+
   True;
 ];
 

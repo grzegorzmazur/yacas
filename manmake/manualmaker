@@ -37,7 +37,7 @@ GarbageCollect();
   plain["Chapters"][currentChapter]["Index"]:=currentChapterIndex;
   plain["Chapters"][currentChapter]["Intro"]:=HtmlTag(chapter, title);
   plain["Chapters"][currentChapter]["Commands"]:={};
-
+  plain["Chapters"][currentChapter]["FunctionsDefined"]:={};
 ];
 
 ChapterIntro(text) :=
@@ -82,6 +82,12 @@ WriteString(title);NewLine();
 
 CmdDescription(cmd, desc) :=
 [
+
+//TODO remove? Echo("Chapter ",plain["BaseName"] : "chapter" : String(currentChapterIndex) : ".html",": function ",cmd);
+
+  DestructiveAppend(plain["Chapters"][currentChapter]["FunctionsDefined"],cmd);
+
+
   AddBody(HtmlAnchor() cmd);
   AddBody(HtmlAnchor() ToLowerCase(cmd));	// add a lowercase version for easier help
   SubSection(cmd : " -- " : desc);
@@ -341,11 +347,47 @@ NewLine();
                 FramedChapterIndex(chapters))
                ) );
 
+  ToFile(plain["BaseName"]:".funcs.js")
+  [
+    Echo("function findFileForFunctionIn",plain["BaseName"],"(seach) {");
+
+    ForEach(chapter,chapters)
+    [
+      Local(pcc,file,index,str,first);
+      pcc := plain["Chapters"][chapter];
+      index := pcc["Index"];
+      first := True;
+
+      Echo("var funcs_",plain["BaseName"] : "chapter" : String(index)," = new Array(");
+
+      ForEach(function,plain["Chapters"][chapter]["FunctionsDefined"])
+      [
+        If (Not first,WriteString(", "),first := False);
+        Echo("\"",function,"\"");
+      ];
+      Echo(");");
+    ];
+
+    ForEach(chapter,chapters)
+    [
+      Local(pcc,file,index,str,name);
+      pcc := plain["Chapters"][chapter];
+      index := pcc["Index"];
+      name:=plain["BaseName"] : "chapter" : String(index);
+      Echo("  if (containsFunc(funcs_",name,",seach))");
+      Echo("    return \"",name,".html\";");
+    ];
+    Echo("  return \"\";");
+    Echo("}");
+
+  ];
+
   ForEach(chapter,chapters)
   [
     Local(pcc,file,index,str,keyword);
     pcc := plain["Chapters"][chapter];
     index := pcc["Index"];
+
     file := plain["BaseName"] : "chapter" : String(index) : ".html";
     str := HtmlAnchor() ChapterTag(index);
     str := str : ChapterHeader(pcc["Commands"]);
@@ -437,14 +479,14 @@ WriteString("Creating book index"); NewLine();
 	AddBody(".");
      ];
 
-SeeAlso1(_seealso) <-- HtmlLink(seealso, "ref.html", seealso, "Chapters");
+SeeAlso1(_seealso) <-- HtmlLink(seealso, "ref.html?":seealso, "", "Chapters");
 
 /*
 SeeAlso(_list)<--
 [
   ForEach(item,list)
   [
-    AddBody(HtmlLink(item,"ref.html",item,"Chapters"):", ");
+    AddBody(HtmlLink(item,"ref.html?":item,"","Chapters"):", ");
   ];
 ];
 */
