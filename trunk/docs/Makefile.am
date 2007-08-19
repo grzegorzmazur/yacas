@@ -25,7 +25,7 @@ EXTRA_DIST = \
 	journaldescr.html journalview.html journaledit.html \
 	yacas-screenshot.png \
         downloads.html.in \
-	README \
+	README autocompleterheader.txt \
 	paper1.tex paper2.tex 
 
 YART_FILES = derivative.yart newtonsqrt.yart newtonconvergence.yart taylordefinition.yart 
