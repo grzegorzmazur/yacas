@@ -59,6 +59,8 @@ function initPage()
         }
         else if (object.className == "codeEdit")
         {
+          var width = 660;
+
           object.innerHTML = 
 '      <table cellspacing=0>' +
 '        <tr>' +
@@ -68,11 +70,10 @@ function initPage()
 '        <\/tr>' +
 '        <tr>' +
 '          <td style="border-color:black; border-style:solid; border-width:thin; background-color:#fafabe;">' +
-'            <textarea style="background-color:#fafabe;" class="codeEditor" id="codeText"><\/textarea>' +
+'            <textarea style="background-color:#fafabe; width: '+width+'px; " class="codeEditor" id="codeText"><\/textarea>' +
 '          <\/td>' +
 '        <\/tr>' +
 '      <\/table>';
-
           if (object.id)
             initCodeEditors(object.id);
         }
@@ -88,6 +89,10 @@ function initPage()
             if (object.id == "tutorial")
             {
               height = 200;
+            }
+            if (object.id == "console")
+            {
+              width=660;
             }
           }
           object.innerHTML = 
