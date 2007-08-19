@@ -8,7 +8,9 @@ for programming in Yacas.
 
 *INTRO This chapter describes functions useful for writing Yacas scripts.
 
-*CMD	/*, */, // --- comments
+*CMD	/* --- Start of comment
+*CMD	*/ --- end of comment
+*CMD	// --- Beginning of one-line comment
 *CORE
 *CALL
 	/* comment */
@@ -24,7 +26,9 @@ Introduce a comment block in a source file, similar to C++ comments.
 	a+b; // get result
 	a + /* add them */ b;
 
-*CMD Prog, [, ] --- block of statements
+*CMD Prog --- block of statements
+*CMD [ --- beginning of block of statements
+*CMD ] --- end of block of statements
 *CORE
 *CALL
 	Prog(statement1, statement2, ...)
@@ -45,7 +49,10 @@ function bodies. The {[ ... ]} construct is a syntactically nicer version of the
 
 
 
-*CMD Bodied, Infix, Postfix, Prefix --- define function syntax
+*CMD Bodied --- define function syntax (bodied function)
+*CMD Infix --- define function syntax (infix operator)
+*CMD Postfix --- define function syntax (postfix operator)
+*CMD Prefix --- define function syntax (prefix operator)
 *CORE
 *CALL
 	Bodied("op", precedence)
@@ -111,7 +118,10 @@ Note that, due to a current parser limitation, a function atom that is declared 
 
 
 
-*CMD IsBodied, IsInfix, IsPostfix, IsPrefix --- check for function syntax
+*CMD IsBodied --- check for function syntax
+*CMD IsInfix --- check for function syntax
+*CMD IsPostfix --- check for function syntax
+*CMD IsPrefix --- check for function syntax
 *CORE
 *CALL
 	IsBodied("op")
@@ -141,7 +151,9 @@ Check whether the function with given name {"op"} has been declared as a
 
 *SEE Bodied, OpPrecedence
 
-*CMD OpPrecedence, OpLeftPrecedence, OpRightPrecedence --- get operator precedence
+*CMD OpPrecedence --- get operator precedence
+*CMD OpLeftPrecedence --- get operator precedence
+*CMD OpRightPrecedence --- get operator precedence
 *CORE
 *CALL
 	OpPrecedence("op")
@@ -186,7 +198,8 @@ they are declared to be right-associative.)
 *SEE OpPrecedence
 
 
-*CMD LeftPrecedence, RightPrecedence --- set operator precedence
+*CMD LeftPrecedence --- set operator precedence
+*CMD RightPrecedence --- set operator precedence
 *CORE
 *CALL
 	LeftPrecedence("op",precedence)
@@ -441,7 +454,12 @@ for the function named {"operator"} with the specific {arity}.
 *SEE RuleBase, HoldArgNr, HoldArg
 
 
-*CMD MacroSet, MacroClear, MacroLocal, MacroRuleBase, MacroRuleBaseListed, MacroRule --- define rules in functions
+*CMD MacroSet --- define rules in functions
+*CMD MacroClear --- define rules in functions
+*CMD MacroLocal --- define rules in functions
+*CMD MacroRuleBase --- define rules in functions
+*CMD MacroRuleBaseListed --- define rules in functions
+*CMD MacroRule --- define rules in functions
 *CORE
 *DESC
 
@@ -913,7 +931,8 @@ No more errors left:
 
 *SEE IsError, DumpErrors, Check, GetError, ClearError, ClearErrors, GetErrorTableau
 
-*CMD DumpErrors, ClearErrors --- simple error handlers
+*CMD DumpErrors --- simple error handlers
+*CMD ClearErrors --- simple error handlers
 *STD
 *CALL
 	DumpErrors()
@@ -947,7 +966,9 @@ error we are interested in. It returns {True} if any errors of the given class
 *SEE GetError, ClearError, Assert, Check
 
 
-*CMD GetError, ClearError, GetErrorTableau --- custom errors handlers
+*CMD GetError --- custom errors handlers
+*CMD ClearError --- custom errors handlers
+*CMD GetErrorTableau --- custom errors handlers
 *STD
 *CALL
 	GetError("str")
@@ -987,7 +1008,8 @@ object was found and deleted, and {False} otherwise.
 
 *SEE IsError, Assert, Check, ClearErrors
 
-*CMD CurrentFile, CurrentLine --- show current file and line of input
+*CMD CurrentFile --- return current input file
+*CMD CurrentLine --- return current line number on input
 *CORE
 *CALL
 	CurrentFile()
@@ -1064,7 +1086,9 @@ library. You can redefine them as infix operators yourself, so you have the
 choice of precedence. In the standard scripts they are in fact declared as
 infix operators, so you can write {expr1 And expr}.
 
-*CMD BitAnd, BitOr, BitXor --- bitwise arithmetic
+*CMD BitAnd --- bitwise and operation
+*CMD BitOr --- bitwise or operation
+*CMD BitXor --- bitwise xor operation
 *CORE
 *CALL
 	BitAnd(n,m)
@@ -1086,7 +1110,8 @@ Compares evaluated {a} and {b} recursively
 "True" if the expressions would be printed exactly
 the same, and "False" otherwise.
 
-*CMD GreaterThan, LessThan --- comparison predicates
+*CMD GreaterThan --- comparison predicate
+*CMD LessThan --- comparison predicate
 *CORE
 *CALL
 	GreaterThan(a,b)
@@ -1216,7 +1241,8 @@ FastArcSin(x), FastArcCos(x), FastArcTan(x)
 Versions of these functions using the C++ library. These
 should then at least be faster than the arbitrary precision versions.
 
-*CMD ShiftLeft, ShiftRight --- built-in bit shifts
+*CMD ShiftLeft --- built-in bitwise shift left operation
+*CMD ShiftRight --- built-in bitwise shift right operation
 *CORE
 *CALL
 	ShiftLeft(expr,bits)
@@ -1820,7 +1846,10 @@ execution of the Yacas script that uses these testing commands, since they are
 meant to be used in test scripts.
 
 
-*CMD Verify, TestYacas, LogicVerify, LogicTest --- verifying equivalence of two expressions
+*CMD Verify --- verifying equivalence of two expressions
+*CMD TestYacas --- verifying equivalence of two expressions
+*CMD LogicVerify --- verifying equivalence of two expressions
+*CMD LogicTest --- verifying equivalence of two expressions
 *STD
 *CALL
 	Verify(question,answer)
@@ -1968,7 +1997,9 @@ using the {Verify} command.
 
 
 
-*CMD VerifyArithmetic, RandVerifyArithmetic, VerifyDiv --- Special purpose arithmetic verifiers
+*CMD VerifyArithmetic --- Special purpose arithmetic verifiers
+*CMD RandVerifyArithmetic --- Special purpose arithmetic verifiers
+*CMD VerifyDiv --- Special purpose arithmetic verifiers
 *STD
 *CALL
 	VerifyArithmetic(x,n,m)

@@ -9,7 +9,8 @@ They should not be used in scripts.
 
 
 
-*CMD quit, restart, Ctrl-C --- basic session control
+*CMD quit --- stop Yacas from running, from the command line
+*CMD restart --- restart Yacas (to start with a clean slate)
 *CORE
 *CALL
 	quit
@@ -116,7 +117,8 @@ This command always evaluates to {True}.
 
 *SEE DefaultDirectory, DllLoad
 
-*CMD PrettyPrinter, GetPrettyPrinter --- set/get routine to use as pretty-printer
+*CMD PrettyPrinter --- set routine to use as pretty-printer
+*CMD GetPrettyPrinter --- get routine to use as pretty-printer
 
 *STD
 
@@ -165,7 +167,8 @@ an empty string if the default pretty printer is used.
 
 
 
-*CMD PrettyReader, GetPrettyReader --- set/get routine to use as pretty-reader
+*CMD PrettyReader --- set routine to use as pretty-reader
+*CMD GetPrettyReader --- get routine that is currently used as pretty-reader
 
 *STD
 

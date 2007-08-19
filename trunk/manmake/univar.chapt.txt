@@ -622,7 +622,8 @@ Most of the work is performed by the internal function {OrthoPoly}.
 
 *SEE OrthoLSum, OrthoPoly
 
-*CMD OrthoT, OrthoU --- Chebyshev polynomials
+*CMD OrthoT --- Chebyshev polynomials
+*CMD OrthoU --- Chebyshev polynomials
 *STD
 *CALL
 	OrthoT(n, x);
@@ -667,8 +668,12 @@ $U(1,x) = 2*x$.
 *SEE OrthoG, OrthoTSum, OrthoUSum, OrthoPoly
 
 
-
-*CMD OrthoPSum, OrthoHSum, OrthoLSum, OrthoGSum, OrthoTSum, OrthoUSum --- sums of series of orthogonal polynomials
+*CMD OrthoPSum --- sums of series of orthogonal polynomials
+*CMD OrthoHSum --- sums of series of orthogonal polynomials
+*CMD OrthoLSum --- sums of series of orthogonal polynomials
+*CMD OrthoGSum --- sums of series of orthogonal polynomials
+*CMD OrthoTSum --- sums of series of orthogonal polynomials
+*CMD OrthoUSum --- sums of series of orthogonal polynomials
 *STD
 *CALL
 	OrthoPSum(c, x);
@@ -859,7 +864,8 @@ The polynomial must use the variable {x} and no other variables.
 
 *SEE FindRealRoots, SquareFree, MinimumBound, MaximumBound, Factor
 
-*CMD MinimumBound, MaximumBound --- return upper/lower bounds on the absolute values of real roots of a polynomial
+*CMD MinimumBound --- return lower bounds on the absolute values of real roots of a polynomial
+*CMD MaximumBound --- return upper bounds on the absolute values of real roots of a polynomial
 *STD
 *CALL
 	MinimumBound(p)

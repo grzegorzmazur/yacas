@@ -590,7 +590,8 @@ might follow:
 *SEE Read, LispRead, LispReadListed
 
 
-*CMD LispRead, LispReadListed --- read expressions in LISP syntax
+*CMD LispRead --- read expressions in LISP syntax
+*CMD LispReadListed --- read expressions in LISP syntax
 *CORE
 *CALL
 	LispRead()
@@ -1130,7 +1131,9 @@ If given a plain text string, the same string is returned.
 
 *SEE XmlTokenizer
 
-*CMD DefaultTokenizer, XmlTokenizer, CTokenizer --- select a syntax for parsing the input
+*CMD DefaultTokenizer --- select the default syntax tokenizer for parsing the input
+*CMD XmlTokenizer --- select an XML syntax tokenizer for parsing the input
+*CMD CTokenizer --- select a C syntax tokenizer for parsing the input
 *CORE
 *CALL
 	DefaultTokenizer()
@@ -1181,7 +1184,8 @@ it is <i>not</i> a string.
 
 
 
-*CMD OMForm, OMRead --- convert expressions to and from OpenMath
+*CMD OMForm --- convert Yacas expression to OpenMath
+*CMD OMRead --- convert expression from OpenMath to Yacas expression
 *STD
 *CALL
 	OMForm(expression)

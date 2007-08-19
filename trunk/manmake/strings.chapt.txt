@@ -53,7 +53,8 @@ accessed using the {[]} operator.
 
 *SEE SetStringMid, Length
 
-*CMD String, Atom --- convert atom to string and vice versa
+*CMD String --- convert atom to string
+*CMD Atom --- convert string to atom
 *CORE
 *CALL
 	Atom("string")

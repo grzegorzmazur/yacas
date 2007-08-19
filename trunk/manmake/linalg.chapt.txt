@@ -937,7 +937,8 @@ equivalently Inverse($A$) = Transpose($A$).
 	In> IsDiagonal(HilbertMatrix(5))
 	Out> False;
 
-*CMD IsLowerTriangular, IsUpperTriangular --- test for a lower or an upper triangular matrix
+*CMD IsLowerTriangular --- test for a lower triangular matrix
+*CMD IsUpperTriangular --- test for an upper triangular matrix
 *STD
 *CALL
 	IsLowerTriangular(A)
