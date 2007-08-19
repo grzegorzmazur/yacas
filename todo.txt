@@ -1,6 +1,6 @@
 
 TODO:
-  - "more..." link in autocompleter needs to actually do something (or remove for a release)
+  - "example" link in autocompleter needs to actually generate an example
   - make books.html not too wide also
   - make plain site not too wide also
   - autocompleter should also offer "example" link in the console views (can we rip examples from the manual?)
