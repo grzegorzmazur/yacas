@@ -191,82 +191,47 @@ divisible by b.
 
 
 
+<html>
+  <head>
+    <script type=\"text/javascript\" src=\"ref.funcs.js\"></script>
+    <script type=\"text/javascript\" src=\"refprog.funcs.js\"></script>
+    <script type=\"text/javascript\">
+    <!-- 
+var seach = document.location.search;
+if (seach.indexOf(\"?\") == 0)
+{
+  seach = seach.substring(1);
+  var file = findFileForFunction(seach);
+  if (file != \"\")
+  {
+    self.location.replace(file+\"#\"+seach);
+  }
+}
 
-Done:
+function findFileForFunction(seach)
+{
+  var file = \"\";
+  if (file == \"\")
+    file = findFileForFunctionInref(seach);
+  if (file == \"\")
+    file = findFileForFunctionInrefprog(seach);
+  return file;
+}
 
-x hint box does not render anti-aliased.
+function containsFunc(chapter,func)
+{
+  for (var i=0;i<chapter.length;i++)
+  {
+    if (chapter[i] == func)
+      return true;
+  }
+  return false;
+}
 
+    //   end script hiding -->
+    </script>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-<PARAM name="programMode" value="'+programMode+'">
-<PARAM name="articleFromFile" value="'+articleFromFile+'">
-
-
-
-
-    var count=0;
-    function initializeApplet()
-    {
-      var datahub = getDatahub();
-      {
-        var javaGood = true;
-        try 
-        {
-          if (datahub)
-          {
-            var pr = getCookie("currentArticle","false");
-            if (pr != "false")
-            {
-              datahub.setProgramMode("console");
-              datahub.setArticle(pr);
-            }
-            datahub.setProgramMode("journal");
-          }
-          else
-          {
-            javaGood = false;
-          }
-        } 
-        catch (e) 
-        {
-          javaGood = false;
-        }
-        if (!javaGood)
-        {
-          count = count+1;
-          if (count < 10)
-          {
-            setTimeout("initializeApplet()",1000);
-          }
-          else
-          {
-              var element = document.getElementById("javawarn");
-              if (element)
-              {
-                element.innerHTML = 
-    '<p style="color:#FF0000;">' + 
-    '  Your browser does not have an up to date Java system installed. This web site uses Java ' + 
-    '  to allow you to do calculations immediately online. Please visit <a href="http://www.java.com/">www.java.com</a>' + 
-    '  to download and install the latest version for free.' + 
-    '</p>' +
-    '<p style="color:#FF0000;">' + 
-    '  Alternatively you can go to the <a href="plain.html">simplified</a> part of our web site and download <i>yacas</i> for use off-line.' + 
-    '</p>';
-              }
-          }
-        }
-      }
-    }
-
+  </head>
+  <body>
+  </body>
+</html>
