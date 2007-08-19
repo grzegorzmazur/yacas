@@ -36,7 +36,7 @@ tar -zcvf manual.ps.tar.gz *.ps
 tar -zcvf manual.pdf.tar.gz *.pdf
 rm *.ps *.pdf
 
-cp ../docs/*.gif ../docs/*.png ../docs/*.html ../docs/*.js ../docs/*.yart ../docs/*.css .
+cp ../docs/*.gif ../docs/*.html ../docs/*.js ../docs/*.yart ../docs/*.css .
 rm back-dark.gif
 cp yacas.html index.html
 yacas --patchload -pc ../docs/downloads.html.in > downloads.html
