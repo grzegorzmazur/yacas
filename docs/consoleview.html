@@ -3,7 +3,8 @@
     <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
     <script type="text/javascript" src="cookie.js"></script>
     <link rel="stylesheet" href="autocompleter.css" TYPE="text/css" MEDIA="screen">
-    <script type="text/javascript" src="autocompleter.js"></script>
+    <script type="text/javascript" src="autocompleteraccess.js"></script>
+    <script type="text/javascript" src="autocompleterarray.js"></script>
     <script type="text/javascript" src="datahub.js"></script>
     <script type="text/javascript" src="yacas.js"></script>
 
@@ -37,10 +38,7 @@
     </script>
   </head>
   <body style="background-image:url('back.gif'); ">
-  <center>
-  <table>
-    <tr>
-      <td valign="top">
+    <center>
         <table>
           <tr>
             <td valign="top">
@@ -48,21 +46,20 @@
     <input type=button value="Example" title="Generate example" onclick="generateExample();" />
     <input type=button value="Edit (locally)" onclick="gotoHREF('consoleedit.html');" title="Edit the code that gets loaded at start-up in this calculation center. Note you will only edit a local copy, so you can not accidentally destroy anything." />
             </td>
+            <td>
+              Find function: <input type="text" id="funcLookup"/>
+            <td>
           </tr>
           <tr>
             <td valign="top">
               <span class="yacasConsole" id="console"></span>
             </td>
+            <td valign="top" style="background-image:url('back.gif'); ">
+              <div id="popups"></div>
+            </td>
           </tr>
         </table>
-      </td>
-      <td valign="top" style="background-image:url('back.gif'); ">
-        Find function: <input type="text" id="funcLookup"/>
-        <div id="popups"></div>
-      </td>
-    </tr>
-  </table>
-  </center>
+    </center>
 
 
 

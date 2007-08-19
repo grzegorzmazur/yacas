@@ -23,9 +23,8 @@ EXTRA_DIST = \
 	tutorialtext1.html back-dark.gif back.gif back.texhtml \
 	$(YART_FILES) \
 	journaldescr.html journalview.html journaledit.html \
-	yacas-screenshot.png \
         downloads.html.in \
-	README autocompleterheader.txt \
+	README autocompleteraccess.js \
 	paper1.tex paper2.tex 
 
 YART_FILES = derivative.yart newtonsqrt.yart newtonconvergence.yart taylordefinition.yart 
@@ -35,9 +34,9 @@ YART_FILES = derivative.yart newtonsqrt.yart newtonconvergence.yart taylordefini
 htmldir = $(scriptdir)/documentation
 html_DATA = yacaslogo.gif
 
-autocompleter.js: autocompleter
+autocompleterarray.js: autocompleter
 	cd ../JavaYacas ; make hints.txt ; cd ../docs/
-	./autocompleter ../JavaYacas/hints.txt autocompleter.js
+	./autocompleter ../JavaYacas/hints.txt autocompleterarray.js
 
 check: riptestfromyart
 	for file in $(YART_FILES) ; do echo "Running test code from $$file..." ; ./riptestfromyart $$file temp.yts ; ../src/yacas -pc --rootdir ../scripts temp.yts ; done

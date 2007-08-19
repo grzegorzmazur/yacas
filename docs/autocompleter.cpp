@@ -59,20 +59,6 @@ int main(int argc, char** argv)
   fout=fopen(outName,"wb");
   if (!fout)exit(-1);
 
-  {
-    FILE* fin2 = fopen("autocompleterheader.txt","rb");
-    if (!fin2)
-      exit(-1);
-    fseek(fin2,0,SEEK_END);
-    int size = ftell(fin2);
-    fseek(fin2,0,SEEK_SET);
-    char* inbuffer = (char*)malloc(size);
-    fread(inbuffer,1,size,fin2);
-    fwrite(inbuffer,1,size,fout);
-    free(inbuffer);
-    fclose(fin2);
-  }
-
   fprintf(fout,"var hints = new Array(\n");
 
   char buffer[16384];

@@ -15,7 +15,7 @@ make -f makefile.yacas
 cd ..
 
 cd docs
-make autocompleter.js
+make autocompleterarray.js
 cd ..
 
 make dist
