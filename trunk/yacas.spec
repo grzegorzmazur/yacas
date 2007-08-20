@@ -3,15 +3,15 @@
 %define prefix /usr
 
 Name: yacas
-Version: 1.1.4
+Version: 1.1.5
 Release: 1
 Group: Applications/Math
 License: GPL
 URL: http://www.xs4all.nl/~apinkus/yacas.html
 Summary: Yet Another Computer Algebra System
 
-Source: http://www.xs4all.nl/~apinkus/yacas-1.1.4.tar.gz
-BuildRoot: /tmp/yacas-1.1.4-root
+Source: http://www.xs4all.nl/~apinkus/yacas-1.1.5.tar.gz
+BuildRoot: /tmp/yacas-1.1.5-root
 
 %description
 Yacas (Yet Another Computer Algebra System) is a small and highly flexible
