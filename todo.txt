@@ -190,7 +190,6 @@ divisible by b.
 
 
 
-:Add:Add({list})::
 :Append:Append(list, expr):append an entry at the end of a list:
 :Apply:Apply(fn, arglist):apply a function to arguments:
 :ArcCos:ArcCos(x):inverse trigonometric function arc-cosine:
