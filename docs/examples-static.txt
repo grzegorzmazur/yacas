@@ -21,7 +21,7 @@ Select:Select("IsPrime", 1 .. 100):
 IsPrime:IsPrime(1)<sep>IsPrime(2)<sep>IsPrime(10)<sep>IsPrime(23)<sep>Select("IsPrime", 1 .. 100):
 NextPrime:NextPrime(5):
 Factors:Factors(24)<sep>Factors(2*x^3 + 3*x^2 - 1):
-Factor:Factor(24)<sep>Factors(2*x^3 + 3*x^2 - 1):
+Factor:Factor(24)<sep>Factor(2*x^3 + 3*x^2 - 1):
 PAdicExpand:PAdicExpand(1234, 10)<sep>PAdicExpand(x^3, x-1):
 Sin:N(Sin(1),20)<sep>Sin(Pi/4):
 Cos:N(Cos(1),20)<sep>Cos(Pi/4):
