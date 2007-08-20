@@ -28,8 +28,8 @@ Function() Max(l1, l2, l3, ...);
 20 # Min(l1_IsRationalOrNumber,l2_IsRationalOrNumber) <-- If(l1<l2,l1,l2);
 20 # Max(l1_IsRationalOrNumber,l2_IsRationalOrNumber) <-- If(l1>l2,l1,l2);
 
-30 # Min(l1_IsConstant,l2_IsConstant) <-- If(N(l1-l2)<0,l1,l2);
-30 # Max(l1_IsConstant,l2_IsConstant) <-- If(N(l1-l2)>0,l1,l2);
+30 # Min(l1_IsConstant,l2_IsConstant) <-- If(N(Eval(l1-l2))<0,l1,l2);
+30 # Max(l1_IsConstant,l2_IsConstant) <-- If(N(Eval(l1-l2))>0,l1,l2);
 
 // Min and Max on empty lists
 10 # Min({}) <-- Undefined;
