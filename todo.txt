@@ -7,6 +7,7 @@ TODO:
   - make plain site not too wide also
   - autocompleter should also offer "example" link in the console views (can we rip examples from the manual?)
   - center everything, with the back.gif on the sides.
+  - step-by-step solver possible?
 
 1) Documentation improvements
 - document the article mark-up language
@@ -182,6 +183,7 @@ unevaluated. I'm not sure what the "correct" meaning of Mod is for
 negative moduli bases, but the answer should in any case be non-negative.
 Mod(a,b) is defined as the smallest non-negative number c such that a-c is
 divisible by b.
+- Simplify(4-x-y) returns 4-y-x, Simplify(4-y-x) returns 4-x-y
 
 
 
