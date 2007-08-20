@@ -34,7 +34,7 @@ YART_FILES = derivative.yart newtonsqrt.yart newtonconvergence.yart taylordefini
 htmldir = $(scriptdir)/documentation
 html_DATA = yacaslogo.gif
 
-autocompleterarray.js: autocompleter
+autocompleterarray.js: autocompleter examples-static.txt 
 	cd ../JavaYacas ; make hints.txt ; cd ../docs/
 	./autocompleter ../JavaYacas/hints.txt autocompleterarray.js
 

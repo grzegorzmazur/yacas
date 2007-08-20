@@ -1,5 +1,7 @@
 
 TODO:
+  - Remove the spurious entries for N
+  - examples should have their own tests
   - "example" link in autocompleter needs to actually generate an example
   - make books.html not too wide also
   - make plain site not too wide also
