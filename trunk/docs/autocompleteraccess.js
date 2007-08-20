@@ -10,9 +10,14 @@ function initPage()
   }
 }
 
+
+var lastExampleIndex = 0;
 function getYacasExampleOnFunction(name)
 {
-  alert("This is work in progress, in the near future you will see help and examples on "+name+" here.");
+  var examples = name.split("<sep>");
+  var toUse = examples[lastExampleIndex % examples.length];
+  yacasEval(""+toUse);
+  lastExampleIndex = lastExampleIndex+1;
 }
 
 function searchSuggest()
@@ -25,56 +30,47 @@ function updateHints(searchString)
   var popups = document.getElementById("popups");
   popups.innerHTML = "";
   {
-    var match1 = "";
-    var match2 = "";
-    var match3 = "";
-    var length1 = 0;
-    var length2 = 0;
-    var length3 = 0;
+    var matches = new Array("","","","","","");
+    var lengths = new Array(0,0,0,0,0,0);
     var moreAvailable = 0;
-
     var maxMatches=20;
 
     var lwr = searchString.toLowerCase();
-    for (var i=0;i<hints.length;i=i+2)
+    for (var i=0;i<hints.length;i=i+3)
     {
+      var exam = "";
+      if (hints[i+2] != "")
+      {
+        exam = '|   <a href="javascript:getYacasExampleOnFunction(\''+hints[i+2]+'\')">Example<\/a>';
+      }
       var line = 
         '<div class="suggestions">'+
            hints[i+1]+
            '<br><a target="newwin" href="ref.html?'+hints[i]+'">Manual<\/a>' + 
-           '|   <a href="javascript:getYacasExampleOnFunction(\''+hints[i]+'\')">Example<\/a>' + 
+           exam + 
         '<\/div>';
+      
+      var matchIndex = -1;
       if (hints[i].indexOf(searchString) == 0)
       {
-        if (length1 < maxMatches)
-        {
-          length1 = length1 + 1;
-          match1 = match1 + line;
-        }
-        else
-        {
-          moreAvailable = 1;
-          break;
-        }
+        matchIndex = 0;
       }
       else if (hints[i].indexOf(searchString) > 0)
       {
-        if (length2 < maxMatches)
-        {
-          length2 = length2 + 1;
-          match2 = match2 + line;
-        }
-        else
-        {
-          moreAvailable = 1;
-        }
+        matchIndex = 1;
       }
       else if (hints[i].toLowerCase().indexOf(lwr) > -1)
       {
-        if (length3 < maxMatches)
+        matchIndex = 2;
+      }
+      if (matchIndex >= 0)
+      {
+        if (exam == "")
+          matchIndex = matchIndex + 3;
+        if (lengths[matchIndex] < maxMatches)
         {
-          length3 = length3 + 1;
-          match3 = match3 + line;
+          lengths[matchIndex] = lengths[matchIndex] + 1;
+          matches[matchIndex] = matches[matchIndex] + line;
         }
         else
         {
@@ -82,17 +78,16 @@ function updateHints(searchString)
         }
       }
     }
-    var totalmatch = match1;
-    var totalLength = length1;
-    if (totalLength < maxMatches)
+
+    var totalmatch = "";
+    var totalLength = 0;
+    for (var i=0;i<matches.length;i++)
     {
-      totalmatch = totalmatch+match2;
-      totalLength = totalLength + length2;
-    }
-    if (totalLength < maxMatches)
-    {
-      totalmatch = totalmatch+match3;
-      totalLength = totalLength + length3;
+      if (totalLength < maxMatches)
+      {
+        totalmatch = totalmatch+matches[i];
+        totalLength = totalLength + lengths[i];
+      }
     }
     if (moreAvailable == 1)
     {

@@ -188,7 +188,7 @@ list, the function is applied to all entries in the list.
 
 *SEE Exp, ^, N
 
-*CMD Abs --- absolute value or modulus
+*CMD Abs --- absolute value or modulus of complex number
 *STD
 *CALL
 	Abs(x)
@@ -216,7 +216,7 @@ list, the function is applied to all entries in the list.
 	In> Abs(2);
 	Out> 2;
 	In> Abs(-1/2);
-	Out> -1/2;
+	Out> 1/2;
 	In> Abs(3+4*I);
 	Out> 5;
 

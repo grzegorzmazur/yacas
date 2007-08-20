@@ -24,7 +24,7 @@ EXTRA_DIST = \
 	$(YART_FILES) \
 	journaldescr.html journalview.html journaledit.html \
         downloads.html.in \
-	README autocompleteraccess.js \
+	README autocompleteraccess.js examples-static.txt \
 	paper1.tex paper2.tex 
 
 YART_FILES = derivative.yart newtonsqrt.yart newtonconvergence.yart taylordefinition.yart 

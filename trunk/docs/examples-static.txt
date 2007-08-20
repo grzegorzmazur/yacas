@@ -1,0 +1,3 @@
+Abs:Abs(-1/2);<sep>Abs(3+4*I);<sep>Abs(2);:
+Add:Add(1,4,9);<sep>Add({1,2,3});<sep>Add(1 .. 10);:
+Average:Average({1,2,3,4,5});<sep>Average({2,6,7});:
