@@ -1,3 +1,68 @@
 Abs:Abs(-1/2);<sep>Abs(3+4*I);<sep>Abs(2);:
 Add:Add(1,4,9);<sep>Add({1,2,3});<sep>Add(1 .. 10);:
 Average:Average({1,2,3,4,5});<sep>Average({2,6,7});:
+Div:Div(5,3):
+Mod:Mod(5,3):
+Gcd:Gcd(55,10)<sep>Gcd({60,24,120})<sep>Gcd( 7300 + 12*I, 2700 + 100*I):
+Lcm:Lcm(60,24)<sep>Lcm({3,5,7,9}):
+FromBase:FromBase(2,"111111"):
+ToBase:ToBase(16,255):
+N:N(1/2)<sep>N(Sin(1),20)<sep>N(Pi,20):
+Rationalize:Rationalize({1.2,3.123,4.5}):
+NthRoot:NthRoot(12,2)<sep>NthRoot(81,3)<sep>NthRoot(3255552,2)<sep>NthRoot(3255552,3):
+ContFrac:ContFrac(N(Pi))<sep>ContFrac(x^2+x+1, 3):
+Decimal:Decimal(1/3):
+TruncRadian:TruncRadian(6.29):
+Floor:Floor(1.1)<sep>Floor(-1.1):
+Ceil:Ceil(1.1)<sep>Ceil(-1.1):
+Round:Round(1.49)<sep>Round(1.51)<sep>Round(-1.49)<sep>Round(-1.51):
+Pslq:Pslq({ 2*Pi+3*Exp(1), Pi, Exp(1) },20):
+Select:Select("IsPrime", 1 .. 100):
+IsPrime:IsPrime(1)<sep>IsPrime(2)<sep>IsPrime(10)<sep>IsPrime(23)<sep>Select("IsPrime", 1 .. 100):
+NextPrime:NextPrime(5):
+Factors:Factors(24)<sep>Factors(2*x^3 + 3*x^2 - 1):
+Factor:Factor(24)<sep>Factors(2*x^3 + 3*x^2 - 1):
+PAdicExpand:PAdicExpand(1234, 10)<sep>PAdicExpand(x^3, x-1):
+Sin:N(Sin(1),20)<sep>Sin(Pi/4):
+Cos:N(Cos(1),20)<sep>Cos(Pi/4):
+Tan:N(Tan(1),20)<sep>Tan(Pi/4):
+ArcCos:ArcCos(1):
+ArcSin:ArcSin(1):
+ArcTan:ArcTan(1):
+Exp:Exp(0)<sep>Exp(I*Pi)<sep>N(Exp(1)):
+Ln:Ln(1)<sep>Ln(Exp(x))<sep>D(x) Ln(x):
+Sqrt:Sqrt(16)<sep>Sqrt(15)<sep>N(Sqrt(15))<sep>Sqrt(4/9)<sep>Sqrt(-1):
+Sign:Sign(2)<sep>Sign(-3)<sep>Sign(0)<sep>Sign(-3)*Abs(-3):
+Complex:I<sep>3+4*I<sep>Complex(-2,0):
+Re:Re(5)<sep>Re(I)<sep>Re(Complex(3,4)):
+Im:Im(5)<sep>Im(I)<sep>Im(Complex(3,4)):
+I:I<sep>3*I+2:
+Conjugate:Conjugate(2)<sep>Conjugate(Complex(a,b)):
+Arg:Arg(2)<sep>Arg(-1)<sep>Arg(1+I):
+Bin:Bin(10, 4):
+Sum:Sum(i, 1, 3, i^2):
+Factorize:Factorize({1,2,3,4})<sep>Factorize(i, 1, 4, i):
+Max:Max(2,3)<sep>Max({5,8,4}):
+Min:Min(2,3)<sep>Min({5,8,4}):
+IsZero:IsZero(3.25)<sep>IsZero(0)<sep>IsZero(x):
+IsRational:IsRational(5)<sep>IsRational(2/7)<sep>IsRational(0.5)<sep>IsRational(a/b)<sep>IsRational(x + 1/x):
+Numer:Numer(2/7)<sep>Numer(a / x^2)<sep>Numer(5):
+Denom:Denom(2/7)<sep>Denom(a / x^2)<sep>Denom(5):
+Taylor:Taylor(x,0,9) Sin(x):
+Newton:Newton(Sin(x),x,3,0.0001)<sep>Newton(x^2-1,x,2,0.0001,-5,5)<sep>Newton(x^2+1,x,2,0.0001,-5,5):
+D:D(x)Sin(x*y)<sep>D({x,y,z})Sin(x*y)<sep>D(x,2)Sin(x*y)<sep>D(x){Sin(x),Cos(x)}:
+Curl:Curl({x*y,x*y,x*y},{x,y,z}):
+Diverge:Diverge({x*y,x*y,x*y},{x,y,z}):
+Integrate:Integrate(x,a,b) Cos(x)<sep>Integrate(x) Cos(x):
+Simplify:Simplify(a*b*a^2/b-a^3):
+RadSimp:RadSimp(Sqrt(9+4*Sqrt(2)))<sep>RadSimp(Sqrt(5+2*Sqrt(6))+Sqrt(5-2*Sqrt(6)))<sep>RadSimp(Sqrt(14+3*Sqrt(3+2*Sqrt(5-12*Sqrt(3-2*Sqrt(2)))))):
+FactorialSimplify:FactorialSimplify( (n-k+1)! / (n-k)! )<sep>FactorialSimplify(n! / Bin(n,k))<sep>FactorialSimplify(2^(n+1)/2^n):
+Solve:Solve(Cos(x) == 1/2, x)<sep>Solve(x / Sin(x) == 0, x)<sep>Solve(Sqrt(x) == 2, x):
+SuchThat:SuchThat(a+b*x, x)<sep>SuchThat(Cos(a)+Cos(b)^2, Cos(b))<sep>SuchThat(Expand(a*x+b*x+c,x), x):
+Subst:Subst(Cos(b), c) (Sin(a)+Cos(b)^2/c):
+Eliminate:Eliminate(Cos(b), c, Sin(a)+Cos(b)^2/c):
+PSolve:PSolve(b*x+a,x)<sep>PSolve(c*x^2+b*x+a,x):
+Random:Random():
+Limit:Limit(x,0) Sin(x)/x<sep>Limit(x,0) (Sin(x)-Tan(x))/(x^3)<sep>Limit(x,0) 1/x<sep>Limit(x,0,Left) 1/x<sep>Limit(x,0,Right) 1/x:
+TrigSimpCombine:TrigSimpCombine(Cos(a)^2+Sin(a)^2)<sep>TrigSimpCombine(Cos(a)^2-Sin(a)^2)<sep>TrigSimpCombine(Cos(a)^2*Sin(b)):
+LagrangeInterpolant:LagrangeInterpolant({0,1,2},{0,1,1}, x)<sep>LagrangeInterpolant({x1,x2,x3}, {y1,y2,y3}, x):
