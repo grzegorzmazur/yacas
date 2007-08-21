@@ -2150,7 +2150,6 @@ For real arguments $x$, $W(x)$ is real if $x>= -Exp(-1)$.
 *CMD gamma --- Euler's constant $gamma$
 *STD
 *CALL
-	N(gamma)
 	gamma()
 
 *DESC
@@ -2183,7 +2182,6 @@ Note that Euler's Gamma function $Gamma(x)$ is the capitalized {Gamma} in Yacas.
 *CMD GoldenRatio --- the Golden Ratio
 *STD
 *CALL
-	N(GoldenRatio)
 	GoldenRatio()
 
 *DESC
@@ -2221,7 +2219,6 @@ The numerical value of the constant can also be obtained as {N(GoldenRatio)}.
 *CMD Catalan --- Catalan's Constant
 *STD
 *CALL
-	N(Catalan)
 	Catalan()
 
 *DESC

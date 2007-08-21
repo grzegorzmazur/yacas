@@ -1,6 +1,6 @@
-Abs:Abs(-1/2);<sep>Abs(3+4*I);<sep>Abs(2);:
-Add:Add(1,4,9);<sep>Add({1,2,3});<sep>Add(1 .. 10);:
-Average:Average({1,2,3,4,5});<sep>Average({2,6,7});:
+Abs:Abs(-1/2)<sep>Abs(3+4*I)<sep>Abs(2):
+Add:Add(1,4,9)<sep>Add({1,2,3})<sep>Add(1 .. 10):
+Average:Average({1,2,3,4,5})<sep>Average({2,6,7}):
 Div:Div(5,3):
 Mod:Mod(5,3):
 Gcd:Gcd(55,10)<sep>Gcd({60,24,120})<sep>Gcd( 7300 + 12*I, 2700 + 100*I):
@@ -53,7 +53,7 @@ Newton:Newton(Sin(x),x,3,0.0001)<sep>Newton(x^2-1,x,2,0.0001,-5,5)<sep>Newton(x^
 D:D(x)Sin(x*y)<sep>D({x,y,z})Sin(x*y)<sep>D(x,2)Sin(x*y)<sep>D(x){Sin(x),Cos(x)}:
 Curl:Curl({x*y,x*y,x*y},{x,y,z}):
 Diverge:Diverge({x*y,x*y,x*y},{x,y,z}):
-Integrate:Integrate(x,a,b) Cos(x)<sep>Integrate(x) Cos(x):
+Integrate:Integrate(x,a,b) Cos(x)<sep>Integrate(x) Cos(x)<sep>Integrate(x)x^3*Cos(a*x):
 Simplify:Simplify(a*b*a^2/b-a^3):
 RadSimp:RadSimp(Sqrt(9+4*Sqrt(2)))<sep>RadSimp(Sqrt(5+2*Sqrt(6))+Sqrt(5-2*Sqrt(6)))<sep>RadSimp(Sqrt(14+3*Sqrt(3+2*Sqrt(5-12*Sqrt(3-2*Sqrt(2)))))):
 FactorialSimplify:FactorialSimplify( (n-k+1)! / (n-k)! )<sep>FactorialSimplify(n! / Bin(n,k))<sep>FactorialSimplify(2^(n+1)/2^n):
