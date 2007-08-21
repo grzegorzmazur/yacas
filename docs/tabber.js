@@ -1,5 +1,5 @@
 /*==================================================
-  $Id: tabber.js,v 1.2 2007-08-21 09:26:31 ayalpinkus Exp $
+  $Id: tabber.js,v 1.3 2007-08-21 10:26:17 ayalpinkus Exp $
   tabber.js by Patrick Fitzgerald pat@barelyfitz.com
 
   Documentation can be found at the following URL:
@@ -445,7 +445,13 @@ tabberObj.prototype.navSetActive = function(tabberIndex)
        * display a message that the page is being loaded. Yield for a tenth of a second to allow the 
        * system to display the screen.
        */
-      elem.innerHTML = "<center><h1>Loading page, one moment please.</h1>If this page includes a Yacas calculation center, and you are visiting this page for the first time, it could take a minute to download the program.</center>";
+      elem.innerHTML = 
+"<center>"+
+"<h1>Loading page, one moment please.</h1>"+
+"<p style='width:100% ; height:100% ; background-image:url(\"back.gif\"); ' >"+
+"If this page includes a Yacas calculation center, and you are visiting this page for the first time, "+
+"it could take a minute to download the program."+
+"</p></center>";
       setTimeout("initTabPAgeIFrame('"+this.tabs[tabberIndex].div.id+"')",100);
     }
   }
