@@ -1,5 +1,5 @@
 /*==================================================
-  $Id: tabber.js,v 1.1 2007-07-21 09:01:44 ayalpinkus Exp $
+  $Id: tabber.js,v 1.2 2007-08-21 09:26:31 ayalpinkus Exp $
   tabber.js by Patrick Fitzgerald pat@barelyfitz.com
 
   Documentation can be found at the following URL:
@@ -324,6 +324,7 @@ tabberObj.prototype.navClick = function(event)
   a = this;
   if (!a.tabber) { return false; }
 
+
   self = a.tabber;
   tabberIndex = a.tabberIndex;
 
@@ -419,8 +420,48 @@ tabberObj.prototype.navSetActive = function(tabberIndex)
   /* Set classNavActive for the navigation list item */
   this.tabs[tabberIndex].li.className = this.classNavActive;
 
+  /*Added by Ayal:
+   If you give the tabbertab divs an id of the form "frame:body"
+   and put a line
+        <div class="tabPageContent" id="body" ></div>
+   on the tab page, then it will be filled out in to an iframe with name and id equal to frame, and 
+   showing the content of the file body+".html"
+   Example:
+      <div class="tabbertab" id="LibraryFrame:recent">
+        <h2>Articles</h2>
+          <div class="tabPageContent" id="recent" ></div>
+        <br />
+      </div>
+   will put an iframe that will load recent.html when this tab is shown
+
+   */
+  if (this.tabs[tabberIndex].div.id)
+  {
+    var fields = this.tabs[tabberIndex].div.id.split(":");
+    var elem = document.getElementById(fields[1]);
+    if (elem)
+    {
+      /* In case loading takes some time (for example because the page contains an applet), 
+       * display a message that the page is being loaded. Yield for a tenth of a second to allow the 
+       * system to display the screen.
+       */
+      elem.innerHTML = "<center><h1>Loading page, one moment please.</h1>If this page includes a Yacas calculation center, and you are visiting this page for the first time, it could take a minute to download the program.</center>";
+      setTimeout("initTabPAgeIFrame('"+this.tabs[tabberIndex].div.id+"')",100);
+    }
+  }
   return this;
 };
+
+/*Added by Ayal: refresh content on tab that has a tabPageContent item. */
+function initTabPAgeIFrame(id)
+{
+  var fields = id.split(":");
+  var elem = document.getElementById(fields[1]);
+  if (elem)
+  {
+    elem.innerHTML = '<iframe name="'+fields[0]+'" id="'+fields[0]+'" frameborder="0" width="100%" height="80%" src="'+fields[1]+'.html"></iframe>';
+  }
+}
 
 
 tabberObj.prototype.navClearActive = function(tabberIndex)

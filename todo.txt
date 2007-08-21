@@ -52,17 +52,13 @@ currently implemented.
 - document threaded use of integration
 
 2) Web site improvements
-- change the style of the scrollbar
-    scrollbar-base-color:#AAAAEE;
 - allow saving multiple programs in cookies
 - work through mommies feedback
   - computer calculations made easy zou ik in lijn met het logo plaatsen liefst in lijn met de groene balletjes. Nu zweeft het een beetje los.
   - Get Yacas en contact us is goed, maar ik zou het wat lager plaatsen in lijn met de tabs, maar wel zo laten als tekst links.
-- autocompleter should also make it easier to go to the manual (preview part of the section on that function?)
 - Explain that a connection to the server is not needed, and that Yacas can be run off-line (with a link to a download of the Yacas web site).
 ============================================================================================================
 - have the Java version available as a separate install.
-- When user clicks on a tab he should go back to the starting page of that tab (does not work on IE).
 - Set up proper mailing lists
 - should I reconsider the way things are compressed? tgz? Why not zip?
 - when leaving codeedit page, ask to remember code?
