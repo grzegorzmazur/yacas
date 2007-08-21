@@ -1,6 +1,7 @@
 
 TODO:
   - fill out the examples in the autocompleter
+  - comparison operators should try to fully coerce to real-valued
   - examples should have their own tests
   - make books.html not too wide also
   - make plain site not too wide also
