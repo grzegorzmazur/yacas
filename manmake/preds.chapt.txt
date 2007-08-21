@@ -542,7 +542,7 @@ variables are all atoms.
 *E.G.
 
 	In> IsAtom(x+5);
-	Out> Falso;
+	Out> False;
 	In> IsAtom(5);
 	Out> True;
 

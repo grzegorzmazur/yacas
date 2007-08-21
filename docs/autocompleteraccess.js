@@ -12,8 +12,9 @@ function initPage()
 
 
 var lastExampleIndex = 0;
-function getYacasExampleOnFunction(name)
+function getYacasExampleOnFunction(index)
 {
+  var name = hints[index];
   var examples = name.split("<sep>");
   var toUse = examples[lastExampleIndex % examples.length];
   yacasEval(""+toUse);
@@ -41,7 +42,7 @@ function updateHints(searchString)
       var exam = "";
       if (hints[i+2] != "")
       {
-        exam = '|   <a href="javascript:getYacasExampleOnFunction(\''+hints[i+2]+'\')">Example<\/a>';
+        exam = '|   <a href="javascript:getYacasExampleOnFunction('+(i+2)+')">Example<\/a>';
       }
       var line = 
         '<div class="suggestions">'+

@@ -1,5 +1,6 @@
 
 TODO:
+  - better examples for for example Integrate
   - fill out the examples in the autocompleter
   - comparison operators should try to fully coerce to real-valued
   - examples should have their own tests

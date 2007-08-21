@@ -120,6 +120,17 @@ int main(int argc, char** argv)
     } 
     fclose(fex);
     qsort(examples, nrExamples, sizeof(Example),exampleCompare);
+    {
+      int i;
+      for (i=0;i<nrExamples-1;i++)
+      {
+        if (!strcmp(examples[i].name,examples[i+1].name))
+        {
+          printf("ERROR generating autocompleter array: duplicate entries found for %s\n",examples[i].name);
+          exit(-1);
+        }
+      }
+    }
   }
 
   FILE*fin=fopen(inName,"rb");
