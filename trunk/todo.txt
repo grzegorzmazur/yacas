@@ -8,6 +8,7 @@ TODO:
   - make plain site not too wide also
   - center everything, with the back.gif on the sides.
   - step-by-step solver possible?
+  - different color scheme for each tab page?
 
 1) Documentation improvements
 - document the article mark-up language
