@@ -14,6 +14,7 @@ class SBoxBuilder
       {
         if (iSymbol.equals("\\pi")) {}
         else if (iSymbol.equals("\\infty")) {}
+        else if (iSymbol.equals("\\cdot")) {}
         else if (iSymbol.equals("\\wedge")) {}
         else if (iSymbol.equals("\\vee")) {}
         else if (iSymbol.equals("\\neq")) {}
@@ -44,6 +45,11 @@ class SBoxBuilder
       else if (iSymbol.equals("\\infty"))
       {
         iDimension = new Dimension(g.TextWidth("oo"),height);
+        iAscent = g.GetAscent();
+      }
+      else if (iSymbol.equals("\\cdot"))
+      {
+        iDimension = new Dimension(g.TextWidth("."),height);
         iAscent = g.GetAscent();
       }
       else
@@ -91,6 +97,12 @@ class SBoxBuilder
         g.SetFontSize(SBoxBuilder.FontForSize(iSize));
         g.DrawText("o", iPosition.x+1, iPosition.y);
         g.DrawText("o", iPosition.x+g.TextWidth("o")-2, iPosition.y);
+      }
+      else if (iSymbol.equals("\\cdot")) 
+      {
+        int height = SBoxBuilder.FontForSize(iSize);
+        g.SetFontSize(height);
+        g.DrawText(".", iPosition.x, iPosition.y-height/3);
       }
       else
       {

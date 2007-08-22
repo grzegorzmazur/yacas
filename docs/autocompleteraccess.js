@@ -37,7 +37,7 @@ function updateHints(searchString)
     var maxMatches=20;
 
     // Most interesting functions, make sure people see these first so they have something interesting to click on
-    var fronts = ":Div:Mod:Gcd:N:Select:IsPrime:Factor:Taylor:Newton:D:Integrate:Simplify:RadSimp:FactorialSimplify:Solve:Limit:TrigSimpCombine:LagrangeInterpolant:DiagonalMatrix:ForEach:Pi:Echo:Version:";
+    var fronts = ":Div:N:Select:Factor:Taylor:D:Integrate:Simplify:Solve:Limit:DiagonalMatrix:ForEach:Pi:";
 
     var lwr = searchString.toLowerCase();
     for (var i=0;i<hints.length;i=i+3)
@@ -45,7 +45,7 @@ function updateHints(searchString)
       var exam = "";
       if (hints[i+2] != "")
       {
-        exam = '|   <a href="javascript:getYacasExampleOnFunction('+(i+2)+')">Example<\/a>';
+        exam = '|   <a href="javascript:getYacasExampleOnFunction('+(i+2)+')">Demo<\/a>';
       }
       var line = 
         '<div class="suggestions">'+

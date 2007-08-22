@@ -1,9 +1,9 @@
 Abs:Abs(-1/2)<sep>Abs(3+4*I)<sep>Abs(2):
 Add:Add(1,4,9)<sep>Add({1,2,3})<sep>Add(1 .. 10):
 Average:Average({1,2,3,4,5})<sep>Average({2,6,7}):
-Div:Div(5,3):
-Mod:Mod(5,3):
-Gcd:Gcd(55,10)<sep>Gcd({60,24,120})<sep>Gcd( 7300 + 12*I, 2700 + 100*I):
+Div:Div(5,3)<sep>Div(x^2-1,x+1):
+Mod:Mod(5,3)<sep>Mod((x+1)^3,x^2):
+Gcd:Gcd(55,10)<sep>Gcd({60,24,120})<sep>Gcd( 7300 + 12*I, 2700 + 100*I)<sep>Gcd((x+1)^3*(x-1)^2,(x+1)^2*(x-1)*3):
 Lcm:Lcm(60,24)<sep>Lcm({3,5,7,9}):
 FromBase:FromBase(2,"111111"):
 ToBase:ToBase(16,255):
@@ -48,13 +48,13 @@ IsZero:IsZero(3.25)<sep>IsZero(0)<sep>IsZero(x):
 IsRational:IsRational(5)<sep>IsRational(2/7)<sep>IsRational(0.5)<sep>IsRational(a/b)<sep>IsRational(x + 1/x):
 Numer:Numer(2/7)<sep>Numer(a / x^2)<sep>Numer(5):
 Denom:Denom(2/7)<sep>Denom(a / x^2)<sep>Denom(5):
-Taylor:Taylor(x,0,9) Sin(x):
+Taylor:Taylor(x,0,9) Sin(x)<sep>Taylor(x,0,15)Cos(a*x)<sep>Taylor(x,0,7)Exp(a*x):
 Newton:Newton(Sin(x),x,3,0.0001)<sep>Newton(x^2-1,x,2,0.0001,-5,5)<sep>Newton(x^2+1,x,2,0.0001,-5,5):
-D:D(x)Sin(x*y)<sep>D({x,y,z})Sin(x*y)<sep>D(x,2)Sin(x*y)<sep>D(x){Sin(x),Cos(x)}:
+D:D(x)Sin(x)/x^2<sep>D(x)Sin(a*x)<sep>D(x,2)Sin(a*x):
 Curl:Curl({x*y,x*y,x*y},{x,y,z}):
 Diverge:Diverge({x*y,x*y,x*y},{x,y,z}):
 Integrate:Integrate(x,a,b) Cos(x)<sep>Integrate(x) Cos(x)<sep>Integrate(x)x^3*Cos(a*x):
-Simplify:Simplify(a*b*a^2/b-a^3):
+Simplify:Simplify(a*b*a^2/b-a^3)<sep>FactorialSimplify( (n-k+1)! / (n-k)! )<sep>FactorialSimplify(n! / Bin(n,k))<sep>FactorialSimplify(2^(n+1)/2^n)<sep>TrigSimpCombine(Cos(a)^2+Sin(a)^2)<sep>TrigSimpCombine(Cos(a)^2-Sin(a)^2)<sep>TrigSimpCombine(Cos(a)^2*Sin(b))<sep>RadSimp(Sqrt(9+4*Sqrt(2))):
 RadSimp:RadSimp(Sqrt(9+4*Sqrt(2)))<sep>RadSimp(Sqrt(5+2*Sqrt(6))+Sqrt(5-2*Sqrt(6)))<sep>RadSimp(Sqrt(14+3*Sqrt(3+2*Sqrt(5-12*Sqrt(3-2*Sqrt(2)))))):
 FactorialSimplify:FactorialSimplify( (n-k+1)! / (n-k)! )<sep>FactorialSimplify(n! / Bin(n,k))<sep>FactorialSimplify(2^(n+1)/2^n):
 Solve:Solve(Cos(x) == 1/2, x)<sep>Solve(x / Sin(x) == 0, x)<sep>Solve(Sqrt(x) == 2, x):
@@ -63,7 +63,7 @@ Subst:Subst(Cos(b), c) (Sin(a)+Cos(b)^2/c):
 Eliminate:Eliminate(Cos(b), c, Sin(a)+Cos(b)^2/c):
 PSolve:PSolve(b*x+a,x)<sep>PSolve(c*x^2+b*x+a,x):
 Random:Random():
-Limit:Limit(x,0) Sin(x)/x<sep>Limit(x,0) 1/x<sep>Limit(x,0,Left) 1/x<sep>Limit(x,0,Right) 1/x:
+Limit:Limit(x,0) Sin(x)/x<sep>Limit(x,0,Left) 1/x<sep>Limit(x,0,Right) 1/x<sep>Limit(x,0) (x+1)^(Ln(a)/x)<sep>Limit(x,-Infinity)Exp(2*x)<sep>Limit(x,Infinity)(1+2/x)^x:
 TrigSimpCombine:TrigSimpCombine(Cos(a)^2+Sin(a)^2)<sep>TrigSimpCombine(Cos(a)^2-Sin(a)^2)<sep>TrigSimpCombine(Cos(a)^2*Sin(b)):
 LagrangeInterpolant:LagrangeInterpolant({0,1,2},{0,1,1}, x)<sep>LagrangeInterpolant({x1,x2,x3}, {y1,y2,y3}, x):
 LeviCivita:LeviCivita({1,2,3})<sep>LeviCivita({2,1,3})<sep>LeviCivita({2,2,3}):
@@ -130,7 +130,7 @@ IsEven:IsEven(4)<sep>IsEven(-1):
 IsOdd:IsOdd(4)<sep>IsOdd(-1):
 If:If(3>2, Echo("larger"),Echo("not larger"))<sep>If(3>2, Echo("larger")):
 For:For (i:=1, i<=10, i++) Echo({i, i!}):
-ForEach:ForEach(i,{2,3,5,7,11}) Echo({i, i!}):
+ForEach:ForEach(i,{2,3,5,7,11}) Echo(i,"! = ", i!):
 IsEvenFunction:IsEvenFunction(Cos(b*x),x)<sep>IsEvenFunction(Sin(b*x),x)<sep>IsEvenFunction(1/x^2,x)<sep>IsEvenFunction(1/x,x):
 IsOddFunction:IsOddFunction(Cos(b*x),x)<sep>IsOddFunction(Sin(b*x),x)<sep>IsOddFunction(1/x,x)<sep>IsOddFunction(1/x^2,x):
 IsFunction:IsFunction(x+5)<sep>IsFunction(Sin(x))<sep>IsFunction(x):
@@ -143,12 +143,12 @@ IsBoolean:IsBoolean(a)<sep>IsBoolean(True)<sep>IsBoolean(a And b):
 IsNotZero:IsNotZero(3.25)<sep>IsNotZero(0):
 IsConstant:IsConstant(Cos(x))<sep>IsConstant(Cos(2))<sep>IsConstant(Cos(2+x)):
 CanProve:CanProve(a  Or   Not a)<sep>CanProve(True  Or a)<sep>CanProve(False  Or  a)<sep>CanProve(a  And   Not a)<sep>CanProve(a Or b Or (a And b))<sep>CanProve(( (a=>b) And (b=>c) ) => (a=>c)):
-Pi:Sin(3*Pi/2)<sep>Sin(3*Pi()/2)<sep>N(Pi):
+Pi:Sin(3*Pi/2)<sep>N(Pi):
 Clear:[ a:=2; Clear(a); a; ]:
 Local:[ Local(a); a:=2; [ Local(a); a:=1; ]; a; ]:
 UniqueConstant:UniqueConstant()<sep>UniqueConstant():
 FullForm:FullForm(a+b+c)<sep>FullForm(2*I*b^2):
-Echo:Echo(5+3)<sep>Echo({"The square of two is ", 2*2})<sep>Echo("The square of two is ", 2*2)<sep>Echo({a,b,c})<sep>Echo({{a,b,c}}):
+Echo:Echo(5+3)<sep>Echo({"The square of two is ", 2*2})<sep>Echo("D(x)Sin(x) = ",D(x)Sin(x)):
 FromString:FromString("2+5; this is never read") [res := Read(); ]<sep>FromString("2+5; this is never read") [res := Eval(Read()); ]:
 ToString:ToString() Echo("The square of 8 is ",8^2):
 Read:FromString("2+5;") Read()<sep>FromString("") Read():

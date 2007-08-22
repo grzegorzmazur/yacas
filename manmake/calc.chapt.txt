@@ -1083,20 +1083,20 @@ going outside of the bounds.
 
 *SEE Solve, NewtonNum
 
-*CMD D --- differentiation
+*CMD D --- take derivative of expression with respect to variable
 *STD
 *CALL
-	D(var) expr
-	D(list) expr
-	D(var,n) expr
+	D(variable) expression
+	D(list) expression
+	D(variable,n) expression
 
 *PARMS
 
-{var} -- variable
+{variable} -- variable
 
 {list} -- a list of variables
 
-{expr} -- expression to take derivatives of
+{expression} -- expression to take derivatives of
 
 {n} -- order of derivative
 
@@ -1684,35 +1684,6 @@ handled.
 	Sqrt(b^2-4*c*a)))/(2*c)};
 
 *SEE Solve, Factor
-
-*CMD Pi --- numerical approximation of $Pi$
-*CORE
-*CALL
-	Pi()
-
-*DESC
-
-This commands returns the value of the mathematical constant $pi$ at the current
-precision, as set by {Precision}. Usually this
-function should not be called directly. The constant {Pi} can (and should) be used to represent the exact value of $pi$, as it is recognized by
-the simplification rules. When the function {N}
-is invoked on an expression, {Pi} will be replaced with the value
-returned by {Pi()}.
-
-*E.G.
-
-	In> Pi()
-	Out> 3.14159265358979323846;
-	In> Sin(3*Pi/2)
-	Out> -1;
-	In> Sin(3*Pi()/2)
-	Out> Sin(4.7123889804);
-	In> Precision(35)
-	Out> True;
-	In> Pi()
-	Out> 3.14159265358979323846264338327950288;
-
-*SEE N, Pi, Precision
 
 *CMD Random, RandomSeed --- (pseudo-) random number generator
 *STD

@@ -1,5 +1,8 @@
 
 TODO:
+  - try if I can't change the format of numbers from 0.xxx to x.xxxx, is more natural
+  - Factor(24) shows 24, should fix TeXForm used to not re-evaluate its argument
+  - Remove Pi() and reference to it in favor of N(Pi), everywhere  (manual, tests, examples).
   - Add a few examples for the more important functions
   - do a cleanup of the "ref" manual, first pass to throw away functions that should not have been there in the first place.
   - make plain site not too wide also

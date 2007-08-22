@@ -77,6 +77,7 @@ Thus {Infinity*2} will return {Infinity}, and {a < Infinity} will evaluate to {T
 	Out> True;
 
 *CMD Pi --- mathematical constant, $pi$
+
 *STD
 *CALL
 	Pi
@@ -85,25 +86,21 @@ Thus {Infinity*2} will return {Infinity}, and {a < Infinity} will evaluate to {T
 
 Pi symbolically represents the exact value of $pi$. When the {N()} function is
 used, {Pi} evaluates to a numerical value according to the current precision.
-This is performed by the function {Pi()} which always returns the numerical
-value. It is better to use {Pi} than {Pi()} except in numerical calculations, because exact
+It is better to use {Pi} than {N(Pi)} except in numerical calculations, because exact
 simplification will be possible.
 
 This is a "cached constant" which is recalculated only when precision is increased.
-
 
 *E.G.
 
 	In> Sin(3*Pi/2)
 	Out> -1;
-	In> Sin(3*Pi()/2)
-	Out> Sin(4.7123889804);
 	In> Pi+1
 	Out> Pi+1;
 	In> N(Pi)
 	Out> 3.14159265358979323846;
 
-*SEE Sin, Cos, Precision, N, Pi(), CachedConstant
+*SEE Sin, Cos, Precision, N, CachedConstant
 
 *CMD Undefined --- constant signifying an undefined result
 *STD
