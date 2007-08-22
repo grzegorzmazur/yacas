@@ -1,10 +1,8 @@
 
 TODO:
-  - comparison operators should try to fully coerce to real-valued
-  - autocompleter sorting order: start with items that I have pre-determined to be most important (Simplify, Solve, Integrate, Limit, the most powerful functions effectively, so users get to see interesting things quickly.
-  - Add one or two more examples for "Simplify"
+  - Add a few examples for the more important functions
+  - do a cleanup of the "ref" manual, first pass to throw away functions that should not have been there in the first place.
   - make plain site not too wide also
-  - fill out the examples in the autocompleter
   - Move brackets slightly down, especially when what they bracket is not too big.
   - Strip comments from scripts before adding to zip file
   - examples should have their own tests
@@ -16,7 +14,6 @@ TODO:
   - carefully change things so that the scripts do not have things like "N(Eval(" any more (just grep on it).
   - change testnum to not be so verbose
 
-
 1) Documentation improvements
 - document the article mark-up language
 - document ":test" to run test code from article
@@ -24,8 +21,7 @@ TODO:
 - what is Yacas? How did it come into existence? Why did I write it? Who is it for?
 - mention  the use of lists for passing multiple arguments.
 ============================================================================================================
-- document the algorithms used, and expand on all of the functions
-currently implemented.
+- document the algorithms used, and expand on all of the functions currently implemented.
 - separate manual chapter on tensors. (Serge? Is it going to change?). TSimplify and TExplicitSum, TD, X
 - document the source code.
 - document HoldArg in combination with <-- (or actually remove HoldArg? I want to depreciate UnFence/HoldArg in favor of macros)

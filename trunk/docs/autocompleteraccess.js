@@ -31,10 +31,13 @@ function updateHints(searchString)
   var popups = document.getElementById("popups");
   popups.innerHTML = "";
   {
-    var matches = new Array("","","","","","");
-    var lengths = new Array(0,0,0,0,0,0);
+    var matches = new Array("","","","","","","","");
+    var lengths = new Array(0,0,0,0,0,0,0,0);
     var moreAvailable = 0;
     var maxMatches=20;
+
+    // Most interesting functions, make sure people see these first so they have something interesting to click on
+    var fronts = ":Div:Mod:Gcd:N:Select:IsPrime:Factor:Taylor:Newton:D:Integrate:Simplify:RadSimp:FactorialSimplify:Solve:Limit:TrigSimpCombine:LagrangeInterpolant:DiagonalMatrix:ForEach:Pi:Echo:Version:";
 
     var lwr = searchString.toLowerCase();
     for (var i=0;i<hints.length;i=i+3)
@@ -54,20 +57,26 @@ function updateHints(searchString)
       var matchIndex = -1;
       if (hints[i].indexOf(searchString) == 0)
       {
-        matchIndex = 0;
+        matchIndex = 1;
       }
       else if (hints[i].indexOf(searchString) > 0)
       {
-        matchIndex = 1;
+        matchIndex = 2;
       }
       else if (hints[i].toLowerCase().indexOf(lwr) > -1)
       {
-        matchIndex = 2;
+        matchIndex = 3;
       }
       if (matchIndex >= 0)
       {
+        // Matches, and is one of the important functions? Then put at the beginning.
+        if (fronts.indexOf(":"+hints[i]+":") > -1)
+        {
+          matchIndex = 0;
+        }
+        // If no example given then the function is probably less important, put at the end.
         if (exam == "")
-          matchIndex = matchIndex + 3;
+          matchIndex = matchIndex + 4;
         if (lengths[matchIndex] < maxMatches)
         {
           lengths[matchIndex] = lengths[matchIndex] + 1;
