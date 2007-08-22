@@ -28,10 +28,10 @@ int first = 1;
 struct Example
 {
   char name[32];
-  char example[224];
+  char example[512];
 };
 
-Example examples[2048];
+Example examples[1024];
 int nrExamples = 0;
 
 int exampleCompare(const void *v1, const void *v2)
