@@ -576,3 +576,6 @@ Verify(TeXForm(Hold(2*x*(-2))), "$2 x \\left(  - 2\\right) $");
   Verify(Max(A1,A2), 400*Pi);
 ];
 
+/* One place where we forgot to change Sum to Add */
+TestYacas(Diverge({x*y,x*y,x*y},{x,y,z}),x+y);
+
