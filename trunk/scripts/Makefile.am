@@ -4,7 +4,7 @@
 # because of Sun computers  
 
 SCRIPTFILES1 = 	        										    \
-	glview.ys standard.ys standard.ys.def stdopers.ys yacasinit.ys					    \
+	standard.ys standard.ys.def stdopers.ys yacasinit.ys					    \
 	array.rep/code.ys array.rep/code.ys.def 							    \
 	assoc.rep/code.ys assoc.rep/code.ys.def 							    \
 	c_form.rep/code.ys c_form.rep/code.ys.def 							    \

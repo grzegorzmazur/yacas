@@ -12,13 +12,22 @@
 1 # _x >  Undefined  <--  False;
 1 # _x >= Undefined  <--  False;
 
-// Convert our comparisons to a canonical form with zero on one side
-5  # (_n < _m)_(m != 0)  <--  n-m < 0;
 
-10 # (n_IsNumber < _m)_(m=0)  <--  LessThan(n,0);
+// If n and m are numbers, use the standard LessThan function immediately
+5 # (n_IsNumber < m_IsNumber) <-- LessThan(n-m,0);
+
+
+// If n and m are symbolic after a single evaluation, see if they can be coerced in to a real-valued number. 
+LocalSymbols(nNum,mNum)
+[
+  10 # (_n < _m)_[nNum:=N(Eval(n)); mNum:=N(Eval(m));IsNumber(nNum) And IsNumber(mNum);] <-- LessThan(nNum-mNum,0);
+];
 
 // Deal with Infinity
-20 #  Infinity < 0 <-- False;
+20 #  (Infinity < _n)_(Not(IsInfinity(n)))  <-- False;
+20 #  (-Infinity < _n)_(Not(IsInfinity(n))) <-- True;
+20 #  (_n < Infinity)_(Not(IsInfinity(n)))  <-- True;
+20 #  (_n < -Infinity)_(Not(IsInfinity(n))) <-- False;
 
 // Lots of known identities go here
 30 # (_n1/_n2) < 0  <--  (n1 < 0) != (n2 < 0);

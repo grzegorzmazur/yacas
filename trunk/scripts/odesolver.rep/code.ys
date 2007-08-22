@@ -269,7 +269,7 @@ OdeBoundaries(_solution,bounds_IsList) <--
 OdeTest(_e,_solution) <--
 [
   Local(s);
-  s:=Subst(ss,solution){{n},if (n>0)(D(x,n)ss) else ss};
+  s:= `Lambda({n},if (n>0)(D(x,n)(@solution)) else (@solution));
   e:=OdeNormalForm(e);
   e:=Apply("OdeSubstitute",{e,s});
   e:=Simplify(e);

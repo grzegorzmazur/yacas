@@ -119,7 +119,7 @@ LocalSymbols(var,var2,a,b,y)[
 
 RuleBase("Diverge", {aFunc, aBasis});
 Rule("Diverge", 2, 1, IsList(aBasis) And IsList(aFunc) And Length(aBasis) = Length(aFunc))
-	Sum(Map("D", {aBasis,aFunc}));
+	Add(Map("D", {aBasis,aFunc}));
 
 RuleBase("Curl", {aFunc, aBasis});
 
