@@ -579,3 +579,19 @@ Verify(TeXForm(Hold(2*x*(-2))), "$2 x \\left(  - 2\\right) $");
 /* One place where we forgot to change Sum to Add */
 TestYacas(Diverge({x*y,x*y,x*y},{x,y,z}),x+y);
 
+/* Bug reported by Adrian Vontobel: comparison operators should coerce
+ * to a real value as much as possible before trying the comparison.
+ */
+[
+  Local(F);
+];
+  F:=0.2*Pi;
+  Verify(F>0.5, True);
+  Verify(F>0.7, False);
+  Verify(F<0.7, True);
+  Verify(F<0.6, False);
+];
+
+
+
+
