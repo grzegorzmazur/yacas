@@ -51,13 +51,6 @@ Bodied("ChapterIntro", 60000);
 // we need this so that *A inserts and anchor into HTML
 AddAnchor(aAnchor) := (HtmlAnchor()aAnchor);
 // but we don't need to enter the *A stuff into tables of contents
-/*[
-  AddBody(HtmlAnchor()aAnchor);
-  plain["Chapters"][currentChapter]["Commands"] :=
-     Concat(plain["Chapters"][currentChapter]["Commands"], 
-            {{ChapterLink(aAnchor), ""}}); 
-];
-*/
 
 SectionTag(chapterIndex,sectionIndex):=
   "c" : String(chapterIndex) : "s" : String(sectionIndex) ;
@@ -93,7 +86,9 @@ CmdDescription(cmd, desc) :=
   SubSection(cmd : " -- " : desc);
   plain["Chapters"][currentChapter]["Commands"] :=
      Concat(plain["Chapters"][currentChapter]["Commands"], 
-            {{ChapterLink(cmd), desc}});
+            {{
+"<a href='":plain["BaseName"] : "chapter" : String(currentChapterIndex) : ".html#":cmd:"' target='Chapters' title='":desc:"'>":cmd:"</a>",
+desc}});
 ];   
 
 CmdDescriptionMany(cmd, desc) := CmdDescription(cmd, desc);
@@ -106,10 +101,6 @@ ChapterLink(aLink) :=
 
 SubSection(title):=
 [
-/*
-WriteString("      Sub section ");
-WriteString(title);NewLine();
-*/
   AddBody(HtmlTag(subsection,"<hr>":title));
 ];
 
@@ -390,10 +381,9 @@ NewLine();
 
     file := plain["BaseName"] : "chapter" : String(index) : ".html";
     str := HtmlAnchor() ChapterTag(index);
-    str := str : ChapterHeader(pcc["Commands"]);
+    If (pcc["Commands"] != {},str := str : "(directly go to documentation on : " : ChapterHeader(pcc["Commands"]):")");
     str := str : pcc["Intro"] : "<p> </p>" : newline;
-    If (pcc["Commands"] != {}, 
-        str := str : ChapterTOC(pcc["Commands"]));
+//TODO remove?    If (pcc["Commands"] != {}, str := str : ChapterTOC(pcc["Commands"]));
     str := str : pcc["Body"];
     str := HtmlTitle(chapter) : newline : HtmlTag(body, str);
     ToFile(HtmlFile(file)) WriteString(HtmlTag(html, str));
@@ -407,10 +397,13 @@ NewLine();
   Local(str, keyword);
   str := Head(alist)[1];
   ForEach(keyword, Tail(alist))
+  [
     str := str : ", " : keyword[1];
+  ];
   str := str : "." : newline;
 ];
 
+/*TODO remove?
 ChapterTOC(alist) :=
 [
   Local(str, flag, keyword);
@@ -418,7 +411,7 @@ ChapterTOC(alist) :=
   ForEach(keyword, alist) 
      flag := flag And (keyword[2] = "");
   If (flag, 
-      str := "", /* If there are no descriptions, a TOC has no use */
+      str := "", // If there are no descriptions, a TOC has no use 
       [
         str := "<center><table>";
        	str := str : newline;	
@@ -430,6 +423,7 @@ ChapterTOC(alist) :=
        	str := str : "</table></center>" : newline;
       ]);
 ];
+*/
 
 BookList():=
 [

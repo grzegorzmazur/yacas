@@ -64,14 +64,14 @@ ALGOSOURCES = algo-basic.chapt.txt algo-numapprox.chapt.txt \
 	algorithms-multivar.chapt.txt SturmSequences.chapt.txt FDL.chapt.txt \
 	algo-refs.chapt.txt algo-contfrac.chapt.txt algorithms-transforms.chapt.txt
 
-REFCHAPTERS = config.chapt arith.chapt calc.chapt ode.chapt linalg.chapt \
+REFCHAPTERS = config.chapt arith.chapt calc.chapt complex.chapt simplify.chapt ode.chapt linalg.chapt \
 	univar.chapt lists.chapt functional.chapt controlflow.chapt \
 	preds.chapt logic.chapt const.chapt vars.chapt io.chapt \
 	numtheory.chapt strings.chapt transforms.chapt cl-options.chapt \
 	probability-and-statistics.chapt addons.chapt FDL.chapt \
 	plugin-docs.chapt filescanner.chapt pcre.chapt
 
-REFSOURCES = config.chapt.txt arith.chapt.txt calc.chapt.txt ode.chapt.txt \
+REFSOURCES = config.chapt.txt arith.chapt.txt calc.chapt.txt complex.chapt.txt simplify.chapt.txt ode.chapt.txt \
 	linalg.chapt.txt univar.chapt.txt lists.chapt.txt cl-options.chapt.txt \
 	functional.chapt.txt controlflow.chapt.txt preds.chapt.txt \
 	logic.chapt.txt const.chapt.txt vars.chapt.txt io.chapt.txt \
@@ -225,7 +225,7 @@ codingmanual.html : coding.book $(CODINGCHAPTERS) $(srcdir)/manualmaker $(srcdir
 essaysmanual.html : essays.book $(ESSAYCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("essays");];' | $(ouryacas) -fpc
 
-refmanual.html : ref.book $(REFCHAPTERS) refprog.book $(REFPROGCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
+refmanual.html : ref.book $(REFCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
 	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("ref");];'    | $(ouryacas) -fpc
 
 refprogmanual.html : ref.book $(REFCHAPTERS) refprog.book $(REFPROGCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain

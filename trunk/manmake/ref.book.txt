@@ -32,9 +32,11 @@ when doing calculations.
 
 *INCLUDE arith.chapt
 
-*INCLUDE numtheory.chapt
-
 *INCLUDE calc.chapt
+
+*INCLUDE simplify.chapt
+
+*INCLUDE complex.chapt
 
 *INCLUDE ode.chapt
 
@@ -63,6 +65,8 @@ when doing calculations.
 *INCLUDE strings.chapt
 
 *INCLUDE probability-and-statistics.chapt
+
+*INCLUDE numtheory.chapt
 
 *INCLUDE addons.chapt
 

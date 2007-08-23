@@ -1,15 +1,11 @@
 
 TODO:
   - do a cleanup of the "ref" manual, first pass to throw away functions that should not have been there in the first place.
-    - Take (in favor of list[from .. to] )
-    - Precision, GetPrecision, change to Builtin'Precision and Builtin'GetPrecision, and move to refprog manual. People should use N() instead.
-    - Skim through Math... functions, renaming them to Builtin'...
-
+  - Future, change name of builtin functions that are not directly accessible to outside to have prefix Builtin'...
+  - Skim through Math... functions, renaming them to Builtin'...
   - tab pages are now 100% wide, requiring a scrollbar. Maybe make 80%?
-
-- manuals, provide as zip files? more people can use unzip than can use
-untar.
-- Direct link to pdf manual files uncompressed?
+  - manuals, provide as zip files? more people can use unzip than can use untar.
+  - manuals, Direct link to pdf manual files uncompressed?
 
 
  
