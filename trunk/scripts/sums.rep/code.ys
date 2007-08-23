@@ -168,19 +168,13 @@ Function() Add(val, ...);
 [
    Local(i, sum);
    sum:=0;
-   ForEach(i, values) sum := sum + i;
+   ForEach(i, values) [ sum := sum + i; ];
    sum;
 ];
 
 // Add(1) should return 1
 30 # Add(_value) <-- value;
 
-// recursive implementation -- may quickly run out of stack
-//10 # Add({}) <-- 0;
-//20 # Add(list_IsList) <-- Head(list)+Add(Tail(list));
-
-10 # Average({}) <-- Undefined;
-20 # Average(list_IsList) <-- Add(list)/Length(list);
 
 Function("Factorize",{sumvar,sumfrom,sumto,sumbody})
 [

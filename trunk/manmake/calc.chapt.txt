@@ -257,31 +257,6 @@ list, the function is applied to all entries in the list.
 *SEE Arg, Abs
 
 
-*CMD RootsOfUnity --- find the $n$ complex roots of unity
-*STD
-*CALL
-	RootsOfUnity(n)
-
-*PARMS
-
-{n} -- positive integer
-
-*DESC
-
-This function returns the list of $n$ roots of unity. The first
-element of this list is the primitive $n$-th root of unity, and the last element is simply {1}.
-
-*E.G.
-	In> RootsOfUnity(3)
-	Out> {Complex(-1/2,Sqrt(3/4)),Complex(-1/2,-Sqrt(3/4)),1};
-	In> RootsOfUnity(1)
-	Out> {1};
-	In> RootsOfUnity(2)
-	Out> {-1,1};
-
-*SEE I, Complex 
-
-
 *CMD !  --- factorial
 *CMD !!  --- factorial and related functions
 *CMD ***  --- factorial and related functions
@@ -415,7 +390,6 @@ number of arguments. The arguments can be also passed as a list.
 	In> Add(1 .. 10);
 	Out> 55;
 
-*SEE Average
 
 *CMD Sum --- find sum of a sequence
 *STD
@@ -450,29 +424,6 @@ Warning: {Sum} does not evaluate its arguments {var} and {body} until the actual
 
 *SEE Factorize
 
-*CMD Average --- average of a list of values
-*STD
-*CALL
-	Average(list)
-
-*PARMS
-
-{list} -- list of values to average
-
-*DESC
-
-This command calculates the (arithmetical) average of all the entries in
-"list", which is the sum of all entries divided by the number of
-entries.
-
-*E.G.
-
-	In> Average({1,2,3,4,5});
-	Out> 3;
-	In> Average({2,6,7});
-	Out> 5;
-
-*SEE Add
 
 *CMD Factorize --- product of a list of values
 *STD

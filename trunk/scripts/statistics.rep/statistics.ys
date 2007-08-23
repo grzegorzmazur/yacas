@@ -1,4 +1,5 @@
-Mean(x) := Average(x);
+
+Mean(x) := Add(x)/Length(x);
 
 GeometricMean(x) := Factorize(x)^(1/Length(x));
 

@@ -495,7 +495,7 @@ with numerical values and not with symbolic arguments.
 	In> Min({5,8,4});
 	Out> 4;
 
-*SEE Max, Sum, Average
+*SEE Max, Sum
 
 *CMD Max --- maximum of a number of values
 *STD
@@ -524,7 +524,7 @@ with numerical values and not with symbolic arguments.
 	In> Max({5,8,4});
 	Out> 8;
 
-*SEE Min, Sum, Average
+*SEE Min, Sum
 
 *CMD IsZero --- test whether argument is zero
 *STD
