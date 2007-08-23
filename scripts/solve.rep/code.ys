@@ -176,9 +176,9 @@ LocalSymbols(x)
 LocalSymbols(x)
 [
   20 # Solve'Simple(_e1 ^ _n, _rhs, _var)_(e1 = var And IsPositiveInteger(n)) 
-       <-- MapSingle({{x}, var == rhs^(1/n)*x}, RootsOfUnity(n));
+       <-- MapSingle({{x}, var == rhs^(1/n)*x}, Exp(2*Pi*I*(1 .. n)/n));
   20 # Solve'Simple(_e1 ^ _n, _rhs, _var)_(e1 = var And IsNegativeInteger(n)) 
-       <-- MapSingle({{x}, var == rhs^(1/n)*x}, RootsOfUnity(-n));
+       <-- MapSingle({{x}, var == rhs^(1/n)*x}, Exp(2*Pi*I*(1 .. (-n))/(-n)));
 ];
 
 20 # Solve'Simple(_e1 ^ _e2, _rhs, _var)
