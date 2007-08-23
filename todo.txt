@@ -9,11 +9,14 @@ TODO:
 
 - Example: RootsOfUnity (nice example of threading): Exp(2*Pi*I*(1 .. n)/n)
 - Example: Average (nice example of threading): Average(list_IsList) <-- Add(list)/Length(list); 
+
+
+- in the manual, on the top line with links to functions, if functions contain ' then the links go haywire. We need to escape quotes there.
  
   - Remove Pi() and reference to it in favor of N(Pi), everywhere  (manual, tests, examples).
   - try if I can't change the format of numbers from 0.xxx to x.xxxx, is more natural
   - make plain site not too wide also
-  - Move brackets slightly down, especially when what they bracket is not too big.
+  - Move brackets slightly down in tex form pretty renderer, especially when what they bracket is not too big.
   - Strip comments from scripts before adding to zip file
   - examples should have their own tests
   - center everything, with the back.gif on the sides.

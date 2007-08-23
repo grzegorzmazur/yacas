@@ -6,14 +6,12 @@ described. These include functions implementing differentiation,
 integration, standard mathematical functions, and solving of
 equations.
 
+		General calculus
+
 *CMD Sin --- trigonometric sine function
-*CMD Cos --- trigonometric cosine function
-*CMD Tan --- trigonometric tangent function
 *STD
 *CALL
 	Sin(x)
-	Cos(x)
-	Tan(x)
 
 *PARMS
 
@@ -21,10 +19,10 @@ equations.
 
 *DESC
 
-These functions represent the trigonometric functions sine, cosine,
-and tangent respectively. Yacas leaves them alone even if x is a
-number, trying to keep the result as exact as possible. The floating
-point approximations of these functions can be forced by using the {N} function.
+This function represents the trigonometric function sine. Yacas leaves 
+expressions alone even if x is a number, trying to keep the result as 
+exact as possible. The floating point approximations of these functions 
+can be forced by using the {N} function.
 
 Yacas knows some trigonometric identities, so it can simplify to exact
 results even if {N} is not used. This is the case, for instance,
@@ -42,16 +40,86 @@ list, the function is applied to all entries in the list.
 	In> Sin(Pi/4)
 	Out> Sqrt(2)/2;
 
-*SEE ArcSin, ArcCos, ArcTan, N, Pi
+*SEE Cos, Tan, ArcSin, ArcCos, ArcTan, N, Pi
+
+
+
+
+*CMD Cos --- trigonometric cosine function
+*STD
+*CALL
+	Cos(x)
+
+*PARMS
+
+{x} -- argument to the function, in radians
+
+*DESC
+
+This function represents the trigonometric function cosine. Yacas leaves 
+expressions alone even if x is a number, trying to keep the result as 
+exact as possible. The floating point approximations of these functions 
+can be forced by using the {N} function.
+
+Yacas knows some trigonometric identities, so it can simplify to exact
+results even if {N} is not used. This is the case, for instance,
+when the argument is a multiple of $Pi$/6 or $Pi$/4.
+
+These functions are threaded, meaning that if the argument {x} is a
+list, the function is applied to all entries in the list.
+
+*E.G.
+
+	In> Cos(1)
+	Out> Cos(1);
+	In> N(Cos(1),20)
+	Out> 0.5403023058681397174;
+	In> Cos(Pi/4)
+	Out> Sqrt(1/2);
+
+*SEE Sin, Tan, ArcSin, ArcCos, ArcTan, N, Pi
+
+
+
+*CMD Tan --- trigonometric tangent function
+*STD
+*CALL
+	Tan(x)
+
+*PARMS
+
+{x} -- argument to the function, in radians
+
+*DESC
+
+This function represents the trigonometric function tangent. Yacas leaves 
+expressions alone even if x is a number, trying to keep the result as 
+exact as possible. The floating point approximations of these functions 
+can be forced by using the {N} function.
+
+Yacas knows some trigonometric identities, so it can simplify to exact
+results even if {N} is not used. This is the case, for instance,
+when the argument is a multiple of $Pi$/6 or $Pi$/4.
+
+These functions are threaded, meaning that if the argument {x} is a
+list, the function is applied to all entries in the list.
+
+*E.G.
+
+	In> Tan(1)
+	Out> Tan(1);
+	In> N(Tan(1),20)
+	Out> 1.5574077246549022305;
+	In> Tan(Pi/4)
+	Out> 1;
+
+*SEE Sin, Cos, ArcSin, ArcCos, ArcTan, N, Pi
+
 
 *CMD ArcSin --- inverse trigonometric function arc-sine
-*CMD ArcCos --- inverse trigonometric function arc-cosine
-*CMD ArcTan --- inverse trigonometric function arc-tangent
 *STD
 *CALL
 	ArcSin(x)
-	ArcCos(x)
-	ArcTan(x)
 
 *PARMS
 
@@ -59,23 +127,22 @@ list, the function is applied to all entries in the list.
 
 *DESC
 
-These functions represent the inverse trigonometric functions. For
-instance, the value of $ArcSin(x)$ is the number $y$ such that
+This function represents the inverse trigonometric function arcsine. For
+instance, the value of $ArcSin(x)$ is a number $y$ such that
 $Sin(y)$ equals $x$.
 
 Note that the number $y$ is not unique. For instance, $Sin(0)$ and
 $Sin(Pi)$ both equal 0, so what should $ArcSin(0)$ be? In Yacas,
 it is agreed that the value of $ArcSin(x)$ should be in the interval
-[-$Pi$/2,$Pi$/2]. The same goes for $ArcTan(x)$. However, $ArcCos(x)$
-is in the interval [0,$Pi$].
+[-$Pi$/2,$Pi$/2]. 
 
-Usually, Yacas leaves these functions alone unless it is forced to do
+Usually, Yacas leaves this function alone unless it is forced to do
 a numerical evaluation by the {N} function. If the
 argument is -1, 0, or 1 however, Yacas will simplify the
 expression. If the argument is complex,  the expression will be
 rewritten using the {Ln} function.
 
-These functions are threaded, meaning that if the argument {x} is a
+This function is threaded, meaning that if the argument {x} is a
 list, the function is applied to all entries in the list.
 
 *E.G.
@@ -93,7 +160,107 @@ list, the function is applied to all entries in the list.
 	In> N(Sin(x))
 	Out> 0.7499999477;
 
-*SEE Sin, Cos, Tan, N, Pi, Ln
+*SEE Sin, Cos, Tan, N, Pi, Ln, ArcCos, ArcTan
+
+
+
+
+*CMD ArcCos --- inverse trigonometric function arc-cosine
+*STD
+*CALL
+	ArcCos(x)
+
+*PARMS
+
+{x} -- argument to the function
+
+*DESC
+
+This function represents the inverse trigonometric function arc-cosine. For
+instance, the value of $ArcCos(x)$ is a number $y$ such that
+$Cos(y)$ equals $x$.
+
+Note that the number $y$ is not unique. For instance, $Cos(Pi/2)$ and
+$Cos(3*Pi/2)$ both equal 0, so what should $ArcCos(0)$ be? In Yacas,
+it is agreed that the value of $ArcCos(x)$ should be in the interval [0,$Pi$] .
+
+Usually, Yacas leaves this function alone unless it is forced to do
+a numerical evaluation by the {N} function. If the
+argument is -1, 0, or 1 however, Yacas will simplify the
+expression. If the argument is complex,  the expression will be
+rewritten using the {Ln} function.
+
+This function is threaded, meaning that if the argument {x} is a
+list, the function is applied to all entries in the list.
+
+*E.G.
+
+
+	In> ArcCos(0)
+	Out> Pi/2
+
+	In> ArcCos(1/3)
+	Out> ArcCos(1/3)
+	In> Cos(ArcCos(1/3))
+	Out> 1/3
+
+	In> x:=N(ArcCos(0.75))
+	Out> 0.7227342478
+	In> N(Cos(x))
+	Out> 0.75
+
+
+*SEE Sin, Cos, Tan, N, Pi, Ln, ArcSin, ArcTan
+
+
+
+
+*CMD ArcTan --- inverse trigonometric function arc-tangent
+*STD
+*CALL
+	ArcTan(x)
+
+*PARMS
+
+{x} -- argument to the function
+
+*DESC
+
+This function represents the inverse trigonometric function arctangent. For
+instance, the value of $ArcTan(x)$ is a number $y$ such that
+$Tan(y)$ equals $x$.
+
+Note that the number $y$ is not unique. For instance, $Tan(0)$ and
+$Tan(2*Pi)$ both equal 0, so what should $ArcTan(0)$ be? In Yacas,
+it is agreed that the value of $ArcTan(x)$ should be in the interval
+[-$Pi$/2,$Pi$/2]. 
+
+Usually, Yacas leaves this function alone unless it is forced to do
+a numerical evaluation by the {N} function. Yacas will try to simplify
+as much as possible while keeping the result exact. If the argument is 
+complex,  the expression will be rewritten using the {Ln} function.
+
+This function is threaded, meaning that if the argument {x} is a
+list, the function is applied to all entries in the list.
+
+*E.G.
+
+	In> ArcTan(1)
+	Out> Pi/4
+
+	In> ArcTan(1/3)
+	Out> ArcTan(1/3)
+	In> Tan(ArcTan(1/3))
+	Out> 1/3
+
+	In> x:=N(ArcTan(0.75))
+	Out> 0.643501108793285592213351264945231378078460693359375
+	In> N(Tan(x))
+	Out> 0.75
+
+*SEE Sin, Cos, Tan, N, Pi, Ln, ArcSin, ArcCos
+
+
 
 *CMD Exp --- exponential function
 *STD
@@ -896,256 +1063,6 @@ division of integers.
 
 *SEE IsRational
 
-*CMD Solve --- solve an equation
-*STD
-*CALL
-	Solve(eq, var)
-
-*PARMS
-
-{eq} -- equation to solve
-
-{var} -- variable to solve for
-
-*DESC
-
-This command tries to solve an equation. If {eq} does not contain the
-{==} operator, it is assumed that the user wants to solve $eq ==
-0$. The result is a list of equations of the form {var == value}, each
-representing a solution of the given equation. The {Where} operator
-can be used to substitute this solution in another expression. If the
-given equation {eq} does not have any solutions, or if {Solve} is
-unable to find any, then an empty list is returned.
-
-The current implementation is far from perfect. In particular, the
-user should keep the following points in mind:
-*	{Solve} cannot solve all equations. If it is given a equation
-it can not solve, it raises an error via {Check}. Unfortunately, this
-is not displayed by the inline pretty-printer; call {PrettyPrinter} to
-change this. If an equation cannot be solved analytically, you may
-want to call {Newton} to get a numerical solution.
-*	Systems of equations are not handled yet. For linear systems,
-{MatrixSolve} can be used. The old version of {Solve}, with the name
-{OldSolve} might be able to solve nonlinear systems of equations.
-*	The periodicity of the trigonometric functions {Sin}, {Cos},
-and {Tan} is not taken into account. The same goes for the (imaginary)
-periodicity of {Exp}. This causes {Solve} to miss solutions.
-*	It is assumed that all denominators are nonzero. Hence, a
-solution reported by {Solve} may in fact fail to be a solution because
-a denominator vanishes.
-*	In general, it is wise not to have blind trust in the results
-returned by {Solve}. A good strategy is to substitute the solutions
-back in the equation.
-
-*E.G. notest
-
-First a simple example, where everything works as it should. The
-quadratic equation $x^2 + x == 0$ is solved. Then the result is
-checked by substituting it back in the quadratic.
-
-	In> quadratic := x^2+x;
-	Out> x^2+x;
-	In> Solve(quadratic, x);
-	Out> {x==0,x==(-1)};
-	In> quadratic Where %;
-	Out> {0,0};
-
-If one tries to solve the equation $Exp(x) == Sin(x)$, one finds that
-{Solve} can not do this.
-
-	In> PrettyPrinter("DefaultPrint");
-	Out> True;
-	In> Solve(Exp(x) == Sin(x), x);
-	Error: Solve'Fails: cannot solve equation Exp(x)-Sin(x) for x
-	Out> {};
-
-The equation $Cos(x) == 1/2$ has an infinite number of solutions,
-namely $x == (2*k + 1/3) * Pi$ and $x == (2*k - 1/3) * Pi$ for any
-integer $k$. However, {Solve} only reports the solutions with $k == 0$.
-
-	In> Solve(Cos(x) == 1/2, x);
-	Out> {x==Pi/3,x== -Pi/3};
-
-For the equation $x/Sin(x) == 0$, a spurious solution at $x == 0$ is
-returned. However, the fraction is undefined at that point.
-
-	In> Solve(x / Sin(x) == 0, x);
-	Out> {x==0};
-
-At first sight, the equation $Sqrt(x) == a$ seems to have the solution
-$x == a^2$. However, this is not true for eg. $a == -1$.
-
-	In> PrettyPrinter("DefaultPrint");
-	Out> True;
-	In> Solve(Sqrt(x) == a, x);
-	Error: Solve'Fails: cannot solve equation Sqrt(x)-a for  x
-	Out> {};
-	In> Solve(Sqrt(x) == 2, x);
-	Out> {x==4};
-	In> Solve(Sqrt(x) == -1, x);
-	Out> {};
-
-*SEE Check, MatrixSolve, Newton, OldSolve, PrettyPrinter, PSolve, Where, ==
-
-*CMD OldSolve --- old version of {Solve}
-*STD
-*CALL
-	OldSolve(eq, var)
-	OldSolve(eqlist, varlist)
-
-*PARMS
-
-{eq} -- single identity equation
-
-{var} -- single variable
-
-{eqlist} -- list of identity equations
-
-{varlist} -- list of variables
-
-*DESC
-
-This is an older version of {Solve}. It is retained for two
-reasons. The first one is philosophical: it is good to have multiple
-algorithms available. The second reason is more practical: the newer
-version cannot handle systems of equations, but {OldSolve} can.
-
-This command tries to solve one or more equations. Use the first form
-to solve a single equation and the second one for systems of
-equations.
-
-The first calling sequence solves the equation "eq" for the variable
-"var". Use the {==} operator to form the equation.
-The value of "var" which satisfies the equation, is returned. Note
-that only one solution is found and returned.
-
-To solve a system of equations, the second form should be used. It
-solves the system of equations contained in the list "eqlist" for
-the variables appearing in the list "varlist". A list of results is
-returned, and each result is a list containing the values of the
-variables in "varlist". Again, at most a single solution is
-returned.
-
-The task of solving a single equation is simply delegated to {SuchThat}. Multiple equations are solved recursively:
-firstly, an equation is sought in which one of the variables occurs
-exactly once; then this equation is solved with {SuchThat}; and finally the solution is substituted in the
-other equations by {Eliminate} decreasing the number
-of equations by one. This suffices for all linear equations and a
-large group of simple nonlinear equations.
-
-*E.G.
-
-	In> OldSolve(a+x*y==z,x)
-	Out> (z-a)/y;
-	In> OldSolve({a*x+y==0,x+z==0},{x,y})
-	Out> {{-z,z*a}};
-
-This means that "x = (z-a)/y" is a solution of the first equation
-and that "x = -z", "y = z*a" is a solution of the systems of
-equations in the second command.
-
-An example which {OldSolve} cannot solve:
-
-	In> OldSolve({x^2-x == y^2-y,x^2-x == y^3+y},{x,y});
-	Out> {};
-
-*SEE Solve, SuchThat, Eliminate, PSolve, ==
-
-*CMD SuchThat --- special purpose solver
-*STD
-*CALL
-	SuchThat(expr, var)
-
-*PARMS
-
-{expr} -- expression to make zero
-
-{var} -- variable (or subexpression) to solve for
-
-*DESC
-
-This functions tries to find a value of the variable "var" which
-makes the expression "expr" zero. It is also possible to pass a
-subexpression as "var", in which case {SuchThat}
-will try to solve for that subexpression.
-
-Basically, only expressions in which "var" occurs only once are
-handled; in fact, {SuchThat} may even give wrong
-results if the variables occurs more than once. This is a consequence
-of the implementation, which repeatedly applies the inverse of the top
-function until the variable "var" is reached.
-
-*E.G.
-
-	In> SuchThat(a+b*x, x)
-	Out> (-a)/b;
-	In> SuchThat(Cos(a)+Cos(b)^2, Cos(b))
-	Out> Cos(a)^(1/2);
-	In> A:=Expand(a*x+b*x+c, x)
-	Out> (a+b)*x+c;
-	In> SuchThat(A, x)
-	Out> (-c)/(a+b);
-
-*SEE Solve, OldSolve, Subst, Simplify
-
-*CMD Eliminate --- substitute and simplify
-*STD
-*CALL
-	Eliminate(var, value, expr)
-
-*PARMS
-
-{var} -- variable (or subexpression) to substitute
-
-{value} -- new value of "var"
-
-{expr} -- expression in which the substitution should take place
-
-*DESC
-
-This function uses {Subst} to replace all instances
-of the variable (or subexpression) "var" in the expression "expr"
-with "value", calls {Simplify} to simplify the
-resulting expression, and returns the result.
-
-*E.G.
-
-	In> Subst(Cos(b), c) (Sin(a)+Cos(b)^2/c)
-	Out> Sin(a)+c^2/c;
-	In> Eliminate(Cos(b), c, Sin(a)+Cos(b)^2/c)
-	Out> Sin(a)+c;
-
-*SEE SuchThat, Subst, Simplify
-
-*CMD PSolve --- solve a polynomial equation
-*STD
-*CALL
-	PSolve(poly, var)
-
-*PARMS
-
-{poly} -- a polynomial in "var"
-
-{var} -- a variable
-
-*DESC
-
-This commands returns a list containing the roots of "poly",
-considered as a polynomial in the variable "var". If there is only
-one root, it is not returned as a one-entry list but just by
-itself. A double root occurs twice in the result, and similarly for
-roots of higher multiplicity. All polynomials of degree up to 4 are
-handled.
-
-*E.G.
-
-	In> PSolve(b*x+a,x)
-	Out> -a/b;
-	In> PSolve(c*x^2+b*x+a,x)
-	Out> {(Sqrt(b^2-4*c*a)-b)/(2*c),(-(b+
-	Sqrt(b^2-4*c*a)))/(2*c)};
-
-*SEE Solve, Factor
 
 *CMD Random, RandomSeed --- (pseudo-) random number generator
 *STD
@@ -1376,7 +1293,41 @@ denotes the $n$-th Fibonacci number.
 	In> Table(Fibonacci(i), i, 1, 10, 1)
 	Out> {1,1,2,3,5,8,13,21,34,55};
 
-			Special functions
+*CMD Pslq --- search for integer relations between reals
+*STD
+*CALL
+	Pslq(xlist,precision)
+
+*PARMS
+
+{xlist} -- list of numbers
+
+{precision} -- required number of digits precision of calculation
+
+*DESC
+
+This function is an integer relation detection algorithm. This means
+that, given the numbers $x[i]$ in the list "xlist", it tries
+to find integer coefficients $a[i]$ such that
+$a[1]*x[1]$ + ... + $a[n]*x[n] = 0$.
+The list of integer coefficients is returned.
+
+The numbers in "xlist" must evaluate to floating point numbers if
+the {N} operator is applied on them.
+
+*EG
+
+	In> Pslq({ 2*Pi+3*Exp(1), Pi, Exp(1) },20)
+	Out> {1,-2,-3};
+
+Note: in this example the system detects correctly that
+$1 * (2*Pi+3*e) + (-2) * Pi + (-3) * e = 0$.
+
+*SEE N
+
+
+
+		Special functions
 
 *INTRO In this chapter, special and transcendental mathematical functions are described.
 
@@ -1633,38 +1584,6 @@ The low-level numerical computations are performed by the routine {CatalanConstN
 
 *SEE N, CachedConstant
 
-
-*CMD Pslq --- search for integer relations between reals
-*STD
-*CALL
-	Pslq(xlist,precision)
-
-*PARMS
-
-{xlist} -- list of numbers
-
-{precision} -- required number of digits precision of calculation
-
-*DESC
-
-This function is an integer relation detection algorithm. This means
-that, given the numbers $x[i]$ in the list "xlist", it tries
-to find integer coefficients $a[i]$ such that
-$a[1]*x[1]$ + ... + $a[n]*x[n] = 0$.
-The list of integer coefficients is returned.
-
-The numbers in "xlist" must evaluate to floating point numbers if
-the {N} operator is applied on them.
-
-*EG
-
-	In> Pslq({ 2*Pi+3*Exp(1), Pi, Exp(1) },20)
-	Out> {1,-2,-3};
-
-Note: in this example the system detects correctly that
-$1 * (2*Pi+3*e) + (-2) * Pi + (-3) * e = 0$.
-
-*SEE N
-
+*INCLUDE complex.chapt
 
 

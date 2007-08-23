@@ -36,9 +36,7 @@ when doing calculations.
 
 *INCLUDE simplify.chapt
 
-*INCLUDE complex.chapt
-
-*INCLUDE ode.chapt
+*INCLUDE solvers.chapt
 
 *INCLUDE transforms.chapt
 
@@ -53,8 +51,6 @@ when doing calculations.
 *INCLUDE controlflow.chapt
 
 *INCLUDE preds.chapt
-
-*INCLUDE logic.chapt
 
 *INCLUDE const.chapt
 

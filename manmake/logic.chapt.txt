@@ -1,5 +1,5 @@
 
-			Propositional logic theorem prover
+		Propositional logic theorem prover
 
 *CMD CanProve --- try to prove statement
 *STD
