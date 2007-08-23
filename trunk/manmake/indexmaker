@@ -126,11 +126,6 @@ urchinTracker();
 </script>
 </body>"
 
-/*TODO remove
-              HtmlTag(body,
-                      HtmlTable(3,"",BookList())
-                     )
-*/
              )
     );
   ];
@@ -231,41 +226,26 @@ urchinTracker();
 
 	SetHtmlDirectory("");
 	Use("styleplain");  /* style sheet for the documentation */
-//	Use("indexmaker"); /* engine that renders book to html */
 
 	InitBooks();        /* Initialize book building */
-
-	InitBook("intro");
-	Load("intro.book");
-
-//	  GarbageCollect();
-
-	InitBook("coding");
-	Load("coding.book");
-
-//	  GarbageCollect();
-
-	InitBook("essays");
-	Load("essays.book");
-
-//	  GarbageCollect();
 
 	InitBook("ref");
 	Load("ref.book");
 
+	InitBook("coding");
+	Load("coding.book");
+
 	InitBook("refprog");
 	Load("refprog.book");
-
-//	  GarbageCollect();
 
 	InitBook("Algo");
 	Load("Algo.book");	// note: manualmaker crashes mysteriously when trying to emit a book that was not loaded
 
-//	  GarbageCollect();
+	InitBook("intro");
+	Load("intro.book");
 
-
-
-//	  GarbageCollect();
+	InitBook("essays");
+	Load("essays.book");
 
 	/* make the index of framed books */
 	EmitBookIndex();
