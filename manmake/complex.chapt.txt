@@ -1,0 +1,160 @@
+
+			Complex numbers
+
+*INTRO Yacas understands the concept of a complex number,
+and has a few functions that allow manipulation of complex
+numbers.
+
+*CMD Complex --- construct a complex number
+*STD
+*CALL
+	Complex(r, c)
+
+*PARMS
+
+{r} -- real part
+
+{c} -- imaginary part
+
+*DESC
+
+This function represents the complex number "r + I*c", where "I"
+is the imaginary unit. It is the standard representation used in Yacas
+to represent complex numbers. Both "r" and "c" are supposed to be
+real.
+
+Note that, at the moment, many functions in Yacas assume that all
+numbers are real unless it is obvious that it is a complex
+number. Hence {Im(Sqrt(x))} evaluates to {0} which is only true for nonnegative "x".
+
+*E.G.
+
+	In> I
+	Out> Complex(0,1);
+	In> 3+4*I
+	Out> Complex(3,4);
+	In> Complex(-2,0)
+	Out> -2;
+
+*SEE Re, Im, I, Abs, Arg
+
+*CMD Re --- real part of a complex number
+*STD
+*CALL
+	Re(x)
+
+*PARMS
+
+{x} -- argument to the function
+
+*DESC
+
+This function returns the real part of the complex number "x".
+
+*E.G.
+
+	In> Re(5)
+	Out> 5;
+	In> Re(I)
+	Out> 0;
+	In> Re(Complex(3,4))
+	Out> 3;
+
+*SEE Complex, Im
+
+*CMD Im --- imaginary part of a complex number
+*STD
+*CALL
+	Im(x)
+
+*PARMS
+
+{x} -- argument to the function
+
+*DESC
+
+This function returns the imaginary part of the complex number "x".
+
+*E.G.
+
+	In> Im(5)
+	Out> 0;
+	In> Im(I)
+	Out> 1;
+	In> Im(Complex(3,4))
+	Out> 4;
+
+*SEE Complex, Re
+
+*CMD I --- imaginary unit
+*STD
+*CALL
+	I
+
+*DESC
+
+This symbol represents the imaginary unit, which equals the square
+root of -1. It evaluates to {Complex(0,1)}.
+
+*E.G.
+
+	In> I
+	Out> Complex(0,1);
+	In> I = Sqrt(-1)
+	Out> True;
+
+*SEE Complex
+
+*CMD Conjugate --- complex conjugate
+*STD
+*CALL
+	Conjugate(x)
+
+*PARMS
+
+{x} -- argument to the function
+
+*DESC
+
+This function returns the complex conjugate of "x". The complex
+conjugate of $a + I*b$ is $a - I*b$. This function assumes that all
+unbound variables are real.
+
+*E.G.
+
+	In> Conjugate(2)
+	Out> 2;
+	In> Conjugate(Complex(a,b))
+	Out> Complex(a,-b);
+
+*SEE Complex, Re, Im
+
+*CMD Arg --- argument of a complex number
+*STD
+*CALL
+	Arg(x)
+
+*PARMS
+
+{x} -- argument to the function
+
+*DESC
+
+This function returns the argument of "x". The argument is the angle
+with the positive real axis in the Argand diagram, or the angle
+"phi" in the polar representation $r * Exp(I*phi)$ of "x". The
+result is in the range ($-Pi$, $Pi$], that is, excluding $-Pi$ but including $Pi$. The
+argument of 0 is {Undefined}.
+
+*E.G.
+
+	In> Arg(2)
+	Out> 0;
+	In> Arg(-1)
+	Out> Pi;
+	In> Arg(1+I)
+	Out> Pi/4;
+
+*SEE Abs, Sign
+
+ 
