@@ -381,8 +381,8 @@ NewLine();
 
     file := plain["BaseName"] : "chapter" : String(index) : ".html";
     str := HtmlAnchor() ChapterTag(index);
-    If (pcc["Commands"] != {},str := str : "(directly go to documentation on : " : ChapterHeader(pcc["Commands"]):")");
     str := str : pcc["Intro"] : "<p> </p>" : newline;
+    If (pcc["Commands"] != {},str := str : "(directly go to documentation on : " : ChapterHeader(pcc["Commands"]):")");
     str := str : pcc["Body"];
     str := HtmlTitle(chapter) : newline : HtmlTag(body, str);
     ToFile(HtmlFile(file)) WriteString(HtmlTag(html, str));

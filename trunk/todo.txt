@@ -7,11 +7,10 @@ TODO:
   - manuals, provide as zip files? more people can use unzip than can use untar.
   - manuals, Direct link to pdf manual files uncompressed?
 
-- Example: RootsOfUnity (nice example of threading): Exp(2*Pi*I*(1 .. n)/n)
-- Example: Average (nice example of threading): Average(list_IsList) <-- Add(list)/Length(list); 
+  - Example: RootsOfUnity (nice example of threading): Exp(2*Pi*I*(1 .. n)/n)
+  - Example: Average (nice example of threading): Average(list_IsList) <-- Add(list)/Length(list); 
 
-
-- in the manual, on the top line with links to functions, if functions contain ' then the links go haywire. We need to escape quotes there.
+  - ZetaNum, GammaNum, LambertWNum, should not exist, N(Zeta) etcetera should suffice.
  
   - Remove Pi() and reference to it in favor of N(Pi), everywhere  (manual, tests, examples).
   - try if I can't change the format of numbers from 0.xxx to x.xxxx, is more natural
