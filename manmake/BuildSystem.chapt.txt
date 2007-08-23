@@ -637,15 +637,6 @@ appropriate directory during installation.
 Yacas in one's own application; see <*yacasdoc://essays/3/4/*>. This
 part of the build system is still being developed.
 
-The build system does not perform any actions for the following
-components of Yacas. 
-*	The directory {YacasNotebook} contains Emacs lisp files to aid
-in interacting with Yacas from within Emacs. 
-*	The directory {compile} contains the experimental Yacas
-compiler.
-*	The directory {epoc} contains the support for the EPOC
-device. See the file {README.EPOC} in the root of the distribution for
-details. 
 
 
 	    Non-Unix architectures

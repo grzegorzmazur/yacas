@@ -307,7 +307,6 @@ AC_SUBST(LIBLTDL)
 AC_OUTPUT(yacas.spec
 	Makefile
 	docs/Makefile
-	YacasNotebook/Makefile
 	plugins/Makefile
 	plugins/example/Makefile
 	plugins/forth/Makefile
@@ -317,7 +316,6 @@ AC_OUTPUT(yacas.spec
 	plugins/filescanner/Makefile
 	scripts/Makefile
 	JavaYacas/Makefile
-	epoc/Makefile
 	tests/Makefile
         manmake/Makefile
         embed/Makefile
