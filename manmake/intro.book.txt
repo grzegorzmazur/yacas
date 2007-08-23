@@ -8,18 +8,6 @@ commands to get you started using Yacas. There are also some examples.
 
 		Introduction
 
-{Yacas} (Yet Another Computer Algebra System) is a small and highly flexible
-general-purpose computer algebra system and programming language. The language has a familiar, C-like infix-operator
-syntax. The distribution contains a small library of mathematical
-functions, but its real strength is in the language in which you can easily
-write your own symbolic manipulation algorithms. The core engine supports
-arbitrary precision arithmetic (for faster calculations, it can also optionally
-be linked with the GNU arbitrary precision math library {libgmp}) and is able
-to execute symbolic manipulations on various mathematical objects by following
-user-defined rules.
-
-Currently, the {Yacas} programming language is stable and seems powerful enough for all computer algebra applications. External libraries providing additional functionality may be dynamically loaded into {Yacas} via the "plugin" mechanism.
-
 This section describes how to get started with {Yacas} locally by downloading and compiling the
 program. However, this is not strictly necessary. You can also go online to our web site and
 use {Yacas} in there inside your browser. The web page contains tutorials, example calculations 
@@ -246,7 +234,7 @@ The script {yacas_client} reads standard input and writes to standard output, so
 On a given host computer running the "{Yacas} server", each user currently may have only one persistent {Yacas} session.
 
 
-
+*INCLUDE config.chapt
 
 
 *REM GNU Free Documentation License

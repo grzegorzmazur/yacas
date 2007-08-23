@@ -34,22 +34,22 @@ function updateHints(searchString)
     var matches = new Array("","","","","","","","");
     var lengths = new Array(0,0,0,0,0,0,0,0);
     var moreAvailable = 0;
-    var maxMatches=20;
+    var maxMatches=13;
 
     // Most interesting functions, make sure people see these first so they have something interesting to click on
     var fronts = ":Div:N:Select:Factor:Taylor:D:Integrate:Simplify:Solve:Limit:DiagonalMatrix:ForEach:Pi:";
 
     var lwr = searchString.toLowerCase();
-    for (var i=0;i<hints.length;i=i+3)
+    for (var i=0;i<hints.length;i=i+4)
     {
       var exam = "";
-      if (hints[i+2] != "")
+      if (hints[i+3] != "")
       {
-        exam = '|   <a href="javascript:getYacasExampleOnFunction('+(i+2)+')">Demo<\/a>';
+        exam = '|   <a href="javascript:getYacasExampleOnFunction('+(i+3)+')">Demo<\/a>';
       }
       var line = 
-        '<div class="suggestions">'+
-           hints[i+1]+
+        '<div class="suggestions" title="'+hints[i+1]+'">'+
+           '<b>'+hints[i]+'</b> - '+hints[i+2]+
            '<br><a target="newwin" href="ref.html?'+hints[i]+'">Manual<\/a>' + 
            exam + 
         '<\/div>';

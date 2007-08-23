@@ -1,4 +1,4 @@
-			Running Yacas
+			Running Yacas off-line
 
 		Interactive session commands
 
