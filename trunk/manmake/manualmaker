@@ -87,7 +87,7 @@ CmdDescription(cmd, desc) :=
   plain["Chapters"][currentChapter]["Commands"] :=
      Concat(plain["Chapters"][currentChapter]["Commands"], 
             {{
-"<a href='":plain["BaseName"] : "chapter" : String(currentChapterIndex) : ".html#":cmd:"' target='Chapters' title='":desc:"'>":cmd:"</a>",
+"<a href=\"":plain["BaseName"] : "chapter" : String(currentChapterIndex) : ".html#":cmd:"\" target='Chapters' title=\"":desc:"\">":cmd:"</a>",
 desc}});
 ];   
 
@@ -383,7 +383,6 @@ NewLine();
     str := HtmlAnchor() ChapterTag(index);
     If (pcc["Commands"] != {},str := str : "(directly go to documentation on : " : ChapterHeader(pcc["Commands"]):")");
     str := str : pcc["Intro"] : "<p> </p>" : newline;
-//TODO remove?    If (pcc["Commands"] != {}, str := str : ChapterTOC(pcc["Commands"]));
     str := str : pcc["Body"];
     str := HtmlTitle(chapter) : newline : HtmlTag(body, str);
     ToFile(HtmlFile(file)) WriteString(HtmlTag(html, str));
@@ -403,27 +402,6 @@ NewLine();
   str := str : "." : newline;
 ];
 
-/*TODO remove?
-ChapterTOC(alist) :=
-[
-  Local(str, flag, keyword);
-  flag := True;
-  ForEach(keyword, alist) 
-     flag := flag And (keyword[2] = "");
-  If (flag, 
-      str := "", // If there are no descriptions, a TOC has no use 
-      [
-        str := "<center><table>";
-       	str := str : newline;	
-       	ForEach(keyword, alist)
-       	  str := str : "<tr BGCOLOR=#E0E0E0>" : newline
-       		     : "<td>" : keyword[1] : "</td>" : newline
-       		     : "<td>" : keyword[2] : "</td>" : newline
-       		     : "</tr>" : newline;
-       	str := str : "</table></center>" : newline;
-      ]);
-];
-*/
 
 BookList():=
 [

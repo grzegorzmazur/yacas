@@ -4,17 +4,40 @@
 *INTRO Besides the usual arithmetical operations, Yacas defines some more advanced operations on
 numbers. Many of them also work on polynomials.
 
+		Arithmetic
+
 *CMD + --- arithmetic addition
-*CMD - --- arithmetic subtraction or negation
-*CMD * --- arithmetic multiplication
-*CMD / --- arithmetic division
-*CMD ^ --- arithmetic power
 *STD
 *CALL
+
 	x+y
 	+x
 Precedence:
 *EVAL OpPrecedence("+")
+
+*PARMS
+
+{x} and {y} -- objects for which arithmetic addition is defined
+
+
+*DESC
+
+The addition operators can work on integers,
+rational numbers, complex numbers, vectors, matrices and lists.
+
+These operators are implemented in the standard math library (as opposed
+to being built-in). This means that they can be extended by the user.
+
+*E.G.
+
+	In> 2+3
+	Out> 5;
+
+
+
+*CMD - --- arithmetic subtraction or negation
+*STD
+*CALL
 
 	x-y
 Precedence: left-side:
@@ -23,13 +46,82 @@ Precedence: left-side:
 *EVAL OpRightPrecedence("-")
 
 	-x
+
+*PARMS
+
+{x} and {y} -- objects for which subtraction is defined
+
+*DESC
+
+The subtraction operators can work on integers,
+rational numbers, complex numbers, vectors, matrices and lists.
+
+These operators are implemented in the standard math library (as opposed
+to being built-in). This means that they can be extended by the user.
+
+*E.G.
+
+	In> 2-3
+	Out> -1;
+	In> - 3
+	Out> -3;
+
+
+*CMD * --- arithmetic multiplication
+*STD
+*CALL
+
 	x*y
 Precedence:
 *EVAL OpPrecedence("*")
 
+*PARMS
+
+{x} and {y} -- objects for which arithmetic multiplication is defined
+
+*DESC
+
+The multiplication operator can work on integers,
+rational numbers, complex numbers, vectors, matrices and lists.
+
+This operator is implemented in the standard math library (as opposed
+to being built-in). This means that they can be extended by the user.
+
+*E.G.
+
+	In> 2*3
+	Out> 6;
+
+
+*CMD / --- arithmetic division
+*STD
+*CALL
+
 	x/y
 Precedence:
 *EVAL OpPrecedence("/")
+
+*PARMS
+
+{x} and {y} -- objects for which arithmetic division is defined
+
+*DESC
+
+The division operator can work on integers,
+rational numbers, complex numbers, vectors, matrices and lists.
+
+This operator is implemented in the standard math library (as opposed
+to being built-in). This means that they can be extended by the user.
+
+*E.G.
+
+	In> 6/2
+	Out> 3;
+
+
+*CMD ^ --- arithmetic power
+*STD
+*CALL
 
 	x^y
 Precedence:
@@ -49,10 +141,9 @@ to being built-in). This means that they can be extended by the user.
 
 *E.G.
 
-	In> 2+3
-	Out> 5;
-	In> 2*3
-	Out> 6;
+	In> 2^3
+	Out> 8;
+
 
 *CMD Div --- Determine divisor of two mathematical objects
 *CMD Mod --- Determine remainder of two mathematical objects after dividing one by the other
@@ -526,6 +617,200 @@ with numerical values and not with symbolic arguments.
 
 *SEE Min, Sum
 
+*CMD Numer --- numerator of an expression
+*STD
+*CALL
+	Numer(expr)
+
+*PARMS
+
+{expr} -- expression to determine numerator of
+
+*DESC
+
+This function determines the numerator of the rational expression
+"expr" and returns it. As a special case, if its argument is numeric
+but not rational, it returns this number. If "expr" is neither
+rational nor numeric, the function returns unevaluated.
+
+*E.G.
+
+	In> Numer(2/7)
+	Out> 2;
+	In> Numer(a / x^2)
+	Out> a;
+	In> Numer(5)
+	Out> 5;
+
+*SEE Denom, IsRational, IsNumber
+
+*CMD Denom --- denominator of an expression
+*STD
+*CALL
+	Denom(expr)
+
+*PARMS
+
+{expr} -- expression to determine denominator of
+
+*DESC
+
+This function determines the denominator of the rational expression
+"expr" and returns it. As a special case, if its argument is numeric
+but not rational, it returns {1}. If "expr" is
+neither rational nor numeric, the function returns unevaluated.
+
+*E.G.
+
+	In> Denom(2/7)
+	Out> 7;
+	In> Denom(a / x^2)
+	Out> x^2;
+	In> Denom(5)
+	Out> 1;
+
+*SEE Numer, IsRational, IsNumber
+
+
+
+		Predicates relating to numbers
+
+
+*CMD < --- test for "less than"
+*STD
+*CALL
+	e1 < e2
+Precedence:
+*EVAL OpPrecedence("<")
+
+*PARMS
+
+{e1}, {e2} -- expressions to be compared
+
+*DESC
+
+The two expression are evaluated. If both results are numeric, they
+are compared. If the first expression is smaller than the second one,
+the result is {True} and it is {False} otherwise. If either of the expression is not numeric, after
+evaluation, the expression is returned with evaluated arguments.
+
+The word "numeric" in the previous paragraph has the following
+meaning. An expression is numeric if it is either a number (i.e. {IsNumber} returns {True}), or the
+quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}). Yacas will try to 
+coerce the arguments passed to this comparison operator to a real value before making the comparison.
+
+*E.G.
+
+	In> 2 < 5;
+	Out> True;
+	In> Cos(1) < 5;
+	Out> True;
+
+*SEE IsNumber, IsInfinity, N
+
+*CMD > --- test for "greater than"
+*STD
+*CALL
+	e1 > e2
+Precedence:
+*EVAL OpPrecedence(">")
+
+
+*PARMS
+
+{e1}, {e2} -- expressions to be compared
+
+*DESC
+
+The two expression are evaluated. If both results are numeric, they
+are compared. If the first expression is larger than the second one,
+the result is {True} and it is {False} otherwise. If either of the expression is not numeric, after
+evaluation, the expression is returned with evaluated arguments.
+
+The word "numeric" in the previous paragraph has the following
+meaning. An expression is numeric if it is either a number (i.e. {IsNumber} returns {True}), or the
+quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}). Yacas will try to 
+coerce the arguments passed to this comparison operator to a real value before making the comparison.
+
+*E.G.
+
+	In> 2 > 5;
+	Out> False;
+	In> Cos(1) > 5;
+	Out> False
+
+*SEE IsNumber, IsInfinity, N
+
+*CMD <= --- test for "less or equal"
+*STD
+*CALL
+	e1 <= e2
+Precedence:
+*EVAL OpPrecedence("<=")
+
+
+*PARMS
+
+{e1}, {e2} -- expressions to be compared
+
+*DESC
+
+The two expression are evaluated. If both results are numeric, they
+are compared. If the first expression is smaller than or equals the
+second one, the result is {True} and it is {False} otherwise. If either of the expression is not
+numeric, after evaluation, the expression is returned with evaluated
+arguments.
+
+The word "numeric" in the previous paragraph has the following
+meaning. An expression is numeric if it is either a number (i.e. {IsNumber} returns {True}), or the
+quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}). Yacas will try to 
+coerce the arguments passed to this comparison operator to a real value before making the comparison.
+
+*E.G.
+
+	In> 2 <= 5;
+	Out> True;
+	In> Cos(1) <= 5;
+	Out> True
+
+*SEE IsNumber, IsInfinity, N
+
+*CMD >= --- test for "greater or equal"
+*STD
+*CALL
+	e1 >= e2
+Precedence:
+*EVAL OpPrecedence(">=")
+
+
+*PARMS
+
+{e1}, {e2} -- expressions to be compared
+
+*DESC
+
+The two expression are evaluated. If both results are numeric, they
+are compared. If the first expression is larger than or equals the
+second one, the result is {True} and it is {False} otherwise. If either of the expression is not
+numeric, after evaluation, the expression is returned with evaluated
+arguments.
+
+The word "numeric" in the previous paragraph has the following
+meaning. An expression is numeric if it is either a number (i.e. {IsNumber} returns {True}), or the
+quotient of two numbers, or an infinity (i.e. {IsInfinity} returns {True}). Yacas will try to 
+coerce the arguments passed to this comparison operator to a real value before making the comparison.
+
+*E.G.
+
+	In> 2 >= 5;
+	Out> False;
+	In> Cos(1) >= 5;
+	Out> False
+
+*SEE IsNumber, IsInfinity, N
+
+
+
 *CMD IsZero --- test whether argument is zero
 *STD
 *CALL
@@ -580,59 +865,5 @@ number, i.e. an integer or a fraction of integers.
 	Out> False;
 
 *SEE Numer, Denom
-
-*CMD Numer --- numerator of an expression
-*STD
-*CALL
-	Numer(expr)
-
-*PARMS
-
-{expr} -- expression to determine numerator of
-
-*DESC
-
-This function determines the numerator of the rational expression
-"expr" and returns it. As a special case, if its argument is numeric
-but not rational, it returns this number. If "expr" is neither
-rational nor numeric, the function returns unevaluated.
-
-*E.G.
-
-	In> Numer(2/7)
-	Out> 2;
-	In> Numer(a / x^2)
-	Out> a;
-	In> Numer(5)
-	Out> 5;
-
-*SEE Denom, IsRational, IsNumber
-
-*CMD Denom --- denominator of an expression
-*STD
-*CALL
-	Denom(expr)
-
-*PARMS
-
-{expr} -- expression to determine denominator of
-
-*DESC
-
-This function determines the denominator of the rational expression
-"expr" and returns it. As a special case, if its argument is numeric
-but not rational, it returns {1}. If "expr" is
-neither rational nor numeric, the function returns unevaluated.
-
-*E.G.
-
-	In> Denom(2/7)
-	Out> 7;
-	In> Denom(a / x^2)
-	Out> x^2;
-	In> Denom(5)
-	Out> 1;
-
-*SEE Numer, IsRational, IsNumber
 
 
