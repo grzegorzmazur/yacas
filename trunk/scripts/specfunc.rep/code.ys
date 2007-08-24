@@ -34,7 +34,7 @@
 11 # Zeta(n_IsInfinity) <-- 1;
 
 /// compute numeric value
-20 # Zeta(s_IsConstant)_(InNumericMode()) <-- ZetaNum(N(Eval(s)));
+20 # Zeta(s_IsConstant)_(InNumericMode()) <-- Internal'ZetaNum(N(Eval(s)));
 
 /////////////////////////////////////////////////
 /// Bernoulli numbers and polynomials
@@ -265,15 +265,15 @@ LocalSymbols(n'max, k)
 20 # LambertW(_x * Ln(_x)) <-- Ln(x);
 20 # LambertW(Ln(_x) * _x) <-- Ln(x);
 
-30 # LambertW(x_IsConstant) _ InNumericMode() <-- LambertWNum(Eval(x));
+30 # LambertW(x_IsConstant) _ InNumericMode() <-- Internal'LambertWNum(Eval(x));
 
-/* {LambertWNum} computes a numeric approximation of Lambert's $W$ function
+/* {Internal'LambertWNum} computes a numeric approximation of Lambert's $W$ function
 to the current precision. It uses a Halley iteration
 $$ W'=W-(W-x*Exp(-W))/(W+1-(W+2)/(W+1)*(W-x*Exp(-W))/2) $$.
 The function has real values for real $x >= -Exp(-1)$. (This point is a logarithmic branching point.)
 */
-10 # LambertWNum(x_IsNumber)_(x < -MathExp(-1)) <-- Undefined;
-20 # LambertWNum(x_IsNumber) <--
+10 # Internal'LambertWNum(x_IsNumber)_(x < -MathExp(-1)) <-- Undefined;
+20 # Internal'LambertWNum(x_IsNumber) <--
 [
 	Local(W);
 	NewtonNum(

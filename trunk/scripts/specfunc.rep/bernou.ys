@@ -67,10 +67,10 @@ Bernoulli1(n_IsEven)_(n>=2) <-- [
 	B := Floor(N(	// compute integer part of B
 		If(	// use different methods to compute Zeta function
 			n>250,	// threshold is roughly right for internal math
-			ZetaNum2(n, n/17+1),	// with this method, a single Bernoulli number n is computed in O(n*M(P)) operations where P = O(n*Ln(n)) is the required precision
+			Internal'ZetaNum2(n, n/17+1),	// with this method, a single Bernoulli number n is computed in O(n*M(P)) operations where P = O(n*Ln(n)) is the required precision
 			// Brent's method requires n^2*P+n*M(P)
 			// simple array method requires 
-			ZetaNum1(n, n/17+1)	// this gives O(n*Ln(n)*M(P))
+			Internal'ZetaNum1(n, n/17+1)	// this gives O(n*Ln(n)*M(P))
 		)
 		*N(2*n! /(2*Pi)^n)))
 		// 2*Pi*e is approx. 17, add 1 to guard precision

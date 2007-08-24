@@ -221,18 +221,18 @@ Zeta(-12)
 );
 
 NumericEqual(
-RoundTo(ZetaNum(40), 19)
+RoundTo(N(Zeta(40)), 19)
 , 1.0000000000009094948
 ,19);
 
 NumericEqual(
-RoundTo(ZetaNum(1.5), 19)
+RoundTo(N(Zeta(1.5)), 19)
 , 2.6123753486854883433
 ,19);
 
 // test correctness of Zeta(3)
 NumericEqual(
-RoundTo(ZetaNum(3)-N(Zeta(3)), 20)
+RoundTo(Internal'ZetaNum(3)-N(Zeta(3)), 20)
 , 0
 ,20);
 

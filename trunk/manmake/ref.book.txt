@@ -38,8 +38,6 @@ when doing calculations.
 
 *INCLUDE solvers.chapt
 
-*INCLUDE transforms.chapt
-
 *INCLUDE linalg.chapt
 
 *INCLUDE univar.chapt

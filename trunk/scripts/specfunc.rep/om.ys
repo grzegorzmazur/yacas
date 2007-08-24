@@ -13,7 +13,6 @@ OMDef( "Erfi"           , "yacas", "Erfi" );
 OMDef( "FresnelSin"     , "yacas", "FresnelSin" );
 OMDef( "FresnelCos"     , "yacas", "FresnelCos" );
 OMDef( "LambertW"       , "yacas", "LambertW" );
-OMDef( "LambertWNum"    , "yacas", "LambertWNum" );
 OMDef( "Beta"           , "yacas", "Beta" );
 OMDef( "DirichletEta"   , "yacas", "DirichletEta" );
 OMDef( "DirichletLambda", "yacas", "DirichletLambda" );
