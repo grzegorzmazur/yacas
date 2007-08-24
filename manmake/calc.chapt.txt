@@ -1031,39 +1031,6 @@ functions with polynomials can be integrated.
 *SEE D, UniqueConstant
 
 
-*CMD Rationalize --- convert floating point numbers to fractions
-*STD
-*CALL
-	Rationalize(expr)
-
-*PARMS
-
-{expr} -- an expression containing real numbers
-
-*DESC
-
-This command converts every real number in the expression "expr"
-into a rational number. This is useful when a calculation needs to be
-done on floating point numbers and the algorithm is unstable.
-Converting the floating point numbers to rational numbers will force
-calculations to be done with infinite precision (by using rational
-numbers as representations).
-
-It does this by finding the smallest integer n such that multiplying
-the number with $10^n$ is an integer. Then it divides by $10^n$ again,
-depending on the internal gcd calculation to reduce the resulting
-division of integers.
-
-*E.G.
-
-	In> x:={1.2, 3.123, 4.5}
-	Out> {1.2,3.123,4.5};
-	In> Rationalize(x)
-	Out> {6/5,3123/1000,9/2};
-
-*SEE IsRational
-
-
 *CMD Random, RandomSeed --- (pseudo-) random number generator
 *STD
 *CALL
@@ -1366,11 +1333,10 @@ Note that Euler's constant $gamma<=>0.57722$ is the lowercase {gamma} in Yacas.
 *SEE !, N, gamma
 
 *CMD Zeta --- Riemann's Zeta function
-*CMD ZetaNum --- Riemann's Zeta function
+
 *STD
 *CALL
 	Zeta(x)
-	ZetaNum(number)
 
 *PARMS
 
@@ -1380,7 +1346,7 @@ Note that Euler's constant $gamma<=>0.57722$ is the lowercase {gamma} in Yacas.
 
 *DESC
 
-{Zeta(x)} is an interface to Riemann's Zeta function $zeta(s)$. It returns exact values on integer and half-integer arguments. {ZetaNum(x)} or equivalently {N(Zeta(x)} takes a numeric parameter and always returns a floating-point number in the current precision.
+{Zeta(x)} is an interface to Riemann's Zeta function $zeta(s)$. It returns exact values on integer and half-integer arguments. {N(Zeta(x)} takes a numeric parameter and always returns a floating-point number in the current precision.
 
 *E.G.
 
@@ -1394,7 +1360,7 @@ Note that Euler's constant $gamma<=>0.57722$ is the lowercase {gamma} in Yacas.
 	Out> 3.93194921180954422697490751058798;
 	In> Zeta(2)
 	Out> Pi^2/6;
-	In> ZetaNum(2);
+	In> N(Zeta(2));
 	Out> 1.64493406684822643647241516664602;
 
 *SEE !, N
@@ -1458,11 +1424,10 @@ An auxiliary function {BernoulliArray(n)} might be useful too: it returns an arr
 
 
 *CMD LambertW --- Lambert's $W$ function
-*CMD LambertWNum --- Lambert's $W$ function
+
 *STD
 *CALL
 	LambertW(x)
-	LambertWNum(x)
 *PARMS
 
 {x} -- expression, argument of the function
@@ -1475,7 +1440,7 @@ This function is sometimes useful to represent solutions of transcendental equat
 
 For real arguments $x$, $W(x)$ is real if $x>= -Exp(-1)$.
 
-{LambertWNum} is an auxiliary function that computes the numerical value of the principal branch of Lambert's $W$ function for real arguments $x>= -Exp(-1)$ to current precision.
+To compute the numeric value of the  principal branch of Lambert's $W$ function for real arguments $x>= -Exp(-1)$ to current precision, one can call {N(LambertW(x))} (where the function {N} tries to approximate its argument with a real value).
 
 *E.G.
 	In> LambertW(0)
@@ -1586,4 +1551,5 @@ The low-level numerical computations are performed by the routine {CatalanConstN
 
 *INCLUDE complex.chapt
 
+*INCLUDE transforms.chapt
 

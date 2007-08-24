@@ -432,12 +432,12 @@ This method requires to compute $n$ times the exponential and the logarithm to f
 This power can be computed in asymptotic time $O(M(P)*Ln(P))$, unless $s$ is an integer, in which case this computation is $O(M(P))$, the cost of one division by an integer $(j+1)^s$.
 Therefore the complexity of this method is at most $O(P*M(P)*Ln(P))$.
 
-The function {Zeta(s)} calls {ZetaNum(s)} to compute this approximation formula
+The function {Zeta(s)} calls {Internal'ZetaNum(s)} to compute this approximation formula
 for $Re(s)>1/2$ and uses the identity above to get the value for other $s$.
 
 *A Riemann's Zeta function!by direct summation
 
-For very large values of $s$, it is faster to use more direct methods implemented in the routines {ZetaNum1(s,N)} and {ZetaNum2(s,N)}.
+For very large values of $s$, it is faster to use more direct methods implemented in the routines {Internal'ZetaNum1(s,N)} and {Internal'ZetaNum2(s,N)}.
 If the required precision is $P$ digits and
 $s > 1 + Ln(10)/Ln(P)*P$,
 then it is more efficient to compute the defining series for $Zeta(s)$,
@@ -445,24 +445,24 @@ $$Zeta(s) <=> Sum(k,1,N, 1/k^s)$$,
 up to a certain number of terms $N$, than to use Borwein's method.
 The required number of terms $N$ is given by $$N = 10^(P/(s-1))$$.
 This is implemented in the routine
-{ZetaNum1(s)}.
+{Internal'ZetaNum1(s)}.
 For example, at 100 digits of precision it is advisable to use
-{ZetaNum1(s)} only for $s>50$, since it would require $N<110$ terms in
-the series, whereas the expression used in {ZetaNum(s)} uses
+{Internal'ZetaNum1(s)} only for $s>50$, since it would require $N<110$ terms in
+the series, whereas the expression used in {Internal'ZetaNum(s)} uses
 $n=Ln(10)/Ln(8)*P$ terms (of a different series).
 The complexity of this method is $O(N)*M(P)$.
 
 *A Riemann's Zeta function!by product over primes
 
-Alternatively, one can use {ZetaNum2(n,N)} which computes the infinite product over prime numbers $p[i]$
+Alternatively, one can use {Internal'ZetaNum2(n,N)} which computes the infinite product over prime numbers $p[i]$
 $$1/Zeta(n) <=> Factorize(k,1,M,(1-1/p[k]^s))$$.
 Here $M$ must be chosen such that the $M$-th prime number $p[M]>N$.
 To obtain $P$ digits of precision, $N$ must be chosen as above, i.e.
 $N > 10^(P/(s-1))$.
-Since only prime numbers $p[i]$ are used, this formula is asymptotically faster than {ZetaNum1}.
+Since only prime numbers $p[i]$ are used, this formula is asymptotically faster than {Internal'ZetaNum1}.
 (Prime numbers have to be obtained and tested but this is quick for numbers of size $n$, compared with other operations.)
 The number of primes up to $N$ is asymptotically
-$pi(N) <> N/Ln(N)$ and therefore this procedure is faster by a factor $O(Ln(N)) <> O(Ln(n))$. However, for $n<250$ it is better (with Yacas internal math) to use the {ZetaNum1} routine because it involves fewer multiplications.
+$pi(N) <> N/Ln(N)$ and therefore this procedure is faster by a factor $O(Ln(N)) <> O(Ln(n))$. However, for $n<250$ it is better (with Yacas internal math) to use the {Internal'ZetaNum1} routine because it involves fewer multiplications.
 
 	    Zeta function at special arguments
 
@@ -722,7 +722,7 @@ $$Ln(n!) <=> Ln(2*Pi*n)/2+n*Ln(n/e)$$. The result is that for large $n$,
 $$ Abs(B[2*n]) <>  2*(n/(Pi*e))^(2*n)$$.
 
 At such 
-large values of the argument $n$, it is feasible to use the routines {ZetaNum1(n, N)} or {ZetaNum2(n,N)} to compute the zeta function.
+large values of the argument $n$, it is feasible to use the routines {Internal'ZetaNum1(n, N)} or {Internal'ZetaNum2(n,N)} to compute the zeta function.
 These routines approximate $zeta(n)$ by the defining series
 $$zeta(n) <=> Sum(k,1,N, 1/k^n)$$.
 The remainder of the
@@ -767,7 +767,7 @@ This is exactly the Bernoulli number $B[20]$.
 
 All these steps are implemented in the routine {Bernoulli1}. The function {Bernoulli1Threshold()} returns the smallest $n$ for which $B[n]$ is to be computed via this routine instead of the recursion relation. Its current default value is 20. This value can be set with {SetBernoulli1Threshold(threshold)}.
 
-The complexity of {Bernoulli1} is estimated as the complexity of finding all primes up to $n$ plus the complexity of computing the factorial, the power and the Zeta function. Finding the prime numbers up to $n$ by checking all potential divisors up to $Sqrt(n)$ requires $O(n^(3/2)*M(Ln(n)))$ operations with precision $O(Ln(n))$ digits. For the second step we need to evaluate $n!$, $Pi^n$ and $zeta(n)$ with precision of $P=O(n*Ln(n))$ digits. The factorial is found in $n$ short multiplications with $P$-digit numbers (giving $O(n*P)$), the power of $pi$ in $Ln(n)$ long multiplications (giving $O(M(P)*Ln(n))$), and {ZetaNum2(n)} (the asymptotically faster algorithm) requires $O(n*M(P))$ operations. The Zeta function calculation dominates the total cost because $M(P)$ is slower than $O(P)$. So the total complexity of {Bernoulli1} is $O(n*M(P))$ with $P <> n*Ln(n)$.
+The complexity of {Bernoulli1} is estimated as the complexity of finding all primes up to $n$ plus the complexity of computing the factorial, the power and the Zeta function. Finding the prime numbers up to $n$ by checking all potential divisors up to $Sqrt(n)$ requires $O(n^(3/2)*M(Ln(n)))$ operations with precision $O(Ln(n))$ digits. For the second step we need to evaluate $n!$, $Pi^n$ and $zeta(n)$ with precision of $P=O(n*Ln(n))$ digits. The factorial is found in $n$ short multiplications with $P$-digit numbers (giving $O(n*P)$), the power of $pi$ in $Ln(n)$ long multiplications (giving $O(M(P)*Ln(n))$), and {Internal'ZetaNum2(n)} (the asymptotically faster algorithm) requires $O(n*M(P))$ operations. The Zeta function calculation dominates the total cost because $M(P)$ is slower than $O(P)$. So the total complexity of {Bernoulli1} is $O(n*M(P))$ with $P <> n*Ln(n)$.
 
 Note that this is the cost of finding just one Bernoulli number, as opposed to the $O(n^2*M(P)*Ln(P))$ cost of finding all Bernoulli numbers up to $B[n]$ using the first algorithm {BernoulliArray}. If we need a complete table of Bernoulli numbers, then {BernoulliArray} is only marginally (logarithmically) slower. So for finding complete Bernoulli tables, {Bernoulli1} is better only for very large $n$.
 
