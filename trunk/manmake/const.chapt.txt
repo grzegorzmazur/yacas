@@ -1,6 +1,8 @@
 
 			Constants
 
+		Yacas-specific constants
+
 *CMD % --- previous result
 *CORE
 *CALL
@@ -55,6 +57,8 @@ of boolean expressions such as {2 < 3} or {True And False}.
 End of file marker when reading from file. If a file
 contains the expression {EndOfFile;} the
 operation will stop reading the file at that point.
+
+		Mathematical constants
 
 *CMD Infinity --- constant representing mathematical infinity
 *STD
@@ -126,3 +130,106 @@ Most functions also return {Undefined} when evaluated on it.
 	Out> Undefined;
 
 *SEE Infinity
+
+
+
+
+*CMD GoldenRatio --- the Golden Ratio
+*STD
+*CALL
+	GoldenRatio
+
+*DESC
+
+These functions compute the "golden ratio"
+$$phi <=> 1.6180339887 <=> (1+Sqrt(5))/2 $$.
+
+The ancient Greeks defined the "golden ratio" as follows:
+If one divides a length 1 into two pieces $x$ and $1-x$, such that the ratio of 1 to $x$ is the same as the ratio of $x$ to $1-x$, then $1/x <=> 1.618$... is the "golden ratio".
+
+
+The constant is available symbolically as {GoldenRatio} or numerically as a function {GoldenRatio()}.
+This is a "cached constant" which is recalculated only when precision is increased.
+The numerical value of the constant can also be obtained as {N(GoldenRatio)}.
+
+
+*E.G.
+
+	In> x:=GoldenRatio - 1
+	Out> GoldenRatio-1;
+	In> N(x)
+	Out> 0.6180339887;
+	In> N(1/GoldenRatio)
+	Out> 0.6180339887;
+	In> [Precision(20);V(GoldenRatio());]
+
+	CachedConstant: Info: constant GoldenRatio is
+	being recalculated at precision 20 
+	Out> 1.6180339887498948482;
+
+
+*SEE N, CachedConstant
+
+
+*CMD Catalan --- Catalan's Constant
+*STD
+*CALL
+	Catalan
+
+*DESC
+
+These functions compute Catalan's Constant $Catalan<=>0.9159655941$.
+
+The constant is available symbolically as {Catalan} or numerically as a function {Catalan()}.
+This is a "cached constant" which is recalculated only when precision is increased.
+The numerical value of the constant can also be obtained as {N(Catalan)}.
+The low-level numerical computations are performed by the routine {CatalanConstNum}.
+
+
+*E.G.
+
+	In> N(Catalan)
+	Out> 0.9159655941;
+	In> DirichletBeta(2)
+	Out> Catalan;
+	In> [Precision(20);V(Catalan());]
+
+	CachedConstant: Info: constant Catalan is
+	being recalculated at precision 20
+	Out> 0.91596559417721901505;
+
+
+*SEE N, CachedConstant
+
+*CMD gamma --- Euler's constant $gamma$
+*STD
+*CALL
+	gamma
+
+*DESC
+
+These functions compute Euler's constant $gamma<=>0.57722$...
+
+The constant is available symbolically as {gamma} or numerically as a function {gamma()}.
+This is a "cached constant" which is recalculated only when precision is increased.
+The numerical value of the constant can also be obtained as {N(gamma)}.
+The low-level numerical computations are performed by the routine {GammaConstNum}.
+
+Note that Euler's Gamma function $Gamma(x)$ is the capitalized {Gamma} in Yacas.
+
+*E.G.
+
+	In> gamma+Pi
+	Out> gamma+Pi;
+	In> N(gamma+Pi)
+	Out> 3.7188083184;
+	In> [Precision(20);V(gamma());]
+	
+	CachedConstant: Info: constant gamma is being
+	  recalculated at precision 20 
+	GammaConstNum: Info: used 56 iterations at
+	  working precision 24 
+	Out> 0.57721566490153286061;
+
+*SEE Gamma, N, CachedConstant
+

@@ -381,8 +381,9 @@ NewLine();
 
     file := plain["BaseName"] : "chapter" : String(index) : ".html";
     str := HtmlAnchor() ChapterTag(index);
-    str := str : pcc["Intro"] : "<p> </p>" : newline;
     If (pcc["Commands"] != {},str := str : "(directly go to documentation on : " : ChapterHeader(pcc["Commands"]):")");
+    str := str : pcc["Intro"] : "<p> </p>" : newline;
+    If (pcc["Commands"] != {}, str := str : ChapterTOC(pcc["Commands"]));
     str := str : pcc["Body"];
     str := HtmlTitle(chapter) : newline : HtmlTag(body, str);
     ToFile(HtmlFile(file)) WriteString(HtmlTag(html, str));
@@ -400,6 +401,26 @@ NewLine();
     str := str : ", " : keyword[1];
   ];
   str := str : "." : newline;
+];
+
+ChapterTOC(alist) :=
+[
+  Local(str, flag, keyword);
+  flag := True;
+  ForEach(keyword, alist) 
+     flag := flag And (keyword[2] = "");
+  If (flag, 
+      str := "", /* If there are no descriptions, a TOC has no use */
+      [
+        str := "<center><table>";
+       	str := str : newline;	
+       	ForEach(keyword, alist)
+       	  str := str : "<tr BGCOLOR=#E0E0E0>" : newline
+       		     : "<td>" : keyword[1] : "</td>" : newline
+       		     : "<td>" : keyword[2] : "</td>" : newline
+       		     : "</tr>" : newline;
+       	str := str : "</table></center>" : newline;
+      ]);
 ];
 
 

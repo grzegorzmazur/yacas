@@ -1,6 +1,6 @@
 /// Simple implementation of the recurrence relation: create an array of Bernoulli numbers
 // special cases: n=0 or n=1
-10 # BernoulliArray(n_IsInteger)_(n=0 Or n=1) <-- [
+10 # Internal'BernoulliArray(n_IsInteger)_(n=0 Or n=1) <-- [
 	Local(B);
 	B:=ArrayCreate(n+1,0);
 	B[1] := 1;
@@ -8,9 +8,9 @@
 	B;
 ];
 /// Assume n>=2
-20 # BernoulliArray(n_IsInteger) <-- [
+20 # Internal'BernoulliArray(n_IsInteger) <-- [
 	Local(B, i, k, k2, bin);
-	If (InVerboseMode(), Echo({"BernoulliArray: using direct recursion, n = ", n}));
+	If (InVerboseMode(), Echo({"Internal'BernoulliArray: using direct recursion, n = ", n}));
 	B:=ArrayCreate(n+1, 0);	// array of B[k], k=1,2,... where B[1] is the 0th Bernoulli number
 	// it would be better not to store the odd elements but let's optimize this later
 	// we could also maintain a global cache of Bernoulli numbers computed so far, but it won't really speed up things at large n
@@ -85,7 +85,7 @@ Bernoulli1(n_IsEven)_(n>=2) <-- [
 /// but is not good at all for exact evaluation! (too slow)
 /// Brent claims that the usual recurrence is numerically unstable
 /// but we can't check this because Yacas internal math is fixed-point and Brent's algorithm needs real floating point (C[k] are very small and then multiplied by (2*k)! )
-BernoulliArray1(n_IsEven) _ (n>=2) <--
+Internal'BernoulliArray1(n_IsEven) _ (n>=2) <--
 [
 	Local(C, f, k, j, denom, sum);
 	C := ArrayCreate(n+1, 0);

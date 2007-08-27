@@ -266,60 +266,6 @@ Function("Taylor1",{taylorvariable,taylorat,taylororder,taylorfunction})
   result;
 ];
 
-/*
-RuleBase("Fibonacci",{n});
-Rule("Fibonacci",1,0, IsInteger(n) And IsZero(n-1)) 1;
-Rule("Fibonacci",1,0, IsInteger(n) And IsZero(n-2)) 1;
-Rule("Fibonacci",1,1, IsInteger(n) And n > 2)
-[
-  Local(i,a1,a2,result);
-  i:=3;
-  a1:=1;
-  a2:=1;
-  result:=a1+a2;
-  While(i<n)
-  [
-    a1:=a2;
-    a2:=result;
-    result:=a1+a2;
-    i++;
-  ];
-  result;
-];
-*/
-
-10 # Lucas(0) <-- {2,1};
-11 # Lucas(n_IsPositiveInteger) <--
-[
-   Local(result, residue, z, t);
-   {z,t}:=Lucas(ShiftRight(n,1));
-   residue:=Mod(n,4);
-   If(residue=0, [
-     t:=z*t-1;
-     z:=z*z-2;
-   ], If(residue=1, [
-     z:=z*t-1;
-     t:=2+t*t;
-   ], If(residue=2, [
-     t:=1+z*t;
-     z:=2+z*z;
-   ], If(residue=3, [
-     z:=1+z*t;
-     t:=t*t-2;
-   ]))));
-   {z,t};
-];
-
-10 # Fibonacci(n_IsPositiveInteger) <--
-[
-   Local(z,t);
-   {z,t}:=Lucas(n-1);
-   ((z << 1)+t)/5;
-];
-
-5  # Fibonacci(1,_x)			<-- 1; 
-5  # Fibonacci(2,x_IsRationalOrNumber)	<-- x;
-10 # Fibonacci(n_IsPositiveInteger,x_IsRationalOrNumber)  <-- x*Fibonacci(n-1,x)+Fibonacci(n-2,x);
 
 Function("Subfactorial",{n}) 
 [
@@ -389,7 +335,6 @@ SumFunc(_k,1,_n,_k, n*(n+1)/2 );
 SumFunc(_k,1,_n,_k^_p,(Bernoulli(p+1,n+1) - Bernoulli(p+1))/(p+1), IsInteger(p) );
 SumFunc(_k,1,_n,2*_k-1, n^2 );
 SumFunc(_k,1,_n,HarmonicNumber(_k),(n+1)*HarmonicNumber(n) - n );
-SumFunc(_k,1,_n,Fibonacci(_k)^2, Fibonacci(n)*Fibonacci(n+1) );
 
 // Geometric series! The simplest of them all ;-)
 SumFunc(_k,0,_n,(r_IsFreeOf(k))^(_k), (1-r^(n+1))/(1-r) );

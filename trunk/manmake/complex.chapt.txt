@@ -1,5 +1,5 @@
 
-		Complex numbers
+			Complex numbers
 
 *INTRO Yacas understands the concept of a complex number,
 and has a few functions that allow manipulation of complex

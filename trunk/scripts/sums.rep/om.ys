@@ -22,6 +22,5 @@ OMDef( "Sum", "arith1","sum", // Same argument reordering as Integrate.
       );
 OMDef( "Factorize", "yacas","Factorize" );
 OMDef( "Taylor",    "yacas","Taylor" );
-OMDef( "Fibonacci", "combinat1","Fibonacci" );
 OMDef( "Lucas",        "yacas","Lucas"        );
 OMDef( "Subfactorial", "yacas","Subfactorial" );

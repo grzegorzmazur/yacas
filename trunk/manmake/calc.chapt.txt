@@ -6,7 +6,7 @@ described. These include functions implementing differentiation,
 integration, standard mathematical functions, and solving of
 equations.
 
-		General calculus
+
 
 *CMD Sin --- trigonometric sine function
 *STD
@@ -424,114 +424,301 @@ list, the function is applied to all entries in the list.
 *SEE Arg, Abs
 
 
-*CMD !  --- factorial
-*CMD !!  --- factorial and related functions
-*CMD ***  --- factorial and related functions
-*CMD Subfactorial  --- factorial and related functions
+
+*CMD D --- take derivative of expression with respect to variable
 *STD
 *CALL
-	n!
-	n!!
-	a *** b
-	Subfactorial(m)
+	D(variable) expression
+	D(list) expression
+	D(variable,n) expression
 
 *PARMS
 
-{m} -- integer
-{n} -- integer, half-integer, or list
-{a}, {b} -- numbers
+{variable} -- variable
+
+{list} -- a list of variables
+
+{expression} -- expression to take derivatives of
+
+{n} -- order of derivative
 
 *DESC
 
-The factorial function {n!} calculates the factorial of integer or half-integer numbers. For
-nonnegative integers, $n! := n*(n-1)*(n-2)*...*1$. The factorial of
-half-integers is defined via Euler's Gamma function, $z! := Gamma(z+1)$. If $n=0$ the function returns $1$.
+This function calculates the derivative of the expression {expr} with
+respect to the variable {var} and returns it. If the third calling
+format is used, the {n}-th derivative is determined. Yacas knows
+how the differentiate standard functions such as {Ln}
+and {Sin}.
 
-The "double factorial" function {n!!} calculates $n*(n-2)*(n-4)*...$. This product terminates either with $1$ or with $2$ depending on whether $n$ is odd or even. If $n=0$ the function returns $1$.
+The {D} operator is threaded in both {var} and
+{expr}. This means that if either of them is a list, the function is
+applied to each entry in the list. The results are collected in
+another list which is returned. If both {var} and {expr} are a
+list, their lengths should be equal. In this case, the first entry in
+the list {expr} is differentiated with respect to the first entry in
+the list {var}, the second entry in {expr} is differentiated with
+respect to the second entry in {var}, and so on.
 
-The "partial factorial" function {a *** b} calculates the product $a*(a+1)*...$ which is terminated at the least integer not greater than $b$. The arguments $a$ and $b$ do not have to be integers; for integer arguments, {a *** b} = $b! / (a-1)!$. This function is sometimes a lot faster than evaluating the two factorials, especially if $a$ and $b$ are close together. If $a>b$ the function returns $1$.
-
-The {Subfactorial} function can be interpreted as the  number of permutations of {m} objects in which no object 
-appears in its natural place, also called "derangements." 
-
-The factorial functions are threaded, meaning that if the argument {n} is a
-list, the function will be applied to each element of the list.
-
-Note: For reasons of Yacas syntax, the factorial sign {!} cannot precede other
-non-letter symbols such as {+} or {*}. Therefore, you should enter a space
-after {!} in expressions such as {x! +1}.
-
-The factorial functions terminate and print an error message if the arguments are too large (currently the limit is $n < 65535$) because exact factorials of such large numbers are computationally expensive and most probably not useful. One can call {LnGammaNum()} to evaluate logarithms of such factorials to desired precision.
+The {D} operator returns the original function if $n=0$, a common
+mathematical idiom that simplifies many formulae.
 
 *E.G.
 
-	In> 5!
-	Out> 120;
-	In> 1 * 2 * 3 * 4 * 5
-	Out> 120;
-	In> (1/2)!
-	Out> Sqrt(Pi)/2;
-	In> 7!!;
-	Out> 105;
-	In> 1/3 *** 10;
-	Out> 17041024000/59049;
-	In> Subfactorial(10)
-	Out> 1334961;
+	In> D(x)Sin(x*y)
+	Out> y*Cos(x*y);
+	In> D({x,y,z})Sin(x*y)
+	Out> {y*Cos(x*y),x*Cos(x*y),0};
+	In> D(x,2)Sin(x*y)
+	Out> -Sin(x*y)*y^2;
+	In> D(x){Sin(x),Cos(x)}
+	Out> {Cos(x),-Sin(x)};
 
+*SEE Integrate, Taylor, Diverge, Curl
 
-*SEE Bin, Factorize, Gamma, !!, ***, Subfactorial
-
-*CMD Bin --- binomial coefficients
+*CMD Curl --- curl of a vector field
 *STD
 *CALL
-	Bin(n, m)
+	Curl(vector, basis)
 
 *PARMS
 
-{n}, {m} -- integers
+{vector} -- vector field to take the curl of
+
+{basis} -- list of variables forming the basis
 
 *DESC
 
-This function calculates the binomial coefficient "n" above
-"m", which equals $$n! / (m! * (n-m)!)$$
+This function takes the curl of the vector field "vector" with
+respect to the variables "basis". The curl is defined in the usual way,
 
-This is equal to the number of ways
-to choose "m" objects out of a total of "n" objects if order is
-not taken into account. The binomial coefficient is defined to be zero
-if "m" is negative or greater than "n"; {Bin(0,0)}=1.
+	Curl(f,x) = {
+	    D(x[2]) f[3] - D(x[3]) f[2],
+	    D(x[3]) f[1] - D(x[1]) f[3],
+	    D(x[1]) f[2] - D(x[2]) f[1]
+	}
+Both "vector" and "basis" should be lists of length 3.
 
-*E.G.
+*EG
 
-	In> Bin(10, 4)
-	Out> 210;
-	In> 10! / (4! * 6!)
-	Out> 210;
+	In> Curl({x*y,x*y,x*y},{x,y,z})
+	Out> {x,-y,y-x};
 
-*SEE !, Eulerian
+*SEE D, Diverge
 
-*CMD Eulerian --- Eulerian numbers
+*CMD Diverge --- divergence of a vector field
 *STD
 *CALL
-	Eulerian(n,m)
+	Diverge(vector, basis)
 
 *PARMS
 
-{n}, {m} --- integers
+{vector} -- vector field to calculate the divergence of
+
+{basis} -- list of variables forming the basis
 
 *DESC
 
-The Eulerian numbers can be viewed as a generalization of the binomial coefficients,
-and are given explicitly by $$ Sum(j,0,k+1,(-1)^j*Bin(n+1,j)*(k-j+1)^n) $$ .
+This function calculates the divergence of the vector field "vector"
+with respect to the variables "basis". The divergence is defined as
+
+	Diverge(f,x) = D(x[1]) f[1] + ...
+	    + D(x[n]) f[n],
+where {n} is the length of the lists "vector" and
+"basis". These lists should have equal length.
+
+*EG
+
+	In> Diverge({x*y,x*y,x*y},{x,y,z})
+	Out> y+x;
+
+*SEE D, Curl
+
+*CMD Integrate --- integration
+*STD
+*CALL
+	Integrate(var, x1, x2) expr
+	Integrate(var) expr
+
+*PARMS
+
+{var} -- atom, variable to integrate over
+
+{x1} -- first point of definite integration
+
+{x2} -- second point of definite integration
+
+{expr} -- expression to integrate
+
+*DESC
+
+This function integrates the expression {expr} with respect to the
+variable {var}. The first calling format is used to perform
+definite integration: the integration is carried out from $var=x1$
+to $var=x2$". The second form is for indefinite integration.
+
+Some simple integration rules have currently been
+implemented. Polynomials, some quotients of polynomials,
+trigonometric functions and their inverses, hyperbolic functions
+and their inverses, {Exp}, and {Ln}, and products of these
+functions with polynomials can be integrated.
 
 *E.G.
 
-	In> Eulerian(6,2)
-	Out> 302;
-	In> Eulerian(10,9)
+	In> Integrate(x,a,b) Cos(x)
+	Out> Sin(b)-Sin(a);
+	In> Integrate(x) Cos(x)
+	Out> Sin(x);
+
+*SEE D, UniqueConstant
+
+
+*CMD Limit --- limit of an expression
+*STD
+*CALL
+	Limit(var, val) expr
+	Limit(var, val, dir) expr
+
+*PARMS
+
+{var} -- a variable
+
+{val} -- a number
+
+{dir} -- a direction ({Left} or {Right})
+
+{expr} -- an expression
+
+*DESC
+
+This command tries to determine the value that the expression "expr"
+converges to when the variable "var" approaches "val". One may use
+{Infinity} or {-Infinity} for
+"val". The result of {Limit} may be one of the
+symbols {Undefined} (meaning that the limit does not
+exist), {Infinity}, or {-Infinity}.
+
+The second calling sequence is used for unidirectional limits. If one
+gives "dir" the value {Left}, the limit is taken as
+"var" approaches "val" from the positive infinity; and {Right} will take the limit from the negative infinity.
+
+*E.G.
+
+	In> Limit(x,0) Sin(x)/x
 	Out> 1;
+	In> Limit(x,0) (Sin(x)-Tan(x))/(x^3)
+	Out> -1/2;
+	In> Limit(x,0) 1/x
+	Out> Undefined;
+	In> Limit(x,0,Left) 1/x
+	Out> -Infinity;
+	In> Limit(x,0,Right) 1/x
+	Out> Infinity;
 
-*SEE Bin
 
+
+
+
+
+			Random numbers
+
+*CMD Random, RandomSeed --- (pseudo-) random number generator
+*STD
+*CALL
+	Random()
+	RandomSeed(init)
+
+*PARAMS
+{init} -- positive integer, initial random seed
+
+*DESC
+
+The function {Random} returns a random number, uniformly distributed in the
+interval between 0 and 1. The same sequence of random numbers is
+generated in every Yacas session.
+
+The random number generator can be initialized by calling {RandomSeed} with an integer value.
+Each seed value will result in the same sequence of pseudo-random numbers.
+
+*SEE RandomInteger, RandomPoly, Rng
+
+
+*CMD RngCreate --- manipulate random number generators as objects
+*CMD RngSeed --- manipulate random number generators as objects
+*CMD Rng --- manipulate random number generators as objects
+*STD
+*CALL
+	RngCreate()
+	RngCreate(init)
+	RngCreate(option==value,...)
+	RngSeed(r, init)
+	Rng(r)
+	
+*PARMS
+{init} -- integer, initial seed value
+
+{option} -- atom, option name
+
+{value} -- atom, option value
+
+{r} -- a list, RNG object
+
+*DESC
+These commands are an object-oriented interface to (pseudo-)random number generators (RNGs).
+
+{RngCreate} returns a list which is a well-formed RNG object.
+Its value should be saved in a variable and used to call {Rng} and {RngSeed}.
+
+{Rng(r)} returns a floating-point random number between 0 and 1 and updates the RNG object {r}.
+(Currently, the Gaussian option makes a RNG return a <i>complex</i> random number instead of a real random number.)
+
+{RngSeed(r,init)} re-initializes the RNG object {r} with the seed value {init}.
+The seed value should be a positive integer.
+
+The {RngCreate} function accepts several options as arguments.
+Currently the following options are available:
+
+*	{seed} -- specify initial seed value, must be a positive integer
+*	{dist} -- specify the distribution of the random number; currently {flat} and {gauss} are implemented, and the default is the flat (uniform) distribution
+*	{engine} -- specify the RNG engine; currently {default} and {advanced} are available ("advanced" is slower but has much longer period)
+
+If the initial seed is not specified, the value of 76544321 will be used.
+
+The {gauss} option will create a RNG object that generates pairs of Gaussian distributed random numbers as a complex random number.
+The real and the imaginary parts of this number are independent random numbers taken from a Gaussian (i.e. "normal") distribution with unit variance.
+
+For the Gaussian distribution, the Box-Muller transform method is used.
+A good description of this method, along with the proof that the method
+generates normally distributed random numbers, can be found in Knuth, 
+"The Art of Computer Programming", Volume 2 (Seminumerical algorithms, third 
+edition), section 3.4.1 
+
+Note that unlike the global {Random} function, the RNG objects created with {RngCreate} are independent RNGs and do not affect each other.
+They generate independent streams of pseudo-random numbers.
+However, the {Random} function is slightly faster.
+
+*E.G.
+
+	In> r1:=RngCreate(seed=1,dist=gauss)
+	Out> {"GaussianRNGDist","RNGEngine'LCG'2",{1}}
+	In> Rng(r1)
+	Out> Complex(-1.6668466417,0.228904004);
+	In> Rng(r1);
+	Out> Complex(0.0279296109,-0.5382405341);
+The second RNG gives a uniform distribution (default option) but uses a more complicated algorithm:
+	In> [r2:=RngCreate(engine=advanced);Rng(r2);]
+	Out> 0.3653615377;
+The generator {r1} can be re-initialized with seed 1 again to obtain the same sequence:
+	In> RngSeed(r1, 1)
+	Out> True;
+	In> Rng(r1)
+	Out> Complex(-1.6668466417,0.228904004);
+	
+
+*SEE Random
+
+
+
+			Series
 
 *CMD Add --- find sum of a list of values
 *STD
@@ -629,56 +816,6 @@ returned. Obviously, "to" should be greater than or equal to
 	Out> 24;
 
 *SEE Sum, Apply
-
-
-*CMD Commutator --- commutator of two objects
-*STD
-*CALL
-	Commutator(a, b)
-
-*PARMS
-
-{a}, {b} -- two objects whose commutator should be computed
-
-*DESC
-
-This command computes the commutator of 'a" and "b", i.e. the
-expression "a b - b a". For numbers and other objects for which
-multiplication is commutative, the commutator is zero. But this is not
-necessarily the case for matrices.
-
-*E.G.
-
-	In> Commutator(2,3)
-	Out> 0;
-	In> PrettyPrinter("PrettyForm");
-	
-	True
-	
-	In> A := { {0,x}, {0,0} }
-	
-	/              \
-	| ( 0 ) ( x )  |
-	|              |
-	| ( 0 ) ( 0 )  |
-	\              /
-	
-	In> B := { {y,0}, {0,z} }
-	
-	/              \
-	| ( y ) ( 0 )  |
-	|              |
-	| ( 0 ) ( z )  |
-	\              /
-	
-	In> Commutator(A,B)
-	
-	/                          \
-	| ( 0 ) ( x * z - y * x )  |
-	|                          |
-	| ( 0 ) ( 0 )              |
-	\                          /
-
 
 
 *CMD Taylor --- univariate Taylor series expansion
@@ -836,341 +973,6 @@ This function drops all terms of order "degree" or higher in
 
 *SEE Taylor, InverseTaylor
 
-*CMD Newton --- solve an equation numerically with Newton's method
-*STD
-*CALL
-	Newton(expr, var, initial, accuracy)
-	Newton(expr, var, initial, accuracy,min,max)
-
-*PARMS
-
-{expr} -- an expression to find a zero for
-
-{var} -- free variable to adjust to find a zero
-
-{initial} -- initial value for "var" to use in the search
-
-{accuracy} -- minimum required accuracy of the result
-
-{min} -- minimum value for "var" to use in the search
-
-{max} -- maximum value for "var" to use in the search
-
-*DESC
-
-This function tries to numerically find a zero of the expression
-{expr}, which should depend only on the variable {var}. It uses
-the value {initial} as an initial guess.
-
-The function will iterate using Newton's method until it estimates
-that it has come within a distance {accuracy} of the correct
-solution, and then it will return its best guess. In particular, it
-may loop forever if the algorithm does not converge.
-
-When {min} and {max} are supplied, the Newton iteration takes them
-into account by returning {Fail} if it failed to find a root in
-the given range. Note this doesn't mean there isn't a root, just
-that this algorithm failed to find it due to the trial values
-going outside of the bounds.
-
-*E.G.
-
-	In> Newton(Sin(x),x,3,0.0001)
-	Out> 3.1415926535;
-	In> Newton(x^2-1,x,2,0.0001,-5,5)
-	Out> 1;
-	In> Newton(x^2+1,x,2,0.0001,-5,5)
-	Out> Fail;
-
-*SEE Solve, NewtonNum
-
-*CMD D --- take derivative of expression with respect to variable
-*STD
-*CALL
-	D(variable) expression
-	D(list) expression
-	D(variable,n) expression
-
-*PARMS
-
-{variable} -- variable
-
-{list} -- a list of variables
-
-{expression} -- expression to take derivatives of
-
-{n} -- order of derivative
-
-*DESC
-
-This function calculates the derivative of the expression {expr} with
-respect to the variable {var} and returns it. If the third calling
-format is used, the {n}-th derivative is determined. Yacas knows
-how the differentiate standard functions such as {Ln}
-and {Sin}.
-
-The {D} operator is threaded in both {var} and
-{expr}. This means that if either of them is a list, the function is
-applied to each entry in the list. The results are collected in
-another list which is returned. If both {var} and {expr} are a
-list, their lengths should be equal. In this case, the first entry in
-the list {expr} is differentiated with respect to the first entry in
-the list {var}, the second entry in {expr} is differentiated with
-respect to the second entry in {var}, and so on.
-
-The {D} operator returns the original function if $n=0$, a common
-mathematical idiom that simplifies many formulae.
-
-*E.G.
-
-	In> D(x)Sin(x*y)
-	Out> y*Cos(x*y);
-	In> D({x,y,z})Sin(x*y)
-	Out> {y*Cos(x*y),x*Cos(x*y),0};
-	In> D(x,2)Sin(x*y)
-	Out> -Sin(x*y)*y^2;
-	In> D(x){Sin(x),Cos(x)}
-	Out> {Cos(x),-Sin(x)};
-
-*SEE Integrate, Taylor, Diverge, Curl
-
-*CMD Curl --- curl of a vector field
-*STD
-*CALL
-	Curl(vector, basis)
-
-*PARMS
-
-{vector} -- vector field to take the curl of
-
-{basis} -- list of variables forming the basis
-
-*DESC
-
-This function takes the curl of the vector field "vector" with
-respect to the variables "basis". The curl is defined in the usual way,
-
-	Curl(f,x) = {
-	    D(x[2]) f[3] - D(x[3]) f[2],
-	    D(x[3]) f[1] - D(x[1]) f[3],
-	    D(x[1]) f[2] - D(x[2]) f[1]
-	}
-Both "vector" and "basis" should be lists of length 3.
-
-*EG
-
-	In> Curl({x*y,x*y,x*y},{x,y,z})
-	Out> {x,-y,y-x};
-
-*SEE D, Diverge
-
-*CMD Diverge --- divergence of a vector field
-*STD
-*CALL
-	Diverge(vector, basis)
-
-*PARMS
-
-{vector} -- vector field to calculate the divergence of
-
-{basis} -- list of variables forming the basis
-
-*DESC
-
-This function calculates the divergence of the vector field "vector"
-with respect to the variables "basis". The divergence is defined as
-
-	Diverge(f,x) = D(x[1]) f[1] + ...
-	    + D(x[n]) f[n],
-where {n} is the length of the lists "vector" and
-"basis". These lists should have equal length.
-
-*EG
-
-	In> Diverge({x*y,x*y,x*y},{x,y,z})
-	Out> y+x;
-
-*SEE D, Curl
-
-*CMD Integrate --- integration
-*STD
-*CALL
-	Integrate(var, x1, x2) expr
-	Integrate(var) expr
-
-*PARMS
-
-{var} -- atom, variable to integrate over
-
-{x1} -- first point of definite integration
-
-{x2} -- second point of definite integration
-
-{expr} -- expression to integrate
-
-*DESC
-
-This function integrates the expression {expr} with respect to the
-variable {var}. The first calling format is used to perform
-definite integration: the integration is carried out from $var=x1$
-to $var=x2$". The second form is for indefinite integration.
-
-Some simple integration rules have currently been
-implemented. Polynomials, some quotients of polynomials,
-trigonometric functions and their inverses, hyperbolic functions
-and their inverses, {Exp}, and {Ln}, and products of these
-functions with polynomials can be integrated.
-
-*E.G.
-
-	In> Integrate(x,a,b) Cos(x)
-	Out> Sin(b)-Sin(a);
-	In> Integrate(x) Cos(x)
-	Out> Sin(x);
-
-*SEE D, UniqueConstant
-
-
-*CMD Random, RandomSeed --- (pseudo-) random number generator
-*STD
-*CALL
-	Random()
-	RandomSeed(init)
-
-*PARAMS
-{init} -- positive integer, initial random seed
-
-*DESC
-
-The function {Random} returns a random number, uniformly distributed in the
-interval between 0 and 1. The same sequence of random numbers is
-generated in every Yacas session.
-
-The random number generator can be initialized by calling {RandomSeed} with an integer value.
-Each seed value will result in the same sequence of pseudo-random numbers.
-
-*SEE RandomInteger, RandomPoly, Rng
-
-
-*CMD RngCreate --- manipulate random number generators as objects
-*CMD RngSeed --- manipulate random number generators as objects
-*CMD Rng --- manipulate random number generators as objects
-*STD
-*CALL
-	RngCreate()
-	RngCreate(init)
-	RngCreate(option==value,...)
-	RngSeed(r, init)
-	Rng(r)
-	
-*PARMS
-{init} -- integer, initial seed value
-
-{option} -- atom, option name
-
-{value} -- atom, option value
-
-{r} -- a list, RNG object
-
-*DESC
-These commands are an object-oriented interface to (pseudo-)random number generators (RNGs).
-
-{RngCreate} returns a list which is a well-formed RNG object.
-Its value should be saved in a variable and used to call {Rng} and {RngSeed}.
-
-{Rng(r)} returns a floating-point random number between 0 and 1 and updates the RNG object {r}.
-(Currently, the Gaussian option makes a RNG return a <i>complex</i> random number instead of a real random number.)
-
-{RngSeed(r,init)} re-initializes the RNG object {r} with the seed value {init}.
-The seed value should be a positive integer.
-
-The {RngCreate} function accepts several options as arguments.
-Currently the following options are available:
-
-*	{seed} -- specify initial seed value, must be a positive integer
-*	{dist} -- specify the distribution of the random number; currently {flat} and {gauss} are implemented, and the default is the flat (uniform) distribution
-*	{engine} -- specify the RNG engine; currently {default} and {advanced} are available ("advanced" is slower but has much longer period)
-
-If the initial seed is not specified, the value of 76544321 will be used.
-
-The {gauss} option will create a RNG object that generates pairs of Gaussian distributed random numbers as a complex random number.
-The real and the imaginary parts of this number are independent random numbers taken from a Gaussian (i.e. "normal") distribution with unit variance.
-
-For the Gaussian distribution, the Box-Muller transform method is used.
-A good description of this method, along with the proof that the method
-generates normally distributed random numbers, can be found in Knuth, 
-"The Art of Computer Programming", Volume 2 (Seminumerical algorithms, third 
-edition), section 3.4.1 
-
-Note that unlike the global {Random} function, the RNG objects created with {RngCreate} are independent RNGs and do not affect each other.
-They generate independent streams of pseudo-random numbers.
-However, the {Random} function is slightly faster.
-
-*E.G.
-
-	In> r1:=RngCreate(seed=1,dist=gauss)
-	Out> {"GaussianRNGDist","RNGEngine'LCG'2",{1}}
-	In> Rng(r1)
-	Out> Complex(-1.6668466417,0.228904004);
-	In> Rng(r1);
-	Out> Complex(0.0279296109,-0.5382405341);
-The second RNG gives a uniform distribution (default option) but uses a more complicated algorithm:
-	In> [r2:=RngCreate(engine=advanced);Rng(r2);]
-	Out> 0.3653615377;
-The generator {r1} can be re-initialized with seed 1 again to obtain the same sequence:
-	In> RngSeed(r1, 1)
-	Out> True;
-	In> Rng(r1)
-	Out> Complex(-1.6668466417,0.228904004);
-	
-	
-
-
-*SEE Random
-
-
-*CMD Limit --- limit of an expression
-*STD
-*CALL
-	Limit(var, val) expr
-	Limit(var, val, dir) expr
-
-*PARMS
-
-{var} -- a variable
-
-{val} -- a number
-
-{dir} -- a direction ({Left} or {Right})
-
-{expr} -- an expression
-
-*DESC
-
-This command tries to determine the value that the expression "expr"
-converges to when the variable "var" approaches "val". One may use
-{Infinity} or {-Infinity} for
-"val". The result of {Limit} may be one of the
-symbols {Undefined} (meaning that the limit does not
-exist), {Infinity}, or {-Infinity}.
-
-The second calling sequence is used for unidirectional limits. If one
-gives "dir" the value {Left}, the limit is taken as
-"var" approaches "val" from the positive infinity; and {Right} will take the limit from the negative infinity.
-
-*E.G.
-
-	In> Limit(x,0) Sin(x)/x
-	Out> 1;
-	In> Limit(x,0) (Sin(x)-Tan(x))/(x^3)
-	Out> -1/2;
-	In> Limit(x,0) 1/x
-	Out> Undefined;
-	In> Limit(x,0,Left) 1/x
-	Out> -Infinity;
-	In> Limit(x,0,Right) 1/x
-	Out> Infinity;
-
 
 *CMD LagrangeInterpolant --- polynomial interpolation
 *STD
@@ -1233,68 +1035,174 @@ polynomial.
 
 *SEE Subst
 
-*CMD Fibonacci --- Fibonacci sequence
+
+
+			Combinatorics
+
+*CMD !  --- factorial
+*CMD !!  --- factorial and related functions
+*CMD ***  --- factorial and related functions
+*CMD Subfactorial  --- factorial and related functions
 *STD
 *CALL
-	Fibonacci(n)
+	n!
+	n!!
+	a *** b
+	Subfactorial(m)
 
 *PARMS
 
-{n} -- an integer
+{m} -- integer
+{n} -- integer, half-integer, or list
+{a}, {b} -- numbers
 
 *DESC
 
-This command calculates and returns the "n"-th Fibonacci number.
+The factorial function {n!} calculates the factorial of integer or half-integer numbers. For
+nonnegative integers, $n! := n*(n-1)*(n-2)*...*1$. The factorial of
+half-integers is defined via Euler's Gamma function, $z! := Gamma(z+1)$. If $n=0$ the function returns $1$.
 
-The Fibonacci sequence is 1, 1, 2, 3, 5, 8, 13, 21, ... where every
-number is the sum of the two preceding numbers. Formally, it is
-defined by $F(1) = 1$, $F(2) = 1$, and $F(n+1) = F(n) + F(n-1)$, where $F(n)$
-denotes the $n$-th Fibonacci number.
+The "double factorial" function {n!!} calculates $n*(n-2)*(n-4)*...$. This product terminates either with $1$ or with $2$ depending on whether $n$ is odd or even. If $n=0$ the function returns $1$.
+
+The "partial factorial" function {a *** b} calculates the product $a*(a+1)*...$ which is terminated at the least integer not greater than $b$. The arguments $a$ and $b$ do not have to be integers; for integer arguments, {a *** b} = $b! / (a-1)!$. This function is sometimes a lot faster than evaluating the two factorials, especially if $a$ and $b$ are close together. If $a>b$ the function returns $1$.
+
+The {Subfactorial} function can be interpreted as the  number of permutations of {m} objects in which no object 
+appears in its natural place, also called "derangements." 
+
+The factorial functions are threaded, meaning that if the argument {n} is a
+list, the function will be applied to each element of the list.
+
+Note: For reasons of Yacas syntax, the factorial sign {!} cannot precede other
+non-letter symbols such as {+} or {*}. Therefore, you should enter a space
+after {!} in expressions such as {x! +1}.
+
+The factorial functions terminate and print an error message if the arguments are too large (currently the limit is $n < 65535$) because exact factorials of such large numbers are computationally expensive and most probably not useful. One can call {LnGammaNum()} to evaluate logarithms of such factorials to desired precision.
 
 *E.G.
 
-	In> Fibonacci(4)
-	Out> 3;
-	In> Fibonacci(8)
-	Out> 21;
-	In> Table(Fibonacci(i), i, 1, 10, 1)
-	Out> {1,1,2,3,5,8,13,21,34,55};
+	In> 5!
+	Out> 120;
+	In> 1 * 2 * 3 * 4 * 5
+	Out> 120;
+	In> (1/2)!
+	Out> Sqrt(Pi)/2;
+	In> 7!!;
+	Out> 105;
+	In> 1/3 *** 10;
+	Out> 17041024000/59049;
+	In> Subfactorial(10)
+	Out> 1334961;
 
-*CMD Pslq --- search for integer relations between reals
+
+*SEE Bin, Factorize, Gamma, !!, ***, Subfactorial
+
+*CMD Bin --- binomial coefficients
 *STD
 *CALL
-	Pslq(xlist,precision)
+	Bin(n, m)
 
 *PARMS
 
-{xlist} -- list of numbers
-
-{precision} -- required number of digits precision of calculation
+{n}, {m} -- integers
 
 *DESC
 
-This function is an integer relation detection algorithm. This means
-that, given the numbers $x[i]$ in the list "xlist", it tries
-to find integer coefficients $a[i]$ such that
-$a[1]*x[1]$ + ... + $a[n]*x[n] = 0$.
-The list of integer coefficients is returned.
+This function calculates the binomial coefficient "n" above
+"m", which equals $$n! / (m! * (n-m)!)$$
 
-The numbers in "xlist" must evaluate to floating point numbers if
-the {N} operator is applied on them.
+This is equal to the number of ways
+to choose "m" objects out of a total of "n" objects if order is
+not taken into account. The binomial coefficient is defined to be zero
+if "m" is negative or greater than "n"; {Bin(0,0)}=1.
 
-*EG
+*E.G.
 
-	In> Pslq({ 2*Pi+3*Exp(1), Pi, Exp(1) },20)
-	Out> {1,-2,-3};
+	In> Bin(10, 4)
+	Out> 210;
+	In> 10! / (4! * 6!)
+	Out> 210;
 
-Note: in this example the system detects correctly that
-$1 * (2*Pi+3*e) + (-2) * Pi + (-3) * e = 0$.
+*SEE !, Eulerian
 
-*SEE N
+*CMD Eulerian --- Eulerian numbers
+*STD
+*CALL
+	Eulerian(n,m)
+
+*PARMS
+
+{n}, {m} --- integers
+
+*DESC
+
+The Eulerian numbers can be viewed as a generalization of the binomial coefficients,
+and are given explicitly by $$ Sum(j,0,k+1,(-1)^j*Bin(n+1,j)*(k-j+1)^n) $$ .
+
+*E.G.
+
+	In> Eulerian(6,2)
+	Out> 302;
+	In> Eulerian(10,9)
+	Out> 1;
+
+*SEE Bin
+
+
+*CMD LeviCivita --- totally anti-symmetric Levi-Civita symbol
+*STD
+*CALL
+	LeviCivita(list)
+
+*PARMS
+
+{list} -- a list of integers 1 .. n in some order
+
+*DESC
+
+{LeviCivita} implements the Levi-Civita symbol. This is generally
+useful for tensor calculus.  {list}  should be a list of integers,
+and this function returns 1 if the integers are in successive order,
+eg. {LeviCivita( {1,2,3,...} )}  would return 1. Swapping two elements of this
+list would return -1. So, {LeviCivita( {2,1,3} )} would evaluate
+to -1.
+
+*E.G.
+
+	In> LeviCivita({1,2,3})
+	Out> 1;
+	In> LeviCivita({2,1,3})
+	Out> -1;
+	In> LeviCivita({2,2,3})
+	Out> 0;
+
+*SEE Permutations
+
+*CMD Permutations --- get all permutations of a list
+*STD
+*CALL
+	Permutations(list)
+
+*PARMS
+
+{list} -- a list of elements
+
+*DESC
+
+Permutations returns a list with all the permutations of
+the original list.
+
+*E.G.
+
+	In> Permutations({a,b,c})
+	Out> {{a,b,c},{a,c,b},{c,a,b},{b,a,c},
+	{b,c,a},{c,b,a}};
+
+*SEE LeviCivita
 
 
 
-		Special functions
+
+			Special functions
 
 *INTRO In this chapter, special and transcendental mathematical functions are described.
 
@@ -1365,11 +1273,9 @@ Note that Euler's constant $gamma<=>0.57722$ is the lowercase {gamma} in Yacas.
 
 
 *CMD Bernoulli --- Bernoulli numbers and polynomials
-*CMD BernoulliArray --- Bernoulli numbers and polynomials
 *STD
 *CALL
 	Bernoulli(index)
-	BernoulliArray(index)
 	Bernoulli(index, x)
 
 *PARMS
@@ -1381,8 +1287,6 @@ Note that Euler's constant $gamma<=>0.57722$ is the lowercase {gamma} in Yacas.
 *DESC
 
 {Bernoulli(n)} evaluates the $n$-th Bernoulli number. {Bernoulli(n, x)} returns the $n$-th Bernoulli polynomial in the variable $x$. The polynomial is returned in the Horner form.
-
-An auxiliary function {BernoulliArray(n)} might be useful too: it returns an array (of type {GenericArray}) of Bernoulli numbers up to $n$. The array is 1-based, so that the $n$-th Bernoulli number is {BernoulliArray(n)[n+1]}.
 
 *EG
 
@@ -1448,104 +1352,7 @@ To compute the numeric value of the  principal branch of Lambert's $W$ function 
 
 *SEE Exp
 
-*CMD gamma --- Euler's constant $gamma$
-*STD
-*CALL
-	gamma()
 
-*DESC
-
-These functions compute Euler's constant $gamma<=>0.57722$...
-
-The constant is available symbolically as {gamma} or numerically as a function {gamma()}.
-This is a "cached constant" which is recalculated only when precision is increased.
-The numerical value of the constant can also be obtained as {N(gamma)}.
-The low-level numerical computations are performed by the routine {GammaConstNum}.
-
-Note that Euler's Gamma function $Gamma(x)$ is the capitalized {Gamma} in Yacas.
-
-*E.G.
-
-	In> gamma+Pi
-	Out> gamma+Pi;
-	In> N(gamma+Pi)
-	Out> 3.7188083184;
-	In> [Precision(20);V(gamma());]
-	
-	CachedConstant: Info: constant gamma is being
-	  recalculated at precision 20 
-	GammaConstNum: Info: used 56 iterations at
-	  working precision 24 
-	Out> 0.57721566490153286061;
-
-*SEE Gamma, N, CachedConstant
-
-*CMD GoldenRatio --- the Golden Ratio
-*STD
-*CALL
-	GoldenRatio()
-
-*DESC
-
-These functions compute the "golden ratio"
-$$phi <=> 1.6180339887 <=> (1+Sqrt(5))/2 $$.
-
-The ancient Greeks defined the "golden ratio" as follows:
-If one divides a length 1 into two pieces $x$ and $1-x$, such that the ratio of 1 to $x$ is the same as the ratio of $x$ to $1-x$, then $1/x <=> 1.618$... is the "golden ratio".
-
-
-The constant is available symbolically as {GoldenRatio} or numerically as a function {GoldenRatio()}.
-This is a "cached constant" which is recalculated only when precision is increased.
-The numerical value of the constant can also be obtained as {N(GoldenRatio)}.
-
-
-*E.G.
-
-	In> x:=GoldenRatio - 1
-	Out> GoldenRatio-1;
-	In> N(x)
-	Out> 0.6180339887;
-	In> N(1/GoldenRatio)
-	Out> 0.6180339887;
-	In> [Precision(20);V(GoldenRatio());]
-
-	CachedConstant: Info: constant GoldenRatio is
-	being recalculated at precision 20 
-	Out> 1.6180339887498948482;
-
-
-*SEE N, CachedConstant
-
-
-*CMD Catalan --- Catalan's Constant
-*STD
-*CALL
-	Catalan()
-
-*DESC
-
-These functions compute Catalan's Constant $Catalan<=>0.9159655941$.
-
-The constant is available symbolically as {Catalan} or numerically as a function {Catalan()}.
-This is a "cached constant" which is recalculated only when precision is increased.
-The numerical value of the constant can also be obtained as {N(Catalan)}.
-The low-level numerical computations are performed by the routine {CatalanConstNum}.
-
-
-*E.G.
-
-	In> N(Catalan)
-	Out> 0.9159655941;
-	In> DirichletBeta(2)
-	Out> Catalan;
-	In> [Precision(20);V(Catalan());]
-
-	CachedConstant: Info: constant Catalan is
-	being recalculated at precision 20
-	Out> 0.91596559417721901505;
-
-
-*SEE N, CachedConstant
 
 *INCLUDE complex.chapt
 

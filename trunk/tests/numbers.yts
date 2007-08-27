@@ -1,53 +1,22 @@
 
 f():=[]; //Echo(CurrentLine());
 
-Verify( Lucas(143), {767772505664398093937756525279,1242282009792667284144565908482}); f();
 Verify( CatalanNumber(6), 132 ); f();
 Verify( CatalanNumber(10), 16796 ); f();
-Verify( Fibonacci(242), 168083057059453008835412295811648513482449585399521 ); f();
+
 
 Testing("Integer logarithms and roots");
 
-Verify(
-IntLog(23^45, 67)
-, 33
-); f();
+Verify(IntLog(23^45, 67), 33); f();
 
-Verify(
-IntLog(1, 67)
-, 0
-); f();
-Verify(
-IntLog(2, 67)
-, 0
-); f();
-Verify(
-IntLog(0, 67)
-, 0
-); f();
-Verify(
-IntLog(1, 1)
-, Undefined
-); f();
-Verify(
-IntLog(2, 1)
-, Undefined
-); f();
-
-Verify(
-IntLog(256^8, 4)
-, 32
-); f();
-
-Verify(
-IntLog(256^8-1, 4)
-, 31
-); f();
-
-Verify(
-IntNthRoot(65537^33, 11)
-, 281487861809153
-); f();
+Verify(IntLog(1, 67), 0); f();
+Verify(IntLog(2, 67), 0); f();
+Verify(IntLog(0, 67), 0); f();
+Verify(IntLog(1, 1), Undefined); f();
+Verify(IntLog(2, 1), Undefined); f();
+Verify(IntLog(256^8, 4), 32); f();
+Verify(IntLog(256^8-1, 4), 31); f();
+Verify(IntNthRoot(65537^33, 11), 281487861809153); f();
 
 Testing("Factorial");
 Verify(261! - 261*260!, 0); f();

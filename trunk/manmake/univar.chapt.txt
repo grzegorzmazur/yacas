@@ -1,9 +1,11 @@
 
-			Polynomials
+			Polynomials and series
 
 *INTRO This chapter contains commands to manipulate
 polynomials. This includes functions for constructing and evaluating
 orthogonal polynomials.
+
+		Operations on polynomials
 
 *CMD Expand --- transform a polynomial to an expanded form
 *STD
@@ -383,6 +385,10 @@ the Horner scheme. The list of coefficients starts with the $0$-th power.
 	Out> a+x*(b+x*(c+x*d));
 
 *SEE Horner
+
+
+
+		Special polynomials
 
 *CMD OrthoP --- Legendre and Jacobi orthogonal polynomials
 *STD
