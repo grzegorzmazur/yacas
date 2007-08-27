@@ -1127,7 +1127,7 @@ Here are some examples of this behavior:
 
 To implement this behavior, {Gamma} and other mathematical functions usually
 have two variants: the "symbolic" one and the "numerical" one. For instance,
-there are {Sin} and {MathSin}, {Ln} and {LnNum}, {Gamma} and {GammaNum}. (Here
+there are {Sin} and {MathSin}, {Ln} and {LnNum}, {Gamma} and {Internal'GammaNum}. (Here
 {MathSin} happens to be a core function but it is not essential.) The "numerical"
 functions always evaluate to floating-point results. The "symbolic" function
 serves as a front-end; it evaluates when the result can be expressed exactly,

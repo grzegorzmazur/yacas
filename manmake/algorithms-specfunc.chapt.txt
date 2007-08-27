@@ -67,8 +67,9 @@ This method is currently not implemented in Yacas.
 *A Gamma function!by Lanczos-Spouge method
 
 For arbitrary complex arguments with nonnegative real part, the
-function {GammaNum(x)} computes a uniform appoximation of Lanczos [Lanczos 1964] modified by Spouge [Spouge 1994].
-(See also [Godfrey 2001] for some more explanations.)
+function {Internal'GammaNum(x)} computes a uniform appoximation of Lanczos [Lanczos 1964] modified by Spouge [Spouge 1994].
+(See also [Godfrey 2001] for some more explanations.) This function is also triggered when in numeric mode, eg. when 
+calling {N(Gamma(x))}, which is the preferred method for end users.
 
 The method gives the $Gamma$-function only for arguments with positive
 real part; at negative values of the real part of the argument, the
@@ -103,11 +104,10 @@ This leads to some cancellations and as a result to a certain loss of precision.
 
 At version
 *EVAL Version() : ","
-{Yacas} is limited in
-its internal arbitrary precision facility that does not support
+{Yacas} is limited in its internal arbitrary precision facility that does not support
 true floating-point computation but rather uses fixed-point logic; this hinders precise calculations with
 floating-point numbers. (This concern does not apply to Yacas linked with
-{gmp}.) In the current version of the {GammaNum()} function, two workarounds
+{gmp}.) In the current version of the {Internal'GammaNum()} function, two workarounds
 are implemented. First, a Horner scheme is used to compute the sum; this is somewhat
 faster and leads to smaller round-off errors. Second, intermediate calculations
 are performed at 40{%} higher precision than requested. This is much slower but

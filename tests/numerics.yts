@@ -185,20 +185,14 @@ Gamma(-7/2)
 , (16*Sqrt(Pi))/105
 );
 
-NumericEqual(
-RoundTo(N( GammaNum(10.5) ), 13)
-, 1133278.3889487855673
-,13);
+NumericEqual(RoundTo(N( Internal'GammaNum(10.5) ), 13), 1133278.3889487855673, 13);
+NumericEqual(RoundTo(N( Internal'GammaNum(-11.5) ), 20), 0.00000002295758104824, 20);
+NumericEqual(RoundTo(N( Internal'GammaNum(-12.5) ), 20), -0.00000000183660648386, 20);
 
-NumericEqual(
-RoundTo(N( GammaNum(-11.5) ), 20)
-, 0.00000002295758104824
-, 20);
+// Check for one example that N(Gamma(x)) returns the same as Internal'GammaNum
+NumericEqual(RoundTo(N( Gamma(10.5) ), 13), 1133278.3889487855673, 13);
 
-NumericEqual(
-RoundTo(N( GammaNum(-12.5) ), 20)
-, -0.00000000183660648386
-, 20);
+
 
 NumericEqual(	// lost 2 digits b/c of imprecise arithmetic
 RoundTo(N( Zeta(-11.5) ), 18)

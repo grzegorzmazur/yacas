@@ -61,7 +61,12 @@ Function() Max(l1, l2, l3, ...);
 	Check(n <= 65535, "Factorial: Error: the argument " : ( ToString() Write(n) ) : " is too large, you may want to avoid exact calculation");
 	MathFac(n);
 ];
-30 # (n_IsList)! <-- MapSingle("!",n);
+
+25 # ((x_IsConstant)!)_(FloatIsInt(x) And x>0) <-- (Round(x)!);
+
+30 # ((x_IsNumber)!)_InNumericMode() <-- Internal'GammaNum(x+1);
+
+40 # (n_IsList)! <-- MapSingle("!",n);
 
 /* formulae for half-integer factorials:
 

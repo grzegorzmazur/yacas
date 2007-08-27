@@ -48,8 +48,8 @@ LnGammaNum(z) := [
 	result;
 ];
 
-GammaNum(z) := N(Exp(LnGammaNum(z)));
+Internal'GammaNum(z) := N(Exp(LnGammaNum(z)));
 
 /// this should not be used by applications
-GammaNum(z,a) := N(Exp(LnGammaNum(z,a)));
+Internal'GammaNum(z,a) := N(Exp(LnGammaNum(z,a)));
 
