@@ -1,11 +1,13 @@
 
 TODO:
-  - GammaNum, 
+  - following crashes.
+	In> expr := 1800*x/1.5 - 1800
+	Out> (1800*x)/1.5-1800
+	In> Newton(expr, x,2,0.001)
   - LnNum
   - LnGammaNum
   - (find other ...Num functions)
   - NewtonNum
-
   - move Pi(), GoldenRatio() etcetera to Internal'Pi(), Internal'GoldenRatio() etcetera.
 
   - do a cleanup of the "ref" manual, first pass to throw away functions that should not have been there in the first place.
