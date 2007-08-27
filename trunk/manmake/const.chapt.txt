@@ -1,7 +1,6 @@
 
-			Constants
 
-		Yacas-specific constants
+			Yacas-specific constants
 
 *CMD % --- previous result
 *CORE
@@ -58,7 +57,7 @@ End of file marker when reading from file. If a file
 contains the expression {EndOfFile;} the
 operation will stop reading the file at that point.
 
-		Mathematical constants
+			Mathematical constants
 
 *CMD Infinity --- constant representing mathematical infinity
 *STD
