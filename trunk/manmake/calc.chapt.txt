@@ -1299,11 +1299,9 @@ $1 * (2*Pi+3*e) + (-2) * Pi + (-3) * e = 0$.
 *INTRO In this chapter, special and transcendental mathematical functions are described.
 
 *CMD Gamma --- Euler's Gamma function
-*CMD GammaNum --- Euler's Gamma function
 *STD
 *CALL
 	Gamma(x)
-	GammaNum(number)
 
 *PARMS
 
@@ -1313,7 +1311,7 @@ $1 * (2*Pi+3*e) + (-2) * Pi + (-3) * e = 0$.
 
 *DESC
 
-{Gamma(x)} is an interface to Euler's Gamma function $Gamma(x)$. It returns exact values on integer and half-integer arguments. {GammaNum(x)} or equivalently {N(Gamma(x)} takes a numeric parameter and always returns a floating-point number in the current precision.
+{Gamma(x)} is an interface to Euler's Gamma function $Gamma(x)$. It returns exact values on integer and half-integer arguments. {N(Gamma(x)} takes a numeric parameter and always returns a floating-point number in the current precision.
 
 Note that Euler's constant $gamma<=>0.57722$ is the lowercase {gamma} in Yacas.
 
@@ -1327,7 +1325,7 @@ Note that Euler's constant $gamma<=>0.57722$ is the lowercase {gamma} in Yacas.
 	Out> 0.897470696306277188493754954771;
 	In> Gamma(1.5)
 	Out> Sqrt(Pi)/2;
-	In> GammaNum(1.5);
+	In> N(Gamma(1.5));
 	Out> 0.88622692545275801364908374167;
 
 *SEE !, N, gamma

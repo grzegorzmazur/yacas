@@ -1,5 +1,10 @@
 
 TODO:
+  - GammaNum, 
+  - LnNum
+  - LnGammaNum
+  - (find other ...Num functions)
+
   - do a cleanup of the "ref" manual, first pass to throw away functions that should not have been there in the first place.
   - Future, change name of builtin functions that are not directly accessible to outside to have prefix Builtin'...
   - Skim through Math... functions, renaming them to Builtin'...
@@ -10,7 +15,7 @@ TODO:
   - Example: RootsOfUnity (nice example of threading): Exp(2*Pi*I*(1 .. n)/n)
   - Example: Average (nice example of threading): Average(list_IsList) <-- Add(list)/Length(list); 
 
-  - ZetaNum, GammaNum, LambertWNum, should not exist, N(Zeta) etcetera should suffice.
+  - cos(arccos(x)) -> x+k*2*pi etc
  
   - Remove Pi() and reference to it in favor of N(Pi), everywhere  (manual, tests, examples).
   - try if I can't change the format of numbers from 0.xxx to x.xxxx, is more natural
