@@ -1,11 +1,10 @@
 
-			Polynomials and series
+			Operations on polynomials
 
 *INTRO This chapter contains commands to manipulate
 polynomials. This includes functions for constructing and evaluating
 orthogonal polynomials.
 
-		Operations on polynomials
 
 *CMD Expand --- transform a polynomial to an expanded form
 *STD
@@ -264,36 +263,41 @@ calling sequence may be used.
 
 *SEE LeadingCoef
 
-*CMD RandomPoly --- construct a random polynomial
+
+*CMD SquareFree --- return the square-free part of polynomial
 *STD
 *CALL
-	RandomPoly(var,deg,coefmin,coefmax)
+	SquareFree(p)
 
 *PARMS
 
-{var} -- free variable for resulting univariate polynomial
-
-{deg} -- degree of resulting univariate polynomial
-
-{coefmin} -- minimum value for coefficients
-
-{coefmax} -- maximum value for coefficients
+{p} - a polynomial in {x}
 
 *DESC
 
-RandomPoly generates a random polynomial in variable "var", of
-degree "deg", with integer coefficients ranging from "coefmin" to
-"coefmax" (inclusive). The coefficients are uniformly distributed in
-this interval, and are independent of each other.
+Given a polynomial 
+$$ p = p[1]^n[1]* ... * p[m]^n[m] $$
+with irreducible polynomials $ p[i] $,
+return the square-free version part (with all the factors having
+multiplicity 1):
+$$ p[1]* ... * p[m] $$
 
 *E.G.
 
-	In> RandomPoly(x,3,-10,10)
-	Out> 3*x^3+10*x^2-4*x-6;
-	In> RandomPoly(x,3,-10,10)
-	Out> -2*x^3-8*x^2+8;
+	In> Expand((x+1)^5)
+	Out> x^5+5*x^4+10*x^3+10*x^2+5*x+1;
+	In> SquareFree(%)
+	Out> (x+1)/5;
+	In> Monic(%)
+	Out> x+1;
 
-*SEE Random, RandomIntegerVector
+*SEE FindRealRoots, NumRealRoots, MinimumBound, MaximumBound, Factor
+
+
+
+
+
+
 
 	    {Div} and {Mod} for polynomials
 *STD
@@ -388,7 +392,7 @@ the Horner scheme. The list of coefficients starts with the $0$-th power.
 
 
 
-		Special polynomials
+			Special polynomials
 
 *CMD OrthoP --- Legendre and Jacobi orthogonal polynomials
 *STD
@@ -789,35 +793,6 @@ a polynomial expression.
 *SEE OrthoPSum, OrthoGSum, OrthoHSum, OrthoLSum, OrthoTSum, OrthoUSum, OrthoPoly
 
 
-
-*CMD SquareFree --- return the square-free part of polynomial
-*STD
-*CALL
-	SquareFree(p)
-
-*PARMS
-
-{p} - a polynomial in {x}
-
-*DESC
-
-Given a polynomial 
-$$ p = p[1]^n[1]* ... * p[m]^n[m] $$
-with irreducible polynomials $ p[i] $,
-return the square-free version part (with all the factors having
-multiplicity 1):
-$$ p[1]* ... * p[m] $$
-
-*E.G.
-
-	In> Expand((x+1)^5)
-	Out> x^5+5*x^4+10*x^3+10*x^2+5*x+1;
-	In> SquareFree(%)
-	Out> (x+1)/5;
-	In> Monic(%)
-	Out> x+1;
-
-*SEE FindRealRoots, NumRealRoots, MinimumBound, MaximumBound, Factor
 
 
 

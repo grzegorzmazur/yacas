@@ -332,139 +332,6 @@ magnitude, so as the give them unit length.
 *SEE OrthogonalBasis, InProduct, Normalize
 
 
-*CMD IsScalar --- test for a scalar
-*STD
-*CALL
-
-	IsScalar(expr)
-
-*PARMS
-
-{expr} -- a mathematical object
-
-*DESC
-
-{IsScalar} returns {True} if {expr} is a scalar, {False} otherwise.
-Something is considered to be a scalar if it's not a list.
-
-*E.G.
-	In> IsScalar(7)
-	Out> True;
-	In> IsScalar(Sin(x)+x)
-	Out> True;
-	In> IsScalar({x,y})
-	Out> False;
-
-*SEE IsList, IsVector, IsMatrix
-
-
-*CMD IsVector --- test for a vector
-*STD
-*CALL
-
-	IsVector(expr)
-
-	IsVector(pred,expr)
-
-*PARMS
-
-{expr} -- expression to test
-
-{pred} -- predicate test (e.g. IsNumber, IsInteger, ...)
-
-*DESC
-
-{IsVector(expr)} returns {True} if {expr} is a vector, {False} otherwise.
-Something is considered to be a vector if it's a list of scalars.
-{IsVector(pred,expr)} returns {True} if {expr} is a vector and if the
-predicate test {pred} returns {True} when applied to every element of
-the vector {expr}, {False} otherwise.
-
-*E.G.
-	In> IsVector({a,b,c})
-	Out> True;
-	In> IsVector({a,{b},c})
-	Out> False;
-	In> IsVector(IsInteger,{1,2,3})
-	Out> True;
-	In> IsVector(IsInteger,{1,2.5,3})
-	Out> False;
-
-*SEE IsList, IsScalar, IsMatrix
-
-
-*CMD IsMatrix --- test for a matrix
-*STD
-*CALL
-	IsMatrix(expr)
-
-	IsMatrix(pred,expr)
-
-*PARMS
-
-{expr} -- expression to test
-
-{pred} -- predicate test (e.g. IsNumber, IsInteger, ...)
-
-*DESC
-
-{IsMatrix(expr)} returns {True} if {expr} is a matrix, {False} otherwise.
-Something is considered to be a matrix if it's a list of vectors of equal
-length.
-{IsMatrix(pred,expr)} returns {True} if {expr} is a matrix and if the
-predicate test {pred} returns {True} when applied to every element of
-the matrix {expr}, {False} otherwise.
-
-*E.G.
-
-	In> IsMatrix(1)
-	Out> False;
-	In> IsMatrix({1,2})
-	Out> False;
-	In> IsMatrix({{1,2},{3,4}})
-	Out> True;
-	In> IsMatrix(IsRational,{{1,2},{3,4}})
-	Out> False;
-	In> IsMatrix(IsRational,{{1/2,2/3},{3/4,4/5}})
-	Out> True;
-
-*SEE IsList, IsVector
-
-
-*CMD IsSquareMatrix --- test for a square matrix
-*STD
-*CALL
-	IsSquareMatrix(expr)
-
-	IsSquareMatrix(pred,expr)
-
-*PARMS
-
-{expr} -- expression to test
-
-{pred} -- predicate test (e.g. IsNumber, IsInteger, ...)
-
-*DESC
-
-{IsSquareMatrix(expr)} returns {True} if {expr} is a square matrix,
-{False} otherwise. Something is considered to be a square matrix if
-it's a matrix having the same number of rows and columns.
-{IsMatrix(pred,expr)} returns {True} if {expr} is a square matrix and
-if the predicate test {pred} returns {True} when applied to every
-element of the matrix {expr}, {False} otherwise.
-
-*E.G.
-
-	In> IsSquareMatrix({{1,2},{3,4}});
-	Out> True;
-	In> IsSquareMatrix({{1,2,3},{4,5,6}});
-	Out> False;
-	In> IsSquareMatrix(IsBoolean,{{1,2},{3,4}});
-	Out> False;
-	In> IsSquareMatrix(IsBoolean,{{True,False},{False,True}});
-	Out> True;
-
-*SEE IsMatrix
 
 
 *CMD Normalize --- normalize a vector
@@ -805,6 +672,216 @@ the values of each vector.
 
 *SEE EigenValues, CharacteristicEquation
 
+
+
+
+*CMD Sparsity --- get the sparsity of a matrix
+*STD
+*CALL
+	Sparsity(matrix)
+*PARMS
+
+{matrix} -- a matrix
+
+*DESC
+
+The function {Sparsity} returns a number between {0} and {1} which 
+represents the percentage of zero entries in the matrix. Although
+there is no definite critical value, a sparsity of {0.75}  or more
+is almost universally considered a "sparse" matrix. These type of
+matrices can be handled in a different manner than "full" matrices
+which speedup many calculations by orders of magnitude.
+
+*E.G.
+
+	In> Sparsity(Identity(2))
+	Out> 0.5;
+	In> Sparsity(Identity(10))
+	Out> 0.9;
+	In> Sparsity(HankelMatrix(10))
+	Out> 0.45;
+	In> Sparsity(HankelMatrix(100))
+	Out> 0.495;
+	In> Sparsity(HilbertMatrix(10))
+	Out> 0;
+	In> Sparsity(ZeroMatrix(10,10))
+	Out> 1;
+
+
+			Matrix decomposition
+
+*CMD Cholesky --- find the Cholesky Decomposition
+*STD
+*CALL
+	Cholesky(A)
+
+*PARMS
+
+{A} -- a square positive definite matrix
+
+*DESC
+
+{Cholesky} returns a upper triangular matrix {R} such that {Transpose(R)*R = A}.
+The matrix {A} must be positive definite, {Cholesky} will notify the user if the matrix
+is not. Some families of positive definite matrices are all symmetric matrices, diagonal
+matrices with positive elements and Hilbert matrices.
+
+*E.G.
+
+	In> A:={{4,-2,4,2},{-2,10,-2,-7},{4,-2,8,4},{2,-7,4,7}}
+	Out> {{4,-2,4,2},{-2,10,-2,-7},{4,-2,8,4},{2,-7,4,7}};
+	In> R:=Cholesky(A);
+	Out> {{2,-1,2,1},{0,3,0,-2},{0,0,2,1},{0,0,0,1}};
+	In> Transpose(R)*R = A
+	Out> True;
+	In> Cholesky(4*Identity(5))
+	Out> {{2,0,0,0,0},{0,2,0,0,0},{0,0,2,0,0},{0,0,0,2,0},{0,0,0,0,2}};
+	In> Cholesky(HilbertMatrix(3))
+	Out> {{1,1/2,1/3},{0,Sqrt(1/12),Sqrt(1/12)},{0,0,Sqrt(1/180)}};
+	In> Cholesky(ToeplitzMatrix({1,2,3}))
+	In function "Check" :
+	CommandLine(1) : "Cholesky: Matrix is not positive definite"
+
+*SEE IsSymmetric, IsDiagonal, Diagonal
+
+
+			Predicates related to matrices
+
+
+*CMD IsScalar --- test for a scalar
+*STD
+*CALL
+
+	IsScalar(expr)
+
+*PARMS
+
+{expr} -- a mathematical object
+
+*DESC
+
+{IsScalar} returns {True} if {expr} is a scalar, {False} otherwise.
+Something is considered to be a scalar if it's not a list.
+
+*E.G.
+	In> IsScalar(7)
+	Out> True;
+	In> IsScalar(Sin(x)+x)
+	Out> True;
+	In> IsScalar({x,y})
+	Out> False;
+
+*SEE IsList, IsVector, IsMatrix
+
+
+*CMD IsVector --- test for a vector
+*STD
+*CALL
+
+	IsVector(expr)
+
+	IsVector(pred,expr)
+
+*PARMS
+
+{expr} -- expression to test
+
+{pred} -- predicate test (e.g. IsNumber, IsInteger, ...)
+
+*DESC
+
+{IsVector(expr)} returns {True} if {expr} is a vector, {False} otherwise.
+Something is considered to be a vector if it's a list of scalars.
+{IsVector(pred,expr)} returns {True} if {expr} is a vector and if the
+predicate test {pred} returns {True} when applied to every element of
+the vector {expr}, {False} otherwise.
+
+*E.G.
+	In> IsVector({a,b,c})
+	Out> True;
+	In> IsVector({a,{b},c})
+	Out> False;
+	In> IsVector(IsInteger,{1,2,3})
+	Out> True;
+	In> IsVector(IsInteger,{1,2.5,3})
+	Out> False;
+
+*SEE IsList, IsScalar, IsMatrix
+
+
+*CMD IsMatrix --- test for a matrix
+*STD
+*CALL
+	IsMatrix(expr)
+
+	IsMatrix(pred,expr)
+
+*PARMS
+
+{expr} -- expression to test
+
+{pred} -- predicate test (e.g. IsNumber, IsInteger, ...)
+
+*DESC
+
+{IsMatrix(expr)} returns {True} if {expr} is a matrix, {False} otherwise.
+Something is considered to be a matrix if it's a list of vectors of equal
+length.
+{IsMatrix(pred,expr)} returns {True} if {expr} is a matrix and if the
+predicate test {pred} returns {True} when applied to every element of
+the matrix {expr}, {False} otherwise.
+
+*E.G.
+
+	In> IsMatrix(1)
+	Out> False;
+	In> IsMatrix({1,2})
+	Out> False;
+	In> IsMatrix({{1,2},{3,4}})
+	Out> True;
+	In> IsMatrix(IsRational,{{1,2},{3,4}})
+	Out> False;
+	In> IsMatrix(IsRational,{{1/2,2/3},{3/4,4/5}})
+	Out> True;
+
+*SEE IsList, IsVector
+
+
+*CMD IsSquareMatrix --- test for a square matrix
+*STD
+*CALL
+	IsSquareMatrix(expr)
+
+	IsSquareMatrix(pred,expr)
+
+*PARMS
+
+{expr} -- expression to test
+
+{pred} -- predicate test (e.g. IsNumber, IsInteger, ...)
+
+*DESC
+
+{IsSquareMatrix(expr)} returns {True} if {expr} is a square matrix,
+{False} otherwise. Something is considered to be a square matrix if
+it's a matrix having the same number of rows and columns.
+{IsMatrix(pred,expr)} returns {True} if {expr} is a square matrix and
+if the predicate test {pred} returns {True} when applied to every
+element of the matrix {expr}, {False} otherwise.
+
+*E.G.
+
+	In> IsSquareMatrix({{1,2},{3,4}});
+	Out> True;
+	In> IsSquareMatrix({{1,2,3},{4,5,6}});
+	Out> False;
+	In> IsSquareMatrix(IsBoolean,{{1,2},{3,4}});
+	Out> False;
+	In> IsSquareMatrix(IsBoolean,{{True,False},{False,True}});
+	Out> True;
+
+*SEE IsMatrix
+
 *CMD IsHermitian --- test for a Hermitian matrix
 *STD
 *CALL
@@ -1037,6 +1114,9 @@ to any power is also equal to $A$.
 	Out> True;
 
 
+			Special matrices
+
+
 *CMD JacobianMatrix --- calculate the Jacobian matrix of $n$ functions in $n$ variables
 *STD
 *CALL
@@ -1135,37 +1215,7 @@ minimum or a saddle point.
 	|                |
 	| ( -2 ) ( 2 )   |
 	\                /
-*CMD Sparsity --- get the sparsity of a matrix
-*STD
-*CALL
-	Sparsity(matrix)
-*PARMS
 
-{matrix} -- a matrix
-
-*DESC
-
-The function {Sparsity} returns a number between {0} and {1} which 
-represents the percentage of zero entries in the matrix. Although
-there is no definite critical value, a sparsity of {0.75}  or more
-is almost universally considered a "sparse" matrix. These type of
-matrices can be handled in a different manner than "full" matrices
-which speedup many calculations by orders of magnitude.
-
-*E.G.
-
-	In> Sparsity(Identity(2))
-	Out> 0.5;
-	In> Sparsity(Identity(10))
-	Out> 0.9;
-	In> Sparsity(HankelMatrix(10))
-	Out> 0.45;
-	In> Sparsity(HankelMatrix(100))
-	Out> 0.495;
-	In> Sparsity(HilbertMatrix(10))
-	Out> 0;
-	In> Sparsity(ZeroMatrix(10,10))
-	Out> 1;
 
 *CMD HilbertMatrix --- create a Hilbert matrix
 *STD
@@ -1359,102 +1409,3 @@ zeros if $ a = 3 $.
 
 *SEE Determinant, Simplify, Solve, PSolve
 
-*CMD MatrixSolve --- solve a system of equations
-*STD
-*CALL
-	MatrixSolve(A,b)
-
-*PARMS
-
-{A} -- coefficient matrix
-
-{b} -- row vector
-
-*DESC
-
-{MatrixSolve} solves the matrix equations {A*x = b} using Gaussian Elimination
-with Backward substitution. If your matrix is triangular or diagonal, it will
-be recognized as such and a faster algorithm will be used.
-
-*E.G.
-
-	In> A:={{2,4,-2,-2},{1,2,4,-3},{-3,-3,8,-2},{-1,1,6,-3}};
-	Out> {{2,4,-2,-2},{1,2,4,-3},{-3,-3,8,-2},{-1,1,6,-3}};
-	In> b:={-4,5,7,7};
-	Out> {-4,5,7,7};
-	In> MatrixSolve(A,b);
-	Out> {1,2,3,4};
-
-*CMD Cholesky --- find the Cholesky Decomposition
-*STD
-*CALL
-	Cholesky(A)
-
-*PARMS
-
-{A} -- a square positive definite matrix
-
-*DESC
-
-{Cholesky} returns a upper triangular matrix {R} such that {Transpose(R)*R = A}.
-The matrix {A} must be positive definite, {Cholesky} will notify the user if the matrix
-is not. Some families of positive definite matrices are all symmetric matrices, diagonal
-matrices with positive elements and Hilbert matrices.
-
-*E.G.
-
-	In> A:={{4,-2,4,2},{-2,10,-2,-7},{4,-2,8,4},{2,-7,4,7}}
-	Out> {{4,-2,4,2},{-2,10,-2,-7},{4,-2,8,4},{2,-7,4,7}};
-	In> R:=Cholesky(A);
-	Out> {{2,-1,2,1},{0,3,0,-2},{0,0,2,1},{0,0,0,1}};
-	In> Transpose(R)*R = A
-	Out> True;
-	In> Cholesky(4*Identity(5))
-	Out> {{2,0,0,0,0},{0,2,0,0,0},{0,0,2,0,0},{0,0,0,2,0},{0,0,0,0,2}};
-	In> Cholesky(HilbertMatrix(3))
-	Out> {{1,1/2,1/3},{0,Sqrt(1/12),Sqrt(1/12)},{0,0,Sqrt(1/180)}};
-	In> Cholesky(ToeplitzMatrix({1,2,3}))
-	In function "Check" :
-	CommandLine(1) : "Cholesky: Matrix is not positive definite"
-
-*SEE IsSymmetric, IsDiagonal, Diagonal
-
-*CMD RandomIntegerMatrix --- generate a matrix of random integers
-
-*STD
-
-*CALL
-	RandomIntegerMatrix(rows,cols,from,to)
-
-*PARMS
-
-{rows} -- number of rows in matrix
-
-{cols} -- number of cols in matrix
-
-{from} -- lower bound
-
-{to} -- upper bound
-
-*DESC
-
-This function generates a {rows x cols} matrix of random integers. All
-entries lie between "from" and "to", including the boundaries, and
-are uniformly distributed in this interval.
-
-*E.G.
-	In> PrettyForm( RandomIntegerMatrix(5,5,-2^10,2^10) )
-
-	/                                               \
-	| ( -506 ) ( 749 )  ( -574 ) ( -674 ) ( -106 )  |
-	|                                               |
-	| ( 301 )  ( 151 )  ( -326 ) ( -56 )  ( -277 )  |
-	|                                               |
-	| ( 777 )  ( -761 ) ( -161 ) ( -918 ) ( -417 )  |
-	|                                               |
-	| ( -518 ) ( 127 )  ( 136 )  ( 797 )  ( -406 )  |
-	|                                               |
-	| ( 679 )  ( 854 )  ( -78 )  ( 503 )  ( 772 )   |
-	\                                               /
-
-*SEE RandomIntegerVector, RandomPoly

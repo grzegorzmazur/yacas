@@ -718,6 +718,107 @@ The generator {r1} can be re-initialized with seed 1 again to obtain the same se
 
 
 
+*CMD RandomIntegerMatrix --- generate a matrix of random integers
+
+*STD
+
+*CALL
+	RandomIntegerMatrix(rows,cols,from,to)
+
+*PARMS
+
+{rows} -- number of rows in matrix
+
+{cols} -- number of cols in matrix
+
+{from} -- lower bound
+
+{to} -- upper bound
+
+*DESC
+
+This function generates a {rows x cols} matrix of random integers. All
+entries lie between "from" and "to", including the boundaries, and
+are uniformly distributed in this interval.
+
+*E.G.
+	In> PrettyForm( RandomIntegerMatrix(5,5,-2^10,2^10) )
+
+	/                                               \
+	| ( -506 ) ( 749 )  ( -574 ) ( -674 ) ( -106 )  |
+	|                                               |
+	| ( 301 )  ( 151 )  ( -326 ) ( -56 )  ( -277 )  |
+	|                                               |
+	| ( 777 )  ( -761 ) ( -161 ) ( -918 ) ( -417 )  |
+	|                                               |
+	| ( -518 ) ( 127 )  ( 136 )  ( 797 )  ( -406 )  |
+	|                                               |
+	| ( 679 )  ( 854 )  ( -78 )  ( 503 )  ( 772 )   |
+	\                                               /
+
+*SEE RandomIntegerVector, RandomPoly
+
+*CMD RandomIntegerVector --- generate a vector of random integers
+
+*STD
+
+*CALL
+	RandomIntegerVector(nr, from, to)
+
+*PARMS
+
+{nr} -- number of integers to generate
+
+{from} -- lower bound
+
+{to} -- upper bound
+
+*DESC
+
+This function generates a list with "nr" random integers. All
+entries lie between "from" and "to", including the boundaries, and
+are uniformly distributed in this interval.
+
+*E.G.
+
+	In> RandomIntegerVector(4,-3,3)
+	Out> {0,3,2,-2};
+
+*SEE Random, RandomPoly
+
+*CMD RandomPoly --- construct a random polynomial
+*STD
+*CALL
+	RandomPoly(var,deg,coefmin,coefmax)
+
+*PARMS
+
+{var} -- free variable for resulting univariate polynomial
+
+{deg} -- degree of resulting univariate polynomial
+
+{coefmin} -- minimum value for coefficients
+
+{coefmax} -- maximum value for coefficients
+
+*DESC
+
+RandomPoly generates a random polynomial in variable "var", of
+degree "deg", with integer coefficients ranging from "coefmin" to
+"coefmax" (inclusive). The coefficients are uniformly distributed in
+this interval, and are independent of each other.
+
+*E.G.
+
+	In> RandomPoly(x,3,-10,10)
+	Out> 3*x^3+10*x^2-4*x-6;
+	In> RandomPoly(x,3,-10,10)
+	Out> -2*x^3-8*x^2+8;
+
+*SEE Random, RandomIntegerVector
+
+
+
 			Series
 
 *CMD Add --- find sum of a list of values
