@@ -1,9 +1,8 @@
 
-			Solving equations
+			Symbolic solvers
 
 *INTRO By solving one tries to find a mathematical object that meets certain criteria. This chapter documents the functions that are available to help find solutions to specific types of problems.
 
-		Symbolic solvers
 
 *CMD Solve --- solve an equation
 *STD
@@ -257,7 +256,57 @@ handled.
 *SEE Solve, Factor
 
 
-		Numeric solvers
+			Numeric solvers
+
+*CMD Newton --- solve an equation numerically with Newton's method
+*STD
+*CALL
+	Newton(expr, var, initial, accuracy)
+	Newton(expr, var, initial, accuracy,min,max)
+
+*PARMS
+
+{expr} -- an expression to find a zero for
+
+{var} -- free variable to adjust to find a zero
+
+{initial} -- initial value for "var" to use in the search
+
+{accuracy} -- minimum required accuracy of the result
+
+{min} -- minimum value for "var" to use in the search
+
+{max} -- maximum value for "var" to use in the search
+
+*DESC
+
+This function tries to numerically find a zero of the expression
+{expr}, which should depend only on the variable {var}. It uses
+the value {initial} as an initial guess.
+
+The function will iterate using Newton's method until it estimates
+that it has come within a distance {accuracy} of the correct
+solution, and then it will return its best guess. In particular, it
+may loop forever if the algorithm does not converge.
+
+When {min} and {max} are supplied, the Newton iteration takes them
+into account by returning {Fail} if it failed to find a root in
+the given range. Note this doesn't mean there isn't a root, just
+that this algorithm failed to find it due to the trial values
+going outside of the bounds.
+
+*E.G.
+
+	In> Newton(Sin(x),x,3,0.0001)
+	Out> 3.1415926535;
+	In> Newton(x^2-1,x,2,0.0001,-5,5)
+	Out> 1;
+	In> Newton(x^2+1,x,2,0.0001,-5,5)
+	Out> Fail;
+
+*SEE Solve, NewtonNum
+
+
 
 *CMD FindRealRoots --- find the real roots of a polynomial
 *STD

@@ -401,8 +401,6 @@ Trace(matrix_IsList) <-- Tr(matrix);
 
 
 x X y := CrossProduct(x,y);
-// x . y := InProduct(x,y); // see Dot function below (dr)
-Commutator(x,y):=x*y-y*x;
 
 Function("VandermondeMatrix",{vector})[
 	Local(len,i,j,item,matrix);
