@@ -1,5 +1,12 @@
 
 TODO:
+- remove redundant functions (low hanging fruit):
+  - Remove FastPi (does not seem to be used anywhere)
+  - N(GoldenRatio) and N(Catalan) etcetera crash (sometimes need to provide precision for it to crash).
+  - remove Pi(), GoldenRatio() etcetera is defined in constants.rep/code.ys as a macro defining these functions (!), everywhere  (manual, tests, examples, documentation on CachedConstants).
+  - get rid of the Ortho?Sum functions, replace with just one?
+  - (find other ...Num functions)
+  - NewtonNum
 - new functionality:
   - graph plotter 2D for Java
   - graph plotter 3D for Java
@@ -11,14 +18,6 @@ TODO:
   - chapter "predicates" has way too many function entries.
   - chapter "Input/output and plotting" has way too many function entries.
   - chapter "Number theory" needs to be cleaned up.
-- remove redundant functions (low hanging fruit):
-  - Remove FastPi (does not seem to be used anywhere)
-  - move Pi(), GoldenRatio() etcetera to Internal'Pi(), Internal'GoldenRatio() etcetera.
-  - Remove Pi() and reference to it in favor of N(Pi), everywhere  (manual, tests, examples).
-  - get rid of the Ortho?Sum functions, replace with just one?
-  - (find other ...Num functions)
-  - NewtonNum
-
 - do a cleanup of the other books also
 
 
