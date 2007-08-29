@@ -1,7 +1,8 @@
 
 TODO:
 - new functionality:
-  - graph plotter
+  - graph plotter 2D for Java
+  - graph plotter 3D for Java
   - better looking tip box in the autocompleter.
 - do a cleanup of the "ref" manual, first pass to throw away functions that should not have been there in the first place.
   - second chapter in refprog titled "Programming" has way too many functions
@@ -11,6 +12,7 @@ TODO:
   - chapter "Input/output and plotting" has way too many function entries.
   - chapter "Number theory" needs to be cleaned up.
 - remove redundant functions (low hanging fruit):
+  - Remove FastPi (does not seem to be used anywhere)
   - move Pi(), GoldenRatio() etcetera to Internal'Pi(), Internal'GoldenRatio() etcetera.
   - Remove Pi() and reference to it in favor of N(Pi), everywhere  (manual, tests, examples).
   - get rid of the Ortho?Sum functions, replace with just one?
