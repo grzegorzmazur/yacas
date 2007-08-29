@@ -82,7 +82,7 @@ Trace:Trace(DiagonalMatrix(1 .. 4)):
 Inverse:Simplify(Inverse(DiagonalMatrix({a,b,c}))):
 CharacteristicEquation:CharacteristicEquation(DiagonalMatrix({a,b,c}),x):
 EigenValues:EigenValues({{1,2},{2,1}}):
-EigenVectors:[Local(M); M:={{1,2},{2,1}}; EigenVectors(M,EigenValues(M));]:
+EigenVectors:[Local(M); M\:={{1,2},{2,1}}; EigenVectors(M,EigenValues(M));]:
 Expand:Expand((1+x)^5)<sep>Expand((1+x-y)^2, x)<sep>Expand((1+x-y)^2, {x,y}):
 Degree:Degree(x^5+x-1)<sep>Degree(a+b*x^3, a)<sep>Degree(a+b*x^3, x):
 Coef:Coef((a+x)^4,a,2)<sep>Coef((a+x)^4,a,0 .. 4):
@@ -118,8 +118,8 @@ Table:Table(i!, i, 1, 9, 1)<sep>Table(i, i, 3, 16, 4)<sep>Table(i^2, i,10, 1, -1
 Where:x^2+y^2 Where x==2<sep>x^2+y^2 Where x==2 And y==3<sep>x^2+y^2 Where {x==2 And y==3}<sep>x^2+y^2 Where {x==2 And y==3,x==4 And y==5}:
 Hold:Echo({ Hold(1+1), "=", 1+1 }):
 Eval:Eval(Hold(1+1)):
-While:[Local(x); x := 0; While (x! < 10^6) [ Echo({x, x!}); x++; ]; ]:
-Until:[ Local(x); x := 0; Until (x! > 10^6) [ Echo({x, x!}); x++; ]; ]:
+While:[Local(x); x \:= 0; While (x! < 10^6) [ Echo({x, x!}); x++; ]; ]:
+Until:[ Local(x); x \:= 0; Until (x! > 10^6) [ Echo({x, x!}); x++; ]; ]:
 WithValue:WithValue(x, 3, x^2+y^2+1)<sep>WithValue({x,y}, {3,2}, x^2+y^2+1):
 Time:Time(N(MathLog(1000),40)):
 And:True And False<sep>And(True,True)<sep>False And a<sep>True And a<sep>And(True,a,True,b):
@@ -129,7 +129,7 @@ IsFreeOf:IsFreeOf(x, Sin(x))<sep>IsFreeOf(y, Sin(x))<sep>IsFreeOf(x, D(x) a*x+b)
 IsEven:IsEven(4)<sep>IsEven(-1):
 IsOdd:IsOdd(4)<sep>IsOdd(-1):
 If:If(3>2, Echo("larger"),Echo("not larger"))<sep>If(3>2, Echo("larger")):
-For:For (i:=1, i<=10, i++) Echo({i, i!}):
+For:For (i\:=1, i<=10, i++) Echo({i, i!}):
 ForEach:ForEach(i,{2,3,5,7,11}) Echo(i,"! = ", i!):
 IsEvenFunction:IsEvenFunction(Cos(b*x),x)<sep>IsEvenFunction(Sin(b*x),x)<sep>IsEvenFunction(1/x^2,x)<sep>IsEvenFunction(1/x,x):
 IsOddFunction:IsOddFunction(Cos(b*x),x)<sep>IsOddFunction(Sin(b*x),x)<sep>IsOddFunction(1/x,x)<sep>IsOddFunction(1/x^2,x):
@@ -138,18 +138,18 @@ IsAtom:IsAtom(x+5)<sep>IsAtom(5):
 IsString:IsString("duh")<sep>IsString(duh):
 IsNumber:IsNumber(6)<sep>IsNumber(3.25)<sep>IsNumber(I)<sep>IsNumber("duh"):
 IsList:IsList({2,3,5})<sep>IsList(2+3+5):
-IsBound:[ Local(x); Echo(IsBound(x)); x := 5; Echo(IsBound(x)); ]:
+IsBound:[ Local(x); Echo(IsBound(x)); x \:= 5; Echo(IsBound(x)); ]:
 IsBoolean:IsBoolean(a)<sep>IsBoolean(True)<sep>IsBoolean(a And b):
 IsNotZero:IsNotZero(3.25)<sep>IsNotZero(0):
 IsConstant:IsConstant(Cos(x))<sep>IsConstant(Cos(2))<sep>IsConstant(Cos(2+x)):
 CanProve:CanProve(a  Or   Not a)<sep>CanProve(True  Or a)<sep>CanProve(False  Or  a)<sep>CanProve(a  And   Not a)<sep>CanProve(a Or b Or (a And b))<sep>CanProve(( (a=>b) And (b=>c) ) => (a=>c)):
 Pi:Sin(3*Pi/2)<sep>N(Pi):
-Clear:[ a:=2; Clear(a); a; ]:
-Local:[ Local(a); a:=2; [ Local(a); a:=1; ]; a; ]:
+Clear:[ a\:=2; Clear(a); a; ]:
+Local:[ Local(a); a\:=2; [ Local(a); a\:=1; ]; a; ]:
 UniqueConstant:UniqueConstant()<sep>UniqueConstant():
 FullForm:FullForm(a+b+c)<sep>FullForm(2*I*b^2):
 Echo:Echo(5+3)<sep>Echo({"The square of two is ", 2*2})<sep>Echo("D(x)Sin(x) = ",D(x)Sin(x)):
-FromString:FromString("2+5; this is never read") [res := Read(); ]<sep>FromString("2+5; this is never read") [res := Eval(Read()); ]:
+FromString:FromString("2+5; this is never read") [res \:= Read(); ]<sep>FromString("2+5; this is never read") [res \:= Eval(Read()); ]:
 ToString:ToString() Echo("The square of 8 is ",8^2):
 Read:FromString("2+5;") Read()<sep>FromString("") Read():
 String:String(a):

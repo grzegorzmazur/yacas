@@ -584,7 +584,6 @@ TestYacas(Diverge({x*y,x*y,x*y},{x,y,z}),x+y);
  */
 [
   Local(F);
-];
   F:=0.2*Pi;
   Verify(F>0.5, True);
   Verify(F>0.7, False);

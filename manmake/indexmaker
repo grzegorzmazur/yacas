@@ -91,7 +91,7 @@ BookList():=
 
     bl := bl : 
 "<p>
-<a class=\"linkcalc\" href=\"":book:"manual.html\">":bookinfo["Title"]:"</a> - ":bookinfo["Blurb"]:"
+<a href=\"":book:"manual.html\">":bookinfo["Title"]:"</a> (<a href=\"":book:".book.pdf\">PDF</a>) (<a href=\"downloads.html\">download</a>) - ":bookinfo["Blurb"]:"
 </p>
 ";
 

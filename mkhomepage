@@ -34,7 +34,7 @@ cp ../manmake/*.ps .
 cp ../manmake/*.pdf .
 tar -zcvf manual.ps.tar.gz *.ps
 tar -zcvf manual.pdf.tar.gz *.pdf
-rm *.ps *.pdf
+rm *.ps 
 
 cp ../docs/*.gif ../docs/*.html ../docs/*.js ../docs/*.yart ../docs/*.css .
 rm back-dark.gif

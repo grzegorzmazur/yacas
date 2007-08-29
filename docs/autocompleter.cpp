@@ -50,7 +50,13 @@ void getfields(char* buffer)
   items[nrItems++] = ptr;
   while (*ptr)
   {
-    while (*ptr && *ptr != ':') ptr++;
+    while (*ptr && *ptr != ':') 
+    {
+      // Use backslash for escaping for example ':' characters
+      if (*ptr == '\\')
+        ptr++;
+      ptr++;
+    }
     if (*ptr)
     {
       *ptr++ = '\0';

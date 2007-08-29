@@ -163,20 +163,18 @@ LocalSymbols(TrueFalse)
 ];
 
 
-
-f1(x,n,m):=(x^n-1)*(x^m-1);
-f2(x,n,m):=x^(n+m)-(x^n)-(x^m)+1;
-
-VerifyArithmetic(x,n,m):=
+LocalSymbols(f1,f2)
 [
-/*
-  WriteString("Checking arithmetic with ");
-  Write(x);Space();
-  Write(n);Space();
-  Write(m);NewLine();
-*/
-  Verify(f1(x,n,m),f2(x,n,m));
+  // f1 and f2 are used inside VerifyArithmetic
+  f1(x,n,m):=(x^n-1)*(x^m-1);
+  f2(x,n,m):=x^(n+m)-(x^n)-(x^m)+1;
+
+  VerifyArithmetic(x,n,m):=
+  [
+    Verify(f1(x,n,m),f2(x,n,m));
+  ];
 ];
+
 RandVerifyArithmetic(_n)<--
 [
  While(n>0)
