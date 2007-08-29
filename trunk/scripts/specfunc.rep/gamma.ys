@@ -15,14 +15,14 @@
 /// but current value of precision is used
 /// Note that we return LnGamma(z), not of z+1
 /// This function should not be used directly by applications
-10 # LnGammaNum(_z, _a)_(N(Re(z))<0) <-- [
-	If (InVerboseMode(), Echo({"LnGammaNum: using 1-z identity"}));
-	N(Ln(Pi/Sin(Pi*z)) - LnGammaNum(1-z, a));
+10 # Internal'LnGammaNum(_z, _a)_(N(Re(z))<0) <-- [
+	If (InVerboseMode(), Echo({"Internal'LnGammaNum: using 1-z identity"}));
+	N(Ln(Pi/Sin(Pi*z)) - Internal'LnGammaNum(1-z, a));
 ];
-20 # LnGammaNum(_z, _a) <-- [
+20 # Internal'LnGammaNum(_z, _a) <-- [
 	Local(e, k, tmpcoeff, coeff, result);
 	a := Max(a, 4);	// guard against low values
-	If (InVerboseMode(), Echo({"LnGammaNum: precision parameter = ", a}));
+	If (InVerboseMode(), Echo({"Internal'LnGammaNum: precision parameter = ", a}));
 	e := N(Exp(1));
 	k:=Ceil(a);	// prepare k=N+1; the k=N term is probably never significant but we don't win much by excluding it
 	result := 0;	// prepare for last term
@@ -34,7 +34,7 @@
 	N(Ln(1+Exp(a-1)/Sqrt(2*Pi)*result) + Ln(2*Pi)/2 -a-z+(z+1/2)*Ln(z+a) - Ln(z));
 ];
 
-LnGammaNum(z) := [
+Internal'LnGammaNum(z) := [
 	Local(a, prec, result);
 	prec := GetPrecision();
 	a:= Div((prec-IntLog(prec,10))*659, 526) + 0.4;	// see algorithm docs
@@ -43,13 +43,13 @@ LnGammaNum(z) := [
 	/// error < Sqrt(a)/Real(a+z)/(2*Pi)^(a+1/2)
 //	Echo({"parameter a = ", a, " setting precision to ", Ceil(prec*1.4)});
 	Precision(Ceil(prec*1.4));	// need more precision b/c of roundoff errors but don't know exactly how many digits
-	result := LnGammaNum(z,a);
+	result := Internal'LnGammaNum(z,a);
 	Precision(prec);
 	result;
 ];
 
-Internal'GammaNum(z) := N(Exp(LnGammaNum(z)));
+Internal'GammaNum(z) := N(Exp(Internal'LnGammaNum(z)));
 
 /// this should not be used by applications
-Internal'GammaNum(z,a) := N(Exp(LnGammaNum(z,a)));
+Internal'GammaNum(z,a) := N(Exp(Internal'LnGammaNum(z,a)));
 

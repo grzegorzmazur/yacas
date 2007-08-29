@@ -1076,7 +1076,7 @@ $$n!! *(n+2) = (n+2)!!$$
 are valid also for $n=0$ and $n= -1$.
 
 There are two tasks related to the factorial: the exact integer calculation and an approximate calculation to some floating-point precision. Factorial of $n$ has approximately $n*Ln(n)/Ln(10)$ decimal digits, so an exact calculation is practical only for relatively small $n$. In the current implementation, exact factorials for $n>65535$ are not computed but print an error message advising the user to avoid exact computations of large factorials.
-For example, {LnGammaNum(n+1)} is able to compute $Ln(n!)$ for very large $n$ to any desired floating-point precision.
+For example, {Internal'LnGammaNum(n+1)} is able to compute $Ln(n!)$ for very large $n$ to any desired floating-point precision.
 
 	    Exact factorials
 

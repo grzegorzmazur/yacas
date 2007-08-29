@@ -18,7 +18,7 @@
 20 # LnGamma(n_IsRationalOrNumber)_(IsPositiveInteger(n) Or FloatIsInt(2*n)) <-- Ln((Round(2*n)/2-1)!);
 
 30 # Gamma(x_IsConstant)_(InNumericMode()) <-- Internal'GammaNum(N(Eval(x)));
-30 # LnGamma(x_IsConstant)_(InNumericMode()) <-- LnGammaNum(N(Eval(x)));
+30 # LnGamma(x_IsConstant)_(InNumericMode()) <-- Internal'LnGammaNum(N(Eval(x)));
 
 /////////////////////////////////////////////////
 /// Riemann's Zeta function
