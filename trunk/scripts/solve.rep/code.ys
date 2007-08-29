@@ -510,18 +510,17 @@ Function("SolveMatrix",{matrix,vector})
 
 
 Function("Newton",{function,variable,initial,accuracy})
-/*block*/
 [	// since we call a function with HoldArg(), we need to evaluate some variables by hand
   `Newton(@function,@variable,initial,accuracy,-Infinity,Infinity);
 ];
+
 Function("Newton",{function,variable,initial,accuracy,min,max})
-/*block*/
 [
   Local(result,adjust,delta,requiredPrec);
   MacroLocal(variable);
-requiredPrec := GetPrecision();
-accuracy:=N((accuracy/10)*10); // Making sure accuracy is rounded correctly
-Precision(requiredPrec+2);
+  requiredPrec := GetPrecision();
+  accuracy:=N((accuracy/10)*10); // Making sure accuracy is rounded correctly
+  Precision(requiredPrec+2);
   function:=N(function);
   adjust:= -function/Apply("D",{variable,function});
   delta:=10000;

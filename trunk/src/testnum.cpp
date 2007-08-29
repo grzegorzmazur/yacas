@@ -13,9 +13,10 @@ int verbose_debug=0; //linkage
 #define ENABLE_TESTS 1
 
 // whether to print detailed information about passed tests
-const bool show_passed =
-    false;
-//    true;
+bool show_passed = false;
+
+// whether to print detailed information about failed tests
+bool show_failed = false;
 
 unsigned failed = 0;
 unsigned passed = 0;
@@ -45,52 +46,55 @@ char* Message(char* str,...)
 // compare a given LispString value to a given character string and print diagnostic
 void CheckL(int line, LispString& str, const char* s, const char* test_description)
 {
-    if (strcmp(str.c_str(),s))
-    {
-        printf("@@@@@@@ (line %d) %s: failed: %s != %s\n",line, test_description, str.c_str(), s);
+  if (strcmp(str.c_str(),s))
+  {
+    if (show_failed)
+      printf("@@@@@@@ (line %d) %s: failed: %s != %s\n",line, test_description, str.c_str(), s);
     ++failed;
-    }
-    else
-    {
-  if (show_passed)
-    printf("\t%s: passed\n", test_description);
-  ++passed;
-    }
-    fflush(stdout);
+  }
+  else
+  {
+    if (show_passed)
+      printf("\t%s: passed\n", test_description);
+    ++passed;
+  }
+  fflush(stdout);
 }
 
 // check that the condition is true and print diagnostic
 void CheckL(int line, bool test_condition, const char* test_description)
 {
-    if (!test_condition)
-    {
-        printf("@@@@@@@ (line %d) %s: failed\n",line, test_description);
+  if (!test_condition)
+  {
+    if (show_failed)
+      printf("@@@@@@@ (line %d) %s: failed\n",line, test_description);
     ++failed;
-    }
-    else
-    {
-  if (show_passed)
+  }
+  else
+  {
+    if (show_passed)
       printf("\t%s: passed\n", test_description);
-  ++passed;
-    }
-    fflush(stdout);
+    ++passed;
+  }
+  fflush(stdout);
 }
 
 // check that the condition is true and print diagnostic
 void CheckValuesL(int line, double x, double y, const char* test_description)
 {
-    if (x!=y)
-    {
-        printf("@@@@@@@ (line %d) %s: failed, %f!=%f\n",line, test_description, x, y);
+  if (x!=y)
+  {
+    if (show_failed)
+     printf("@@@@@@@ (line %d) %s: failed, %f!=%f\n",line, test_description, x, y);
     ++failed;
-    }
-    else
-    {
-  if (show_passed)
+  }
+  else
+  {
+    if (show_passed)
       printf("\t%s: passed\n", test_description);
-  ++passed;
-    }
-    fflush(stdout);
+    ++passed;
+  }
+  fflush(stdout);
 }
 
 // check that the given BigNumber gives a correct string value, print diagnostic
@@ -99,33 +103,36 @@ void CheckStringValueL(int line,
                       LispInt precision,
                       LispInt base, const char* test_description)
 {
-    LispString str;
-    x.ToString(str, precision, base);
-    CheckL(line,str, value, test_description);
+  LispString str;
+  x.ToString(str, precision, base);
+  CheckL(line,str, value, test_description);
 }
 
 // check that the two numbers are equal by their string representation in given base to given number of base digits
 void CheckEqualsL(int line,const BigNumber& x1, const BigNumber& x2, LispInt precision, LispInt base, const char* test_description)
 {
-    LispString str1, str2;
-    x1.ToString(str1, precision, base);
-    x2.ToString(str2, precision, base);
-    CheckL(line, str1, str2.c_str(), test_description);
+  LispString str1, str2;
+  x1.ToString(str1, precision, base);
+  x2.ToString(str2, precision, base);
+  CheckL(line, str1, str2.c_str(), test_description);
 }
 
 // print a progress message
 void Next(const char* description)
 {
-    static int i=0;
-    i++;
+  static int i=0;
+  i++;
+  if (show_failed || show_passed)
+  {
     printf("Test group %d: %s\n",i, description);
-    fflush(stdout);
+  }
+  fflush(stdout);
 }
 
 void Finish()
 {
-    printf("\n\t\t\tPassed %d, failed %d tests.\n", passed, failed);
-    fflush(stdout);
+  printf("\nPassed %d, failed %d tests (pass --show-failed to see which tests failed).\n", passed, failed);
+  fflush(stdout);
 }
 
 #if ENABLE_TESTS
@@ -218,7 +225,11 @@ void TestTypes2(const char* float_string, const char* float_printed, const char*
   Check(!x.IsInt(), "x is a float type as read");
   Check(y.IsInt(), "y is an integer type as read");
   CheckValues(x.Double(),double_value, "double value is correct");
-  if (x.Double()!=double_value) printf("mismatch: %24e vs %24e\n", x.Double(), double_value);
+  if (x.Double()!=double_value)
+  {
+    if (show_failed)
+      printf("mismatch: %24e vs %24e\n", x.Double(), double_value);
+  }
   x.ToString(str, precision, base);
   CheckStringEquals(str, float_printed, "float value is printed back correctly");
   Check(!x.IsIntValue(), "x has a non-integer value as read");
@@ -256,8 +267,10 @@ void TestTypes2(const char* float_string, const char* float_printed, const char*
   Check(!x.Equals(z), "x!=z");
   Check(!z.Equals(x), "z!=x");
   if (x.Equals(z))
-    printf("problematic value: x=%f, precision %d, %d bits\n", x.Double(), x.GetPrecision(), z.GetPrecision());
-
+  {
+    if (show_failed)
+      printf("problematic value: x=%f, precision %d, %d bits\n", x.Double(), x.GetPrecision(), z.GetPrecision());
+  }
  
   BigNumber t;
   t.SetTo(x);
@@ -290,8 +303,11 @@ void TestArith1(const char* str_value, int base, int val1, double val2)
 //  Check(x.Equals(x1), "add and subtract an integer");
   if (!x.Equals(x1))
   {
-    printf("WARNING: this test may fail due to roundoff error, please check:\n");
-    printf(   "x:= -(-x+y)+y for x=%s and y=%d\n",str_value,val1);
+    if (show_failed || show_passed)
+    {
+      printf("WARNING: this test may fail due to roundoff error, please check:\n");
+      printf(   "x:= -(-x+y)+y for x=%s and y=%d\n",str_value,val1);
+    }
   }
   CheckEquals(x, x1, print_prec, base, "result of add and subtract an integer");
   x1.SetTo(x);
@@ -321,7 +337,11 @@ void TestArith1(const char* str_value, int base, int val1, double val2)
   x.Add(x,z, prec);
 //  Check(x.Equals(x1), "add and subtract a double 100 times");
   x1.BecomeFloat(prec);
-  if (!x.Equals(x1)) printf("WARNING: this test may fail due to roundoff error, please check:\n-------- precision of x is %d, precision of x1 is %d bits\n", x.GetPrecision(), x1.GetPrecision());
+  if (!x.Equals(x1))
+  {
+    if (show_failed || show_passed)
+      printf("WARNING: this test may fail due to roundoff error, please check:\n-------- precision of x is %d, precision of x1 is %d bits\n", x.GetPrecision(), x1.GetPrecision());
+  }
   CheckEquals(x, x1, print_prec, base, "result of add and subtract a double 100 times");
  
   x.SetTo(x2);
@@ -484,8 +504,20 @@ void test_less_than(const char* str1, const char* str2, int base)
 
 #endif // whether to test numbers
 
-int main(void)
+int main(int argc, char** argv)
 {
+
+  {
+    int i;
+    for (i=1;i<argc;i++)
+    {
+      if (!strcmp(argv[i],"--show-failed"))
+        show_failed = true;
+      if (!strcmp(argv[i],"--show-passed"))
+        show_passed = true;
+    }
+  }
+
     LispString  str;
 
 #if ENABLE_TESTS
@@ -551,7 +583,8 @@ int main(void)
   }
   catch (LispInt err)
   {
-    printf("Correctly caught division by zero exception.\n");
+    if (show_passed)
+      printf("Correctly caught division by zero exception.\n");
   }
   Next("4.b");
   try
@@ -560,7 +593,8 @@ int main(void)
   }
   catch (LispInt err)
   {
-    printf("Correctly caught division by zero exception.\n");
+    if (show_passed)
+      printf("Correctly caught division by zero exception.\n");
   }
   Next("5");
   x.Add(x,x,100);
@@ -941,8 +975,11 @@ int main(void)
   Check(x.Equals(y), "x = x + 0.");
   // the precision of x should be at most prec1+10, this is really implementation-dependent (GUARD_BITS and so on)
   Check(x.GetPrecision() < prec1+10, "x has correct precision");
-  if (x.GetPrecision() >= prec1 + 10) printf ("x has precision %d\n", x.GetPrecision());
- 
+  if (x.GetPrecision() >= prec1 + 10)
+  {
+    if (show_failed)
+      printf ("x has precision %d\n", x.GetPrecision());
+  }
   Next("simple precision test with 100/243");  // compute 100/243 to 9 bits, should be 0.411
   prec1 = 10;
   x.SetTo(100./243.);
@@ -1065,9 +1102,11 @@ int main(void)
 {
   LispString str;
   x.ToString(str,100,10);
-  printf("x = %s (should be 15.)\n",str.c_str());
+  if (show_failed || show_passed)
+    printf("x = %s (should be 15.)\n",str.c_str());
   y.ToString(str,100,10);
-  printf("y = %s (should be 4.)\n",str.c_str());
+  if (show_failed || show_passed)
+    printf("y = %s (should be 4.)\n",str.c_str());
 }
 
   z.Divide(x,y,10);
@@ -1091,7 +1130,8 @@ int main(void)
   }
   catch (LispInt err)
   {
-    printf("Correctly caught integer division by zero.\n");
+    if (show_passed)
+      printf("Correctly caught integer division by zero.\n");
   }
   y.SetTo(0.);
   try
@@ -1100,7 +1140,8 @@ int main(void)
   }
   catch (LispInt err)
   {
-    printf("Correctly caught floating division by zero.\n");
+    if (show_passed)
+      printf("Correctly caught floating division by zero.\n");
   }
     Next("conversions with large strings");
   x.SetTo("3.000000000000000000000000000000000000000050104", 0, 10);
