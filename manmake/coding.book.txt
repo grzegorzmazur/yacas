@@ -1147,7 +1147,7 @@ the library and it may need to use some of these algorithms.
 Arbitrary-precision math can be handled by core functions such as
 {MathDivide}, {MathSin} and so on, without using {N()}. For example, if
 your code needs to evaluate $Sqrt(Pi)$ to many digits as an
-intermediate result, it is better to write {MathSqrt(Pi())} than
+intermediate result, it is better to write {MathSqrt(Internal'Pi())} than
 {N(Sqrt(Pi))} because it makes for faster, more reliable code.
 
 	    Using {Precision()}

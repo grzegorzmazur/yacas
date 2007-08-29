@@ -836,7 +836,7 @@ This remains to be seen.
 
 *A computation of $pi$
 
-In Yacas, the constant $pi$ is computed by the library routine {Pi()} which
+In Yacas, the constant $pi$ is computed by the library routine {Internal'Pi()} which
 uses the internal routine {MathPi} to compute the value to current
 precision {Precision()}. The result is stored in a global variable as a
 list of the form {{precision, value}} where {precision} is the number of
@@ -849,7 +849,7 @@ Efficient iterative algorithms for computing $pi$ with arbitrary precision have 
 *A computation of $pi$!by Newton's method
 
 The file {examples/pi.ys} implements several different algorithms that
-duplicate the functionality of {Pi()}. See
+duplicate the functionality of {Internal'Pi()}. See
 [Gourdon <i>et al.</i> 2001] for more details of computations of $pi$ and
 generalizations of Newton-Raphson iteration.
 

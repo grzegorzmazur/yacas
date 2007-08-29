@@ -168,7 +168,7 @@
 200 # ArcSin(_n)_(-n = Sqrt(1/2)) <-- -Pi/4;
 200 # ArcSin(_n)_(-n = 1/2) <-- -Pi/6;
 
-2 # ArcCos(x_IsNumber)_InNumericMode() <-- Pi()/2-ArcSin(x);
+2 # ArcCos(x_IsNumber)_InNumericMode() <-- Internal'Pi()/2-ArcSin(x);
 4 # ArcCos(Cos(_x))           <-- x;
 5 # (ArcTan(x_IsConstant))_(IsNegativeNumber(N(Eval(x))))   <-- -ArcTan(-x);
 110 # ArcCos(Complex(_r,_i)) <--

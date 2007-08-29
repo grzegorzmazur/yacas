@@ -1,9 +1,8 @@
 
 TODO:
 - remove redundant functions (low hanging fruit):
-  - Remove FastPi (does not seem to be used anywhere)
-  - N(GoldenRatio) and N(Catalan) etcetera crash (sometimes need to provide precision for it to crash).
-  - remove Pi(), GoldenRatio() etcetera is defined in constants.rep/code.ys as a macro defining these functions (!), everywhere  (manual, tests, examples, documentation on CachedConstants).
+  - Remove Fast* (does not seem to be used anywhere). FastArcSin, FastAssoc, FastIsPrime, FastLog, FastPower do seem to be used.
+  - remove Catalan(), gamma(), Pi(), GoldenRatio() is defined in constants.rep/code.ys as a macro defining these functions (!), everywhere  (manual, tests, examples, documentation on CachedConstants).
   - get rid of the Ortho?Sum functions, replace with just one?
   - (find other ...Num functions)
   - NewtonNum

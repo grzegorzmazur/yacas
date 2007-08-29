@@ -197,7 +197,7 @@ LocalSymbols(k)
 [
   Local(prec);
   prec := GetPrecision(); // N(...) modifies the precision
-  2 / MathSqrt(Pi()) * x 
+  2 / MathSqrt(Internal'Pi()) * x 
 	* SumTaylorNum(x^2, 1, {{k}, -(2*k-1)/(2*k+1)/k},
 	// the number of terms n must satisfy n*Ln(n/Exp(1))>10^prec 
 //	Hold({{k}, [Echo(k); k;]}) @
@@ -230,7 +230,7 @@ LocalSymbols(n'max, k)
 				Abs(x) > n'max+3/2;
 			]
 		)
-	) <-- If(Re(x)!=0, Sign(Re(x)), 0) - Exp(-x^2)/x/MathSqrt(Pi())
+	) <-- If(Re(x)!=0, Sign(Re(x)), 0) - Exp(-x^2)/x/MathSqrt(Internal'Pi())
 	// the series is 1 - 1/2/x^2 + 1*3/2^2/x^4 - 1*3*5/2^3/x^6 + ...
 	* SumTaylorNum(1/x^2, 1, {{k}, -(2*k-1)/2 }, Max(0, Floor(n'max)));
 

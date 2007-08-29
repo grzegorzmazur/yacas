@@ -147,7 +147,7 @@ The ancient Greeks defined the "golden ratio" as follows:
 If one divides a length 1 into two pieces $x$ and $1-x$, such that the ratio of 1 to $x$ is the same as the ratio of $x$ to $1-x$, then $1/x <=> 1.618$... is the "golden ratio".
 
 
-The constant is available symbolically as {GoldenRatio} or numerically as a function {GoldenRatio()}.
+The constant is available symbolically as {GoldenRatio} or numerically through {N(GoldenRatio)}.
 This is a "cached constant" which is recalculated only when precision is increased.
 The numerical value of the constant can also be obtained as {N(GoldenRatio)}.
 
@@ -160,7 +160,7 @@ The numerical value of the constant can also be obtained as {N(GoldenRatio)}.
 	Out> 0.6180339887;
 	In> N(1/GoldenRatio)
 	Out> 0.6180339887;
-	In> [Precision(20);V(GoldenRatio());]
+	In> [Precision(20);V(N(GoldenRatio));]
 
 	CachedConstant: Info: constant GoldenRatio is
 	being recalculated at precision 20 
@@ -179,7 +179,7 @@ The numerical value of the constant can also be obtained as {N(GoldenRatio)}.
 
 These functions compute Catalan's Constant $Catalan<=>0.9159655941$.
 
-The constant is available symbolically as {Catalan} or numerically as a function {Catalan()}.
+The constant is available symbolically as {Catalan} or numerically through {N(Catalan)} with {N(...)} the usual operator used to try to coerce an expression in to a numeric approximation of that expression.
 This is a "cached constant" which is recalculated only when precision is increased.
 The numerical value of the constant can also be obtained as {N(Catalan)}.
 The low-level numerical computations are performed by the routine {CatalanConstNum}.
@@ -191,7 +191,7 @@ The low-level numerical computations are performed by the routine {CatalanConstN
 	Out> 0.9159655941;
 	In> DirichletBeta(2)
 	Out> Catalan;
-	In> [Precision(20);V(Catalan());]
+	In> [Precision(20);V(N(Catalan));]
 
 	CachedConstant: Info: constant Catalan is
 	being recalculated at precision 20
@@ -209,7 +209,7 @@ The low-level numerical computations are performed by the routine {CatalanConstN
 
 These functions compute Euler's constant $gamma<=>0.57722$...
 
-The constant is available symbolically as {gamma} or numerically as a function {gamma()}.
+The constant is available symbolically as {gamma} or numerically through using the usual function {N(...)} to get a numeric result, {N(gamma)}.
 This is a "cached constant" which is recalculated only when precision is increased.
 The numerical value of the constant can also be obtained as {N(gamma)}.
 The low-level numerical computations are performed by the routine {GammaConstNum}.
@@ -222,7 +222,7 @@ Note that Euler's Gamma function $Gamma(x)$ is the capitalized {Gamma} in Yacas.
 	Out> gamma+Pi;
 	In> N(gamma+Pi)
 	Out> 3.7188083184;
-	In> [Precision(20);V(gamma());]
+	In> [Precision(20);V(N(gamma));]
 	
 	CachedConstant: Info: constant gamma is being
 	  recalculated at precision 20 

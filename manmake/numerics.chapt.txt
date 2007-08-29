@@ -46,16 +46,17 @@ the value of the desired constant at the current precision. (Most arbitrary-prec
 
 The associative list {cache} contains elements of the form {{Cname, prec, value}}, as illustrated in the example. If this list does not exist, it will be created.
 
-This mechanism is currently used by {N()} to precompute the values of $Pi$ and $gamma$.
+This mechanism is currently used by {N()} to precompute the values of $Pi$ and $gamma$ (and the golden ratio through {GoldenRatio}, and {Catalan}).
 The name of the cache for {N()} is {CacheOfConstantsN}.
-The code in the function {N()} assigns unevaluated calls to {Pi()} and {gamma()} to the atoms {Pi} and {gamma} and declares them to be lazy global variables through {SetGlobalLazyVariable}.
+The code in the function {N()} assigns unevaluated calls to {Internal'Pi()} and {Internal'gamma()} to the atoms {Pi} and {gamma} and declares them to be lazy global variables through {SetGlobalLazyVariable} (with equivalent functions assigned to other constants that are added to the list of cached constants).
+
 The result is that the constants will be recalculated only when they are used in the expression under {N()}.
 In other words, the code in {N()} does the equivalent of
 
-	SetGlobalLazyVariable(mypi,Hold(Pi()));
-	SetGlobalLazyVariable(mygamma,Hold(gamma()));
+	SetGlobalLazyVariable(mypi,Hold(Internal'Pi()));
+	SetGlobalLazyVariable(mygamma,Hold(Internal'gamma()));
 
-After this, evaluating an expression such as {1/2+gamma} will call the function {gamma()} but not the function {Pi()}.
+After this, evaluating an expression such as {1/2+gamma} will call the function {Internal'gamma()} but not the function {Internal'Pi()}.
 
 *EG notest
 
@@ -73,7 +74,7 @@ After this, evaluating an expression such as {1/2+gamma} will call the function 
 	Out> {{"Ln2",20,0.69314718055994530942}};
 
 
-*SEE N, Pi(), Precision, gamma
+*SEE N, Precision, Pi, GoldenRatio, Catalan, gamma
 
 *CMD NewtonNum --- low-level optimized Newton's iterations
 *STD

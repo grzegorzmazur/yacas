@@ -306,10 +306,10 @@ RoundTo(1.09317119002909585408+I*0.00475463306931818955275, 19)
 // testing GammaConstNum against Maple
 Testing("Gamma constant");
 Precision(40);
-NumericEqual(gamma()+0, 0.5772156649015328606065120900824024310422,GetPrecision());
+NumericEqual(Internal'gamma()+0, 0.5772156649015328606065120900824024310422,GetPrecision());
 Precision(20);
 Verify(gamma,Atom("gamma"));
-NumericEqual(RoundTo(gamma()+0,19), 0.5772156649015328606,19);
+NumericEqual(RoundTo(Internal'gamma()+0,19), 0.5772156649015328606,19);
 NumericEqual(RoundTo(N(1/2+gamma+Pi), 19), 4.2188083184913260991,19);
 
 // From GSL 1.0
