@@ -14,7 +14,7 @@ TruncRadian(_r) <--
   // increase precision by the number of digits of r before decimal point; enough to evaluate Abs(r) with 1 digit of precision
   N([
     r:=Eval(r);
-    twopi:=2*Pi();
+    twopi:=2*Internal'Pi();
     r:=r-MathFloor(r/twopi)*twopi;
   ], GetPrecision() + IntLog(Ceil(Abs(N(Eval(r), 1))), 10));
   r;
@@ -43,7 +43,7 @@ ArcSinNum(x) :=
 	If(
 		239*Abs(x) >= 169,	// 169/239 is a good enough approximation of 1/Sqrt(2)
 		// use trigonometric identity to avoid |x| close to 1
-		Sign(x)*(Pi()/2-MathArcSin(Sqrt(1-x^2))),
+		Sign(x)*(Internal'Pi()/2-MathArcSin(Sqrt(1-x^2))),
 		MathArcSin(x)
 	);
 ];
@@ -117,7 +117,7 @@ NewtonLn(x) :=
 	eps := MathDivide(1, 10^n);	// precision
 	y := MathPower(x, k);	// not yet divided by 4
 	// this is Brent's AGM times y. This way we work around the Yacas limitation of fixed precision, at cost of slightly slower initial iterations
-	y := MathDivide(Pi()*y, (2*k)*AG'Mean(4, y, eps));
+	y := MathDivide(Internal'Pi()*y, (2*k)*AG'Mean(4, y, eps));
 	Precision(n);
 	RoundTo(y, n);	// do not return a more precise number than we really have
 ];
@@ -145,7 +145,7 @@ NewtonLn(x) :=
     y := x*2^(k-2);	// divided already by 4
     // initial values for AGM
     // this is Brent's AGM times y. This way we work around the Yacas limitation of fixed precision, at cost of slightly slower initial iterations
-    y:=Pi()*y/(2*AG'Mean(1,y,eps)) - k*Ln2();
+    y:=Internal'Pi()*y/(2*AG'Mean(1,y,eps)) - k*Ln2();
     Precision(n);
   ]);
 	y;	// do not return a more precise number than we really have
@@ -166,7 +166,7 @@ ArcTanNum(x) :=
 	// using trigonometric identities is faster for now
 	If(
 		Abs(x)>1,
-		Sign(x)*(Pi()/2-ArcSin(1/Sqrt(x^2+1))),
+		Sign(x)*(Internal'Pi()/2-ArcSin(1/Sqrt(x^2+1))),
 		ArcSin(x/Sqrt(x^2+1))
 	);
 ];

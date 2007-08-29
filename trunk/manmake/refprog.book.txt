@@ -1103,7 +1103,7 @@ digits.
 
 *E.G.
 
-	In> 2*Pi()
+	In> 2*Internal'Pi()
 	Out> 6.283185307;
 	In> TruncRadian(6.28)
 	Out> 6.28;

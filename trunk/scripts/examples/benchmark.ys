@@ -40,7 +40,7 @@ DoNext("Compute an infinite decimal representation of 1/7");
 BenchShow(Decimal(1/7));
 
 DoNext("Compute the first terms of the continued fraction of Pi.");
-BenchShow(PrettyForm(ContFrac(Pi())));
+BenchShow(PrettyForm(ContFrac(Internal'Pi())));
 
 DoNext("Simplify sqrt(2*sqrt(3)+4).");
 BenchShow(RadSimp(Sqrt(2*Sqrt(3)+4)));

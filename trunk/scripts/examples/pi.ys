@@ -2,7 +2,7 @@
 
 /* Defined: PiMethod0(), PiMethod1(), PiMethod2(), PiBrentSalamin(), PiBorwein() */
 
-// Reference method: just use Newton's method all the time, no complicated logic to select precision steps. Slightly slower than method 1 but a lot simpler. This is implemented in Pi()
+// Reference method: just use Newton's method all the time, no complicated logic to select precision steps. Slightly slower than method 1 but a lot simpler. This is implemented in Internal'Pi()
 
 PiMethod0() := [
 	Local(result, delta, k, Epsilon, prec, prec1, curprec);

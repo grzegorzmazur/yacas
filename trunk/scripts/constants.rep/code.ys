@@ -26,8 +26,9 @@ HoldArg("CachedConstant", C'cache);	// name of the cache
 // check syntax: must be called on an atom and a function
 Rule("CachedConstant", 3, 10, And(IsAtom(C'atom), IsFunction(C'func)))
 [
- 	Local(C'name);
+ 	Local(C'name,C'functionName);
 	Set(C'name, String(C'atom));	// this is for later conveniences
+  Set(C'functionName,ConcatStrings("Internal'",C'name));
 
 	If(	// create the cache it if it does not already exist
 		IsAtom(Eval(C'cache)),
@@ -46,8 +47,9 @@ Rule("CachedConstant", 3, 10, And(IsAtom(C'atom), IsFunction(C'func)))
 //		Write({"debug step 2: ", Cache'name, C'cache, Eval(C'cache)});
 		// define the new function "C'atom"()
 		// note: this should not use N() because it may be called from inside N() itself
-		MacroRuleBase(C'name, {});
-		`( Rule(@C'name, 0, 1024, True)
+
+		MacroRuleBase(C'functionName, {});
+		`( Rule(@C'functionName, 0, 1024, True)
 		[
 			Local(new'prec, new'C, cached'C);
 			Set(new'prec, GetPrecision());
@@ -67,6 +69,7 @@ Rule("CachedConstant", 3, 10, And(IsAtom(C'atom), IsFunction(C'func)))
 			  MathNth(cached'C, 3)
 			);
 		]);
+
 		// calculate C'atom at current precision for the first time
 //		Eval(UnList({C'atom}));	// "C'name"();
 		// we do not need this until the constant is used; it will just slow us down
@@ -83,13 +86,14 @@ Rule("CachedConstant", 3, 20, True)
 // this is called from N()
 Function("AssignCachedConstantsN", {})
 [
-	Local(var);
+	Local(var,fname);
 	ForEach(var, AssocIndices(CacheOfConstantsN))
 	[
 		MacroClear(Atom(var));
+    Set(fname,ConcatStrings("Internal'",var));
     Set(var,Atom(var));
-		// this way the routine Pi() will be actually called only when the variable 'Pi' is used, etcetera.
-    `SetGlobalLazyVariable((@var), UnList({var}));
+		// this way the routine Internal'Pi() will be actually called only when the variable 'Pi' is used, etcetera.
+    `SetGlobalLazyVariable((@var), UnList({Atom(fname)}));
 	];
 ];
 UnFence("AssignCachedConstantsN", 0);

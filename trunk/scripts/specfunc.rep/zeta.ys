@@ -96,7 +96,7 @@ Zeta3() :=
 		// call ourselves with a different argument
 		[
 			If(InVerboseMode(), Echo({"Internal'ZetaNum: using s->1-s identity, s=", s, ", precision ", prec}));
-			result :=  2*Exp(Internal'LnGammaNum(1-s)-(1-s)*Ln(2*Pi()))*Sin(Pi()*s/2) * Internal'ZetaNum(1-s);
+			result :=  2*Exp(Internal'LnGammaNum(1-s)-(1-s)*Ln(2*Internal'Pi()))*Sin(Internal'Pi()*s/2) * Internal'ZetaNum(1-s);
 		],
 		// choose between methods
 		If (N(Re(s)) > N(1+(prec*Ln(10))/(Ln(prec)+0.1), 6),
