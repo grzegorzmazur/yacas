@@ -140,12 +140,12 @@
 
 /* 2 # Ln(-Infinity)                    <-- 0; */
 2 # Ln(x_IsNegativeNumber)_InNumericMode() <-- Complex(Ln(-x), Pi);
-3 # Ln(x_IsNumber)_(InNumericMode() And x>=1) <-- LnNum(x);
+3 # Ln(x_IsNumber)_(InNumericMode() And x>=1) <-- Internal'LnNum(x);
 4 # Ln(Exp(_x))              <-- x;
 
 3 # Ln(Complex(_r,_i)) <-- Complex(Ln(Abs(Complex(r,i))), Arg(Complex(r,i)));
 4 # Ln(x_IsNegativeNumber) <-- Complex(Ln(-x), Pi);
-5 # Ln(x_IsNumber)_(InNumericMode() And x<1) <-- - LnNum(MathDivide(1, x));
+5 # Ln(x_IsNumber)_(InNumericMode() And x<1) <-- - Internal'LnNum(MathDivide(1, x));
 
 
 2 # ArcSin(x_IsNumber)_(InNumericMode() And Abs(x)<=1) <-- ArcSinNum(x);

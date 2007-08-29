@@ -6,7 +6,7 @@ GammaConstNum() :=
   NonN([
     Precision(prec+IntLog(prec,10)+3);	// 2 guard digits and 1 to compensate IntLog
     n:= 1+Ceil(prec*0.5757+0.2862);	// n>(P*Ln(10)+Ln(Pi))/4
-    A:= -LnNum(n);
+    A:= -Internal'LnNum(n);
     B:=1;
     U:=A;
     V:=1;

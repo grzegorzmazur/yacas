@@ -62,9 +62,5 @@ when doing calculations.
 
 *INCLUDE numtheory.chapt
 
-*INCLUDE addons.chapt
-
-*INCLUDE plugin-docs.chapt
-
 *REM GNU Free Documentation License
 *INCLUDE FDL.chapt

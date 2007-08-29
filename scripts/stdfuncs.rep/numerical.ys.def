@@ -8,7 +8,7 @@ ExpNum
 MathExpThreshold
 SetMathExpThreshold 
 MathLog
-LnNum
+Internal'LnNum
 BrentLn
 Ln2
 NewtonLn

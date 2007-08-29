@@ -184,7 +184,7 @@ CheckIntPower(n, limit) :=
 	k := Div(IntLog(n, 2), s);
 	// therefore we need k*Ln(2)/Ln(10) digits for the floating-point calculation
 	Precision(2+Div(k*3361, 11165));	// 643/2136 < Ln(2)/Ln(10) < 3361/11165
-	result := Round(MathExp(MathDivide(LnNum(MathDivide(n, 2^(k*s))), s))*2^k);
+	result := Round(MathExp(MathDivide(Internal'LnNum(MathDivide(n, 2^(k*s))), s))*2^k);
 	Precision(GlobalPop());
 	// result is rounded and so it may overshoot (we do not use Floor above because numerical calculations may undershoot)
 	If(result^s>n, result-1, result);

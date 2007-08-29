@@ -236,6 +236,9 @@ On a given host computer running the "{Yacas} server", each user currently may h
 
 *INCLUDE config.chapt
 
+*INCLUDE addons.chapt
+
+*INCLUDE plugin-docs.chapt
 
 *REM GNU Free Documentation License
 *INCLUDE FDL.chapt
