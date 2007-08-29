@@ -166,11 +166,11 @@ int main(int argc, char** argv)
         {
           strcat(lastVal,items[2]);
         }
-        strcat(lastVal,"\\n");
         strcpy(lastDes,items[3]);
       }
       else
       {
+        strcat(lastVal,", \\n");
         if (!strncmp(lastKey,items[2],strlen(lastKey)))
         {
           strcat(lastVal,lastKey);
@@ -180,7 +180,6 @@ int main(int argc, char** argv)
         {
           strcat(lastVal,items[2]);
         }
-        strcat(lastVal,"\\n");
         strcat(lastDes,items[3]);
       }
     }
