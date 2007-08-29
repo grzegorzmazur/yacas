@@ -7,9 +7,6 @@
 double GetDouble(LispObject* aInteger);
 LispObject* Double(LispEnvironment& aEnvironment,double aValue);
 
-LispObject* PlatSin(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision);
-LispObject* PlatCos(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision);
-LispObject* PlatTan(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision);
 LispObject* PlatArcSin(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision);
 LispObject* PlatArcCos(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision);
 LispObject* PlatArcTan(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision);

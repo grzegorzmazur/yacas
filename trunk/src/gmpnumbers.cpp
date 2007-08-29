@@ -810,18 +810,18 @@ LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnv
 LispObject* SinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     //TODO
-    return PlatSin(aEnvironment, int1, 0);
+    return Double(aEnvironment, sin(GetDouble(int1)));
 }
 
 LispObject* CosFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     //TODO
-    return PlatCos(aEnvironment, int1, 0);
+    return Double(aEnvironment, cos(GetDouble(int1)));
 }
 LispObject* TanFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     //TODO
-    return PlatTan(aEnvironment, int1, 0);
+    return Double(aEnvironment, tan(GetDouble(int1)));
 }
 
 LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)

@@ -33,20 +33,6 @@ LispObject* Double(LispEnvironment& aEnvironment,double aValue)
   return LispAtom::New(aEnvironment,buf);
 }
 
-LispObject* PlatSin(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
-{
-    return Double(aEnvironment, sin(GetDouble(int1)));
-}
-
-LispObject* PlatCos(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
-{
-    return Double(aEnvironment, cos(GetDouble(int1)));
-}
-
-LispObject* PlatTan(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
-{
-    return Double(aEnvironment, tan(GetDouble(int1)));
-}
 
 LispObject* PlatArcSin(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {

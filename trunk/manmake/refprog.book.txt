@@ -1610,9 +1610,6 @@ However, when the result is mathematically not an integer, the functions return 
 *A {FastExp}
 *A {FastLog}
 *A {FastPower}
-*A {FastSin}
-*A {FastCos}
-*A {FastTan}
 *A {FastArcSin}
 *A {FastArcCos}
 *A {FastArcTan}
@@ -1623,7 +1620,6 @@ However, when the result is mathematically not an integer, the functions return 
 
 FastExp(x), FastLog(x) (natural logarithm),
 FastPower(x,y),
-FastSin(x), FastCos(x), FastTan(x),
 FastArcSin(x), FastArcCos(x), FastArcTan(x)
 
 *DESC
