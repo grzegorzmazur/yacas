@@ -1,12 +1,25 @@
 
 TODO:
+- remove redundant functions (low hanging fruit):
+  - move Pi(), GoldenRatio() etcetera to Internal'Pi(), Internal'GoldenRatio() etcetera.
+  - Remove Pi() and reference to it in favor of N(Pi), everywhere  (manual, tests, examples).
+  - get rid of the Ortho?Sum functions, replace with just one?
   - LnNum
   - LnGammaNum
   - (find other ...Num functions)
   - NewtonNum
-  - move Pi(), GoldenRatio() etcetera to Internal'Pi(), Internal'GoldenRatio() etcetera.
+- do a cleanup of the "ref" manual, first pass to throw away functions that should not have been there in the first place.
+  - second chapter in refprog titled "Programming" has way too many functions
+  - chapter "List operators" has way too many function entries.
+  - chapter "Control flow" has entries relating only to the off-line version
+  - chapter "predicates" has way too many function entries.
+  - chapter "Input/output and plotting" has way too many function entries.
+  - why is "LocalSymbols" in the string manipulation chapter?
+  - chapter "Number theory" needs to be cleaned up.
+  - platform-dependent stuff at the end of refmanual should be in manual on the off-line version.
 
-  - do a cleanup of the "ref" manual, first pass to throw away functions that should not have been there in the first place.
+
+
   - Future, change name of builtin functions that are not directly accessible to outside to have prefix Builtin'...
   - Skim through Math... functions, renaming them to Builtin'...
   - manuals, provide as zip files? more people can use unzip than can use untar.
@@ -20,7 +33,6 @@ TODO:
 
   - cos(arccos(x)) -> x+k*2*pi etc
  
-  - Remove Pi() and reference to it in favor of N(Pi), everywhere  (manual, tests, examples).
   - try if I can't change the format of numbers from 0.xxx to x.xxxx, is more natural
   - make plain site not too wide also
   - Move brackets slightly down in tex form pretty renderer, especially when what they bracket is not too big.
