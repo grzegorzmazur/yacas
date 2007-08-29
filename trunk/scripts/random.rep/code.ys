@@ -170,7 +170,7 @@ GaussianRNGDist(_rng) <--
 		b:=2*rnumber-1;
 		m:=a*a+b*b;	
 	];
-	{new'state, (a+I*b)*MathSqrt(-2*MathDivide(LnNum(m),m))};
+	{new'state, (a+I*b)*MathSqrt(-2*MathDivide(Internal'LnNum(m),m))};
 ];
 
 

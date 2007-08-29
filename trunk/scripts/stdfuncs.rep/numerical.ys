@@ -81,17 +81,17 @@ LocalSymbols(mathExpThreshold) [
 //////////////////////////////////////////////////
 
 //  MathLog in the original C++ code hangs! Scripted implementation is much better
-MathLog(x) := LnNum(x);
+MathLog(x) := Internal'LnNum(x);
 
 // natural logarithm: this should be called only for real x>1
-//LnNum(x) := MathLog(x);
+//Internal'LnNum(x) := MathLog(x);
 // right now the fastest algorithm is Halley's method for Exp(x)=a
 // when internal math is fixed, we may want to use Brent's method (below)
 // this method is using a cubically convergent Newton iteration for Exp(x/2)-a*Exp(-x/2)=0:
 // x' := x - 2 * (Exp(x)-a) / (Exp(x)+a) = x-2+4*a/(Exp(x)+a)
-LnNum(x_IsNumber)_(x>=1) <-- NewtonLn(x);
+Internal'LnNum(x_IsNumber)_(x>=1) <-- NewtonLn(x);
 
-LnNum(x_IsNumber)_(0<x And x<1) <-- - LnNum(MathDivide(1,x));
+Internal'LnNum(x_IsNumber)_(0<x And x<1) <-- - Internal'LnNum(MathDivide(1,x));
 
 NewtonLn(x) :=
 	LocalSymbols(y)
@@ -153,7 +153,7 @@ NewtonLn(x) :=
 
 40 # BrentLn(x_IsNumber) <-- MathLog(x);
 
-CachedConstant(Ln2, LnNum(2));	// this is only useful for BrentLn
+CachedConstant(Ln2, Internal'LnNum(2));	// this is only useful for BrentLn
 /**/
 //CachedConstant(Exp1, MathExp(1));	// Exp1 is useless so far
 

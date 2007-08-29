@@ -220,13 +220,13 @@ LocalSymbols(n'max, k)
 			]
 			Or
 			[	// next condition: the exp(-x^2) helps but we need a few terms of the series too
-				n'max := N(Min((GetPrecision()*3295/1431+0.121)/LnNum(Abs(x)), 2*LnNum(Abs(x))), 10);
+				n'max := N(Min((GetPrecision()*3295/1431+0.121)/Internal'LnNum(Abs(x)), 2*Internal'LnNum(Abs(x))), 10);
 				2*Abs(x)+Re(x^2) > GetPrecision()*3295/1431+0.121;
 			]
 			Or
 			[	// worst case: exp(-x^2) does not help and we need the full series
 	// hack: save a value computed in the predicate to use in the body of rule
-				n'max := N(({{k}, k+LnNum(k)} @ GetPrecision()*3295/1431)/2 - 3/2, 10);
+				n'max := N(({{k}, k+Internal'LnNum(k)} @ GetPrecision()*3295/1431)/2 - 3/2, 10);
 				Abs(x) > n'max+3/2;
 			]
 		)
@@ -289,7 +289,7 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 	  If(
 		x<0,
 		x*MathExp(1) / (1+1 / (1 / MathSqrt(2*(x*MathExp(1)+1)) - 1 / MathSqrt(2) + 1/(MathExp(1)-1))),
-		LnNum(1+x)*(1-LnNum(1+LnNum(1+x))/(2+LnNum(1+x)))
+		Internal'LnNum(1+x)*(1-Internal'LnNum(1+Internal'LnNum(1+x))/(2+Internal'LnNum(1+x)))
 	  ),
 	  10,	// initial approximation is good to about 3 digits
 	  3	// 3rd order scheme

@@ -501,7 +501,7 @@ The initial value found in this fashion will be correct to about one bit.
 The number of digits triples at each Halley iteration, so the result will have about $3*k$ correct bits after $k$ iterations (this disregards round-off error).
 Therefore the required number of iterations for $P$ decimal digits is $1/Ln(3)*Ln(P*Ln(2)/Ln(10))$.
 
-This method is currently faster than other methods (with internal math) and so it is implemented in the routine {LnNum}.
+This method is currently faster than other methods (with internal math) and so it is implemented in the routine {Internal'LnNum}.
 
 This method can be generalized to higher orders.
 Let $y:=1-a*Exp(-x[0])$, where $x[0]$ is a good approximation to $Ln(a)$ so $y$ is small.

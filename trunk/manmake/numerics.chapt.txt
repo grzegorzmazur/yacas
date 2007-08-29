@@ -59,7 +59,7 @@ After this, evaluating an expression such as {1/2+gamma} will call the function 
 
 *EG notest
 
-	In> CachedConstant( my'cache, Ln2, LnNum(2) )
+	In> CachedConstant( my'cache, Ln2, Internal'LnNum(2) )
 	Out> 0.6931471806;
 	In> Ln2
 	Out> Ln2;
