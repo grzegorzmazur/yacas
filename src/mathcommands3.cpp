@@ -439,12 +439,8 @@ void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
   #endif
 
 // now we can define all such functions, e.g.:
-//  PLATFORM_UNARY(LispFastSin, sin, LispSin, PlatSin)
 
 // some or all of these functions should be moved to scripts
-  PLATFORM_UNARY(LispFastSin, sin, LispSin, PlatSin)
-  PLATFORM_UNARY(LispFastCos, cos, LispCos, PlatCos)
-  PLATFORM_UNARY(LispFastTan, tan, LispTan, PlatTan)
   PLATFORM_UNARY(LispFastArcSin, asin, LispArcSin, PlatArcSin)
   PLATFORM_UNARY(LispFastArcCos, acos, LispArcCos, PlatArcCos)
   PLATFORM_UNARY(LispFastArcTan, atan, LispArcTan, PlatArcTan)

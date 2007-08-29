@@ -330,15 +330,6 @@ class MathCommands
          new YacasEvaluator(new LispSystemCall(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "SystemCall");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFastSin(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FastSin");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFastCos(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FastCos");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFastTan(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FastTan");
-    aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispFastArcSin(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "FastArcSin");
     aEnvironment.CoreCommands().SetAssociation(
@@ -2613,7 +2604,6 @@ class MathCommands
       String ls_str;
       Process ls_proc = Runtime.getRuntime().exec(oper);
       // get its output (your input) stream
-//TODO remove?      DataInputStream ls_in = new DataInputStream(ls_proc.getInputStream());
       BufferedReader ls_in = new BufferedReader(new InputStreamReader(ls_proc.getInputStream()));
 
       while ((ls_str = ls_in.readLine()) != null)
@@ -2621,45 +2611,6 @@ class MathCommands
         aEnvironment.iCurrentOutput.Write(ls_str);
         aEnvironment.iCurrentOutput.Write("\n");
       }
-    }
-  }
-
-  class LispFastSin extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      BigNumber x;
-      x = GetNumber(aEnvironment, aStackTop, 1);
-      double result = Math.sin(x.Double());
-      BigNumber z = new BigNumber(aEnvironment.Precision());
-      z.SetTo(result);
-      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
-    }
-  }
-
-  class LispFastCos extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      BigNumber x;
-      x = GetNumber(aEnvironment, aStackTop, 1);
-      double result = Math.cos(x.Double());
-      BigNumber z = new BigNumber(aEnvironment.Precision());
-      z.SetTo(result);
-      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
-    }
-  }
-
-  class LispFastTan extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      BigNumber x;
-      x = GetNumber(aEnvironment, aStackTop, 1);
-      double result = Math.tan(x.Double());
-      BigNumber z = new BigNumber(aEnvironment.Precision());
-      z.SetTo(result);
-      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
 

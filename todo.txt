@@ -2,6 +2,7 @@
 TODO:
 - remove redundant functions (low hanging fruit):
   - Remove Fast* (does not seem to be used anywhere). FastArcSin, FastAssoc, FastIsPrime, FastLog, FastPower do seem to be used.
+  - remove gmp support
   - get rid of the Ortho?Sum functions, replace with just one?
   - (find other ...Num functions)
   - NewtonNum
