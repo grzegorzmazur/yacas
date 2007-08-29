@@ -1177,7 +1177,7 @@ Note: For reasons of Yacas syntax, the factorial sign {!} cannot precede other
 non-letter symbols such as {+} or {*}. Therefore, you should enter a space
 after {!} in expressions such as {x! +1}.
 
-The factorial functions terminate and print an error message if the arguments are too large (currently the limit is $n < 65535$) because exact factorials of such large numbers are computationally expensive and most probably not useful. One can call {LnGammaNum()} to evaluate logarithms of such factorials to desired precision.
+The factorial functions terminate and print an error message if the arguments are too large (currently the limit is $n < 65535$) because exact factorials of such large numbers are computationally expensive and most probably not useful. One can call {Internal'LnGammaNum()} to evaluate logarithms of such factorials to desired precision.
 
 *E.G.
 

@@ -1,5 +1,8 @@
 
 TODO:
+- new functionality:
+  - graph plotter
+  - better looking tip box in the autocompleter.
 - do a cleanup of the "ref" manual, first pass to throw away functions that should not have been there in the first place.
   - second chapter in refprog titled "Programming" has way too many functions
   - chapter "List operators" has way too many function entries.
@@ -11,7 +14,6 @@ TODO:
   - move Pi(), GoldenRatio() etcetera to Internal'Pi(), Internal'GoldenRatio() etcetera.
   - Remove Pi() and reference to it in favor of N(Pi), everywhere  (manual, tests, examples).
   - get rid of the Ortho?Sum functions, replace with just one?
-  - LnGammaNum
   - (find other ...Num functions)
   - NewtonNum
 
@@ -46,6 +48,7 @@ TODO:
 
 1) Documentation improvements
 - document the article mark-up language
+- examples embedded in the manual
 - document ":test" to run test code from article
 - link to mark-up documentation from the editors.
 - what is Yacas? How did it come into existence? Why did I write it? Who is it for?
