@@ -36,64 +36,37 @@ LispObject* Double(LispEnvironment& aEnvironment,double aValue)
 
 LispObject* PlatArcSin(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-    return Double(aEnvironment, asin(GetDouble(int1)));
+  return Double(aEnvironment, asin(GetDouble(int1)));
 }
 
 LispObject* PlatArcCos(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-    return Double(aEnvironment, acos(GetDouble(int1)));
+  return Double(aEnvironment, acos(GetDouble(int1)));
 }
 
 LispObject* PlatArcTan(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-    return Double(aEnvironment, atan(GetDouble(int1)));
-}
-
-LispObject* PlatExp(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
-{
-    return Double(aEnvironment, exp(GetDouble(int1)));
+  return Double(aEnvironment, atan(GetDouble(int1)));
 }
 
 LispObject* PlatLn(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-    return Double(aEnvironment, log(GetDouble(int1)));
+  return Double(aEnvironment, log(GetDouble(int1)));
 }
 
-LispObject* PlatPower(LispEnvironment& aEnvironment,LispObject* int1, LispObject* int2,
-                        LispInt aPrecision)
+LispObject* PlatPower(LispEnvironment& aEnvironment,LispObject* int1, LispObject* int2, LispInt aPrecision)
 {
-    return Double(aEnvironment, pow(GetDouble(int1),GetDouble(int2)));
+  return Double(aEnvironment, pow(GetDouble(int1),GetDouble(int2)));
 }
 
-
-
-LispObject* PlatSqrt(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
-{
-    return Double(aEnvironment, sqrt(GetDouble(int1)));
-}
-LispObject* PlatPi(LispEnvironment& aEnvironment,LispInt aPrecision)
-{
-    return Double(aEnvironment, acos(-1.0));
-}
-LispObject* PlatFloor(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
-{
-    return Double(aEnvironment, floor(GetDouble(int1)));
-}
-LispObject* PlatCeil(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
-{
-    return Double(aEnvironment, ceil(GetDouble(int1)));
-}
-LispObject* PlatMod(LispEnvironment& aEnvironment,LispObject* int1, LispObject* int2,LispInt aPrecision)
-{
-    return Double(aEnvironment, fmod(GetDouble(int1),GetDouble(int2)));
-}
 LispObject* PlatDiv(LispEnvironment& aEnvironment,LispObject* int1, LispObject* int2,LispInt aPrecision)
 {
-    return Double(aEnvironment,((long)GetDouble(int1))/((long)GetDouble(int2)));
+  return Double(aEnvironment,((long)GetDouble(int1))/((long)GetDouble(int2)));
 }
+
 LispObject* PlatAbs(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-    return Double(aEnvironment, fabs(GetDouble(int1)));
+  return Double(aEnvironment, fabs(GetDouble(int1)));
 }
 
 

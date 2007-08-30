@@ -1607,7 +1607,6 @@ However, when the result is mathematically not an integer, the functions return 
 	Out> 0.125
 
 
-*A {FastExp}
 *A {FastLog}
 *A {FastPower}
 *A {FastArcSin}
@@ -1618,7 +1617,7 @@ However, when the result is mathematically not an integer, the functions return 
 *CALL
 *REM these are not made into code examples to save space
 
-FastExp(x), FastLog(x) (natural logarithm),
+FastLog(x) (natural logarithm),
 FastPower(x,y),
 FastArcSin(x), FastArcCos(x), FastArcTan(x)
 

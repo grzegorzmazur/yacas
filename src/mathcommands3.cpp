@@ -444,14 +444,9 @@ void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
   PLATFORM_UNARY(LispFastArcSin, asin, LispArcSin, PlatArcSin)
   PLATFORM_UNARY(LispFastArcCos, acos, LispArcCos, PlatArcCos)
   PLATFORM_UNARY(LispFastArcTan, atan, LispArcTan, PlatArcTan)
-  PLATFORM_UNARY(LispFastExp, exp, LispExp, PlatExp)
   PLATFORM_UNARY(LispFastLog, log, LispLn, PlatLn)
   PLATFORM_UNARY(LispFastAbs, fabs, LispAbs, PlatAbs)
-  PLATFORM_UNARY(LispFastFloor, floor, LispFloor, PlatFloor)
-  PLATFORM_UNARY(LispFastCeil, ceil, LispCeil, PlatCeil)
-  PLATFORM_UNARY(LispFastSqrt, sqrt, LispSqrt, PlatSqrt)
   PLATFORM_BINARY(LispFastPower, pow, LispPower, PlatPower)
-  PLATFORM_BINARY(LispFastMod, fmod, LispMod, PlatMod)
 
 
 

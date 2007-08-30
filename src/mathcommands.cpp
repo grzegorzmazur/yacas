@@ -1280,12 +1280,6 @@ void LispSystemCall(LispEnvironment& aEnvironment,LispInt aStackTop)
 #endif
 }
 
-// this function will eventually be removed
-void LispFastPi(LispEnvironment& aEnvironment, LispInt aStackTop)
-{
-    RESULT = (PlatPi(aEnvironment,aEnvironment.Precision()));
-}
-
 void LispMaxEvalDepth(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispPtr index(ARGUMENT(1));

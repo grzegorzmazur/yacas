@@ -339,29 +339,11 @@ class MathCommands
          new YacasEvaluator(new LispFastArcTan(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "FastArcTan");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFastExp(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FastExp");
-    aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispFastLog(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "FastLog");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispFastPower(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "FastPower");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFastSqrt(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FastSqrt");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFastPi(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FastPi");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFastFloor(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FastFloor");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFastCeil(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FastCeil");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFastMod(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FastMod");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispFastAbs(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "FastAbs");
@@ -2653,19 +2635,6 @@ class MathCommands
     }
   }
 
-  class LispFastExp extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      BigNumber x;
-      x = GetNumber(aEnvironment, aStackTop, 1);
-      double result = Math.pow(Math.E,x.Double());
-      BigNumber z = new BigNumber(aEnvironment.Precision());
-      z.SetTo(result);
-      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
-    }
-  }
-
   class LispFastLog extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
@@ -2690,65 +2659,6 @@ class MathCommands
       BigNumber z = new BigNumber(aEnvironment.Precision());
       z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
-    }
-  }
-
-  class LispFastSqrt extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      BigNumber x;
-      x = GetNumber(aEnvironment, aStackTop, 1);
-      double result = Math.sqrt(x.Double());
-      BigNumber z = new BigNumber(aEnvironment.Precision());
-      z.SetTo(result);
-      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
-    }
-  }
-
-  class LispFastPi extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      double result = Math.PI;
-      BigNumber z = new BigNumber(aEnvironment.Precision());
-      z.SetTo(result);
-      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
-    }
-  }
-
-  class LispFastFloor extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      BigNumber x;
-      x = GetNumber(aEnvironment, aStackTop, 1);
-      double result = Math.floor(x.Double());
-      BigNumber z = new BigNumber(aEnvironment.Precision());
-      z.SetTo(result);
-      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
-    }
-  }
-
-  class LispFastCeil extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      BigNumber x;
-      x = GetNumber(aEnvironment, aStackTop, 1);
-      double result = Math.ceil(x.Double());
-      BigNumber z = new BigNumber(aEnvironment.Precision());
-      z.SetTo(result);
-      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
-    }
-  }
-
-  class LispFastMod extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : FastMod");//TODO FIXME
-      throw new Yacasexception("Function not yet supported");
     }
   }
 
