@@ -2,7 +2,7 @@
 // special cases: n=0 or n=1
 10 # Internal'BernoulliArray(n_IsInteger)_(n=0 Or n=1) <-- [
 	Local(B);
-	B:=ArrayCreate(n+1,0);
+	B:=Array'Create(n+1,0);
 	B[1] := 1;
 	If(n=1, B[2] := -1/2);
 	B;
@@ -11,7 +11,7 @@
 20 # Internal'BernoulliArray(n_IsInteger) <-- [
 	Local(B, i, k, k2, bin);
 	If (InVerboseMode(), Echo({"Internal'BernoulliArray: using direct recursion, n = ", n}));
-	B:=ArrayCreate(n+1, 0);	// array of B[k], k=1,2,... where B[1] is the 0th Bernoulli number
+	B:=Array'Create(n+1, 0);	// array of B[k], k=1,2,... where B[1] is the 0th Bernoulli number
 	// it would be better not to store the odd elements but let's optimize this later
 	// we could also maintain a global cache of Bernoulli numbers computed so far, but it won't really speed up things at large n
 	// all odd elements after B[2] are zero
@@ -88,8 +88,8 @@ Bernoulli1(n_IsEven)_(n>=2) <-- [
 Internal'BernoulliArray1(n_IsEven) _ (n>=2) <--
 [
 	Local(C, f, k, j, denom, sum);
-	C := ArrayCreate(n+1, 0);
-	f := ArrayCreate(n/2, 0);
+	C := Array'Create(n+1, 0);
+	f := Array'Create(n/2, 0);
 	C[1] := 1;
 	C[2] := -1/2;
 	C[3] := 1/12;	// C[2*k+1] = B[2*k]/(2*k)!

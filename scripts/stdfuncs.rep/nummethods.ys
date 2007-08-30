@@ -119,7 +119,7 @@ SumTaylorNum1(x, nth'term'func, next'term'factor, n'terms) :=
     rows := IntNthRoot(n'terms+1, 2);
     cols := Div(n'terms+rows, rows);	// now: rows*cols >= n'terms+1
     Check(rows>1 And cols>1, "SumTaylorNum1: Internal error: number of Taylor sum terms must be at least 4");
-    rows'tmp := ArrayCreate(rows, 0);
+    rows'tmp := Array'Create(rows, 0);
     x'power := x ^ rows;	// do not use MathPower b/c x might be complex
     // initialize partial sums (array rows'tmp) - the 0th column (i:=0)
     // prepare term'tmp for the first element

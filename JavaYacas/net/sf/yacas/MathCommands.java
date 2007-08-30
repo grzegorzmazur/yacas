@@ -412,16 +412,16 @@ class MathCommands
          "GenericTypeName");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new GenArrayCreate(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "ArrayCreate");
+         "Array'Create");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new GenArraySize(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "ArraySize");
+         "Array'Size");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new GenArrayGet(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "ArrayGet");
+         "Array'Get");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new GenArraySet(),3, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "ArraySet");
+         "Array'Set");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispCustomEval(),4, YacasEvaluator.Fixed|YacasEvaluator.Macro),
          "CustomEval");
