@@ -460,10 +460,10 @@ class MathCommands
          "StringMid'Set");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new GenPatternCreate(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "PatternCreate");
+         "Pattern'Create");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new GenPatternMatches(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "PatternMatches");
+         "Pattern'Matches");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispRuleBaseDefined(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "RuleBaseDefined");
@@ -498,11 +498,11 @@ class MathCommands
          new YacasEvaluator(new LispPrettyReader(),1, YacasEvaluator.Variable|YacasEvaluator.Function),
          "PrettyReader");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispPrettyPrinter(),1, YacasEvaluator.Variable|YacasEvaluator.Function),
-         "PrettyPrinter");
+         new YacasEvaluator(new YacasPrettyPrinterSet(),1, YacasEvaluator.Variable|YacasEvaluator.Function),
+         "PrettyPrinter'Set");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispGetPrettyPrinter(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "GetPrettyPrinter");
+         new YacasEvaluator(new YacasPrettyPrinterGet(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "PrettyPrinter'Get");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispGetPrettyReader(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "GetPrettyReader");
@@ -3569,7 +3569,7 @@ class MathCommands
     }
   }
 
-  class LispPrettyPrinter extends YacasEvalCaller
+  class YacasPrettyPrinterSet extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
@@ -3591,7 +3591,7 @@ class MathCommands
     }
   }
 
-  class LispGetPrettyPrinter extends YacasEvalCaller
+  class YacasPrettyPrinterGet extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {

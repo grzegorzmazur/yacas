@@ -1232,7 +1232,7 @@ int main(int argc, char** argv)
 */
 
 #define USE_TEXMACS_OUT yacas->getDefEnv().getEnv().SetPrettyPrinter(yacas->getDefEnv().getEnv().HashTable().LookUp("\"TexForm\""));
-//  yacas->Evaluate("ToString()PrettyPrinter(\"TexForm\");");
+
  
     char* file_to_load=NULL;
     bool exit_after_files = false;

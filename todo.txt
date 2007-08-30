@@ -1,9 +1,12 @@
 
 TODO:
 - remove redundant functions (low hanging fruit):
-  - PatternCreate/PatternMatches -> Pattern'Create/Pattern'Matches
   - Precision/GetPrecision -> Precision'Get/Precision'Set
-  - PrettyPrinter/GetPrettyPrinter -> PrettyPrinter'Set/PrettyPrinter'Get
+  - PrettyReader/GetPrettyReader
+  - StringMid'Get/Set should have separate anchors with explanations in autocompleter, or not be in the list.
+
+  - Test suite fails on Java version. We *have* to make the test suite more lenient.
+
 
   - Remove Fast* (does not seem to be used anywhere). FastArcSin, FastAssoc, FastIsPrime, FastLog, FastPower do seem to be used.
   - remove gmp support
@@ -64,7 +67,7 @@ TODO:
 - document HoldArg in combination with <-- (or actually remove HoldArg? I want to depreciate UnFence/HoldArg in favor of macros)
 - document II, ReII, ImII, IsComplexII
 - document ExpressionDepth, PAdicExpandInternal, GetPrimeFactors, Rem, Roots, Apart, Together
-- document UnHoldable, GcdReduce, ApplyPure, DestructiveAppendList, PatternMatches, PatternCreate, RuleBaseDefined, Lambda (in combination with Apply), Primes, MapArgs, Substitute,
+- document UnHoldable, GcdReduce, ApplyPure, DestructiveAppendList, Pattern'Matches, Pattern'Create, RuleBaseDefined, Lambda (in combination with Apply), Primes, MapArgs, Substitute,
 - document %, |, &, ^, if, else (else binds to the last if)
 - document DivPoly, RootsWithMultiples,
 - document OdeSolve
@@ -222,6 +225,5 @@ Mod(a,b) is defined as the smallest non-negative number c such that a-c is
 divisible by b.
 - Simplify(4-x-y) returns 4-y-x, Simplify(4-y-x) returns 4-x-y
 - following crashes. However, not sure if we need to fix this? One can also use ` and @, in stead of making Newton a macro. [  Local(expr); expr := 1800*x/1.5 - 1800; Newton(expr, x,2,0.001); ];
-
 
 

@@ -117,15 +117,15 @@ This command always evaluates to {True}.
 
 *SEE DefaultDirectory, Dll'Load
 
-*CMD PrettyPrinter --- set routine to use as pretty-printer
-*CMD GetPrettyPrinter --- get routine to use as pretty-printer
+*CMD PrettyPrinter'Set --- set routine to use as pretty-printer
+*CMD PrettyPrinter'Get --- get routine to use as pretty-printer
 
 *STD
 
 *CALL
-	PrettyPrinter(printer)
-	PrettyPrinter()
-	GetPrettyPrinter()
+	PrettyPrinter'Set(printer)
+	PrettyPrinter'Set()
+	PrettyPrinter'Get()
 
 *PARMS
 
@@ -135,18 +135,18 @@ This command always evaluates to {True}.
 *DESC
 
 This function sets up the function printer to print out the results on
-the command line. This can be reset to the internal printer with {PrettyPrinter()} (when no argument is given, the system returns to the default).
+the command line. This can be reset to the internal printer with {PrettyPrinter'Set()} (when no argument is given, the system returns to the default).
 
 Currently implemented prettyprinters are: {PrettyForm}, {TeXForm}, {Print}, {OMForm}, {CForm} and {DefaultPrint}.
 
-{GetPrettyPrinter()} returns the current pretty printer, or it returns
+{PrettyPrinter'Get()} returns the current pretty printer, or it returns
 an empty string if the default pretty printer is used.
 
 *E.G.
 
 	In> Taylor(x,0,5)Sin(x)
 	Out> x-x^3/6+x^5/120;
-	In> PrettyPrinter("PrettyForm");
+	In> PrettyPrinter'Set("PrettyForm");
 	
 	True
 	
@@ -157,7 +157,7 @@ an empty string if the default pretty printer is used.
 	x - -- + ---
 	    6    120
 	
-	In> PrettyPrinter();
+	In> PrettyPrinter'Set();
 	Out> True;
 	In> Taylor(x,0,5)Sin(x)
 	Out> x-x^3/6+x^5/120;
@@ -201,7 +201,7 @@ an empty string if the default pretty printer is used.
 	In> (Taylor x 0 5 (Sin x))
 	Out> x-x^3/6+x^5/120
 
-*SEE Read, LispRead, OMRead, PrettyPrinter, GetPrettyPrinter
+*SEE Read, LispRead, OMRead, PrettyPrinter'Set, PrettyPrinter'Get
 
 
 

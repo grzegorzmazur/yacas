@@ -574,7 +574,7 @@ void LispGetPrettyReader(LispEnvironment& aEnvironment, LispInt aStackTop)
     RESULT = (LispAtom::New(aEnvironment,aEnvironment.PrettyReader()->c_str()));
 }
 
-void LispPrettyPrinter(LispEnvironment& aEnvironment, LispInt aStackTop)
+void YacasPrettyPrinterSet(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   LispInt nrArguments = InternalListLength(ARGUMENT(0));
 
@@ -593,7 +593,7 @@ void LispPrettyPrinter(LispEnvironment& aEnvironment, LispInt aStackTop)
   InternalTrue(aEnvironment,RESULT);
 }
 
-void LispGetPrettyPrinter(LispEnvironment& aEnvironment, LispInt aStackTop)
+void YacasPrettyPrinterGet(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   if (!aEnvironment.PrettyPrinter())
     RESULT = (LispAtom::New(aEnvironment,"\"\""));

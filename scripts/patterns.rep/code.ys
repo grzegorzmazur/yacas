@@ -50,7 +50,7 @@ Rule("DefinePattern",4,10,True)
       MacroRuleBase(patternoper,MakeVector(arg,arity));
      ]
     );
-  Set(patt,PatternCreate(patternvars,postpredicate));
+  Set(patt,Pattern'Create(patternvars,postpredicate));
   MacroRulePattern(patternoper,arity,patternprecedence,
             patt)patternright;
   True;

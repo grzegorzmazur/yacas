@@ -34,7 +34,7 @@ LocalSymbols(LocResult) [
     While (tr != {})
     [
       Set(head, Head(Head(tr)));
-      If (Not(IsAtom(head)) And exp[0]=head[1] And PatternMatches(head[2], exp),
+      If (Not(IsAtom(head)) And exp[0]=head[1] And Pattern'Matches(head[2], exp),
       [
         Set(LocResult,Eval(Head(Tail(Head(tr)))));
         Set(result, True);
@@ -54,10 +54,10 @@ LocalSymbols(LocResult) [
 UnFence("LocPredicate",1);
 UnFence("LocChange",1);
 
-10 # LocProcessSingle({_pat,_post,_exp}) <-- { {pat[0],PatternCreate(pat,post)},exp };
-20 # LocProcessSingle({pat_IsFunction,_exp}) <-- { {pat[0],PatternCreate(pat,True)},exp };
+10 # LocProcessSingle({_pat,_post,_exp}) <-- { {pat[0],Pattern'Create(pat,post)},exp };
+20 # LocProcessSingle({pat_IsFunction,_exp}) <-- { {pat[0],Pattern'Create(pat,True)},exp };
 30 # LocProcessSingle({pat_IsAtom,_exp}) <-- { pat,exp };
-40 # LocProcessSingle(pat_IsFunction <- _exp) <-- { {pat[0],PatternCreate(pat,True)},exp };
+40 # LocProcessSingle(pat_IsFunction <- _exp) <-- { {pat[0],Pattern'Create(pat,True)},exp };
 50 # LocProcessSingle(pat_IsAtom <- _exp) <-- { pat,exp };
 
 LocProcess(patterns) :=

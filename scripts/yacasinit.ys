@@ -103,12 +103,12 @@ Rule("REP",0,1,True)
       If(Not(stringOut = ""), WriteString(stringOut));
       If(Not(errorString = ""), WriteString(errorString));
       SetGlobalLazyVariable(%,result);
-      If(GetPrettyPrinter()="",
+      If(PrettyPrinter'Get()="",
       [
         Write(Atom("Out> "),result);
         NewLine();
       ],
-      Apply(GetPrettyPrinter(),{result}));
+      Apply(PrettyPrinter'Get(),{result}));
     ]);
   ];
 ];

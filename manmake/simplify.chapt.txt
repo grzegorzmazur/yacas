@@ -198,7 +198,7 @@ integrated easily.
 
 *E.G.
 
-	In> PrettyPrinter("PrettyForm");
+	In> PrettyPrinter'Set("PrettyForm");
 	
 	True
 	
