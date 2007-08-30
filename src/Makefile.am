@@ -126,9 +126,8 @@ libmath_la_SOURCES = libmath.cpp
 # 
 
 
-EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp \
-	epocyacas.hrh epocyacas.mmp epocyacasconsole.mmp \
-	epocstubs.cpp grower.inl lisphash.inl lispobject.inl \
+EXTRA_DIST = anumber.inl deffile.inl  \
+	grower.inl lisphash.inl lispobject.inl \
 	lispstring.inl standard.inl \
 	win32dll.cpp win32dll.h compilescript.sh \
 	depend.dep makefile.beos makefile.genericstatic \
@@ -142,10 +141,6 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 	plat/linux64/stubs.inl \
 	plat/linux64/platfileio.h \
 	plat/linux64/platdll.h \
-	plat/epoc32/lisptype.h \
-	plat/epoc32/stubs.inl \
-	plat/epoc32/platdll.h \
-	plat/epoc32/platfileio.h \
 	plat/beos/lisptype.h \
 	plat/beos/stubs.inl \
 	plat/beos/platfileio.h \
@@ -164,8 +159,7 @@ EXTRA_DIST = anumber.inl deffile.inl epocfileio.cpp epocmain.cpp epocmaincmd.cpp
 	win32dllresource.h win32yacasdll.h win32yacasdll.cpp \
 	win32yacasdllresource.h yacasdll.dsp yacasdll.dsw yacasdll.rc \
 	setup.py yacasc.i yacas.py \
-	epoccli.cpp epoccli.h epoccli.mmp epocclsv.h epocserv.cpp epocserv.h \
-	epocserv.mmp yacas.rss  \
+	yacas.rss  \
 	compressedfiles.cpp \
 	README.LZO lzoconf.h minilzo.c minilzo.h decompressor.cpp \
 	compressor.cpp filescanner.cpp filescanner.h \
