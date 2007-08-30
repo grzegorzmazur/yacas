@@ -8,14 +8,11 @@ double GetDouble(LispObject* aInteger);
 LispObject* Double(LispEnvironment& aEnvironment,double aValue);
 
 LispObject* PlatArcSin(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision);
-LispObject* PlatArcCos(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision);
-LispObject* PlatArcTan(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision);
 LispObject* PlatLn(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision);
 LispObject* PlatPower(LispEnvironment& aEnvironment,LispObject* int1, LispObject* int2,
                         LispInt aPrecision);
 
 LispObject* PlatDiv(LispEnvironment& aEnvironment,LispObject* int1, LispObject* int2,LispInt aPrecision);
-LispObject* PlatAbs(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision);
 
 LispObject* PlatIsPrime(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision);
 

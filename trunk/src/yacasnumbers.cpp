@@ -264,19 +264,6 @@ LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt 
   return FloatToString(result, aEnvironment);
 }
 
-// ArcCosFloat should be defined in scripts through ArcSinFloat
-LispObject* ArcCosFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
-{
-    //TODO
-    return PlatArcCos(aEnvironment, int1, 0);
-}
-
-LispObject* ArcTanFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
-{
-    //TODO
-    return PlatArcTan(aEnvironment, int1, 0);
-}
-
 static void ExpFloat(ANumber& aResult, ANumber& x)
 {
     // Exp(x)=Sum(i=0 to Inf)  x^(i) /(i)!

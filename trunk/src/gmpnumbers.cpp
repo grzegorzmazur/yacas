@@ -830,18 +830,6 @@ LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt 
     return PlatArcSin(aEnvironment, int1, 0);
 }
 
-LispObject* ArcCosFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
-{
-    //TODO
-    return PlatArcCos(aEnvironment,int1, 0);
-}
-
-LispObject* ArcTanFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
-{
-    //TODO
-    return PlatArcTan(aEnvironment,int1, 0);
-}
-
 LispObject* ExpFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
   GMPNumber x;

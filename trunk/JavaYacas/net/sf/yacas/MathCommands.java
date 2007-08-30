@@ -276,12 +276,6 @@ class MathCommands
          new YacasEvaluator(new LispDivide(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "MathDivide");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispArcCos(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathArcCos");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispArcTan(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathArcTan");
-    aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispPrecision(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "Precision");
     aEnvironment.CoreCommands().SetAssociation(
@@ -333,20 +327,11 @@ class MathCommands
          new YacasEvaluator(new LispFastArcSin(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "FastArcSin");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFastArcCos(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FastArcCos");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFastArcTan(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FastArcTan");
-    aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispFastLog(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "FastLog");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispFastPower(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "FastPower");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFastAbs(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FastAbs");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispShiftLeft(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "ShiftLeft");
@@ -564,8 +549,8 @@ class MathCommands
          new YacasEvaluator(new LispExplodeTag(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "XmlExplodeTag");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFastAssoc(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FastAssoc");
+         new YacasEvaluator(new YacasBuiltinAssoc(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "Builtin'Assoc");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispCurrentFile(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "CurrentFile");
@@ -2326,38 +2311,6 @@ class MathCommands
     }
   }
 
-  class LispArcCos extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      /* TODO fixme this is wrong in the C++ version too, we need to have this in
-       * arbitrary-precision format, defined in the scripts.
-       */
-      BigNumber x;
-      x = GetNumber(aEnvironment, aStackTop, 1);
-      double result = Math.acos(x.Double());
-      BigNumber z = new BigNumber(aEnvironment.Precision());
-      z.SetTo(result);
-      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
-    }
-  }
-
-  class LispArcTan extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      /* TODO fixme this is wrong in the C++ version too, we need to have this in
-       * arbitrary-precision format, defined in the scripts.
-       */
-      BigNumber x;
-      x = GetNumber(aEnvironment, aStackTop, 1);
-      double result = Math.atan(x.Double());
-      BigNumber z = new BigNumber(aEnvironment.Precision());
-      z.SetTo(result);
-      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
-    }
-  }
-
   class LispPrecision extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
@@ -2609,32 +2562,6 @@ class MathCommands
     }
   }
 
-  class LispFastArcCos extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      BigNumber x;
-      x = GetNumber(aEnvironment, aStackTop, 1);
-      double result = Math.acos(x.Double());
-      BigNumber z = new BigNumber(aEnvironment.Precision());
-      z.SetTo(result);
-      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
-    }
-  }
-
-  class LispFastArcTan extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      BigNumber x;
-      x = GetNumber(aEnvironment, aStackTop, 1);
-      double result = Math.atan(x.Double());
-      BigNumber z = new BigNumber(aEnvironment.Precision());
-      z.SetTo(result);
-      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
-    }
-  }
-
   class LispFastLog extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
@@ -2656,19 +2583,6 @@ class MathCommands
       x = GetNumber(aEnvironment, aStackTop, 1);
       y = GetNumber(aEnvironment, aStackTop, 2);
       double result = Math.pow(x.Double(), y.Double());
-      BigNumber z = new BigNumber(aEnvironment.Precision());
-      z.SetTo(result);
-      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
-    }
-  }
-
-  class LispFastAbs extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      BigNumber x;
-      x = GetNumber(aEnvironment, aStackTop, 1);
-      double result = Math.abs(x.Double());
       BigNumber z = new BigNumber(aEnvironment.Precision());
       z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
@@ -3928,7 +3842,7 @@ class MathCommands
     }
   }
 
-  class LispFastAssoc extends YacasEvalCaller
+  class YacasBuiltinAssoc extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
