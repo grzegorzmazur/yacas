@@ -91,8 +91,8 @@ MakeFunctionPlugin(_extName, _fBody) <--
 	/* If compilation succeeds, DLL file is present */
 	Check(FindFile(dllPath) = dllPath, "MakeFunctionPlugin: error: compilation of '" : dllPath : "' failed, consult " : fileBase : ".log");
 	/* Load DLL file */
-	DllUnload(dllPath);
-	DllLoad(dllPath);
+	Dll'Unload(dllPath);
+	Dll'Load(dllPath);
 	Echo({"Function " : extName : "(" : MakeArgumentList(argList, ""): ") loaded from " : dllPath});
 	/* define wrapper */
 	NFunction(extName, exportName, argList);

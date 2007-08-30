@@ -115,7 +115,7 @@ DeclareCountable(x) := [
 SingularFromPlural(x) := [
 	Local(singular);
 	singular := String(x);	// cut the ending "s"
-	singular := StringMid(1, Length(singular)-1, singular);
+	singular := StringMid'Get(1, Length(singular)-1, singular);
 	Atom(singular);
 ];
 

@@ -23,13 +23,13 @@ Rule("Nth",2,14,
 [
   Local(result);
   result:="";
-  ForEach(i,aindex) [ result := result : StringMid(i,1,alist); ];
+  ForEach(i,aindex) [ result := result : StringMid'Get(i,1,alist); ];
   result;
 ];
 
 Rule("Nth",2,15,Equals(IsString(alist),True))
 [
-  StringMid(aindex,1,alist);
+  StringMid'Get(aindex,1,alist);
 ];
 
 

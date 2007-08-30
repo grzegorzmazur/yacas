@@ -44,7 +44,7 @@ If(Equals(LoadPlugIns,False),
     Use("base.rep/math.ys");
   ],
   [
-    TrapError(DllLoad("libmath"),Use("base.rep/math.ys"));
+    TrapError(Dll'Load("libmath"),Use("base.rep/math.ys"));
   ]
   );
 

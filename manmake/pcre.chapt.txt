@@ -40,7 +40,7 @@ The following example sets up the tokenizer to recognize
 either an integer, or a word consisting only of lowercase
 letters.
 
-	In> DllLoad("pcre")
+	In> Dll'Load("pcre")
 	Out> True
 	In> PcreLexer({{"[0-9]+",Integer},{"[a-z]+",Word}})
 	Out> True

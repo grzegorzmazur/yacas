@@ -1518,7 +1518,7 @@ determine that this can be replaced with the evaluation of
 
 The file {yacasinit.ys} contains lines like:
 
-	TrapError(DllLoad("libmath"),Use("base.rep/math.ys"));
+	TrapError(Dll'Load("libmath"),Use("base.rep/math.ys"));
 
 What this does is it tries to load the plugin with name {libmath},
 and if this fails it tries to load the script {base.rep/math.ys}

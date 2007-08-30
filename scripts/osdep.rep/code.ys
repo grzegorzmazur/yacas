@@ -4,10 +4,10 @@
 
 // first, define PlatformOS(). Supported values so far: "Unix", "Win32"
 PlatformOS() := Eval(
-   If(GreaterThan(Length(OSVersion()),5) And StringMid(1,5,OSVersion()) = "linux",   "Unix", 
-   If(GreaterThan(Length(OSVersion()),6) And StringMid(1,6,OSVersion()) = "darwin",  "Unix", 
-   If(GreaterThan(Length(OSVersion()),7) And StringMid(1,7,OSVersion()) = "solaris", "Unix",
-   If(GreaterThan(Length(OSVersion()),7) And StringMid(1,7,OSVersion()) = "freebsd", "Unix",
+   If(GreaterThan(Length(OSVersion()),5) And StringMid'Get(1,5,OSVersion()) = "linux",   "Unix", 
+   If(GreaterThan(Length(OSVersion()),6) And StringMid'Get(1,6,OSVersion()) = "darwin",  "Unix", 
+   If(GreaterThan(Length(OSVersion()),7) And StringMid'Get(1,7,OSVersion()) = "solaris", "Unix",
+   If(GreaterThan(Length(OSVersion()),7) And StringMid'Get(1,7,OSVersion()) = "freebsd", "Unix",
    If(OSVersion() = "Win32",   "Win32",
    If(OSVersion() = "cygwin",  "Unix", 
    /* otherwise */             Check(False, "Unsupported platform ":OSVersion()))))))));
@@ -31,8 +31,8 @@ LocalSymbols(FilePathSeparators) [
     For(i:=1, i<=Length(path), i++)
     [
       If(
-        StringMid(i, 1, path) = FilePathSeparator(),
-        path:=SetStringMid(i, FilePathSeparators[OSname], path)
+        StringMid'Get(i, 1, path) = FilePathSeparator(),
+        path:=StringMid'Set(i, FilePathSeparators[OSname], path)
       );
     ];
     path;

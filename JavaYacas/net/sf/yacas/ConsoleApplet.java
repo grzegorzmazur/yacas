@@ -87,20 +87,20 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     repaint();
   }
 
-  public void mouseClicked(MouseEvent event) 
+  public void mouseClicked(MouseEvent event)
   {
   }
-  public void mouseEntered(MouseEvent event) 
+  public void mouseEntered(MouseEvent event)
   {
   }
-  public void mouseExited(MouseEvent event) 
+  public void mouseExited(MouseEvent event)
   {
   }
-  
+
   boolean scrolling = false;
   int yDown = 0;
   int yStart = 0;
-  public void mousePressed(MouseEvent event) 
+  public void mousePressed(MouseEvent event)
   {
     scrolling = false;
     int th = calcThumbHeight();
@@ -130,7 +130,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
     }
   }
-  public void mouseReleased(MouseEvent event) 
+  public void mouseReleased(MouseEvent event)
   {
     if (scrolling)
     {
@@ -150,7 +150,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
   }
 
-  public void mouseMoved(MouseEvent event) 
+  public void mouseMoved(MouseEvent event)
   {
     boolean newthumbMoused = false;
     int canvasHeight = getHeight()-fontHeight-1;
@@ -182,7 +182,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       thumbPos = canvasHeight-th-4;
   }
 
-  public void mouseDragged(MouseEvent event) 
+  public void mouseDragged(MouseEvent event)
   {
     int th = calcThumbHeight();
     int canvasHeight = getHeight()-fontHeight-1;
@@ -278,7 +278,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
     {
       String docbase = getDocumentBase().toString();
-  
+
 //      AddLineStatic(100, ""," '" + docbase + "'.", font, Color.red);
 
       if (docbase.substring(0,4).equals("file"))
@@ -335,7 +335,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
     gotDatahubInit = false;
     TryInitThroughDatahub();
-  
+
     i=1;
     while (true)
     {
@@ -385,7 +385,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
   }
 
-  
+
   public void stop()
   {
   }
@@ -610,7 +610,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
             }
           }
         }
-      
+
         if (!handled)
         {
           handled = true;
@@ -644,7 +644,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
             }
           }
         }
-      
+
         if (!handled)
         {
           String prefix = inputLine.substring(0,cursorPos);
@@ -888,7 +888,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         expression.calculatePositions(gp, 3, new java.awt.Point(0,0));
         height = expression.getDimension().height+20;
       }
-      return height;      
+      return height;
     }
     int height = -1;
   }
@@ -974,7 +974,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   void clearOutputLines()
   {
     int i;
-    for (i=0;i<nrLines;i++) 
+    for (i=0;i<nrLines;i++)
     {
       lines[i] = null;
     }
@@ -1076,7 +1076,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   {
     int canvasHeight = getHeight()-fontHeight-1;
     int hgt = ((canvasHeight-4)*canvasHeight)/totalLinesHeight;
-    if (hgt < 16) 
+    if (hgt < 16)
       hgt = 16;
     return hgt;
   }
@@ -1148,7 +1148,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
           g.setColor(new Color(192,192,240));
         else
           g.setColor(new Color(124,124,224));
-        
+
         g.fillRect(w-scrollWidth+2,thumbPos+2,scrollWidth-4,thumbHeight);
 
         g.setColor(Color.black);

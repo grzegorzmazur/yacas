@@ -501,9 +501,9 @@ void DeclareDllPath(char *ptr2)
 {
   char buf[1000];
   if (ptr2[strlen(ptr2)-1] != PATH_SEPARATOR)
-    sprintf(buf,"DllDirectory(\"%s%s\");",ptr2,PATH_SEPARATOR_2);
+    sprintf(buf,"Dll'Directory(\"%s%s\");",ptr2,PATH_SEPARATOR_2);
   else
-    sprintf(buf,"DllDirectory(\"%s\");",ptr2);
+    sprintf(buf,"Dll'Directory(\"%s\");",ptr2);
   yacas->Evaluate(buf);
 }
 
@@ -605,7 +605,7 @@ CORE_KERNEL_FUNCTION("PluginsCanBeLoaded",LispPluginsCanBeLoaded,0,YacasEvaluato
 
     {
         /* Split up dll_dir in pieces separated by colons, and run
-           DllDirectory on each of them. */
+           Dll'Directory on each of them. */
         char *ptr1, *ptr2;
         ptr1 = ptr2 = dll_dir;
         while (*ptr1 != '\0') {

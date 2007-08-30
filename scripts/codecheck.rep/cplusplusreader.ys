@@ -444,7 +444,7 @@ ReplacePatternMatcher(patternId):=
 [
   Local(string);
   string:=GetInputTokens(patternId);
-  string:=StringMid(2,Length(string)-2,string);
+  string:=StringMid'Get(2,Length(string)-2,string);
   string:=string:";";
   FromString(string)Read();
 ];

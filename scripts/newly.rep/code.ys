@@ -20,7 +20,7 @@ UniqueConstant() <--
 [
   Local(result);
   result := String(LocalSymbols(C)(C));
-  Atom(StringMid(2,Length(result)-1,result));
+  Atom(StringMid'Get(2,Length(result)-1,result));
 ];
 
 

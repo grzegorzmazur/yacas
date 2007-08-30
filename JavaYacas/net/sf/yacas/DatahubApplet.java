@@ -9,7 +9,7 @@ import java.io.*;
 /* This little applet should facilitate communication between Java and Javascript.
  * The idea is to allow Javascript to set data in this applet at various times, and
  * for the main Yacas console to then get that data at startup, when it is loaded.
- * 
+ *
  * The Yacas console thus does not need to be loaded always, but this applet should
  * always be there.
  */
@@ -98,7 +98,7 @@ public class DatahubApplet extends Applet
       return currentArticle().articleBody;
     }
   }
-  
+
   public void setArticle(String p)
   {
 //System.out.println("article:\n"+p);
@@ -166,7 +166,7 @@ public class DatahubApplet extends Applet
         in.close();
       }
     }
-    catch(Exception e) 
+    catch(Exception e)
     {
     }
     return prog;
@@ -226,7 +226,7 @@ public class DatahubApplet extends Applet
       }
     }
   }
-  
+
   static Article consoleProgram = new Article("You can start entering your own program between the code delimiters below.\n\n{{code:\n:code}}\n"+
       "\n\n{{example:Example();:example}}");
   static Article journalProgram = new Article("No article loaded yet.");

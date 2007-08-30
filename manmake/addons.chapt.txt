@@ -87,10 +87,10 @@ Note that all files have names matching "{*_plugin*}".
 
 After creating these files, {MakeFunctionPlugin()} will:
 *	1. Run a {c++} compiler command; if compilation fails, all error messages will appear in the log file {f1_plugin.log};
-*	1. Load resulting .so object with {DllLoad()};
+*	1. Load resulting .so object with {Dll'Load()};
 *	1. Print an information message on success.
 
-If you call {MakeFunctionPlugin()} repeatedly to define a function with the same name, old files will be overwritten and old libraries will be unloaded with {DllUnload()}.
+If you call {MakeFunctionPlugin()} repeatedly to define a function with the same name, old files will be overwritten and old libraries will be unloaded with {Dll'Unload()}.
 
 If the numerical calculation does not return a number (for example,
 it might return the atom {nan}, "not a number", for some arguments),
@@ -108,7 +108,7 @@ This is the behavior of {NFunction} which is used to wrap the numerical routine.
 	In> f1(x,5)
 	Out> f1(x,5);
 
-*SEE DllLoad, DllUnload, DllEnumerate, CForm, NFunction
+*SEE Dll'Load, Dll'Unload, Dll'Enumerate, CForm, NFunction
 
 *CMD Version --- show version of Yacas
 *CORE
@@ -209,7 +209,7 @@ The function {FilePathSeparator()} returns the string that separates directories
 
 *E.G. notest
 
-	In> Check(StringMid(1, 5, OSVersion())="linux", \
+	In> Check(StringMid'Get(1, 5, OSVersion())="linux", \
 	          "BAAA! I WANT LINUX!")
 	Out> True;
 	In> PlatformOS()
