@@ -288,8 +288,8 @@ Echo("Pattern    is ",pat);
   Set(exp,TranslatedExpression(language,grammar,exp));
 Echo("Expression is ",GetInputTokens(exp));
   Local(u);
-  u:=PatternCreate(F(pat),True);
-  PatternMatches(u,F(exp));  
+  u:=Pattern'Create(F(pat),True);
+  Pattern'Matches(u,F(exp));  
 ];
 
 Bodied("Recognize",0);

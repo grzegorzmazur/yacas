@@ -980,7 +980,7 @@ up to order "order". It uses the function {ReversePoly} to perform the task.
 
 *E.G.
 
-	In> PrettyPrinter("PrettyForm")
+	In> PrettyPrinter'Set("PrettyForm")
 	
 	True
 	
@@ -1115,7 +1115,7 @@ polynomial.
 	In> Eval(Subst(x,2) f);
 	Out> 1;
 	
-	In> PrettyPrinter("PrettyForm");
+	In> PrettyPrinter'Set("PrettyForm");
 	
 	True
 	

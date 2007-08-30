@@ -125,7 +125,7 @@ complex than a simple number.
 	
 	Out> True;
 
-*SEE EvalFormula, PrettyPrinter
+*SEE EvalFormula, PrettyPrinter'Set
 
 *CMD EvalFormula --- print an evaluation nicely with ASCII art
 *STD
@@ -138,7 +138,7 @@ complex than a simple number.
 
 *DESC
 
-Show an evaluation in a nice way, using PrettyPrinter
+Show an evaluation in a nice way, using {PrettyPrinter'Set}
 to show 'input = output'.
 
 *E.G.

@@ -29,7 +29,7 @@ The current implementation is far from perfect. In particular, the
 user should keep the following points in mind:
 *	{Solve} cannot solve all equations. If it is given a equation
 it can not solve, it raises an error via {Check}. Unfortunately, this
-is not displayed by the inline pretty-printer; call {PrettyPrinter} to
+is not displayed by the inline pretty-printer; call {PrettyPrinter'Set} to
 change this. If an equation cannot be solved analytically, you may
 want to call {Newton} to get a numerical solution.
 *	Systems of equations are not handled yet. For linear systems,
@@ -61,7 +61,7 @@ checked by substituting it back in the quadratic.
 If one tries to solve the equation $Exp(x) == Sin(x)$, one finds that
 {Solve} can not do this.
 
-	In> PrettyPrinter("DefaultPrint");
+	In> PrettyPrinter'Set("DefaultPrint");
 	Out> True;
 	In> Solve(Exp(x) == Sin(x), x);
 	Error: Solve'Fails: cannot solve equation Exp(x)-Sin(x) for x
@@ -83,7 +83,7 @@ returned. However, the fraction is undefined at that point.
 At first sight, the equation $Sqrt(x) == a$ seems to have the solution
 $x == a^2$. However, this is not true for eg. $a == -1$.
 
-	In> PrettyPrinter("DefaultPrint");
+	In> PrettyPrinter'Set("DefaultPrint");
 	Out> True;
 	In> Solve(Sqrt(x) == a, x);
 	Error: Solve'Fails: cannot solve equation Sqrt(x)-a for  x
@@ -93,7 +93,7 @@ $x == a^2$. However, this is not true for eg. $a == -1$.
 	In> Solve(Sqrt(x) == -1, x);
 	Out> {};
 
-*SEE Check, MatrixSolve, Newton, OldSolve, PrettyPrinter, PSolve, Where, ==
+*SEE Check, MatrixSolve, Newton, OldSolve, PrettyPrinter'Set, PSolve, Where, ==
 
 *CMD OldSolve --- old version of {Solve}
 *STD

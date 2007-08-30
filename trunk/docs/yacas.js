@@ -111,7 +111,7 @@ function initPage()
 '            <PARAM name="boxmessage" value="Loading Yacas..." \/>' + 
 '            <PARAM NAME="init1" value="Load(\'\'yacasinit.ys\'\')" \/>' + 
 '            <PARAM NAME="init2" value="Macro(TeXWrite,{x})WriteString(TeXForm(Hold(@x)))">' + 
-'            <PARAM NAME="init3" value="PrettyPrinter(\'\'TeXWrite\'\')">' + 
+'            <PARAM NAME="init3" value="PrettyPrinter\'Set(\'\'TeXWrite\'\')">' + 
 'Java support does not seem to be installed in your browser, so the console is not available. ' + 
 'If you want to be able to use Yacas online, please install and enable Java support, which can be downloaded from http:\/\/www.java.com\/ for free. ' + 
 'Alternatively, you can go to the "About Yacas" tab to download Yacas and run it locally.' + 

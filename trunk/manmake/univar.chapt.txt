@@ -39,7 +39,7 @@ so on.
 
 *E.G.
 
-	In> PrettyPrinter("PrettyForm");
+	In> PrettyPrinter'Set("PrettyForm");
 	
 	True
 
@@ -467,7 +467,7 @@ Most of the work is performed by the internal function {OrthoPoly}.
 
 *E.G.
 
-	In> PrettyPrinter("PrettyForm");
+	In> PrettyPrinter'Set("PrettyForm");
 	
 	True
 	
