@@ -61,7 +61,7 @@ CharList(length,item):=
   line;
 ];
 
-CharField(width,height) := ArrayCreate(height,CharList(width," "));
+CharField(width,height) := Array'Create(height,CharList(width," "));
 
 WriteCharField(charfield):=
 [
@@ -130,14 +130,14 @@ PutString(charfield,x,y,string):=
 MakeOper(x,y,width,height,oper,args,base):=
 [
   Local(result);
-  Set(result,ArrayCreate(7,0));
-  ArraySet(result,1,x);
-  ArraySet(result,2,y);
-  ArraySet(result,3,width);
-  ArraySet(result,4,height);
-  ArraySet(result,5,oper);
-  ArraySet(result,6,args);
-  ArraySet(result,7,base);
+  Set(result,Array'Create(7,0));
+  Array'Set(result,1,x);
+  Array'Set(result,2,y);
+  Array'Set(result,3,width);
+  Array'Set(result,4,height);
+  Array'Set(result,5,oper);
+  Array'Set(result,6,args);
+  Array'Set(result,7,base);
   result;
 ];
 

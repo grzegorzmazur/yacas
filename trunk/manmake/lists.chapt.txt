@@ -955,7 +955,7 @@ returned.
 	In> Swap(lst, 2, 4);
 	Out> {a,d,c,b,e,f};
 
-*SEE Replace, DestructiveReplace, ArrayCreate
+*SEE Replace, DestructiveReplace, Array'Create
 
 *CMD Count --- count the number of occurrences of an expression
 *STD

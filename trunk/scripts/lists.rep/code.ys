@@ -227,7 +227,7 @@ SmallSort(_list, _first, _last, _compare) _ (last=first+2) <--
 	list;
 ];
 
-HeapSort(list, compare) := HeapSort(list, ArrayCreate(Length(list), 0), 1, Length(list), compare);
+HeapSort(list, compare) := HeapSort(list, Array'Create(Length(list), 0), 1, Length(list), compare);
 
 // this will sort "list" and mangle "tmplist"
 1 # HeapSort(_list, _tmplist, _first, _last, _compare) _ (last - first <= 2) <-- SmallSort(list, first, last, compare);

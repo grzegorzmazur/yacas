@@ -46,7 +46,7 @@ Rule("Nth",2,30,
           )
     )
 [
-  ArrayGet(alist,aindex);
+  Array'Get(alist,aindex);
 ];
 
 

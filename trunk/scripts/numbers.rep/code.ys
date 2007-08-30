@@ -591,7 +591,7 @@ PartitionsP'recur(number_IsPositiveInteger) <--
 [
 	// need storage of n values PartitionsP(k) for k=1,...,n
 	Local(sign, cache, n, k, pentagonal, P);
-	cache:=ArrayCreate(number+1,1);	// cache[n] = PartitionsP(n-1)
+	cache:=Array'Create(number+1,1);	// cache[n] = PartitionsP(n-1)
 	n := 1;
 	While(n<number)	// this will never execute if number=1
 	[

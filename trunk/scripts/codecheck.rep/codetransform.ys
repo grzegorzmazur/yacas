@@ -181,8 +181,8 @@ CodeTransform(language,action) :=
   Apply(language:"'":action:"'PreProcess",{});
   // copy the input stream to the outpur stream
 //Echo(CodeTrans'input);
-  CodeTrans'output:=ArrayCreateFromList(CodeTrans'input);
-  CodeTrans'input:=ArrayCreateFromList(CodeTrans'input);
+  CodeTrans'output:=Array'CreateFromList(CodeTrans'input);
+  CodeTrans'input:=Array'CreateFromList(CodeTrans'input);
   // post-process, converting the tokens in the output stream based on the tokens in the input stream
   Apply(language:"'":action:"'PostProcess",{});
   // write the resulting output stream to the current output

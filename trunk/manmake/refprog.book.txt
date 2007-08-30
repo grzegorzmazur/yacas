@@ -2146,42 +2146,42 @@ the name of a generic object.
 
 EG
 
-	In> GenericTypeName(ArrayCreate(10,1))
+	In> GenericTypeName(Array'Create(10,1))
 	Out> "Array";
 
-*CMD ArrayCreate --- create array
+*CMD Array'Create --- create array
 *CORE
 *CALL
-	ArrayCreate(size,init)
+	Array'Create(size,init)
 
 *DESC
 Creates an array with {size} elements, all initialized to the
 value {init}.
 
-*CMD ArraySize --- get array size
+*CMD Array'Size --- get array size
 *CORE
 *CALL
-	ArraySize(array)
+	Array'Size(array)
 
 *DESC
 Returns the size of an array (number of elements in the array).
 
-*CMD ArrayGet --- fetch array element
+*CMD Array'Get --- fetch array element
 *CORE
 *CALL
-	ArrayGet(array,index)
+	Array'Get(array,index)
 
 *DESC
 Returns the element at position index in the array passed. Arrays are treated
 as base-one, so {index} set to 1 would return the first element.
 
 Arrays can also be accessed through the {[]} operators. So
-{array[index]} would return the same as {ArrayGet(array, index)}.
+{array[index]} would return the same as {Array'Get(array, index)}.
 
-*CMD ArraySet --- set array element
+*CMD Array'Set --- set array element
 *CORE
 *CALL
-	ArraySet(array,index,element)
+	Array'Set(array,index,element)
 
 *DESC
 Sets the element at position index in the array passed to the value
@@ -2189,20 +2189,20 @@ passed in as argument to element. Arrays are treated
 as base-one, so {index} set to 1 would set first element.
 
 Arrays can also be accessed through the {[]} operators. So
-{array[index] := element} would do the same as {ArraySet(array, index,element)}.
+{array[index] := element} would do the same as {Array'Set(array, index,element)}.
 
-*CMD ArrayCreateFromList --- convert list to array
+*CMD Array'CreateFromList --- convert list to array
 *CORE
 *CALL
-	ArrayCreateFromList(list)
+	Array'CreateFromList(list)
 
 *DESC
 Creates an array from the contents of the list passed in.
 
-*CMD ListFromArray --- convert array to list
+*CMD Array'ToList --- convert array to list
 *CORE
 *CALL
-	ListFromArray(array)
+	Array'ToList(array)
 
 *DESC
 Creates a list from the contents of the array passed in.
