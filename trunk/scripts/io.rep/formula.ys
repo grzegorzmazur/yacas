@@ -82,7 +82,7 @@ ColumnFilled(charfield,column):=
   len:=Length(charfield);
   For(Set(i, 1),(result = False) And (i<=len),Set(i,MathAdd(i,1)))
   [
-    If(StringMid(column,1,charfield[i]) != " ",result:=True);
+    If(StringMid'Get(column,1,charfield[i]) != " ",result:=True);
   ];
   result;
 ];
@@ -110,7 +110,7 @@ WriteCharField(charfield,width):=
     len:=Length(charfield);
     For(Set(i, 1),i<=len,Set(i,MathAdd(i,1)))
     [
-      WriteString(StringMid(pos,thiswidth,charfield[i]));
+      WriteString(StringMid'Get(pos,thiswidth,charfield[i]));
       NewLine();
     ];
     Set(pos, MathAdd(pos, thiswidth));
@@ -123,7 +123,7 @@ WriteCharField(charfield,width):=
 
 PutString(charfield,x,y,string):=
 [
-  cf[y] := SetStringMid(x,string,cf[y]);
+  cf[y] := StringMid'Set(x,string,cf[y]);
   True;
 ];
 
@@ -362,10 +362,10 @@ Rule("RenderFormula",4,1,f[5] = "Atom" And f[6] = "(" And f[4] > 1)
   Set(y, MathAdd(y,f[2]));
   Set(height, MathSubtract(f[4],1));
 
-  cf[y] := SetStringMid(x, "/", cf[y]);
-  cf[MathAdd(y,height)] := SetStringMid(x, "\\", cf[MathAdd(y,height)]);
+  cf[y] := StringMid'Set(x, "/", cf[y]);
+  cf[MathAdd(y,height)] := StringMid'Set(x, "\\", cf[MathAdd(y,height)]);
   For (Set(i,1),LessThan(i,height),Set(i,MathAdd(i,1)))
-    cf[MathAdd(y,i)] := SetStringMid(x, "|", cf[MathAdd(y,i)]);
+    cf[MathAdd(y,i)] := StringMid'Set(x, "|", cf[MathAdd(y,i)]);
 ];
 
 Rule("RenderFormula",4,1,f[5] = "Atom" And f[6] = ")" And f[4] > 1)
@@ -374,16 +374,16 @@ Rule("RenderFormula",4,1,f[5] = "Atom" And f[6] = ")" And f[4] > 1)
   Set(x, MathAdd(x,f[1]));
   Set(y, MathAdd(y,f[2]));
   Set(height, MathSubtract(f[4],1));
-  cf[y] := SetStringMid(x, "\\", cf[y]);
-  cf[y+height] := SetStringMid(x, "/", cf[y+height]);
+  cf[y] := StringMid'Set(x, "\\", cf[y]);
+  cf[y+height] := StringMid'Set(x, "/", cf[y+height]);
   For (Set(i,1),LessThan(i,height),Set(i,MathAdd(i,1)))
-    cf[MathAdd(y,i)] := SetStringMid(x, "|", cf[MathAdd(y,i)]);
+    cf[MathAdd(y,i)] := StringMid'Set(x, "|", cf[MathAdd(y,i)]);
 ];
 
 Rule("RenderFormula",4,5,f[5] = "Atom")
 [
   cf[MathAdd(y, f[2]) ]:=
-    SetStringMid(MathAdd(x,f[1]),f[6],cf[MathAdd(y, f[2]) ]);
+    StringMid'Set(MathAdd(x,f[1]),f[6],cf[MathAdd(y, f[2]) ]);
 ];
 
 Rule("RenderFormula",4,6,True)

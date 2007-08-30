@@ -152,7 +152,7 @@ GenericParserNextExpression( grammar ):=
         Set(rest,token[1]);
         if (Length(rest)>50)
         [
-          rest:=StringMid(1,50,rest):"...";
+          rest:=StringMid'Get(1,50,rest):"...";
         ];
         ToString()[Echo("UnRecognized CPP'expression in file ",TokenFile(tokenIndex)," at line ",TokenLine(tokenIndex),
         ":

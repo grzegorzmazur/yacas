@@ -139,7 +139,7 @@ Note that it is not necessary to append a trailing slash to the directory names.
 
 	yacas --dlldir [directory]
 Tells the system where to find the plugins. Here {directory} is a
-path that is passed to {DllDirectory}. It is also possible to give a
+path that is passed to {Dll'Directory}. It is also possible to give a
 list of directories separated by a colon.
 The default value is specified at compile time, usually {/usr/local/lib/yacas}.
 

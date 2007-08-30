@@ -46,7 +46,7 @@ AtomToCharList(x_IsAtom) <-- [
   For([ index:=Length(String(x)); result:={}; ],
    index > 0, index:=index-1 )
    Push(result,
-    StringMid(index, 1, String(x)));
+    StringMid'Get(index, 1, String(x)));
   result;
 ];
 

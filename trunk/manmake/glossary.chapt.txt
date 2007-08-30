@@ -166,7 +166,7 @@ A plugin is an compiled dynamic library of functions that can be loaded into {Ya
 After loading a plugin, the functions implemented in the library become available as new Yacas functions.
 Currently plugins have to be written in C++.
 
-*SEE DllLoad, MakeFunctionPlugin
+*SEE Dll'Load, MakeFunctionPlugin
 
 *A precedence
 	    precedence
@@ -196,11 +196,11 @@ and right precedence
 
 Properties are special additional objects (tags) that can be tied to expressions.
 For example, the expression {1+x} may be tagged by an expression {y} by the command
-	In> a:= SetExtraInfo(1+x,y);
+	In> a:= ExtraInfo'Set(1+x,y);
 	Out> 1+x;
 Now {a} refers to an expression {1+x} which is different from all other copies of {1+x} because it is tagged by {y}.
 
-*SEE GetExtraInfo, SetExtraInfo
+*SEE ExtraInfo'Get, ExtraInfo'Set
 
 *A rules
 	    rules
@@ -230,7 +230,7 @@ A string is an atom with character string value, for example, {"abcd"}.
 Individual characters of the string can be accessed using the {[]} operation.
 Some string manipulation functions are supported.
 
-*SEE String, StringMid
+*SEE String, StringMid'Get, StringMid'Set
 
 *A syntax
 	    syntax

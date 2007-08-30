@@ -21,7 +21,7 @@ public class TeXParser
 //showToken();
       return;
     }
-    while (currentPos < iCurrentExpression.length() && IsSpace(iCurrentExpression.charAt(currentPos))) 
+    while (currentPos < iCurrentExpression.length() && IsSpace(iCurrentExpression.charAt(currentPos)))
       currentPos++;
     if (currentPos == iCurrentExpression.length())
     {
@@ -74,7 +74,7 @@ public class TeXParser
     }
 //showToken();
   }
-  
+
   boolean matchToken(String token)
   {
     if (nextToken.equals(token))
@@ -115,7 +115,7 @@ public class TeXParser
   {
     parseOneExpression25(builder);
     // +, -
-    while (nextToken.equals("+") || nextToken.equals("-") || 
+    while (nextToken.equals("+") || nextToken.equals("-") ||
            nextToken.equals("\\wedge") || nextToken.equals("\\vee") ||
            nextToken.equals("<") || nextToken.equals(">") ||
            nextToken.equals("\\leq") || nextToken.equals("\\geq")
@@ -138,26 +138,26 @@ public class TeXParser
   {
     parseOneExpression30(builder);
     // implicit *
-    while (nextToken.length() > 0 && 
-          !nextToken.equals("+") && 
-          !nextToken.equals("-") && 
-          !nextToken.equals("=") && 
-          !nextToken.equals("\\neq") && 
-          !nextToken.equals("}") && 
-          !nextToken.equals("&") && 
+    while (nextToken.length() > 0 &&
+          !nextToken.equals("+") &&
+          !nextToken.equals("-") &&
+          !nextToken.equals("=") &&
+          !nextToken.equals("\\neq") &&
+          !nextToken.equals("}") &&
+          !nextToken.equals("&") &&
           !nextToken.equals("\\wedge") &&
           !nextToken.equals("\\vee") &&
 
           !nextToken.equals("<") &&
           !nextToken.equals(">") &&
-          !nextToken.equals("\\leq") && 
+          !nextToken.equals("\\leq") &&
           !nextToken.equals("\\geq") &&
 
-          !nextToken.equals("\\end") && 
-          !nextToken.equals("\\\\") && 
-          !nextToken.equals("\\right)") && 
-          !nextToken.equals("\\right]") && 
-          !nextToken.equals(",") 
+          !nextToken.equals("\\end") &&
+          !nextToken.equals("\\\\") &&
+          !nextToken.equals("\\right)") &&
+          !nextToken.equals("\\right]") &&
+          !nextToken.equals(",")
           )
     {
 
@@ -341,7 +341,7 @@ public class TeXParser
   {
     if (IsSpace(c))
       return false;
-    if (c == '{') 
+    if (c == '{')
       return false;
     if (c == '}')
       return false;

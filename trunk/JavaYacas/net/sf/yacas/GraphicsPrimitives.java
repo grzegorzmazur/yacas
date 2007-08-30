@@ -21,7 +21,7 @@ class GraphicsPrimitives
       iG2D.setStroke(new BasicStroke((float)(aThickness*viewScale),BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
     }
   }
-  
+
   public void DrawLine(int x0, int y0, int x1, int y1)
   {
     iG.drawLine((int)(x0*viewScale),(int)(y0*viewScale),(int)(x1*viewScale),(int)(y1*viewScale));
@@ -52,7 +52,7 @@ class GraphicsPrimitives
     {
       prevSetFontSize = newFontSize;
       Font f = new Font ("Verdana", Font.PLAIN, newFontSize);
-      if (f != null) 
+      if (f != null)
       {
         iG.setFont(f);
         metrics = iG.getFontMetrics();

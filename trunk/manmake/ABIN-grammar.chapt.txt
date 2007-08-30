@@ -124,7 +124,7 @@ replace {IsProvable}.
 	  For( [ index:=Length(String(x));
 	     result:={}; ],
 	   index > 0, index:=index-1 )
-	   Push(result, StringMid(index, 1,
+	   Push(result, StringMid'Get(index, 1,
 	     String(x)));
 	  result;
 	];

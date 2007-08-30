@@ -12,7 +12,7 @@
 # will compile <name>.ys to lib<name>.cpp first, and then invoke
 # libtool to compile it into a plugin. You can then load the plugin
 # through 
-#     DllLoad("lib<name>");
+#     Dll'Load("lib<name>");
 #
 # when in Yacas
 #

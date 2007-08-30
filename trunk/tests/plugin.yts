@@ -2,20 +2,20 @@
 
 If(MakeFunctionPlugin(),
   [
-    // test DllLoad and DllUnload
-    DllLoad("example");
+    // test Dll'Load and Dll'Unload
+    Dll'Load("example");
 
-    Verify(Contains(DllEnumerate(), "example"), True);
+    Verify(Contains(Dll'Enumerate(), "example"), True);
     Verify(AddTwoIntegers(1,2), 3);
     Verify(AddTwoDoubles(1.5,2.7), 4.2);
     mybla := CreateBla(5,7);
     Verify(BlaGetA(mybla), 5);
     BlaSetA(mybla, -2);
     Verify(BlaGetA(mybla), -2);
-    DllUnload("example");
+    Dll'Unload("example");
 
     Verify(AddTwoIntegers(1,2), Hold(AddTwoIntegers(1,2)));
-    Verify(Contains(DllEnumerate(), "example"), False);
+    Verify(Contains(Dll'Enumerate(), "example"), False);
   ],
 	Echo("MakeFunctionPlugin unavailable, so not tested.")
 );

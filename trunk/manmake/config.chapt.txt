@@ -87,12 +87,12 @@ and standard scripts.
 	In> DefaultDirectory("/home/user/myscripts/");
 	Out> True;
 
-*SEE Load, Use, DefLoad, FindFile, DllDirectory
+*SEE Load, Use, DefLoad, FindFile, Dll'Directory
 
-*CMD DllDirectory --- add directory to path for Yacas plugins
+*CMD Dll'Directory --- add directory to path for Yacas plugins
 *CORE
 *CALL
-	DllDirectory(path)
+	Dll'Directory(path)
 
 *PARMS
 
@@ -112,10 +112,10 @@ This command always evaluates to {True}.
 
 *E.G.
 
-	In> DllDirectory("/home/user/yacas/plugins/");
+	In> Dll'Directory("/home/user/yacas/plugins/");
 	Out> True;
 
-*SEE DefaultDirectory, DllLoad
+*SEE DefaultDirectory, Dll'Load
 
 *CMD PrettyPrinter --- set routine to use as pretty-printer
 *CMD GetPrettyPrinter --- get routine to use as pretty-printer

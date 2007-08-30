@@ -642,7 +642,7 @@ void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
   RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(str.c_str())->c_str()));
 }
 
-void LispDllLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
+void YacasDllLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   LispPtr evaluated(ARGUMENT(1));
   LispString * string = evaluated->String();
@@ -674,7 +674,7 @@ void LispDllLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
   InternalTrue(aEnvironment,RESULT);
 }
 
-void LispDllUnload(LispEnvironment& aEnvironment, LispInt aStackTop)
+void YacasDllUnload(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   LispPtr evaluated(ARGUMENT(1));
   LispString * string = evaluated->String();
@@ -685,7 +685,7 @@ void LispDllUnload(LispEnvironment& aEnvironment, LispInt aStackTop)
   InternalTrue(aEnvironment,RESULT);
 }
 
-void LispDllEnumerate(LispEnvironment& aEnvironment, LispInt aStackTop)
+void YacasDllEnumerate(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispInt i;
     LispObject *res = NULL;
@@ -700,7 +700,7 @@ void LispDllEnumerate(LispEnvironment& aEnvironment, LispInt aStackTop)
     RESULT = (LIST(LA(ATOML("List")) + LA(res)));
 }
 
-void LispSetExtraInfo(LispEnvironment& aEnvironment, LispInt aStackTop)
+void YacasExtraInfoSet(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispPtr object(ARGUMENT(1));
     LispPtr info(ARGUMENT(2));
@@ -708,7 +708,7 @@ void LispSetExtraInfo(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 
-void LispGetExtraInfo(LispEnvironment& aEnvironment, LispInt aStackTop)
+void YacasExtraInfoGet(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispPtr object(ARGUMENT(1));
 

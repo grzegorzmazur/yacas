@@ -45,8 +45,8 @@ class MathCommands
          new YacasEvaluator(new LispDefaultDirectory(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "DefaultDirectory");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDllDirectory(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "DllDirectory");
+         new YacasEvaluator(new YacasDllDirectory(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "Dll'Directory");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispFromFile(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
          "FromFile");
@@ -453,11 +453,11 @@ class MathCommands
          new YacasEvaluator(new LispType(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "Type");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispStringMid(),3, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "StringMid");
+         new YacasEvaluator(new YacasStringMidGet(),3, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "StringMid'Get");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispSetStringMid(),3, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "SetStringMid");
+         new YacasEvaluator(new YacasStringMidSet(),3, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "StringMid'Set");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new GenPatternCreate(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "PatternCreate");
@@ -519,20 +519,20 @@ class MathCommands
          new YacasEvaluator(new LispPatchString(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "PatchString");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDllLoad(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "DllLoad");
+         new YacasEvaluator(new YacasDllLoad(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "Dll'Load");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDllUnload(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "DllUnload");
+         new YacasEvaluator(new YacasDllUnload(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "Dll'Unload");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDllEnumerate(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "DllEnumerate");
+         new YacasEvaluator(new YacasDllEnumerate(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "Dll'Enumerate");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispSetExtraInfo(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "SetExtraInfo");
+         new YacasEvaluator(new YacasExtraInfoSet(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "ExtraInfo'Set");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispGetExtraInfo(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "GetExtraInfo");
+         new YacasEvaluator(new YacasExtraInfoGet(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "ExtraInfo'Get");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispDefaultTokenizer(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "DefaultTokenizer");
@@ -1038,11 +1038,11 @@ class MathCommands
     }
   }
 
-  class LispDllDirectory extends YacasEvalCaller
+  class YacasDllDirectory extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : DllDirectory");//TODO fixme
+      aEnvironment.iCurrentOutput.Write("Function not yet implemented : Dll'Directory");//TODO fixme
       throw new Yacasexception("Function not yet supported");
     }
   }
@@ -3203,7 +3203,7 @@ class MathCommands
     }
   }
 
-  class LispStringMid extends YacasEvalCaller
+  class YacasStringMidGet extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
@@ -3230,7 +3230,7 @@ class MathCommands
     }
   }
 
-  class LispSetStringMid extends YacasEvalCaller
+  class YacasStringMidSet extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
@@ -3630,29 +3630,29 @@ class MathCommands
   }
 
 
-  class LispDllLoad extends YacasEvalCaller
+  class YacasDllLoad extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Warning: function not yet implemented : DllLoad");////TODO fixme
+      aEnvironment.iCurrentOutput.Write("Warning: function not yet implemented : Dll'Load");////TODO fixme
       LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
     }
   }
 
-  class LispDllUnload extends YacasEvalCaller
+  class YacasDllUnload extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Warning: Function not yet implemented : DllUnload\n");////TODO fixme
+      aEnvironment.iCurrentOutput.Write("Warning: Function not yet implemented : Dll'Unload\n");////TODO fixme
       LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
     }
   }
 
-  class LispDllEnumerate extends YacasEvalCaller
+  class YacasDllEnumerate extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Warning: Function not yet implemented : DllEnumerate\n");////TODO fixme
+      aEnvironment.iCurrentOutput.Write("Warning: Function not yet implemented : Dll'Enumerate\n");////TODO fixme
  
       LispObject ls = LispAtom.New(aEnvironment,"List");
       LispObject newinfo =  LispSubList.New(ls);
@@ -3660,7 +3660,7 @@ class MathCommands
     }
   }
 
-  class LispSetExtraInfo extends YacasEvalCaller
+  class YacasExtraInfoSet extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
@@ -3674,7 +3674,7 @@ class MathCommands
     }
   }
 
-  class LispGetExtraInfo extends YacasEvalCaller
+  class YacasExtraInfoGet extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {

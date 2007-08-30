@@ -171,7 +171,7 @@ LocalSymbols(TeXFormRegularOps, TeXFormRegularPrefixOps, TeXFormGreekLetters, Te
     If (Contains(TeXFormGreekLetters, string), ConcatStrings("\\", string, " "),
     If (Contains(AssocIndices(TeXFormRegularOps), string), TeXFormRegularOps[string],
     If (Contains(AssocIndices(TeXFormRegularPrefixOps), string), TeXFormRegularPrefixOps[string],
-    If (Length(string) >= 2 And IsNumber(Atom(StringMid(2, Length(string)-1, string))), ConcatStrings(StringMid(1,1,string), "_{", StringMid(2, Length(string)-1, string), "}"),
+    If (Length(string) >= 2 And IsNumber(Atom(StringMid'Get(2, Length(string)-1, string))), ConcatStrings(StringMid'Get(1,1,string), "_{", StringMid'Get(2, Length(string)-1, string), "}"),
     If (Length(string) > 2, ConcatStrings("\\mathrm{ ", string, " }"),
     string
     ))))));

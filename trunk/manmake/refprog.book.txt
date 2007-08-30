@@ -672,11 +672,11 @@ number of arguments, similar to {RuleBaseListed}.
 
 
 *A object properties
-*CMD SetExtraInfo, GetExtraInfo --- annotate objects with additional information
+*CMD ExtraInfo'Set, ExtraInfo'Get --- annotate objects with additional information
 *CORE
 *CALL
-	SetExtraInfo(expr,tag)
-	GetExtraInfo(expr)
+	ExtraInfo'Set(expr,tag)
+	ExtraInfo'Get(expr)
 
 *PARMS
 
@@ -688,9 +688,9 @@ number of arguments, similar to {RuleBaseListed}.
 
 Sometimes it is useful to be able to add extra tag information to "annotate"
 objects or to label them as having certain "properties". The functions
-{SetExtraInfo} and {GetExtraInfo} enable this.
+{ExtraInfo'Set} and {ExtraInfo'Get} enable this.
 
-The function {SetExtraInfo} returns the tagged expression, leaving
+The function {ExtraInfo'Set} returns the tagged expression, leaving
 the original expression alone. This means there is a common pitfall:
 be sure to assign the returned value to a variable, or the tagged
 expression is lost when the temporary object is destroyed.
@@ -700,7 +700,7 @@ returned, in order to keep the atomic objects small. To tag an
 object, a new type of object is created from the old object, with
 one added property (the tag). The tag can be any expression whatsoever.
 
-The function {GetExtraInfo(x)} retrieves this tag expression from an object
+The function {ExtraInfo'Get(x)} retrieves this tag expression from an object
 {x}. If an object has no tag, it looks the same as if it had a tag with value
 {False}.
 
@@ -723,23 +723,23 @@ examples).
 
 	In> a:=2*b
 	Out> 2*b;
-	In> a:=SetExtraInfo(a,{{"type","integer"}})
+	In> a:=ExtraInfo'Set(a,{{"type","integer"}})
 	Out> 2*b;
 	In> a
 	Out> 2*b;
-	In> GetExtraInfo(a)
+	In> ExtraInfo'Get(a)
 	Out> {{"type","integer"}};
-	In> GetExtraInfo(a)["type"]
+	In> ExtraInfo'Get(a)["type"]
 	Out> "integer";
 	In> c:=a
 	Out> 2*b;
-	In> GetExtraInfo(c)
+	In> ExtraInfo'Get(c)
 	Out> {{"type","integer"}};
 	In> c
 	Out> 2*b;
 	In> d:=FlatCopy(a);
 	Out> 2*b;
-	In> GetExtraInfo(d)
+	In> ExtraInfo'Get(d)
 	Out> False;
 
 *SEE Assoc, :=
@@ -1737,23 +1737,23 @@ See <*yacasdoc://essays/5/#build system!plugins*> for a description of
 the integration of plugins in the build system.
 
 
-*CMD DllLoad --- load a plugin
+*CMD Dll'Load --- load a plugin
 *CORE
 *CALL
-	DllLoad(file)
+	Dll'Load(file)
 
 *PARMS
 {file} -- file name of the plugin
 
 *DESC
 
-{DllLoad} loads the plugin {file} into Yacas. Neither the directory
+{Dll'Load} loads the plugin {file} into Yacas. Neither the directory
 nor the extension of {file} need to be specified. The result is {True}
 if the plugin is loaded successfully, and {False} otherwise.
 
 If the argument {file} does not specify a directory, all directories
 in the path for Yacas plugins are searched. This path is built up by
-calls to {DllDirectory}. In addition, it contains the default plugin
+calls to {Dll'Directory}. In addition, it contains the default plugin
 directory which is specified by the command line option {--dlldir} 
 (see <*yacasdoc://ref/1/#command-line options!summary*>).
 If this option is not present, the default plugin directory is as
@@ -1771,7 +1771,7 @@ platforms with ELF libraries).
 The following commands load the example plugin, and then call the
 function {AddTwoIntegers} which is defined in this plugin.
 
-	 In> DllLoad("example");
+	 In> Dll'Load("example");
 	 Out> True
 	 In> AddTwoIntegers(2,3);
 	 Out> 5
@@ -1780,26 +1780,26 @@ Note that it suffices to specify the string {example}. Yacas knows
 that the plugin resides in the file {/usr/local/lib/yacas/example.la}
 (if plugins are installed in the default locations).
 
-*SEE DllDirectory, DllUnload, DllEnumerate
+*SEE Dll'Directory, Dll'Unload, Dll'Enumerate
 
 
-*CMD DllUnload --- unload a plugin
+*CMD Dll'Unload --- unload a plugin
 *CORE
 *CALL
-	DllUnload(file)
+	Dll'Unload(file)
 
 *PARMS
 {file} -- file name of the plugin
 
 *DESC
 
-{DllUnload} unloads a plugin previously loaded with {DllLoad}.  The
+{Dll'Unload} unloads a plugin previously loaded with {Dll'Load}.  The
 argument {file} has to be exactly the same as specified in the call to
-{DllLoad}, or the system will not be able to determine which plugin to
+{Dll'Load}, or the system will not be able to determine which plugin to
 unload.  It will scan all plugins which are currently loaded, and
 delete the first one found to exactly match.
 
-{DllUnload} always returns {True}, even if no plugin with the name
+{Dll'Unload} always returns {True}, even if no plugin with the name
 {file} is found.
 
 *EG notest
@@ -1807,7 +1807,7 @@ delete the first one found to exactly match.
 First, we load the example plugin, and call the function
 {AddTwoIntegers} which is defined in this plugin.
 
-	In> DllLoad("example");
+	In> Dll'Load("example");
 	Out> True
 	In> AddTwoIntegers(2,3);
 	Out> 5
@@ -1815,40 +1815,40 @@ First, we load the example plugin, and call the function
 Then, we unload the plugin, and we check that the function
 {AddTwoIntegers} is indeed no longer defined.
 
-	In> DllUnload("example");
+	In> Dll'Unload("example");
 	Out> True
 	In> AddTwoIntegers(2,3);
 	Out> AddTwoIntegers(2,3)
 
-*SEE DllLoad, DllEnumerate
+*SEE Dll'Load, Dll'Enumerate
 
 
-*CMD DllEnumerate --- enumerate all loaded plugins
+*CMD Dll'Enumerate --- enumerate all loaded plugins
 *CORE
 *CALL
-	DllEnumerate()
+	Dll'Enumerate()
 
 *DESC
 
-{DllEnumerate} returns a list with the names of all the plugins which
+{Dll'Enumerate} returns a list with the names of all the plugins which
 are currently loaded.
 
 *EG notest
 
-At startup, no plugins are loaded, so {DllEnumerate()} evaluates to
+At startup, no plugins are loaded, so {Dll'Enumerate()} evaluates to
 the empty list.
 
-	In> DllEnumerate();
+	In> Dll'Enumerate();
 	Out> {}
 
 This changes after we load the example plugin.
 
-	In> DllLoad("example");
+	In> Dll'Load("example");
 	Out> True
-	In> DllEnumerate();
+	In> Dll'Enumerate();
 	Out> {"example"}
 
-*SEE DllLoad, DllUnload
+*SEE Dll'Load, Dll'Unload
 
 
 
@@ -2065,7 +2065,7 @@ in the plugin will then have access to the Yacas environment.
 
 *PARMS
 
-{pluginname} -- name of the plugin, as passed to {DllLoad}
+{pluginname} -- name of the plugin, as passed to {Dll'Load}
 
 {basename} -- name for the generation of the stub file
 
@@ -2075,8 +2075,8 @@ Generate the C++ stub file, "basename.cc", and a documentation file
 named "basename.description". The descriptions are automatically
 generated while adding functions and constants to the stub.
 
-{pluginname} should be the name as passed to {DllLoad}. If the
-plugin name is loaded with {DllLoad("example")}, then pluginname
+{pluginname} should be the name as passed to {Dll'Load}. If the
+plugin name is loaded with {Dll'Load("example")}, then pluginname
 should be {"example"}.
 
 *SEE StubApiCStart, StubApiCShortIntegerConstant, StubApiCInclude, StubApiCFunction, StubApiCSetEnv

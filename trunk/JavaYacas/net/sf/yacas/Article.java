@@ -41,12 +41,12 @@ class Article
   {
     return testCode;
   }
-  
+
   public String getNrExamples()
   {
     return ""+nrExamples;
   }
-  
+
   void processText(String aString)
   {
     int pos = aString.indexOf("\n\n");
@@ -129,7 +129,7 @@ class Article
           }
         }
       }
-      
+
       if (name.equals("title"))
       {
         articleBody = articleBody + "<h1>" + data + "</h1>";

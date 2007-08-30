@@ -83,10 +83,10 @@ xEmbed Yacas in the web site somehow.
 
 - run test scripts, and fix problems accordingly
 - LispFastMod
-- LispDllEnumerate
-- LispDllDirectory
-- LispDllLoad
-- LispDllUnload
+- YacasDllEnumerate
+- YacasDllDirectory
+- YacasDllLoad
+- YacasDllUnload
 
 - LispPatchLoad
 - LispPatchString

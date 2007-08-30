@@ -11,7 +11,7 @@
  * the general file structure (including comments!).
  *
  */
-DllLoad("pcre"); // We need regular expressions to tokenize the input stream
+Dll'Load("pcre"); // We need regular expressions to tokenize the input stream
 
 
 
@@ -73,7 +73,7 @@ ReportParseError(errorString, tokenId) :=
   Set(rest, CodeTrans'input[tokenId][1]);
   if (Length(rest)>50)
   [
-    rest:=StringMid(1,50,rest):"...";
+    rest:=StringMid'Get(1,50,rest):"...";
   ];
   ToString()[Echo(errorString," in file ",TokenFile(tokenId)," at line ",TokenLine(tokenId),":",rest);];
 ];
@@ -94,7 +94,7 @@ ReadTokens(language):=
     [
       Local(str);
       str:=token[1];
-      If(Length(str)>100,str:=StringMid(1,100,str):"...");
+      If(Length(str)>100,str:=StringMid'Get(1,100,str):"...");
       Check(Head(Tail(token)) != UnParsed,"UnRecognized token in file ":currentfile:" at line ":String(currentline):" : ":str);
     ]);
     // Tag the line the token was read from to the token.

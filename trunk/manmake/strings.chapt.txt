@@ -1,10 +1,10 @@
 
 			String manipulation
 
-*CMD SetStringMid --- change a substring
+*CMD StringMid'Set --- change a substring
 *CORE
 *CALL
-	SetStringMid(index,substring,string)
+	StringMid'Set(index,substring,string)
 
 *PARMS
 
@@ -21,15 +21,15 @@ a new changed copy.
 
 *E.G.
 
-	In> SetStringMid(3,"XY","abcdef")
+	In> StringMid'Set(3,"XY","abcdef")
 	Out> "abXYef";
 
-*SEE StringMid, Length
+*SEE StringMid'Get, Length
 
-*CMD StringMid --- retrieve a substring
+*CMD StringMid'Get --- retrieve a substring
 *CORE
 *CALL
-	StringMid(index,length,string)
+	StringMid'Get(index,length,string)
 
 *PARMS
 
@@ -41,17 +41,17 @@ a new changed copy.
 
 *DESC
 
-{StringMid} returns a part of a string. Substrings can also be
+{StringMid'Get} returns a part of a string. Substrings can also be
 accessed using the {[]} operator.
 
 *E.G.
 
-	In> StringMid(3,2,"abcdef")
+	In> StringMid'Get(3,2,"abcdef")
 	Out> "cd";
 	In> "abcdefg"[2 .. 4]
 	Out> "bcd";
 
-*SEE SetStringMid, Length
+*SEE StringMid'Set, Length
 
 *CMD String --- convert atom to string
 *CMD Atom --- convert string to atom

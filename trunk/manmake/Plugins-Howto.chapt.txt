@@ -93,11 +93,11 @@ But we can also keep it in the working directory.
 
 *	Yacas can use the new plugin after we load it:
 
-	In> DllLoad("libfunc1");
+	In> Dll'Load("libfunc1");
 	Out> True;
 
 If the plugin is not installed in the Yacas plugin path, we have to
-specify the path to the plugin, eg. {DllLoad("./libfunc1")}.
+specify the path to the plugin, eg. {Dll'Load("./libfunc1")}.
 
 *	Finally, we can use the new function:
 
@@ -105,7 +105,7 @@ specify the path to the plugin, eg. {DllLoad("./libfunc1")}.
 	Out> 0.61837;
 When we are finished using the function, we might unload the DLL:
 
-	In> DllUnload("libfunc1");
+	In> Dll'Unload("libfunc1");
 	Out> True;
 
 

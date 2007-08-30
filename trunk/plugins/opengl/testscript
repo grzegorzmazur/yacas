@@ -4,7 +4,7 @@
  is draggable with the mouse.
 */
 Use(FindFile("addons/glututils"));
-DllLoad(FindFile("addons/libopengl.so"));
+Dll'Load(FindFile("addons/libopengl.so"));
 
 10 # GlutKeyHandler("q",_x,_y) <-- Check(False,"Leaving");
 10 # GlutKeyHandler("Q",_x,_y) <-- Check(False,"Leaving");

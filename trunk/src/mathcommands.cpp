@@ -1095,7 +1095,7 @@ void LispDefaultDirectory(LispEnvironment& aEnvironment, LispInt aStackTop)
     InternalTrue(aEnvironment,RESULT);
 }
 
-void LispDllDirectory(LispEnvironment& aEnvironment, LispInt aStackTop)
+void YacasDllDirectory(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     // Get file name
     CHK_ARG_CORE(ARGUMENT(1), 1);
@@ -1725,7 +1725,7 @@ EMPTY:
     return;
 }
 
-void LispStringMid(LispEnvironment& aEnvironment,LispInt aStackTop)
+void YacasStringMidGet(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
     LispPtr evaluated(ARGUMENT(3));
     CHK_ISSTRING_CORE(evaluated,3);
@@ -1754,7 +1754,7 @@ void LispStringMid(LispEnvironment& aEnvironment,LispInt aStackTop)
     RESULT = (LispAtom::New(aEnvironment,str.c_str()));
 }
 
-void LispSetStringMid(LispEnvironment& aEnvironment,LispInt aStackTop)
+void YacasStringMidSet(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
     LispPtr evaluated(ARGUMENT(3));
     CHK_ISSTRING_CORE(evaluated,3);

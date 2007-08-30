@@ -203,7 +203,7 @@ Macro(Time,{expression})
  * strings, one string for each line. The file can then be displayed later. Ascii
  * escape codes are used to clear the screen.
  */
-DllLoad("pcre");
+Dll'Load("pcre");
 ReadLines():=
 [
   PcreLexer({{"^.*?\\n",Line}});
@@ -212,7 +212,7 @@ ReadLines():=
   line:=PcreNextToken();
   While (line != EndOfFile)
   [
-    line[1] := StringMid(1,Length(line[1])-1,line[1]);
+    line[1] := StringMid'Get(1,Length(line[1])-1,line[1]);
     DestructiveAppend(result,line);
     line:=PcreNextToken();
   ];

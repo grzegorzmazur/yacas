@@ -29,10 +29,10 @@ class SBoxBuilder
     {
       int height = SBoxBuilder.FontForSize(aSize);
       g.SetFontSize(height);
-      
+
       iSize = aSize;
       iPosition = aPosition;
-      if (iSymbol.equals("\\pi") || iSymbol.equals("\\wedge") || iSymbol.equals("\\vee")) 
+      if (iSymbol.equals("\\pi") || iSymbol.equals("\\wedge") || iSymbol.equals("\\vee"))
       {
         iDimension = new Dimension(g.TextWidth("M"),height);
         iAscent = g.GetAscent();
@@ -61,7 +61,7 @@ class SBoxBuilder
 
     public void render(GraphicsPrimitives g)
     {
-      if (iSymbol.equals("\\pi")) 
+      if (iSymbol.equals("\\pi"))
       {
         double deltax = 0.15*iDimension.width;
         double deltay = 0.2*iDimension.height;
@@ -70,7 +70,7 @@ class SBoxBuilder
         g.DrawLine((int)(iPosition.x                 +2*deltax),(int)(iPosition.y-iAscent+2*deltay),(int)(iPosition.x                 +2*deltax),(int)(iPosition.y-iAscent+iDimension.height+0*deltay));
         g.DrawLine((int)(iPosition.x+iDimension.width-2*deltax),(int)(iPosition.y-iAscent+2*deltay),(int)(iPosition.x+iDimension.width-2*deltax),(int)(iPosition.y-iAscent+iDimension.height+0*deltay));
       }
-      else if (iSymbol.equals("\\wedge") || iSymbol.equals("\\vee") ) 
+      else if (iSymbol.equals("\\wedge") || iSymbol.equals("\\vee") )
       {
         double deltax = 0.15*iDimension.width;
         double deltay = 0.2*iDimension.height;
@@ -85,20 +85,20 @@ class SBoxBuilder
         g.DrawLine((int)(iPosition.x                 +1*deltax), ybase, iPosition.x + iDimension.width/2, ytip);
         g.DrawLine((int)(iPosition.x+iDimension.width-1*deltax), ybase, iPosition.x + iDimension.width/2, ytip);
       }
-      else if (iSymbol.equals("\\neq")) 
+      else if (iSymbol.equals("\\neq"))
       {
         g.SetFontSize(SBoxBuilder.FontForSize(iSize));
         g.DrawText("=", iPosition.x, iPosition.y);
         g.DrawLine(iPosition.x+(2*iDimension.width)/3,iPosition.y-iAscent+(2*iDimension.height)/6,
                    iPosition.x+(1*iDimension.width)/3,iPosition.y-iAscent+(6*iDimension.height)/6);
       }
-      else if (iSymbol.equals("\\infty")) 
+      else if (iSymbol.equals("\\infty"))
       {
         g.SetFontSize(SBoxBuilder.FontForSize(iSize));
         g.DrawText("o", iPosition.x+1, iPosition.y);
         g.DrawText("o", iPosition.x+g.TextWidth("o")-2, iPosition.y);
       }
-      else if (iSymbol.equals("\\cdot")) 
+      else if (iSymbol.equals("\\cdot"))
       {
         int height = SBoxBuilder.FontForSize(iSize);
         g.SetFontSize(height);
@@ -121,7 +121,7 @@ class SBoxBuilder
       iExpressions = new SBox[aNrSubExpressions];
     }
     SBox iExpressions[];
-    
+
     public void render(GraphicsPrimitives g)
     {
 //drawBoundingBox(g);
@@ -149,7 +149,7 @@ class SBoxBuilder
       int i;
       for (i=0;i<iExpressions.length;i++)
       {
-        if (iExpressions[i] != null) 
+        if (iExpressions[i] != null)
           iExpressions[i].drawBoundingBox(g);
       }
     }
@@ -198,7 +198,7 @@ class SBoxBuilder
         Dimension dexpr = iExpressions[0].getDimension();
         if (iExpressions[1] != null) dsfix = iExpressions[1].getDimension();
         if (iExpressions[2] != null) dlfix = iExpressions[2].getDimension();
-                
+
         if (iExpressions[0] instanceof SBoxSum || iExpressions[0] instanceof SBoxInt)
         {
           iSuperOffset = 0;
@@ -213,12 +213,12 @@ class SBoxBuilder
         }
         else
         {
-          if (iExpressions[1] != null) 
+          if (iExpressions[1] != null)
           {
             iSuperOffset = iExpressions[1].getDimension().height-iExpressions[1].iAscent-iExpressions[0].getDimension().height/4;
             iExtent = iExtent + iSuperOffset + iExpressions[1].iAscent;
           }
-          if (iExpressions[2] != null) 
+          if (iExpressions[2] != null)
           {
             iSubOffset = iExpressions[2].iAscent;
 
@@ -235,7 +235,7 @@ class SBoxBuilder
 
 if (iExpressions[2] != null)
 {
-  iAscent = iAscent - iExpressions[2].getDimension().height; 
+  iAscent = iAscent - iExpressions[2].getDimension().height;
 }
       }
       if (aPosition != null)
@@ -295,7 +295,7 @@ if (iExpressions[2] != null)
           iWidths[i] = 0;
         for (i=0;i<iHeight;i++)
           iHeights[i] = 0;
-       
+
         for (i=0;i<iWidth;i++)
         {
           for (j=0;j<iHeight;j++)
@@ -470,7 +470,7 @@ if (iExpressions[2] != null)
         iExpressions[1].calculatePositions(g,aSize,new java.awt.Point(aPosition.x + (iDimension.width-ddim.width)/2,ydenom));
       }
     }
-    
+
     public void render(GraphicsPrimitives g)
     {
       super.render(g);
@@ -648,7 +648,7 @@ if (iExpressions[2] != null)
       else if (bracket.equals("(") || bracket.equals(")"))
       {
         int xstart;
-        int xend; 
+        int xend;
         if (bracket.equals("("))
         {
           xstart = x+iBracketWidth;
@@ -673,7 +673,7 @@ if (iExpressions[2] != null)
         g.SetLineThickness(1.3f);
         g.DrawLine((int)(xstart+(delta*steps[2])),y+(4*dim.height)/6,(int)(xstart+(delta*steps[1])),y+(5*dim.height)/6);
         g.SetLineThickness(1f);
-        g.DrawLine((int)(xstart+(delta*steps[1])),y+(5*dim.height)/6,(int)(xstart+(delta*steps[0])),y+(6*dim.height)/6);      
+        g.DrawLine((int)(xstart+(delta*steps[1])),y+(5*dim.height)/6,(int)(xstart+(delta*steps[0])),y+(6*dim.height)/6);
       }
       else
       {
@@ -696,7 +696,7 @@ if (iExpressions[2] != null)
   {
     if (aSize > 3) aSize = 3;
     if (aSize < 0) aSize = 0;
-    
+
     switch (aSize)
     {
       case 0: return 6;
@@ -721,15 +721,15 @@ if (iExpressions[2] != null)
     stack[stackDepth] = aSbox;
     stackDepth++;
   }
-	public int StackDepth()
-	{
-		return stackDepth;
-	}
+  public int StackDepth()
+  {
+    return stackDepth;
+  }
 
   void process(String aType)
   {
-    if (aType.equals("=") || aType.equals("\\neq") || aType.equals("+") || aType.equals(",") || 
-        aType.equals("\\wedge") || aType.equals("\\vee") || 
+    if (aType.equals("=") || aType.equals("\\neq") || aType.equals("+") || aType.equals(",") ||
+        aType.equals("\\wedge") || aType.equals("\\vee") ||
         aType.equals("<") || aType.equals(">") ||
         aType.equals("<=") || aType.equals(">=")
         )
@@ -742,7 +742,7 @@ if (iExpressions[2] != null)
     {
       SBox denom = pop();
       SBox numer = pop();
-      push(new SBoxDivisor(numer, denom));        
+      push(new SBoxDivisor(numer, denom));
     }
     else if (aType.equals("-/2"))
     {
@@ -783,7 +783,7 @@ if (iExpressions[2] != null)
       SBox right = pop();
       SBox left = pop();
       boolean appendToExisting = false;
-      
+
       if (left instanceof SBoxSubSuperfix)
       {
         SBoxSubSuperfix sbox = (SBoxSubSuperfix)left;
@@ -859,12 +859,12 @@ if (iExpressions[2] != null)
         for (i=width-1;i>=0;i--)
         {
           SBox value = pop();
-          grid.SetSBox(i, j, value);      
+          grid.SetSBox(i, j, value);
         }
       }
       push(grid);
     }
-    else 
+    else
     {
       push(new SBoxSymbolName(aType));
     }
