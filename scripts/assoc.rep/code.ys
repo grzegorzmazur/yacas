@@ -4,7 +4,7 @@
    it will return the atom Empty.
 */
 
-Function("Assoc",{key,list})  FastAssoc(key,list);
+Function("Assoc",{key,list})  Builtin'Assoc(key,list);
 
 
 AssocIndices(associndiceslist_IsList) <--
@@ -31,7 +31,7 @@ LocalSymbols(hash, key, element, hash'expr)
 /// AssocDelete(hash, "key")
 20 # AssocDelete(hash_IsList, key_IsString) <--
 [
-	AssocDelete(hash, FastAssoc(key, hash));
+	AssocDelete(hash, Builtin'Assoc(key, hash));
 ];
 
 30 # AssocDelete(hash_IsList, Empty) <-- False;

@@ -1610,8 +1610,6 @@ However, when the result is mathematically not an integer, the functions return 
 *A {FastLog}
 *A {FastPower}
 *A {FastArcSin}
-*A {FastArcCos}
-*A {FastArcTan}
 *CMD Fast... --- double-precision math functions
 *CORE
 *CALL
@@ -1619,7 +1617,7 @@ However, when the result is mathematically not an integer, the functions return 
 
 FastLog(x) (natural logarithm),
 FastPower(x,y),
-FastArcSin(x), FastArcCos(x), FastArcTan(x)
+FastArcSin(x)
 
 *DESC
 Versions of these functions using the C++ library. These

@@ -19,8 +19,6 @@ LispObject* SinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPr
 LispObject* CosFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
 LispObject* TanFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
 LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
-LispObject* ArcCosFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
-LispObject* ArcTanFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
 LispObject* ExpFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
 LispObject* LnFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
 

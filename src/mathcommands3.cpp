@@ -208,17 +208,6 @@ void LispDivide(LispEnvironment& aEnvironment, LispInt aStackTop)
   return;
 }
 
-
-void LispArcCos(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aStackTop, ArcCosFloat);
-}
-
-void LispArcTan(LispEnvironment& aEnvironment, LispInt aStackTop)
-{//FIXME move to scripts
-    LispArithmetic1(aEnvironment, aStackTop, ArcTanFloat);
-}
-
 void LispSqrt(LispEnvironment& aEnvironment, LispInt aStackTop)
 {//FIXME move to scripts
     LispArithmetic1(aEnvironment, aStackTop, SqrtFloat);
@@ -442,10 +431,7 @@ void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 
 // some or all of these functions should be moved to scripts
   PLATFORM_UNARY(LispFastArcSin, asin, LispArcSin, PlatArcSin)
-  PLATFORM_UNARY(LispFastArcCos, acos, LispArcCos, PlatArcCos)
-  PLATFORM_UNARY(LispFastArcTan, atan, LispArcTan, PlatArcTan)
   PLATFORM_UNARY(LispFastLog, log, LispLn, PlatLn)
-  PLATFORM_UNARY(LispFastAbs, fabs, LispAbs, PlatAbs)
   PLATFORM_BINARY(LispFastPower, pow, LispPower, PlatPower)
 
 
@@ -843,7 +829,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 
-void LispFastAssoc(LispEnvironment& aEnvironment, LispInt aStackTop)
+void YacasBuiltinAssoc(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     // Check that we have two arguments.
 

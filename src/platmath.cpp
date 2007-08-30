@@ -39,16 +39,6 @@ LispObject* PlatArcSin(LispEnvironment& aEnvironment,LispObject* int1, LispInt a
   return Double(aEnvironment, asin(GetDouble(int1)));
 }
 
-LispObject* PlatArcCos(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
-{
-  return Double(aEnvironment, acos(GetDouble(int1)));
-}
-
-LispObject* PlatArcTan(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
-{
-  return Double(aEnvironment, atan(GetDouble(int1)));
-}
-
 LispObject* PlatLn(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
   return Double(aEnvironment, log(GetDouble(int1)));
@@ -62,11 +52,6 @@ LispObject* PlatPower(LispEnvironment& aEnvironment,LispObject* int1, LispObject
 LispObject* PlatDiv(LispEnvironment& aEnvironment,LispObject* int1, LispObject* int2,LispInt aPrecision)
 {
   return Double(aEnvironment,((long)GetDouble(int1))/((long)GetDouble(int2)));
-}
-
-LispObject* PlatAbs(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
-{
-  return Double(aEnvironment, fabs(GetDouble(int1)));
 }
 
 
