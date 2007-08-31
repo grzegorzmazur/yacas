@@ -1,34 +1,5 @@
 package net.sf.yacas;
 
-
-/*
-
-Documentation for the applet, starting it here, but has to move to main docs:
-just random thoughts for now.
-
-1) typing 'restart' on the command line restarts the system
-2) You can perform initialization calls by adding parameters "initN" in the html
-   code, where N is a number from 1 upwards, which have to be in consecutive order.
-3) add to the history with "historyN" parameters to the applet
-
-
-<B>Note:</B> to allow supporting copy-pasting from and to this applet, you need to enable
-access to the clip board on your computer. On Unix-style computers this can be done
-by appending the following lines to the file ~/.java.policy (create the file if it does
-not exist yet):
-<p>
-<TT>
-grant codeBase "http://www.xs4all.nl/~apinkus/*" {
-permission java.awt.AWTPermission "accessClipboard";
-};
-</TT>
-<p>
-You can then copy with CTRL-c and paste with CTRL-v.
-
-
-*/
-
-
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.Transferable;

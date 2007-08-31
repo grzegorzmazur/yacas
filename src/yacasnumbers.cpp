@@ -485,47 +485,20 @@ LispString * LispFactorial(LispChar * int1, LispHashTable& aHashTable,LispInt aP
 
 // this will use the new BigNumber/BigInt/BigFloat scheme
 
-#ifndef USE_NATIVE
-
-
 BigNumber::BigNumber(const LispChar * aString,LispInt aBasePrecision,LispInt aBase)
- : iReferenceCount(),iPrecision(0)
-#ifdef USE_NATIVE
-#else
-  #ifdef USE_GMP
-  #else
-    ,iType(KInt),iNumber(NULL)
-  /// Internal library wrapper ends here.
-  #endif  // USE_GMP
-#endif  // USE_NATIVE
+ : iReferenceCount(),iPrecision(0),iType(KInt),iNumber(NULL)
 {
   iNumber = NULL;
   SetTo(aString, aBasePrecision, aBase);
 }
 BigNumber::BigNumber(const BigNumber& aOther)
- : iReferenceCount(),iPrecision(aOther.GetPrecision())
-#ifdef USE_NATIVE
-#else
-  #ifdef USE_GMP
-  #else
-    ,iType(KInt),iNumber(NULL)
-  /// Internal library wrapper ends here.
-  #endif  // USE_GMP
-#endif  // USE_NATIVE
+ : iReferenceCount(),iPrecision(aOther.GetPrecision()),iType(KInt),iNumber(NULL)
 {
   iNumber = NEW ANumber(*aOther.iNumber);
   SetIsInteger(aOther.IsInt());
 }
 BigNumber::BigNumber(LispInt aPrecision)
- : iReferenceCount(),iPrecision(aPrecision)
-#ifdef USE_NATIVE
-#else
-  #ifdef USE_GMP
-  #else
-    ,iType(KInt),iNumber(NULL)
-  /// Internal library wrapper ends here.
-  #endif  // USE_GMP
-#endif  // USE_NATIVE
+ : iReferenceCount(),iPrecision(aPrecision),iType(KInt),iNumber(NULL)
 {
   iNumber = NEW ANumber(BITS_TO_DIGITS(aPrecision,10));
   SetIsInteger(LispTrue);
@@ -1353,8 +1326,6 @@ void BigNumber::SetTo(const LispChar * aString,LispInt aBasePrecision,LispInt aB
   SetIsInteger(!isFloat && iNumber->iExp == 0 && iNumber->iTensExp == 0);
 }
 
-
-#endif  // USE_NATIVE
 
 
 

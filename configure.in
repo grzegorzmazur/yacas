@@ -130,7 +130,7 @@ AC_SUBST(OPENGL_PLUGIN)
 
 # Choice of arbitrary precision library
 AC_ARG_WITH(numlib, [  --with-numlib=LIB       select library for arbitrary precision arithmetics
-                             Options: native, gmp.  [default=native]], with_numlib=$withval, with_numlib="native")
+                             Options: native.  [default=native]], with_numlib=$withval, with_numlib="native")
 AC_MSG_CHECKING([which arbitrary precision library to use])
 case $with_numlib in
   native) 
@@ -138,16 +138,6 @@ case $with_numlib in
     NUMBERS_LIB_SHORT="yacasnumbers"
     NUMBERS_LDFLAGS="-lm"
     AC_MSG_RESULT(native);;
-  gmp)
-    AC_MSG_RESULT(gmp)
-    AC_CHECK_LIB(gmp, __gmpz_init, have_gmp=yes, have_gmp=no)
-    if test "$have_gmp" = "no" ; then
-      AC_MSG_ERROR([GNU MP library not found])
-    fi
-    NUMBERS_LIB="libgmpnumbers.la"
-    NUMBERS_LIB_SHORT="gmpnumbers"
-    NUMBERS_LDFLAGS="-lgmp -lm"
-    AC_DEFINE(USE_GMP,, [Define to use the GNU MP library]);;
   yes)
     AC_MSG_RESULT(error)
     AC_MSG_ERROR([Arbitrary precision library not specified]);;

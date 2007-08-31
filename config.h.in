@@ -143,9 +143,6 @@
 /* Define to build the debug version */
 #undef USE_ASSERT
 
-/* Define to use the GNU MP library */
-#undef USE_GMP
-
 /* Version number of package */
 #undef VERSION
 

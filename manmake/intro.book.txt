@@ -45,9 +45,6 @@ A note for MacOS X 10.4 users; for now loading dynamic link libraries does not w
 
 
 
-*A compiling with {libgmp}
-The arbitrary precision math in {Yacas} will be generally faster if you compile {Yacas} with the {libgmp} library (the option {--with-numlib=gmp} for the {configure} script). Precompiled Red Hat (RPM) and Debian (DEB) packages are also available.
-
 *A getting printed manuals
 Additionally, $LaTeX$-formatted documentation in PostScript and PDF formats can be produced by the command
 
@@ -80,25 +77,6 @@ for the Java version are:
 *	3. hints.txt - the hints that are shown in the applet
 (the grey box with commands that match what you are typing in 
 at that moment).
-
-To get copy-pasting to work in the applet version, you need
-to tell the Java virtual machine that you trust this applet
-to get or set data on the clipboard of your OS.
-
-On Unix-like systems this means creating a file ~/.java.policy
-if it does not already exist, and then adding the following
-lines to it:
-
-	grant codeBase "http://yacas.sourceforge.net/*" {
-	permission java.awt.AWTPermission "accessClipboard";
-	};
-
-This grants all applets residing at http://www.xs4all.nl/~apinkus/*
-access to the clipboard.
-
-This can be done in a similar way on Windows, but the directory
-where you need to place the .java.policy file depends on the
-version of Windows that is running.
 
 The Java version has almost all the features the C++ version
 has. In fact, there is no reason the Java version should not
