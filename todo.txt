@@ -6,10 +6,8 @@ TODO:
     - yacas.sgml
     - yacas.spec
     - README.beos
-  - remove beos-related files
   - N(GoldenRatio) still crashes
 
-  - grep on apinkus to see if there are references to the old site still.
   - grep on USE_NATIVE (should not be defined, and should be removed)
   - remove concept of having different numeric libraries, remove MathLibrary() and the functions it uses, everywhere.
 

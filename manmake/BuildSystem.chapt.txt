@@ -618,34 +618,6 @@ part of the build system is still being developed.
 
 
 
-	    Non-Unix architectures
-
-*A build system!BeOS
-*A build system!MS Windows
-*A build system!Psion
-*A build system!Macintosh
-*A build system!EPOC
-*A BeOS
-*A Microsoft Windows
-*A Psion
-*A Macintosh
-*A EPOC
-
-Until now, we have only talked about the support for building Yacas on
-Unix-like systems. Here are pointers to descriptions of the support
-for other architectures. Some architectures may sometimes be trailing
-behind.
-*	{BeOS}. Use the file {src/makefile.beos} for this, as
-described in {README.beos}.
-*	{EPOC}. Support for this device is contained in the {epoc}
-directory. The details are explained in the {README.EPOC} file.
-*	{Macintosh}. The Mac port is maintained at
-<*http://homepage.mac.com/yacas*>.
-*	{MS Windows}. The files {yacas.dsw} and {yacas.dsp} contain
-support for MSDevStudio c++ 6.0. Alternatively, look in the
-{README.Win32} file. 
-*	{Psion Series}. Use the file {epocyacasconsole.mmp}.
-
 
 	    Compiling Yacas with plugins linked in statically
 

@@ -19,7 +19,7 @@
 #define LISPEXPORT
 #define LISPIMPORT
 
-// Number of bits in long 
+// Number of bits in long
 #define BITS_PER_LONG 32
 
 
