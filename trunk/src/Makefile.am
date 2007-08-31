@@ -8,7 +8,7 @@ EXTRA_PROGRAMS = compressor testnum codereviewer
 libmath_USES = yacas$(EXEEXT) check_plugins$(EXEEXT)
 
 lib_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la @NUMBERS_LIB@ 
-EXTRA_LTLIBRARIES = libgmpnumbers.la libyacasnumbers.la 
+EXTRA_LTLIBRARIES = libyacasnumbers.la 
 
 pkglib_LTLIBRARIES = libmath.la
 
@@ -80,8 +80,6 @@ libyacasplatform_la_DEPENDENCIES= fastprimes.c
 ## so automake does not know in what directory it is installed.
 libyacasnumbers_la_SOURCES = anumber.cpp yacasnumbers.cpp numbers.cpp
 libyacasnumbers_la_LDFLAGS = -rpath $(libdir)
-libgmpnumbers_la_SOURCES = gmpnumbers.cpp numbers.cpp
-libgmpnumbers_la_LDFLAGS = -rpath $(libdir)
 
 # We need iteration (rebuilding the same target multiple times).
 # This variable ensures non-empty cmd-goals, taking automake's default, "all".

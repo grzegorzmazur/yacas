@@ -2,7 +2,16 @@
 TODO:
 - remove redundant functions (low hanging fruit):
   - remove gmp support
+  - clean up the root dir:
+    - yacas.sgml
+    - yacas.spec
+    - README.beos
+  - remove beos-related files
   - N(GoldenRatio) still crashes
+
+  - grep on apinkus to see if there are references to the old site still.
+  - grep on USE_NATIVE (should not be defined, and should be removed)
+  - remove concept of having different numeric libraries, remove MathLibrary() and the functions it uses, everywhere.
 
   - precision.yts is not used yet, discard? Or fix?
   - Test suite fails on Java version. We *have* to make the test suite more lenient.

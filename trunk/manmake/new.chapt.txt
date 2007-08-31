@@ -168,11 +168,6 @@ it is best to keep this in mind and keep the code passed to
 
 {Yacas} comes with its own arbitrary-precision arithmetic library,
 to reduce dependencies on other software.
-Several excellent and free arbitrary precision arithmetic
-libraries are available, for example {gmp} and {CLN}.
-The {gmp} library can optionally be linked with the {Yacas} engine, instead of the internal arithmetic library.
-The choice of a specific number library is a <i>compile-time</i> option; one cannot switch to another arithmetic library at runtime.
-The default choice is the internal library ("{yacasnumbers.a}").
 
 This part describes how the arithmetic library is embedded into
 {Yacas} and how to embed other arithmetic libraries.
@@ -281,7 +276,7 @@ Here we encounter a problem of ambiguous hexadecimal exponent:
 	x.SetTo("2a8c.e2", 100, 16);
 It is not clear whether the above number is in exponential notation or not.
 But this is hopefully not a frequently encountered situation.
-We may assume (following the example of the {gmp} library) that the exponent character for $base>10$ is "{@}" and not "{e}".
+We may assume that the exponent character for $base>10$ is "{@}" and not "{e}".
 *	The same function is overloaded to construct a number from a platform number (a 32-bit integer or a double precision value).
 C++:
 	x.SetTo(12345); y.SetTo(-0.001);
@@ -495,7 +490,7 @@ That is fine;
 but it is important that the sum should not contain <i>more</i> than 100 digits.
 Floating-point values, unlike integers, only grow up to the given number of significant bits and then a round-off <i>must</i> occur.
 Otherwise we will be wasting a lot of time on computations with many meaningless digits.
-A good low-level arithmetic library such as {gmp} will avoid floating-point computations with more digits than explicitly requested.
+
 
 	    Automatic precision tracking
 
@@ -663,7 +658,7 @@ float.
 (To be sure, we should check that the integer powering algorithm generates enough significant digits.)
 
 However, the opposite approach is also completely possible: no two floating-point numbers should be considered equal, except perhaps when one is a bit-for-bit exact copy of the other and when we haven't yet performed any arithmetic on them.
-(The GMP library uses essentially this definition.)
+
 It seems that no algorithm really needs a test for equality of floats.
 The two useful comparisons on floats $x$, $y$ seem to be the following:
 *	1. whether $Abs(x-y)<epsilon$ where $epsilon$ is a given floating-point number representing the precision,
@@ -834,7 +829,6 @@ wants to see this result with 50 digits. Even if we chose the option
 somewhat random round-off error. Should we print 10 correct digits and
 40 bogus digits? It seems better to print only 10 correct
 digits in this case.
-The GMP library already has this functionality in its string printing functions: it does not print more digits than the number actually holds.
 
 If we choose this route, then the only effect of {Builtin'Precision'Set(50)} will be to 
 interpret a literal constant {1.4} as a 50-digit number. All other numbers already know their 

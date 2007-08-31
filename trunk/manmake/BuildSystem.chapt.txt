@@ -203,14 +203,6 @@ clarity, a simplified version is presented).
 	  native) 
 	    NUMBERS_LIB="libyacasnumbers.la"
 	    NUMBERS_LDFLAGS="-lm"
-	  gmp)
-	    AC_CHECK_LIB(gmp, __gmpz_init, \
-	                 have_gmp=yes, have_gmp=no)
-	    if test "$have_gmp" = "no" ; then
-	      AC_MSG_ERROR([GNU MP library not found])
-	    fi
-	    NUMBERS_LIB="libgmpnumbers.la"
-	    NUMBERS_LDFLAGS="-lgmp -lm"
 	esac
 	AC_SUBST(NUMBERS_LIB)
 	AC_SUBST(NUMBERS_LDFLAGS)
@@ -225,13 +217,6 @@ that the user has either given the {--with-numlib=native} option to
 {configure}, or not used the option at all), then the {NUMBERS_LIB} and
 {NUMBERS_LDFLAGS} shell variables are set to {libyacasnumbers.la} and
 {-lm} respectively.
-
-If on the other hand the {--with-numlib=gmp} option is passed to the
-{configure} script, then first it is
-checked that the GNU MP library is available -- if this is not the
-case, the configuration terminates with an error. Then the
-{NUMBERS_LIB} and {NUMBERS_LDFLAGS} shell variables are set to
-suitable values. 
 
 The last two lines say that the value of the {NUMBERS_LIB} and
 {NUMBERS_LDFLAGS} shell variables should be substituted for the
@@ -329,10 +314,7 @@ by all packages, but will restrict ourselves to the options
 exclusively used by Yacas.
 *	{with-numlib=LIB}. This option specifies the arbitrary-precision
 library to use.  The supported values for {LIB} so far are {native} (the
-default) and {gmp}.  The latter options enables the GNU multi-precision
-arithmetic library (GNU MP), available from <*http://www.swox.com/gmp*>,
-instead of the library provided by the Yacas team. For this to work, the
-GNU MP library must of course be installed.
+default). 
 *	{enable-debug}. Build a version of Yacas suitable for debugging. 
 *	{enable-archive}. Build and install the library archive. The
 library archive resides in the file {scripts.dat} and contains all the
@@ -424,10 +406,7 @@ automatically: {version.h} (generated from {configure.in}),
 {core_yacasmain.h} (generated from {yacasmain.cpp}).
 *	Building the libraries. Three libraries are used to build the
 Yacas executable: {libyacas}, {libyacasplatform}, and a library for
-arbitrary precision arithmetics.  For the latter library, the user can
-specify a choice of {gmp} (GNU MP library) or {native} (the library
-distributed with Yacas) with the {with-numlib} option of the
-{configure} script. In addition, the {libcyacas} library (see
+arbitrary precision arithmetics. In addition, the {libcyacas} library (see
 <*yacasdoc://essays/3/4/*>) is built.
 *	Building the executables. Besides the Yacas executables, we
 also build {mkfastprimes} and {gencorefunctions} (which are needed to

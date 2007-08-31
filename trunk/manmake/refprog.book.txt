@@ -1650,7 +1650,7 @@ Returns {False} if Yacas has been started with the option to suppress the prompt
 *DESC
 Returns a string that describes the currently used arbitrary-precision arithmetic library.
 
-Possible names supported at the moment are {"Internal"} and {"Gmp"}, indicating the internal math library {libyacasnumbers} and the GNU Multiple Precision library {libgmp}.
+Possible names supported at the moment are {"Internal"}, indicating the internal math library {libyacasnumbers}.
 
 *EG
 	In>  MathLibrary()

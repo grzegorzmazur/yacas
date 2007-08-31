@@ -64,7 +64,7 @@ Having gone through the steps in either Section A or Section B, you can finish
 the procedure by doing the following:
 
 * type './configure' with optional arguments
-  (e.g. './configure --with-numlib=gmp --enable-ps-doc --prefix=/home/user/').
+  (e.g. './configure --enable-ps-doc --prefix=/home/user/').
   You can get a list of possible options by running './configure --help'.
 
 * type 'make'.

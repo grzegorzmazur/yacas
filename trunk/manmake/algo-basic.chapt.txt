@@ -464,20 +464,14 @@ This situation seems to be typical for Taylor series.
 
 *A arbitrary-precision computation!Yacas internal math
 
-Currently, Yacas can be compiled to use either internal math (the {yacasnumbers} library) or the
-GNU multiple precision library ({gmp}).
-The internal math library is intended as a replacement for platforms where specialized arbitrary-precision libraries are not available.
-This reduces the dependencies of the Yacas system and improves portability.
+Yacas uses an internal math library (the {yacasnumbers} library) which comes with the source
+code. This reduces the dependencies of the Yacas system and improves portability.
 The internal math library is simple and does not necessarily use the most optimal algorithms.
-Well-tested libraries such as {gmp} implement much more heavily optimized algorithms.
 
-The algorithms for basic arithmetic in
-the internal math version are currently rather slow compared with {gmp}.
 If $P$ is
 the number of digits of precision, then multiplication and division take
 $M(P)=O(P^2)$ operations in the internal math. (Of course, multiplication and division by a short integer takes time linear in $P$.)
-Much faster algorithms
-(Karatsuba, Toom-Cook, FFT multiplication, Newton-Raphson division etc.) are
+Much faster algorithms (Karatsuba, Toom-Cook, FFT multiplication, Newton-Raphson division etc.) are
 implemented in {gmp}, {CLN} and some other libraries.
 The asymptotic cost of multiplication for very large precision is $M(P)<=>O(P^1.6)$ for the Karatsuba method and $M(P)=O(P*Ln(P)*Ln(Ln(P)))$ for the FFT method.
 In the estimates of computation cost in this book we shall assume that $M(P)$ is at

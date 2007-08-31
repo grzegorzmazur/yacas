@@ -49,16 +49,8 @@ template<class T> inline T DIST(T x, T y) { return (x>=y+DIST_BITS || y>=x+DIST_
 /** Base number class.
  */
  
-// You can enable this define to have a BigNumber implementation based on 'double' and 'long'
-#define noUSE_NATIVE
 
-#ifndef USE_NATIVE
-  #ifdef USE_GMP
-  #include <gmp.h>
-  #else
-    class ANumber;
-  #endif
-#endif
+class ANumber;
 
 
  
@@ -153,55 +145,7 @@ public:
 private:
   LispInt iPrecision;
 
-#ifdef USE_NATIVE
-
-private:
-  enum EType
-  {
-    KInteger = 0,
-    KDouble=1,
-  };
-  union UValue
-  {
-    long i;
-    double  d;
-  };
-  EType type;
-  UValue value;
-
-#else
-  #ifdef USE_GMP
-  /// direct GMP wrapper starts here
-  public:
-  /// These functions will enable us to use arbitrary GMP functions without changing this class definition.
-  /// Copy from gmp objects (which must have values).
-  void import_gmp(mpz_t gmp_int);
-  void import_gmp(mpf_t gmp_float);
-  // Copy to gmp objects (which must be already initialized and of correct type).
-  void export_gmp(mpz_t gmp_int) const;
-  void export_gmp(mpf_t gmp_float) const;
-  private:
-  /// Auxiliary internal private functions.
-  /// Initialize all gmp objects.
-  void init();
-  /// Change types to int and float but do not convert any values.
-  void turn_float();
-  void turn_int();
-  /// This type gives masks to check the current type of the BigNumber.
-  enum EType
-  { /// bit masks: KFloatNAN includes KFloat.
-    KInt = 1,
-    KFloat = 2,
-    KFloatNAN =  2 | 4
-  };
-  mpz_t int_;  // these two are not in a union
-  mpf_t float_;  // because we want to avoid excessive memory reallocation.
-  /// Type flag (a bit mask).
-  unsigned type_;
- 
-  /// direct GMP wrapper ends here.
-  #else
-  public:
+public:
   /// Internal library wrapper starts here.
     inline void SetIsInteger(LispBoolean aIsInteger) {iType = (aIsInteger ? KInt : KFloat);}
     enum ENumType
@@ -212,8 +156,6 @@ private:
     ENumType iType;
     ANumber* iNumber;
   /// Internal library wrapper ends here.
-  #endif  // USE_GMP
-#endif  // USE_NATIVE
 };
 
 /// bits_to_digits and digits_to_bits, utility functions
