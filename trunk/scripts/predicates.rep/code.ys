@@ -121,15 +121,15 @@ IsPositiveInteger(x):= IsInteger(x) And x > 0;
 
 
 /*
-10 # IsZero(x_IsNumber) <-- (MathDivide( Round( MathMultiply(x, 10^GetPrecision()) ), 10^GetPrecision() ) = 0);
-10 # IsNotZero(x_IsNumber)       <-- ( RoundTo(x,GetPrecision()) != 0);
+10 # IsZero(x_IsNumber) <-- (MathDivide( Round( MathMultiply(x, 10^Builtin'Precision'Get()) ), 10^Builtin'Precision'Get() ) = 0);
+10 # IsNotZero(x_IsNumber)       <-- ( RoundTo(x,Builtin'Precision'Get()) != 0);
 */
 // these should be calls to MathSign() and the math library should do this. Or it should be just MathEquals(x,0).
-// for now, avoid underflow and avoid IsZero(10^(-GetPrecision())) returning True.
-10 # IsZero(x_IsNumber) <-- ( MathSign(x) = 0 Or MathAbs(x)  < MathPower(10, -GetPrecision()));
+// for now, avoid underflow and avoid IsZero(10^(-Builtin'Precision'Get())) returning True.
+10 # IsZero(x_IsNumber) <-- ( MathSign(x) = 0 Or MathAbs(x)  < MathPower(10, -Builtin'Precision'Get()));
 60000 # IsZero(_x) <-- False;
 
-10 # IsNotZero(x_IsNumber) <-- ( MathAbs(x)  >= MathPower(10, -GetPrecision()));
+10 # IsNotZero(x_IsNumber) <-- ( MathAbs(x)  >= MathPower(10, -Builtin'Precision'Get()));
 10 # IsNotZero(x_IsInfinity) <-- True;
 60000 # IsNotZero(_x) <-- False;
 
@@ -308,15 +308,15 @@ FloatIsInt(_x) <--
    [
      x:=N(Eval(x));
      Local(prec,result,n);
-     Set(prec,GetPrecision());
+     Set(prec,Builtin'Precision'Get());
      If(IsZero(x),Set(n,2),
      If(x>0,
        Set(n,2+MathFloor(N(FastLog(x)/FastLog(10)))),
        Set(n,2+MathFloor(N(FastLog(-x)/FastLog(10))))
        ));
-     Precision(n+prec);
+     Builtin'Precision'Set(n+prec);
      Set(result,IsZero(RoundTo(x-Floor(x),prec)) Or IsZero(RoundTo(x-Ceil(x),prec)));
-     Precision(prec);
+     Builtin'Precision'Set(prec);
      result;
    ];
 //  

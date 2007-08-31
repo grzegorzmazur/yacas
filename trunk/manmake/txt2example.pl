@@ -128,7 +128,7 @@ sub start_eg	# what to print into the test file in front of each EG block
 {
 	print << "EOF2";
 /* Testing EG block at line $line in file $filename */
-Precision(10);Clear(x);Clear(y);Clear(z);Clear(a);Clear(b); Clear(A);Clear(B);Clear(v);Clear(p);
+Builtin'Precision'Set(10);Clear(x);Clear(y);Clear(z);Clear(a);Clear(b); Clear(A);Clear(B);Clear(v);Clear(p);
 EOF2
 }
 

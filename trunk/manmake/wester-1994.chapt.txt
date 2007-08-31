@@ -21,11 +21,11 @@ Below is the list of Wester's problems with the corresponding {Yacas} code. "OK"
 	  Exp(Pi*Sqrt(163))), 50)> -0.75, True);
 *	5. (OK) Evaluate the Bessel function $J[2]$ numerically at $z=1+I$.
 	NumericEqual(N(BesselJ(2, 1+I)),
-	  0.4157988694e-1+I*0.2473976415,GetPrecision());
+	  0.4157988694e-1+I*0.2473976415,Builtin'Precision'Get());
 *	6. (OK) Obtain period of decimal fraction 1/7=0.(142857).
 	Verify(Decimal(1/7), {0,{1,4,2,8,5,7}});
 *	7. Continued fraction of 3.1415926535.
-	Verify([Local(p,r);p:=GetPrecision();Precision(12);r:=ContFracList(3.1415926535, 6);Precision(p);r;],
+	Verify([Local(p,r);p:=Builtin'Precision'Get();Builtin'Precision'Set(12);r:=ContFracList(3.1415926535, 6);Builtin'Precision'Set(p);r;],
 	  {3,7,15,1,292,1});
 *	8. (OK) $Sqrt(2*Sqrt(3)+4) = 1+Sqrt(3)$.
 	Verify(RadSimp(Sqrt(2*Sqrt(3)+4)), 1+Sqrt(3));

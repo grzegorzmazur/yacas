@@ -61,12 +61,10 @@ After this, evaluating an expression such as {1/2+gamma} will call the function 
 *EG notest
 
 	In> CachedConstant( my'cache, Ln2, Internal'LnNum(2) )
+	Out> True;
+	In> Internal'Ln2()
 	Out> 0.6931471806;
-	In> Ln2
-	Out> Ln2;
-	In> Ln2()
-	Out> 0.6931471806;
-	In> [ Precision(20); V( Ln2() ); ]
+	In> V(N(Internal'Ln2(),20))
 	CachedConstant: Info: constant Ln2 is being
 	  recalculated at precision 20 
 	Out> 0.69314718055994530942;
@@ -74,7 +72,7 @@ After this, evaluating an expression such as {1/2+gamma} will call the function 
 	Out> {{"Ln2",20,0.69314718055994530942}};
 
 
-*SEE N, Precision, Pi, GoldenRatio, Catalan, gamma
+*SEE N, Builtin'Precision'Set, Pi, GoldenRatio, Catalan, gamma
 
 *CMD NewtonNum --- low-level optimized Newton's iterations
 *STD
@@ -120,7 +118,7 @@ achieved exact digits should roughly form a geometric progression.
 
 *EG
 
-	In> Precision(20)
+	In> Builtin'Precision'Set(20)
 	Out> True;
 	In> NewtonNum({{x}, x+Sin(x)}, 3, 5, 3)
 	Out> 3.14159265358979323846;
@@ -179,7 +177,7 @@ advance to achieve the desired accuracy.
 To compute 20 digits of $Exp(1)$ using the Taylor series, one needs 21
 digits of working precision and 21 terms of the series. 
 
-	In> Precision(21)
+	In> Builtin'Precision'Set(21)
 	Out> True;
 	In> SumTaylorNum(1, {{k},1/k!}, 21)
 	Out> 2.718281828459045235351;
@@ -279,7 +277,7 @@ $$ S = T / (B*Q) $$.
 
 Compute the series for $e=Exp(1)$ using binary splitting.
 (We start from $n=1$ to simplify the coefficient functions.)
-	In> Precision(21)
+	In> Builtin'Precision'Set(21)
 	Out> True;
 	In>  BinSplitNum(1,21, {{k},1},
 	  {{k},1},{{k},1},{{k},k})
@@ -337,4 +335,4 @@ Prepare a "floating zero" representing an interval [-4, 4]:
 	In> x=0
 	Out> True;
 
-*SEE Precision, GetPrecision
+*SEE Builtin'Precision'Set, Builtin'Precision'Get

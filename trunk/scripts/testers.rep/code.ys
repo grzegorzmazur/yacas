@@ -5,10 +5,10 @@
 10 # RoundTo(x_IsNumber, prec_IsPositiveInteger) <-- 
 [
   Local(oldPrec,result);
-  oldPrec:=GetPrecision();
-  Precision(prec);
+  oldPrec:=Builtin'Precision'Get();
+  Builtin'Precision'Set(prec);
   Set(result,MathDivide( Round( MathMultiply(x, 10^prec) ), 10^prec ));
-  Precision(oldPrec);
+  Builtin'Precision'Set(oldPrec);
   result;
 ];
 // complex numbers too

@@ -937,7 +937,7 @@ As an example, we can try to find a root of $Sin(x)$ near
 $3$, which should converge to $Pi$.
 
 Setting precision to 30 digits,
-	In> Precision(30)
+	In> Builtin'Precision'Set(30)
 	Out> True;
 
 We first set up a function $dx(x)$:
@@ -1023,7 +1023,7 @@ It is clear that the solution to this is $a=2$ and $x:=N*Pi/2$
 for any integer value $N$.
 
 We will do calculations with precision 30:
-	In> Precision(30)
+	In> Builtin'Precision'Set(30)
 	Out> True;
 
 And set up a vector of functions ${f_1(X),f_2(X)}$

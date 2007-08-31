@@ -69,7 +69,7 @@ Verify(MathPower(1, -1), 1);
 Verify(MathPower(1, -2), 1);
 Verify(IsZero(MathPower(10, -2)- 0.01));
 Verify(MathPower(2, 3), 8);
-NumericEqual(MathPower(2, -3), 0.125,GetPrecision()); 
+NumericEqual(MathPower(2, -3), 0.125,Builtin'Precision'Get()); 
 
 Testing("Rounding");
 Verify(Floor(1.2),1);
@@ -123,16 +123,16 @@ Verify(1+2.00e3,2001.);
 Verify(1+2.000e3,2001.);
 Verify(1+2.0000e3,2001.);
 
-NumericEqual(N(Sqrt(1e4))-100,0,GetPrecision());
-NumericEqual(N(Sqrt(1.0e4))-100,0,GetPrecision());
+NumericEqual(N(Sqrt(1e4))-100,0,Builtin'Precision'Get());
+NumericEqual(N(Sqrt(1.0e4))-100,0,Builtin'Precision'Get());
 
 Verify(2.0000e3-1,1999.);
 [
   Local(p);
-  p:=GetPrecision();
-  Precision(12);//TODO this will fail if you drop precision to below 12, for some reason.
-  NumericEqual(RoundTo(10e3*1.2e-3,GetPrecision()),12.,GetPrecision());
-  Precision(p);
+  p:=Builtin'Precision'Get();
+  Builtin'Precision'Set(12);//TODO this will fail if you drop precision to below 12, for some reason.
+  NumericEqual(RoundTo(10e3*1.2e-3,Builtin'Precision'Get()),12.,Builtin'Precision'Get());
+  Builtin'Precision'Set(p);
 ];
 Verify((10e3*1.2e-4)-1.2,0);
 
@@ -143,7 +143,7 @@ Verify(IsZero(N(Sin(0.1e1)-Sin(1),30)),True);
    */
   Local(diff);
   diff := N(Sin(10e-1)-Sin(1),30);
-//Precision(20);
+//Builtin'Precision'Set(20);
 //Echo("diff = ",diff);
 //Echo("diff > -0.00001 = ",diff > -0.00001);
 //Echo("diff < 0.00001 = ",diff < 0.00001);

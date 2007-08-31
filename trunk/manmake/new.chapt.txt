@@ -674,7 +674,7 @@ just as efficiently as with any "reasonable" definition of the floating-point eq
 
 	    How to increase of the working precision
 
-Suppose that in a {Yacas} session we declare {Precision(5)}, write {x:=0.1}, 
+Suppose that in a {Yacas} session we declare {Builtin'Precision'Set(5)}, write {x:=0.1}, 
 and then increase 
 precision to 10 digits. What is {x} now? There are several approaches:
 
@@ -731,7 +731,7 @@ But numbers that are results of arithmetic operations are not converted back to
 a decimal representation for zero-padding.
 Here are some example calculations:
 
-	In> Precision(5)
+	In> Builtin'Precision'Set(5)
 	Out> True
 	In> x:=1.2
 	Out> 1.2
@@ -739,7 +739,7 @@ Here are some example calculations:
 	Out> 0.33333
 The number {y} is a result of a calculation and has a limited precision.
 Now we shall increase the precision:
-	In> Precision(20)
+	In> Builtin'Precision'Set(20)
 	Out> True
 	In> y
 	Out> 0.33333
@@ -752,7 +752,7 @@ In a calculation, {y} was binary-padded, so the last digits are incorrect.
 However, {x} has not been padded and remains an "exact" {1.2}.
 	In> z:=y+0
 	Out> 0.33333333325572311878
-	In> Precision(40)
+	In> Builtin'Precision'Set(40)
 	Out> True
 	In> z
 	Out> 0.33333333325572311878
@@ -761,11 +761,11 @@ Now we can see how the number {z} is padded again:
 	Out> 0.33333333325572311878204345703125
 
 
-	    The meaning of the {Precision()} call
+	    The meaning of the {Builtin'Precision'Set()} call
 
-The user calls {Precision()} to specify the "wanted number of digits."
+The user calls {Builtin'Precision'Set()} to specify the "wanted number of digits."
 We could use different interpretations of the user's wish:
-The first interpretation is that {Precision(10)} means "I want all answers
+The first interpretation is that {Builtin'Precision'Set(10)} means "I want all answers
 of all calculations to contain 10 correct digits".
 The second interpretation is "I want all calculations with floating-point numbers done
 using at least 10 digits".
@@ -773,7 +773,7 @@ using at least 10 digits".
 Suppose we have floating-point numbers {x} and {y}, known only to 2 and 3 significant
 digits respectively. For example, {x=1.6} and {y=2.00}. These {x} and {y} are
 results of previous calculations and we do not have any more digits than this.  If we now say
-	Precision(10);
+	Builtin'Precision'Set(10);
 	x*y;
 then clearly the system cannot satisfy the first interpretation because there
 aren't enough digits of $x$ and $y$ to find 10 digits of $x*y$.
@@ -785,7 +785,7 @@ digits of $x*y$.
 The garbage digits can be suppressed when the number is printed, so that the user will never see them.
 But if our calculation depends on the way we choose the extra digits, then we are using a bad algorithm.
 
-The first interpretation of {Precision()} is only possible to satisfy if
+The first interpretation of {Builtin'Precision'Set()} is only possible to satisfy if
 we are given a self-contained calculation with integer
 numbers. For example,
 	N(Sin(Sqrt(3/2)-10^(20)), 50)
@@ -800,7 +800,7 @@ and expect full precision in all cases.
 This seems to be a separate task, "compute something with {n} digits 
 no matter what", and not a general routine to be followed at all times.
 
-So it seems that the second interpretation of {Precision(n)}, namely:
+So it seems that the second interpretation of {Builtin'Precision'Set(n)}, namely:
 "please use {n} digits in all calculations now", is more
 sensible as a general-purpose prescription.
 
@@ -808,7 +808,7 @@ But this interpretation does not mean that all numbers will be
 <i>printed</i> with {n} digits. Let's look at a particular case (for simplicity we are talking about
 decimal digits but in the implementation they will be binary digits).
 Suppose we have {x} precise to 10 digits and {y} precise to 20 digits, and
-the user says {Precision(50)} and {z:=1.4+x*y}. What happens now in this
+the user says {Builtin'Precision'Set(50)} and {z:=1.4+x*y}. What happens now in this
 calculation? (Assume that {x} and {y} are small numbers of order 1; the
 other cases are similar.)
 
@@ -836,7 +836,7 @@ somewhat random round-off error. Should we print 10 correct digits and
 digits in this case.
 The GMP library already has this functionality in its string printing functions: it does not print more digits than the number actually holds.
 
-If we choose this route, then the only effect of {Precision(50)} will be to 
+If we choose this route, then the only effect of {Builtin'Precision'Set(50)} will be to 
 interpret a literal constant {1.4} as a 50-digit number. All other numbers already know their 
 real precision and will not invent any bogus digits.
 
@@ -889,7 +889,7 @@ For example,
 	IsInteger(0)  =True
 	IsIntValue(1.)=True
 	IsInteger(1.) =False
-*	1. The Yacas function {Precision(n)} sets a global parameter that controls the precision of
+*	1. The Yacas function {Builtin'Precision'Set(n)} sets a global parameter that controls the precision of
 <i>newly created floats</i>.
 It does not modify previously created floating-point numbers
 and has no effect on copying floats or on any integer calculations.
@@ -903,15 +903,15 @@ a temporary float is created from an integer {3},
 and {y} is created as a result of division of two floats.
 Converting an integer to a float is similar to converting from a literal string representing the integer.
 A new number object created from a literal string must have at least as many bits of mantissa as is required to represent the value given by the string.
-The string might be very long but we want to retain all information from a string, so we may have to make the number much more precise than the currently declared {Precision}.
-*FOOT Note that the argument {n} of {Precision(n)} means <i>decimal</i> digits, not bits. This is more convenient for {Yacas} sessions.
+The string might be very long but we want to retain all information from a string, so we may have to make the number much more precise than currently declared with {Builtin'Precision'Set}.
+*FOOT Note that the argument {n} of {Builtin'Precision'Set(n)} means <i>decimal</i> digits, not bits. This is more convenient for {Yacas} sessions.
 But if the necessary number of digits to represent the string is less than {n}, then the new number object will have the number of bits that corresponds to {n} decimal digits.
-Thus, in creating objects from strings or from integers, {Precision} sets the <i>minimum</i> precision of the resulting floating-point number.
+Thus, in creating objects from strings or from integers, {Builtin'Precision'Set} sets the <i>minimum</i> precision of the resulting floating-point number.
 On the other hand, a new number object created from a calculation will already have an error estimate and will "know" its real precision.
-But a directive {Precision(n)} indicates that we are only interested in $n$ digits of a result.
+But a directive {Builtin'Precision'Set(n)} indicates that we are only interested in $n$ digits of a result.
 Therefore, a calculation should not generate <i>more</i> digits than
 {n}, even if its operands have more digits.
-Thus, in creating objects from operations, {Precision} sets the <i>maximum</i> precision of the resulting floating-point number.
+Thus, in creating objects from operations, {Builtin'Precision'Set} sets the <i>maximum</i> precision of the resulting floating-point number.
 *	1. {SetExactBits(x,n)} will make the number {x} think that it has {n} exact
 bits. If {x} had more exact bits before, then it may be rounded. If {x}
 had fewer exact bits before, then it may be padded. (The way the padding is done
@@ -1353,7 +1353,7 @@ The number of precise digits might be greater than the currently requested preci
 But a truncation of precision will only occur when performing arithmetic operations.
 This behavior is desired, for example:
 
-	In> Precision(6)
+	In> Builtin'Precision'Set(6)
 	Out> True;
 	In> x:=1.23456789
 	Out> 1.23456789;
@@ -1373,7 +1373,7 @@ Later when {x} needs to be printed, the full string representation is available 
 
 If now we increase precision to 20 digits, the object {x} will be interpreted as 1.23456789 with 12 zeros at the end.
 
-	In> Precision(20)
+	In> Builtin'Precision'Set(20)
 	Out> True;
 	In> x+0.000000000001
 	Out> 1.234567890001;

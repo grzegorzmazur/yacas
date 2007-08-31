@@ -54,10 +54,10 @@ Defun("MathIntPower", {x,y})
 Defun("Trigonometry",{x,i,sum,term})
 [
   Local(x2,orig,eps,previousPrec,newPrec);
-  Set(previousPrec,GetPrecision());
-  Set(newPrec,MathAdd(GetPrecision(),2));
+  Set(previousPrec,Builtin'Precision'Get());
+  Set(newPrec,MathAdd(Builtin'Precision'Get(),2));
   Set(x2,MathMultiply(x,x));
-  Precision(newPrec);
+  Builtin'Precision'Set(newPrec);
   Set(eps,MathIntPower(10,MathNegate(previousPrec)));
   While(GreaterThan(MathAbs(term),eps))
   [
@@ -66,11 +66,11 @@ Defun("Trigonometry",{x,i,sum,term})
     Set(term,MathDivide(term,i));
     Set(i,MathAdd(i,1.0));
     Set(term,MathDivide(MathNegate(term),i));
-    Precision(previousPrec);
+    Builtin'Precision'Set(previousPrec);
     Set(sum, MathAdd(sum, term));
-    Precision(newPrec);
+    Builtin'Precision'Set(newPrec);
   ];
-  Precision(previousPrec);
+  Builtin'Precision'Set(previousPrec);
   sum;
 ];
 
@@ -84,7 +84,7 @@ Defun("MathArcSin",{int1})
 	Set(result,FastArcSin(int1));
   Local(x,q,s,c);
   Set(q,MathSubtract(MathSin(result),int1));
-  Set(eps,MathIntPower(10,MathNegate(GetPrecision())));
+  Set(eps,MathIntPower(10,MathNegate(Builtin'Precision'Get())));
   While(GreaterThan(MathAbs(q),eps))
   [
 		Set(s,MathSubtract(int1,MathSin(result)));
@@ -109,7 +109,7 @@ Defun("MathExpTaylor0",{x})
   Set(aResult,1.0);
   // term <- 1
   Set(term,1.0);
-  Set(eps,MathIntPower(10,MathNegate(GetPrecision())));
+  Set(eps,MathIntPower(10,MathNegate(Builtin'Precision'Get())));
   // While (term>epsilon)
   While(GreaterThan(MathAbs(term),eps))
   [
@@ -184,7 +184,7 @@ Defun("MathPi",{})
   // x[0] := 3.1415926
   // x[n+1] := x[n] + Sin(x[n])
   Local(initialPrec,curPrec,result,aPrecision);
-  Set(aPrecision,GetPrecision());
+  Set(aPrecision,Builtin'Precision'Get());
 	Set(initialPrec, aPrecision);	// target precision of first iteration, will be computed below
   Set(curPrec, 40);  // precision of the initial guess
   Set(result, 3.141592653589793238462643383279502884197169399);    // initial guess 
@@ -199,7 +199,7 @@ Defun("MathPi",{})
   [
  		// start of iteration code
     // Get Sin(result)
-    Precision(curPrec);
+    Builtin'Precision'Set(curPrec);
     Set(result,MathAdd(result,MathSin(result)));
     // Calculate new result: result := result + Sin(result);
 		// end of iteration code
@@ -217,7 +217,7 @@ Defun("MathPi",{})
       ]);
 		]);
   ];
-  Precision(aPrecision);
+  Builtin'Precision'Set(aPrecision);
   result;
 ];
 

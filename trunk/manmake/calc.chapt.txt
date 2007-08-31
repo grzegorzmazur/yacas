@@ -1326,15 +1326,13 @@ Note that Euler's constant $gamma<=>0.57722$ is the lowercase {gamma} in Yacas.
 
 *E.G.
 
-	In> Precision(30)
-	Out> True;
 	In> Gamma(1.3)
 	Out> Gamma(1.3);
-	In> N(Gamma(1.3))
+	In> N(Gamma(1.3),30)
 	Out> 0.897470696306277188493754954771;
 	In> Gamma(1.5)
 	Out> Sqrt(Pi)/2;
-	In> N(Gamma(1.5));
+	In> N(Gamma(1.5),30);
 	Out> 0.88622692545275801364908374167;
 
 *SEE !, N, gamma

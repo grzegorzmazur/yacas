@@ -36,15 +36,15 @@
 
 Internal'LnGammaNum(z) := [
 	Local(a, prec, result);
-	prec := GetPrecision();
+	prec := Builtin'Precision'Get();
 	a:= Div((prec-IntLog(prec,10))*659, 526) + 0.4;	// see algorithm docs
 	/// same as parameter "g" in Godfrey 2001.
 	/// Chosen to satisfy Spouge's error bound:
 	/// error < Sqrt(a)/Real(a+z)/(2*Pi)^(a+1/2)
 //	Echo({"parameter a = ", a, " setting precision to ", Ceil(prec*1.4)});
-	Precision(Ceil(prec*1.4));	// need more precision b/c of roundoff errors but don't know exactly how many digits
+	Builtin'Precision'Set(Ceil(prec*1.4));	// need more precision b/c of roundoff errors but don't know exactly how many digits
 	result := Internal'LnGammaNum(z,a);
-	Precision(prec);
+	Builtin'Precision'Set(prec);
 	result;
 ];
 

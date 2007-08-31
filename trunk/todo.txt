@@ -1,15 +1,14 @@
 
 TODO:
 - remove redundant functions (low hanging fruit):
-  - Precision/GetPrecision -> Precision'Get/Precision'Set
-  - PrettyReader/GetPrettyReader
+  - remove gmp support
+  - N(GoldenRatio) still crashes
+
+  - precision.yts is not used yet, discard? Or fix?
+  - Test suite fails on Java version. We *have* to make the test suite more lenient.
   - StringMid'Get/Set should have separate anchors with explanations in autocompleter, or not be in the list.
 
-  - Test suite fails on Java version. We *have* to make the test suite more lenient.
-
-
   - Remove Fast* (does not seem to be used anywhere). FastArcSin, FastAssoc, FastIsPrime, FastLog, FastPower do seem to be used.
-  - remove gmp support
   - get rid of the Ortho?Sum functions, replace with just one?
   - (find other ...Num functions)
   - NewtonNum
