@@ -1,8 +1,10 @@
 
+
+
 TODO:
 - remove redundant functions (low hanging fruit):
   - clean up the root dir (Windows readmes?)
-  - N(GoldenRatio) still crashes
+  - V(N(GoldenRatio)) still crashes, but with --read-eval-print "" you can see it is after calculating the constant (!) 
 
   - precision.yts is not used yet, discard? Or fix?
   - Test suite fails on Java version. We *have* to make the test suite more lenient.
