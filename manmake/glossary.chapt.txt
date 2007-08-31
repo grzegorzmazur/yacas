@@ -52,12 +52,12 @@ Abbreviation for "computer algebra system". {Yacas} is a CAS.
 
 Constants such as {I}, {Pi} or {GoldenRatio} are symbolic atoms that are specially interpreted by {Yacas}.
 For example, there are simplification rules that transform expressions such as {Sin(Pi)} into {0}.
-When requesting a numerical evaluation of a constant, the numerical value is given to the current value of {Precision}.
+When requesting a numerical evaluation of a constant, the numerical value is given to the current value as set with {N}.
 
 Some constants take a long time to compute and therefore they are cached at the highest precision computed so far.
 These are the "cached constants".
 
-*SEE N, CachedConstant, Pi, GoldenRatio, CatalanConstant, gamma, I, Precision
+*SEE N, CachedConstant, Pi, GoldenRatio, CatalanConstant, gamma, I
 
 *A equations
 *A {==}

@@ -276,8 +276,8 @@ class MathCommands
          new YacasEvaluator(new LispDivide(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "MathDivide");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispPrecision(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Precision");
+         new YacasEvaluator(new YacasBuiltinPrecisionSet(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "Builtin'Precision'Set");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispGetExactBits(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "MathGetExactBits");
@@ -384,8 +384,8 @@ class MathCommands
          new YacasEvaluator(new LispGetRightPrecedence(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "OpRightPrecedence");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispGetPrecision(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "GetPrecision");
+         new YacasEvaluator(new YacasBuiltinPrecisionGet(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "Builtin'Precision'Get");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispBitAnd(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "BitAnd");
@@ -495,8 +495,8 @@ class MathCommands
          new YacasEvaluator(new LispApplyPure(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "ApplyPure");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispPrettyReader(),1, YacasEvaluator.Variable|YacasEvaluator.Function),
-         "PrettyReader");
+         new YacasEvaluator(new YacasPrettyReaderSet(),1, YacasEvaluator.Variable|YacasEvaluator.Function),
+         "PrettyReader'Set");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new YacasPrettyPrinterSet(),1, YacasEvaluator.Variable|YacasEvaluator.Function),
          "PrettyPrinter'Set");
@@ -504,8 +504,8 @@ class MathCommands
          new YacasEvaluator(new YacasPrettyPrinterGet(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "PrettyPrinter'Get");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispGetPrettyReader(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "GetPrettyReader");
+         new YacasEvaluator(new YacasPrettyReaderGet(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
+         "PrettyReader'Get");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispGarbageCollect(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "GarbageCollect");
@@ -2311,7 +2311,7 @@ class MathCommands
     }
   }
 
-  class LispPrecision extends YacasEvalCaller
+  class YacasBuiltinPrecisionSet extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
@@ -2872,7 +2872,7 @@ class MathCommands
     }
   }
 
-  class LispGetPrecision extends YacasEvalCaller
+  class YacasBuiltinPrecisionGet extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
@@ -3536,7 +3536,7 @@ class MathCommands
   }
 
 
-  class LispPrettyReader extends YacasEvalCaller
+  class YacasPrettyReaderSet extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
@@ -3558,7 +3558,7 @@ class MathCommands
     }
   }
 
-  class LispGetPrettyReader extends YacasEvalCaller
+  class YacasPrettyReaderGet extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {

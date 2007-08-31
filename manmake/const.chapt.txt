@@ -103,7 +103,7 @@ This is a "cached constant" which is recalculated only when precision is increas
 	In> N(Pi)
 	Out> 3.14159265358979323846;
 
-*SEE Sin, Cos, Precision, N, CachedConstant
+*SEE Sin, Cos, N, CachedConstant
 
 *CMD Undefined --- constant signifying an undefined result
 *STD
@@ -160,7 +160,7 @@ The numerical value of the constant can also be obtained as {N(GoldenRatio)}.
 	Out> 0.6180339887;
 	In> N(1/GoldenRatio)
 	Out> 0.6180339887;
-	In> [Precision(20);V(N(GoldenRatio));]
+	In> V(N(GoldenRatio,20));
 
 	CachedConstant: Info: constant GoldenRatio is
 	being recalculated at precision 20 
@@ -191,7 +191,7 @@ The low-level numerical computations are performed by the routine {CatalanConstN
 	Out> 0.9159655941;
 	In> DirichletBeta(2)
 	Out> Catalan;
-	In> [Precision(20);V(N(Catalan));]
+	In> V(N(Catalan,20))
 
 	CachedConstant: Info: constant Catalan is
 	being recalculated at precision 20
@@ -222,7 +222,7 @@ Note that Euler's Gamma function $Gamma(x)$ is the capitalized {Gamma} in Yacas.
 	Out> gamma+Pi;
 	In> N(gamma+Pi)
 	Out> 3.7188083184;
-	In> [Precision(20);V(N(gamma));]
+	In> V(N(gamma,20))
 	
 	CachedConstant: Info: constant gamma is being
 	  recalculated at precision 20 

@@ -33,7 +33,7 @@ DoNext("Compute 1/2 + ... + 1/10.");
 BenchShow(Sum(i,2,10,1/i));
 
 DoNext("Compute a numerical approximation of e^(Pi*sqrt(163)) to 50 digits.");
-BenchCall(Precision(50));
+BenchCall(Builtin'Precision'Set(50));
 BenchShow(N(Exp(Pi*Sqrt(163))));
 
 DoNext("Compute an infinite decimal representation of 1/7");

@@ -6,22 +6,22 @@
 
 PiMethod0() := [
 	Local(result, delta, k, Epsilon, prec, prec1, curprec);
-	prec := GetPrecision();	// full required precision
+	prec := Builtin'Precision'Get();	// full required precision
 	prec1 := Ceil(N(prec/3));	// precision of the last-but-one iteration
 
 	/* initial approximation */
 	result := 3.14159265358979323846;
 	curprec := 20;
-	Precision(curprec);
+	Builtin'Precision'Set(curprec);
 	For(k:=0, curprec < prec1, k:=k+1) [
 		curprec := Min(prec1, curprec * 3);
-		Precision(curprec);
+		Builtin'Precision'Set(curprec);
 		Echo({"Iteration ", k, " setting precision to ", curprec});
 		result := Time(MathAdd(result, MathSin(result)));
 	];
 	// last iteration -- do by hand
-	Precision(prec);	// restore full precision
-	Echo("Iteration ", k, " setting precision to ", GetPrecision());
+	Builtin'Precision'Set(prec);	// restore full precision
+	Echo("Iteration ", k, " setting precision to ", Builtin'Precision'Get());
 	result := Time(MathAdd(result, MathSin(result)));
 	Echo({"variable precision Newton's method: ", k, "iterations"}); 
 	result;
@@ -38,26 +38,26 @@ final result. This makes method1 the fastest for Yacas internal math. */
 
 PiMethod1() := [
 	Local(result, delta, deltasq, k, Epsilon, prec, curprec);
-	prec := GetPrecision();
+	prec := Builtin'Precision'Get();
 	N([
     /* initial approximation */
     curprec := 20;
-    Precision(curprec);
+    Builtin'Precision'Set(curprec);
     result := 3.14159265358979323846;
     /* right now we do all but the last iteration using the 8th order scheme, and the last iteration is done using the 2nd order scheme. However it would be faster to use a very high-order scheme first, then a smaller-order scheme, etc., because it's faster to do multiplications at low precision.
     */
     For(k:=0, curprec*3 < prec, k := k+1) [
       curprec := Min(Ceil((prec/3)), curprec * 9);
-      Precision(curprec);
-      Echo("Iteration ", k, " setting precision to ", GetPrecision());
+      Builtin'Precision'Set(curprec);
+      Echo("Iteration ", k, " setting precision to ", Builtin'Precision'Get());
       delta := MathSin(result);
       deltasq := (delta*delta);
       result := Time(result + delta*(1 + deltasq*(1/6 + deltasq*(3/40 + deltasq*5/112))));
     ];
     // now do the last iteration
-    Precision(prec);
+    Builtin'Precision'Set(prec);
     k := k+1;
-    Echo("Iteration ", k, " setting precision to ", GetPrecision());
+    Echo("Iteration ", k, " setting precision to ", Builtin'Precision'Get());
     result := Time(MathAdd(result, MathSin(result)));
     Echo({"8th order Newton's method: ", k, "iterations"}); 
   ]);
@@ -71,7 +71,7 @@ PiMethod1() := [
 PiMethod2() := [
 	Local(result, delta, tansq, k, Epsilon);
 	N([
-    Epsilon := (2*10 ^ (-GetPrecision()));
+    Epsilon := (2*10 ^ (-Builtin'Precision'Get()));
 
     /* initial approximation */
     result := 3.141592653589793;
@@ -94,7 +94,7 @@ PiMethod2() := [
 /* Method due to Brent and Salamin (1976) */
 PiBrentSalamin() := [
 	Local(a, b, c, s, k, p, result, Epsilon);
-	Epsilon := N(2*10 ^ (-GetPrecision()));
+	Epsilon := N(2*10 ^ (-Builtin'Precision'Get()));
 
 	/* initialization */
 	a := 1; b := N(1/Sqrt(2)); s := N(1/2); k := 0;
@@ -118,7 +118,7 @@ PiBrentSalamin() := [
 /* Method due to Borwein (c. 1988) -- "quartic" method */
 PiBorwein() := [
 	Local(a, y, y4s, k, result, Epsilon);
-	Epsilon := N(2*10 ^ (-GetPrecision()));
+	Epsilon := N(2*10 ^ (-Builtin'Precision'Get()));
 
 	/* initialization */
 	a:=N(6-4*Sqrt(2)); y := N(Sqrt(2)-1); k := 0;
@@ -146,11 +146,11 @@ PiMethod3() :=
 [
 	Local(result, delta, deltasq, k, order, prec, curprec);
 	order := 13;	// order of approximation
-	prec := GetPrecision();
+	prec := Builtin'Precision'Get();
   N([
     /* initial approximation */
     curprec := 20;
-    Precision(curprec);
+    Builtin'Precision'Set(curprec);
     result := 3.14159265358979323846*0.5;
     // find optimal initial precision
     For(k:=prec, k>=curprec, k:=Div(k,order)+2) True;
@@ -160,8 +160,8 @@ PiMethod3() :=
     For(k:=0, curprec < prec, k := k+1) [
     // at this iteration we know the result to curprec digits
       curprec := Min(prec, curprec * order-2);	// 2 guard digits
-      Precision(curprec+2);
-      Echo("Iteration ", k, " setting precision to ", GetPrecision());
+      Builtin'Precision'Set(curprec+2);
+      Echo("Iteration ", k, " setting precision to ", Builtin'Precision'Get());
   //		Echo("old result=", MathCos(result));
       Time([
       delta := MathCos(result);
@@ -180,11 +180,11 @@ PiChudnovsky() :=
 [	// use the Ramanujan series found by Chudnovsky brothers
 	Local(A, B, C, n, result, term);
 	A:=13591409; B:=545140134; C:=640320; // black magic, Rama, Rama, Ramanujan
-	prec := GetPrecision();
+	prec := Builtin'Precision'Get();
   N([
     n:=Div(prec*479,6793)+1;	// n> P*Ln(10)/(3*Ln(C/12))
     Echo({"Method: Chudnovsky, using ", n, " terms"});
-    Precision(prec+IntLog(n,10)+5);
+    Builtin'Precision'Set(prec+IntLog(n,10)+5);
     result := (A+n*B);
     While(n>0)
     [
@@ -194,15 +194,15 @@ PiChudnovsky() :=
     ];
     result := C/12*Sqrt(C)/Abs(result);
   ]);
-	Precision(prec);
+	Builtin'Precision'Set(prec);
 	RoundTo(result,prec);
 ];
 
 BenchmarkPi(prec) :=
 [
 	Local(result);
-	GlobalPush(GetPrecision());
-	Precision(prec);
+	GlobalPush(Builtin'Precision'Get());
+	Builtin'Precision'Set(prec);
 	
 	result := {
 		Time(MathPi()),
@@ -216,6 +216,6 @@ BenchmarkPi(prec) :=
 		Time(PiBorwein()),
 	};
 	result := N(Sin(result));
-	Precision(GlobalPop());
+	Builtin'Precision'Set(GlobalPop());
 	result;
 ];

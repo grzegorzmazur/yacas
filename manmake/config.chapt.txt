@@ -162,20 +162,20 @@ an empty string if the default pretty printer is used.
 	In> Taylor(x,0,5)Sin(x)
 	Out> x-x^3/6+x^5/120;
 
-*SEE PrettyForm, Write, TeXForm, CForm, OMForm, PrettyReader, GetPrettyReader
+*SEE PrettyForm, Write, TeXForm, CForm, OMForm, PrettyReader'Set, PrettyReader'Get
 
 
 
 
-*CMD PrettyReader --- set routine to use as pretty-reader
-*CMD GetPrettyReader --- get routine that is currently used as pretty-reader
+*CMD PrettyReader'Set --- set routine to use as pretty-reader
+*CMD PrettyReader'Get --- get routine that is currently used as pretty-reader
 
 *STD
 
 *CALL
-	PrettyReader(reader)
-	PrettyReader()
-	GetPrettyReader()
+	PrettyReader'Set(reader)
+	PrettyReader'Set()
+	PrettyReader'Get()
 
 *PARMS
 
@@ -185,18 +185,18 @@ an empty string if the default pretty printer is used.
 *DESC
 
 This function sets up the function reader to read in the input on
-the command line. This can be reset to the internal reader with {PrettyReader()} (when no argument is given, the system returns to the default).
+the command line. This can be reset to the internal reader with {PrettyReader'Set()} (when no argument is given, the system returns to the default).
 
 Currently implemented PrettyReaders are: {LispRead}, {OMRead}.
 
-{GetPrettyReader()} returns the current reader, or it returns
+{PrettyReader'Get()} returns the current reader, or it returns
 an empty string if the default pretty printer is used.
 
 *E.G.
 
 	In> Taylor(x,0,5)Sin(x)
 	Out> x-x^3/6+x^5/120
-	In> PrettyReader("LispRead")
+	In> PrettyReader'Set("LispRead")
 	Out> True
 	In> (Taylor x 0 5 (Sin x))
 	Out> x-x^3/6+x^5/120

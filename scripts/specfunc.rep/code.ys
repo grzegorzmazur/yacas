@@ -147,9 +147,9 @@ Function("ApproxInfSum",{expr,start,x,c})
 [
         Local(term,result,k);
         Local(prec,eps,tmp);
-        prec:=GetPrecision();
-//        Precision(Ceil(1.2*prec)); // this is a guess
-        Precision(prec+2); // this is a guess
+        prec:=Builtin'Precision'Get();
+//        Builtin'Precision'Set(Ceil(1.2*prec)); // this is a guess
+        Builtin'Precision'Set(prec+2); // this is a guess
 //        eps:=5*10^(-prec);
         eps:=10^(-prec);
 //Echo(expr);
@@ -166,7 +166,7 @@ Function("ApproxInfSum",{expr,start,x,c})
 
         ];
 		If(InVerboseMode(), Echo("ApproxInfSum: Info: using ", k, " terms of the series"));
-        Precision(prec);
+        Builtin'Precision'Set(prec);
         // This should not round, only truncate
         // some outputs will be off by one in the last digit
 
@@ -196,7 +196,7 @@ LocalSymbols(k)
 	40 # Erf(_x)_(InNumericMode() And (IsNumber(x) Or IsComplex(x)) And Abs(x) <= 1) <-- 
 [
   Local(prec);
-  prec := GetPrecision(); // N(...) modifies the precision
+  prec := Builtin'Precision'Get(); // N(...) modifies the precision
   2 / MathSqrt(Internal'Pi()) * x 
 	* SumTaylorNum(x^2, 1, {{k}, -(2*k-1)/(2*k+1)/k},
 	// the number of terms n must satisfy n*Ln(n/Exp(1))>10^prec 
@@ -216,17 +216,17 @@ LocalSymbols(n'max, k)
 		And (
 			[	// strongest condition: the exp(-x^2) asymptotic is already good
 				n'max := 0;
-				Re(x^2) > GetPrecision()*3295/1431+0.121;
+				Re(x^2) > Builtin'Precision'Get()*3295/1431+0.121;
 			]
 			Or
 			[	// next condition: the exp(-x^2) helps but we need a few terms of the series too
-				n'max := N(Min((GetPrecision()*3295/1431+0.121)/Internal'LnNum(Abs(x)), 2*Internal'LnNum(Abs(x))), 10);
-				2*Abs(x)+Re(x^2) > GetPrecision()*3295/1431+0.121;
+				n'max := N(Min((Builtin'Precision'Get()*3295/1431+0.121)/Internal'LnNum(Abs(x)), 2*Internal'LnNum(Abs(x))), 10);
+				2*Abs(x)+Re(x^2) > Builtin'Precision'Get()*3295/1431+0.121;
 			]
 			Or
 			[	// worst case: exp(-x^2) does not help and we need the full series
 	// hack: save a value computed in the predicate to use in the body of rule
-				n'max := N(({{k}, k+Internal'LnNum(k)} @ GetPrecision()*3295/1431)/2 - 3/2, 10);
+				n'max := N(({{k}, k+Internal'LnNum(k)} @ Builtin'Precision'Get()*3295/1431)/2 - 3/2, 10);
 				Abs(x) > n'max+3/2;
 			]
 		)
@@ -323,45 +323,45 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 
 20 # PolyLog(_n,_x)_(InNumericMode() And  x < -1 )  <-- [
 	Local(prec,result);
-	prec:=GetPrecision();
-	Precision(prec+5);
+	prec:=Builtin'Precision'Get();
+	Builtin'Precision'Set(prec+5);
 	Echo("Warning: PolyLog is only currently accurate for x in [-1,1]");
 	result:= (-1)^(n-1)*PolyLog(n,1/x) - ((Ln(-x))^n)/n! - 
 	Sum(r,1,Round(n/2), 
 		2^(2*r-2)*Pi^(2*r)*Abs(Bernoulli(2*r))*Ln(-x)^(n-2*r)/( (2*r)! * (n - 2*r)! ) );
-	Precision(prec);
+	Builtin'Precision'Set(prec);
 	RoundTo(N(result),prec);
 ];
 20 # PolyLog(_n,_x)_(InNumericMode() And x>= -1 And x < 0 ) <-- [
 	// this makes the domain [-1,0) into [0,1],
 	// so if the summation representation is used, it is monotone
         Local(prec,result);
-        prec:=GetPrecision();
-        Precision(prec+5);
+        prec:=Builtin'Precision'Get();
+        Builtin'Precision'Set(prec+5);
 
 	result:=PolyLog(n,x^2)/2^(n-1) - PolyLog(n,-x) ;	
-        Precision(prec);
+        Builtin'Precision'Set(prec);
         RoundTo(N(result),prec);
 
 ];
 /* this is very slow at high precision
 20 # PolyLog(_n,_x)_(InNumericMode() And x > 0 And x <= 1) <-- [
 	Local(result,prec,term,k,eps);
-	prec:=GetPrecision();
-        Precision(prec+5);
+	prec:=Builtin'Precision'Get();
+  Builtin'Precision'Set(prec+5);
 	eps:=10^(-prec);
 	result:=0;
 	// Sorry Serge, I was only getting 2 digits of precision with this
 		// so why didn't you ask me? :) -- Serge
 	//terms:=Floor(10 + N(prec*Ln(10)/Ln(prec) - 1));
-	//Precision( prec + Floor(N(Ln(6*terms)/Ln(10))) );
+	//Builtin'Precision'Set( prec + Floor(N(Ln(6*terms)/Ln(10))) );
 	//result:=SumTaylorNum(x, {{k}, x^(k+1)/(k+1)^n }, terms );
 	term:=1;
 	For(k:=1,Abs(term)>eps,k++)[
 		term:=N(x^k/k^n);
 		result:=result+term;
 	];
-	Precision(prec);
+	Builtin'Precision'Set(prec);
 	RoundTo(result,prec);
 ];
 */
@@ -369,15 +369,15 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 20 # PolyLog(_n,_x)_(InNumericMode() And x > 0 And x < 1) <--
 [	// use Taylor series x^(k+1)/(k+1)^n, converges for -1<x<1
 	Local(prec, result, terms);
-	prec:=GetPrecision();
-	Precision(15);	// to calculate the number of terms
+	prec:=Builtin'Precision'Get();
+	Builtin'Precision'Set(15);	// to calculate the number of terms
 	terms := Floor(-prec*Ln(10)/Ln(x));
 	terms := Floor(-(prec*Ln(10)-(n-1)*Ln(terms))/Ln(x));
 //	Echo("used", terms, "terms");
 	If(terms < 4, terms := 4);
-	Precision(prec+2*IntLog(prec,10)+5);
+	Builtin'Precision'Set(prec+2*IntLog(prec,10)+5);
 	result := x*SumTaylorNum(x, {{k}, 1/(k+1)^n}, terms);
-	Precision(prec);
+	Builtin'Precision'Set(prec);
 	RoundTo(result, prec);
 ];
 
@@ -394,8 +394,8 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 
 10 # DirichletBeta(x_IsRationalOrNumber)_(InNumericMode() And x>=1 ) <-- [
 	Local(prec,eps,term,result,k);
-	prec:=GetPrecision();
-        Precision(prec+3);
+	prec:=Builtin'Precision'Get();
+  Builtin'Precision'Set(prec+3);
 	eps:=10^(-prec);
 	result:=0;
 	term:=1;
@@ -404,7 +404,7 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
 		Echo("term is ",term);
 		result:=result+term;
 	];
-	Precision(prec);
+	Builtin'Precision'Set(prec);
 	RoundTo(result,prec);
 ];
 
@@ -416,28 +416,28 @@ The function has real values for real $x >= -Exp(-1)$. (This point is a logarith
  * Geometric convergence as 2^(-n). */
 CatalanConstNum1() := 
 [
-        Local(prec,Aterm,Bterm,nterms,result,n);
-        prec:=GetPrecision();
-		Precision(10);
-		// estimate the number of terms from above
-		nterms := 1+Floor(N((prec*Ln(10)+Ln(prec*Ln(10)/Ln(2)))/Ln(2)));
-        Precision(prec+5);
-		Aterm:=N(1/2);
-        result:= Aterm;
-        Bterm:=Aterm;
-        For(n:=1, n<=nterms, n++ )
-		[
+  Local(prec,Aterm,Bterm,nterms,result,n);
+  prec:=Builtin'Precision'Get();
+	Builtin'Precision'Set(10);
+	// estimate the number of terms from above
+	nterms := 1+Floor(N((prec*Ln(10)+Ln(prec*Ln(10)/Ln(2)))/Ln(2)));
+  Builtin'Precision'Set(prec+5);
+	Aterm:=N(1/2);
+  result:= Aterm;
+  Bterm:=Aterm;
+  For(n:=1, n<=nterms, n++ )
+	[
 /*
-			Bterm := MultiplyNum(Bterm, n/(2*n+1));
-			Aterm:= MathDivide(MultiplyNum(Aterm,n)+Bterm, 2*n+1);
+    Bterm := MultiplyNum(Bterm, n/(2*n+1));
+    Aterm:= MathDivide(MultiplyNum(Aterm,n)+Bterm, 2*n+1);
 /* this is faster: */
-			Bterm:=MathDivide(MathMultiply(Bterm,n), 2*n+1); // Bterm = (k!)^2*2^(k-1)/(2*k+1)!
-			Aterm:=MathDivide(MathMultiply(Aterm,n)+Bterm, 2*n+1); // Aterm = Bterm * Sum(k,0,n,1/(2*k+1))
+    Bterm:=MathDivide(MathMultiply(Bterm,n), 2*n+1); // Bterm = (k!)^2*2^(k-1)/(2*k+1)!
+    Aterm:=MathDivide(MathMultiply(Aterm,n)+Bterm, 2*n+1); // Aterm = Bterm * Sum(k,0,n,1/(2*k+1))
 /**/
-			result := result + Aterm;
-        ];
-        Precision(prec);
-        RoundTo(result,prec);	
+    result := result + Aterm;
+  ];
+  Builtin'Precision'Set(prec);
+  RoundTo(result,prec);	
 ];
 
 /* Bailey 1997's method.
@@ -446,11 +446,11 @@ CatalanConstNum1() :=
 CatalanConstNum() :=
 [
 	Local(prec, n, result);
-	prec:=GetPrecision();
+	prec:=Builtin'Precision'Get();
 
 	// number of terms
 	n := 1+Div(prec*1068+642,643); // prec*Ln(10)/Ln(4)
-	Precision(prec+2);	// 2 guard digits
+	Builtin'Precision'Set(prec+2);	// 2 guard digits
 	
 	result := N(1/(2*n+1));
 	While(n>0)
@@ -463,7 +463,7 @@ CatalanConstNum() :=
 		n := n-1;
 	];
 	result := MultiplyNum(result, 3/8) + N(Pi/8*Ln(2+Sqrt(3)));
-	Precision(prec);
+	Builtin'Precision'Set(prec);
 	RoundTo(result,prec);
 ];
 
@@ -473,12 +473,12 @@ CatalanConstNum() :=
 CatalanConstNum2() :=
 [
 	Local(prec, n, result1, result2);
-	prec:=GetPrecision();
+	prec:=Builtin'Precision'Get();
 
 	// first series
 	// number of terms
 	n := 1+Div(prec*534+642,643); // prec*Ln(10)/Ln(16)
-	Precision(prec+2);	// 2 guard digits
+	Builtin'Precision'Set(prec+2);	// 2 guard digits
 	
 	result1 := 0;
 	While(n>=0)
@@ -492,7 +492,7 @@ CatalanConstNum2() :=
 	// second series
 	// number of terms
 	n := 1+Div(prec*178+642,643); // prec*Ln(10)/Ln(4096)
-	Precision(prec+2);	// 2 guard digits
+	Builtin'Precision'Set(prec+2);	// 2 guard digits
 	
 	result2 := 0;
 	While(n>=0)
@@ -503,7 +503,7 @@ CatalanConstNum2() :=
 		n := n-1;
 	];
 	result1 := MultiplyNum(result1, 3/2) - MultiplyNum(result2, 1/4);
-	Precision(prec);
+	Builtin'Precision'Set(prec);
 	RoundTo(result1,prec);
 ];
 
@@ -514,10 +514,10 @@ CatalanConstNum2() :=
 /*
 10 # DawsonIntegral(_x) <-- [
 	Local(result,prec);
-	prec:=GetPrecision();
-	Precision(prec+5);
+	prec:=Builtin'Precision'Get();
+	Builtin'Precision'Set(prec+5);
 	result:=N(I*Sqrt(Pi)*Exp(-x^2)*Erf(-I*x)/2);
-	Precision(prec);
+	Builtin'Precision'Set(prec);
 	RoundTo(result,prec);
 ];
 */

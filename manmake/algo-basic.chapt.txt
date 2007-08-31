@@ -255,7 +255,7 @@ All integer or rational functions return exact
 results, and all floating-point functions return their value with $P$
 correct decimal digits (assuming sufficient precision of the arguments).
 The current value of $P$ is accessed as
-{GetPrecision()} and may be changed by {Precision(...)}.
+{Builtin'Precision'Get()} and may be changed by {Builtin'Precision'Set(...)}.
 
 *A arbitrary-precision computation!requirements
 

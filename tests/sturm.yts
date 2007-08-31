@@ -8,9 +8,9 @@
    visible when turning show file/line on.
 */
 
-Precision(5);
+Builtin'Precision'Set(5);
 
-VerifyZero(x) := (Abs(x)<10^ -GetPrecision());
+VerifyZero(x) := (Abs(x)<10^ -Builtin'Precision'Get());
 
 
 sl() := []; //Echo(CurrentFile(),CurrentLine());
@@ -110,7 +110,7 @@ sl();
 ];
 
 sl();
-Verify(GetPrecision(),5);
+Verify(Builtin'Precision'Get(),5);
 [ 
   Local(res);
   res:=FindRealRoots(Expand((x-3.1)*(x+6.23)))-{-6.23,3.1};

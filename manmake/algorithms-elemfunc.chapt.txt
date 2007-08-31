@@ -838,7 +838,7 @@ This remains to be seen.
 
 In Yacas, the constant $pi$ is computed by the library routine {Internal'Pi()} which
 uses the internal routine {MathPi} to compute the value to current
-precision {Precision()}. The result is stored in a global variable as a
+precision {Builtin'Precision'Set()}. The result is stored in a global variable as a
 list of the form {{precision, value}} where {precision} is the number of
 digits of $pi$ that have already been found and {value} is the
 multiple-precision value. This is done to avoid recalculating $pi$ if a

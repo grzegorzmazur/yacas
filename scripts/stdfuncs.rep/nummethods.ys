@@ -8,7 +8,7 @@
 AG'Mean(a, b, eps) :=
 [
 	Local(a1, b1);
-	If(InVerboseMode(), Echo("AG'Mean: Info: at prec. ", GetPrecision()));
+	If(InVerboseMode(), Echo("AG'Mean: Info: at prec. ", Builtin'Precision'Get()));
 	// AGM main loop
 	While(Abs(a-b)>=eps)
 	[
@@ -257,10 +257,10 @@ NewtonNum(_func, _x'init, _prec0, _order) <--
 	Local(x0, x1, prec, exact'digits, int'part, initial'tries);
   N([
     x0 := x'init;
-    prec := GetPrecision();
+    prec := Builtin'Precision'Get();
     int'part := IntLog(Ceil(Abs(x0)), 10);	// how many extra digits for numbers like 100.2223
-    // int'part must be set to 0 if we have true floating-point semantics of Precision()
-    Precision(2+prec0-int'part);	// 2 guard digits
+    // int'part must be set to 0 if we have true floating-point semantics of Builtin'Precision'Set()
+    Builtin'Precision'Set(2+prec0-int'part);	// 2 guard digits
     x1 := (func @ x0);	// let's run one more iteration by hand
     // first, we get prec0 exact digits
     exact'digits := 0;
@@ -271,7 +271,7 @@ NewtonNum(_func, _x'init, _prec0, _order) <--
       x0 := x1;
       x1 := (func @ x0);
       exact'digits := Common'digits(x0, x1);
-  //		If(InVerboseMode(), Echo("NewtonNum: Info: got", exact'digits, "exact digits at prec. ", GetPrecision()));
+  //		If(InVerboseMode(), Echo("NewtonNum: Info: got", exact'digits, "exact digits at prec. ", Builtin'Precision'Get()));
     ];
     // need to check that the initial precision is achieved
     If(
@@ -284,19 +284,19 @@ NewtonNum(_func, _x'init, _prec0, _order) <--
     While(exact'digits*order <= prec)
     [
       exact'digits := exact'digits*order;
-      Precision(2+Min(exact'digits, Div(prec,order)+1)-int'part);
+      Builtin'Precision'Set(2+Min(exact'digits, Div(prec,order)+1)-int'part);
       x0 := x1;
       x1 := (func @ x0);
-  //		If(InVerboseMode(), Echo("NewtonNum: Info: got", Common'digits(x0, x1), "exact digits at prec. ", GetPrecision()));
+  //		If(InVerboseMode(), Echo("NewtonNum: Info: got", Common'digits(x0, x1), "exact digits at prec. ", Builtin'Precision'Get()));
     ];
     // last iteration by hand
-    Precision(2+prec);
+    Builtin'Precision'Set(2+prec);
     x1 := RoundTo( (func @ x1), prec);
     ],
     // did not get a good initial value, so return what we were given
     x1 := x'init
     );
-    Precision(prec);
+    Builtin'Precision'Set(prec);
   ]);
 	x1;
 ];

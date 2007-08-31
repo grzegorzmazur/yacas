@@ -56,14 +56,14 @@ BernoulliFracPart(n_IsEven)_(n>=2) <-- [
 /// compute Riemann's zeta function and combine with the fractional part
 Bernoulli1(n_IsEven)_(n>=2) <-- [
 	Local(B, prec);
-	prec := GetPrecision();
+	prec := Builtin'Precision'Get();
 	// estimate the size of B[n] using Stirling formula
 	// and compute Ln(B[n])/Ln(10) to find the number of digits
-	Precision(10);
-	Precision(
+	Builtin'Precision'Set(10);
+	Builtin'Precision'Set(
 		Ceil(N((1/2*Ln(8*Pi*n)-n+n*Ln(n/2/Pi))/Ln(10)))+3	// 3 guard digits
 	);
-	If (InVerboseMode(), Echo({"Bernoulli: using zeta funcion, precision ", GetPrecision(), ", n = ", n}));
+	If (InVerboseMode(), Echo({"Bernoulli: using zeta funcion, precision ", Builtin'Precision'Set(), ", n = ", n}));
 	B := Floor(N(	// compute integer part of B
 		If(	// use different methods to compute Zeta function
 			n>250,	// threshold is roughly right for internal math
@@ -76,7 +76,7 @@ Bernoulli1(n_IsEven)_(n>=2) <-- [
 		// 2*Pi*e is approx. 17, add 1 to guard precision
 		* (2*Mod(n/2,2)-1)	// sign of B
 		+ BernoulliFracPart(n);	// this already has the right sign
-	Precision(prec);	// restore old precision
+	Builtin'Precision'Set(prec);	// restore old precision
 	B;
 ];
 

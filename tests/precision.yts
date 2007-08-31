@@ -11,19 +11,19 @@ Verify(MathBitCount(0.3),-1);
 Verify(MathBitCount(10),4);
 Verify(MathBitCount(-10),4);
 
-// GetPrecision, Precision
-a:=GetPrecision();
+// Builtin'Precision'Get, Builtin'Precision'Set
+a:=Builtin'Precision'Get();
 Verify(a,10);	// default precision is 10
-Verify(a, GetPrecision());
-Precision(a);
-Verify(a, GetPrecision());
+Verify(a, Builtin'Precision'Get());
+Builtin'Precision'Set(a);
+Verify(a, Builtin'Precision'Get());
 Verify(FloatIsInt(N(Sin(355/226)) ), True);
 b:=150;
-Precision(b);
-Verify(b, GetPrecision());
+Builtin'Precision'Set(b);
+Verify(b, Builtin'Precision'Get());
 Verify(FloatIsInt(N(Sin(355/226)) ), False);
 
-Precision(10);
+Builtin'Precision'Set(10);
 
 // IsInteger, FloatIsInt, MathFloor
 Verify(IsInteger(0), True);
@@ -39,11 +39,11 @@ Verify(FloatIsInt(-1.), True);
 Verify(FloatIsInt(1), True);
 
 Verify(IsInteger(Floor(-1.234)), True);
-Precision(5);
+Builtin'Precision'Set(5);
 // should keep the extra digits even though the declared precision is low
 Verify(FloatIsInt(1.0000000000000001), False);
 Verify(FloatIsInt(1.0000000000000000), True);
-Precision(10);
+Builtin'Precision'Set(10);
 
 // BitsToDigits, DigitsToBits
 Verify(BitsToDigits(22,10), 7);
@@ -66,7 +66,7 @@ Verify(MathGetExactBits(x), 4);	// unchanged
 // floats are created at either current precision or at enough precision to represent all digits
 a:=8;	// decimal precision
 b:=DigitsToBits(a,10); // binary precision
-Precision(a);
+Builtin'Precision'Set(a);
 
 // creating new number objects from literals
 // a new number object is created with precision at least b
@@ -101,7 +101,7 @@ Verify(MathGetExactBits(x), 11);
 
 // adding, multiplying, dividing floats and integers
 a:=10;
-Precision(a);
+Builtin'Precision'Set(a);
 // these numbers should have equally many precise bits now
 x:=N(1/7);
 y:=N(1/13);

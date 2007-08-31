@@ -12,7 +12,7 @@
 /// Also $s$ must satisfy $Re(s)+n+1 > 0$
 Internal'ZetaNum(_s, n_IsInteger) <-- [
 	Local(result, j, sign);
-	If (InVerboseMode(), Echo({"Internal'ZetaNum: Borwein's method, precision ", GetPrecision(), ", n = ", n}));
+	If (InVerboseMode(), Echo({"Internal'ZetaNum: Borwein's method, precision ", Builtin'Precision'Get(), ", n = ", n}));
 	result := 0;
 	sign := 1;	// flipping sign
 	For(j:=0, j<=2*n-1, j++)
@@ -26,7 +26,7 @@ Internal'ZetaNum(_s, n_IsInteger) <-- [
 /// direct method -- only good for large s
 Internal'ZetaNum1(s, limit) := [
 	Local(i, sum);
-	If (InVerboseMode(), Echo({"Internal'ZetaNum: direct method (sum), precision ", GetPrecision(), ", N = ", limit}));
+	If (InVerboseMode(), Echo({"Internal'ZetaNum: direct method (sum), precision ", Builtin'Precision'Get(), ", N = ", limit}));
 	sum := 0;
 	limit := Ceil(N(limit));
 	For(i:=2, i<=limit, i++) sum := sum+N(1/MathPower(i, s));
@@ -37,7 +37,7 @@ Internal'ZetaNum1(s, limit) := [
 Internal'ZetaNum2(s, limit) := 
 [
 	Local(i, prod);
-	If (InVerboseMode(), Echo({"Internal'ZetaNum: direct method (product), precision ", GetPrecision(), ", N = ", limit}));
+	If (InVerboseMode(), Echo({"Internal'ZetaNum: direct method (product), precision ", Builtin'Precision'Get(), ", N = ", limit}));
 	prod := N( (1-1/MathPower(2, s))*(1-1/MathPower(3,s)) );
 	limit := Ceil(N(limit));
 	For(i:=5, i<=limit, i:= NextPrime(i))
@@ -79,7 +79,7 @@ Zeta3() :=
       result := result + term/(k+1)^2;
     ];
     result := 5/4*result;
-  ], GetPrecision()+IntLog(GetPrecision(),10)+1);
+  ], Builtin'Precision'Get()+IntLog(Builtin'Precision'Get(),10)+1);
 	
 	result;
 ];
@@ -90,7 +90,7 @@ Zeta3() :=
 10 # Internal'ZetaNum(_s) _ (N(s)=1) <-- Infinity;
 20 # Internal'ZetaNum(_s) <-- [
 	Local(n, prec, result);
-	prec := GetPrecision();
+	prec := Builtin'Precision'Get();
 	If(	// use identity if s<1/2 to replace with larger s. Also must be sn!=0 or else we get infinity * zero
 		N(Re(s)) < 0.5,
 		// call ourselves with a different argument
@@ -102,17 +102,17 @@ Zeta3() :=
 		If (N(Re(s)) > N(1+(prec*Ln(10))/(Ln(prec)+0.1), 6),
 			[	// use direct summation
 				n:= N(10^(prec/(s-1)), 6)+2;	// 2 guard terms
-				Precision(prec+2);	// 2 guard digits
+				Builtin'Precision'Set(prec+2);	// 2 guard digits
 				result := Internal'ZetaNum1(s, n);
 			],
 			[	// use Internal'ZetaNum(s, n)
 				n := Ceil( N( prec*Ln(10)/Ln(8) + 2, 6 ) );	// add 2 digits just in case
-				Precision(prec+2);	// 2 guard digits
+				Builtin'Precision'Set(prec+2);	// 2 guard digits
 				result := Internal'ZetaNum(s, n);
 			]
 		)
 	);
-	Precision(prec);
+	Builtin'Precision'Set(prec);
 	result;
 ];
 

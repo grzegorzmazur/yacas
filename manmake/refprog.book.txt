@@ -862,7 +862,7 @@ be evaluated after the numeric mode has been set appropriately.
 	In> N(NonN(InNumericMode()))
 	Out> False
 
-*SEE N, Precision, GetPrecision, Pi, CachedConstant
+*SEE N, Builtin'Precision'Set, Builtin'Precision'Get, Pi, CachedConstant
 
 
 
@@ -1113,10 +1113,10 @@ digits.
 *SEE Sin, Cos, Tan
 
 
-*CMD Precision --- set the precision
+*CMD Builtin'Precision'Set --- set the precision
 *CORE
 *CALL
-	Precision(n)
+	Builtin'Precision'Set(n)
 
 *PARMS
 
@@ -1130,30 +1130,30 @@ at least {n} digits of mantissa.
 
 This is not the number of digits after the decimal point.
 For example, {123.456} has 3 digits after the decimal point and 6 digits of mantissa.
-The number {123.456} is adequately computed by specifying {Precision(6)}.
+The number {123.456} is adequately computed by specifying {Builtin'Precision'Set(6)}.
 
-The call {Precision(n)} will not guarantee that all results are precise to {n} digits.
+The call {Builtin'Precision'Set(n)} will not guarantee that all results are precise to {n} digits.
 
 When the precision is changed, all variables containing previously calculated values
 remain unchanged.
-The {Precision} function only makes all further calculations proceed with a different precision.
+The {Builtin'Precision'Set} function only makes all further calculations proceed with a different precision.
 
-Also, when typing floating-point numbers, the current value of {Precision} is used to implicitly determine the number of precise digits in the number.
+Also, when typing floating-point numbers, the current value of {Builtin'Precision'Set} is used to implicitly determine the number of precise digits in the number.
 
 *E.G.
 
-	In> Precision(10)
+	In> Builtin'Precision'Set(10)
 	Out> True;
 	In> N(Sin(1))
 	Out> 0.8414709848;
-	In> Precision(20)
+	In> Builtin'Precision'Set(20)
 	Out> True;
 	In> x:=N(Sin(1))
 	Out> 0.84147098480789650665;
 
-The value {x} is not changed by a {Precision()} call:
+The value {x} is not changed by a {Builtin'Precision'Set()} call:
 
-	In> [ Precision(10); x; ]
+	In> [ Builtin'Precision'Set(10); x; ]
 	Out> 0.84147098480789650665;
 
 The value {x} is rounded off to 10 digits after an arithmetic operation:
@@ -1164,27 +1164,27 @@ The value {x} is rounded off to 10 digits after an arithmetic operation:
 In the above operation, {0.} was interpreted as a number which is precise to 10 digits (the user does not need to type {0.0000000000} for this to happen).
 So the result of {x+0.} is precise only to 10 digits.
 
-*SEE GetPrecision, N
+*SEE Builtin'Precision'Get, N
 
-*CMD GetPrecision --- get the current precision
+*CMD Builtin'Precision'Get --- get the current precision
 *CORE
 *CALL
-	GetPrecision()
+	Builtin'Precision'Get()
 
 *DESC
 
-This command returns the current precision, as set by {Precision}.
+This command returns the current precision, as set by {Builtin'Precision'Set}.
 
 *E.G.
 
-	In> GetPrecision();
+	In> Builtin'Precision'Get();
 	Out> 10;
-	In> Precision(20);
+	In> Builtin'Precision'Set(20);
 	Out> True;
-	In> GetPrecision();
+	In> Builtin'Precision'Get();
 	Out> 20;
 
-*SEE Precision, N
+*SEE Builtin'Precision'Set, N
 
 
 
@@ -1587,11 +1587,11 @@ Note that all functions, such as the {MathPower}, {MathSqrt}, {MathAdd} etc., ac
 The resulting values may be integers or floats.
 If the mathematical result is an exact integer, then the integer is returned.
 For example, {MathSqrt(25)} returns the integer {5}, and {MathPower(2,3)} returns the integer {8}.
-In such cases, the integer result is returned even if the calculation requires more digits than set by {Precision}.
+In such cases, the integer result is returned even if the calculation requires more digits than set by {Builtin'Precision'Set}.
 However, when the result is mathematically not an integer, the functions return a floating-point result which is correct only to the current precision.
 
 *EG
-	In> Precision(10)
+	In> Builtin'Precision'Set(10)
 	Out> True
 	In> Sqrt(10)
 	Out> Sqrt(10)

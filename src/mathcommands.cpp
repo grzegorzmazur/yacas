@@ -1071,7 +1071,7 @@ void LispRetract(LispEnvironment& aEnvironment, LispInt aStackTop)
     InternalTrue(aEnvironment,RESULT);
 }
 
-void LispPrecision(LispEnvironment& aEnvironment, LispInt aStackTop)
+void YacasBuiltinPrecisionSet(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispPtr index(ARGUMENT(1));
     CHK_ARG_CORE(index, 1);
@@ -1482,7 +1482,7 @@ void LispIsPostFix(LispEnvironment& aEnvironment, LispInt aStackTop)
   InternalBoolean(aEnvironment, RESULT, op != NULL);
 }
 
-void LispGetPrecision(LispEnvironment& aEnvironment, LispInt aStackTop)
+void YacasBuiltinPrecisionGet(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispChar buf[30];
   // decimal precision

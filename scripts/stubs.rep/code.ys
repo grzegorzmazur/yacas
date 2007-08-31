@@ -281,18 +281,18 @@ Rule("Object",2,0,Apply(pred,{x})=True) x;
      x:=N(Eval(x));
 //Echo("x = ",x);
      Local(prec,result,n);
-     Set(prec,GetPrecision());
+     Set(prec,Builtin'Precision'Get());
      If(IsZero(x),
        Set(n,2),
        If(x>0,
          Set(n,2+MathFloor(N(FastLog(x)/FastLog(10)))),
          Set(n,2+MathFloor(N(FastLog(-x)/FastLog(10))))
        ));
-     If(n>prec,Precision(n));
+     If(n>prec,Builtin'Precision'Set(n));
 //Echo("Before");
      Set(result,MathFloor(x));
 //Echo("After");
-     Precision(prec);
+     Builtin'Precision'Set(prec);
      result;
    ];
 
@@ -303,15 +303,15 @@ Rule("Object",2,0,Apply(pred,{x})=True) x;
    [
      x:=N(x);
      Local(prec,result,n);
-     Set(prec,GetPrecision());
+     Set(prec,Builtin'Precision'Get());
      If(IsZero(x),Set(n,2),
      If(x>0,
        Set(n,2+MathFloor(N(FastLog(x)/FastLog(10)))),
        Set(n,2+MathFloor(N(FastLog(-x)/FastLog(10))))
        ));
-     If(n>prec,Precision(n));
+     If(n>prec,Builtin'Precision'Set(n));
      Set(result,MathCeil(x));
-     Precision(prec);
+     Builtin'Precision'Set(prec);
      result;
    ];
 //   MathCeil (N(x));

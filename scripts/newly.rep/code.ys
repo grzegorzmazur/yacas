@@ -95,7 +95,7 @@ Function("RationalizeNumber",{x})
   n:=1;
   i:=0;
   // We can not take for granted that the internal representation is rounded properly...
-  While(i<=GetPrecision() And Not(FloatIsInt(x)))  
+  While(i<=Builtin'Precision'Get() And Not(FloatIsInt(x)))  
   [ 
     n:=n*10; x:=x*10; 
     i:=i+1;
@@ -375,11 +375,11 @@ ContFracEval(list_IsList) <-- ContFracEval(list, 0);
 
 /// find rational number with smallest num./denom. near a given number x
 /// See: HAKMEM, MIT AI Memo 239, 02/29/1972, Item 101C
-NearRational(_x) <-- NearRational(x, Floor(1/2*GetPrecision()));
+NearRational(_x) <-- NearRational(x, Floor(1/2*Builtin'Precision'Get()));
 NearRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 	Local(x1, x2, i,  old'prec);
-	old'prec := GetPrecision();
-  Precision(prec + 8);	// 8 guard digits (?)
+	old'prec := Builtin'Precision'Get();
+  Builtin'Precision'Set(prec + 8);	// 8 guard digits (?)
 	x1 := ContFracList(N(Eval(x+10^(-prec))));
 	x2 := ContFracList(N(Eval(x-10^(-prec))));
 
@@ -410,13 +410,13 @@ NearRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 	If(InVerboseMode(), Echo({"NearRational: using ", i, "terms of the continued fraction"}));
 	If(i>Length(x1),i:=Length(x1));
 	x1[i] := x1[i] + If(i=Length(x1), 0, 1);
-	Precision(old'prec);
+	Builtin'Precision'Set(old'prec);
 	ContFracEval(Take(x1, i));
 ];
 
 /// guess the rational number behind an imprecise number
 /// prec parameter is the max number of digits you can have in the denominator
-GuessRational(_x) <-- GuessRational(x, Floor(1/2*GetPrecision()));
+GuessRational(_x) <-- GuessRational(x, Floor(1/2*Builtin'Precision'Get()));
 GuessRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 	Local(denom'estimate, cf, i);
 	denom'estimate := 1;

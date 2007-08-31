@@ -1150,7 +1150,7 @@ your code needs to evaluate $Sqrt(Pi)$ to many digits as an
 intermediate result, it is better to write {MathSqrt(Internal'Pi())} than
 {N(Sqrt(Pi))} because it makes for faster, more reliable code.
 
-	    Using {Precision()}
+	    Using {Builtin'Precision'Set()}
 
 The usual assumption is that numerical functions will evaluate
 floating-point results to the currently set precision. For intermediate
@@ -1210,7 +1210,7 @@ will immediately halt the execution of a Yacas script and print the
 error messsage. This is implemented as a C++ exception. A drawback of
 this mechanism is that the Yacas stack unwinding is not performed by
 the Yacas interpreter, so global variables such as {InNumericMode()},
-{Verbose}, {Precision()} may keep the intermediate values they had been
+{Verbose}, {Builtin'Precision'Set()} may keep the intermediate values they had been
 assigned just before the error occurred. Also, sometimes it is better
 for the program to be able to catch the error and continue.
 

@@ -16,7 +16,7 @@ TruncRadian(_r) <--
     r:=Eval(r);
     twopi:=2*Internal'Pi();
     r:=r-MathFloor(r/twopi)*twopi;
-  ], GetPrecision() + IntLog(Ceil(Abs(N(Eval(r), 1))), 10));
+  ], Builtin'Precision'Get() + IntLog(Ceil(Abs(N(Eval(r), 1))), 10));
   r;
 ];
 HoldArg("TruncRadian",r);
@@ -107,18 +107,18 @@ NewtonLn(x) :=
 
 // compute Ln(x_IsInteger) using the AGM sequence. See: Brent paper rpb028 (1975).
 // this is currently faster than MathLog(n) for precision > 40 digits
-10 # BrentLn(x_IsInteger)_(GetPrecision()>40) <--
+10 # BrentLn(x_IsInteger)_(Builtin'Precision'Get()>40) <--
 [
 	Local(y, n, k, eps);
-	n := GetPrecision();	// decimal digits
+	n := Builtin'Precision'Get();	// decimal digits
 	// initial power of x
 	k := 1 + Div(IntLog(4*10^n, x), 2);	// now x^(2*k)>4*10^n
-	Precision(n+5);	// guard digits
+	Builtin'Precision'Set(n+5);	// guard digits
 	eps := MathDivide(1, 10^n);	// precision
 	y := MathPower(x, k);	// not yet divided by 4
 	// this is Brent's AGM times y. This way we work around the Yacas limitation of fixed precision, at cost of slightly slower initial iterations
 	y := MathDivide(Internal'Pi()*y, (2*k)*AG'Mean(4, y, eps));
-	Precision(n);
+	Builtin'Precision'Set(n);
 	RoundTo(y, n);	// do not return a more precise number than we really have
 ];
 
@@ -128,11 +128,11 @@ NewtonLn(x) :=
 20 # BrentLn(_x)_(x<1) <-- -BrentLn(1/x);
 
 // this is currently faster than MathLog() for precision > 85 digits and numbers >2
-30 # BrentLn(_x)_(GetPrecision()>85) <--
+30 # BrentLn(_x)_(Builtin'Precision'Get()>85) <--
 [
 	Local(y, n, n1, k, eps);
   N([
-    n := GetPrecision();	// decimal digits
+    n := Builtin'Precision'Get();	// decimal digits
     // effective precision is n+Ln(n)/Ln(10)
     n1 := n + IntLog(n,10);	// Ln(2) < 7050/10171
     // initial power of 2
@@ -140,13 +140,13 @@ NewtonLn(x) :=
     // find how many binary digits we already have in x, and multiply by a sufficiently large power of 2 so that y=x*2^k is larger than 2*10^(n1/2)
     - IntLog(Floor(x), 2);
     // now we need k*Ln(2)/Ln(10) additional digits to compensate for cancellation at the final subtraction
-    Precision(n1+2+Div(k*3361, 11165));	// Ln(2)/Ln(10) < 3361/11165
+    Builtin'Precision'Set(n1+2+Div(k*3361, 11165));	// Ln(2)/Ln(10) < 3361/11165
     eps := MathDivide(1, 10^(n1+1));	// precision
     y := x*2^(k-2);	// divided already by 4
     // initial values for AGM
     // this is Brent's AGM times y. This way we work around the Yacas limitation of fixed precision, at cost of slightly slower initial iterations
     y:=Internal'Pi()*y/(2*AG'Mean(1,y,eps)) - k*Ln2();
-    Precision(n);
+    Builtin'Precision'Set(n);
   ]);
 	y;	// do not return a more precise number than we really have
 ];
@@ -192,7 +192,7 @@ Sign(x) *
 	// see essays book on the choice of the number of terms (added 2 "guard terms").
 	// we need Hold() because otherwise, if InNumericMode() returns True, N(..., 5) will not avoid the full precision calculation of Ln().
 	// the value of x should not be greater than 1 here!
-	nterms := 2 + Ceil( N(Hold(Ln(10)/(Ln(4)+2*Ln(nterms))), 5) * GetPrecision() );
+	nterms := 2 + Ceil( N(Hold(Ln(10)/(Ln(4)+2*Ln(nterms))), 5) * Builtin'Precision'Get() );
 	If(	// call the actual routine
 		Abs(x)>1,
 		Pi/2-2*MyArcTan(y, nterms),	// this is for |x|>1

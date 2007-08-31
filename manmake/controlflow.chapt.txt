@@ -887,7 +887,7 @@ The result is the "user time" as reported by the OS, not the real ("wall clock")
 Therefore, any CPU-intensive processes running alongside Yacas will not significantly affect the result of {Time}.
 
 *EG notest
-	In> Time([Precision(40);MathLog(1000);])
+	In> Time(N(MathLog(1000),40))
 	0.34 seconds taken
 	Out> 6.9077552789821370520539743640530926228033;
 
