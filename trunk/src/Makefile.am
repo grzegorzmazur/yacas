@@ -128,7 +128,7 @@ EXTRA_DIST = anumber.inl deffile.inl  \
 	grower.inl lisphash.inl lispobject.inl \
 	lispstring.inl standard.inl \
 	win32dll.cpp win32dll.h compilescript.sh \
-	depend.dep makefile.beos makefile.genericstatic \
+	depend.dep makefile.genericstatic \
 	version.h \
 	convertcctocpp.bat \
 	plat/linux32/lisptype.h \
@@ -139,10 +139,6 @@ EXTRA_DIST = anumber.inl deffile.inl  \
 	plat/linux64/stubs.inl \
 	plat/linux64/platfileio.h \
 	plat/linux64/platdll.h \
-	plat/beos/lisptype.h \
-	plat/beos/stubs.inl \
-	plat/beos/platfileio.h \
-	plat/beos/platdll.h \
 	plat/win32/lisptype.h \
 	plat/win32/platdll.h   \
 	plat/win32/platfileio.h \
