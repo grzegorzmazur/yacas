@@ -30,10 +30,6 @@ LispInt NumericSupportForMantissa()
   return LispTrue;
 }
 
-const LispChar * NumericLibraryName()
-{
-    return "Internal";
-}
 
 
 /* Converting between internal formats and ascii format.
@@ -588,16 +584,6 @@ double BigNumber::Double() const
   return 0.0;
 #endif
 }
-
-const LispChar * BigNumber::NumericLibraryName()
-{
-  return "Internal Yacas numbers";
-}
-
-
-
-
-
 
 
 

@@ -128,27 +128,6 @@ else
 fi
 AC_SUBST(OPENGL_PLUGIN)
 
-# Choice of arbitrary precision library
-AC_ARG_WITH(numlib, [  --with-numlib=LIB       select library for arbitrary precision arithmetics
-                             Options: native.  [default=native]], with_numlib=$withval, with_numlib="native")
-AC_MSG_CHECKING([which arbitrary precision library to use])
-case $with_numlib in
-  native) 
-    NUMBERS_LIB="libyacasnumbers.la"
-    NUMBERS_LIB_SHORT="yacasnumbers"
-    NUMBERS_LDFLAGS="-lm"
-    AC_MSG_RESULT(native);;
-  yes)
-    AC_MSG_RESULT(error)
-    AC_MSG_ERROR([Arbitrary precision library not specified]);;
-  *)
-    AC_MSG_RESULT(error)
-    AC_MSG_ERROR([Argument of --with-numlib ($with_numlib) not recognized]);;
-esac
-AC_SUBST(NUMBERS_LIB)
-AC_SUBST(NUMBERS_LIB_SHORT)
-AC_SUBST(NUMBERS_LDFLAGS)
-
 
 # Support for the debug version
 AC_ARG_ENABLE(debug, [  --enable-debug          build the debug version [default=no]])

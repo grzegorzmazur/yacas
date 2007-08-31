@@ -10,9 +10,6 @@
 /// Whether the numeric library supports 1.0E-10 and such.
 LispInt NumericSupportForMantissa();
 
-/// Numeric library name
-const LispChar * NumericLibraryName();
-
 LispObject* GcdInteger(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment);
 
 LispObject* SinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
@@ -78,9 +75,6 @@ public: // Convert back to other types
   void ToString(LispString& aResult, LispInt aPrecision, LispInt aBase=10) const;
   /// Give approximate representation as a double number
   double Double() const;
-
-  /// Numeric library name
-static const LispChar * NumericLibraryName();
 
 public://basic object manipulation
   LispBoolean Equals(const BigNumber& aOther) const;

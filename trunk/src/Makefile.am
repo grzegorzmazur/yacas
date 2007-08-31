@@ -7,8 +7,7 @@ noinst_PROGRAMS = mkfastprimes check_plugins plugin_stub_gen gencorefunctions @C
 EXTRA_PROGRAMS = compressor testnum codereviewer
 libmath_USES = yacas$(EXEEXT) check_plugins$(EXEEXT)
 
-lib_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la @NUMBERS_LIB@ 
-EXTRA_LTLIBRARIES = libyacasnumbers.la 
+lib_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la  
 
 pkglib_LTLIBRARIES = libmath.la
 
@@ -25,14 +24,14 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
         archiver.h cyacas.h GPL_stuff.h vm.h 
 
 yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp
-yacas_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS_LDFLAGS@
-yacas_DEPENDENCIES = $(srcdir)/plugins_available.h @NUMBERS_LIB@ libyacas.la libyacasplatform.la fastprimes.c version.h GPL_stuff.h 
+yacas_LDADD = libyacas.la libyacasplatform.la @LIBLTDL@ 
+yacas_DEPENDENCIES = $(srcdir)/plugins_available.h libyacas.la libyacasplatform.la fastprimes.c version.h GPL_stuff.h 
 
-# order of libraries is important, @NUMBERS_LIB@ before libyacas.la and that is before libyacasplatform.la
+# order of libraries is important, before libyacas.la and that is before libyacasplatform.la
 
 testnum_SOURCES = testnum.cpp 
-testnum_LDADD = @NUMBERS_LIB@ libyacas.la libyacasplatform.la @LIBLTDL@ @NUMBERS_LDFLAGS@
-testnum_DEPENDENCIES = @NUMBERS_LIB@ libyacas.la libyacasplatform.la
+testnum_LDADD = libyacas.la libyacasplatform.la @LIBLTDL@ 
+testnum_DEPENDENCIES = libyacas.la libyacasplatform.la
 
 codereviewer_SOURCES = codereviewer.cpp 
 codereviewer_LDADD = 
@@ -68,18 +67,14 @@ libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
         archiver.cpp compressedfiles.cpp commandline.cpp \
 	libmath_stub.cpp pcre_study_stub.c pcre_pcre_stub.c \
 	pcre_maketables_stub.c pcre_pcreposix_stub.c pcre_get_stub.c \
-	pcre_plugin_stub.cpp filescanner_stub.cpp filescanner_plugin_stub.cpp
+	pcre_plugin_stub.cpp filescanner_stub.cpp filescanner_plugin_stub.cpp \
+	anumber.cpp yacasnumbers.cpp numbers.cpp
 
 libcyacas_la_SOURCES = cyacas.cpp
 
 libyacasplatform_la_SOURCES = platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
 	lispstring.cpp mathutil.cpp yacasbase.cpp debugmem.cpp 
 libyacasplatform_la_DEPENDENCIES= fastprimes.c
-
-## The -rpath flag is not added automatically because lib*numbers is listed in EXTRA_LTLIBRARIES,
-## so automake does not know in what directory it is installed.
-libyacasnumbers_la_SOURCES = anumber.cpp yacasnumbers.cpp numbers.cpp
-libyacasnumbers_la_LDFLAGS = -rpath $(libdir)
 
 # We need iteration (rebuilding the same target multiple times).
 # This variable ensures non-empty cmd-goals, taking automake's default, "all".

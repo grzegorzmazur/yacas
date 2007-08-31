@@ -236,7 +236,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 //      AddLineStatic(100, "","See the GNU General Public License (GPL) for the full conditions.", font, c);
 //      AddLineStatic(100, "","Type ?license or ?licence to see the GPL; type ?warranty for warranty info.", font, c);
 //      AddLineStatic(100, "","See http://yacas.sf.net for more information and documentation on Yacas.", font, c);
-//      AddLineStatic(100, "","Numeric mode: \""+BigNumber.NumericLibraryName()+"\"\n", font, c);
 //      AddLineStatic(100, "","", font, c);
 
 //      AddLineStatic(100, "","Type '?', '??' or 'help' for help, or type '?function' for help on a function.\n", font, c);

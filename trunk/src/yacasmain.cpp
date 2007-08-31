@@ -1565,7 +1565,6 @@ RESTART:
 #else
             printf(GPL_blurb);
 #endif
-            printf("Numeric mode: \"%s\"\n",NumericLibraryName());
             printf("To exit Yacas, enter  Exit(); or quit or Ctrl-c.\n");
             printf("Type 'restart' to restart Yacas.\n");
             printf("To see example commands, keep typing Example();\n");

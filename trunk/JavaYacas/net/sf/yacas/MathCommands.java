@@ -573,9 +573,6 @@ class MathCommands
          new YacasEvaluator(new LispDebugLine(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "DebugLine");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispMathLibName(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathLibrary");
-    aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispVersion(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "Version");
 
@@ -3943,14 +3940,6 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       throw new Exception("Cannot call DebugLine in non-debug version of Yacas");
-    }
-  }
-
-  class LispMathLibName extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,aEnvironment.HashTable().LookUpStringify(BigNumber.NumericLibraryName())));
     }
   }
 

@@ -951,19 +951,6 @@ void LispUnFence(LispEnvironment& aEnvironment, LispInt aStackTop)
     InternalTrue(aEnvironment,RESULT);
 }
 
-void LispMathLibName(LispEnvironment& aEnvironment,LispInt aStackTop)
-{
-    // can't use NumericLibraryName() inside LookUpStringify() b/c of
-    // nonconstant pointer! why is it not a const char* and do I have to
-    // write this?  (TODO: woof)
-    // const_cast removes const-ness... ;-)
-    char* library_name = const_cast<char*>(NumericLibraryName());
-    RESULT = (LispAtom::New(
-    aEnvironment,
-    aEnvironment.HashTable().LookUpStringify(library_name)->c_str()
-  ));
-}
-
 void LispIsFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
     LispPtr result(ARGUMENT(1));
