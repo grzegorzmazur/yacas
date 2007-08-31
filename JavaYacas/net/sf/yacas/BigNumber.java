@@ -129,12 +129,6 @@ class BigNumber
       return decimal.longValue();
   }
 
-  /// Numeric library name
-  static  String NumericLibraryName()
-  {
-    return "DefaultJavaNumberSupport";
-  }
-
   //basic object manipulation
   public boolean Equals( BigNumber aOther)
   {

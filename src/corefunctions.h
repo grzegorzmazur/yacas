@@ -252,6 +252,5 @@ CORE_KERNEL_FUNCTION("DebugLine",LispDebugLine,1,YacasEvaluator::Function | Yaca
 //
 // Information functions
 //
-CORE_KERNEL_FUNCTION("MathLibrary",LispMathLibName,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("Version",LispVersion,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 

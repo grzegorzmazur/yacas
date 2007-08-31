@@ -1643,19 +1643,6 @@ Shift bits to the left or to the right.
 *DESC
 Returns {False} if Yacas has been started with the option to suppress the prompt, and {True} otherwise.
 
-*CMD MathLibrary --- obtain current math library name
-*CORE
-*CALL
-	MathLibrary()
-*DESC
-Returns a string that describes the currently used arbitrary-precision arithmetic library.
-
-Possible names supported at the moment are {"Internal"}, indicating the internal math library {libyacasnumbers}.
-
-*EG
-	In>  MathLibrary()
-	Out> "Internal";
-
 
 *CMD GetTime --- measure the time taken by an evaluation
 *CORE

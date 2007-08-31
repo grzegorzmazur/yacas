@@ -560,9 +560,6 @@ int main(int argc, char** argv)
 //////////////////////////////////////////////////
   printf("SizeOf(BigNumber)=%ld\n", (long)sizeof(BigNumber));
 
-  Next("library name");
-  printf("\tTesting numeric library: '%s'.\n", BigNumber::NumericLibraryName());
- 
   Next("constructor");
   BigNumber x;  // default constructor
   Next("call some functions on objects with undefined values");
