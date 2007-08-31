@@ -294,8 +294,7 @@ AC_SUBST(INCLTDL)
 AC_SUBST(LIBLTDL)
 
 # All done
-AC_OUTPUT(yacas.spec
-	Makefile
+AC_OUTPUT(Makefile
 	docs/Makefile
 	plugins/Makefile
 	plugins/example/Makefile
