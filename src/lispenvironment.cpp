@@ -207,29 +207,32 @@ void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue, LispB
 
 void LispEnvironment::GetVariable(LispString * aVariable,LispPtr& aResult)
 {
-    aResult = (NULL);
-    LispPtr *local = FindLocal(aVariable);
-    if (local)
+  aResult = (NULL);
+  LispPtr *local = FindLocal(aVariable);
+  if (local)
+  {
+    aResult = ((*local));
+    return;
+  }
+  LispGlobalVariable *l = iGlobals.LookUp(aVariable);
+  if (l)
+  {
+    if (l->iEvalBeforeReturn)
     {
-        aResult = ((*local));
-        return;
+      InternalEval(*this, aResult, l->iValue);
+      // re-lookup the global variable, as this pointer might now be invalid due to the evaluation actually changing the global itself.
+      l = iGlobals.LookUp(aVariable);
+
+      l->iValue = (aResult);
+      l->iEvalBeforeReturn = LispFalse;
+      return;
     }
-    LispGlobalVariable *l = iGlobals.LookUp(aVariable);
-    if (l)
+    else
     {
-        if (l->iEvalBeforeReturn)
-        {
-            InternalEval(*this, aResult, l->iValue);
-            l->iValue = (aResult);
-            l->iEvalBeforeReturn = LispFalse;
-            return;
-        }
-        else
-        {
-            aResult = (l->iValue);
-            return;
-        }
+      aResult = (l->iValue);
+      return;
     }
+  }
 }
 
 void LispEnvironment::UnsetVariable(LispString * aString)

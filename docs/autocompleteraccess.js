@@ -26,6 +26,14 @@ function searchSuggest()
   var searchString = this.value;
   updateHints(searchString);
 }
+
+var allowDemos = true;
+
+function setAllowDemos(allow)
+{
+  allowDemos = allow;
+}
+
 function updateHints(searchString)
 {
   var popups = document.getElementById("popups");
@@ -43,9 +51,14 @@ function updateHints(searchString)
     for (var i=0;i<hints.length;i=i+4)
     {
       var exam = "";
+      var exampleAvailable = false;
       if (hints[i+3] != "")
       {
-        exam = '|   <a href="javascript:getYacasExampleOnFunction('+(i+3)+')">Demo<\/a>';
+        exampleAvailable = true;
+        if (allowDemos)
+        {
+          exam = '|   <a href="javascript:getYacasExampleOnFunction('+(i+3)+')">Demo<\/a>';
+        }
       }
       var line = 
         '<div class="suggestions" title="'+hints[i+1]+'">'+
@@ -75,7 +88,7 @@ function updateHints(searchString)
           matchIndex = 0;
         }
         // If no example given then the function is probably less important, put at the end.
-        if (exam == "")
+        if (exampleAvailable == "")
           matchIndex = matchIndex + 4;
         if (lengths[matchIndex] < maxMatches)
         {
