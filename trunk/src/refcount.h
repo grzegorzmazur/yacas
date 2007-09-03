@@ -14,58 +14,59 @@
   One can use RefPtr on any arbitrary object from that moment on.
  */
 
-class ReferenceCount
-{
-public:
-   ReferenceCount() : m_count(0) {}
-   ~ReferenceCount() { LISPASSERT(m_count == 0); }
-   // Note that this *ignores* the thing that's being copied
-   ReferenceCount(const ReferenceCount &) : m_count(0) {}
-   ReferenceCount &operator=(const ReferenceCount &) { return *this; }
-   // pre-increment/decrement only
-   ReferenceCount &operator++() { ++m_count; return *this; }
-   ReferenceCount &operator--() { LISPASSERT(m_count > 0); --m_count; return *this; }
-   bool operator!() const { return !m_count; }  // is zero
-   operator int() const { return m_count; }
-private:
-   ReferenceType m_count;
-};
+typedef ReferenceType ReferenceCount;
 
 template<class T>
 class RefPtr : public YacasBase  // derived, so we can 'NEW LispPtr[nnn]'
 {
 public:
   // Default constructor (not explicit, so it auto-initializes)
-  RefPtr() : m_ptr(0) {}
-
+  inline RefPtr() : iPtr(NULL) {}
   // Construct from pointer to T
-    explicit RefPtr(T *ptr) : m_ptr(ptr)
-  { if (ptr) ++ptr->iReferenceCount; }  // should use m_ptr
-
+  explicit RefPtr(T *ptr) : iPtr(ptr) { if (ptr) { ptr->iReferenceCount++; } }
   // Copy constructor
-  RefPtr(const RefPtr &refPtr) : m_ptr(refPtr.ptr())
-  { if (m_ptr) ++m_ptr->iReferenceCount; }
-
+  RefPtr(const RefPtr &refPtr) : iPtr(refPtr.ptr()) { if (iPtr) { iPtr->iReferenceCount++; } }
   // Destructor
   ~RefPtr()
-  { if (m_ptr && !--m_ptr->iReferenceCount) delete m_ptr; }
-
+  {
+    if (iPtr)
+    {
+      iPtr->iReferenceCount--;
+      if (iPtr->iReferenceCount == 0)
+      {
+        delete iPtr;
+      }
+    }
+  }
   // Assignment from pointer
-    RefPtr &operator=(T *ptr)
-  { if (ptr) ++ptr->iReferenceCount; if (m_ptr && !--m_ptr->iReferenceCount) delete m_ptr; m_ptr = ptr; return *this; }
-
+  RefPtr &operator=(T *ptr)
+  {
+    if (ptr)
+    {
+      ptr->iReferenceCount++;
+    }
+    if (iPtr)
+    {
+      iPtr->iReferenceCount--;
+      if (iPtr->iReferenceCount == 0)
+      {
+        delete iPtr;
+      }
+    }
+    iPtr = ptr;
+    return *this;
+  }
   // Assignment from another
-  RefPtr &operator=(const RefPtr &refPtr)
-    { return this->operator=(refPtr.ptr()); }
+  RefPtr &operator=(const RefPtr &refPtr) { return this->operator=(refPtr.ptr()); }
 
-    operator T*()    const { return  m_ptr; }  // implicit conversion to pointer to T
-    T &operator*()   const { return *m_ptr; }  // so (*refPtr) is a reference to T
-    T *operator->()  const { return  m_ptr; }  // so (refPtr->member) accesses T's member
-    T *ptr()         const { return  m_ptr; }  // so (refPtr.ptr()) returns the pointer to T (boost calls this method 'get')
-    bool operator!() const { return !m_ptr; }  // is null pointer
+  operator T*()    const { return  iPtr; }  // implicit conversion to pointer to T
+  T &operator*()   const { return *iPtr; }  // so (*refPtr) is a reference to T
+  T *operator->()  const { return  iPtr; }  // so (refPtr->member) accesses T's member
+  T *ptr()         const { return  iPtr; }  // so (refPtr.ptr()) returns the pointer to T (boost calls this method 'get')
+  bool operator!() const { return !iPtr; }  // is null pointer
 
 private:
-   T *m_ptr;
+   T *iPtr;
 };
 
 

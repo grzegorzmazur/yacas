@@ -23,7 +23,7 @@ PLOTTINGSCRIPTS = yacas-gmtplot2d.sh yacas-gmtplot3d.sh
 ## in the distribution. Note that scripts are not distributed by default.
 
 EXTRA_DIST = makemake mkhomepage \
-	yacas.sh doxy_yacas README.Win32 ltmain.sh \
+	yacas.sh doxy_yacas ltmain.sh \
 	upload.txt readme.bin.win32.txt \
 	makewin.bat $(bin_SCRIPTS) $(PLOTTINGSCRIPTS) conf-macosx.sh
 
