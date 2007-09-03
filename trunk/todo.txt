@@ -1,12 +1,9 @@
 
-
-
 TODO:
 - remove redundant functions (low hanging fruit):
-  - change properties named m_... to i...
-  - clean up the root dir (Windows readmes?)
-  - scalable views in consoleedit/view.
   - nicer looking tip boxes
+  - scalable views in consoleedit/view.
+  - clean up the root dir (Windows readmes?)
 
   - precision.yts is not used yet, discard? Or fix?
   - Test suite fails on Java version. We *have* to make the test suite more lenient.

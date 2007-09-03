@@ -29,28 +29,20 @@ LispInt LispHashPtr(const LispString * aString);  // hash the *address*!
 class LispHashTable : public YacasBase
 {
 public:
-  LispHashTable()
-    //: m_isDirty(false)
-  {}
-    ~LispHashTable();
-    // If string not yet in table, insert. Afterwards return the string.
-    LispString * LookUp(const LispChar * aString, LispBoolean aStringOwnedExternally=LispFalse);
-    /// LookUp that takes ownership of the string
-    LispString * LookUp(LispString * aString);
-    LispString * LookUpCounted(LispChar * aString,LispInt aLength);
-    LispString * LookUpStringify(LispChar * aString,
-                         LispBoolean aStringOwnedExternally=LispFalse);
-    LispString * LookUpUnStringify(LispChar * aString,
-                         LispBoolean aStringOwnedExternally=LispFalse);
-
-    // GarbageCollect
-    void GarbageCollect();
+  LispHashTable() {}
+  ~LispHashTable();
+  // If string not yet in table, insert. Afterwards return the string.
+  LispString * LookUp(const LispChar * aString, LispBoolean aStringOwnedExternally=LispFalse);
+  /// LookUp that takes ownership of the string
+  LispString * LookUp(LispString * aString);
+  LispString * LookUpCounted(LispChar * aString,LispInt aLength);
+  LispString * LookUpStringify(LispChar * aString, LispBoolean aStringOwnedExternally=LispFalse);
+  LispString * LookUpUnStringify(LispChar * aString, LispBoolean aStringOwnedExternally=LispFalse);
+  void GarbageCollect();
 private:
-    void AppendString(LispInt bin,LispString * result);
- 
+  void AppendString(LispInt bin,LispString * result);
 private:
-    CArrayGrower<LispStringSmartPtr, ArrOpsCustomObj<LispStringSmartPtr> > iHashTable[KSymTableSize];
-  //bool m_isDirty;
+  CArrayGrower<LispStringSmartPtr, ArrOpsCustomObj<LispStringSmartPtr> > iHashTable[KSymTableSize];
 };
 
 

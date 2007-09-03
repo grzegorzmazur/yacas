@@ -164,11 +164,10 @@ LispString * LispHashTable::LookUp(const LispChar * aString, LispBoolean aString
 
 void LispHashTable::AppendString(LispInt bin,LispString * result)
 {
-    LispStringSmartPtr smartptr;
-    int index = iHashTable[bin].Size();
-    iHashTable[bin].ResizeTo(index+1);  // change to GrowBy sometime
-    iHashTable[bin][index] = result;
-  //m_isDirty = true;
+  LispStringSmartPtr smartptr;
+  int index = iHashTable[bin].Size();
+  iHashTable[bin].ResizeTo(index+1);  // change to GrowBy sometime
+  iHashTable[bin][index] = result;
 }
 
 // If string not yet in table, insert. Afterwards return the string.
@@ -324,21 +323,20 @@ LispString * LispHashTable::LookUpUnStringify(LispChar * aString,
 // GarbageCollect
 void LispHashTable::GarbageCollect()
 {
-  //if (!m_isDirty) return;
-    for (LispInt bin = 0; bin < KSymTableSize; bin++)
-    {
+  for (LispInt bin = 0; bin < KSymTableSize; bin++)
+  {
     LispStringSmartPtrArray & aBin = iHashTable[bin];
     for (LispInt i = 0, n = aBin.Size(); i < n; i++)
-        {
-            if (aBin[i]->iReferenceCount != 1) continue;
-            //printf("deleting [%s]\n",aBin[i]->String());
+    {
+      if (aBin[i]->iReferenceCount != 1) 
+        continue;
+      //printf("deleting [%s]\n",aBin[i]->String());
       // this should be cheaper than 'aBin[i]=NULL;aBin.Delete(i)'
       aBin[i] = aBin[n-1];
       aBin[n-1] = (NULL);
-            aBin.ResizeTo(n-1);
-            i--;
-            n--;
-        }
+      aBin.ResizeTo(n-1);
+      i--;
+      n--;
     }
-  //m_isDirty = false;
+  }
 }
