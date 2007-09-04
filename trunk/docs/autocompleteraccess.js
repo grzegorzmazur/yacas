@@ -65,7 +65,7 @@ exString;
   if (elem != null)
   {
     elem.style.backgroundColor = "#AAAAEE";
-    cursorPosition[0] += 96;//elem.offsetWidth/2;
+    cursorPosition[0] += 48;//elem.offsetWidth/2;
   }
   while (elem != null)
   {
@@ -74,10 +74,31 @@ exString;
     elem = elem.offsetParent;
   }
 
-  tip.style.left = cursorPosition[0] + 10 + "px";
-  tip.style.top = cursorPosition[1] + 10 + "px";
+  var left = cursorPosition[0] + 10;
+  var top = cursorPosition[1] + 10;
+
+  tip.style.left = left + "px";
+  tip.style.top = top + "px";
+  tip.style.visibility = "hidden";
 
   document.getElementsByTagName("body")[0].appendChild(tip);
+
+  var viewportSize = getViewportSize();
+
+  if (left > viewportSize[0]-tip.offsetWidth)
+  {
+    left = viewportSize[0]-tip.offsetWidth;
+    if (left < cursorPosition[0]+10-48)
+      left = cursorPosition[0]+10-48;
+    tip.style.left = left;
+  }
+  if (top > viewportSize[1]-tip.offsetHeight)
+  {
+    top = viewportSize[1]-tip.offsetHeight;
+    tip.style.top = top;
+  }
+
+  tip.style.visibility = "visible";
 }
 
 
@@ -121,10 +142,10 @@ function updateHints(searchString)
     var matches = new Array("","","","","","","","");
     var lengths = new Array(0,0,0,0,0,0,0,0);
     var moreAvailable = 0;
-    var maxMatches=13;
+    var maxMatches=14;
 
     // Most interesting functions, make sure people see these first so they have something interesting to click on
-    var fronts = ":Div:N:Select:Factor:Taylor:D:Integrate:Simplify:Solve:Limit:DiagonalMatrix:ForEach:Pi:";
+    var fronts = ":Div:N:Select:Factor:Taylor:D:Integrate:Simplify:Solve:Sum:Limit:DiagonalMatrix:ForEach:Pi:";
 
     var lwr = searchString.toLowerCase();
     for (var i=0;i<hints.length;i=i+4)

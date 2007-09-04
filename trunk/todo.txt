@@ -1,12 +1,9 @@
 
 TODO:
 - remove redundant functions (low hanging fruit):
-  - scalable views in consoleedit/view.
   - clean up the root dir (Windows readmes?)
-
   - precision.yts is not used yet, discard? Or fix?
   - Test suite fails on Java version. We *have* to make the test suite more lenient.
-  - StringMid'Get/Set should have separate anchors with explanations in autocompleter, or not be in the list.
 
   - Remove Fast* (does not seem to be used anywhere). FastArcSin, FastAssoc, FastIsPrime, FastLog, FastPower do seem to be used.
   - get rid of the Ortho?Sum functions, replace with just one?
@@ -15,7 +12,6 @@ TODO:
 - new functionality:
   - graph plotter 2D for Java
   - graph plotter 3D for Java
-  - better looking tip box in the autocompleter.
 - do a cleanup of the "ref" manual, first pass to throw away functions that should not have been there in the first place.
   - second chapter in refprog titled "Programming" has way too many functions
   - chapter "List operators" has way too many function entries.
@@ -24,7 +20,6 @@ TODO:
   - chapter "Input/output and plotting" has way too many function entries.
   - chapter "Number theory" needs to be cleaned up.
 - do a cleanup of the other books also
-
 
   - Future, change name of builtin functions that are not directly accessible to outside to have prefix Builtin'...
   - Skim through Math... functions, renaming them to Builtin'...

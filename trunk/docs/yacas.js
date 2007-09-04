@@ -7,6 +7,13 @@ window.onload = initPage;
 
 function initPage()
 {
+  var viewportSize = getViewportSize();
+
+  var preferredWidth = viewportSize[0]-400;//750;
+  var preferredHeight = viewportSize[1]-100;//400;
+  if (preferredWidth  < 320) preferredWidth  = 320;
+  if (preferredHeight < 200) preferredHeight = 200;
+
   if (prevOnLoadTutorial)
     prevOnLoadTutorial();
 
@@ -59,7 +66,8 @@ function initPage()
         }
         else if (object.className == "codeEdit")
         {
-          var width = 660;
+          var width = preferredWidth;
+          var height = preferredHeight;
 
           object.innerHTML = 
 '      <table cellspacing=0>' +
@@ -70,7 +78,7 @@ function initPage()
 '        <\/tr>' +
 '        <tr>' +
 '          <td style="border-color:black; border-style:solid; border-width:thin; background-color:#fafabe;">' +
-'            <textarea style="background-color:#fafabe; width: '+width+'px; " class="codeEditor" id="codeText"><\/textarea>' +
+'            <textarea style="background-color:#fafabe; width:'+width+'px; height:'+height+'px; " class="codeEditor" id="codeText"><\/textarea>' +
 '          <\/td>' +
 '        <\/tr>' +
 '      <\/table>';
@@ -79,8 +87,9 @@ function initPage()
         }
         else if (object.className == "yacasConsole")
         {
-          var width = 750;
-          var height = 400;
+          var width  = preferredWidth;
+          var height = preferredHeight;
+
           var jarFile = "yacas.jar";
           var programMode = "console";
           if (object.id)
@@ -88,11 +97,8 @@ function initPage()
             programMode = object.id;
             if (object.id == "tutorial")
             {
+              width  = 750;
               height = 200;
-            }
-            if (object.id == "console")
-            {
-              width=660;
             }
           }
           object.innerHTML = 
@@ -370,6 +376,26 @@ function generateExample()
 }
 
 
+function getViewportSize()
+{
+  var size = [0,0];
+
+  if (typeof window.innerWidth != 'undefined')
+  {
+    size = [ window.innerWidth, window.innerHeight ];
+  }
+  else if (typeof document.documentElement != 'undefined'
+      && typeof document.documentElement.clientWidth != 'undefined'
+      && document.documentElement.clientWidth != 0)
+  {
+    size = [ document.documentElement.clientWidth, document.documentElement.clientHeight ];
+  }
+  else
+  {
+    size = [ document.getElementsByTagName('body')[0].clientWidth, document.getElementsByTagName('body')[0].clientHeight ];
+  }
+  return size;
+}
 
 
 
