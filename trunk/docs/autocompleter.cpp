@@ -84,8 +84,8 @@ void WriteLine()
       fprintf(fout,",\n");
     }
     first = 0;
-    fprintf(fout,"\'%s\',\n",lastKey);
-    fprintf(fout,"\'%s\',\n",escape(lastVal));
+    fprintf(fout,"\'%s\',\n",escape(lastKey));
+    fprintf(fout,"\'<ul>%s</ul>\',\n",escape(lastVal));
     fprintf(fout,"\'%s\',\n",escape(lastDes));
     fprintf(fout,"\'%s\'\n",findexample(lastKey)); // placeholder for examples
     lastKey[0] = '\0';
@@ -159,7 +159,9 @@ int main(int argc, char** argv)
         strcpy(lastVal,"");
         if (!strncmp(lastKey,items[2],strlen(lastKey)))
         {
+          strcat(lastVal,"<li><b>");
           strcat(lastVal,lastKey);
+          strcat(lastVal,"</b>");
           strcat(lastVal,&items[2][strlen(lastKey)]);
         }
         else
@@ -170,10 +172,12 @@ int main(int argc, char** argv)
       }
       else
       {
-        strcat(lastVal,", \\n");
+//        strcat(lastVal,", \\n");
         if (!strncmp(lastKey,items[2],strlen(lastKey)))
         {
+          strcat(lastVal,"<li><b>");
           strcat(lastVal,lastKey);
+          strcat(lastVal,"</b>");
           strcat(lastVal,&items[2][strlen(lastKey)]);
         }
         else
