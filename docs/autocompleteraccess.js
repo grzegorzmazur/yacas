@@ -6,8 +6,78 @@ function initPage()
   if (document.getElementById("funcLookup"))
   {
     document.getElementById("funcLookup").onkeyup = searchSuggest;
-    updateHints("");
+    setTimeout('updateHints("")',1000);
+    
   }
+}
+
+
+var highlighted = null;
+var tip = null;
+function enterItem(id)
+{
+  id = parseInt(id);
+
+  var elem = document.getElementById(id);
+  if (elem == highlighted)
+    return;
+
+  if (highlighted)
+  {
+    highlighted.style.backgroundColor = "#FFFFFF";
+  }
+  highlighted = elem;
+
+  if (tip)
+  {
+    document.getElementsByTagName("body")[0].removeChild(tip);
+  }
+
+  var exString = "";
+  if (hints[id+3] != "")
+  {
+    if (allowDemos)
+    {
+      exString = '<hr><h1>Examples</h1><i>(clicking on one of the items below sends them to the Yacas calculation center on the left)</i><ul>';
+      var examples = hints[id+3].split("<sep>");
+      for (var i=0;i<examples.length;i++)
+      {
+        exString = exString + '<li><a href="javascript:yacasEval(unescape(\''+escape(examples[i])+'\'));">'+examples[i]+'</a>';
+      }
+      exString = exString + "</ul>";
+    }
+  }
+
+
+  tip = document.createElement("div");
+  tip.className = "autocompletertooltip";
+  tip.innerHTML = 
+'<b>Function '+hints[id]+'</b> &mdash; '+hints[id+2]+' <a target="newwin" href="ref.html?'+hints[id]+'">more...</a>' +
+'<hr>' +
+'<h1>Prototypes</h1>'+hints[id+1] +
+exString;
+
+
+  tip.style.position = "absolute";
+
+  var cursorPosition = [0, 0];
+
+  if (elem != null)
+  {
+    elem.style.backgroundColor = "#AAAAEE";
+    cursorPosition[0] += 96;//elem.offsetWidth/2;
+  }
+  while (elem != null)
+  {
+    cursorPosition[0] += elem.offsetLeft;
+    cursorPosition[1] += elem.offsetTop;
+    elem = elem.offsetParent;
+  }
+
+  tip.style.left = cursorPosition[0] + 10 + "px";
+  tip.style.top = cursorPosition[1] + 10 + "px";
+
+  document.getElementsByTagName("body")[0].appendChild(tip);
 }
 
 
@@ -36,6 +106,15 @@ function setAllowDemos(allow)
 
 function updateHints(searchString)
 {
+  var firstId = "";
+  var firstIdIndex = 100;
+  if (tip)
+  {
+    document.getElementsByTagName("body")[0].removeChild(tip);
+  }
+  highlighted = null;
+  tip = null;
+
   var popups = document.getElementById("popups");
   popups.innerHTML = "";
   {
@@ -60,12 +139,8 @@ function updateHints(searchString)
           exam = '|   <a href="javascript:getYacasExampleOnFunction('+(i+3)+')">Demo<\/a>';
         }
       }
-      var line = 
-        '<div class="suggestions" title="'+hints[i+1]+'">'+
-           '<b>'+hints[i]+'</b> - '+hints[i+2]+
-           '<br><a target="newwin" href="ref.html?'+hints[i]+'">Manual<\/a>' + 
-           exam + 
-        '<\/div>';
+//title="'+hints[i+1]+'" 
+      var line = '<div class="suggestions" id="'+i+'" onmouseover=\'enterItem("'+i+'");\'>'+hints[i]+'<\/div>';
       
       var matchIndex = -1;
       if (hints[i].indexOf(searchString) == 0)
@@ -92,6 +167,12 @@ function updateHints(searchString)
           matchIndex = matchIndex + 4;
         if (lengths[matchIndex] < maxMatches)
         {
+          if (matches[matchIndex] == "")
+            if (firstIdIndex > matchIndex)
+            {
+              firstIdIndex = matchIndex;
+              firstId = ""+i;
+            }
           lengths[matchIndex] = lengths[matchIndex] + 1;
           matches[matchIndex] = matches[matchIndex] + line;
         }
@@ -117,5 +198,6 @@ function updateHints(searchString)
       totalmatch = totalmatch + '<div class="suggestions"><i>... (more available, enter part of function name in input field above)<\/i><\/div>';
     }
     popups.innerHTML = totalmatch;
+    if (firstId != "") enterItem(firstId);
   }
 }

@@ -77,7 +77,7 @@ void ProcessFile(char* fname)
       {
         if (buf[strlen(buf)-1] == '\n') buf[strlen(buf)-1] = '\0';
         char* ptr = &buf[1];
-        while (isalnum(*ptr)) ptr++;
+        while (isalnum(*ptr) || *ptr == '\'') ptr++;
         memset(cmd,0,255);
         memcpy(cmd,&buf[1],ptr-(&buf[1]));
         
