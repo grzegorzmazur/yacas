@@ -1,7 +1,6 @@
 
 TODO:
 - remove redundant functions (low hanging fruit):
-  - nicer looking tip boxes
   - scalable views in consoleedit/view.
   - clean up the root dir (Windows readmes?)
 
