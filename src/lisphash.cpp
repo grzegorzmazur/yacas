@@ -328,7 +328,7 @@ void LispHashTable::GarbageCollect()
     LispStringSmartPtrArray & aBin = iHashTable[bin];
     for (LispInt i = 0, n = aBin.Size(); i < n; i++)
     {
-      if (aBin[i]->iReferenceCount != 1) 
+      if (aBin[i]->iReferenceCount != 1)
         continue;
       //printf("deleting [%s]\n",aBin[i]->String());
       // this should be cheaper than 'aBin[i]=NULL;aBin.Delete(i)'
