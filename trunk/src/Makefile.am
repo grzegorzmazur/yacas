@@ -148,7 +148,6 @@ EXTRA_DIST = anumber.inl deffile.inl  \
 	win32dllresource.h win32yacasdll.h win32yacasdll.cpp \
 	win32yacasdllresource.h yacasdll.dsp yacasdll.dsw yacasdll.rc \
 	setup.py yacasc.i yacas.py \
-	yacas.rss  \
 	compressedfiles.cpp \
 	README.LZO lzoconf.h minilzo.c minilzo.h decompressor.cpp \
 	compressor.cpp filescanner.cpp filescanner.h \
