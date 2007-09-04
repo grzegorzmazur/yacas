@@ -1,24 +1,27 @@
 
 TODO:
-- remove redundant functions (low hanging fruit):
-  - clean up the root dir (Windows readmes?)
-  - precision.yts is not used yet, discard? Or fix?
-  - Test suite fails on Java version. We *have* to make the test suite more lenient.
 
-  - Remove Fast* (does not seem to be used anywhere). FastArcSin, FastAssoc, FastIsPrime, FastLog, FastPower do seem to be used.
-  - get rid of the Ortho?Sum functions, replace with just one?
-  - (find other ...Num functions)
-  - NewtonNum
-- new functionality:
-  - graph plotter 2D for Java
-  - graph plotter 3D for Java
+- do not allow sending examples to the applet while the applet is not yet initialized.
+- examples-static.txt modifications:
+  - examples should have their own tests
+  - Add "See also" items to the autocompleters.
+- graph plotter 2D for Java
+
+- clean up the root dir (Windows readmes?)
+- precision.yts is not used yet, discard? Or fix?
+- Test suite fails on Java version. We *have* to make the test suite more lenient.
+- Remove Fast* (does not seem to be used anywhere). FastArcSin, FastAssoc, FastIsPrime, FastLog, FastPower do seem to be used.
+- get rid of the Ortho?Sum functions, replace with just one?
+- (find other ...Num functions)
+- NewtonNum
+- graph plotter 3D for Java
 - do a cleanup of the "ref" manual, first pass to throw away functions that should not have been there in the first place.
-  - second chapter in refprog titled "Programming" has way too many functions
-  - chapter "List operators" has way too many function entries.
-  - chapter "Control flow" has entries relating only to the off-line version
-  - chapter "predicates" has way too many function entries.
-  - chapter "Input/output and plotting" has way too many function entries.
-  - chapter "Number theory" needs to be cleaned up.
+- second chapter in refprog titled "Programming" has way too many functions
+- chapter "List operators" has way too many function entries.
+- chapter "Control flow" has entries relating only to the off-line version
+- chapter "predicates" has way too many function entries.
+- chapter "Input/output and plotting" has way too many function entries.
+- chapter "Number theory" needs to be cleaned up.
 - do a cleanup of the other books also
 
   - Future, change name of builtin functions that are not directly accessible to outside to have prefix Builtin'...
@@ -34,18 +37,16 @@ TODO:
 
   - cos(arccos(x)) -> x+k*2*pi etc
  
-  - try if I can't change the format of numbers from 0.xxx to x.xxxx, is more natural
-  - make plain site not too wide also
-  - Move brackets slightly down in tex form pretty renderer, especially when what they bracket is not too big.
-  - Strip comments from scripts before adding to zip file
-  - examples should have their own tests
-  - center everything, with the back.gif on the sides.
-  - step-by-step solver possible?
-  - different color scheme for each tab page?
-  - screenshots, explanation of how to use, demo, tipbox, or *something*, to persuade people to enter something in the search field
-  - separate project, teacher version
-  - carefully change things so that the scripts do not have things like "N(Eval(" any more (just grep on it).
-  - change testnum to not be so verbose
+- try if I can't change the format of numbers from 0.xxx to x.xxxx, is more natural
+- make plain site not too wide also
+- Move brackets slightly down in tex form pretty renderer, especially when what they bracket is not too big.
+- Strip comments from scripts before adding to zip file
+- step-by-step solver possible?
+- different color scheme for each tab page?
+- screenshots, explanation of how to use, demo, tipbox, or *something*, to persuade people to enter something in the search field
+- separate project, teacher version
+- carefully change things so that the scripts do not have things like "N(Eval(" any more (just grep on it).
+- change testnum to not be so verbose
 
 1) Documentation improvements
 - document the article mark-up language
