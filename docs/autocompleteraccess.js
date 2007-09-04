@@ -6,7 +6,7 @@ function initPage()
   if (document.getElementById("funcLookup"))
   {
     document.getElementById("funcLookup").onkeyup = searchSuggest;
-    setTimeout('updateHints("")',1000);
+    setTimeout('updateHints("")',100);
     
   }
 }

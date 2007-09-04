@@ -143,7 +143,7 @@ EXTRA_DIST = anumber.inl deffile.inl  \
 	plat/win32/yacas.dsp            \
 	plat/win32/yacas_exe.dsp        \
 	plat/win32/yacasmain-win32.cpp Makefile.win32 \
-	makefile.agenda yacas.dsp yacas.dsw \
+	yacas.dsp yacas.dsw \
   debugmem.h mkfastprimes.dsp \
 	win32dllresource.h win32yacasdll.h win32yacasdll.cpp \
 	win32yacasdllresource.h yacasdll.dsp yacasdll.dsw yacasdll.rc \
