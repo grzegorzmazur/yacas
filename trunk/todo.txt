@@ -1,19 +1,9 @@
 
-
-
 TODO:
-
-x autocompleter elements full width
-x yacas calculation CENTER
-- menu to left of landing page
-- do not allow sending examples to the applet while the applet is not yet initialized.
-- examples-static.txt modifications:
-  - examples should have their own tests
-  - Add "See also" items to the autocompleters.
-
-
-
+- examples should have their own tests
 - graph plotter 2D for Java
+
+- sometimes there is a delay between the user clicking on an example and the example being executed. Need to make it visible that a calculation has started.
 
 - clean up the root dir (Windows readmes?)
 - precision.yts is not used yet, discard? Or fix?
