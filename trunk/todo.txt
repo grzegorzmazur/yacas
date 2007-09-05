@@ -1,10 +1,18 @@
 
+
+
 TODO:
 
+x autocompleter elements full width
+x yacas calculation CENTER
+- menu to left of landing page
 - do not allow sending examples to the applet while the applet is not yet initialized.
 - examples-static.txt modifications:
   - examples should have their own tests
   - Add "See also" items to the autocompleters.
+
+
+
 - graph plotter 2D for Java
 
 - clean up the root dir (Windows readmes?)

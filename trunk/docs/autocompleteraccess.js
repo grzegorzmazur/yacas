@@ -161,7 +161,7 @@ function updateHints(searchString)
         }
       }
 //title="'+hints[i+1]+'" 
-      var line = '<div class="suggestions" id="'+i+'" onmouseover=\'enterItem("'+i+'");\'>'+hints[i]+'<\/div>';
+      var line = '<div style="width:164px;" class="suggestions" id="'+i+'" onmouseover=\'enterItem("'+i+'");\'>'+hints[i]+'<\/div>';
       
       var matchIndex = -1;
       if (hints[i].indexOf(searchString) == 0)

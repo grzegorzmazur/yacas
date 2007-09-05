@@ -106,7 +106,7 @@ function initPage()
 '    <table cellspacing=0>' + 
 '      <tr>' + 
 '        <td style="border-color:black; border-style:solid; border-width:thin; border-bottom:0px; background-color: #DDDDEE;">' + 
-'        <span>Yacas calculation environment<\/span>' + 
+'        <span>Yacas calculation center<\/span>' + 
 '        <\/td>' + 
 '      <\/tr>' + 
 '      <tr>' + 
