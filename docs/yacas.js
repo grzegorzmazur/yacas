@@ -242,7 +242,10 @@ function yacasEval(expression)
   {
     if (consoleApplet.isActive)
       if (!consoleApplet.isActive())
+      {
         alert("Trying to execute an expression while the calculation center has not been initialized yet");
+        return;
+      }
     consoleApplet.InvokeCalculation(getPlainText(expression));
   }
 }
