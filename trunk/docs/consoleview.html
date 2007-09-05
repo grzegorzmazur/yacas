@@ -45,6 +45,9 @@
 
     <input type=button value="Example" title="Generate example" onclick="generateExample();" />
     <input type=button value="Edit (locally)" onclick="gotoHREF('consoleedit.html');" title="Edit the code that gets loaded at start-up in this calculation center. Note you will only edit a local copy, so you can not accidentally destroy anything." />
+
+    <input type=button id="stopButton" value="Stop" onclick="yacasStopCurrentCalculation();" title="Stop the current calculation of a calculation is running." />
+
             </td>
             <td>
               Find function: <input type="text" id="funcLookup"/>

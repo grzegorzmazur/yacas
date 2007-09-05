@@ -236,8 +236,8 @@ function commandLinkClick()
   }
 }
 
-function yacasEval(expression)
-{ 
+function getConsoleApplet()
+{
   var consoleApplet = document.consoleApplet;
   if (!consoleApplet)
     consoleApplet = parent.document.consoleApplet;
@@ -247,26 +247,38 @@ function yacasEval(expression)
       if (!consoleApplet.isActive())
       {
         alert("Trying to execute an expression while the calculation center has not been initialized yet");
-        return;
+        consoleApplet = null;
       }
-    expression = getPlainText(expression);
+  }
+  return consoleApplet;
+}
 
+function yacasEval(expression)
+{ 
+  var consoleApplet = getConsoleApplet();
+  if (consoleApplet)
+  {
+    expression = getPlainText(expression);
     consoleApplet.AddInputLine(expression);
     consoleApplet.InvokeCalculationSilent(expression);
   }
 }
 
+function yacasStopCurrentCalculation()
+{
+  var consoleApplet = getConsoleApplet();
+  if (consoleApplet)
+  {
+    consoleApplet.StopCurrentCalculation();
+  }  
+}
+
 // Do a calculation, returning the result as a string
 function yacas_calculate(expression)
 { 
-  var consoleApplet = document.consoleApplet;
-  if (!consoleApplet)
-    consoleApplet = parent.document.consoleApplet;
+  var consoleApplet = getConsoleApplet();
   if (consoleApplet)
   {
-    if (consoleApplet.isActive)
-      if (!consoleApplet.isActive())
-        alert("Trying to execute an expression while the calculation center has not been initialized yet");
     return consoleApplet.calculate(getPlainText(expression));
   }
   return "False";
