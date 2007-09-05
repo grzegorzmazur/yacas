@@ -173,6 +173,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   {
   }
 
+  boolean calculating = false;
 
   LispOutput stdoutput = null;
   CYacas yacas = null;
@@ -489,7 +490,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
               if (inputLine.charAt(inputLine.length()-1) == '\\')
                 gatheredMultiLine = gatheredMultiLine + inputLine.substring(0,inputLine.length()-1);
               else
-                PerformRequest("Out> ",gatheredMultiLine+inputLine);
+                PerformRequest("Out> ",gatheredMultiLine+inputLine,true);
               ResetInput();
             }
             inputLine = inputLine+toInsert;
@@ -704,7 +705,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
             if (inputLine.charAt(inputLine.length()-1) == '\\')
               gatheredMultiLine = gatheredMultiLine + inputLine.substring(0,inputLine.length()-1);
             else
-              PerformRequest("Out> ",gatheredMultiLine+inputLine);
+              PerformRequest("Out> ",gatheredMultiLine+inputLine,true);
             ResetInput();
             RefreshHintWindow();
             repaint(0);
@@ -727,7 +728,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
     }
   }
-  void PerformRequest(String outputPrompt,String inputLine)
+  void PerformRequest(String outputPrompt,String inputLine, boolean doRepaint)
   {
     boolean succeed = false;
     if (inputLine.equals("restart"))
@@ -771,8 +772,17 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
     else
     {
+      ResetInput();
+      RefreshHintWindow();
+
+      calculating = true;
+      if (doRepaint)
+      {
+        paint(getGraphics());
+      }
       outp.delete(0,outp.length());
       String response = yacas.Evaluate(inputLine);
+      calculating = false;
 
       AddOutputLine(outp.toString());
       if (yacas.iError != null)
@@ -1019,7 +1029,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
  
     // Render image
     paintToBitmap(offGra);
-
     // put the OffScreen image OnScreen
     g.drawImage(offImg,0,0,null);
     if (hintWindow != null)
@@ -1129,7 +1138,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
     y=getHeight()-g.getFontMetrics().getDescent();
     outputDirty = false;
-    if (focusGained)
+    if (focusGained && !calculating)
     {
       if (inputDirty)
       {
@@ -1154,6 +1163,11 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     else
     {
       String toPrint = "Click here to enter an expression";
+      if (calculating)
+      {
+        toPrint = "Calculating...";
+      }
+      
       int promptLength = metrics.stringWidth(toPrint);
       g.setColor(Color.blue);
       g.setFont(font);
@@ -1472,9 +1486,11 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     if (!gotDatahubInit) start();
     AppendHistoryLine(expression);
     AddLinesStatic(48,"In> ",expression);
-    PerformRequest("Out> ",expression);
     ResetInput();
     RefreshHintWindow();
+    inputDirty = true;
+    outputDirty = true;
+    PerformRequest("Out> ",expression,false);
     inputDirty = true;
     outputDirty = true;
     repaint(0);
@@ -1518,11 +1534,24 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
   }
 
+  public void AddInputLine(String expression)
+  {
+    if (!gotDatahubInit) start();
+    AppendHistoryLine(expression);
+    AddLinesStatic(48,"In> ",expression);
+    ResetInput();
+    RefreshHintWindow();
+    inputDirty = true;
+    outputDirty = true;
+    calculating = true;
+    repaint(0);
+  }
 
   public void InvokeCalculationSilent(String expression)
   {
     outp.delete(0,outp.length());
     String response = yacas.Evaluate(expression);
+    calculating = false;
     AddOutputLine(outp.toString());
     if (yacas.iError != null)
     {

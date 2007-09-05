@@ -223,13 +223,16 @@ function getPlainText(text)
 
 function commandLinkClick()
 {
+  var expression = getPlainText(this.innerHTML);
   if (parent.document.consoleApplet)
   {
-    parent.document.consoleApplet.InvokeCalculation(getPlainText(this.innerHTML));
+    parent.document.consoleApplet.AddInputLine(expression);
+    parent.document.consoleApplet.InvokeCalculationSilent(expression);
   }
   else if (document.consoleApplet)
   {
-    document.consoleApplet.InvokeCalculation(getPlainText(this.innerHTML));
+    document.consoleApplet.AddInputLine(expression);
+    document.consoleApplet.InvokeCalculationSilent(expression);
   }
 }
 
@@ -246,7 +249,10 @@ function yacasEval(expression)
         alert("Trying to execute an expression while the calculation center has not been initialized yet");
         return;
       }
-    consoleApplet.InvokeCalculation(getPlainText(expression));
+    expression = getPlainText(expression);
+
+    consoleApplet.AddInputLine(expression);
+    consoleApplet.InvokeCalculationSilent(expression);
   }
 }
 
