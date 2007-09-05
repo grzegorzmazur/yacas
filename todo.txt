@@ -1,9 +1,6 @@
 
 TODO:
-- stop button from Javascript to halt a calculation:
-  - make it do its work only when a calculation is running
-  - make sure the -EvalDepth is cleaned up afterwards similar to the C++ version
-  - find a stop button gif icon.
+
 - Show little animation when some one clicks on an example from the autocompleter
 - test that new code that shows input in console before the calculation is done still works in IE and Firefox
 
