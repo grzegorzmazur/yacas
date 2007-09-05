@@ -24,6 +24,10 @@ public class CYacas
     String rs = "";
     try
     {
+       env.iEvalDepth=0;
+       env.iEvaluator.ResetStack();
+
+
       iError = null;
 
       LispPtr in_expr = new LispPtr();
