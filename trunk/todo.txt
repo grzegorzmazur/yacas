@@ -1,9 +1,8 @@
 
 TODO:
+
 - examples should have their own tests
 - graph plotter 2D for Java
-
-- sometimes there is a delay between the user clicking on an example and the example being executed. Need to make it visible that a calculation has started.
 
 - clean up the root dir (Windows readmes?)
 - precision.yts is not used yet, discard? Or fix?
