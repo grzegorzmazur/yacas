@@ -1565,6 +1565,10 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     repaint(0);
   }
 
+  public void StopCurrentCalculation()
+  {
+    yacas.env.iEvalDepth = yacas.env.iMaxEvalDepth+100;
+  }
 
 
 }
