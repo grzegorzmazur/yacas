@@ -454,6 +454,7 @@ function startExpressionAnimation(id,text)
   }
   if (elem != null && tg != null)
   {
+    var elemWidth = elem.offsetWidth;
     var cursorPosition = [0, 0];
     while (elem != null)
     {
@@ -470,6 +471,8 @@ function startExpressionAnimation(id,text)
     }
     else
     {
+      targetPosition[0] += tg.offsetWidth;
+      targetPosition[0] -= elemWidth;
       targetPosition[1] += tg.offsetHeight;
       targetPosition[1] -= 10;
       while (tg != null)
@@ -495,6 +498,10 @@ function startExpressionAnimation(id,text)
 
     document.getElementsByTagName("body")[0].appendChild(movingBox);
     setTimeout("animateExpressionMover()",10);
+  }
+  else
+  {
+    yacasEval(text);
   }
 }
 

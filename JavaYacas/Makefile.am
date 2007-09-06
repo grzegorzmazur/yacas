@@ -29,8 +29,8 @@ net/sf/yacas/YacasConsole.java net/sf/yacas/YacasCoreCommands.java \
 net/sf/yacas/YacasEvalCaller.java net/sf/yacas/YacasEvaluator.java net/sf/yacas/YacasParamMatcherBase.java \
 net/sf/yacas/YacasPatternPredicateBase.java net/sf/yacas/Yacasexception.java net/sf/yacas/CommonLispTokenizer.java \
 net/sf/yacas/GraphicsPrimitives.java net/sf/yacas/SBox.java net/sf/yacas/SBoxBuilder.java net/sf/yacas/TeXParser.java net/sf/yacas/FormulaViewApplet.java \
-convertfns.cpp makefile.yacas net/sf/yacas/tmp.java  net/sf/yacas/Article.java \
-todo.txt yacasconsole.html \
+makefile.yacas net/sf/yacas/tmp.java  net/sf/yacas/Article.java \
+yacasconsole.html \
 net/sf/yacas/CDataReader.java net/sf/yacas/HintItem.java \
 net/sf/yacas/HintWindow.java net/sf/yacas/Hints.java net/sf/yacas/SelectSymbol.java net/sf/yacas/TResult.java  \
 net/sf/yacas/TWord.java net/sf/yacas/YacasGraphicsContext.java \

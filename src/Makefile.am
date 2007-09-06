@@ -122,10 +122,9 @@ libmath_la_SOURCES = libmath.cpp
 EXTRA_DIST = anumber.inl deffile.inl  \
 	grower.inl lisphash.inl lispobject.inl \
 	lispstring.inl standard.inl \
-	win32dll.cpp win32dll.h compilescript.sh \
+	win32dll.cpp win32dll.h \
 	depend.dep makefile.genericstatic \
 	version.h \
-	convertcctocpp.bat \
 	plat/linux32/lisptype.h \
 	plat/linux32/stubs.inl \
 	plat/linux32/platfileio.h \
@@ -152,7 +151,7 @@ EXTRA_DIST = anumber.inl deffile.inl  \
 	README.LZO lzoconf.h minilzo.c minilzo.h decompressor.cpp \
 	compressor.cpp filescanner.cpp filescanner.h \
 	compressedfiles.h compress.bat \
-	compressor.dsp compressor.dsw win32rcwriter.cpp yacas.pas biginteger.cpp libmath.cpp \
+	compressor.dsp compressor.dsw win32rcwriter.cpp yacas.pas libmath.cpp \
   libmath_stub.cpp pcre_study_stub.c pcre_pcre_stub.c pcre_maketables_stub.c \
   pcre_pcreposix_stub.c pcre_get_stub.c pcre_plugin_stub.cpp \
   filescanner_stub.cpp filescanner_plugin_stub.cpp \
