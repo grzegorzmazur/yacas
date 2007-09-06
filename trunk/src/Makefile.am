@@ -114,11 +114,11 @@ EXTRA_DIST =  cyacas.cpp anumber.inl deffile.inl  \
 	README.LZO lzoconf.h minilzo.c minilzo.h decompressor.cpp \
 	compressor.cpp filescanner.cpp filescanner.h \
 	compressedfiles.h compress.bat \
-	compressor.dsp compressor.dsw win32rcwriter.cpp yacas.pas libmath.cpp \
+	compressor.dsp compressor.dsw win32rcwriter.cpp yacas.pas \
   libmath_stub.cpp pcre_study_stub.c pcre_pcre_stub.c pcre_maketables_stub.c \
   pcre_pcreposix_stub.c pcre_get_stub.c pcre_plugin_stub.cpp \
   filescanner_stub.cpp filescanner_plugin_stub.cpp \
-  fastprimes.c core_yacasmain.h $(srcdir)/libmath.cpp $(srcdir)/plugins_available.h
+  fastprimes.c core_yacasmain.h $(srcdir)/plugins_available.h
 
 
 # list some extra generated files

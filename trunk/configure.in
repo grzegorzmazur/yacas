@@ -240,6 +240,5 @@ AC_OUTPUT(Makefile
 	JavaYacas/Makefile
 	tests/Makefile
         manmake/Makefile
-        embed/Makefile
 	src/Makefile)
 
