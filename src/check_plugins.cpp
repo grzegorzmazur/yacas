@@ -4,27 +4,12 @@
 
 /*
   This executable has one output: it updates the file plugins_available.h. This header file contains
-  one define, EXE_DLL_PLUGINS. This symbol is defined if and only if: DISABLE_DYNAMIC is defined,
-  and the plugin files like libmath.cpp are available. For if DISABLE_DYNAMIC is not defined, we
-  want to load plugins as dlls. But if it is defined, we can not compile the plugins in yet because
-  the files are not yet available.
+  one define, EXE_DLL_PLUGINS. 
 */
 
 int main(int argc, char** argv)
 {
-  char* define = "//#define";
-  {
-//printf("1...\n");
-    FILE* f=fopen("libmath.cpp","rb");
-  if (f)
-  {
-//printf("2...\n");
-    // DISABLE_DYNAMIC is defined, but the plugin files are available, so compile them in statically
-      define = "#define";
-    fclose(f);
-  }
-//printf("3...\n");
-  }
+  char* define = "#define";
 
   char new_buf[1024];
   sprintf(new_buf,"#ifndef __plugins_available_h__\n#define __plugins_available_h__\n%s EXE_DLL_PLUGINS\n#endif /* __plugins_available_h__ */\n",define);
