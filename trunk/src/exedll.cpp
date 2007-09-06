@@ -30,7 +30,6 @@ static const ExeDllEntry exeDllentries[] =
 {
 #ifdef EXE_DLL_PLUGINS
   {"filescanner",make_filescanner},
-  {"libmath",make_libmath},
   {"pcre",make_pcre},
 #endif
 };

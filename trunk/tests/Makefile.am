@@ -20,7 +20,7 @@ BUILT_YACAS = ../src/yacas -pc --rootdir $(top_srcdir)/scripts/:../scripts/ --dl
 # To run the installed version of yacas
 INSTALLED_YACAS = $(bindir)/yacas -pc   
 
-EXTRA_DIST = test.bat _do_test.bat test-yacas $(NORMAL_TESTFILES) includetestfiles
+EXTRA_DIST =  test-yacas $(NORMAL_TESTFILES) includetestfiles
 
 .PHONY : quicktest
 

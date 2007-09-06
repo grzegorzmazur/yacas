@@ -29,7 +29,7 @@ yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp deffile.cpp
         lispplugin.cpp exedll.cpp genericstructs.cpp \
 	xmltokenizer.cpp \
         archiver.cpp compressedfiles.cpp commandline.cpp \
-	libmath_stub.cpp pcre_study_stub.c pcre_pcre_stub.c \
+	pcre_study_stub.c pcre_pcre_stub.c \
 	pcre_maketables_stub.c pcre_pcreposix_stub.c pcre_get_stub.c \
 	pcre_plugin_stub.cpp filescanner_stub.cpp filescanner_plugin_stub.cpp \
 	anumber.cpp yacasnumbers.cpp numbers.cpp \
@@ -71,8 +71,6 @@ plugin_stub_gen_SOURCES = plugin_stub_gen.cpp
 # Belay that order, Mr. Sulu!  What if the request was "make clean test"?  Use the innocuous "check" for now.
 ITERATIVEMAKE = $(MAKE) $(MAKEFLAGS) check
 
-# The libmath.cpp source file is generated as follows
-# TODO: Get the dependency (on .ys components) right, not piecemeal
 
 
 $(srcdir)/plugins_available.h:
@@ -113,16 +111,16 @@ EXTRA_DIST =  cyacas.cpp anumber.inl deffile.inl  \
 	compressedfiles.cpp \
 	README.LZO lzoconf.h minilzo.c minilzo.h decompressor.cpp \
 	compressor.cpp filescanner.cpp filescanner.h \
-	compressedfiles.h compress.bat \
+	compressedfiles.h \
 	compressor.dsp compressor.dsw win32rcwriter.cpp yacas.pas \
-  libmath_stub.cpp pcre_study_stub.c pcre_pcre_stub.c pcre_maketables_stub.c \
+   pcre_study_stub.c pcre_pcre_stub.c pcre_maketables_stub.c \
   pcre_pcreposix_stub.c pcre_get_stub.c pcre_plugin_stub.cpp \
   filescanner_stub.cpp filescanner_plugin_stub.cpp \
   fastprimes.c core_yacasmain.h $(srcdir)/plugins_available.h
 
 
 # list some extra generated files
-CLEANFILES = fastprimes.c core_yacasmain.h $(srcdir)/libmath.cpp $(srcdir)/plugins_available.h
+CLEANFILES = fastprimes.c core_yacasmain.h $(srcdir)/plugins_available.h
 
 $(srcdir)/platmath.cpp: fastprimes.c
 
@@ -130,9 +128,6 @@ fastprimes.c: mkfastprimes
 	./mkfastprimes > fastprimes.c
 # We don't want $(srcdir)/mkfastprimes because this executable
 # is not generated inside the $(srcdir). 
-
-libmath_stub.cpp:plugin_stub_gen $(srcdir)/plugins_available.h 
-	./plugin_stub_gen libmath_stub.cpp libmath.cpp
 
 pcre_study_stub.c:plugin_stub_gen $(srcdir)/plugins_available.h
 	./plugin_stub_gen pcre_study_stub.c ../plugins/pcre/study.c
