@@ -617,7 +617,7 @@ A problem arises on platforms that don't support plugins that well. In other ins
 additional dynamic link libraries. For this reason there is also a means to compile the Yacas so that the plugins are statically
 linked in to the Yacas kernel. One example is Mac OS X 10.4. For this platform pluginscan be used by configuring it as:
 
-	./configure CFLAGS="-O9 -DDISABLE_DYNAMIC" CXXFLAGS="-O9 -DDISABLE_DYNAMIC" --enable-server --disable-shared
+	./configure CFLAGS="-O9" CXXFLAGS="-O9" --enable-server 
 
 This chapter explains the inner workings of the boot strapping process that takes place when compiling the plugins in to the 
 Yacas kernel.
@@ -643,16 +643,13 @@ So the compilation is essentially a three-stage process:
 
 	    Inside the compilation process
 
-Compilation in to the Yacas kernel goes through the following process; one passes the flag {CFLAGS="-DDISABLE_DYNAMIC" CXFLAGS="-DDISABLE_DYNAMIC"} 
-to {./configure}, or something equivalent so that dynamic link libraries are not used any more.
-This tells the compiler that dynamic link libraries are not desired. The plugin file ExeDll.cpp is used in stead of its dynamic
-variants. This file makes sure the statically linked in variants can be accessed when they are available.
+The plugin file ExeDll.cpp is used in stead of its dynamic variants. This file makes sure the statically linked in variants can be accessed when they are available.
 
 Initially, one starts off without the compiled plugins (as the C++ code is not available yet). This
 A program built from {check_plugins.cpp} is used to check the availability of the generated plugins (to check if the generated C++
 files are available). The output of this program is a file {plugins_available.h} with either {EXE_DLL_PLUGINS} defined or not.
 
-The compilation system is controlled by two defines, {EXE_DLL_PLUGINS} and {DISABLE_DYNAMIC}. In order to make sure the dynamic version 
+The compilation system is controlled by the define, {EXE_DLL_PLUGINS} . In order to make sure the dynamic version 
 does not recompile, {check_plugins} does not re-generate the file {plugins_available.h} if it didn't change (to avoid infinite recompilation).
 
 If {EXE_DLL_PLUGINS} is not defined, the plugins can not be loaded (ExeDll.cpp does not provide access to them). Also,

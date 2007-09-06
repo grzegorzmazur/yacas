@@ -206,17 +206,12 @@ void LispExit(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispPluginsCanBeLoaded(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef DISABLE_DYNAMIC
-  InternalTrue(aEnvironment, RESULT);
-#else // DISABLE_DYNAMIC
-
 #ifdef EXE_DLL_PLUGINS
   InternalTrue(aEnvironment, RESULT);
 #else // EXE_DLL_PLUGINS
   InternalFalse(aEnvironment, RESULT);
 #endif // EXE_DLL_PLUGINS
 
-#endif // DISABLE_DYNAMIC
 }
 
 

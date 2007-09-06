@@ -20,9 +20,6 @@
 #include "substitute.h"
 #include "errors.h"
 #include "patcher.h"
-#ifndef DISABLE_DYNAMIC
-#include "platdll.h"
-#endif // DISABLE_DYNAMIC
 #include "exedll.h"
 
 #ifdef HAVE_MATH_H
@@ -656,12 +653,6 @@ void YacasDllLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
   {
     dll  = NEW ExeDll(maker);
   }
-  #ifndef DISABLE_DYNAMIC
-  else
-  {
-    dll  = NEW DLLCLASS;
-  }
-  #endif  // DISABLE_DYNAMIC
   Check(dll,KLispErrNotEnoughMemory);
 
   DBG_printf("DLL allocated -- %s\n",oper.c_str());
