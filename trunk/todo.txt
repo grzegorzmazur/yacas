@@ -1,6 +1,8 @@
 
 TODO:
-- remove everything even remotely related to parsing C++ (CTokenizer etcetera). 
+- C/C++ code checkers, should go at least from the scripts?
+- scripts/addons/ directories, to go?
+- scripts/examples/ do somewhere else?
 - try to remove dependency on libtool, takes up 800Kb!!!
 
 - examples should have their own tests
@@ -73,7 +75,7 @@ TODO:
 - document IsVariable
 - document the fact that VarList can also be called with a second argument, a filter predicate.
 - document Extended predicates in the pattern matcher (needs to be explained).
-- document CTokenizer(), DefaultTokenizer()
+- document DefaultTokenizer()
 - document XmlTokenizer, XmlExplodeTag
 - document BSearch, FindIsq Search for a zero in a monotonously growing function. BSearch returns -1 if not found, FindIsq returns the insertion point.
 - document MultiDivide, MultiGcd, Groebner
@@ -246,7 +248,6 @@ divisible by b.
   - Some more functions that are defined in yacasmain.cpp: Exit, IsExitRequested, HistorySize, StaSiz, IsPromptShown, ReadCmdLineString, FileSize
   - LispDefaultTokenizer
   - LispCommonLispTokenizer
-  - LispCTokenizer
   - LispXmlTokenizer
   - LispExplodeTag
   - LispCustomEval

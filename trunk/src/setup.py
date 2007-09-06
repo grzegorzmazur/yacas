@@ -12,7 +12,7 @@ yacas_source = [ 'deffile.cpp', 'infixparser.cpp', 'lispatom.cpp',
                  'arrayclass.cpp', 'lispevalhash.cpp', 'patterns.cpp', 'patternclass.cpp', 
                  'substitute.cpp', 'mathcommands2.cpp', 'mathcommands3.cpp', 'errors.cpp',
                  'patcher.cpp', 'lispplugin.cpp', 'genericstructs.cpp',
-                 'unipoly.cpp', 'ctokenizer.cpp', 'xmltokenizer.cpp', 'archiver.cpp',
+                 'unipoly.cpp', 'xmltokenizer.cpp', 'archiver.cpp',
                  'cyacas.cpp', 'platmath.cpp', 'grower.cpp', 'stdstubs.cpp', 'obmalloc.cpp',
                  'lisphash.cpp', 'lispstring.cpp', 'mathutil.cpp', 'yacasbase.cpp',
                  'anumber.cpp', 'yacasnumbers.cpp', 'win32dll.cpp' ]

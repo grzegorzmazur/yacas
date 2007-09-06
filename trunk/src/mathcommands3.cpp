@@ -736,12 +736,6 @@ void LispCommonLispTokenizer(LispEnvironment& aEnvironment, LispInt aStackTop)
   InternalTrue(aEnvironment,RESULT);
 }
 
-void LispCTokenizer(LispEnvironment& aEnvironment, LispInt aStackTop)
-{
-  aEnvironment.iCurrentTokenizer = &aEnvironment.iCTokenizer;
-  InternalTrue(aEnvironment,RESULT);
-}
-
 void LispXmlTokenizer(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   aEnvironment.iCurrentTokenizer = &aEnvironment.iXmlTokenizer;

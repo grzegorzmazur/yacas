@@ -17,7 +17,6 @@
 #include "stringio.h"
 #include "lispglobals.h"
 #include "lispplugin.h"
-#include "ctokenizer.h"
 #include "xmltokenizer.h"
 #include "errors.h"
 
@@ -357,7 +356,6 @@ private:
 public:
   LispTokenizer iDefaultTokenizer;
   CommonLispTokenizer iCommonLispTokenizer;
-  CTokenizer    iCTokenizer;
   XmlTokenizer  iXmlTokenizer;
   LispTokenizer* iCurrentTokenizer;
 
@@ -473,7 +471,6 @@ private:
     iPrettyPrinter(NULL),
     iDefaultTokenizer(),
     iCommonLispTokenizer(),
-    iCTokenizer(),
     iXmlTokenizer(),
     iCurrentTokenizer(NULL),
     iStack(0)

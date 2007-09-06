@@ -20,7 +20,7 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	stdfileio.h stringio.h stubs.h tokenizer.h yacas.h refcount.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
         patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
-        lispplugin.h genericstructs.h ctokenizer.h yacasprivate.h yacasbase.h xmltokenizer.h \
+        lispplugin.h genericstructs.h yacasprivate.h yacasbase.h xmltokenizer.h \
         archiver.h cyacas.h GPL_stuff.h vm.h 
 
 yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp
@@ -63,7 +63,7 @@ libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
 	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp \
         substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp \
         lispplugin.cpp ltdll.cpp exedll.cpp genericstructs.cpp \
-	ctokenizer.cpp xmltokenizer.cpp \
+	xmltokenizer.cpp \
         archiver.cpp compressedfiles.cpp commandline.cpp \
 	libmath_stub.cpp pcre_study_stub.c pcre_pcre_stub.c \
 	pcre_maketables_stub.c pcre_pcreposix_stub.c pcre_get_stub.c \

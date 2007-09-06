@@ -84,7 +84,6 @@ LispEnvironment::LispEnvironment(
     iPrettyPrinter(NULL),
     iDefaultTokenizer(),
     iCommonLispTokenizer(),
-    iCTokenizer(),
     iXmlTokenizer(),
     iCurrentTokenizer(&iDefaultTokenizer),
     iStack(aStackSize)
@@ -105,7 +104,6 @@ LispEnvironment::LispEnvironment(
     iList         = LispAtom::New(*this,"List");
     iProg         = LispAtom::New(*this,"Prog");
     PushLocalFrame(LispTrue);
-    iCTokenizer.SetRemarkReceiver(*this);
 }
 
 

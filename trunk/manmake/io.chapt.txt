@@ -646,7 +646,7 @@ combination of the semantics of the tokens. Hence {a := foo} consists of three t
 
 The parsing of the string depends on the syntax of the language.
 The part of the kernel that does the parsing is the "tokenizer".
-Yacas can parse its own syntax (the default tokenizer) or it can be instructed to parse XML or C++ syntax using the directives {DefaultTokenizer}, {XmlTokenizer}, or {CTokenizer}.
+Yacas can parse its own syntax (the default tokenizer) or it can be instructed to parse XML or C++ syntax using the directives {DefaultTokenizer} or {XmlTokenizer}.
 Setting a tokenizer is a global action that affects all {ReadToken} calls.
 
 *E.G. notest
@@ -1133,12 +1133,10 @@ If given a plain text string, the same string is returned.
 
 *CMD DefaultTokenizer --- select the default syntax tokenizer for parsing the input
 *CMD XmlTokenizer --- select an XML syntax tokenizer for parsing the input
-*CMD CTokenizer --- select a C syntax tokenizer for parsing the input
 *CORE
 *CALL
 	DefaultTokenizer()
 	XmlTokenizer()
-	CTokenizer()
 
 *DESC
 
@@ -1147,7 +1145,7 @@ This affects all input typed in by a user at the prompt and also the input redir
 
 The Yacas environment currently supports some experimental tokenizers for 
 various syntaxes. {DefaultTokenizer} switches to the tokenizer used for
-default Yacas syntax. {XmlTokenizer} switches to an XML syntax and {CTokenizer} to a C syntax.
+default Yacas syntax. {XmlTokenizer} switches to an XML syntax.
 Note that setting the tokenizer is a global side effect.
 One typically needs
 to switch back to the default tokenizer when finished reading the special syntax.
@@ -1166,8 +1164,6 @@ Yacas expression with {XmlExplodeTag}.
 Note that when reading XML, any plain text between tags is returned as one token.
 Any malformed XML will be treated as plain text.
 
-
-{CTokenizer} is an implementation of a C/C++ tokenizer. It is still work in progress.
 
 *EG notest
 

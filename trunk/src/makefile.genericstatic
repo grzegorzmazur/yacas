@@ -30,7 +30,7 @@ OBJS = anumber.o arggetter.o arrayclass.o commandline.o \
 	mathenvironment.o mathuserfunc.o mathutil.o patcher.o vm.o  \
 	patternclass.o patterns.o platmath.o standard.o                \
 	stdcommandline.o stdfileio.o stdstubs.o obmalloc.o stringio.o             \
-	substitute.o tokenizer.o xmltokenizer.o ctokenizer.o archiver.o fastprimes.o elfdll.o unixcommandline.o numbers.o \
+	substitute.o tokenizer.o xmltokenizer.o archiver.o fastprimes.o elfdll.o unixcommandline.o numbers.o \
 	yacasapi.o yacasmain.o yacasnumbers.o unipoly.o compressedfiles.o \
 	libmath.o exedll.o \
 	../plugins/pcre/study.o ../plugins/pcre/pcre.o \
