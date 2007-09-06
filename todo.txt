@@ -1,9 +1,10 @@
 
 TODO:
+- try to remove dependency on libtool, takes up 800Kb!!!
+
 - C/C++ code checkers, should go at least from the scripts?
 - scripts/addons/ directories, to go?
 - scripts/examples/ do somewhere else?
-- try to remove dependency on libtool, takes up 800Kb!!!
 
 - examples should have their own tests
 - graph plotter 2D for Java
