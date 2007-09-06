@@ -30,6 +30,7 @@ function initPage()
       {
         if (object.className == "commandlink")
         {
+          object.id = "command"+i;
           object.onmouseover=commandLinkOver;
           object.onmouseout=commandLinkOut;
           object.onclick=commandLinkClick;
@@ -223,7 +224,11 @@ function getPlainText(text)
 
 function commandLinkClick()
 {
+  var id = this.id;
   var expression = getPlainText(this.innerHTML);
+  startExpressionAnimation(id,expression);
+
+/*TODO remove
   if (parent.document.consoleApplet)
   {
     parent.document.consoleApplet.AddInputLine(expression);
@@ -234,6 +239,7 @@ function commandLinkClick()
     document.consoleApplet.AddInputLine(expression);
     document.consoleApplet.InvokeCalculationSilent(expression);
   }
+*/
 }
 
 function getConsoleApplet()
@@ -418,5 +424,97 @@ function getViewportSize()
   return size;
 }
 
+
+
+
+var movingLeft = 0;
+var movingTop  = 0;
+var movingSteps = 0;
+var movingBox = null;
+var movingDx = 10;
+var movingDy = 10;
+var movingNrSteps = 20;
+var movingText = "";
+function startExpressionAnimation(id,text)
+{
+  movingText = text;
+  if (movingBox)
+  {
+    document.getElementsByTagName("body")[0].removeChild(movingBox);
+    movingBox = null;
+  }
+
+  var elem = document.getElementById(id);
+  var tg = document.getElementById("consoleApplet");
+  var isTutorial = false;
+  if (tg == null)
+  {
+    isTutorial = true;
+    tg = parent.document.getElementById("consoleApplet");
+  }
+  if (elem != null && tg != null)
+  {
+    var cursorPosition = [0, 0];
+    while (elem != null)
+    {
+      cursorPosition[0] += elem.offsetLeft;
+      cursorPosition[1] += elem.offsetTop;
+      elem = elem.offsetParent;
+    }
+
+    var targetPosition = [0, 0];
+    if (isTutorial)
+    {
+      targetPosition[0] = cursorPosition[0];
+      targetPosition[1] = cursorPosition[1]-224;
+    }
+    else
+    {
+      targetPosition[1] += tg.offsetHeight;
+      targetPosition[1] -= 10;
+      while (tg != null)
+      {
+        targetPosition[0] += tg.offsetLeft;
+        targetPosition[1] += tg.offsetTop;
+        tg = tg.offsetParent;
+      }
+    }
+    movingLeft = cursorPosition[0];
+    movingTop  = cursorPosition[1];
+    movingSteps = 0;
+    movingBox = document.createElement("div");
+    movingBox.innerHTML = text;
+    movingBox.style.padding = "2px 2px 2px 2px;";
+    movingBox.style.color = "#000000";
+    movingBox.style.position = "absolute";
+    movingBox.style.left = movingLeft + "px";
+    movingBox.style.top = movingTop + "px";
+
+    movingDx = (targetPosition[0] - cursorPosition[0])/movingNrSteps;
+    movingDy = (targetPosition[1] - cursorPosition[1])/movingNrSteps;
+
+    document.getElementsByTagName("body")[0].appendChild(movingBox);
+    setTimeout("animateExpressionMover()",10);
+  }
+}
+
+function animateExpressionMover()
+{
+  if (movingSteps == movingNrSteps)
+  {
+    document.getElementsByTagName("body")[0].removeChild(movingBox);
+    movingBox = null;
+    yacasEval(movingText);
+  }
+  else
+  {
+    movingSteps += 1;
+    movingLeft += movingDx;
+    movingTop  += movingDy;
+    movingBox.style.left = movingLeft + "px";
+    movingBox.style.top = movingTop + "px";
+    setTimeout("animateExpressionMover()",10);
+  }
+}
 
 

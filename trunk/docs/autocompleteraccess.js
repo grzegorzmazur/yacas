@@ -42,7 +42,7 @@ function enterItem(id)
       var examples = hints[id+3].split("<sep>");
       for (var i=0;i<examples.length;i++)
       {
-        exString = exString + '<li><a href="javascript:yacasEval(unescape(\''+escape(examples[i])+'\'));">'+examples[i]+'</a>';
+        exString = exString + '<li><a id="demo'+i+'" href="javascript:startExpressionAnimation(\'demo'+i+'\', unescape(\''+escape(examples[i])+'\'));">'+examples[i]+'</a>';
       }
       exString = exString + "</ul>";
     }
@@ -102,15 +102,6 @@ exString;
 }
 
 
-var lastExampleIndex = 0;
-function getYacasExampleOnFunction(index)
-{
-  var name = hints[index];
-  var examples = name.split("<sep>");
-  var toUse = examples[lastExampleIndex % examples.length];
-  yacasEval(""+toUse);
-  lastExampleIndex = lastExampleIndex+1;
-}
 
 function searchSuggest()
 {
@@ -150,17 +141,12 @@ function updateHints(searchString)
     var lwr = searchString.toLowerCase();
     for (var i=0;i<hints.length;i=i+4)
     {
-      var exam = "";
       var exampleAvailable = false;
       if (hints[i+3] != "")
       {
         exampleAvailable = true;
-        if (allowDemos)
-        {
-          exam = '|   <a href="javascript:getYacasExampleOnFunction('+(i+3)+')">Demo<\/a>';
-        }
       }
-//title="'+hints[i+1]+'" 
+
       var line = '<div style="width:164px;" class="suggestions" id="'+i+'" onmouseover=\'enterItem("'+i+'");\'>'+hints[i]+'<\/div>';
       
       var matchIndex = -1;
@@ -184,7 +170,7 @@ function updateHints(searchString)
           matchIndex = 0;
         }
         // If no example given then the function is probably less important, put at the end.
-        if (exampleAvailable == "")
+        if (exampleAvailable == false)
           matchIndex = matchIndex + 4;
         if (lengths[matchIndex] < maxMatches)
         {
