@@ -233,7 +233,6 @@ CORE_KERNEL_FUNCTION("ExtraInfo'Set",YacasExtraInfoSet,2,YacasEvaluator::Functio
 CORE_KERNEL_FUNCTION("ExtraInfo'Get",YacasExtraInfoGet,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("DefaultTokenizer",LispDefaultTokenizer,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("CommonLispTokenizer",LispCommonLispTokenizer,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
-CORE_KERNEL_FUNCTION("CTokenizer",LispCTokenizer,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("XmlTokenizer",LispXmlTokenizer,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("XmlExplodeTag",LispExplodeTag,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("Builtin'Assoc",YacasBuiltinAssoc,2,YacasEvaluator::Function | YacasEvaluator::Fixed)

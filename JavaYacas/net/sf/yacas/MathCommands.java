@@ -540,9 +540,6 @@ class MathCommands
          new YacasEvaluator(new LispCommonLispTokenizer(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "CommonLispTokenizer");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispCTokenizer(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "CTokenizer");
-    aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispXmlTokenizer(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "XmlTokenizer");
     aEnvironment.CoreCommands().SetAssociation(
@@ -3708,15 +3705,6 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispCommonLispTokenizer");//TODO FIXME
-      throw new Yacasexception("Function not yet supported");
-    }
-  }
-
-  class LispCTokenizer extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispCTokenizer");//TODO FIXME
       throw new Yacasexception("Function not yet supported");
     }
   }

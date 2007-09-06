@@ -116,10 +116,6 @@ SOURCE=.\compressedfiles.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ctokenizer.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\cyacas.cpp
 # End Source File
 # Begin Source File

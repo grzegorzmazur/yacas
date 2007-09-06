@@ -111,10 +111,6 @@ SOURCE=.\compressedfiles.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\ctokenizer.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\deffile.cpp
 # End Source File
 # Begin Source File

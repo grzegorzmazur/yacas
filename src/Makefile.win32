@@ -13,7 +13,7 @@ OBJS = anumber.o archiver.o arggetter.o arrayclass.o commandline.o \
 	mathenvironment.o mathuserfunc.o mathutil.o patcher.o          \
 	patternclass.o patterns.o platmath.o standard.o                \
 	$(PLATDIR)\win32commandline.o stdfileio.o stdstubs.o obmalloc.o stringio.o    \
-	substitute.o tokenizer.o win32dll.o xmltokenizer.o ctokenizer.o    \
+	substitute.o tokenizer.o win32dll.o xmltokenizer.o    \
 	yacasapi.o $(PLATDIR)\yacasmain-win32.o yacasnumbers.o unipoly.o
 
 .SUFFIXES: .cpp 
