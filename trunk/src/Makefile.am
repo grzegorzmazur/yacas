@@ -1,15 +1,10 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 
-INCLUDES = @INCLTDL@ -I$(srcdir)/plat/linux32
+INCLUDES = -I$(srcdir)/plat/linux32
 
 bin_PROGRAMS =  yacas
 noinst_PROGRAMS = mkfastprimes check_plugins plugin_stub_gen gencorefunctions @COMPRESSOR_PRG@
-EXTRA_PROGRAMS = compressor testnum codereviewer
-libmath_USES = yacas$(EXEEXT) check_plugins$(EXEEXT)
-
-lib_LTLIBRARIES = libyacas.la libyacasplatform.la libcyacas.la  
-
-pkglib_LTLIBRARIES = libmath.la
+EXTRA_PROGRAMS = compressor codereviewer
 
 noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	infixparser.h lispassert.h lispatom.h lispcleanupstack.h \
@@ -21,17 +16,29 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
         patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
         lispplugin.h genericstructs.h yacasprivate.h yacasbase.h xmltokenizer.h \
-        archiver.h cyacas.h GPL_stuff.h vm.h 
+        archiver.h cyacas.h GPL_stuff.h vm.h ltdll.cpp 
 
-yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp
-yacas_LDADD = libyacas.la libyacasplatform.la @LIBLTDL@ 
-yacas_DEPENDENCIES = $(srcdir)/plugins_available.h libyacas.la libyacasplatform.la fastprimes.c version.h GPL_stuff.h 
+yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp deffile.cpp infixparser.cpp lispatom.cpp \
+	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp \
+	lispio.cpp lispobject.cpp lispparser.cpp vm.cpp \
+	lispuserfunc.cpp mathcommands.cpp mathenvironment.cpp \
+	mathuserfunc.cpp standard.cpp  stdfileio.cpp arggetter.cpp \
+	stringio.cpp tokenizer.cpp yacasapi.cpp genericobject.cpp \
+	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp \
+        substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp \
+        lispplugin.cpp exedll.cpp genericstructs.cpp \
+	xmltokenizer.cpp \
+        archiver.cpp compressedfiles.cpp commandline.cpp \
+	libmath_stub.cpp pcre_study_stub.c pcre_pcre_stub.c \
+	pcre_maketables_stub.c pcre_pcreposix_stub.c pcre_get_stub.c \
+	pcre_plugin_stub.cpp filescanner_stub.cpp filescanner_plugin_stub.cpp \
+	anumber.cpp yacasnumbers.cpp numbers.cpp \
+	platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
+	lispstring.cpp mathutil.cpp yacasbase.cpp debugmem.cpp fastprimes.c
 
-# order of libraries is important, before libyacas.la and that is before libyacasplatform.la
+yacas_DEPENDENCIES = $(srcdir)/plugins_available.h fastprimes.c version.h GPL_stuff.h 
 
-testnum_SOURCES = testnum.cpp 
-testnum_LDADD = libyacas.la libyacasplatform.la @LIBLTDL@ 
-testnum_DEPENDENCIES = libyacas.la libyacasplatform.la
+
 
 codereviewer_SOURCES = codereviewer.cpp 
 codereviewer_LDADD = 
@@ -54,27 +61,8 @@ check_plugins_SOURCES = check_plugins.cpp
 
 plugin_stub_gen_SOURCES = plugin_stub_gen.cpp
 
-libyacas_la_SOURCES = deffile.cpp infixparser.cpp lispatom.cpp \
-	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp \
-	lispio.cpp lispobject.cpp lispparser.cpp vm.cpp \
-	lispuserfunc.cpp mathcommands.cpp mathenvironment.cpp \
-	mathuserfunc.cpp standard.cpp  stdfileio.cpp arggetter.cpp \
-	stringio.cpp tokenizer.cpp yacasapi.cpp genericobject.cpp \
-	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp \
-        substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp \
-        lispplugin.cpp ltdll.cpp exedll.cpp genericstructs.cpp \
-	xmltokenizer.cpp \
-        archiver.cpp compressedfiles.cpp commandline.cpp \
-	libmath_stub.cpp pcre_study_stub.c pcre_pcre_stub.c \
-	pcre_maketables_stub.c pcre_pcreposix_stub.c pcre_get_stub.c \
-	pcre_plugin_stub.cpp filescanner_stub.cpp filescanner_plugin_stub.cpp \
-	anumber.cpp yacasnumbers.cpp numbers.cpp
 
-libcyacas_la_SOURCES = cyacas.cpp
 
-libyacasplatform_la_SOURCES = platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
-	lispstring.cpp mathutil.cpp yacasbase.cpp debugmem.cpp 
-libyacasplatform_la_DEPENDENCIES= fastprimes.c
 
 # We need iteration (rebuilding the same target multiple times).
 # This variable ensures non-empty cmd-goals, taking automake's default, "all".
@@ -86,40 +74,15 @@ ITERATIVEMAKE = $(MAKE) $(MAKEFLAGS) check
 # The libmath.cpp source file is generated as follows
 # TODO: Get the dependency (on .ys components) right, not piecemeal
 
-$(srcdir)/libmath.cpp: \
-		$(top_srcdir)/scripts/base.rep/math.ys \
-		$(top_srcdir)/scripts/compile.rep/compilecpp.ys
-	(cd ../scripts && $(MAKE) packages.ys corefunctions.ys)
-	echo "Set(LoadPlugIns,False);Use(\"yacasinit.ys\");" > compileinit.txt
-	echo "CompileCpp(\"base.rep/math.ys\",\"libmath\");" > compile.txt
-	@need='' list='$(libmath_USES)'; for p in $$list; do \
-	  if test ! -f $$p; then need="$$need $$p"; fi; \
-	done; \
-    test -z "$$need" || $(MAKE) $(MAKEFLAGS) $$need
-	-@ echo "Bad if crash or abort between next two commands."
-	./yacas --rootdir $(top_srcdir)/scripts -pc --init compileinit.txt compile.txt
-	./check_plugins || $(ITERATIVEMAKE) $(libmath_USES)
 
 $(srcdir)/plugins_available.h:
 	test -f check_plugins$(EXEEXT) || $(MAKE) $(MAKEFLAGS) check_plugins$(EXEEXT)
 	./check_plugins || echo "More to do..."
 
-# We used to have "libmath_la_LIBADD = libmath.lo" because libmath.cpp
-# is a built source. However, this broke the build process on some
-# Macs, so we replaced it by the line below. Hopefully, it will not
-# bite us later. Some discussion of this issue is at
-# http://www.gnu.org/software/automake/manual/html_node/Sources.html
-
-libmath_la_SOURCES = libmath.cpp
-
-# 
-# It appears these flags are not needed for Mac OSX. Keeping them around
-# for future reference...
-# libmath_la_LDFLAGS = -module -avoid-version -no-undefined 
-# 
 
 
-EXTRA_DIST = anumber.inl deffile.inl  \
+
+EXTRA_DIST =  cyacas.cpp anumber.inl deffile.inl  \
 	grower.inl lisphash.inl lispobject.inl \
 	lispstring.inl standard.inl \
 	win32dll.cpp win32dll.h \
@@ -243,14 +206,10 @@ compressor_SOURCES = compressor.cpp filescanner.cpp minilzo.c filescanner.h mini
 scripts.dat: compressor
 	./compressor - $(top_srcdir)/scripts/ scripts.dat 
 
-# doing testnum first because that test program still generates errors. This way we can also see the warnings from the other tests
-check: check-testnum @CHECK_ARCHIVE@ check-codereviewer
+check: @CHECK_ARCHIVE@ check-codereviewer
 
 check-archive: scripts.dat 
 	../src/yacas -pc --archive scripts.dat $(top_srcdir)/tests/arithmetic.yts
-
-check-testnum: testnum
-	./testnum
 
 check-codereviewer: codereviewer
 	./codereviewer c *.h *.inl *.cpp plat/*/*.h

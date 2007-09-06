@@ -67,7 +67,6 @@ OBJEXT = o
 PATH_SEPARATOR = :
 AMTAR = ${SHELL} /Users/ayalpinkus/projects/yacas/missing --run tar
 AR = ar
-AS = @AS@
 AWK = awk
 BOOKS_HTML = manicon.html
 CC = gcc
@@ -76,24 +75,16 @@ COMPRESSOR_PRG = compressor
 CPP = gcc -E
 CXX = g++
 DEPDIR = .deps
-DLLTOOL = @DLLTOOL@
-ECHO = echo
-INCLTDL = -I${top_srcdir}/libltdl
 INSTALL_ARCHIVE = install-archive
 INSTALL_HTML = install-html
 INSTALL_PS = 
 INSTALL_STRIP_PROGRAM = ${SHELL} $(install_sh) -c -s
-LIBLTDL = ${top_builddir}/libltdl/libltdlc.la
-LIBTOOL = $(SHELL) $(top_builddir)/libtool
-LN_S = ln -s
-OBJDUMP = @OBJDUMP@
 PACKAGE = yacas
 PDF_DOCS = 
 PS_DOCS = 
-RANLIB = ranlib
 RELEASE = 1
 SCRIPTS_DAT = scripts.dat
-STRIP = strip
+STRIP = 
 VERSION = 1.1.12
 am__include = include
 am__quote = 
@@ -161,15 +152,6 @@ $(srcdir)/Makefile.in:  Makefile.am  $(top_srcdir)/configure.in $(ACLOCAL_M4)
 	  $(AUTOMAKE) --gnu  JavaYacas/Makefile
 Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
-
-mostlyclean-libtool:
-	-rm -f *.lo
-
-clean-libtool:
-	-rm -rf .libs _libs
-
-distclean-libtool:
-	-rm -f libtool
 uninstall-info-am:
 tags: TAGS
 TAGS:
@@ -233,11 +215,11 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 clean: clean-am
 
-clean-am: clean-generic clean-libtool mostlyclean-am
+clean-am: clean-generic mostlyclean-am
 
 distclean: distclean-am
 
-distclean-am: clean-am distclean-generic distclean-libtool
+distclean-am: clean-am distclean-generic
 
 dvi: dvi-am
 
@@ -263,18 +245,17 @@ maintainer-clean-am: distclean-am maintainer-clean-generic
 
 mostlyclean: mostlyclean-am
 
-mostlyclean-am: mostlyclean-generic mostlyclean-libtool
+mostlyclean-am: mostlyclean-generic
 
 uninstall-am: uninstall-info-am
 
-.PHONY: all all-am check check-am clean clean-generic clean-libtool \
-	distclean distclean-generic distclean-libtool distdir dvi \
-	dvi-am info info-am install install-am install-data \
-	install-data-am install-exec install-exec-am install-info \
-	install-info-am install-man install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic \
-	mostlyclean-libtool uninstall uninstall-am uninstall-info-am
+.PHONY: all all-am check check-am clean clean-generic distclean \
+	distclean-generic distdir dvi dvi-am info info-am install \
+	install-am install-data install-data-am install-exec \
+	install-exec-am install-info install-info-am install-man \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic uninstall uninstall-am uninstall-info-am
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
