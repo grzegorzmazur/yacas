@@ -1,6 +1,7 @@
 
 TODO:
-- test that new code that shows input in console before the calculation is done still works in IE and Firefox
+- remove everything even remotely related to parsing C++ (CTokenizer etcetera). 
+- try to remove dependency on libtool, takes up 800Kb!!!
 
 - examples should have their own tests
 - graph plotter 2D for Java
@@ -25,6 +26,9 @@ TODO:
   - Future, change name of builtin functions that are not directly accessible to outside to have prefix Builtin'...
   - Skim through Math... functions, renaming them to Builtin'...
   - manuals, provide as zip files? more people can use unzip than can use untar.
+
+- yacas.pas, remove?
+
 
   - Example: RootsOfUnity (nice example of threading): Exp(2*Pi*I*(1 .. n)/n)
   - Example: Average (nice example of threading): Average(list_IsList) <-- Add(list)/Length(list); 
@@ -218,5 +222,48 @@ Mod(a,b) is defined as the smallest non-negative number c such that a-c is
 divisible by b.
 - Simplify(4-x-y) returns 4-y-x, Simplify(4-y-x) returns 4-x-y
 - following crashes. However, not sure if we need to fix this? One can also use ` and @, in stead of making Newton a macro. [  Local(expr); expr := 1800*x/1.5 - 1800; Newton(expr, x,2,0.001); ];
+
+7) Java applet improvements:
+============================================================================================================
+- Give "Where" a much lower precedence.
+- test: FromBase to also work with real numbers
+- test: ToBase to also work with real numbers
+- real fix for the sockets in yacasmain.cpp
+- Find out why MathPi is so slow when executed from script. Perhaps conversions to/from string in MathSin?
+- document the mental model for arb precision numerics
+- test program for the cyacas.h api
+- implement plots from Java
+
+- run test scripts in Java version, and fix problems accordingly
+- Functions to be implemented in the Java version still:
+  - LispFastMod
+  - YacasDllEnumerate
+  - YacasDllDirectory
+  - YacasDllLoad
+  - YacasDllUnload
+  - LispPatchLoad
+  - LispPatchString
+  - Some more functions that are defined in yacasmain.cpp: Exit, IsExitRequested, HistorySize, StaSiz, IsPromptShown, ReadCmdLineString, FileSize
+  - LispDefaultTokenizer
+  - LispCommonLispTokenizer
+  - LispCTokenizer
+  - LispXmlTokenizer
+  - LispExplodeTag
+  - LispCustomEval
+  - LispCustomEvalExpression
+  - LispCustomEvalResult
+  - LispCustomEvalLocals
+  - LispCustomEvalStop
+  - LispTraceRule
+  - LispTraceStack
+- command line flags for Java console version, useful for doing the test scripts
+- Supporting the default read-eval-print loop from script in Java?
+- Run the tests from Java
+- Give some performance statistics on comparison between Java and C++
+
+
+
+
+
 
 
