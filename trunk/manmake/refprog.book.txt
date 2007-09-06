@@ -1936,7 +1936,7 @@ the library header file.
 
 Declare an include file (a header file for the library, for instance)
 The delimiters need to be specified too. So, for a standard library
-like the one needed for OpenGL, you need to specify
+ you need to specify
 	StubApiCInclude("\<GL/gl.h\>")
 and for user include file:
 	StubApiCInclude("\"GL/gl.h\"")
