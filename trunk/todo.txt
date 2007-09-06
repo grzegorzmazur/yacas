@@ -4,7 +4,6 @@
 TODO:
 - remove documentation on embed/ seeing as we now removed it
 - remove any code in the scripts that tries to build plugins, as it will not work any more
-- search for --disable-shared and --enable-shared
 - should check_plugins.cpp go?
 - remove the code that built libmath.cpp
 - remove the compiler code that builds plugins from the scripts.
@@ -13,6 +12,8 @@ TODO:
 - make sure embedded scripts still work.
 
 - remove Delphi and Python bindings we have so far.
+
+- remove all the Dll'... functions, just start them up by default automatically.
 
 - C/C++ code checkers, should go at least from the scripts?
 - scripts/addons/ directories, to go?
