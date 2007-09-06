@@ -1,13 +1,11 @@
 
 
-SUBDIRS =  example forth yacas_gsl pcre filescanner
+SUBDIRS =  example forth pcre filescanner
 
-EXTRA_DIST = doc.txt extract_stub.pl README    
+EXTRA_DIST = doc.txt extract_stub.pl    
 
 macosx:
 	cd example ; make example.dylib
-	cd forth ; make forth.dylib
-	cd yacas_gsl ; make yacas_gsl.dylib
 
 
 

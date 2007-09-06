@@ -4,7 +4,7 @@
 
 Plugins are dynamic libraries loaded at runtime.
 They are normally used to provide access to external libraries or applications.
-{Yacas} comes with a few plugins, such as the GSL plugin.
+{Yacas} comes with a few plugins.
 This chapter contains the documentation generated for each plugin.
 
 *REM sections written by hand
@@ -13,8 +13,6 @@ This chapter contains the documentation generated for each plugin.
 *INCLUDE pcre.chapt
 
 *REM sections generated automatically
-
-*INCLUDE yacas_gsl.chapt
 
 *INCLUDE example.chapt
 
