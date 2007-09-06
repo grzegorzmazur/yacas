@@ -12,8 +12,3 @@ This chapter contains the documentation generated for each plugin.
 *INCLUDE filescanner.chapt
 *INCLUDE pcre.chapt
 
-*REM sections generated automatically
-
-*INCLUDE example.chapt
-
-*INCLUDE forth.chapt
