@@ -251,8 +251,6 @@ AC_SUBST(LIBLTDL)
 AC_OUTPUT(Makefile
 	docs/Makefile
 	plugins/Makefile
-	plugins/example/Makefile
-	plugins/forth/Makefile
 	plugins/pcre/Makefile
 	plugins/filescanner/Makefile
 	scripts/Makefile

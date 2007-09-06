@@ -572,10 +572,6 @@ is installed in {pkglib} (which defaults to {/usr/local/lib/yacas})
 when the user gives the {make install} command.
 
 The following plugins are included with Yacas:
-*	The example plugin resides in {plugins/example} (see its
-<*documentation in the Reference Manual|yacasdoc://ref/22/4/*>).
-*	The Forth plugin resides in {plugins/forth} (see its
-<*documentation in the Reference Manual|yacasdoc://ref/22/6/*>).
 *	The regular expressions plugin resides in {plugins/pcre} (see
 its <*documentation in the Reference Manual|yacasdoc://ref/22/2/*>).
 *	The filescanner plugin resides in {plugins/filescanner} (see
