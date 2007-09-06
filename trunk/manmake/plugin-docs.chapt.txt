@@ -15,6 +15,7 @@ This chapter contains the documentation generated for each plugin.
 *REM sections generated automatically
 
 *INCLUDE yacas_gsl.chapt
+
 *INCLUDE example.chapt
-*INCLUDE opengl.chapt
+
 *INCLUDE forth.chapt
