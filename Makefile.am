@@ -9,8 +9,8 @@
 ## suite in "tests". In addition, one of the tests to be run is generated in
 ## "manmake".
 
-SUBDIRS = . docs libltdl src scripts \
-	plugins manmake tests embed \
+SUBDIRS = . docs src scripts \
+	plugins manmake tests \
 	JavaYacas 
 
 ## A script to be installed in the directory for binaries

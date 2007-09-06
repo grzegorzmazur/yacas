@@ -229,23 +229,6 @@ jb_PREFIX_EXPAND([libdir])
 
 AC_DEFINE_UNQUOTED(SCRIPT_DIR, "$jb_expanded_scriptdir", [ Directory in which scripts are installed ])
 AC_DEFINE_UNQUOTED(PLUGIN_DIR, "$jb_expanded_libdir/$PACKAGE", [ Directory in which plugins are installed ])
-               
-# libtool support
-# ---------------
-
-# Configure libltdl:
-AC_CONFIG_SUBDIRS(libltdl)
-# Search for dlopen():
-AC_LIBTOOL_DLOPEN
-# Build libltdl as convenience library:
-AC_LIBLTDL_CONVENIENCE
-# Configure libtool:
-AM_PROG_LIBTOOL
-# Substitute INCLTDL and LIBLTDL in the Makefiles
-# (INCLDT lists include flags for the compiler,
-#  LIBLDT lists libraries to link in for the linker)
-AC_SUBST(INCLTDL)
-AC_SUBST(LIBLTDL)
 
 # All done
 AC_OUTPUT(Makefile
