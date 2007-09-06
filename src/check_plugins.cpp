@@ -13,7 +13,6 @@
 int main(int argc, char** argv)
 {
   char* define = "//#define";
-#ifdef DISABLE_DYNAMIC
   {
 //printf("1...\n");
     FILE* f=fopen("libmath.cpp","rb");
@@ -26,7 +25,6 @@ int main(int argc, char** argv)
   }
 //printf("3...\n");
   }
-#endif // DISABLE_DYNAMIC
 
   char new_buf[1024];
   sprintf(new_buf,"#ifndef __plugins_available_h__\n#define __plugins_available_h__\n%s EXE_DLL_PLUGINS\n#endif /* __plugins_available_h__ */\n",define);

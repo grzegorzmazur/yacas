@@ -1,8 +1,10 @@
 
 TODO:
+- make sure --disable shared and -DDISABLE_DYNAMIC are not needed any more.
 - remove documentation on embed/ seeing as we now removed it
 - remove any code in the scripts that tries to build plugins, as it will not work any more
-
+- search for --disable-shared and --enable-shared
+- should check_plugins.cpp go?
 
 - C/C++ code checkers, should go at least from the scripts?
 - scripts/addons/ directories, to go?
