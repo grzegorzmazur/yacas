@@ -2,19 +2,26 @@
 
 
 TODO:
+
+- PATH_SEPARATOR?
+- gnuplot
+- gmt
+- plotutils
+- remove platform-specific code:
+  - remove TeXShowPS?
+  - other functions defined in addons.chapt.txt, remove all.
+
+- removing plugin support:
+  - do a grep on "plugin", and clean up
+  - auto-load the plugins
+  - remove all the Dll'... functions, just start them up by default automatically.
+
 - remove any code in the scripts that tries to build plugins, as it will not work any more
 
-- remove GetYacasPID, ShowPS, Vi
-
-- remove PSViewCommand and friends (TeXShowPS also)
 
 - make sure embedded scripts still work.
 
 - in yacasinit.ys, make base.rep/math.ys also defloaded
-
-- remove Delphi and Python bindings we have so far.
-
-- remove all the Dll'... functions, just start them up by default automatically.
 
 - C/C++ code checkers, should go at least from the scripts?
 - scripts/addons/ directories, to go?

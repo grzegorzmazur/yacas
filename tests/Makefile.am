@@ -15,7 +15,7 @@ include includetestfiles
 
 
 # To run the version of yacas in the build tree
-BUILT_YACAS = ../src/yacas -pc --rootdir $(top_srcdir)/scripts/:../scripts/ --dlldir ../plugins/example:../src/ 
+BUILT_YACAS = ../src/yacas -pc --rootdir $(top_srcdir)/scripts/:../scripts/ 
 
 # To run the installed version of yacas
 INSTALLED_YACAS = $(bindir)/yacas -pc   

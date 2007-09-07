@@ -5,11 +5,8 @@
 /// List of all defined backends and their symbolic labels.
 /// Add any new backends here 
 Plot3DS'outputs() := {
-	{"default", "gnuplot"},
+	{"default", "data"},
 	{"data", "Plot3DS'data"},
-	{"datafile", "Plot3DS'datafile"},
-	{"gnuplot", "Plot3DS'gnuplot"},
-	{"gmt", "Plot3DS'gmt"},
 };
 
 /*
@@ -26,102 +23,4 @@ Plot3DS'outputs() := {
 
 /// trivial backend: return data list (do not confuse with Plot3DS'get'data() defined in the main code which is the middle-level plotting routine)
 Plot3DS'data(values_IsList, _options'hash) <-- values;
-
-/// backend: display graph using gnuplot
-Plot3DS'gnuplot(values_IsList, _options'hash) <--
-[
-  Local(item, dirBase, filename'list, control'file);
-  dirBase := make'plotting'dir(options'hash);
-  // write all data to file(s) and save the filenames
-  filename'list := Plot3DS'datafile(values, options'hash);
-  // prepare the control file for gnuplot
-  control'file := MakeFilePath(dirBase, "gnuplot.in");
-  ToFile(control'file)
-  [
-	WriteString("set surface" : Nl() 
-	: If(options'hash["hidden"], "set hidden3d" : Nl(), ""));
-	// 'set xrange [-5:5]'
-    WriteString("set xrange [");
-	Write(options'hash["xrange"][1]);
-	WriteString(" : ");
-	Write(options'hash["xrange"][2]);
-	WriteString("]" : Nl());
-    WriteString("set yrange [");
-	Write(options'hash["yrange"][1]);
-	WriteString(" : ");
-	Write(options'hash["yrange"][2]);
-	WriteString("]" : Nl());
-	If(
-		options'hash["zrange"] != Empty,
-		[
-			WriteString("set zrange [");
-			Write(options'hash["zrange"][1]);
-			WriteString(" : ");
-			Write(options'hash["zrange"][2]);
-			WriteString("]" : Nl());
-		]
-	);
-	WriteString("set dgrid3d ");
-	Write(1+options'hash["xpoints"]*2^(options'hash["depth"] - options'hash["used depth"]));
-	WriteString(",");
-	Write(1+options'hash["ypoints"]*2^(options'hash["depth"] - options'hash["used depth"]));
-	WriteString(",");
-	Write(4);	// gnuplot's "norm" for its primitive interpolation
-	WriteString(Nl());
-	// 'plot "data1" title "y(x)" with lines, "data2" title "z(x)" with lines'
-	WriteString("splot ");
-	For(item:=1, item<=Length(values), item++)
-	[
-		WriteString("\"" : ConvertOSPath(filename'list[item], "Unix") : "\" title \"" : options'hash["zname"][item] : "\" with lines");
-		// add a comma if necessary
-		If(item<Length(values), WriteString(", "));
-	];
-	WriteString(Nl());
-	// special handling for Win32 platforms
-	WriteString(GnuplotExtraCmd());
-  ];
-  SystemCall(GnuplotCmd(control'file));
-];
-
-/// backend: write data into file.
-/// Filename must be specified in options as options'hash["filename"].
-/// Returns the list of created filenames
-/// This backend is used by other backends to write data to files.
-Plot3DS'datafile(values_IsList, _options'hash) <--
-[
-	Local(item, func, filename, filename'list);
-	filename'list := {};
-	For(func:=1, func<=Length(values), func++)
-	[
-		filename := options'hash["filename"]:String(func);
-		DestructiveAppend(filename'list, filename);
-		ToFile(filename) ForEach(item, values[func]) WriteDataItem(item, options'hash);
-		If(InVerboseMode(), Echo( "Plot3DS'datafile: created file '" : filename :  "'"), True);
-	];
-	filename'list;
-];
-
-/// backend: use GMT and the script yacas-gmtplot3d.sh
-Plot3DS'gmt(values_IsList, _options'hash) <--
-[
-  Local(dirBase, filename'list, script'file, ps'file);
-  dirBase := make'plotting'dir(options'hash);
-  // use a special shell script file for plotting
-  script'file := FindFile("yacas-gmtplot3d.sh");
-  Check(script'file!="", "Missing file yacas-gmtplot3d.sh");
-  // write postscript to this file
-  ps'file := MakeFilePath(dirBase, "gmt-out.ps");
-  // write all data to file(s) and save the filenames
-  filename'list := Plot3DS'datafile(values, options'hash);
-  SystemCall("sh " : script'file : " -o " : ps'file
-    : " -grid " : (ToString()Write(
-  options'hash["xpoints"]*2^(options'hash["depth"] - options'hash["used depth"]), options'hash["ypoints"]*2^(options'hash["depth"] - options'hash["used depth"]) ))
-    : If(options'hash["zrange"] != Empty, " -zrange "
-	  : ToString()Write(options'hash["zrange"][1], options'hash["zrange"][2])
-	  , "")
-    : " " : PrintList(filename'list, " ") );
-  Echo("Displaying PS file");
-  SystemCall(PSViewCommand() : " " : ps'file : " &");
-
-];
 

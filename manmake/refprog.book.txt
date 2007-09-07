@@ -1740,10 +1740,7 @@ if the plugin is loaded successfully, and {False} otherwise.
 
 If the argument {file} does not specify a directory, all directories
 in the path for Yacas plugins are searched. This path is built up by
-calls to {Dll'Directory}. In addition, it contains the default plugin
-directory which is specified by the command line option {--dlldir} 
-(see <*yacasdoc://ref/1/#command-line options!summary*>).
-If this option is not present, the default plugin directory is as
+calls to {Dll'Directory}. The default plugin directory is as
 specified at compile time (the default value is
 {/usr/local/lib/yacas}).
 

@@ -7,9 +7,7 @@ DEFINES = \
   -DHAVE_MATH_H   \
   -DSUPPORT_SERVER \
   -DACCEPT_TYPE_ARG3="socklen_t *" \
-  -DPLATFORM_OS=\"Generic\" \
   -DPLUGIN_HANDLER="ElfDll " \
-  -DPLUGIN_DIR="\"./\"" \
   -DEXE_DLL_PLUGINS \
   -DHAVE_DIRENT_H
 
