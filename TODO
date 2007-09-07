@@ -7,8 +7,9 @@ TODO:
   - optimize Dll'Load away.
 - make sure embedded plugins still work.
 
+- ../manmake/wester-1994.ys should end with yts
+
 - C/C++ code checkers, should go at least from the scripts?
-- scripts/addons/ directories, to go?
 - scripts/examples/ do somewhere else?
 
 - examples should have their own tests
@@ -285,7 +286,6 @@ divisible by b.
 - Is there not enough in common between the different files platfileio.h that we should perhaps consider merging them?
 - When exception thrown within N(...) then reset all globals that were changed.
 - For N, Verbose, etcetera, in stead of LocalSymbols guarding scope, perhaps a macro that generalizes the concept (with getters and setters, for a type of expandable singleton).
-- ../manmake/wester-1994.ys should end with yts
 - have the application work in a directory structure that is identical to the source tree. --rootdir should be more general (set it and you can find the documentation also, etcetera).
 - plotting functions are extremely verbose, this code needs to be reduced I feel
 - other os-ish modules that I think are ugly, ShowPS ? Tries to write to /tmp/? 

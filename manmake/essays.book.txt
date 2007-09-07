@@ -28,7 +28,5 @@ to general issues related to the Yacas system development and maintenance.
 
 *INCLUDE new.chapt
 
-*INCLUDE CodeTransformation.chapt
-
 *REM GNU Free Documentation License
 *INCLUDE FDL.chapt
