@@ -93,14 +93,12 @@ CODINGSOURCES = YacasDebugger.chapt.txt FDL.chapt.txt
 ESSAYCHAPTERS = ABIN-grammar.chapt \
 	SimpleTools.chapt CVS-Howto.chapt YacasDocs.chapt \
 	wester-1994.chapt new.chapt paper.chapt \
-	wordproblems.chapt FDL.chapt BuildSystem.chapt \
-	CodeTransformation.chapt
+	wordproblems.chapt FDL.chapt BuildSystem.chapt 
 
 ESSAYSOURCES = ABIN-grammar.chapt.txt \
 	SimpleTools.chapt.txt CVS-Howto.chapt.txt YacasDocs.chapt.txt \
         paper.chapt.txt wester-1994.chapt.txt new.chapt.txt \
-	wordproblems.chapt.txt FDL.chapt.txt BuildSystem.chapt.txt \
-	CodeTransformation.chapt.txt
+	wordproblems.chapt.txt FDL.chapt.txt BuildSystem.chapt.txt 
 
 
 # Yacas test code extracted from the docs
