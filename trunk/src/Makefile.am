@@ -3,7 +3,7 @@
 INCLUDES = -I$(srcdir)/plat/linux32
 
 bin_PROGRAMS =  yacas
-noinst_PROGRAMS = mkfastprimes check_plugins plugin_stub_gen gencorefunctions @COMPRESSOR_PRG@
+noinst_PROGRAMS = mkfastprimes plugin_stub_gen gencorefunctions @COMPRESSOR_PRG@
 EXTRA_PROGRAMS = compressor codereviewer
 
 noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
@@ -36,7 +36,7 @@ yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp deffile.cpp
 	platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
 	lispstring.cpp mathutil.cpp yacasbase.cpp debugmem.cpp fastprimes.c
 
-yacas_DEPENDENCIES = $(srcdir)/plugins_available.h fastprimes.c version.h GPL_stuff.h 
+yacas_DEPENDENCIES = plugins_available.h fastprimes.c version.h GPL_stuff.h 
 
 
 
@@ -57,15 +57,8 @@ core_yacasmain.h: $(srcdir)/yacasmain.cpp
 
 mkfastprimes_SOURCES = mkfastprimes.cpp 
 
-check_plugins_SOURCES = check_plugins.cpp
 
 plugin_stub_gen_SOURCES = plugin_stub_gen.cpp
-
-
-
-$(srcdir)/plugins_available.h:
-	test -f check_plugins$(EXEEXT) || $(MAKE) $(MAKEFLAGS) check_plugins$(EXEEXT)
-	./check_plugins || echo "More to do..."
 
 
 EXTRA_DIST =  cyacas.cpp anumber.inl deffile.inl  \
@@ -88,11 +81,9 @@ EXTRA_DIST =  cyacas.cpp anumber.inl deffile.inl  \
 	plat/win32/stubs.inl  \
 	plat/win32/win32commandline.cpp \
 	plat/win32/win32commandline.h   \
-	plat/win32/yacas.dsp            \
-	plat/win32/yacas_exe.dsp        \
 	plat/win32/yacasmain-win32.cpp Makefile.win32 \
 	yacas.dsp yacas.dsw \
-  debugmem.h mkfastprimes.dsp \
+	debugmem.h mkfastprimes.dsp \
 	win32dllresource.h win32yacasdll.h win32yacasdll.cpp \
 	win32yacasdllresource.h yacasdll.dsp yacasdll.dsw yacasdll.rc \
 	setup.py yacasc.i yacas.py \
@@ -104,11 +95,11 @@ EXTRA_DIST =  cyacas.cpp anumber.inl deffile.inl  \
    pcre_study_stub.c pcre_pcre_stub.c pcre_maketables_stub.c \
   pcre_pcreposix_stub.c pcre_get_stub.c pcre_plugin_stub.cpp \
   filescanner_stub.cpp filescanner_plugin_stub.cpp \
-  fastprimes.c core_yacasmain.h $(srcdir)/plugins_available.h
+  fastprimes.c core_yacasmain.h plugins_available.h
 
 
 # list some extra generated files
-CLEANFILES = fastprimes.c core_yacasmain.h $(srcdir)/plugins_available.h
+CLEANFILES = fastprimes.c core_yacasmain.h 
 
 $(srcdir)/platmath.cpp: fastprimes.c
 
@@ -117,36 +108,36 @@ fastprimes.c: mkfastprimes
 # We don't want $(srcdir)/mkfastprimes because this executable
 # is not generated inside the $(srcdir). 
 
-pcre_study_stub.c:plugin_stub_gen $(srcdir)/plugins_available.h
+pcre_study_stub.c:plugin_stub_gen plugins_available.h
 	./plugin_stub_gen pcre_study_stub.c ../plugins/pcre/study.c
 
-pcre_pcre_stub.c:plugin_stub_gen $(srcdir)/plugins_available.h
+pcre_pcre_stub.c:plugin_stub_gen plugins_available.h
 	./plugin_stub_gen pcre_pcre_stub.c ../plugins/pcre/pcre.c
 
-pcre_maketables_stub.c:plugin_stub_gen $(srcdir)/plugins_available.h
+pcre_maketables_stub.c:plugin_stub_gen plugins_available.h
 	./plugin_stub_gen pcre_maketables_stub.c ../plugins/pcre/maketables.c
 
-pcre_pcreposix_stub.c:plugin_stub_gen $(srcdir)/plugins_available.h
+pcre_pcreposix_stub.c:plugin_stub_gen plugins_available.h
 	./plugin_stub_gen pcre_pcreposix_stub.c ../plugins/pcre/pcreposix.c
 
-pcre_get_stub.c:plugin_stub_gen $(srcdir)/plugins_available.h
+pcre_get_stub.c:plugin_stub_gen plugins_available.h
 	./plugin_stub_gen pcre_get_stub.c ../plugins/pcre/get.c
 
-pcre_plugin_stub.cpp:plugin_stub_gen $(srcdir)/plugins_available.h
+pcre_plugin_stub.cpp:plugin_stub_gen plugins_available.h
 	./plugin_stub_gen pcre_plugin_stub.cpp ../plugins/pcre/plugin.cpp
 	cd ../plugins/pcre/ ; make chartables.c
 
-filescanner_stub.cpp:plugin_stub_gen $(srcdir)/plugins_available.h
+filescanner_stub.cpp:plugin_stub_gen plugins_available.h
 	./plugin_stub_gen filescanner_stub.cpp filescanner.cpp
 
-filescanner_plugin_stub.cpp:plugin_stub_gen $(srcdir)/plugins_available.h
+filescanner_plugin_stub.cpp:plugin_stub_gen plugins_available.h
 	./plugin_stub_gen filescanner_plugin_stub.cpp ../plugins/filescanner/plugin.cc
 
 #workaround that hopefully allows compiling Yacas out of the box, 
 #dependency on the plugins_available.h header file
-exedll.$(OBJEXT) yacasmain.$(OBJEXT): $(srcdir)/plugins_available.h
+exedll.$(OBJEXT) yacasmain.$(OBJEXT): plugins_available.h
 
-exedll.cpp yacasmain.cpp: $(srcdir)/plugins_available.h
+exedll.cpp yacasmain.cpp: plugins_available.h
 
 
 yacas_include = $(datadir)/yacas/include

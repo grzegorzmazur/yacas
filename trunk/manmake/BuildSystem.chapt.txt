@@ -410,7 +410,7 @@ arbitrary precision arithmetics. In addition, the {libcyacas} library (see
 <*yacasdoc://essays/3/4/*>) is built.
 *	Building the executables. Besides the Yacas executables, we
 also build {mkfastprimes} and {gencorefunctions} (which are needed to
-generate some source files), the {testnum} executable, and the {codereviewer} executable (which does a static analysis of code 
+generate some source files), and the {codereviewer} executable (which does a static analysis of code 
 and can in some circumstances also fix the code where the coding
 style is not adhered to).
 
@@ -627,44 +627,5 @@ Yacas kernel.
 The process of creating a small initial program, then have that program compile parts of itself and then recompile the system
 with these new parts added in is often called boot strapping. The mechanism works as follows: 
 
-There are C++ files that together
-define the minimum Yacas kernel. Compiling this in to an executable gives one the smallest Yacas kernel possible. The functionality
-available from the scripts is already available at this stage, as this micro kernel can interpret these scripts. 
-
-With this Yacas micro-kernel it is possible to compile scripts in to C++ code. The step after that is to re-compile the Yacas kernel
-telling the compiler the generated C++ files are available. After that, the Yacas kernel has the functionality compiled in.
-
-So the compilation is essentially a three-stage process:
-
-*	1. Compile the Yacas micro kernel
-*	2. Use the micro-kernel to compile scripts
-*	3. Re-compile the kernel, with the available scripts this time
-
-
-	    Inside the compilation process
-
-The plugin file ExeDll.cpp is used in stead of its dynamic variants. This file makes sure the statically linked in variants can be accessed when they are available.
-
-Initially, one starts off without the compiled plugins (as the C++ code is not available yet). This
-A program built from {check_plugins.cpp} is used to check the availability of the generated plugins (to check if the generated C++
-files are available). The output of this program is a file {plugins_available.h} with either {EXE_DLL_PLUGINS} defined or not.
-
-The compilation system is controlled by the define, {EXE_DLL_PLUGINS} . In order to make sure the dynamic version 
-does not recompile, {check_plugins} does not re-generate the file {plugins_available.h} if it didn't change (to avoid infinite recompilation).
-
-If {EXE_DLL_PLUGINS} is not defined, the plugins can not be loaded (ExeDll.cpp does not provide access to them). Also,
-a function in the kernel provides this information, through the function {PluginsCanBeLoaded()}. This way {yacasinit.ys} knows
-whether to load the plugins or rather load the scripts instead.
-
-In addition, there is a stub for each plugin, which roughly looks like:
-
-	#ifdef EXE_DLL_PLUGINS
-	#include "SomePlugin.cpp"
-	#endif // EXE_DLL_PLUGINS
-
-This in order to not have to change the files that need to be compiled. When {SomePlugin.cpp} is available, {EXE_DLL_PLUGINS}
-can be defined, and the code available. These stubs are generated with the program built from {plugin_stub_gen.cpp}.
-
-
-
+There are C++ files that together define the minimum Yacas kernel. Compiling this in to an executable gives one the smallest Yacas kernel possible. The functionality available from the scripts is already available at this stage, as this micro kernel can interpret all the scripts. 
 
