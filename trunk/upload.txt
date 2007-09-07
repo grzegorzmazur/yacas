@@ -1,5 +1,0 @@
-binary
-cd WWW
-cd backups
-mput yacas-*.tar.gz 
-quit

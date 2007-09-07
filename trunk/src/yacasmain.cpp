@@ -54,15 +54,12 @@
 #ifndef WIN32
   #include "unixcommandline.h"
   #define FANCY_COMMAND_LINE CUnixCommandLine
-  /* PLATFORM_OS is defined in config.h */
 #else
   #define _WINSOCKAPI_            // Prevent inclusion of winsock.h in windows.h
   #define _WIN32_WINDOWS 0x0410      // Make sure that Waitable Timer functions are declared in winbase.h
   #include "win32commandline.h"
   #define FANCY_COMMAND_LINE CWin32CommandLine
   #define SCRIPT_DIR ""
-  #define PLUGIN_DIR ""
-  #define PLATFORM_OS "Win32"
 #endif
 
 #include "stdcommandline.h"
@@ -125,16 +122,8 @@ int hideconsolewindow=0;
 #ifndef SCRIPT_DIR
   #define SCRIPT_DIR "none"
 #endif
-#ifndef PLUGIN_DIR
-  #define PLUGIN_DIR "none"
-#endif
-#ifndef PLATFORM_OS
-  #define PLATFORM_OS "none"
-#endif
-
 
 char* root_dir    = SCRIPT_DIR;
-char* dll_dir     = PLUGIN_DIR;
 #ifndef WIN32
   char* archive     = NULL;
 #else
@@ -193,10 +182,6 @@ void ReportNrCurrent()
 
 #define RESULT aEnvironment.iStack.GetElement(aStackTop)
 #define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
-void LispPlatformOS(LispEnvironment& aEnvironment, LispInt aStackTop)
-{
-  RESULT = (LispAtom::New(aEnvironment,"\"" PLATFORM_OS "\""));
-}
 
 void LispExit(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
@@ -513,7 +498,6 @@ void LoadYacas(LispOutput* aOutput=NULL)
 
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) yacas->getDefEnv().getEnv().SetCommand(fname,iname,nrargs,flags);
 
-CORE_KERNEL_FUNCTION("OSVersion",LispPlatformOS,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("Exit",LispExit,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("IsExitRequested",LispExitRequested,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("HistorySize",LispHistorySize,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
@@ -596,23 +580,6 @@ CORE_KERNEL_FUNCTION("PluginsCanBeLoaded",LispPluginsCanBeLoaded,0,YacasEvaluato
           ShowResult("");
           read_eval_print = NULL;
         }
-    }
-
-    {
-        /* Split up dll_dir in pieces separated by colons, and run
-           Dll'Directory on each of them. */
-        char *ptr1, *ptr2;
-        ptr1 = ptr2 = dll_dir;
-        while (*ptr1 != '\0') {
-            while (*ptr1 != '\0' && *ptr1 != ':') ptr1++;
-            if (*ptr1 == ':') {
-                *ptr1 = '\0';
-                DeclareDllPath(ptr2);
-                ptr1++;
-                ptr2 = ptr1;
-            }
-        }
-        DeclareDllPath(ptr2);
     }
 
     if (yacas->IsError())
@@ -1186,12 +1153,6 @@ int main(int argc, char** argv)
                 fileind++;
                 if (fileind<argc)
                   root_dir = argv[fileind];
-            }
-            else if (!strcmp(argv[fileind],"--dlldir"))
-            {
-                fileind++;
-                if (fileind<argc)
-                  dll_dir = argv[fileind];
             }
             else if (!strcmp(argv[fileind],"--archive"))
             {

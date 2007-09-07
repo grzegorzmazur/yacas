@@ -578,9 +578,6 @@ class MathCommands
          new YacasEvaluator(new LispPluginsCanBeLoaded(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "PluginsCanBeLoaded");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispPlatformOS(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "OSVersion");
-    aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispExit(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "Exit");
     aEnvironment.CoreCommands().SetAssociation(
@@ -3947,13 +3944,6 @@ class MathCommands
     {
       //TODO fixme need to enable this in the end if plugins are available
       LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
-    }
-  }
-  class LispPlatformOS extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,"\"J2SE\""));
     }
   }
 

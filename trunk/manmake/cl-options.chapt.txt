@@ -13,7 +13,6 @@ Here is a summary of options:
 *	{-p} (do not use terminal capabilities)
 *	{-t} (enable extra history features)
 *	{--archive} <i>filename</i> (use a given library archive file)
-*	{--dlldir} <i>directory</i> (specify default directory for plugins)
 *	{--init} <i>filename</i> (use a given initial file)
 *	{--patchload} (use {PatchLoad} to load files)
 *	{--read-eval-print} <i>expression</i> (call this expression for the read-eval-print loop)
@@ -136,12 +135,6 @@ path that is passed to {DefaultDirectory}. It is also possible to give a
 list of directories, separated by a colon, e.g. 
 {yacas --rootdir scripts/:morescripts/}.
 Note that it is not necessary to append a trailing slash to the directory names.
-
-	yacas --dlldir [directory]
-Tells the system where to find the plugins. Here {directory} is a
-path that is passed to {Dll'Directory}. It is also possible to give a
-list of directories separated by a colon.
-The default value is specified at compile time, usually {/usr/local/lib/yacas}.
 
 	yacas --archive [file]
 Use a compressed archive instead of the script library.

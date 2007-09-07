@@ -24,8 +24,7 @@ PLOTTINGSCRIPTS = yacas-gmtplot2d.sh yacas-gmtplot3d.sh
 
 EXTRA_DIST = makemake mkhomepage \
 	yacas.sh doxy_yacas \
-	upload.txt \
-	$(bin_SCRIPTS) $(PLOTTINGSCRIPTS) conf-macosx.sh
+	$(bin_SCRIPTS) conf-macosx.sh
 
 # The target "test" is an alias for "check"
 test: check
@@ -41,15 +40,4 @@ texdocs:
 htmldocs:
 	cd manmake; make manicon.html
 
-backup:
-	-rm yacas-*.tar.gz
-	make dist
-	yacas --patchload -pc docs/downloads.html.in > downloads.html
-	ftp -i ftp.xs4all.nl < upload.txt
 
-## Install the plotting scripts
-install-data-local: $(PLOTTINGSCRIPTS)
-	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/
-	-for file in $(PLOTTINGSCRIPTS); do \
-	   $(INSTALL_DATA) $(srcdir)/$$file $(DESTDIR)$(pkgdatadir)/$$file; \
-	done

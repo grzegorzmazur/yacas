@@ -103,11 +103,6 @@ and standard scripts.
 This command adds "path" to the list of directories in which Yacas
 looks for plugins. 
 
-Note there will be at least one directory specified at start-up
-time. If the command line option {--dlldir} is given, the default
-directory for plugins will be the argument to the option. Otherwise,
-it is a directory specified at compile time.
-
 This command always evaluates to {True}.
 
 *E.G.
