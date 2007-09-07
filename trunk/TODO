@@ -4,12 +4,11 @@
 TODO:
 
 - removing plugin support:
-  - do a grep on "plugin", and clean up
   - auto-load the plugins
+  - do a grep on "plugin", and clean up
   - remove all the Dll'... functions, just start them up by default automatically.
 
 - remove any code in the scripts that tries to build plugins, as it will not work any more
-
 
 - make sure embedded plugins still work.
 
