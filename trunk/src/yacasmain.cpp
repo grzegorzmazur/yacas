@@ -618,103 +618,10 @@ CORE_KERNEL_FUNCTION("PluginsCanBeLoaded",LispPluginsCanBeLoaded,0,YacasEvaluato
     if (yacas->IsError())
         ShowResult("");
 
-    /* renaming .cc to .cpp files (I know, doesn't belong here ;-) ) */
-    /*
-    {
-        DIR *dp;
-        struct dirent* entry;
-        struct stat statbuf;
-        char dir[256];
-        strcpy(dir,"/root/myprojects/yacas-latest/src/");
-        if ((dp = opendir(dir)) != NULL)
-        {
-            while ((entry = readdir(dp)) != NULL)
-            {
-                memset(&statbuf,0,sizeof(struct stat));
-                stat(entry->d_name,&statbuf);
-                if (S_ISDIR(statbuf.st_mode))
-                    continue;
-                char *ext;
-                ext = strstr(entry->d_name,".cc");
-                if (ext==NULL)
-                    continue;
-                if (strcmp(ext,".cc"))
-                    continue;
-                char dummy[256];
-                strcpy(dummy,entry->d_name);
-                strstr(dummy,".cc")[0] = '\0';
-                char cmd[256];
-                sprintf(cmd,"mv %s.cc %s.cpp",dummy,dummy);
-                system(cmd);
-            }
-        }
-    }
-    return;
-*/
-    //Loading user addons
     if (use_texmacs_out)
     {
         printf("%cverbatim:",TEXMACS_DATA_BEGIN);
     }
-#ifndef WIN32 //TODO fix, with the file scanner in ramscripts
-    if (root_dir != NULL && root_dir[0] != '\0')
-    {
-        DIR *dp;
-        struct dirent* entry;
-        struct stat statbuf;
-        char dir[256];
-        char cwd[256];
-#ifdef HAVE_VSNPRINTF
-        snprintf(dir,256,"%saddons/",root_dir);
-#else
-        sprintf(dir,"%saddons/",root_dir);
-#endif
-
-        if ((dp = opendir(dir)) != NULL)
-        {
-            {
-                char ld[256];
-#ifdef HAVE_VSNPRINTF
-                snprintf(ld,256,"DefaultDirectory(\"%saddons/\");",root_dir);
-#else
-                sprintf(ld,"DefaultDirectory(\"%saddons/\");",root_dir);
-#endif
-                yacas->Evaluate(ld);
-            }
-            getcwd(cwd,256);
-            chdir(dir);
-            while ((entry = readdir(dp)) != NULL)
-            {
-                memset(&statbuf,0,sizeof(struct stat));
-                stat(entry->d_name,&statbuf);
-                if (S_ISDIR(statbuf.st_mode))
-                    continue;
-                char *ext;
-                ext = strstr(entry->d_name,".def");
-                if (ext==NULL)
-                    continue;
-                if (strcmp(ext,".def"))
-                    continue;
-                char buf[512];
-                char dummy[256];
-                strcpy(dummy,entry->d_name);
-                strstr(dummy,".def")[0] = '\0';
-                if (show_prompt && !use_texmacs_out)
-                    printf("[%s] ",dummy);
-#ifdef HAVE_VSNPRINTF
-                snprintf(buf,512,"DefLoad(\"%s\");",dummy);
-#else
-                sprintf(buf,"DefLoad(\"%s\");",dummy);
-#endif
-                yacas->Evaluate(buf);
-            }
-            closedir(dp);
-            chdir(cwd);
-            if (show_prompt)
-                printf("\n");
-        }
-    }
-#endif
     {
         char fname[256];
 #ifdef HAVE_VSNPRINTF

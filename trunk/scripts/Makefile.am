@@ -141,10 +141,9 @@ uninstall-local:
 
 ## Scripts are not automatically distributed, so force this
 
-EXTRA_DIST = $(ALLSCRIPTS) addons/README maketest 
+EXTRA_DIST = $(ALLSCRIPTS) maketest 
 
 # Automatically generate a full list of all .def files
-# note addons/ directory should be excluded because Yacas reads it already
 
 all-local: $(srcdir)/packages.ys $(srcdir)/corefunctions.ys
 
