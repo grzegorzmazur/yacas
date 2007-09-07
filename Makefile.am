@@ -19,9 +19,7 @@ bin_SCRIPTS =
 ## EXTRA_DIST contains the files automake does not know about, that need to go
 ## in the distribution. Note that scripts are not distributed by default.
 
-EXTRA_DIST = makemake mkhomepage \
-	yacas.sh doxy_yacas \
-	$(bin_SCRIPTS) conf-macosx.sh
+EXTRA_DIST = makemake mkhomepage $(bin_SCRIPTS) 
 
 # The target "test" is an alias for "check"
 test: check
