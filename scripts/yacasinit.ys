@@ -31,7 +31,7 @@ Rule("Defun",3,0,True)
   `Rule(@fn, @nrargs, 0,True)(@bd);
 ];
 
-Use("base.rep/math.ys");
+//TODO remove? Use("base.rep/math.ys");
 
 Use("patterns.rep/code.ys");
 // at this point <-- can be used

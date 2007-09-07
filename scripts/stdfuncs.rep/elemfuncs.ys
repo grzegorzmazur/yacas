@@ -7,13 +7,7 @@
  *  then the kernel version will automatically shadow these functions.
  *  These implementations are not necessarily the best optimized versions.
  */
-/* this is now moved to base.rep/math.ys
-/// MathMul2Exp(x,n): multiply x by 2^n for integer n. This should be implemented in the core, but it doesn't hurt to define it here as well.
-10 # MathMul2Exp(_x,0) <-- x;
-20 # MathMul2Exp(_x,_n) <-- MathMultiply(x, MathPower(2,n));
-//20 # MathMul2Exp(_x,_n)_(n>0) <-- MathMultiply(x, MathPower(2,n));
-//30 # MathMul2Exp(_x,_n)_(n<0) <-- MathDivide(x, MathPower(2,-n));
-*/
+
 /// BitsToDigits(n,base) and DigitsToBits(n,base). Enough to compute at low precision.
 // this is now a call to the kernel functions, so leave as a reference implementation
 BitsToDigits(n, base) := MathFloor(0.51+n*N(Ln(2)/Ln(base),10));
@@ -50,25 +44,6 @@ DigitsToBits(n, base) := MathFloor(0.51+n*N(Ln(base)/Ln(2),10));
 	nbits;
 ];
 /**/
-
-/* this is already moved to base.rep/math.ys
-/// MathPower(x,y).
-/// Compute x^y, using a binary algorithm for integer y and exp/log for all other cases.
-/// FIXME: No precision tracking yet.
-// identities:
-5 # MathPower(0, _y) <-- 0;
-5 # MathPower(1, _y) <-- 1;
-
-7 # MathPower(_x, 0) <-- 1;
-7 # MathPower(_x, 1) <-- x;
-
-8 # MathPower(_x, y_IsInteger) _ (y<0) <-- MathDivide(1, MathPower(x, -y));
-
-// integer powers:
-10 # MathPower(_x, y_IsInteger) <-- IntPowerNum(x, y, MathMultiply, 1);
-// real powers: this needs precision tracking.
-20 # MathPower(_x, _y) <-- MathExp(MathMultiply(y,MathLog(x)));
-*/
 
 /// MathSqrt(x).
 MathSqrt(x) := MathSqrt1(x);	// to have another function is easier for debugging
@@ -239,27 +214,6 @@ MathSqrtFloat(_A) <--
 	x;
 ];
 
-/// MathExp(x). Use the shifted squaring argument reduction and Taylor series.
-/// FIXME: No precision tracking yet.
-/* This is mostly moved to base.rep/math.ys
-10 # MathExp(0) <-- 1;
-20 # MathExp(_x)_(x<0) <-- MathDivide(1, MathExp(-x));
-30 # MathExp(_x)_(x>1) <-- MathExp(MathMul2Exp(x,-1))^2;
-40 # MathExp(_x) <--
-// now 0<x<1
-[	Local(y, prec, shift, result);
-	prec:=Builtin'Precision'Get();
-	// find the optimal number of divisions by 2.
-	// it is approximately (P*Ln(10)/Ln(2))^(1/3)-BitCount(P)
-	shift := IntNthRoot(Div(prec*28738,8651),3)-MathBitCount(prec);
-	// increase precision by some bits to allow for roundoff
-	Builtin'Precision'Set(prec+IntLog(prec, 10)+2);
-	// compute Exp(x/2^shift) - 1
-	result := MathExp'Doubling1(MathExp'Taylor1(MathMul2Exp(x,-shift)), shift);
-	Builtin'Precision'Set(prec);
-	RoundTo(1+result, prec);
-];
-*/
 /// Identity transformation, compute Exp(x)-1 from value=Exp(x/2^n)-1
 
 MathExp'Doubling1(value, n) :=

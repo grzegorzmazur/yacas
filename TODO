@@ -6,7 +6,6 @@ TODO:
   - auto-load the plugins
   - optimize Dll'Load away.
 - make sure embedded plugins still work.
-- in yacasinit.ys, make base.rep/math.ys also defloaded
 
 - C/C++ code checkers, should go at least from the scripts?
 - scripts/addons/ directories, to go?
