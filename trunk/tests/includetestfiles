@@ -10,7 +10,7 @@ NORMAL_TESTFILES = \
 	scopestack.yts plots.yts GaussianIntegers.yts nummethods.yts sturm.yts \
         cyclotomic.yts binaryfactors.yts 
 
-SPECIAL_TESTFILES = ../manmake/wester-1994.ys
+SPECIAL_TESTFILES = ../manmake/wester-1994.yts
 
 TESTFILES = $(NORMAL_TESTFILES) $(SPECIAL_TESTFILES)
 QUICKTESTFILES = simplify.yts sturm.yts
