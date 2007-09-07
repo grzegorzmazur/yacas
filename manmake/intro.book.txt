@@ -172,7 +172,6 @@ The script {yacas_client} reads {Yacas} commands from the standard input and pas
 
 	8:20pm Unix>echo "x:=3" | yacas_client
 	Starting server.
-	[editvi] [gnuplot]
 	True;
 	To exit Yacas, enter  Exit(); or quit
 	  or Ctrl-c. Type ?? for help.

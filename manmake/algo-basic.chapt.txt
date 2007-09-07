@@ -170,11 +170,6 @@ So, unless adaptive refinement is disabled, the function {Plot3DS} produces a so
 However, most surface plotting programs require that the set of data points be a rectangular grid in the parameter space.
 So a smoothing and interpolation procedure is necessary to convert a non-gridded set of data points ("scattered" data) to a gridded set.
 
-The program {gnuplot} has this facility (the "{set dgrid3d}" command), although its implementation may not be optimal for all purposes.
-The current solution is to use the {dgrid3d} command and to generate a grid at the highest level of bisection ever used during the adaptive refinement process.
-This quite possibly generates many more grid points than necessary, but a more optimal solution would be more much more time-consuming or would require a specialized external program.
-One such set of programs is the {GMT} ("generic mapping tools") utility suite.
-
 		Parametric plots
 
 *A plotting!parametric

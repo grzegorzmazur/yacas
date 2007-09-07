@@ -864,7 +864,7 @@ The result is presented as a line given by the equation $y=f(x)$.
 Several functions can be plotted at once.
 Various plotting options can be specified.
 Output can be directed to a plotting program (the default is to use
-{gnuplot}), to a data file, or to a list of values.
+{data}) to a list of values.
 
 The function parameter {f(x)} must evaluate to a Yacas expression containing
 at most one variable. (The variable does not have to be called {x}.)
@@ -894,23 +894,17 @@ Options are of the form {option=value}. Currently supported option names
 are: "points", "precision", "depth", "output", "filename", "yrange". Option values
 are either numbers or special unevaluated atoms such as {data}.
 If you need to use the names of these atoms
-in your script, strings can be used (e.g. {output="gnuplot"}). Several option/value pairs may be specified (the function {Plot2D} has a variable number of arguments).
+in your script, strings can be used. Several option/value pairs may be specified (the function {Plot2D} has a variable number of arguments).
 
 *	{yrange}: the range of ordinates to use for plotting, e.g.
 {yrange=0:20}. If no range is specified, the default is usually to
-leave the choice to the plotting backend. {gnuplot} and {plotutils}
-will choose the range automatically based on actual values (which may
-give visually inadequate plots if the function has a singularity).
+leave the choice to the plotting backend. 
 *	{points}: initial number of points (default 23) -- at least that
 many points will be plotted. The initial grid of this many points will be
 adaptively refined. 
 *	{precision}: graphing precision (default $10^(-6)$). This is interpreted as the relative precision of computing the integral of $f(x)-Min(f(x))$ using the grid points. For a smooth, non-oscillating function this value should be roughly 1/(number of screen pixels in the plot).
 *	{depth}: max. refinement depth, logarithmic (default 5) -- means there will be at most $2^depth$ extra points per initial grid point.
-*	{output}: name of the plotting backend. Supported names:
-{gnuplot} (default), {plotutils}, {datafile}, {data}.
-The {gnuplot} and {plotutils} backends will display
-the plot on the screen (this requires either the {gnuplot} program or the GNU {plotutils} suite).
-The {datafile} backend will write the numerical data to a text file with specified name.
+*	{output}: name of the plotting backend. Supported names: {data} (default).
 The {data} backend will return the data as a list of pairs such as {{{x1,y1}, {x2,y2}, ...}}.
 *	{filename}: specify name of the created data file. For example: {filename="data1.txt"}.
 The default is the name {"output.data"}.
@@ -929,21 +923,6 @@ singularities.)
 
 *WIN32
 
-On the Wind*ws platforms, there are some limitations:
-*	The {gnuplot} program must be installed on the path, or in the same directory as Yacas is started.
-The executable must be called {wgnupl32.exe} and the file {wgnuplot.mnu} must be there as well.
-*	The {plotutils} backend is not yet supported.
-*	Some extra messages are printed to the console.
-*	All files are created in the subdirectory {plot.tmp} under the current directory; also the system cannot determine whether the current directory is writable and whether the {plot.tmp} subdirectory has been successfully created.
-
-*E.G. notest
-	In> Plot2D({(2+x)/(2-x),Exp(y)},-1.8:1.5)
-	Out> True;
-	In> V(Plot2D(Sin(1/x),0:1, depth=4, \
-	In>   precision=0.001, output=plotutils))
-	Plot2D: using 65 points for function Sin(1/x)
-	Plot2D'datafile: created file '/tmp/plot.tmp/data1'
-	Out> True;
 
 
 *SEE V, NFunction, Plot3DS
@@ -978,7 +957,7 @@ The result is presented as a surface given by the equation $z=f(x,y)$.
 Several functions can be plotted at once, by giving a list of functions.
 Various plotting options can be specified.
 Output can be directed to a plotting program (the default is to use
-{gnuplot}), to a data file, or to a list of values.
+{data}), to a list of values.
 
 The function parameter {f(x,y)} must evaluate to a Yacas expression containing
 at most two variables. (The variables do not have to be called {x} and {y}.)
@@ -1010,7 +989,7 @@ Options are of the form {option=value}. Currently supported option names
 are "points", "xpoints", "ypoints", "precision", "depth", "output", "filename", "xrange", "yrange", "zrange". Option values
 are either numbers or special unevaluated atoms such as {data}.
 If you need to use the names of these atoms
-in your script, strings can be used (e.g. {output="gnuplot"}). Several option/value pairs may be specified (the function {Plot3DS} has a variable number of arguments).
+in your script, strings can be used (e.g. {output="data"}). Several option/value pairs may be specified (the function {Plot3DS} has a variable number of arguments).
 
 *	{xrange}, {yrange}: optionally override coordinate ranges. Note that {xrange} is always the first variable and {yrange} the second variable, regardless of the actual variable names.
 *	{zrange}: the range of the $z$ axis to use for plotting, e.g.
@@ -1024,16 +1003,8 @@ adaptively refined.
 If {points} is specified, it serves as a default for both {xpoints} and {ypoints}; this value may be overridden by {xpoints} and {ypoints} values.
 *	{precision}: graphing precision (default $0.01$). This is interpreted as the relative precision of computing the integral of $f(x,y)-Min(f(x,y))$ using the grid points. For a smooth, non-oscillating function this value should be roughly 1/(number of screen pixels in the plot).
 *	{depth}: max. refinement depth, logarithmic (default 3) -- means there will be at most $2^depth$ extra points per initial grid point (in each coordinate).
-*	{output}: name of the plotting backend. Supported names:
-{gnuplot} (default), {datafile}, {data}.
-The {gnuplot} backend will display
-the plot on the screen (this requires the {gnuplot} suite).
-The {datafile} backend will write the numerical data to a text file with specified name.
+*	{output}: name of the plotting backend. Supported names: {data} (default).
 The {data} backend will return the data as a list of triples such as {{{x1, y1, z1}, {x2, y2, z2}, ...}}.
-*	{hidden}: boolean value, whether to use the hidden-line visualization. Default is {True}. Currently used only for {gnuplot} backend.
-*	{filename}: specify name of the created data file. For example: {filename="data1.txt"}.
-The default is the name {"output.data"}.
-Note that if several functions are plotted, the data files will have a number appended to the given name, for example {data.txt1}, {data.txt2}.
 
 Other options may be supported in the future.
 

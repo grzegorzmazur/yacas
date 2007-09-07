@@ -16,9 +16,6 @@ SUBDIRS = . docs src scripts \
 ## A script to be installed in the directory for binaries
 bin_SCRIPTS = yacas_client
 
-## These scripts are needed to support plotting with GMT
-PLOTTINGSCRIPTS = yacas-gmtplot2d.sh yacas-gmtplot3d.sh
-
 ## EXTRA_DIST contains the files automake does not know about, that need to go
 ## in the distribution. Note that scripts are not distributed by default.
 

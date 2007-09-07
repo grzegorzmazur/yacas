@@ -837,7 +837,6 @@ By using a command such as
 one can create a source text file {file.chapt.txt} corresponding to the Yacas documentation file {file.chapt}. For example:
 
 	12:51pm scriabin> book2txt.sh intro.book
-	[editvi.ys] [gnuplot.ys] 
 	True;
 	Out> True;
 	Quitting...

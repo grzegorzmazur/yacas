@@ -155,7 +155,7 @@ Apart from the syntax, operators are exactly the same as any other functions, th
 
 Plotting is currently supported via the {Plot2D} and {Plot3DS} functions.
 Functions of one or two variables can be plotted on given intervals with a given precision.
-{Yacas} generates all numerical data for plots, while external programs such as {gnuplot} or {plotutils} are executed to actually produce and display the plots.
+{Yacas} generates all numerical data for plots.
 
 *SEE Plot2D, Plot3DS
 
