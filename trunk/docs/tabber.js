@@ -1,5 +1,5 @@
 /*==================================================
-  $Id: tabber.js,v 1.5 2007-09-05 12:58:40 ayalpinkus Exp $
+  $Id: tabber.js,v 1.6 2007-09-07 12:29:23 ayalpinkus Exp $
   tabber.js by Patrick Fitzgerald pat@barelyfitz.com
 
   Documentation can be found at the following URL:
@@ -452,20 +452,23 @@ tabberObj.prototype.navSetActive = function(tabberIndex)
 "If this page includes a Yacas calculation center, and you are visiting this page for the first time, "+
 "it could take a minute to download the program."+
 "</p></center>";
-      setTimeout("initTabPAgeIFrame('"+this.tabs[tabberIndex].div.id+"')",100);
+      setTimeout("initTabPageIFrame('"+this.tabs[tabberIndex].div.id+"')",100);
     }
   }
   return this;
 };
 
 /*Added by Ayal: refresh content on tab that has a tabPageContent item. */
-function initTabPAgeIFrame(id)
+function initTabPageIFrame(id)
 {
   var fields = id.split(":");
   var elem = document.getElementById(fields[1]);
   if (elem)
   {
-    elem.innerHTML = '<iframe name="'+fields[0]+'" id="'+fields[0]+'" frameborder="0" width="100%" height="80%" src="'+fields[1]+'.html"></iframe>';
+    var width = "100%";
+    if (elem.id == "recent")
+      width = "800px";
+    elem.innerHTML = '<iframe name="'+fields[0]+'" id="'+fields[0]+'" frameborder="0" width="'+width+'" height="80%" src="'+fields[1]+'.html"></iframe>';
   }
 }
 
