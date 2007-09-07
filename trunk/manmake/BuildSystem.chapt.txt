@@ -103,8 +103,7 @@ This is an example of the {PROGRAMS} primary, and says that the
 directory contains a program called {yacas}. Hence it will be built if
 the {make all} command is executed, it will be installed at 
 {make install}, etc. Other useful primaries are {SCRIPTS} for
-executable scripts, {HEADERS} for header files, {LIBRARIES} for static
-libraries, {LTLIBRARIES} for libtool libraries, and {DATA} for all
+executable scripts, {HEADERS} for header files, and {DATA} for all
 files which are just copied verbatim at installation time (this
 includes Yacas scripts). 
 
@@ -121,14 +120,10 @@ There are also so-called <i>associated variables</i>. The same
 executable:
 	yacas_SOURCES = yacasmain.cpp commandline.cpp \
 	      unixcommandline.cpp stdcommandline.cpp
-	yacas_LDADD = libyacas.a libyacasplatform.a \
-	      @NUMBERS_LIB@ @NUMBERS_LDFLAGS@ 
+	yacas_LDADD = libyacas.a libyacasplatform.a 
 These lines tell that the executable is built from four source files
 (yacasmain.cpp, commandline.cpp, unixcommandline.cpp and stdcommandline.cpp)
-and two static libraries (libyacas.a and libyacasplatform.a). The
-{@NUMBERS_LIB@} and {@NUMBERS_LDFLAGS@} symbols are defined when the
-{configure} script is run, as explained in the next section. They
-contain the names of additional libraries to link in.
+and two static libraries (libyacas.a and libyacasplatform.a). 
 
 From the information contained in these lines, {automake} can construct
 the necessary commands to go in the final {Makefile}.  This {Makefile}
@@ -185,43 +180,7 @@ with special macros defined by the {autoconf} package. These can be
 recognized by the {AC_} prefix.
 
 As the {configure.in} file only rarely needs to be changed, we will
-only describe the {autoconf} tool by one example. As explained in the
-previous section, <*"The automake tool"|yacasdoc://#build system!automake*>, 
-the symbols {@NUMBERS_LIB@} and {@NUMBERS_LDFLAGS@} are used in the
-{Makefile.in} to link a library with basic numerical routines into the
-Yacas executable. This gives the user the option to choose between two
-libraries: the GNU multi-precision arithmetic (GNU MP) library and a
-library provided by the Yacas team.
-
-This effect is achieved by the following fragment of {configure.in} (for
-clarity, a simplified version is presented).
-
-	AC_ARG_WITH(numlib, [  --with-numlib=LIB ... ],  \
-	            with_numlib=$withval,                \
-	            with_numlib="native")
-	case $with_numlib in
-	  native) 
-	    NUMBERS_LIB="libyacasnumbers.la"
-	    NUMBERS_LDFLAGS="-lm"
-	esac
-	AC_SUBST(NUMBERS_LIB)
-	AC_SUBST(NUMBERS_LDFLAGS)
-
-The first line tells the {configure} script to accept an extra option,
-{--with-numlib=LIB}. The shell variable {with_numlib} is set to the
-value {LIB} given by the user, or to {native} if the user does not
-specify this option on the command line. 
-
-If the shell variable {with_numlib} has the value {native} (which means
-that the user has either given the {--with-numlib=native} option to
-{configure}, or not used the option at all), then the {NUMBERS_LIB} and
-{NUMBERS_LDFLAGS} shell variables are set to {libyacasnumbers.la} and
-{-lm} respectively.
-
-The last two lines say that the value of the {NUMBERS_LIB} and
-{NUMBERS_LDFLAGS} shell variables should be substituted for the
-{@NUMBER_LIB@} and {@NUMBER_LDFLAGS@} symbols respectively, in the
-{Makefile.in}.
+only describe the {autoconf} tool by one example. 
 
 This ends the brief description of {autoconf}. For more information,
 the reader is referred to the documentation that comes with the
@@ -230,45 +189,6 @@ package.
 We currently assume {autoconf} version 2.13 or later.
 
 
-	    The libtool utility
-
-*A build system!libtool
-*A {libtool}
-
-The {libtool} utility takes care of all the peculiarities of creating,
-linking and loading shared and static libraries across a great number
-of platforms, providing a uniform command line interface to the Yacas
-developer. The inner workings of {libtool} are fairly complicated, but
-fortunately Yacas developers very rarely need to concern themselves
-with it as {libtool} is tightly integrated with {automake} and
-{autoconf}. In fact, it should suffice to replace any {LIBRARIES}
-primary in {Makefile.am} with an {LTLIBRARIES} primary to indicate
-that libtool libraries should be used, and to keep in mind that the
-correct suffices are used: {.lo} for object files and {.la} for any
-libraries.
-
-For the people that want to know everything, we will now explain the
-idea of {libtool} in a nutshell by a simple example: suppose that we
-want to build and install a library from the source file
-{hello.c}. The following commands do the trick, on <i>any</i> system:
-
-	libtool gcc -c hello.c
-	libtool gcc -rpath /usr/local/lib -o \
-	  libhello.la hello.lo
-	libtool cp libtrim.la /usr/local/lib
-
-The first command builds a <i>libtool object</i> with the name
-{hello.lo}. This file encapsulates the {hello.o} object file.
-Subsequently, the <i>libtool library</i> with the name {libhello.la}
-is built, which encapsulates both the static and the shared library.
-The last command installs both the static and the shared library in
-the {/usr/local/lib} directory. Note that the GNU compiler {gcc} need
-not be installed on the system; {libtool} will call the native
-compiler with the correct switches if necessary.
-
-*A {libltdl}
-The {libtool} distribution includes {libltdl}, the LibTool Dynamic
-Loading library. This library is used to support Yacas plugins.
 
  
 	    The configure script
@@ -551,21 +471,11 @@ fact works.
 	    Plugins
 
 The directory {plugins} contains the files which are necessary to
-build plugins, which can be dynamically loaded into Yacas. See
+build plugins, which can be statically linked in to Yacas. See
 <*yacasdoc://essays/3/3/*> for details.
 
-Plugins are almost the same as shared libraries, except that they are
-not linked when the Yacas executable is started, but at the user's
-request while Yacas is being run.  The steps for building plugins are
-as follows. First we need to run Yacas on the {.stub} file. Then the
-generated C++ file is compiled, together with the files which contain
-the actual code for the functionality to be provided by the
-plugin. Finally, the resulting object files are linked. We need to add
-the linker flags {-module -avoid-version -no-undefined} in order to
-get a plugin. If the plugin uses any functions from other libraries,
-these libraries should be specified with the {-L} option.  The plugin
-is installed in {pkglib} (which defaults to {/usr/local/lib/yacas})
-when the user gives the {make install} command.
+Plugins can define additional platform-specific functionality that
+can be loaded through Dll'Load.
 
 The following plugins are included with Yacas:
 *	The regular expressions plugin resides in {plugins/pcre} (see
@@ -574,50 +484,5 @@ its <*documentation in the Reference Manual|yacasdoc://ref/22/2/*>).
 its <*documentation in the Reference Manual|yacasdoc://ref/22/1/*>).
 It shares one of its source files with the {compressor} program in the
 {src} directory.
-*	The math plugin resides in the {src} directory. This plugin is
-created by compiling the Yacas script file {scripts/base.rep/math.ys}.
-If Yacas is run, and finds this plugin, then it will use it instead of
-the script file. This improves the performance.
 
-
-
-	    Other components
-
-This section lists the components of the Yacas distributions that have
-not yet been described. 
-*	The {yacas-client} script (see <*Client-server usage|yacasdoc://intro/3/1/*>) resides in the root of
-the distribution. This script is copied during installation.
-*	The directory {colorcode} contains a program constructing
-colorful HTML files listing the contests of the Yacas script files. At
-the moment, this program does not function quite correctly. This
-program is compiled, but not installed.
-*	The directory {docs} contains various files in for the
-website. The file {yacaslogo.gif} is also used in the HTML
-documentation of Yacas, therefore this file is copied in the
-appropriate directory during installation.
-
-
-
-	    Compiling Yacas with plugins linked in statically
-
-Yacas consists of a small kernel written in C++, together with a set of scripts (the math library, and utility functions).
-Some scripts can be compiled to C++ code. The C++ code can then be further compiled to a plugin, which can be loaded in to
-Yacas at run time. In addition, there are some stand-alone plugins that have been hand-written in C or C++ that can be used 
-as plugins as well.
-
-A problem arises on platforms that don't support plugins that well. In other instances it is preferable to not have to provide
-additional dynamic link libraries. For this reason there is also a means to compile the Yacas so that the plugins are statically
-linked in to the Yacas kernel. One example is Mac OS X 10.4. For this platform pluginscan be used by configuring it as:
-
-	./configure CFLAGS="-O9" CXXFLAGS="-O9" --enable-server 
-
-This chapter explains the inner workings of the boot strapping process that takes place when compiling the plugins in to the 
-Yacas kernel.
-
-	    Overview of the compilation process for statically linked in plugins
-
-The process of creating a small initial program, then have that program compile parts of itself and then recompile the system
-with these new parts added in is often called boot strapping. The mechanism works as follows: 
-
-There are C++ files that together define the minimum Yacas kernel. Compiling this in to an executable gives one the smallest Yacas kernel possible. The functionality available from the scripts is already available at this stage, as this micro kernel can interpret all the scripts. 
 

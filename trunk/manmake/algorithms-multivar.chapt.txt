@@ -291,7 +291,7 @@ implemented in {sparsetree.ys}.
 The middle level is called the 'driver', and can be changed, or 
 re-implemented if necessary. For instance, in case calculations need
 to be done for which dense representations are actually acceptable,
-one could write a C++ plugin implementing above-mentioned database
+one could write C++ implementing above-mentioned database
 structure, and then write a middle-level driver using the code.
 The driver can then be selected at startup. In the file 'yacasinit.ys'
 the default driver is chosen, but this can be overridden in the 
