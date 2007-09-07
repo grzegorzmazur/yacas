@@ -80,8 +80,7 @@ EXTRA_DIST =  cyacas.cpp anumber.inl deffile.inl  \
 	plat/win32/platfileio.h \
 	plat/win32/stubs.inl  \
 	plat/win32/win32commandline.cpp \
-	plat/win32/win32commandline.h   \
-	plat/win32/yacasmain-win32.cpp Makefile.win32 \
+	plat/win32/win32commandline.h \
 	yacas.dsp yacas.dsw \
 	debugmem.h mkfastprimes.dsp \
 	win32dllresource.h win32yacasdll.h win32yacasdll.cpp \
