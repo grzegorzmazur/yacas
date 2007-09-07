@@ -32,7 +32,7 @@ OBJS = anumber.o arggetter.o arrayclass.o commandline.o \
 	stdcommandline.o stdfileio.o stdstubs.o obmalloc.o stringio.o             \
 	substitute.o tokenizer.o xmltokenizer.o archiver.o fastprimes.o elfdll.o unixcommandline.o numbers.o \
 	yacasapi.o yacasmain.o yacasnumbers.o unipoly.o compressedfiles.o \
-	libmath.o exedll.o \
+	exedll.o \
 	../plugins/pcre/study.o ../plugins/pcre/pcre.o \
 	../plugins/pcre/maketables.o ../plugins/pcre/pcreposix.o \
 	../plugins/pcre/get.o ../plugins/pcre/plugin.o \

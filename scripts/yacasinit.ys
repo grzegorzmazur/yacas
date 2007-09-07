@@ -31,25 +31,9 @@ Rule("Defun",3,0,True)
   `Rule(@fn, @nrargs, 0,True)(@bd);
 ];
 
-// And here is one example plugin call: either load the plugin, or if that fails
-// load the script that is used to compile the plugin instead. You can set up
-// your own init file to disabling loading of scripts, by setting LoadPlugIns to 
-// false.
-
-// First, if statically linked in plugins, PluginsCanBeLoaded() tells us if we can load
-If(Equals(PluginsCanBeLoaded(),False),Set(LoadPlugIns,False));
-
-If(Equals(LoadPlugIns,False),
-  [
-    Use("base.rep/math.ys");
-  ],
-  [
-    TrapError(Dll'Load("libmath"),Use("base.rep/math.ys"));
-  ]
-  );
+Use("base.rep/math.ys");
 
 Use("patterns.rep/code.ys");
-
 // at this point <-- can be used
 
 Use("deffunc.rep/code.ys");

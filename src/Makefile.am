@@ -63,21 +63,9 @@ plugin_stub_gen_SOURCES = plugin_stub_gen.cpp
 
 
 
-
-# We need iteration (rebuilding the same target multiple times).
-# This variable ensures non-empty cmd-goals, taking automake's default, "all".
-# Thus, we can redo the original request, with additions.
-#ITERATIVEMAKE = $(MAKE) $(MAKEFLAGS) $(MAKECMDGOALS) `test -n "$(MAKECMDGOALS)" || all`
-# Belay that order, Mr. Sulu!  What if the request was "make clean test"?  Use the innocuous "check" for now.
-ITERATIVEMAKE = $(MAKE) $(MAKEFLAGS) check
-
-
-
 $(srcdir)/plugins_available.h:
 	test -f check_plugins$(EXEEXT) || $(MAKE) $(MAKEFLAGS) check_plugins$(EXEEXT)
 	./check_plugins || echo "More to do..."
-
-
 
 
 EXTRA_DIST =  cyacas.cpp anumber.inl deffile.inl  \

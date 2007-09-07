@@ -19,7 +19,6 @@ struct ExeDllEntry
 
 #ifdef EXE_DLL_PLUGINS
 extern "C" {
-extern LispPluginBase* make_libmath(void);
 extern LispPluginBase* make_pcre(void);
 extern LispPluginBase* make_filescanner(void);
 }
