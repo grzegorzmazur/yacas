@@ -14,7 +14,7 @@ SUBDIRS = . docs src scripts \
 	JavaYacas 
 
 ## A script to be installed in the directory for binaries
-bin_SCRIPTS = yacas_client
+bin_SCRIPTS = 
 
 ## EXTRA_DIST contains the files automake does not know about, that need to go
 ## in the distribution. Note that scripts are not distributed by default.

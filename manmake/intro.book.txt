@@ -161,47 +161,6 @@ here:
 
 *INCLUDE cl-options.chapt
 
-	    Client/server usage
-
-In addition to the interactive console sessions, a remote persistent session facility is provided through the script {yacas_client}.
-(This is currently only supported on Unix platforms.)
-By means of this script, the user can configure third-party applications to pass commands to a constantly running "{Yacas} server" and get output. The "{Yacas} server" is automatically started by {yacas_client}. It may run on a remote computer; in that case the user should have a user account on the remote computer and privileges to execute {yacas_client} there, as well as {rsh} or {ssh} access. The purpose of {yacas_client} is to enable users to pass commands to {Yacas} within a persistent session while running another application such as a text editor.
-
-*A {yacas_client}
-The script {yacas_client} reads {Yacas} commands from the standard input and passes them to the running "{Yacas} server"; it then waits 2 seconds and prints whatever output {Yacas} produced up to this time. Usage may look like this:
-
-	8:20pm Unix>echo "x:=3" | yacas_client
-	Starting server.
-	True;
-	To exit Yacas, enter  Exit(); or quit
-	  or Ctrl-c. Type ?? for help.
-	Or type ?function for help on a function.
-	Type 'restart' to restart Yacas.
-	To see example commands, keep typing
-	  Example();
-	In> x:=3
-	Out> 3;
-	In> 8:21pm Unix>echo "x:=3+x" | yacas_client
-	In> x:=3+x
-	Out> 6;
-	In> 8:23pm Unix>yacas_client -stop
-	In> quit
-	Quitting...
-	Server stopped.
-	8:23pm Unix>
-
-Persistence of the session means that {Yacas} remembered the value of {x} between invocations of {yacas_client}. If there is not enough time for {Yacas} to produce output within 2 seconds, the output will be displayed the next time you call {yacas_client}.
-
-The "{Yacas} server" is started automatically when first used and can be stopped either by quitting {Yacas} or by an explicit option {yacas_client -stop}, in which case {yacas_client} does not read standard input.
-
-The script {yacas_client} reads standard input and writes to standard output, so it can be used via remote shell execution. For example, if an account "user" on a remote computer "remote.host" is accessible through {ssh}, then {yacas_client} can be used remotely, like this:
-
-	echo "x:=2;" | \
-	  ssh user@remote.host yacas_client
-
-On a given host computer running the "{Yacas} server", each user currently may have only one persistent {Yacas} session.
-
-
 *INCLUDE config.chapt
 
 *INCLUDE addons.chapt

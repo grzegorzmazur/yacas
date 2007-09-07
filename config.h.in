@@ -119,9 +119,6 @@
 /* Operating system */
 #undef PLATFORM_OS
 
-/* Directory in which plugins are installed */
-#undef PLUGIN_DIR
-
 /* Directory in which scripts are installed */
 #undef SCRIPT_DIR
 

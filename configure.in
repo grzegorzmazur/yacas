@@ -228,7 +228,6 @@ jb_PREFIX_EXPAND([scriptdir])
 jb_PREFIX_EXPAND([libdir])
 
 AC_DEFINE_UNQUOTED(SCRIPT_DIR, "$jb_expanded_scriptdir", [ Directory in which scripts are installed ])
-AC_DEFINE_UNQUOTED(PLUGIN_DIR, "$jb_expanded_libdir/$PACKAGE", [ Directory in which plugins are installed ])
 
 # All done
 AC_OUTPUT(Makefile

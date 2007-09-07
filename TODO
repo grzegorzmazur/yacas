@@ -2,18 +2,10 @@
 
 
 TODO:
-
 - removing plugin support:
   - auto-load the plugins
-  - do a grep on "plugin", and clean up
-  - remove all the Dll'... functions, just start them up by default automatically.
-
-- remove any code in the scripts that tries to build plugins, as it will not work any more
-
-- optimize Dll'Load away.
-
+  - optimize Dll'Load away.
 - make sure embedded plugins still work.
-
 - in yacasinit.ys, make base.rep/math.ys also defloaded
 
 - C/C++ code checkers, should go at least from the scripts?
