@@ -26,7 +26,7 @@ dftables_SOURCES = dftables.c
 chartables.c: dftables
 	./dftables > chartables.c
 
-CLEANFILES = chartables.c 
+CLEANFILES = 
 
 
 

@@ -7,9 +7,6 @@
  * The choice of which LispDllBase-derived class to use is made in
  * the lisptype.h file.
  *
- * Yacas has a module 'cstubgen' that can generate the plugin glue
- * code between an external library and yacas. See the manual for more
- * details.
  */
 
 #ifndef __lispplugin_h__

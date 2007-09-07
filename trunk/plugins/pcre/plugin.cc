@@ -1,9 +1,4 @@
 
-/* This file was automatically generated with cstubgen.
-*/
-
-//For debug #include <stdio.h> 
-
 #include "lisptype.h"
 #include "lispenvironment.h"
 #include "lispatom.h"
