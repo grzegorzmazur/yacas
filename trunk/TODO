@@ -10,7 +10,6 @@ TODO:
 - examples should have their own tests
 - graph plotter 2D for Java
 
-- clean up the root dir (Windows readmes?)
 - precision.yts is not used yet, discard? Or fix?
 - Test suite fails on Java version. We *have* to make the test suite more lenient.
 - Remove Fast* (does not seem to be used anywhere). FastArcSin, FastAssoc, FastIsPrime, FastLog, FastPower do seem to be used.
