@@ -10,7 +10,7 @@ TODO:
 
 - remove any code in the scripts that tries to build plugins, as it will not work any more
 
-- StubApiCStart and friends
+- optimize Dll'Load away.
 
 - make sure embedded plugins still work.
 

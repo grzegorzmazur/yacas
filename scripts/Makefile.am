@@ -11,7 +11,6 @@ SCRIPTFILES1 = 	        										    \
 	complex.rep/code.ys complex.rep/code.ys.def complex.rep/om.ys 					    \
 	constants.rep/code.ys constants.rep/code.ys.def  constants.rep/om.ys 				    \
 	controlflow.rep/code.ys controlflow.rep/code.ys.def 						    \
-	cstubgen.rep/code.ys cstubgen.rep/code.ys.def 							    \
 	deffunc.rep/code.ys deffunc.rep/code.ys.def 							    \
 	deriv.rep/code.ys deriv.rep/code.ys.def 							    \
 	example.rep/code.ys example.rep/code.ys.def 							    \
