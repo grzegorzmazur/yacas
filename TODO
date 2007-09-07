@@ -2,10 +2,7 @@
 TODO:
 - remove documentation on embed/ seeing as we now removed it
 - remove any code in the scripts that tries to build plugins, as it will not work any more
-- should check_plugins.cpp go?
 - remove the virtual machine code vm.cpp/vm.h.
-
-- remove testnum
 
 - make sure embedded scripts still work.
 
@@ -64,7 +61,6 @@ TODO:
 - screenshots, explanation of how to use, demo, tipbox, or *something*, to persuade people to enter something in the search field
 - separate project, teacher version
 - carefully change things so that the scripts do not have things like "N(Eval(" any more (just grep on it).
-- change testnum to not be so verbose
 
 1) Documentation improvements
 - document the article mark-up language
