@@ -159,15 +159,6 @@ Functions of one or two variables can be plotted on given intervals with a given
 
 *SEE Plot2D, Plot3DS
 
-*A plugin
-	    plugin
-
-A plugin is an compiled dynamic library of functions that can be loaded into {Yacas} at run time.
-After loading a plugin, the functions implemented in the library become available as new Yacas functions.
-Currently plugins have to be written in C++.
-
-*SEE Dll'Load, MakeFunctionPlugin
-
 *A precedence
 	    precedence
 

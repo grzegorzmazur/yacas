@@ -171,7 +171,7 @@ to show 'input = output'.
 	In> TeXForm(Sin(a1)+2*Cos(b1))
 	Out> "$\sin a_{1} + 2 \cos b_{1}$";
 
-*SEE PrettyForm, CForm, ShowPS
+*SEE PrettyForm, CForm
 
 *CMD CForm --- export expression to C++ code
 *STD
@@ -947,24 +947,8 @@ The executable must be called {wgnupl32.exe} and the file {wgnuplot.mnu} must be
 	Plot2D'datafile: created file '/tmp/plot.tmp/data1'
 	Out> True;
 
-If a function takes a long time to evaluate, one can use
-{MakeFunctionPlugin} (a Unix-specific tool) to compile the function and plot it faster:
 
-	In> f(x) := Cos( (Abs(Pi/x))^1.5 )
-	Out> True;
-	In> Time( Plot2D(f(x),0:1) )
-	94.93 seconds taken
-	Out> True;
-	In> MakeFunctionPlugin("f1", f(x))
-	Function f1(x) loaded from plugins.tmp/
-	  libf1_plugin_cc.so
-	Out> True;
-	In> Time( Plot2D(f1(x),0:1) )
-	6.97 seconds taken
-	Out> True;
-
-
-*SEE V, NFunction, MakeFunctionPlugin, Plot3DS
+*SEE V, NFunction, Plot3DS
 
 
 
@@ -1085,7 +1069,7 @@ Same limitations as {Plot2D}.
 	Out> True;
 
 
-*SEE V, NFunction, MakeFunctionPlugin, Plot2D
+*SEE V, NFunction, Plot2D
 
 *CMD XmlExplodeTag --- convert XML strings to tag objects
 *CORE

@@ -4,6 +4,10 @@
 TODO:
 - remove any code in the scripts that tries to build plugins, as it will not work any more
 
+- remove GetYacasPID, ShowPS, Vi
+
+- remove PSViewCommand and friends (TeXShowPS also)
+
 - make sure embedded scripts still work.
 
 - in yacasinit.ys, make base.rep/math.ys also defloaded
