@@ -16,8 +16,6 @@ to general issues related to the Yacas system development and maintenance.
 
 *INCLUDE wordproblems.chapt
 
-*INCLUDE Plugins-Howto.chapt
-
 *INCLUDE SimpleTools.chapt
 
 			For Yacas developers

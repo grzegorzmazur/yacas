@@ -170,7 +170,7 @@ it is best to keep this in mind and keep the code passed to
 to reduce dependencies on other software.
 
 This part describes how the arithmetic library is embedded into
-{Yacas} and how to embed other arithmetic libraries.
+{Yacas}.
 
 		The link between the interpreter and the arithmetic library
 
