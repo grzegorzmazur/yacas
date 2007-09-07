@@ -2,12 +2,10 @@
 
 
 TODO:
-- removing plugin support:
-  - auto-load the plugins
-  - optimize Dll'Load away.
-- test code for "pcre" and "filescanner".
-
 - ../manmake/wester-1994.ys should end with yts
+
+- auto-load the plugins, and optimize Dll'Load away.
+- test code for "pcre" and "filescanner".
 
 - C/C++ code checkers, should go at least from the scripts?
 - scripts/examples/ do somewhere else?
