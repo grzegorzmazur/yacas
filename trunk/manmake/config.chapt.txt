@@ -87,30 +87,8 @@ and standard scripts.
 	In> DefaultDirectory("/home/user/myscripts/");
 	Out> True;
 
-*SEE Load, Use, DefLoad, FindFile, Dll'Directory
+*SEE Load, Use, DefLoad, FindFile
 
-*CMD Dll'Directory --- add directory to path for Yacas plugins
-*CORE
-*CALL
-	Dll'Directory(path)
-
-*PARMS
-
-{path} -- a string containing a full path where Yacas plugins reside
-
-*DESC
-
-This command adds "path" to the list of directories in which Yacas
-looks for plugins. 
-
-This command always evaluates to {True}.
-
-*E.G.
-
-	In> Dll'Directory("/home/user/yacas/plugins/");
-	Out> True;
-
-*SEE DefaultDirectory, Dll'Load
 
 *CMD PrettyPrinter'Set --- set routine to use as pretty-printer
 *CMD PrettyPrinter'Get --- get routine to use as pretty-printer

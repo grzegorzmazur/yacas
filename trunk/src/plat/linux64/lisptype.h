@@ -35,9 +35,6 @@
 #define LispFalse 0
 #define LispTrue 1
 
-// Dynamic link library loader class
-#define DLLCLASS    ElfDll
-
 // System calls
 #define SystemCall system
 
