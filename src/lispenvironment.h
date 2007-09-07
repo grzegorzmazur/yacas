@@ -214,7 +214,6 @@ protected:
   LispInt iBinaryPrecision;
 public:
   InputDirectories iInputDirectories;
-  InputDirectories iDllDirectories;
   DeletingLispCleanup iCleanup;
   LispInt iEvalDepth;
   LispInt iMaxEvalDepth;
@@ -425,7 +424,6 @@ private:
     iPrecision(0),  // default user precision of 10 decimal digits
     iBinaryPrecision(0),  // same as 34 bits
     iInputDirectories(),
-    iDllDirectories(),
     iCleanup(),
     iEvalDepth(0),
     iMaxEvalDepth(0),

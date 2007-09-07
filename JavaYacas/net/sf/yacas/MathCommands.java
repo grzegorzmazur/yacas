@@ -45,9 +45,6 @@ class MathCommands
          new YacasEvaluator(new LispDefaultDirectory(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "DefaultDirectory");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new YacasDllDirectory(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Dll'Directory");
-    aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispFromFile(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
          "FromFile");
     aEnvironment.CoreCommands().SetAssociation(
@@ -521,12 +518,6 @@ class MathCommands
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new YacasDllLoad(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "Dll'Load");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new YacasDllUnload(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Dll'Unload");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new YacasDllEnumerate(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Dll'Enumerate");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new YacasExtraInfoSet(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "ExtraInfo'Set");
@@ -1026,15 +1017,6 @@ class MathCommands
       String oper = LispStandard.InternalUnstringify(orig);
       aEnvironment.iInputDirectories.add(oper);
       LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
-    }
-  }
-
-  class YacasDllDirectory extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : Dll'Directory");//TODO fixme
-      throw new Yacasexception("Function not yet supported");
     }
   }
 
@@ -3627,27 +3609,6 @@ class MathCommands
     {
       aEnvironment.iCurrentOutput.Write("Warning: function not yet implemented : Dll'Load");////TODO fixme
       LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
-    }
-  }
-
-  class YacasDllUnload extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      aEnvironment.iCurrentOutput.Write("Warning: Function not yet implemented : Dll'Unload\n");////TODO fixme
-      LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
-    }
-  }
-
-  class YacasDllEnumerate extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      aEnvironment.iCurrentOutput.Write("Warning: Function not yet implemented : Dll'Enumerate\n");////TODO fixme
- 
-      LispObject ls = LispAtom.New(aEnvironment,"List");
-      LispObject newinfo =  LispSubList.New(ls);
-      RESULT(aEnvironment, aStackTop).Set(newinfo);
     }
   }
 

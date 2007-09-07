@@ -1738,18 +1738,6 @@ the integration of plugins in the build system.
 nor the extension of {file} need to be specified. The result is {True}
 if the plugin is loaded successfully, and {False} otherwise.
 
-If the argument {file} does not specify a directory, all directories
-in the path for Yacas plugins are searched. This path is built up by
-calls to {Dll'Directory}. The default plugin directory is as
-specified at compile time (the default value is
-{/usr/local/lib/yacas}).
-
-If the argument {file} does not specify the extension, then first the
-extension {.la} is appended. This is the standard extension for
-Libtool libraries. If no plugin with this name can be found, a
-platform-specific extension is tried (as an example, this is {.so} on
-platforms with ELF libraries).
-
 *EG
 
 The following commands load the example plugin, and then call the
@@ -1763,77 +1751,6 @@ function {AddTwoIntegers} which is defined in this plugin.
 Note that it suffices to specify the string {example}. Yacas knows
 that the plugin resides in the file {/usr/local/lib/yacas/example.la}
 (if plugins are installed in the default locations).
-
-*SEE Dll'Directory, Dll'Unload, Dll'Enumerate
-
-
-*CMD Dll'Unload --- unload a plugin
-*CORE
-*CALL
-	Dll'Unload(file)
-
-*PARMS
-{file} -- file name of the plugin
-
-*DESC
-
-{Dll'Unload} unloads a plugin previously loaded with {Dll'Load}.  The
-argument {file} has to be exactly the same as specified in the call to
-{Dll'Load}, or the system will not be able to determine which plugin to
-unload.  It will scan all plugins which are currently loaded, and
-delete the first one found to exactly match.
-
-{Dll'Unload} always returns {True}, even if no plugin with the name
-{file} is found.
-
-*EG notest
-
-First, we load the example plugin, and call the function
-{AddTwoIntegers} which is defined in this plugin.
-
-	In> Dll'Load("example");
-	Out> True
-	In> AddTwoIntegers(2,3);
-	Out> 5
-
-Then, we unload the plugin, and we check that the function
-{AddTwoIntegers} is indeed no longer defined.
-
-	In> Dll'Unload("example");
-	Out> True
-	In> AddTwoIntegers(2,3);
-	Out> AddTwoIntegers(2,3)
-
-*SEE Dll'Load, Dll'Enumerate
-
-
-*CMD Dll'Enumerate --- enumerate all loaded plugins
-*CORE
-*CALL
-	Dll'Enumerate()
-
-*DESC
-
-{Dll'Enumerate} returns a list with the names of all the plugins which
-are currently loaded.
-
-*EG notest
-
-At startup, no plugins are loaded, so {Dll'Enumerate()} evaluates to
-the empty list.
-
-	In> Dll'Enumerate();
-	Out> {}
-
-This changes after we load the example plugin.
-
-	In> Dll'Load("example");
-	Out> True
-	In> Dll'Enumerate();
-	Out> {"example"}
-
-*SEE Dll'Load, Dll'Unload
-
 
 
 *CMD StubApiCStart --- begin a C++ plugin API description

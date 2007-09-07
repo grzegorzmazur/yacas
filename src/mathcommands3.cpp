@@ -665,31 +665,6 @@ void YacasDllLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
   InternalTrue(aEnvironment,RESULT);
 }
 
-void YacasDllUnload(LispEnvironment& aEnvironment, LispInt aStackTop)
-{
-  LispPtr evaluated(ARGUMENT(1));
-  LispString * string = evaluated->String();
-  CHK_ARG_CORE(string, 1);
-  LispString oper;
-  InternalUnstringify(oper, string);
-  aEnvironment.iDlls.DeleteNamed(oper.c_str(),aEnvironment);
-  InternalTrue(aEnvironment,RESULT);
-}
-
-void YacasDllEnumerate(LispEnvironment& aEnvironment, LispInt aStackTop)
-{
-    LispInt i;
-    LispObject *res = NULL;
-    for (i=aEnvironment.iDlls.Size()-1;i>=0;i--)
-    {
-        LispString orig;
-        orig = aEnvironment.iDlls[i]->DllFileName();
-        LispString oper;
-        InternalStringify(oper, &orig);
-        res = LA(ATOML(oper.c_str())) + LA(res);
-    }
-    RESULT = (LIST(LA(ATOML("List")) + LA(res)));
-}
 
 void YacasExtraInfoSet(LispEnvironment& aEnvironment, LispInt aStackTop)
 {

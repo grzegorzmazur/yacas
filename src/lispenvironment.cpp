@@ -38,7 +38,6 @@ LispEnvironment::LispEnvironment(
     iPrecision(10),  // default user precision of 10 decimal digits
     iBinaryPrecision(34),  // same as 34 bits
     iInputDirectories(),
-    iDllDirectories(),
     iCleanup(),
     iEvalDepth(0),
     iMaxEvalDepth(1000),

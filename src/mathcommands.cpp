@@ -1082,18 +1082,6 @@ void LispDefaultDirectory(LispEnvironment& aEnvironment, LispInt aStackTop)
     InternalTrue(aEnvironment,RESULT);
 }
 
-void YacasDllDirectory(LispEnvironment& aEnvironment, LispInt aStackTop)
-{
-    // Get file name
-    CHK_ARG_CORE(ARGUMENT(1), 1);
-    LispString * orig = ARGUMENT(1)->String();
-    CHK_ARG_CORE(orig, 1);
-    LispString oper;
-    InternalUnstringify(oper, orig);
-    aEnvironment.iDllDirectories.Append(NEW LispString(oper.c_str()));
-    InternalTrue(aEnvironment,RESULT);
-}
-
 void LispFromFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
