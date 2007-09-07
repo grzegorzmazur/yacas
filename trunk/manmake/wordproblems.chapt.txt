@@ -22,7 +22,6 @@ We shall create a set of rules that will "simplify" sentences to atoms such as {
 The full source of this example is in the file {examples/wordproblems.ys}. In the next subsection we shall discuss the basic issues of the implementation. For now, here is an example session that shows what functionality we have in mind:
 
 	Unix>   yacas
-	[editvi.ys] [gnuplot.ys] [unix.ys] 
 	True;
 	Numeric mode: "Internal"
 	To exit Yacas, enter  Exit(); or quit or Ctrl-c.

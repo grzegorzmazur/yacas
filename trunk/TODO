@@ -3,14 +3,6 @@
 
 TODO:
 
-- PATH_SEPARATOR?
-- gnuplot
-- gmt
-- plotutils
-- remove platform-specific code:
-  - remove TeXShowPS?
-  - other functions defined in addons.chapt.txt, remove all.
-
 - removing plugin support:
   - do a grep on "plugin", and clean up
   - auto-load the plugins
@@ -19,7 +11,7 @@ TODO:
 - remove any code in the scripts that tries to build plugins, as it will not work any more
 
 
-- make sure embedded scripts still work.
+- make sure embedded plugins still work.
 
 - in yacasinit.ys, make base.rep/math.ys also defloaded
 
