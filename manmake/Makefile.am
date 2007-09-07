@@ -102,9 +102,9 @@ ESSAYSOURCES = ABIN-grammar.chapt.txt \
 
 
 # Yacas test code extracted from the docs
-TESTCODESNIPPETS = wester-1994.ys ref.book.yts refprog.book.yts
+TESTCODESNIPPETS = wester-1994.yts ref.book.yts refprog.book.yts
 
-## This means: build wester-1994.ys etc. if running tests
+## This means: build wester-1994.yts etc. if running tests
 check_SCRIPTS = $(TESTCODESNIPPETS)
 
 
@@ -151,6 +151,9 @@ SUFFIXES = .chapt.txt .chapt .book.tex .book.txt .book .tex .dvi .ps .pdf .ys
 	@echo "***Documentation created:" $*.pdf
 
 .chapt.ys:
+	sh $(srcdir)/book2ys.sh -run "$(ouryacas)" $< $@
+
+.chapt.yts:
 	sh $(srcdir)/book2ys.sh -run "$(ouryacas)" $< $@
 
 # generate test code from book sources
