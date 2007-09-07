@@ -156,10 +156,6 @@ SOURCE=.\infixparser.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\libmath.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=.\lispatom.cpp
 # End Source File
 # Begin Source File

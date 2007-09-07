@@ -88,7 +88,7 @@ SCRIPTFILES2 = \
         probability.rep/code.ys  probability.rep/code.ys.def                                                \
 	numbers.rep/NumberTheory.ys numbers.rep/NumberTheory.ys.def                                         \
 	numbers.rep/GaussianIntegers.ys numbers.rep/GaussianIntegers.ys.def				    \
-	transforms.rep/code.ys transforms.rep/code.ys.def compile.rep/compilecpp.ys compile.rep/compilecpp.ys.def \
+	transforms.rep/code.ys transforms.rep/code.ys.def \
   base.rep/math.ys base.rep/math.ys.def \
 	stdarith.ys stdarith.ys.def 
 
