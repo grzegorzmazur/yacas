@@ -16,11 +16,11 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
         patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
         lispplugin.h genericstructs.h yacasprivate.h yacasbase.h xmltokenizer.h \
-        archiver.h cyacas.h GPL_stuff.h vm.h ltdll.cpp 
+        archiver.h cyacas.h GPL_stuff.h ltdll.cpp 
 
 yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp deffile.cpp infixparser.cpp lispatom.cpp \
 	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp \
-	lispio.cpp lispobject.cpp lispparser.cpp vm.cpp \
+	lispio.cpp lispobject.cpp lispparser.cpp \
 	lispuserfunc.cpp mathcommands.cpp mathenvironment.cpp \
 	mathuserfunc.cpp standard.cpp  stdfileio.cpp arggetter.cpp \
 	stringio.cpp tokenizer.cpp yacasapi.cpp genericobject.cpp \
@@ -85,12 +85,11 @@ EXTRA_DIST =  cyacas.cpp anumber.inl deffile.inl  \
 	debugmem.h mkfastprimes.dsp \
 	win32dllresource.h win32yacasdll.h win32yacasdll.cpp \
 	win32yacasdllresource.h yacasdll.dsp yacasdll.dsw yacasdll.rc \
-	setup.py yacasc.i yacas.py \
 	compressedfiles.cpp \
 	README.LZO lzoconf.h minilzo.c minilzo.h decompressor.cpp \
 	compressor.cpp filescanner.cpp filescanner.h \
 	compressedfiles.h \
-	compressor.dsp compressor.dsw win32rcwriter.cpp yacas.pas \
+	compressor.dsp compressor.dsw win32rcwriter.cpp \
    pcre_study_stub.c pcre_pcre_stub.c pcre_maketables_stub.c \
   pcre_pcreposix_stub.c pcre_get_stub.c pcre_plugin_stub.cpp \
   filescanner_stub.cpp filescanner_plugin_stub.cpp \

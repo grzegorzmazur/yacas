@@ -414,10 +414,6 @@ generate some source files), and the {codereviewer} executable (which does a sta
 and can in some circumstances also fix the code where the coding
 style is not adhered to).
 
-At installation time, not only the {yacas} executable is installed but
-also the static libraries and the header files. This is also to enable
-developers to embed Yacas in their own programs.
-
 
 	    The Yacas script files
 
@@ -599,10 +595,6 @@ program is compiled, but not installed.
 website. The file {yacaslogo.gif} is also used in the HTML
 documentation of Yacas, therefore this file is copied in the
 appropriate directory during installation.
-*	The directory {embed} contains examples showing how to embed
-Yacas in one's own application; see <*yacasdoc://essays/3/4/*>. This
-part of the build system is still being developed.
-
 
 
 

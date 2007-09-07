@@ -1,8 +1,8 @@
 
+
+
 TODO:
-- remove documentation on embed/ seeing as we now removed it
 - remove any code in the scripts that tries to build plugins, as it will not work any more
-- remove the virtual machine code vm.cpp/vm.h.
 
 - make sure embedded scripts still work.
 
