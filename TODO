@@ -5,7 +5,7 @@ TODO:
 - removing plugin support:
   - auto-load the plugins
   - optimize Dll'Load away.
-- make sure embedded plugins still work.
+- test code for "pcre" and "filescanner".
 
 - ../manmake/wester-1994.ys should end with yts
 
