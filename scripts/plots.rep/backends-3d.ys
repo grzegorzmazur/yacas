@@ -105,7 +105,6 @@ Plot3DS'datafile(values_IsList, _options'hash) <--
 Plot3DS'gmt(values_IsList, _options'hash) <--
 [
   Local(dirBase, filename'list, script'file, ps'file);
-  Use("addons/unix.ys");	// need PSViewCommand()
   dirBase := make'plotting'dir(options'hash);
   // use a special shell script file for plotting
   script'file := FindFile("yacas-gmtplot3d.sh");
