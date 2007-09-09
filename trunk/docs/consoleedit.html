@@ -37,11 +37,6 @@
         {
           elem.onclick=goRun;
         }
-        elem = document.getElementById("thesavebutton");
-        if (elem)
-        {
-          elem.onclick=goSave;
-        }
         elem = document.getElementById("thecleanbutton");
         if (elem)
         {
@@ -67,11 +62,6 @@
         keepCookie();
 	commandView('ConsoleFrame','console');
       }
-      function goSave()
-      {
-        keepCookie();
-	alert("Article saved. Next time you enter this site you should have this article back.");
-      }
       function goClean()
       {
         if (confirm("Are you sure you want to start with a clean file and throw the text below away?"))
@@ -89,14 +79,12 @@
     </script>
   </head>
   <body style="background-image:url('back.gif'); ">
-    <center>
         <table>
           <tr>
             <td valign="top">
 
-      <input type=button id="therunbutton" value="Run" title="Save and run this code in the calculation center (note that this is a local copy of the program below)." />
-      <input type=button id="theexplainbutton" value="Proof-read" title="Read article that comes with this code." />
-      <input type=button id="thesavebutton" value="Save (locally)" title="Make sure this article is stored in a cookie (just in case)." />
+      <input type=button id="therunbutton" value="Run code" title="Save and run this code in the calculation center (note that this is a local copy of the program below)." />
+      <input type=button id="theexplainbutton" value="Preview article" title="Read article that comes with this code." />
       <input type=button id="thecleanbutton" value="New" title="Start with a clean slate." />
 
             </td>
@@ -113,7 +101,6 @@
             </td>
           </tr>
         </table>
-    </center>
 
     <APPLET name="datahub" archive="yacas.jar" code="net.sf.yacas.DatahubApplet" width=1 height=1></APPLET>
 
