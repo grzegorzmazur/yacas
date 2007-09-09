@@ -16,7 +16,7 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
         patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
         lispplugin.h genericstructs.h yacasprivate.h yacasbase.h xmltokenizer.h \
-        archiver.h cyacas.h GPL_stuff.h  
+        archiver.h GPL_stuff.h  
 
 yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp deffile.cpp infixparser.cpp lispatom.cpp \
 	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp \
@@ -61,7 +61,7 @@ mkfastprimes_SOURCES = mkfastprimes.cpp
 plugin_stub_gen_SOURCES = plugin_stub_gen.cpp
 
 
-EXTRA_DIST =  cyacas.cpp anumber.inl deffile.inl  \
+EXTRA_DIST =  anumber.inl deffile.inl  \
 	grower.inl lisphash.inl lispobject.inl \
 	lispstring.inl standard.inl \
 	win32dll.cpp win32dll.h \
