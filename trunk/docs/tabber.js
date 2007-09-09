@@ -1,5 +1,5 @@
 /*==================================================
-  $Id: tabber.js,v 1.6 2007-09-07 12:29:23 ayalpinkus Exp $
+  $Id: tabber.js,v 1.7 2007-09-09 12:11:12 ayalpinkus Exp $
   tabber.js by Patrick Fitzgerald pat@barelyfitz.com
 
   Documentation can be found at the following URL:
@@ -467,7 +467,7 @@ function initTabPageIFrame(id)
   {
     var width = "100%";
     if (elem.id == "recent")
-      width = "800px";
+      width = "840px";
     elem.innerHTML = '<iframe name="'+fields[0]+'" id="'+fields[0]+'" frameborder="0" width="'+width+'" height="80%" src="'+fields[1]+'.html"></iframe>';
   }
 }

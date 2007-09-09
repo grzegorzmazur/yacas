@@ -15,7 +15,7 @@ autocompleter_SOURCES = autocompleter.cpp
 EXTRA_DIST = \
 	about.html basicindex.html \
 	consoleedit.html consoleview.html consoledescr.html credits.html faq.html \
-	gpl.html homepage.html jslog.js links.html \
+	gpl.html homepage.html links.html \
 	placeholder.html plain.html recent.html recentindex.html articles.html \
 	tabber.css tabber.js tutorials.html yacas.css yacas.html \
 	yacas.js datahub.js yacaslogo.gif stop.gif journal.js \
@@ -27,7 +27,7 @@ EXTRA_DIST = \
 	README autocompleteraccess.js examples-static.txt \
 	paper1.tex paper2.tex 
 
-YART_FILES = derivative.yart newtonsqrt.yart newtonconvergence.yart taylordefinition.yart 
+YART_FILES = derivative.yart newtonsqrt.yart newtonconvergence.yart taylordefinition.yart newdesign.yart
 
 ## The file "yacaslogo.gif" is used in the HTML documentation
 
