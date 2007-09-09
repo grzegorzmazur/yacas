@@ -1,0 +1,69 @@
+{{title:Big changes ahead for Yacas:title}}
+Some of you may have noticed some changes on the web site of Yacas. Yacas is currently undergoing a big change. In this article I will talk a bit about what has been going on, and my future plans for Yacas.
+
+The original idea behind open-sourcing Yacas was always to try to get people to help extend it. My reasoning was that if I wanted such a system, other people were bound to also want it. Wouldn't it be great if all those people helped me extend Yacas, instead of them starting their own system? All I had to do is stop them from starting their own project and work on mine instead. So Yacas started life as an open-source project, and people did come to help. 
+
+In retrospect it is a wonder that people came to help at all! Consider the effort one has to take in order to be able to contribute to Yacas. First, one has to be able to use it, which means:
+<ul>
+  <li> have an interest in math (1 percent of the population, say)
+  <li> be comfortable using a Unix-style system (10 percent of the remaining population, say)
+  <li> download Yacas and compile it yourself, and install it
+  <li> learn a completely new programming language
+  <li> after <i>all</i> of that, you are greeted with a blinking cursor, and you are supposed to think up calculation examples yourself. You have to do all this work, and after that the benefits are not clear, you have to think of what you want to calculate.
+</ul>
+Now, that was just to <i>use</i> Yacas. Now, if you want to actually <i>contribute</i>, you have to:
+<ul>
+  <li> get comfortable with cvs and ssh
+  <li> get aqcuainted with the Yacas system
+  <li> get an account at Sourceforge (will take a day to process)
+  <li> get me to give you write permissions to the cvs repository (again another day of waiting)
+</ul>
+Given these hoops we made people jump through it is a miracle people came to help at all! Many thanks to the people who have helped out so far, I now realize the hurdles you had to take. I will try to solve that.
+{{title:User interface design to the rescue:title}}
+User interface design is generally frowned upon in academia. It is not 'smart', does not require 'brains'. I have seen Google summer of code projects for competing software programs where they sollicited help from computer science students to design a user interface for them. This is akin to, say, asking a student of mathematics to become a cook in a one-star restaurant, <b>tonight</b>, or a photographer, or an artist painter, etcetera. No amount of smarts will allow you to do work instantly that requires skill and years of training. And user interface design is an art, a skill, and it requires knowledge and experience. You can not substitute smartness for that.
+
+One of the problems Yacas was facing was a usability problem. I wanted people to contribute, but I made it practically impossible for them to do so. The interface I had defined for them, the way in which they had to communicate with the Yacas project, was more cumbersome than necessary. And hiring a computer science student to do an intern project designing a user interface is not per se the right approach.
+
+{{title:But we are not alone any more!:title}}
+When I started Yacas back in 1998, there were no big open-source computer algebra systems. People tend to forget that now with Maxima and Axiom available in open-source form. But we used to be alone. We were this little rowing boat on a big ocean. Suddenly two huge titanic-sized ships named Axiom and Maxima came and floated next to us. Two huge ships, Maxima and Axiom, and we are in the middle with our tiny little life-saving rowing boat named Yacas. Out of the blue! This forced me to reconsider the goals for Yacas. Do we compete on their turf, or do something else?
+
+Axiom and Maxima have their roots in the seventies, in an era where artificial intelligence was the next big thing. Computers had to second-guess you. You typed in a problem, and the system presented you with the solution. People have come to think of computer algebra systems in that way, as huge databases of mathematical knowledge to query, a search engine of mathematics. That is what they mean when they say Yacas is less powerful than the other systems. They typed in some calculation that Axiom and Maxima had entries for in their databases, and Yacas didn't.
+
+Maxima and Axiom have approximately 30 years under their belts. Hundreds of researchers have worked on it. They have both been commercial. Hundreds of man-years of work went in to them. Competing with them on their own turf might be a bad idea.
+
+Other mathematical calculations people use computers for are of the brute-force kind. You have some simple repetitive task, and write a computer program for is because that is what computers are good at. Many of the small special-purpose systems work like that. They focus on doing one calculation but doing it very well. They are optimized for one specific calculation and thus have additional value that other systems do not have. This is not something Yacas will typically shine at either, seeing as clean code and maintainability are considered more important than raw performance.
+
+The two classic ways to compete are to compete on features (who has more features?), or to compete by providing something different. Maxima is understood to be the most powerful system, but Axiom has another dream. Axioms dream is based on strong typing, and the promise of mathematically provable correct code. And Yacas will also have to find its niche, its area where it outshines the other systems, if it is to survive. This niche will be ease of use. Ease of use is not something you can casually fake. Making a software program easy to use is hard work.
+
+The development mailing lists of the two systems Maxima and Axiom are interesting reads. Essentially, you have the next generation of maintainers of these systems. The original authors have generally moved to greener pastures (or retired?). You have to understand that these systems are <i>huge</i>, and mathematical algorithms are (or can be) highly non-trivial. Taking over maintenance of such a system is not trivial! It is as if you can see what lies ahead in the future of Yacas (if it survives the next 30 years like these systems have, impressively).
+
+{{title:The new world order:title}}
+What you see here before you (September 2007) is the result of a major overhaul of the project. The focus was very much on ease of use. In a sense this has always been a focus for Yacas. I always wanted the system to be self-contained, easy to download, easy to install without external dependencies. And after installation, the ideal was to only have to write a few lines of code to do complex calculations, in an easy to read programming language. Those are ease-of-use issues, and I have cared for them deeply from the very inception of Yacas.
+
+For the recent update of the web site I decided that we can now use Javascript. Javascript is now supported by most browsers, it has been around for a long while. In combination with the Java applet you can now program on-line and run your program directly in the Java applet inside your browser (no need to have a link with a web server). This is how an experienced programmer would use Yacas; write a program and then start Yacas and load the program and then run it. You can now do this on-line. The idea behind this is that people now do not have to download, compile and install a program any more. They can just run it on-line, from any OS that has a Java and Javascript-capable browser. When you enter the Yacas site, you are now one click away from actually using Yacas.
+
+In addition, we have one of those autocompleter boxes that Google helped make famous. Type in (part of) a function name, and you get a list of possible matches. Hover over a possible match, and you get a little blurb explaining the function, and its calling sequence, some examples and a link to the manual entry. This should relieve the pain of being confronted with a blinking cursor with no idea as to what to type there. You can just click on one of the examples.
+
+We have an interactive tutorial that should be somewhat entertaining also. Click on a link and see the calculation performed instantly.
+
+This article that you are reading now is part of a series of articles, which I intend to extend in to a weblog with essays, thoughts, calculation examples, anything in general that might be of interest to people interested in computer algebra systems. These articles are written in a markup language that allows embedding formulas (written out in TeX syntax), and with code embedded in them that you can directly try out, including examples and test code (the test code for each article is run before I make a new release, to make sure I didn't break an example in one of the articles). 
+
+I enabled Google analytics, which is really nice! I can now follow how the site is being used, how long people stay, etcetera. One of the initial shocks was that 50 percent of the people bounced! That means that 50 percent of the people go to the Yacas web site, have one look at it and instantly decide that it is not for them. I was able to reduce that to 25 percent just by making the site faster to load. I can understand why people go away if it takes ten seconds or more to load a page. Before the change, the applet also got loaded, but in Internet explorer also the Java runtime got started. This took ten seconds. Now the Java applet is only started when you go in to a page that needs it. So Google analytics was immediately useful. As they say, to measure is to know. Google analytics is a very useful service. 
+
+The coming period should see some further improvements as I try to optimize Yacas for ease of use. Ease of use is the area, the niche, I want to attack with Yacas. It is an area where Yacas can outshine the competing systems. This might be helped a bit by the fact that my girlfriend is an expert at interaction design ;-)
+
+{{title:The Big Cleanup:title}}
+The more mature systems like Maxima and Axiom now seem to have run in to the problem of succession, where the next generation has to take over and maintain the code that was sometimes developed three decades ago, when memory was at a premium and every byte counted and you would rather use a variable name with one letter, and rather not have comments in the code. 
+
+I wouldn't be surprised if a system like Wikipedia runs in to the same problem at a certain moment. The experts that maintain a subject now will eventually be gone. Their entries were non-trivial, and you will not always be able to find some one with the relevant experience to maintain what the previous person left behind.
+
+I had this problem in small in Yacas. I was always willing to give cvs write access to Yacas, to people whose coding expertise I had not checked yet. This resulted in people adding non-trivial parts to Yacas, which was really great because it made the system do more. However, there were now parts of the code I didn't know intimately. Sometimes I didn't agree with the way it was implemented either. But now it was in the system. Leaving it in was easier than removing it. This reduced maintainability from my standpoint. It is easier to maintain code you wrote yourself than it is to write code written by some one else, in another programming language, in another coding style. 
+
+Most of the people making contributions have now left, leaving me with the task of maintaining what they contributed. Maintenance of parts that I don't understand will cause me to slow down as I have to delve in to understanding that part. Because of that, I have decided to do a big cleanup. If I am going to commit to maintaining this system for the next 50 or so years, I should be allowed to decide on <i>what</i> I will be maintaining. I need to be quick, flexible, efficient. Yacas needs to grow, become more useful. That is not going to happen if I get slowed down in to trying to understand obscure code. I am in the process of removing things that we don't need. It is funny to see that I can remove enormous amounts of files and Yacas still does what it used to do! It still passes all the tests! Apparently we didn't need plugins. Apparently we didn't need an fltk-based user interface. The list goes on.
+
+As a consequence of that, the policy for contributing has changed also. I have become more strict. I now reserve the right to referree, review and edit everything that goes in to the Yacas branch that I maintain. Every one is free to maintain a different branch, or an addition to Yacas, but control over the branch that I maintain is going to rest with me.
+
+If you have any suggestions on improvements, please don't hesitate to send an email! Feedback is very much appreciated. Stay around, as I hope to impress you in the near future with great enhancements to Yacas.
+
+
+
