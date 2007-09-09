@@ -61,7 +61,7 @@ function initPage()
     '  to download and install the latest version for free.' + 
     '</p>' +
     '<p style="color:#FF0000;">' + 
-    '  Alternatively you can go to the <a href="plain.html">simplified</a> part of our web site and download <i>yacas</i> for use off-line.' + 
+    '  Alternatively you can go to the <a href="downloads.html">downloads</a> part of our web site and download <i>yacas</i> for use off-line.' + 
     '</p>';
 
         }
