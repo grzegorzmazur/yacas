@@ -2,6 +2,15 @@
 
 TODO:
 
+- clicking on "restart" from the tutorial doesn't do what it is supposed to do.
+- Java applet should center the output, or maybe put "Out>" in front of it.
+- sometimes output line is not updated when clicking on tutorial commands, lowest line is not visible.
+- in journal mode, console is rather narrow under firefox.
+- use &mdash; more in stead of "-"
+- autocompleter does not stay in bounds for for example "simplify"
+- make the tutorials page scale with the browser
+
+
 - auto-load the plugins, and optimize Dll'Load away.
 - test code for "pcre" and "filescanner".
 
