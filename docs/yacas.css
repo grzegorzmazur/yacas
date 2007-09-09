@@ -67,6 +67,12 @@ table
 	font-size:12;
 }
 
+.articleTitle
+{
+  background-color: #555588;
+  color: #FFFFFF;
+}
+
 a
 {
   text-decoration: none;
