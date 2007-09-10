@@ -174,7 +174,7 @@ class Article
             height = Integer.parseInt(values[i]);
           }
         }
-        articleBody = articleBody + "<applet code=net.sf.yacas.FormulaViewApplet archive=\"yacas.jar\" width=800 height="+height+"><param name=\"expression\" value=\""+data+"\" /></applet><br />";
+        articleBody = articleBody + "<applet code=net.sf.yacas.FormulaViewApplet archive=\"yacas.jar\" width=600 height="+height+"><param name=\"expression\" value=\""+data+"\" /></applet><br />";
       }
       else if (name.equals("example"))
       {

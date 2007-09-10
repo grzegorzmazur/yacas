@@ -1,5 +1,5 @@
 /*==================================================
-  $Id: tabber.js,v 1.7 2007-09-09 12:11:12 ayalpinkus Exp $
+  $Id: tabber.js,v 1.8 2007-09-10 15:22:52 ayalpinkus Exp $
   tabber.js by Patrick Fitzgerald pat@barelyfitz.com
 
   Documentation can be found at the following URL:
@@ -468,7 +468,25 @@ function initTabPageIFrame(id)
     var width = "100%";
     if (elem.id == "recent")
       width = "840px";
-    elem.innerHTML = '<iframe name="'+fields[0]+'" id="'+fields[0]+'" frameborder="0" width="'+width+'" height="80%" src="'+fields[1]+'.html"></iframe>';
+
+    var target = fields[1]+'.html';
+
+    if (fields[0] == "LibraryFrame" && document.location.search)
+    {
+      target = document.location.search;
+      if (target.indexOf("?") == 0)
+      {
+        target = target.substring(1);
+      }
+      var subfields = target.split("&");
+      target = subfields[0];
+      if (subfields.length == 2)
+      {
+        target = target + "?" + subfields[1];
+      }
+    }
+
+    elem.innerHTML = '<iframe name="'+fields[0]+'" id="'+fields[0]+'" frameborder="0" width="'+width+'" height="80%" src="'+target+'"></iframe>';
   }
 }
 

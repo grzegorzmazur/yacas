@@ -23,28 +23,6 @@
         this.style.color="#0000ff";
       }
 
-      var prevOnLoad = window.onload;
-      window.onload = initPage;
-
-      function initPage()
-      {
-        prevOnLoad();
-
-        if (document.location.search)
-        {
-          var base = document.location.search;
-          if (base.indexOf("?") == 0)
-          {
-            base = base.substring(1);
-          }
-          var elem = document.getElementById("LibraryFrame");
-
-          if (elem)
-          {
-            elem.src = base;
-          }
-        }
-      }
       function goToJournal()
       {
         top.location.href = "yacas.html";
