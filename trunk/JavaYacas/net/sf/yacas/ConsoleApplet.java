@@ -793,7 +793,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   }
   void AddLinesStatic(int indent, String prompt,String str)
   {
-//TODO remove?    String err = yacas.iError;
     int pos;
     while ((pos = str.indexOf('\n')) >=0)
     {
@@ -834,11 +833,15 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     private Color  iColor;
   }
 
-
-  class FormulaLine extends MOutputLine
+  class PromptedFormulaLine extends MOutputLine
   {
-    FormulaLine(String aLine)
+    PromptedFormulaLine(int aIndent, String aPrompt, Font aPromptFont, Color aPromptColor, String aLine)
     {
+      iIndent = aIndent;
+      iPrompt = aPrompt;
+      iPromptFont = aPromptFont;
+      iPromptColor = aPromptColor;
+
       TeXParser parser = new TeXParser();
       expression = parser.parse(aLine);
     }
@@ -846,10 +849,18 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     public void draw(Graphics g, int x,int y)
     {
       int hgt = height(g);
+
+      {
+        g.setColor(iPromptColor);
+        g.setFont(iPromptFont);
+        FontMetrics fontMetrics = g.getFontMetrics();
+        g.drawString(iPrompt, x, y+fontMetrics.getAscent() + (hgt-fontMetrics.getHeight())/2);
+      }
+
       g.setColor(Color.black);
       GraphicsPrimitives gp = new GraphicsPrimitives(g);
       gp.SetLineThickness(0);
-      expression.calculatePositions(gp, 3, new java.awt.Point(x+1, y+expression.getCalculatedAscent()+10));
+      expression.calculatePositions(gp, 3, new java.awt.Point(x+iIndent, y+expression.getCalculatedAscent()+10));
       expression.render(gp);
     }
     public int height(Graphics g)
@@ -863,6 +874,10 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       return height;
     }
     int height = -1;
+    int iIndent;
+    private String iPrompt;
+    private Font   iPromptFont;
+    private Color  iPromptColor;
   }
 
 
@@ -911,6 +926,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     private Color  iPromptColor;
     private Color  iColor;
   }
+
 
 
 
@@ -990,7 +1006,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   }
  
   Color iPromptColor = new Color(128,128,128);
-  Font iPromptFont = new Font("helvetica", Font.PLAIN, 12);
+  Font iPromptFont = new Font("Verdana", Font.PLAIN, 12);
   void AddLineStatic(int indent, String prompt, String text,  Font aFont, Color aColor)
   {
     addLine(new PromptedStringLine(indent, prompt,text,iPromptFont, aFont,iPromptColor, aColor));
@@ -1075,7 +1091,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       g.setFont(font);
       int inHeight = fontHeight;
    
-      int yto = getHeight()-1;
+      int yto = getHeight();
       if (!outputDirty)
         yfrom += getHeight()-inHeight;
       if (!inputDirty)
@@ -1184,7 +1200,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   final static String outputPrompt = "Out> ";
 
   static final int fontHeight = 14;
-  private Font font = new Font("courier", Font.BOLD, fontHeight);
+  private Font font = new Font("Verdana", Font.PLAIN, fontHeight);
 
   private static final int nrHistoryLines = 100;
   public  static String history[] = new String[nrHistoryLines];
@@ -1521,7 +1537,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         {
           AddLinesStatic(48,"",outp.substring(0,dollarPos));
         }
-        addLine(new FormulaLine(outp.substring(dollarPos+1,outp.length()-1)));
+        addLine(new PromptedFormulaLine(48, "Out>", iPromptFont, iPromptColor, outp.substring(dollarPos+1,outp.length()-1)));
       }
       else
       {

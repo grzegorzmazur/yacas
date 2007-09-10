@@ -503,10 +503,27 @@ function animateExpressionMover()
   {
     document.getElementsByTagName("body")[0].removeChild(movingBox);
     movingBox = null;
-    yacasEval(movingText);
+//    yacasEval(movingText);
+
+    var consoleApplet = getConsoleApplet();
+    if (consoleApplet)
+    {
+      var expression = getPlainText(movingText);
+      consoleApplet.InvokeCalculationSilent(expression);
+    }
   }
   else
   {
+    if (movingSteps == movingNrSteps-5)
+    {
+      var consoleApplet = getConsoleApplet();
+      if (consoleApplet)
+      {
+        expression = getPlainText(movingText);
+        consoleApplet.AddInputLine(expression);
+      }
+    }
+
     movingSteps += 1;
     movingLeft += movingDx;
     movingTop  += movingDy;
