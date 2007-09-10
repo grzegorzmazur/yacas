@@ -1,5 +1,5 @@
 /*==================================================
-  $Id: tabber.js,v 1.8 2007-09-10 15:22:52 ayalpinkus Exp $
+  $Id: tabber.js,v 1.9 2007-09-10 15:55:05 ayalpinkus Exp $
   tabber.js by Patrick Fitzgerald pat@barelyfitz.com
 
   Documentation can be found at the following URL:
@@ -480,9 +480,13 @@ function initTabPageIFrame(id)
       }
       var subfields = target.split("&");
       target = subfields[0];
-      if (subfields.length == 2)
+      if (subfields.length > 1)
       {
         target = target + "?" + subfields[1];
+        if (subfields.length > 2)
+        {
+          target = target + "&" + subfields[2];
+        }
       }
     }
 
