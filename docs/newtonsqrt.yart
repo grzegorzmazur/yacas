@@ -67,3 +67,5 @@ For (i:=1,i<=8,i++) iterate();
 :code}}
 
 
+<input type=button id="therunbutton" value="Run code" title="Try this example out online" />
+

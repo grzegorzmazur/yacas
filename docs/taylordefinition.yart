@@ -79,6 +79,7 @@ to modify these lines a bit. Enjoy!
 :test}}
 
 
+<input type=button id="therunbutton" value="Run code" title="Try this example out online" />
 
 
 

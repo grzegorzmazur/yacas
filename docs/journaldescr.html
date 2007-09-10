@@ -38,13 +38,7 @@
             elem.innerHTML = text;
           }
 
-          elem = document.getElementById("therunbutton1");
-          if (elem)
-          {
-            elem.onclick = tryItOut;
-          }
-
-          elem = document.getElementById("therunbutton2");
+          elem = document.getElementById("therunbutton");
           if (elem)
           {
             elem.onclick = tryItOut;
@@ -60,11 +54,6 @@
   </head>
   <body>
     <table border=0 width="800">
-      <tr>
-        <td>
-          <input type=button id="therunbutton1" value="Run code" title="Try this example out online" />
-        </td>
-      </tr>
       <tr height=50>
         <td>
           <div width="100%" class="dummy" id="thetext" ></div>
@@ -73,7 +62,6 @@
       </tr>
       <tr>
         <td>
-          <input type=button id="therunbutton2" value="Run" title="Try this example out online" />
         </td>
       </tr>
     </table>

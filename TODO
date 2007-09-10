@@ -1,14 +1,7 @@
 
 
 TODO:
-- sometimes output line is not updated when clicking on tutorial commands, lowest line is not visible.
-- clicking on "restart" from the tutorial doesn't do what it is supposed to do.
-- add console to the articles
-- remove "Run" button from the articles
-
 - Java applet should center the output, or maybe put "Out>" in front of it.
-- in journal mode, console is rather narrow under firefox.
-- use &mdash; more in stead of "-"
 - autocompleter does not stay in bounds for for example "simplify"
 - make the tutorials page scale with the browser
 

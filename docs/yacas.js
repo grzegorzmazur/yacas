@@ -9,8 +9,8 @@ function initPage()
 {
   var viewportSize = getViewportSize();
 
-  var preferredWidth = viewportSize[0]-400;//750;
-  var preferredHeight = viewportSize[1]-100;//400;
+  var preferredWidth = viewportSize[0]-400;
+  var preferredHeight = viewportSize[1]-100;
   if (preferredWidth  < 320) preferredWidth  = 320;
   if (preferredHeight < 200) preferredHeight = 200;
 
@@ -96,6 +96,10 @@ function initPage()
           if (object.id)
           {
             programMode = object.id;
+            if (object.id == "journal")
+            {
+              width += 300;
+            }
             if (object.id == "tutorial")
             {
               width  = 750;
@@ -227,19 +231,6 @@ function commandLinkClick()
   var id = this.id;
   var expression = getPlainText(this.innerHTML);
   startExpressionAnimation(id,expression);
-
-/*TODO remove
-  if (parent.document.consoleApplet)
-  {
-    parent.document.consoleApplet.AddInputLine(expression);
-    parent.document.consoleApplet.InvokeCalculationSilent(expression);
-  }
-  else if (document.consoleApplet)
-  {
-    document.consoleApplet.AddInputLine(expression);
-    document.consoleApplet.InvokeCalculationSilent(expression);
-  }
-*/
 }
 
 function getConsoleApplet()

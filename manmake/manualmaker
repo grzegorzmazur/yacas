@@ -437,7 +437,6 @@ BookList():=
     bl:= bl : 
      "<tr>" : "<td bgcolor=e0e0e0>
      " : HtmlLink(bookinfo["Title"],book:"manual.html","","") :
-/*     " or " : HtmlLink(" (single file) ",bookinfo["BaseName"]:".html","","") : */
      "</tr><tr>" : "<td bgcolor=ffffff>
      " : bookinfo["Blurb"] :"</tr>";
   ];
