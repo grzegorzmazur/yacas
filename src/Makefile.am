@@ -89,7 +89,7 @@ EXTRA_DIST =  anumber.inl deffile.inl  \
 	README.LZO lzoconf.h minilzo.c minilzo.h decompressor.cpp \
 	compressor.cpp filescanner.cpp filescanner.h \
 	compressedfiles.h \
-	compressor.dsp compressor.dsw win32rcwriter.cpp \
+	compressor.dsp compressor.dsw \
    pcre_study_stub.c pcre_pcre_stub.c pcre_maketables_stub.c \
   pcre_pcreposix_stub.c pcre_get_stub.c pcre_plugin_stub.cpp \
   filescanner_stub.cpp filescanner_plugin_stub.cpp \

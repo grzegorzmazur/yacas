@@ -25,21 +25,12 @@
         {
           var seach = getBase();
           var elem;
-          elem = document.getElementById("theeditbutton");
-          if (elem)
-          {
-            elem.onclick=goEdit;
-          }
           elem = document.getElementById("theexplainbutton");
           if (elem)
           {
             elem.onclick=goExplain;
           }
         }
-      }
-      function goEdit()
-      {
-        gotoHREF('journaledit.html?'+getBase());
       }
       function goExplain()
       {

@@ -69,8 +69,10 @@ table
 
 .articleTitle
 {
-  background-color: #555588;
-  color: #FFFFFF;
+  background-color: #AAAAEE;
+  color: #222266;
+  padding: 4px 4px 4px 4px;
+  border: 1px solid #555588;
 }
 
 a
