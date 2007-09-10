@@ -25,6 +25,8 @@
           {
             target = target.substring(1);
           }
+          var subfields = target.split("&");
+          target = subfields.join("?");
           var elem = document.getElementById("infoframe");
           if (elem)
           {

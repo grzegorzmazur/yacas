@@ -9,8 +9,17 @@
       /* When deep link found, redirect to the tabbified main page */
       if (top.location == self.location)
       {
-        self.location.replace("yacas.html");
+        if (document.location.search)
+        {
+          var seach = getBase();
+          self.location.replace("homepage.html?recent.html&journaldescr.html&"+seach);
+        }
+        else
+        {
+          self.location.replace("yacas.html");
+        }
       }
+
     //   end script hiding -->
     </script>
     <script type="text/javascript">
