@@ -150,7 +150,7 @@ class Article
         codeBody = codeBody + data;
         if (addToArticle)
         {
-          articleBody = articleBody + "<table width=\"100%\"><tr><td width=100% bgcolor=\"#DDDDEE\"><pre>" + data + "</pre></tr></table>";
+          articleBody = articleBody + "<table width=\"100%\"><tr><td width=\"100%\" bgcolor=\"#DDDDEE\"><pre>" + data + "</pre></tr></table>";
         }
       }
       else if (name.equals("test"))

@@ -479,6 +479,7 @@ function startExpressionAnimation(id,text)
       {
         targetPosition[0] += tg.offsetLeft;
         targetPosition[1] += tg.offsetTop;
+        targetPosition[1] -= 20;
         tg = tg.offsetParent;
       }
     }
