@@ -22,7 +22,7 @@ EXTRA_DIST = \
 	cookie.js autocompleter.css \
 	tutorialtext1.html back-dark.gif back.gif back.texhtml \
 	$(YART_FILES) \
-	journaldescr.html journalview.html journaledit.html \
+	journaldescr.html journalview.html \
         downloads.html.in \
 	README autocompleteraccess.js examples-static.txt \
 	paper1.tex paper2.tex 
