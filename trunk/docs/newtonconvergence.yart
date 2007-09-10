@@ -74,5 +74,6 @@ To try this out, click on the button labeled "Run".
 {{example:iterate():example}}
 {{example:iterate():example}}
 
+<input type=button id="therunbutton" value="Run code" title="Try this example out online" />
 
 

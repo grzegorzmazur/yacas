@@ -227,30 +227,15 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
       AddLineStatic(100, "","", font, c);
       AddLineStatic(100, "","", font, c);
-
       AddLineStatic(100, "","Yacas version '" + CVersion.VERSION + "'.", font, c);
-
-//      AddLineStatic(100, "","Running from location '" + getDocumentBase() + "'.", font, c);
-
-//      AddLineStatic(100, "","Yacas is Free Software--Free as in Freedom--so you can redistribute Yacas or", font, c);
-//      AddLineStatic(100, "","modify it under certain conditions. Yacas comes with ABSOLUTELY NO WARRANTY.", font, c);
-//      AddLineStatic(100, "","See the GNU General Public License (GPL) for the full conditions.", font, c);
-//      AddLineStatic(100, "","Type ?license or ?licence to see the GPL; type ?warranty for warranty info.", font, c);
-//      AddLineStatic(100, "","See http://yacas.sf.net for more information and documentation on Yacas.", font, c);
-//      AddLineStatic(100, "","", font, c);
-
-//      AddLineStatic(100, "","Type '?', '??' or 'help' for help, or type '?function' for help on a function.\n", font, c);
       AddLineStatic(100, "","Type 'restart' to restart Yacas, or 'cls' to clear screen.\n", font, c);
       AddLineStatic(100, "","To see example commands, keep typing 'Example();'\n", font, c);
-
     }
 
 
 
     {
       String docbase = getDocumentBase().toString();
-
-//      AddLineStatic(100, ""," '" + docbase + "'.", font, Color.red);
 
       if (docbase.substring(0,4).equals("file"))
       {
@@ -333,14 +318,11 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
       else
       {
-//AddLineStatic(100, "","programMode = "+programMode, font, Color.black);
-
         try
         {
           Applet dataHub = getAppletContext().getApplet( "datahub");
           if (dataHub != null)
           {
-//AddLineStatic(100, "","dataHub != null", font, Color.black);
             net.sf.yacas.DatahubApplet cons = (net.sf.yacas.DatahubApplet)dataHub;
             cons.setProgramMode(programMode);
 
@@ -728,19 +710,19 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
     }
   }
-  void PerformRequest(String outputPrompt,String inputLine, boolean doRepaint)
+  
+  boolean DirectCommand(String inputLine)
   {
-    boolean succeed = false;
     if (inputLine.equals("restart"))
     {
       stop();
       start();
-      return;
+      return true;
     }
     else if (inputLine.equals("cls"))
     {
       clearOutputLines();
-      succeed = true;
+      return true;
     }
     else if (inputLine.equals(":test"))
     {
@@ -751,24 +733,34 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         {
           net.sf.yacas.DatahubApplet cons = (net.sf.yacas.DatahubApplet)dataHub;
           String programContentsToLoad = "["+cons.getTestcode()+"];";
-          succeed = true;
           InvokeCalculationSilent(programContentsToLoad);
         }
       }
       catch (Exception e)
       {
       }
+      return true;
     }
     else if (inputLine.equals("?license") || inputLine.equals("?licence") || inputLine.equals("?warranty"))
     {
       try
       {
         getAppletContext().showDocument( new URL("gpl.html"),"license");
-        succeed = true;
       }
       catch (Exception e)
       {
       }
+      return true;
+    }
+    return false;
+  }
+  
+  void PerformRequest(String outputPrompt,String inputLine, boolean doRepaint)
+  {
+    boolean succeed = false;
+    if (DirectCommand(inputLine))
+    {
+      return;
     }
     else
     {
@@ -964,23 +956,25 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   }
   void addLine(MOutputLine aLine)
   {
-    CreateOffscreenImage();
-    if (lines[currentLine] != null)
-      totalLinesHeight -= lines[currentLine].height(offGra);
-    lines[currentLine] = aLine;
-    if (lines[currentLine] != null)
-      totalLinesHeight += lines[currentLine].height(offGra);
-    currentLine = (currentLine+1)%nrLines;
-
     {
-      int canvasHeight = getHeight()-fontHeight-1;
-      if (canvasHeight < totalLinesHeight)
+      CreateOffscreenImage();
+      if (lines[currentLine] != null)
+        totalLinesHeight -= lines[currentLine].height(offGra);
+      lines[currentLine] = aLine;
+      if (lines[currentLine] != null)
+        totalLinesHeight += lines[currentLine].height(offGra);
+      currentLine = (currentLine+1)%nrLines;
+
       {
-        int th = calcThumbHeight();
-        thumbPos = canvasHeight-th-4;
+        int canvasHeight = getHeight()-fontHeight-1;
+        if (canvasHeight < totalLinesHeight)
+        {
+          int th = calcThumbHeight();
+          thumbPos = canvasHeight-th-4;
+        }
       }
+      outputDirty = true;
     }
-    outputDirty = true;
   }
 
 
@@ -1064,118 +1058,121 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   Color bkColor = new Color(255,255,255);
   public void paintToBitmap(Graphics g)
   {
-    if ( g instanceof Graphics2D )
+    synchronized(this)
     {
-      Graphics2D g2d = null;
-      g2d = (Graphics2D)g;
-      g2d.addRenderingHints( new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON ));
-    }
-
-    FontMetrics metrics = getFontMetrics(font);
-
-    g.setColor(bkColor);
-    int yfrom = 0;
- 
-    g.setFont(font);
-    int inHeight = fontHeight;
- 
-    int yto = getHeight()-1;
-    if (!outputDirty)
-      yfrom += getHeight()-inHeight;
-    if (!inputDirty)
-      yto -= inHeight;
- 
-    g.clearRect(0,yfrom,getWidth(),yto);
-    g.setColor(Color.black);
-
-    int i;
-    int y=getHeight()-inHeight-g.getFontMetrics().getHeight();
-
-      int canvasHeight = getHeight()-fontHeight-1;
-    if (outputDirty)
-    {
-      y -= totalLinesHeight;
-      if (canvasHeight < totalLinesHeight)
+      if ( g instanceof Graphics2D )
       {
-        int th = calcThumbHeight();
-        double scale = (1.0*thumbPos)/(canvasHeight-th-4);
-        y += (int)((1-scale)*(totalLinesHeight-canvasHeight));
+        Graphics2D g2d = null;
+        g2d = (Graphics2D)g;
+        g2d.addRenderingHints( new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON ));
       }
-      g.setClip(0,0,getWidth(),getHeight()-fontHeight-1);
-      for (i=0;i<nrLines;i++)
-      {
-        int index = (currentLine+i)%nrLines;
-        if (lines[index] != null)
-        {
-          if (y+lines[index].height(g)>0)
-          {
-            lines[index].draw(g,inset,y);
-          }
-          y+=lines[index].height(g);
-        }
-      }
-      g.setClip(0,0,getWidth(),getHeight());
-      int w=getWidth();
-//System.out.println("height = "+totalLinesHeight+", screen = "+(canvasHeight));
-      if (canvasHeight < totalLinesHeight)
-      {
-        int thumbHeight = calcThumbHeight();
-        g.setColor(Color.white);
-        g.fillRect(w-scrollWidth,0,scrollWidth,canvasHeight);
 
-        if (thumbMoused)
-          g.setColor(new Color(192,192,240));
-        else
-          g.setColor(new Color(124,124,224));
+      FontMetrics metrics = getFontMetrics(font);
 
-        g.fillRect(w-scrollWidth+2,thumbPos+2,scrollWidth-4,thumbHeight);
-
-        g.setColor(Color.black);
-        g.drawRect(w-scrollWidth,0,scrollWidth,canvasHeight);
-
-        g.drawRect(w-scrollWidth+2,thumbPos+2,scrollWidth-4,thumbHeight);
-      }
-    }
-    y=getHeight()-g.getFontMetrics().getDescent();
-    outputDirty = false;
-    if (focusGained && !calculating)
-    {
-      if (inputDirty)
-      {
-        if (y+fontHeight>0)
-        {
-          int promptLength = metrics.stringWidth(inputPrompt);
-          g.setColor(Color.red);
-          g.setFont(font);
-
-          g.drawString(inputPrompt, inset, y);
-          g.drawString(inputLine, inset+promptLength, y);
-          int cursorLocation = promptLength;
-          for (i=0;i<cursorPos;i++)
-          {
-            cursorLocation += metrics.charWidth(inputLine.charAt(i));
-          }
-          y+=g.getFontMetrics().getDescent();
-          g.drawLine(inset+cursorLocation,y,inset+cursorLocation,y-fontHeight);
-        }
-      }
-    }
-    else
-    {
-      String toPrint = "Click here to enter an expression";
-      if (calculating)
-      {
-        toPrint = "Calculating...";
-      }
-      
-      int promptLength = metrics.stringWidth(toPrint);
-      g.setColor(Color.blue);
+      g.setColor(bkColor);
+      int yfrom = 0;
+   
       g.setFont(font);
+      int inHeight = fontHeight;
+   
+      int yto = getHeight()-1;
+      if (!outputDirty)
+        yfrom += getHeight()-inHeight;
+      if (!inputDirty)
+        yto -= inHeight;
+   
+      g.clearRect(0,yfrom,getWidth(),yto);
+      g.setColor(Color.black);
 
-      g.drawString(toPrint, inset, y);
-      y+=g.getFontMetrics().getDescent();
+      int i;
+      int y=getHeight()-inHeight-g.getFontMetrics().getHeight();
+
+        int canvasHeight = getHeight()-fontHeight-1;
+      if (outputDirty)
+      {
+        y -= totalLinesHeight;
+        if (canvasHeight < totalLinesHeight)
+        {
+          int th = calcThumbHeight();
+          double scale = (1.0*thumbPos)/(canvasHeight-th-4);
+          y += (int)((1-scale)*(totalLinesHeight-canvasHeight));
+        }
+        g.setClip(0,0,getWidth(),getHeight()-fontHeight-1);
+        for (i=0;i<nrLines;i++)
+        {
+          int index = (currentLine+i)%nrLines;
+          if (lines[index] != null)
+          {
+            if (y+lines[index].height(g)>0)
+            {
+              lines[index].draw(g,inset,y);
+            }
+            y+=lines[index].height(g);
+          }
+        }
+        g.setClip(0,0,getWidth(),getHeight());
+        int w=getWidth();
+  //System.out.println("height = "+totalLinesHeight+", screen = "+(canvasHeight));
+        if (canvasHeight < totalLinesHeight)
+        {
+          int thumbHeight = calcThumbHeight();
+          g.setColor(Color.white);
+          g.fillRect(w-scrollWidth,0,scrollWidth,canvasHeight);
+
+          if (thumbMoused)
+            g.setColor(new Color(192,192,240));
+          else
+            g.setColor(new Color(124,124,224));
+
+          g.fillRect(w-scrollWidth+2,thumbPos+2,scrollWidth-4,thumbHeight);
+
+          g.setColor(Color.black);
+          g.drawRect(w-scrollWidth,0,scrollWidth,canvasHeight);
+
+          g.drawRect(w-scrollWidth+2,thumbPos+2,scrollWidth-4,thumbHeight);
+        }
+      }
+      y=getHeight()-g.getFontMetrics().getDescent();
+      outputDirty = false;
+      if (focusGained && !calculating)
+      {
+        if (inputDirty)
+        {
+          if (y+fontHeight>0)
+          {
+            int promptLength = metrics.stringWidth(inputPrompt);
+            g.setColor(Color.red);
+            g.setFont(font);
+
+            g.drawString(inputPrompt, inset, y);
+            g.drawString(inputLine, inset+promptLength, y);
+            int cursorLocation = promptLength;
+            for (i=0;i<cursorPos;i++)
+            {
+              cursorLocation += metrics.charWidth(inputLine.charAt(i));
+            }
+            y+=g.getFontMetrics().getDescent();
+            g.drawLine(inset+cursorLocation,y,inset+cursorLocation,y-fontHeight);
+          }
+        }
+      }
+      else
+      {
+        String toPrint = "Click here to enter an expression";
+        if (calculating)
+        {
+          toPrint = "Calculating...";
+        }
+        
+        int promptLength = metrics.stringWidth(toPrint);
+        g.setColor(Color.blue);
+        g.setFont(font);
+
+        g.drawString(toPrint, inset, y);
+        y+=g.getFontMetrics().getDescent();
+      }
+      inputDirty=false;
     }
-    inputDirty=false;
   }
   String inputLine  = new String();
   String gatheredMultiLine = new String();
@@ -1493,14 +1490,13 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     PerformRequest("Out> ",expression,false);
     inputDirty = true;
     outputDirty = true;
-    repaint(0);
+    repaint();
   }
 
   String lastError;
   public String calculate(String expression)
   {
     if (!gotDatahubInit) start();
-
     String result = yacas.Evaluate(expression);
     lastError = yacas.iError;
     return result;
@@ -1532,44 +1528,56 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         AddLinesStatic(48,"",outp.toString());
       }
     }
+    outputDirty = true;
   }
 
   public void AddInputLine(String expression)
   {
-    if (!gotDatahubInit) start();
-    AppendHistoryLine(expression);
-    AddLinesStatic(48,"In> ",expression);
-    ResetInput();
-    RefreshHintWindow();
-    inputDirty = true;
-    outputDirty = true;
-    calculating = true;
-    repaint(0);
+    synchronized(this)
+    {
+      if (!gotDatahubInit) start();
+      AppendHistoryLine(expression);
+      AddLinesStatic(48,"In> ",expression);
+      ResetInput();
+      RefreshHintWindow();
+      inputDirty = true;
+      outputDirty = true;
+      calculating = true;
+    }
+    repaint();
   }
 
   public void InvokeCalculationSilent(String expression)
   {
-    outp.delete(0,outp.length());
-    String response = yacas.Evaluate(expression);
-    calculating = false;
-    AddOutputLine(outp.toString());
-    if (yacas.iError != null)
+    synchronized(this)
     {
-      AddLinesStatic(48,"Error> ",yacas.iError);
-    }
+      if (DirectCommand(expression))
+      {
+        return;
+      }
+      else
+      {
+        outp.delete(0,outp.length());
+        String response = yacas.Evaluate(expression);
+        calculating = false;
+        AddOutputLine(outp.toString());
+        if (yacas.iError != null)
+        {
+          AddLinesStatic(48,"Error> ",yacas.iError);
+        }
 
-    ResetInput();
-    RefreshHintWindow();
-    inputDirty = true;
-    outputDirty = true;
-    repaint(0);
+        ResetInput();
+        RefreshHintWindow();
+        inputDirty = true;
+        outputDirty = true;
+      }
+    }
+    repaint();
   }
 
   public void StopCurrentCalculation()
   {
     yacas.env.iEvalDepth = yacas.env.iMaxEvalDepth+100;
   }
-
-
 }
 

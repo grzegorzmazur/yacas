@@ -155,4 +155,5 @@ Verify(dd(x,Sin(x)),Cos(x));
 Verify(dd(x,a),0);
 :test}}
 
+<input type=button id="therunbutton" value="Run code" title="Try this example out online" />
 
