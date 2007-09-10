@@ -2,6 +2,15 @@
   <head>
     <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
     <script type="text/javascript" src="yacas.js"></script>
+
+    <script type="text/javascript">
+      /* When deep link found, redirect to the tabbified main page */
+      if (top.location == self.location)
+      {
+        self.location.replace("homepage.html?recent.html&links.html");
+      }
+    </script>
+
   </head>
   <body>
     <h1>Related links on the internet</h1>

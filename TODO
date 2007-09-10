@@ -1,6 +1,7 @@
 
 
 TODO:
+- make file.yart.html cached pages so they can be directly linked through
 - make manual entries look better, similar to articles, but use different colors so it is clear that it is something else.
 - Java applet should center the output, or maybe put "Out>" in front of it.
 - autocompleter does not stay in bounds for for example "simplify"
