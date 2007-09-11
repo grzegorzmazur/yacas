@@ -869,4 +869,9 @@ if (iExpressions[2] != null)
       push(new SBoxSymbolName(aType));
     }
   }
+
+  public void processLiteral(String aExpression)
+  {
+    push(new SBoxSymbolName(aExpression));
+  }
 }
