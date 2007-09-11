@@ -277,12 +277,7 @@ FramedChapterIndex(chapters):=
     Local(file,index);
     index:=plain["Chapters"][chapter]["Index"];
     file:=plain["BaseName"] : "chapter" : String(index) : ".html";
-/*TODO remove?
-    bl := bl:HtmlTag(bullet,
-    HtmlLink(chapter,file,
-       ChapterTag(plain["Chapters"][chapter]["Index"]),"Chapters"));
-      );
-*/
+
     bl := bl : 
       "<a href=\"":file:"#":ChapterTag(plain["Chapters"][chapter]["Index"]):"\" target=\"Chapters\">":String(plain["Chapters"][chapter]["Index"]):". ":chapter:"</a><br />";
 
@@ -292,7 +287,7 @@ FramedChapterIndex(chapters):=
     [
       bl:=bl : FramedSectionsIndex(file,chapter,sections);
     ];
-    bl:=bl:"<br />";
+//TODO remove?    bl:=bl:"<br />";
   ];
   bl;
 ];

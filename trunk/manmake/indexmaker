@@ -91,7 +91,8 @@ BookList():=
 
     bl := bl : 
 "<p>
-<a href=\"":book:"manual.html\">":bookinfo["Title"]:"</a> (<a href=\"":book:".book.pdf\" target=\"pdfwin\">PDF</a>) (<a href=\"downloads.html\">download</a>) &mdash; ":bookinfo["Blurb"]:"
+<div class=\"articleTitle\">
+<a class=\"articleTitleLink\" href=\"":book:"manual.html\"><b>":bookinfo["Title"]:"</b></a> (<a class=\"articleTitleLink\" href=\"":book:".book.pdf\" target=\"pdfwin\">PDF</a>) (<a class=\"articleTitleLink\" href=\"downloads.html\">download</a>) </div> ":bookinfo["Blurb"]:"
 </p>
 ";
 
