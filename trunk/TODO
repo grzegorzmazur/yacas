@@ -1,8 +1,6 @@
 
 
 TODO:
-- Reply email on fact that Listify(a+b*(c+d)); crash is fixed
-
 - do a cleanup of the "ref" manual, first pass to throw away functions that should not have been there in the first place.
 - second chapter in refprog titled "Programming" has way too many functions
 - chapter "List operators" has way too many function entries.
