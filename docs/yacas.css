@@ -67,14 +67,6 @@ table
 	font-size:12;
 }
 
-.articleTitle
-{
-  background-color: #AAAAEE;
-  color: #222266;
-  padding: 4px 4px 4px 4px;
-  border: 1px solid #555588;
-}
-
 a
 {
   text-decoration: none;
@@ -99,5 +91,22 @@ a:hover
 a:active
 {
   color:#FF0000;
+}
+
+.articleTitle
+{
+  background-color: #AAAAEE;
+  color: #222266;
+  padding: 4px 4px 4px 4px;
+  border: 1px solid #555588;
+}
+
+a.articleTitleLink
+{
+  color:#222266;
+}
+a.articleTitleLink:hover
+{
+  color:#FFFFFF;
 }
 
