@@ -708,8 +708,6 @@ which speedup many calculations by orders of magnitude.
 	Out> 1;
 
 
-			Matrix decomposition
-
 *CMD Cholesky --- find the Cholesky Decomposition
 *STD
 *CALL
