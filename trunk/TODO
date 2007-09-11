@@ -2,6 +2,16 @@
 
 TODO:
 - Reply email on fact that Listify(a+b*(c+d)); crash is fixed
+
+- do a cleanup of the "ref" manual, first pass to throw away functions that should not have been there in the first place.
+- second chapter in refprog titled "Programming" has way too many functions
+- chapter "List operators" has way too many function entries.
+- chapter "Control flow" has entries relating only to the off-line version
+- chapter "predicates" has way too many function entries.
+- chapter "Input/output and plotting" has way too many function entries.
+- chapter "Number theory" needs to be cleaned up.
+- do a cleanup of the other books also
+
 - emailable Yacas?
 - autocompleter does not stay in bounds for for example "simplify"
 - make the tutorials page scale with the browser
@@ -19,20 +29,10 @@ TODO:
 - get rid of the Ortho?Sum functions, replace with just one?
 - (find other ...Num functions)
 - NewtonNum
-- graph plotter 3D for Java
-- do a cleanup of the "ref" manual, first pass to throw away functions that should not have been there in the first place.
-- second chapter in refprog titled "Programming" has way too many functions
-- chapter "List operators" has way too many function entries.
-- chapter "Control flow" has entries relating only to the off-line version
-- chapter "predicates" has way too many function entries.
-- chapter "Input/output and plotting" has way too many function entries.
-- chapter "Number theory" needs to be cleaned up.
-- do a cleanup of the other books also
 
-  - Future, change name of builtin functions that are not directly accessible to outside to have prefix Builtin'...
-  - Skim through Math... functions, renaming them to Builtin'...
-  - manuals, provide as zip files? more people can use unzip than can use untar.
-
+- Future, change name of builtin functions that are not directly accessible to outside to have prefix Builtin'...
+- Skim through Math... functions, renaming them to Builtin'...
+- manuals, provide as zip files? more people can use unzip than can use untar.
 
 - Example: RootsOfUnity (nice example of threading): Exp(2*Pi*I*(1 .. n)/n)
 - Example: Average (nice example of threading): Average(list_IsList) <-- Add(list)/Length(list); 
@@ -49,9 +49,7 @@ TODO:
 - Move brackets slightly down in tex form pretty renderer, especially when what they bracket is not too big.
 - Strip comments from scripts before adding to zip file
 - step-by-step solver possible?
-- different color scheme for each tab page?
 - screenshots, explanation of how to use, demo, tipbox, or *something*, to persuade people to enter something in the search field
-- separate project, teacher version
 - carefully change things so that the scripts do not have things like "N(Eval(" any more (just grep on it).
 
 1) Documentation improvements
@@ -241,10 +239,7 @@ divisible by b.
 - run test scripts in Java version, and fix problems accordingly
 - Functions to be implemented in the Java version still:
   - LispFastMod
-  - YacasDllEnumerate
-  - YacasDllDirectory
   - YacasDllLoad
-  - YacasDllUnload
   - LispPatchLoad
   - LispPatchString
   - Some more functions that are defined in yacasmain.cpp: Exit, IsExitRequested, HistorySize, StaSiz, IsPromptShown, ReadCmdLineString, FileSize
@@ -300,7 +295,6 @@ divisible by b.
 - Mention MultiGcd in the documentation where polynomial operations are explained.
 - make sure there are no collisions (axiom link in links.html for example) ???
 - change all references to LISP in to YACAS, and Lisp in to Yacas
-- On Mac OS X, SetHelpBrowser should be "open", on Windows it should be "start"
 - univar.rep/Cyclotomic.ys is the only file to start with a capital (perhaps change to lower case?)
 - some garbage (double defined functions) I'd like to remove from univar
 - Taylor series expansion of Tan is slow, use other form for derivative?
