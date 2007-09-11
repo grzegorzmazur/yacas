@@ -45,12 +45,13 @@ x_1 = x_0 - tan \left( x_0 \right)
 We can set this in motion by starting with the following code.
 
 {{code:
-start():= [ x:=3; ];
+start():= [ x:=3; x; ];
 iterate() := 
 [ 
   x := N(x-Tan(x),100); 
   Echo("The new approximation to pi is ",x);
   Echo("The number of digits precision is ",-N(Ln(Abs(x-Pi))/Ln(10),100));
+  x;
 ];
 :code}}
 
