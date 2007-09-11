@@ -246,7 +246,15 @@ public class TeXParser
     else if (nextToken.equals("\\mathrm"))
     {
       NextToken();
-      parseOneExpression25(builder);
+      if (!matchToken("{")) return;
+
+      int startPos = currentPos;
+      while (currentPos < iCurrentExpression.length() && iCurrentExpression.charAt(currentPos) != '}' )
+        currentPos++;
+      String literal = iCurrentExpression.substring(startPos,currentPos);
+      currentPos++;
+      builder.processLiteral(literal);
+      NextToken();
       return;
     }
     else if (nextToken.equals("-"))

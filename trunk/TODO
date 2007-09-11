@@ -1,13 +1,10 @@
 
 
 TODO:
-- Listify(a+b*(c+d)); crashes in the applet when trying to pretty-print through texform.
-
+- Reply email on fact that Listify(a+b*(c+d)); crash is fixed
 - emailable Yacas?
-- make manual entries look better, similar to articles, but use different colors so it is clear that it is something else.
 - autocompleter does not stay in bounds for for example "simplify"
 - make the tutorials page scale with the browser
-
 - auto-load the plugins, and optimize Dll'Load away.
 - test code for "pcre" and "filescanner".
 
