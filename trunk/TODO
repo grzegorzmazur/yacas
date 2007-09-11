@@ -1,6 +1,9 @@
 
 
 TODO:
+- Listify(a+b*(c+d)); crashes in the applet when trying to pretty-print through texform.
+
+- emailable Yacas?
 - make manual entries look better, similar to articles, but use different colors so it is clear that it is something else.
 - autocompleter does not stay in bounds for for example "simplify"
 - make the tutorials page scale with the browser
