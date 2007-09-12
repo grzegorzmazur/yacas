@@ -1,7 +1,8 @@
 
 
 TODO:
-
+- some manual does not build first time due to config.chapt
+- revise the new newtonconvergence.html
 - combine the newton articles
 
 - do a cleanup of the "ref" manual, first pass to throw away functions that should not have been there in the first place.
