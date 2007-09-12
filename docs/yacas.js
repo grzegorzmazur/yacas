@@ -65,7 +65,7 @@ function initPage()
 
           object.innerHTML = 
             '<applet code=net.sf.yacas.FormulaViewApplet archive="yacas.jar" width="'+width+'" height="'+height+'" >'+
-            '  <param name="expression" value="'+expression+'" />'+
+            '  <param name="expression" value="'+expression+'" />'+ expression +
             '</applet><br />';
 
         }

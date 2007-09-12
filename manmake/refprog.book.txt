@@ -1664,19 +1664,6 @@ Therefore, any CPU-intensive processes running alongside Yacas will not signific
 
 *SEE Time
 
-		Full listing of core functions
-
-The following Yacas functions are currently declared in {corefunctions.h}
-as core functions.
-The list indicates whether a function is a real function (evaluating its arguments) or a macro (not evaluating its arguments).
-Also a function can either take a fixed number of arguments or a variable number (say, 2 or more).
-Some kernel functions are additionally declared as operators (bodied, prefix, infix, postfix) with the given precedence.
-
-*A core functions, listing of
-*REM yacasapi.chapt is generated from corefunctions.h
-
-*INCLUDE yacasapi.chapt
-
 
 
 			The Yacas plugin structure

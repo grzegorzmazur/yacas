@@ -81,9 +81,9 @@ REFSOURCES = config.chapt.txt arith.chapt.txt calc.chapt.txt complex.chapt.txt \
 	plugin-docs.chapt.txt filescanner.chapt.txt pcre.chapt.txt
 
 
-REFPROGCHAPTERS = yacasapi.chapt FDL.chapt glossary.chapt \
+REFPROGCHAPTERS = FDL.chapt glossary.chapt \
 	GPL.chapt numerics.chapt
-# yacasapi.chapt and GPL.chapt have no .txt source
+# GPL.chapt has no .txt source
 REFPROGSOURCES = FDL.chapt.txt glossary.chapt.txt \
 	numerics.chapt.txt
 
@@ -177,8 +177,6 @@ Algo.book.tex: Algo.book $(ALGOCHAPTERS)
 
 # special "virtual" chapter built from corefunctions.h. This is printed by a special program "gencorefunctions", compiled together with yacas.
 
-yacasapi.chapt.txt: ../src/gencorefunctions
-	../src/gencorefunctions refman | sort > yacasapi.chapt.txt
 
 # special chapter copied from the GPL (need to replace "<" and ">")
 GPL.chapt: $(top_srcdir)/COPYING
@@ -197,7 +195,7 @@ pdf-docs: $(PDF_DOCS)
 CLEANFILES = books.html *.tex *.dvi *.aux *.idx *.ind *.ilg *.toc *.log *.ps *.pdf *.funcs.js \
 	coding*.html intro*.html ref*.html essays*.html Algo*.html  *.o core *~ texdocs.c \
 	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) $(CODINGCHAPTERS)  \
-	$(TESTCODESNIPPETS) $(ALGOCHAPTERS) yacasapi.chapt.txt $(BOOKS) manicon.html \
+	$(TESTCODESNIPPETS) $(ALGOCHAPTERS) $(BOOKS) manicon.html \
 	$(PLUGINDOCSCHAPTERS)
 
 # The top HTML docs target is now "manicon.html" that is built by GenerateIndex().

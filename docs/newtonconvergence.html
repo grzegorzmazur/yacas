@@ -69,7 +69,7 @@ function nextStep()
   }
   else
   {
-    thetable.innerHTML = thetable.innerHTML + '<input type="button" value="Restart" onclick="enterInput();"/> <input type="button" value="Other example" onclick="goNextExample();"/>';
+    thetable.innerHTML = thetable.innerHTML + '<input type="button" value="Change" onclick="enterInput();"/> <input type="button" value="Other example" onclick="goNextExample();"/>';
   }
 }
 
@@ -135,9 +135,9 @@ function enterInput()
   thetable.innerHTML = "<input id='function' type='text' value='"+usedFn+"' /> = 0, with x starting at <input id='initValue' type='text' value='"+initValue+"' /><input type='button' value='Go' onclick='restart();'/> <input type='button' value='Other example' onclick='example();'/> <br />Precision: <input id='precision' type='text' value='"+usedPrecision+"' /> digits.";
 }
 
-var exPrecisions = new Array('80'   ,'80'   );
-var exInitValues = new Array('3'     ,'1'    );
-var exFunctions  = new Array('Sin(x)','x^2-2');
+var exPrecisions = new Array('80'   ,'80'    , '80');
+var exInitValues = new Array('3'     ,'1'    , '2');
+var exFunctions  = new Array('Sin(x)','x^2-2', 'Ln(x)-1');
 var curExample = 0;
 
 function example()
@@ -162,11 +162,8 @@ function init()
   example();
 }
 
-
     </script>
-
-
-  <head>
+  </head>
   <body>
     <h1>A demonstration of the amazingly fast convergence of Newton iteration</h1>
 
@@ -175,31 +172,21 @@ function init()
     </div>
 
     <p>
-You probably know the game where you have to guess a number under say a hundred, and where you get an indication "higher" or "lower" for each guess. The trick with this game is to always guess in the middle, so the chance that the number you are guessing at is higher is equal to the chance that the number is lower than your guess. This means that the answer gives you maximum information, you will converge to the right answer in the highest possible pace. 
+When trying to find something, one would usually want to work efficiently, so one can find what one is looking for as quickly as possible. For example, you probably know the game where you have to guess a number under say a hundred, and where you get an indication "higher" or "lower" for each guess you make. The trick with this game is to always guess in the middle of the range known to contain the solution, so the chance that the number you are guessing at is higher is equal to the chance that the number is lower, thus halving the range with each answer. This ensures that you arrive at the correct answer in the least possible steps, on average (if this is all the information you are given).
     </p>
     <p>
-In computer science the way of searching by guessing in the middle of the possible solutions is called a binary search, or bisection method. It can be proven from  information theory that such a question is a question that gives you maximum information, if you know nothing, have no additional information, this generally is a good strategy for searching for something. For example, when doing a scientific research, where you venture into uncharted territory, trying to device an experiment where the answer is as likely to be yes as it is to be no gives you the maximum information. In contrast, when asking a question where the chance that the answer is yes is 99 percent and the chance that the answer is no is 1 percent gives much less information. You already knew that the answer was likely to be yes.
+The method of searching by guessing in the middle of the possible solutions is called a binary search (or sometimes the bisection method), and is often a very good approach when trying to find something. It can be proven from information theory that the answer to a question with two possible answers, each with a 50 percent chance, gives you maximum information. This is the theoretical basis for the binary search approach; when you have no additional knowledge of the object you are trying to find, a binary search is usually the quickest approach. The speed with which you gather information with a binary search grows linearly with the number of questions you ask. Each time you get an answer, you have another bit of information, while maximizing the information content of the answer to each question. In contrast, the answer to a question where the odds that the answer is yes is 99 percent and the odds that the answer is no is 1 percent, gives much less information. You already knew that the answer was likely to be yes, so you get very little extra information.  
     </p>
-
     <p>
-The speed with which you gather information with a binary search grows linearly with the number of questions you ask. Each time you get an answer, you have another bit of information. You can chain them up in to an array of yes and no answers. 
-    </p>
-
-    <p>
-This is the first article where we use a Javascript applet as a demonstration at the top. The reason for using this demo is to make it more visible, touchable, for the reader. Also it means that the reader does not have to learn any complicated commands. I chose newton iteration because I was astounded as to the speed of convergence first time I saw it. I am used to seeing people use binary search, which is the fastest if you do not know anything, as you then ask a question with only two possible answers, yes or no. This is perfect if you do not know anything else, you guess in the middle and get maximum information. Each guess you add one digit of information. The solution grows linear with the number of questions when doing a binary search. This is often considered to be the ideal approach if you do not have more information. Newton iteration converges much faster because you do have more information. When sampling a smooth continuous function at a certain point you know if a nearby zero will be to its left or to its right, but also Newton iteration provides an indication, an estimate, of how close it will be relative to the current guess. And with each guess you get closer to the answer, and the estimate also becomes more precise. This results in an impressive speed of convergence. You can see it with the little demonstration at the beginning of this article, if you are close enough then generally the number of digits precision will double, or triple, or grow with a certain multiple relative to the previous guess depending on the specific example. the precision effectively grows exponentially! With binary search it grows linearly, with Newton iteration it grows exponentially. This shows that it can pay off to look past known search methods that rely on certain assumptions, as these assumptions might not be correct for the case at hand.
+There are situations where binary search is not the best approach, and finding the zero of a smooth continuous function is one such example. For finding a zero, Newton iteration will usually outshine binary search, and it is not even a close call. The reason finding a zero of an analytic function is better done through Newton iteration is that with a smooth continuous function one <i>does</i> have more information, namely the derivative of the function! The function, together with its derivative, can be used in an ingenious way to not just determine the direction one has to consider for the zero, but also to determine an estimate of the <i>distance</i> to the final solution. 
     </p>
 
     <p>
-In the first part we showed how to define derivatives with a few lines of code in Yacas. In the second part we showed how to define a Taylor series expansion (a polynomial approximating a function) by using derivatives. In this section we will use it to look at the amazingly fast convergence that Newton iteration (which is based on derivatives) can exhibit.
+The speed of convergence of Newton iteration can sometimes be nothing short of astounding. It will often happen, for suitably neatly defined problems, that the amount of information you gather doubles with each question you ask! Or even triples! Imagine having an encyclopedia, where the number of volumes you have doubles each time you put in some effort to get new information (by finding the answer to a question). Each time you get an answer to a question, you double the number of words of information you have. You can see this happen in the demonstration at the top of this article, where the digits in red indicate correct digits, and black are as of yet incorrect digits. With the typical example, the number of digits precision doubles or triples, with each iteration. This is very far off from the application of binary search, where you get one extra bit of information in a linear fashion, each time you ask a question.
     </p>
+
     <p>
-One common way of finding something is by a bisection method. This method is similar to guessing a number, where for each guess you get an answer "lower" or "higher". You guess in the middle of the possible range, and when you get the answer you know whether it is in the upper or in the lower range. You are thus left with a new range which is half the original range. This is sometimes also called binary search. When no other information is present, this is the fastest way to get at an answer, to find something. 
-    </p>
-    <p>
-One example of "finding something" is finding the zero of a function. The interesting thing here is that for a continuous function we <i>do</i> have more information. Newton iteration makes use of this additional information and as a consequence it converges to the answer much faster than a binary search would.
-    </p>
-    <p>
-Here is the math behind it; we start with a function {{expr:f(x):expr}}, and start at some value {{expr:x0:expr}}, and take a first-order Taylor series expansion as an approximation of the function:
+Here is the math behind Newton iteration; we start with a function <tt>f(x)</tt>, and start at some value <tt>x0</tt>, and take a first-order Taylor series expansion as an approximation of the function:
     </p>
     <p>
 
@@ -231,7 +218,7 @@ Repeating this for x1 to x2 and so on should yield more and more accurate answer
     </p>
     <p>
 We will now try this out on a simple example. We will try to get the zero 
-{{expr:Sin(x)=0:expr}} for x at pi (thus effectively approximating the value of pi). The derivative of {{expr:Sin(x):expr}} with respect to x is {{expr:Cos(x):expr}}, so the above expression becomes:
+<tt>Sin(x)=0</tt> for x at pi (thus effectively approximating the value of pi). The derivative of <tt>Sin(x)</tt> with respect to x is <tt>Cos(x)</tt>, so the above expression becomes:
     </p>
     <p>
 <div class="math" style="height:160px; ">
@@ -247,22 +234,12 @@ x_1 = x_0 - tan \left( x_0 \right)
 </div>
     </p>
     <p>
-We can set this in motion by starting with the following code.
-    </p>
-    <p>
-You can type {{expr:start():expr}} to start the iteration. Then calling {{expr:iterate():expr}} repeatedly will increase the precision of the estimation. 
-    </p>
-    <p>
-You will see the number of digits precision roughly triple for each iteration! That is an exponential convergence (after n iterations one has approximately 3^n digits precision), whereas a binary search would have given a convergence which was only linear, growing roughly as fast as n. 
-    </p>
-    <p>
-Please note that we explicitly state that we do not want to use more than 100 digits in the calculations, so the accuracy of the approximation to pi will never be better than that in this example.
+The demonstration at the top of this article shows the result of applying Newton iteration to a few examples. For each iteration it shows the current result, where the digits in red are the digits that are already correct, the black ones are not correct yet. This demonstration is really using Yacas, so you can insert real examples to try out yourself.
     </p>
 
     <p>
 You can view the Yacas script code used in this example <a href="journaldescr.html?newtonconvergence">here</a>.
     </p>
-
 
 
 <applet name="consoleApplet" archive="yacas.jar" code="net.sf.yacas.ConsoleApplet" width=1 height=1>
