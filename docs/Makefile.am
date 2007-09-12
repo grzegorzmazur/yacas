@@ -21,13 +21,13 @@ EXTRA_DIST = \
 	yacas.js datahub.js yacaslogo.gif stop.gif journal.js \
 	cookie.js autocompleter.css \
 	tutorialtext1.html back-dark.gif back.gif back.texhtml \
-	$(YART_FILES) \
-	journaldescr.html journalview.html \
+	$(YART_FILES) newtonconvergence.html newdesign.html \
+	journaldescr.html \
         downloads.html.in \
 	README autocompleteraccess.js examples-static.txt \
 	paper1.tex paper2.tex 
 
-YART_FILES = derivative.yart newtonsqrt.yart newtonconvergence.yart taylordefinition.yart newdesign.yart
+YART_FILES = newtonsqrt.yart newtonconvergence.yart 
 
 ## The file "yacaslogo.gif" is used in the HTML documentation
 

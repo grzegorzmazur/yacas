@@ -1,0 +1,290 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
+    <script type="text/javascript" src="datahub.js"></script>
+    <script type="text/javascript" src="yacas.js"></script>
+
+    <script type="text/javascript">
+      /* When deep link found, redirect to the tabbified main page */
+      if (top.location == self.location)
+      {
+        self.location.replace("homepage.html?recent.html&newtonconvergence.html");
+      }
+    </script>
+
+    <script type="text/javascript">
+
+var current = 0;
+var previousValue = "";
+var usedPrecision = "50";
+var initValue = "3";
+var usedFn = "Sin(x)";
+
+function nextStep()
+{
+  var thetable = document.getElementById("thetable");
+
+  var result;
+  var toshow;
+  var end = 0;
+  var totalend = false;
+  if (current == 0)
+  {
+    result = ""+yacas_calculate("start();");
+    toshow = result;
+    end = 0;
+    totalend = false;
+  }
+  else
+  {
+    result = ""+yacas_calculate("iterate();");
+    toshow = result;
+    end = result.length;
+    totalend = false;
+    if (previousValue.length < end) end = previousValue.length;
+    while (end > 0)
+    {
+      if (result.substring(0,end) == previousValue.substring(0,end))
+      {
+        break;
+      }
+      end--;
+    }
+    if (end > 0)
+    {
+      if (current > 5 && previousValue.length == end && end >= usedPrecision)
+      {
+        totalend = true;
+      }
+      toshow = '<tt style="color:red; ">'+previousValue.substring(0,end)+'</tt>'+previousValue.substring(end);
+    }
+  }
+  previousValue = result;
+  thetable.innerHTML = thetable.innerHTML + "<div>x("+current+") = "+toshow+"</div>";
+
+  if ( totalend == false && (current < 15) )
+  {
+    current = current + 1;
+    setTimeout("nextStep()",100);
+  }
+  else
+  {
+    thetable.innerHTML = thetable.innerHTML + '<input type="button" value="Restart" onclick="enterInput();"/> <input type="button" value="Other example" onclick="goNextExample();"/>';
+  }
+}
+
+function goNextExample()
+{
+  example();
+  restart();
+}
+
+function restart()
+{
+  if (getConsoleApplet() == null) return;
+  var elem;
+
+  elem = document.getElementById("function");
+  usedFn = elem.value;
+
+  yacas_calculate("[Clear(x);setup("+usedFn+");];");
+
+  elem = document.getElementById("initValue");
+  initValue = elem.value;
+  yacas_calculate("newtonInitValue := "+initValue+";");
+
+  elem = document.getElementById("precision");
+  usedPrecision = elem.value;
+  yacas_calculate("newtonPrecision := "+usedPrecision+";");
+
+  var thetable = document.getElementById("thetable");
+  thetable.innerHTML = "Trying to find x where "+usedFn+" = 0 through Newton iteration, starting at x="+initValue+" at precision "+usedPrecision+
+  "<br /> <div id='iter'><input type='button' value='Show iteration equation' onclick='showIterExpr();' /> </div>";
+
+  current = 0;
+  setTimeout("nextStep()",100);
+}
+
+function showIterExpr()
+{
+  var elem = document.getElementById("iter");
+  var iterStr = yacas_calculate("[Local(x);TeXForm(x_(i+1) == newtonIteration(x_i) );];");
+  iterStr = iterStr.substring(2,iterStr.length()-2);
+  elem.innerHTML = 
+    '<applet code=net.sf.yacas.FormulaViewApplet archive="yacas.jar" width=400 height=100>'+
+    '  <param name="expression" value="'+iterStr+'" />'+
+    '</applet><br />';
+}
+
+function enterInput()
+{
+  var consoleApplet = document.consoleApplet;
+  if (!consoleApplet)
+    consoleApplet = parent.document.consoleApplet;
+  if (consoleApplet)
+  {
+    if (consoleApplet.isActive)
+      if (!consoleApplet.isActive())
+      {
+        setTimeout("enterInput();",1000);
+        return;
+      }
+  }
+
+  var thetable = document.getElementById("thetable");
+  thetable.innerHTML = "<input id='function' type='text' value='"+usedFn+"' /> = 0, with x starting at <input id='initValue' type='text' value='"+initValue+"' /><input type='button' value='Go' onclick='restart();'/> <input type='button' value='Other example' onclick='example();'/> <br />Precision: <input id='precision' type='text' value='"+usedPrecision+"' /> digits.";
+}
+
+var exPrecisions = new Array('80'   ,'80'   );
+var exInitValues = new Array('3'     ,'1'    );
+var exFunctions  = new Array('Sin(x)','x^2-2');
+var curExample = 0;
+
+function example()
+{
+  usedPrecision = exPrecisions[curExample];
+  initValue     = exInitValues[curExample];
+  usedFn        = exFunctions [curExample];
+  curExample = (curExample+1) % exFunctions.length;
+  enterInput();
+}
+
+var prevInit = window.onload;
+
+window.onload = init;
+
+function init()
+{
+  if (prevInit)
+  {
+    prevInit();
+  }
+  example();
+}
+
+
+    </script>
+
+
+  <head>
+  <body>
+    <h1>A demonstration of the amazingly fast convergence of Newton iteration</h1>
+
+    <div style="padding: 2px 2px 2px 2px; border: 1px solid #000000;">
+      <pre><div id="thetable">Please wait, loading application...</div></pre>
+    </div>
+
+    <p>
+You probably know the game where you have to guess a number under say a hundred, and where you get an indication "higher" or "lower" for each guess. The trick with this game is to always guess in the middle, so the chance that the number you are guessing at is higher is equal to the chance that the number is lower than your guess. This means that the answer gives you maximum information, you will converge to the right answer in the highest possible pace. 
+    </p>
+    <p>
+In computer science the way of searching by guessing in the middle of the possible solutions is called a binary search, or bisection method. It can be proven from  information theory that such a question is a question that gives you maximum information, if you know nothing, have no additional information, this generally is a good strategy for searching for something. For example, when doing a scientific research, where you venture into uncharted territory, trying to device an experiment where the answer is as likely to be yes as it is to be no gives you the maximum information. In contrast, when asking a question where the chance that the answer is yes is 99 percent and the chance that the answer is no is 1 percent gives much less information. You already knew that the answer was likely to be yes.
+    </p>
+
+    <p>
+The speed with which you gather information with a binary search grows linearly with the number of questions you ask. Each time you get an answer, you have another bit of information. You can chain them up in to an array of yes and no answers. 
+    </p>
+
+    <p>
+This is the first article where we use a Javascript applet as a demonstration at the top. The reason for using this demo is to make it more visible, touchable, for the reader. Also it means that the reader does not have to learn any complicated commands. I chose newton iteration because I was astounded as to the speed of convergence first time I saw it. I am used to seeing people use binary search, which is the fastest if you do not know anything, as you then ask a question with only two possible answers, yes or no. This is perfect if you do not know anything else, you guess in the middle and get maximum information. Each guess you add one digit of information. The solution grows linear with the number of questions when doing a binary search. This is often considered to be the ideal approach if you do not have more information. Newton iteration converges much faster because you do have more information. When sampling a smooth continuous function at a certain point you know if a nearby zero will be to its left or to its right, but also Newton iteration provides an indication, an estimate, of how close it will be relative to the current guess. And with each guess you get closer to the answer, and the estimate also becomes more precise. This results in an impressive speed of convergence. You can see it with the little demonstration at the beginning of this article, if you are close enough then generally the number of digits precision will double, or triple, or grow with a certain multiple relative to the previous guess depending on the specific example. the precision effectively grows exponentially! With binary search it grows linearly, with Newton iteration it grows exponentially. This shows that it can pay off to look past known search methods that rely on certain assumptions, as these assumptions might not be correct for the case at hand.
+    </p>
+
+    <p>
+In the first part we showed how to define derivatives with a few lines of code in Yacas. In the second part we showed how to define a Taylor series expansion (a polynomial approximating a function) by using derivatives. In this section we will use it to look at the amazingly fast convergence that Newton iteration (which is based on derivatives) can exhibit.
+    </p>
+    <p>
+One common way of finding something is by a bisection method. This method is similar to guessing a number, where for each guess you get an answer "lower" or "higher". You guess in the middle of the possible range, and when you get the answer you know whether it is in the upper or in the lower range. You are thus left with a new range which is half the original range. This is sometimes also called binary search. When no other information is present, this is the fastest way to get at an answer, to find something. 
+    </p>
+    <p>
+One example of "finding something" is finding the zero of a function. The interesting thing here is that for a continuous function we <i>do</i> have more information. Newton iteration makes use of this additional information and as a consequence it converges to the answer much faster than a binary search would.
+    </p>
+    <p>
+Here is the math behind it; we start with a function {{expr:f(x):expr}}, and start at some value {{expr:x0:expr}}, and take a first-order Taylor series expansion as an approximation of the function:
+    </p>
+    <p>
+
+<div class="math">
+f \left( x \right) = f \left( x_0 \right) + \left( x - x_0 \right) \frac{d f(x)}{dx}
+</div>
+    </p>
+    <p>
+We thus effectively approximate the function with a straight line. The shorter the distance (the nearer x is to x0), the more correct that approximation will be. This method thus only works well when the initial guess x0 is close to the real answer.
+    </p>
+    <p>
+We want the function f(x1) to be zero, so setting it to zero yields:
+    </p>
+    <p>
+<div class="math">
+f \left( x_0 \right) + \left( x_1 - x_0 \right) \frac{d f(x)}{dx} = 0
+</div>
+    </p>
+    <p>
+Or:
+    </p>
+    <p>
+<div class="math" style="height:160px; ">
+x_1 = x_0 - \frac{f \left( x_0 \right) }{ \left[ \frac{d f \left( x_0 \right) }{dx} \right] }
+</div>
+    </p>
+    <p>
+Repeating this for x1 to x2 and so on should yield more and more accurate answers. 
+    </p>
+    <p>
+We will now try this out on a simple example. We will try to get the zero 
+{{expr:Sin(x)=0:expr}} for x at pi (thus effectively approximating the value of pi). The derivative of {{expr:Sin(x):expr}} with respect to x is {{expr:Cos(x):expr}}, so the above expression becomes:
+    </p>
+    <p>
+<div class="math" style="height:160px; ">
+x_1 = x_0 - \frac{sin \left( x_0 \right) }{cos \left( x_0 \right) }
+</div>
+    </p>
+    <p>
+Or
+    </p>
+    <p>
+<div class="math">
+x_1 = x_0 - tan \left( x_0 \right)
+</div>
+    </p>
+    <p>
+We can set this in motion by starting with the following code.
+    </p>
+    <p>
+You can type {{expr:start():expr}} to start the iteration. Then calling {{expr:iterate():expr}} repeatedly will increase the precision of the estimation. 
+    </p>
+    <p>
+You will see the number of digits precision roughly triple for each iteration! That is an exponential convergence (after n iterations one has approximately 3^n digits precision), whereas a binary search would have given a convergence which was only linear, growing roughly as fast as n. 
+    </p>
+    <p>
+Please note that we explicitly state that we do not want to use more than 100 digits in the calculations, so the accuracy of the approximation to pi will never be better than that in this example.
+    </p>
+
+    <p>
+You can view the Yacas script code used in this example <a href="journaldescr.html?newtonconvergence">here</a>.
+    </p>
+
+
+
+<applet name="consoleApplet" archive="yacas.jar" code="net.sf.yacas.ConsoleApplet" width=1 height=1>
+  <param name="programMode" value="journal">
+  <param name="progressbar" value="true">
+  <param name="boxmessage" value="Loading Yacas...">
+  <param name="init1" value="Load(''yacasinit.ys'')">
+  Your browser does not support Java, so nothing is displayed.
+</applet>
+
+<applet name="datahub" archive="yacas.jar" code="net.sf.yacas.DatahubApplet" width=1 height=1>
+  <param name="programMode" value="journal">
+  <param name="articleFromFile" value="newtonconvergence.yart">
+</applet>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2425144-1";
+urchinTracker();
+</script>
+
+  </body>
+</html>
+

@@ -45,13 +45,41 @@ function initPage()
   }
 
   {
+    var links = document.getElementsByTagName("div");
+    for (var i=0; i<links.length; i++)
+    {
+      var object = links[i];
+      if (object.className)
+      {
+        if (object.className == "math")
+        {
+          var width = "600px";//object.style.width;
+          var height = "80px";//object.style.height;
+          var expression = object.innerHTML;
+
+          if (object.style)
+            if (object.style.height)
+            {
+              height = object.style.height;
+            }
+
+          object.innerHTML = 
+            '<applet code=net.sf.yacas.FormulaViewApplet archive="yacas.jar" width="'+width+'" height="'+height+'" >'+
+            '  <param name="expression" value="'+expression+'" />'+
+            '</applet><br />';
+
+        }
+      }
+    }
+  }
+
+  {
     var links = document.getElementsByTagName("span");
     for (var i=0; i<links.length; i++)
     {
       var object = links[i];
       if (object.className)
       {
-
         if (object.className == "javawarn")
         {
           object.innerHTML = 
@@ -346,10 +374,7 @@ function commandView(frame,base)
     var elem = parent.document.getElementById(frame);
     if (elem)
     {
-      if (frame == 'ConsoleFrame')
-        elem.contentWindow.document.location.href = "consoleview.html";
-      else
-        elem.contentWindow.document.location.href = "journalview.html"+document.location.search;
+      elem.contentWindow.document.location.href = "consoleview.html";
     }
   }
 }
