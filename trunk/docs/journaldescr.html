@@ -46,19 +46,9 @@
             var text="<body>"+datahub.getArticleBody()+"</body>";
             elem.innerHTML = text;
           }
-
-          elem = document.getElementById("therunbutton");
-          if (elem)
-          {
-            elem.onclick = tryItOut;
-          }
         }
       }
 
-      function tryItOut()
-      {
-	gotoHREF("journalview.html?"+getBase());
-      }
     </script>
   </head>
   <body>
