@@ -1,9 +1,11 @@
 
 
 TODO:
-- some manual does not build first time due to config.chapt
+
 - revise the new newtonconvergence.html
 - combine the newton articles
+
+- make the default read-eval-print loop print to out on the go, at least for the off-line version.
 
 - do a cleanup of the "ref" manual, first pass to throw away functions that should not have been there in the first place.
 - second chapter in refprog titled "Programming" has way too many functions

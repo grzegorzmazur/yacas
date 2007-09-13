@@ -710,7 +710,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
     }
   }
-  
+
   boolean DirectCommand(String inputLine)
   {
     if (inputLine.equals("restart"))
@@ -754,7 +754,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
     return false;
   }
-  
+
   void PerformRequest(String outputPrompt,String inputLine, boolean doRepaint)
   {
     boolean succeed = false;
@@ -1087,16 +1087,15 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
       g.setColor(bkColor);
       int yfrom = 0;
-   
+
       g.setFont(font);
       int inHeight = fontHeight;
-   
+
       int yto = getHeight();
       if (!outputDirty)
         yfrom += getHeight()-inHeight;
       if (!inputDirty)
         yto -= inHeight;
-   
       g.clearRect(0,yfrom,getWidth(),yto);
       g.setColor(Color.black);
 
@@ -1168,7 +1167,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
               cursorLocation += metrics.charWidth(inputLine.charAt(i));
             }
             y+=g.getFontMetrics().getDescent();
-            g.drawLine(inset+cursorLocation,y,inset+cursorLocation,y-fontHeight);
+            g.setColor(Color.blue);
+            g.drawLine(inset+cursorLocation,y-2,inset+cursorLocation,y-fontHeight+1);
+            g.drawLine(inset+cursorLocation+1,y-2,inset+cursorLocation+1,y-fontHeight+1);
           }
         }
       }
@@ -1179,7 +1180,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         {
           toPrint = "Calculating...";
         }
-        
+
         int promptLength = metrics.stringWidth(toPrint);
         g.setColor(Color.blue);
         g.setFont(font);
