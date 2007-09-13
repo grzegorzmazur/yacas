@@ -48,9 +48,12 @@ PDF_DOCS = intro.book.pdf coding.book.pdf essays.book.pdf ref.book.pdf \
 HTMLBOOKS = intromanual.html codingmanual.html essaysmanual.html refmanual.html refprogmanual.html \
 	Algomanual.html 
 
-INTROCHAPTERS = FDL.chapt cl-options.chapt config.chapt addons.chapt plugin-docs.chapt
+INTROCHAPTERS = FDL.chapt cl-options.chapt config.chapt addons.chapt plugin-docs.chapt filescanner.chapt pcre.chapt
 
-INTROSOURCES = FDL.chapt.txt cl-options.chapt.txt config.chapt.txt addons.chapt.txt plugin-docs.chapt.txt
+
+
+INTROSOURCES = FDL.chapt.txt cl-options.chapt.txt config.chapt.txt addons.chapt.txt plugin-docs.chapt.txt filescanner.chapt.txt pcre.chapt.txt
+
 
 ALGOCHAPTERS = algo-basic.chapt algo-numapprox.chapt \
 	algorithms-elemfunc.chapt algorithms-specfunc.chapt \
@@ -68,17 +71,15 @@ REFCHAPTERS = arith.chapt calc.chapt complex.chapt solvers.chapt simplify.chapt 
 	univar.chapt lists.chapt functional.chapt controlflow.chapt \
 	preds.chapt logic.chapt const.chapt vars.chapt io.chapt \
 	numtheory.chapt strings.chapt transforms.chapt cl-options.chapt \
-	probability-and-statistics.chapt FDL.chapt \
-	filescanner.chapt pcre.chapt
+	probability-and-statistics.chapt FDL.chapt 
 
-REFSOURCES = config.chapt.txt arith.chapt.txt calc.chapt.txt complex.chapt.txt \
+REFSOURCES = arith.chapt.txt calc.chapt.txt complex.chapt.txt \
 	solvers.chapt.txt simplify.chapt.txt ode.chapt.txt \
 	linalg.chapt.txt univar.chapt.txt lists.chapt.txt cl-options.chapt.txt \
 	functional.chapt.txt controlflow.chapt.txt preds.chapt.txt \
 	logic.chapt.txt const.chapt.txt vars.chapt.txt io.chapt.txt \
 	numtheory.chapt.txt strings.chapt.txt transforms.chapt.txt \
-	probability-and-statistics.chapt.txt addons.chapt.txt FDL.chapt.txt \
-	plugin-docs.chapt.txt filescanner.chapt.txt pcre.chapt.txt
+	probability-and-statistics.chapt.txt FDL.chapt.txt 
 
 
 REFPROGCHAPTERS = FDL.chapt glossary.chapt \
