@@ -99,15 +99,36 @@ class BigNumber
     else
     {
       String result = decimal.toString();
+
+      int extraExp = 0;
+      // Parse out the exponent
+      {
+        int pos = result.indexOf("E");
+        if (pos<0) pos = result.indexOf("e");
+        if (pos > 0)
+        {
+          extraExp = Integer.parseInt(result.substring(pos+1));
+          result = result.substring(0,pos);
+        }
+      }
+
+
       int dotPos = result.indexOf('.');
       if (dotPos >= 0)
       {
         int endpos = result.length();
         while (endpos>dotPos && result.charAt(endpos-1) == '0') endpos--;
-        result = result.substring(0,endpos);
-        if (iTensExp != 0)
+        if (endpos > 1)
         {
-          result = result + "e"+iTensExp;
+          if (result.charAt(endpos-1) == '.' && result.charAt(endpos-2) >= '0' && result.charAt(endpos-2) <= '9')
+          {
+            endpos--;
+          }
+        }
+        result = result.substring(0,endpos);
+        if ((iTensExp+extraExp) != 0)
+        {
+          result = result + "e"+(iTensExp+extraExp);
         }
       }
       return result;
