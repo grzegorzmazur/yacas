@@ -2,6 +2,9 @@
 
 TODO:
 
+- Simplify(((4*x)-2.25)/2) returns something strange
+- Work with Adrian on key handling in applet
+
 - revise the new newtonconvergence.html
 - combine the newton articles
 
