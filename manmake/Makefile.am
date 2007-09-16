@@ -48,11 +48,11 @@ PDF_DOCS = intro.book.pdf coding.book.pdf essays.book.pdf ref.book.pdf \
 HTMLBOOKS = intromanual.html codingmanual.html essaysmanual.html refmanual.html refprogmanual.html \
 	Algomanual.html 
 
-INTROCHAPTERS = FDL.chapt cl-options.chapt config.chapt addons.chapt plugin-docs.chapt filescanner.chapt pcre.chapt
+INTROCHAPTERS = FDL.chapt cl-options.chapt config.chapt addons.chapt  
 
 
 
-INTROSOURCES = FDL.chapt.txt cl-options.chapt.txt config.chapt.txt addons.chapt.txt plugin-docs.chapt.txt filescanner.chapt.txt pcre.chapt.txt
+INTROSOURCES = FDL.chapt.txt cl-options.chapt.txt config.chapt.txt addons.chapt.txt 
 
 
 ALGOCHAPTERS = algo-basic.chapt algo-numapprox.chapt \
@@ -184,11 +184,6 @@ GPL.chapt: $(top_srcdir)/COPYING
 	cat $(top_srcdir)/COPYING | sed -e 's,<,{<},g;s,>,{>},g;' | perl $(srcdir)/txt2yacasdoc.pl > $@
 
 
-# this chapter depends on special chapters
-PLUGINDOCSCHAPTERS = filescanner.chapt pcre.chapt 
-plugin-docs.chapt: $(PLUGINDOCSCHAPTERS)
-
-
 
 ps-docs: $(PS_DOCS)
 pdf-docs: $(PDF_DOCS)
@@ -196,8 +191,7 @@ pdf-docs: $(PDF_DOCS)
 CLEANFILES = books.html *.tex *.dvi *.aux *.idx *.ind *.ilg *.toc *.log *.ps *.pdf *.funcs.js \
 	coding*.html intro*.html ref*.html essays*.html Algo*.html  *.o core *~ texdocs.c \
 	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) $(CODINGCHAPTERS)  \
-	$(TESTCODESNIPPETS) $(ALGOCHAPTERS) $(BOOKS) manicon.html \
-	$(PLUGINDOCSCHAPTERS)
+	$(TESTCODESNIPPETS) $(ALGOCHAPTERS) $(BOOKS) manicon.html 
 
 # The top HTML docs target is now "manicon.html" that is built by GenerateIndex().
 # The dependence on $(HTMLBOOKS) is only to make sure that all HTML docs

@@ -27,7 +27,7 @@ EXTRA_DIST = \
 	README autocompleteraccess.js examples-static.txt \
 	paper1.tex paper2.tex 
 
-YART_FILES = newtonsqrt.yart newtonconvergence.yart 
+YART_FILES = newtonconvergence.yart 
 
 ## The file "yacaslogo.gif" is used in the HTML documentation
 

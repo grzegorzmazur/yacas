@@ -3,19 +3,19 @@
 INCLUDES = -I$(srcdir)/plat/linux32
 
 bin_PROGRAMS =  yacas
-noinst_PROGRAMS = mkfastprimes plugin_stub_gen gencorefunctions @COMPRESSOR_PRG@
+noinst_PROGRAMS = mkfastprimes gencorefunctions @COMPRESSOR_PRG@
 EXTRA_PROGRAMS = compressor codereviewer
 
 noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	infixparser.h lispassert.h lispatom.h lispcleanupstack.h \
 	lispenvironment.h lisperror.h lispeval.h lispevalhash.h \
 	lispglobals.h lisphash.h lispio.h lispobject.h lispparser.h \
-	lispstring.h lispuserfunc.h corefunctions.h mathcommands.h mathenvironment.h patcher.h exedll.h \
+	lispstring.h lispuserfunc.h corefunctions.h mathcommands.h mathenvironment.h patcher.h  \
 	mathuserfunc.h numbers.h platmath.h standard.h patterns.h errors.h arggetter.h \
 	stdfileio.h stringio.h stubs.h tokenizer.h yacas.h refcount.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
         patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
-        lispplugin.h genericstructs.h yacasprivate.h yacasbase.h xmltokenizer.h \
+        genericstructs.h yacasprivate.h yacasbase.h xmltokenizer.h \
         archiver.h GPL_stuff.h  
 
 yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp deffile.cpp infixparser.cpp lispatom.cpp \
@@ -26,17 +26,14 @@ yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp deffile.cpp
 	stringio.cpp tokenizer.cpp yacasapi.cpp genericobject.cpp \
 	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp \
         substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp \
-        lispplugin.cpp exedll.cpp genericstructs.cpp \
+        genericstructs.cpp \
 	xmltokenizer.cpp \
         archiver.cpp compressedfiles.cpp commandline.cpp \
-	pcre_study_stub.c pcre_pcre_stub.c \
-	pcre_maketables_stub.c pcre_pcreposix_stub.c pcre_get_stub.c \
-	pcre_plugin_stub.cpp filescanner_stub.cpp filescanner_plugin_stub.cpp \
 	anumber.cpp yacasnumbers.cpp numbers.cpp \
 	platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
 	lispstring.cpp mathutil.cpp yacasbase.cpp debugmem.cpp fastprimes.c
 
-yacas_DEPENDENCIES = plugins_available.h fastprimes.c version.h GPL_stuff.h 
+yacas_DEPENDENCIES = fastprimes.c version.h GPL_stuff.h 
 
 
 
@@ -58,42 +55,28 @@ core_yacasmain.h: $(srcdir)/yacasmain.cpp
 mkfastprimes_SOURCES = mkfastprimes.cpp 
 
 
-plugin_stub_gen_SOURCES = plugin_stub_gen.cpp
-
-
 EXTRA_DIST =  anumber.inl deffile.inl  \
 	grower.inl lisphash.inl lispobject.inl \
 	lispstring.inl standard.inl \
-	win32dll.cpp win32dll.h \
 	depend.dep makefile.genericstatic \
 	version.h \
 	plat/linux32/lisptype.h \
 	plat/linux32/stubs.inl \
 	plat/linux32/platfileio.h \
-	plat/linux32/platdll.h \
 	plat/linux64/lisptype.h \
 	plat/linux64/stubs.inl \
 	plat/linux64/platfileio.h \
-	plat/linux64/platdll.h \
 	plat/win32/lisptype.h \
-	plat/win32/platdll.h   \
 	plat/win32/platfileio.h \
 	plat/win32/stubs.inl  \
 	plat/win32/win32commandline.cpp \
 	plat/win32/win32commandline.h \
-	yacas.dsp yacas.dsw \
-	debugmem.h mkfastprimes.dsp \
-	win32dllresource.h win32yacasdll.h win32yacasdll.cpp \
-	win32yacasdllresource.h yacasdll.dsp yacasdll.dsw yacasdll.rc \
+	debugmem.h \
 	compressedfiles.cpp \
 	README.LZO lzoconf.h minilzo.c minilzo.h decompressor.cpp \
-	compressor.cpp filescanner.cpp filescanner.h \
+	compressor.cpp \
 	compressedfiles.h \
-	compressor.dsp compressor.dsw \
-   pcre_study_stub.c pcre_pcre_stub.c pcre_maketables_stub.c \
-  pcre_pcreposix_stub.c pcre_get_stub.c pcre_plugin_stub.cpp \
-  filescanner_stub.cpp filescanner_plugin_stub.cpp \
-  fastprimes.c core_yacasmain.h plugins_available.h
+  fastprimes.c core_yacasmain.h 
 
 
 # list some extra generated files
@@ -105,37 +88,6 @@ fastprimes.c: mkfastprimes
 	./mkfastprimes > fastprimes.c
 # We don't want $(srcdir)/mkfastprimes because this executable
 # is not generated inside the $(srcdir). 
-
-pcre_study_stub.c:plugin_stub_gen plugins_available.h
-	./plugin_stub_gen pcre_study_stub.c ../plugins/pcre/study.c
-
-pcre_pcre_stub.c:plugin_stub_gen plugins_available.h
-	./plugin_stub_gen pcre_pcre_stub.c ../plugins/pcre/pcre.c
-
-pcre_maketables_stub.c:plugin_stub_gen plugins_available.h
-	./plugin_stub_gen pcre_maketables_stub.c ../plugins/pcre/maketables.c
-
-pcre_pcreposix_stub.c:plugin_stub_gen plugins_available.h
-	./plugin_stub_gen pcre_pcreposix_stub.c ../plugins/pcre/pcreposix.c
-
-pcre_get_stub.c:plugin_stub_gen plugins_available.h
-	./plugin_stub_gen pcre_get_stub.c ../plugins/pcre/get.c
-
-pcre_plugin_stub.cpp:plugin_stub_gen plugins_available.h
-	./plugin_stub_gen pcre_plugin_stub.cpp ../plugins/pcre/plugin.cpp
-	cd ../plugins/pcre/ ; make chartables.c
-
-filescanner_stub.cpp:plugin_stub_gen plugins_available.h
-	./plugin_stub_gen filescanner_stub.cpp filescanner.cpp
-
-filescanner_plugin_stub.cpp:plugin_stub_gen plugins_available.h
-	./plugin_stub_gen filescanner_plugin_stub.cpp ../plugins/filescanner/plugin.cc
-
-#workaround that hopefully allows compiling Yacas out of the box, 
-#dependency on the plugins_available.h header file
-exedll.$(OBJEXT) yacasmain.$(OBJEXT): plugins_available.h
-
-exedll.cpp yacasmain.cpp: plugins_available.h
 
 
 yacas_include = $(datadir)/yacas/include

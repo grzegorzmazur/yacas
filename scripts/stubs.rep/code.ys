@@ -200,8 +200,12 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
   NormalForm(Gcd(MakeUni(n,vars),MakeUni(m,vars)));
 ];
 
-100 # Gcd(n_IsNumber,m_IsNumber) <-- 1;
- 
+100 # Gcd(n_IsConstant,m_IsConstant) <-- 1;
+110 # Gcd(_m,_n) <--
+[
+  Echo("Not simplified");
+];
+
 
 /* Least common multiple */
 5  # Lcm(a_IsInteger,b_IsInteger) <-- Div(a*b,Gcd(a,b));

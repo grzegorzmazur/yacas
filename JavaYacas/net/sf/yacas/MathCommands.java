@@ -516,9 +516,6 @@ class MathCommands
          new YacasEvaluator(new LispPatchString(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "PatchString");
     aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new YacasDllLoad(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Dll'Load");
-    aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new YacasExtraInfoSet(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "ExtraInfo'Set");
     aEnvironment.CoreCommands().SetAssociation(
@@ -564,10 +561,6 @@ class MathCommands
          new YacasEvaluator(new LispVersion(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "Version");
 
-
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispPluginsCanBeLoaded(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "PluginsCanBeLoaded");
     aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispExit(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "Exit");
@@ -3602,16 +3595,6 @@ class MathCommands
     }
   }
 
-
-  class YacasDllLoad extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      aEnvironment.iCurrentOutput.Write("Warning: function not yet implemented : Dll'Load");////TODO fixme
-      LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
-    }
-  }
-
   class YacasExtraInfoSet extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
@@ -3897,16 +3880,6 @@ class MathCommands
     }
   }
 
-
-
-  class LispPluginsCanBeLoaded extends YacasEvalCaller
-  {
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      //TODO fixme need to enable this in the end if plugins are available
-      LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
-    }
-  }
 
   class LispExit extends YacasEvalCaller
   {

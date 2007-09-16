@@ -1,12 +1,18 @@
 
 
 TODO:
-
-- Simplify(((4*x)-2.25)/2) returns something strange
-- Work with Adrian on key handling in applet
-
+- use remove-dll-files.sh to remove dll-related files from cvs
 - revise the new newtonconvergence.html
-- combine the newton articles
+- make the newtonconvergence Javascript code dynamically interactive like originally intended.
+- Send Michael email that Simplify(((4*x)-2.25)/2) returning something strange is fixed in the 1.1.19 release.
+- Bug:
+	In> Gcd(3.25/2,2)
+	Out> Gcd(3.25/2,2)
+	In> Gcd(3.25/2,2)
+	Out> 1
+
+
+- Work with Adrian on key handling in applet
 
 - make the default read-eval-print loop print to out on the go, at least for the off-line version.
 
@@ -24,8 +30,6 @@ TODO:
 - emailable Yacas?
 - autocompleter does not stay in bounds for for example "simplify"
 - make the tutorials page scale with the browser
-- auto-load the plugins, and optimize Dll'Load away.
-- test code for "pcre" and "filescanner".
 
 - scripts/examples/ do somewhere else?
 
@@ -99,7 +103,6 @@ TODO:
 - document The PcreLexer and PcreNextToken functions
 - document Small summary of regular expressions syntax accepted.
 - document Html... commands.
-- document FakeDb... functions.
 - document some blurb on the pattern matching/multivirtual functionality.
 - Clean up integration code, and document algorithm used.
 - document the extra Is... predicates for matrices that was added by Jonathan

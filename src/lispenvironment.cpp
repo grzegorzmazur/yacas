@@ -2,7 +2,6 @@
 #include "yacasbase.h"
 #include "choices.h"
 #include "lispenvironment.h"
-#include "lispplugin.h"
 #include "lispeval.h"
 #include "lispatom.h"
 #include "standard.h"
@@ -62,7 +61,6 @@ LispEnvironment::LispEnvironment(
     iLastUniqueId(1),
     iError(),
     iErrorOutput(iError),
-    iDlls(),
     iDebugger(NULL),
     iLocalsList(NULL),
     iInitialOutput(aOutput),
@@ -110,12 +108,6 @@ LispEnvironment::~LispEnvironment()
 {
   PopLocalFrame();
 
-  DBG_printf("Entered environment destructor, %d DLLs loaded\n",iDlls.Size());
-  for (LispInt i=0,nr=iDlls.Size(); i<nr; i++)
-  {
-    DBG_printf("Closing DLL \"%s\"\n",iDlls[i]->DllFileName());
-    iDlls[i]->Close(*this);
-  }
   LISPASSERT(!iLocalsList);
   delete iEvaluator;
   if (iDebugger) delete iDebugger;
@@ -683,36 +675,3 @@ LispLocalTrace::~LispLocalTrace()
 }
 
 
-
-/*
-void LispErrorNrArgs::PrintError(LispOutput& aOutput)
-{
-    LispChar str[20];
-    aOutput.Write("Expected ");
-    InternalIntToAscii(str,iNrArgsExpected);
-    aOutput.Write(str);
-    aOutput.Write(" arguments, got ");
-    InternalIntToAscii(str,iNrArgsReceived);
-    aOutput.Write(str);
-    aOutput.Write("\n");
-}
-*/
-
-void CDllArray::DeleteNamed(LispChar * aName, LispEnvironment& aEnvironment)
-{
-    LispInt i,nr=Size();
-    for (i=0;i<nr;i++)
-    {
-//printf("DLL: %s ",(*this)[i]->DllFileName());
-        if (StrEqual(aName,(*this)[i]->DllFileName()))
-        {
-            (*this)[i]->Close(aEnvironment);
-            delete (*this)[i];
-            (*this)[i] = NULL;
-            Delete(i,1);
-//printf("deleted!\n");
-            return;
-        }
-//printf("\n");
-    }
-}

@@ -71,8 +71,7 @@ at that moment).
 
 The Java version has almost all the features the C++ version
 has. In fact, there is no reason the Java version should not
-have all the same features. At the time of writing (version 1.0.58),
-plugins are not available yet, not all command line arguments
+have all the same features. Not all command line arguments
 are available yet, and the command line prompt does not have the
 history yet.
 
@@ -164,8 +163,6 @@ here:
 *INCLUDE config.chapt
 
 *INCLUDE addons.chapt
-
-*INCLUDE plugin-docs.chapt
 
 *REM GNU Free Documentation License
 *INCLUDE FDL.chapt

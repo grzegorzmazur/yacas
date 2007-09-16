@@ -48,7 +48,6 @@
 #define PATH_SEPARATOR   '/'
 #define PATH_SEPARATOR_2 "/"
 
-#include "plugins_available.h"
 #include "yacas.h"
 
 #ifndef WIN32
@@ -188,17 +187,6 @@ void LispExit(LispEnvironment& aEnvironment, LispInt aStackTop)
     busy=LispFalse;
     InternalTrue(aEnvironment, RESULT);
 }
-
-void LispPluginsCanBeLoaded(LispEnvironment& aEnvironment, LispInt aStackTop)
-{
-#ifdef EXE_DLL_PLUGINS
-  InternalTrue(aEnvironment, RESULT);
-#else // EXE_DLL_PLUGINS
-  InternalFalse(aEnvironment, RESULT);
-#endif // EXE_DLL_PLUGINS
-
-}
-
 
 
 void LispExitRequested(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -477,16 +465,6 @@ void DeclarePath(char *ptr2)
   yacas->Evaluate(buf);
 }
 
-void DeclareDllPath(char *ptr2)
-{
-  char buf[1000];
-  if (ptr2[strlen(ptr2)-1] != PATH_SEPARATOR)
-    sprintf(buf,"Dll'Directory(\"%s%s\");",ptr2,PATH_SEPARATOR_2);
-  else
-    sprintf(buf,"Dll'Directory(\"%s\");",ptr2);
-  yacas->Evaluate(buf);
-}
-
 void LoadYacas(LispOutput* aOutput=NULL)
 {
   if (yacas) return;
@@ -506,7 +484,6 @@ CORE_KERNEL_FUNCTION("IsPromptShown",LispIsPromptShown,0,YacasEvaluator::Functio
 CORE_KERNEL_FUNCTION("ReadCmdLineString",LispReadCmdLineString,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("GetTime",LispTime,1,YacasEvaluator::Macro | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("FileSize",LispFileSize,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
-CORE_KERNEL_FUNCTION("PluginsCanBeLoaded",LispPluginsCanBeLoaded,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 
 
 #undef CORE_KERNEL_FUNCTION

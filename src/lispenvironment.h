@@ -16,7 +16,6 @@
 #include "lispio.h"
 #include "stringio.h"
 #include "lispglobals.h"
-#include "lispplugin.h"
 #include "xmltokenizer.h"
 #include "errors.h"
 
@@ -36,15 +35,8 @@ class LispUserFunction;
 class LispMultiUserFunction;
 class LispEvaluatorBase;
 class BasicEvaluator;
-class LispDllBase;
 class DefaultDebugger;
 class LispEnvironment;
-class CDllArray : public CDeletingArrayGrower<LispDllBase*, ArrOpsDeletingPtr<LispDllBase> >
-{
-public:
-    void DeleteNamed(LispChar * aName, LispEnvironment& aEnvironment);
-  //~CDllArray();
-};
 
 
 /// The Lisp environment.
@@ -245,7 +237,6 @@ public: // pre-found
 public: // Error reporting
   LispString iError;
   StringOutput iErrorOutput;
-  CDllArray iDlls;
   DefaultDebugger* iDebugger;
 
 private:
@@ -448,7 +439,6 @@ private:
     iLastUniqueId(0),
     iError(),
     iErrorOutput(aOther.iErrorOutput),
-    iDlls(),
     iDebugger(NULL),
     iLocalsList(NULL),
     iInitialOutput(aOther.iInitialOutput),
