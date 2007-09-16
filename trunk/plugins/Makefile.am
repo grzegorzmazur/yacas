@@ -1,8 +1,0 @@
-
-
-SUBDIRS =  pcre filescanner
-
-
-
-
-

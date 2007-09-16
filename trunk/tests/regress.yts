@@ -591,6 +591,10 @@ TestYacas(Diverge({x*y,x*y,x*y},{x,y,z}),x+y);
   Verify(F<0.6, False);
 ];
 
-
+/* Bug reported by Michael Borcherds: Simplify(((4*x)-2.25)/2) 
+   returned some expression with three calls to Gcd, which was technically
+   correct, but not the intended simplification.
+ */
+Verify(IsZero(Simplify(Simplify(((4*x)-2.25)/2)-(2*x-2.25/2))),True);
 
 

@@ -20,7 +20,6 @@
 #include "substitute.h"
 #include "errors.h"
 #include "patcher.h"
-#include "exedll.h"
 
 #ifdef HAVE_MATH_H
   #include <math.h>
@@ -638,33 +637,6 @@ void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
   PatchLoad(oper.c_str(), newOutput, aEnvironment);
   RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(str.c_str())->c_str()));
 }
-
-void YacasDllLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
-{
-  LispPtr evaluated(ARGUMENT(1));
-  LispString * string = evaluated->String();
-  CHK_ARG_CORE(string, 1);
-  LispString oper;
-  InternalUnstringify(oper, string);
-  LispDllBase *dll=NULL;
-  LispInt opened = LispFalse;
-  ExePluginMaker maker = FindExePlugin(oper.c_str());
-  if (maker)
-  {
-    dll  = NEW ExeDll(maker);
-  }
-  Check(dll,KLispErrNotEnoughMemory);
-
-  DBG_printf("DLL allocated -- %s\n",oper.c_str());
-  aEnvironment.iDlls.Append(dll);  // store ptr now, in case Open never returns!
-  opened = dll->Open(oper.c_str(),aEnvironment);
-  DBG_printf("DLL opened, opened = %d\n", opened);
-  if (!opened) aEnvironment.iDlls.DeleteNamed(oper.c_str(), aEnvironment);
-  Check(opened,KLispErrLibraryNotFound);
-  DBG_printf("DLL added, %d DLLs loaded\n",aEnvironment.iDlls.Size());
-  InternalTrue(aEnvironment,RESULT);
-}
-
 
 void YacasExtraInfoSet(LispEnvironment& aEnvironment, LispInt aStackTop)
 {

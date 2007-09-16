@@ -1666,30 +1666,6 @@ Therefore, any CPU-intensive processes running alongside Yacas will not signific
 
 
 
-			The Yacas plugin structure
-
-
-*CMD Dll'Load --- load a plugin
-*CORE
-*CALL
-	Dll'Load(file)
-
-*PARMS
-{file} -- file name of the plugin
-
-*DESC
-
-{Dll'Load} loads the plugin {file} into Yacas. Neither the directory
-nor the extension of {file} need to be specified. The result is {True}
-if the plugin is loaded successfully, and {False} otherwise.
-
-*EG
-
-The following command loads the filescanner plugin.
-
-	 In> Dll'Load("filescanner");
-
-
 			Generic objects
 
 *INTRO Generic objects are objects that are implemented in C++, but

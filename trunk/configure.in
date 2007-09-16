@@ -232,9 +232,6 @@ AC_DEFINE_UNQUOTED(SCRIPT_DIR, "$jb_expanded_scriptdir", [ Directory in which sc
 # All done
 AC_OUTPUT(Makefile
 	docs/Makefile
-	plugins/Makefile
-	plugins/pcre/Makefile
-	plugins/filescanner/Makefile
 	scripts/Makefile
 	JavaYacas/Makefile
 	tests/Makefile

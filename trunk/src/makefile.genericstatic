@@ -23,18 +23,13 @@ OBJS = anumber.o arggetter.o arrayclass.o commandline.o \
 	deffile.o errors.o genericobject.o genericstructs.o \
 	grower.o infixparser.o lispatom.o lispcleanupstack.o         \
 	lispenvironment.o lispeval.o lispevalhash.o lisphash.o       \
-	lispio.o lispobject.o lispparser.o lispplugin.o lispstring.o  \
+	lispio.o lispobject.o lispparser.o lispstring.o  \
 	lispuserfunc.o mathcommands.o mathcommands2.o mathcommands3.o  \
 	mathenvironment.o mathuserfunc.o mathutil.o patcher.o vm.o  \
 	patternclass.o patterns.o platmath.o standard.o                \
 	stdcommandline.o stdfileio.o stdstubs.o obmalloc.o stringio.o             \
 	substitute.o tokenizer.o xmltokenizer.o archiver.o fastprimes.o elfdll.o unixcommandline.o numbers.o \
-	yacasapi.o yacasmain.o yacasnumbers.o unipoly.o compressedfiles.o \
-	exedll.o \
-	../plugins/pcre/study.o ../plugins/pcre/pcre.o \
-	../plugins/pcre/maketables.o ../plugins/pcre/pcreposix.o \
-	../plugins/pcre/get.o ../plugins/pcre/plugin.o \
-  filescanner.o ../plugins/filescanner/plugin.o
+	yacasapi.o yacasmain.o yacasnumbers.o unipoly.o compressedfiles.o 
 
 .SUFFIXES: .cpp.cc 
 

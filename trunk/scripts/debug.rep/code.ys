@@ -3,7 +3,7 @@
 
 LocalSymbols(TraceStart,TraceEnter,TraceLeave,DebugStart,DebugEnter, 
              DebugLeave,ProfileStart,ProfileEnter,result,
-             ReadLines,WriteLines,ClearScreenString,Debug'FileLoaded, Debug'FileLines, Debug'NrLines,
+             WriteLines,ClearScreenString,Debug'FileLoaded, Debug'FileLines, Debug'NrLines,
              debugstepoverfile, debugstepoverline) [
 
 TraceStart() := [indent := 0;];
@@ -197,27 +197,6 @@ Macro(Time,{expression})
 
 
 
-/*
- * Sub-section defining DebugRefreshScreen, which shows the current file and line.
- * It uses the pcre module to chop a file up into lines, and then fills a list with
- * strings, one string for each line. The file can then be displayed later. Ascii
- * escape codes are used to clear the screen.
- */
-Dll'Load("pcre");
-ReadLines():=
-[
-  PcreLexer({{"^.*?\\n",Line}});
-  Local(result,line);
-  result:={};
-  line:=PcreNextToken();
-  While (line != EndOfFile)
-  [
-    line[1] := StringMid'Get(1,Length(line[1])-1,line[1]);
-    DestructiveAppend(result,line);
-    line:=PcreNextToken();
-  ];
-  result;
-];
 
 // ClearScreenString : the ascii escape codes to clear the screen
 ClearScreenString := CharString(27):"[2J":CharString(27):"[1;1H";
@@ -252,27 +231,11 @@ Debug'NrLines:=20;
 // DebugShowCode: show the part of the file we are currently executing (based on the 
 // value returned by CustomEval'Expression() ).
 //
+// Currently unimplemented, should we remove?
+//
 DebugShowCode():=
 [
-  Check(InDebugMode(),"DebugRefreshScreen can only be called in a debug version of the Yacas kernel");
-  Local(file,line);
-  file := DebugFile(CustomEval'Expression());
-  if(file != "" And file != "String")
-  [
-    if (Debug'FileLoaded != file)
-    [
-      Debug'FileLoaded := file;
-      Debug'FileLines  := FromFile(FindFile(file))ReadLines();
-    ];
-    line := DebugLine(CustomEval'Expression());
-    Local(from,breakpoints);
-    from := line-(Debug'NrLines>>1);
-    if (from<1) [from := 1;];
-    breakpoints := filebreakpoints[file];
-    If (breakpoints = Empty,breakpoints := {}); 
-    WriteLines(Debug'FileLoaded,Debug'FileLines,from,Debug'NrLines,breakpoints,line);
-  ];
-  True;
+  False;
 ];
 
 ]; //LocalSymbols
