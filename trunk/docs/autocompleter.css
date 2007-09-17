@@ -8,15 +8,15 @@
 #popups 
 {
   position:absolute;
-  width:164px;
+  width:148px;
 }
 
 .autocompletertooltip
 {
-  width: 240px;
+  width: 200px;
   background-color: #FFFFFF;
   font-family:Verdana, Arial, Helvetica, sans-serif;
-  font-size:10pt;
+  font-size:9pt;
   padding: 2px 2px 2px 2px;
   color: #000000;
   border: 1px solid #000000;
