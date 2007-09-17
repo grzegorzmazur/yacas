@@ -76,19 +76,21 @@ LocalSymbols(Numeric) [
   // evaluate numerically with given precision
   LocalSymbols(prev'Numeric, prev'digits, numeric'result) Macro("N",{expr,digits})
   [ // we were in non-numeric mode
-      Local(prev'Numeric, prev'digits, numeric'result);
+      Local(prev'Numeric, prev'digits, numeric'result,errorString);
       Set(prev'digits, Builtin'Precision'Get());
       Builtin'Precision'Set(@digits);
       AssignCachedConstantsN();
       Set(prev'Numeric,Numeric);
       Set(Numeric, True);
-      Set(numeric'result, @expr);
+      Set(errorString,"");
+      TrapError(Set(numeric'result, @expr),Set(errorString,GetCoreError()));
       Set(Numeric,prev'Numeric);
       If(Not Numeric,[
           // clear constants
           ClearCachedConstantsN();
       ]);
       Builtin'Precision'Set(prev'digits);
+      Check(errorString="",errorString);
       numeric'result;
   ];
 

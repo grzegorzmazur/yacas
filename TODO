@@ -1,8 +1,6 @@
 
 
 TODO:
-- revise the new newtonconvergence.html
-- make the newtonconvergence Javascript code dynamically interactive like originally intended.
 - Send Michael email that Simplify(((4*x)-2.25)/2) returning something strange is fixed in the 1.1.19 release.
 - Bug:
 	In> Gcd(3.25/2,2)
@@ -287,7 +285,6 @@ divisible by b.
 - Global variables are still used in the scripts that create the plugin stubs
 - Global variables are still used in the scripts that compile/create for example libmath.cpp
 - Is there not enough in common between the different files platfileio.h that we should perhaps consider merging them?
-- When exception thrown within N(...) then reset all globals that were changed.
 - For N, Verbose, etcetera, in stead of LocalSymbols guarding scope, perhaps a macro that generalizes the concept (with getters and setters, for a type of expandable singleton).
 - have the application work in a directory structure that is identical to the source tree. --rootdir should be more general (set it and you can find the documentation also, etcetera).
 - plotting functions are extremely verbose, this code needs to be reduced I feel
