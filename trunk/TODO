@@ -1,7 +1,6 @@
 
 
 TODO:
-- use remove-dll-files.sh to remove dll-related files from cvs
 - revise the new newtonconvergence.html
 - make the newtonconvergence Javascript code dynamically interactive like originally intended.
 - Send Michael email that Simplify(((4*x)-2.25)/2) returning something strange is fixed in the 1.1.19 release.
@@ -10,7 +9,6 @@ TODO:
 	Out> Gcd(3.25/2,2)
 	In> Gcd(3.25/2,2)
 	Out> 1
-
 
 - Work with Adrian on key handling in applet
 
