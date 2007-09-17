@@ -62,11 +62,13 @@ exString;
 
   var cursorPosition = [0, 0];
 
+
   if (elem != null)
   {
     elem.style.backgroundColor = "#AAAAEE";
-    cursorPosition[0] += 48;//elem.offsetWidth/2;
+    cursorPosition[0] += elem.offsetWidth;
   }
+  elem = document.getElementById("popups");
   while (elem != null)
   {
     cursorPosition[0] += elem.offsetLeft;
@@ -74,8 +76,8 @@ exString;
     elem = elem.offsetParent;
   }
 
-  var left = cursorPosition[0] + 10;
-  var top = cursorPosition[1] + 10;
+  var left = cursorPosition[0];
+  var top = cursorPosition[1];
 
   tip.style.left = left + "px";
   tip.style.top = top + "px";
@@ -147,7 +149,7 @@ function updateHints(searchString)
         exampleAvailable = true;
       }
 
-      var line = '<div style="width:164px;" class="suggestions" id="'+i+'" onmouseover=\'enterItem("'+i+'");\'>'+hints[i]+'<\/div>';
+      var line = '<div style="width:148px;" class="suggestions" id="'+i+'" onmouseover=\'enterItem("'+i+'");\'>'+hints[i]+'<\/div>';
       
       var matchIndex = -1;
       if (hints[i].indexOf(searchString) == 0)
@@ -205,6 +207,6 @@ function updateHints(searchString)
       totalmatch = totalmatch + '<div class="suggestions"><i>... (more available, enter part of function name in input field above)<\/i><\/div>';
     }
     popups.innerHTML = totalmatch;
-    if (firstId != "") enterItem(firstId);
+//TODO remove?    if (firstId != "") enterItem(firstId);
   }
 }
