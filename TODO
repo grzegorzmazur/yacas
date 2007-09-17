@@ -1,6 +1,8 @@
 
 
 TODO:
+- do not pop up the autocompleter tip box immediately.
+- move autocompleter tip box more to the right.
 - Send Michael email that Simplify(((4*x)-2.25)/2) returning something strange is fixed in the 1.1.19 release.
 - Bug:
 	In> Gcd(3.25/2,2)
