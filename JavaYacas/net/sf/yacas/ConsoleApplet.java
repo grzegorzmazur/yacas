@@ -1081,6 +1081,8 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         Graphics2D g2d = null;
         g2d = (Graphics2D)g;
         g2d.addRenderingHints( new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON ));
+
+        g2d.setStroke(new BasicStroke((float)(2),BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
       }
 
       FontMetrics metrics = getFontMetrics(font);
@@ -1169,7 +1171,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
             y+=g.getFontMetrics().getDescent();
             g.setColor(Color.blue);
             g.drawLine(inset+cursorLocation,y-2,inset+cursorLocation,y-fontHeight+1);
-            g.drawLine(inset+cursorLocation+1,y-2,inset+cursorLocation+1,y-fontHeight+1);
+//TODO remove?            g.drawLine(inset+cursorLocation+1,y-2,inset+cursorLocation+1,y-fontHeight+1);
           }
         }
       }

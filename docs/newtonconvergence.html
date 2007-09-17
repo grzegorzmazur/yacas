@@ -34,7 +34,7 @@ function nextStep()
     result = ""+yacas_calculate("start();");
 
     var error = yacas_getlasterror();
-    if (error.length() > 0)
+    if (error.length > 0)
     {
       alert("Error performing calculation, some of the input is invalid, error returned was "+error);
       return;
@@ -48,7 +48,7 @@ function nextStep()
   {
     result = ""+yacas_calculate("iterate();");
     var error = yacas_getlasterror();
-    if (error.length() > 0)
+    if (error.length > 0)
     {
       alert("Error performing calculation, some of the input is invalid, error returned was "+error);
       return;
@@ -129,7 +129,7 @@ function doRestart()
   var elem;
   yacas_calculate("[Clear(x);setup("+usedFn+");];");
   var error = yacas_getlasterror();
-  if (error.length() > 0)
+  if (error.length > 0)
   {
     alert("Error reading expression: "+usedFn);
     elem = document.getElementById("usedFn");
@@ -141,7 +141,7 @@ function doRestart()
   }
   yacas_calculate("newtonInitValue := "+initValue+";");
   error = yacas_getlasterror();
-  if (error.length() > 0)
+  if (error.length > 0)
   {
     alert("Error reading initial value");
     elem = document.getElementById("initValue");
@@ -172,13 +172,13 @@ function showIterExpr()
   var iterStr = yacas_calculate("[Local(x);TeXForm(x_(i+1) == newtonIteration(x_i) );];");
 
   var error = yacas_getlasterror();
-  if (error.length() > 0)
+  if (error.length > 0)
   {
     alert("Error getting the current iteration expression");
     return;
   }
 
-  iterStr = iterStr.substring(2,iterStr.length()-2);
+  iterStr = iterStr.substring(2,iterStr.length-2);
   elem.innerHTML = 
     '<applet code=net.sf.yacas.FormulaViewApplet archive="yacas.jar" width=400 height=100>'+
     '  <param name="expression" value="'+iterStr+'" />'+
