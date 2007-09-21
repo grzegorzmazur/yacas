@@ -1,6 +1,7 @@
 
 
 TODO:
+- Manual titles do not correspond with the manual you go to.
 - Bug:
 	In> Gcd(3.25/2,2)
 	Out> Gcd(3.25/2,2)
