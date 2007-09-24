@@ -1,6 +1,7 @@
 
 
 TODO:
+- SAL.IBO.SEPT.
 - Manual titles do not correspond with the manual you go to.
 - Bug:
 	In> Gcd(3.25/2,2)
@@ -9,6 +10,16 @@ TODO:
 	Out> 1
 
 - Work with Adrian on key handling in applet
+- Make Newton a macro so you can pass in references to expressions
+
+
+- From Laurent Debacker:
+  In file scripts/integrate.rep/code.ys, shouldn't the
+    IntFunc(x,(_x)^(-1),Ln(x));
+  be
+    IntFunc(x,(_x)^(-1),Ln(Abs(x)));
+  My motivation is based on http://metric.ma.ic.ac.uk/integration/techniques/indefinite/standard-integrals/integral-of-one-over-x/index.html .
+
 
 - make the default read-eval-print loop print to out on the go, at least for the off-line version.
 
