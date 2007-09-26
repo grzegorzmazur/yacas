@@ -881,6 +881,38 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   }
 
 
+  class PromptedGraph2DLine extends MOutputLine
+  {
+    PromptedGraph2DLine(int aIndent, String aPrompt, Font aPromptFont, Color aPromptColor, String aLine)
+    {
+      iIndent = aIndent;
+      iPrompt = aPrompt;
+      iPromptFont = aPromptFont;
+      iPromptColor = aPromptColor;
+      iGrapher = new Grapher(aLine);
+    }
+    Grapher iGrapher;
+
+    public void draw(Graphics g, int x,int y)
+    {
+      iGrapher.paint(g,x,y,size);
+    }
+    public int height(Graphics g)
+    {
+      return size.height;
+    }
+    Dimension size = new Dimension(320,240);   
+    int iIndent;
+    private String iPrompt;
+    private Font   iPromptFont;
+    private Color  iPromptColor;
+  }
+
+
+
+
+
+
   class PromptedStringLine extends MOutputLine
   {
     PromptedStringLine(int aIndent, String aPrompt, String aText, Font aPromptFont, Font aFont, Color aPromptColor, Color aColor)
@@ -1532,17 +1564,38 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   {
     if (outp.length() > 0)
     {
-      if (outp.charAt(outp.length()-1) == '$')
+      int dollarPos = outp.indexOf("$");
+      while (dollarPos >= 0)
       {
-        int dollarPos = outp.indexOf("$");
-
+        // Print plain text before the dollared content
         if (dollarPos > 0)
         {
           AddLinesStatic(48,"",outp.substring(0,dollarPos));
         }
-        addLine(new PromptedFormulaLine(48, "Out>", iPromptFont, iPromptColor, outp.substring(dollarPos+1,outp.length()-1)));
+        // Strip off the left dollar sign
+        outp = outp.substring(dollarPos+1,outp.length());
+
+        // Find the right dollar sign, and split there too
+        dollarPos = outp.indexOf("$");
+        String dollared = outp.substring(0,dollarPos);
+        outp = outp.substring(dollarPos+1,outp.length());
+
+//System.out.println("Dollared: "+dollared);
+        int plotPos = dollared.indexOf("plot2d:");
+        if (plotPos >= 0)
+        {
+          dollared = dollared.substring(plotPos+7);
+//System.out.println("Plotting: ["+dollared+"]");
+          addLine(new PromptedGraph2DLine(48, "Out>", iPromptFont, iPromptColor, dollared));
+        }
+        else
+        {
+          addLine(new PromptedFormulaLine(48, "Out>", iPromptFont, iPromptColor, dollared));
+        }
+        dollarPos = outp.indexOf("$");
       }
-      else
+      // If there is some plain text left at the end, print
+      if (outp.length() > 0)
       {
         AddLinesStatic(48,"",outp.toString());
       }
