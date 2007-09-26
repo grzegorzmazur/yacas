@@ -5,7 +5,6 @@ TODO:
 - Grapher applet:
   - Plot2D is not completed well when typing it in
   - update manual entry on Plot2D to refer to the Java version
-  - Trap exceptions in running the call list, try Plot2D({Sin(x)/x},-10:10)
   - Have examples for Plot2d from the autocompleter
   - try to have an example that controls this plotter from Javascript
   - Better formatting of numbers: 2.5 iso 25e-1

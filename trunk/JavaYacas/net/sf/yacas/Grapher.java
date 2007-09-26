@@ -31,41 +31,28 @@ public class Grapher
   }
   void RunCallList(Graphics g)
   {
-    Graphics2D g2d = null;
-    if (g != null)
+    try
     {
-      if (g instanceof Graphics2D)
+      Graphics2D g2d = null;
+      if (g != null)
       {
-        g2d = (Graphics2D)g;
-      }
-    }
-
-    execList = iCallList;
-    NextToken();
-    while (token.length() > 0)
-    {
-      if (token.equals("lines2d"))
-      {
-        NextToken();
-        int nr = Integer.parseInt(token);
-        NextToken();
-        double x2 = Float.parseFloat(token);
-        NextToken();
-        double y2 = Float.parseFloat(token);
-        if (g == null)
+        if (g instanceof Graphics2D)
         {
-          if (xmin > x2) xmin = x2;
-          if (xmax < x2) xmax = x2;
-          if (ymin > y2) ymin = y2;
-          if (ymax < y2) ymax = y2;
+          g2d = (Graphics2D)g;
         }
-        double x1,y1;
-        int i;
-        for (i=1;i<nr;i++)
+      }
+
+      execList = iCallList;
+      NextToken();
+      while (token.length() > 0)
+      {
+        if (token.equals("lines2d"))
         {
-          x1 = x2;
-          y1 = y2;
+          int i;
           NextToken();
+          int nr = Integer.parseInt(token);
+          NextToken();
+          double x2,y2=0;
           x2 = Float.parseFloat(token);
           NextToken();
           y2 = Float.parseFloat(token);
@@ -76,47 +63,68 @@ public class Grapher
             if (ymin > y2) ymin = y2;
             if (ymax < y2) ymax = y2;
           }
+          double x1,y1;
+          for (i=1;i<nr;i++)
+          {
+            x1 = x2;
+            y1 = y2;
+            NextToken();
+            x2 = Float.parseFloat(token);
+            NextToken();
+            y2 = Float.parseFloat(token);
+            if (g == null)
+            {
+              if (xmin > x2) xmin = x2;
+              if (xmax < x2) xmax = x2;
+              if (ymin > y2) ymin = y2;
+              if (ymax < y2) ymax = y2;
+            }
+            if (g != null)
+            {
+              int xPix1 = (int)(graphx + graphWidth * (x1 - xmin) / (xmax - xmin));
+              int yPix1 = (int)(graphy + graphHeight * (1.0 - (y1 - ymin) / (ymax - ymin)));
+              int xPix2 = (int)(graphx + graphWidth * (x2 - xmin) / (xmax - xmin));
+              int yPix2 = (int)(graphy + graphHeight * (1.0 - (y2 - ymin) / (ymax - ymin)));
+              g.drawLine(xPix1, yPix1, xPix2, yPix2);
+            }
+          }
+        }
+        else if (token.equals("pencolor"))
+        {
+          NextToken();
+          int red = Integer.parseInt(token);
+          NextToken();
+          int green = Integer.parseInt(token);
+          NextToken();
+          int blue = Integer.parseInt(token);
           if (g != null)
           {
-            int xPix1 = (int)(graphx + graphWidth * (x1 - xmin) / (xmax - xmin));
-            int yPix1 = (int)(graphy + graphHeight * (1.0 - (y1 - ymin) / (ymax - ymin)));
-            int xPix2 = (int)(graphx + graphWidth * (x2 - xmin) / (xmax - xmin));
-            int yPix2 = (int)(graphy + graphHeight * (1.0 - (y2 - ymin) / (ymax - ymin)));
-            g.drawLine(xPix1, yPix1, xPix2, yPix2);
+            g.setColor(new Color(red, green, blue));
           }
         }
-      }
-      else if (token.equals("pencolor"))
-      {
-        NextToken();
-        int red = Integer.parseInt(token);
-        NextToken();
-        int green = Integer.parseInt(token);
-        NextToken();
-        int blue = Integer.parseInt(token);
-        if (g != null)
+        else if (token.equals("pensize"))
         {
-          g.setColor(new Color(red, green, blue));
-        }
-      }
-      else if (token.equals("pensize"))
-      {
-        NextToken();
-        float width = Float.parseFloat(token);
-        if (g != null)
-        {
-          if (g2d != null)
+          NextToken();
+          float width = Float.parseFloat(token);
+          if (g != null)
           {
-            g2d.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            if (g2d != null)
+            {
+              g2d.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+            }
           }
         }
+        else
+        {
+          //TODO raise an exception here
+          return;
+        }
+        NextToken();
       }
-      else
-      {
-        //TODO raise an exception here
-        return;
-      }
-      NextToken();
+    }
+    catch (Exception e)
+    {
+    //TODO handle exception here
     }
   }
 

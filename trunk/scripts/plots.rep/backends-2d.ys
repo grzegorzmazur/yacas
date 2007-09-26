@@ -37,6 +37,9 @@ Plot2D'java(values_IsList, _options'hash) <--
     result := result:ColorForGraphNr(count);
     count++;
     result:=result:" lines2d ":String(Length(function));
+
+    function:=Select(Lambda({item},item[2] != Undefined),function);
+
     ForEach(item,function)
     [
       result := result:" ":String(item[1]):" ":String(item[2]):" ";
