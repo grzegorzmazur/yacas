@@ -1,6 +1,18 @@
 
 
 TODO:
+- Grapher applet:
+  - Better formatting of numbers: 2.5 iso 25e-1
+  - build up graph as list of lines
+  - embed the graph as a console type
+  - have the console pick up $plot2d ... $ and redirect to plot
+  - Have Plot2D generate a real plot
+  - Have examples for Plot2d from the autocompleter
+  - try to have an example that controls this plotter from Javascript
+
+- Work with Adrian on key handling in applet
+- Make Newton a macro so you can pass in references to expressions
+
 - SAL.IBO.SEPT.
 - Manual titles do not correspond with the manual you go to.
 - Bug:
@@ -8,10 +20,6 @@ TODO:
 	Out> Gcd(3.25/2,2)
 	In> Gcd(3.25/2,2)
 	Out> 1
-
-- Work with Adrian on key handling in applet
-- Make Newton a macro so you can pass in references to expressions
-
 
 - From Laurent Debacker:
   In file scripts/integrate.rep/code.ys, shouldn't the
