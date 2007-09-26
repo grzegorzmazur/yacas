@@ -5,8 +5,9 @@
 /// List of all defined backends and their symbolic labels.
 /// Add any new backends here 
 Plot2D'outputs() := {
-	{"default", "data"},
-	{"data", "Plot2D'data"}
+	{"default", "java"},
+	{"data", "Plot2D'data"},
+	{"java", "Plot2D'java"},
 };
 
 /*
@@ -22,6 +23,35 @@ Plot2D'outputs() := {
 
 /// trivial backend: return data list (do not confuse with Plot2D'get'data() defined in the main code which is the middle-level plotting routine)
 Plot2D'data(values_IsList, _options'hash) <-- values;
+
+/// The Java back-end generates a call-list that the Java graph plotter can handle
+Plot2D'java(values_IsList, _options'hash) <-- 
+[
+  Local(result,count);
+  count := 0;
+  result:="$plot2d:";
+
+  result := result:" pensize 2.0 ";
+  ForEach(function,values)
+  [
+    result := result:ColorForGraphNr(count);
+    count++;
+    result:=result:" lines2d ":String(Length(function));
+    ForEach(item,function)
+    [
+      result := result:" ":String(item[1]):" ":String(item[2]):" ";
+    ];
+  ];
+  WriteString(result:"$");
+  True;
+];
+
+10 # ColorForGraphNr(0) <-- " pencolor 64 64 128 ";
+10 # ColorForGraphNr(1) <-- " pencolor 128 64 64 ";
+10 # ColorForGraphNr(2) <-- " pencolor 64 128 64 ";
+20 # ColorForGraphNr(_count) <-- ColorForGraphNr(Mod(count,3));
+
+
 
 
 
