@@ -5,6 +5,7 @@ TODO:
 - Grapher applet:
   - Plot2D is not completed well when typing it in
   - update manual entry on Plot2D to refer to the Java version
+  - input field is flooded when scrolling the view with plots in it.
   - Have examples for Plot2d from the autocompleter
   - try to have an example that controls this plotter from Javascript
   - Better formatting of numbers: 2.5 iso 25e-1
