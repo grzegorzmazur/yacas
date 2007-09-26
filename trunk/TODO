@@ -1,14 +1,12 @@
 
 
 TODO:
+
 - Grapher applet:
-  - Better formatting of numbers: 2.5 iso 25e-1
-  - build up graph as list of lines
-  - embed the graph as a console type
-  - have the console pick up $plot2d ... $ and redirect to plot
   - Have Plot2D generate a real plot
   - Have examples for Plot2d from the autocompleter
   - try to have an example that controls this plotter from Javascript
+  - Better formatting of numbers: 2.5 iso 25e-1
 
 - Work with Adrian on key handling in applet
 - Make Newton a macro so you can pass in references to expressions
@@ -252,7 +250,6 @@ negative moduli bases, but the answer should in any case be non-negative.
 Mod(a,b) is defined as the smallest non-negative number c such that a-c is
 divisible by b.
 - Simplify(4-x-y) returns 4-y-x, Simplify(4-y-x) returns 4-x-y
-- following crashes. However, not sure if we need to fix this? One can also use ` and @, in stead of making Newton a macro. [  Local(expr); expr := 1800*x/1.5 - 1800; Newton(expr, x,2,0.001); ];
 
 7) Java applet improvements:
 ============================================================================================================

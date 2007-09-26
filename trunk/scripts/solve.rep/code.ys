@@ -540,7 +540,4 @@ Function("Newton",{function,variable,initial,accuracy,min,max})
   result;
 ];
 
-HoldArg("Newton",function);
-HoldArg("Newton",variable);
-
 

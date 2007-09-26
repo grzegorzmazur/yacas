@@ -597,4 +597,10 @@ TestYacas(Diverge({x*y,x*y,x*y},{x,y,z}),x+y);
  */
 Verify(IsZero(Simplify(Simplify(((4*x)-2.25)/2)-(2*x-2.25/2))),True);
 
+/* Bug reported by Adrian Vontobel: when assigning an expression to a variable,
+ * it did not get re-evaluated in the calling environment when passing it in to Newton.
+ * The resulting value was "Undefined", instead of the expected 1.5 .
+ */
+NumericEqual([  Local(expr); expr := 1800*x/1.5 - 1800; Newton(expr, x,2,0.001); ],1.5,3);
+
 
