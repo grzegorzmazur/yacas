@@ -149,6 +149,7 @@ public class Grapher
   public void paint(Graphics g, int xleft, int ytop, Dimension d)
   {
     Shape clip = g.getClip();
+    Rectangle r = clip.getBounds();
     Graphics2D g2d = null;
     if (g instanceof Graphics2D)
     {
@@ -158,7 +159,12 @@ public class Grapher
     {
       g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
     }
-    g.setClip(xleft, ytop, d.width, d.height); 
+    int clipHeight = d.height;
+    if (ytop+clipHeight > r.y+r.height)
+    {
+      clipHeight = r.y+r.height-ytop;
+    }
+    g.setClip(xleft, ytop, d.width, clipHeight); 
     
     // Erase the previous image
     g.setColor(Color.white);
@@ -210,9 +216,16 @@ public class Grapher
         ytick++;
       }
     }
-    g.setClip(graphx,graphy,graphWidth,graphHeight); 
+    
+    int graphClipHeight = graphHeight;
+    if (graphy+graphClipHeight > r.y+r.height)
+    {
+      graphClipHeight = r.y+r.height-graphy;
+    }
+    
+    g.setClip(graphx,graphy,graphWidth,graphClipHeight); 
     RunCallList(g);
-    g.setClip(xleft, ytop, d.width, d.height); 
+    g.setClip(xleft, ytop, d.width, clipHeight); 
     g.setColor(Color.black);
     if (g2d != null)
     {

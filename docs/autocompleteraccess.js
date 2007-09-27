@@ -66,7 +66,7 @@ exString;
   if (elem != null)
   {
     elem.style.backgroundColor = "#AAAAEE";
-    cursorPosition[0] += elem.offsetWidth;
+    cursorPosition[0] += elem.offsetWidth + 16;
   }
   elem = document.getElementById("popups");
   while (elem != null)
@@ -82,7 +82,7 @@ exString;
   tip.style.left = left + "px";
   tip.style.top = top + "px";
   tip.style.visibility = "hidden";
-
+  tip.style.overflow = "hidden";
   document.getElementsByTagName("body")[0].appendChild(tip);
 
   var viewportSize = getViewportSize();
@@ -130,15 +130,17 @@ function updateHints(searchString)
   tip = null;
 
   var popups = document.getElementById("popups");
+
+  popups.style.visibility = "hidden";
   popups.innerHTML = "";
   {
     var matches = new Array("","","","","","","","");
     var lengths = new Array(0,0,0,0,0,0,0,0);
     var moreAvailable = 0;
-    var maxMatches=14;
+    var maxMatches=1000;//15;
 
     // Most interesting functions, make sure people see these first so they have something interesting to click on
-    var fronts = ":Div:N:Select:Factor:Taylor:D:Integrate:Simplify:Solve:Sum:Limit:DiagonalMatrix:ForEach:Pi:";
+    var fronts = ":Div:N:Select:Factor:Taylor:D:Integrate:Simplify:Solve:Sum:Limit:DiagonalMatrix:ForEach:Pi:Plot2D:";
 
     var lwr = searchString.toLowerCase();
     for (var i=0;i<hints.length;i=i+4)
@@ -207,6 +209,6 @@ function updateHints(searchString)
       totalmatch = totalmatch + '<div class="suggestions"><i>... (more available, enter part of function name in input field above)<\/i><\/div>';
     }
     popups.innerHTML = totalmatch;
-//TODO remove?    if (firstId != "") enterItem(firstId);
+    popups.style.visibility = "visible";
   }
 }

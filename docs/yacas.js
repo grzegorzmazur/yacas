@@ -22,6 +22,14 @@ function initPage()
     return; 
   }
   {
+    var popups = document.getElementById("popups");
+    if (popups)
+    {
+      popups.style.height = preferredHeight+"px";
+    }
+  }
+  
+  {
     var links = document.getElementsByTagName("a");
     for (var i=0; i<links.length; i++)
     {
