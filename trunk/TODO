@@ -1,19 +1,9 @@
 
-
 TODO:
-
 - Grapher applet:
-  - Plot2D is not completed well when typing it in
   - update manual entry on Plot2D to refer to the Java version
-  - input field is flooded when scrolling the view with plots in it.
-  - Have examples for Plot2d from the autocompleter
-  - try to have an example that controls this plotter from Javascript
   - Better formatting of numbers: 2.5 iso 25e-1
-
 - Work with Adrian on key handling in applet
-- Make Newton a macro so you can pass in references to expressions
-
-- SAL.IBO.SEPT.
 - Manual titles do not correspond with the manual you go to.
 - Bug:
 	In> Gcd(3.25/2,2)
@@ -28,6 +18,8 @@ TODO:
     IntFunc(x,(_x)^(-1),Ln(Abs(x)));
   My motivation is based on http://metric.ma.ic.ac.uk/integration/techniques/indefinite/standard-integrals/integral-of-one-over-x/index.html .
 
+- Remove the examples directory from the scripts directory, placing them somewhere else to reduce jar file size.
+- Use reflection to look up methods, will make the jar file smaller.
 
 - make the default read-eval-print loop print to out on the go, at least for the off-line version.
 
@@ -42,7 +34,6 @@ TODO:
 - chapter "Number theory" needs to be cleaned up.
 - do a cleanup of the other books also
 
-- emailable Yacas?
 - autocompleter does not stay in bounds for for example "simplify"
 - make the tutorials page scale with the browser
 
@@ -62,14 +53,6 @@ TODO:
 - Skim through Math... functions, renaming them to Builtin'...
 - manuals, provide as zip files? more people can use unzip than can use untar.
 
-- Example: RootsOfUnity (nice example of threading): Exp(2*Pi*I*(1 .. n)/n)
-- Example: Average (nice example of threading): Average(list_IsList) <-- Add(list)/Length(list); 
-- Example: Fibonacci series, Lucas series.
-  - Verify( Fibonacci(242), 168083057059453008835412295811648513482449585399521 );
-  - Verify( Fibonacci(6,.5), 2.03125 );
-  - Verify( Fibonacci(3,.5), 1.25 );
-- Article: rant on strong typing versus test code
-- Article on splitting documentation between the two target audiences "user" and "maintainer".
 
 
 - cos(arccos(x)) -> x+k*2*pi etc
@@ -344,6 +327,52 @@ divisible by b.
 - slowness of Taylor, due to its trivial implementation. Perhaps we should do something about this as soon as we have series calculus.
 - Solve is way too simplistic.
 - (Is this still true?) MatchAtom still compares atoms by string representation! It should raise an error if you define a pattern with a float in it.
+
+
+============================================================================================================
+9) Article fodder:
+Computers have made many laborious tasks easier to do. You can look up mathematical things in a database-ish way, or have the computer do repetitive work. There are more things computers are good at. Because you can design a user interface, you can design how it interacts with humans, you can effectively design a custom tool for a task. 
+
+When  I did my internship (high-energy physics, Zeus, 1995-1996, at NIKHEF H) I used a user interface to get more results. The task at hand with high-energy physics is as follows; you have this massive accelerator that accelerates particles in a tube. The accelerated particle beams collide, and out of the collision come other particles. The particles that come out of it can tell you something about the structure of the particles that collided. Now at the point where the collision takes place people place what they call a detector. This detector detects particles coming from the collision. The collisions occur at enormous rates, so you get an enormous amount of data coming from these detectors. Any way, the data is filtered a bit (the amount of data coming from these detectors is so vast that one can not possibly hope to capture all of it, so electronics boards are designed to be able to handle the high bandwidth of data and filter out the events for which it is absolutely sure that the researchers will not be interested in it, reducing the amount of data captured), and then ends on a harddisk somewhere, in what they call (or used to call, don't know how it works nowadays) ntuples, essentially one big database table with rows of records, each record with some fields. Each row is an isolated event that might be of interest. Now the trick is to make a selection of the events, and plot a certain number. For example, one could take all the events where the electron (one of the incoming particles) scattered heavily backwards, and then plot the mass of the whole system, as in a histogram, where you accumulate the results of events with mass between two values in one bin, mass between other values in the next bin, etcetera. You would then see a sea of noise, with hopefully a peak in it, which would be called a "resonance", and would indicate that there had been a short-lived particle with that mass. The narrower the peak, the longer-lived the particles. The wider the peak, the shorter-lived the particles. This way you could measure the speed at which they decayed, which you can also calculate from theory sometimes, or at least use as an input parameter for theory. And you could measure the precise point of the top, so as to give you the mass of the particle. And you could count the number of events that were in the peak, and again compare that to theory, which should be able to give a prediction of the amount of events that were observed given the intensity of the beams colliding against each other. The trick would be to find the area where the resonance (the peak) should be, and try to design filters that reduce the background noise while keeping as much as possible of the signal. The filters would be simple things (often referred to as <i>cuts</i>, as they cut out a part of the data). For example, you could select all the events for which a specific value in one of the fields of the ntuple was larger than a certain value. Or smaller than a specific value. Large part of the work consisted of just trial-and-error, finding the good cuts to apply as to get the best view on the resonance. The cut to apply was the real information being sought. It required hard work, putting in many many many hours. The more hours you worked, the more likely you were to find something interesting. Being smart is not enough in such a case, as luck plays a big role (as they say, luck is when opportunity meets preparation). After you found the best cuts to apply to the data, it was surprisingly little information you needed to communicate. It could be as little as just a few conditionals, selecting all the events with, say, a detected electron, and where the virtual photon had a larger energy than such and so, and ... Surprisingly hard work for so little information. One would then proceed to get an estimate of the curve representing the noise, and subtract that from the data, to arrive at the pure signal.
+
+A good estimate of the total noise is then subtracted from the total data in what is hoped to then be the resulting signal of the resonance being sought. The task is thus essentially just to count how often something happened, and to try to make a wise selection of the events to look at.
+
+<make a drawing explaining the noise versus signal>
+
+One problem I encountered during my internship was that due to the fact that there was just such a vast amount of data, each time I wanted to change a cut, you had to wait forever (10 minutes sometimes), for the result. You would wander off and do something else, and come back to the window where you were trying the cut, wondering what it was again you were trying out. It all just moved very slow.
+
+So one weekend I resolved to make a nice little tool to make my life easier. The entire group worked on a Silicon Graphics workstation at that time, which apparently had cost the equivalent of 150,000.00 euros, and carried an astonishing 256 megabytes of RAM. Twelve people worked on that. Chances are you are now reading this article on a computer that cost a fraction of that machine, and has many times more memory than we had back then. And we were doing cutting edge research! But I digress.
+
+I used what knowledge I had already gleaned from the data to make a stricter selection on the data. What resulted was something like 38 megabytes of data remaining. What I then did was load that all in to memory (I waited until every one had gone home so I had the full system to myself, one advantage of working on big iron). In addition, I kept an index of each field, and sorted the records per that field, in that index. Now, I created a little user interface that would show a graph, histogram, of the counts of number of events per bin. And I defined scrollbars that allowed me to define ranges from within to select data. Those were effectively two cuts, one to the left and one to the right, limiting the amount to fall within a range of two values, a<x<b. I defined that for certain fields that I thought might give me the results I was looking for (in hindsight, I was already close to finding the right cuts any way, this tool just made me find it faster, but more on that later). For each event, I would keep a reference count. The reference count would start at zero, but as soon as the event fell outside of the selection, the reference count would be increased by one. When it fell from outside a selection to inside a selection again, the count would be decreased. When the scrollbar got dragged, I would only have to visit a few of the events, as I had a sorted index of them. Moreover, for each event, I could then remove it from the bin count if its reference count became nonzero, and add it to the bin again if the reference count became zero again.
+
+The above allowed me to go through the data with breakneck speed. I could dynamically change cuts and see the result a split-second later, where previously I would have had to wait for ten minutes sometimes. My internship was already a success because I had found the resonance I was looking for. But with the tool I was able to find two more resonances on the Monday morning following the weekend in which I had coded up the tool. Unfortunately, I later found out that other researchers had already found these resonances, but they must have only found them a short period before I did, as I hadn't found any publications yet when I found the resonances. If memory serves (it is more than ten years ago now) the cuts they found were different, but could probably be shown to be roughly equivalent to what I had found. I had dramatically increased the amount of space I could search per unit of time, increasing the chance of finding something interesting accordingly. 
+
+The point I want to make in this article that there might actually be a place for such tools in science. There might be a place for graphical user interfaces. Obviously they do not merit real new knowledge about nature, and would thus not merit a scientific publication, but as a tool they could be very useful. At the end of the day, research is about finding new things, and because what you are looking for is effectively unknown, you proceed by trial and error. And the more you try and the more you err, the more chance you have to accidentally run in to something interesting. With a graphical user interface you can make a custom tool that allows you to search a much much much larger space. With the example given in this article I went mining through data but one can equally make a tool that allows one to search in the world of platonic beauty, to discover new objects in the platonic world. Because such a tool could potentially make you much more productive, effectively making you in to many many researchers as you become as productive as many researchers. Moreover, this is an under-researched area, not many scientists looking at this. Fair enough, you would not be able to publish an article on how the tool works. Just the results of applying the tools yourself. But there is possibly something interesting to be found here. I can not help but wonder what great names from the past would have done had they had access to computers. Would they have used computers to do their work? Probably. Creating user interfaces to search larger parts of problem-solution spaces? Maybe...
+
+For the coming period, I will be exploring this idea, and abusing the Yacas web site for this. Over time, this article section should fill up with articles on this subject, with little applets and snippets of Javascript to demonstrate the point. The focus will not be the usual approach where the applet creator tries to teach something, but rather the focus will be on tools that allow you to venture off in to the unknown. I believe that this is a fruitful area where a lot can be discovered still. 
+
+
+
+
+- One-off tasks, completable in a few hours
+- A look at Google Analytics
+- Java applets as little servers running inside a browser (off-loading the server, no need for maintenance of a server, security for the user, no need to install anything, with examples relevant to teaching maybe?).
+
+- Example: RootsOfUnity (nice example of threading): Exp(2*Pi*I*(1 .. n)/n)
+- Example: Average (nice example of threading): Average(list_IsList) <-- Add(list)/Length(list); 
+- Example: Fibonacci series, Lucas series.
+  - Verify( Fibonacci(242), 168083057059453008835412295811648513482449585399521 );
+  - Verify( Fibonacci(6,.5), 2.03125 );
+  - Verify( Fibonacci(3,.5), 1.25 );
+- Article: rant on strong typing versus test code
+- Article on splitting documentation between the two target audiences "user" and "maintainer".
+
+- poking fun at systems by caricaturizing their properties
+
+
+
+
+
 
 
 

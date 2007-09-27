@@ -443,7 +443,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   protected void processKeyEvent(KeyEvent e)
   {
     inputDirty = true;
-
     if ((e.getModifiers() & InputEvent.CTRL_MASK) == InputEvent.CTRL_MASK)
     {
       if (KeyEvent.KEY_PRESSED != e.getID())
@@ -529,6 +528,20 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         if (cursorPos>0)
         {
           cursorPos--;
+          inputLine = new StringBuffer(inputLine).delete(cursorPos,cursorPos+1).toString();
+          RefreshHintWindow();
+          repaint();
+          return;
+        }
+      }
+      else if (e.VK_DELETE == e.getKeyCode())
+      {
+        if (inputLine.length() > 0)
+        {
+          if (cursorPos == inputLine.length())
+          {
+            cursorPos--;
+          }
           inputLine = new StringBuffer(inputLine).delete(cursorPos,cursorPos+1).toString();
           RefreshHintWindow();
           repaint();
@@ -644,8 +657,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
         if (!handled)
         {
-          if (matchToInsert.length() > 0)
+          if (cursorPos == ito && matchToInsert.length() > 0)
           {
+//System.out.println("matchToInsert = "+matchToInsert);
             handled = true;
             inputLine = inputLine.substring(0,ito) + matchToInsert + inputLine.substring(ito,inputLine.length());
             cursorPos += matchToInsert.length();
@@ -658,7 +672,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         {
           if (hintWindow != null)
           {
-            if (hintWindow.iAllowSelection)
+            if (cursorPos == ito && hintWindow.iAllowSelection)
             {
               handled = true;
               String item = hintWindow.iText[hintWindow.iCurrentPos];
@@ -700,7 +714,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     else if (KeyEvent.KEY_TYPED == e.getID())
     {
       int c = (int)e.getKeyChar();
-      if (c>=32 && c < 128)
+      if (c>=32 && c < 127)
       {
         inputLine = new StringBuffer(inputLine).insert(cursorPos,e.getKeyChar()).toString();
         cursorPos++;
@@ -1455,10 +1469,14 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     {
       if (ifrom == 0)
         break;
-      if (!LispTokenizer.IsAlpha(inputLine.charAt(ifrom-1)))
+      char c = inputLine.charAt(ifrom-1);
+      if (!LispTokenizer.IsAlpha(c) && !LispTokenizer.IsDigit(c))
         break;
       ifrom--;
     }
+    // Name of function *has* to start with alphabetic letter
+    while (ifrom < ito && LispTokenizer.IsDigit(inputLine.charAt(ifrom)))
+      ifrom++;
 
     matchToInsert = "";
     lastMatchedWord = "";
