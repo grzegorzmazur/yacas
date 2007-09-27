@@ -42,7 +42,7 @@ Arg:Arg(2)<sep>Arg(-1)<sep>Arg(1+I):
 Bin:Bin(10, 4):
 Sum:Sum(i, 1, 3, i^2)<sep>Sum(i,0,n,r^i)<sep>Sum(i,0,Infinity,(1/3)^i):
 Factorize:Factorize({1,2,3,4})<sep>Factorize(i, 1, 4, i):
-Plot2D:Plot2D(Sin(x))<sep>Plot2D(Sin(x)/x,-10\:10):
+Plot2D:Plot2D(Sin(x))<sep>Plot2D(Sin(x)/x,-10\:10)<sep>Plot2D({Sin(x),Cos(x)}):
 Max:Max(2,3)<sep>Max({5,8,4}):
 Min:Min(2,3)<sep>Min({5,8,4}):
 IsZero:IsZero(3.25)<sep>IsZero(0)<sep>IsZero(x):
