@@ -8,6 +8,11 @@ public class Grapher
 {
   Grapher(String aCallList)
   {
+    SetupCallList(aCallList);
+  }
+
+  public void SetupCallList(String aCallList)
+  {
     xmin = 1e200;
     ymin = 1e200;
     xmax = -xmin;
@@ -29,6 +34,23 @@ public class Grapher
     token = execList.substring(startPos, endPos);
     execList = execList.substring(endPos);
   }
+
+  void DetermineBounds(double x, double y)
+  {
+    if (xmin > x) xmin = x;
+    if (xmax < x) xmax = x;
+    if (ymin > y) ymin = y;
+    if (ymax < y) ymax = y;
+  }
+  int ProjectX(double x)
+  {
+    return (int)(graphx + graphWidth * (x - xmin) / (xmax - xmin));
+  }
+  int ProjectY(double y)
+  {
+    return (int)(graphy + graphHeight * (1.0 - (y - ymin) / (ymax - ymin)));
+  }
+
   void RunCallList(Graphics g)
   {
     try
@@ -42,6 +64,12 @@ public class Grapher
         }
       }
 
+      Color penColor = new Color(0,0,0);
+      Color fillColor = new Color(0,0,0);
+      if (g != null)
+      {
+        g.setColor(penColor);
+      }
       execList = iCallList;
       NextToken();
       while (token.length() > 0)
@@ -58,10 +86,7 @@ public class Grapher
           y2 = Float.parseFloat(token);
           if (g == null)
           {
-            if (xmin > x2) xmin = x2;
-            if (xmax < x2) xmax = x2;
-            if (ymin > y2) ymin = y2;
-            if (ymax < y2) ymax = y2;
+            DetermineBounds(x2, y2);
           }
           double x1,y1;
           for (i=1;i<nr;i++)
@@ -74,18 +99,61 @@ public class Grapher
             y2 = Float.parseFloat(token);
             if (g == null)
             {
-              if (xmin > x2) xmin = x2;
-              if (xmax < x2) xmax = x2;
-              if (ymin > y2) ymin = y2;
-              if (ymax < y2) ymax = y2;
+              DetermineBounds(x2, y2);
             }
             if (g != null)
             {
-              int xPix1 = (int)(graphx + graphWidth * (x1 - xmin) / (xmax - xmin));
-              int yPix1 = (int)(graphy + graphHeight * (1.0 - (y1 - ymin) / (ymax - ymin)));
-              int xPix2 = (int)(graphx + graphWidth * (x2 - xmin) / (xmax - xmin));
-              int yPix2 = (int)(graphy + graphHeight * (1.0 - (y2 - ymin) / (ymax - ymin)));
-              g.drawLine(xPix1, yPix1, xPix2, yPix2);
+              g.drawLine(ProjectX(x1), ProjectY(y1), ProjectX(x2), ProjectY(y2));
+            }
+          }
+        }
+        else if (token.equals("rectangle2d"))
+        {
+          NextToken();
+          int flags = Integer.parseInt(token);
+          NextToken();
+          float x0 = Float.parseFloat(token);
+          NextToken();
+          float y0 = Float.parseFloat(token);
+          NextToken();
+          float x1 = Float.parseFloat(token);
+          NextToken();
+          float y1 = Float.parseFloat(token);
+
+          if (g == null)
+          {
+            DetermineBounds(x0, y0);
+            DetermineBounds(x1, y1);
+          }
+          if (g != null)
+          {
+            int xPix0 = ProjectX(x0);
+            int yPix0 = ProjectY(y0);
+            int xPix1 = ProjectX(x1);
+            int yPix1 = ProjectY(y1);
+
+            if (xPix1<xPix0)
+            {
+              int swap = xPix1;
+              xPix1 = xPix0;
+              xPix0 = swap;
+            }
+            if (yPix1<yPix0)
+            {
+              int swap = yPix1;
+              yPix1 = yPix0;
+              yPix0 = swap;
+            }
+
+            if ((flags & 1) != 0)
+            {
+              g.setColor(fillColor);
+              g.fillRect(xPix0,yPix0,xPix1-xPix0,yPix1-yPix0);
+              g.setColor(penColor);
+            }
+            if ((flags & 2) != 0)
+            {
+              g.drawRect(xPix0,yPix0,xPix1-xPix0,yPix1-yPix0);
             }
           }
         }
@@ -99,7 +167,21 @@ public class Grapher
           int blue = Integer.parseInt(token);
           if (g != null)
           {
-            g.setColor(new Color(red, green, blue));
+            penColor = new Color(red, green, blue);
+            g.setColor(penColor);
+          }
+        }
+        else if (token.equals("fillcolor"))
+        {
+          NextToken();
+          int red = Integer.parseInt(token);
+          NextToken();
+          int green = Integer.parseInt(token);
+          NextToken();
+          int blue = Integer.parseInt(token);
+          if (g != null)
+          {
+            fillColor = new Color(red, green, blue);
           }
         }
         else if (token.equals("pensize"))
@@ -149,7 +231,12 @@ public class Grapher
   public void paint(Graphics g, int xleft, int ytop, Dimension d)
   {
     Shape clip = g.getClip();
-    Rectangle r = clip.getBounds();
+
+    Rectangle r = null;
+    if (clip != null)
+    {
+      r = clip.getBounds();
+    }
     Graphics2D g2d = null;
     if (g instanceof Graphics2D)
     {
@@ -160,9 +247,12 @@ public class Grapher
       g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
     }
     int clipHeight = d.height;
-    if (ytop+clipHeight > r.y+r.height)
+    if (r != null)
     {
-      clipHeight = r.y+r.height-ytop;
+      if (ytop+clipHeight > r.y+r.height)
+      {
+        clipHeight = r.y+r.height-ytop;
+      }
     }
     g.setClip(xleft, ytop, d.width, clipHeight); 
     
@@ -218,9 +308,12 @@ public class Grapher
     }
     
     int graphClipHeight = graphHeight;
-    if (graphy+graphClipHeight > r.y+r.height)
+    if (r != null)
     {
-      graphClipHeight = r.y+r.height-graphy;
+      if (graphy+graphClipHeight > r.y+r.height)
+      {
+        graphClipHeight = r.y+r.height-graphy;
+      }
     }
     
     g.setClip(graphx,graphy,graphWidth,graphClipHeight); 
