@@ -1,5 +1,7 @@
 
 TODO:
+- complete the range_control.html article.
+
 - Grapher applet:
   - update manual entry on Plot2D to refer to the Java version
   - Better formatting of numbers: 2.5 iso 25e-1
@@ -10,6 +12,8 @@ TODO:
 	Out> Gcd(3.25/2,2)
 	In> Gcd(3.25/2,2)
 	Out> 1
+
+- Ceil, Round and Floor, also try to force to a number.
 
 - From Laurent Debacker:
   In file scripts/integrate.rep/code.ys, shouldn't the
@@ -331,6 +335,9 @@ divisible by b.
 
 ============================================================================================================
 9) Article fodder:
+
+UI to search solution spaces
+============================
 Computers have made many laborious tasks easier to do. You can look up mathematical things in a database-ish way, or have the computer do repetitive work. There are more things computers are good at. Because you can design a user interface, you can design how it interacts with humans, you can effectively design a custom tool for a task. 
 
 When  I did my internship (high-energy physics, Zeus, 1995-1996, at NIKHEF H) I used a user interface to get more results. The task at hand with high-energy physics is as follows; you have this massive accelerator that accelerates particles in a tube. The accelerated particle beams collide, and out of the collision come other particles. The particles that come out of it can tell you something about the structure of the particles that collided. Now at the point where the collision takes place people place what they call a detector. This detector detects particles coming from the collision. The collisions occur at enormous rates, so you get an enormous amount of data coming from these detectors. Any way, the data is filtered a bit (the amount of data coming from these detectors is so vast that one can not possibly hope to capture all of it, so electronics boards are designed to be able to handle the high bandwidth of data and filter out the events for which it is absolutely sure that the researchers will not be interested in it, reducing the amount of data captured), and then ends on a harddisk somewhere, in what they call (or used to call, don't know how it works nowadays) ntuples, essentially one big database table with rows of records, each record with some fields. Each row is an isolated event that might be of interest. Now the trick is to make a selection of the events, and plot a certain number. For example, one could take all the events where the electron (one of the incoming particles) scattered heavily backwards, and then plot the mass of the whole system, as in a histogram, where you accumulate the results of events with mass between two values in one bin, mass between other values in the next bin, etcetera. You would then see a sea of noise, with hopefully a peak in it, which would be called a "resonance", and would indicate that there had been a short-lived particle with that mass. The narrower the peak, the longer-lived the particles. The wider the peak, the shorter-lived the particles. This way you could measure the speed at which they decayed, which you can also calculate from theory sometimes, or at least use as an input parameter for theory. And you could measure the precise point of the top, so as to give you the mass of the particle. And you could count the number of events that were in the peak, and again compare that to theory, which should be able to give a prediction of the amount of events that were observed given the intensity of the beams colliding against each other. The trick would be to find the area where the resonance (the peak) should be, and try to design filters that reduce the background noise while keeping as much as possible of the signal. The filters would be simple things (often referred to as <i>cuts</i>, as they cut out a part of the data). For example, you could select all the events for which a specific value in one of the fields of the ntuple was larger than a certain value. Or smaller than a specific value. Large part of the work consisted of just trial-and-error, finding the good cuts to apply as to get the best view on the resonance. The cut to apply was the real information being sought. It required hard work, putting in many many many hours. The more hours you worked, the more likely you were to find something interesting. Being smart is not enough in such a case, as luck plays a big role (as they say, luck is when opportunity meets preparation). After you found the best cuts to apply to the data, it was surprisingly little information you needed to communicate. It could be as little as just a few conditionals, selecting all the events with, say, a detected electron, and where the virtual photon had a larger energy than such and so, and ... Surprisingly hard work for so little information. One would then proceed to get an estimate of the curve representing the noise, and subtract that from the data, to arrive at the pure signal.
@@ -349,14 +356,26 @@ The above allowed me to go through the data with breakneck speed. I could dynami
 
 The point I want to make in this article that there might actually be a place for such tools in science. There might be a place for graphical user interfaces. Obviously they do not merit real new knowledge about nature, and would thus not merit a scientific publication, but as a tool they could be very useful. At the end of the day, research is about finding new things, and because what you are looking for is effectively unknown, you proceed by trial and error. And the more you try and the more you err, the more chance you have to accidentally run in to something interesting. With a graphical user interface you can make a custom tool that allows you to search a much much much larger space. With the example given in this article I went mining through data but one can equally make a tool that allows one to search in the world of platonic beauty, to discover new objects in the platonic world. Because such a tool could potentially make you much more productive, effectively making you in to many many researchers as you become as productive as many researchers. Moreover, this is an under-researched area, not many scientists looking at this. Fair enough, you would not be able to publish an article on how the tool works. Just the results of applying the tools yourself. But there is possibly something interesting to be found here. I can not help but wonder what great names from the past would have done had they had access to computers. Would they have used computers to do their work? Probably. Creating user interfaces to search larger parts of problem-solution spaces? Maybe...
 
+The reason this has not been done could quite possibly be that it means you write a one-off tool to allow you to search in a space. In effect you write something you intend to throw away again soon. This goes against the usual activity of a scientist, which is to discover things that have eternal value.
+
 For the coming period, I will be exploring this idea, and abusing the Yacas web site for this. Over time, this article section should fill up with articles on this subject, with little applets and snippets of Javascript to demonstrate the point. The focus will not be the usual approach where the applet creator tries to teach something, but rather the focus will be on tools that allow you to venture off in to the unknown. I believe that this is a fruitful area where a lot can be discovered still. 
+
+
+Embeddable applets
+==================
+I have thought in the past on-and-off about writing tools that would allow teachers to create lesson material using Yacas. This usually evolved in to an idea where there was some notebook (or similar metaphor), with the authoring tools to allow such a teacher to write rich documents, with graphs, interactive, etcetera (you would not want to write material for teachers, as most teachers probably think they can do a better job at it than you). 
+
+It is only recently that I realized that those tools actually already exist! There is no reason not to start using html with JavaScript, in combination with a Java applet. The Java applet could do the more computationally intensive work, like calculations or plotting, where one would use JavaScript for creating the user interface, the interactivity, and html for the layout. 
+
+You can use Yacas as an applet inside a page. In effect, it acts like a little server that runs inside the page. The JavaScript code can send requests to it, and receive answers back. Teachers could literally start to write interactive lesson material without having to install any software at all (a text editor and a web browser will do). No need to maintain a server, a plain web site will do. No need for the user to install any special software, other than a browser with Java and JavaScript support.
+
+<some example applet allowing the user to perform operations on formulas, highschool>
 
 
 
 
 - One-off tasks, completable in a few hours
 - A look at Google Analytics
-- Java applets as little servers running inside a browser (off-loading the server, no need for maintenance of a server, security for the user, no need to install anything, with examples relevant to teaching maybe?).
 
 - Example: RootsOfUnity (nice example of threading): Exp(2*Pi*I*(1 .. n)/n)
 - Example: Average (nice example of threading): Average(list_IsList) <-- Add(list)/Length(list); 
