@@ -22,6 +22,7 @@ EXTRA_DIST = \
 	cookie.js autocompleter.css \
 	tutorialtext1.html back-dark.gif back.gif back.texhtml \
 	$(YART_FILES) newtonconvergence.html newdesign.html \
+	range_control.html range_control.css range_control.js \
 	journaldescr.html \
         downloads.html.in \
 	README autocompleteraccess.js examples-static.txt \
