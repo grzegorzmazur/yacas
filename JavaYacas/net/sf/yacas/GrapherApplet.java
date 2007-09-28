@@ -26,6 +26,16 @@ public class GrapherApplet extends java.applet.Applet implements KeyListener
     repaint();
   }
 
+  public void SetupCallList(String aCallList)
+  {
+    if (grapher != null)
+    {
+      grapher.SetupCallList(aCallList);
+      offGraphics = null;
+      repaint();
+    }
+  }
+
   public void	keyReleased(KeyEvent e) {}
   public void	keyTyped(KeyEvent e) {}
   public void keyPressed(KeyEvent e)
