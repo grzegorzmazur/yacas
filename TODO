@@ -1,9 +1,6 @@
 
 TODO:
-- complete the range_control.html article:
-  - add filled and drawn rectangles.
-  - allow setting a graph from JavaScript
-
+- complete the range_control.html article
 
 - Grapher applet:
   - update manual entry on Plot2D to refer to the Java version
