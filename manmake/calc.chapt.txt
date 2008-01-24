@@ -447,7 +447,7 @@ list, the function is applied to all entries in the list.
 This function calculates the derivative of the expression {expr} with
 respect to the variable {var} and returns it. If the third calling
 format is used, the {n}-th derivative is determined. Yacas knows
-how the differentiate standard functions such as {Ln}
+how to differentiate standard functions such as {Ln}
 and {Sin}.
 
 The {D} operator is threaded in both {var} and
