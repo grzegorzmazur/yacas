@@ -1,11 +1,25 @@
 
 TODO:
+- Some solve commands do not evaluate correctly the second time
+  - Solve((Ln(1/x)-1)*(1/x)^x, x)
+- Bug reports:
+  - 1) Solve(x==x^3,x) produces several "MathSqrt: invalid argument: -1"
+messages.
+  - 2) I don't think the prettyprint version of Solve(x==x^3,x) is correct
+(seems to start with sqrt[3] which isn't in the regular version (see 2nd and
+3rd screenshots attached))
+  - 3) If you try and simplify the answers to Solve(x==x^3,x), you get some odd
+results. The first screenshot (attached) has the input and output to
+Simplify shown.
+
+- Version of the web site that you can download?
+
+
 - complete the range_control.html article
 
 - Grapher applet:
   - update manual entry on Plot2D to refer to the Java version
   - Better formatting of numbers: 2.5 iso 25e-1
-- Work with Adrian on key handling in applet
 - Manual titles do not correspond with the manual you go to.
 - Bug:
 	In> Gcd(3.25/2,2)
