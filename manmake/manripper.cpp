@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string>
+#include <cstring>
 #include <map>
 
 using namespace std;
