@@ -92,6 +92,8 @@ class ArrOpsDeletingPtr : public ArrOpsCustomPtr<T>
 {
   typedef T* TY;
 public:
+  ArrOpsDeletingPtr() {}
+
   inline void destruct(void * obj) const
   { delete *static_cast<const TY*>(obj); }
 };
