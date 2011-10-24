@@ -36,7 +36,7 @@ public:
   /// LookUp that takes ownership of the string
   LispString * LookUp(LispString * aString);
   LispString * LookUpCounted(LispChar * aString,LispInt aLength);
-  LispString * LookUpStringify(LispChar * aString, LispBoolean aStringOwnedExternally=LispFalse);
+  LispString * LookUpStringify(const LispChar * aString, LispBoolean aStringOwnedExternally=LispFalse);
   LispString * LookUpUnStringify(LispChar * aString, LispBoolean aStringOwnedExternally=LispFalse);
   void GarbageCollect();
 private:

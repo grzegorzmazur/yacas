@@ -150,7 +150,7 @@ char *GenericErrorBuf()
    return theGenericErrorBuf;
 }
 
-void RaiseError(char* str,...)
+void RaiseError(const char* str,...)
 {
 #ifdef HAVE_STDARG_H
   va_list arg;

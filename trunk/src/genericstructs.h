@@ -23,8 +23,8 @@ class GenericStruct : public GenericClass
 public:
   GenericStruct(LispChar * aTypeName, void* aData, void (*aDestructor)(void*));
   virtual ~GenericStruct();
-  virtual LispChar * Send(LispArgList& aArgList);
-  virtual LispChar * TypeName();
+  virtual const LispChar * Send(LispArgList& aArgList);
+  virtual const LispChar * TypeName();
   inline void* Data() {return iData;}
 private:
   GenericStruct(const GenericStruct& aOther) : iData(NULL),iTypeName(NULL),iDestructor(NULL)

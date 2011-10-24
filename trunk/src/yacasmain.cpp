@@ -44,6 +44,8 @@
 #include <signal.h>
 #endif
 
+#include <string>
+
 // For all platforms, assume forward slash as path separator (handle at the lowest level).
 #define PATH_SEPARATOR   '/'
 #define PATH_SEPARATOR_2 "/"
@@ -122,16 +124,16 @@ int hideconsolewindow=0;
   #define SCRIPT_DIR "none"
 #endif
 
-char* root_dir    = SCRIPT_DIR;
+const char* root_dir    = SCRIPT_DIR;
 #ifndef WIN32
   char* archive     = NULL;
 #else
   char* archive     = "scripts.dat";
   HANDLE htimer = 0;
 #endif
-char* init_script = "yacasinit.ys";
+const char* init_script = "yacasinit.ys";
 
-char* read_eval_print = "REP()";
+const char* read_eval_print = "REP()";
 
 
 static int readmode = 0;
@@ -208,7 +210,7 @@ void LispStackSize(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 
-char* ReadInputString(char* prompt)
+const char* ReadInputString(const char* prompt)
 {
   if (!commandline) return "False";
   char *inpline;
@@ -244,7 +246,7 @@ static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispInt aStackT
     CHK_ISSTRING_CORE(promptObject,1);
     LispString prompt;
     InternalUnstringify(prompt, promptObject->String());
-    char* output = ReadInputString(prompt.c_str());
+    const char* output = ReadInputString(prompt.c_str());
     RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(output)->c_str()));
 }
 
@@ -419,7 +421,7 @@ void build_full_prompt(char* full_prompt, const char* prompt, const int maxlen)
 #define TEXMACS_DATA_END     ((char)5)
 #define TEXMACS_DATA_ESCAPE  ((char)27)
 
-void ShowResult(char *prompt)
+void ShowResult(const char *prompt)
 {
     if (use_texmacs_out)
     {
@@ -443,7 +445,7 @@ void ShowResult(char *prompt)
     fflush(stdout);
 }
 
-void DeclarePath(char *ptr2)
+void DeclarePath(const char *ptr2)
 {
   char buf[1000];
   if (ptr2[strlen(ptr2)-1] != PATH_SEPARATOR)
@@ -504,17 +506,20 @@ CORE_KERNEL_FUNCTION("FileSize",LispFileSize,1,YacasEvaluator::Function | YacasE
             unsigned char* fullbuf = (unsigned char*)PlatAlloc(fullsize);
             if (fullbuf)
             {
-                fread(fullbuf,1,fullsize,fin);
-                CCompressedArchive *a =
-                    NEW CCompressedArchive(fullbuf, fullsize, compressed_archive);
-                if (a->iFiles.IsValid())
-                {
-                    yacas->getDefEnv().getEnv().iArchive = a;
-                }
-                else
-                {
-                    printf("Error, %s is not a valid archive file.\n",archive);
-                    delete a;
+                if (!fread(fullbuf,1,fullsize,fin)) {
+                    printf("Error, failed to read archive %s.\n",archive);
+                } else {
+                    CCompressedArchive *a =
+                        NEW CCompressedArchive(fullbuf, fullsize, compressed_archive);
+                    if (a->iFiles.IsValid())
+                    {
+                        yacas->getDefEnv().getEnv().iArchive = a;
+                    }
+                    else
+                    {
+                        printf("Error, %s is not a valid archive file.\n",archive);
+                        delete a;
+                    }
                 }
             }
             else
@@ -528,13 +533,13 @@ CORE_KERNEL_FUNCTION("FileSize",LispFileSize,1,YacasEvaluator::Function | YacasE
     {
         /* Split up root_dir in pieces separated by colons, and run
            DefaultDirectory on each of them. */
-        char *ptr1, *ptr2;
+        const char *ptr1, *ptr2;
         ptr1 = ptr2 = root_dir;
         while (*ptr1 != '\0') {
             while (*ptr1 != '\0' && *ptr1 != ':') ptr1++;
             if (*ptr1 == ':') {
-                *ptr1 = '\0';
-                DeclarePath(ptr2);
+                const std::string path(ptr2, ptr1);
+                DeclarePath(path.c_str());
                 ptr1++;
                 ptr2 = ptr1;
             }
@@ -1080,7 +1085,6 @@ int main(int argc, char** argv)
 #define USE_TEXMACS_OUT yacas->getDefEnv().getEnv().SetPrettyPrinter(yacas->getDefEnv().getEnv().HashTable().LookUp("\"TexForm\""));
 
  
-    char* file_to_load=NULL;
     bool exit_after_files = false;
 
     int fileind=1;
@@ -1259,8 +1263,6 @@ int main(int argc, char** argv)
 #endif
             }
         }
-        if (fileind<argc)
-            file_to_load=argv[fileind];
     }
 
     /*
@@ -1306,7 +1308,7 @@ int main(int argc, char** argv)
     LoadYacas();
 
 
-    char* inprompt="",*outprompt="";
+    const char* inprompt="",*outprompt="";
     if (show_prompt && !use_texmacs_out)
     {
         inprompt = "In> ";
@@ -1374,10 +1376,11 @@ int main(int argc, char** argv)
     {
         char buffer[4001];
         int offs=0;
+        bool ok;
     MORE:
-        fgets(&buffer[offs],4000-offs,stdin);
+        ok = fgets(&buffer[offs],4000-offs,stdin);
         offs=strlen(buffer);
-        if (!feof(stdin) && offs>0)
+        if (ok && !feof(stdin) && offs>0)
             goto MORE;
 
         yacas->Evaluate(buffer);

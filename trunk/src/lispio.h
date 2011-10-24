@@ -15,10 +15,10 @@ class InputStatus : public YacasBase
 public:
   InputStatus() : iFileName("none") , iLineNumber(-1)  {};
   ~InputStatus();
-  void SetTo(LispChar * aFileName);
+  void SetTo(const LispChar * aFileName);
   void RestoreFrom(InputStatus& aPreviousStatus);
   inline LispInt LineNumber();
-  inline LispChar * FileName();
+  inline const LispChar * FileName();
   inline void NextLine();
 
   inline InputStatus(const InputStatus& aOther) : iFileName(aOther.iFileName) , iLineNumber(aOther.iLineNumber)
@@ -33,7 +33,7 @@ public:
   }
 
 private:
-  LispChar * iFileName;
+  const LispChar * iFileName;
   LispInt  iLineNumber;
 };
 
@@ -41,7 +41,7 @@ inline LispInt InputStatus::LineNumber()
 {
   return iLineNumber;
 }
-inline LispChar * InputStatus::FileName()
+inline const LispChar * InputStatus::FileName()
 {
   return iFileName;
 }

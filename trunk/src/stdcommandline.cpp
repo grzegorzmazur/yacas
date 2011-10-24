@@ -14,7 +14,7 @@ void CStdCommandLine::Pause()
 {
 }
 
-void CStdCommandLine::ShowLine(LispChar * prompt,LispInt promptlen,LispInt cursor)
+void CStdCommandLine::ShowLine(const LispChar * prompt,LispInt promptlen,LispInt cursor)
 {
 }
 
@@ -31,14 +31,18 @@ LispInt CStdCommandLine::GetKey()
     return '\n';
 }
 
-void CStdCommandLine::ReadLine(LispChar * prompt)
+void CStdCommandLine::ReadLine(const LispChar * prompt)
 {
-    printf(prompt); fflush(stdout);
+    puts(prompt); fflush(stdout);
     char buffer[4001];
     int offs=0;
+    bool ok;
 MORE:
-    fgets(&buffer[offs],4000-offs,stdin);
-if (feof(stdin)) strcpy(buffer,"quit");
+    ok = fgets(&buffer[offs],4000-offs,stdin);
+
+    if (!ok || feof(stdin)) 
+        strcpy(buffer,"quit");
+
     offs=strlen(buffer);
 
     if (buffer[offs-1] == '\n')

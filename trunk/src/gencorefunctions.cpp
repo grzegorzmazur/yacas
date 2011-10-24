@@ -12,7 +12,7 @@
 
 const char* REFMAN_PREFIX = "*\t";
  
-void Emit(char* iname,char* fname, int flags, int nrargs, int do_refman)
+void Emit(const char* iname,const char* fname, int flags, int nrargs, int do_refman)
 {
 //
  if (do_refman == 1)  // print the information for the ref manual

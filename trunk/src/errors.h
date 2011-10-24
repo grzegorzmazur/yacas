@@ -20,7 +20,7 @@ void CheckFuncGeneric(LispInt aError,LispEnvironment& aEnvironment);
 #define CHK2(_pred,_err)     {if (!(_pred)) CheckFuncGeneric(_err,aEnvironment);}
 
 char *GenericErrorBuf(); // called (only) from errors.cpp and LispEnvironment::ErrorString()
-void RaiseError(char* str,...);
+void RaiseError(const char* str,...);
 
 /*
 #define TESTARGS(_n)  \

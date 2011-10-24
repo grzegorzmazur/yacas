@@ -30,7 +30,7 @@ public:
   // Constructors
     // The constructors allow the caller to specify whether the storage is owned externally.
   // Use the assignment operators to set the string after this.
-    inline LispString(LispBoolean aStringOwnedExternally=LispFalse);
+    inline LispString();
     inline LispString(LispString &aString, LispBoolean aStringOwnedExternally=LispFalse);
     inline LispString(LispChar * aString, LispBoolean aStringOwnedExternally);
     inline LispString(const LispChar * aString);

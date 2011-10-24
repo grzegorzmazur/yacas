@@ -35,9 +35,9 @@ inline LispString::LispString(LispChar * aString, LispBoolean aStringOwnedExtern
   SetString(aString, aStringOwnedExternally);
 }
 
-inline LispString::LispString(LispBoolean aStringOwnedExternally) : iReferenceCount()
+inline LispString::LispString() : iReferenceCount()
 {
-  SetString("", aStringOwnedExternally);
+  SetString(strdup(""), LispFalse);
 }
 
 inline LispChar * LispString::c_str() const

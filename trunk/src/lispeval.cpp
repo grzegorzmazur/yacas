@@ -217,7 +217,7 @@ void TraceShowEnter(LispEnvironment& aEnvironment,
     aEnvironment.CurrentOutput()->Write("  ");
   aEnvironment.CurrentOutput()->Write("TrEnter(\"");
   {
-    LispChar * function = "";
+    const LispChar * function = "";
     if (aExpression->SubList())
     {
       LispPtr *sub = aExpression->SubList();

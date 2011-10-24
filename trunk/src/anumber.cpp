@@ -30,7 +30,7 @@ void BaseSqrt(ANumber& aResult, ANumber& N);
 #ifdef HAVE_STDIO_H
 #include <stdio.h> // Safe, only included if HAVE_STDIO_H is defined
 #endif
-void PrintNumber(char* prefix,ANumber& aNumber)
+void PrintNumber(const char* prefix,ANumber& aNumber)
 {
 #ifdef HAVE_STDIO_H
   printf("%s\n",prefix);
@@ -198,7 +198,7 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
     {
         if (aString[endNumberIndex]=='.')
             endIntIndex = endNumberIndex;
-        if (aBase < 14 && aString[endNumberIndex]=='e' || aString[endNumberIndex]=='E')
+        if ((aBase < 14 && aString[endNumberIndex]=='e') || aString[endNumberIndex]=='E')
             endFloatIndex = endNumberIndex;
         endNumberIndex++;
     }

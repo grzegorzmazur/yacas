@@ -271,7 +271,7 @@ LispInt StrEqualUnStringified(const LispChar * ptr1, const LispChar * ptr2)
 }
 
 // If string not yet in table, insert. Afterwards return the string.
-LispString * LispHashTable::LookUpStringify(LispChar * aString,
+LispString * LispHashTable::LookUpStringify(const LispChar * aString,
                               LispBoolean aStringOwnedExternally)
 {
     LispInt bin = LispHashStringify(aString);

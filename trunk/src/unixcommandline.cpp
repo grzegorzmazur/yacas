@@ -16,7 +16,7 @@ void CUnixCommandLine::Pause()
     while (clock()<i);
 }
 
-void CUnixCommandLine::ShowLine(LispChar * prompt,LispInt promptlen,LispInt cursor)
+void CUnixCommandLine::ShowLine(const LispChar * prompt,LispInt promptlen,LispInt cursor)
 {
     if (iFullLineDirty)
     {

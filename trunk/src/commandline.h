@@ -73,7 +73,7 @@ public:
   CCommandLine() : iFullLineDirty(LispFalse),iHistoryUnchanged(0),iLine(),iSubLine(),iHistoryList() {};
   virtual ~CCommandLine();
   /// Call this function if the user needs to enter an expression.
-  virtual void ReadLine(LispChar * prompt);
+  virtual void ReadLine(const LispChar * prompt);
 public: //platform stuff
   /** return a key press, which is either an ascii value, or one
    * of the values specified in ESpecialChars
@@ -84,7 +84,7 @@ public: //platform stuff
   /** Show the current line (in iSubLine), with the required prompt,
    *  and the cursor position at cursor (starting from the prompt).
    */
-  virtual void ShowLine(LispChar * prompt,
+  virtual void ShowLine(const LispChar * prompt,
                         LispInt promptlen,LispInt cursor) = 0;
   /// Pause for a short while. Used when matching brackets.
   virtual void Pause() = 0;
@@ -93,10 +93,10 @@ public: //platform stuff
   virtual void MaxHistoryLinesSaved(LispInt aNrLines);
 
 protected:
-  virtual void ReadLineSub(LispChar * prompt);
+  virtual void ReadLineSub(const LispChar * prompt);
 private:
   void GetHistory(LispInt aLine);
-  void ShowOpen(LispChar * prompt,LispInt promptlen,
+  void ShowOpen(const LispChar * prompt,LispInt promptlen,
                 LispChar aOpen, LispChar aClose, LispInt aCurPos);
 protected:
   LispInt iFullLineDirty;

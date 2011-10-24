@@ -12,12 +12,12 @@ GenericStruct::~GenericStruct()
     iDestructor(iData);
 }
 
-LispChar * GenericStruct::Send(LispArgList& aArgList)
+const LispChar * GenericStruct::Send(LispArgList& aArgList)
 {
     return "";
 }
 
-LispChar * GenericStruct::TypeName()
+const LispChar * GenericStruct::TypeName()
 {
     return iTypeName;
 }

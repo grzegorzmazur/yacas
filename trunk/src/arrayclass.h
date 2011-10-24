@@ -11,8 +11,8 @@ class ArrayClass : public GenericClass
 public: //required
     ArrayClass(LispInt aSize,LispObject* aInitialItem);
     virtual ~ArrayClass();
-    virtual LispChar * Send(LispArgList& aArgList);
-    virtual LispChar * TypeName();
+    virtual const LispChar * Send(LispArgList& aArgList);
+    virtual const LispChar * TypeName();
 public: //array-specific
     inline LispInt Size();
     inline LispObject* GetElement(LispInt aItem); // TODO: 1-based, ...

@@ -12,12 +12,12 @@ PatternClass::~PatternClass()
     delete iPatternMatcher;
 }
 
-LispChar * PatternClass::Send(LispArgList& aArgList)
+const LispChar * PatternClass::Send(LispArgList& aArgList)
 {
     return NULL;
 }
 
-LispChar * PatternClass::TypeName()
+const LispChar * PatternClass::TypeName()
 {
     return "\"Pattern\"";
 }

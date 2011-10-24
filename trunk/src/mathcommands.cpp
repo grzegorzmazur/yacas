@@ -1525,7 +1525,7 @@ void LispGenericTypeName(LispEnvironment& aEnvironment,LispInt aStackTop)
 
     CHK_ARG_CORE(evaluated->Generic(),1);
 
-    LispChar * name = evaluated->Generic()->TypeName();
+    const LispChar * name = evaluated->Generic()->TypeName();
     RESULT = (LispAtom::New(aEnvironment,name));
 }
 

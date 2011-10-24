@@ -10,7 +10,7 @@ unsigned char primes_table[primes_table_size];
 int check_if_prime(const int p)
 {
   int q;
-  if (p & 1 == 0) return 0;
+  if ((p & 1) == 0) return 0;
   for(q = 3; q*q <= p && (p % q != 0); q += 2);
   return (p % q == 0) ? 0 : 1;
 }
