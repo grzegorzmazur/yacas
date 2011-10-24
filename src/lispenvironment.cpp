@@ -501,7 +501,7 @@ void LispEnvironment::DefineRulePattern(LispString * aOperator,LispInt aArity,
     userFunc->DeclarePattern(aPrecedence, aPredicate,aBody);
 }
 
-void LispEnvironment::SetCommand(YacasEvalCaller aEvaluatorFunc, LispChar * aString,LispInt aNrArgs,LispInt aFlags)
+void LispEnvironment::SetCommand(YacasEvalCaller aEvaluatorFunc, const LispChar * aString,LispInt aNrArgs,LispInt aFlags)
 {
   DBG_({ extern long theNrDefinedBuiltIn; theNrDefinedBuiltIn++; })
   YacasEvaluator eval(aEvaluatorFunc,aNrArgs,aFlags);
@@ -526,7 +526,7 @@ void LispEnvironment::SetUserError(LispChar * aErrorString)
     theUserError=aErrorString;
 }
 
-LispChar * LispEnvironment::ErrorString(LispInt aError)
+const LispChar * LispEnvironment::ErrorString(LispInt aError)
 {
     LISPASSERT(aError>=0 && aError < KLispNrErrors);
     switch (aError)

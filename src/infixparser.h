@@ -124,7 +124,7 @@ public:
 private:
     void Print(LispPtr& aExpression, LispOutput& aOutput,
                LispInt iPrecedence);
-    void WriteToken(LispOutput& aOutput,LispChar * aString);
+    void WriteToken(LispOutput& aOutput,const LispChar * aString);
 private:
     LispOperators& iPrefixOperators;
     LispOperators& iInfixOperators;

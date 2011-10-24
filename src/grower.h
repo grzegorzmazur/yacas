@@ -12,14 +12,7 @@
 
 #include "yacasbase.h"
 #include "lispassert.h"
-
-
-
-// Default placement versions of operator new and delete, placed here because I do not want to include <new>
-inline void* operator new(size_t, void* __p) throw() { return __p; }
-inline void* operator new[](size_t, void* __p) throw() { return __p; }
-inline void  operator delete  (void*, void*) throw() { }
-inline void  operator delete[](void*, void*) throw() { }
+#include <new>
 
 
 template <class T>
@@ -92,8 +85,7 @@ class ArrOpsDeletingPtr : public ArrOpsCustomPtr<T>
 {
   typedef T* TY;
 public:
-  ArrOpsDeletingPtr() {}
-
+  inline ArrOpsDeletingPtr() {}
   inline void destruct(void * obj) const
   { delete *static_cast<const TY*>(obj); }
 };

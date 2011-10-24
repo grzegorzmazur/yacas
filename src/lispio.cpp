@@ -2,7 +2,7 @@
 #include "yacasprivate.h"
 #include "lispio.h"
 
-void InputStatus::SetTo(LispChar * aFileName)
+void InputStatus::SetTo(const LispChar * aFileName)
 {
     iFileName = aFileName;
     iLineNumber=1;

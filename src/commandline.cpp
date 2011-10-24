@@ -35,7 +35,7 @@ void CCommandLine::MaxHistoryLinesSaved(LispInt aNrLines)
 {
 }
 
-void CCommandLine::ReadLine(LispChar * prompt)
+void CCommandLine::ReadLine(const LispChar * prompt)
 {
     iLine.ResizeTo(0);
 
@@ -59,7 +59,7 @@ NEXTLINE:
     iLine.Append('\0');
 }
 
-void CCommandLine::ReadLineSub(LispChar * prompt)
+void CCommandLine::ReadLineSub(const LispChar * prompt)
 {
     LispInt cursor=0;
     int promptlen = PlatStrLen(prompt);
@@ -174,7 +174,7 @@ void CCommandLine::ReadLineSub(LispChar * prompt)
     }
 }
 
-void CCommandLine::ShowOpen(LispChar * prompt,LispInt promptlen,
+void CCommandLine::ShowOpen(const LispChar * prompt,LispInt promptlen,
                             LispChar aOpen, LispChar aClose, LispInt aCurPos)
 {
     LispInt count=1;

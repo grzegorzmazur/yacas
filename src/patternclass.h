@@ -21,8 +21,8 @@ public:
   LispBoolean Matches(LispEnvironment& aEnvironment,
                       LispPtr* aArguments);
 public: //From GenericClass
-  virtual LispChar * Send(LispArgList& aArgList);
-  virtual LispChar * TypeName();
+  virtual const LispChar * Send(LispArgList& aArgList);
+  virtual const LispChar * TypeName();
 
 private:
   PatternClass(const PatternClass& aOther): iPatternMatcher(NULL)

@@ -404,7 +404,7 @@ void ParsedObject::ReadAtom()
 }
 
 
-void InfixPrinter::WriteToken(LispOutput& aOutput,LispChar * aString)
+void InfixPrinter::WriteToken(LispOutput& aOutput, const LispChar * aString)
 {
     if (IsAlNum(iPrevLastChar) && (IsAlNum(aString[0]) || aString[0]=='_'))
     {

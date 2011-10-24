@@ -121,7 +121,8 @@ CachedStdFileInput::CachedStdFileInput(LispLocalFile& aFile,InputStatus& aStatus
   char * ptr = PlatAllocN<char>(iNrBytes+1);      // sizeof(char) == 1
   iBuffer = (LispChar *)ptr;                                        // sizeof(LispChar) == not so sure
   Check(ptr!=NULL,KLispErrNotEnoughMemory);
-  fread(ptr,iNrBytes,1,iFile);
+  const LispInt n = fread(ptr,iNrBytes,1,iFile);
+  Check(n == 1, KLispErrReadingFile);
   ptr[iNrBytes] = '\0';
 }
 

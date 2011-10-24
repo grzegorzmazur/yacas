@@ -118,7 +118,7 @@ public:
   /// \param aString name of the command
   /// \param aNrArgs number of arguments
   /// \param aFlags flags, see YacasEvaluator::FunctionFlags
-  void SetCommand(YacasEvalCaller aEvaluatorFunc, LispChar * aString,LispInt aNrArgs,LispInt aFlags);
+  void SetCommand(YacasEvalCaller aEvaluatorFunc, const LispChar * aString,LispInt aNrArgs,LispInt aFlags);
 
   void RemoveCommand(LispChar * aString);
   void RemoveCoreCommand(LispChar * aString);
@@ -197,7 +197,7 @@ public:
   void SetCurrentOutput(LispOutput* aOutput);
 public:
   void SetUserError(LispChar * aErrorString);
-  LispChar * ErrorString(LispInt aError);
+  const LispChar * ErrorString(LispInt aError);
   //@}
 
 protected:
@@ -315,11 +315,14 @@ private:
     LispLocalVariable* iFirst;
     LispLocalVariable* iLast;
   };
-public: //Well... only because I want to be able to show the stack to the outside world...
-  LocalVariableFrame *iLocalsList;
-  LispOutput*    iInitialOutput;
-private:
 
+private:
+  LocalVariableFrame *iLocalsList;
+  
+public:
+  LispOutput* iInitialOutput;
+
+private:
   /// Hash of core commands with associated YacasEvaluator
   YacasCoreCommands& iCoreCommands;
 
