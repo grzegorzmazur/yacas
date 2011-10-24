@@ -65,7 +65,7 @@ void getfields(char* buffer)
   }
 }
 
-char* findexample(char* name)
+const char* findexample(char* name)
 {
   Example key;
   strcpy(key.name,name);
@@ -101,8 +101,8 @@ int main(int argc, char** argv)
   lastKey[0] = '\0';
   lastVal[0] = '\0';
   lastDes[0] = '\0';
-  char* inName = "hints.txt";
-  char* outName = "autocompleter.js";
+  const char* inName = "hints.txt";
+  const char* outName = "autocompleter.js";
   if (argc>2)
   {
     inName = argv[1];
@@ -112,8 +112,8 @@ int main(int argc, char** argv)
     FILE* fex = fopen("examples-static.txt","rb");
     if (!fex)
       exit(-1);
-    fgets(buffer,16384,fex);
-    while (!feof(fex))
+
+    while (fgets(buffer,16384,fex) && !feof(fex))
     {
       getfields(buffer);
       if (nrItems>1)
@@ -122,7 +122,6 @@ int main(int argc, char** argv)
         strcpy(examples[nrExamples].example,items[1]);
         nrExamples++;
       }
-      fgets(buffer,16384,fex);
     } 
     fclose(fex);
     qsort(examples, nrExamples, sizeof(Example),exampleCompare);
@@ -146,8 +145,7 @@ int main(int argc, char** argv)
 
   fprintf(fout,"var hints = new Array(\n");
 
-  fgets(buffer,16384,fin);
-  while (!feof(fin))
+  while (fgets(buffer,16384,fin) && !feof(fin))
   {
     getfields(buffer);
     if (nrItems>3)
@@ -187,7 +185,6 @@ int main(int argc, char** argv)
         strcat(lastDes,items[3]);
       }
     }
-    fgets(buffer,16384,fin);
   } 
   WriteLine();
 
