@@ -14,10 +14,9 @@ int main(int argc, char** argv)
   
   char prev[8192];
   prev[0]=0;
-  while (!feof(fin))
+  char buf[8192];
+  while (fgets(buf,8192,fin) && !feof(fin))
   {
-    char buf[8192];
-    fgets(buf,8192,fin);
     if (strcmp(buf,prev))
     {
       fprintf(fout,"%s",buf);

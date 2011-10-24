@@ -1,8 +1,9 @@
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
-#include <string>
 #include <cstring>
+#include <string>
 #include <map>
 
 using namespace std;
@@ -16,7 +17,16 @@ CmdEntries files;
 int fileline=0;
 void GetBf(char* buf, int size, FILE*f)
 {
-  fgets(buf,2048,f);
+  if (!fgets(buf,2048,f))
+  {
+    *buf = '\0';
+    if (!feof(f))
+    {
+      printf("Error reading, bailing out.\n");
+      exit(-1);
+    }
+  }
+
   fileline++;
   if (buf[strlen(buf)-1] == '\n') buf[strlen(buf)-1] = '\0';
   char* ptr=buf;
