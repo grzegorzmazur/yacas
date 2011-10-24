@@ -3,7 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-char* indexOf(char* haystack, char* needle)
+#include <cstddef>
+
+char* indexOf(char* haystack, const char* needle)
 {
   int pos = 0;
   int needleLength = strlen(needle);
@@ -37,10 +39,21 @@ int main(int argc, char** argv)
     exit(-1);
   }
   fseek(fin,0,SEEK_END);
-  int size = ftell(fin);
+  const long size = ftell(fin);
+  if (size < 0)
+  {
+    fprintf(stderr,"Failed to detect size of %s\n",inName);
+    exit(-1);
+  }
+
   fseek(fin,0,SEEK_SET);
   inbuffer = (char*)malloc(size+1);
-  fread(inbuffer,1,size,fin);
+
+  if (fread(inbuffer,1,size,fin) != std::size_t(size))
+  {
+    fprintf(stderr,"Error reading %s\n",inName);
+    exit(-1);
+  }
   inbuffer[size] = '\0';
   fclose(fin);
   
