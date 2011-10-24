@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 #
 # test-yacas -- Script for testing Yacas
 
@@ -69,7 +69,7 @@ for scr in $SCRIPTS; do
 #		fi
     echo "Running $scr"
 	if [ -f $TESTFILE ]; then rm $TESTFILE ; fi
-    /bin/sh -c "time -p ($CMD $f || echo \"Error: exit status $?\") | tee $TESTFILE" \
+    /bin/bash -c "time -p ($CMD $f || echo \"Error: exit status $?\") | tee $TESTFILE" \
 		2> $TIMEFILE \
 		|| (echo "Error -- User interrupt" > $TESTFILE)
 #	cat $TIMEFILE
