@@ -1,4 +1,4 @@
-
+JAVAC?=javac
 .SUFFIXES: .java .class 
 
 all: net/sf/yacas/CVersion.java yacas.jar hints.txt 
@@ -30,10 +30,10 @@ yacas.jar: $(CLASSES)
 	cd ../scripts/ ; jar uvf ../JavaYacas/yacas.jar *
 
 .java.class:
-	javac $*.java 
+	$(JAVAC) $(JAVACFLAGS) $*.java 
 
 net/sf/yacas/CVersion.java: ../config.h dumpversion.cpp
-	g++ dumpversion.cpp -o dumpversion
+	$(CXX) $(CXXFLAGS) dumpversion.cpp -o dumpversion
 	./dumpversion
 
 
