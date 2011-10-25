@@ -73,7 +73,7 @@ EXTRA_DIST =  anumber.inl deffile.inl  \
 	plat/win32/win32commandline.h \
 	debugmem.h \
 	compressedfiles.cpp \
-	README.LZO lzoconf.h minilzo.c minilzo.h decompressor.cpp \
+	README.LZO lzodefs.h lzoconf.h minilzo.c minilzo.h decompressor.cpp \
 	compressor.cpp \
 	compressedfiles.h \
   fastprimes.c core_yacasmain.h 
