@@ -42,7 +42,7 @@ Expand(x); /* TODO no idea why this is needed! Mod/Div/UniVariate thing :-( */
 [
   Local(coefs);
   coefs:=PAdicExpandInternal(x,y);
-  Subst(p,y)Add(coefs*(p^(0 .. Length(coefs))));
+  Subst(p,y)Add(coefs*(p^(0 .. Length(coefs)-1)));
 ];
  
 10 # PAdicExpandInternal(0,_y) <-- {};
