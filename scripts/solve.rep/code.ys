@@ -44,7 +44,16 @@ LocalSymbols(res)
       ];
       u;
   ];
-  70  # Solve(_e1 / _e2, _var) <-- Solve(e1, var);
+  70  # Solve(_e1 / _e2, _var) <-- [
+      Local(tn, t, s);
+      tn := Solve(e1, var);
+      t := {};
+      ForEach(s, tn)
+          If(Not(IsZero(WithValue(var, s[2], e2))), 
+              DestructiveAppend(t, s)
+          );
+      t;
+  ];
   80  # Solve(_e1 + _e2, _var)_(Not HasExpr(e2,var) And (res := Solve'Simple(e1,-e2,var)) != Failed) <-- res;
   80  # Solve(_e1 + _e2, _var)_(Not HasExpr(e1,var) And (res := Solve'Simple(e2,-e1,var)) != Failed) <-- res;
   80  # Solve(_e1 - _e2, _var)_(Not HasExpr(e2,var) And (res := Solve'Simple(e1,e2,var)) != Failed) <-- res;
