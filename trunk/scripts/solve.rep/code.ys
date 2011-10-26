@@ -30,7 +30,20 @@ LocalSymbols(res)
   42  # Solve(_expr, _var)_(Not HasExpr(expr,var)) <--
         [ Assert("Solve", "expression ":(ToString() Write(expr)):" does not depend on ":ToString() Write(var)) False; {}; ];
   50  # Solve(_expr, _var)_((res := Solve'Poly(expr, var)) != Failed) <-- res;
-  60  # Solve(_e1 * _e2, _var) <-- Union(Solve(e1,var), Solve(e2,var));
+  60  # Solve(_e1 * _e2, _var) <-- [
+      Local(t,u,s);
+      t := Union(Solve(e1,var), Solve(e2,var));
+      u := {};
+      ForEach(s, t) [
+         Local(v1,v2);
+         v1 := WithValue(var, s[2], e1);
+         v2 := WithValue(var, s[2], e2);
+         If(Not (IsInfinity(v1) Or (v1 = Undefined) Or
+                 IsInfinity(v2) Or (v2 = Undefined)),
+             DestructiveAppend(u, s));
+      ];
+      u;
+  ];
   70  # Solve(_e1 / _e2, _var) <-- Solve(e1, var);
   80  # Solve(_e1 + _e2, _var)_(Not HasExpr(e2,var) And (res := Solve'Simple(e1,-e2,var)) != Failed) <-- res;
   80  # Solve(_e1 + _e2, _var)_(Not HasExpr(e1,var) And (res := Solve'Simple(e2,-e1,var)) != Failed) <-- res;
