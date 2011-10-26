@@ -89,6 +89,7 @@ VerifySolve(Solve(Sqrt(x) == I, x),  { x == -1 });
 VerifySolve(Solve(Sqrt(x) == -I, x), { });
 VerifySolve(Solve(Sqrt(x) == 0, x),  { x == 0 });
 
+VerifySolve(Solve(x * Ln(x) == 0, x), { x == 1 });
 
 /* The following equations have in fact infinitely many solutions */
 
