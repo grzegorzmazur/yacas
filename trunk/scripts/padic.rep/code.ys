@@ -190,11 +190,52 @@ PartFracExpand(_g,_f) <--
 /* Echo({"g = ",g}); */
 /* Echo({"vlist = ",vlist}); */
 
-  If(IsInteger(f),
-    res:=ChineseRemainderInteger(mlist,vlist)[2],
-    res:=ChineseRemainderPoly(mlist,vlist)[2]
-    );
+  If(IsInteger(f), [
+    Local(t,r,m);
 
+    res:=ChineseRemainderInteger(mlist,vlist)[2];
+
+    r := {};
+    m := {};
+
+    ForEach(t, Transpose({res,mlist})) [
+      Local(f,p,c,n);
+
+      f := Factors(t[2])[1];
+
+      p := f[1];
+      c := Sign(t[1])*PAdicExpandInternal(Abs(t[1]), p);
+
+      r := Concat(r, Reverse(c));
+      m := Concat(m, MapSingle({{n}, p^n}, (1 .. f[2])));
+    ];
+
+    res := r;
+    mlist := m;
+  ],
+  [
+    Local(t,r,m);
+
+    res := ChineseRemainderPoly(mlist,vlist)[2];
+
+    r := {};
+    m := {};
+
+    ForEach(t, Transpose({res,mlist})) [
+      Local(f,p,c,n);
+
+      f := Factors(t[2])[1];
+
+      p := f[1];
+      c := PAdicExpandInternal(t[1], p);
+
+      r := Concat(r, Reverse(c));
+      m := Concat(m, MapSingle({{n}, p^n}, (1 .. f[2])));
+    ];
+
+    res := r;
+    mlist := m;
+  ]);
 
 /* Echo({res,mlist});  */
   Local(result,divlist);
