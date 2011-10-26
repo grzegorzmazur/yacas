@@ -1,31 +1,4 @@
-
 /*
- TODO:
-
-
-
- 
- - example:
-   20 # f(_x) <-- Sin(x);
-   10 # f(Eval(_x)) <-- Sin(Eval(x));
-   HoldArgNr("f",1,1);
-
-   Out( 0 ) = True;
-   In( 1 ) = f(2+3)
-   Out( 1 ) = Sin(2+3);
-   In( 2 ) = f(Eval(2+3))
-   Out( 2 ) = Sin(5);
-
-   Alternative:
-   f(x):=
-   [
-     UnHoldable(x);
-     Sin(x);
-   ];
-
-   this is if you don't want to use patterns.
- 
- 
  Mini-module padic. This module creates a p-adic expansion of
  an expression:
 
@@ -33,10 +6,7 @@
 
  PAdicExpand and PAdicExpandInternal can be called with integer
  or univariate polynomial arguments.
- */
-
-
-Expand(x); /* TODO no idea why this is needed! Mod/Div/UniVariate thing :-( */
+*/
 
 10 # PAdicExpand(_x,_y) <--
 [
@@ -50,8 +20,6 @@ Expand(x); /* TODO no idea why this is needed! Mod/Div/UniVariate thing :-( */
 [
   Mod(x,y) : PAdicExpandInternal(Div(x,y),y);
 ];
-
-
 
 
 /* Extended Euclidean algorithm. Algorithm taken from
