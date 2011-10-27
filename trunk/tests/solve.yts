@@ -73,6 +73,8 @@ VerifySolve(Solve(x^2-3*x+2, x), { x == 1, x == 2 });
 VerifySolve(Solve(2^n == 32, n), { n == Ln(32)/Ln(2) });  
             /* Of course, Ln(32)/Ln(2) = 5 */
 
+Verify(Solve(a * b^x == c, x), {x==Ln(c/a)/Ln(b)});
+
 VerifySolve(Solve(ArcTan(x^4) == Pi/4, x), 
             { x == 1, x == -1, x == I, x == -I });
 

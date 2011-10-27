@@ -224,6 +224,7 @@ LocalSymbols(x)
 10 # Solve'Simple(Exp(_e1), 0,    _var)_(e1 = var) <-- { };
 20 # Solve'Simple(Exp(_e1), _rhs, _var)_(e1 = var) <-- { var == Ln(rhs) };
 20 # Solve'Simple(Ln(_e1),  _rhs, _var)_(e1 = var) <-- { var == Exp(rhs) };
+20 # Solve'Simple(_b^_e1, _rhs, _var)_(e1 = var And IsFreeOf(var,b) And Not IsZero(b)) <-- { var == Ln(rhs) / Ln(b) };
 
 /* The range of Sqrt is the set of (complex) numbers with either
  * positive real part, together with the pure imaginary numbers with
