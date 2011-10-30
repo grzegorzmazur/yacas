@@ -1017,7 +1017,7 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
                         }
                         else
                         {
-                           char* limtxt = "Maximum number of connections reached, sorry\r\n";
+                           const char* limtxt = "Maximum number of connections reached, sorry\r\n";
 #ifndef WIN32
                            write(fd,"]\r\n",3);
                            write(fd, limtxt, strlen(limtxt));
