@@ -5,8 +5,9 @@
 /// List of all defined backends and their symbolic labels.
 /// Add any new backends here 
 Plot2D'outputs() := {
-	{"default", "java"},
+	{"default", "gnuplot"},
 	{"data", "Plot2D'data"},
+        {"gnuplot", "Plot2D'gnuplot"},
 	{"java", "Plot2D'java"},
 };
 
@@ -23,6 +24,68 @@ Plot2D'outputs() := {
 
 /// trivial backend: return data list (do not confuse with Plot2D'get'data() defined in the main code which is the middle-level plotting routine)
 Plot2D'data(values_IsList, _options'hash) <-- values;
+
+/// backend: display graph using gnuplot 
+Plot2D'gnuplot(values_IsList, _options'hash) <-- 
+[ 
+  Local(item, dirBase, filename'list, control'file); 
+  If(options'hash["filename"] != Empty,
+    True,
+    options'hash["filename"] := "/tmp/data"
+  );
+  filename'list := Plot2D'datafile(values, options'hash);
+  control'file := "/tmp/gnuplot.in"; 
+  ToFile(control'file) 
+  [ 
+        // 'set xrange [-5:5]' 
+        WriteString("set xrange ["); 
+        Write(options'hash["xrange"][1]); 
+        WriteString(" : "); 
+        Write(options'hash["xrange"][2]); 
+        WriteString("]" : Nl()); 
+        // 'set yrange [0:1]' 
+        If( 
+                options'hash["yrange"] != Empty, 
+                [ 
+                        WriteString("set yrange ["); 
+                        Write(options'hash["yrange"][1]); 
+                        WriteString(" : "); 
+                        Write(options'hash["yrange"][2]); 
+                        WriteString("]" : Nl()); 
+                ] 
+        ); 
+        // 'plot "data1" title "y(x)" with lines, "data2" title "z(x)" with lines' 
+        WriteString("plot "); 
+        For(item:=1, item<=Length(values), item++) 
+        [ 
+                WriteString("\"" : filename'list[item] : "\" smooth csplines title \"" : options'hash["yname"][item] : "\" with lines"); 
+                If(item<Length(values), WriteString(", ")); 
+        ]; 
+        WriteString(Nl()); 
+
+        WriteString("pause -1"); 
+        WriteString(Nl());
+  ]; 
+  SystemCall("gnuplot " : control'file); 
+]; 
+
+/// backend: write data into file.
+/// Filename must be specified in options as options'hash["filename"].
+/// Returns the list of created filenames
+/// This backend is used by other backends to write data to files.
+Plot2D'datafile(values_IsList, _options'hash) <--
+[
+        Local(item, func, filename, filename'list);
+        filename'list := {};
+        For(func:=1, func<=Length(values), func++)
+        [
+                filename := options'hash["filename"]:String(func);
+                DestructiveAppend(filename'list, filename);
+                ToFile(filename) ForEach(item, values[func]) WriteDataItem(item, options'hash);
+                If(InVerboseMode(), Echo( "Plot2D'datafile: created file '" : filename :  "'"), True);
+        ];
+        filename'list;
+];
 
 /// The Java back-end generates a call-list that the Java graph plotter can handle
 Plot2D'java(values_IsList, _options'hash) <-- 
