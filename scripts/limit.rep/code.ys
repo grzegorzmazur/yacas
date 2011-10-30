@@ -153,11 +153,14 @@ UnFence("LimitArgs",1); /* Allow LimitArgs to have access to the local variables
 
 /* User-callable function */
 
-(Limit(_var,_lim)(_fie)) <-- Lim(var,lim,fie);
-(Limit(_var,_lim,_direction)(_fie)) <-- Lim(var,lim,direction,fie);
+(Limit(_var,_lim)(_fie)) <-- [
+    Check(IsAtom(var) And Not(IsNumber(var)), "Limit: " : (ToString() Write(var)) : " is not a valid variable");
+    Lim(var,lim,fie);
+];
+
+(Limit(_var,_lim,_direction)(_fie)) <-- [
+    Check(IsAtom(var) And Not(IsNumber(var)), "Limit: " : (ToString() Write(var)) : " is not a valid variable");
+    Lim(var,lim,direction,fie);
+];
+
 UnFence("Limit",3);
-
-
-
-
-
