@@ -991,14 +991,27 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
                                if (response)
                                {
    #ifndef WIN32
-                                 write(fd, outStrings.c_str(), strlen(outStrings.c_str()));
-                                 write(fd,"]\r\n",3);
+                                 ssize_t c;
+                                 c = write(fd, outStrings.c_str(), strlen(outStrings.c_str()));
+                                 if (c < 0)
+                                     perror("yacasserver");
+                                     
+                                 c = write(fd,"]\r\n",3);
+                                 if (c < 0)
+                                     perror("yacasserver");
+
                                  if (buflen>0)
                                  {
-                                   write(fd, response, buflen);
-                                   write(fd,"\r\n",2);
+                                   c = write(fd, response, buflen);
+                                   if (c < 0)
+                                       perror("yacasserver");
+                                   c = write(fd,"\r\n",2);
+                                   if (c < 0)
+                                       perror("yacasserver");
                                  }
-                                 write(fd,"]\r\n",3);
+                                 c = write(fd,"]\r\n",3);
+                                 if (c < 0)
+                                     perror("yacasserver");
    #else
                                  send(fd, outStrings.c_str(), strlen(outStrings.c_str()), 0);
                                  send(fd,"]\r\n",3, 0);
@@ -1019,9 +1032,16 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
                         {
                            const char* limtxt = "Maximum number of connections reached, sorry\r\n";
 #ifndef WIN32
-                           write(fd,"]\r\n",3);
-                           write(fd, limtxt, strlen(limtxt));
-                           write(fd,"]\r\n",3);
+                           ssize_t c;
+                           c = write(fd,"]\r\n",3);
+                           if (c < 0)
+                               perror("yacasserver");
+                           c = write(fd, limtxt, strlen(limtxt));
+                           if (c < 0)
+                               perror("yacasserver");
+                           c = write(fd,"]\r\n",3);
+                           if (c < 0)
+                               perror("yacasserver");
 #else
                            send(fd,"]\r\n",3, 0);
                            send(fd, limtxt, strlen(limtxt), 0);
