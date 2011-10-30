@@ -153,9 +153,13 @@ NewtonLn(x) :=
 
 40 # BrentLn(x_IsNumber) <-- MathLog(x);
 
-CachedConstant(Ln2, Internal'LnNum(2));	// this is only useful for BrentLn
+LocalSymbols(CacheOfConstantsN) [
+
+CachedConstant(Ln2, CacheOfConstantsN, Internal'LnNum(2)); // this is only useful for BrentLn
 /**/
-//CachedConstant(Exp1, MathExp(1));	// Exp1 is useless so far
+//CachedConstant(Exp1, CacheOfConstantsN, MathExp(1));       // Exp1 is useless so far
+
+];
 
 //////////////////////////////////////////////////
 /// ArcTan(x)
