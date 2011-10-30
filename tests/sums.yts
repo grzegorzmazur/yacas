@@ -5,6 +5,7 @@ Verify( Sum(k,1,n,k), n*(n+1)/2 );
 Verify( Simplify(Sum(k,1,n,k^3)), Simplify( (n*(n+1))^2 / 4 ) );
 Verify( Sum(k,1,Infinity,1/k^2), Zeta(2) );
 Verify( Sum(k,1,Infinity,1/k), Infinity );
+Verify( Sum(i,1,Infinity,1/i), Infinity );
 Verify( Sum(k,1,Infinity,Sqrt(k)), Infinity );
 Verify( Sum(k,2,Infinity,x^k/k!), Exp(x)-(x+1) );
 Verify( Sum(k,1,n,Sin(a)+Sin(b)+p),(Sin(a)+Sin(b)+p)*n );
