@@ -276,6 +276,8 @@ Function("Subfactorial",{n})
 
 // Attempt to Sum series 
 
+LocalSymbols(c,d,expr,from,to,summand,sum,predicate,k,n,r,var,x) [
+
 Function() SumFunc(k,from,to,summand, sum, predicate );
 Function() SumFunc(k,from,to,summand, sum);
 HoldArg(SumFunc,predicate);
@@ -358,4 +360,6 @@ SumFunc(_k,1,Infinity,1/(_k*Bin(2*_k,_k)), (Pi*Sqrt(3))/9 );
 SumFunc(_k,1,Infinity,1/(_k^2*Bin(2*_k,_k)), Zeta(2)/3 );
 SumFunc(_k,1,Infinity,1/(_k^3*Bin(2*_k,_k)), 17*Zeta(4)/36 );
 SumFunc(_k,1,Infinity,(-1)^(_k-1)/_k, Ln(2) );
+
+];
 
