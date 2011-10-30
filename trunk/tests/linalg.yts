@@ -74,7 +74,7 @@ Verify(Transpose({{a,b},{c,d}}),{{a,c},{b,d}});
 /* Determinant */
 Testing("Determinant");
 Verify(Determinant({{2,3},{3,1}}),-7);
-Verity( Determinant(ToeplitzMatrix(1 .. 10)), -2816 );
+Verify( Determinant(ToeplitzMatrix(1 .. 10)), -2816 );
 // check that Determinant gives correct symbolic result
 TestYacas(Determinant({{a,b},{c,d}}),a*d-b*c);
 
@@ -113,7 +113,7 @@ TestYacas(Determinant({{a,b},{c,d}}),a*d-b*c);
   Verify( IsOrthogonal(2*Identity(10)), False );
   A := {{1,2,2},{2,1,-2},{-2,2,-1}};
   Verify( IsOrthogonal(A/3), True );
-  Verity( IsSymmetric(Identity(10)), True );
+  Verify( IsSymmetric(Identity(10)), True );
   Verify( IsSymmetric({{1}}),True );
   A := {{1,0,0,0,1},{0,2,0,0,0},{0,0,3,0,0},{0,0,0,4,0},{1,0,0,0,5}};
   Verify( IsSymmetric(A),True );
