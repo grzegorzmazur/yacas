@@ -151,7 +151,8 @@
 2 # ArcSin(x_IsNumber)_(InNumericMode() And Abs(x)<=1) <-- ArcSinNum(x);
 /// complex ArcSin
 3 # ArcSin(x_IsNumber)_InNumericMode() <-- Sign(x)*(Pi/2+I*ArcCosh(x));
-4 # ArcSin(Sin(_x))           <-- x;
+// TODO: can we do this one correctly?
+//4 # ArcSin(Sin(_x))           <-- x;
 110 # ArcSin(Complex(_r,_i)) <--
     (- I) * Ln((I*Complex(r,i)) + ((1-(Complex(r,i)^2))^(1/2)));
 
@@ -169,7 +170,8 @@
 200 # ArcSin(_n)_(-n = 1/2) <-- -Pi/6;
 
 2 # ArcCos(x_IsNumber)_InNumericMode() <-- Internal'Pi()/2-ArcSin(x);
-4 # ArcCos(Cos(_x))           <-- x;
+// TODO: can we do this one correctly?
+//4 # ArcCos(Cos(_x))           <-- x;
 5 # (ArcTan(x_IsConstant))_(IsNegativeNumber(N(Eval(x))))   <-- -ArcTan(-x);
 110 # ArcCos(Complex(_r,_i)) <--
     (- I)*Ln(Complex(r,i) + (Complex(r,i)^2 - 1)^(1/2));
