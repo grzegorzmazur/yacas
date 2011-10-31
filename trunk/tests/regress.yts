@@ -422,7 +422,7 @@ Verify(Simplify(x^(-2)/(1-x)^3) != 0);
 /* I don't know what we want to return, but '0' is definitely wrong! */
 
 /* Bug #11 */
-KnownFailure(ArcCos(Cos(beta)) != beta);
+Verify(ArcCos(Cos(beta)) != beta);
 
 /* Bug #12 */
 KnownFailure((Limit(n, Infinity) n^5/2^n) = 0);

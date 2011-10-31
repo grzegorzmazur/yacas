@@ -4,8 +4,9 @@ Verify(Sin(ArcSin(a)),a);  f();
 Verify(Cos(ArcCos(a)),a);  f();
 
 //TODO ??? Verify(Tan(ArcTan(a)),a);
-Verify(ArcSin(Sin(a)),a);  f();
-Verify(ArcCos(Cos(a)),a);  f();
+// FIXME: These tests are not correct
+//Verify(ArcSin(Sin(a)),a);  f();
+//Verify(ArcCos(Cos(a)),a);  f();
 //TODO ??? this is not always the correct answer! Verify(ArcTan(Tan(a)),a);
 Verify(Tan(Pi/2),Infinity); f();
 Verify(Tan(Pi),0); f();
