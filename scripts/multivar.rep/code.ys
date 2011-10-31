@@ -41,7 +41,7 @@ MultiSimp(_expr) <--
   c2[1] := c2[1] - cmn;
 
   vars:=MultiVars(a);
-  Check(vars = MultiVars(a),"incompatible Multivars to simplify");
+  Check(vars = MultiVars(b),"incompatible Multivars to simplify");
   
   (NormalForm(CreateTerm(vars,c1))/NormalForm(CreateTerm(vars,c2)))
     *(NormalForm(MultiPrimitivePart(a))/NormalForm(MultiPrimitivePart(b)));
