@@ -62,7 +62,7 @@ Sign(_var, _tar, _dir, _exp, _n)
 
 /*  Default rule  */
 330 # Lim(_var, _tar, _dir, _x / _y)
-<-- Lim(var, tar, dir, x)/Lim(var, tar, dir, y); ];
+<-- Lim(var, tar, dir, x)/Lim(var, tar, dir, y);
 
 
 /*  Multiplication rules  */
