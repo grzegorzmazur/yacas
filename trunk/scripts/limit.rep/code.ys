@@ -61,8 +61,24 @@ Sign(_var, _tar, _dir, _exp, _n)
 
 
 /*  Default rule  */
-330 # Lim(_var, _tar, _dir, _x / _y)
-<-- Lim(var, tar, dir, x)/Lim(var, tar, dir, y);
+330 # Lim(_var, _tar, _dir, _x / _y) <-- [
+    Local(u,v,r);
+
+    u := Lim(var, tar, dir, x);
+    v := Lim(var, tar, dir, y);
+
+    r := u / v;
+
+    If (u = Undefined And IsInfinity(v), [
+        Local(li, ls);
+
+        li := LimInf(var,tar,dir,x); 
+        ls := LimSup(var,tar,dir,x);
+        r := (li * ls) / v;
+    ]);
+
+    r;
+];
 
 
 /*  Multiplication rules  */
@@ -86,8 +102,28 @@ Sign(_var, _tar, _dir, _exp, _n)
 {var, 1/x})));
 
 /*  Default rule  */
-420 # Lim(_var, _tar, _dir, _x * _y)
-<-- Lim(var, tar, dir, x) * Lim(var, tar, dir, y);
+420 # Lim(_var, _tar, _dir, _x * _y) <-- [
+    Local(u,v,r);
+
+    u := Lim(var, tar, dir, x);
+    v := Lim(var, tar, dir, y);
+
+    r := u * v;
+
+    If (u = 0 And v = Undefined, [
+        Local(li, ls);
+        li := LimInf(var,tar,dir,y); 
+        ls := LimSup(var,tar,dir,y);
+        r := u * li * ls;
+    ], If (u = Undefined And v = 0, [
+        Local(li, ls);
+        li := LimInf(var,tar,dir,x); 
+        ls := LimSup(var,tar,dir,x);
+        r := v * li * ls;
+    ]));
+
+    r;
+];
 
 
 /*  Substraction rules  */
@@ -119,6 +155,15 @@ Sign(_var, _tar, _dir, _exp, _n)
 ] )
 <-- Lim(var, tar, dir, x*(1+y/x));
 
+605 # Lim(_var, _tar, _dir, _x + _y)_
+(
+    Lim(var, tar, dir, x) = Infinity And Lim(var, tar, dir, y) = Undefined And LimInf(var, tar, dir, y) != -Infinity
+    Or
+    Lim(var, tar, dir, x) = Undefined And LimInf(var, tar, dir, x) != -Infinity And Lim(var, tar, dir, y) = Infinity
+
+) <-- Infinity;
+
+
 /*  Default rule  */
 610 # Lim(_var, _tar, _dir, _x + _y)
 <-- Lim(var, tar, dir, x)+Lim(var, tar, dir, y);
@@ -148,7 +193,15 @@ UnFence("LimitArgs",1); /* Allow LimitArgs to have access to the local variables
      );
 ];
 
+100 # LimInf(_var, _tar, _dir, Cos( _exp ))_IsInfinity(Lim(var,tar,dir,exp)) <-- -1;
+100 # LimInf(_var, _tar, _dir, Sin( _exp ))_IsInfinity(Lim(var,tar,dir,exp)) <-- -1;
 
+500 # LimInf(_var, _tar, _dir, _exp) <-- Lim(var,tar,dir,exp);
+
+100 # LimSup(_var, _tar, _dir, Cos( _exp ))_IsInfinity(Lim(var,tar,dir,exp)) <-- 1;
+100 # LimSup(_var, _tar, _dir, Sin( _exp ))_IsInfinity(Lim(var,tar,dir,exp)) <-- 1;
+
+500 # LimSup(_var, _tar, _dir, _exp) <-- Lim(var,tar,dir,exp);
 
 
 /* User-callable function */
