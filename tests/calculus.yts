@@ -47,6 +47,10 @@ Testing("Limits");
 Verify( Limit(x,0,Right) Ln(x)*Sin(x), 0 ); f();
 KnownFailure( Limit(k,Infinity) ((k-phi)/k)^(k+1/2) = Exp(-phi) ); f();
 
+Verify(Limit(x,Infinity)(1/x * Sin(x)), 0);
+Verify(Limit(x,Infinity)Sin(x)/x, 0);
+Verify(Limit(x, Infinity) (x^2 + Sin(x)), Infinity);
+
 [
   Local(z);
   // This function satisfies Laplaces eqn: D(x,2)z + D(y,2)z = 0
