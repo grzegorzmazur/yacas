@@ -43,6 +43,7 @@ CORE_KERNEL_FUNCTION("ToFile",LispToFile,2,YacasEvaluator::Macro | YacasEvaluato
 CORE_KERNEL_FUNCTION("ToString",LispToString,1,YacasEvaluator::Macro | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("ToStdout",LispToStdout,1,YacasEvaluator::Macro | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("Load",LispLoad,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("TmpFile",LispTmpFile,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 
 //
 // Variable setting/clearing
