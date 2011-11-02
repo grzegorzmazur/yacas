@@ -74,10 +74,8 @@ Plot3DS'gnuplot(values_IsList, _options'hash) <--
                 If(item<Length(values), WriteString(", "));
         ];
         WriteString(Nl());
-        WriteString("pause -1"); 
-        WriteString(Nl());
   ];
-  SystemCall("gnuplot " : control'file);
+  SystemCall("gnuplot --persist " : control'file);
 ];
 
 /// backend: write data into file.
