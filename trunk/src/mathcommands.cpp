@@ -22,6 +22,8 @@
 #include "arggetter.h"
 
 #include <limits.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #define InternalEval aEnvironment.iEvaluator->Eval
 #define RESULT aEnvironment.iStack.GetElement(aStackTop)
@@ -790,6 +792,24 @@ void LispLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     InternalLoad(aEnvironment,orig);
     InternalTrue(aEnvironment,RESULT);
+}
+
+void LispTmpFile(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+    CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
+
+    LispChar fn[] = "/tmp/yacas-XXXXXX";
+
+    int fd = mkstemp(fn);
+
+    CHK_CORE(fd >= 0, KLispErrFileNotFound); // FIXME: not very clear
+
+    if (fd < 0) {
+        InternalFalse(aEnvironment, RESULT);
+    } else {
+        close(fd);
+        RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(fn)->c_str()));
+    }
 }
 
 /// Implements the Yacas functions \c RuleBase and \c MacroRuleBase .
