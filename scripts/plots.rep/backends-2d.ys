@@ -29,12 +29,8 @@ Plot2D'data(values_IsList, _options'hash) <-- values;
 Plot2D'gnuplot(values_IsList, _options'hash) <-- 
 [ 
   Local(item, dirBase, filename'list, control'file); 
-  If(options'hash["filename"] != Empty,
-    True,
-    options'hash["filename"] := "/tmp/data"
-  );
   filename'list := Plot2D'datafile(values, options'hash);
-  control'file := "/tmp/gnuplot.in"; 
+  control'file := TmpFile(); 
   ToFile(control'file) 
   [ 
         // 'set xrange [-5:5]' 
@@ -63,11 +59,10 @@ Plot2D'gnuplot(values_IsList, _options'hash) <--
         ]; 
         WriteString(Nl()); 
   ]; 
-  SystemCall("gnuplot --persist " : control'file); 
+  SystemCall("gnuplot --persist " : control'file : " < /dev/null > /dev/null");
 ]; 
 
 /// backend: write data into file.
-/// Filename must be specified in options as options'hash["filename"].
 /// Returns the list of created filenames
 /// This backend is used by other backends to write data to files.
 Plot2D'datafile(values_IsList, _options'hash) <--
@@ -76,7 +71,7 @@ Plot2D'datafile(values_IsList, _options'hash) <--
         filename'list := {};
         For(func:=1, func<=Length(values), func++)
         [
-                filename := options'hash["filename"]:String(func);
+                filename := TmpFile();
                 DestructiveAppend(filename'list, filename);
                 ToFile(filename) ForEach(item, values[func]) WriteDataItem(item, options'hash);
                 If(InVerboseMode(), Echo( "Plot2D'datafile: created file '" : filename :  "'"), True);
