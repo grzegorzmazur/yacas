@@ -21,6 +21,8 @@
 #include "errors.h"
 #include "arggetter.h"
 
+#include <limits.h>
+
 #define InternalEval aEnvironment.iEvaluator->Eval
 #define RESULT aEnvironment.iStack.GetElement(aStackTop)
 #define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
@@ -1505,11 +1507,10 @@ void LispFindFile(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispString oper;
     InternalUnstringify(oper, orig);
 
-    LispChar filename[1024];//TODO FIXME
+    LispChar filename[PATH_MAX];//TODO FIXME
     InternalFindFile(oper.c_str(), aEnvironment.iInputDirectories,
                      filename);
-    LispString res(filename,1);
-    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(res.c_str())->c_str()));
+    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(filename)->c_str()));
 }
 
 void LispIsGeneric(LispEnvironment& aEnvironment,LispInt aStackTop)
