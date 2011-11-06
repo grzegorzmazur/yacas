@@ -271,8 +271,7 @@ LispInt StrEqualUnStringified(const LispChar * ptr1, const LispChar * ptr2)
 }
 
 // If string not yet in table, insert. Afterwards return the string.
-LispString * LispHashTable::LookUpStringify(const LispChar * aString,
-                              LispBoolean aStringOwnedExternally)
+LispString * LispHashTable::LookUpStringify(const LispChar * aString)
 {
     LispInt bin = LispHashStringify(aString);
 
@@ -296,8 +295,7 @@ LispString * LispHashTable::LookUpStringify(const LispChar * aString,
 }
 
 // If string not yet in table, insert. Afterwards return the string.
-LispString * LispHashTable::LookUpUnStringify(LispChar * aString,
-                              LispBoolean aStringOwnedExternally)
+LispString * LispHashTable::LookUpUnStringify(const LispChar * aString)
 {
     Check(aString[0] == '\"',KLispErrInvalidArg);
     LispInt bin = LispHashUnStringify(aString);
