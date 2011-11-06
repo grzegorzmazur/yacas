@@ -1,0 +1,322 @@
+
+
+
+LocalSymbols(p,x)
+[
+// test for a scalar
+Function("IsScalar",{x}) Not(IsList(x));
+
+
+
+// test for a vector
+Function("IsVector",{x})
+   If(IsList(x),
+   Length(Select(IsList,x))=0,
+   False);
+
+// test for a vector w/ element test p
+Function("IsVector",{p,x})
+[
+   If(IsList(x),
+   [
+      Local(i,n,result);
+      n:=Length(x);
+      i:=1;
+      result:=True;
+      While(i<=n And result)
+      [
+	 result:=Apply(p,{x[i]});
+	 i++;
+      ];
+      result;
+   ],
+   False);
+];
+
+// test for a matrix (dr)
+Function("IsMatrix",{x})
+If(IsList(x) And Length(x)>0,
+[
+   Local(n);
+   n:=Length(x);
+   If(Length(Select(IsVector,x))=n,
+   MapSingle(Length,x)=Length(x[1])+ZeroVector(n),
+   False);
+],
+False);
+
+// test for a matrix w/ element test p (dr)
+Function("IsMatrix",{p,x})
+If(IsMatrix(x),
+[
+   Local(i,j,m,n,result);
+   m:=Length(x);
+   n:=Length(x[1]);
+   i:=1;
+   result:=True;
+   While(i<=m And result)
+   [
+      j:=1;
+      While(j<=n And result)
+      [
+         result:=Apply(p,{x[i][j]});
+         j++;
+      ];
+      i++;
+   ];
+   result;
+],
+False);
+
+/* remove? (dr)
+IsSquareMatrix(_x) <--
+[
+   Local(d);
+   d:=Dimensions(x);
+   Length(d)=2 And d[1]=d[2];
+];
+*/
+
+// test for a square matrix (dr)
+Function("IsSquareMatrix",{x}) IsMatrix(x) And Length(x)=Length(x[1]);
+// test for a square matrix w/ element test p (dr)
+Function("IsSquareMatrix",{p,x}) IsMatrix(p,x) And Length(x)=Length(x[1]);
+
+]; // LocalSymbols(p,x)
+
+/* changed definition of IsRational, Nobbi 030529
+Function("IsRational",{aLeft}) Type(aLeft) = "/";
+
+Function("IsRationalNumeric",{aLeft})
+    Type(aLeft) = "/" And
+    IsNumber(aLeft[1]) And
+    IsNumber(aLeft[2]);
+
+IsRationalOrNumber(_x) <-- (IsNumber(x) Or IsRationalNumeric(x));
+
+10 # IsRationalOrInteger(x_IsInteger) <-- True;
+10 # IsRationalOrInteger(x_IsInteger / y_IsInteger) <-- True;
+20 # IsRationalOrInteger(_x) <-- False;
+
+*/
+
+10 # IsRational(x_IsInteger) <-- True;
+10 # IsRational(x_IsInteger / y_IsInteger) <-- True;
+10 # IsRational(-(x_IsInteger / y_IsInteger)) <-- True;
+60000 # IsRational(_x) <-- False;
+
+10 # IsRationalOrNumber(x_IsNumber) <-- True;
+10 # IsRationalOrNumber(x_IsNumber / y_IsNumber) <-- True;
+10 # IsRationalOrNumber(-(x_IsNumber / y_IsNumber)) <-- True;
+60000 # IsRationalOrNumber(_x) <-- False;
+
+
+IsNegativeNumber(x):= IsNumber(x) And x < 0;
+IsNonNegativeNumber(x):= IsNumber(x) And x >= 0;
+IsPositiveNumber(x):= IsNumber(x) And x > 0;
+
+IsNegativeInteger(x):= IsInteger(x) And x < 0;
+IsNonNegativeInteger(x):= IsInteger(x) And x >= 0;
+IsPositiveInteger(x):= IsInteger(x) And x > 0;
+
+
+/*
+10 # IsZero(x_IsNumber) <-- (MathDivide( Round( MathMultiply(x, 10^Builtin'Precision'Get()) ), 10^Builtin'Precision'Get() ) = 0);
+10 # IsNotZero(x_IsNumber)       <-- ( RoundTo(x,Builtin'Precision'Get()) != 0);
+*/
+// these should be calls to MathSign() and the math library should do this. Or it should be just MathEquals(x,0).
+// for now, avoid underflow and avoid IsZero(10^(-Builtin'Precision'Get())) returning True.
+10 # IsZero(x_IsNumber) <-- ( MathSign(x) = 0 Or MathAbs(x)  < MathPower(10, -Builtin'Precision'Get()));
+60000 # IsZero(_x) <-- False;
+
+10 # IsNotZero(x_IsNumber) <-- ( MathAbs(x)  >= MathPower(10, -Builtin'Precision'Get()));
+10 # IsNotZero(x_IsInfinity) <-- True;
+60000 # IsNotZero(_x) <-- False;
+
+IsNonZeroInteger(x) := (IsInteger(x) And x != 0);
+
+// why do we need this? Why doesn't x=1 not work?
+10 # IsOne(x_IsNumber) <-- IsZero(MathSubtract(x,1));
+60000 # IsOne(_x) <-- False;
+
+IsEven(n) := IsInteger(n) And ( BitAnd(n,1)  = 0 );
+IsOdd(n)  := IsInteger(n) And ( BitAnd(n,1)  = 1 );
+
+IsEvenFunction(f,x):= (f = Eval(Subst(x,-x)f));
+IsOddFunction(f,x):= (f = Eval(-Subst(x,-x)f));
+
+
+10 # IsInfinity(Infinity) <-- True;
+10 # IsInfinity(-(_x)) <-- IsInfinity(x);
+
+// This is just one example, we probably need to extend this further to include all
+// cases for f*Infinity where f can be guaranteed to not be zero
+11 # IsInfinity(Sign(_x)*y_IsInfinity) <-- True;
+
+60000 # IsInfinity(_x) <-- False;
+
+IsConstant(_n) <-- (VarList(n) = {});
+
+Function ("IsBoolean", {x})
+	(x=True) Or (x=False) Or IsFunction(x) And Contains({"=", ">", "<", ">=", "<=", "!=", "And", "Not", "Or"}, Type(x));
+
+0 # IsBoolType(True) <-- True;
+0 # IsBoolType(False) <-- True;
+1 # IsBoolType(_anythingelse) <-- False;
+
+/* See if a number, when evaluated, would be a positive/negative real value */
+IsPositiveReal(_r) <--
+[
+  r:=N(Eval(r));
+  (IsNumber(r) And r >= 0);
+];
+IsNegativeReal(_r) <--
+[
+  r:=N(Eval(r));
+  (IsNumber(r) And r <= 0);
+];
+
+
+/* Predicates on matrices */
+IsDiagonal(A_IsMatrix) <--
+[
+	Local(i,j,m,n,result);
+	m:=Length(A);
+	n:=Length(A[1]);
+	i:=2;
+	result:=(m=n);
+	While(i<=m And result)
+	[
+		j:=1;
+		While(j<=n And result)
+		[
+ 			result:= (i=j Or A[i][j] = 0);
+ 			j++;
+		];
+		i++;
+	];
+	result;
+];
+IsUpperTriangular(A_IsMatrix) <--
+[
+        Local(i,j,m,n,result);
+        m:=Length(A);
+        n:=Length(A[1]);
+        i:=2;
+        result:=(m=n);
+        While(i<=m And result)
+        [
+                j:=1;
+                While(j<=n And result)
+                [
+                        result:= (i<=j Or A[i][j] = 0);
+                        j++;
+                ];
+                i++;
+        ];
+        result;
+];
+IsLowerTriangular(A_IsMatrix) <-- (IsUpperTriangular(Transpose(A)));
+IsSkewSymmetric(A_IsMatrix) <-- (Transpose(A)=(-1*A));
+IsHermitian(A_IsMatrix) <-- (Conjugate(Transpose(A))=A);
+IsSymmetric(A_IsMatrix) <-- (Transpose(A)=A);
+IsOrthogonal(A_IsMatrix) <-- (Transpose(A)*A=Identity(Length(A)));
+IsIdempotent(A_IsMatrix) <-- (A^2 = A);
+IsUnitary(A_IsMatrix) <-- (Transpose(Conjugate(A))*A = Identity(Length(A)));
+
+IsVariable(_expr) <-- (IsAtom(expr) And Not(expr=Infinity) And Not(expr= -Infinity) And Not(expr=Undefined) And Not(IsNumber(N(Eval(expr)))));
+
+// check that all items in the list are numbers
+IsNumericList(_arg'list) <-- IsList(arg'list) And
+	("And" @ (MapSingle(Hold({{x},IsNumber(N(Eval(x)))}), arg'list)));
+
+//////////////////////////////////////////////////
+/// Predicates HasExpr*, HasFunc*, ListHasFunc
+//////////////////////////////////////////////////
+
+/// HasExpr --- test for an expression containing a subexpression
+/// for checking dependence on variables, this may be faster than using VarList or IsFreeOf and this also can be used on non-variables, e.g. strings or numbers or other atoms or even on non-atoms
+// an expression contains itself -- check early
+10 # HasExpr(_expr, _atom) _ Equals(expr, atom) <-- True;
+// an atom contains itself
+15 # HasExpr(expr_IsAtom, _atom) <-- Equals(expr, atom);
+// a list contains an atom if one element contains it
+// we test for lists now because lists are also functions
+// first take care of the empty list:
+19 # HasExpr({}, _atom) <-- False;
+20 # HasExpr(expr_IsList, _atom) <-- HasExpr(Head(expr), atom) Or HasExpr(Tail(expr), atom);
+// a function contains an atom if one of its arguments contains it
+30 # HasExpr(expr_IsFunction, _atom) <-- HasExpr(Tail(Listify(expr)), atom);
+
+/// Same except only look at function arguments for functions in a given list
+HasExprSome(_expr, _atom, _look'list) _ Equals(expr, atom) <-- True;
+// an atom contains itself
+15 # HasExprSome(expr_IsAtom, _atom, _look'list) <-- Equals(expr, atom);
+// a list contains an atom if one element contains it
+// we test for lists now because lists are also functions
+// first take care of the empty list:
+19 # HasExprSome({}, _atom, _look'list) <-- False;
+20 # HasExprSome(expr_IsList, _atom, _look'list) <-- HasExprSome(Head(expr), atom, look'list) Or HasExprSome(Tail(expr), atom, look'list);
+// a function contains an atom if one of its arguments contains it
+// first deal with functions that do not belong to the list: return False since we have already checked it at #15
+25 # HasExprSome(expr_IsFunction, _atom, _look'list)_(Not Contains(look'list, Atom(Type(expr)))) <-- False;
+// a function contains an atom if one of its arguments contains it
+30 # HasExprSome(expr_IsFunction, _atom, _look'list) <-- HasExprSome(Tail(Listify(expr)), atom, look'list);
+
+/// HasFunc --- test for an expression containing a function
+/// function name given as string.
+10 # HasFunc(_expr, string_IsString) <-- HasFunc(expr, Atom(string));
+/// function given as atom.
+// atom contains no functions
+10 # HasFunc(expr_IsAtom, atom_IsAtom) <-- False;
+// a list contains the function List so we test it together with functions
+// a function contains itself, or maybe an argument contains it
+20 # HasFunc(expr_IsFunction, atom_IsAtom) <-- Equals(Head(Listify(expr)), atom) Or ListHasFunc(Tail(Listify(expr)), atom);
+
+/// function name given as string.
+10 # HasFuncSome(_expr, string_IsString, _look'list) <-- HasFuncSome(expr, Atom(string), look'list);
+/// function given as atom.
+// atom contains no functions
+10 # HasFuncSome(expr_IsAtom, atom_IsAtom, _look'list) <-- False;
+// a list contains the function List so we test it together with functions
+// a function contains itself, or maybe an argument contains it
+
+// first deal with functions that do not belong to the list: return top level function
+15 # HasFuncSome(expr_IsFunction, atom_IsAtom, _look'list)_(Not Contains(look'list, Atom(Type(expr)))) <-- Equals(Head(Listify(expr)), atom);
+// function belongs to the list - check its arguments
+20 # HasFuncSome(expr_IsFunction, atom_IsAtom, _look'list) <-- Equals(Head(Listify(expr)), atom) Or ListHasFuncSome(Tail(Listify(expr)), atom, look'list);
+
+/// ListHasFunc --- test for one of the elements of a list to contain a function
+/// this is mainly useful to test whether a list has nested lists, i.e. ListHasFunc({1,2,3}, List)=False and ListHasFunc({1,2,{3}}, List)=True.
+// need to exclude the List atom itself, so don't use Listify
+19 # ListHasFunc({}, _atom) <-- False;
+20 # ListHasFunc(expr_IsList, atom_IsAtom) <-- HasFunc(Head(expr), atom) Or ListHasFunc(Tail(expr), atom);
+
+19 # ListHasFuncSome({}, _atom, _look'list) <-- False;
+20 # ListHasFuncSome(expr_IsList, atom_IsAtom, _look'list) <-- HasFuncSome(Head(expr), atom, look'list) Or ListHasFuncSome(Tail(expr), atom, look'list);
+
+/// Analyse arithmetic expressions
+
+HasExprArith(expr, atom) := HasExprSome(expr, atom, {Atom("+"), Atom("-"), *, /});
+HasFuncArith(expr, atom) := HasFuncSome(expr, atom, {Atom("+"), Atom("-"), *, /});
+
+
+/// TODO FIXME document this: FloatIsInt returns True if the argument is integer after removing potential trailing 
+/// zeroes after the decimal point
+// but in fact this should be a call to BigNumber::IsIntValue()
+FloatIsInt(_x) <-- 
+   [
+     x:=N(Eval(x));
+     Local(prec,result,n);
+     Set(prec,Builtin'Precision'Get());
+     If(IsZero(x),Set(n,2),
+     If(x>0,
+       Set(n,2+MathFloor(N(FastLog(x)/FastLog(10)))),
+       Set(n,2+MathFloor(N(FastLog(-x)/FastLog(10))))
+       ));
+     Builtin'Precision'Set(n+prec);
+     Set(result,IsZero(RoundTo(x-Floor(x),prec)) Or IsZero(RoundTo(x-Ceil(x),prec)));
+     Builtin'Precision'Set(prec);
+     result;
+   ];
+//  

@@ -1,0 +1,21 @@
+
+Mean(x) := Add(x)/Length(x);
+
+GeometricMean(x) := Factorize(x)^(1/Length(x));
+
+Median(x) :=
+[
+ Local(sx,n,n2); // s[orted]x
+ sx := BubbleSort(x,"<");
+ n := Length(x);
+ n2 := (n>>1);
+ If(Mod(n,2) = 1, sx[n2+1], (sx[n2]+sx[n2+1])/2);
+];
+
+Variance(x) := Add((x-Mean(x))^2)/Length(x);
+UnbiasedVariance(x) := Add((x-Mean(x))^2)/(Length(x)-1);
+
+// stdev in Wester benchmark
+StandardDeviation(x) := Sqrt(UnbiasedVariance(x)); 
+// Why Sqrt(1.01) --> Sqrt(1.01) ?
+

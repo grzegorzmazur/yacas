@@ -1,0 +1,64 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
+
+    <script type="text/javascript">
+      /* When deep link found, redirect to the tabbified main page */
+      if (top.location == self.location)
+      {
+        self.location.replace("homepage.html?recent.html&faq.html");
+      }
+    </script>
+
+  </head>
+  <body bgcolor="#FFFFFF">
+
+    <h2>Frequently Asked Questions (FAQ)</h2>
+    <h3>What is a computer algebra system?</h3>
+     
+A computer algebra system (CAS) is a program that
+can manipulate mathematical expressions, potentially reducing the
+time it takes to perform cumbersome but trivial calculations. It does
+this symbolically, so a CAS can return a mathematical expression as
+a resulting answer.
+
+    <h3>Why cannot Yacas solve my homework/integrodifferential matrix operator constraint equations/ [<i>insert another problem</i>]?</h3>
+
+Yacas is developed by a small group of volunteers and does not yet perform many of the sophisticated tasks that a modern CAS can theoretically handle.
+Ask the users' mailing list (see links below) if you have a specific problem that is covered in the manual and should be solvable by Yacas.
+Yacas consists of a small kernel and a library of interpreted scripts in the easy-to-use Yacas language; the scripts contain all CAS-related functionality.
+You are encouraged to contribute library code for solving a specific problem.
+
+    <h3>I want to use Yacas from inside my own application. What should I do?</h3>
+Yacas can be used in several ways:
+<ul>
+<li>as a command-line application that takes text from standard input and prints text to standard output;
+<li>as a server listening on a port (also on remote hosts);
+</ul>
+These options allow you to use the functionality of an installed Yacas application directly from another application without having to link to any Yacas code.
+
+    <h3>What platforms are supported?</h3>
+
+Yacas can be run directly from the Yacas web site as a Java applet.
+
+In addition, the C++ version of Yacas is very portable and runs on many platforms and OSes, including Unix flavors (including GNU/Linux and derivatives), Mac OS X, EPOC32, Ipaq and probably other devices running embedded Linux, and 32-bit Microsoft Windows (TM). 
+
+    <h3>Yacas gives an error message, a wrong answer, etc. What's wrong?</h3>
+
+Most probably it is a bug in Yacas, especially if you expected a correct answer after reading the manuals. Please let us know by posting to the developer's list (<a href="#maillist">see links below</a>).
+
+
+
+    <h3>Is there a mailing list?</h2>
+There is a <a href="http://lists.sourceforge.net/lists/listinfo/yacas-devel">mailing list for developers</A>, but you can also ask questions relating to Yacas there.
+<br />
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2425144-1";
+urchinTracker();
+</script>
+
+  </body>
+</html>

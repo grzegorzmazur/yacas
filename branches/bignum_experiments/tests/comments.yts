@@ -1,0 +1,27 @@
+
+NextTest("Checking comment syntax supported");
+[
+  Local(a);
+  /* something here */
+  a:= 3;
+  // test 1
+
+  // /* test2 */
+
+  /* // test3 */
+
+  //Echo({a, Nl()});
+
+  // Check parsing
+  a==-b; // This would generate a parse error in Yacas versions 1.0.54 and earlier
+];
+
+
+[
+  Local(errorString);
+  errorString:="";
+  TrapError(Check(False,"some error"),errorString:=GetCoreError());
+  Verify(IsString(errorString),True);
+  Verify(Length(errorString)>4,True);  
+];
+Verify(errorString,errorString);

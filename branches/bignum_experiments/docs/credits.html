@@ -1,0 +1,185 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
+
+    <script type="text/javascript">
+      /* When deep link found, redirect to the tabbified main page */
+      if (top.location == self.location)
+      {
+        self.location.replace("homepage.html?recent.html&credits.html");
+      }
+    </script>
+
+  </head>
+  <body bgcolor="#FFFFFF">
+    <table width="75%" border="0">
+
+      <h2>Credits</h2>
+
+        <dl><b> Ayal Pinkus</b>
+		  <dt> This project was started by Ayal Pinkus who remains the main author and the primary maintainer.</dt>
+	    </dl>
+        <dl><b> John Lapeyre</b>
+		  <dt> made some modifications to the make file, and improved some math code.</dt>
+        </dl>
+        <dl><b> Juan Pablo</b>
+		  <dt> reported many bugs, made many suggestions for improvements, and 
+               supplied improved code (yacas scripts and makefile code).</dt>
+	    </dl>
+        <dl><b> Doreen Pinkus</b>
+		  <dt> Designed the second version of the Web site for Yacas.</dt>
+	    </dl>
+        <dl><b> Igor Khavkine</b>
+		  <dt> added 'Diverge' and 'Curl', and implemented threading for the 
+               derivative operator (the gradient). Fixed GMP code.</dt>
+        </dl>
+        <dl><b> James Gilbertson</b>
+          <dt> Win32 port, improved error reporting. Added 
+            initial version of Karatsuba multiplication, and added some matrix functions 
+            to the math library.</dt>
+        </dl>
+        <dl><b> Daniel Richard G.</b>
+		  <dt> added autoconf/automake scripts, made Sun/Sgi compilation 
+            possible, created a rpm spec file, many many many changes to clean up 
+            the source distribution.</dt>
+        </dl>
+        <dl><b> Ladislav Zejda</b>
+		  <dt> supplied patches to make Yacas work on Dec Alpha's.</dt>
+		</dl>
+        <dl><b> Fred   Bacon</b>
+		  <dt> fixed some compiler errors on the newer gcc compiles. Reported some important bugs.</dt>
+		</dl>
+        <dl><b> Schneelocke </b>
+          <dt>  reported an important bug in numeric calculations.</dt>
+        </dl>
+        <dl><b> Serge Winitzki</b>
+          <dt> added factorials over rationals, TeXForm, did a major overhaul
+            of the introduction manual (actually, he wrote large part of the manual
+            as it is), and initiated numerous 
+            improvements and test code for Yacas, and implemented yacas_client.
+            Actually, Serge has been one of the larger contributors, and the
+            main force behind the improved documentation.</dt>
+        </dl>
+        <dl><b> Jay Belanger</b>
+          <dt> reported some bugs, and improved some of the GnuPlot code. He also wrote
+            the yacas.el file, which allows you to run yacas from within emacs.
+            His most recent version can be found <A href="ftp://vh213601.truman.edu/pub/Yacas/">here</a> </dt>
+        </dl>
+        <dl><b> Gopal Narayanan</b>
+          <dt> maintains the Debian package for Yacas.</dt>
+        </dl>
+        <dl><b> Vladimir Livshits</b>
+          <dt> set up the initial sourceforge CVS repository, and updated the Windows version
+             source code. He also greatly improved the logic theorem prover code.</dt>
+        </dl>
+        <dl><b> Eugenia Loli</b>
+          <dt> Helped build the BeOS version of Yacas. It can be found <A HREF="http://www.bebits.com/app/1755">here</a></dt>
+        </dl>
+        <dl><b> Saverio Prinz</b>
+          <dt> built a fantastic Mac version of Yacas. It can be found <A HREF="http://homepage.mac.com/yacas">here</a></dt>
+        </dl>
+        <dl><b> John Fremlin</b> 
+          <dt> Added some code for fast calculation of roots of a cubic polynomial. </dt>
+        </dl>
+        <dl><b> Mark Arrasmith</b>
+		  <dt>Helped greatly in setting up the fltk-based graphicaluser interface,
+                and fixed some bugs relating to limits regarding infinity.</dt>
+        </dl>
+        <dl><b> Robert V Schipper</b>
+		  <dt>Ironed out a few bugs in Yacas.</dt>
+		</dl>
+        <dl><b> Gopal Narayanan</b>
+		  <dt>Debian package maintainer. Made a man page for Yacas.</dt>
+		</dl>
+        <dl><b> Christian Obrecht</b>
+		  <dt>Made a much better Limit, and made Yacas behave better at infinity.</dt>
+		</dl>
+        <dl><b> Jitse Niesen</b>
+		  <dt> Reported some bugs, helped improve various parts of Yacas, and
+                greatly improved the manual for Yacas.</dt>
+        </dl>
+        <dl><b> Pablo Di Napoli</b>
+          <dt> Fixed the configure script so Yacas compiles under cygwin.</dt>
+        </dl>
+        <dl><b> Joris van der Hoeven</b>
+          <dt> Helped with texmacs support.</dt>
+        </dl>
+        <dl><b> Alberto González Palomo</b>
+          <dt> Implemented a console-mode version of Yacas for AgendaVR. Changed the
+                directory structure for the script files, and implemented initial
+                support for OpenMath.</dt>
+        </dl>
+        <dl><b> Jonathan Leto</b>
+		  <dt>Helped improve the integration algorithm, and  helped extend
+                the tests used for Yacas (finding numerous bugs).</dt>
+        </dl>
+        <dl><b> Andrei Zorine</b>
+		  <dt>Started the body of statistics code.</dt>
+		</dl>
+	    <dl><b> Daniel Rigby</b>
+	      <dt>  Brought a client-server structure to the EPOC32 version of Yacas.</dt>
+	    </dl>
+        <dl><b> Dirk Reusch</b>
+		  <dt>Added some linear algebra functions, and fixed some predicate functions.</dt>
+		</dl>
+        <dl><b> Mark Hatsell</b>
+		  <dt> made the server code work on Windows.</dt>
+		</dl>
+        <dl><b> Yannick Versley</b>
+		  <dt> sent some patches regarding bugs relating
+             integration and differentiation.</dt>
+        </dl>
+        <dl><b> Franz Hack</b>
+		  <dt> Supplied a Delphi interface to the Yacas DLL.</dt>
+		</dl>
+        <dl><b> Mike Pinna</b>
+		  <dt> Applied some bug fixes.</dt>
+		</dl>
+        <dl><b> Sebastian Ferraro</b>
+		  <dt> Reported bugs and supplied improved code (determinants).</dt>
+		</dl>
+
+        <dl><b> Roberto Colistete Junior</b>
+          <dt> Is maintaining a version of <A HREF="http://www.RobertoColistete.net/Yacas">Yacas</a> for SymbianOS.</dt>
+        </dl>
+        <dl><b>Jim Apple</b>
+ 	      <dt> Reported bugs and supplied improved code for gcc 3.3.4</dt>
+ 	    </dl>
+
+        <dl><b>Wolfgang Hšnig</b>
+		  <dt> created a port of Yacas that runs on PocketPC, to be found <A HREF="http://www.pocket-software.de.vu">here</a> . </dt>
+		</dl>
+
+        <dl><b>Rene Grothmann</b>
+		  <dt> Married Euler to Yacas. Link <A HREF="http://mathsrv.ku-eichstaett.de/MGF/homes/grothmann/euler/">here</a> .</dt>
+		</dl>
+
+        <dl><b>Peter Gilbert</b>
+		  <dt> Made many improvements to the C++ code to make it conform more to standard C++ coding
+           conventions (class interfaces looking more like stl), improved the regression test suite.</dt>
+        </dl>
+
+        <dl><b>Ingrid Halters</b>
+		  <dt> Helped improve the ease of use of the Yacas web site.</dt>
+        </dl>
+
+        <dl><b>Gabor Grothendieck</b>
+		  <dt>Gabor is the maintainer of <a target="newwin" href="http://code.google.com/p/ryacas/">Ryacas</a>, and gave valuable feedback on the new web site.</dt>
+        </dl>
+
+
+
+
+
+
+    </table>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2425144-1";
+urchinTracker();
+</script>
+
+  </body>
+</html>

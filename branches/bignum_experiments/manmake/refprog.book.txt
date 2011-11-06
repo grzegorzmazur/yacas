@@ -1,0 +1,1991 @@
+*BLURB 
+This is the second part of the Yacas function reference.
+This reference explains functions that are used in the Yacas
+source code that is underneath what the user sees. The documentation
+in this section is thus mostly useful to people who are maintaining
+Yacas.
+				Programming in Yacas, function reference
+
+			Introduction
+
+This document aims to be a reference for functions that are useful 
+when programming in {Yacas}, but which are not necessarily useful when 
+using {Yacas}. There is another document that describes the functions
+that are useful from a users point of view.
+
+			Programming
+
+*INTRO This chapter describes functions useful for writing Yacas scripts.
+
+*CMD	/* --- Start of comment
+*CMD	*/ --- end of comment
+*CMD	// --- Beginning of one-line comment
+*CORE
+*CALL
+	/* comment */
+	// comment
+
+*DESC
+
+Introduce a comment block in a source file, similar to C++ comments.
+{//} makes everything until the end of the line a comment, while {/*} and {*/} may delimit a multi-line comment.
+
+*E.G.
+
+	a+b; // get result
+	a + /* add them */ b;
+
+*CMD Prog --- block of statements
+*CMD [ --- beginning of block of statements
+*CMD ] --- end of block of statements
+*CORE
+*CALL
+	Prog(statement1, statement2, ...)
+	[ statement1; statement2; ... ]
+
+*PARMS
+
+{statement1}, {statement2} -- expressions
+
+*DESC
+
+The {Prog} and the {[ ... ]} construct have the same effect: they evaluate all
+arguments in order and return the result of the last evaluated expression.
+
+{Prog(a,b);} is the same as typing {[a;b;];} and is very useful for writing out
+function bodies. The {[ ... ]} construct is a syntactically nicer version of the
+{Prog} call; it is converted into {Prog(...)} during the parsing stage.
+
+
+
+*CMD Bodied --- define function syntax (bodied function)
+*CMD Infix --- define function syntax (infix operator)
+*CMD Postfix --- define function syntax (postfix operator)
+*CMD Prefix --- define function syntax (prefix operator)
+*CORE
+*CALL
+	Bodied("op", precedence)
+	Infix("op")
+	Infix("op", precedence)
+	Postfix("op")
+	Postfix("op", precedence)
+	Prefix("op")
+	Prefix("op", precedence)
+
+*PARMS
+
+{"op"} -- string, the name of a function
+
+{precedence} -- nonnegative integer (evaluated)
+
+*DESC
+
+Declares a special syntax for the function to be parsed as a bodied, infix, postfix,
+or prefix operator.
+
+"Bodied" functions have all arguments except the first one inside parentheses and the last argument outside, for example:
+	For(pre, condition, post) statement;
+Here the function {For} has 4 arguments and the last argument is placed outside the parentheses.
+The {precedence} of a "bodied" function refers to how tightly the last argument is bound to the parentheses.
+This makes a difference when the last argument contains other operators.
+For example, when taking the derivative
+	D(x) Sin(x)+Cos(x)
+both {Sin} and {Cos} are under the derivative because the bodied function {D} binds less tightly than the infix operator "{+}".
+
+"Infix" functions must have two arguments and are syntactically placed between their arguments.
+Names of infix functions can be arbitrary, although for reasons of readability they are usually made of non-alphabetic characters.
+
+"Prefix" functions must have one argument and are syntactically placed before their argument.
+"Postfix" functions must have one argument and are syntactically placed after their argument.
+
+Function name can be any string but meaningful usage and readability would
+require it to be either made up entirely of letters or entirely of non-letter
+characters (such as "+", ":" etc.).
+Precedence is optional (will be set to 0 by default).
+
+*E.G.
+	In> YY x := x+1;
+	CommandLine(1) : Error parsing expression
+	
+	In> Prefix("YY", 2)
+	Out> True;
+	In> YY x := x+1;
+	Out> True;
+	In> YY YY 2*3
+	Out> 12;
+	In> Infix("##", 5)
+	Out> True;
+	In> a ## b ## c
+	Out> a##b##c;
+
+Note that, due to a current parser limitation, a function atom that is declared prefix cannot be used by itself as an argument.
+
+	In> YY
+	CommandLine(1) : Error parsing expression
+
+*SEE IsBodied, OpPrecedence
+
+
+
+*CMD IsBodied --- check for function syntax
+*CMD IsInfix --- check for function syntax
+*CMD IsPostfix --- check for function syntax
+*CMD IsPrefix --- check for function syntax
+*CORE
+*CALL
+	IsBodied("op")
+	IsInfix("op")
+	IsPostfix("op")
+	IsPrefix("op")
+
+*PARMS
+
+{"op"} -- string, the name of a function
+
+*DESC
+
+Check whether the function with given name {"op"} has been declared as a
+"bodied", infix, postfix, or prefix operator, and  return {True} or {False}.
+
+*E.G.
+
+	In> IsInfix("+");
+	Out> True;
+	In> IsBodied("While");
+	Out> True;
+	In> IsBodied("Sin");
+	Out> False;
+	In> IsPostfix("!");
+	Out> True;
+
+*SEE Bodied, OpPrecedence
+
+*CMD OpPrecedence --- get operator precedence
+*CMD OpLeftPrecedence --- get operator precedence
+*CMD OpRightPrecedence --- get operator precedence
+*CORE
+*CALL
+	OpPrecedence("op")
+	OpLeftPrecedence("op")
+	OpRightPrecedence("op")
+
+*PARMS
+
+{"op"} -- string, the name of a function
+
+*DESC
+
+Returns the precedence of the function named "op" which should have been declared as a bodied function or an infix, postfix, or prefix operator. Generates an error message if the string str does not represent a type of function that can have precedence.
+
+For infix operators, right precedence can differ from left precedence. Bodied functions and prefix operators cannot have left precedence, while postfix operators cannot have right precedence; for these operators, there is only one value of precedence.
+
+*E.G.
+	In> OpPrecedence("+")
+	Out> 6;
+	In> OpLeftPrecedence("!")
+	Out> 0;
+
+
+
+*CMD RightAssociative --- declare associativity
+*CORE
+*CALL
+	RightAssociative("op")
+
+*PARMS
+
+{"op"} -- string, the name of a function
+
+*DESC
+This makes the operator right-associative. For example:
+	RightAssociative("*")
+would make multiplication right-associative. Take care not to abuse this
+function, because the reverse, making an infix operator left-associative, is
+not implemented. (All infix operators are by default left-associative until
+they are declared to be right-associative.)
+
+*SEE OpPrecedence
+
+
+*CMD LeftPrecedence --- set operator precedence
+*CMD RightPrecedence --- set operator precedence
+*CORE
+*CALL
+	LeftPrecedence("op",precedence)
+	RightPrecedence("op",precedence)
+
+*PARMS
+
+{"op"} -- string, the name of a function
+
+{precedence} -- nonnegative integer
+
+*DESC
+
+{"op"} should be an infix operator. This function call tells the
+infix expression printer to bracket the left or right hand side of
+the expression if its precedence is larger than precedence.
+
+This functionality was required in order to display expressions like {a-(b-c)}
+correctly. Thus, {a+b+c} is the same as {a+(b+c)}, but {a-(b-c)} is not
+the same as {a-b-c}.
+
+Note that the left and right precedence of an infix operator does not affect the way Yacas interprets expressions typed by the user. You cannot make Yacas parse {a-b-c} as {a-(b-c)} unless you declare the operator "{-}" to be right-associative.
+
+*SEE OpPrecedence, OpLeftPrecedence, OpRightPrecedence, RightAssociative
+
+*CMD RuleBase --- define function with a fixed number of arguments
+*CORE
+*CALL
+	RuleBase(name,params)
+
+*PARMS
+
+{name} -- string, name of function
+
+{params} -- list of arguments to function
+
+*DESC
+Define a new rules table entry for a
+function "name", with {params} as the parameter list. Name can be
+either a string or simple atom.
+
+In the context of the transformation rule declaration facilities
+this is a useful function in that it allows the stating of argument
+names that can he used with HoldArg.
+
+Functions can be overloaded: the same function can be defined
+with different number of arguments.
+
+
+*SEE MacroRuleBase, RuleBaseListed, MacroRuleBaseListed, HoldArg, Retract
+
+
+
+*CMD RuleBaseListed --- define function with variable number of arguments
+*CORE
+*CALL
+	RuleBaseListed("name", params)
+
+*PARMS
+
+{"name"} -- string, name of function
+
+{params} -- list of arguments to function
+
+*DESC
+
+The command {RuleBaseListed} defines a new function. It essentially works the
+same way as {RuleBase}, except that it declares a new function with a variable
+number of arguments. The list of parameters {params} determines the smallest
+number of arguments that the new function will accept. If the number of
+arguments passed to the new function is larger than the number of parameters in
+{params}, then the last argument actually passed to the new function will be a
+list containing all the remaining arguments.
+
+A function defined using {RuleBaseListed} will appear to have the arity equal
+to the number of parameters in the {param} list, and it can accept any number
+of arguments greater or equal than that. As a consequence, it will be impossible to define a new function with the same name and with a greater arity.
+
+The function body will know that the function is passed more arguments than the
+length of the {param} list, because the last argument will then be a list. The
+rest then works like a {RuleBase}-defined function with a fixed number of
+arguments. Transformation rules can be defined for the new function as usual.
+
+
+*E.G.
+
+The definitions
+
+	RuleBaseListed("f",{a,b,c})
+	10 # f(_a,_b,{_c,_d}) <--
+	  Echo({"four args",a,b,c,d});
+	20 # f(_a,_b,c_IsList) <--
+	  Echo({"more than four args",a,b,c});
+	30 # f(_a,_b,_c) <-- Echo({"three args",a,b,c});
+give the following interaction:
+
+	In> f(A)
+	Out> f(A);
+	In> f(A,B)
+	Out> f(A,B);
+	In> f(A,B,C)
+	three args A B C 
+	Out> True;
+	In> f(A,B,C,D)
+	four args A B C D 
+	Out> True;
+	In> f(A,B,C,D,E)
+	more than four args A B {C,D,E} 
+	Out> True;
+	In> f(A,B,C,D,E,E)
+	more than four args A B {C,D,E,E} 
+	Out> True;
+
+The function {f} now appears to occupy all arities greater than 3:
+
+	In> RuleBase("f", {x,y,z,t});
+	CommandLine(1) : Rule base with this arity
+	  already defined
+
+
+*SEE RuleBase, Retract, Echo
+
+
+*CMD Rule --- define a rewrite rule
+*CORE
+*CALL
+	Rule("operator", arity,
+	  precedence, predicate) body
+*PARMS
+
+{"operator"} -- string, name of function
+
+{arity}, {precedence} -- integers
+
+{predicate} -- function returning boolean
+
+{body} -- expression, body of rule
+
+*DESC
+
+Define a rule for the function "operator" with
+"arity", "precedence", "predicate" and
+"body". The "precedence" goes from low to high: rules with low precedence will be applied first.
+
+The arity for a rules database equals the number of arguments. Different
+rules data bases can be built for functions with the same name but with
+a different number of arguments.
+
+Rules with a low precedence value will be tried before rules with a high value, so
+a rule with precedence 0 will be tried before a rule with precedence 1.
+
+*CMD HoldArg --- mark argument as not evaluated
+*CORE
+*CALL
+	HoldArg("operator",parameter)
+
+*PARMS
+
+{"operator"} -- string, name of a function
+
+{parameter} -- atom, symbolic name of parameter
+
+*DESC
+Specify that parameter should
+not be evaluated before used. This will be
+declared for all arities of "operator", at the moment
+this function is called, so it is best called
+after all {RuleBase} calls for this operator.
+"operator" can be a string or atom specifying the 
+function name.
+
+The {parameter} must be an atom from the list of symbolic 
+arguments used when calling {RuleBase}.
+
+*SEE RuleBase, HoldArgNr, RuleBaseArgList
+
+*CMD Retract --- erase rules for a function
+*CORE
+*CALL
+	Retract("function",arity)
+
+*PARMS
+{"function"} -- string, name of function
+
+{arity} -- positive integer
+
+*DESC
+
+Remove a rulebase for the function named {"function"} with the specific {arity}, if it exists at all. This will make
+Yacas forget all rules defined for a given function. Rules for functions with
+the same name but different arities are not affected.
+
+Assignment {:=} of a function does this to the function being (re)defined.
+
+*SEE RuleBaseArgList, RuleBase, :=
+
+*CMD UnFence --- change local variable scope for a function
+*CORE
+*CALL
+	UnFence("operator",arity)
+
+*PARMS
+{"operator"} -- string, name of function
+
+{arity} -- positive integers
+
+*DESC
+
+When applied to a user function, the bodies
+defined for the rules for "operator" with given
+arity can see the local variables from the calling
+function. This is useful for defining macro-like
+procedures (looping and such).
+
+The standard library functions {For} and {ForEach} use {UnFence}.
+
+*CMD HoldArgNr --- specify argument as not evaluated
+*STD
+*CALL
+	HoldArgNr("function", arity, argNum)
+
+*PARMS
+{"function"} -- string, function name
+
+{arity}, {argNum} -- positive integers
+
+*DESC
+
+Declares the argument numbered {argNum} of the function named {"function"} with
+specified {arity} to be unevaluated ("held"). Useful if you don't know symbolic
+names of parameters, for instance, when the function was not declared using an
+explicit {RuleBase} call. Otherwise you could use {HoldArg}.
+
+*SEE HoldArg, RuleBase
+
+
+*CMD RuleBaseArgList --- obtain list of arguments
+*CORE
+*CALL
+	RuleBaseArgList("operator", arity)
+
+*PARMS
+{"operator"} -- string, name of function
+
+{arity} -- integer
+
+*DESC
+
+Returns a list of atoms, symbolic parameters specified in the {RuleBase} call
+for the function named {"operator"} with the specific {arity}.
+
+*SEE RuleBase, HoldArgNr, HoldArg
+
+
+*CMD MacroSet --- define rules in functions
+*CMD MacroClear --- define rules in functions
+*CMD MacroLocal --- define rules in functions
+*CMD MacroRuleBase --- define rules in functions
+*CMD MacroRuleBaseListed --- define rules in functions
+*CMD MacroRule --- define rules in functions
+*CORE
+*DESC
+
+These functions have the same effect as their non-macro counterparts, except
+that their arguments are evaluated before the required action is performed.
+This is useful in macro-like procedures or in functions that need to define new
+rules based on parameters.
+
+Make sure that the arguments of {Macro}... commands evaluate to expressions that would normally be used in the non-macro versions!
+
+*SEE Set, Clear, Local, RuleBase, Rule, Backquoting
+
+*A {`}
+*CMD Backquoting --- macro expansion (LISP-style backquoting)
+*CORE
+*CALL
+	`(expression)
+
+*PARMS
+
+{expression} -- expression containing "{@var}" combinations to substitute the value of variable "{var}"
+
+*DESC
+
+Backquoting is a macro substitution mechanism. A backquoted {expression}
+is evaluated in two stages: first, variables prefixed by {@} are evaluated
+inside an expression, and second, the new expression is evaluated.
+
+To invoke this functionality, a backquote {`} needs to be placed in front of
+an expression. Parentheses around the expression are needed because the
+backquote binds tighter than other operators.
+
+The expression should contain some variables (assigned atoms) with the special
+prefix operator {@}. Variables prefixed by {@} will be evaluated even if they
+are inside function arguments that are normally not evaluated (e.g. functions
+declared with {HoldArg}). If the {@var} pair is in place of a function name,
+e.g. "{@f(x)}", then at the first stage of evaluation the function name itself
+is replaced, not the return value of the function (see example); so at the
+second stage of evaluation, a new function may be called.
+
+One way to view backquoting is to view it as a parametric expression
+generator. {@var} pairs get substituted with the value of the variable {var}
+even in contexts where nothing would be evaluated. This effect can be also
+achieved using {UnList} and {Hold} but the resulting code is much more
+difficult to read and maintain.
+
+This operation is relatively slow since a new expression is built
+before it is evaluated, but nonetheless backquoting is a powerful mechanism
+that sometimes allows to greatly simplify code.
+
+*E.G.
+
+This example defines a function that automatically evaluates to a number as
+soon as the argument is a number (a lot of functions  do this only when inside
+a {N(...)} section).
+
+	In> Decl(f1,f2) := \
+	In>   `(@f1(x_IsNumber) <-- N(@f2(x)));
+	Out> True;
+	In> Decl(nSin,Sin)
+	Out> True;
+	In> Sin(1)
+	Out> Sin(1);
+	In> nSin(1)
+	Out> 0.8414709848;
+
+This example assigns the expression {func(value)} to variable {var}. Normally
+the first argument of {Set} would be unevaluated.
+
+	In> SetF(var,func,value) := \
+	In>     `(Set(@var,@func(@value)));
+	Out> True;
+	In> SetF(a,Sin,x)
+	Out> True;
+	In> a
+	Out> Sin(x);
+
+
+*SEE MacroSet, MacroLocal, MacroRuleBase, Hold, HoldArg, DefMacroRuleBase
+
+
+
+*CMD DefMacroRuleBase --- define a function as a macro
+*STD
+*CALL
+	DefMacroRuleBase(name,params)
+
+*PARMS
+
+{name} -- string, name of a function
+
+{params} -- list of arguments
+
+*DESC
+
+{DefMacroRuleBase} is similar to {RuleBase}, with the difference that it declares a macro,
+instead of a function.
+After this call, rules can be defined for the function "{name}", but their interpretation will be different.
+
+With the usual functions, the evaluation model is that of the <i>applicative-order model of 
+substitution</i>, meaning that first the arguments are evaluated, and then the function 
+is applied to the result of evaluating these arguments. The function is entered, and the
+code inside the function can not access local variables outside of its own local variables.
+
+With macros, the evaluation model is that of the <i>normal-order model of substitution</i>,
+meaning that all occurrences of variables in an expression are first substituted into the 
+body of the macro, and only then is the resulting expression evaluated <i>in its
+calling environment</i>. This is important, because then in principle a macro body
+can access the local variables from the calling environment, whereas functions can not do that.
+
+As an example, suppose there is a function {square}, which squares its argument, and a function
+{add}, which adds its arguments. Suppose the definitions of these functions are:
+
+	add(x,y) <-- x+y;
+and
+	square(x) <-- x*x;
+In applicative-order mode (the usual way functions are evaluated), in the following expression
+	add(square(2),square(3))
+first the arguments to {add} get evaluated. So, first {square(2)} is evaluated.
+To evaluate this, first {2} is evaluated, but this evaluates to itself. Then
+the {square} function is applied to it, {2*2}, which returns 4. The same
+is done for {square(3)}, resulting in {9}. Only then, after evaluating these two
+arguments, {add} is applied to them, which is equivalent to
+	add(4,9)
+resulting in calling {4+9}, which in turn results in {13}.
+
+In contrast, when {add} is a macro, the arguments to {add} are first
+expanded. So 
+	add(square(2),square(3))
+first expands to 
+	square(2) + square(3)
+and then this expression is evaluated, as if the user had written it directly.
+In other words, {square(2)} is not evaluated before the macro has been fully expanded.
+
+
+*REM One more difference between macros and 
+
+Macros are useful for customizing syntax, and compilers can potentially
+greatly optimize macros, as they can be inlined in the calling environment,
+and optimized accordingly. 
+
+There are disadvantages, however. In interpreted mode, macros are slower,
+as the requirement for substitution means that a new expression to be evaluated
+has to be created on the fly. Also, when one of the parameters to the macro
+occur more than once in the body of the macro, it is evaluated multiple times.
+
+When defining transformation rules for macros, the variables to be substituted
+need to be preceded by the {@} operator, similar to the back-quoting mechanism.
+Apart from that, the two are similar, and all transformation rules can also be
+applied to macros.
+
+Macros can co-exist with functions with the same name but different arity.
+For instance, one can have a function {foo(a,b)}
+with two arguments, and a macro {foo(a,b,c)} with three arguments.
+
+
+*EG
+
+The following example defines a function {myfor}, and shows one use, referencing
+a variable {a} from the calling environment.
+
+	In> DefMacroRuleBase("myfor",{init,pred,inc,body})
+	Out> True;
+	In> myfor(_init,_pred,_inc,_body)<--[@init;While(@pred)[@body;@inc;];True;];
+	Out> True;
+	In> a:=10
+	Out> 10;
+	In> myfor(i:=1,i<10,i++,Echo(a*i))
+	10 
+	20 
+	30 
+	40 
+	50 
+	60 
+	70 
+	80 
+	90 
+	Out> True;
+	In> i
+	Out> 10;
+
+*SEE RuleBase, Backquoting, DefMacroRuleBaseListed
+
+*CMD DefMacroRuleBaseListed --- define macro with variable number of arguments
+*CORE
+*CALL
+	DefMacroRuleBaseListed("name", params)
+
+*PARMS
+
+{"name"} -- string, name of function
+
+{params} -- list of arguments to function
+
+*DESC
+
+This does the same as {DefMacroRuleBase} (define a macro), but with a variable
+number of arguments, similar to {RuleBaseListed}.
+
+*SEE RuleBase, RuleBaseListed, Backquoting, DefMacroRuleBase
+
+
+*A object properties
+*CMD ExtraInfo'Set, ExtraInfo'Get --- annotate objects with additional information
+*CORE
+*CALL
+	ExtraInfo'Set(expr,tag)
+	ExtraInfo'Get(expr)
+
+*PARMS
+
+{expr} -- any expression
+
+{tag} -- tag information (any other expression)
+
+*DESC
+
+Sometimes it is useful to be able to add extra tag information to "annotate"
+objects or to label them as having certain "properties". The functions
+{ExtraInfo'Set} and {ExtraInfo'Get} enable this.
+
+The function {ExtraInfo'Set} returns the tagged expression, leaving
+the original expression alone. This means there is a common pitfall:
+be sure to assign the returned value to a variable, or the tagged
+expression is lost when the temporary object is destroyed.
+
+The original expression is left unmodified, and the tagged expression
+returned, in order to keep the atomic objects small. To tag an
+object, a new type of object is created from the old object, with
+one added property (the tag). The tag can be any expression whatsoever.
+
+The function {ExtraInfo'Get(x)} retrieves this tag expression from an object
+{x}. If an object has no tag, it looks the same as if it had a tag with value
+{False}.
+
+No part of the Yacas core uses tags in a way that is visible to the outside
+world, so for specific purposes a programmer can devise a format to use for tag
+information. Association lists (hashes) are a natural fit for this, although it
+is not required and a tag can be any object (except the atom {False} because it
+is indistinguishable from having no tag information). Using association lists
+is highly advised since it is most likely to be the format used by other parts
+of the library, and one needs to avoid clashes with other library code.
+Typically, an object will either have no tag or a tag which is an associative
+list (perhaps empty). A script that uses tagged objects will check whether an
+object has a tag and if so, will add or modify certain entries of the
+association list, preserving any other tag information.
+
+Note that {FlatCopy} currently does <i>not</i> copy the tag information (see
+examples).
+
+*E.G.
+
+	In> a:=2*b
+	Out> 2*b;
+	In> a:=ExtraInfo'Set(a,{{"type","integer"}})
+	Out> 2*b;
+	In> a
+	Out> 2*b;
+	In> ExtraInfo'Get(a)
+	Out> {{"type","integer"}};
+	In> ExtraInfo'Get(a)["type"]
+	Out> "integer";
+	In> c:=a
+	Out> 2*b;
+	In> ExtraInfo'Get(c)
+	Out> {{"type","integer"}};
+	In> c
+	Out> 2*b;
+	In> d:=FlatCopy(a);
+	Out> 2*b;
+	In> ExtraInfo'Get(d)
+	Out> False;
+
+*SEE Assoc, :=
+
+*CMD GarbageCollect --- do garbage collection on unused memory
+*CORE
+*CALL
+	GarbageCollect()
+
+*DESC
+
+{GarbageCollect} garbage-collects unused memory. The Yacas system
+uses a reference counting system for most objects, so this call
+is usually not necessary. 
+
+Reference counting refers to bookkeeping where in each object a 
+counter is held, keeping track of the number of parts in the system 
+using that object. When this count drops to zero, the object is 
+automatically removed. Reference counting is not the fastest way
+of doing garbage collection, but it can be implemented in a very
+clean way with very little code.
+
+Among the most important objects that are not reference counted are
+the strings. {GarbageCollect} collects these and disposes of them
+when they are not used any more. 
+
+{GarbageCollect} is useful when doing a lot of text processing,
+to clean up the text buffers. It is not highly needed, but it keeps
+memory use low.
+
+
+*CMD FindFunction --- find the library file where a function is defined
+*CORE
+*CALL
+	FindFunction(function)
+
+*PARMS
+
+{function} -- string, the name of a function
+
+*DESC
+
+This function is useful for quickly finding the file where a standard library
+function is defined. It is likely to only be useful for developers. The
+function {FindFunction} scans the {.def} files that were loaded at start-up.
+This means that functions that are not listed in {.def} files will not be found with {FindFunction}.
+
+*E.G.
+
+	In> FindFunction("Sum")
+	Out> "sums.rep/code.ys";
+	In> FindFunction("Integrate")
+	Out> "integrate.rep/code.ys";
+
+*SEE Vi
+
+*CMD Secure --- guard the host OS
+*CORE
+*CALL
+	Secure(body)
+
+*PARMS
+
+{body} -- expression
+
+*DESC
+
+{Secure} evaluates {body} in a "safe" environment, where files cannot be opened
+and system calls are not allowed. This can help protect the system
+when e.g. a script is sent over the
+Internet to be evaluated on a remote computer, which is potentially unsafe.
+
+*SEE SystemCall
+
+*REM functions for arbitrary-precision numerical programming
+*INCLUDE numerics.chapt
+
+
+*CMD InNumericMode --- determine if currently in numeric mode
+*CMD NonN --- calculate part in non-numeric mode
+
+*STD
+*CALL
+	NonN(expr)
+	InNumericMode()
+*PARMS
+
+{expr} -- expression to evaluate
+
+{prec} -- integer, precision to use
+
+*DESC
+
+When in numeric mode, {InNumericMode()} will return {True}, else it will
+return {False}. {Yacas} is in numeric mode when evaluating an expression
+with the function {N}. Thus when calling {N(expr)}, {InNumericMode()} will
+return {True} while {expr} is being evaluated.
+
+{InNumericMode()} would typically be used to define a transformation rule 
+that defines how to get a numeric approximation of some expression. One
+could define a transformation rule
+
+	f(_x)_InNumericMode() <- [... some code to get a numeric approximation of f(x) ... ];
+
+{InNumericMode()} usually returns {False}, so transformation rules that check for this
+predicate are usually left alone.
+
+When in numeric mode, {NonN} can be called to switch back to non-numeric
+mode temporarily.
+
+{NonN} is a macro. Its argument {expr} will only 
+be evaluated after the numeric mode has been set appropriately.
+
+*E.G.
+
+	In> InNumericMode()
+	Out> False
+	In> N(InNumericMode())
+	Out> True
+	In> N(NonN(InNumericMode()))
+	Out> False
+
+*SEE N, Builtin'Precision'Set, Builtin'Precision'Get, Pi, CachedConstant
+
+
+
+
+*CMD IntLog --- integer part of logarithm
+*STD
+*CALL
+	IntLog(n, base)
+
+*PARMS
+
+{n}, {base} -- positive integers
+
+*DESC
+
+{IntLog} calculates the integer part of the logarithm of {n} in base {base}. The algorithm uses only integer math and may be faster than computing $$Ln(n)/Ln(base)$$ with multiple precision floating-point math and rounding off to get the integer part.
+
+This function can also be used to quickly count the digits in a given number.
+
+*E.G.
+Count the number of bits:
+	In> IntLog(257^8, 2)
+	Out> 64;
+
+Count the number of decimal digits:
+	In> IntLog(321^321, 10)
+	Out> 804;
+
+*SEE IntNthRoot, Div, Mod, Ln
+
+*CMD IntNthRoot --- integer part of $n$-th root
+*STD
+*CALL
+	IntNthRoot(x, n)
+
+*PARMS
+
+{x}, {n} -- positive integers
+
+*DESC
+
+{IntNthRoot} calculates the integer part of the $n$-th root of $x$. The algorithm uses only integer math and may be faster than computing $x^(1/n)$ with floating-point and rounding.
+
+This function is used to test numbers for prime powers.
+
+*EG
+	In> IntNthRoot(65537^111, 37)
+	Out> 281487861809153;
+
+*SEE IntLog, MathPower, IsPrimePower
+
+
+
+*CMD NthRoot --- calculate/simplify nth root of an integer
+*STD
+*CALL
+	NthRoot(m,n)
+
+*PARMS
+
+{m} -- a non-negative integer ($m>0$)
+
+{n} -- a positive integer greater than 1 ($n>1$)
+
+*DESC
+
+{NthRoot(m,n)} calculates the integer part of the $n$-th root $m^(1/n)$ and
+returns a list {{f,r}}. {f} and {r} are both positive integers
+that satisfy $f^n*r$=$m$.
+In other words, $f$ is the largest integer such that $m$ divides $f^n$ and $r$ is the remaining factor.
+
+For large {m} and small {n}
+{NthRoot} may work quite slowly. Every result {{f,r}} for given
+{m}, {n} is saved in a lookup table, thus subsequent calls to
+{NthRoot} with the same values {m}, {n} will be executed quite
+fast.
+
+*EG
+	In> NthRoot(12,2)
+	Out> {2,3};
+	In> NthRoot(81,3)
+	Out> {3,3};
+	In> NthRoot(3255552,2)
+	Out> {144,157};
+	In> NthRoot(3255552,3)
+	Out> {12,1884};
+
+*SEE IntNthRoot, Factors, MathPower
+
+
+*CMD ContFracList --- manipulate continued fractions
+*CMD ContFracEval --- manipulate continued fractions
+*STD
+*CALL
+	ContFracList(frac)
+	ContFracList(frac, depth)
+	ContFracEval(list)
+	ContFracEval(list, rest)
+
+*PARMS
+
+{frac} -- a number to be expanded
+
+{depth} -- desired number of terms
+
+{list} -- a list of coefficients
+
+{rest} -- expression to put at the end of the continued fraction
+
+*DESC
+
+The function {ContFracList} computes terms of the continued fraction
+representation of a rational number {frac}.  It returns a list of terms of length {depth}. If {depth} is not specified, it returns all terms.
+
+The function {ContFracEval} converts a list of coefficients into a continued fraction expression. The optional parameter {rest} specifies the symbol to put at the end of the expansion. If it is not given, the result is the same as if {rest=0}.
+
+*E.G.
+
+	In> A:=ContFracList(33/7 + 0.000001)
+	Out> {4,1,2,1,1,20409,2,1,13,2,1,4,1,1,3,3,2};
+	In> ContFracEval(Take(A, 5))
+	Out> 33/7;
+	In> ContFracEval(Take(A,3), remainder)
+	Out> 1/(1/(remainder+2)+1)+4;
+	
+*SEE ContFrac, GuessRational
+
+*CMD GuessRational --- find optimal rational approximations
+*CMD NearRational --- find optimal rational approximations
+*CMD BracketRational --- find optimal rational approximations
+*STD
+*CALL
+	GuessRational(x)
+	GuessRational(x, digits)
+	NearRational(x)
+	NearRational(x, digits)
+	BracketRational(x, eps)
+
+*PARMS
+
+{x} -- a number to be approximated (must be already evaluated to floating-point)
+
+{digits} -- desired number of decimal digits (integer)
+
+{eps} -- desired precision
+
+*DESC
+
+The functions {GuessRational(x)} and {NearRational(x)} attempt to find "optimal"
+rational approximations to a given value {x}. The approximations are "optimal"
+in the sense of having smallest numerators and denominators among all rational
+numbers close to {x}. This is done by computing a continued fraction
+representation of {x} and truncating it at a suitably chosen term.  Both
+functions return a rational number which is an approximation of {x}.
+
+Unlike the function {Rationalize()} which converts floating-point numbers to
+rationals without loss of precision, the functions {GuessRational()} and
+{NearRational()} are intended to find the best rational that is <i>approximately</i>
+equal to a given value.
+
+The function {GuessRational()} is useful if you have obtained a
+floating-point representation of a rational number and you know
+approximately how many digits its exact representation should contain.
+This function takes an optional second parameter {digits} which limits
+the number of decimal digits in the denominator of the resulting
+rational number. If this parameter is not given, it defaults to half
+the current precision. This function truncates the continuous fraction
+expansion when it encounters an unusually large value (see example).
+This procedure does not always give the "correct" rational number; a
+rule of thumb is that the floating-point number should have at least as
+many digits as the combined number of digits in the numerator and the
+denominator of the correct rational number.
+
+The function {NearRational(x)} is useful if one needs to
+approximate a given value, i.e. to find an "optimal" rational number
+that lies in a certain small interval around a certain value {x}. This
+function takes an optional second parameter {digits} which has slightly
+different meaning: it specifies the number of digits of precision of
+the approximation; in other words, the difference between {x} and the
+resulting rational number should be at most one digit of that
+precision. The parameter {digits} also defaults to half of the current
+precision.
+
+The function {BracketRational(x,eps)} can be used to find approximations with a given relative precision from above and from below.
+This function returns a list of two rational numbers {{r1,r2}} such that $r1<x<r2$ and $Abs(r2-r1)<Abs(x*eps)$.
+The argument {x} must be already evaluated to enough precision so that this approximation can be meaningfully found.
+If the approximation with the desired precision cannot be found, the function returns an empty list.
+
+*E.G.
+
+Start with a rational number and obtain a floating-point approximation:
+	In> x:=N(956/1013)
+	Out> 0.9437314906
+	In> Rationalize(x)
+	Out> 4718657453/5000000000;
+	In> V(GuessRational(x))
+	
+	GuessRational: using 10 terms of the
+	  continued fraction
+	Out> 956/1013;
+	In> ContFracList(x)
+	Out> {0,1,16,1,3,2,1,1,1,1,508848,3,1,2,1,2,2};
+The first 10 terms of this continued fraction correspond to the correct continued fraction for the original rational number.
+	In> NearRational(x)
+	Out> 218/231;
+This function found a different rational number closeby because the precision was not high enough.
+	In> NearRational(x, 10)
+	Out> 956/1013;
+Find an approximation to $Ln(10)$ good to 8 digits:
+	In> BracketRational(N(Ln(10)), 10^(-8))
+	Out> {12381/5377,41062/17833};
+
+
+*SEE ContFrac, ContFracList, Rationalize
+
+
+*CMD TruncRadian --- remainder modulo $2*Pi$
+*STD
+*CALL
+	TruncRadian(r)
+
+*PARMS
+
+{r} -- a number
+
+*DESC
+
+{TruncRadian} calculates $Mod(r,2*Pi)$, returning a value between $0$
+and $2*Pi$. This function is used in the trigonometry functions, just
+before doing a numerical calculation using a Taylor series. It greatly
+speeds up the calculation if the value passed is a large number.
+
+The library uses the formula
+$$TruncRadian(r) = r - Floor( r/(2*Pi) )*2*Pi$$,
+where $r$ and $2*Pi$ are calculated with twice the precision used in the
+environment to make sure there is no rounding error in the significant
+digits.
+
+*E.G.
+
+	In> 2*Internal'Pi()
+	Out> 6.283185307;
+	In> TruncRadian(6.28)
+	Out> 6.28;
+	In> TruncRadian(6.29)
+	Out> 0.0068146929;
+
+*SEE Sin, Cos, Tan
+
+
+*CMD Builtin'Precision'Set --- set the precision
+*CORE
+*CALL
+	Builtin'Precision'Set(n)
+
+*PARMS
+
+{n} -- integer, new value of precision
+
+*DESC
+
+This command sets the number of decimal digits to be used in calculations.
+All subsequent floating point operations will allow for
+at least {n} digits of mantissa.
+
+This is not the number of digits after the decimal point.
+For example, {123.456} has 3 digits after the decimal point and 6 digits of mantissa.
+The number {123.456} is adequately computed by specifying {Builtin'Precision'Set(6)}.
+
+The call {Builtin'Precision'Set(n)} will not guarantee that all results are precise to {n} digits.
+
+When the precision is changed, all variables containing previously calculated values
+remain unchanged.
+The {Builtin'Precision'Set} function only makes all further calculations proceed with a different precision.
+
+Also, when typing floating-point numbers, the current value of {Builtin'Precision'Set} is used to implicitly determine the number of precise digits in the number.
+
+*E.G.
+
+	In> Builtin'Precision'Set(10)
+	Out> True;
+	In> N(Sin(1))
+	Out> 0.8414709848;
+	In> Builtin'Precision'Set(20)
+	Out> True;
+	In> x:=N(Sin(1))
+	Out> 0.84147098480789650665;
+
+The value {x} is not changed by a {Builtin'Precision'Set()} call:
+
+	In> [ Builtin'Precision'Set(10); x; ]
+	Out> 0.84147098480789650665;
+
+The value {x} is rounded off to 10 digits after an arithmetic operation:
+
+	In> x+0.
+	Out> 0.8414709848;
+
+In the above operation, {0.} was interpreted as a number which is precise to 10 digits (the user does not need to type {0.0000000000} for this to happen).
+So the result of {x+0.} is precise only to 10 digits.
+
+*SEE Builtin'Precision'Get, N
+
+*CMD Builtin'Precision'Get --- get the current precision
+*CORE
+*CALL
+	Builtin'Precision'Get()
+
+*DESC
+
+This command returns the current precision, as set by {Builtin'Precision'Set}.
+
+*E.G.
+
+	In> Builtin'Precision'Get();
+	Out> 10;
+	In> Builtin'Precision'Set(20);
+	Out> True;
+	In> Builtin'Precision'Get();
+	Out> 20;
+
+*SEE Builtin'Precision'Set, N
+
+
+
+
+			Error reporting
+
+*INTRO
+This chapter contains commands useful for reporting errors to the user.
+
+*CMD Check --- report "hard" errors
+*CMD TrapError --- trap "hard" errors
+*CMD GetCoreError --- get "hard" error string
+*CORE
+*CALL
+	Check(predicate,"error text")
+	TrapError(expression,errorHandler)
+	GetCoreError()
+
+*PARMS
+
+{predicate} -- expression returning {True} or {False}
+
+{"error text"} -- string to print on error
+
+{expression} -- expression to evaluate (causing potential error)
+
+{errorHandler} -- expression to be called to handle error
+
+*DESC
+If {predicate} does not evaluate to {True},
+the current operation will be stopped, the string {"error text"} will be printed, and control will be returned immediately to the command line. This facility can be used to assure that some condition
+is satisfied during evaluation of expressions (guarding
+against critical internal errors).
+
+A "soft" error reporting facility that does not stop the execution is provided by the function {Assert}.
+
+*EG
+
+	In> [Check(1=0,"bad value"); Echo(OK);]
+	In function "Check" : 
+	CommandLine(1) : "bad value"
+
+Note that {OK} is not printed.
+
+TrapError evaluates its argument {expression}, returning the
+result of evaluating {expression}. If an error occurs,
+{errorHandler} is evaluated, returning its return value in stead.
+
+GetCoreError returns a string describing the core error.
+TrapError and GetCoreError can be used in combination to write
+a custom error handler. 
+
+
+*SEE Assert
+
+*CMD Assert --- signal "soft" custom error
+*STD
+*CALL
+	Assert("str", expr) pred
+	Assert("str") pred
+	Assert() pred
+Precedence:
+*EVAL OpPrecedence("Assert")
+
+*PARMS
+
+{pred} -- predicate to check
+
+{"str"} -- string to classify the error
+
+{expr} -- expression, error object
+
+*DESC
+
+{Assert} is a global error reporting mechanism. It can be used to check for
+errors and report them. An error is considered to occur when the predicate
+{pred} evaluates to anything except {True}. In this case, the function returns
+{False} and an error object is created and posted to the global error tableau.
+Otherwise the function returns {True}.
+
+Unlike the "hard" error function {Check}, the function {Assert} does not stop
+the execution of the program.
+
+The error object consists of the string {"str"} and an arbitrary
+expression {expr}. The string should be used to classify the kind of error that
+has occurred, for example "domain" or "format". The error object can be any expression that might be useful for handling the error later;
+for example, a list of erroneous values and explanations.
+The association list of error objects is currently obtainable through
+the function {GetErrorTableau()}.
+
+If the parameter {expr} is missing, {Assert} substitutes {True}. If both optional parameters {"str"} and {expr} are missing, {Assert} creates an error of class {"generic"}.
+
+Errors can be handled by a
+custom error handler in the portion of the code that is able to handle a certain class of
+errors. The functions {IsError}, {GetError} and {ClearError} can be used.
+
+Normally, all errors posted to the error tableau during evaluation of an expression should
+be eventually printed to the screen. This is the behavior of prettyprinters
+{DefaultPrint}, {Print}, {PrettyForm} and {TeXForm} (but not of the
+inline prettyprinter, which is enabled by default); they call
+{DumpErrors} after evaluating the expression. 
+
+*E.G.
+
+	In> Assert("bad value", "must be zero") 1=0
+	Out> False;
+	In> Assert("bad value", "must be one") 1=1
+	Out> True;
+	In> IsError()
+	Out> True;
+	In> IsError("bad value")
+	Out> True;
+	In> IsError("bad file")
+	Out> False;
+	In> GetError("bad value");
+	Out> "must be zero";
+	In> DumpErrors()
+	Error: bad value: must be zero
+	Out> True;
+No more errors left:
+	In> IsError()
+	Out> False;
+	In> DumpErrors()
+	Out> True;
+
+*SEE IsError, DumpErrors, Check, GetError, ClearError, ClearErrors, GetErrorTableau
+
+*CMD DumpErrors --- simple error handlers
+*CMD ClearErrors --- simple error handlers
+*STD
+*CALL
+	DumpErrors()
+	ClearErrors()
+
+*DESC
+
+{DumpErrors} is a simple error handler for the global error reporting mechanism. It prints all errors posted using {Assert} and clears the error tableau.
+
+{ClearErrors} is a trivial error handler that does nothing except it clears the tableau.
+
+*SEE Assert, IsError
+
+*CMD IsError --- check for custom error
+*STD
+*CALL
+	IsError()
+	IsError("str")
+
+*PARMS
+
+{"str"} -- string to classify the error
+
+*DESC
+
+{IsError()} returns {True} if any custom errors have been reported using {Assert}.
+The second form takes a parameter {"str"} that designates the class of the
+error we are interested in. It returns {True} if any errors of the given class
+{"str"} have been reported.
+
+*SEE GetError, ClearError, Assert, Check
+
+
+*CMD GetError --- custom errors handlers
+*CMD ClearError --- custom errors handlers
+*CMD GetErrorTableau --- custom errors handlers
+*STD
+*CALL
+	GetError("str")
+	ClearError("str")
+	GetErrorTableau()
+
+*PARMS
+
+{"str"} -- string to classify the error
+
+*DESC
+
+These functions can be used to create a custom error handler.
+
+{GetError} returns the error object if a custom error of class {"str"} has been
+reported using {Assert}, or {False} if no errors of this class have been
+reported.
+
+{ClearError("str")} deletes the same error object that is returned by
+{GetError("str")}. It deletes at most one error object. It returns {True} if an
+object was found and deleted, and {False} otherwise.
+
+{GetErrorTableau()} returns the entire association list of currently reported errors.
+
+*E.G.
+
+	In> x:=1
+	Out> 1;
+	In> Assert("bad value", {x,"must be zero"}) x=0
+	Out> False;
+	In> GetError("bad value")
+	Out> {1, "must be zero"};
+	In> ClearError("bad value");
+	Out> True;
+	In> IsError()
+	Out> False;
+
+*SEE IsError, Assert, Check, ClearErrors
+
+*CMD CurrentFile --- return current input file
+*CMD CurrentLine --- return current line number on input
+*CORE
+*CALL
+	CurrentFile()
+	CurrentLine()
+
+*DESC
+
+The functions {CurrentFile} and {CurrentLine} return a string
+with the file name of the current file and the current line 
+of input respectively.
+
+These functions are most useful in batch file calculations, where
+there is a need to determine at which line an error occurred.
+One can define a function 
+
+	tst() := Echo({CurrentFile(),CurrentLine()});
+which can then be inserted into the input file at various places,
+to see how far the interpreter reaches before an error occurs.
+
+*SEE Echo
+
+
+
+
+
+
+			Built-in (core) functions
+
+*INTRO
+Yacas comes with a small core of built-in functions and a large library of
+user-defined functions. Some of these core functions are documented in this
+chapter.
+
+
+
+
+It is important for a developer to know which functions are built-in and cannot
+be redefined or {Retract}-ed. Also, core functions may be somewhat faster to
+execute than functions defined in the script library. All core functions are
+listed in the file {corefunctions.h} in the {src/} subdirectory of the Yacas
+source tree. The declarations typically look like this:
+
+	SetCommand(LispSubtract, "MathSubtract");
+Here {LispSubtract} is the Yacas internal name for the function and {MathSubtract} is the name visible to the Yacas language.
+Built-in bodied functions and infix operators are declared in the same file.
+
+
+
+
+
+*CMD MathNot --- built-in logical "not"
+*CORE
+*CALL
+	MathNot(expression)
+
+*DESC
+
+Returns "False" if "expression" evaluates
+to "True", and vice versa.
+
+*CMD MathAnd --- built-in logical "and"
+
+*CALL
+	MathAnd(...)
+
+*DESC
+Lazy logical {And}: returns {True} if all args evaluate to
+{True}, and does this by looking at first, and then at the
+second argument, until one is {False}.
+If one of the arguments is {False}, {And} immediately returns {False} without
+evaluating the rest. This is faster, but also means that none of the
+arguments should cause side effects when they are evaluated.
+
+*CMD MathOr --- built-in logical "or"
+*CORE
+*CALL
+	MathOr(...)
+
+{MathOr} is the basic logical "or" function. Similarly to {And}, it is
+lazy-evaluated. {And(...)} and {Or(...)} do also exist, defined in the script
+library. You can redefine them as infix operators yourself, so you have the
+choice of precedence. In the standard scripts they are in fact declared as
+infix operators, so you can write {expr1 And expr}.
+
+*CMD BitAnd --- bitwise and operation
+*CMD BitOr --- bitwise or operation
+*CMD BitXor --- bitwise xor operation
+*CORE
+*CALL
+	BitAnd(n,m)
+	BitOr(n,m)
+	BitXor(n,m)
+
+*DESC
+These functions return bitwise "and", "or" and "xor"
+of two numbers.
+
+*CMD Equals --- check equality
+*CORE
+*CALL
+	Equals(a,b)
+
+*DESC
+Compares evaluated {a} and {b} recursively
+(stepping into expressions). So "Equals(a,b)" returns
+"True" if the expressions would be printed exactly
+the same, and "False" otherwise.
+
+*CMD GreaterThan --- comparison predicate
+*CMD LessThan --- comparison predicate
+*CORE
+*CALL
+	GreaterThan(a,b)
+	LessThan(a,b)
+
+*PARMS
+{a}, {b} -- numbers or strings
+*DESC
+Comparing numbers or strings (lexicographically).
+
+*EG
+	In> LessThan(1,1)
+	Out> False;
+	In> LessThan("a","b")
+	Out> True;
+
+
+*A {MathExp}
+*A {MathLog}
+*A {MathPower}
+*A {MathSin}
+*A {MathCos}
+*A {MathTan}
+*A {MathArcSin}
+*A {MathArcCos}
+*A {MathArcTan}
+*A {MathSinh}
+*A {MathCosh}
+*A {MathTanh}
+*A {MathArcSinh}
+*A {MathArcCosh}
+*A {MathArcTanh}
+*A {MathGcd}
+*A {MathAdd}
+*A {MathSubtract}
+*A {MathMultiply}
+*A {MathDivide}
+*A {MathSqrt}
+*A {MathFloor}
+*A {MathCeil}
+*A {MathAbs}
+*A {MathMod}
+*A {MathDiv}
+*CMD Math... --- arbitrary-precision math functions
+*CORE
+*REM these are not made into code examples to save space
+*CALL
+	MathGcd(n,m)      (Greatest Common Divisor)
+	MathAdd(x,y)      (add two numbers)
+	MathSubtract(x,y) (subtract two numbers)
+	MathMultiply(x,y) (multiply two numbers)
+	MathDivide(x,y)   (divide two numbers)
+	MathSqrt(x)    (square root, must be x>=0)
+	MathFloor(x)   (largest integer not larger than x)
+	MathCeil(x)    (smallest integer not smaller than x)
+	MathAbs(x)     (absolute value of x, or |x| )
+	MathExp(x)     (exponential, base 2.718...)
+	MathLog(x)     (natural logarithm, for x>0)
+	MathPower(x,y) (power, x ^ y)
+	MathSin(x)     (sine)
+	MathCos(x)     (cosine)
+	MathTan(x)     (tangent)
+	MathSinh(x)     (hyperbolic sine)
+	MathCosh(x)     (hyperbolic cosine)
+	MathTanh(x)     (hyperbolic tangent)
+	MathArcSin(x)   (inverse sine)
+	MathArcCos(x)   (inverse cosine)
+	MathArcTan(x)   (inverse tangent)
+	MathArcSinh(x)  (inverse hyperbolic sine)
+	MathArcCosh(x)  (inverse hyperbolic cosine)
+	MathArcTanh(x)  (inverse hyperbolic tangent)
+	MathDiv(x,y)    (integer division, result is an integer)
+	MathMod(x,y)    (remainder of division, or x mod y)
+
+*DESC
+
+These commands perform the calculation of elementary mathematical functions.
+The arguments <i>must</i> be numbers.
+The reason for the prefix {Math} is that
+the library needs to define equivalent
+non-numerical functions for symbolic computations, such as {Exp}, {Sin} and so on.
+
+Note that all functions, such as the {MathPower}, {MathSqrt}, {MathAdd} etc., accept integers as well as floating-point numbers.
+The resulting values may be integers or floats.
+If the mathematical result is an exact integer, then the integer is returned.
+For example, {MathSqrt(25)} returns the integer {5}, and {MathPower(2,3)} returns the integer {8}.
+In such cases, the integer result is returned even if the calculation requires more digits than set by {Builtin'Precision'Set}.
+However, when the result is mathematically not an integer, the functions return a floating-point result which is correct only to the current precision.
+
+*EG
+	In> Builtin'Precision'Set(10)
+	Out> True
+	In> Sqrt(10)
+	Out> Sqrt(10)
+	In> MathSqrt(10)
+	Out> 3.16227766
+	In> MathSqrt(490000*2^150)
+	Out> 26445252304070013196697600
+	In> MathSqrt(490000*2^150+1)
+	Out> 0.264452523e26
+	In> MathPower(2,3)
+	Out> 8
+	In> MathPower(2,-3)
+	Out> 0.125
+
+
+*A {FastLog}
+*A {FastPower}
+*A {FastArcSin}
+*CMD Fast... --- double-precision math functions
+*CORE
+*CALL
+*REM these are not made into code examples to save space
+
+FastLog(x) (natural logarithm),
+FastPower(x,y),
+FastArcSin(x)
+
+*DESC
+Versions of these functions using the C++ library. These
+should then at least be faster than the arbitrary precision versions.
+
+*CMD ShiftLeft --- built-in bitwise shift left operation
+*CMD ShiftRight --- built-in bitwise shift right operation
+*CORE
+*CALL
+	ShiftLeft(expr,bits)
+	ShiftRight(expr,bits)
+
+*DESC
+
+Shift bits to the left or to the right.
+
+
+
+*CMD IsPromptShown --- test for the Yacas prompt option
+*CORE
+*CALL
+	IsPromptShown()
+*DESC
+Returns {False} if Yacas has been started with the option to suppress the prompt, and {True} otherwise.
+
+
+*CMD GetTime --- measure the time taken by an evaluation
+*CORE
+*CALL
+	GetTime(expr)
+*PARMS
+{expr} -- any expression
+*DESC
+The function {GetTime(expr)} evaluates the expression {expr} and returns the time needed for the evaluation.
+The result is returned as a floating-point number of seconds.
+The value of the expression {expr} is lost.
+
+The result is the "user time" as reported by the OS, not the real ("wall clock") time.
+Therefore, any CPU-intensive processes running alongside Yacas will not significantly affect the result of {GetTime}.
+
+*EG
+	In> GetTime(Simplify((a*b)/(b*a)))
+	Out> 0.09;
+
+*SEE Time
+
+
+
+			Generic objects
+
+*INTRO Generic objects are objects that are implemented in C++, but
+can be accessed through the Yacas interpreter.
+
+*CMD IsGeneric --- check for generic object
+*CORE
+*CALL
+	IsGeneric(object)
+
+*DESC
+Returns {True} if an object is of a generic object type.
+
+*CMD GenericTypeName --- get type name
+*CORE
+*CALL
+	GenericTypeName(object)
+
+*DESC
+Returns a string representation of
+the name of a generic object.
+
+EG
+
+	In> GenericTypeName(Array'Create(10,1))
+	Out> "Array";
+
+*CMD Array'Create --- create array
+*CORE
+*CALL
+	Array'Create(size,init)
+
+*DESC
+Creates an array with {size} elements, all initialized to the
+value {init}.
+
+*CMD Array'Size --- get array size
+*CORE
+*CALL
+	Array'Size(array)
+
+*DESC
+Returns the size of an array (number of elements in the array).
+
+*CMD Array'Get --- fetch array element
+*CORE
+*CALL
+	Array'Get(array,index)
+
+*DESC
+Returns the element at position index in the array passed. Arrays are treated
+as base-one, so {index} set to 1 would return the first element.
+
+Arrays can also be accessed through the {[]} operators. So
+{array[index]} would return the same as {Array'Get(array, index)}.
+
+*CMD Array'Set --- set array element
+*CORE
+*CALL
+	Array'Set(array,index,element)
+
+*DESC
+Sets the element at position index in the array passed to the value
+passed in as argument to element. Arrays are treated
+as base-one, so {index} set to 1 would set first element.
+
+Arrays can also be accessed through the {[]} operators. So
+{array[index] := element} would do the same as {Array'Set(array, index,element)}.
+
+*CMD Array'CreateFromList --- convert list to array
+*CORE
+*CALL
+	Array'CreateFromList(list)
+
+*DESC
+Creates an array from the contents of the list passed in.
+
+*CMD Array'ToList --- convert array to list
+*CORE
+*CALL
+	Array'ToList(array)
+
+*DESC
+Creates a list from the contents of the array passed in.
+
+
+
+			The Yacas test suite
+
+*INTRO This chapter describes commands used for verifying correct performance
+of Yacas.
+
+Yacas comes with a test suite which can be found in
+the directory {tests/}. Typing 
+	make test
+on the command line after Yacas was built will run the test.
+This test can be run even before {make install}, as it only 
+uses files in the local directory of the Yacas source tree.
+The default extension for test scripts is {.yts} (Yacas test script).
+
+The verification commands described in this chapter only  display the
+expressions that do not evaluate correctly. Errors do not terminate the
+execution of the Yacas script that uses these testing commands, since they are
+meant to be used in test scripts.
+
+
+*CMD Verify --- verifying equivalence of two expressions
+*CMD TestYacas --- verifying equivalence of two expressions
+*CMD LogicVerify --- verifying equivalence of two expressions
+*CMD LogicTest --- verifying equivalence of two expressions
+*STD
+*CALL
+	Verify(question,answer)
+	TestYacas(question,answer)
+	LogicVerify(question,answer)
+	LogicTest(variables,expr1,expr2)
+
+*PARMS
+
+{question} -- expression to check for
+
+{answer} -- expected result after evaluation
+
+{variables} -- list of variables
+
+{exprN} -- Some boolean expression
+
+*DESC
+
+The commands {Verify}, {TestYacas}, {LogicVerify} and {LogicTest} can be used to verify that an
+expression is <I>equivalent</I> to  a correct answer after evaluation. All
+three commands return {True} or {False}.
+
+For some calculations, the demand that two expressions
+are <I>identical</I> syntactically is too stringent. The 
+Yacas system might change at various places in the future,
+but $ 1+x $ would still be equivalent, from a mathematical
+point of view, to $ x+1 $.
+
+The general problem of deciding that two expressions $ a $ and $ b $
+are equivalent, which is the same as saying that $ a-b=0 $ , 
+is generally hard to decide on. The following commands solve
+this problem by having domain-specific comparisons.
+
+The comparison commands do the following comparison types:
+
+*	{Verify} -- verify for literal equality. 
+This is the fastest and simplest comparison, and can be 
+used, for example, to test that an expression evaluates to $ 2 $.
+*	{TestYacas} -- compare two expressions after simplification as 
+multivariate polynomials. If the two arguments are equivalent
+multivariate polynomials, this test succeeds. {TestYacas} uses {Simplify}. Note: {TestYacas} currently should not be used to test equality of lists.
+*	{LogicVerify} -- Perform a test by using {CanProve} to verify that from 
+{question} the expression {answer} follows. This test command is 
+used for testing the logic theorem prover in Yacas.
+*	{LogicTest} -- Generate a truth table for the two expressions and compare these two tables. They should be the same if the two expressions are logically the same.
+
+*E.G.
+
+	In> Verify(1+2,3)
+	Out> True;
+	In> Verify(x*(1+x),x^2+x)
+	******************
+	x*(x+1) evaluates to x*(x+1) which differs
+	  from x^2+x
+	******************
+	Out> False;
+	In> TestYacas(x*(1+x),x^2+x)
+	Out> True;
+	In> Verify(a And c Or b And Not c,a Or b)
+	******************
+	 a And c Or b And Not c evaluates to  a And c
+	  Or b And Not c which differs from  a Or b
+	******************
+	Out> False;
+	In> LogicVerify(a And c Or b And Not c,a Or b)
+	Out> True;
+	In> LogicVerify(a And c Or b And Not c,b Or a)
+	Out> True;
+	In> LogicTest({A,B,C},Not((Not A) And (Not B)),A Or B)
+	Out> True
+	In> LogicTest({A,B,C},Not((Not A) And (Not B)),A Or C)
+	******************
+	CommandLine: 1 
+	
+	$TrueFalse4({A,B,C},Not(Not A And Not B))
+	 evaluates to 
+	{{{False,False},{True,True}},{{True,True},{True,True}}}
+	 which differs from 
+	{{{False,True},{False,True}},{{True,True},{True,True}}}
+	******************
+	Out> False
+
+*SEE Simplify, CanProve, KnownFailure
+
+
+*CMD KnownFailure --- Mark a test as a known failure
+*STD
+*CALL
+	KnownFailure(test)
+
+*PARMS
+
+{test} -- expression that should return {False} on failure
+
+*DESC
+
+The command {KnownFailure} marks a test as known to fail
+by displaying a message to that effect on screen. 
+
+This might be used by developers when they have no time
+to fix the defect, but do not wish to alarm users who download
+Yacas and type {make test}.
+
+*E.G.
+
+	In> KnownFailure(Verify(1,2))
+	Known failure:
+	******************
+	 1 evaluates to  1 which differs from  2
+	******************
+	Out> False;
+	In> KnownFailure(Verify(1,1))
+	Known failure:
+	Failure resolved!
+	Out> True;
+
+*SEE Verify, TestYacas, LogicVerify
+
+*CMD RoundTo --- Round a real-valued result to a set number of digits
+*STD
+*CALL
+	RoundTo(number,precision)
+
+*PARMS
+
+{number} -- number to round off
+
+{precision} -- precision to use for round-off
+
+*DESC
+
+The function {RoundTo} rounds a floating point number to a
+specified precision, allowing for testing for correctness
+using the {Verify} command.
+
+*E.G.
+
+	In> N(RoundTo(Exp(1),30),30)
+	Out> 2.71828182110230114951959786552;
+	In> N(RoundTo(Exp(1),20),20)
+	Out> 2.71828182796964237096;
+
+*SEE Verify, VerifyArithmetic, VerifyDiv
+
+
+
+*CMD VerifyArithmetic --- Special purpose arithmetic verifiers
+*CMD RandVerifyArithmetic --- Special purpose arithmetic verifiers
+*CMD VerifyDiv --- Special purpose arithmetic verifiers
+*STD
+*CALL
+	VerifyArithmetic(x,n,m)
+	RandVerifyArithmetic(n)
+	VerifyDiv(u,v)
+
+*PARMS
+
+{x}, {n}, {m}, {u}, {v} -- integer arguments
+
+*DESC
+
+The commands {VerifyArithmetic} and {VerifyDiv} test a 
+mathematic equality which should hold, testing that the
+result returned by the system is mathematically correct
+according to a mathematically provable theorem.
+
+{VerifyArithmetic} verifies for an arbitrary set of numbers
+$ x $, $ n $ and $ m $ that
+$$ (x^n-1)*(x^m-1) = x^(n+m)-(x^n)-(x^m)+1 $$.
+
+The left and right side represent two ways to arrive at the
+same result, and so an arithmetic module actually doing the
+calculation does the calculation in two different ways. 
+The results should be exactly equal.
+
+{RandVerifyArithmetic(n)} calls {VerifyArithmetic} with
+random values, {n} times.
+
+{VerifyDiv(u,v)} checks that 
+$$ u = v*Div(u,v) + Mod(u,v) $$.
+
+
+*E.G.
+
+	In> VerifyArithmetic(100,50,60)
+	Out> True;
+	In> RandVerifyArithmetic(4)
+	Out> True;
+	In> VerifyDiv(x^2+2*x+3,x+1)
+	Out> True;
+	In> VerifyDiv(3,2)
+	Out> True;
+
+*SEE Verify
+
+*INCLUDE glossary.chapt
+
+
+*REM GNU General Public License
+
+			GNU General Public License
+*INTRO This chapter contains the GNU General Public License (GPL).
+This information is important for everyone using or modifying the Yacas source code or binaries.
+
+*A license
+*A licence
+
+*INCLUDE GPL.chapt
+
+
+*REM GNU Free Documentation License
+*INCLUDE FDL.chapt

@@ -1,0 +1,624 @@
+// needed to read html.rep/code.ys, or else get error at bodied function HtmlAnchor()
+SetHtmlDirectory("");	// reads html.rep/code.ys
+Use("styleplain");  /* style sheet for the documentation */
+
+Book(title) :=
+[
+WriteString("Creating Book ");
+WriteString(title);NewLine();
+
+ plain["Title"] := title;
+];
+
+AddBody(text):=
+[
+  currentBody[2] := currentBody[2]:text;
+  GarbageCollect();
+  True;
+];
+
+Chapter(title):=
+[
+GarbageCollect();
+  currentChapterIndex++;
+  currentSectionIndex:=0;
+
+  currentChapter:=title;
+
+  title := String(currentChapterIndex):". ":title;
+  WriteString("  Creating Chapter ");
+  WriteString(title);NewLine();
+  plain["Chapters"][currentChapter]:={};
+  plain["Chapters"][currentChapter]["Sections"]:={};
+  plain["Chapters"][currentChapter]["Body"]:="";
+
+  currentBody := Assoc("Body",plain["Chapters"][currentChapter]);
+
+  plain["Chapters"][currentChapter]["Index"]:=currentChapterIndex;
+  plain["Chapters"][currentChapter]["Intro"]:=HtmlTag(chapter, title);
+  plain["Chapters"][currentChapter]["Commands"]:={};
+  plain["Chapters"][currentChapter]["FunctionsDefined"]:={};
+];
+
+ChapterIntro(text) :=
+[
+  plain["Chapters"][currentChapter]["Intro"] :=
+     plain["Chapters"][currentChapter]["Intro"] : text : newline;
+];
+
+Bodied("ChapterIntro", 60000);
+
+// we need this so that *A inserts and anchor into HTML
+AddAnchor(aAnchor) := (HtmlAnchor()aAnchor);
+// but we don't need to enter the *A stuff into tables of contents
+
+SectionTag(chapterIndex,sectionIndex):=
+  "c" : String(chapterIndex) : "s" : String(sectionIndex) ;
+
+ChapterTag(chapterIndex):= ("c" : String(chapterIndex));
+
+Section(title):=
+[
+
+  currentSectionIndex++;
+
+
+  plain["Chapters"][currentChapter]["Sections"][title]:=currentSectionIndex;
+  AddBody(HtmlAnchor()SectionTag(currentChapterIndex,currentSectionIndex));
+
+  title := String(currentChapterIndex):".":String(currentSectionIndex):" ":title;
+WriteString("    Creating Section ");
+WriteString(title);NewLine();
+
+  AddBody(HtmlTag(section,"<hr>":title));
+];
+
+CmdDescription(cmd, desc) :=
+[
+
+//TODO remove? Echo("Chapter ",plain["BaseName"] : "chapter" : String(currentChapterIndex) : ".html",": function ",cmd);
+
+  DestructiveAppend(plain["Chapters"][currentChapter]["FunctionsDefined"],cmd);
+
+
+  AddBody(HtmlAnchor() cmd);
+  AddBody(HtmlAnchor() ToLowerCase(cmd));	// add a lowercase version for easier help
+  SubSection(cmd : " -- " : desc);
+  plain["Chapters"][currentChapter]["Commands"] :=
+     Concat(plain["Chapters"][currentChapter]["Commands"], 
+            {{
+"<a href=\"":plain["BaseName"] : "chapter" : String(currentChapterIndex) : ".html#":cmd:"\" target='Chapters' title=\"":desc:"\">":cmd:"</a>",
+desc}});
+];   
+
+CmdDescriptionMany(cmd, desc) := CmdDescription(cmd, desc);
+CmdDescriptionSingle(cmd, desc) := CmdDescription(cmd, desc);
+
+ChapterLink(aLink) := 
+  HtmlLink(aLink, plain["BaseName"] : "chapter" 
+                                    : String(currentChapterIndex) : ".html",
+           aLink, "Chapters");
+
+SubSection(title):=
+[
+  AddBody(HtmlTag(subsection,"<hr>":title));
+];
+
+Topical(title):=
+[
+  AddBody(HtmlTag(topical,title));
+];
+
+
+Text(text):=
+[
+  AddBody(text : newline);
+];
+
+
+Blurb(text):=
+[
+  plain["Blurb"]:=text;
+];
+
+HtmlCommand(command):=
+[
+HtmlTable(0,"100%",
+"<tr>" : "<td width=100% bgcolor=\"#DDDDEE\">" : "<pre>" : EscapeLtGt(command) : "</pre></tr>"
+         );
+];
+
+HtmlTerm(term):= ("<b><tt>" : EscapeLtGt(term) : "</tt></b>");
+
+HtmlEmphasis(word) := ("<i>" : word : "</i>");
+
+HtmlBreak():="<p>  </p>";
+
+
+Enumerate(body):=
+[
+  "<ul>" : body : "</ul>";
+];
+Bodied("Enumerate",2);
+
+Itemize(body):=
+[
+  "<ul>" : body : "</ul>";
+];
+Bodied("Itemize",2);
+
+Item(body):=
+[
+  "<li>" : body : "</li>";
+];
+Bodied("Item",1);
+
+
+
+
+
+Bodied("Book",60000);
+
+Bodied("Title",60000);
+Bodied("Author",60000);
+
+Bodied("Chapter",60000);
+
+Bodied("Section",60000);
+Bodied("SubSection",60000);
+Bodied("Topical",60000);
+Bodied("Text",60000);
+
+Bodied("Blurb",60000);
+Bodied("DocumentationComment",60000);
+
+
+RuleBase("WriteItem",{item});
+Rule("WriteItem",1,1,IsString(item)) WriteString(item);
+Rule("WriteItem",1,2,True) Write(item);
+
+WriteList(list):=
+[
+  ForEach(item,list)
+  [
+    WriteItem(item);
+  ];
+];
+
+
+InitBooks():=
+[
+  site["Books"]:={};
+];
+
+SelectBook(book):=
+[
+  plain:=site["Books"][book];
+];
+
+InitBook(basename):=
+[
+  /* create a new book */
+  site["Books"][basename]:={};
+  SelectBook(basename);
+  plain["BaseName"]:=basename;
+  plain["Chapters"] := {};
+  plain["Body"]:="";
+  plain["Blurb"]:="";
+  currentChapterIndex:=0;
+  currentSectionIndex:=0;
+];
+
+
+
+SimpleSectionsIndex(filename,chapter,sections):=
+[
+  Local(bl,section,index);
+  bl:="";
+  index:=plain["Chapters"][chapter]["Index"];
+
+  ForEach(section,sections)
+  [
+    bl := bl:HtmlTag(bullet,
+                     HtmlLink(section,filename,SectionTag(index,
+    plain["Chapters"][chapter]["Sections"][section]),""));
+  ];
+  bl;
+];
+
+
+SimpleChapterIndex(filename,chapters):=
+[
+  Local(bl,chapter);
+  bl:="";
+  ForEach(chapter,chapters)
+  [
+    bl := bl:HtmlTag(bullet,
+    HtmlLink(chapter,filename,
+       ChapterTag(plain["Chapters"][chapter]["Index"]),""));
+      );
+
+    sections:=AssocIndices(plain["Chapters"][chapter]["Sections"]);
+    if (sections != {})
+    [
+      bl:=bl : HtmlTag(bullets,SimpleSectionsIndex(filename,chapter,sections));
+    ];
+  ];
+  bl;
+];
+
+
+FramedSectionsIndex(filename,chapter,sections):=
+[
+  Local(bl,section,index);
+  bl:="";
+  index:=plain["Chapters"][chapter]["Index"];
+
+  ForEach(section,sections)
+  [
+/*TODO remove?
+    bl := bl:HtmlTag(bullet,
+                     HtmlLink(section,filename,SectionTag(index,
+    plain["Chapters"][chapter]["Sections"][section]),"Chapters"));
+*/
+    bl := bl : "<a href=\"":filename:"#":SectionTag(index,plain["Chapters"][chapter]["Sections"][section]):"\" target=\"Chapters\">":String(index):".":String(plain["Chapters"][chapter]["Sections"][section]):" ":section:"</a><br />";
+
+
+  ];
+  bl;
+];
+
+FramedChapterIndex(chapters):=
+[
+  Local(bl,chapter);
+  bl:="";
+  ForEach(chapter,chapters)
+  [
+    Local(file,index);
+    index:=plain["Chapters"][chapter]["Index"];
+    file:=plain["BaseName"] : "chapter" : String(index) : ".html";
+
+    bl := bl : 
+      "<a href=\"":file:"#":ChapterTag(plain["Chapters"][chapter]["Index"]):"\" target=\"Chapters\">":String(plain["Chapters"][chapter]["Index"]):". ":chapter:"</a><br />";
+
+
+    sections:=AssocIndices(plain["Chapters"][chapter]["Sections"]);
+    if (sections != {})
+    [
+      bl:=bl : FramedSectionsIndex(file,chapter,sections);
+    ];
+//TODO remove?    bl:=bl:"<br />";
+  ];
+  bl;
+];
+
+GroupBooks(first,second):=
+[
+  site["Books"][first]["Chapters"] :=
+    Concat(site["Books"][second]["Chapters"], site["Books"][first]["Chapters"]);
+];
+
+
+
+EmitHtmlFramed():=
+[
+  Local(chapter,chapters);
+  chapters:=AssocIndices(plain["Chapters"]);
+
+  ToFile(HtmlFile(plain["BaseName"] : "manual.html"))
+  [
+    WriteString(
+
+    HtmlTag(html,
+        HtmlFrameSetCols("240,*",
+          HtmlFrameSetRows("80,*",
+            HtmlFrame("manicon.html","") : 
+            HtmlFrame(plain["BaseName"] : "chapters.html","")
+                  ) :
+          HtmlFrame(plain["BaseName"] : "chapter1.html","Chapters")
+                )
+           )
+    );
+  ];
+
+
+WriteString("Writing ");
+WriteString(plain["BaseName"]);
+NewLine();
+
+  ToFile(HtmlFile(plain["BaseName"] : "chapters.html"))
+    WriteString(
+      HtmlTag(html,
+      HtmlTitle("") : newline :HtmlTag(indexbody,
+                FramedChapterIndex(chapters))
+               ) );
+
+  ToFile(plain["BaseName"]:".funcs.js")
+  [
+    Echo("function findFileForFunctionIn",plain["BaseName"],"(seach) {");
+
+    ForEach(chapter,chapters)
+    [
+      Local(pcc,file,index,str,first);
+      pcc := plain["Chapters"][chapter];
+      index := pcc["Index"];
+      first := True;
+
+      Echo("var funcs_",plain["BaseName"] : "chapter" : String(index)," = new Array(");
+
+      ForEach(function,plain["Chapters"][chapter]["FunctionsDefined"])
+      [
+        If (Not first,WriteString(", "),first := False);
+        Echo("\"",function,"\"");
+      ];
+      Echo(");");
+    ];
+
+    ForEach(chapter,chapters)
+    [
+      Local(pcc,file,index,str,name);
+      pcc := plain["Chapters"][chapter];
+      index := pcc["Index"];
+      name:=plain["BaseName"] : "chapter" : String(index);
+      Echo("  if (containsFunc(funcs_",name,",seach))");
+      Echo("    return \"",name,".html\";");
+    ];
+    Echo("  return \"\";");
+    Echo("}");
+
+  ];
+
+  ForEach(chapter,chapters)
+  [
+    Local(pcc,file,index,str,keyword);
+    pcc := plain["Chapters"][chapter];
+    index := pcc["Index"];
+
+    file := plain["BaseName"] : "chapter" : String(index) : ".html";
+    str := HtmlAnchor() ChapterTag(index);
+    If (pcc["Commands"] != {},str := str : "(directly go to documentation on : " : ChapterHeader(pcc["Commands"]):")");
+    str := str : pcc["Intro"] : "<p> </p>" : newline;
+    If (pcc["Commands"] != {}, str := str : ChapterTOC(pcc["Commands"]));
+    str := str : pcc["Body"];
+    str := HtmlTitle(chapter) : newline : HtmlTag(body, str);
+    ToFile(HtmlFile(file)) WriteString(HtmlTag(html, str));
+    GarbageCollect();
+  ];
+];
+
+10 # ChapterHeader({}) <-- "";
+20 # ChapterHeader(_alist) <--
+[
+  Local(str, keyword);
+  str := Head(alist)[1];
+  ForEach(keyword, Tail(alist))
+  [
+    str := str : ", " : keyword[1];
+  ];
+  str := str : "." : newline;
+];
+
+ChapterTOC(alist) :=
+[
+  Local(str, flag, keyword);
+  flag := True;
+  ForEach(keyword, alist) 
+     flag := flag And (keyword[2] = "");
+  If (flag, 
+      str := "", /* If there are no descriptions, a TOC has no use */
+      [
+        str := "<center><table>";
+       	str := str : newline;	
+       	ForEach(keyword, alist)
+       	  str := str : "<tr BGCOLOR=#E0E0E0>" : newline
+       		     : "<td>" : keyword[1] : "</td>" : newline
+       		     : "<td>" : keyword[2] : "</td>" : newline
+       		     : "</tr>" : newline;
+       	str := str : "</table></center>" : newline;
+      ]);
+];
+
+
+BookList():=
+[
+  Local(book,books,bl);
+  bl:="";
+  books:=AssocIndices(site["Books"]);
+  ForEach(book,books)
+  [
+    Local(bookinfo);
+    bookinfo:=site["Books"][book];
+
+    bl:= bl : 
+     "<tr>" : "<td bgcolor=e0e0e0>
+     " : HtmlLink(bookinfo["Title"],book:"manual.html","","") :
+     "</tr><tr>" : "<td bgcolor=ffffff>
+     " : bookinfo["Blurb"] :"</tr>";
+  ];
+  bl;
+];
+
+
+EmitBookIndex():=
+[
+WriteString("Creating book index"); NewLine();
+  ToFile(HtmlFile("books.html"))
+  [
+    WriteString(
+      HtmlTag(html,
+              HtmlTitle("Yacas documentation") :
+              "<center><h1>Yacas documentation</h1></center>":
+              HtmlTag(body,HtmlTable(3,"",
+              BookList()))
+             )
+    );
+  ];
+  True;
+];
+
+
+10 # SeeAlso({}) <-- True;
+20 # SeeAlso(_list) <--
+     [
+	Local(item);
+        AddBody(SeeAlso1(Head(list)));
+	ForEach(item, Tail(list)) AddBody(", " : SeeAlso1(item));
+	AddBody(".");
+     ];
+
+SeeAlso1(_seealso) <-- HtmlLink(seealso, "ref.html?":seealso, "", "Chapters");
+
+/*
+SeeAlso(_list)<--
+[
+  ForEach(item,list)
+  [
+    AddBody(HtmlLink(item,"ref.html?":item,"","Chapters"):", ");
+  ];
+];
+*/
+
+BuiltIn() <-- AddBody("<h5 align=right>Internal function</h5>");
+UnixSpecific() <-- AddBody("<h5 align=right>Unix-specific add-on</h5>");
+MacSpecific() <-- AddBody("<h5 align=right>Macintosh-specific add-on</h5>");
+MSWinSpecific() <-- AddBody("<h5 align=right>MS Windows-specific add-on</h5>");
+StandardLib() <-- AddBody("<h5 align=right>Standard library</h5>");
+
+/* alias for Load() that can be redefined */
+IncludeFile(x) := [ Load(x); GarbageCollect(); ];
+
+/* mathematical expressions */
+RuleBase("TeXMath", {x});
+RuleBase("TeXMathD", {x});
+RuleBase("TeXMathD", {x,y});
+
+TeXMath(x) := "<b>" : EscapeLtGt(ToString() Write(x)) : "</b>";
+TeXMathD(_x) <-- "
+<p><center><b>" : EscapeLtGt(ToString() Write(x)) : " </b></center></p>
+";
+// special form: punctuation at the end of a displayed equation
+TeXMathD(_x, _string) <-- "
+<p><center><b>" : EscapeLtGt(ToString() Write(x)) : string : "</b></center></p>
+";
+
+HoldArg("TeXMath",x);
+HoldArg("TeXMathD",x);
+
+/* Replace all < and > characters in a string by &lt; and &gt; */
+EscapeLtGtStrings := { {"<", "&lt;"}, {">", "&gt;"}, {"&", "&amp;"} };
+EscapeLtGt(string) := [
+	Local(i, result);
+	result := "";
+	For(i:=1, i<=Length(string), i++) result := result : If(EscapeLtGtStrings[string[i]] != Empty, EscapeLtGtStrings[string[i]], string[i]);
+	result;
+];
+
+/* Convert ASCII-7 string to lowercase */
+UCStrings :=
+{
+	{"A","a"},
+	{"B","b"},
+	{"C","c"},
+	{"D","d"},
+	{"E","e"},
+	{"F","f"},
+	{"G","g"},
+	{"H","h"},
+	{"I","i"},
+	{"J","j"},
+	{"K","k"},
+	{"L","l"},
+	{"M","m"},
+	{"N","n"},
+	{"O","o"},
+	{"P","p"},
+	{"Q","q"},
+	{"R","r"},
+	{"S","s"},
+	{"T","t"},
+	{"U","u"},
+	{"V","v"},
+	{"W","w"},
+	{"X","x"},
+	{"Y","y"},
+	{"Z","z"},
+};
+LCStrings :=
+{
+	{"a","A"},
+	{"b","B"},
+	{"c","C"},
+	{"d","D"},
+	{"e","E"},
+	{"f","F"},
+	{"g","G"},
+	{"h","H"},
+	{"i","I"},
+	{"j","J"},
+	{"k","K"},
+	{"l","L"},
+	{"m","M"},
+	{"n","N"},
+	{"o","O"},
+	{"p","P"},
+	{"q","Q"},
+	{"r","R"},
+	{"s","S"},
+	{"t","T"},
+	{"u","U"},
+	{"v","V"},
+	{"w","W"},
+	{"x","X"},
+	{"y","Y"},
+	{"z","Z"},
+};
+ToLowerCase(string) :=
+[
+	Local(i, result);
+	result := "";
+	For(i:=1, i<=Length(string), i++) result := result : If(UCStrings[string[i]] != Empty, UCStrings[string[i]], string[i]);
+	result;
+];
+
+// inline Yacas code
+DocEval(x) :=
+AddBody(ToString()
+[
+	Local(result);
+	result:=Eval(x);	// this already prints anything that x printed
+	
+	If(
+		result = True,	// if the expression resulted in True, do not print "True"
+		True,
+		// otherwise print result
+		If(
+			IsString(result),
+			WriteString(result),
+			Write(result)
+		)
+	);
+	NewLine();
+]
+);
+
+HoldArgNr("DocEval", 1, 1);
+
+DocFootnote(x) := "<h6>" : x : "</h6>";
+
+// HTML representation of a Yacasdoc reference
+YacasDocLink(bookname, text, url) :=
+  If(bookname = "", "", HtmlLink(text, url, "", ""));
+
+
+// create an HTML version of a book
+GenerateBook(BaseName) :=
+[
+  InitBooks();        /* Initialize book building */
+  InitBook(BaseName);
+  Load(BaseName:".book");
+  GarbageCollect();
+  SelectBook(BaseName);
+  EmitHtmlFramed();
+];
+
+

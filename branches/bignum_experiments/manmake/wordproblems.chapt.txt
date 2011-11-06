@@ -1,0 +1,314 @@
+		Example: Using rules with special syntax operators creatively
+
+Any Yacas function can be declared to have <i>special syntax</i>: in other
+words, it can be made into a prefix, infix, postfix, or bodied operator. In
+this section we shall see how prefix, infix, and postfix operators understood
+by Yacas can be adapted to a problem that seems to be far removed from algebra.
+Nevertheless it is instructive to understand how rewriting rules are used with
+special syntax operators.
+
+Suppose we want to build a system that understands a simple set of English
+sentences and will be able to answer questions. For example, we would like to
+say "Tom had an apple and Jane gave 3 apples to Tom"; the system should
+understand that Tom has 4 apples now. In the usual LISP-based treatments of
+artificial intelligence, this problem would be illustrated with a cumbersome list
+syntax such as {(had (Tom apple 1))} but we would like to use the power of the
+Yacas syntax and use plain English.
+
+We shall create a set of rules that will "simplify" sentences to atoms such as {True} or {False}. As a side-effect, these "simplifications" will maintain a "knowledgebase" of information about all existing persons and objects.
+
+	    The talking machine
+
+The full source of this example is in the file {examples/wordproblems.ys}. In the next subsection we shall discuss the basic issues of the implementation. For now, here is an example session that shows what functionality we have in mind:
+
+	Unix>   yacas
+	True;
+	Numeric mode: "Internal"
+	To exit Yacas, enter  Exit(); or quit or Ctrl-c.
+	Type 'restart' to restart Yacas.
+	To see example commands, keep typing Example();
+	In> Load("wordproblems.ys")
+	Out> True;
+	In> Jitse and Ayal are persons;
+	OK, Jitse is a person.
+	OK,  Ayal is a person.
+	Out> {True,True};
+	In> apple is an object;
+	OK,  apple is an object.
+	Out> True;
+	In> there are many apples and pears;
+	Note: we already know that  apple  is an object
+	OK, we assume that the plural of " apple " is
+	  " apples ".
+	OK,  pear is an object.
+	OK, we assume that the plural of " pear " is
+	  " pears ".
+	Out> {True,True};
+	In> Serge had an apple;
+	OK,  Serge is a person.
+	OK,  Serge  has  1   apples  now.
+	Out> True;
+	In> Jitse had (10!) pears;
+	OK,  Jitse  has  3628800   pears  now.
+	Out> True;
+	In> Ayal had (2+3) apples and Serge had \
+	  2 pears;
+	OK,  Ayal  has  5   apples  now.
+	OK,  Serge  has  2   pears  now.
+	Out> {True,True};
+	In> Serge ate the apple;
+	OK,  Serge  has  no   apples  now.
+	Out> True;
+	In> Ayal ate a pear;// this should fail
+	Error:  Ayal  does not have enough
+	  pears  at this time.
+	Out> False;
+	In> Ayal gave an apple to Serge and \
+	  Serge gave a pear to Ayal;
+	OK,  Ayal  has  4   apples  now.
+	OK,  Serge  has  1   apples  now.
+	OK,  Serge  has  1   pears  now.
+	OK,  Ayal  has  1   pears  now.
+	Out> {True,True};
+	In> Ayal ate a pear;
+	OK,  Ayal  has  no   pears  now.
+	Out> True;
+	In> soup is an object and Ayal had \
+	  some soup;
+	OK,  soup is an object.
+	OK,  Ayal  has some  soup  now.
+	Out> {True,True};
+	In> Ayal gave soup to Serge and Serge \
+	  ate the soup;
+	OK,  Ayal  has  no   soup  now.
+	OK,  Serge  has some  soup  now.
+	OK,  Serge  has  no   soup  now.
+	Out> {True,True};
+	In> Serge has soup
+	Out> no;
+	In> Serge has apples
+	Out> 1;
+	In> Ayal has apples
+	Out> 4;
+	In> Serge has some soup
+	Out> False;
+	In> Serge has some apples
+	Out> True;
+	In> Ayal has some pears
+	Out> False;
+	In> Knowledge();
+	OK, this is what we know:
+	Persons: Jitse, Ayal, Serge
+	Object names: soup, pear, apple
+	Countable objects: pears, apples
+	Jitse has: 
+	 3628800  pears 
+
+	Ayal has: 
+	 4  apples 
+	 no  pears 
+	 no  soup 
+
+	Serge has: 
+	 1  apples 
+	 1  pears 
+	 no  soup 
+
+	Out> True;
+	In> software is an object
+	OK,  software is an object.
+	Out> True;
+	In> Ayal made some software
+	OK,  Ayal  has some  software  now.
+	Out> True;
+	In> Ayal gave some software to everyone
+	OK,  everyone is a person.
+	OK,  Ayal  still has some  software 
+	OK,  everyone  has some  software  now.
+	Out> True;
+	In> Ayal gave some software to Serge
+	OK,  Ayal  still has some  software 
+	OK,  Serge  has some  software  now.
+	Out> True;
+	In> Serge ate the software
+	OK,  Serge  has  no   software  now.
+	Out> True;
+
+The string "OK" is printed when there is no error, "Note" when there is a
+warning, and "Error" on any inconsistencies in the described events. The
+special function {Knowledge()} prints everything the system currently knows.
+
+Now we shall see how this system can be implemented in Yacas with very little
+difficulty.
+
+	    Parsing sentences
+
+A sentence such as "{Mary had a lamb}" should be parsed as a valid Yacas expression. Since this sentence contains more than one atom, it should be parsed as a function invocation, or else Yacas will simply give a syntax error when we type it in.
+
+It is logical to declare "{had}" as an infix operator and "{a}" as a prefix
+operator quantifying {lamb}. In other words, "{Mary had a lamb}" should be
+parsed into {had(Mary, a(lamb))}. This is how we can do it:
+
+	In> [ Infix("had", 20); Prefix("a", 10); ]
+	Out> True;
+	In> FullForm(Mary had a lamb)
+	(had Mary (a lamb ))
+	Out> Mary had a lamb;
+Now this sentence is parsed as a valid Yacas expression (although we have not
+yet defined any rules for the functions "{a}" and "{had}").
+
+Note that we declared the precedence of the prefix operator "{a}" to be 10. We
+have in mind declaring another infix operator "{and}" and we would like
+quantifiers such as "a", "an", "the" to bind more tightly than other words.
+
+Clearly,  we need to plan the structure of all admissible sentences and declare
+all necessary auxiliary words as prefix, infix, or postfix operators. Here are the patterns for our admissible sentences:
+
+"X {is a person}" -- this declares a person.  Parsed: {is(}X{,} {a(person))}
+
+"X {and} Y {are persons}" -- shorthand for the above. Parsed: {are(and(}X{,} Y{),} {persons)}. "person" and "persons" are unevaluated atoms.
+
+"A {is an object}" -- this tells the system that "A" can be manipulated. Parsed: {is(}A{,} {an(object))}
+
+"{there are many} A{s}"	-- this tells the system that "A" can be counted (by default, objects are not considered countable entities, e.g. "milk" or "soup"). Parsed: {are(there,} {many(}A{s))}. Here "A{s}" is a single atom which will have to be stripped of the ending "s" to obtain its singular form.
+
+"X {ate} N1 A{s}", for example, {Tom ate 3 apples} -- parsed as {ate(Tom,} {apples(3))}. Since we cannot make the number {3} into an infix operator, we have to make {apples} into a postfix operator that will act on {3}.
+
+"X {gave} N A{s to} Y" -- Here "N" is a number and "A" is the name of an object. Parsed as: {gave(}X{,} {to(}A{s(}N{),} {Y))}. So {to} and {gave} are infix operators and {to} binds tighter than {gave}.
+
+Sentences can be joined by "{and}", for example:
+"{Tom} {gave} {Jane} {an apple} {and} {Jane} {ate} {3 pears}". This will be parsed as the infix operator "{and}" acting on both sentences which are parsed as above. So we need to make "{and}" of higher precedence than other operators, or else it would bind  {(apple} {and} {Jane)} together.
+
+"X {made} {some} A" -- note that if "A" is not countable, we cannot put a number so we need to write {some} which is again a prefix operator. {made} is an infix operator.
+
+"X {ate} {some} A" -- the interpretation is that some A is still left after this, as opposed to "X ate the A" or "X ate A".
+
+"X {gave} {some} A {to} Y" -- similarly, X still has some A left after this.
+
+After each sentence, the system should know who has what at that time. Each
+sentence is parsed separately and should be completely interpreted, or
+"simplified".
+
+All knowledge is maintained in the variable {Knowledge} which is an associative list with three entries: 
+	Knowledge := {
+		{"objects", {} },
+		{"countable objects", {} },
+		{"persons", {} }
+	};
+The values under the keys "objects" and "countable objects" are lists of names of
+declared objects. The values of the "persons" key is  a doubly nested
+associative list that specifies which objects each person has and how many. So,
+for example, {Knowledge}["persons"]["Tom"]["apples"] should give the number of
+apples Tom has now, or the atom {Empty} if he has none.
+
+	    Declaring objects
+
+Declaring persons is easy: we just create a new entry in the "persons" list. This can be done by an auxiliary routine {DeclarePerson()}. Note that after we have declared the words "{is}", "{a}" to be operators, we can just write the rule using them:
+
+	Infix("is", 20);
+	Prefix("a", 10);
+	_x is a person <-- DeclarePerson(x);
+Here "{person}" will be left as an unevaluated atom and we shall never have any
+rules to replace it. Some other words such as "object", "objects" or "there"
+will also remain unevaluated atoms.
+
+The operator "{and}" will group its operands into a list:
+
+	Infix("and", 30);
+	10 # x_IsList and _y <-- Concat(x, {y});
+	15 # _x and _y <-- Concat({x}, {y});
+So expressions such as "{Lisa} {and} {Anna} {and} {Maria}" will be
+automatically transformed into {{Lisa, Anna, Maria}}. We shall adapt our rules
+to operate on lists of operands as well as on simple operands and that will
+automatically take care of sentences such as "there are many apples and ideas".
+
+	10 # there are many xs_IsList <--
+	  MapSingle("DeclareCountable", xs);
+	20 # there are many _xs <-- DeclareCountable(xs);
+
+However, in the present system we cannot simultaneously parse "there are many
+apples and ideas" and "Isaac had an apple and an idea" because we have chosen
+{had} to bind tighter than {and}. We could in principle choose another set of
+precedences for these operators; this would allow some new sentences but at the
+same time disallow some sentences that are admissible with the current choice.
+Our purpose, however, is not to build a comprehensive system for parsing
+English sentences, but to illustrate the usage of syntax in Yacas.
+
+Declaring objects is a little more tricky (the function {DeclareCountable}).
+For each countable object (introduced by the phrase "there are many ...s") we
+need to introduce a new postfix operator with a given name. This postfix
+operator will have to operate on a preceding number, so that a sentence such as
+"Mary had 3 lambs" will parse correctly.
+
+If {x} were an unevaluated atom such as "{lambs}" which is passed to a
+function, how can we declare {lambs} to be a postfix operator within that
+function? The string representation of the new operator is {String(x)}. But we cannot call {Postfix(String(x))} because {Postfix()} does not
+evaluate its arguments (as of Yacas 1.0.49). Instead, we use the function
+{UnList} to build the expression {Postfix(String(x))} with {String(x)}
+evaluated from a list {{Postfix, String(x)}}, and we use the function {Eval()}
+to evaluate the resulting expression (which would actually call {Postfix()}):
+	Eval(UnList({Postfix, String(x)} ));
+We also need to declare a rulebase for the operator named {String(x)}. We use {MacroRuleBase} for this:
+	MacroRuleBase(String(x), {n});
+
+Finally, we would need to define a rule for "{had}" which can match expressions such as
+	_Person had n_IsNumber _Objects
+where {_Objects} would be a pattern matcher for an unknown postfix operator
+such as {lambs} in our previous example. But we discover that it is impossible
+to write rules that match an unknown postfix operator. The syntax parser of
+Yacas cannot do this for us; so we should find a workaround. Let us define a
+rule for each object operator that will transform an expression such as {5
+lambs} into a list {{lambs, 5}}. In this list, "lambs" will just remain an
+unevaluated atom.
+
+Incidentally, the parser of Yacas does not allow to keep unevaluated atoms that
+are at the same time declared as <i>prefix</i> operators but it is okay to have
+infix or postfix operators.
+
+A rule that we need for an operator named {String(x)} can be defined using
+{MacroRule}:
+	MacroRule(String(x), 1, 1, True) {x, n};
+Now, after we declare "{lambs}" as an operator, the routine will define these rules, and <i>anything</i> on which "{lambs}" acts will be transformed into a list.
+	In> 5 lambs;
+	Out> {lambs, 5};
+	In> grilled lambs
+	Out> {lambs, grilled};
+
+But what about the expression "{many lambs}"? In it, {many} is a prefix operator and {lambs} is a postfix operator. It turns out that for Yacas it is the <i>prefix</i> operator that is parsed first (and remember, we cannot have unevaluated atoms with the same name as a prefix operator!) so "{many lambs}" will be transformed into {many(lambs)} and not into an illegal expression {{lambs, many}}.
+
+	    Implementing semantics
+
+After implementing all the syntax, the semantics of these sentences is very easy to transform into rules. All sentences are either about how something exists, or about someone "having", "making", "eating", or "giving" certain objects. With the rules described so far, a complicated sentence such as 
+	Ayal gave soup to Serge and Serge ate the soup
+will be already parsed into function calls
+	{gave(Ayal, to(soup, Serge)), ate(Serge,
+	  {soup, 1}}
+So now we only need to make sure that all this information is correctly entered
+into the knowledgebase and any inconsistencies (e.g. eating something you do
+not have) are flagged.
+
+Here is the simplest rule: "giving" is implemented as a sequence of "eating" and "making".
+	10 # _x gave _obj to _y <-- [
+		x ate obj;
+		y made obj;
+	];
+
+One more subtlety connected with the notion of "countable" vs. "uncountable" objects is that there are two different actions one can perform on an "uncountable" object such as "soup": one can eat (or give away) <i>all</i> of it or only <i>some</i> of it. This is implemented using the keyword "{some}" which is a prefix operator that turns its argument into a list,
+
+	some _obj <-- {obj, True};
+This list looks like the result of another quantifier, e.g.
+	the _x  <-- {x, 1};
+but in fact the special value {True} in it is used in the definition of "{ate}" so that when you "eat" "some" of the object, you still have "some" of it left.
+
+To implement this, we have made a special rule for the pattern
+	_x had {obj, True} <-- ...
+separately from the general rule
+	_x had {obj, n_IsNumber} <-- ...
+and its shorthand
+	(_x had _obj )_(Not IsList(obj)) <--
+	  x had {obj, 1};
+
+Admittedly, the module {wordproblems.ys} has not very much practical use but it
+is fun to play with and it illustrates the power of syntactic constructions
+from an unexpected angle.
+

@@ -1,0 +1,171 @@
+			M. Wester's CAS benchmark and {Yacas}
+
+In his 1994 paper <i>Review of CAS mathematical capabilities</i>, Michael Wester has put forward 123 problems that a reasonable computer algebra system should be able to solve and tested the then current versions of various commercial CAS on this list.
+
+Below is the list of Wester's problems with the corresponding {Yacas} code. "OK" means a satisfactory solution, "BUG" means that {Yacas} gives a wrong solution or breaks down, "NO" means that the relevant functionality is not yet implemented.
+
+{Yacas} version:
+*EVAL Version()
+
+*	1. (OK) $50!$
+	Verify(25!, 15511210043330985984000000);
+	Verify(50!, (26***50)*25!);
+*	2. (OK) Factorize $50!$
+	Verify(Factors(50!), {{2,47},{3,22},{5,12},
+	  {7,8},{11,4},{13,3},{17,2},{19,2},{23,2},
+	  {29,1},{31,1},{37,1},{41,1},{43,1},{47,1}});
+*	3. (OK) $1/2 + ... + 1/10 = 4861/2520$
+	Verify(Sum(n,2,10,1/n) , 4861/2520);
+*	4. (OK) Evaluate $e^(Pi*Sqrt(163))$ to 50 decimal digits
+	Verify(N(1000000000000*(-262537412640768744 +
+	  Exp(Pi*Sqrt(163))), 50)> -0.75, True);
+*	5. (OK) Evaluate the Bessel function $J[2]$ numerically at $z=1+I$.
+	NumericEqual(N(BesselJ(2, 1+I)),
+	  0.4157988694e-1+I*0.2473976415,Builtin'Precision'Get());
+*	6. (OK) Obtain period of decimal fraction 1/7=0.(142857).
+	Verify(Decimal(1/7), {0,{1,4,2,8,5,7}});
+*	7. Continued fraction of 3.1415926535.
+	Verify([Local(p,r);p:=Builtin'Precision'Get();Builtin'Precision'Set(12);r:=ContFracList(3.1415926535, 6);Builtin'Precision'Set(p);r;],
+	  {3,7,15,1,292,1});
+*	8. (OK) $Sqrt(2*Sqrt(3)+4) = 1+Sqrt(3)$.
+	Verify(RadSimp(Sqrt(2*Sqrt(3)+4)), 1+Sqrt(3));
+*	9. (OK) $Sqrt(14+3*Sqrt(3+2*Sqrt(5-12*Sqrt(3-2*Sqrt(2))))) = 3+Sqrt(2)$.
+	Verify(RadSimp(Sqrt(14+3*Sqrt(3+2*Sqrt(5-12
+	  *Sqrt(3-2*Sqrt(2)))))), 3+Sqrt(2));
+*	10. (OK) $2*Infinity-3 = Infinity$.
+	Verify(2*Infinity-3, Infinity);
+*	11. (NO) Standard deviation of the sample (1, 2, 3, 4, 5).
+*	12. (NO) Hypothesis testing with $t$-distribution.
+*	13. (NO) Hypothesis testing with normal distribution (M. Wester probably meant the $chi^2$ distribution).
+*	14. (OK) $(x^2-4)/(x^2+4*x+4) = (x-2)/(x+2)$.
+	Verify(GcdReduce((x^2-4)/(x^2+4*x+4),x),
+	  (x-2)/(x+2));
+*	15. (NO) $(Exp(x)-1)/(Exp(x/2)+1) = Exp(x/2)-1$.
+*	16. (OK) Expand $(1+x)^20$, take derivative and factorize.
+	Factor(D(x) Expand((1+x)^20));
+*	17. (BUG/NO) Factorize $x^100-1$.
+	Factor(x^100-1);
+(returns the same expression unfactorized)
+*	18. (NO) Factorize $x^4-3*x^2+1$ in the field of rational numbers extended by roots of $x^2-x-1$.
+*	19. (NO) Factorize $x^4-3*x^2+1$ mod 5.
+*	20. (BUG) Partial fraction decomposition of $(x^2+2*x+3)/(x^3+4*x^2+5*x+2)$.
+	Apart((x^2+2*x+3)/(x^3+4*x^2+5*x+2), x);
+(does not obtain full partial fraction representation for higher-degree polynomials, e.g. $p(x)$/$(x+a)^n$)
+*	21. (NO) Assuming $x>=y$, $y>=z$, $z>=x$, deduce $x=z$.
+*	22. (NO) Assuming $x>y$, $y>0$, deduce $2*x^2>2*y^2$.
+*	23. (NO) Solve the inequality $Abs(x-1)>2$.
+*	24. (NO) Solve the inequality $(x-1)*...*(x-5)<0$.
+*	25. (NO) $Cos(3*x)/Cos(x) = Cos(x)^2-3*Sin(x)^2$ or similar equivalent combination.
+*	26. (NO) $Cos(3*x)/Cos(x) = 2*Cos(2*x)-1$.
+*	27. (OK) Define rewrite rules to match $Cos(3*x)/Cos(x) = Cos(x)^2-3*Sin(x)^2$.
+	Cos(3*_x)/Cos(_x) <-- Cos(x)^2-3*Sin(x)^2;
+*	28. (OK) $Sqrt(997)-(997^3)^(1/6) = 0$
+	Verify(RadSimp(Sqrt(997)-(997^3)^(1/6)), 0);
+*	29. (OK) $Sqrt(99983)-(99983^3)^(1/6) = 0$
+	Verify(RadSimp(Sqrt(99983)-(99983^3)^(1/6))
+	  , 0);
+*	30. (OK) $(2^(1/3)+4^(1/3))^2-6*(2^(1/3)+4^(1/3))-6 = 0$
+	Verify(RadSimp((2^(1/3)+4^(1/3))^3-6*(2^(1/3)+
+	  4^(1/3))-6), 0);
+*	31. (NO) $Ln(Tan(x/2+Pi/4))-ArcSinh(Tan(x))=0$
+*	32. (NO) Numerically, the expression $Ln(Tan(x/2+Pi/4))-ArcSinh(Tan(x))=0$ and its derivative at $x=0$ are zero.
+	Ln(Tan(x/2+Pi/4))-ArcSinh(Tan(x));
+	D(x)(Ln(Tan(x/2+Pi/4))-ArcSinh(Tan(x)));
+*	33. (NO) $Ln((2*Sqrt(r)+1)/Sqrt(4*r+4*Sqrt(r)+1)) = 0$.
+*	34. (NO) $(4*r+4*Sqrt(r)+1)^(Sqrt(r)/(2*Sqrt(r)+1)) * (2*Sqrt(r)+1)^((2*Sqrt(r)+1)^(-1)) - 2*Sqrt(r)-1 = 0$, assuming $r>0$.
+*	35. (OK) Obtain real and imaginary parts of $Ln(3+4*I)$.
+	Verify(
+	  Hold({ {x}, {Re(x), Im(x)}}) @ Ln(3+4*I)
+	  , {Ln(5),ArcTan(4/3)});
+*	36. (BUG) Obtain real and imaginary parts of $Tan(x+I*y)$.
+	Hold({ {x}, {Re(x), Im(x)}}) @ Tan(x+I*y);
+*	41. (BUG) Simplify $Ln(Exp(z))$ to $z$ for $-Pi<Im(z)<=Pi$.
+	Verify(Simplify(Ln(Exp(z))), z);
+(no conditions on $z$ are used)
+*	43. (NO) Assuming $Re(x)>0$, $Re(y)>0$, deduce $x^(1/n)*y^(1/n)-(x*y)^(1/n) = 0$.
+*	46. (NO) Transform equations, $(x==2)/2 + (1==1) => x/2+1==2$.  
+*	52. (BUG) Solve $Exp(x)=1$ and get all solutions.
+	Verify(Solve(Exp(x)==1,x), {x==0});
+(get only one solution)
+*	54. (BUG) Solve $Tan(x)=1$ and get all solutions.
+	Verify(Solve(Tan(x)==1,x), {x==Pi/4});
+(get only one solution)
+*	60. (OK) Solve a degenerate 3x3 linear system.
+	Verify(Simplify({x+y+z==6,2*x+y+2*z==10,x+3*y+z==10} Where Solve({x+y+z==6, 2*x+y+2*z==10,x+3*y+z==10}, {x,y,z})), {{0==0,0==0,0==0}});
+(the new routine {Solve} cannot do this yet)
+*	62. (OK) Invert a 2x2 symbolic matrix.
+	Verify(Simplify(Inverse({{a,b},{1,a*b}})),
+	  {{a/(a^2-1), -1/(a^2-1)},
+	  {-1/(b*(a^2-1)), a/(b*(a^2-1))}});
+*	63. (BUG) Compute the determinant of the 4x4 Vandermonde matrix.
+	Factor(Determinant(VandermondeMatrix
+	  ({a,b,c,d})));
+(this does not factor correctly)
+*	64. (OK) Find eigenvalues of a 3x3 integer matrix.
+	Verify(EigenValues({{5,-3,-7},{-2,1,2},
+	  {2,-3,-4}}) , {1,3,-2});
+*	71. (OK) Verify some standard limits found by L'Hopital's rule:
+	Verify(Limit(x,Infinity) (1+1/x)^x, Exp(1));
+	Verify(Limit(x,0) (1-Cos(x))/x^2, 1/2);
+*	76. (OK) $D(x) Abs(x)$
+	Verify(D(x) Abs(x), Sign(x));
+*	77. (OK) $(Integrate(x) Abs(x)) = Abs(x)*x/2$
+*REM (mathed version with dollar signs doesn't generate doc on MacOs X BSD FIXME?)
+
+	Verify(Simplify(Integrate(x) Abs(x)),
+	  Abs(x)*x/2);
+*	78. (OK) Compute derivative of $Abs(x)$, piecewise defined.
+	Verify(D(x)if(x<0) (-x) else x,
+	  Simplify(if(x<0) -1 else 1));
+*	79. (OK) Integrate $Abs(x)$, piecewise defined.
+	Verify(Simplify(Integrate(x)
+	  if(x<0) (-x) else x),
+	  Simplify(if(x<0) (-x^2/2) else x^2/2));
+*	91. (OK) Taylor series of $1/Sqrt(1-v^2/c^2)$ at $v=0$.
+	S := Taylor(v,0,4) 1/Sqrt(1-v^2/c^2);
+	TestYacas(S, 1+v^2/(2*c^2)+3/8*v^4/c^4);
+Note: The result of {Taylor} is not in convenient form but is equivalent.
+*	92. (OK) Compute the Taylor expansion of the inverse square of the above.
+	TestYacas(Taylor(v,0,4) 1/S^2, 1-v^2/c^2);
+Note: The result of {Taylor} is not in convenient form but is equivalent.
+*	93. (OK) (Taylor expansion of $Sin(x)$)/(Taylor expansion of $Cos(x)$) = (Taylor expansion of $Tan(x)$).
+	TestYacas(Taylor(x,0,5)(Taylor(x,0,5)Sin(x))/
+	  (Taylor(x,0,5)Cos(x)), Taylor(x,0,5)Tan(x));
+*	94. (BUG) Taylor expansion of $(Ln(x))^a*Exp(-b*x)$ at $x=1$.
+	//Taylor(x,1,3)(Ln(x))^a*Exp(-b*x);
+(bugs in Deriv manipulation)
+*	97. (BUG) Taylor expansion of $Ln(Sin(x)/x)$ at $x=0$.
+	//Taylor(x,0,5) Ln(Sin(x)/x);
+(never stops)
+*	98. (NO) Compute $n$-th term of the Taylor series of $Ln(Sin(x)/x)$ at $x=0$.
+*	99. (NO) Compute $n$-th term of the Taylor series of $Exp(-x)*Sin(x)$ at $x=0$.
+*	100. (OK) Solve $x=Sin(y)+Cos(y)$ for $y$ as Taylor series in $x$ at $x=1$.
+	TestYacas(InverseTaylor(y,0,4) Sin(y)+Cos(y),
+	  (y-1)+(y-1)^2/2+2*(y-1)^3/3+(y-1)^4);
+Note that {InverseTaylor} does not give the series in terms of $x$ but in terms of $y$ which is semantically wrong. But other CAS do the same.
+*	123. (OK) Compute Legendre polynomials directly from Rodrigues's formula, $P[n] = 1/(2*n)!! * Deriv(x,n) (x^2-1)^n$.
+	P(n,x) := Simplify( 1/(2*n)!! *
+	  Deriv(x,n) (x^2-1)^n );
+	TestYacas(P(4,x), (35*x^4)/8+(-15*x^2)/4+3/8);
+*	124. (OK) Compute Legendre polynomials $P[n]$ recursively.
+	Verify(OrthoP(4,x)
+	  , 3/8+((35*x^2)/8-15/4)*x^2);
+*	125. (OK) Compute Legendre polynomial $P[4]$ at $x=1$.
+	Verify(OrthoP(4,1), 1);
+*	126. (OK) Define the polynomial $p=Sum(i,1,5,a[i]*x^i)$.
+	p:=Sum(i,1,5,a[i]*x^i);
+	Verify(p, a[1]*x+a[2]*x^2+a[3]*x^3
+	  +a[4]*x^4+a[5]*x^5);
+*	127. (OK) Convert the above to Horner's form.
+	Verify(Horner(p, x), ((((a[5]*x+a[4])*x
+	  +a[3])*x+a[2])*x+a[1])*x);
+*	128. (NO) Convert the result of problem 127 to Fortran syntax.
+	CForm(Horner(p, x));
+*	129. (OK) Verify that $True And False = False$.
+	Verify(True And False, False);
+*	130. (OK) Prove $x$ Or Not $x$.
+	Verify(CanProve(x Or Not x), True);
+*	131. (OK) Prove $x Or y Or x And y => x Or y$.
+	Verify(CanProve(x Or y Or x And y => x Or y)
+	  , True);
+

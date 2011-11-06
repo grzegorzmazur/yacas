@@ -1,0 +1,288 @@
+/// Solve aritmetic problems written in (limited) English
+///
+/// Supported words:
+/// a an the is are and person persons object objects many has had ate gave to some made
+/// See coding.book section "Example: Using rules with special syntax operators creatively"
+
+
+Prefix("a", 10);
+Prefix("an", 10);
+Infix("to", 15);
+Prefix("the", 10);
+Prefix("many", 35);	// many apples and pears
+Infix("is", 20);
+Infix("had", 20);
+Infix("has", 20);
+Infix("ate", 20);
+Infix("gave", 20);
+Infix("made", 20);
+Prefix("some", 10);
+Infix("and", 30);
+Infix("are", 40);
+
+/// object name in person's inventory is stored in plural unless it's uncountable
+Knowledge := {
+	{"objects", {} },
+	{"countable objects", {} },
+	{"persons", {} }
+};
+
+/// articles a, an are the same as quantifiers and can be used only with countable objects
+10 # (an _x) _(Not IsList(x) And IsCountableObject(PluralFromSingular(x)))  <-- {PluralFromSingular(x), 1};
+10 # (a _x) _(Not IsList(x) And IsCountableObject(PluralFromSingular(x)))  <-- {PluralFromSingular(x), 1};
+// "the" with countable
+10 # (the _x) _(Not IsList(x) And IsCountableObject(PluralFromSingular(x)))  <-- {PluralFromSingular(x), 1};
+// "the" with uncountable
+20 # (the _x) _(Not IsList(x) And IsSomeObject(x))  <-- {x, 1};
+
+20 # _x is a person <-- DeclarePerson(x);
+20 # _x is an object <-- DeclareObject(x);
+
+/// multiple "and" clauses
+10 # x_IsList and _y <-- Concat(x, {y});
+15 # _x and _y <-- Concat({x}, {y});
+
+/// "some"
+some _obj <-- {obj, True};
+
+/// declare many objects or many persons at once
+20 # x_IsList are persons <-- MapSingle("DeclarePerson", x);
+20 # x_IsList are objects <-- MapSingle("DeclareObject", x);
+
+10 # there are many xs_IsList <-- MapSingle("DeclareCountable", xs);
+20 # there are many _xs <-- DeclareCountable(xs);
+
+/// aux function
+DeclarePerson(x) :=
+	// check that hasn't been already declared
+	If (
+		IsPerson(x),
+		Echo({"Note: we already know that ", x, " is a person"}),
+		[
+			// store knowledge: person with empty inventory list
+			Knowledge["persons"][String(x)] := {};
+			Echo({"OK, ", x, "is a person."});
+		]
+);
+
+/// predicates
+IsPerson(x) := Contains(AssocIndices(Knowledge["persons"]), String(x));
+/// countable objects are always in plural (IsCountableObject(apple) <-- False if "apples" is defined)
+IsCountableObject(x) := Contains(Knowledge["countable objects"], String(x));
+/// IsSomeObject(x) means that either x is uncountable, or the plural form of x is countable
+IsSomeObject(x) := Contains(Knowledge["objects"], String(x));
+
+/// AssumeIsPerson will always return True and will declare a person if needed
+AssumeIsPerson(x) := If(IsPerson(x), True, DeclarePerson(x));
+
+/// declare uncountable object
+DeclareObject(x) :=
+	// check that hasn't been already declared
+	If (
+		IsSomeObject(x) Or IsCountableObject(x),
+		Echo({"Note: we already know that ", x, " is an object"}),
+		[
+			// store knowledge: object name
+			Push(Knowledge["objects"], String(x));
+			Echo({"OK, ", x, "is an object."});
+		]
+	);
+
+DeclareCountable(x) := [
+	Local(singular);
+	singular := SingularFromPlural(x);
+	DeclareObject(singular);
+	// check that hasn't been already declared
+	If(
+		IsCountableObject(x),
+		Echo({"Note: we already know that there are many ", x}),
+		[
+			// store knowledge: countable object
+			Push(Knowledge["countable objects"], String(x));
+			MacroRuleBase(String(x), {n});
+			MacroRule(String(x), 1, 1, True) {x, n};
+			// Postfix does not evaluate its argument, so need to jump through hoops
+			Eval(UnList({Postfix, String(x)} ));
+			Echo({"OK, we assume that the plural of \"", singular, "\" is \"", x, "\"."});
+		]
+	);		
+];
+
+
+
+
+/// get singular forms from plural, e.g. apples->apple
+SingularFromPlural(x) := [
+	Local(singular);
+	singular := String(x);	// cut the ending "s"
+	singular := StringMid'Get(1, Length(singular)-1, singular);
+	Atom(singular);
+];
+
+/// get plural forms from singular, e.g. apple->apples
+PluralFromSingular(x) := [
+	Local(plural);
+	plural := ConcatStrings(String(x), "s");	// add the ending "s"
+	Atom(plural);
+];
+
+/// find out how much they have and print an atom as a result
+/// note that "x has {list}" is a predicate defined below
+/// print number for countable objects and "some" or "no" for uncountable
+10 # (_x has _obj)_(Not IsList(obj)) <-- [
+	Local(quantity);
+	// defined "quantity" just to save typing
+	quantity := Knowledge["persons"][String(x)][String(obj)];
+	If(
+		IsPerson(x),
+		If(quantity=0 Or quantity=Empty, no, 
+			If(IsSomeObject(obj), "some", quantity
+			)
+		)
+		, False
+	);
+];
+
+/// predicates to check who has what -- note difference from the above function
+10 # _x has {_obj, True} <-- IsPerson(x) And Knowledge["persons"][String(x)][String(obj)] != Empty And Knowledge["persons"][String(x)][String(obj)] > 0;
+20 # _x has {_obj, n_IsInteger} <-- IsPerson(x) And Knowledge["persons"][String(x)][String(obj)] = n;
+
+/// limitation: cannot match abstract functions with special syntax, e.g. can't do this:
+///10 # (x_IsPerson had _obj(n_IsInteger)) <-- ...;
+/// when _obj is supposed to match *any* prefix operator.
+/// therefore we shall transform object quantifiers first.
+
+/// "x had N As" parsed into "Serge had {apples, 6}"
+10 # (x_AssumeIsPerson had {_obj, n_IsInteger}) _ (IsCountableObject(obj) Or n = 1 And IsSomeObject(obj)) <-- [
+	// check knowledge: did they have it before? if yes, print warning
+	If(
+		x has some obj,	// need to check if it is consistent
+		If(
+			x has {obj, n},
+			Echo({"Note: we already know that ", x, " had ", n, " ", obj, " at that time."}),
+			[
+				Echo({"Error: we know that ", x," had ", x has obj, " ", obj, " at that time."});
+				False;
+			]
+		),
+		[
+			// store knowledge: x now has n obj's
+			Knowledge["persons"][String(x)][String(obj)] := n;
+			Synopsis(x, obj);
+		]
+	);
+];
+
+/// "x ate N As" 
+10 # (x_AssumeIsPerson ate {_obj, n_IsInteger}) _ (IsCountableObject(obj) Or n = 1 And IsSomeObject(obj)) <--
+	// check knowledge: did they have it before? if yes, print warning
+If(
+	(x has some obj) And (IsCountableObject(obj) And (x has obj) >= n Or Not IsCountableObject(obj)),	// need to check if it is consistent
+	[
+		// store knowledge: x now has fewer obj's
+		Knowledge["persons"][String(x)][String(obj)] := Knowledge["persons"][String(x)][String(obj)] - n;
+		Synopsis(x, obj);
+	],
+	[
+		Echo({"Error: ", x, " does not have enough ", obj, " at this time."});
+		False;
+	]
+);
+
+/// aux function to print diagnostic messages
+Synopsis(x, obj) := Echo({"OK, ", x, " has ", x has obj, " ", obj, " now."});
+
+/// X ate some A (uncountable only)
+20 # (x_AssumeIsPerson ate {_obj, True}) _ (Not IsList(obj) And IsSomeObject(obj)) <--
+	If(
+		x has some obj,
+		Echo({"OK, ", x, " still has some ", obj}),
+		[
+			Echo({"Error: ", x, " does not have any ", obj});
+			False;
+		]
+	);
+/// X ate A
+30 # (x_AssumeIsPerson ate _obj)_ (Not IsList(obj) And IsSomeObject(obj)) <-- x ate {If(IsCountableObject(PluralFromSingular(obj)), PluralFromSingular(obj), obj), 1};
+
+/// interface for "had" in case we are dealing with uncountable objects
+/// {obj, True} is a result of "some obj"
+20 # (x_AssumeIsPerson had {_obj, True}) _ (Not IsList(obj)) <-- x had {obj, 1};
+/// just "obj" means "1 obj" or "1 objs" depending on whether "obj" is countable
+30 # (x_AssumeIsPerson had _obj) _ (Not IsList(obj)) <-- x had {If(IsCountableObject(PluralFromSingular(obj)), PluralFromSingular(obj), obj), 1};
+
+/// making new objects
+10 # (x_AssumeIsPerson made {_obj, n_IsInteger}) _ (IsCountableObject(obj) Or n = 1 And IsSomeObject(obj)) <-- [
+	Local(quantity);
+	quantity := Knowledge["persons"][String(x)][String(obj)];
+	If(IsNumber(quantity),
+		quantity := quantity + n,
+		quantity := n
+	);
+	Knowledge["persons"][String(x)][String(obj)] := quantity;
+	Synopsis(x, obj);
+];
+
+/// interface for making "some" new object
+20 # (x_AssumeIsPerson made {_obj, True}) _ (Not IsList(obj) And IsSomeObject(obj) And Not IsCountableObject(PluralFromSingular(obj))) <-- x made {obj, 1};
+30 # (x_AssumeIsPerson made _obj) _ (Not IsList(obj)) <-- x made {If(IsCountableObject(PluralFromSingular(obj)), PluralFromSingular(obj), obj), 1};
+
+/// giving objects to other people
+10 # _x gave _obj to _y <-- [
+	x ate obj;
+	y made obj;
+];
+
+/// knowledgebase is stored in a global variable Knowledge
+/// format: {{"persons", {{"name", {{"objname", quantity}, ...}}, ...} }, {"objects", {"name", ... } }, {"countable objects", {"name", ... } }  }
+
+/// print all knowledge
+Knowledge() := [
+	Local(person, object);
+	Echo("OK, this is what we know:");
+	WriteString("Persons: ");
+	WriteString(PrintList(AssocIndices(Knowledge["persons"])));
+	NewLine();
+	WriteString("Object names: ");
+	WriteString(PrintList(Knowledge["objects"]));
+	NewLine();
+	WriteString("Countable objects: ");
+	WriteString(PrintList(Knowledge["countable objects"]));
+	NewLine();
+	ForEach(person, AssocIndices(Knowledge["persons"]))
+	[
+		Echo({person, " has: "});
+		ForEach(object, AssocIndices(Knowledge["persons"][person]))
+			Echo({Atom(person) has Atom(object), Atom(object)});
+		Echo("");
+	];
+];
+
+/// testing
+/*
+
+Jitse and Ayal are persons;
+apple is an object;
+there are many apples and pears;
+Serge had an apple;
+Jitse had (10!) pears;
+Ayal had (2+3) apples and Serge had 2 pears;
+Serge ate the apple;
+Ayal ate a pear;	// this should fail
+Ayal gave an apple to Serge and Serge gave a pear to Ayal;
+Ayal ate a pear;
+soup is an object and Ayal had some soup;
+Ayal gave soup to Serge and Serge ate the soup;
+Serge has soup
+Serge has apples
+Ayal has apples
+Serge has some soup
+Serge has some apples
+Ayal has some pears
+Knowledge();
+software is an object
+Ayal made some software
+Ayal gave some software to everyone
+Knowledge();
+
+//*/

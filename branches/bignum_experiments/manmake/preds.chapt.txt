@@ -1,0 +1,953 @@
+
+			Predicates
+
+*INTRO
+A predicate is a function that returns a boolean value, i.e. {True} or {False}. Predicates are
+often used in patterns, For instance, a rule that only holds for a
+positive integer would use a pattern such as {n_IsPositiveInteger}.
+
+
+*CMD != --- test for "not equal"
+*STD
+*CALL
+	e1 != e2
+Precedence:
+*EVAL OpPrecedence("!=")
+
+
+*PARMS
+
+{e1}, {e2} -- expressions to be compared
+
+*DESC
+
+Both expressions are evaluated and compared. If they turn out to be
+equal, the result is {False}. Otherwise, the result
+is {True}.
+
+The expression {e1 != e2} is equivalent to {Not(e1 = e2)}.
+
+*E.G.
+
+	In> 1 != 2;
+	Out> True;
+	In> 1 != 1;
+	Out> False;
+
+*SEE =
+
+*CMD = --- test for equality of expressions
+*STD
+*CALL
+	e1 = e2
+Precedence:
+*EVAL OpPrecedence("=")
+
+
+*PARMS
+
+{e1}, {e2} -- expressions to be compared
+
+*DESC
+
+Both expressions are evaluated and compared. If they turn out to be equal, the
+result is {True}. Otherwise, the result is {False}. The function {Equals} does
+the same.
+
+Note that the test is on syntactic equality, not mathematical equality. Hence
+even if the result is {False}, the expressions can still be
+<i>mathematically</i> equal; see the examples below. Put otherwise, this
+function tests whether the two expressions would be displayed in the same way
+if they were printed.
+
+*E.G.
+
+	In> e1 := (x+1) * (x-1);
+	Out> (x+1)*(x-1);
+	In> e2 := x^2 - 1;
+	Out> x^2-1;
+	
+	In> e1 = e2;
+	Out> False;
+	In> Expand(e1) = e2;
+	Out> True;
+
+*SEE !=, Equals
+
+*CMD Not --- logical negation
+*CORE
+*CALL
+	Not expr
+
+*PARMS
+
+{expr} -- a boolean expression
+
+*DESC
+
+Not returns the logical negation of the argument expr. If {expr} is
+{False} it returns {True}, and if {expr} is {True}, {Not expr} returns {False}.
+If the argument is neither {True} nor {False}, it returns the entire
+expression with evaluated arguments.
+
+*E.G.
+
+	In> Not True
+	Out> False;
+	In> Not False
+	Out> True;
+	In> Not(a)
+	Out> Not a;
+
+*SEE And, Or
+
+*CMD And --- logical conjunction
+*CORE
+*CALL
+	a1 And a2
+Precedence:
+*EVAL OpPrecedence("And")
+
+	And(a1, a2, a3, ..., aN)
+
+*PARMS
+
+{a}1, ..., {a}N -- boolean values (may evaluate to {True} or {False})
+
+*DESC
+
+This function returns {True} if all arguments are true. The
+{And} operation is "lazy", i.e. it returns {False} as soon as a {False} argument
+is found (from left to right). If an argument other than {True} or
+{False} is encountered a new {And} expression is returned with all
+arguments that didn't evaluate to {True} or {False} yet.
+
+*E.G.
+
+	In> True And False
+	Out> False;
+	In> And(True,True)
+	Out> True;
+	In> False And a
+	Out> False;
+	In> True And a
+	Out> And(a);
+	In> And(True,a,True,b)
+	Out> b And a;
+
+*SEE Or, Not
+
+*CMD Or --- logical disjunction
+*CORE
+*CALL
+	a1 Or a2
+Precedence:
+*EVAL OpPrecedence("Or")
+	Or(a1, a2, a3, ..., aN)
+
+*PARMS
+
+{a}1, ..., {a}N -- boolean expressions (may evaluate to {True} or {False})
+
+*DESC
+
+This function returns {True} if an argument is encountered
+that is true (scanning from left to right). The
+{Or} operation is "lazy", i.e. it returns {True} as soon as a {True} argument
+is found (from left to right). If an argument other than {True} or
+{False} is encountered, an unevaluated {Or} expression is returned with all
+arguments that didn't evaluate to {True} or {False} yet.
+
+*E.G.
+
+	In> True Or False
+	Out> True;
+	In> False Or a
+	Out> Or(a);
+	In> Or(False,a,b,True)
+	Out> True;
+
+*SEE And, Not
+
+*CMD IsFreeOf --- test whether expression depends on variable
+*STD
+*CALL
+	IsFreeOf(var, expr)
+	IsFreeOf({var, ...}, expr)
+
+*PARMS
+
+{expr} -- expression to test
+
+{var} -- variable to look for in "expr"
+
+*DESC
+
+This function checks whether the expression "expr" (after being
+evaluated) depends on the variable "var". It returns {False} if this is the case and {True}
+otherwise.
+
+The second form test whether the expression depends on <i>any</i> of
+the variables named in the list. The result is {True} if none of the variables appear in the expression and {False} otherwise.
+
+*E.G.
+
+	In> IsFreeOf(x, Sin(x));
+	Out> False;
+	In> IsFreeOf(y, Sin(x));
+	Out> True;
+	In> IsFreeOf(x, D(x) a*x+b);
+	Out> True;
+	In> IsFreeOf({x,y}, Sin(x));
+	Out> False;
+
+The third command returns {True} because the
+expression {D(x) a*x+b} evaluates to {a}, which does not depend on {x}.
+
+*SEE Contains
+
+*CMD IsZeroVector --- test whether list contains only zeroes
+*STD
+*CALL
+	IsZeroVector(list)
+
+*PARMS
+
+{list} -- list to compare against the zero vector
+
+*DESC
+
+The only argument given to {IsZeroVector} should be
+a list. The result is {True} if the list contains
+only zeroes and {False} otherwise.
+
+*E.G.
+
+	In> IsZeroVector({0, x, 0});
+	Out> False;
+	In> IsZeroVector({x-x, 1 - D(x) x});
+	Out> True;
+
+*SEE IsList, ZeroVector
+
+*CMD IsNonObject --- test whether argument is not an {Object()}
+*STD
+*CALL
+	IsNonObject(expr)
+
+*PARMS
+
+{expr} -- the expression to examine
+
+*DESC
+
+This function returns {True} if "expr" is not of
+the form {Object(...)} and {False}
+otherwise.
+
+*HEAD Bugs
+
+In fact, the result is always {True}.
+
+*SEE Object
+
+*CMD IsEven --- test for an even integer
+*STD
+*CALL
+	IsEven(n)
+
+*PARMS
+
+{n} -- integer to test
+
+*DESC
+
+This function tests whether the integer "n" is even. An integer is
+even if it is divisible by two. Hence the even numbers are 0, 2, 4, 6,
+8, 10, etc., and -2, -4, -6, -8, -10, etc.
+
+*E.G.
+
+	In> IsEven(4);
+	Out> True;
+	In> IsEven(-1);
+	Out> False;
+
+*SEE IsOdd, IsInteger
+
+*CMD IsOdd --- test for an odd integer
+*STD
+*CALL
+	IsOdd(n)
+
+*PARMS
+
+{n} -- integer to test
+
+*DESC
+
+This function tests whether the integer "n" is odd. An integer is
+odd if it is not divisible by two. Hence the odd numbers are 1, 3, 5,
+7, 9, etc., and -1, -3, -5, -7, -9, etc.
+
+*E.G.
+
+	In> IsOdd(4);
+	Out> False;
+	In> IsOdd(-1);
+	Out> True;
+
+*SEE IsEven, IsInteger
+
+
+
+
+*CMD IsEvenFunction --- Return true if function is an even function, False otherwise
+*CMD IsOddFunction --- Return true if function is an odd function, False otherwise
+
+*STD
+*CALL
+	IsEvenFunction(expression,variable)
+	IsOddFunction(expression,variable)
+
+*PARMS
+
+{expression} -- mathematical expression
+{variable} -- variable
+
+*DESC
+
+These functions return True if Yacas can determine that the
+function is even or odd respectively. Even functions are
+defined to be functions that have the property:
+
+$$ f(x) = f(-x) $$
+
+And odd functions have the property:
+
+$$ f(x) = -f(-x) $$
+
+{Sin(x)} is an example of an odd function, and {Cos(x)}
+is an example of an even function.
+
+As a side note, one can decompose a function into an
+even and an odd part:
+
+$$ f(x) = f_even(x) + f_odd(x) $$
+
+Where 
+
+$$ f_even(x) = (f(x)+f(-x))/2 $$
+
+and
+
+$$ f_odd(x) = (f(x)-f(-x))/2 $$
+
+*EG
+
+	In> IsEvenFunction(Cos(b*x),x)
+	Out> True
+	In> IsOddFunction(Cos(b*x),x)
+	Out> False
+	In> IsOddFunction(Sin(b*x),x)
+	Out> True
+	In> IsEvenFunction(Sin(b*x),x)
+	Out> False
+	In> IsEvenFunction(1/x^2,x)
+	Out> True
+	In> IsEvenFunction(1/x,x)
+	Out> False
+	In> IsOddFunction(1/x,x)
+	Out> True
+	In> IsOddFunction(1/x^2,x)
+	Out> False
+
+*SEE Sin, Cos
+
+
+
+*CMD IsFunction --- test for a composite object
+*CORE
+*CALL
+	IsFunction(expr)
+
+*PARMS
+
+{expr} -- expression to test
+
+*DESC
+
+This function tests whether "expr" is a composite object, i.e. not an
+atom. This includes not only obvious functions such as {f(x)}, but also expressions such as {x+5} and lists.
+
+*E.G.
+
+	In> IsFunction(x+5);
+	Out> True;
+	In> IsFunction(x);
+	Out> False;
+
+*SEE IsAtom, IsList, Type
+
+*CMD IsAtom --- test for an atom
+*CORE
+*CALL
+	IsAtom(expr)
+
+*PARMS
+
+{expr} -- expression to test
+
+*DESC
+
+This function tests whether "expr" is an atom. Numbers, strings, and
+variables are all atoms.
+
+*E.G.
+
+	In> IsAtom(x+5);
+	Out> False;
+	In> IsAtom(5);
+	Out> True;
+
+*SEE IsFunction, IsNumber, IsString
+
+*CMD IsString --- test for an string
+*CORE
+*CALL
+	IsString(expr)
+
+*PARMS
+
+{expr} -- expression to test
+
+*DESC
+
+This function tests whether "expr" is a string. A string is a text
+within quotes, e.g. {"duh"}.
+
+*E.G.
+
+	In> IsString("duh");
+	Out> True;
+	In> IsString(duh);
+	Out> False;
+
+*SEE IsAtom, IsNumber
+
+*CMD IsNumber --- test for a number
+*CORE
+*CALL
+	IsNumber(expr)
+
+*PARMS
+
+{expr} -- expression to test
+
+*DESC
+
+This function tests whether "expr" is a number. There are two kinds
+of numbers, integers (e.g. 6) and reals (e.g. -2.75 or 6.0). Note that a
+complex number is represented by the {Complex}
+function, so {IsNumber} will return {False}.
+
+*E.G.
+
+	In> IsNumber(6);
+	Out> True;
+	In> IsNumber(3.25);
+	Out> True;
+	In> IsNumber(I);
+	Out> False;
+	In> IsNumber("duh");
+	Out> False;
+
+*SEE IsAtom, IsString, IsInteger, IsPositiveNumber, IsNegativeNumber, Complex
+
+*CMD IsList --- test for a list
+*CORE
+*CALL
+	IsList(expr)
+
+*PARMS
+
+{expr} -- expression to test
+
+*DESC
+
+This function tests whether "expr" is a list. A list is a sequence
+between curly braces, e.g. {{2, 3, 5}}.
+
+*E.G.
+
+	In> IsList({2,3,5});
+	Out> True;
+	In> IsList(2+3+5);
+	Out> False;
+
+*SEE IsFunction
+
+*CMD IsNumericList --- test for a list of numbers
+*STD
+*CALL
+	IsNumericList({list})
+
+*PARMS
+
+{{list}} -- a list
+
+*DESC
+Returns {True} when called on a list of numbers or expressions that evaluate to numbers using {N()}. Returns {False} otherwise.
+
+*SEE N, IsNumber
+
+*CMD IsBound --- test for a bound variable
+*CORE
+*CALL
+	IsBound(var)
+
+*PARMS
+
+{var} -- variable to test
+
+*DESC
+
+This function tests whether the variable "var" is bound, i.e. whether
+it has been assigned a value. The argument "var" is not evaluated.
+
+*E.G.
+
+	In> IsBound(x);
+	Out> False;
+	In> x := 5;
+	Out> 5;
+	In> IsBound(x);
+	Out> True;
+
+*SEE IsAtom
+
+*CMD IsBoolean --- test for a Boolean value
+*STD
+*CALL
+	IsBoolean(expression)
+
+*PARMS
+
+{expression} -- an expression
+
+*DESC
+
+IsBoolean returns True if the argument is of a boolean type.
+This means it has to be either True, False, or an expression involving
+functions that return a boolean result, e.g.
+{=}, {>}, {<}, {>=}, {<=}, {!=}, {And}, {Not}, {Or}.
+
+*E.G.
+
+	In> IsBoolean(a)
+	Out> False;
+	In> IsBoolean(True)
+	Out> True;
+	In> IsBoolean(a And b)
+	Out> True;
+
+*SEE True, False
+
+*CMD IsNegativeNumber --- test for a negative number
+*STD
+*CALL
+	IsNegativeNumber(n)
+
+*PARMS
+
+{n} -- number to test
+
+*DESC
+
+{IsNegativeNumber(n)} evaluates to {True} if $n$ is (strictly) negative, i.e.
+if $n<0$. If {n} is not a number, the functions return {False}. 
+
+*E.G.
+
+	In> IsNegativeNumber(6);
+	Out> False;
+	In> IsNegativeNumber(-2.5);
+	Out> True;
+
+*SEE IsNumber, IsPositiveNumber, IsNotZero, IsNegativeInteger, IsNegativeReal
+
+*CMD IsNegativeInteger --- test for a negative integer
+*STD
+*CALL
+	IsNegativeInteger(n)
+
+*PARMS
+
+{n} -- integer to test
+
+*DESC
+
+This function tests whether the integer {n} is (strictly)
+negative. The negative integers are -1, -2, -3, -4, -5, etc. If
+{n} is not a integer, the function returns {False}.
+
+*E.G.
+
+	In> IsNegativeInteger(31);
+	Out> False;
+	In> IsNegativeInteger(-2);
+	Out> True;
+
+*SEE IsPositiveInteger, IsNonZeroInteger, IsNegativeNumber
+
+*CMD IsPositiveNumber --- test for a positive number
+*STD
+*CALL
+	IsPositiveNumber(n)
+
+*PARMS
+
+{n} -- number to test
+
+*DESC
+
+{IsPositiveNumber(n)} evaluates to {True} if $n$ is (strictly) positive, i.e.
+if $n>0$. If {n} is not a number the function returns {False}.
+
+*E.G.
+
+	In> IsPositiveNumber(6);
+	Out> True;
+	In> IsPositiveNumber(-2.5);
+	Out> False;
+
+*SEE IsNumber, IsNegativeNumber, IsNotZero, IsPositiveInteger, IsPositiveReal
+
+*CMD IsPositiveInteger --- test for a positive integer
+*STD
+*CALL
+	IsPositiveInteger(n)
+
+*PARMS
+
+{n} -- integer to test
+
+*DESC
+
+This function tests whether the integer {n} is (strictly) positive. The
+positive integers are 1, 2, 3, 4, 5, etc. If {n} is not a integer, the
+function returns {False}.
+
+*E.G.
+
+	In> IsPositiveInteger(31);
+	Out> True;
+	In> IsPositiveInteger(-2);
+	Out> False;
+
+*SEE IsNegativeInteger, IsNonZeroInteger, IsPositiveNumber
+
+*CMD IsNotZero --- test for a nonzero number
+*STD
+*CALL
+	IsNotZero(n)
+
+*PARMS
+
+{n} -- number to test
+
+*DESC
+
+{IsNotZero(n)} evaluates to {True} if {n} is not zero. In case {n} is not a
+number, the function returns {False}.
+
+*E.G.
+
+	In> IsNotZero(3.25);
+	Out> True;
+	In> IsNotZero(0);
+	Out> False;
+
+*SEE IsNumber, IsPositiveNumber, IsNegativeNumber, IsNonZeroInteger
+
+*CMD IsNonZeroInteger --- test for a nonzero integer
+*STD
+*CALL
+	IsNonZeroInteger(n)
+
+*PARMS
+
+{n} -- integer to test
+
+*DESC
+
+This function tests whether the integer {n} is not zero. If {n} is
+not an integer, the result is {False}.
+
+*E.G.
+
+	In> IsNonZeroInteger(0)
+	Out> False;
+	In> IsNonZeroInteger(-2)
+	Out> True;
+
+*SEE IsPositiveInteger, IsNegativeInteger, IsNotZero
+
+*CMD IsInfinity --- test for an infinity
+*STD
+*CALL
+	IsInfinity(expr)
+
+*PARMS
+
+{expr} -- expression to test
+
+*DESC
+
+This function tests whether {expr} is an infinity. This is only the
+case if {expr} is either {Infinity} or {-Infinity}.
+
+*E.G.
+
+	In> IsInfinity(10^1000);
+	Out> False;
+	In> IsInfinity(-Infinity);
+	Out> True;
+
+*SEE Integer
+
+*CMD IsPositiveReal --- test for a numerically positive value
+*STD
+*CALL
+	IsPositiveReal(expr)
+
+*PARMS
+
+{expr} -- expression to test
+
+*DESC
+
+This function tries to approximate "expr" numerically. It returns {True} if this approximation is positive. In case no
+approximation can be found, the function returns {False}. Note that round-off errors may cause incorrect
+results.
+
+*E.G.
+
+	In> IsPositiveReal(Sin(1)-3/4);
+	Out> True;
+	In> IsPositiveReal(Sin(1)-6/7);
+	Out> False;
+	In> IsPositiveReal(Exp(x));
+	Out> False;
+
+The last result is because {Exp(x)} cannot be
+numerically approximated if {x} is not known. Hence
+Yacas can not determine the sign of this expression.
+
+*SEE IsNegativeReal, IsPositiveNumber, N
+
+*CMD IsNegativeReal --- test for a numerically negative value
+*STD
+*CALL
+	IsNegativeReal(expr)
+
+*PARMS
+
+{expr} -- expression to test
+
+*DESC
+
+This function tries to approximate {expr} numerically. It returns {True} if this approximation is negative. In case no
+approximation can be found, the function returns {False}. Note that round-off errors may cause incorrect
+results.
+
+*E.G.
+
+	In> IsNegativeReal(Sin(1)-3/4);
+	Out> False;
+	In> IsNegativeReal(Sin(1)-6/7);
+	Out> True;
+	In> IsNegativeReal(Exp(x));
+	Out> False;
+
+The last result is because {Exp(x)} cannot be
+numerically approximated if {x} is not known. Hence
+Yacas can not determine the sign of this expression.
+
+*SEE IsPositiveReal, IsNegativeNumber, N
+
+*CMD IsConstant --- test for a constant
+*STD
+*CALL
+	IsConstant(expr)
+
+*PARMS
+
+{expr} -- some expression
+
+*DESC
+
+{IsConstant} returns {True} if the
+expression is some constant or a function with constant arguments. It
+does this by checking that no variables are referenced in the
+expression. {Pi} is considered a constant.
+
+*E.G.
+
+	In> IsConstant(Cos(x))
+	Out> False;
+	In> IsConstant(Cos(2))
+	Out> True;
+	In> IsConstant(Cos(2+x))
+	Out> False;
+
+*SEE IsNumber, IsInteger, VarList
+
+
+*CMD IsGaussianInteger ---  test for a Gaussian integer
+*STD
+*CALL
+	IsGaussianInteger(z)
+*PARMS
+
+{z} -- a complex or real number	
+
+*DESC
+
+This function returns {True} if the argument is a Gaussian integer and {False} otherwise.
+A Gaussian integer is a generalization
+of integers into the complex plane. A complex number $a+b*I$ is a Gaussian
+integer if and only if $a$ and $b$ are integers.
+
+*E.G.
+	In> IsGaussianInteger(5)
+	Out> True;
+	In> IsGaussianInteger(5+6*I)
+	Out> True;
+	In> IsGaussianInteger(1+2.5*I)
+	Out> False;
+
+*SEE  IsGaussianUnit, IsGaussianPrime
+
+
+*CMD MatchLinear --- match an expression to a polynomial of degree one in a variable
+*STD
+*CALL
+	MatchLinear(x,expr)
+
+*PARMS
+
+{x} -- variable to express the univariate polynomial in
+
+{expr} -- expression to match
+
+*DESC
+
+{MatchLinear} tries to match an expression to a linear (degree less than
+two) polynomial. The function returns {True} if it could match, and
+it stores the resulting coefficients in the variables "{a}" and "{b}"
+as a side effect. The function calling this predicate should declare
+local variables "{a}" and "{b}" for this purpose.
+{MatchLinear} tries to match to constant coefficients which don't
+depend on the variable passed in, trying to find a form "{a*x+b}"
+with "{a}" and "{b}" not depending on {x} if {x} is given as the variable.
+
+*E.G.
+
+	In> MatchLinear(x,(R+1)*x+(T-1))
+	Out> True;
+	In> {a,b};
+	Out> {R+1,T-1};
+	In> MatchLinear(x,Sin(x)*x+(T-1))
+	Out> False;
+
+*SEE Integrate
+
+
+*CMD HasExpr --- check for expression containing a subexpression
+*CMD HasExprArith --- check for expression containing a subexpression
+*CMD HasExprSome --- check for expression containing a subexpression
+*STD
+*CALL
+	HasExpr(expr, x)
+	HasExprArith(expr, x)
+	HasExprSome(expr, x, list)
+
+*PARMS
+
+{expr} -- an expression
+
+{x} -- a subexpression to be found
+
+{list} -- list of function atoms to be considered "transparent"
+
+*DESC
+
+The command {HasExpr} returns {True} if the expression {expr} contains a literal subexpression {x}. The expression is recursively traversed.
+
+The command {HasExprSome} does the same, except it only looks at arguments of a given {list} of functions. All other functions become "opaque" (as if they do not contain anything).
+
+{HasExprArith} is defined through {HasExprSome} to look only at arithmetic operations {+}, {-}, {*}, {/}.
+
+Note that since the operators "{+}" and "{-}" are prefix as well as infix operators, it is currently required to use {Atom("+")} to obtain the unevaluated atom "{+}".
+
+*E.G.
+
+	In> HasExpr(x+y*Cos(Ln(z)/z), z)
+	Out> True;
+	In> HasExpr(x+y*Cos(Ln(z)/z), Ln(z))
+	Out> True;
+	In> HasExpr(x+y*Cos(Ln(z)/z), z/Ln(z))
+	Out> False;
+	In> HasExprArith(x+y*Cos(Ln(x)/x), z)
+	Out> False;
+	In> HasExprSome({a+b*2,c/d},c/d,{List})
+	Out> True;
+	In> HasExprSome({a+b*2,c/d},c,{List})
+	Out> False;
+
+*SEE FuncList, VarList, HasFunc
+
+*CMD HasFunc --- check for expression containing a function
+*CMD HasFuncArith --- check for expression containing a function
+*CMD HasFuncSome --- check for expression containing a function
+*STD
+*CALL
+	HasFunc(expr, func)
+	HasFuncArith(expr, func)
+	HasFuncSome(expr, func, list)
+
+*PARMS
+
+{expr} -- an expression
+
+{func} -- a function atom to be found
+
+{list} -- list of function atoms to be considered "transparent"
+
+*DESC
+
+The command {HasFunc} returns {True} if the expression {expr} contains a function {func}. The expression is recursively traversed.
+
+The command {HasFuncSome} does the same, except it only looks at arguments of a given {list} of functions. Arguments of all other functions become "opaque" (as if they do not contain anything).
+
+{HasFuncArith} is defined through {HasFuncSome} to look only at arithmetic operations {+}, {-}, {*}, {/}.
+
+Note that since the operators "{+}" and "{-}" are prefix as well as infix operators, it is currently required to use {Atom("+")} to obtain the unevaluated atom "{+}".
+
+*E.G.
+
+	In> HasFunc(x+y*Cos(Ln(z)/z), Ln)
+	Out> True;
+	In> HasFunc(x+y*Cos(Ln(z)/z), Sin)
+	Out> False;
+	In> HasFuncArith(x+y*Cos(Ln(x)/x), Cos)
+	Out> True;
+	In> HasFuncArith(x+y*Cos(Ln(x)/x), Ln)
+	Out> False;
+	In> HasFuncSome({a+b*2,c/d},/,{List})
+	Out> True;
+	In> HasFuncSome({a+b*2,c/d},*,{List})
+	Out> False;
+
+*SEE FuncList, VarList, HasExpr

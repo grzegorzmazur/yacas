@@ -1,0 +1,175 @@
+/*
+ * File `rabinmiller.ys' is an implementation of the
+ *           Rabin-Miller primality test.
+ */
+
+
+/*
+ * FastModularPower(a, b, n) computes a^b (mod n) efficiently.
+ * This function is called by IsStronglyProbablyPrime. 
+ */
+
+FastModularPower(a_IsPositiveInteger, b_IsPositiveInteger, n_IsPositiveInteger) <-- 
+[
+  Local(p, j, r);
+  p := a;
+  j := b;
+  r := 1;
+
+  While (j > 0)
+    [
+      If (IsOdd(j), r := MathMod(r*p, n));
+      p := MathMod(p*p, n);
+      j := ShiftRight(j, 1);
+    ];
+  r;
+];
+
+
+/*
+ * An integer n is `strongly-probably-prime' for base b if
+ *
+ *                   b^q = 1 (mod n) or
+ * b^(q*2^i) = -1 (mod n) for some i such that 0 <= i < r
+ *
+ *    where q and r are such that n-1 = q*2^r and q is odd.
+ *
+ * If an integer is not strongly-probably-prime for a given
+ * base b, then it is composed. The reciprocal is false.
+ * Composed strongly-probably-prime numbers for base b
+ * are called `strong pseudoprimes' for base b.
+ */
+// this will return a pair {root, True/False}
+IsStronglyProbablyPrime(b_IsPositiveInteger, n_IsPositiveInteger) <-- 
+[
+  Local(m, q, r, a, flag, i, root);
+  m := n-1;
+  q := m;
+  r := 0;
+  root := 0;	// will be the default return value of the "root"
+  While (IsEven(q))
+  [
+    q := ShiftRight(q, 1);
+    r++;
+  ];
+  
+  a := FastModularPower(b, q, n);
+  flag := (a = 1 Or a = m);
+  i := 1;
+
+  While (Not(flag) And (i < r))
+  [
+	root := a;	// this is the value of the root if flag becomes true now
+    a := MathMod(a*a, n);
+    flag := (a = m);
+    i++;
+  ];
+
+  {root, flag};	// return a root of -1 (or 0 if not found)
+];
+
+
+/*
+ * For numbers less than 3.4e14, exhaustive computations have
+ * shown that there is no strong pseudoprime simultaneously for
+ * bases 2, 3, 5, 7, 11, 13 and 17.
+ * Function RabinMillerSmall is based on the results of these
+ * computations. 
+ */
+ 
+10 # RabinMillerSmall(1) <-- False;
+
+10 # RabinMillerSmall(2) <-- True;
+
+20 # RabinMillerSmall(n_IsEven) <-- False;
+
+20 # RabinMillerSmall(3) <-- True;
+
+30 # RabinMillerSmall(n_IsPositiveInteger) <--
+[
+  Local(continue, prime, i, primetable, pseudotable, root);
+  continue := True;
+  prime := True;
+  i := 1;
+  primetable := {2, 3, 5, 7, 11, 13, 17};
+  pseudotable := {2047, 1373653, 25326001, 3215031751, 2152302898747,
+                  3474749660383, 34155071728321};
+  // if n is strongly probably prime for all bases up to and including primetable[i], then n is actually prime unless it is >= pseudotable[i].
+  While (continue And prime And (i < 8))
+  [	// we do not really need to collect the information about roots of -1 here, so we do not do anything with root
+    {root, prime} := IsStronglyProbablyPrime(primetable[i], n);
+    If(InVerboseMode() And prime, Echo("RabinMiller: Info: ", n, "is spp base", primetable[i]));
+    continue := (n >= pseudotable[i]);
+    i++;
+  ];
+  // the function returns "Overflow" when we failed to check (i.e. the number n was too large)
+  If (continue And (i = 8), Overflow, prime);
+];
+
+
+/*
+ * RabinMillerProbabilistic(n, p) tells whether n is prime.
+ * If n is actually prime, the result will always be `True'.
+ * If n is composed the probability to obtain the wrong
+ * result is less than 4^(-p).
+ */
+// these 4 rules are not really used now because RabinMillerProbabilistic is only called for large enough n
+10 # RabinMillerProbabilistic(1, _p) <-- False;
+
+10 # RabinMillerProbabilistic(2, _p) <-- True;
+
+20 # RabinMillerProbabilistic(n_IsEven, _p) <-- False;
+
+20 # RabinMillerProbabilistic(3, _p) <-- True;
+
+30 # RabinMillerProbabilistic(n_IsPositiveInteger, p_IsPositiveInteger) <--
+[
+  Local(k, prime, b, roots'of'minus1, root);
+  k := 1+IntLog(IntLog(n,2),4)+p;	// find k such that Ln(n)*4^(-k) < 4^(-p)
+  b := 1;
+  prime := True;
+  roots'of'minus1 := {0};	// accumulate the set of roots of -1 modulo n
+  While (prime And k>0)
+    [
+      b := NextPseudoPrime(b);	// use only prime bases, as suggested by Davenport; weak pseudo-primes are good enough
+      {root, prime} := IsStronglyProbablyPrime(b, n);
+	  If(prime, roots'of'minus1 := Union(roots'of'minus1, {root}));
+	  If(Length(roots'of'minus1)>3, prime := False);
+	  If(InVerboseMode() And prime, Echo("RabinMiller: Info: ", n, "is spp base", b));
+	  If( // this whole If() clause is only working when InVerboseMode() is in effect and the test is terminated in the unusual way
+	  	InVerboseMode() And Length(roots'of'minus1)>3,
+	  	[	// we can actually find a factor of n now
+			Local(factor);
+			roots'of'minus1 := Difference(roots'of'minus1,{0});
+			Echo("RabinMiller: Info: ", n, "is composite via roots of -1 ; ", roots'of'minus1);
+			factor := Gcd(n, If(
+				roots'of'minus1[1]+roots'of'minus1[2]=n,
+				roots'of'minus1[1]+roots'of'minus1[3],
+				roots'of'minus1[1]+roots'of'minus1[2]
+			));
+			Echo(n, " = ", factor, " * ", n/factor);
+		]
+	  );
+      k--;
+    ];
+  prime;
+];
+
+
+/*
+ * This is the frontend function, which uses RabinMillerSmall for
+ * ``small'' numbers and RabinMillerProbabilistic for bigger ones.
+ * 
+ * The probability to err is set to 1e-25, hopping this is less
+ * than the one to step on a rattlesnake in northern Groenland. :-)
+ */
+
+RabinMiller(n_IsPositiveInteger) <--
+[
+	If(InVerboseMode(), Echo("RabinMiller: Info: Testing ", n));
+	If(
+		n < 34155071728321,
+		RabinMillerSmall(n),
+		RabinMillerProbabilistic(n, 40)	// 4^(-40)
+	);
+];

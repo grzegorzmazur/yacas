@@ -1,0 +1,653 @@
+
+		Continued fractions
+
+A "continued fraction" is an expression of the form
+$$ a[0]+b[0]/(a[1]+b[1]/(a[2]+b[2]/(a[3]+...)))$$.
+The coefficients $a[i]$, $b[i]$ are called the "terms" of the fraction.
+(Usually one has $a[i]!=0$, $b[i]!=0$.)
+The above continued fraction is sometimes written as
+$$ a[0]+(b[0]/(a[1]+ ...))*(b[1]/(a[2]+...))*(b[2]/(a[3]+...))*... $$
+
+Usually one considers infinite continued fractions, i.e. the sequences $a[i]$, $b[i]$ are infinite.
+The value of an infinite continued fraction is defined as the limit of the fraction truncated after a very large number of terms.
+(A continued traction can be truncated after $n$-th term if one replaces $b[n]$ by $0$.)
+
+An infinite continued fraction does not always converge.
+Convergence depends on the values of the terms.
+
+The representation of a number via a continued fraction is not unique because we could, for example, multiply the numerator and the denominator of any simple fraction inside it by any number.
+Therefore one may consider some normalized representations.
+A continued fraction is called "regular" if $b[k]=1$ for all $k$, all $a[k]$ are integer and $a[k]>0$ for $k>=1$.
+Regular continued fractions always converge.
+
+	    Approximation of numbers by continued fractions
+
+*A continued fraction approximation!of rational numbers
+
+The function {ContFrac} converts a (real) number $r$ into a regular
+continued fraction with integer terms,
+$$ r = n[0] + 1/(n[1] + 1/(n[2]+...)) $$.
+Here all numbers $n[i]$ are integers and all except $n[0]$ are positive.
+This representation of a real number $r$ is unique.
+We may write this representation as $r=[n[0];n[1];n[2];...;]$.
+If $r$ is a rational number, the corresponding regular continued fraction is finite, terminating at some $n[N]$.
+Otherwise the continued fraction will be infinite.
+It is known that the truncated fractions will be in some sense "optimal" rational representations of the real number $r$.
+
+
+The algorithm for converting a rational number $r=n/m$ into a regular continued
+fraction is simple. First, we determine the integer part of $r$, which is
+$Div(n,m)$. If it is negative, we need to subtract one, so that $r=n[0]+x$ and
+the remainder $x$ is nonnegative and less than $1$. The remainder
+$x=Mod(n,m)/m$ is then inverted, $r[1] := 1/x = m/Mod(n,m)$ and so we have
+completed the first step in the decomposition, $r = n[0] + 1/r[1]$; now $n[0]$
+is integer but $r[1]$ is perhaps not integer. We repeat the same procedure on
+$r[1]$, obtain the next integer term $n[1]$ and the remainder $r[2]$ and so on,
+until such $n$ that $r[n]$ is an integer and there is no more work to do. This
+process will always terminate.
+
+If $r$ is a real number which is known by its floating-point representation at some precision, then we can use the same algorithm because all floating-point values are actually
+rational numbers.
+
+Real numbers known by their exact representations can sometimes be expressed as infinite continued fractions, for example
+$$ Sqrt(11) = [3;3;6;3;6;3;6;...;] $$;
+$$ Exp(1/p)=[1;p-1;1;1;3*p-1;1;1;5*p-1;...;] $$.
+
+*A {GuessRational}
+
+The functions {GuessRational} and {NearRational} take a real number $x$ and use
+continued fractions to find rational approximations $r=p/q<=>x$ with "optimal" (small) numerators and denominators $p$, $q$.
+
+Suppose we know that a
+certain number $x$ is rational but we have only a floating-point representation of
+$x$ with a limited precision, for example, $x<=>1.5662650602409638$.
+We would like to guess a
+rational form for $x$ (in this example $x=130/83$).
+The function {GuessRational} solves this problem.
+
+Consider the following example. The number $17/3$ has a continued fraction
+expansion {{5,1,2}}. Evaluated as a floating point number with limited
+precision, it may become something like $17/3+0.00001$, where the small number
+represents a round-off error. The continued fraction expansion of this number is
+{{5, 1, 2, 11110, 1, 5, 1, 3, 2777, 2}}. The presence of an unnaturally large
+term $11110$ clearly signifies the place where the floating-point error was
+introduced; all terms following it should be discarded to recover the continued fraction {{5,1,2}} and from it the initial number $17/3$.
+
+If a continued fraction for a number $x$ is
+cut right before an unusually large term and
+evaluated, the resulting rational number has a small denominator and is very close to $x$.
+This works because partial continued fractions provide "optimal"
+rational approximations for the final (irrational) number, and because the
+magnitude of the terms of the partial fraction is related to the magnitude of
+the denominator of the resulting rational approximation.
+
+{GuessRational(x, prec)} needs to choose the place where it should cut the
+continued fraction.
+The algorithm for this is somewhat heuristic but it works well enough.
+The idea is to cut the continued fraction
+when adding one more term would change the result by less than the specified
+precision. To realize this in practice, we need an estimate of how much a
+continued fraction changes when we add one term.
+
+*A continued fraction approximation!error bound
+
+The routine {GuessRational} uses a (somewhat weak) upper bound for the difference of continued fractions that differ only by an additional last term:
+$$ Abs(delta) := Abs( 1/(a[1]+1/(...+1/a[n])) - 1/(a[1]+1/(...+1/a[n+1])) ) < 1/ ((a[1]*...*a[n])^2 * a[n+1]) $$.
+(The derivation of this inequality is given below.)
+Thus we should compute the product of successive terms $a[i]$ of the continued fraction and stop at $a[n]$ at which this product exceeds the maximum number of digits. The routine {GuessRational} has a second parameter {prec} which is by default 1/2 times the number of decimal digits of current precision; it stops at $a[n]$ at which the product $a[1]*...*a[n]$ exceeds $10^prec$.
+
+The above estimate for $delta$ hinges on the inequality
+$$ 1/(a+1/(b+...)) < 1/a $$
+and is suboptimal if some terms $a[i]=1$, because the product of $a[i]$ does not increase when one of the terms is equal to 1, whereas in fact these terms do make $delta$ smaller. A somewhat better estimate would be obtained if we use the inequality
+$$ 1/(a+1/(b+1/(c+...))) < 1/(a+1/(b+1/c)) $$.
+(See the next section for more explanations of precision of continued fraction approximations.)
+This does not lead to a significant improvement if $a>1$ but makes a difference when $a=1$. In the product $a[1]*...*a[n]$, the terms $a[i]$ which are equal to 1 should be replaced by
+$$ a[i]+1/(a[i+1]+1/a[i+2])$$.
+Since the comparison of $a[1]*...*a[n]$ with $10^prec$ is qualitative, it it enough to perform calculations of $a[1]*...*a[n]$ with limited precision.
+
+This algorithm works well if $x$ is computed with enough precision; namely, it
+must be computed to at least as many digits as there are in the numerator and
+the denominator of the fraction combined. Also, the parameter {prec} should not
+be too large (or else the algorithm will find another rational number with a larger
+denominator that approximates $x$ "better" than the precision to which you know $x$).
+
+*A {NearRational}
+
+The related function {NearRational(x, prec)} works somewhat differently. The
+goal is to find an "optimal" rational number, i.e. with smallest numerator and
+denominator, that is within the distance $10^(-prec)$ of a given value $x$.
+The function {NearRational} does not always give the same answer as {GuessRational}.
+
+The
+algorithm for {NearRational} comes from the HAKMEM [Beeler <i>et al.</i> 1972], Item 101C. Their
+description is terse but clear:
+
+	Problem: Given an interval, find in it the
+	rational number with the smallest numerator and
+	denominator.
+	Solution: Express the endpoints as continued
+	fractions.  Find the first term where they differ
+	and add 1 to the lesser term, unless it's last. 
+	Discard the terms to the right.  What's left is
+	the continued fraction for the "smallest"
+	rational in the interval.  (If one fraction
+	terminates but matches the other as far as it
+	goes, append an infinity and proceed as above.)
+
+The HAKMEM text [Beeler <i>et al.</i> 1972] contains several interesting insights relevant to continued fractions and other numerical algorithms.
+
+	    Accurate computation of continued fractions
+
+Sometimes an analytic function $f(x)$ can be approximated using a continued
+fraction that contains $x$ in its terms. Examples include the inverse tangent
+$ArcTan(x)$, the error function $Erf(x)$, and the incomplete gamma function
+$Gamma(a,x)$ (see below for details).
+For these functions, continued fractions
+provide a method of numerical calculation that works when the Taylor series
+converges slowly or not at all, or is not easily available.
+However, continued fractions may converge
+quickly for one value of $x$ but slowly for another.
+Also, it is not as easy to
+obtain an analytic error bound for a continued fraction approximation as it is for power series.
+
+In this section we describe some methods for computing general continued fractions and for estimating the number of terms needed to achieve a given precision.
+
+Let us introduce some notation. A continued fraction
+$$ a[0]+b[0]/(a[1]+b[1]/(a[2]+...))$$
+is specified by a set of terms ($a[i]$, $b[i]$).
+[If continued fractions are used to approximate analytic functions such as $ArcTan(x)$, then ($a[i]$, $b[i]$) will depend on $x$.]
+Let us denote by $F[m][n]$ the truncated fraction containing only the terms from $m$ to $n$,
+$$ F[m][n] := a[m]+b[m]/(a[m+1]+b[m+1]/(...+b[n]/a[n]))$$.
+In this notation, the continued fraction that we need to compute is $F[0][n]$.
+Our task is first, to select a large enough $n$ so that $F[0][n]$ gives enough precision, and second, to compute that value.
+
+	    Method 1: bottom-up with straightforward division
+
+*A continued fraction approximation!bottom-up computation
+
+All "bottom-up" methods need to know the number of terms $n$ in advance.
+The simplest method is to start evaluating the fraction from the bottom upwards.
+As the initial approximation we take $F[n][n]=a[n]$.
+Then we use the obvious relation of backward recurrence,
+$$ F[m][n] = a[m]+b[m]/F[m+1][n] $$,
+to obtain successively $F[n-1][n]$, ..., $F[0][n]$.
+
+This method requires one long division at each step.
+There may be significant round-off error if $a[m]$ and $b[m]$ have opposite signs, but otherwise the round-off error is very small because a convergent continued fraction is not sensitive to small changes in its terms.
+
+	    Method 2: bottom-up with two recurrences
+
+An alternative implementation may be faster in some cases.
+The idea is to obtain the numerator and the denominator of $F[0][n]$
+separately as two simultaneous backward recurrences. If 
+$F[m+1][n] = p[m+1]/q[m+1]$, then 
+$p[m]=a[m]*p[m+1]+b[m]*q[m+1]$ and $q[m]=p[m+1]$.
+The recurrences start with
+$p[n]=a[n]$, $q[n]=1$.
+The method requires two long multiplications at each step; the only
+division will be performed at the very end.
+Sometimes this method reduces the round-off error as well.
+
+	    Method 3: bottom-up with estimated remainders
+
+*A continued fraction approximation!bottom-up computation!estimated remainder
+
+There is an improvement over the bottom-up method that can sometimes increase the achieved
+precision without computing more terms.
+This trick is suggested in [Tsimring 1988], sec. 2.4, where it is also claimed that the remainder estimates improve convergence.
+
+The idea is that the starting value of the backward recurrence should be chosen not as
+$a[n]$ but as another number that more closely approximates the infinite remainder of the fraction.
+The infinite remainder, which we can symbolically write as $F[n][Infinity]$, can be sometimes estimated analytically (obviously, we are unable to compute the remainder exactly).
+In simple cases, $F[n][Infinity]$ changes very slowly at large $n$
+(warning: this is not always true and needs to be verified in each particular case!).
+Suppose that $F[n][Infinity]$ is approximately constant; then it must be approximately equal to $F[n+1][Infinity]$.
+Therefore, if we solve the (quadratic) equation
+$$ x = a[n] + b[n]/x $$,
+we shall obtain the (positive) value $x$ which may be a much better
+approximation for $F[n][Infinity]$ than $a[n]$. But this depends on the
+assumption of the way the continued fraction converges. It may happen,
+for example, that for large $n$ the value $F[n][Infinity]$ is almost
+the same as $F[n+2][Infinity]$ but is significantly different from
+$F[n+1][Infinity]$. Then we should instead solve the (quadratic) equation
+$$ x = a[n] + b[n]/(a[n+1]+b[n+1]/x) $$
+and take the positive solution $x$ as $F[n][Infinity]$.
+
+We may use more terms of the original continued fraction starting from $a[n]$ and obtain a more precise estimate of the remainder.
+In each case we will only have to solve one quadratic equation.
+
+	    Method 4: top-down computation
+
+The "bottom-up" method obviously requires to know the number of terms $n$ in
+advance; calculations have to be started all over again if more terms are
+needed. Also, the bottom-up method provides no error estimate.
+
+*A continued fraction approximation!top-down computation
+
+The "top-down" method is slower but provides an automatic error estimate and can be used to
+evaluate a continued fraction with more and more terms until the desired
+precision is achieved.
+The idea
+*FOOT This is a well-known result in the theory of continued fractions. We give an elementary derivation below.
+is to
+replace the continued fraction $F[0][n]$ with a sum of a certain series,
+$$ a[0]+b[0]/(a[1]+b[1]/(...+b[n-1]/a[n])) = Sum(k,0,n,f[k]) $$.
+Here
+$$ f[k]:=F[0][k]-F[0][k-1] $$
+($k>=1$) is a sequence that will be calculated in the forward direction, starting from $k=1$.
+If we manage to find a formula for this sequence, then adding one
+more term $f[k]$ will be equivalent to recalculating the
+continued fraction with $k$ terms instead of $k-1$ terms. This will
+automatically give an error estimate and allow to compute with more
+precision if necessary without having to repeat the calculation from
+the beginning. (The transformation of the continued fraction into a
+series is exact, not merely an approximation.)
+
+The formula for $f[k]$ is the following.
+First the auxiliary sequence $P[k]$, $Q[k]$ for $k>=1$ needs to be
+defined by $P[1]=0$, $Q[1]$=1, and $P[k+1]:=b[k]*Q[k]$,
+$Q[k+1]:=P[k]+a[k]*Q[k]$.
+Then define $f[0] := a[0]$ and 
+$$ f[k] := ((-1)^k*b[0]*...*b[k-1])/(Q[k]*Q[k+1]) $$
+for $k>=1$.
+The "top-down" method consists of computing $f[n]$
+sequentially and adding them together, until $n$ is large enough so
+that $f[n]/f[0]$ is less than the required precision.
+
+Evaluating the next element $f[k]$ requires four long multiplications
+and one division.
+This is significantly slower, compared with just one long division or two long multiplications in the bottom-up method.
+Therefore it is desirable to have an a priori estimate of the convergence rate and to be able to choose the number of terms before the computation.
+Below we shall consider some examples when the formula for $f[k]$ allows to estimate the required number of terms analytically.
+
+	    Method 5: top-down with two steps at once
+
+*A continued fraction approximation!top-down computation!non-alternating signs
+
+If all coefficients $a[i]$, $b[i]$ are positive, then the
+series we obtained in the top-down method will have terms $f[k]$ with alternating signs.
+This leads to a somewhat larger round-off error.
+We can convert the alternating series into a monotonic series
+by adding together two adjacent elements, say
+$f[2*k]+f[2*k+1]$.
+*FOOT This method is used by [Thacher 1963], who refers to a suggestion by Hans Maehly.
+The relevant formulae can be derived from the
+definition of $f[k]$ using the recurrence relations for $P[k]$, $Q[k]$:
+$$ f[2*k-1]+f[2*k] = - (b[0]*...*b[2*k-2]*a[2*k]) / (Q[2*k-1]*Q[2*k+1]) $$,
+$$ f[2*k]+f[2*k+1] = (b[0]*...*b[2*k-1]*a[2*k+1]) / (Q[2*k]*Q[2*k+2]) $$.
+Now in the series $f[0]$+($f[1]+f[2]$)+($f[3]+f[4]$)+... the first term is positive and all subsequent terms will be negative.
+
+	    Which method to use
+
+We have just described the following methods of computing a continued fraction:
+*	1. Bottom-up, straight division.
+*	1. Bottom-up, separate recurrences for numerators and denominators.
+*	1. Bottom-up, with an estimate of the remainder.
+*	1. Top-down, with ordinary step.
+*	1. Top-down, with two steps at once.
+
+The bottom-up methods are simpler and faster than the top-down methods but require to know the number of terms in advance.
+In many cases the required number of terms can be estimated analytically, and then the bottom-up methods are always preferable.
+But in some cases the convergence analysis is very complicated.
+
+The plain bottom-up method requires one long division at each step, while the bottom-up method with two recurrences requires two long multiplications at each step.
+Since the time needed for a long division is usually about four times that for a long multiplication (e.g. when the division is computed by Newton's method), the second variation of the bottom-up method is normally faster.
+
+The estimate of the remainder improves the convergence of the bottom-up method and should always be used if available.
+
+If an estimate of the number of terms is not possible, the top-down methods should be used, looping until the running error estimate shows enough precision.
+This incurs a performance penalty of at least 100{%} and at most 300{%}.
+The top-down method with two steps at once should be used only when the formula for $f[k]$ results in alternating signs.
+
+
+	    Usefulness of continued fractions
+
+Many mathematical functions have a representation as a continued fraction.
+Some systems of "exact arithmetic" use continued fractions as a primary internal representation of real numbers.
+This has its advantages (no round-off errors, lazy "exact" computations) and disadvantages (it is slow, especially with some operations).
+Here we consider the use of continued fractions with a traditional implementation of arithmetic (floating-point numbers with variable precision).
+
+Usually, a continued fraction representation of a function will converge geometrically or slower, i.e. at least $O(P)$ terms are needed for a precision of $P$ digits.
+If a geometrically convergent Taylor series representation is also available, the continued fraction method will be slower because it requires at least as many or more long multiplications per term.
+Also, in most cases the Taylor series can be computed much more efficiently using the rectangular scheme.
+(See, e.g., the section on $ArcTan(x)$ for a more detailed consideration.)
+
+However, there are some functions for which a Taylor series is not easily computable or does not converge but a continued fraction is available.
+For example, the incomplete Gamma function and related functions can be computed using continued fractions in some domains of their arguments.
+
+
+	    Derivation of the formula for $f[k]$
+
+*A continued fraction approximation!top-down computation!derivation
+
+Here is a straightforward derivation of the formula for $f[k]$ in the top-down method.
+We need
+to compute the difference between successive approximations $F[0][n]$
+and $F[0][n+1]$.
+The recurrence relation we shall use is
+$$ F[m][n+1] - F[m][n] = -(b[m]*(F[m+1][n+1]-F[m+1][n]))/(F[m+1][n+1]*F[m+1][n]) $$.
+This can be shown by manipulating the two fractions, or by using
+the recurrence relation for $F[m][n]$.
+
+So far we have reduced the difference between $F[m][n+1]$ and $F[m][n]$
+to a similar difference on the next level $m+1$ instead of $m$; i.e. we
+can increment $m$ but keep $n$ fixed. We can apply this formula to
+$F[0][n+1]-F[0][n]$, i.e. for $m=0$, and continue applying the same
+recurrence relation until $m$ reaches $n$. The result
+is
+$$ F[0][n+1] - F[0][n] = ((-1)^n*b[0]*...*b[n])/(F[1][n+1]*...*F[n+1][n+1]*F[1][n]*...*F[n][n]) $$.
+
+Now the problem is to simplify the two long products in the
+denominator. We notice that $F[1][n]$ has $F[2][n]$ in the denominator,
+and therefore $F[1][n]*F[2][n]=F[2][n]*a[1]+b[1]$. The next product is
+$F[1][n]*F[2][n]*F[3][n]$ and it simplifies to a linear function of
+$F[3][n]$, namely $F[1][n]*F[2][n]*F[3][n]$ =
+$(b[1]+a[1]*a[2])*F[3][n]+b[1]*a[2]$. So we can see that there is a
+general formula
+$$  F[1][n]*...*F[k][n] = P[k]+Q[k]*F[k][n] $$
+with some coefficients $P[k]$, $Q[k]$ which do not actually depend on
+$n$ but only on the terms of the partial fraction up to $k$. In other
+words, these coefficients can be computed starting with $P[1]=0$,
+$Q[1]=1$ in the forward direction. The recurrence relations for $P[k]$,
+$Q[k]$ that we have seen above in the definition of $f[k]$ follow from the identity $(P[k]+Q[k]*F[k][n])*F[k+1][n]$ =
+$P[k+1]+Q[k+1]*F[k+1][n]$.
+
+Having found the coefficients $P[k]$, $Q[k]$, we can now rewrite the long products in the denominator, e.g.
+$$ F[1][n]*...*F[n][n] = P[n]+Q[n]*F[n][n] = Q[n+1] $$.
+(We have used the recurrence relation for $Q[n+1]$.) Now it follows that
+$$ f[n+1]:=F[0][n+1]-F[0][n] = ((-1)^n*b[0]*...*b[n])/(Q[n+1]*Q[n+2]) $$.
+Thus we have converted the continued fraction into a series, i.e. $F[0][n]=Sum(k,0,n,f[k])$ with $f[k]$ defined above.
+
+	    Examples of continued fraction representations
+
+We have already mentioned that continued fractions give a computational advantage only when other methods are not available.
+There exist continued fraction representations of almost all functions, but in most cases the usual methods (Taylor series, identity transformations, Newton's method and so on) are superior.
+
+*A continued fraction approximation!of $ArcTan(x)$
+
+For example, the continued fraction
+$$ ArcTan(x) = x/(1+x^2/(3+(2*x)^2/(5+(3*x)^2/(7+...)))) $$
+converges geometrically at all $x$.
+However, the Taylor series also converges geometrically and can be computed much faster than the continued fraction.
+
+*A continued fraction approximation!of $Erfc(x)$
+
+There are some cases when a continued fraction representation is efficient.
+The complementary error function $Erfc(x)$ can be computed using the
+continued fraction due to Laplace (e.g. [Thacher 1963]),
+$$ Sqrt(Pi)/2*x*Exp(x^2)*Erfc(x)=1/(1+v/(1+(2*v)/(1+(3*v)/(1+...)))) $$,
+where $v:=(2*x^2)^(-1)$.
+This continued fraction converges for all (complex) $x$ except pure imaginary $x$.
+
+*A continued fraction approximation!of $Gamma(a,z)$
+
+The error function is a particular case of the incomplete Gamma function
+$$ Gamma(a,z) := Integrate(x,z,+Infinity) x^(a-1)*Exp(-x) $$.
+There exists an analogous continued fraction representation due to Legendre (e.g. [Abramowitz <i>et al.</i>], 6.5.31),
+$$ Gamma(a,z) = (z^(a-1)*Exp(-z))/(1+((1-a)*v)/(1+v/(1+((2-a)*v)/(1+(2*v)/(1+...))))) $$,
+where $v:=z^(-1)$.
+*REM is this statement correct? FIXME
+This continued fraction also converges for all complex $a$, $z$.
+
+
+
+		Estimating convergence of continued fractions
+
+Elsewhere in this book we have used elementary considerations to find the required number of terms in a power series.
+It is much more difficult
+to estimate the convergence rate of a continued fraction.
+In many cases this can be done using the theory of complex variable.
+Below we shall consider some cases when this computation is analytically tractable.
+
+*A continued fraction approximation!convergence rate
+
+Suppose we are given the terms $a[k]$, $b[k]$ that define an infinite continued fraction, and we need to estimate its convergence rate.
+We have to find the number of terms $n$ for which the error of approximation is less than a given $epsilon$.
+In our notation, we need to solve
+$ Abs(f[n+1]) < epsilon $
+for $n$.
+
+The formula that we derived for $f[n+1]$ gives an error estimate for
+the continued fraction truncated at the $n$-th term.
+But this formula contains the numbers $Q[n]$ in the denominator.
+The main problem is to find how quickly the sequence $Q[n]$ grows.
+The recurrence relation for this sequence can be rewritten as
+$$ Q[n+2]=a[n+1]*Q[n+1]+b[n]*Q[n] $$,
+for $k>=0$, with initial values $Q[0]=0$ and $Q[1]=1$.
+It is not always easy to get a handle on this sequence, because in most cases there is no closed-form expression for $Q[n]$.
+
+*A continued fraction approximation!error bound
+
+	    Simple bound on $Q[n]$
+
+A simple lower bound on the growth of $Q[n]$ can be obtained from the recurrence relation for $Q[n]$.
+Assume that $a[k]>0$, $b[k]>0$.
+It is clear that all $Q[n]$ are positive, so $Q[n+1]>=a[n]*Q[n]$.
+Therefore $Q[n]$ grows at least as the product of all $a[n]$:
+$$ Q[n+1] >= Factorize(i,1,n, a[n]) $$.
+This result gives the following upper bound on the precision,
+$$ Abs(f[n+1]) <= (b[0]*...*b[n])/((a[1]*...*a[n])^2*a[n+1]) $$.
+
+We have used this bound to estimate the relative error of the
+continued fraction expansion for $ArcTan(x)$ at small $x$ (elsewhere in this book).
+However, we found that at large $x$ this bound becomes greater than 1.
+This does not mean that the continued fraction does not converge and cannot be used to compute $ArcTan(x)$ when $x>1$, but merely
+indicates that the "simple bound" is too weak.
+The sequence $Q[n]$ actually grows faster than the product of all $a[k]$ and we
+need a tighter bound on this growth.
+In many cases such a bound can be obtained by the method of generating functions.
+
+	    The method of generating functions
+
+*A continued fraction approximation!convergence rate!from generating functions
+
+The idea is to find a generating function $G(s)$ of the sequence $Q[n]$ and then use an explicit form of $G(s)$ to obtain an asymptotic estimate of $Q[n]$ at large $k$.
+
+*A method of steepest descent
+
+The asymptotic growth of the sequence $Q[n]$ can be estimated by the method of steepest descent, also known as Laplace's method.
+(See, e.g., [Olver 1974],
+ch. 3, sec. 7.5.)
+This method is somewhat complicated but quite powerful.
+The method requires that we find an integral representation for $Q[n]$ (usually a contour integral in the complex plane).
+Then we can convert the integral into an asymptotic series in $k^(-1)$.
+
+*A continued fraction approximation!of $Erfc(x)$
+
+Along with the general presentation of the method, we shall consider an example when the convergence rate can be
+obtained analytically.
+The example is the representation of the complementary error function $Erfc(x)$,
+$$ Sqrt(Pi)/2*x*Exp(x^2)*Erfc(x)=1/(1+v/(1+(2*v)/(1+(3*v)/(1+...)))) $$,
+where $v:=(2*x^2)^(-1)$.
+We shall assume that $Abs(v)<1/2$ since the continued fraction representation will not be used for small $x$ (where the Taylor series is efficient). 
+The terms of this continued fraction are: $a[k]=1$, $b[k]=k*v$, for $k>=1$, and $a[0]=0$, $b[0]=1$.
+
+The "simple bound" would give $Abs(f[n+1])<=(v^n*n!)$ and this expression grows with $n$.
+But we know that the above continued fraction actually converges for any $v$, so $f[n+1]$ must tend to zero for large $n$.
+It seems that the "simple bound" is not strong enough for any $v$ and we need a better bound.
+
+
+*A generating function of a sequence
+
+An integral representation for $Q[n]$ can be obtained using the method of generating functions.
+Consider a function $G(s)$ defined by the infinite series
+$$ G(s) = Sum(n, 0, Infinity, Q[n+1]*s^n/n!) $$.
+$G(s)$ is usually called the "generating function" of a sequence.
+We shifted the index to $n+1$ for convenience, since $Q[0]=0$, so now $G(0)=1$.
+
+
+Note that the above series for the function $G(s)$ may or may not converge for any given $s$;
+we shall manipulate $G(s)$ as a formal power series until we obtain an explicit representation.
+What we really need is an analytic continuation of $G(s)$ to the complex $s$.
+
+*A generating function of a sequence!obtaining
+
+It is generally the case that if we know a simple linear recurrence relation for a sequence, then we can also easily find its generating function.
+The generating function will satisfy a linear differential equation.
+To guess this equation, we write down the series for $G(s)$ and its
+derivative $G'(s)$ and try to find their linear combination which is
+identically zero because of the recurrence relation.
+(There is, of course, a computer algebra algorithm for doing this automatically.)
+
+Taking the derivative $G'(s)$ produces the forward-shifted series
+$$ G'(s) = Sum(n, 0, Infinity, Q[n+2]*s^n/n!) $$.
+Multiplying $G(s)$ by $s$ produces a back-shifted series with each term multiplied by $n$:
+$$ s*G(s) = Sum(n, 0, Infinity, n*Q[n]*s^n/n!) $$.
+If the recurrence relation for $Q[n]$ contains only constants and polynomials in $n$, then we can easily convert that relation into a differential equation for $G(s)$.
+We only need to find the right combination of back- and forward-shifts and multiplications by $n$.
+
+In the case of our sequence $Q[n]$ above, the recurrence relation is
+$$ Q[n+2]=Q[n+1]+v*n*Q[n] $$.
+This is equivalent to the differential equation
+$$ G'(s) = (1+v*s)*G(s) $$.
+The solution with the obvious initial condition $G(0)=1$ is
+$$ G(s) = Exp(s+(v*s^2)/2) $$.
+
+*A generating function of a sequence!integral representation
+
+The second step is to obtain an integral representation for $Q[n]$, so that we could use the method of steepest descents and find its asymptotic at large $n$.
+
+In our notation $Q[n+1]$ is equal to the $n$-th derivative of the generating function at $s=0$:
+$$ Q[n+1] = D(s, n) G(s=0) $$,
+but it is generally not easy to estimate the growth of this derivative at large $n$.
+
+There are two ways to proceed.
+One is to obtain an integral representation for $G(s)$, for instance
+$$ G(s) = Integrate(t,-Infinity,Infinity) F(t,s) $$,
+where $F(t,s)$ is some known function.
+Then an integral representation for $Q[n]$ will be found by differentiation.
+But it may be difficult to find such $F(t,s)$.
+
+The second possibility is to express $Q[n]$ as a contour integral in the complex plane around $s=0$ in the counter-clockwise direction:
+$$ Q[n] = (n-1)! /(2*Pi*I)*Integrate(s) G(s)*s^(-n) $$.
+If we know the singularities and of $G(s)$, we may transform the contour of the integration into a path that is more convenient for the method of the steepest descent.
+This procedure is more general but requires a detailed understanding of the behavior of $G(s)$ in the complex plane.
+
+*A Stirling's formula
+*A continued fraction approximation!of $Erfc(x)$!error estimate
+
+In the particular case of the continued fraction for $Erfc(x)$, the calculations are somewhat easier if $Re(v)>0$ (where $v:=1/(2*x^2)$).
+Full details are given in a separate section.
+The result for $Re(v)>0$ is
+$$ Q[n] <=> ((v*n)^(n/2))/Sqrt(2*n*v)*Exp(Sqrt(n/v)-1/(4*v)-n/2) $$.
+This, together with Stirling's formula
+$$ n! <=> Sqrt(2*Pi*n)*(n/e)^n $$,
+allows to estimate the error of the continued fraction approximation:
+$$ f[n+1] <=> 2*(-1)^(n+1)*Sqrt((2*Pi)/v)*Exp(-2*Sqrt(n/v)+1/(2*v)) $$.
+
+Note that this is not merely a bound but an actual asymptotic estimate of $f[n+1]$.
+(Stirling's formula can also be derived using the method of
+steepest descent from an integral representation of the Gamma function,
+in a similar way.)
+
+Defined as above, the value of $f[n+1]$ is in general a complex number. The absolute value of $f[n+1]$ can be found using the formula
+$$ Re(Sqrt(n/v)) = Sqrt(n/2)*Sqrt(1+Re(v)/Abs(v)) $$.
+We obtain
+$$ Abs(f[n+1]) <=> 2*Sqrt((2*Pi)/Abs(v)) * Exp( -Sqrt(2*n)*Sqrt(1+Re(v)/Abs(v)) + Re(v)/(2*Abs(v)^2)) $$. 
+
+When $Re(v)<=0$, the same formula can be used (this can be shown by a more careful consideration of the branches of the square roots).
+The continued fraction does not converge when $Re(v)<0$ and $Im(v)=0$ (i.e. for pure imaginary $x$).
+This can be seen from the above formula: in that case $Re(v)= -Abs(v)$ and $Abs(f[n+1])$ does not decrease when $n$ grows.
+
+These estimates show that the error of the continued fraction approximation to $Erfc(x)$ (when it converges)
+decreases with $n$ slower than in a geometric progression.
+This means that we need to take $O(P^2)$ terms to get $P$ digits of precision.
+
+	    Derivations for the example with $Erfc(x)$
+
+Here we give a detailed calculation of the convergence rate of the continued fraction for $Erfc(x)$ using the method of generating functions.
+
+*HEAD A simpler approach
+
+*A method of steepest descent!example for real $x$
+
+In our case, $G(s)$ is a function with a known Fourier transform and we can obtain a straightforward representation valid when $Re(v)>0$,
+$$ Q[n+1] = (1/Sqrt(2*Pi*v)) * Integrate(t, -Infinity, Infinity) (1+t)^n * Exp(-t^2/(2*v)) $$.
+We shall first apply the method of steepest descent to this integral (assuming real $v>0$ for simplicity) and then consider the more general procedure with the contour integration.
+
+
+To use the method of steepest descent, we represent the integrand as an exponential of some function $g(t,n)$ and find "stationary points" where this function has local maxima:
+$$ Q[n+1] = (1/Sqrt(2*Pi*v)) * Integrate(t, -Infinity, Infinity) Exp(g(t,n)) $$,
+$$ g(t,n) := -t^2/(2*v)+n*Ln(1+t) $$.
+(Note that the logarithm here must acquire an imaginary part $I*Pi$ for $t<-1$,
+and we should take the real part which is equal to $Ln(Abs(1+t))$.
+We shall see that the integral over negative $t$ is negligible.)
+We expect that when $n$ is large, $Re(g(t,n))$ will have a peak or several peaks at certain values of $t$.
+When $t$ is not close to the peaks, the value of $Re(g(t,n))$ is smaller and,
+since $g$ is in the exponential, the integral is dominated by the
+contribution of the peaks.
+This is the essence of the method of steepest descent on the real line.
+
+We only need to consider very large values of $n$, so we can neglect terms of order $O(1/Sqrt(n))$ or smaller.
+We find that, in our case, two peaks of $Re(g)$ occur at approximately $t1<=> -1/2+Sqrt(n*v)$ and $t2<=> -1/2-Sqrt(n*v)$.
+We assume that $n$ is large enough so that $n*v>1/2$. Then the first peak is at a positive $t$ and the second peak is at a negative $t$.
+The contribution of the peaks can be computed from the Taylor approximation of $g(t,n)$ near the peaks.
+We can expand, for example,
+$$ g(t,n) <=> g(t1,n) + (Deriv(t,2)g(t1,n))*(t-t1)^2/2 $$
+near $t=t1$.
+The values $g(t1,n)$ and $Deriv(t,2)g(t1,n)$, and likewise for $t2$, are constants that we already know since we know $t1$ and $t2$.
+Then the integral of $Exp(g)$ will be approximated by the integral
+$$ Integrate(t, -Infinity, Infinity) Exp(g(t1,n) + (Deriv(t,2)g(t1,n))*(t-t1)^2/2) $$.
+(Note that $Deriv(t,2)g(t1,n)$ is negative.)
+This is a Gaussian integral that can be easily evaluated, with the result
+$$ exp(g(t1,n))*Sqrt(-(2*Pi)/Deriv(t,2)g(t1,n)) $$.
+This is the leading term of the contribution of the peak at $t1$;
+there will be a similar expression for the contribution of $t2$.
+We find that the peak at $t1$ gives a larger contribution, by the factor $Exp(2*Sqrt(n/v))$.
+This factor is never small since $n>1$ and $v<1/2$.
+So it is safe to ignore the peak at $t2$ for the purposes of our analysis.
+
+Then we obtain the estimate
+$$ Q[n+1] <=> 1/Sqrt(2)*Exp(Sqrt(n/v)-1/(4*v)-n/2)*(v*n)^(n/2) $$.
+
+
+*HEAD The contour integral approach
+
+In many cases it is impossible to compute the Fourier transform of the generating function $G(s)$.
+Then one can use the contour integral approach.
+One should represent the integrand as
+$$ G(s)*s^(-n) = Exp(g(s)) $$
+where
+$$ g(s) := Ln(G(s))-n*Ln(s) $$,
+and look for stationary points of $g(s)$ in the complex plane ($(D(s)g)=0$).
+The original contour is around the pole $s=0$ in the counter-clockwise direction.
+We need to deform that contour so that the new contour passes through the stationary points.
+The contour should cross each stationary point in a certain direction in the complex plane.
+The direction is chosen to make the stationary point the sharpest local maximum of $Re(g(s))$ on the contour.
+
+Usually one of the stationary points has the largest value of $Re(g(s))$; this is the dominant stationary point.
+If $s0$ is the dominant stationary point and $g2=Deriv(s,2)g(s0)$ is the second derivative of $g$ at that point, then the asymptotic of the integral is
+$$ 1/(2*Pi)*(Integrate(s)Exp(g(s)))=1/Sqrt(2*Pi*Abs(g2))*Exp(g(s0)) $$.
+(The integral will have a negative sign if the contour crosses the point $s0$ in the negative imaginary direction.)
+
+We have to choose a new contour and check the convergence of the resulting integral separately.
+In each case we may need to isolate the singularities of $G(s)$ or to find the regions of infinity where $G(s)$ quickly decays (so that the infinite parts of the contour might be moved there).
+There is no prescription that works for all functions $G(s)$.
+
+Let us return to our example.
+For
+$ G(s)=Exp(s+(v*s^2)/2) $,
+the function $g(s)$ has no singularities except the pole at $s=0$.
+There are two stationary points located at the (complex) roots $s1$, $s2$ of the quadratic equation
+$ v*s^2+s-n=0 $.
+Note that $v$ is an arbitrary (nonzero) complex number.
+We now need to find which of the two stationary points gives the dominant contribution.
+By comparing $Re(g(s1))$ and $Re(g(s2))$ we find
+that the point $s$ with the largest real part gives the dominant contribution.
+However, if $Re(s1)=Re(s2)$ (this happens only if $v$ is real and $v<0$, i.e. if $x$ is pure imaginary), then both stationary points contribute equally.
+Barring that possibility, we find
+(with the usual definition of the complex square root) that
+the dominant contribution for large $n$ is from the stationary point at
+$$ s1 = (Sqrt(4*n*v+1)-1)/(2*v) $$.
+The second derivative of $g(s)$ at the stationary point is approximately $2*v$.
+The contour of integration can be deformed into a line passing through the dominant stationary point in the positive imaginary direction.
+Then the leading asymptotic is found using the Gaussian approximation (assuming $Re(v)>0$):
+$$ Q[n] = ((n-1)! *v^(n/2))/ Sqrt(4*Pi*v) * Exp((n*(1-Ln(n)))/2 + Sqrt(n/v)-1/(4*v)) $$.
+
+*A Stirling's formula
+
+This formula agrees with the asymptotic for $Q[n+1]$ found above for real $v>0$, when we use Stirling's formula for $(n-1)!$:
+$$ (n-1)! = Sqrt(2*Pi)*e^(-n)*n^(n-1/2) $$.
+
+The treatment for $Re(v)<0$ is similar.
+

@@ -1,0 +1,836 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
+    <script type="text/javascript" src="yacas.js"></script>
+    <title>The Yacas computer algebra system</title>
+  </head>
+  <body>
+
+    <h1>Introduction to <i>Yacas</i>: tutorial and examples</h1>
+
+    <h2>Introduction</h2>
+    <p>
+      <i>Yacas</i> allows you to do calculations, and can be used directly inside your browser. Above 
+      you should see the <i>Yacas</i> calculation center, with a text in blue stating "Click here to enter an expression". 
+      After tapping in that area, that text should be replaced with <span class="yacasExpression">In></span>. You can type an expression to
+      be executed here. If you don't know what to type don't worry, that is what this tutorial is for.
+    </p>
+    <p>
+      In this tutorial you will also see highlighted underlined text. Clicking on it invokes a calculation. 
+      For example, to get the result of adding one to one, you could click here: <a class="commandlink">1+1</a> 
+      (The calculation might take a few seconds the first time you click). Below in the calculation box you will 
+      then see <span class="yacasExpression">In> 1+1</span> and a line following it with <span class="yacasExpression">Out> 2</span>. 
+      You can (and usually will) type it in manually in the calculation
+      environment, but in this tutorial you can click on the links to perform the action. The above is obviously a simple example, but <i>Yacas</i>
+      is capable of doing calculations that are a lot more complex. This tutorial should get you started
+      in a few hours.
+    </p>
+
+    <h2>The <i>Yacas</i> syntax</h2>
+    <p>
+      Syntax is very important. It helps you read code or expressions, and sometimes even guides the way you think about a problem.
+    </p>
+    <p>
+      Expressions in <i>Yacas</i> are generally built up of words. We will not bore you with the exact definitions of such words, 
+      but roughly speaking they are either sequences of alphabetic letters, or a number, or a bracket, or space to separate words, or
+      a word built up from symbols like <span class="yacasExpression">+, -. *, &lt;</span>, etcetera. If you want, you can mix these different types of characters, by surrounding
+      them with quotes. Thus, <a class="commandlink">"This text"</a> is what is called one token, surrounded by quotes, in <i>Yacas</i>.
+    </p>
+    <p>
+      The usual notation people use when writing down a calculation is called the infix notation, and you can readily recognize it, as for example 
+      <a class="commandlink">2+3</a> and <a class="commandlink">3*4</a>. Prefix operators also exist. These operators come before an expression, like 
+      for example the unary minus sign (called unary because it accepts one argument), <a class="commandlink">-(3*4)</a>. In addition to prefix
+      operators there are also postfix operators, like the exclamation mark to calculate the factorial of a number, <a class="commandlink">10!</a>.
+    </p>
+    <p>
+      <i>Yacas</i> understands standard simple arithmetic expressions. Some examples:
+      <ul>
+        <li><a class="commandlink">2+3</a> (addition)</li>
+        <li><a class="commandlink">2*3</a> (multiplication)</li>
+        <li><a class="commandlink">2-3</a> (subtraction)</li>
+        <li><a class="commandlink">2^3</a> (raising powers)</li>
+        <li><a class="commandlink">2+3*4</a></li>
+        <li><a class="commandlink">(2+3)*4</a></li>
+        <li><a class="commandlink">6/3</a> (division)</li>
+        <li><a class="commandlink">1/3</a></li>
+      </ul>
+      Divisions are not reduced to real numbers, but kept as a rational for as long as possible, since the 
+      rational is an exact correct expression (and any real number would just be an approximation. <i>Yacas</i>
+      is able to change a rational in to a number with the function <span class="yacasExpression">N</span>, for example <a class="commandlink">N(1/3)</a>.
+    </p>
+    <p>
+      Operators have "precedence", meaning that certain operations are done first before others are done. For example, in <a class="commandlink">2+3*4</a>
+      the multiplication is performed before the addition. The usual way to change the order of a calculation is with round brackets. 
+      The round brackets in the expression <a class="commandlink">(2+3)*4</a> will force <i>Yacas</i> to first add 2 and 3, and then multiply the 
+      result.
+    </p>
+    <p>
+      Simple function calls have their arguments between round brackets, separated by commas. Examples are <a class="commandlink">Sin(Pi)</a> (which
+      indicates that you are interested in the value of the trigonometric function sin applied to the constant pi),
+      and <a class="commandlink">Min(5,1,3,-5,10)</a> (which should return the lowest of its arguments, <span class="yacasExpression">-5</span> in this case).
+      Functions usually have the form <span class="yacasExpression">f()</span>, <span class="yacasExpression">f(x)</span> or <span class="yacasExpression">f(x,y,z,...)</span> 
+      depending on how many arguments the function accepts. Functions always return a result. 
+      For example, <a class="commandlink">Cos(0)</a> should return <span class="yacasExpression">1</span>. Evaluating functions can be thought of as simplifying an expression as much
+      as possible. Sometimes further simplification is not possible and a function returns itself unsimplified, like taking the square root of
+      an integer <a class="commandlink">Sqrt(2)</a>. A reduction to a number would be an approximation. We explain elsewhere how to get <i>Yacas</i>
+      to simplify an expression to a number.
+    </p>
+    <p>
+      <i>Yacas</i> allows for use of the infix notation, but with some additions. Functions can be "bodied", meaning that the
+      last argument is written past the close bracket. An example is <span class="yacasExpression">ForEach</span>, where we write <a class="commandlink">ForEach(item, 1 .. 10) Echo(item);</a>.
+      <span class="yacasExpression">Echo(item)</span> is the last argument to the function <span class="yacasExpression">ForEach</span>. 
+      <br />
+      A list is enclosed with curly braces, and is written out with commas between the elements, like for example <a class="commandlink">{1,2,3}</a>. 
+      items in lists (and things that can be made to look like lists, like arrays and strings), can then be accessed by indicating the index between
+      square brackets after the object. <a class="commandlink">{a,b,c}[2]</a> should return <span class="yacasExpression">b</span>, as 
+      <span class="yacasExpression">b</span> is the second element in the list (<i>Yacas</i>
+      starts counting from 1 when accessing elements). The same can be done with strings: <a class="commandlink">"abc"[2]</a>.
+      <br />
+      And finally, function calls can be grouped together, where they get executed one at a time, and the result of executing the last expression is
+      returned. This is done through square brackets, as <a class="commandlink">[ Echo("Hello"); Echo("World"); True; ];</a>, which first writes
+      <span class="yacasExpression">Hello</span> to screen, then <span class="yacasExpression">World</span> on the next line, and then returns <span class="yacasExpression">True</span>.
+    </p>
+    <p>
+      When you type in an expression, you have to take in to account the fact that <i>Yacas</i> is case-sensitive. This means that a function <span class="yacasExpression">sin</span> 
+      (with all lowercase) is a different function from <span class="yacasExpression">Sin</span> (which starts with a capital s), and the variable <span class="yacasExpression">v</span> 
+      is a different one from <span class="yacasExpression">V</span>.
+    </p>
+    <h2>Using <i>Yacas</i> from the calculation center</h2>
+    <p>
+      As mentioned earlier, you can type in commands on the command line in the calculation center. Typically, you would enter one statement per line, 
+      for example, click on <a class="commandlink">Sin(Pi/2);</a>. The has a memory, and remembers results from calculations performed before. 
+      For example, if you define a function on a line (or set a variable to a value), the defined function (or variable) are available to be used
+      in following lines. A session can be restarted (forgetting all previous definitions and results) by typing <a class="commandlink">restart</a>. 
+      All memory is erased in that case. 
+    </p>
+	<p>
+      Statements should end with a semicolon <span class="yacasExpression">;</span> although this is not required in interactive sessions
+      (<i>Yacas</i> will append a semicolon at end of line to finish the statement).
+    </p>
+    <p>
+      The command line has a history list, so it should be easy to
+      browse through the expressions you entered previously using the up and down arrow keys. 
+    </p>
+    <p>
+      When a few characters have been typed, the command line will use
+      the characters before the cursor as a filter into the history,
+      and allow you to browse through all the commands in the history
+      that start with these characters quickly, instead of browsing through
+      the entire history. If the system recognized the first few characters,
+      it will also show the commands that start with the sequence entered. You 
+      can use the arrow keys to browse through this list, and then select the 
+      intended function to be inserted by pressing enter. 
+    </p>
+    <p>
+      Commands spanning multiple lines can (and actually have to) be entered by 
+      using a trailing backslash \ at end of each continued line. For example,
+      clicking on <a class="commandlink">2+3+</a> will result in an error,
+      but entering the same with a backslash at the end and then entering another 
+      expression will concatenate the two lines and evaluate the concatenated input.
+    </p>
+    <p>
+      Incidentally, any text <i>Yacas</i> prints without a prompt is either a message printed by a 
+      function as a side-effect, or an error message. Resulting values of expressions 
+      are always printed after an <span class="yacasExpression">Out></span> prompt.
+    </p>
+
+    <h2><i>Yacas</i> as a symbolic calculator</h2>
+    <p>
+      We are ready to try some calculations. <i>Yacas</i> uses a 
+      C-like infix syntax and is case-sensitive. Here are some 
+      exact manipulations with fractions for a start:
+      <a class="commandlink">1/14+5/21*(30-(1+1/2)*5^2);</a>
+    </p>
+    <p>
+      The standard scripts already contain a simple math library for symbolic simplification of basic 
+      algebraic functions. Any names such as x are treated as independent, symbolic variables and are 
+      not evaluated by default. Some examples to try: 
+      <ul>
+        <li><a class="commandlink">0+x</a></li>
+        <li><a class="commandlink">x+1*y</a></li>
+        <li><a class="commandlink">Sin(ArcSin(alpha))+Tan(ArcTan(beta))</a></li>
+      </ul>
+      Note that the answers are not just simple numbers here, but actual expressions. This is 
+      where <i>Yacas</i> shines. It was built specifically to do calculations that have expressions
+      as answers.
+    </p>
+    <p>
+      In <i>Yacas</i> after a calculation is done, you can refer to the previous result with <span class="yacasExpression">%</span>. For example,
+      we could first type <a class="commandlink">(x+1)*(x-1)</a>, and then decide we would like to see
+      a simpler version of that expression, and thus type <a class="commandlink">Simplify(%)</a>, which 
+      should result in <span class="yacasExpression">x^2-1</span>.
+    </p>
+    <p>
+      The special operator <a class="commandlink">%</a> automatically recalls the result from the previous line. 
+      The function Simplify attempts to reduce an expression to a simpler form. Note that standard function names 
+      in <i>Yacas</i> are typically capitalized. Multiple capitalization such as <span class="yacasExpression">ArcSin</span> is sometimes used. The 
+      underscore character <span class="yacasExpression">_</span> is a reserved operator symbol and cannot be part of variable or function names.
+    </p>
+    <p>
+      <i>Yacas</i> offers some more powerful symbolic manipulation operations. A few will be shown here to wetten
+      the appetite.
+    </p>
+    <p>
+      Some simple equation solving algorithms are in place:
+      <ul>
+        <li><a class="commandlink">Solve(x/(1+x) == a, x);</a></li>
+        <li><a class="commandlink">Solve(x^2+x == 0, x);</a></li>
+        <li><a class="commandlink">Solve(a+x*y==z,x);</a></li>
+      </ul>
+     (Note the use of the <span class="yacasExpression">==</span> operator, which does not evaluate to anything, to denote an "equation" object.) 
+    </p>
+    <p>
+      Taylor series are supported, for example: <a class="commandlink">Taylor(x,0,3) Exp(x)</a> is a bodied operator
+      that expands <span class="yacasExpression">Exp(x)</span> for <span class="yacasExpression">x</span> around <span class="yacasExpression">x=0</span>, up to order 3.
+    </p>
+    <p>
+      Symbolic manipulation is the main application of <i>Yacas</i>. This is a small tour of the capabilities <i>Yacas</i> 
+      currently offers. Note that this list of examples is far from complete. <i>Yacas</i> contains a few hundred commands, 
+      of which only a few are shown here.
+      <ul>
+        <li><a class="commandlink">Expand((1+x)^5);</a> (expand the expression into a polynomial)</li>
+        <li><a class="commandlink">Limit(x,0) Sin(x)/x;</a> (calculate the limit of <span class="yacasExpression">Sin(x)/x</span> as <span class="yacasExpression">x</span> approaches zero)</li>
+        <li><a class="commandlink">Newton(Sin(x),x,3,0.0001);</a> (use Newton's method to find the value of <span class="yacasExpression">x</span> near 3 where <span class="yacasExpression">Sin(x)</span> equals zero, numerically, and stop if the result is closer than <span class="yacasExpression">0.0001</span> to the real result)</li>
+        <li><a class="commandlink">DiagonalMatrix({a,b,c});</a> (create a matrix with the elements specified in the vector on the diagonal)</li>
+        <li><a class="commandlink">Integrate(x,a,b) x*Sin(x);</a> (integrate a function over variable <span class="yacasExpression">x</span>, from <span class="yacasExpression">a</span> to <span class="yacasExpression">b</span>)</li>
+        <li><a class="commandlink">Factor(x^2-1);</a> (factorize a polynomial)</li>
+        <li><a class="commandlink">Apart(1/(x^2-1),x);</a> (create a partial fraction expansion of a polynomial)</li>
+        <li><a class="commandlink">Simplify((x^2-1)/(x-1));</a> (simplification of expressions)</li>
+        <li><a class="commandlink">CanProve( (a And b) Or (a And Not b) );</a> (special-purpose simplifier that tries to simplify boolean expressions as much as possible)</li>
+        <li><a class="commandlink">TrigSimpCombine(Cos(a)*Sin(b));</a> (special-purpose simplifier that tries to transform trigonometric expressions into a form where there are only additions of trigonometric functions involved and no multiplications)</li>
+      </ul>
+    </p>
+
+    <h2>Arbitrary precision numbers</h2>
+    <p>
+      <i>Yacas</i> can deal with arbitrary precision numbers. It can work with large integers,
+      like <a class="commandlink">20!</a> (The ! means factorial, thus <span class="yacasExpression">1*2*3*...*20</span>).
+    </p>
+    <p>
+      As we saw before, rational numbers will stay rational as long as the numerator and denominator
+      are integers, so <a class="commandlink">55/10</a> will evaluate to <span class="yacasExpression">11/2</span>. You can override this
+      behavior by using the numerical evaluation function <span class="yacasExpression">N()</span>. For example,
+      <a class="commandlink">N(55/10)</a> will evaluate to <span class="yacasExpression">5.5</span> . This behavior holds for most math
+      functions. <i>Yacas</i> will try to maintain an exact answer (in terms of integers or
+      fractions) instead of using floating point numbers, unless <span class="yacasExpression">N()</span> is used. Where
+      the value for the constant pi is needed, use the built-in variable <span class="yacasExpression">Pi</span>. It
+      will be replaced by the (approximate) numerical value when <a class="commandlink">N(Pi)</a> is called.
+      <i>Yacas</i> knows some simplification rules using <span class="yacasExpression">Pi</span> (especially with trigonometric
+      functions). 
+    </p>
+    <p>
+      The function <span class="yacasExpression">N</span> takes either one or two arguments. It evaluates its first argument and tries to 
+      reduce it as much as possible to a real-valued approximation of the expression. If the second argument
+      is present, it states the number of digits precision required. Thus <a class="commandlink">N(1/234)</a>
+      returns a number with the current default precision (which starts at 20 digits), but you can request
+      as many digits as you like by passing a second argument, as in <a class="commandlink">N(1/234, 10)</a>, 
+      <a class="commandlink">N(1/234, 20)</a>, <a class="commandlink">N(1/234, 30)</a>, etcetera.
+    </p>
+    <p>
+      Note that we need to enter <span class="yacasExpression">N()</span> to force the approximate calculation, otherwise the fraction would have been left 
+      unevaluated. 
+    </p>
+    <p>
+      Revisiting <span class="yacasExpression">Pi</span>, we can get as many digits of <span class="yacasExpression">Pi</span> as we like, by providing the 
+      precision required as argument to <span class="yacasExpression">N</span>.
+      So to get 50 digits precision, we can evaluate <a class="commandlink">N(Pi,50)</a>.
+    </p>
+
+    <p>
+      Taking a derivative of a function was amongst the very first of symbolic calculations to be performed
+      by a computer, as the operation lends itself surprisingly well to being performed automatically. Naturally,
+      it is also implemented in <i>Yacas</i>, through the function <span class="yacasExpression">D</span>. 
+      <span class="yacasExpression">D</span> is a <i>bodied</i> function, meaning
+      that its last argument is past the closing brackets. Where normal functions are called with syntax similar
+      to <span class="yacasExpression">f(x,y,z)</span>, a bodied function would be called with a syntax 
+      <span class="yacasExpression">f(x,y)z</span>. Here are two examples of taking a derivative:
+      <ul>
+        <li><a class="commandlink">D(x) Sin(x);</a> (taking a derivative)</li>
+        <li><a class="commandlink">D(x) D(x) Sin(x);</a> (taking a derivative twice)</li>
+      </ul>
+        The {D} function also accepts an argument specifying how often
+        the derivative has to be taken. In that case, the above expressions
+        can also be written as:
+      <ul>
+        <li><a class="commandlink">D(x,1) Sin(x);</a> (taking a derivative)</li>
+        <li><a class="commandlink">D(x,2) Sin(x);</a> (taking a derivative twice)</li>
+      </ul>
+    </p>
+ 
+    <h2>Analytic functions</h2>
+    <p>
+      Many of the usual analytic functions have been defined in the <i>Yacas</i> library. Examples are
+      <a class="commandlink">Exp(1)</a>, <a class="commandlink">Sin(2)</a>, <a class="commandlink">ArcSin(1/2)</a>,
+      <a class="commandlink">Sqrt(2)</a>.
+      These will not evaluate to a numeric result in general, unless the result is an integer, like 
+      <a class="commandlink">Sqrt(4)</a>. If asked to reduce the result to a numeric approximation with
+      the function <span class="yacasExpression">N</span>, then <i>Yacas will do so</i>, as for example in <a class="commandlink">N(Sqrt(2),50)</a>.
+    </p>
+
+    <h2>Variables</h2>
+    <p>
+      <i>Yacas</i> supports variables. You can set the value of a variable with the <span class="yacasExpression">:=</span> infix operator,
+      as in <a class="commandlink">a:=1;</a>. The variable can then be used in expressions, and everywhere
+      where it is referred to, it will be replaced by its value, <a class="commandlink">a</a>. 
+    </p>
+    <p>
+      To clear a variable binding, execute <a class="commandlink">Clear(a);</a>.  
+      A variable will evaluate to itself after a call to clear it (so after the call to clear <span class="yacasExpression">a</span>
+      above, calling <span class="commandlink">a</span> should now return <span class="yacasExpression">a</span>).
+      This is one of the properties of the evaluation scheme of <i>Yacas</i>; when some 
+      object can not be evaluated or transformed any further, it is returned as the final result.
+    </p>
+
+    <h2>Functions</h2>
+    <p>
+      The <span class="yacasExpression">:=</span> operator can also be used to define simple functions: <a class="commandlink">f(x):=2*x*x</a>.
+      will define a new function, <span class="yacasExpression">f</span>, that accepts one argument and returns twice the square of that argument.
+      This function can now be called, <a class="commandlink">f(a)</a>. You can change the definition of a function
+      by defining it again.
+    </p>
+    <p>
+      One and the same function name such as <span class="yacasExpression">f</span> may define different functions if they take different 
+      numbers of arguments. One can define a function <span class="yacasExpression">f</span> which takes one argument, as for example 
+      <a class="commandlink">f(x):=x^2;</a>, or two arguments, <a class="commandlink">f(x,y):=x*y;</a>.
+      If you clicked on both links, both functions should now be defined, and <a class="commandlink">f(a)</a>
+      calls the one function whereas <a class="commandlink">f(a,b)</a> calls the other.
+    </p>
+    <p>
+      <i>Yacas</i> is very flexible when it comes to types of mathematical objects. Functions can in general
+      accept or return any type of argument.
+    </p>
+
+    <h2>Boolean expressions and predicates</h2>
+    <p>
+      <i>Yacas</i> predefines <span class="yacasExpression">True</span> and <span class="yacasExpression">False</span> as boolean values. Functions returning boolean values are 
+      called <i>predicates</i>. For example, <span class="yacasExpression">IsNumber()</span> and<span class="yacasExpression"> IsInteger()</span> are predicates defined in the 
+      <i>Yacas</i> environment. For example, try <a class="commandlink">IsNumber(2+x);</a>, or 
+      <a class="commandlink">IsInteger(15/5);</a>.
+    </p>
+    <p>
+      There are also comparison operators. Typing <span class="commandlink">2 &gt; 1</span> would return <span class="yacasExpression">True</span>. You can also use the infix operators
+      <span class="yacasExpression">And</span> and <span class="yacasExpression">Or</span>, and the prefix operator 
+      <span class="yacasExpression">Not</span>, to make more complex boolean expressions. For example, try <a class="commandlink">True And False</a>, 
+      <a class="commandlink">True Or False</a>, <a class="commandlink">True And Not(False)</a>.
+    </p>
+
+	<h2>Strings and lists</h2>
+    <p>
+      In addition to numbers and variables, <i>Yacas</i> supports strings and lists. Strings are simply sequences of 
+      characters enclosed by double quotes, for example: <a class="commandlink">"this is a string with \"quotes\" in it"</a>.
+    </p>
+    <p>
+      Lists are ordered groups of items, as usual. <i>Yacas</i> represents lists by putting the objects between braces 
+      and separating them with commas. The list consisting of objects a, b, and c could be entered by typing <a class="commandlink">{a,b,c}</a>. 
+      In <i>Yacas</i>, vectors are represented as lists and matrices as lists of lists. 
+    </p>
+    <p>
+      Items in a list can be accessed through the <span class="yacasExpression">[ ]</span> operator. The first element has index one. Examples: when you enter
+      <a class="commandlink">uu:={a,b,c,d,e,f};</a> then <a class="commandlink">uu[2];</a> evaluates to <span class="yacasExpression">b</span>, and
+      <a class="commandlink">uu[2 .. 4];</a> evaluates to <span class="yacasExpression">{b,c,d}</span>. The "range" expression <a class="commandlink">2 .. 4</a>
+      evaluates to <span class="yacasExpression">{2,3,4}</span>. Note that spaces around the <span class="yacasExpression">..</span> operator are necessary, or else the parser will not be able to 
+      distinguish it from a part of a number.
+    </p>      
+    <p>
+      Lists evaluate their arguments, and return a list with results of evaluating each element. So, 
+      typing <a class="commandlink">{1+2,3};</a> would evaluate to <span class="yacasExpression">{3,3}</span>.
+    </p>
+    <p>
+      The idea of using lists to represent expressions dates back to the language LISP developed in the 1970's. From a
+      small set of operations on lists, very powerful symbolic manipulation algorithms can be built. Lists can also be used 
+      as function arguments when a variable number of arguments are necessary.
+    </p>
+    <p>
+      Let's try some list operations now. First click on <a class="commandlink">m:={a,b,c};</a> to set up an initial
+      list to work on. Then click on links below:
+      <ul>
+        <li><a class="commandlink">Length(m);</a> (return the length of a list)</li>
+        <li><a class="commandlink">Reverse(m);</a> (return the string reversed)</li>
+        <li><a class="commandlink">Concat(m,m);</a> (concatenate two strings)</li>
+        <li><a class="commandlink">m[1]:=d;</a> (setting the first element of the list to a new value, d, as can be verified by
+        evaluating <a class="commandlink">m</a>)</li>
+      </ul>
+      Many more list operations are described in the reference manual.
+    </p>
+
+    <h2>Writing simplification rules</h2>
+    <p>
+      Mathematical calculations require versatile transformations on symbolic
+      quantities. Instead of trying to define all possible transformations, <i>Yacas</i>
+      provides a simple and easy to use pattern matching scheme for manipulating
+      expressions according to user-defined <i>rules</i>. <i>Yacas</i> itself is designed 
+      as a small core engine executing a large library of rules to match and replace patterns. 
+    </p>
+    <p>
+      One simple application of pattern-matching rules is to define new
+      functions. (This is actually the only way <i>Yacas</i> can learn about new
+      functions.) As an example, let's define a function <span class="yacasExpression">f</span> that will evaluate
+      factorials of non-negative integers. We will define a predicate to
+      check whether our argument is indeed a non-negative integer, and we will use
+      this predicate and the obvious recursion <span class="yacasExpression">f(n)=n*f(n-1) if n>0 and 1 if n=0</span>
+      to evaluate the factorial. 
+    </p>
+    <p>
+      We start with the simple termination condition, which is that <span class="yacasExpression">f(n)</span> should return one if <span class="yacasExpression">n</span> is zero:
+      <ul>
+        <li><a class="commandlink">10 # f(0) &lt;-- 1;</a></li>
+      </ul>
+      You can verify that this already works for input value
+      zero, with <a class="commandlink">f(0)</a>.
+    </p>
+    <p>
+      Now we come to the more complex line,
+      <ul>
+        <li><a class="commandlink">20 # f(n_IsIntegerGreaterThanZero) &lt;-- n*f(n-1);</a></li>
+      </ul>
+      Now we realize we need a function <span class="yacasExpression">IsGreaterThanZero</span>, so we define this function, with 
+      
+      <ul>
+        <li><a class="commandlink">IsIntegerGreaterThanZero(_n) &lt;-- (IsInteger(n) And n&gt;0);</a></li>
+      </ul>
+      You can verify that it works by trying <a class="commandlink">f(5)</a>, which should return 
+      the same value as <a class="commandlink">5!</a>.
+    </p>
+    <p>
+      In the above example we have first defined two "simplification rules" for a new function <span class="yacasExpression">f()</span>. Then
+      we realized that we need to define a predicate <span class="yacasExpression">IsIntegerGreaterThanZero()</span>. A
+      predicate equivalent to <span class="yacasExpression">IsIntegerGreaterThanZero()</span> is actually already
+      defined in the standard library and it's called <span class="yacasExpression">IsPositiveInteger</span>, so it was
+      not necessary, strictly speaking, to define our own predicate to do the same
+      thing. We did it here just for illustration purposes.
+    </p>
+    <p>
+      The first two lines recursively define a factorial function <span class="yacasExpression">f(n)=n*(n-1)*...*1</span>. The rules are given
+      precedence values 10 and 20, so the first rule will be applied first.
+      Incidentally, the factorial is also defined in the standard library as a postfix
+      operator ! and it is bound to an internal routine much faster than the
+      recursion in our example. The example does show how to create your own routine with a few lines of 
+      code. One of the design goals of <i>Yacas</i> was to allow precisely that, definition of a
+      new function with very little effort.
+    </p>
+    <p>
+      The operator <span class="yacasExpression">&lt;--</span> defines a rule to be applied to a specific 
+      function. (The <span class="yacasExpression">&lt;--</span> operation cannot be applied to an atom.)
+      The <span class="yacasExpression">_n</span> in the rule for <span class="yacasExpression">IsIntegerGreaterThanZero()</span> specifies that any object which happens to be
+      the argument of that predicate is matched and assigned to the local
+      variable <span class="yacasExpression">n</span>. The expression to the right of <span class="yacasExpression">&lt;--</span> can use n (without the underscore) as a variable.
+    </p>
+    <p>
+      Now we consider the rules for the function <span class="yacasExpression">f</span>. The first rule just specifies that <span class="yacasExpression">f(0)</span> should be replaced 
+      by 1 in any expression. The second rule is a little more involved.
+      <span class="yacasExpression">n_IsIntegerGreaterThanZero</span> is a match for the argument of <span class="yacasExpression">f</span>, with the proviso that the predicate 
+      <span class="yacasExpression">IsIntegerGreaterThanZero(n)</span> should return <span class="yacasExpression">True</span>, otherwise the pattern is not matched. The underscore
+      operator is to be used only on the left hand side of the rule definition operator <span class="yacasExpression">&lt;--</span>.
+    </p>
+    <p>
+      There is another, slightly longer but equivalent way of writing the second rule:
+      <ul>
+        <li><a class="commandlink">20 # f(_n)_(IsIntegerGreaterThanZero(n)) &lt;-- n*f(n-1);</a></li>
+      </ul>
+	
+      The underscore after the function object denotes a "postpredicate" that should return 
+      <span class="yacasExpression">True</span> or else there is no match. This predicate may be a complicated expression involving several 
+      logical operations, unlike the simple checking of just one predicate in the <span class="yacasExpression">n_IsIntegerGreaterThanZero</span>
+      construct. The postpredicate can also use the variable <span class="yacasExpression">n</span> (without the underscore).
+    </p>
+    <p>
+      Precedence values for rules are given by a number followed by the <span class="yacasExpression">#</span> infix operator (and the transformation rule after it). This number determines 
+      the ordering of precedence for the pattern matching rules, with 0 the lowest allowed precedence value, 
+      i.e. rules with precedence 0 will be tried first. Multiple rules can have the same number: this just 
+      means that it doesn't matter what order these patterns are tried in. If no number is supplied, 0
+      is assumed. In our example, the rule <span class="yacasExpression">f(0) &lt;-- 1<span class="yacasExpression"> must be applied earlier than the recursive rule, 
+      or else the recursion will never terminate. But as long as there are no other rules concerning the function
+      <span class="yacasExpression">f</span>, the assignment of numbers 10 and 20 is arbitrary, and they could have been 500 and 501 just as well.
+      It is usually a good idea however to keep some space between these numbers, so you have room to insert
+      new transformation rules later on.
+    </p>
+    <p>
+      Predicates can be combined: for example, {IsIntegerGreaterThanZero()} could also have been defined as:
+      <ul>
+        <li><a class="commandlink">10 # IsIntegerGreaterThanZero(n_IsInteger)_(n&gt;0) &lt;-- True;</a></li>
+        <li><a class="commandlink">20 # IsIntegerGreaterThanZero(_n) &lt;-- False;</a></li>
+      </ul>
+      The first rule specifies that if n is an integer, and is greater than zero, the result is <span class="yacasExpression">True</span>, and the 
+      second rule states that otherwise (when the rule with precedence 10 did not apply) the predicate returns <span class="yacasExpression">False</span>.
+    </p>
+    <p>
+      In the above example, the expression <span class="yacasExpression">n &gt; 0</span> is added after the pattern and allows the pattern to match only 
+      if this predicate return <span class="yacasExpression">True</span>. This is a useful syntax for defining rules with complicated predicates. There is 
+      no difference between the rules<span class="yacasExpression"> F(n_IsPositiveInteger) &lt;--...</span> and <span class="yacasExpression">F(_n)_(IsPositiveInteger(n)) &lt;-- ...</span>
+      except that the first syntax is a little more concise.
+    </p>
+    <p>
+      The left hand side of a rule expression has the following form:
+      <br />
+     <span class="yacasExpression"><i>precedence</i> # <i>pattern</i> _ <i>postpredicate</i> &lt;-- <i>replacement</i> ; </span>
+      <br />
+      The optional <i>precedence</i> must be a positive integer.
+    </p>
+    <p>
+      Some more examples of rules (not made clickable because their equivalents are already in the basic <i>Yacas</i> library):
+      <ul>
+        <li><span class="yacasExpression">10 # _x + 0 &lt;-- x;</span></li>
+        <li><span class="yacasExpression">20 # _x - _x &lt;-- 0;</span></li>
+        <li><span class="yacasExpression">ArcSin(Sin(_x)) &lt;-- x;</span></li>
+      </ul>
+      The last rule has no explicit precedence specified in it (the precedence zero will be assigned automatically by the system).
+    </p>
+    <p>
+      <i>Yacas</i> will first try to match the pattern as a template. Names preceded or followed by an underscore can match any 
+      one object: a number, a function, a list, etc. <i>Yacas</i> will assign the relevant variables as local
+      variables within the rule, and try the predicates as stated in the pattern. The post-predicate (defined after the pattern) 
+      is tried after all these matched. As an example, the simplification rule <span class="yacasExpression">_x - _x &lt;--0</span> specifies that the two objects at left 
+      and at right of the minus sign should be the same for this transformation rule to apply.
+    </p>
+    <h2>Local simplification rules</h2>
+    <p>
+      Sometimes you have an expression, and you want to use specific simplification rules on it that should not be universally applied. 
+      This can be done with the <span class="yacasExpression">/:</span> and the <span class="yacasExpression">/::</span> operators. 
+      Suppose we have the expression containing things such as <span class="yacasExpression">Ln(a*b)</span>, 
+      and we want to change these into <span class="yacasExpression">Ln(a)+Ln(b)</span>. The easiest way to do this is using the <span class="yacasExpression">/:</span> operator as follows:
+      <ul>
+        <li><a class="commandlink">Sin(x)*Ln(a*b)</a> (example expression without simplification)</li>
+        <li><a class="commandlink">Sin(x)*Ln(a*b) /: { Ln(_x*_y) &lt;- Ln(x)+Ln(y) }</a> (with instruction to simplify the expression)</li>
+      </ul>
+      A whole list of simplification rules can be built up in the list, and they will be applied to the expression on the left hand side
+      of <span class="yacasExpression">/:</span>.
+    </p>
+    <p>
+      Note that for these local rules, <span class="yacasExpression">&lt;-</span> should be used instead of <span class="yacasExpression">&lt;--</span>. 
+      Using latter would result in a global definition of a new transformation rule on evaluation, which is not the intention.
+    </p>
+    <p>
+      The <span class="yacasExpression">/:</span> operator traverses an expression from the top down, trying to apply the rules from the beginning of the list of
+      rules to the end of the list of rules. If no rules can be applied to the whole expression, it will try the sub-expressions of the
+      expression being analyzed.
+    </p>
+    <p>
+      It might be sometimes necessary to use the <span class="yacasExpression">/::</span> operator, which repeatedly applies the <span class="yacasExpression">/:</span> operator until the result does not change
+      any more. Caution is required, since rules can contradict each other, and that could result in an infinite loop. To detect this situation,
+      just use <span class="yacasExpression">/:</span> repeatedly on the expression. The repetitive nature should become apparent.
+    </p>
+    <h2>Programming essentials</h2>
+    <p>
+      An important feature of <i>Yacas</i> is its programming language which allows you to create your own programs for doing calculations.
+      This section describes some constructs and functions for control flow. 
+    </p>
+    <p>
+      Looping can be done with the function <span class="yacasExpression">ForEach</span>. There are more options, but ForEach is the simplest to use for now and will suffice for this turorial.
+      The statement form <span class="yacasExpression">ForEach(x, list) body</span>
+      executes its body for each element of the list and assigns the variable x to that element each time. The 
+      statement form <span class="yacasExpression">While(predicate) body</span>
+      repeats execution of the expression represented by  <span class="yacasExpression">body</span> 
+      until evaluation of the expression represented by <span class="yacasExpression">predicate</span> 
+      returns <span class="yacasExpression">False</span>.
+    </p>
+    <p>
+      This example loops over the integers from one to three, and writes out a line for each, multiplying the integer by 3 and displaying the result with the
+      function <span class="yacasExpression">Echo</span>:
+      <a class="commandlink">ForEach(x,1 .. 5) Echo(x," times 3 equals ",3*x);</a>
+    </p>
+
+	<h3>Compound statements</h3>
+    <p>
+      Multiple statements can be grouped together using the <span class="yacasExpression">[</span> and <span class="yacasExpression">]</span> brackets. The compound 
+      <a class="commandlink">[a; Echo("In the middle"); 1+2;];</a> evaluates a, then the echo command, and finally 
+      evaluates <span class="yacasExpression">1+2</span>, and returns the result
+      of evaluating the last statement <span class="yacasExpression">1+2</span>.
+    </p>
+    <p>
+      A variable can be declared local to a compound statement block by the function <span class="yacasExpression">Local(var1, var2,...)</span>. For example, if you execute
+      <a class="commandlink">[Local(v);v:=1+2;v;];</a> the result will be 3. The program body created a variable called <span class="yacasExpression">v</span>, assigned the
+      value of evaluating <span class="yacasExpression">1+2</span> to it, and made sure the contents of the variable <span class="yacasExpression">v</span> were returned. 
+      If you now evaluate <a class="commandlink">v</a>
+      afterwards you will notice that the variable <span class="yacasExpression">v</span> is not bound to a value any more. The variable <span class="yacasExpression">v</span> 
+      was defined locally in the program body between the two square brackets <span class="yacasExpression">[</span> and <span class="yacasExpression">]</span>.
+    </p>
+    <p>
+      Conditional execution is implemented by the <span class="yacasExpression">If(predicate, body1, body2)</span> function call. If the expression
+      <span class="yacasExpression">predicate</span> evaluates to <span class="yacasExpression">True</span>, the expression represented by <span class="yacasExpression">body1</span> 
+      is evaluated, otherwise <span class="yacasExpression">body2</span> is evaluated, and the corresponding 
+      value is returned. For example, the absolute value of a number can be computed with: 
+      <a class="commandlink">f(x) := If(x < 0,-x,x);</a> (note that there already is a standard library function that calculates the absolute
+      value of a number).
+    </p>
+    <p>
+      Variables can also be made to be local to a small set of functions, with  <span class="yacasExpression">LocalSymbols(variables) body</span>. For example, the following code snippet:
+      <a class="commandlink">LocalSymbols(a,b) [a:=0;b:=0; inc():=[a:=a+1;b:=b-1;show();]; show():=Echo("a = ",a," b = ",b); ];</a> defines two functions, <span class="yacasExpression">inc</span>
+      and <span class="yacasExpression">show</span>. Calling <a class="commandlink">inc()</a> repeatedly increments <span class="yacasExpression">a</span> and decrements
+      <span class="yacasExpression">b</span>, and calling <a class="commandlink">show()</a> then shows the result (the function "inc" also calls the function "show", but the purpose of 
+this example is to show how two functions can share the same variable while the outside world cannot get at that variable). The variables are local to these two functions, as you can see
+      by evaluating <a class="commandlink">a</a> and <a class="commandlink">b</a> outside the scope of these two functions. This feature is very important when writing a larger body
+      of code, where you want to be able to guarantee that there are no unintended side-effects due to two bits of code defined in different files accidentally using the same global
+      variable.
+    </p>
+    <p>
+      To illustrate these features, let us create a list of all even integers from 2 to 20 and compute the product of all those integers except 
+      those divisible by 3. (What follows is not necessarily the most economical way to do it in <i>Yacas</i>.)
+    </p>
+    <p>
+      <pre>
+        <a class="commandlink">
+[
+  Local(L,i,answer);
+  L:={};
+  i:=2;
+  /* Make a list of all even integers from 2 to 20 */
+  While (i&lt;=20)
+  [
+    L := Append(L,i);
+    i := i + 2;
+  ];
+  /* Now calculate the product of all of 
+     these numbers that are not divisible by 3 */
+  answer := 1;
+  ForEach(i,L)
+    If (Mod(i, 3)!=0, answer := answer * i);
+  /* And return the answer */
+  answer;
+];</a>
+      </pre>
+    </p>
+    <p>
+      We used a shorter form of <span class="yacasExpression">If(predicate, body)</span> with only one body which is executed when the condition holds. If the condition does not 
+      hold, this function call returns <span class="yacasExpression">False</span>. We also introduced comments, which can be placed between 
+      <span class="yacasExpression">/*</span> and <span class="yacasExpression">*/</span>. <i>Yacas</i> will ignore anything
+      between those two. When putting a program in a file you can also use <span class="yacasExpression">//</span>. Everything after 
+      <span class="yacasExpression">//</span> up until the end of the line will be a comment.
+      Also shown is the use of the <span class="yacasExpression">While</span> function. Its form is <span class="yacasExpression">While (predicate) body</span>. 
+      While the expression represented by <span class="yacasExpression">predicate</span> evaluates to <span class="yacasExpression">True</span>, 
+      the expression represented by <span class="yacasExpression">body</span> will keep on being evaluated.
+    </p>
+    <p>
+      The above example is not the shortest possible way to write out the algorithm. It is written out in a procedural way, where the program explains 
+      step by step what the computer should do. There is nothing fundamentally wrong with the approach of writing down a program in a procedural way, 
+      but the symbolic nature of <i>Yacas</i> also allows you to write it in a more concise, elegant, compact way, by combining function calls. 
+    </p>
+    <p>
+      There is nothing wrong with procedural style, but there is amore 'functional' approach to the same problem would go as follows below. The advantage 
+      of the functional approach is that it is shorter and more concise (the difference is cosmetic mostly). 
+    </p>
+    <p>
+      Before we show how to do the same calculation in a functional style, we need to explain what a "pure function" is, as you will need it a lot
+      when programming in a functional style. We will jump in with an example that should be self-explanatory. Consider the expression <span class="yacasExpression">Lambda({x,y},x+y)</span>.
+      This has two arguments, the first listing x and y, and the second an expression. We can use this construct with the function Apply as follows:
+      <a class="commandlink">Apply(Lambda({x,y},x+y),{2,3})</a>. The result should be 5, the result of adding 2 and 3. The expression starting with <span class="yacasExpression">Lambda</span>
+      is essentially a prescription for a specific operation, where it is stated that it accepts 2 arguments, and returns the two arguments added together. 
+      In this case, since the operation was so simple, we could also have used the name of a function to apply the arguments to, the addition operator
+      in this case <a class="commandlink">Apply("+",{2,3})</a>. When the operations become more complex however, the Lambda construct becomes more useful.
+    </p>
+    <p>
+      Now we are ready to do the same example using a functional approach. First, let us construct a list with all even numbers from 2 to 20. For this we 
+      use the <span class="yacasExpression">..</span> operator to set up all numbers from one to ten, and then 
+      multiply that with two: <a class="commandlink">2*(1 .. 10)</a>.
+    </p>
+    <p>
+      Now we want an expression that returns all the even numbers up to 20 which are not divisible by 3. For this we can use <span class="yacasExpression">Select</span>, 
+      which takes as first argument a predicate that should return <span class="yacasExpression">True</span> if the list item is to be accepted, and false otherwise, 
+      and as second argument the list in question:
+      <a class="commandlink">Select(Lambda({n},Mod(n,3)!=0),2*(1 .. 10))</a>.
+      <br />
+      The numbers 6, 12 and 18 have been correctly filtered out. Here you see one example of a pure function where the operation is a little bit more complex. 
+    </p>
+    <p>
+      All that remains is to factor the items in this list. For this we can use <span class="yacasExpression">UnFlatten</span>.
+      Two examples of the use of UnFlatten are <a class="commandlink">UnFlatten({a,b,c},"*",1)</a> and <a class="commandlink">UnFlatten({a,b,c},"+",0)</a>.
+      The 0 and 1 are a base element to start with when grouping the arguments in to an expression (hence it is zero for addition and 1 for multiplication).
+    </p>
+    <p>	
+       Now we have all the ingredients to finally do the same calculation we did above in a procedural way, but this time we can do it in a functional style,
+       and thus captured in one concise single line: <a class="commandlink">UnFlatten(Select(Lambda({n},Mod(n,3)!=0),2*(1 .. 10)),"*",1)</a>. 
+       As was mentioned before, the choice between the two is mostly a matter of style. 
+    </p>
+
+    <h2>Macros</h2>
+    <p>
+      One of the powerful constructs in <i>Yacas</i> is the construct of a macro. In its essence, a macro is a prescription to create another program before
+      executing the program. An example perhaps explains it best. Evaluate the following expression 
+      <a class="commandlink">Macro(for,{st,pr,in,bd}) [(@st);While(@pr)[(@bd);(@in);];];</a>. This expression defines a macro that allows for looping.
+      <i>Yacas</i> has a <span class="yacasExpression">For</span> function already, but this is how it could be defined in one line (In <i>Yacas</i> the 
+      <span class="yacasExpression">For</span> function is bodied, we left that
+      out here for clarity, as the example is about macros). 
+    </p>
+    <p>
+      To see it work just type <a class="commandlink">for(i:=0,i&lt;3,i:=i+1,Echo(i))</a>. You will see the count from one to three.
+    </p>
+    <p>
+      The construct works as follows; The expression defining the macro sets up a macro named <span class="yacasExpression">for</span> with four arguments. On the right is the
+      body of the macro. This body contains expressions of the form <span class="yacasExpression">@var</span>. These are replaced by the values passed in on calling the macro.
+      After all the variables have been replaced, the resulting expression is evaluated. In effect a new program has been created. Such macro
+      constructs come from LISP, and are famous for allowing you to almost design your own programming language constructs just for your own
+      problem at hand. When used right, macros can greatly simplify the task of writing a program.
+    </p>
+    <p>
+      You can also use the back-quote <span class="yacasExpression">`</span> to expand a macro in-place. It takes on the form <span class="yacasExpression">`(expression)</span>, 
+      where the expression can again contain 
+      sub-expressions of the form <span class="yacasExpression">@variable</span>. These instances will be replaced with the values of these variables.
+    </p>
+
+    <h2>The practice of programming in <i>Yacas</i></h2>
+    <p>
+      When you become more proficient in working with <i>Yacas</i> you will be doing more and more sophisticated calculations. For such calculations it is generally
+      necessary to write little programs. In real life you will usually write these programs in a text editor, and then start <i>Yacas</i>, load the text file
+      you just wrote, and try out the calculation. Generally this is an iterative process, where you go back to the text editor to modify something, and then
+      go back to <i>Yacas</i>, type <a class="commandlink">restart</a> and then reload the file. 
+    </p>
+    <p>
+      On this site you can run <i>Yacas</i> in a little window called a Yacas calculation center (the same as the one below this tutorial). On page
+      there is tab that contains a <i>Yacas</i> calculation center. If you click on that tab you will be directed to a larger calculation center than the
+      one below this tutorial. In this page you can easily switch between doing a calculation and editing a program to load at startup. We tried to make the 
+      experience match the general use of <i>Yacas</i> on a desktop as much as possible. The Yacas journal (which you see when you go to the <i>Yacas</i> web
+      site) contains examples of calculations done before by others. 
+    </p>
+
+    <h2>Defining your own operators</h2>
+    <p>
+      Large part of the <i>Yacas</i> system is defined in the scripting language itself. This includes the definitions of the operators it accepts,
+      and their precedences. This means that you too can define your own operators. This section shows you how to do that.
+    </p>
+    <p>
+      Suppose we wanted to define a function <span class="yacasExpression">F(x,y)=x/y+y/x</span>. We could use the standard syntax <a class="commandlink">F(a,b) := a/b + b/a;</a>.
+      <a class="commandlink">F(1,2);</a>. For the purpose of this demonstration, lets assume that we want to define an infix operator <span class="yacasExpression">xx</span> for this 
+      operation. We can teach <i>Yacas</i> about this infix operator with <a class="commandlink">Infix("xx", OpPrecedence("/"));</a>. Here we told
+      <i>Yacas</i> that the operator <span class="yacasExpression">xx</span> is to have the same precedence as the division operator.
+      We can now proceed to tell <i>Yacas</i> how to evaluate expressions involving the operator <span class="yacasExpression">xx</span> by defining it as we would with a function, 
+      <a class="commandlink">a xx b := a/b + b/a;</a>. 
+    </p>
+    <p>
+      You can verify for yourself <a class="commandlink">3 xx 2 + 1;</a> and <a class="commandlink">1 + 3 xx 2;</a> return the same value, and that they
+      follow the precedence rules (eg. <span class="yacasExpression">xx</span> binds stronger than <span class="yacasExpression">+</span>).
+    </p>
+    <p>
+      We have chosen the name <span class="yacasExpression">xx</span> just to show that we don't need to use the special characters in the infix operator's name. However we must define this 
+      operator as infix before using it in expressions, otherwise <i>Yacas</i> will raise a syntax error.
+    </p>
+    <p>
+      Finally, we might decide to be completely flexible with this important function and also define it as a mathematical operator
+      <span class="yacasExpression">##</span> . First we define <span class="yacasExpression">##</span> as a <i>bodied</i> function 
+      and then proceed as before. First we can tell <i>Yacas</i> that <span class="yacasExpression">##</span> is a bodied
+      operator with <a class="commandlink">Bodied("##", OpPrecedence("/"));</a>. Then we define the function itself:
+      <a class="commandlink">##(a) b := a xx b;</a>. And now we can use the function, <a class="commandlink">##(1) 3 + 2;</a>.
+    </p>
+    <p>
+      We have used the name <span class="yacasExpression">##</span> but we could have used any other name such as 
+      <span class="yacasExpression">xx</span> or <span class="yacasExpression">F</span> or even <span class="yacasExpression">_-+@+-_</span>.
+      Apart from possibly confusing yourself, it doesn't matter what you call the functions you define.
+    </p>
+    <p>
+      There is currently one limitation in <i>Yacas</i>: once a function name is declared as infix (prefix, postfix) or bodied, it will
+      always be interpreted that way. If we declare a function <span class="yacasExpression">f</span> to be bodied, we may later define 
+      different functions named <span class="yacasExpression">f</span> with different 
+      numbers of arguments, however all of these functions must be bodied.
+    </p>
+    <p>
+      When you use infix operators and either a prefix of postfix operator next to it you can run in to a situation where <i>Yacas</i>
+      can not quite figure out what you typed. This happens when the operators are right next to each other and all consist of symbols
+      (and could thus in principle form a single operator). <i>Yacas</i> will raise an error in that case. This can be avoided by 
+      inserting spaces.
+    </p>
+
+    <h2>Some assorted programming topics</h2>
+    <p>
+      One use of lists is the associative list, sometimes called a dictionary in other programming languages, which is implemented in <i>Yacas</i> 
+      simply as a list of key-value pairs. Keys must be strings and values may be any objects. Associative lists can also work as mini-databases,
+      where a name is associated to an object. 
+      As an example, first enter <a class="commandlink">record:={};</a> to set up an empty record. After that, we can fill arbitrary fields in this
+      record:
+      <ul>
+        <li><a class="commandlink">record["name"]:="Isaia";</a></li>
+        <li><a class="commandlink">record["occupation"]:="prophet";</a></li>
+        <li><a class="commandlink">record["is alive"]:=False;</a></li>
+      </ul>
+      Now, evaluating <a class="commandlink">record["name"]</a> should result in the answer <span class="yacasExpression">"Isaia"</span>. The record is now a list that
+      contains three sublists, as you can see by evaluating <a class="commandlink">record</a>.
+    </p>
+    <p>
+      Assignment of multiple variables is also possible using lists. For instance, evaluating <a class="commandlink">{x,y}:={2!,3!}</a> will result 
+      in 2 being assigned to <a class="commandlink">x</a> and 6 to <a class="commandlink">y</a>.
+    </p>
+    <p>
+      When assigning variables, the right hand side is evaluated before it is assigned. Thus
+      <a class="commandlink">a:=2*2</a> will set a to 4. This is however <i>not</i> the case for 
+      functions. When entering <a class="commandlink">f(x):=x+x</a> the right hand side, <span class="yacasExpression">x+x</span>, is
+      not evaluated before being assigned. This can be forced by using <span class="yacasExpression">Eval()</span>. 
+      Defining <span class="yacasExpression">f(x)</span> with <a class="commandlink">f(x):=Eval(x+x)</a>
+      will tell the system to first evaluate <span class="yacasExpression">x+x</span> (which results in <span class="yacasExpression">2*x</span>) 
+      before assigning it to the user function <span class="yacasExpression">f</span>. This specific example is not a
+      very useful one but it will come in handy when the operation being performed on the right hand side is expensive. For example, if we
+      evaluate a Taylor series expansion before assigning it to the user-defined function, the engine doesn't need to create the Taylor
+      series expansion each time that user-defined function is called.
+    </p>
+    <p>
+      The imaginary unit i is denoted <span class="yacasExpression">I</span> and complex numbers can be entered as either expressions 
+      involving <span class="yacasExpression">I</span>, as for example 
+      <a class="commandlink">1+I*2</a>, or explicitly as <a class="commandlink">Complex(a,b)</a> for a+ib. The form <span class="yacasExpression">Complex(re,im)</span>
+      is the way <i>Yacas</i> deals with complex numbers internally.
+    </p>
+
+	<h3>Linear Algebra</h3>
+    <p>
+      Vectors of fixed dimension are represented as lists of their components. The list <a class="commandlink">{1, 2+x, 3*Sin(p)}</a> would be a 
+      three-dimensional vector with components <span class="yacasExpression">1</span>, <span class="yacasExpression">2+x</span> and 
+      <span class="yacasExpression">3*Sin(p)</span>. Matrices are represented as a lists of lists.
+    </p>
+    <p>
+      Vector components can be assigned values just like list items, since they are in fact list items. If we first set up a variable called "vector"
+      to contain a three-dimensional vector with the command <a class="commandlink">vector:=ZeroVector(3);</a> (you can verify that it is indeed
+      a vector with all components set to zero by evaluating <a class="commandlink">vector</a>), you can change elements of the vector just like you
+      would the elements of a list (seeing as it is represented as a list). For example, to set the second element to two, just evaluate
+      <a class="commandlink">vector[2] := 2;</a>. This results in a new value for <a class="commandlink">vector</a>.
+    </p>
+    <p>
+      <i>Yacas</i> can perform multiplication of matrices, vectors and numbers as usual in linear algebra. 
+      The standard <i>Yacas</i> script library also includes taking the determinant and inverse of a matrix, finding 
+      eigenvectors and eigenvalues (in simple cases) and solving linear sets of equations, such as A * x = b where A is a matrix, and x and b are vectors. 
+      As a little example to wetten your appetite, we define a Hilbert matrix: <a class="commandlink">hilbert:=HilbertMatrix(3)</a>. We can then
+      calculate the determinant with <a class="commandlink">Determinant(hilbert)</a>, or the inverse with <a class="commandlink">Inverse(hilbert)</a>.
+      There are several more matrix operations supported. See the reference manual for more details.
+    </p>
+
+	<h3>"Threading" of functions</h3>
+    <p>
+      Some functions in <i>Yacas</i> can be "threaded". This means that calling the function
+      with a list as argument will result in a list with that function being
+      called on each item in the list. E.g. <a class="commandlink">Sin({a,b,c});</a>
+      will result in <span class="yacasExpression">{Sin(a),Sin(b),Sin(c)}</span>. This functionality is implemented for most normal analytic functions and arithmetic operators.
+    </p>
+
+    <h3>Functions as lists</h3>
+    <p>
+      For some work it pays to understand how things work under the hood. Internally, <i>Yacas</i> represents all atomic expressions (numbers 
+      and variables) as strings and all compound expressions as lists, like LISP. Try <a class="commandlink">FullForm(a+b*c);</a> and you will see
+      the text <span class="yacasExpression">(+ a (* b c ))</span> appear on the screen. This function is occasionally useful, for example when trying to figure out why a specific 
+      transformation rule does not work on a specific expression.
+    </p>
+    <p>
+      If you try <a class="commandlink">FullForm(1+2)</a> you will see that the result is not quite what we intended. The system first adds up one
+      and two, and then shows the tree structure of the end result, which is a simple number 3. To stop <i>Yacas</i> from evaluating something,
+      you can use the function <span class="yacasExpression">Hold</span>, as <a class="commandlink">FullForm(Hold(1+2))</a>. The function 
+      <span class="yacasExpression">Eval</span> is the opposite, it instructs <i>Yacas</i>
+      to re-evaluate its argument (effectively evaluating it twice). This undoes the effect of Hold, as for example <a class="commandlink">Eval(Hold(1+2))</a>.
+    </p>
+    <p>      
+      Also, any expression can be converted to a list by the function Listify or back to an expression by the function UnList:
+      <ul>
+        <li><a class="commandlink">Listify(a+b*(c+d));</a></li>
+        <li><a class="commandlink">UnList({Atom("+"),x,1});</a></li>
+      </ul>
+      Note that the first element of the list is the name of the function <span class="yacasExpression">+</span which is equivalently 
+      represented as <a class="commandlink">Atom("+")</a> and that 
+      the subexpression <span class="yacasExpression">b*(c+d)</span> was not converted to list form. Listify just took the top node of the expression.
+    </p>
+    <p>
+      This concludes the online tutorial. A good place to go next is the "Yacas Journal", which has some examples small but useful programs written in 
+      <i>Yacas</i> to do specific calculations.
+    </p>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2425144-1";
+urchinTracker();
+</script>
+
+  </body>
+</html>
+

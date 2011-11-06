@@ -1,0 +1,89 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
+    <script type="text/javascript" src="datahub.js"></script>
+    <script type="text/javascript" src="yacas.js"></script>
+    
+    <script type="text/javascript">
+    <!-- 
+      /* When deep link found, redirect to the tabbified main page */
+      if (top.location == self.location)
+      {
+        if (document.location.search)
+        {
+          var seach = getBase();
+          self.location.replace("homepage.html?recent.html&journaldescr.html&"+seach);
+        }
+        else
+        {
+          self.location.replace("yacas.html");
+        }
+      }
+
+    //   end script hiding -->
+    </script>
+    <script type="text/javascript">
+
+      var prevOnLoad = window.onload;
+      window.onload = initPage;
+
+      function initPage()
+      {
+        if (prevOnLoad)
+          prevOnLoad();
+        initThisPage();
+      }
+
+      function initThisPage()
+      {
+        if (document.location.search)
+        {
+          var seach = getBase();
+          var elem;
+          elem = document.getElementById("thetext");
+          if (elem)
+          {
+            var text="<body>"+datahub.getArticleBody()+"</body>";
+            elem.innerHTML = text;
+          }
+        }
+      }
+
+    </script>
+  </head>
+  <body>
+    <table border=0 width="680">
+      <tr height=50>
+        <td>
+          <div width="100%" class="dummy" id="thetext" ></div>
+          <br />
+        </td>
+      </tr>
+      <tr>
+        <td>
+        </td>
+      </tr>
+    </table>
+
+    <script type="text/javascript">
+  document.write(
+  '<APPLET name="datahub" archive="yacas.jar" code="net.sf.yacas.DatahubApplet" width=1 height=1>'+
+  '<PARAM name="programMode" value="journal">' +
+  '<PARAM name="articleFromFile" value="'+getBase()+'.yart">' +
+  '</APPLET>'
+  );
+    </script>
+
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2425144-1";
+urchinTracker();
+</script>
+
+  </body>
+</html>
+
+
+

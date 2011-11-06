@@ -1,0 +1,327 @@
+/* Numerical testers - all confirmed with Matlab 6r12.0 */
+
+f():=[];//Echo(CurrentLine());
+
+
+
+
+Builtin'Precision'Set(10);
+
+NumericEqual(N(Sqrt(2),5), 1.41421,5);		// no idea where the problem is
+NumericEqual(N(N(1+Pi,20)-Pi,20),1,20);		// "N" should have "HoldArg" in some way, so inner "N" is evaluated with outer precision 20
+
+/* Got the first digits of Pi from the following page:
+   http://www.cecm.sfu.ca/projects/ISC/dataB/isc/C/pi10000.txt
+  Just checking that Yacas agrees.
+*/
+NumericEqual(N(Pi,70),3.1415926535897932384626433832795028841971693993751058209749445923078164062862,70);
+
+NumericEqual( N(Sec(2),9), -2.402997962, 9);
+NumericEqual( N(Csc(2),9),  1.09975017,9);
+NumericEqual( N(Cot(2),9), -0.457657554, 9);
+NumericEqual( N(Sinh(2),10), 3.6268604078,10); // matter of discussion whether rounding should be to nearest
+
+NumericEqual( N(ArcSin(2), 9), Complex(1.570796327,1.316957897),9);
+NumericEqual( N(ArcCos(2),9), Complex(0,-1.316957897),9);
+NumericEqual( N(ArcTan(2*I), 12), N(Complex(1.57079632679,0.54930614433),12),11); // calculating to precision+1 because RoundTo rounds... cluttering the last digit with round-off
+NumericEqual( N(ArcSinh(2), 9), 1.443635475,9);
+NumericEqual( N(ArcCosh(2), 9), 1.316957897,9);
+NumericEqual( N(ArcCosh(-2), 8), Complex(-1.3169579,3.14159265),8);
+NumericEqual( N(ArcTanh(2), 9), Complex(0.549306144,1.570796327),9);
+
+/* Numerical tests - all confirmed with Maple */
+Builtin'Precision'Set(50);
+
+NumericEqual(
+RoundTo(N(Pi), 50)
+, 3.14159265358979323846264338327950288419716939937511
+, 50);
+
+NumericEqual(
+RoundTo(N(Sin(2.0)), 49)
+, 0.9092974268256816953960198659117448427022549714479
+,49);
+
+NumericEqual(
+RoundTo(N(Sin(2.0)), 50)
+, 0.90929742682568169539601986591174484270225497144789
+,50);
+
+NumericEqual(
+RoundTo(N(Sin(2.0)), 51)
+, 0.90929742682568169539601986591174484270225497144789
+,51);
+
+NumericEqual(
+RoundTo(N(Cos(20.0)), 49)
+, 0.4080820618133919860622678609276449570992995103163
+, 49); f();
+
+NumericEqual(
+RoundTo(N(Tan(20.0)), 49)
+, 2.2371609442247422652871732477303491783724839749188
+, 49); f();
+
+NumericEqual(
+RoundTo(N(Exp(10.32),54), 54)
+, 30333.2575962246035600343483350109621778376486335450125
+,48); f();  // This one rounds off the wrong direction (125 rounded to 12 iso 13). But alas, change was needed because new interpretation means the required precision was actually higher (not number of decimals after point, but total number of digits were meant).
+
+NumericEqual(
+RoundTo(N(Ln(10.32/4.07)), 49)
+, 0.93044076059891305468974486564632598071134270468
+, 49); f();
+
+NumericEqual(
+RoundTo(N(1.3^10.32), 48)
+, 14.99323664825717956473936947123246987802978985306
+, 48); f();
+
+NumericEqual(
+RoundTo(N(Sqrt(5.3),51), 51)
+, 2.302172886644267644194841586420201850185830282633675
+,51); f(); // increased to 51 digits so round-off is obviously downwards (previous rounding was defendably wrong)
+
+// this failed in gmp due to broken MathSqrt()
+NumericEqual(
+RoundTo(N(Sqrt(25.3)), 50)
+, 5.0299105359837166789719353820984438468186649281130
+,50);
+
+// this failed due to broken RoundTo()
+NumericEqual(
+RoundTo(MathPower(13, -23), 50)
+, 0.23949855470974885180294666343025235387321690490245e-25
+, 50);
+
+NumericEqual(
+RoundTo([Local(x);x:=Newton(x*Exp(x)-4,x,1,10^(-49)); N(x*Exp(x));], 49)
+, 4.
+,49); f();
+Verify(Newton(x^2+1,x,1,0.1,-3,3), Fail); f();
+NumericEqual(Newton(x^2-1,x,1,0.1,-3,3), 1.,Builtin'Precision'Get()); f();
+
+NumericEqual(
+RoundTo(N(ArcSin(0.32)), 49)
+, 0.3257294872946301593103199105324500784354180998123
+,49); f();
+
+NumericEqual(
+RoundTo(N(Sin(N(ArcSin(0.1234567)))), 49)
+, 0.1234567
+,49); f();
+
+/* ArcSin(x) for x close to 1 */
+
+NumericEqual(
+RoundTo(N( (1-Sin(N(ArcSin(1-10^(-25)))))*10^25), 25)
+, 1.
+, 25); f();
+
+NumericEqual(
+N(ArcSin(N(Sin(1.234567),50)),50)
+, N(1.234567,50)
+, 49); f(); // calculating to precision+1 because RoundTo rounds... cluttering the last digit with round-off
+
+NumericEqual(
+RoundTo(N(ArcCos(0.32)), 49)
+, 1.2450668395002664599210017811073013636631665998753
+, 49); f();
+
+NumericEqual(
+RoundTo(N(ArcTan(0.32)), 49)
+, 0.3097029445424561999173808103924156700884366304804
+, 49); f();
+
+NumericEqual(
+RoundTo(N(Cos(N(ArcCos(0.1234567)))), 49)
+, 0.1234567
+, 49);
+
+NumericEqual(
+RoundTo(N(ArcCos(N(Cos(1.234567)))), 49)
+, 1.234567
+, 49);
+
+NumericEqual(
+RoundTo(N(Tan(N(ArcTan(20)))), 46)	// large roundoff error on Tan() calculation due to subtraction from Pi/2 -- unavoidable loss of precision
+, 20.
+, 46);
+//KnownFailure(
+NumericEqual(
+RoundTo(N(Tan(N(ArcTan(500000)))), 38)
+, 500000.
+//)
+, 38);
+
+Builtin'Precision'Set(60);  // obviously, 50 is not enough for the following
+//KnownFailure(
+NumericEqual(
+RoundTo(N((Pi/2-ArcTan(N(Tan(N(Pi/2)-10^(-24)))))*10^24 ), 25)
+, 1.
+//)
+, 25);
+
+/// special functions
+Builtin'Precision'Set(20);  // let's be gentle
+
+TestYacas(
+Gamma(10.5)
+, (654729075*Sqrt(Pi))/1024
+);
+
+TestYacas(
+Gamma(9/2)
+, (105*Sqrt(Pi))/16
+);
+
+TestYacas(
+Gamma(-10.5)
+, (-2048*Sqrt(Pi))/13749310575
+);
+
+TestYacas(
+Gamma(-7/2)
+, (16*Sqrt(Pi))/105
+);
+
+NumericEqual(RoundTo(N( Internal'GammaNum(10.5) ), 13), 1133278.3889487855673, 13);
+NumericEqual(RoundTo(N( Internal'GammaNum(-11.5) ), 20), 0.00000002295758104824, 20);
+NumericEqual(RoundTo(N( Internal'GammaNum(-12.5) ), 20), -0.00000000183660648386, 20);
+
+// Check for one example that N(Gamma(x)) returns the same as Internal'GammaNum
+NumericEqual(RoundTo(N( Gamma(10.5) ), 13), 1133278.3889487855673, 13);
+
+
+
+NumericEqual(	// lost 2 digits b/c of imprecise arithmetic
+RoundTo(N( Zeta(-11.5) ), 18)
+, 0.020396978715942792
+,18);
+
+TestYacas(
+Zeta(40)
+, (261082718496449122051*Pi^40)/20080431172289638826798401128390556640625
+);
+
+TestYacas(
+Zeta(-11)
+, 691/32760
+);
+
+TestYacas(
+Zeta(-12)
+, 0
+);
+
+NumericEqual(
+RoundTo(N(Zeta(40)), 19)
+, 1.0000000000009094948
+,19);
+
+NumericEqual(
+RoundTo(N(Zeta(1.5)), 19)
+, 2.6123753486854883433
+,19);
+
+// test correctness of Zeta(3)
+NumericEqual(
+RoundTo(Internal'ZetaNum(3)-N(Zeta(3)), 20)
+, 0
+,20);
+
+TestYacas(
+Bernoulli(40)
+, -261082718496449122051/13530
+);
+
+Verify(
+ContFracList(355/113)
+, {3,7,16}
+);
+
+Verify(
+ContFracList(-24, 4)
+, {-24}
+);
+
+Verify(
+ContFracList(-355/113)
+, {-4,1,6,16}
+);
+
+Builtin'Precision'Set(7);
+
+Verify(
+GuessRational(N(Pi))
+, 355/113
+);
+
+/*
+  For the NearRational test, perhaps better would be a real test that
+  checks that the result is correct up to the required number of digits
+  accuracy.
+*/
+Builtin'Precision'Set(10);
+Verify(
+NearRational(N(Pi))
+, 355/113, 
+);
+
+// Lambert's W function
+NumericEqual(
+N(LambertW(-0.24),Builtin'Precision'Get())
+, -0.3357611648
+, Builtin'Precision'Get());
+NumericEqual(
+N(LambertW(10),Builtin'Precision'Get())
+, 1.7455280027
+, Builtin'Precision'Get());
+
+// Bessel Functions
+// These results are from GNU bc, matlab seems to suck.
+Builtin'Precision'Set(50);
+NumericEqual( N(BesselJ(0,.5)), RoundTo(.93846980724081290422840467359971262556892679709682,50),50 );
+NumericEqual( N(BesselJ(0,.9)), RoundTo(.80752379812254477730240904228745534863542363027564,50),50 );
+NumericEqual( N(BesselJ(0,.99999)), RoundTo(.76520208704756659155313775543958045290339472808482,50),50 );
+NumericEqual( N(BesselJ(10,.75)), RoundTo(.00000000001496217131175968146987124836216828348578,50),50 );
+NumericEqual( N(BesselJ(5,1)), RoundTo(.00024975773021123443137506554098804519815836777698,50),50 );
+NumericEqual( N(BesselJ(4,2)), RoundTo(.03399571980756843414575921128853104471483296834631,50),50 );
+NumericEqual( N(BesselJ(10,3)), RoundTo( .00001292835164571588377753453080258017074342083284,50),50 );
+
+NumericEqual( N(BesselJ(11,11)), RoundTo( .20101400990926940339478738551009382430831534125484,50),50 );
+NumericEqual( N(BesselJ(-11,11)), RoundTo( -.20101400990926940339478738551009382430831534125484,50),50 );
+NumericEqual( RoundTo(N(BesselJ(1,10)),50), RoundTo( .04347274616886143666974876802585928830627286711859, 50),50 );
+NumericEqual( N(BesselJ(10,10)), RoundTo( .20748610663335885769727872351875342803274461128682, 50 ),50 );
+NumericEqual( RoundTo(N(BesselJ(1,3.6)),50), RoundTo( .09546554717787640384570674422606098601943275490885, 50 ),50) ;
+
+Builtin'Precision'Set(20);
+Verify( RoundTo(N(Erf(Sqrt(0.8)),20),19), // verified with Maple
+RoundTo(.79409678926793169113034892342, 19)
+);
+Verify( RoundTo(N(Erf(50*I+20)/10^910,22),19), // verified with Maple
+RoundTo(1.09317119002909585408+I*0.00475463306931818955275, 19)
+);
+
+// testing GammaConstNum against Maple
+Testing("Gamma constant");
+Builtin'Precision'Set(40);
+NumericEqual(Internal'gamma()+0, 0.5772156649015328606065120900824024310422,Builtin'Precision'Get());
+Builtin'Precision'Set(20);
+Verify(gamma,Atom("gamma"));
+NumericEqual(RoundTo(Internal'gamma()+0,19), 0.5772156649015328606,19);
+NumericEqual(RoundTo(N(1/2+gamma+Pi), 19), 4.2188083184913260991,19);
+
+// From GSL 1.0
+//NumericEqual( N(PolyLog(2,-0.001),20), -0.00099975011104865108, 20 );
+// PolyLog I didn't write PolyLog, but it seems to not always calculate correctly up to the last digit.
+Verify( RoundTo(N(PolyLog(2,-0.001)+0.00099975011104865108,20),20),0);
+
+// Round-off errors
+N([
+  Local(a,b);
+  a:= 77617;
+  b:= 33096;
+  // this expression gives a wrong answer on any hardware floating-point platform
+  NumericEqual( 333.75*b^6 + a^2*(11*a^2*b^2-b^6-121*b^4-2)+5.5*b^8 +a/(2*b), -0.827396,6);
+],40);

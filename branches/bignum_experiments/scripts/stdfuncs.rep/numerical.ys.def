@@ -1,0 +1,16 @@
+TruncRadian
+SinNum
+CosNum
+TanNum
+ArcSinNum
+ArcTanNum
+ExpNum
+MathExpThreshold
+SetMathExpThreshold 
+MathLog
+Internal'LnNum
+BrentLn
+Ln2
+NewtonLn
+Exp1
+}

@@ -1,0 +1,244 @@
+/// low-level numerical calculations of elementary functions.
+/// These are only called if InNumericMode() returns True
+
+//////////////////////////////////////////////////
+/// Trigonometric functions: Sin, Cos, Tan, ...
+//////////////////////////////////////////////////
+
+/* TruncRadian truncates the radian r so it is between 0 and 2*Pi.
+ * It calculates r mod 2*Pi using the required precision.
+ */
+TruncRadian(_r) <--
+[
+  Local(twopi);
+  // increase precision by the number of digits of r before decimal point; enough to evaluate Abs(r) with 1 digit of precision
+  N([
+    r:=Eval(r);
+    twopi:=2*Internal'Pi();
+    r:=r-MathFloor(r/twopi)*twopi;
+  ], Builtin'Precision'Get() + IntLog(Ceil(Abs(N(Eval(r), 1))), 10));
+  r;
+];
+HoldArg("TruncRadian",r);
+
+SinNum(x) :=
+[
+  If(x<0 Or 113*x>710, x:=TruncRadian(x));	// 710/113 is close to 2*Pi
+  MathSin(x);
+];
+CosNum(x) :=
+[
+  If(x<0 Or 113*x>710, x:=TruncRadian(x));
+  MathCos(x);
+];
+TanNum(x) :=
+[
+  If(x<0 Or 113*x>710, x:=TruncRadian(x));
+  MathTan(x);
+];
+
+ArcSinNum(x) :=
+[
+	// need to be careful when |x| close to 1
+	If(
+		239*Abs(x) >= 169,	// 169/239 is a good enough approximation of 1/Sqrt(2)
+		// use trigonometric identity to avoid |x| close to 1
+		Sign(x)*(Internal'Pi()/2-MathArcSin(Sqrt(1-x^2))),
+		MathArcSin(x)
+	);
+];
+
+//////////////////////////////////////////////////
+/// Exponent
+//////////////////////////////////////////////////
+
+LocalSymbols(mathExpThreshold) [
+  // improve convergence of Exp(x) for large x
+  mathExpThreshold := If(Not IsBound(mathExpThreshold), 500);
+
+  MathExpThreshold() := mathExpThreshold;
+  SetMathExpThreshold(threshold) := [mathExpThreshold:= threshold; ]; 
+];
+
+// large positive x
+10 # ExpNum(x_IsNumber) _ (x > MathExpThreshold()) <-- [
+	Local(i, y);
+	i:=0;
+	For(i:=0, x > MathExpThreshold(), i++)
+		x := MathDivide(x, 2.);
+	For(y:= MathExp(x), i>0, i--)
+		y := MathMultiply(y, y);
+	y;
+	
+];
+// large negative x
+20 # ExpNum(x_IsNumber) _ (2*x < -MathExpThreshold()) <-- MathDivide(1, ExpNum(-x));
+// other values of x
+30 # ExpNum(x_IsNumber) <-- MathExp(x);
+
+//////////////////////////////////////////////////
+/// Natural logarithm
+//////////////////////////////////////////////////
+
+//  MathLog in the original C++ code hangs! Scripted implementation is much better
+MathLog(x) := Internal'LnNum(x);
+
+// natural logarithm: this should be called only for real x>1
+//Internal'LnNum(x) := MathLog(x);
+// right now the fastest algorithm is Halley's method for Exp(x)=a
+// when internal math is fixed, we may want to use Brent's method (below)
+// this method is using a cubically convergent Newton iteration for Exp(x/2)-a*Exp(-x/2)=0:
+// x' := x - 2 * (Exp(x)-a) / (Exp(x)+a) = x-2+4*a/(Exp(x)+a)
+Internal'LnNum(x_IsNumber)_(x>=1) <-- NewtonLn(x);
+
+Internal'LnNum(x_IsNumber)_(0<x And x<1) <-- - Internal'LnNum(MathDivide(1,x));
+
+NewtonLn(x) :=
+	LocalSymbols(y)
+[
+// we need MathExp instead of Exp to avoid N() which is used in the definition of Exp.
+// and we need ExpNum() instead of MathExp so that it is faster for large arguments and to avoid the error generated when core functions like MathExp are called on symbolic arguments.
+	NewtonNum({{y}, 4*x/(ExpNum(y)+x)-2+y},
+	// initial guess is obtained as Ln(x^2)/Ln(2) * (Ln(2)/2)
+		MathDivide(794*IntLog(Floor(x*x), 2), 2291), 10, 3);
+];
+
+/* The BrentLn() algorithm is currently slower in internal math but should be asymptotically faster.
+
+// compute Ln(x_IsInteger) using the AGM sequence. See: Brent paper rpb028 (1975).
+// this is currently faster than MathLog(n) for precision > 40 digits
+10 # BrentLn(x_IsInteger)_(Builtin'Precision'Get()>40) <--
+[
+	Local(y, n, k, eps);
+	n := Builtin'Precision'Get();	// decimal digits
+	// initial power of x
+	k := 1 + Div(IntLog(4*10^n, x), 2);	// now x^(2*k)>4*10^n
+	Builtin'Precision'Set(n+5);	// guard digits
+	eps := MathDivide(1, 10^n);	// precision
+	y := MathPower(x, k);	// not yet divided by 4
+	// this is Brent's AGM times y. This way we work around the Yacas limitation of fixed precision, at cost of slightly slower initial iterations
+	y := MathDivide(Internal'Pi()*y, (2*k)*AG'Mean(4, y, eps));
+	Builtin'Precision'Set(n);
+	RoundTo(y, n);	// do not return a more precise number than we really have
+];
+
+15 # BrentLn(x_IsInteger)  <-- MathLog(x);
+
+/// calculation of Ln(x) using Brent's AGM sequence - use precomputed Pi and Ln2.
+20 # BrentLn(_x)_(x<1) <-- -BrentLn(1/x);
+
+// this is currently faster than MathLog() for precision > 85 digits and numbers >2
+30 # BrentLn(_x)_(Builtin'Precision'Get()>85) <--
+[
+	Local(y, n, n1, k, eps);
+  N([
+    n := Builtin'Precision'Get();	// decimal digits
+    // effective precision is n+Ln(n)/Ln(10)
+    n1 := n + IntLog(n,10);	// Ln(2) < 7050/10171
+    // initial power of 2
+    k := 2 + Div(n1*28738, 2*8651)	// Ln(10)/Ln(2) < 28738/8651; now 2^(2*k)>4*10^n1
+    // find how many binary digits we already have in x, and multiply by a sufficiently large power of 2 so that y=x*2^k is larger than 2*10^(n1/2)
+    - IntLog(Floor(x), 2);
+    // now we need k*Ln(2)/Ln(10) additional digits to compensate for cancellation at the final subtraction
+    Builtin'Precision'Set(n1+2+Div(k*3361, 11165));	// Ln(2)/Ln(10) < 3361/11165
+    eps := MathDivide(1, 10^(n1+1));	// precision
+    y := x*2^(k-2);	// divided already by 4
+    // initial values for AGM
+    // this is Brent's AGM times y. This way we work around the Yacas limitation of fixed precision, at cost of slightly slower initial iterations
+    y:=Internal'Pi()*y/(2*AG'Mean(1,y,eps)) - k*Ln2();
+    Builtin'Precision'Set(n);
+  ]);
+	y;	// do not return a more precise number than we really have
+];
+
+40 # BrentLn(x_IsNumber) <-- MathLog(x);
+
+LocalSymbols(CacheOfConstantsN) [
+
+CachedConstant(Ln2, CacheOfConstantsN, Internal'LnNum(2)); // this is only useful for BrentLn
+/**/
+//CachedConstant(Exp1, CacheOfConstantsN, MathExp(1));       // Exp1 is useless so far
+
+];
+
+//////////////////////////////////////////////////
+/// ArcTan(x)
+//////////////////////////////////////////////////
+
+ArcTanNum(x) :=
+[
+	// using trigonometric identities is faster for now
+	If(
+		Abs(x)>1,
+		Sign(x)*(Internal'Pi()/2-ArcSin(1/Sqrt(x^2+1))),
+		ArcSin(x/Sqrt(x^2+1))
+	);
+];
+
+/* old methods -- slower for now
+/// numerical evaluation of ArcTan using continued fractions: top level
+2 # ArcTan(x_IsNumber)_InNumericMode() <--
+Sign(x) *
+// now we need to compute ArcTan of a nonnegative number Abs(x)
+[
+	Local(nterms, y);
+	y := Abs(x);
+	// use identities to improve convergence -- see essays book
+	If(
+		y>1,
+		y:=1/y	// now y <= 1
+	// we shall know that the first identity was used because Abs(x) > 1 still
+	);
+	// use the second identity 
+	y := y/(1+Sqrt(1+y^2));	// now y <= Sqrt(2)-1
+	// find the required number of terms in the continued fraction
+	nterms := 1/y;	// this needs to be calculated at full precision
+	// see essays book on the choice of the number of terms (added 2 "guard terms").
+	// we need Hold() because otherwise, if InNumericMode() returns True, N(..., 5) will not avoid the full precision calculation of Ln().
+	// the value of x should not be greater than 1 here!
+	nterms := 2 + Ceil( N(Hold(Ln(10)/(Ln(4)+2*Ln(nterms))), 5) * Builtin'Precision'Get() );
+	If(	// call the actual routine
+		Abs(x)>1,
+		Pi/2-2*MyArcTan(y, nterms),	// this is for |x|>1
+		2*MyArcTan(y, nterms)
+		// MyArcTan(x, nterms)
+	);
+];
+*/
+/// numerical evaluation of ArcTan using continued fractions: low level
+
+// evaluation using recursion -- slightly faster but lose some digits to roundoff errors and needs large recursion depth
+/*
+10 # ContArcTan(_x,_n,_n) <-- (2*n-1);
+20 # ContArcTan(_x,_n,_m) <--
+[
+  (2*n-1) + (n*x)^2/ContArcTan(x,n+1,m);
+];
+
+MyArcTan(x,n) :=
+[
+  x/ContArcTan(x,1,n);
+];
+*/
+/*
+/// evaluate n terms of the continued fraction for ArcTan(x) without recursion.
+/// better control of roundoff errors
+MyArcTan(x, n) :=
+[
+	Local(i, p, q, t);
+	// initial numerator and denominator
+	p:=1;
+	q:=1;
+	// start evaluating from the last term upwards
+	For(i:=n, i>=1, i--)
+	[
+		//{p,q} := {p + q*(i*x)^2/(4*i^2-1), p};
+	//	t := p*(2*i-1) + q*(i*x)^2; then have to start with p:=2*n+1
+		t := p + q*(i*x)^2/(4*i^2-1);
+		q := p;
+		p := t;
+	];
+	// answer is x/(p/q)
+	x*q/p;
+];
+*/

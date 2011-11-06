@@ -1,0 +1,71 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
+    <script type="text/javascript" src="datahub.js"></script>
+    <script type="text/javascript" src="yacas.js"></script>
+    <script type="text/javascript">
+
+      /* When deep link found, redirect to the tabbified main page */
+      if (top.location == self.location)
+      {
+        self.location.replace("yacas.html");
+      }
+
+      var prevOnLoad = window.onload;
+      window.onload = initPage;
+
+      function initPage()
+      {
+        if (prevOnLoad)
+          prevOnLoad();
+        initThisPage();
+      }
+
+      function initThisPage()
+      {
+        var elem;
+        elem = document.getElementById("thetext");
+        if (elem)
+        {
+          var text="<body>"+datahub.getArticleBody()+"</body>";
+          elem.innerHTML = text;
+        }
+      }
+
+    </script>
+  </head>
+  <body style="background-image:url('back.gif'); ">
+    <table border=0 width="800">
+      <tr>
+        <td>
+          <input type=button value="Run code" onclick="commandView('ConsoleFrame','console')" title="Save and run this code in the calculation center (note that this is a local copy of the program below)." />
+          <input type=button value="Edit code" onclick="gotoHREF('consoleedit.html');" title="Edit the code that gets loaded at start-up in this calculation center. Note you will only edit a local copy, so you can not accidentally destroy anything." />
+        </td>
+      </tr>
+      <tr height=50>
+        <td>
+          <div width="100%" class="dummy" id="thetext" ></div>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <input type=button value="Run code" onclick="commandView('ConsoleFrame','console')" title="Save and run this code in the calculation center (note that this is a local copy of the program below)." />
+          <input type=button value="Edit code" onclick="gotoHREF('consoleedit.html');" title="Edit the code that gets loaded at start-up in this calculation center. Note you will only edit a local copy, so you can not accidentally destroy anything." />
+        </td>
+      </tr>
+    </table>
+
+    <APPLET name="datahub" archive="yacas.jar" code="net.sf.yacas.DatahubApplet" width=1 height=1></APPLET>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2425144-1";
+urchinTracker();
+</script>
+
+  </body>
+</html>
+
+
+

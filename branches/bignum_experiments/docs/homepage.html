@@ -1,0 +1,75 @@
+<html>
+  <head>
+    <title>The Yacas computer algebra system</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen" />
+
+    <script type="text/javascript" src="tabber.js"></script>
+    <script type="text/javascript" src="yacas.js"></script>
+
+    <link rel="stylesheet" href="tabber.css" TYPE="text/css" MEDIA="screen">
+    <script type="text/javascript">
+      document.write('<style type="text/css">.tabber{display:none;}<\/style>');
+    </script>
+
+    <script type="text/javascript">
+
+      function linkOver()
+      {
+        this.style.color="#AAE";
+      }
+      function linkOut()
+      {
+        this.style.color="#0000ff";
+      }
+
+      function goToJournal()
+      {
+        top.location.href = "yacas.html";
+      }
+    </script>
+
+  </head>
+  <body>
+
+<table width="100%" cellspacing="0" cellpadding="0">
+  <tr>
+    <td>
+ <img style="cursor:pointer;" onclick="goToJournal();" src="yacaslogo.gif" width="144" height="50" align="middle" title="Home" /> 
+    </td>
+    <td valign="top" align="left">
+      Computer calculations made easy.<br />
+    </td>
+  <tr>
+</table>
+
+    <div class="tabber" id="theTabs">
+      <div class="tabbertab" id="LibraryFrame:recent" style="background-image:url('back.gif'); ">
+        <h2>Home</h2>
+          <div class="tabPageContent" id="recent" ></div>
+        <br />
+      </div>
+      <div class="tabbertab" id="TutorialFrame:tutorials">
+        <h2>Tutorial</h2>
+        <div class="tabPageContent" id="tutorials" ></div>
+      </div>
+      <div class="tabbertab" id="ConsoleFrame:consoleview">
+        <h2>My <i>Yacas</i></h2>
+        <div class="tabPageContent" id="consoleview" ></div>
+      </div>
+      <div class="tabbertab" id="ManualFrame:books">
+        <h2>Manual</h2>
+        <div class="tabPageContent" id="books" ></div>
+      </div>
+    </div>
+    <A href="http://sourceforge.net"><IMG src="http://sourceforge.net/sflogo.php?group_id=2528" width="88" height="31" border="0" alt="SourceForge Logo"></A>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2425144-1";
+urchinTracker();
+</script>
+
+  </body>
+</html>

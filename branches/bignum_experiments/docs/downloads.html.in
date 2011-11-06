@@ -1,0 +1,53 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
+
+    <script type="text/javascript">
+    <!-- 
+      /* When deep link found, redirect to the tabbified main page */
+      if (top.location == self.location)
+      {
+        self.location.replace("homepage.html?recent.html&downloads.html");
+      }
+    //   end script hiding -->
+    </script>
+
+  </head>
+  <body>
+    <h1>Downloading Yacas version <?WriteString(Version());?></h1>
+    <p>
+      From this page you can download various parts of the latest version of Yacas, version <?WriteString(Version());?>.
+    </p>
+    <h2>Downloading the Yacas source code</h2>
+    <p>
+      The source code is offered in a .tar.gz file, with all the source to generate everything relating to Yacas.
+    </p>
+    <p>
+      The latest version of Yacas is <a href="backups/yacas-<?WriteString(Version());?>.tar.gz">yacas-<?WriteString(Version());?>.tar.gz</a>.
+    </p>
+
+    <h2>Download the documentation</h2>
+    <p>
+      The online documentation in html format can also be downloaded as one tar.gz file,
+      <A href="backups/manual.html.tar.gz">manual.html.tar.gz</a>.
+    </p>
+    <p>
+      In addition, there is the postscript version, <A href="backups/manual.ps.tar.gz">manual.ps.tar.gz</a>,
+      and the pdf version <A href="backups/manual.pdf.tar.gz">manual.pdf.tar.gz</a> of the manual.
+    </p>
+
+    <h2>Browse versions for Windows, other operating systems and older versions</h2>
+    <p>
+      Older versions, and versions for other platforms, like Windows, can be found <A href="http://www.xs4all.nl/~apinkus/backups/">here</a>.
+    </p>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2425144-1";
+urchinTracker();
+</script>
+
+  </body
+</html>
+

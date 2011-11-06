@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen" />
+    <script type="text/javascript" src="datahub.js"></script>
+    <script type="text/javascript" src="yacas.js"></script>
+    <script type="text/javascript" src="cookie.js"></script>
+
+    <script type="text/javascript">
+      /* When deep link found, redirect to the tabbified main page */
+      if (top.location == self.location)
+      {
+        self.location.replace("yacas.html");
+      }
+
+      var prevOnLoad = window.onload;
+      window.onload = initPage;
+
+      function initPage()
+      {
+        prevOnLoad();
+        if (document.location.search)
+        {
+          target = document.location.search;
+          if (target.indexOf("?") == 0)
+          {
+            target = target.substring(1);
+          }
+          var subfields = target.split("&");
+          target = subfields.join("?");
+          var elem = document.getElementById("infoframe");
+          if (elem)
+          {
+            elem.src = target;
+          }
+        }
+      }
+
+    </script>
+    <frameset style="maxWidth:800px; " cols="100,600" rows="*" frameborder="NO" border="0" framespacing="0"> 
+      <frame name="basicIndex" src="recentindex.html"></frame>        
+      <frame src="articles.html" name="infoframe" id="infoframe"></frame>
+    </frameset>
+
+  </head>
+  <body style="background-image:url('back.gif'); ">
+
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2425144-1";
+urchinTracker();
+</script>
+
+  </body>
+</html>
+
+

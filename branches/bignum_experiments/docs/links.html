@@ -1,0 +1,208 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
+    <script type="text/javascript" src="yacas.js"></script>
+
+    <script type="text/javascript">
+      /* When deep link found, redirect to the tabbified main page */
+      if (top.location == self.location)
+      {
+        self.location.replace("homepage.html?recent.html&links.html");
+      }
+    </script>
+
+  </head>
+  <body>
+    <h1>Related links on the internet</h1>
+
+    <h2>Free documents relating to computer algebra</h2>
+    <p>
+      This is a short list of links that might be of interest, regarding CAS algorithms.
+    </p>
+
+    <p>
+      <a target="newwin" href="http://mathworld.wolfram.com/">mathworld</a> &mdash;
+      Math world is a rather extensive site with encyclopedic 
+      information on mathematical subjects. 
+    </p>
+
+    <p>
+      <a target="newwin" href="http://www.cis.upenn.edu/~wilf/AeqB.html">A=B</a> &mdash;
+      This is a wonderful book on the Gosper-Zeilberger algorithm. Definitely worth a read, and a nice
+      explanation of one of the success stories in the field of computer algebra.
+    </p>
+
+    <p>
+      <a target="newwin" href="http://mitpress.mit.edu/SICM/">Structure and interpretation of classical mechanics</a> &mdash;
+      From the writers of the well-known "Structure and interpretation of computer programs", this
+      book (available for free online) delves into doing classical mechanics calculations using
+      Scheme in this case (Scheme is a Lisp dialect, and as such related to Yacas). This is not 
+      strictly a book about computer algebra, but about one of the uses for computer algebra. 
+      This should be nice literature for Physics students wanting to try out calculations in this field.
+      No need to roll your own Lisp dialect, just follow this book!
+    </p>
+
+    <p>
+      <a target="newwin" href="http://www.math.unm.edu/~wester/cas_review.html">Wester benchmark</a> &mdash;
+      The Wester benchmark has been used to compare features
+      between various CAS. 
+    </p>
+
+    <p>
+      <a target="newwin" href="http://www.math.niu.edu/~rusin/known-math/">Known math</a> &mdash;
+      (review forthcoming)
+    </p>
+
+    <h2>Projects that use Yacas</h2>
+    <p>
+      <a target="newwin" href="http://www.r-project.org/">R</a> &mdash;
+      R is a statistics package, but a connection with Yacas has been made through the project 
+      <a target="newwin" href="http://code.google.com/p/ryacas/">Ryacas</a>. R seems to have a huge community of users and
+      contributors, and is is well engineered and easy to use.
+    </p>
+
+    <p>
+      <a target="newwin" href="http://mavscript.berlios.de/">mavscript</a> &mdash;
+      With Mavscript you can do calculations in a text document.
+    </p>
+
+    <h2>Other freely available math packages that have symbolic capabilities</h2>
+    <p>
+      This is a short list of links to other related math packages I could find on the net for 
+      which source code is also available. If you know of any other software please 
+      let me know.
+    </p>
+    <p>
+      <a target="newwin" href="http://pari.math.u-bordeaux.fr/">Pari-GP</a> &mdash; 
+      Pari-GP is somewhat similar to Yacas, but based on pure "C" code and it
+      is geared to Number Theory while not being actually "symbolic". That is,
+      all expressions are expanded completely. (1+x)^2 = 1+2*x+x^2 and is not
+      stored in the unexpanded form. Also, no LISP or equivalent is included.
+      More details are available on the web.
+    </p>
+
+    <p>
+      <a target="newwin" href="http://maxima.sourceforge.net/">Maxima</a> &mdash;
+      Maxima is a Macsyma (early computer algebra system) 
+      clone, fully GPL'led. It can be found in the GNU repositories, and 
+      is written in Common Lisp. Maxima is being maintained by an active and friendly community.
+    </p>
+
+    <p>
+      <a target="newwin" href="http://www.axiom-developer.org/">Axiom</a> &mdash;
+      Axiom is a "new generation" CAS that uses strong typing to improve code quality.
+      Next to Maxima this is one of the big systems, recently released under open source licenses.
+      Like Maxima, Axiom also has an active and friendly developer community.
+    </p>
+
+    <p>
+      <a target="newwin" href="http://mathsrv.ku-eichstaett.de/MGF/homes/grothmann/euler/">Euler</a> &mdash;
+      Euler is a package aimed at numeric calculations. It has been married with Euler.
+    </p>
+
+    <p>
+      <a target="newwin" href="http://www.ginac.de/">Ginac</a> &mdash;
+      Ginac is a c++ library for doing computer algebra. 
+      It allows symbolic manipulation from within a c++ program. It is currently 
+      in active development, and looks very promising. 
+      <br /> 
+      GiNaC is an iterated and recursive acronym for GiNaC is Not a 
+      CAS, where CAS stands for Computer Algebra System. It is designed 
+      to allow the creation of integrated systems that embed symbolic 
+      manipulations together with more established areas of computer science 
+      (like computation- intense numeric applications, graphical interfaces, 
+      etc.) under one roof. It is distributed under the terms and conditions 
+      of the GNU general public license (GPL). 
+    </p>
+
+    <p>
+      <a target="newwin" href="http://www.cs.berkeley.edu/~fateman/">MockMMA</a> &mdash;
+      MockMMA is a Mathematica-style parser and pattern 
+      matcher, written in Lisp, with some additional mathematical functionality. 
+      The link mentioned here directs you to Richard Fateman's page, which 
+      should contain a link to MockMMA. 
+    </p>
+
+    <p>
+      <a target="newwin" href="http:/www.informatik.tu-darmstadt.de/TI/LiDIA/">LiDIA</a> &mdash; 
+      (review forthcoming)
+    </p>
+
+    <p>
+      <a target="newwin" href="http://code.google.com/p/sympy/">Sympy</a> &mdash;
+      A new computer algebra system project that seems to have come out of nowhere, and looks quite promising
+      It already has an active base of enthusiastic maintainers.
+    </p>
+
+    <h2>Software parts that are being used inside Yacas</h2>
+
+    <p>
+      <a target="newwin" href="http://www.oberhumer.com/opensource/lzo/">minilzo</a> &mdash;
+      A lovely little and fast compression library that Yacas uses internally,
+      for storing scripts in an archive.
+    </p>
+
+    <p>
+      <a target="newwin" href="http://www.python.org/">Python</a> &mdash;
+      Yacas uses a memory manager optimized for allocating many small blocks of memory (like 
+      an interpreter typically does), which was borrowed from Python.
+    </p>
+
+    <p>
+      <a target="newwin" href="http://www.barelyfitz.com/projects/tabber/">tabber</a> &mdash;
+      The tabs that are visible on the Yacas web site use tabber.
+    </p>
+
+    <h2>Various other mathematics-related software</h2>
+
+    <p>
+      <a target="newwin" href="http://http://www.octave.org">Octave</a> &mdash;
+      (review forthcoming)
+    </p>
+
+    <p>
+      <a target="newwin" href="http://wuarchive.wustl.edu/languages/yorick/doc/index.html">yorick</a> &mdash;
+      (review forthcoming)
+    </p>
+
+    <p>
+      <a target="newwin" href="http:///www-rocq.inria.fr/scilab/">scilab</a> &mdash;
+      (review forthcoming)
+    </p>
+
+    <p>
+      <a target="newwin" href="http://rlab.sourceforge.net">rlab</a> &mdash;
+      (review forthcoming)
+    </p>
+
+    <p>
+      <a target="newwin" href="http://oonumerics.org/oon">Object oriented numerics</a> &mdash;
+      (review forthcoming)
+    </p>
+
+    <p>
+      <a target="newwin" href="http://sources.redhat.com/gsl">Gnu Scientific Library</a> &mdash;
+      (review forthcoming)
+    </p>
+
+    <H2>Miscellaneous</H2>
+    <p>
+      <a target="newwin" href="http://www.cs.queensu.ca/drl/ffes/">ffes</a> &mdash;
+      Written mathematical expression reader.
+      (review forthcoming)
+    </p>
+
+    <p>
+      <a target="newwin" href="http://opsresearch.com/OR-Objects/">Operations-Research objects</a> &mdash;
+      (review forthcoming)
+    </p>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2425144-1";
+urchinTracker();
+</script>
+
+  </body>
+</html>

@@ -1,0 +1,710 @@
+/* todos for univariates:
+   - Factorize
+*/
+
+UniVarList(expr) := VarList(expr);
+
+
+0 # NormalForm(UniVariate(_var,_first,_coefs)) <--
+    ExpandUniVariate(var,first,coefs);
+
+Function("ExpandUniVariate",{var,first,coefs})
+[
+  Local(result,i);
+  result:=0;
+  For(i:=Length(coefs),i>0,i--)
+  [
+    Local(term);
+    term:=NormalForm(coefs[i])*var^(first+i-1);
+    result:=result+term;
+  ];
+  result;
+];
+
+
+10 # IsUniVar(UniVariate(_var,_first,_coefs)) <-- True;
+20 # IsUniVar(_anything) <-- False;
+
+
+RuleBase("UniVariate",{var,first,coefs});
+
+Rule("UniVariate",3,10,Length(coefs)>0 And coefs[1]=0)
+  UniVariate(var,first+1,Tail(coefs));
+Rule("UniVariate",3,1000,IsComplex(var) Or IsList(var))
+    ExpandUniVariate(var,first,coefs);
+
+20 # IsZero(UniVariate(_var,_first,_coefs)) <-- IsZeroVector(coefs);
+
+RuleBase("Degree",{expr});
+Rule("Degree",1,0, IsUniVar(expr))
+[
+
+  Local(i,min,max);
+  min:=expr[2];
+  max:=min+Length(expr[3]);
+  i:=max;
+  While(i >= min And IsZero(Coef(expr,i))) i--;
+  i;
+];
+
+10 # Degree(_poly)      <-- Degree(MakeUni(poly));
+10 # Degree(_poly,_var) <-- Degree(MakeUni(poly,var));
+
+
+
+500 # UniVariate(_var,_f1,_c1) + UniVariate(_var,_f2,_c2) <--
+[
+  Local(from,result);
+  Local(curl,curr,left,right);
+
+  Set(curl, f1);
+  Set(curr, f2);
+  Set(left, c1);
+  Set(right, c2);
+  Set(result, {});
+  Set(from, Min(curl,curr));
+
+  While(And(LessThan(curl,curr),left != {}))
+  [
+    DestructiveAppend(result,Head(left));
+    Set(left,Tail(left));
+    Set(curl,MathAdd(curl,1));
+  ];
+  While(LessThan(curl,curr))
+  [
+    DestructiveAppend(result,0);
+    Set(curl,MathAdd(curl,1));
+  ];
+  While(And(LessThan(curr,curl), right != {}))
+  [
+    DestructiveAppend(result,Head(right));
+    Set(right,Tail(right));
+    Set(curr,MathAdd(curr,1));
+  ];
+  While(LessThan(curr,curl))
+  [
+    DestructiveAppend(result,0);
+    Set(curr,MathAdd(curr,1));
+  ];
+  While(And(left != {}, right != {}))
+  [
+    DestructiveAppend(result,Head(left)+Head(right));
+    Set(left, Tail(left));
+    Set(right, Tail(right));
+  ];
+  While(left != {})
+  [
+    DestructiveAppend(result,Head(left));
+    Set(left, Tail(left));
+  ];
+  While(right != {})
+  [
+    DestructiveAppend(result,Head(right));
+    Set(right, Tail(right));
+  ];
+
+  UniVariate(var,from,result);
+];
+
+
+200 # UniVariate(_var,_first,_coefs) + a_IsNumber <--
+      UniVariate(var,first,coefs) + UniVariate(var,0,{a});
+200 # a_IsNumber + UniVariate(_var,_first,_coefs) <--
+      UniVariate(var,first,coefs) + UniVariate(var,0,{a});
+
+
+200 # - UniVariate(_var,_first,_coefs) <-- UniVariate(var,first,-coefs);
+
+
+200 # aLeft_IsUniVar - aRight_IsUniVar <--
+[
+  Local(from,result);
+  Local(curl,curr,left,right);
+
+  curl:=aLeft[2];
+  curr:=aRight[2];
+  left:=aLeft[3];
+  right:=aRight[3];
+  result:={};
+  from:=Min(curl,curr);
+
+  While(curl<curr And left != {})
+  [
+    DestructiveAppend(result,Head(left));
+    left:=Tail(left);
+    curl++;
+  ];
+  While(curl<curr)
+  [
+    DestructiveAppend(result,0);
+    curl++;
+  ];
+  While(curr<curl And right != {})
+  [
+    DestructiveAppend(result,-Head(right));
+    right:=Tail(right);
+    curr++;
+  ];
+  While(curr<curl)
+  [
+    DestructiveAppend(result,0);
+    curr++;
+  ];
+  While(left != {} And right != {})
+  [
+    DestructiveAppend(result,Head(left)-Head(right));
+    left  := Tail(left);
+    right := Tail(right);
+  ];
+
+
+  While(left != {})
+  [
+    DestructiveAppend(result,Head(left));
+    left  := Tail(left);
+  ];
+  While(right != {})
+  [
+    DestructiveAppend(result,-Head(right));
+    right := Tail(right);
+  ];
+
+  UniVariate(aLeft[1],from,result);
+];
+
+/* Repeated squares multiplication
+ TODO put somewhere else!!!
+ */
+10 # RepeatedSquaresMultiply(_a,- (n_IsInteger)) <-- 1/RepeatedSquaresMultiply(a,n);
+
+15 #  RepeatedSquaresMultiply(UniVariate(_var,_first,{_coef}),(n_IsInteger)) <--
+      UniVariate(var,first*n,{coef^n});
+20 # RepeatedSquaresMultiply(_a,n_IsInteger) <--
+[
+  Local(m,b);
+  Set(m,1);
+  Set(b,1);
+  While(m<=n) Set(m,(ShiftLeft(m,1)));
+  Set(m, ShiftRight(m,1));
+  While(m>0)
+  [
+    Set(b,b*b);
+    If (Not(Equals(BitAnd(m,n), 0)),Set(b,b*a));
+    Set(m, ShiftRight(m,1));
+  ];
+  b;
+];
+
+200 # aLeft_IsUniVar ^ aRight_IsPositiveInteger <--
+      RepeatedSquaresMultiply(aLeft,aRight);
+
+
+
+/*TODO this can be made twice as fast!*/
+
+
+201 # (aLeft_IsUniVar * _aRight)_((IsFreeOf(aLeft[1],aRight))) <--
+[
+    aRight*aLeft;
+];
+
+200 # (_factor * UniVariate(_var,_first,_coefs))_((IsFreeOf(var,factor))) <--
+  UniVariate(var,first,coefs*factor);
+
+200 # (UniVariate(_var,_first,_coefs)/_factor)_((IsFreeOf(var,factor))) <--
+  UniVariate(var,first,coefs/factor);
+
+
+ShiftUniVar(UniVariate(_var,_first,_coefs),_fact,_shift)
+   <-- 
+   [
+//Echo("fact, coefs = ",fact,coefs);   
+     UniVariate(var,first+shift,fact*coefs);
+   ];
+
+
+200 # UniVariate(_var,_f1,_c1) * UniVariate(_var,_f2,_c2) <--
+[
+  Local(i,j,n,shifted,result);
+  Set(result,MakeUni(0,var));
+//Echo("c1 = ",var,f1,c1);
+//Echo("c2 = ",var,f2,c2);
+  Set(n,Length(c1));
+  For(i:=1,i<=n,i++)
+  [
+//Echo("before = ",result);
+//Echo("parms = ",var,c1,c2,f1,f2,f1+i-1);
+    Set(result,result+ShiftUniVar(UniVariate(var,f2,c2),MathNth(c1,i),f1+i-1));
+//Echo("after = ",result);
+  ];
+//Echo("result = ",result);
+  result;
+];
+
+
+5 # Coef(uv_IsUniVar,order_IsList) <--
+[
+  Local(result);
+  result:={};
+  ForEach(item,order)
+  [
+    DestructiveAppend(result,Coef(uv,item));
+  ];
+  result;
+];
+
+10 # Coef(uv_IsUniVar,order_IsInteger)_(order<uv[2]) <-- 0;
+10 # Coef(uv_IsUniVar,order_IsInteger)_(order>=uv[2]+Length(uv[3])) <-- 0;
+20 # Coef(uv_IsUniVar,order_IsInteger) <-- uv[3][(order-uv[2])+1];
+30 # Coef(uv_CanBeUni,_order)_(IsInteger(order) Or IsList(order)) <-- Coef(MakeUni(uv),order);
+
+Function("Coef",{expression,var,order})
+    NormalForm(Coef(MakeUni(expression,var),order));
+
+10 # LeadingCoef(uv_IsUniVar) <-- Coef(uv,Degree(uv));
+
+20 # LeadingCoef(uv_CanBeUni) <--
+[
+  Local(uvi);
+  uvi:=MakeUni(uv);
+  Coef(uvi,Degree(uvi));
+];
+10 # LeadingCoef(uv_CanBeUni(var),_var) <--
+[
+  Local(uvi);
+  uvi:=MakeUni(uv,var);
+  Coef(uvi,var,Degree(uvi));
+];
+
+
+Function("UniTaylor",{taylorfunction,taylorvariable,taylorat,taylororder})
+[
+  Local(n,result,dif,polf);
+  result:={};
+  [
+    MacroLocal(taylorvariable);
+    MacroSet(taylorvariable,taylorat);
+    DestructiveAppend(result,Eval(taylorfunction));
+  ];
+  dif:=taylorfunction;
+  polf:=(taylorvariable-taylorat);
+  For(n:=1,n<=taylororder,n++)
+  [
+    dif:= Deriv(taylorvariable) dif;
+    MacroLocal(taylorvariable);
+    MacroSet(taylorvariable,taylorat);
+    DestructiveAppend(result,(Eval(dif)/n!));
+  ];
+  UniVariate(taylorvariable,0,result);
+];
+
+
+Function("MakeUni",{expression}) MakeUni(expression,UniVarList(expression));
+
+/* Convert normal form to univariate expression */
+RuleBase("MakeUni",{expression,var});
+
+5 # MakeUni(_expr,{}) <-- UniVariate(dummyvar,0,{expression});
+6 # MakeUni(_expr,var_IsList) <-- 
+[
+  Local(result,item);
+  result:=expression;
+  ForEach(item,var)
+  [
+    result:=MakeUni(result,item);
+  ];
+  result;
+];
+
+10 # MakeUni(UniVariate(_var,_first,_coefs),_var) <--
+    UniVariate(var,first,coefs);
+
+20 # MakeUni(UniVariate(_v,_first,_coefs),_var) <--
+[
+  Local(reslist,item);
+  reslist:={};
+  ForEach(item,expression[3])
+  [
+    If(IsFreeOf(var,item),
+      DestructiveAppend(reslist,item),
+      DestructiveAppend(reslist,MakeUni(item,var))
+      );
+  ];
+  UniVariate(expression[1],expression[2],reslist);
+];
+
+
+LocalSymbols(a,b,var,expression)
+[
+  20 # MakeUni(expression_IsFreeOf(var),_var)
+       <-- UniVariate(var,0,{expression});
+  30 # MakeUni(_var,_var) <-- UniVariate(var,1,{1});
+  30 # MakeUni(_a + _b,_var) <-- MakeUni(a,var) + MakeUni(b,var);
+  30 # MakeUni(_a - _b,_var) <-- MakeUni(a,var) - MakeUni(b,var);
+  30 # MakeUni(   - _b,_var) <--                - MakeUni(b,var);
+  30 # MakeUni(_a * _b,_var) <-- MakeUni(a,var) * MakeUni(b,var);
+  1 # MakeUni(_a ^ n_IsInteger,_var) <-- MakeUni(a,var) ^ n;
+  30 # MakeUni(_a / (b_IsFreeOf(var)),_var) <-- MakeUni(a,var) * (1/b);
+];
+
+
+
+
+0 # Div(n_IsUniVar,m_IsUniVar)_(Degree(n) < Degree(m)) <-- 0;
+0 # Mod(n_IsUniVar,m_IsUniVar)_(Degree(n) < Degree(m)) <-- n;
+1 # Div(n_IsUniVar,m_IsUniVar)_
+    (n[1] = m[1] And Degree(n) >= Degree(m)) <--
+[
+    UniVariate(n[1],0,
+               UniDivide(Concat(ZeroVector(n[2]),n[3]),
+                         Concat(ZeroVector(m[2]),m[3]))[1]);
+];
+1 # Mod(n_IsUniVar,m_IsUniVar)_
+    (n[1] = m[1] And Degree(n) >= Degree(m)) <--
+[
+    UniVariate(n[1],0,
+               UniDivide(Concat(ZeroVector(n[2]),n[3]),
+                         Concat(ZeroVector(m[2]),m[3]))[2]);
+];
+
+
+
+/* division algo: (for zero-base univariates:) */
+Function("UniDivide",{u,v})
+[
+  Local(m,n,q,r,k,j);
+  m := Length(u)-1;
+  n := Length(v)-1;
+  While (m>0 And IsZero(u[m+1])) m--;
+  While (n>0 And IsZero(v[n+1])) n--;
+  q := ZeroVector(m-n+1);
+  r := FlatCopy(u);  /*  (m should be >= n) */
+  For(k:=m-n,k>=0,k--)
+  [
+    q[k+1] := r[n+k+1]/v[n+1];
+    For (j:=n+k-1,j>=k,j--)
+    [
+      r[j+1] := r[j+1] - q[k+1]*v[j-k+1];
+    ];
+  ];
+  Local(end);
+  end:=Length(r);
+  While (end>n)
+  [
+    DestructiveDelete(r,end);
+    end:=end-1;
+  ];
+
+  {q,r};
+];
+
+
+DropEndZeroes(list):=
+[
+  Local(end);
+  end:=Length(list);
+  While(list[end] = 0)
+  [
+    DestructiveDelete(list,end);
+    end:=end-1;
+  ];
+];
+
+
+
+Function("UniGcd",{u,v})
+[
+  Local(l,div,mod,m);
+
+  DropEndZeroes(u);
+  DropEndZeroes(v);
+/*
+  If(Length(v)>Length(u),
+    [
+      Locap(swap);
+      swap:=u;
+      u:=v;
+      v:=swap;
+    ] );
+  If(Length(u)=Length(v) And v[Length(v)] > u[Length(u)],
+    [
+      Locap(swap);
+      swap:=u;
+      u:=v;
+      v:=swap;
+    ] );
+  */
+
+
+  l:=UniDivide(u,v);
+
+  div:=l[1];
+  mod:=l[2];
+
+  DropEndZeroes(mod);
+  m := Length(mod);
+
+/* Echo({"v,mod = ",v,mod}); */
+/*  If(m <= 1, */
+  If(m = 0,
+     v,
+/*     v/v[Length(v)], */
+     UniGcd(v,mod));
+];
+
+
+
+0 # Gcd(n_IsUniVar,m_IsUniVar)_
+    (n[1] = m[1] And Degree(n) < Degree(m)) <-- Gcd(m,n);
+
+1 # Gcd(nn_IsUniVar,mm_IsUniVar)_
+    (nn[1] = mm[1] And Degree(nn) >= Degree(mm)) <--
+[
+   UniVariate(nn[1],0,
+                UniGcd(Concat(ZeroVector(nn[2]),nn[3]),
+                       Concat(ZeroVector(mm[2]),mm[3])));
+];
+
+RuleBase("PSolve",{uni});
+
+Rule("PSolve",1,1,IsUniVar(uni) And Degree(uni) = 1)
+    -Coef(uni,0)/Coef(uni,1);
+
+Rule("PSolve",1,1,IsUniVar(uni) And Degree(uni) = 2)
+    [
+     Local(a,b,c,d);
+     c:=Coef(uni,0);
+     b:=Coef(uni,1);
+     a:=Coef(uni,2);
+     d:=b*b-4*a*c;
+     {(-b+Sqrt(d))/(2*a),(-b-Sqrt(d))/(2*a)};
+    ];
+
+
+Rule("PSolve",1,1,IsUniVar(uni) And Degree(uni) = 3 )
+    [
+     Local(p,q,r,w,ww,a,b);
+     Local(coef0,coef1,coef3,adjust);
+
+/* Get coefficients for a new polynomial, such that the coefficient of
+   degree 2 is zero:
+   Take f(x)=a0+a1*x+a2*x^2+a3*x^3 and substitute x = x' + adjust
+   This gives g(x) = b0+b1*x+b2*x^2+b3*x^3 where
+   b3 = a3;
+   b2 = 0 => adjust = (-a2)/(3*a3);
+   b1 = 2*a2*adjust+3*a3*adjust^2+a1;
+   b0 = a2*adjust^2+a3*adjust^3+adjust*a1+a0;
+
+   After solving g(x') = 0, return x = x' + adjust.
+*/
+
+     adjust := (-Coef(uni,2))/(3*Coef(uni,3));
+     coef3 := Coef(uni,3);
+     coef1 := 2*Coef(uni,2)*adjust+3*Coef(uni,3)*adjust^2+Coef(uni,1);
+     coef0 := Coef(uni,2)*adjust^2+Coef(uni,3)*adjust^3+
+              adjust*Coef(uni,1)+Coef(uni,0);
+
+     p:=coef3;
+     q:=coef1/p;
+     r:=coef0/p;
+    w:=Complex(-1/2,Sqrt(3/4));
+    ww:=Complex(-1/2,-Sqrt(3/4));
+
+/* Equation is xxx + qx + r = 0 */
+/* 	Let x = a + b
+	a^3 + b^3 + 3(aab + bba) + q(a + b) + r = 0
+	a^3 + b^3 + (3ab+q)x + r = 0
+
+	Let 3ab+q = 0. This is permissible, for we can still find a+b == x
+
+	a^3 + b^3 = -r
+	(ab)^3 = -q^3/27
+
+        So a^3 and b^3 are the roots of t^2 + rt - q^3/27 = 0
+
+	Let
+                a^3 = -r/2 + Sqrt(q^3/27+ rr/4)
+                b^3 = -r/2 - Sqrt(q^3/27+ rr/4)
+	Therefore there are three values for each of a and b.
+	Clearly if ab = -q/3 is true then (wa)(wwb) == (wb)(wwa) == -q/3
+*/
+
+  a:=(-r/2 + Sqrt(q^3/27+ r*r/4))^(1/3);
+  b:=(-r/2 - Sqrt(q^3/27+ r*r/4))^(1/3);
+
+  {a+b+adjust,w*a+ww*b+adjust,ww*a+w*b+adjust};
+];
+
+/* 
+How to solve the quartic equation?
+
+The equation is x^4 + a1 x^3 + a2 x^2 + a3 x + a4 = 0.
+The idea is to write the left-hand side as the difference of two
+squares: (x^2 + p x + q)^2 - (s x + t)^2. 
+Eliminating the parentheses and equation coefficients yields four
+equations for the four unknowns p, q, s and t:
+  a1 = 2p              (1)
+  a2 = p^2 + 2q - s^2  (2)
+  a3 = 2pq - 2st       (3)
+  a4 = q^2 - t^2       (4)
+From the first equation, we find that p = a1/2. Substituting this in
+the other three equations and rearranging gives
+  s^2 = a1^2/4 - a2 + 2q   (5)
+  2st = a1 q - a3          (6)
+  t^2 = q^2 - a4           (7)
+We now take the square (6) and substitute (5) and (7):
+  4 (a1^2/4 - a2 + 2q) (q^2 - a4) = (a1 q - a3)^2  <==>
+  8 q^3 - 4 a2 q^2 + (2 a1 a3 - 8 a4) q + 4 a2 a4 - a1^2 a4 - a3^2 = 0.
+Miraculously, we got a cubic equation for q. Suppose we can solve this
+equation. We can then compute t from (7): t = sqrt(q^2 - a4). If t is
+nonzero, we can compute s from (6). Note that we cannot compute s from
+(5), since we introduced an extra solution when squaring (6). However,
+if t is zero, then no extra solution was introduced and we can safely
+use (5). Having found the values of p, q, s and t, we can factor the
+difference of squares and solve the quartic:
+  x^4 + a1 x^3 + a2 x^2 + a3 x + a4 = (x^2 + p x + q)^2 - (s x + t)^2 
+                 = (x^2 + p x + q + s x + t) (x^2 + p x + q - sx - t).
+The four roots of the quartic are the two roots of the first quadratic
+factor plus the two roots of the second quadratic factor.
+*/
+
+Rule("PSolve",1,1,IsUniVar(uni) And Degree(uni) = 4 )
+[
+    Local(coef4,a1,a2,a3,a4,y,y1,z,t,s);
+
+    coef4:=Coef(uni,4);
+    a1:=Coef(uni,3)/coef4;
+    a2:=Coef(uni,2)/coef4;
+    a3:=Coef(uni,1)/coef4;
+    a4:=Coef(uni,0)/coef4;
+
+    /* y1 = 2q, with q as above. */
+    y1:=Head(PSolve(y^3-a2*y^2+(a1*a3-4*a4)*y+(4*a2*a4-a3^2-a1^2*a4),y));
+    t := Sqrt(y1^2/4-a4);
+    If(t=0, s:=Sqrt(y1+a1^2/4-a2), s:=(a1*y1-2*a3)/(4*t));
+    Concat(PSolve(z^2+(a1/2+s)*z+y1/2+t,z),
+           PSolve(z^2+(a1/2-s)*z+y1/2-t,z));
+];
+
+Function("PSolve",{uni,var})
+    [
+     PSolve(MakeUni(uni,var));
+     ];
+
+
+/* Generate a random polynomial */
+
+
+RandomPoly(_var,_degree,_coefmin,_coefmax) <--
+  NormalForm(UniVariate(var,0,RandomIntegerVector(degree+1,coefmin,coefmax)));
+
+
+/* CanBeUni returns whether the function can be converted to a
+ * univariate, with respect to a variable.
+ */
+Function("CanBeUni",{expression}) CanBeUni(UniVarList(expression),expression);
+
+
+/* Accepting an expression as being convertable to univariate */
+
+/* Dealing wiht a list of variables. The poly should be expandable
+ * to each of these variables (smells like tail recursion)
+ */
+10 # CanBeUni({},_expression) <-- True;
+20 # CanBeUni(var_IsList,_expression) <--
+    CanBeUni(Head(var),expression) And CanBeUni(Tail(var),expression);
+
+/* Atom can always be a polynom to any variable */
+30 # CanBeUni(_var,expression_IsAtom) <-- True;
+35 # CanBeUni(_var,expression_IsFreeOf(var)) <-- True;
+
+/* Other patterns supported. */
+40 # CanBeUni(_var,_x + _y) <-- CanBeUni(var,x) And CanBeUni(var,y);
+40 # CanBeUni(_var,_x - _y) <-- CanBeUni(var,x) And CanBeUni(var,y);
+40 # CanBeUni(_var,   + _y) <-- CanBeUni(var,y);
+40 # CanBeUni(_var,   - _y) <-- CanBeUni(var,y);
+40 # CanBeUni(_var,_x * _y) <-- CanBeUni(var,x) And CanBeUni(var,y);
+40 # CanBeUni(_var,_x / _y) <-- CanBeUni(var,x) And IsFreeOf(var,y);
+/* Special case again: raising powers */
+40 # CanBeUni(_var,_x ^ y_IsInteger)_(y >= 0 And CanBeUni(var,x)) <-- True;
+41 # CanBeUni(_var,(x_IsFreeOf(var)) ^ (y_IsFreeOf(var))) <-- True;
+50 # CanBeUni(_var,UniVariate(_var,_first,_coefs)) <-- True;
+1000 # CanBeUni(_var,_f)_(Not(IsFreeOf(var,f))) <-- False;
+1001 # CanBeUni(_var,_f) <-- True;
+
+
+
+
+10 # Content(UniVariate(_var,_first,_coefs)) <-- Gcd(coefs)*var^first;
+20 # Content(poly_CanBeUni) <-- NormalForm(Content(MakeUni(poly)));
+
+10 # PrimitivePart(UniVariate(_var,_first,_coefs)) <--
+	UniVariate(var,0,coefs/Gcd(coefs));
+20 # PrimitivePart(poly_CanBeUni) <-- NormalForm(PrimitivePart(MakeUni(poly)));
+
+10 # Monic(UniVariate(_var,_first,_coefs)) <--
+[
+  DropEndZeroes(coefs);
+  UniVariate(var,first,coefs/coefs[Length(coefs)]);
+];
+20 # Monic(poly_CanBeUni) <-- NormalForm(Monic(MakeUni(poly)));
+
+30 # Monic(_poly,_var)_CanBeUni(poly,var) <-- NormalForm(Monic(MakeUni(poly,var)));
+
+
+10 # BigOh(UniVariate(_var,_first,_coefs),_var,_degree) <--
+    [
+     While(first+Length(coefs)>=(degree+1) And Length(coefs)>0) DestructiveDelete(coefs,Length(coefs));
+     UniVariate(var,first,coefs);
+    ];
+20 # BigOh(_uv,_var,_degree)_CanBeUni(uv,var) <-- NormalForm(BigOh(MakeUni(uv,var),var,degree));
+
+
+
+Horner(_e,_v) <--
+[
+  Local(uni,coefs,result);
+  uni := MakeUni(e,v);
+  coefs:=DestructiveReverse(uni[3]);
+  result:=0;
+
+  While(coefs != {})
+  [
+    result := result*v;
+    result := result+Head(coefs);
+    coefs  := Tail(coefs);
+  ];
+  result:=result*v^uni[2];
+  result;
+];
+
+
+DivPoly(_A,_B,_var,_deg) <--
+[
+  Local(a,b,c,i,j,denom);
+  b:=MakeUni(B,var);
+  denom:=Coef(b,0);
+
+  if (denom = 0)
+  [
+    Local(f);
+    f:=Content(b);
+    b:=PrimitivePart(b);
+    A:=Simplify(A/f);
+    denom:=Coef(b,0);
+  ];
+  a:=MakeUni(A,var);
+
+  c:=FillList(0,deg+1);
+  For(i:=0,i<=deg,i++)
+  [
+    Local(sum,j);
+    sum:=0;
+    For(j:=0,j<i,j++)
+    [
+      sum := sum + c[j+1]*Coef(b,i-j);
+    ];
+    c[i+1] := (Coef(a,i)-sum) / denom;
+  ];
+  NormalForm(UniVariate(var,0,c));
+];

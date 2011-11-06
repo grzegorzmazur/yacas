@@ -1,0 +1,666 @@
+
+/// Return integer part of the logarithm of x in given base. Use only integer arithmetic.
+10 # IntLog(_x, _base) _ (base<=1) <-- Undefined;
+/// Use variable steps to speed up operation for large numbers x
+20 # IntLog(_x, _base) <--
+[
+	Local(result, step, old'step, factor, old'factor);
+	result := 0;
+	old'step := step := 1;
+	old'factor := factor := base;
+	// first loop: increase step
+	While (x >= factor)
+	[
+		old'factor := factor;
+		factor := factor*factor;
+		old'step := step;
+		step := step*2;
+	];
+	If(x >= base,
+	  [
+		step := old'step;
+		result := step;
+		x := Div(x, old'factor);
+	  ],
+	  step := 0
+	);
+	// second loop: decrease step
+	While (step > 0 And x != 1)
+	[
+		step := Div(step,2);	// for each step size down to 1, divide by factor if x is up to it
+		factor := base^step;
+		If(
+			x >= factor,
+			[
+				x:=Div(x, factor);
+				result := result + step;
+			]
+		);
+	];
+	result;
+];
+
+/// obtain next number that has good chances of being prime (not divisible by 2,3)
+1# NextPseudoPrime(i_IsInteger)_(i<=1) <-- 2;
+2# NextPseudoPrime(2) <-- 3;
+//2# NextPseudoPrime(3) <-- 5;
+3# NextPseudoPrime(i_IsOdd) <--
+[
+	// this sequence generates numbers not divisible by 2 or 3
+	i := i+2;
+	If(Mod(i,3)=0, i:=i+2, i);
+/* commented out because it slows things down without a real advantage
+// this works only for odd i>=5
+	i := If(
+		Mod(-i,3)=0,
+		i + 2,
+		i + 2*Mod(-i, 3)
+	);
+	// now check if divisible by 5
+	If(
+		Mod(i,5)=0,
+		NextPseudoPrime(i),
+		i
+	);
+*/
+];
+// this works only for even i>=4
+4# NextPseudoPrime(i_IsEven) <-- NextPseudoPrime(i-1);
+
+/// obtain the real next prime number -- use primality testing
+1# NextPrime(_i) <--
+[
+	Until(IsPrime(i)) i := NextPseudoPrime(i);
+	i;
+];
+
+/* Returns whether n is a small by a lookup table, very fast.
+The largest prime number in the table is returned by FastIsPrime(0). */
+
+2 # IsSmallPrime(0) <-- False;
+3 # IsSmallPrime(n_IsInteger) <-- (FastIsPrime(n)>0);
+
+2 # IsPrime(_n)_(Not IsInteger(n) Or n<=1) <-- False;
+3 # IsPrime(n_IsInteger)_(n<=FastIsPrime(0)) <-- IsSmallPrime(n);
+
+/* Fast pseudoprime testing: if n is a prime, then 24 divides (n^2-1) */
+5 # IsPrime(n_IsPositiveInteger)_(n > 4 And Mod(n^2-1,24)!=0) <-- False;
+
+/* Determine if a number is prime, using Rabin-Miller primality
+   testing. Code submitted by Christian Obrecht
+ */
+10 # IsPrime(n_IsPositiveInteger) <-- RabinMiller(n);
+
+5  # IsComposite(1)			<-- False;
+10 # IsComposite(n_IsPositiveInteger) 	<-- (Not IsPrime(n));
+
+/* Returns whether n is a prime^m. */
+10 # IsPrimePower(n_IsPrime) <-- True;
+10 # IsPrimePower(0) <-- False;
+10 # IsPrimePower(1) <-- False;
+20 # IsPrimePower(n_IsPositiveInteger) <-- (GetPrimePower(n)[2] > 1);
+
+/// Check whether n is a power of some prime integer and return that integer and the power.
+/// This routine uses only integer arithmetic.
+/// Returns {p, s} where p is a prime and n=p^s.
+/// If no powers found, returns {n, 1}. Primality testing of n is not done.
+20 # GetPrimePower(n_IsPositiveInteger) <--
+[
+	Local(s, factors, new'factors);
+	// first, separate any small prime factors
+	factors := TrialFactorize(n, 257);	// "factors" = {n1, {p1,s1},{p2,s2},...} or just {n} if no factors found
+	If(
+		Length(factors) > 1,	// factorized into something
+		// now we return {n, 1} either if we haven't completely factorized, or if we factorized into more than one prime factor; otherwise we return the information about prime factors
+		If(
+			factors[1] = 1 And Length(factors) = 2,	// factors = {1, {p, s}}, so we have a prime power n=p^s
+			factors[2],
+			{n, 1}
+		),
+		// not factorizable into small prime factors -- use main algorithm
+		[
+			factors := CheckIntPower(n, 257);	// now factors = {p, s} with n=p^s
+			If(
+				factors[2] > 1,	// factorized into something
+				// now need to check whether p is a prime or a prime power and recalculate "s"
+				If(
+					IsPrime(factors[1]),
+					factors,	// ok, prime power, return information
+					[	// not prime, need to check if it's a prime power
+						new'factors := GetPrimePower(factors[1]);	// recursive call; now new'factors = {p1, s1} where n = (p1^s1)^s; we need to check that s1>1
+						If(
+							new'factors[2] > 1,
+							{new'factors[1], new'factors[2]*factors[2]},	// recalculate and return prime power information
+							{n, 1}	// not a prime power
+						);
+					]
+				),
+				// not factorizable -- return {n, 1}
+				{n, 1}
+			);
+		]
+	);
+];
+
+/// Check whether n is a power of some integer, assuming that it has no prime factors <= limit.
+/// This routine uses only integer arithmetic.
+/// Returns {p, s} where s is the smallest prime integer such that n=p^s. (p is not necessarily a prime!)
+/// If no powers found, returns {n, 1}. Primality testing of n is not done.
+CheckIntPower(n, limit) :=
+[
+	Local(s0, s, root);
+	If(limit<=1, limit:=2);	// guard against too low value of limit
+	// compute the bound on power s
+	s0 := IntLog(n, limit);
+	// loop: check whether n^(1/s) is integer for all prime s up to s0
+	root := 0;
+	s := 0;
+	While(root = 0 And NextPseudoPrime(s)<=s0)	// root=0 while no root is found
+	[
+		s := NextPseudoPrime(s);
+		root := IntNthRoot(n, s);
+		If(
+			root^s = n,	// found root
+			True,
+			root := 0
+		);
+	];
+	// return result
+	If(
+		root=0,
+		{n, 1},
+		{root, s}
+	);
+];
+
+/// Compute integer part of s-th root of (positive) integer n.
+// algorithm using floating-point math
+10 # IntNthRoot(_n, 2) <-- Floor(MathSqrt(n));
+20 # IntNthRoot(_n, s_IsInteger) <--
+[
+	Local(result, k);
+	GlobalPush(Builtin'Precision'Get());
+	// find integer k such that 2^k <= n^(1/s) < 2^(k+1)
+	k := Div(IntLog(n, 2), s);
+	// therefore we need k*Ln(2)/Ln(10) digits for the floating-point calculation
+	Builtin'Precision'Set(2+Div(k*3361, 11165));	// 643/2136 < Ln(2)/Ln(10) < 3361/11165
+	result := Round(MathExp(MathDivide(Internal'LnNum(MathDivide(n, 2^(k*s))), s))*2^k);
+	Builtin'Precision'Set(GlobalPop());
+	// result is rounded and so it may overshoot (we do not use Floor above because numerical calculations may undershoot)
+	If(result^s>n, result-1, result);
+];
+
+/* algorithm using only integer arithmetic.
+(this is slower than the floating-point algorithm for large numbers because all calculations are with long integers)
+IntNthRoot1(_n, s_IsInteger) <--
+[
+	Local(x1, x2, x'new, y1);
+	// initial guess should always undershoot
+	//	x1:= 2 ^ Div(IntLog(n, 2), s); 	// this is worse than we can make it
+	x1 := IntLog(n,2);
+	// select initial interval using (the number of bits in n) mod s
+	// note that if the answer is 1, the initial guess must also be 1 (not 0)
+	x2 := Div(x1, s);	// save these values for the next If()
+	x1 := Mod(x1, s)/s;	// this is kept as a fraction
+	// now assign the initial interval, x1 <= root <= x2
+	{x1, x2} := If(
+		x1 >= 263/290,	// > Ln(15/8)/Ln(2)
+		Div({15,16}*2^x2, 8),
+		If(
+		x1 >= 373/462,	// > Ln(7/4)/Ln(2)
+		Div({7,8}*2^x2, 4),
+		If(
+		x1 >= 179/306,	// > Ln(3/2)/Ln(2)
+		Div({6,7}*2^x2, 4),
+		If(
+		x1 >= 113/351,	// > Ln(5/4)/Ln(2)
+		Div({5,6}*2^x2, 4),
+		Div({4,5}*2^x2, 4)	// between x1 and (5/4)*x1
+	))));
+	// check whether x2 is the root
+	y1 := x2^s;
+	If(
+		y1=n,
+		x1 := x2,
+		// x2 is not a root, so continue as before with x1
+		y1 := x1^s	// henceforth, y1 is always x1^s
+	);
+	// Newton iteration combined with bisection
+	While(y1 < n)
+	[
+//	Echo({x1, x2});
+		x'new := Div(x1*((s-1)*y1+(s+1)*n), (s+1)*y1+(s-1)*n) + 1;	// add 1 because the floating-point value undershoots
+		If(
+			x'new < Div(x1+x2, 2),
+			// x'new did not reach the midpoint, need to check progress
+			If(
+				Div(x1+x2, 2)^s <= n,
+				// Newton's iteration is not making good progress, so leave x2 in place and update x1 by bisection
+				x'new := Div(x1+x2, 2),
+				// Newton's iteration knows what it is doing. Update x2 by bisection
+				x2 := Div(x1+x2, 2)
+			)
+			// else, x'new reached the midpoint, good progress, continue
+		);
+		x1 := x'new;
+		y1 := x1^s;
+	];
+	If(y1=n, x1, x1-1);	// subtract 1 if we overshot
+];
+*/
+
+CatalanNumber(_n) <--
+[
+	Check( IsPositiveInteger(n), "CatalanNumber: Error: argument must be positive" );
+	Bin(2*n,n)/(n+1);
+];
+
+/// Product of small primes <= 257. Computed only once.
+LocalSymbols(p, q)
+[
+	// p:= 1;
+	ProductPrimesTo257() := 2*3*[
+		If(
+			IsInteger(p),
+			p,
+			p := Factorize(Select({{q}, Mod(q^2,24)=1 And IsSmallPrime(q)}, 5 .. 257))
+		);
+//		p;
+	];
+];
+
+10 # 	Repunit(0)	<-- 0;
+// Number consisting of n 1's
+Repunit(n_IsPositiveInteger) <--
+[
+	(10^n-1)/9;
+];
+
+10 # 	HarmonicNumber(n_IsInteger)	<-- HarmonicNumber(n,1);
+HarmonicNumber(n_IsInteger,r_IsPositiveInteger) <--
+[
+	// small speed up
+	if( r=1 )[
+		Sum(k,1,n,1/k);
+	] else [
+		Sum(k,1,n,1/k^r);
+	];
+];
+Function("FermatNumber",{n})[
+	Check(IsPositiveInteger(n),
+		"FermatNumber: argument must be a positive integer");
+	2^(2^n)+1;
+];
+
+// Algorithm adapted from:
+// Elementary Number Theory, David M. Burton
+// Theorem 6.2 p112
+5  # Divisors(0)	<-- 0;
+5  # Divisors(1)	<-- 1;
+// Unsure about if there should also be a function that returns
+// n's divisors, may have to change name in future
+10 # Divisors(_n)	<--
+[
+	Check(IsPositiveInteger(n),
+		"Divisors: argument must be positive integer");
+	Local(len,sum,factors,i);
+	sum:=1;
+	factors:=Factors(n);
+	len:=Length(factors);
+	For(i:=1,i<=len,i++)[
+		sum:=sum*(factors[i][2]+1);
+	];
+	sum;
+];
+10 # ProperDivisors(_n) <--
+[
+        Check(IsPositiveInteger(n),
+                "ProperDivisors: argument must be positive integer");
+	Divisors(n)-1;
+];
+10 # ProperDivisorsSum(_n) <--
+[
+        Check(IsPositiveInteger(n),
+                "ProperDivisorsSum: argument must be positive integer");
+        DivisorsSum(n)-n;
+];
+
+// Algorithm adapted from:
+// Elementary Number Theory, David M. Burton
+// Theorem 6.2 p112
+5  # DivisorsSum(0)	<-- 0;
+5  # DivisorsSum(1)	<-- 1;
+10 # DivisorsSum(_n) 	<--
+[
+	Check(IsPositiveInteger(n),
+		"DivisorsSum: argument must be positive integer");
+	Local(factors,i,sum,len,p,k);
+	p:=0;k:=0;
+	factors:={};
+	factors:=Factors(n);
+	len:=Length(factors);
+	sum:=1;
+	For(i:=1,i<=len,i++)[
+		p:=factors[i][1];
+		k:=factors[i][2];
+		sum:=sum*(p^(k+1)-1)/(p-1);
+	];
+	sum;
+];
+
+// Algorithm adapted from:
+// Elementary Number Theory, David M. Burton
+// Definition 6.3 p120
+
+5  # Moebius(1)	<-- 1;
+10 # Moebius(_n)	<--
+[
+	Check(IsPositiveInteger(n),
+		"Moebius: argument must be positive integer");
+        Local(factors,i,repeat);
+	repeat:=0;
+        factors:=Factors(n);
+        len:=Length(factors);
+        For(i:=1,i<=len,i++)[
+		If(factors[i][2]>1,repeat:=1);
+        ];
+	If(repeat=0,(-1)^len,0);
+
+];
+
+// Algorithm adapted from:
+// Elementary Number Theory, David M. Burton
+// Theorem 7.3 p139
+
+10 # Totient(_n)	<--
+[
+	Check(IsPositiveInteger(n),
+		"Totient: argument must be positive integer");
+	Local(i,sum,factors,len);
+	sum:=n;
+        factors:=Factors(n);
+        len:=Length(factors);
+        For(i:=1,i<=len,i++)[
+		sum:=sum*(1-1/factors[i][1]);
+        ];
+	sum;
+];
+// Algorithm adapted from:
+// Elementary Number Theory, David M. Burton
+// Definition 9.2 p191
+
+10 # LegendreSymbol(_a,_p)	<--
+[
+        Check( IsInteger(a) And IsInteger(p) And p>2 And IsCoprime(a,p) And IsPrime(p),
+                "LegendreSymbol: Invalid arguments");
+	If(IsQuadraticResidue(a,p), 1, -1 );
+];
+
+
+IsPerfect(n_IsPositiveInteger) <-- ProperDivisorsSum(n)=n;
+
+5  # IsCoprime(list_IsList)                     <-- (Lcm(list) = Product(list));
+10 # IsCoprime(n_IsInteger,m_IsInteger)		<-- (Gcd(n,m) = 1);
+
+// Algorithm adapted from:
+// Elementary Number Theory, David M. Burton
+// Theorem 9.1 p187
+10 # IsQuadraticResidue(_a,_p) <--
+[
+        Check( IsInteger(a) And IsInteger(p) And p>2 And IsCoprime(a,p) And IsPrime(p),
+                "IsQuadraticResidue: Invalid arguments");
+        If(a^((p-1)/2) % p = 1, True, False);
+];
+
+// Digital root of n (repeatedly add digits until reach a single digit).
+10 # DigitalRoot(n_IsPositiveInteger) <-- If(n%9=0,9,n%9);
+
+IsTwinPrime(n_IsPositiveInteger)	<-- (IsPrime(n) And IsPrime(n+2));
+
+IsAmicablePair(m_IsPositiveInteger,n_IsPositiveInteger) <-- ( ProperDivisorsSum(m)=n And ProperDivisorsSum(n)=m );
+
+5  # IsIrregularPrime(p_IsComposite)	<-- False;
+// First irregular prime is 37
+5  # IsIrregularPrime(_p)_(p<37)	<-- False;
+
+// an odd prime p is irregular iff p divides the numerator of a Bernoulli number B(2*n) with
+// 2*n+1<p
+10 # IsIrregularPrime(p_IsPositiveInteger) <--
+[
+	Local(i,irregular);
+
+	i:=1;
+	irregular:=False;
+
+	While( 2*i + 1 < p And (irregular = False) )[
+		If( Abs(Numer(Bernoulli(2*i))) % p = 0, irregular:=True );
+		i++;
+	];
+	irregular;
+
+];
+
+IsSquareFree(n_IsInteger)	<-- ( Moebius(n) != 0 );
+
+// Carmichael numbers are odd,squarefree and have at least 3 prime factors
+5  # IsCarmichaelNumber(n_IsEven)		<-- False;
+5  # IsCarmichaelNumber(_n)_(n<561)		<-- False;
+10 # IsCarmichaelNumber(n_IsPositiveInteger)	<--
+[
+	Local(i,factors,length,carmichael);
+
+	factors:=Factors(n);
+	carmichael:=True;
+	length:=Length(factors);
+	if( length < 3)[
+		 carmichael:=False;
+	] else [
+		For(i:=1,i<=length And carmichael,i++)[
+			//Echo( n-1,"%",factors[i][1]-1,"=", Mod(n-1,factors[i][1]-1) );
+			If( Mod(n-1,factors[i][1]-1) != 0, carmichael:=False );
+			If(factors[i][2]>1,carmichael:=False);	// squarefree
+		];
+	];
+	carmichael;
+];
+
+IsCarmichaelNumber(n_IsList) <-- MapSingle("IsCarmichaelNumber",n);
+
+/// the restricted partition function
+/// partitions of length k
+
+5  # PartitionsP(n_IsInteger,0)		  	<-- 0;
+5  # PartitionsP(n_IsInteger,n_IsInteger)	<-- 1;
+5  # PartitionsP(n_IsInteger,1)			<-- 1;
+5  # PartitionsP(n_IsInteger,2)			<-- Floor(n/2);
+5  # PartitionsP(n_IsInteger,3)			<-- Round(n^2/12);
+6  # PartitionsP(n_IsInteger,k_IsInteger)_(k>n) <-- 0;
+10 # PartitionsP(n_IsInteger,k_IsInteger)	<-- PartitionsP(n-1,k-1)+PartitionsP(n-k,k);
+
+/// the number of additive partitions of an integer
+5  # PartitionsP(0)	<-- 1;
+5  # PartitionsP(1)	<-- 1;
+// decide which algorithm to use
+10 # PartitionsP(n_IsInteger)_(n<250) <-- PartitionsP'recur(n);
+20 # PartitionsP(n_IsInteger) <-- PartitionsP'HR(n);
+
+/// Calculation using the Hardy-Ramanujan series.
+10 # PartitionsP'HR(n_IsPositiveInteger) <--
+[
+	Local(P0, A, lambda, mu, mu'k, result, term, j, k, l, prec, epsilon);
+	result:=0;
+	term:=1;	// initial value must be nonzero
+	GlobalPush(Builtin'Precision'Get());
+	// precision must be at least Pi/Ln(10)*Sqrt(2*n/3)-Ln(4*n*Sqrt(3))/Ln(10)
+	// here Pi/Ln(10) < 161/118, and Ln(4*Sqrt(3))/Ln(10) <1 so it is disregarded. Add 2 guard digits and compensate for round-off errors by not subtracting Ln(n)/Ln(10) now
+	prec := 2+Div(IntNthRoot(Div(2*n+2,3),2)*161+117,118);
+	Builtin'Precision'Set(prec);	// compensate for round-off errors
+	epsilon := MathPower(10,-prec)*n*10;	// stop when term < epsilon
+
+	// get the leading term approximation P0 - compute once at high precision
+	lambda := N(Sqrt(n - 1/24));
+	mu := N(Pi*lambda*Sqrt(2/3));
+	// the hoops with MathDivide are needed to avoid roundoff error at large n due to fixed precision:
+	// Exp(mu)/(n) must be computed by dividing by n, not by multiplying by 1/n
+	P0 := N(1-1/mu)*MathDivide(MathExp(mu),(n-MathDivide(1,24))*4*MathSqrt(3));
+	/*
+	the series is now equal to
+	P0*Sum(k,1,Infinity,
+	  (
+		Exp(mu*(1/k-1))*(1/k-1/mu) + Exp(-mu*(1/k+1))*(1/k+1/mu)
+	  ) * A(k,n) * Sqrt(k)
+	)
+	*/
+
+	A := 0;	// this is also used as a flag
+	// this is a heuristic, because the next term error is expensive
+	// to calculate and the theoretic bounds have arbitrary constants
+	// use at most 5+Sqrt(n)/2 terms, stop when the term is nonzero and result stops to change at precision prec
+	For(k:=1, k<=5+Div(IntNthRoot(n,2),2) And (A=0 Or Abs(term)>epsilon), k++)
+	[
+		// compute A(k,n)
+		A:=0;
+		For(l:=1,l<=k,l++)
+		[
+			If(
+				Gcd(l,k)=1,
+				A := A + Cos(Pi*
+				  (	// replace Exp(I*Pi*...) by Cos(Pi*...) since the imaginary part always cancels
+					Sum(j,1,k-1, j*(Mod(l*j,k)/k-1/2)) - 2*l*n
+					// replace (x/y - Floor(x/y)) by Mod(x,y)/y for integer x,y
+				  )/k)
+			);
+			A:=N(A);	// avoid accumulating symbolic Cos() expressions
+		];
+
+		term := If(
+			A=0,	// avoid long calculations if the term is 0
+			0,
+			N( A*Sqrt(k)*(
+			  [
+			  	mu'k := mu/k;	// save time, compute mu/k once
+			    Exp(mu'k-mu)*(mu'k-1) + Exp(-mu'k-mu)*(mu'k+1);
+			  ]
+			)/(mu-1) )
+		);
+//		Echo("k=", k, "term=", term);
+		result := result + term;
+//		Echo("result", new'result* P0);
+	];
+	result := result * P0;
+	Builtin'Precision'Set(GlobalPop());
+	Round(result);
+];
+
+// old code for comparison
+
+10 # PartitionsP1(n_IsPositiveInteger) <--
+ [
+		 Local(C,A,lambda,m,pa,k,h,term);
+	   GlobalPush(Builtin'Precision'Get());
+	   // this is an overshoot, but seems to work up to at least n=4096
+	   Builtin'Precision'Set(10 + Floor(N(Sqrt(n))) );
+	   pa:=0;
+		 C:=Pi*Sqrt(2/3)/k;
+		 lambda:=Sqrt(m - 1/24);
+	   term:=1;
+	   // this is a heuristic, because the next term error is expensive
+	   // to calculate and the theoretic bounds have arbitrary constants
+	   For(k:=1,k<=5+Floor(MathSqrt(n)*0.5) And ( term=0 Or Abs(term)>0.1) ,k++)[
+			   A:=0;
+			   For(h:=1,h<=k,h++)[
+					   if( Gcd(h,k)=1 )[
+							   A:=A+Exp(I*Pi*Sum(j,1,k-1,(j/k)*((h*j)/k - Floor((h*j)/k) -1/2))
+- 2*Pi*I*h*n/k );
+					   ];
+			   ];
+			   If(A!=0, term:= N(A*Sqrt(k)*(Deriv(m) Sinh(C*lambda)/lambda) Where m==n ),term:=0 );
+//			   Echo("Term ",k,"is ",N(term/(Pi*Sqrt(2))));
+			   pa:=pa+term;
+//			   Echo("result", N(pa/(Pi*Sqrt(2))));
+	   ];
+	   pa:=N(pa/(Pi*Sqrt(2)));
+	   Builtin'Precision'Set(GlobalPop());
+	   Round(pa);
+ ];
+
+/// integer partitions by recurrence relation P(n) = Sum(k,1,n, (-1)^(k+1)*( P(n-k*(3*k-1)/2)+P(n-k*(3*k+1)/2) ) ) = P(n-1)+P(n-2)-P(n-5)-P(n-7)+...
+/// where 1, 2, 5, 7, ... is the "generalized pentagonal sequence"
+/// this method is faster with internal math for number<300 or so.
+PartitionsP'recur(number_IsPositiveInteger) <--
+[
+	// need storage of n values PartitionsP(k) for k=1,...,n
+	Local(sign, cache, n, k, pentagonal, P);
+	cache:=Array'Create(number+1,1);	// cache[n] = PartitionsP(n-1)
+	n := 1;
+	While(n<number)	// this will never execute if number=1
+	[
+		n++;
+		// compute PartitionsP(n) now
+		P := 0;
+		k := 1;
+		pentagonal := 1;	// pentagonal is always equal to the first element in the k-th pair of the "pentagonal sequence" of pairs {k*(3*k-1)/2, k*(3*k+1)/2}
+		sign := 1;
+		While(pentagonal<=n)
+		[
+			P := P + (cache[n-pentagonal+1]+If(pentagonal+k<=n, cache[n-pentagonal-k+1], 0))*sign;
+			pentagonal := pentagonal + 3*k+1;
+			k++;
+			sign := -sign;
+		];
+		cache[n+1] := P;	// P(n) computed, store result
+	];
+	cache[number+1];
+];
+PartitionsP'recur(0) <-- 1;
+
+// the product of all the elements of a list
+Product(list_IsList) <--
+[
+	Local(product);
+	product:=1;
+	ForEach(i,list)
+		product:=product*i;
+	product;
+];
+
+
+Eulerian(n_IsInteger,k_IsInteger) <-- Sum(j,0,k+1,(-1)^j*Bin(n+1,j)*(k-j+1)^n);
+
+10 # StirlingNumber1(n_IsInteger,0) <-- If(n=0,1,0);
+10 # StirlingNumber1(n_IsInteger,1) <-- (-1)^(n-1)*(n-1)!;
+10 # StirlingNumber1(n_IsInteger,2) <-- (-1)^n*(n-1)! * HarmonicNumber(n-1);
+10 # StirlingNumber1(n_IsInteger,n-1) <-- -Bin(n,2);
+10 # StirlingNumber1(n_IsInteger,3) <-- (-1)^(n-1)*(n-1)! * (HarmonicNumber(n-1)^2 - HarmonicNumber(n-1,2))/2;
+20 # StirlingNumber1(n_IsInteger,m_IsInteger) <-- 
+	Sum(k,0,n-m,(-1)^k*Bin(k+n-1,k+n-m)*Bin(2*n-m,n-k-m)*StirlingNumber2(k-m+n,k));
+
+
+10 # StirlingNumber2(n_IsInteger,0) <-- If(n=0,1,0);
+20 # StirlingNumber2(n_IsInteger,k_IsInteger) <-- Sum(i,0,k-1,(-1)^i*Bin(k,i)*(k-i)^n)/ k! ;
+
+10 # BellNumber(n_IsInteger)		<-- Sum(k,1,n,StirlingNumber2(n,k));
+
+5  # Euler(0)		<-- 1;
+10 # Euler(n_IsOdd)	<-- 0;
+10 # Euler(n_IsEven)	<-- - Sum(r,0,n/2-1,Bin(n,2*r)*Euler(2*r));
+10 # Euler(n_IsNonNegativeInteger,_x)	<-- Sum(i,0,Round(n/2),Bin(n,2*i)*Euler(2*i)*(x-1/2)^(n-2*i)/2^(2*i));
+
+/** Compute an array of Euler numbers using recurrence relations.
+*/
+10 # EulerArray(n_IsInteger) <-- 
+[
+	Local(E,i,sum,r);
+	E:=ZeroVector(n+1);
+	E[1]:=1;
+	For(i:=1,2*i<=n,i++)[
+		sum:=0;	
+		For(r:=0,r<=i-1,r++)[
+			sum:=sum+Bin(2*i,2*r)*E[2*r+1];
+		];
+		E[2*i+1] := -sum;
+	];
+	E;
+];
+
+

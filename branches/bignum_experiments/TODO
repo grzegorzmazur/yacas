@@ -1,0 +1,417 @@
+
+TODO:
+- Some solve commands do not evaluate correctly the second time
+  - Solve((Ln(1/x)-1)*(1/x)^x, x)
+- Bug reports:
+  - 1) Solve(x==x^3,x) produces several "MathSqrt: invalid argument: -1"
+messages.
+  - 2) I don't think the prettyprint version of Solve(x==x^3,x) is correct
+(seems to start with sqrt[3] which isn't in the regular version (see 2nd and
+3rd screenshots attached))
+  - 3) If you try and simplify the answers to Solve(x==x^3,x), you get some odd
+results. The first screenshot (attached) has the input and output to
+Simplify shown.
+
+- Version of the web site that you can download?
+
+
+- complete the range_control.html article
+
+- Grapher applet:
+  - update manual entry on Plot2D to refer to the Java version
+  - Better formatting of numbers: 2.5 iso 25e-1
+- Manual titles do not correspond with the manual you go to.
+- Bug:
+	In> Gcd(3.25/2,2)
+	Out> Gcd(3.25/2,2)
+	In> Gcd(3.25/2,2)
+	Out> 1
+
+- Ceil, Round and Floor, also try to force to a number.
+
+- From Laurent Debacker:
+  In file scripts/integrate.rep/code.ys, shouldn't the
+    IntFunc(x,(_x)^(-1),Ln(x));
+  be
+    IntFunc(x,(_x)^(-1),Ln(Abs(x)));
+  My motivation is based on http://metric.ma.ic.ac.uk/integration/techniques/indefinite/standard-integrals/integral-of-one-over-x/index.html .
+
+- Remove the examples directory from the scripts directory, placing them somewhere else to reduce jar file size.
+- Use reflection to look up methods, will make the jar file smaller.
+
+- make the default read-eval-print loop print to out on the go, at least for the off-line version.
+
+- strip out the div class="math" part into ysmath.js so that it becomes interchangeable with jsmath.js.
+
+- do a cleanup of the "ref" manual, first pass to throw away functions that should not have been there in the first place.
+- second chapter in refprog titled "Programming" has way too many functions
+- chapter "List operators" has way too many function entries.
+- chapter "Control flow" has entries relating only to the off-line version
+- chapter "predicates" has way too many function entries.
+- chapter "Input/output and plotting" has way too many function entries.
+- chapter "Number theory" needs to be cleaned up.
+- do a cleanup of the other books also
+
+- autocompleter does not stay in bounds for for example "simplify"
+- make the tutorials page scale with the browser
+
+- scripts/examples/ do somewhere else?
+
+- examples should have their own tests
+- graph plotter 2D for Java
+
+- precision.yts is not used yet, discard? Or fix?
+- Test suite fails on Java version. We *have* to make the test suite more lenient.
+- Remove Fast* (does not seem to be used anywhere). FastArcSin, FastAssoc, FastIsPrime, FastLog, FastPower do seem to be used.
+- get rid of the Ortho?Sum functions, replace with just one?
+- (find other ...Num functions)
+- NewtonNum
+
+- Future, change name of builtin functions that are not directly accessible to outside to have prefix Builtin'...
+- Skim through Math... functions, renaming them to Builtin'...
+- manuals, provide as zip files? more people can use unzip than can use untar.
+
+
+
+- cos(arccos(x)) -> x+k*2*pi etc
+ 
+- try if I can't change the format of numbers from 0.xxx to x.xxxx, is more natural
+- make plain site not too wide also
+- Move brackets slightly down in tex form pretty renderer, especially when what they bracket is not too big.
+- Strip comments from scripts before adding to zip file
+- step-by-step solver possible?
+- screenshots, explanation of how to use, demo, tipbox, or *something*, to persuade people to enter something in the search field
+- carefully change things so that the scripts do not have things like "N(Eval(" any more (just grep on it).
+
+1) Documentation improvements
+- document the article mark-up language
+- examples embedded in the manual
+- document ":test" to run test code from article
+- link to mark-up documentation from the editors.
+- what is Yacas? How did it come into existence? Why did I write it? Who is it for?
+- mention  the use of lists for passing multiple arguments.
+============================================================================================================
+- document the algorithms used, and expand on all of the functions currently implemented.
+- separate manual chapter on tensors. (Serge? Is it going to change?). TSimplify and TExplicitSum, TD, X
+- document the source code.
+- document HoldArg in combination with <-- (or actually remove HoldArg? I want to depreciate UnFence/HoldArg in favor of macros)
+- document II, ReII, ImII, IsComplexII
+- document ExpressionDepth, PAdicExpandInternal, GetPrimeFactors, Rem, Roots, Apart, Together
+- document UnHoldable, GcdReduce, ApplyPure, DestructiveAppendList, Pattern'Matches, Pattern'Create, RuleBaseDefined, Lambda (in combination with Apply), Primes, MapArgs, Substitute,
+- document %, |, &, ^, if, else (else binds to the last if)
+- document DivPoly, RootsWithMultiples,
+- document OdeSolve
+- document Dimensions, IsSquareMatrix, Tr.
+- document Deriv, Berlekamp, ExtendedEuclidean, ExtendedEuclideanMonic
+- document IsVariable
+- document the fact that VarList can also be called with a second argument, a filter predicate.
+- document Extended predicates in the pattern matcher (needs to be explained).
+- document DefaultTokenizer()
+- document XmlTokenizer, XmlExplodeTag
+- document BSearch, FindIsq Search for a zero in a monotonously growing function. BSearch returns -1 if not found, FindIsq returns the insertion point.
+- document MultiDivide, MultiGcd, Groebner
+- document DefLoadFunction
+- document CharString (input integer, output a string with one char, using the ascii code passed in).
+- document FloatIsInt
+- document Explain what is destructive about the Destructive... routines, why they are there, and when to use them.
+- document Do slightly more on pure functions, to show why they are useful. Show for example Select.
+- document Explain what Simplify currently does (internal algorithm).
+- document The PcreLexer and PcreNextToken functions
+- document Small summary of regular expressions syntax accepted.
+- document Html... commands.
+- document some blurb on the pattern matching/multivirtual functionality.
+- Clean up integration code, and document algorithm used.
+- document the extra Is... predicates for matrices that was added by Jonathan
+- document threaded use of integration
+
+2) Web site improvements
+- allow saving multiple programs in cookies
+- work through mommies feedback
+  - computer calculations made easy zou ik in lijn met het logo plaatsen liefst in lijn met de groene balletjes. Nu zweeft het een beetje los.
+  - Get Yacas en contact us is goed, maar ik zou het wat lager plaatsen in lijn met de tabs, maar wel zo laten als tekst links.
+- Explain that a connection to the server is not needed, and that Yacas can be run off-line (with a link to a download of the Yacas web site).
+============================================================================================================
+- have the Java version available as a separate install.
+- Set up proper mailing lists
+- should I reconsider the way things are compressed? tgz? Why not zip?
+- when leaving codeedit page, ask to remember code?
+- think through wat it would look like if you could add content
+- make all screens go 100% (edit, tutorial?) or at least center?
+- create a clickable program snippet that is other than a one-liner (?)
+- ideally programs should be uploaded to the datahub from the example
+pages themselves, and not from recent.html, but for some reason that did
+not work. When going from deeply-linked, trying it out does not work any
+more and editing it also not.
+- make descr/view/edit pages not reload, but refresh content dynamically
+- In the tutorial, at "Solve", show how to verify that results are correct
+
+3) Research
+- Scan through my articles
+- scan through examples already in examples directory in scripts dir
+- take a look at Axiom code
+- take a look at Maxima code
+============================================================================================================
+- Think through series of articles on tensors.
+- Quaternions example?
+- Example: the logarithmic derivative example from Fateman is nice.
+- example: inverse, integrate taylor of 1/f'
+- example: generating a polynomial solution for an ordinary DE
+- For fun: try to understand Hensel lifting, and can it be made to apply
+to say Feynman diagrams?
+
+4) Applet improvements
+?- text rendered in console seems to be rendered slightly off, shifted, on Windows (not on my PowerBook).
+- clicking on the hint box should do the same as pressing enter
+- Error in Yacas console should be shorter: drop the
+net.sf.yacas.YacasException as it does not really add anything.
+- Render plain text over multiple lines
+- create a grapher
+============================================================================================================
+- optimize the code that finds matching hints
+- hints.txt in the yacas.jar.
+- tex parse: \lim, \Rightarrow, \max, \min, \zeta, {":=","\\equiv"},{"<>","\\sim "},{"<=>", "\\approx "},{"=>", "\\Rightarrow "},{"%","\\bmod "},
+- Store history also in cookies, so you have access to the history next time.
+
+5) Math improvements
+============================================================================================================
+- allow control over formatting of floats.
+- bumping up a version number seems to force a recompile of all the C++ files, config.h rewritten or so?
+- make all the code more consistent, assuming that variables are real-valued.
+- remove use of UnFence/HoldArg in favor of macros
+- after use of UnFence/HoldArg has been removed, remove support for it
+- local transforms: postpredicates do not seem to work any more.
+- pattern matcher that can work on rings
+- Change the system to use the II way of dealing with complex numbers in
+favor of the Complex(r,i) construct.
+- When the change to the II way of doing complex numbers is finished, add
+it to the tutorial (if not already there), and change the manual
+accordingly
+- replace perl code in favor of C++ code, easier to maintain.
+- sparserep from multi, use for uni too
+- lists/arrays interchangable
+- remove all uses of local files/directories.
+- global var access, test code using a function to return a list of global
+variables.
+- Clean up Solve code, and document algorithm used.
+- remove the final references to stdlib in the code.
+- put Nl() in a common place (if it is still defined in different places
+or an odd place).
+- test Apart for polys. This might have to be adjusted by adding using the
+same mechanism used for the integer version.
+- Taylor on functions containing Abs/Sign can not be trusted (no idea what
+I meant by that, but worth checking).
+- Define the Local,.. functions based on their Macro counterparts, in the
+scripts.
+- also define a Head and Tail for arrays, and append/concat/
+insert/delete/copy. This will ease swapping between lists and arrays.
+- Allow for type convertors in pattern matchers. For instance: IsUniVar,
+should be combined with CanBeUni and NormalForm to get the correct one
+back.
+- A RuleBaseDefined-like function that returns a list of defined arities.
+- FindZeroes (polynoms and other functions)
+- redivide some code ('newly')
+- make suchthat more powerful, so it simplifies sin(x)=cos(x) to tan(x)=1
+to x=Pi/4
+- groebner bases
+- see if using arrays for matrices speeds up things.
+- Fix CanBeUni so that it deals correctly with 1/c
+- EquateCoefs equate coefficients in two polys, and return as list.
+- document /. and /:: with <-
+- allow solve to return a list usable in /.
+- matrix^negative is inverse^positive
+
+6) Bugs:
+============================================================================================================
+- some limits not working correctly when using infinity: Limit(x,Infinity)
+Zeta(x), Limit(x,Infinity) Factorial(x),
+- factorize not checking for correctness of arguments:
+Factorize(Infinity), Factorize(-1)
+- Limit(x,0)D(x,2)Sin(x)/x never terminates (or rather takes a very long
+time), which in turn causes Taylor(x,0,5)Sin(x)/x to never terminate.
+- Limit(x,Infinity) x^n/Ln(x) returns n*Infinity, should be Infinity
+- Limit(x,0,Right) x^( Ln(a)/(1+Ln(x)) ) returns 1, should be "a"
+- Gcd(10,3.3) returns 1, should error with floats, or return unevaluated
+like 'Gcd(10,Pi)' and 'Gcd(Exp(1),Exp(2))' do
+- Limit(n,Infinity) Sqrt(n+1) - Sqrt(n), the limit is zero, but exhausts
+the stack
+- [A:={{1,2,3,4},{0,1,2,3},{0,0,1,2},{I,0,I,I}}; EigenValues(A);] hangs
+- ArcCos(Cos(beta)) returns beta, but this is not strictly correct for all
+values of beta. If I fix this I need to fix it in the tutorial also.
+- Limit(n, Infinity) n^5/2^n returns Infinity/(Infinity*Ln(2)), wrong
+answer -- L'Hopital's theorem is not always the correct thing to do. There
+is a paper by Richardson, Salvy et al "Asymptotic expansions of exp-log
+functions" that may be helpful.
+- TrigSimpCombine(x^500)' exhausts the stack
+- 'Solve(Exp(x^2)==Exp(x),x)' yields {} instead of {0,1}.
+- BUG: InverseTaylor not working correctly for Sin and Tan???
+- BUG: complex^float.
+- Mod(a,b) generates some "UniVariate()" calls if a and b are undefined (I
+expected it to return unevaluated). If one of them is defined, and the
+other undefined, Mod() returns some numbers. Mod(x,-3) returns
+unevaluated. I'm not sure what the "correct" meaning of Mod is for
+negative moduli bases, but the answer should in any case be non-negative.
+Mod(a,b) is defined as the smallest non-negative number c such that a-c is
+divisible by b.
+- Simplify(4-x-y) returns 4-y-x, Simplify(4-y-x) returns 4-x-y
+
+7) Java applet improvements:
+============================================================================================================
+- Give "Where" a much lower precedence.
+- test: FromBase to also work with real numbers
+- test: ToBase to also work with real numbers
+- real fix for the sockets in yacasmain.cpp
+- Find out why MathPi is so slow when executed from script. Perhaps conversions to/from string in MathSin?
+- document the mental model for arb precision numerics
+- test program for the cyacas.h api
+- implement plots from Java
+
+- run test scripts in Java version, and fix problems accordingly
+- Functions to be implemented in the Java version still:
+  - LispFastMod
+  - YacasDllLoad
+  - LispPatchLoad
+  - LispPatchString
+  - Some more functions that are defined in yacasmain.cpp: Exit, IsExitRequested, HistorySize, StaSiz, IsPromptShown, ReadCmdLineString, FileSize
+  - LispDefaultTokenizer
+  - LispCommonLispTokenizer
+  - LispXmlTokenizer
+  - LispExplodeTag
+  - LispCustomEval
+  - LispCustomEvalExpression
+  - LispCustomEvalResult
+  - LispCustomEvalLocals
+  - LispCustomEvalStop
+  - LispTraceRule
+  - LispTraceStack
+- command line flags for Java console version, useful for doing the test scripts
+- Supporting the default read-eval-print loop from script in Java?
+- Run the tests from Java
+- Give some performance statistics on comparison between Java and C++
+
+8) Unsorted:
+============================================================================================================
+- Bug: Factor(0) returns 1
+- Standard mailing list at yahoogroups, I should discontinue it.
+- Search for defines I want to remove
+- Document TeXFormMaxPrec()
+- Document DefFileList()
+- check that unnecessary scripts are not loaded unnecessarily (in debug mode?)
+- Document FormulaMaxWidth()
+- Document SetFormulaMaxWidth(width)
+- Document the debugging facilities in the debug version, warnings on setting global variables etcetera.
+- Global variables are still used in the wester test file
+- Global variables are still used in the scripts that build the manuals
+- Global variables are still used in the scripts that create the plugin stubs
+- Global variables are still used in the scripts that compile/create for example libmath.cpp
+- Is there not enough in common between the different files platfileio.h that we should perhaps consider merging them?
+- For N, Verbose, etcetera, in stead of LocalSymbols guarding scope, perhaps a macro that generalizes the concept (with getters and setters, for a type of expandable singleton).
+- have the application work in a directory structure that is identical to the source tree. --rootdir should be more general (set it and you can find the documentation also, etcetera).
+- plotting functions are extremely verbose, this code needs to be reduced I feel
+- other os-ish modules that I think are ugly, ShowPS ? Tries to write to /tmp/? 
+- examples direcory in scripts/, needed?
+- allow sending openmath expressions and receiving them from a socket.
+  - allow parsing without having to require a ;
+  - removing ] from output
+- Remove MacroSet/MacroClear and friends in favor of macros? makes the whole system simpler, and easier to compile.
+- Erf does not work for numbers larger than one but not too large.
+-  http://www.causascientia.org/math_stat/Dists/Compendium.pdf
+- remove TODOs in the source code
+- document as of yet undocumented functions
+- Try Yacas from some other applet, as a scripting language
+- Try out MapReduce
+- allow for a custom REP loop in server mode (would actually be trivial when sockets are defined in Yacas language)
+- Mention MultiGcd in the documentation where polynomial operations are explained.
+- make sure there are no collisions (axiom link in links.html for example) ???
+- change all references to LISP in to YACAS, and Lisp in to Yacas
+- univar.rep/Cyclotomic.ys is the only file to start with a capital (perhaps change to lower case?)
+- some garbage (double defined functions) I'd like to remove from univar
+- Taylor series expansion of Tan is slow, use other form for derivative?
+- Solve: see if I can recreate HEQS?
+- YacasInterpreter: also allow it to work from an applet?
+- Write test for Solve({mean==(A/(A+B)),variance==((A*B)/(((A+B)^2) * (A+B+1)))},{A,B})
+- There are warnings about YacasBase not having a virtual destructor, problem?
+- document the behavior of underscores in Yacas.
+- Clebsch-Gordan coefficients:
+  - Get Clebsch-Gordan code in to the main Yacas distribution.
+  - Test code for Clebsch-Gordan
+  - documentation for Clebsch-Gordan
+- document *how* the random number generators work.
+- -pc flags should also withhold the In> and Out> printing. Document that you need to use --read-eval-print ""
+- http://centaur.maths.qmul.ac.uk/Computer_Algebra/MathAlgs/mathalgs.pdf
+- http://www.adeptscience.co.uk/maplearticles/f1138.html
+- restructure the documentation (there are a lot of unfinished parts written by Ayal).
+- rewrite anumber, and document it this time.
+- implement precision tracking the way Serge wants it, in the anumber version of BigNumber
+- slowness of Taylor, due to its trivial implementation. Perhaps we should do something about this as soon as we have series calculus.
+- Solve is way too simplistic.
+- (Is this still true?) MatchAtom still compares atoms by string representation! It should raise an error if you define a pattern with a float in it.
+
+
+============================================================================================================
+9) Article fodder:
+
+UI to search solution spaces
+============================
+Computers have made many laborious tasks easier to do. You can look up mathematical things in a database-ish way, or have the computer do repetitive work. There are more things computers are good at. Because you can design a user interface, you can design how it interacts with humans, you can effectively design a custom tool for a task. 
+
+When  I did my internship (high-energy physics, Zeus, 1995-1996, at NIKHEF H) I used a user interface to get more results. The task at hand with high-energy physics is as follows; you have this massive accelerator that accelerates particles in a tube. The accelerated particle beams collide, and out of the collision come other particles. The particles that come out of it can tell you something about the structure of the particles that collided. Now at the point where the collision takes place people place what they call a detector. This detector detects particles coming from the collision. The collisions occur at enormous rates, so you get an enormous amount of data coming from these detectors. Any way, the data is filtered a bit (the amount of data coming from these detectors is so vast that one can not possibly hope to capture all of it, so electronics boards are designed to be able to handle the high bandwidth of data and filter out the events for which it is absolutely sure that the researchers will not be interested in it, reducing the amount of data captured), and then ends on a harddisk somewhere, in what they call (or used to call, don't know how it works nowadays) ntuples, essentially one big database table with rows of records, each record with some fields. Each row is an isolated event that might be of interest. Now the trick is to make a selection of the events, and plot a certain number. For example, one could take all the events where the electron (one of the incoming particles) scattered heavily backwards, and then plot the mass of the whole system, as in a histogram, where you accumulate the results of events with mass between two values in one bin, mass between other values in the next bin, etcetera. You would then see a sea of noise, with hopefully a peak in it, which would be called a "resonance", and would indicate that there had been a short-lived particle with that mass. The narrower the peak, the longer-lived the particles. The wider the peak, the shorter-lived the particles. This way you could measure the speed at which they decayed, which you can also calculate from theory sometimes, or at least use as an input parameter for theory. And you could measure the precise point of the top, so as to give you the mass of the particle. And you could count the number of events that were in the peak, and again compare that to theory, which should be able to give a prediction of the amount of events that were observed given the intensity of the beams colliding against each other. The trick would be to find the area where the resonance (the peak) should be, and try to design filters that reduce the background noise while keeping as much as possible of the signal. The filters would be simple things (often referred to as <i>cuts</i>, as they cut out a part of the data). For example, you could select all the events for which a specific value in one of the fields of the ntuple was larger than a certain value. Or smaller than a specific value. Large part of the work consisted of just trial-and-error, finding the good cuts to apply as to get the best view on the resonance. The cut to apply was the real information being sought. It required hard work, putting in many many many hours. The more hours you worked, the more likely you were to find something interesting. Being smart is not enough in such a case, as luck plays a big role (as they say, luck is when opportunity meets preparation). After you found the best cuts to apply to the data, it was surprisingly little information you needed to communicate. It could be as little as just a few conditionals, selecting all the events with, say, a detected electron, and where the virtual photon had a larger energy than such and so, and ... Surprisingly hard work for so little information. One would then proceed to get an estimate of the curve representing the noise, and subtract that from the data, to arrive at the pure signal.
+
+A good estimate of the total noise is then subtracted from the total data in what is hoped to then be the resulting signal of the resonance being sought. The task is thus essentially just to count how often something happened, and to try to make a wise selection of the events to look at.
+
+<make a drawing explaining the noise versus signal>
+
+One problem I encountered during my internship was that due to the fact that there was just such a vast amount of data, each time I wanted to change a cut, you had to wait forever (10 minutes sometimes), for the result. You would wander off and do something else, and come back to the window where you were trying the cut, wondering what it was again you were trying out. It all just moved very slow.
+
+So one weekend I resolved to make a nice little tool to make my life easier. The entire group worked on a Silicon Graphics workstation at that time, which apparently had cost the equivalent of 150,000.00 euros, and carried an astonishing 256 megabytes of RAM. Twelve people worked on that. Chances are you are now reading this article on a computer that cost a fraction of that machine, and has many times more memory than we had back then. And we were doing cutting edge research! But I digress.
+
+I used what knowledge I had already gleaned from the data to make a stricter selection on the data. What resulted was something like 38 megabytes of data remaining. What I then did was load that all in to memory (I waited until every one had gone home so I had the full system to myself, one advantage of working on big iron). In addition, I kept an index of each field, and sorted the records per that field, in that index. Now, I created a little user interface that would show a graph, histogram, of the counts of number of events per bin. And I defined scrollbars that allowed me to define ranges from within to select data. Those were effectively two cuts, one to the left and one to the right, limiting the amount to fall within a range of two values, a<x<b. I defined that for certain fields that I thought might give me the results I was looking for (in hindsight, I was already close to finding the right cuts any way, this tool just made me find it faster, but more on that later). For each event, I would keep a reference count. The reference count would start at zero, but as soon as the event fell outside of the selection, the reference count would be increased by one. When it fell from outside a selection to inside a selection again, the count would be decreased. When the scrollbar got dragged, I would only have to visit a few of the events, as I had a sorted index of them. Moreover, for each event, I could then remove it from the bin count if its reference count became nonzero, and add it to the bin again if the reference count became zero again.
+
+The above allowed me to go through the data with breakneck speed. I could dynamically change cuts and see the result a split-second later, where previously I would have had to wait for ten minutes sometimes. My internship was already a success because I had found the resonance I was looking for. But with the tool I was able to find two more resonances on the Monday morning following the weekend in which I had coded up the tool. Unfortunately, I later found out that other researchers had already found these resonances, but they must have only found them a short period before I did, as I hadn't found any publications yet when I found the resonances. If memory serves (it is more than ten years ago now) the cuts they found were different, but could probably be shown to be roughly equivalent to what I had found. I had dramatically increased the amount of space I could search per unit of time, increasing the chance of finding something interesting accordingly. 
+
+The point I want to make in this article that there might actually be a place for such tools in science. There might be a place for graphical user interfaces. Obviously they do not merit real new knowledge about nature, and would thus not merit a scientific publication, but as a tool they could be very useful. At the end of the day, research is about finding new things, and because what you are looking for is effectively unknown, you proceed by trial and error. And the more you try and the more you err, the more chance you have to accidentally run in to something interesting. With a graphical user interface you can make a custom tool that allows you to search a much much much larger space. With the example given in this article I went mining through data but one can equally make a tool that allows one to search in the world of platonic beauty, to discover new objects in the platonic world. Because such a tool could potentially make you much more productive, effectively making you in to many many researchers as you become as productive as many researchers. Moreover, this is an under-researched area, not many scientists looking at this. Fair enough, you would not be able to publish an article on how the tool works. Just the results of applying the tools yourself. But there is possibly something interesting to be found here. I can not help but wonder what great names from the past would have done had they had access to computers. Would they have used computers to do their work? Probably. Creating user interfaces to search larger parts of problem-solution spaces? Maybe...
+
+The reason this has not been done could quite possibly be that it means you write a one-off tool to allow you to search in a space. In effect you write something you intend to throw away again soon. This goes against the usual activity of a scientist, which is to discover things that have eternal value.
+
+For the coming period, I will be exploring this idea, and abusing the Yacas web site for this. Over time, this article section should fill up with articles on this subject, with little applets and snippets of Javascript to demonstrate the point. The focus will not be the usual approach where the applet creator tries to teach something, but rather the focus will be on tools that allow you to venture off in to the unknown. I believe that this is a fruitful area where a lot can be discovered still. 
+
+
+Embeddable applets
+==================
+I have thought in the past on-and-off about writing tools that would allow teachers to create lesson material using Yacas. This usually evolved in to an idea where there was some notebook (or similar metaphor), with the authoring tools to allow such a teacher to write rich documents, with graphs, interactive, etcetera (you would not want to write material for teachers, as most teachers probably think they can do a better job at it than you). 
+
+It is only recently that I realized that those tools actually already exist! There is no reason not to start using html with JavaScript, in combination with a Java applet. The Java applet could do the more computationally intensive work, like calculations or plotting, where one would use JavaScript for creating the user interface, the interactivity, and html for the layout. 
+
+You can use Yacas as an applet inside a page. In effect, it acts like a little server that runs inside the page. The JavaScript code can send requests to it, and receive answers back. Teachers could literally start to write interactive lesson material without having to install any software at all (a text editor and a web browser will do). No need to maintain a server, a plain web site will do. No need for the user to install any special software, other than a browser with Java and JavaScript support.
+
+<some example applet allowing the user to perform operations on formulas, highschool>
+
+
+
+
+- One-off tasks, completable in a few hours
+- A look at Google Analytics
+
+- Example: RootsOfUnity (nice example of threading): Exp(2*Pi*I*(1 .. n)/n)
+- Example: Average (nice example of threading): Average(list_IsList) <-- Add(list)/Length(list); 
+- Example: Fibonacci series, Lucas series.
+  - Verify( Fibonacci(242), 168083057059453008835412295811648513482449585399521 );
+  - Verify( Fibonacci(6,.5), 2.03125 );
+  - Verify( Fibonacci(3,.5), 1.25 );
+- Article: rant on strong typing versus test code
+- Article on splitting documentation between the two target audiences "user" and "maintainer".
+
+- poking fun at systems by caricaturizing their properties
+
+
+
+
+
+
+
+
+
+
+
+
+
+

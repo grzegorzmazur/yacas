@@ -1,0 +1,309 @@
+
+/* This module implements factorizing integers and polynomials */
+
+/// Middle level function: returns a list of prime factors and their powers.
+/// E.g. FactorizeInt(50) returns {{2, 1}, {5, 2}}.
+1# FactorizeInt(0) <-- {};
+1# FactorizeInt(1) <-- {};
+
+3# FactorizeInt(n_IsInteger) <--
+[
+  Local(small'powers);
+  n := Abs(n);	// just in case we are given a negative number
+  // first, find powers of 2, 3, ..., p with p=257 currently -- this speeds up PollardRho and should avoids its worst-case performance
+  // do a quick check first - this will save us time especially if we want to move 257 up a lot
+  If(
+  	Gcd(ProductPrimesTo257(), n) > 1,	// if this is > 1, we need to separate some factors. Gcd() is very fast
+	small'powers := TrialFactorize(n, 257),	// value is {n1, {p1,q1}, {p2,q2}, ...} and n1=1 if completely factorized into these factors, and the remainder otherwise
+	small'powers := {n}	// pretend we had run TrialFactorize without success
+  );
+  n := small'powers[1];	// remainder
+  If(n=1, Tail(small'powers),
+  // if n!=1, need to factorize the remainder with Pollard Rho algorithm
+	  [
+	  	If(InVerboseMode(), Echo({"FactorizeInt: Info: remaining number ", n}));
+		SortFactorList(
+	  	  PollardCombineLists(Tail(small'powers), PollardRhoFactorize(n))
+		);
+	  ]
+  );
+];
+
+/// Sort the list of prime factors using HeapSort()
+LocalSymbols(a,b, list) [
+
+SortFactorList(list) := HeapSort(list, {{a,b}, a[1]<b[1]});
+
+];
+
+/// Simple trial factorization: can be very slow for integers > 1,000,000.
+/// Try all prime factors up to Sqrt(n).
+/// Resulting factors are automatically sorted.
+/// This function is not used any more.
+/*
+2# TrialFactorize(n_IsPrimePower) <-- {GetPrimePower(n)};
+3# TrialFactorize(n_IsInteger) <--
+[
+	Local(factorization);
+	factorization := TrialFactorize(n, n);	// TrialFactorize will limit to Sqrt(n) automatically
+	If(
+		Head(factorization) = 1,	// all factors were smaller than Sqrt(n)
+		Tail(factorization),
+		// the first element needs to be replaced
+		Concat(Tail(factorization), {{Head(factorization),1}})
+	);
+];
+*/
+
+/// Auxiliary function. Return the power of a given prime contained in a given integer and remaining integer.
+/// E.g. FindPrimeFactor(63, 3) returns {7, 2} and FindPrimeFactor(42,17) returns {42, 0}
+// use variable step loops, like in IntLog()
+FindPrimeFactor(n, prime) :=
+[
+	Local(power, factor, old'factor, step);
+	power := 1;
+	old'factor := 1;	// in case the power should be 0
+	factor := prime;
+	// first loop: increase step
+	While(Mod(n, factor)=0)	// avoid division, just compute Mod()
+	[
+		old'factor := factor;	// save old value here, avoid sqrt
+		factor := factor^2;
+		power := power*2;
+	];
+	power := Div(power,2);
+	factor := old'factor;
+	n := Div(n, factor);
+	// second loop: decrease step
+	step := Div(power,2);
+	While(step>0 And n > 1)
+	[
+		factor := prime^step;
+		If(
+			Mod(n, factor)=0,
+			[
+				n := Div(n, factor);
+				power := power + step;
+			]
+		);
+		step := Div(step, 2);
+	];
+	{n, power};
+];
+
+/* simpler method but slower on worstcase such as p^n or n! */
+FindPrimeFactorSimple(n, prime) :=
+[
+	Local(power, factor);
+	power := 0;
+	factor := prime;
+	While(Mod(n, factor)=0)
+	[
+		factor := factor*prime;
+		power++;
+	];
+	{n/(factor/prime), power};
+];
+/**/
+
+/// Auxiliary function. Factorizes by trials. Return prime factors up to given limit and the remaining number.
+/// E.g. TrialFactorize(42, 2) returns {21, {{2, 1}}} and TrialFactorize(37, 4) returns {37}
+TrialFactorize(n, limit) :=
+[
+	Local(power, prime, result);
+	result := {n};	// first element of result will be replaced by the final value of n
+	prime := 2;	// first prime
+	While(prime <= limit And n>1 And prime*prime <= n)
+	[	// find the max power of prime which divides n
+		{n, power} := FindPrimeFactor(n, prime);
+		If(
+			power>0,
+			DestructiveAppend(result, {prime,power})
+		);
+		prime := NextPseudoPrime(prime);	// faster than NextPrime and we don't need real primes here
+	];
+	// replace the first element which was n by the new n
+	DestructiveReplace(result, 1, n);
+];
+
+/* This is Pollard's Rho method of factorizing, as described in
+ * "Modern Computer Algebra". It is a rather fast algorithm for
+ * factoring, but doesn't scale to polynomials regrettably.
+ *
+ * It acts 'by chance'. This is the Floyd cycle detection trick, where
+ * you move x(i+1) = f(x(i)) and y(i+1) = f(f(y(i))), so the y goes twice
+ * as fast as x, and for a certain i x(i) will be equal to y(i).
+ *
+ * "Modern Computer Algebra" reasons that if f(x) = (x^2+1) mod n for
+ * the value n to be factored, then chances are good that gcd(x-y,n)
+ * is a factor of n. The function x^2+1 is arbitrary, a higher order
+ * polynomial could have been chosen also.
+ *
+ */
+
+/*
+Warning: The Pollard Rho algorithm cannot factor some numbers, e.g. 703, and
+can enter an infinite loop. This currently results in an error message: "failed to factorize".
+Hopefully the TrialFactorize() step will avoid these situations by excluding
+small prime factors.
+This problem could also be circumvented by trying a different random initial value for x when a loop is encountered -- hopefully another initial value will not get into a loop. (currently this is not implemented)
+*/
+
+RandomInteger(n) := MathFloor(Random()*n);
+/// Polynomial for the Pollard Rho iteration
+PollardRhoPolynomial(_x) <-- x^2+1;
+
+2# PollardRhoFactorize(n_IsPrimePower) <-- {GetPrimePower(n)};
+3# PollardRhoFactorize(_n) <--
+[
+  Local(x,y,restarts,gcd,repeat);
+  gcd:=1;
+  restarts := 100;	// allow at most this many restartings of the algorithm
+  While(gcd = 1 And restarts>=0)	// outer loop: this will be typically executed only once but it is needed to restart the iteration if it "stalls"
+  [
+  	restarts--;
+    /* Pick a random value between 1 and n-1 */
+    x:= RandomInteger(n-1)+1;
+
+    /* Initialize loop */
+    gcd:=1; y:=x;
+	repeat := 4;	// allow at most this many repetitions
+//		Echo({"debug PollardRho: entering gcd loop, n=", n});
+ 
+    /* loop until failure or success found */
+    While(gcd = 1 And repeat>=0)
+    [
+      x:= Mod( PollardRhoPolynomial(x), n);
+   	  y:= Mod( PollardRhoPolynomial(
+	  	Mod( PollardRhoPolynomial(y), n)	// this is faster for large numbers
+	  ), n);
+   	  If(x-y = 0,
+       	 [
+		 	gcd := 1;
+		 	repeat--;	// guard against "stalling" in an infinite loop but allow a few repetitions
+		 ],
+       	 gcd:=Gcd(x-y,n)
+       	 );
+//		Echo({"debug PollardRho: gcd=",gcd," x=", x," y=", y});
+   	];
+	If(InVerboseMode() And repeat<=0, Echo({"PollardRhoFactorize: Warning: stalled while factorizing ", n, "; counters ", x, y}));
+  ];
+  Check(restarts>0, "PollardRhoFactorize: Error: failed to factorize " : String(n));
+  If(InVerboseMode() And gcd > 1, Echo({"PollardRhoFactorize: Info: while factorizing ", n, " found factor ", gcd}));
+  /* Return result found */
+  PollardCombineLists(PollardRhoFactorize(gcd), PollardRhoFactorize(Div(n,gcd)));
+];
+
+/* PollardCombineLists combines two assoc lists used for factoring.
+   the first element in each item list is the factor, and the second
+   the exponent. Thus, an assoc list of {{2,3},{3,5}} means 2^3*3^5.
+*/
+
+5 # PollardMerge(_list,{1,_n}) <-- True;
+10 # PollardMerge(_list,_item)_(Assoc(item[1],list) = Empty) <--
+  DestructiveInsert(list,1,item);
+
+20 # PollardMerge(_list,_item) <--
+[
+  Local(assoc);
+  assoc := Assoc(item[1],list);
+  assoc[2]:=assoc[2]+item[2];
+];
+
+PollardCombineLists(_left,_right) <--
+[
+  ForEach(item,right)
+  [
+    PollardMerge(left,item);
+  ];
+  left;
+];
+
+
+
+
+/* New factorization : split between integers and polynomials. */
+10 # Factors(p_IsInteger) <-- FactorizeInt(p);
+20 # Factors(p_CanBeUni)_(Length(VarList(p)) = 1) <--  BinaryFactors(p);
+30 # Factors(p_IsGaussianInteger)	<-- GaussianFactors(p);
+
+
+// This is so Factor(Sin(x)) doesn't return FWatom(Sin(x))
+//Factor(_p) <-- FW(Factors(p));
+10 # Factor(p_CanBeUni) <-- FW(Factors(p));
+
+
+/* FW: pass FW the result of Factors, and it will show it in the
+ * form of p0^n0*p1^n1*...
+ */
+
+10 # FWatom({_a,1}) <-- a;
+20 # FWatom({_a,_n}) <-- UnList({Atom("^"),a, n});
+5  # FW(_list)_(Length(list) = 0) <-- 1;
+10 # FW(_list)_(Length(list) = 1) <-- FWatom(list[1]);
+20 # FW(_list) <--
+[
+  Local(result);
+  result:=FWatom(Head(list));
+  ForEach(item,Tail(list))
+  [
+   result := UnList({ Atom("*"),result,FWatom(item)});
+  ];
+  result;
+];
+
+10 # Roots(poly_CanBeUni) <--
+[
+  Local(factors,result,uni,root,i,deg);
+  factors:=Factors(poly);
+  result:={};
+  ForEach(item,factors)
+  [
+    uni:=MakeUni(item[1]);
+    deg:=Degree(uni);
+    If(deg > 0 And deg < 3,
+      [
+        root:= PSolve(uni);
+        If(Not IsList(root),root:={root});
+        For(i:=0,i<item[2],i++)
+          result:= Concat(root, result);
+      ]
+      );
+  ];
+  result;
+];
+
+10 # RootsWithMultiples(poly_CanBeUni) <--
+[
+  Local(factors,result,uni,root,i,deg);
+  factors:=Factors(poly);
+  result:={};
+  ForEach(item,factors)
+  [
+    uni:=MakeUni(item[1]);
+
+    deg:=Degree(uni);
+    If(deg > 0 And deg < 3,
+      [
+        root:= PSolve(uni);
+        If(Not IsList(root),root:={root});
+        For(i:=1,i<=Length(root),i++)
+          result:= Concat({{root[i],item[2]}}, result);
+      ]
+      );
+  ];
+  result;
+];
+
+// The bud of an Quadratic Seive algorithm
+// congruence solving code must be written first
+Function("FactorQS",{n})[
+	Local(x,k,fb,j);	
+	// optimal number of primes in factor base
+	// according to Fundamental Number Theory with Applications - Mollin, p130
+	k:=Round(N(Sqrt(Exp(Sqrt(Ln(n)*Ln(Ln(n)))))));
+	fb:=ZeroVector(k);
+	For(j:=1,j<=k,j++)[
+		fb[j]:=NextPrime(j);
+	];
+];

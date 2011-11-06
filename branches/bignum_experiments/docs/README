@@ -1,0 +1,30 @@
+The docs/ directory contains documentation files not directly used by Yacas.
+
+The file "yacaslogo.gif" is used in the HTML documentation.
+
+other *.html, *.gif - used for the Yacas web site
+
+downloads.html.in - source file for downloads.html
+
+paper1.tex - the source file of the paper:
+
+A.Z. Pinkus and S. Winitzki, "YACAS: A Do-it-yourself Symbolic Algebra Environment" (LNCS 2385 p. 332, Springer-Verlag, 2002)
+
+paper2.tex - a much more extensive version of the paper (unpublished)
+
+This paper describes the YACAS system in general and gives some salient examples. (I still can't believe it got published.)
+
+winitzki01.* - source files for the paper:
+
+S. Winitzki, "Uniform approximations for transcendental functions" (LNCS 2667 p. 780, Springer-Verlag, 2003)
+This paper describes a novel uniform approximation for the Lambert's W function.
+
+winitzki02.* - source files for the paper:
+
+S. Winitzki, "Computing the incomplete Gamma function to arbitrary precision" (LNCS 2667 p. 790, Springer-Verlag, 2003)
+This paper lists and compares various methods (but the case of negative real part of z is still not solved.) I give an analysis of convergence rate of the continued fraction.
+
+winitzki03.tex - source file for the paper: 
+
+S. Winitzki, "Arbitrary-precision computation of Chebyshev polynomials" (draft, not published)
+This paper lists and compares various methods and finds the best one.

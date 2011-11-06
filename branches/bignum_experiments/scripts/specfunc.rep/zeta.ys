@@ -1,0 +1,118 @@
+/// special functions coded for Yacas by Serge Winitzki
+
+/////////////////////////////////////////////////
+/// Riemann's Zeta function
+/////////////////////////////////////////////////
+
+/// See: Bateman, Erdelyi: <i>Higher Transcendental Functions<i>, vol. 1;
+/// P. Borwein, <i>An efficient algorithm for Riemann Zeta function<i> (1995).
+
+/// Numerical computation of Zeta function using Borwein's "third" algorithm
+/// The value of $n$ must be large enough to ensure required precision
+/// Also $s$ must satisfy $Re(s)+n+1 > 0$
+Internal'ZetaNum(_s, n_IsInteger) <-- [
+	Local(result, j, sign);
+	If (InVerboseMode(), Echo({"Internal'ZetaNum: Borwein's method, precision ", Builtin'Precision'Get(), ", n = ", n}));
+	result := 0;
+	sign := 1;	// flipping sign
+	For(j:=0, j<=2*n-1, j++)
+	[	// this is suboptimal b/c we can compute the coefficients a lot faster in this same loop, but ok for now
+		result := N(result + sign*Internal'ZetaNumCoeffEj(j,n)/(1+j)^s );
+		sign := -sign;
+	];
+	N(result/(2^n)/(1-2^(1-s)));
+];
+
+/// direct method -- only good for large s
+Internal'ZetaNum1(s, limit) := [
+	Local(i, sum);
+	If (InVerboseMode(), Echo({"Internal'ZetaNum: direct method (sum), precision ", Builtin'Precision'Get(), ", N = ", limit}));
+	sum := 0;
+	limit := Ceil(N(limit));
+	For(i:=2, i<=limit, i++) sum := sum+N(1/MathPower(i, s));
+//	sum := sum + ( N( 1/MathPower(limit, s-1)) + N(1/MathPower(limit+1, s-1)) )/2/(s-1); 	 // these extra terms don't seem to help much
+	sum+1;	// add small terms together and then add 1
+];
+/// direct method -- using infinite product. For internal math, Internal'ZetaNum2 is faster for Bernoulli numbers > 250 or so.
+Internal'ZetaNum2(s, limit) := 
+[
+	Local(i, prod);
+	If (InVerboseMode(), Echo({"Internal'ZetaNum: direct method (product), precision ", Builtin'Precision'Get(), ", N = ", limit}));
+	prod := N( (1-1/MathPower(2, s))*(1-1/MathPower(3,s)) );
+	limit := Ceil(N(limit));
+	For(i:=5, i<=limit, i:= NextPrime(i))
+		prod := prod*N(1-1/MathPower(i, s));
+	1/prod;
+];
+
+/// Compute coefficients e[j] (see Borwein -- excluding (-1)^j )
+Internal'ZetaNumCoeffEj(j,n) := [
+	Local(k);
+	2^n-If(j<n,
+		0,
+		Sum(k,0,j-n,Bin(n,k))	// this is suboptimal but ok for now
+	);
+];
+
+/// fast numerical calculation of Zeta(3) using a special series
+
+
+
+
+Zeta3() :=
+[
+	Local(result, old'result, k, term);
+  N([
+    For(
+    [
+      k:=1;
+      result := 1;
+      old'result := -1;
+      term := 1;
+    ],
+    old'result!=result,
+    k++
+    )
+    [
+      old'result := result;
+      term := -term * k^2 / ((2*k+1)*(2*k));
+      result := result + term/(k+1)^2;
+    ];
+    result := 5/4*result;
+  ], Builtin'Precision'Get()+IntLog(Builtin'Precision'Get(),10)+1);
+	
+	result;
+];
+
+
+/// User interface for Internal'ZetaNum(s,n)
+10 # Internal'ZetaNum(_s) _ (N(s)=0) <-- -0.5;
+10 # Internal'ZetaNum(_s) _ (N(s)=1) <-- Infinity;
+20 # Internal'ZetaNum(_s) <-- [
+	Local(n, prec, result);
+	prec := Builtin'Precision'Get();
+	If(	// use identity if s<1/2 to replace with larger s. Also must be sn!=0 or else we get infinity * zero
+		N(Re(s)) < 0.5,
+		// call ourselves with a different argument
+		[
+			If(InVerboseMode(), Echo({"Internal'ZetaNum: using s->1-s identity, s=", s, ", precision ", prec}));
+			result :=  2*Exp(Internal'LnGammaNum(1-s)-(1-s)*Ln(2*Internal'Pi()))*Sin(Internal'Pi()*s/2) * Internal'ZetaNum(1-s);
+		],
+		// choose between methods
+		If (N(Re(s)) > N(1+(prec*Ln(10))/(Ln(prec)+0.1), 6),
+			[	// use direct summation
+				n:= N(10^(prec/(s-1)), 6)+2;	// 2 guard terms
+				Builtin'Precision'Set(prec+2);	// 2 guard digits
+				result := Internal'ZetaNum1(s, n);
+			],
+			[	// use Internal'ZetaNum(s, n)
+				n := Ceil( N( prec*Ln(10)/Ln(8) + 2, 6 ) );	// add 2 digits just in case
+				Builtin'Precision'Set(prec+2);	// 2 guard digits
+				result := Internal'ZetaNum(s, n);
+			]
+		)
+	);
+	Builtin'Precision'Set(prec);
+	result;
+];
+

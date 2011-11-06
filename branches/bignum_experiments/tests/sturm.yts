@@ -1,0 +1,137 @@
+/*
+ TESTS:
+ - random-test code for roots, be generating random roots and
+   multiplicities.
+ - find an example where bisection is needed, or better, a group
+   of examples where bisection is needed, for tests
+ - GarbageCollect in TryRandomPoly causes some corruption, as is
+   visible when turning show file/line on.
+*/
+
+Builtin'Precision'Set(5);
+
+VerifyZero(x) := (Abs(x)<10^ -Builtin'Precision'Get());
+
+
+sl() := []; //Echo(CurrentFile(),CurrentLine());
+TryRandomPoly(deg,coefmin,coefmax):=
+[
+  //GarbageCollect();
+  Local(coefs,p,roots,px);
+  coefs:=Table(MathFloor(coefmin+Random()*(coefmax-coefmin)),i,1,deg+1,1);
+  p:=Add(coefs*x^(0 .. deg));
+  p:=Rationalize(p);
+//Echo("Test polynom ",p);
+  Verify(Max(Abs(coefs))<=MaximumBound(p));
+  Verify(Min(Abs(coefs))>MinimumBound(p));
+//Echo("bounds ",BoundRealRoots(p));
+  roots:=FindRealRoots(p);
+//Echo("roots ",roots);
+  px := (p Where x==x);
+  Verify(px . px < 0.01);
+];
+TryRandomRoots(deg,coefmin,coefmax):=
+[
+  //GarbageCollect();
+  Local(coefs,p,roots,px,mult);
+  coefs:=RemoveDuplicates(Table(MathFloor(coefmin+Random()*(coefmax-coefmin)),i,1,deg+1,1));
+  deg:=Length(coefs)-1;
+  mult:=1+Abs(Table(MathFloor(coefmin+Random()*(coefmax-coefmin)),i,1,deg+1,1));
+  p:=Factorize((x-coefs)^mult);
+  p:=Rationalize(p);
+Echo("Test polynom ",p);
+Echo("minimum ",MinimumBound(p));
+Echo("maximum ",MaximumBound(p));
+Echo("bounds ",BoundRealRoots(p));
+  roots:=FindRealRoots(p);
+Echo("roots ",roots);
+  Verify(Length(roots) = Length(coefs));
+  Verify(Length(RemoveDuplicates(roots)) = Length(coefs));
+  px := (p Where x==x);
+  Verify(px . px < 0.01);
+];
+
+sl();
+
+[
+  Local(p);
+  p := FindRealRoots((x+2)^9*(x-4)^5*(x-1)^4)-{-2.,1.,4.};
+  Verify(VerifyZero(p . p),True);
+];
+sl();
+
+/*TODO 
+TryRandomRoots(3,-10,10);  sl();
+TryRandomRoots(3,-10,10);  sl();
+TryRandomRoots(5,5,1000);  sl();
+TryRandomRoots(5,5,1000);  sl();
+*/
+
+// Bounds on coefficients
+Verify(MinimumBound(4),-Infinity); sl();
+Verify(MaximumBound(4),Infinity);  sl();
+
+// NumRealRoots
+Verify(NumRealRoots(x^2-1),2);     sl();
+Verify(NumRealRoots(x^2+1),0);     sl();
+
+[
+  Local(p);
+  p:=FindRealRoots(Expand((x*(x-10)^3*(x+2)^2)))-{0,-2.,10.};
+  Verify(VerifyZero(p . p),True);
+];
+Verify(FindRealRoots((x^2+20)*(x^2+10)),{});
+Verify(NumRealRoots((x^2+20)*(x^2+10)),0);
+
+sl();
+
+// Simple test on Squarefree
+TestYacas(Monic(SquareFree((x-1)^2*(x-3)^3)),Monic((x-1)*(x-3)));
+
+sl();
+
+// Check the rare case where the bounds finder lands on
+// exactly a root
+[
+  Local(p);
+  p:=FindRealRoots((x+4)*(x-6),1,7)-{-4.,6.};
+  Verify(VerifyZero(p . p),True);
+];
+
+
+
+sl();
+[
+  Local(p);
+
+  p:=Expand((x-3.1)*(x+6.23));
+  p:=FindRealRoots(p)-{-6.23,3.1};
+  Verify(VerifyZero(p . p),True);
+];
+
+sl();
+Verify(Builtin'Precision'Get(),5);
+[ 
+  Local(res);
+  res:=FindRealRoots(Expand((x-3.1)*(x+6.23)))-{-6.23,3.1};
+  Verify(VerifyZero(res . res) , True);
+];
+sl();
+
+TryRandomPoly(5,5,1000);  sl();
+sl();
+TryRandomPoly(5,5,1000);  sl();
+sl();
+TryRandomPoly(5,5,1000);  sl();
+sl();
+TryRandomPoly(5,5,1000);  sl();
+sl();
+TryRandomPoly(5,5,1000);  sl();
+sl();
+TryRandomPoly(5,5,1000);  sl();
+sl();
+
+
+//RandomPoly(_var,_degree,_coefmin,_coefmax)
+//RandomIntegerVector(_count,_coefmin,_coefmax)
+

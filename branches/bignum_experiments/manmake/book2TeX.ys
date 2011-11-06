@@ -1,0 +1,282 @@
+/* book2TeX - convert Yacas docs back to TeX format (Serge Winitzki)
+	version 0.3 */
+
+
+Book(x) := [	/* this is the first declaration in a file */
+	AddBody("
+\\documentclass[twocolumn,10pt]{report}
+
+\\setlength{\\topmargin}{-1.2in}
+\\setlength{\\oddsidemargin}{-0.5in}
+\\setlength{\\evensidemargin}{-0.5in}
+\\setlength{\\textwidth}{7.2in}
+\\setlength{\\textheight}{10.0in}
+
+\\makeindex
+\\usepackage{makeidx}
+\\begin{document}
+\\title{%
+" : x : "}
+\\author{by the \\textsc{Yacas} team
+\\thanks{
+This text is part of the \\textsc{Yacas} software package.
+Copyright 2000--2002. Principal documentation authors:
+Ayal Zwi Pinkus, Serge Winitzki, Jitse Niesen.
+Permission is granted to copy, distribute and/or modify this
+document under the terms of the GNU Free Documentation License,
+Version 1.1 or any later version published by the Free Software
+Foundation; with no Invariant Sections, no Front-Cover Texts and
+no Back-Cover Texts.  A copy of the license is included in the
+section entitled ``GNU Free Documentation License''.
+}}
+\\date{\\textsc{Yacas} version: " : Version() : "
+\\\\
+generated on \\today
+\\vskip 3cm " : BlurbText() : "}
+\\maketitle
+\\tableofcontents
+");
+];
+
+// titles of sections are on a separate line to allow the script to catch the "" and not be confused by being inside a {} group
+
+Text(x) := AddBody(x);
+Chapter(x) := AddBody(
+"\\chapter{%
+" : x : "}
+");
+Section(x) := AddBody(
+"\\section{%
+" : x : "}
+");
+SubSection(x) := AddBody(
+"\\subsection*{%
+" : x : "}
+");
+
+Itemize(body) :=
+"\\begin{itemize}
+" : body : "
+\\end{itemize}";
+
+Enumerate(body) :=
+"\\begin{enumerate}
+" : body : "
+\\end{enumerate}";
+
+
+Item(body) := "\\item{" : body : "}";
+
+HtmlNewParagraph() := "%end of paragraph
+
+";
+
+HtmlCommand(x) := "\\begin{quote}\\small\\begin{verbatim}" : x : "\\end{verbatim}\\end{quote}
+"; /* use "quote" and not "quotation" */
+
+HtmlEmphasis(x) := "\\emph{" : x : "}";
+
+/* decide whether to use "verb" or "texttt" based on whether the string contains any of the special characters #, _, \, &, {, }, ~ */
+
+LocalSymbols(TexCharsToEscape) [
+  /* If one of these occurs inside an HtmlTerm block, it must be made \\verb| | or escaped with a backslash */
+  TexCharsToEscape := { "{", "}", "#", "_", "&", "\\", "^", "%", "$", "~"};
+
+  HasTexChars(x) := [
+    Local(i);
+    For (i:=1, i<=Length(x) And Not Contains(TexCharsToEscape, x[i]), i:=i+1) [];
+    i<=Length(x);
+  ];
+
+  TexEscapeTT(x) := [
+    Local(i, result);
+    For ([i:=1; result:="";], i<=Length(x), i:=i+1) [
+      result := result : If (Contains(TexCharsToEscape, x[i]),
+        "\\" : x[i] : "",
+        x[i]
+      );
+    ];
+    result;
+  ];
+
+]; // LocalSymbols(TexCharsToEscape)
+
+
+HtmlTerm(x) :=
+If(x = "Yacas",
+	"\\textsc{Yacas}",
+	If(
+		HasTexChars(x)
+//		,"\\verb|" : x : "|",
+		,"\\small{\\texttt{" : TexEscapeTT(x) : "}}"
+		,"\\small{\\texttt{" : x : "}}"
+	)
+);
+
+
+/* this will escape TeX symbols so that the result can be put into a section heading, i.e. cannot use \verb|| */
+HtmlTermHeading(x) := "\\texttt{" : TexEscapeTT(x) : "}";
+
+HtmlBreak() := "
+";
+
+Bodied("Item",2);	/* competes with prec. 7 of ":" */
+Bodied("Book",60000);
+Bodied("Title",60000);
+Bodied("Author",60000);
+Bodied("Chapter",60000);
+Bodied("Section",60000);
+Bodied("SubSection",60000);
+Bodied("Text",60000);
+Bodied("DocumentationComment",60000);
+Bodied("Itemize",2);
+Bodied("Enumerate",2);
+
+TeXFinishUp() := AddBody("
+\\printindex
+\\end{document}
+");
+
+IncludeFile(x) := Load(x);
+
+HtmlLink(text, url, param1, param2) :=
+  If (text = url,
+	"{\\small \\verb|" : text : "|}",
+	text : " (Web URL: {\\small \\verb|" : url :
+	  If(param1 != "", "#" : param1, "" )
+	: "|})"
+);
+
+RuleBase("TeXMath", {x});
+RuleBase("TeXMathD", {x});
+RuleBase("TeXMathD", {x, y});
+HoldArg("TeXMath", x);
+HoldArg("TeXMathD", x);
+/* use <-- since := would redefine everything */
+TeXMath(_x) <-- TeXForm(x);
+TeXMathD(_x) <-- "$" : TeXForm(x) : "$";
+// special form: punctuation at the end of a displayed equation
+TeXMathD(_x, _string) <-- "$$" : TeXForm(x, TeXFormMaxPrec()) : string : "$$";
+
+/* stuff for refman */
+
+ChapterIntro(string) := AddBody("
+" : string : "
+");
+Bodied("ChapterIntro", 60000);
+
+CmdDescriptionMany(cmd, desc) := AddBody(CmdDescriptionHead(cmd, desc));
+CmdDescriptionSingle(cmd, desc) := AddBody(CmdDescriptionHead(cmd, desc)
+: "\\index{":cmd:"@":HtmlTerm(cmd):"}");
+
+CmdDescriptionHead(cmd, desc) :=
+[
+	Local(heading);
+	heading := HtmlTermHeading(cmd) : " --- " : desc;
+	"
+\\section*{%
+" : heading : "}
+\\addcontentsline{toc}{section}{%
+" : heading : "}
+";
+];
+
+StandardLib() := AddBody("
+\\begin{flushright}\\small (standard library)\\end{flushright}
+");
+
+UnixSpecific() := AddBody("
+\\begin{flushright}\\small (Unix-specific)\\end{flushright}
+");
+
+MSWinSpecific() := AddBody("
+\\begin{flushright}\\small (MS Windows-specific)\\end{flushright}
+");
+
+MacSpecific() := AddBody("
+\\begin{flushright}\\small (Macintosh-specific)\\end{flushright}
+");
+
+BuiltIn() := AddBody("
+\\begin{flushright}\\small (\\textsc{Yacas} internal)\\end{flushright}
+");
+
+LineBreak() := AddBody("\\\\
+");
+PageBreak() := AddBody("
+\\newpage
+");
+
+// this could in principle also post-process the TeX code, e.g. replace " by `` '' etc., but it's faster to do it in Perl
+AddBody(string) := WriteString(string);
+
+// make SeeAlso print "See also" and do not do the Topical thing
+SeeAlso(list) := AddBody("
+\\begin{flushleft}\\textbf{\\small See also:}
+" : PrintList(MapSingle("HtmlTerm", list), ", ")
+: "
+\\end{flushleft}
+");
+
+AddAnchor(string) := "\\index{" : string : "}";
+HtmlAnchor(string) := "\\index{" : string : "@" : HtmlTerm(string) : "}";
+
+Bodied("HtmlAnchor", 60000);
+Topical(string) := If(string = "See also:", "",
+	AddBody(
+"\\begin{flushleft}\\textbf{\\small " : string : "}\\end{flushleft}
+")
+);
+Bodied("Topical",60000);
+
+LocalSymbols(blurbText) [
+  blurbText := "";
+
+  Blurb(string) :=
+  [
+    blurbText := string;
+    True;
+  ];
+
+  BlurbText() := blurbText;
+
+]; // LocalSymbols(blurbText)
+
+Bodied("Blurb",60000);
+// special escapes
+Gt() := ">";
+Lt() := "<";
+
+// inline Yacas code
+DocEval(x) :=
+[
+	Local(result);
+	result:=Eval(x);	// this already prints anything that x printed
+	
+	If(
+		result = True,	// if the expression resulted in True, do not print "True"
+		True,
+		// otherwise print result
+		If(
+			IsString(result),
+			WriteString(result),
+			Write(result)
+		)
+	);
+	NewLine();
+];
+
+HoldArgNr("DocEval", 1, 1);
+
+DocFootnote(x) := "\\footnote{":x:"}
+";
+
+// TeX representation of a Yacasdoc reference
+YacasDocLink(bookname, text, url) :=
+  If(bookname = "", "",
+  	If (text = bookname,
+		"\\emph{" : text : "}",
+		"\\emph{" : text : "}, in \\emph{" : bookname : "}"
+	)
+);
+

@@ -1,0 +1,4 @@
+#! /bin/sh
+
+g++ -c unipoly.cpp -o unipoly.o -Iplat/linux32/
+g++ -o unipoly unipoly.o libyacas.a  libyacasnumbers.a  libyacasplatform.a

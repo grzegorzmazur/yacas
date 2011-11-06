@@ -1,0 +1,11 @@
+// From code.ys.def:
+OMDef( "=>" , "logic1","implies" );
+OMDef( "CNF"          ,          "yacas","cnf"                      );
+OMDef( "LogicSimplify",          "yacas","logic_simplify"           );
+OMDef( "CanProve"     ,          "yacas","can_prove"                );
+OMDef( "LogicRemoveTautologies", "yacas","logic_remove_tautologies" );
+OMDef( "Subsumes"     ,          "yacas","subsumes"                 );
+// The following appear in the def file, but commented out:
+//     "~",  "yacas", "Not"
+//     "|",  "yacas", "Or"
+//     "&",  "yacas", "And"

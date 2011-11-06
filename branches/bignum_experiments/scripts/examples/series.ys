@@ -1,0 +1,27 @@
+
+/* Generate a polynomial base1 + base2*x + ....*/
+ArbPoly(_base,n_IsPositiveInteger) <-- Sum(MakeVector(base,n)*x^(0 .. (n-1)));
+
+/*
+   SinTaylor and ExpTaylor: direct series for the taylor series expansions
+   of Sin and Exp.
+   Examples:
+   
+   In> Simplify(SinTaylor(10) - Taylor(x,0,10)Sin(x))
+   Out> 0;
+   In> Simplify(ExpTaylor(10) - Taylor(x,0,10)Exp(x))
+   Out> 0;
+*/
+
+SinTaylor(n_IsPositiveInteger) <-- 
+[
+  Local(m);
+  n:=((n-1)>>1);
+  m:=(1+2*(0 .. n));
+  Sum((-1)^(0 .. n)*x^m/(m!));
+];
+
+ExpTaylor(n_IsPositiveInteger) <-- 
+[
+  Sum(x^(0 .. n)/((0 .. n)!));
+];

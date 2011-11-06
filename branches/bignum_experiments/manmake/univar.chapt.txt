@@ -1,0 +1,798 @@
+
+			Operations on polynomials
+
+*INTRO This chapter contains commands to manipulate
+polynomials. This includes functions for constructing and evaluating
+orthogonal polynomials.
+
+
+*CMD Expand --- transform a polynomial to an expanded form
+*STD
+*CALL
+	Expand(expr)
+	Expand(expr, var)
+	Expand(expr, varlist)
+
+*PARMS
+
+{expr} -- a polynomial expression
+
+{var} -- a variable
+
+{varlist} -- a list of variables
+
+*DESC
+
+This command brings a polynomial in expanded form, in which
+polynomials are represented in the form 
+$c0 + c1*x + c2*x^2 + ... + c[n]*x^n$. In this form, it is easier to test whether a polynomial is
+zero, namely by testing whether all coefficients are zero.
+
+If the polynomial "expr" contains only one variable, the first
+calling sequence can be used. Otherwise, the second form should be
+used which explicitly mentions that "expr" should be considered as a
+polynomial in the variable "var". The third calling form can be used
+for multivariate polynomials. Firstly, the polynomial "expr" is
+expanded with respect to the first variable in "varlist". Then the
+coefficients are all expanded with respect to the second variable, and
+so on.
+
+*E.G.
+
+	In> PrettyPrinter'Set("PrettyForm");
+	
+	True
+
+	In> Expand((1+x)^5);
+	
+	 5        4         3         2
+	x  + 5 * x  + 10 * x  + 10 * x  + 5 * x + 1
+
+	In> Expand((1+x-y)^2, x);
+	
+	 2                                2
+	x  + 2 * ( 1 - y ) * x + ( 1 - y )
+
+	In> Expand((1+x-y)^2, {x,y});
+	
+	 2                         2
+	x  + ( -2 * y + 2 ) * x + y  - 2 * y + 1
+	
+
+*SEE ExpandBrackets
+
+*CMD Degree --- degree of a polynomial
+*STD
+*CALL
+	Degree(expr)
+	Degree(expr, var)
+
+*PARMS
+
+{expr} -- a polynomial
+
+{var} -- a variable occurring in "expr"
+
+*DESC
+
+This command returns the degree of the polynomial "expr" with
+respect to the variable "var". The degree is the highest power of
+"var" occurring in the polynomial. If only one variable occurs in
+"expr", the first calling sequence can be used. Otherwise the user
+should use the second form in which the variable is explicitly
+mentioned.
+
+*E.G.
+
+	In> Degree(x^5+x-1);
+	Out> 5;
+	In> Degree(a+b*x^3, a);
+	Out> 1;
+	In> Degree(a+b*x^3, x);
+	Out> 3;
+
+*SEE Expand, Coef
+
+*CMD Coef --- coefficient of a polynomial
+*STD
+*CALL
+	Coef(expr, var, order)
+
+*PARMS
+
+{expr} -- a polynomial
+
+{var} -- a variable occurring in "expr"
+
+{order} -- integer or list of integers
+
+*DESC
+
+This command returns the coefficient of "var" to the power "order"
+in the polynomial "expr". The parameter "order" can also be a list
+of integers, in which case this function returns a list of
+coefficients.
+
+*E.G.
+
+	In> e := Expand((a+x)^4,x)
+	Out> x^4+4*a*x^3+(a^2+(2*a)^2+a^2)*x^2+
+	(a^2*2*a+2*a^3)*x+a^4;
+	In> Coef(e,a,2)
+	Out> 6*x^2;
+	In> Coef(e,a,0 .. 4)
+	Out> {x^4,4*x^3,6*x^2,4*x,1};
+
+*SEE Expand, Degree, LeadingCoef
+
+*CMD Content --- content of a univariate polynomial
+*STD
+*CALL
+	Content(expr)
+
+*PARMS
+
+{expr} -- univariate polynomial
+
+*DESC
+
+This command determines the content of a univariate polynomial. The
+content is the greatest common divisor of all the terms in the
+polynomial. Every polynomial can be written as the product of the
+content with the primitive part.
+
+*E.G.
+
+	In> poly := 2*x^2 + 4*x;
+	Out> 2*x^2+4*x;
+	In> c := Content(poly);
+	Out> 2*x;
+	In> pp := PrimitivePart(poly);
+	Out> x+2;
+	In> Expand(pp*c);
+	Out> 2*x^2+4*x;
+
+*SEE PrimitivePart, Gcd
+
+*CMD PrimitivePart --- primitive part of a univariate polynomial
+*STD
+*CALL
+	PrimitivePart(expr)
+
+*PARMS
+
+{expr} -- univariate polynomial
+
+*DESC
+
+This command determines the primitive part of a univariate
+polynomial. The primitive part is what remains after the content (the
+greatest common divisor of all the terms) is divided out. So the
+product of the content and the primitive part equals the original
+polynomial.
+
+*E.G.
+
+	In> poly := 2*x^2 + 4*x;
+	Out> 2*x^2+4*x;
+	In> c := Content(poly);
+	Out> 2*x;
+	In> pp := PrimitivePart(poly);
+	Out> x+2;
+	In> Expand(pp*c);
+	Out> 2*x^2+4*x;
+
+*SEE Content
+
+*CMD LeadingCoef --- leading coefficient of a polynomial
+*STD
+*CALL
+	LeadingCoef(poly)
+	LeadingCoef(poly, var)
+
+*PARMS
+
+{poly} -- a polynomial
+
+{var} -- a variable
+
+*DESC
+
+This function returns the leading coefficient of "poly", regarded as
+a polynomial in the variable "var". The leading coefficient is the
+coefficient of the term of highest degree. If only one variable
+appears in the expression "poly", it is obvious that it should be
+regarded as a polynomial in this variable and the first calling
+sequence may be used.
+
+*E.G.
+
+	In> poly := 2*x^2 + 4*x;
+	Out> 2*x^2+4*x;
+	In> lc := LeadingCoef(poly);
+	Out> 2;
+	In> m := Monic(poly);
+	Out> x^2+2*x;
+	In> Expand(lc*m);
+	Out> 2*x^2+4*x;
+	
+	In> LeadingCoef(2*a^2 + 3*a*b^2 + 5, a);
+	Out> 2;
+	In> LeadingCoef(2*a^2 + 3*a*b^2 + 5, b);
+	Out> 3*a;
+
+*SEE Coef, Monic
+
+*CMD Monic --- monic part of a polynomial
+*STD
+*CALL
+	Monic(poly)
+	Monic(poly, var)
+
+*PARMS
+
+{poly} -- a polynomial
+
+{var} -- a variable
+
+*DESC
+
+This function returns the monic part of "poly", regarded as a
+polynomial in the variable "var". The monic part of a polynomial is
+the quotient of this polynomial by its leading coefficient. So the
+leading coefficient of the monic part is always one. If only one
+variable appears in the expression "poly", it is obvious that it
+should be regarded as a polynomial in this variable and the first
+calling sequence may be used.
+
+*E.G.
+
+	In> poly := 2*x^2 + 4*x;
+	Out> 2*x^2+4*x;
+	In> lc := LeadingCoef(poly);
+	Out> 2;
+	In> m := Monic(poly);
+	Out> x^2+2*x;
+	In> Expand(lc*m);
+	Out> 2*x^2+4*x;
+	
+	In> Monic(2*a^2 + 3*a*b^2 + 5, a);
+	Out> a^2+(a*3*b^2)/2+5/2;
+	In> Monic(2*a^2 + 3*a*b^2 + 5, b);
+	Out> b^2+(2*a^2+5)/(3*a);
+
+*SEE LeadingCoef
+
+
+*CMD SquareFree --- return the square-free part of polynomial
+*STD
+*CALL
+	SquareFree(p)
+
+*PARMS
+
+{p} - a polynomial in {x}
+
+*DESC
+
+Given a polynomial 
+$$ p = p[1]^n[1]* ... * p[m]^n[m] $$
+with irreducible polynomials $ p[i] $,
+return the square-free version part (with all the factors having
+multiplicity 1):
+$$ p[1]* ... * p[m] $$
+
+*E.G.
+
+	In> Expand((x+1)^5)
+	Out> x^5+5*x^4+10*x^3+10*x^2+5*x+1;
+	In> SquareFree(%)
+	Out> (x+1)/5;
+	In> Monic(%)
+	Out> x+1;
+
+*SEE FindRealRoots, NumRealRoots, MinimumBound, MaximumBound, Factor
+
+
+
+
+
+
+
+	    {Div} and {Mod} for polynomials
+*STD
+
+{Div} and {Mod} are also defined for polynomials.
+
+*SEE Div, Mod
+
+*CMD Horner --- convert a polynomial into the Horner form
+*STD
+*CALL
+	Horner(expr, var)
+
+*PARMS
+
+{expr} -- a polynomial in "var"
+
+{var} -- a variable
+
+*DESC
+
+This command turns the polynomial "expr", considered as a univariate
+polynomial in "var", into Horner form. A polynomial in normal form
+is an expression such as
+$$c[0] + c[1]*x + ... + c[n]*x^n$$.
+
+If one converts this polynomial into Horner form, one gets the
+equivalent expression
+$$(...( c[n] * x + c[n-1] ) * x + ...  + c[1] ) * x + c[0]$$.
+
+Both expression are equal, but the latter form gives a more
+efficient way to evaluate the polynomial as  the powers have
+disappeared.
+
+*E.G.
+
+	In> expr1:=Expand((1+x)^4)
+	Out> x^4+4*x^3+6*x^2+4*x+1;
+	In> Horner(expr1,x)
+	Out> (((x+4)*x+6)*x+4)*x+1;
+
+*SEE Expand, ExpandBrackets, EvaluateHornerScheme
+
+*CMD ExpandBrackets --- expand all brackets
+*STD
+*CALL
+	ExpandBrackets(expr)
+
+*PARMS
+
+{expr} -- an expression
+
+*DESC
+
+This command tries to expand all the brackets by repeatedly using the
+distributive laws $a * (b+c) = a*b + a*c$ and $(a+b) * c = a*c + b*c$.
+It goes further than {Expand}, in that it expands all brackets.
+
+*E.G.
+
+	In> Expand((a-x)*(b-x),x)
+	Out> x^2-(b+a)*x+a*b;
+	In> Expand((a-x)*(b-x),{x,a,b})
+	Out> x^2-(b+a)*x+b*a;
+	In> ExpandBrackets((a-x)*(b-x))
+	Out> a*b-x*b+x^2-a*x;
+
+*SEE Expand
+
+*CMD EvaluateHornerScheme --- fast evaluation of polynomials
+*STD
+*CALL
+	EvaluateHornerScheme(coeffs,x)
+
+*PARMS
+
+{coeffs} -- a list of coefficients
+
+{x} -- expression
+
+*DESC
+
+This function evaluates a polynomial given as a list of its coefficients, using
+the Horner scheme. The list of coefficients starts with the $0$-th power.
+
+*EG
+
+	In> EvaluateHornerScheme({a,b,c,d},x)
+	Out> a+x*(b+x*(c+x*d));
+
+*SEE Horner
+
+
+
+			Special polynomials
+
+*CMD OrthoP --- Legendre and Jacobi orthogonal polynomials
+*STD
+*CALL
+	OrthoP(n, x);
+	OrthoP(n, a, b, x);
+
+*PARMS
+
+{n} -- degree of polynomial
+
+{x} -- point to evaluate polynomial at
+
+{a}, {b} -- parameters for Jacobi polynomial
+
+*DESC
+
+The first calling format with two arguments evaluates the Legendre polynomial
+of degree {n} at the point {x}. The second form does the same for the Jacobi
+polynomial with parameters {a} and {b}, which should be both greater than -1.
+
+The Jacobi polynomials are orthogonal with respect to the weight
+function $(1-x)^a *(1+x)^b$ on the interval [-1,1]. They satisfy the
+recurrence relation
+$$P(n,a,b,x) = (2*n+a+b-1)/(2*n+a+b-2) $$*
+$$ ((a^2-b^2+x*(2*n+a+b-2)*(n+a+b))/(2*n*(n+a+b))) * P(n-1,a,b,x)$$
+$$ - ((n+a-1)*(n+b-1)*(2*n+a+b))/(n*(n+a+b)*(2*n+a+b-2))*P(n-2,a,b,x)$$
+for $n > 1$, with
+$P(0,a,b,x) = 1$,
+$$P(1,a,b,x) = (a-b)/2+x*(1+(a+b)/2)$$.
+
+*REM (old versions of the equations:)
+//	P(0,a,b,x) = 1,
+//	
+//	             a - b     /     a + b \
+//	P(1,a,b,x) = ----- + x | 1 + ----- | ,
+//	               2       \       2   /
+//	
+//	
+//	
+//	P(n,a,b,x) = (2n + a + b - 1) *
+//	
+//	
+//	    2   2
+//	   a - b + x (2n+a+b-2) (n+a+b)
+//	   ---------------------------- P(n-1,a,b,x)
+//	      2n (2n+a+b-2) (n+a+b)
+//	
+//	    (n+a-1) (n+b-1) (2n+a+b)
+//	 -  ------------------------ P(n-2,a,b,x)
+//	      n (n+a+b) (2n+a+b-2)
+
+Legendre polynomials are a special case of Jacobi polynomials with the
+specific parameter values $a = b = 0$. So they form an orthogonal system
+with respect to the weight function identically equal to 1 on the
+interval [-1,1], and they satisfy the recurrence relation
+$$ P(n,x)=((2*n-1)*x/(2*n))*P(n-1,x)-(n-1)/n*P(n-2,x) $$
+for $n > 1$, with
+$ P(0,x)=1 $,
+$ P(1,x)=x $.
+
+*REM
+//	P(0,x) = 1
+//	
+//	P(1,x) = x
+//	
+//	         (2n - 1) x            n - 1
+//	P(n,x) = ---------- P(n-1,x) - ----- P(n-2,x),
+//	             2n                  n
+
+Most of the work is performed by the internal function {OrthoPoly}.
+
+*E.G.
+
+	In> PrettyPrinter'Set("PrettyForm");
+	
+	True
+	
+	In> OrthoP(3, x);
+	
+	    /      2     \
+	    | 5 * x    3 |
+	x * | ------ - - |
+	    \   2      2 /
+	
+	In> OrthoP(3, 1, 2, x);
+	
+	1       /     / 21 * x   7 \   7 \
+	- + x * | x * | ------ - - | - - |
+	2       \     \   2      2 /   2 /
+	
+	In> Expand(%)
+	
+	      3        2
+	21 * x  - 7 * x  - 7 * x + 1
+	----------------------------
+	             2
+	
+	In> OrthoP(3, 1, 2, 0.5);
+	
+	-0.8124999999
+	
+
+*SEE OrthoPSum, OrthoG, OrthoPoly
+
+*CMD OrthoH --- Hermite orthogonal polynomials
+*STD
+*CALL
+	OrthoH(n, x);
+
+*PARMS
+
+{n} -- degree of polynomial
+
+{x} -- point to evaluate polynomial at
+
+*DESC
+
+This function evaluates the Hermite polynomial of degree {n} at the
+point {x}.
+
+The Hermite polynomials are orthogonal with respect to the weight
+function $Exp(-x^2/2)$ on the entire real axis. They satisfy the
+recurrence relation
+$$ H(n,x) = 2*x*H(n-1,x) - 2*(n-1)*H(n-2,x) $$
+for $n > 1$, with
+$H(0,x) = 1$,
+$H(1,x) = 2*x$.
+
+Most of the work is performed by the internal function {OrthoPoly}.
+
+*E.G.
+
+	In> OrthoH(3, x);
+	Out> x*(8*x^2-12);
+	In> OrthoH(6, 0.5);
+	Out> 31;
+
+*SEE OrthoHSum, OrthoPoly
+
+*CMD OrthoG --- Gegenbauer orthogonal polynomials
+*STD
+*CALL
+	OrthoG(n, a, x);
+
+*PARMS
+
+{n} -- degree of polynomial
+
+{a} -- parameter
+
+{x} -- point to evaluate polynomial at
+
+*DESC
+
+This function evaluates the Gegenbauer (or ultraspherical) polynomial
+with parameter {a} and degree {n} at the point {x}. The
+parameter {a} should be greater than -1/2.
+
+The Gegenbauer polynomials are orthogonal with respect to the weight
+function $(1-x^2)^(a-1/2)$ on the interval [-1,1]. Hence they are
+connected to the Jacobi polynomials via 
+$$ G(n, a, x) = P(n, a-1/2, a-1/2, x) $$.
+They satisfy the recurrence relation
+$$ G(n,a,x) = 2*(1+(a-1)/n)*x*G(n-1,a,x) $$
+$$ -(1+2*(a-2)/n)*G(n-2,a,x) $$
+for $n>1$, with
+$G(0,a,x) = 1$,
+$G(1,a,x) = 2*x$.
+
+*REM	
+//	             /     a - 1 \              
+//	G(n,a,x) = 2 | 1 + ----- | x G(n-1,a,x) 
+//	             \       n   /              
+//	
+//	  /     2 (a-2) \
+//	- | 1 + ------- | G(n-2,a,x),
+//	  \        n    /
+
+Most of the work is performed by the internal function {OrthoPoly}.
+
+*E.G.
+
+	In> OrthoG(5, 1, x);
+	Out> x*((32*x^2-32)*x^2+6);
+	In> OrthoG(5, 2, -0.5);
+	Out> 2;
+
+*SEE OrthoP, OrthoT, OrthoU, OrthoGSum, OrthoPoly
+
+*CMD OrthoL --- Laguerre orthogonal polynomials
+*STD
+*CALL
+	OrthoL(n, a, x);
+
+*PARMS
+
+{n} -- degree of polynomial
+
+{a} -- parameter
+
+{x} -- point to evaluate polynomial at
+
+*DESC
+
+This function evaluates the Laguerre polynomial with parameter {a}
+and degree {n} at the point {x}. The parameter {a} should be
+greater than -1.
+
+The Laguerre polynomials are orthogonal with respect to the weight
+function $x^a * Exp(-x)$ on the positive real axis. They satisfy the
+recurrence relation
+$$ L(n,a,x) = (2+(a-1-x)/n)* L(n-1,a,x) $$
+$$ -(1-(a-1)/n)*L(n-2,a,x) $$
+for $n>1$, with 
+$L(0,a,x) = 1$,
+$L(1,a,x) = a + 1 - x$.
+
+*REM	
+//	           /     a - 1 - x \             
+//	L(n,a,x) = | 2 + --------- | L(n-1,a,x) -
+//	           \         n     /             
+//	
+//	  /     a - 1 \
+//	  | 1 + ----- | L(n-2,a,x),
+//	  \  	  n   /
+
+
+Most of the work is performed by the internal function {OrthoPoly}.
+
+*E.G.
+
+	In> OrthoL(3, 1, x);
+	Out> x*(x*(2-x/6)-6)+4;
+	In> OrthoL(3, 1/2, 0.25);
+	Out> 1.2005208334;
+
+*SEE OrthoLSum, OrthoPoly
+
+*CMD OrthoT --- Chebyshev polynomials
+*CMD OrthoU --- Chebyshev polynomials
+*STD
+*CALL
+	OrthoT(n, x);
+	OrthoU(n, x);
+
+*PARMS
+
+{n} -- degree of polynomial
+
+{x} -- point to evaluate polynomial at
+
+*DESC
+
+These functions evaluate the Chebyshev polynomials of the first kind
+$T(n,x)$ and of the second kind $U(n,x)$, of degree "n" at the point "x". (The
+name of this Russian mathematician is also sometimes spelled "Tschebyscheff".)
+
+The Chebyshev polynomials are orthogonal with respect to the weight
+function $(1-x^2)^(-1/2)$. Hence they are a special case of the Gegenbauer
+polynomials $G(n,a,x)$, with $a=0$. They satisfy the recurrence relations
+$$ T(n,x) = 2* x* T(n-1,x) - T(n-2,x) $$,
+$$ U(n,x) = 2* x* U(n-1,x) - U(n-2,x) $$
+for $n > 1$, with
+$T(0,x) = 1$,
+$T(1,x) = x$,
+$U(0,x) = 1$,
+$U(1,x) = 2*x$.
+
+
+*E.G.
+
+	In> OrthoT(3, x);
+	Out> 2*x*(2*x^2-1)-x;
+	In> OrthoT(10, 0.9);
+	Out> -0.2007474688;
+	In> OrthoU(3, x);
+	Out> 4*x*(2*x^2-1);
+	In> OrthoU(10, 0.9);
+	Out> -2.2234571776;
+
+
+*SEE OrthoG, OrthoTSum, OrthoUSum, OrthoPoly
+
+
+*CMD OrthoPSum --- sums of series of orthogonal polynomials
+*CMD OrthoHSum --- sums of series of orthogonal polynomials
+*CMD OrthoLSum --- sums of series of orthogonal polynomials
+*CMD OrthoGSum --- sums of series of orthogonal polynomials
+*CMD OrthoTSum --- sums of series of orthogonal polynomials
+*CMD OrthoUSum --- sums of series of orthogonal polynomials
+*STD
+*CALL
+	OrthoPSum(c, x);
+	OrthoPSum(c, a, b, x);
+	OrthoHSum(c, x);
+	OrthoLSum(c, a, x);
+	OrthoGSum(c, a, x);
+	OrthoTSum(c, x);
+	OrthoUSum(c, x);
+
+*PARMS
+
+{c} -- list of coefficients
+
+{a}, {b} -- parameters of specific polynomials
+
+{x} -- point to evaluate polynomial at
+
+*DESC
+
+These functions evaluate the sum of series of orthogonal polynomials at the point {x}, with given list of coefficients {c} of the series and fixed polynomial parameters {a}, {b} (if applicable).
+
+The list of coefficients starts with the lowest order, so that for example
+OrthoLSum(c, a, x) = c[1] L[0](a,x) + c[2] L[1](a,x) + ... + c[N] L[N-1](a,x).
+
+See pages for specific orthogonal polynomials for more details on the parameters of the polynomials.
+
+Most of the work is performed by the internal function {OrthoPolySum}. The individual polynomials entering the series are not computed, only the sum of the series.
+
+*E.G.
+
+	In> Expand(OrthoPSum({1,0,0,1/7,1/8}, 3/2, \
+	  2/3, x));
+	Out> (7068985*x^4)/3981312+(1648577*x^3)/995328+
+	(-3502049*x^2)/4644864+(-4372969*x)/6967296
+	+28292143/27869184;
+
+*SEE OrthoP, OrthoG, OrthoH, OrthoL, OrthoT, OrthoU, OrthoPolySum
+
+*CMD OrthoPoly --- internal function for constructing orthogonal polynomials
+*STD
+*CALL
+	OrthoPoly(name, n, par, x)
+
+*PARMS
+
+{name} -- string containing name of orthogonal family
+
+{n} -- degree of the polynomial
+
+{par} -- list of values for the parameters
+
+{x} -- point to evaluate at
+
+*DESC
+
+This function is used internally to construct orthogonal
+polynomials. It returns the {n}-th polynomial from the family
+{name} with parameters {par} at the point {x}.
+
+All known families are stored in the association list returned by the function {KnownOrthoPoly()}. The name serves as key. At the moment
+the following names are known to Yacas: {"Jacobi"}, {"Gegenbauer"}, {"Laguerre"}, {"Hermite"}, {"Tscheb1"},
+and {"Tscheb2"}. The value associated to the key
+is a pure function that takes two arguments: the order {n} and the
+extra parameters {p}, and returns a list of two lists: the first list
+contains the coefficients {A,B} of the n=1 polynomial, i.e. $A+B*x$;
+the second list contains the coefficients {A,B,C} in the recurrence
+relation, i.e. $P[n] = (A+B*x)*P[n-1]+C*P[n-2]$. (There are
+only 3 coefficients in the second list, because none of the polynomials use $C+D*x$ instead of $C$ in the recurrence relation. This is assumed in the implementation!)
+
+If the argument {x} is numerical, the function {OrthoPolyNumeric} is called. Otherwise, the function {OrthoPolyCoeffs} computes a list of coefficients, and
+{EvaluateHornerScheme} converts this list into a
+polynomial expression.
+
+*SEE OrthoP, OrthoG, OrthoH, OrthoL, OrthoT, OrthoU, OrthoPolySum
+
+*CMD OrthoPolySum --- internal function for computing series of orthogonal polynomials
+*STD
+*CALL
+	OrthoPolySum(name, c, par, x)
+
+*PARMS
+
+{name} -- string containing name of orthogonal family
+
+{c} -- list of coefficients
+
+{par} -- list of values for the parameters
+
+{x} -- point to evaluate at
+
+*DESC
+
+This function is used internally to compute series of orthogonal polynomials.
+It is similar to the function {OrthoPoly} and returns the result of the
+summation of series of polynomials from the family {name} with parameters {par}
+at the point {x}, where {c} is the list of coefficients of the series.
+
+The algorithm used to compute the series without first computing the individual polynomials is the Clenshaw-Smith recurrence scheme.
+(See the algorithms book for explanations.)
+
+If the argument {x} is numerical, the function {OrthoPolySumNumeric} is called.
+Otherwise, the function {OrthoPolySumCoeffs} computes the list of coefficients
+of the resulting polynomial, and {EvaluateHornerScheme} converts this list into
+a polynomial expression.
+
+*SEE OrthoPSum, OrthoGSum, OrthoHSum, OrthoLSum, OrthoTSum, OrthoUSum, OrthoPoly
+
+
+
+
+

@@ -1,0 +1,254 @@
+
+Book(title) :=
+[
+WriteString("Reading index entry for book ");
+WriteString(title);NewLine();
+
+ plain["Title"] := title;
+];
+
+Bodied("ChapterIntro", 60000);
+
+
+Blurb(text):=
+[
+  plain["Blurb"]:=text;
+];
+
+Bodied("Enumerate",2);
+
+Bodied("Itemize",2);
+
+Bodied("Item",1);
+
+Bodied("Book",60000);
+
+Bodied("Title",60000);
+Bodied("Author",60000);
+
+Bodied("Chapter",60000);
+
+Bodied("Section",60000);
+Bodied("SubSection",60000);
+Bodied("Topical",60000);
+Bodied("Text",60000);
+
+Bodied("Blurb",60000);
+Bodied("DocumentationComment",60000);
+
+
+RuleBase("WriteItem",{item});
+Rule("WriteItem",1,1,IsString(item)) WriteString(item);
+Rule("WriteItem",1,2,True) Write(item);
+
+WriteList(list):=
+[
+  ForEach(item,list)
+  [
+    WriteItem(item);
+  ];
+];
+
+
+InitBooks():=
+[
+  site["Books"]:={};
+];
+
+SelectBook(book):=
+[
+  plain:=site["Books"][book];
+];
+
+InitBook(basename):=
+[
+  /* create a new book */
+  site["Books"][basename]:={};
+  SelectBook(basename);
+  plain["BaseName"]:=basename;
+  plain["Chapters"] := {};
+  plain["Body"]:="";
+  plain["Blurb"]:="";
+  currentChapterIndex:=0;
+  currentSectionIndex:=0;
+];
+
+GroupBooks(first,second):=
+[
+  site["Books"][first]["Chapters"] :=
+    Concat(site["Books"][second]["Chapters"], site["Books"][first]["Chapters"]);
+];
+
+BookList():=
+[
+  Local(book,books,bl);
+  bl:="";
+  books:=AssocIndices(site["Books"]);
+  ForEach(book,books)
+  [
+    Local(bookinfo);
+    bookinfo:=site["Books"][book];
+
+    bl := bl : 
+"<p>
+<div class=\"articleTitle\">
+<a class=\"articleTitleLink\" href=\"":book:"manual.html\"><b>":bookinfo["Title"]:"</b></a> (<a class=\"articleTitleLink\" href=\"":book:".book.pdf\" target=\"pdfwin\">PDF</a>) (<a class=\"articleTitleLink\" href=\"downloads.html\">download</a>) </div> ":bookinfo["Blurb"]:"
+</p>
+";
+
+  ];
+  bl;
+];
+
+
+EmitBookIndex():=
+[
+  WriteString("Creating book index"); NewLine();
+  ToFile(HtmlFile("books.html"))
+  [
+    WriteString(
+      HtmlTag(html,
+              HtmlTitle("Yacas documentation") :
+"<body style=\"background-image:url('back.gif'); \">
+<center>
+<h1>Yacas documentation</h1>
+<table cellpadding=\"0\">
+<tr><td width=\"600\">
+":BookList():
+"
+</td></tr>
+</table></center>
+
+<script src=\"http://www.google-analytics.com/urchin.js\" type=\"text/javascript\">
+</script>
+<script type=\"text/javascript\">
+_uacct = \"UA-2425144-1\";
+urchinTracker();
+</script>
+</body>"
+
+             )
+    );
+  ];
+  WriteString("Creating ref.html (full function reference index)"); 
+  NewLine();
+  ToFile(HtmlFile("ref.html"))
+  [
+WriteString("
+<html>
+  <head>
+    <script type=\"text/javascript\" src=\"ref.funcs.js\"></script>
+    <script type=\"text/javascript\" src=\"refprog.funcs.js\"></script>
+    <script type=\"text/javascript\">
+    <!-- 
+var seach = document.location.search;
+if (seach.indexOf(\"?\") == 0)
+{
+  seach = seach.substring(1);
+  var file = findFileForFunction(seach);
+  if (file != \"\")
+  {
+    self.location.replace(file+\"#\"+seach);
+  }
+}
+
+function findFileForFunction(seach)
+{
+  var file = \"\";
+  if (file == \"\")
+    file = findFileForFunctionInref(seach);
+  if (file == \"\")
+    file = findFileForFunctionInrefprog(seach);
+  return file;
+}
+
+function containsFunc(chapter,func)
+{
+  for (var i=0;i<chapter.length;i++)
+  {
+    if (chapter[i] == func)
+      return true;
+  }
+  return false;
+}
+
+    //   end script hiding -->
+    </script>
+
+  </head>
+  <body>
+  </body>
+</html>
+");
+  ];
+
+  True;
+];
+
+// do not load any chapter files
+IncludeFile(x) := True;
+
+/* mathematical expressions */
+RuleBase("TeXMath", {x});
+RuleBase("TeXMathD", {x});
+RuleBase("TeXMathD", {x,y});
+
+HoldArg("TeXMath",x);
+HoldArg("TeXMathD",x);
+
+// Prepare the index
+GenerateIndex() :=
+[
+
+	SetHtmlDirectory("");
+	Use("styleplain");
+	
+	ToFile("manicon.html")
+	WriteString("
+<html>
+  <head>
+    <link rel=\"stylesheet\" href=\"yacas.css\" TYPE=\"text/css\" MEDIA=\"screen\">
+  </head>
+  <body>
+    <a href=\"books.html\" target=\"ManualFrame\">
+      Back to manuals
+    </a>
+
+<script src=\"http://www.google-analytics.com/urchin.js\" type=\"text/javascript\">
+</script>
+<script type=\"text/javascript\">
+_uacct =\"UA-2425144-1\";
+urchinTracker();
+</script>
+
+  </body>
+</html>
+");
+
+	SetHtmlDirectory("");
+	Use("styleplain");  /* style sheet for the documentation */
+
+	InitBooks();        /* Initialize book building */
+
+	InitBook("ref");
+	Load("ref.book");
+
+	InitBook("coding");
+	Load("coding.book");
+
+	InitBook("refprog");
+	Load("refprog.book");
+
+	InitBook("Algo");
+	Load("Algo.book");	// note: manualmaker crashes mysteriously when trying to emit a book that was not loaded
+
+	InitBook("intro");
+	Load("intro.book");
+
+	InitBook("essays");
+	Load("essays.book");
+
+	/* make the index of framed books */
+	EmitBookIndex();
+
+];

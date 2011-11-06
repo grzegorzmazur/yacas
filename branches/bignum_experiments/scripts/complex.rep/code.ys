@@ -1,0 +1,172 @@
+
+/* Complex numbers */
+
+//
+// II is the imaginary number Sqrt(-1), and remains that way.
+// The difference is it isn't converted to the form Complex(x,y).
+//
+
+10 # II^n_IsNegativeInteger <-- (-II)^(-n);
+20 # (II^_n)_(IsEven(n) = True) <-- (-1)^(n>>1);
+20 # (II^_n)_(IsOdd(n)  = True) <--  II*(-1)^(n>>1);
+
+LocalSymbols(complexReduce) [
+
+  Set(complexReduce,
+    Hold(
+    {
+      Exp(x_IsComplexII) <- Exp(ReII(x))*(Cos(ImII(x))+II*Sin(ImII(x)))
+    }));
+
+  NN(_c) <--
+  [
+    Local(result);
+    c := (c /:: complexReduce);
+    result := Coef(Expand(c,II),II,{0,1});
+    result;
+  ];
+
+]; //LocalSymbols(complexReduce)
+
+
+ReII(_c) <-- NN(c)[1];
+ImII(_c) <-- NN(c)[2];
+IsComplexII(_c) <-- (ImII(c) != 0);
+
+
+
+0 # Complex(_r,i_IsZero) <-- r;
+2 # Complex(Complex(_r1,_i1),_i2) <-- Complex(r1,i1+i2);
+2 # Complex(_r1,Complex(_r2,_i2)) <-- Complex(r1-i2,r2);
+
+6 # Complex(Undefined,_x) <-- Undefined;
+6 # Complex(_x,Undefined) <-- Undefined;
+
+/*Real parts */
+110 # Re(Complex(_r,_i)) <-- r;
+120 # Re(Undefined) <-- Undefined;
+300 # Re(_x) <-- x;
+
+/* Imaginary parts */
+110 # Im(Complex(_r,_i)) <-- i;
+120 # Im(Undefined) <-- Undefined;
+300 # Im(_x) <-- 0;
+
+/* All things you can request a real and imaginary part for are complex */
+1 # IsComplex(x_IsRationalOrNumber)     <-- True;
+2 # IsComplex(Complex(_r,_i)) <-- True;
+3 # IsComplex(_x)             <-- False;
+
+IsNotComplex(x) := Not(IsComplex(x));
+/* Addition */
+
+110 # Complex(_r1,_i1) + Complex(_r2,_i2) <-- Complex(r1+r2,i1+i2);
+300 # Complex(_r,_i) + x_IsConstant <-- Complex(r+x,i);
+300 # x_IsConstant + Complex(_r,_i) <-- Complex(r+x,i);
+ 
+110 # - Complex(_r,_i) <-- Complex(-r,-i);
+
+300 # Complex(_r,_i) - x_IsConstant <-- Complex(r-x,i);
+300 # x_IsConstant - Complex(_r,_i) <-- Complex((-r)+x,-i);
+111 # Complex(_r1,_i1) - Complex(_r2,_i2) <-- Complex(r1-r2,i1-i2);
+
+/* Multiplication */
+110 # Complex(_r1,_i1) * Complex(_r2,_i2) <-- Complex(r1*r2-i1*i2,r1*i2+r2*i1);
+/* right now this is slower than above
+110 # Complex(_r1,_i1) * Complex(_r2,_i2) <--
+[	// the Karatsuba trick
+	Local(A,B);
+	A:=r1*r2;
+	B:=i1*i2;
+	Complex(A-B,(r1+i1)*(r2+i2)-A-B);
+];
+*/
+
+
+// Multiplication in combination with complex numbers in the light of infinity
+250 # Complex(r_IsZero,_i) * x_IsInfinity <-- Complex(0,i*x);
+250 # Complex(_r,i_IsZero) * x_IsInfinity <-- Complex(r*x,0);
+251 # Complex(_r,_i) * x_IsInfinity <-- Complex(r*x,i*x);
+
+250 # x_IsInfinity * Complex(r_IsZero,_i) <-- Complex(0,i*x);
+250 # x_IsInfinity * Complex(_r,i_IsZero) <-- Complex(r*x,0);
+251 # x_IsInfinity * Complex(_r,_i) <-- Complex(r*x,i*x);
+
+
+300 # Complex(_r,_i) * y_IsConstant <-- Complex(r*y,i*y);
+300 # y_IsConstant * Complex(_r,_i) <-- Complex(r*y,i*y);
+
+330 # Complex(_r,_i) * (y_IsConstant / _z) <-- (Complex(r*y,i*y))/z;
+330 # (y_IsConstant / _z) * Complex(_r,_i) <-- (Complex(r*y,i*y))/z;
+
+
+110 # x_IsConstant / Complex(_r,_i) <-- (x*Conjugate(Complex(r,i)))/(r^2+i^2);
+
+
+300 # Complex(_r,_i) / y_IsConstant <-- Complex(r/y,i/y);
+
+110 # (_x ^ Complex(_r,_i)) <-- Exp(Complex(r,i)*Ln(x));
+
+110 # Sqrt(Complex(_r,_i)) <-- Exp(Ln(Complex(r,i))/2);
+110 # (Complex(_r,_i) ^ x_IsRationalOrNumber)_(Not(IsInteger(x))) <-- Exp(x*Ln(Complex(r,i)));
+
+// This is commented out because it used MathPower so (2*I)^(-10) became a floating-point number. Now everything is handled by binary algorithm below
+//120 # Complex(r_IsZero,_i) ^ n_IsInteger <-- {1,I,-1,-I}[1+Mod(n,4)] * i^n;
+
+123 # Complex(_r, _i) ^ n_IsNegativeInteger <-- 1/Complex(r, i)^(-n);
+
+124 # Complex(_r, _i) ^ (p_IsZero) <-- 1;	// cannot have Complex(0,0) here
+
+125 # Complex(_r, _i) ^ n_IsPositiveInteger <--
+[
+	// use binary method
+	Local(result, x);
+	x:=Complex(r,i);
+	result:=1;
+	While(n > 0)
+	[
+		if ((n&1) = 1)
+		[
+		  result := result*x;
+		];
+		x := x*x;
+		n := n>>1;
+	];
+	result;
+];
+
+
+/*[	// this method is disabled b/c it suffers from severe roundoff errors
+  Local(rr,ii,count,sign);
+  rr:=r^n;
+  ii:=0;
+  For(count:=1,count<=n,count:=count+2) [
+    sign:=If(IsZero(Mod(count-1,4)),1,-1);
+    ii:=ii+sign*Bin(n,count)*i^count*r^(n-count);
+    If(count<n, 
+      rr:=rr-sign*Bin(n,count+1)*i^(count+1)*r^(n-count-1));
+  ];
+  Complex(rr,ii);
+];
+*/
+
+LocalSymbols(a,x)
+[
+Function("Conjugate",{a}) 
+  Substitute(a,{{x},Type(x)="Complex"},{{x},Complex(x[1],-(x[2]))});
+]; // LocalSymbols(a,x)
+
+Function("Magnitude",{x}) [
+	Sqrt(Re(x)^2 + Im(x)^2);
+];
+
+10 # Arg(Complex(Cos(_x),Sin(_x))) <-- x;
+10 # Arg(x_IsZero) <-- Undefined;
+15 # Arg(x_IsPositiveReal) <-- 0;
+15 # Arg(x_IsNegativeReal) <-- Pi;
+20 # Arg(Complex(r_IsZero,i_IsConstant)) <-- Sign(i)*Pi/2;
+30 # Arg(Complex(r_IsPositiveReal,i_IsConstant)) <-- ArcTan(i/r);
+40 # Arg(Complex(r_IsNegativeReal,i_IsPositiveReal)) <-- Pi+ArcTan(i/r);
+50 # Arg(Complex(r_IsNegativeReal,i_IsNegativeReal)) <-- ArcTan(i/r)-Pi;
+
+

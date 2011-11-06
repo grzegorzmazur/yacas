@@ -1,0 +1,70 @@
+
+
+Use("testers.ys");
+
+
+DoNext(_string) <--
+[
+ NextTest("<font color=0000ff>" : string : "</font>");
+ NewLine();
+];
+
+Echo({"<HTML><BODY BGCOLOR=\"ffffff\"><PRE><font size=4>"});
+
+Echo({"An assorted selection of example calculations using Yacas"});
+
+StartTests();
+
+/*
+*/
+
+DoNext("Show that Integrate(-Pi,Pi) (Sin(n*x)*Cos(m*x)) is Pi*Delta(n,m)");
+
+BenchShow(Simplify(Integrate(x,-Pi,Pi) (Sin(x)*Sin(2*x)) ));
+BenchShow(Simplify(Integrate(x,-Pi,Pi) (Sin(2*x)*Sin(2*x)) ));
+BenchShow(Simplify(Integrate(x,-Pi,Pi) (Sin(5*x)*Sin(5*x)) ));
+
+BenchShow(Simplify(Integrate(x,-Pi,Pi) (Cos(x)*Cos(2*x)) ));
+BenchShow(Simplify(Integrate(x,-Pi,Pi) (Cos(2*x)*Cos(2*x)) ));
+BenchShow(Simplify(Integrate(x,-Pi,Pi) (Cos(5*x)*Cos(5*x)) ));
+
+BenchShow(Simplify(Integrate(x,-Pi,Pi) (Sin(x)*Cos(2*x)) ));
+BenchShow(Simplify(Integrate(x,-Pi,Pi) (Sin(2*x)*Cos(2*x)) ));
+BenchShow(Simplify(Integrate(x,-Pi,Pi) (Sin(5*x)*Cos(5*x)) ));
+
+
+DoNext("Get the first 5 coefficients of the Fourier series of x^2
+on the domain -Pi to Pi. This should be (1/Pi)*Sum(n,0,4)a_n * Cos(n*x)");
+
+BenchShow(Fourier(_n,_f) <-- (1/(Pi))*Integrate(x,-Pi,Pi)(f*Cos(n*x)) );
+BenchShow(TableForm(Simplify(Table(Fourier(n,x^2),n,0,5,1))));
+
+DoNext("Check that f:=x*Exp(-x/2) is a solution to the equation H(f)=E f
+where E is a constant and H is D(x)D(x)f + f/x");
+
+BenchCall(H(f):=(Deriv(x)Deriv(x)f) + f/x);
+BenchCall(f:=x*Exp(-x/2));
+BenchCall(res:=H(f));
+BenchCall(PrettyForm(Simplify(res)));
+BenchCall(PrettyForm(Simplify(res/f)));
+
+
+DoNext("Show that the first few terms of the Taylor series expansion
+of Sin(x) and Cos(x-Pi/2) are the same");
+BenchCall(ans1:=Taylor(x,0,8)Sin(x));
+BenchCall(PrettyForm(ans1));
+BenchCall(ans2:=Taylor(x,0,8)Cos(x-Pi/2));
+BenchCall(PrettyForm(ans2));
+BenchShow(ans1-ans2);
+
+
+DoNext("Determine a polynomial that goes through the points
+(x,y) = { (-2,4), (1,1), (3,9) } and show that it is in fact x^2");
+
+BenchCall(ans:=LagrangeInterpolant({-2,1,3},{4,1,9},x));
+BenchCall(PrettyForm(ans));
+BenchCall(PrettyForm(Simplify(ans)));
+
+Echo({curline," examples shown"});
+
+Echo({"</FONT></PRE></BODY></HTML>"});

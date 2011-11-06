@@ -1,0 +1,541 @@
+
+
+Nl():=
+"
+";
+
+NewLine() := WriteN(Nl(),1);
+NewLine(n):= WriteN(Nl(),n);
+Space() := WriteN(" ",1);
+Space(n):= WriteN(" ",n);
+
+WriteN(string,n) :=
+[
+  Local(i);
+  For(i:=1,i<=n,i++) WriteString(string);
+  True;
+];
+
+UniqueConstant() <--
+[
+  Local(result);
+  result := String(LocalSymbols(C)(C));
+  Atom(StringMid'Get(2,Length(result)-1,result));
+];
+
+
+1 # IsFreeOf({},_expr) <-- True;
+2 # IsFreeOf(var_IsList, _expr) <-- And(IsFreeOf(Head(var),expr), IsFreeOf(Tail(var),expr));
+
+4 # IsFreeOf(_var,{}) <-- True;
+5 # IsFreeOf(_var,expr_IsList) <-- And(IsFreeOf(var,Head(expr)), IsFreeOf(var,Tail(expr)));
+
+/* Accept any variable. */
+10 # IsFreeOf(_expr,_expr) <-- False;
+
+/* Otherwise check all leafs of a function. */
+11 # IsFreeOf(_var,expr_IsFunction) <-- IsFreeOf(var,Tail(Listify(expr)));
+
+/* Else it doesn't depend on any variable. */
+12 # IsFreeOf(_var,_expr) <-- True;
+
+
+Function("IsZeroVector",{aList}) aList = ZeroVector(Length(aList));
+
+TemplateFunction("WithValue",{var,val,expr})
+[
+  If(IsList(var),
+     ApplyPure("MacroLocal",var),
+     MacroLocal(var)
+    ); 
+  ApplyPure(":=",{var,val});
+  Eval(expr);
+];
+
+
+
+Function("CharacteristicEquation",{matrix,var})
+   SymbolicDeterminant(matrix-var*Identity(Length(matrix)));
+HoldArg("CharacteristicEquation",var);
+
+// diagonal matrices will be caught by IsUpperTriangular
+10 # EigenValues(matrix_IsUpperTriangular) <-- Diagonal(matrix);
+10 # EigenValues(matrix_IsLowerTriangular) <-- Diagonal(matrix);
+
+20 # EigenValues(matrix_IsMatrix) <-- Roots(CharacteristicEquation(matrix,xx));
+
+EigenVectors(_matrix,_eigenvalues) <--
+[
+  Local(result,n);
+/*  eigenvalues:=N(Eval(eigenvalues));  */
+  n:=Length(eigenvalues);
+  result:={};
+  ForEach(e,eigenvalues)
+  [
+    Local(possible);
+/* Echo({"1...",result}); */
+    possible:=OldSolve(matrix*MakeVector(k,n)==e*MakeVector(k,n),MakeVector(k,n))[1];
+/* Echo({"2..."}); */
+/* Echo({"2..."}); */
+
+    If(Not(IsZeroVector(possible)),
+      DestructiveAppend(result,possible)
+      );
+/* Echo({"3..."}); */
+  ];
+  result;
+];
+
+
+
+Function("RationalizeNumber",{x})
+[
+  Check(IsNumber(x),"RationalizeNumber: Error: " : (ToString()Write(x)) :" is not a number");
+  Local(n,i);
+  n:=1;
+  i:=0;
+  // We can not take for granted that the internal representation is rounded properly...
+  While(i<=Builtin'Precision'Get() And Not(FloatIsInt(x)))  
+  [ 
+    n:=n*10; x:=x*10; 
+    i:=i+1;
+//Echo(x,"/",n);
+  ];
+  Floor(x+0.5)/n; //FIXME forced thunking to string representation
+];
+
+Function("Rationalize",{a'number})
+  Substitute(a'number,{{x},IsNumber(x) And Not(IsInteger(x))},"RationalizeNumber");
+
+
+10 # Decimal( n_IsInteger ) <-- {n,{0}};
+10 # Decimal( (n_IsPositiveInteger) / (d_IsPositiveInteger) ) <--
+[
+  Local(result,rev,first,period,repeat,static);
+  result:={Div(n,d)};
+  Decimal(result,Mod(n,d),d,350);
+  rev:=DecimalFindPeriod(result);
+  first:=rev[1];
+  period:=rev[2];
+  repeat:=result[first .. (first+period-1)];
+  static:=result[1 .. (first-1)];
+  DestructiveAppend(static,repeat);
+];
+20 # Decimal(_n/_m)_((n/m)<0) <-- "-":Decimal(-n/m);
+
+10 # Decimal(_result , _n , _d,_count ) <--
+[
+  While(count>0)
+  [
+    DestructiveAppend(result,Div(10*n,d));
+    n:=Mod(10*n,d);
+    count--;
+  ];
+];
+
+DecimalFindPeriod(_list) <--
+[
+  Local(period,nr,reversed,first,i);
+  reversed:=Tail(DestructiveReverse(FlatCopy(Tail(list))));
+  nr:=Length(reversed)>>1;
+  period:=1;
+  first:=reversed[1];
+
+  For(i:=1,i<nr,i++)
+  [
+    If(reversed[i+1] = first And DecimalMatches(reversed,i),
+      [
+        period:=i;
+        i:=nr;
+      ]  
+      );
+  ];
+
+  first:=Length(list)-period;
+  While(first>1 And list[first] = list[first+period]) first--;
+  first++;
+
+  {first,period};
+];
+
+DecimalMatches(_reversed,_period) <--
+[
+  Local(nr,matches,first);
+  nr:=0;
+  matches:=True;
+  first:=1;
+  While((nr<100) And matches)
+  [
+    matches := (matches And
+       (reversed[first .. (first+period-1)] = reversed[(first+period) .. (first+2*period-1)]));
+    first:=first+period;
+    nr:=nr+period;
+  ];
+  matches;
+];
+
+
+
+
+
+
+LagrangeInt(_var,_list) <--
+[
+  Local(nr);
+  nr:=Length(list);
+  Factorize(FillList(var,nr)-list);
+];
+
+LagrangeInterpolant(list_IsList,_values,_var) <--
+[
+  Local(i,nr,sublist);
+  nr:=Length(list);
+  result:=0;
+  For(i:=1,i<=nr,i++)
+  [
+    sublist:=FlatCopy(list);
+    DestructiveDelete(sublist,i);
+    result:=result + values[i]*LagrangeInt(var,sublist)/LagrangeInt(list[i],sublist);
+  ];
+  result;
+];
+
+
+/* Lagrangian power series reversion. Copied
+   from Knuth seminumerical algorithms */
+
+ReversePoly(_f,_g,_var,_newvar,_degree) <--
+[
+  Local(orig,origg,G,V,W,U,n,initval,firstder,j,k,newsum);
+  orig:=MakeUni(f,var);
+  origg:=MakeUni(g,var);
+  initval:=Coef(orig,0);
+  firstder:=Coef(orig,1);
+  V:=Coef(orig,1 .. Degree(orig));
+  V:=Concat(V,FillList(0,degree));
+  G:=Coef(origg,1 .. Degree(origg));
+  G:=Concat(G,FillList(0,degree));
+  W:=FillList(0,Length(V)+2);
+  W[1]:=G[1]/firstder;
+  U:=FillList(0,Length(V)+2);
+  U[1]:=1/firstder;
+  n:=1;
+  While(n<degree-1)
+  [
+    n++;
+    For(k:=0,k<n-1,k++)
+    [
+      newsum:=U[k+1];
+      For(j:=2,j<=k+1,j++)
+      [
+        newsum:=newsum-U[k+2-j]*V[j];
+      ];
+      U[k+1]:=newsum/firstder;
+    ];
+    newsum:=0;
+    For(k:=2,k<=n,k++)
+    [
+      newsum:=newsum - k*U[n+1-k]*V[k];
+    ];
+    U[n]:=newsum/firstder;
+    newsum:=0;
+    For(k:=1,k<=n,k++)
+    [
+      newsum:=newsum + k*U[n+1-k]*G[k]/n;
+    ];
+    W[n]:=newsum;
+  ];
+  DestructiveInsert(W,1,Coef(origg,0));
+  Subst(newvar,newvar-initval) 
+    NormalForm(UniVariate(newvar,0,W));
+];
+
+
+
+/* InverseTaylor : given a function y=f(x), determine the Taylor series
+ * expansion of the inverse f^-1(y)=x this function around y0=f(x0).
+ *
+ */
+Function("InverseTaylor",{var,val,degree,func})
+[
+  Local(l1);
+  l1:=UniTaylor(func,var,val,degree);
+  val+ReversePoly(l1,var,var,var,degree+1);
+];
+
+
+
+/*
+TRun(_f,_g,_degree)<--
+[
+  Local(l2,l3,l4);
+  l2:=ReversePoly(f,g,t,z,degree);
+  l3:=Subst(z,f)l2;
+  l4:=BigOh(l3,t,degree);
+  Echo({g," == ",l4});
+  NewLine();
+];
+
+TRun(t+t^2,t,10);
+TRun(t/2-t^2,t,10);
+TRun(t/2-t^2,3+t+t^2/2,10);
+TRun(2+t/2-t^2,t,10);
+*/
+
+/*
+TRun(_f,_degree)<--
+[
+  Local(l2,l3,l4);
+  l2:=InverseTaylor(t,0,degree)f;
+  l3:=Subst(t,Taylor(t,0,degree)f)l2;
+  l4:=BigOh(l3,t,degree);
+
+  Echo({t," == ",Simplify(l4)});
+  NewLine();
+];
+TRun(Sin(a*t),3);
+TRun(a^t,3);
+TRun(a^t,3);
+TRun(t+t^2,10);
+TRun(t/2-t^2,10);
+TRun(t/2-t^2,10);
+TRun(2+t/2-t^2,10);
+*/
+
+/////////////////////////////////////////////////
+/// Continued fractions stuff
+/////////////////////////////////////////////////
+
+/// compute the list of continued fraction coefficients for a given number
+/// if order is not given, computes to the end
+10 # ContFracList(_n) <-- ContFracList(n, Infinity);
+/// compute list of given length
+10 # ContFracList(_n, _depth)_(depth <= 0) <-- {};
+20 # ContFracList(n_IsInteger, _depth) <-- {n};
+// prevent infinite loop when in numeric mode
+30 # ContFracList(n_IsNumber, _depth) _InNumericMode() <-- NonN(ContFracList(Rationalize(n), depth));
+
+40 # ContFracList(n_IsNumber, _depth) <-- ContFracList(Rationalize(n), depth);
+
+/* n/m = Div(n,m) + 1/( m/Mod(n,m) ) */
+35 # ContFracList((n_IsNegativeInteger) / (m_IsInteger), _depth) <-- Push( ContFracList(m/Mod(n,m), depth-1) , Div(n,m)-1);
+
+40 # ContFracList((n_IsInteger) / (m_IsInteger), _depth) <-- Push( ContFracList(m/Mod(n,m), depth-1) , Div(n,m));
+
+/// main interface
+10 # ContFrac(_n) <-- ContFrac(n, 6);
+50 # ContFrac(_n,_depth) <-- ContFracEval(ContFracList(n, depth), rest);
+
+//////////////////////////////////////////////////
+/// ContFracEval: evaluate continued fraction from the list of coefficients
+//////////////////////////////////////////////////
+/// Each coefficient is either a single expression or a list of 2 expressions, giving the term and the numerator of the current level in the fraction.
+/// ContFracEval({{a0, b0}, {a1, b1}, ...}) = a0+b0/(a1+b1/(...))
+/// ContFracEval({a0, a1, ...}) = a0+1/(a1+1/(...))
+
+10 # ContFracEval({}, _rest) <-- rest;
+// finish recursion here
+10 # ContFracEval({{_n, _m}}, _rest) <-- n+m+rest;
+15 # ContFracEval({_n}, _rest) <-- n+rest;
+/// Continued fractions with nontrivial numerators
+20 # ContFracEval(list_IsList, _rest)_(IsList(Head(list))) <-- Head(Head(list)) + Tail(Head(list)) / ContFracEval(Tail(list), rest);
+/// Continued fractions with unit numerators
+30 # ContFracEval(list_IsList, _rest) <-- Head(list) + 1 / ContFracEval(Tail(list), rest);
+
+/// evaluate continued fraction: main interface
+ContFracEval(list_IsList) <-- ContFracEval(list, 0);
+
+//////////////////////////////////////////////////
+/// continued fractions for polynomials
+//////////////////////////////////////////////////
+
+40 # ContFrac(n_CanBeUni,_depth)_(Length(VarList(n)) = 1) <--
+[
+  ContFracDoPoly(n,depth,VarList(n)[1]);
+];
+
+5  # ContFracDoPoly(_exp,0,_var) <-- rest;
+5  # ContFracDoPoly(0,0,_var) <-- rest;
+10 # ContFracDoPoly(_exp,_depth,_var) <--
+[
+  Local(content,exp2,first,second);
+  first:=Coef(exp,var,0);
+  exp:=exp-first;
+  content:=Content(exp);
+  exp2:=DivPoly(1,PrimitivePart(exp),var,5+3*depth)-1;
+  second:=Coef(exp2,0);
+  exp2 := exp2 - second;
+  first+content/((1+second)+ContFracDoPoly(exp2,depth-1,var));
+];
+
+
+//////////////////////////////////////////////////
+/// NearRational, GuessRational
+//////////////////////////////////////////////////
+
+/// find rational number with smallest num./denom. near a given number x
+/// See: HAKMEM, MIT AI Memo 239, 02/29/1972, Item 101C
+NearRational(_x) <-- NearRational(x, Floor(1/2*Builtin'Precision'Get()));
+NearRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
+	Local(x1, x2, i,  old'prec);
+	old'prec := Builtin'Precision'Get();
+  Builtin'Precision'Set(prec + 8);	// 8 guard digits (?)
+	x1 := ContFracList(N(Eval(x+10^(-prec))));
+	x2 := ContFracList(N(Eval(x-10^(-prec))));
+
+	If(InVerboseMode(), Echo("NearRational: x      = ", N(Eval(x           ))));
+	If(InVerboseMode(), Echo("NearRational: xplus  = ", N(Eval(x+10^(-prec)))));
+	If(InVerboseMode(), Echo("NearRational: xmin   = ", N(Eval(x-10^(-prec)))));
+
+	If(InVerboseMode(), Echo("NearRational: Length(x1) = ", Length(x1)," ",x1));
+	If(InVerboseMode(), Echo("NearRational: Length(x2) = ", Length(x2)," ",x1));
+	// find where the continued fractions for "x1" and "x2" differ
+	// prepare result in "x1" and length of result in "i"
+	For (i:=1, i<=Length(x1) And i<=Length(x2) And x1[i]=x2[i], i++ ) True;
+	If(
+		i>Length(x1),
+		// "x1" ended but matched, so use "x2" as "x1"
+		x1:=x2,
+		If(
+			i>Length(x2),
+		// "x2" ended but matched, so use "x1"
+			True,
+		// neither "x1" nor "x2" ended and there is a mismatch at "i"
+		// apply recipe: select the smalest of the differing terms
+			x1[i]:=Min(x1[i],x2[i])
+		)
+	);
+	// recipe: x1dd 1 to the lx1st term unless it's the lx1st in the originx1l sequence
+	//Ayal added this line, i could become bigger than Length(x1)!
+	If(InVerboseMode(), Echo({"NearRational: using ", i, "terms of the continued fraction"}));
+	If(i>Length(x1),i:=Length(x1));
+	x1[i] := x1[i] + If(i=Length(x1), 0, 1);
+	Builtin'Precision'Set(old'prec);
+	ContFracEval(Take(x1, i));
+];
+
+/// guess the rational number behind an imprecise number
+/// prec parameter is the max number of digits you can have in the denominator
+GuessRational(_x) <-- GuessRational(x, Floor(1/2*Builtin'Precision'Get()));
+GuessRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
+	Local(denom'estimate, cf, i);
+	denom'estimate := 1;
+	cf := ContFracList(x);
+	For(i:=2, i<=Length(cf) And denom'estimate < 10^prec, i++)
+		[	// estimate the denominator
+			denom'estimate := denom'estimate * If(
+				cf[i] = 1,
+				If(
+					i+2<=Length(cf),	// have at least two more terms, do a full estimate
+					RoundTo(N(Eval(cf[i]+1/(cf[i+1]+1/cf[i+2]))), 3),
+					// have only one more term
+					RoundTo(N(Eval(cf[i]+1/cf[i+1])), 3)
+				),
+				// term is not 1, use the simple estimate
+				cf[i]
+			);
+		];
+	If (denom'estimate < 10^prec,
+		If(InVerboseMode(), Echo({"GuessRational: all ", i, "terms are within limits"})),
+		i--	// do not use the last term
+	);
+	i--;	// loop returns one more number
+	If(InVerboseMode(), Echo({"GuessRational: using ", i, "terms of the continued fraction"}));
+	ContFracEval(Take(cf, i));
+];
+
+//////////////////////////////////////////////////
+/// BracketRational: find two rational approximations
+//////////////////////////////////////////////////
+
+/// Return a list of two rational numbers r1, r2 such that r1<r<r2 and |r2-r1| < eps*|r|
+BracketRational(r,eps):=
+[
+	Local(n,cflist, r1, r2);
+	cflist := ContFracList(r);
+	n:=2;
+	r1 := ContFracEval(Take(cflist,n));
+	r2 := -r1;
+	// find two successive approximations and check that they differ by less than |eps*r|
+	While (n<Length(cflist) And ( Abs(N(Eval(r2-r1))) > Abs(N(Eval(eps*r)) ) ) )
+	[
+		r2 := r1;
+		n++;
+		r1 := ContFracEval(Take(cflist,n));
+	];
+	// now r1 and r2 are some rational numbers.
+	// decide whether the search was successful.
+	If(
+		n=Length(cflist),
+		{},	// return empty list if not enough precision
+		If(N(Eval(r-r1))>0,
+			{r1, r2},	// successive approximations are always bracketing, we only need to decide their order
+			{r2, r1}
+		)
+	);
+];
+
+/** MatchLinear(variable,expression)
+ */
+LocalSymbols(a,b)[
+
+10 # MatchLinear(var_IsAtom,expr_CanBeUni(var)) <--
+[
+  Set(expr,MakeUni(expr,var));
+  MatchLinear(expr);
+];
+20 # MatchLinear(_var,_expr) <-- False;
+
+10 # MatchLinear(_expr)_(Degree(expr,var)<2) <--
+[
+  Check(IsUniVar(expr),ToString()Echo({"Incorrect argument ",expr," passed to MatchLinear"}));
+
+//TODO if I enable these checks, then integration fails (only users of this function any way). Can this be removed? Where are these variables cleared any way?
+//  Check(a = Hold(a), ToString()(Echo({"Found bound variable a which should have been unbound, in MatchLinear: ", a, "=", Eval(a)})));
+//  Check(b = Hold(b), ToString()(Echo({"Found bound variable b which should have been unbound, in MatchLinear: ", b, "=", Eval(b)})));
+
+  a := Coef(expr,1);
+  b := Coef(expr,0);
+  True;
+];
+20 # MatchLinear(_expr) <-- False;
+UnFence("MatchLinear",1);
+UnFence("MatchLinear",2);
+
+/** MatchPureSquared(variable,expression) - matches expressions
+ *  of the form a*x^2+b.
+ */
+10 # MatchPureSquared(var_IsAtom,_sign2,_sign0,expr_CanBeUni(var)) <--
+[
+  Set(expr,MakeUni(expr,var));
+  MatchPureSquared(expr,sign2,sign0);
+];
+20 # MatchPureSquared(_var,_sign2,_sign0,_expr) <-- False;
+
+10 # MatchPureSquared(_expr,_sign2,_sign0)_(Degree(expr,var)=2 And 
+                                    Coef(expr,1) = 0 And   
+				    IsNumber(Coef(expr,0)) And
+				    IsNumber(Coef(expr,2)) And
+				    Coef(expr,0)*sign0 > 0 And
+				    Coef(expr,2)*sign2 > 0
+				    ) <--
+[
+  Check(IsUniVar(expr),ToString()Echo({"Incorrect argument ",expr," passed to MatchLinear"}));
+//TODO if I enable these checks, then integration fails (only users of this function any way). Can this be removed? Where are these variables cleared any way?
+//  Check(a = Hold(a), "Found bound variable which should have been unbound, in MatchLinear");
+//  Check(b = Hold(b), "Found bound variable which should have been unbound, in MatchLinear");
+  a := Coef(expr,2);
+  b := Coef(expr,0);
+  True;
+];
+20 # MatchPureSquared(_expr,_sign2,_sign0) <-- False;
+UnFence("MatchPureSquared",3);
+UnFence("MatchPureSquared",4);
+
+Matched'a() := a;
+Matched'b() := b;
+
+
+
+]; // LocalSymbols a,b
+

@@ -1,0 +1,166 @@
+
+NextTest("Test arithmetic");
+
+NextTest("Basic calculations");
+Verify(3 + 2 , 5);
+Verify(3-7, -4);
+Verify(1 = 2 , 0 = -1);
+Verify(5 ^ 2 , 25);
+
+Verify(IsZero(0.000),True);
+
+Verify(2/5,Hold(2/5));
+Verify(IsZero(N(2/5)-0.4));
+Verify(IsRational(2),True);
+Verify(IsRational(2/5),True);
+Verify(IsRational(-2/5),True);
+Verify(IsRational(2.0/5),False);
+Verify(IsRational(Pi/2),False);
+Verify(Numer(2/5),2);
+Verify(Denom(2/5),5);
+
+VerifyArithmetic(10,5,8);
+VerifyArithmetic(10000000000,5,8);
+VerifyArithmetic(10,50,80);
+VerifyArithmetic(10000,50,88);
+
+Verify(4!,24);
+Verify(Bin(2,1),2);
+
+NextTest("Testing math stuff");
+Verify(1*a,a);
+Verify(a*1,a);
+Verify(0*a,0);
+Verify(a*0,0);
+Verify(aa-aa,0);
+
+Verify(2+3,5);
+Verify(2*3,6);
+
+Verify(2+3*4,14);
+Verify(3*4+2,14);
+Verify(3*(4+2),18);
+Verify((4+2)*3,18);
+
+Verify(15/5,3);
+
+Verify(-2+3,1);
+Verify(-2.01+3.01,1.);
+
+Verify(0+a,a);
+Verify(a+0,a);
+Verify(aa-aa,0);
+
+Testing("IntegerOperations");
+Verify(1<<10,1024);
+Verify(1024>>10,1);
+Verify(Mod(10,3),1);
+Verify(Div(10,3),3);
+Verify(MathGcd(55,10),5);
+
+Verify(Mod(2,Infinity),2);
+Verify(Mod({0,1,2,3,4,5,6},2),{0,1,0,1,0,1,0});
+Verify(Mod({0,1,2,3,4,5,6},{2,2,2,2,2,2,2}),{0,1,0,1,0,1,0});
+
+Testing("MathPower");
+// was broken in the gmp version
+Verify(MathPower(19, 0), 1);
+Verify(MathPower(1, -1), 1);
+Verify(MathPower(1, -2), 1);
+Verify(IsZero(MathPower(10, -2)- 0.01));
+Verify(MathPower(2, 3), 8);
+NumericEqual(MathPower(2, -3), 0.125,Builtin'Precision'Get()); 
+
+Testing("Rounding");
+Verify(Floor(1.2),1);
+Verify(Floor(-1.2),-2);
+Verify(Ceil(1.2),2);
+Verify(Ceil(-1.2),-1);
+Verify(Round(1.49),1);
+Verify(Round(1.51),2);
+Verify(Round(-1.49),-1);
+Verify(Round(-1.51),-2);
+
+Testing("Bases");
+Verify(ToBase(16,255),"ff");
+Verify(FromBase(2,"100"),4);
+
+// conversion between decimal and binary digits
+Verify(BitsToDigits(2000, 10), 602);
+Verify(DigitsToBits(602, 10), 2000);
+
+LocalSymbols(f,ft)
+[
+  f(x,y):=(Div(x,y)*y+Rem(x,y)-x);
+  ft(x,y):=
+  [
+    Verify(f(x,y),0);
+    Verify(f(-x,y),0);
+    Verify(f(x,-y),0);
+    Verify(f(-x,-y),0);
+  ];
+  ft(10,4);
+  ft(2.5,1.2);
+];
+
+Testing("Factorization");
+Verify(
+Eval(Factors(447738843))
+, {{3,1},{17,1},{2729,1},{3217,1}}
+);
+
+
+//Exponential notation is now supported in the native arithmetic library too...
+Verify(2e3+1,2001.);
+Verify(2.0e3+1,2001.);
+Verify(2.00e3+1,2001.);
+Verify(2.000e3+1,2001.);
+Verify(2.0000e3+1,2001.);
+
+Verify(1+2e3,2001.);
+Verify(1+2.0e3,2001.);
+Verify(1+2.00e3,2001.);
+Verify(1+2.000e3,2001.);
+Verify(1+2.0000e3,2001.);
+
+NumericEqual(N(Sqrt(1e4))-100,0,Builtin'Precision'Get());
+NumericEqual(N(Sqrt(1.0e4))-100,0,Builtin'Precision'Get());
+
+Verify(2.0000e3-1,1999.);
+[
+  Local(p);
+  p:=Builtin'Precision'Get();
+  Builtin'Precision'Set(12);//TODO this will fail if you drop precision to below 12, for some reason.
+  NumericEqual(RoundTo(10e3*1.2e-3,Builtin'Precision'Get()),12.,Builtin'Precision'Get());
+  Builtin'Precision'Set(p);
+];
+Verify((10e3*1.2e-4)-1.2,0);
+
+Verify(IsZero(N(Sin(0.1e1)-Sin(1),30)),True);
+[
+  /* In Dutch they have a saying "dit verdient geen schoonheidsprijs" ;-) We need to sort this out.
+   * But a passable result, for now.
+   */
+  Local(diff);
+  diff := N(Sin(10e-1)-Sin(1),30);
+//Builtin'Precision'Set(20);
+//Echo("diff = ",diff);
+//Echo("diff > -0.00001 = ",diff > -0.00001);
+//Echo("diff < 0.00001 = ",diff < 0.00001);
+  Verify(diff > -0.00001 And diff < 0.00001,True);
+];
+
+
+/* Jonathan reported a problem with Simplify(-Sqrt(8)/2), which returned some
+ * complex expression containing greatest common divisors of square roots.
+ * This was fixed by adding some rules dealing with taking the gcd of two objects
+ * where at least one is a square root.
+ */
+Verify(-Sqrt(8)/2,-Sqrt(2));
+Verify(Sqrt(8)/2,Sqrt(2));
+Verify(Gcd(Sqrt(2),Sqrt(2)),Sqrt(2));
+Verify(Gcd(-Sqrt(2),-Sqrt(2)),Sqrt(2));
+Verify(Gcd(Sqrt(2),-Sqrt(2)),Sqrt(2));
+Verify(Gcd(-Sqrt(2),Sqrt(2)),Sqrt(2));
+
+

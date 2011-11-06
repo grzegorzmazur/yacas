@@ -1,0 +1,58 @@
+#!/bin/sh
+
+# clean
+rm -f yacas-*.tar.gz
+make distclean
+
+# Rebuild yacas and the documentation
+./makemake
+./configure CXXFLAGS="-O9" CFLAGS="-O9" --enable-server --enable-ps-doc --enable-pdf-doc --enable-archive 
+make
+make # make a second time, for adding statically linked libraries
+sudo make install
+cd JavaYacas
+make -f makefile.yacas
+cd ..
+
+cd docs
+make autocompleterarray.js
+cd ..
+
+make dist
+# make distcheck
+
+
+# Copy all the files to a homepage directory
+if [ -d homepage ] ; then : ; else  mkdir homepage ; fi; 
+cd homepage
+
+cp ../manmake/ref.funcs.js ../manmake/refprog.funcs.js .
+cp ../manmake/*.html .
+cp ../docs/yacaslogo.gif .
+tar -zcvf manual.html.tar.gz *
+cp ../manmake/*.ps .
+cp ../manmake/*.pdf .
+tar -zcvf manual.ps.tar.gz *.ps
+tar -zcvf manual.pdf.tar.gz *.pdf
+rm *.ps 
+
+cp ../docs/*.gif ../docs/*.html ../docs/*.js ../docs/*.yart ../docs/*.css .
+rm back-dark.gif
+cp yacas.html index.html
+yacas --patchload -pc ../docs/downloads.html.in > downloads.html
+
+cp ../JavaYacas/yacas.jar .
+cp ../JavaYacas/hints.txt .
+
+if [ -d backups ] ; then : ; else  mkdir backups ; fi; 
+mv manual.html.tar.gz backups
+mv manual.ps.tar.gz backups
+mv manual.pdf.tar.gz backups
+cd backups
+mv ../../yacas-*.tar.gz .
+cd ..
+# chmod -R 755 *
+tar -zcf ../homepage.tgz *
+cd ..
+rm -rf homepage/
+

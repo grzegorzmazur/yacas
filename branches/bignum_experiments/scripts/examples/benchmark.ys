@@ -1,0 +1,197 @@
+
+Use("testers.ys");
+
+
+DoNext(_string) <--
+[
+ NextTest("<font color=0000ff>" : string : "</font>");
+ NewLine();
+];
+
+Echo({"<HTML><BODY BGCOLOR=\"ffffff\"><PRE><font size=4>"});
+
+Echo({"An assorted selection of the tests found in the Wester benchmark"});
+
+StartTests();
+
+/*
+*/
+
+DoNext("Compute 50!");
+BenchShow(50!);
+
+DoNext("Compute the prime decomposition of 6!.");
+BenchShow(ans:=Factors(6!));
+
+
+
+Echo({"This list contains lists of two elements. This list should
+be interpreted as "});
+BenchShow(PrettyForm(FW(ans)));
+
+DoNext("Compute 1/2 + ... + 1/10.");
+BenchShow(Sum(i,2,10,1/i));
+
+DoNext("Compute a numerical approximation of e^(Pi*sqrt(163)) to 50 digits.");
+BenchCall(Builtin'Precision'Set(50));
+BenchShow(N(Exp(Pi*Sqrt(163))));
+
+DoNext("Compute an infinite decimal representation of 1/7");
+BenchShow(Decimal(1/7));
+
+DoNext("Compute the first terms of the continued fraction of Pi.");
+BenchShow(PrettyForm(ContFrac(Internal'Pi())));
+
+DoNext("Simplify sqrt(2*sqrt(3)+4).");
+BenchShow(RadSimp(Sqrt(2*Sqrt(3)+4)));
+
+DoNext("Simplify sqrt(14+3*sqrt(3+2*sqrt(5-12*sqrt(3-2*sqrt(2))))).");
+BenchShow(RadSimp(Sqrt(14+3*Sqrt(3+2*Sqrt(5-12*Sqrt(3-2*Sqrt(2)))))));
+
+DoNext("Simplify 2*infinity-3.");
+BenchShow(2*Infinity-3);
+
+Echo({"Infinity is also defined for comparisons like a &lt Infinity"});
+
+DoNext("Compute the normal form of (x^2-4)/(x^2+4x+4).");
+BenchShow(PrettyForm(GcdReduce((x^2-4)/(x^2+4*x+4),x)));
+
+DoNext("Expand (x+1)^5, then differentiate and factorize.");
+BenchCall(ans:=Factors(D(x)Expand((x+1)^5)));
+BenchShow(PrettyForm(FW(ans)));
+
+DoNext("Simplify sqrt(997) - (997^3)^(1/6).");
+BenchShow(RadSimp(Sqrt(997) - (997^3)^(1/6)));
+
+DoNext("Simplify sqrt(999983) - (999983^3)^(1/6).");
+BenchShow(RadSimp(Sqrt(999983) - (999983^3)^(1/6)));
+
+DoNext("Recognize that (2^(1/3)+4^(1/3))^3-6*(2^(1/3)+4^(1/3)) - 6 is 0.");
+BenchShow(RadSimp( (2^(1/3)+4^(1/3))^3-6*(2^(1/3)+4^(1/3)) - 6));
+
+
+DoNext("Simplify log e^z into z only for -Pi < Im(z) <= Pi.");
+BenchShow(Simplify(Ln(Exp(z))));
+
+DoNext("Invert the 2x2 matrix [[a,b],[1,ab]]. ");
+BenchCall(A:={{a,b},{1,a*b}});
+BenchShow(ans:=Inverse(A));
+BenchShow(TableForm(Simplify(ans)));
+
+DoNext("Find the eigenvalues of the matrix [[5, -3, -7],[-2, 1, 2],[ 2, -3, -4]].");
+BenchCall(A:={{5,-3,-7},{-2,1,2},{2,-3,-4}});
+BenchShow(EigenValues(A));
+
+
+DoNext("Compute the limit of (1-cos x)/x^2 when x goes to zero. ");
+BenchShow(Limit(x,0)(1-Cos(x))/(x^2));
+
+DoNext("Compute the derivative of |x|.");
+BenchShow(D(x)Abs(x));
+
+DoNext("Compute an antiderivative of |x|.");
+BenchShow(AntiDeriv(x,Abs(x)));
+
+DoNext("Compute the derivative of |x| (piecewise defined).");
+BenchShow(D(x)(if (x<0) (-x) else x));
+
+DoNext("Compute the antiderivative of |x| (piecewise defined).");
+BenchShow( AntiDeriv(x,if (x<0) (-x) else x));
+
+DoNext("Compute the first terms of the Taylor expansion of 1/sqrt(1-v^2/c^2) at v=0. ");
+BenchCall(ans:=Taylor(v,0,4)Sqrt(1/(1-v^2/c^2)));
+BenchCall(ans:=Simplify(ans));
+BenchShow(PrettyForm(ans));
+
+DoNext("Compute the inverse of the square of the above expansion. ");
+BenchCall(ans:=Taylor(v,0,4)(1/ans)^2);
+BenchShow(PrettyForm(Simplify(ans)));
+
+
+
+DoNext("Compute the Taylor expansion of tan(x) at x=0 by dividing the expansion of sin(x) by that of cos(x). ");
+BenchCall(ans1:=Taylor(x,0,5)(Sin(x)/Cos(x)));
+BenchCall(PrettyForm(ans1));
+BenchCall(ans2:=Taylor(x,0,5)Tan(x));
+BenchCall(PrettyForm(ans2));
+BenchShow(ans1-ans2);
+
+
+DoNext("Compute the Legendre polynomials directly.");
+
+BenchCall(10 # Legendre(0,_x) <-- 1);
+BenchCall(20 # Legendre(n_IsInteger,_x) <--
+[
+ Local(result);
+ result:=[
+   Local(x);
+   Expand((1/(2^n*(n!))) * Deriv(x,n)Expand((x^2-1)^n,x));
+ ];
+ Eval(result);
+]);
+
+BenchCall(ForEach(item,Table(Legendre(i,x),i,0,4,1))PrettyForm(item));
+
+
+DoNext("Compute the Legendre polynomials recursively, using their recurrence of order 2. ");
+
+BenchCall(10 # LegendreRecursive(0,_x) <-- 1);
+BenchCall(20 # LegendreRecursive(1,_x) <-- x);
+BenchCall(30 # LegendreRecursive(n_IsPositiveInteger,_x) <--
+     Expand(((2*n - 1)*x*LegendreRecursive(n-1,x)-(n - 1)*LegendreRecursive(n-2,x))/n));
+
+BenchCall(ForEach(item,Table(LegendreRecursive(i,x),i,0,4,1))PrettyForm(item));
+
+DoNext("Evaluate the fourth Legendre polynomial at 1. ");
+BenchShow(Legendre(4,1));
+
+DoNext("Define the polynomial p = sum( i=1..5, ai*x^i ). ");
+BenchCall(ans:=Sum(MakeVector(a,5)*(FillList(x,5)^(1 .. 5))));
+BenchCall(PrettyForm(ans));
+
+DoNext("Apply Horner\'s rule to the above polynomial.");
+BenchCall(ans:=Sum(MakeVector(a,5)*(FillList(x,5)^(1 .. 5))));
+BenchCall(PrettyForm(Horner(ans,x)));
+
+
+DoNext("Compute the first terms of the continued fraction of Pi. ");
+BenchCall(pi:=N(Pi,20));
+BenchCall(a:=ContFrac(pi,6));
+BenchCall(PrettyForm(a));
+
+DoNext("Compute an infinite decimal representation of 1/7. ");
+BenchShow(Decimal(1/7));
+Echo({"This result means that the decimal expansion of 1/7 is
+0.142857142857142...."});
+
+DoNext("Evaluate TRUE and FALSE. ");
+BenchShow(True And False);
+
+DoNext("Solve the equation tan(x) = 1. ");
+BenchShow(Solve(Tan(x)==1,x));
+
+DoNext("Revert the Taylor expansion of sin(y) + cos(y) at y=0. ");
+BenchCall(t:=InverseTaylor(y,0,6)Sin(y)+Cos(y));
+BenchCall(PrettyForm(t));
+Echo({"And check that it is in fact the inverse up to degree 5:"});
+BenchCall(s:=Taylor(y,0,6)Sin(y)+Cos(y));
+BenchShow(BigOh(Subst(y,s)t,y,6));
+
+DoNext("Solve the linear (dependent) system x+y+z=6,2x+y+2z=10,x+3y+z=10.");
+BenchShow(OldSolve({x+y+z==6,2*x+y+2*z==10,x+3*y+z==10},{x,y,z}));
+
+
+
+DoNext("Evaluate True And False");
+BenchShow(True And False);
+BenchShow(CanProve(True And False));
+
+DoNext("Simplify x or (not x)");
+BenchShow(CanProve(x Or Not x));
+
+DoNext("Simplify x or y or (x and y)");
+BenchShow(CanProve(x Or y Or (x And y)));
+
+Echo({curline," examples done"});
+
+Echo({"</FONT></PRE></BODY></HTML>"});

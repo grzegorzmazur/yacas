@@ -1,0 +1,956 @@
+*REM functions related to number theory
+
+			Number theory
+
+*INTRO This chapter describes functions that are of interest in number theory.
+These functions typically operate on integers.
+Some of these functions work quite slowly.
+
+*CMD IsPrime --- test for a prime number
+*CMD IsSmallPrime --- test for a (small) prime number
+*STD
+*CALL
+	IsPrime(n)
+	IsSmallPrime(n)
+
+*PARMS
+
+{n} -- integer to test
+
+*DESC
+
+The commands checks whether $n$, which should be a positive integer,
+is a prime number. A number $n$ is a prime number if it is only divisible
+by 1 and itself. As a special case, 1 is not considered a prime number.
+The first prime numbers are 2, 3, 5, ...
+
+The function {IsShortPrime} only works for numbers $n<=65537$ but it is very fast.
+
+The function {IsPrime} operates on all numbers and uses different algorithms depending on the magnitude of the number $n$.
+For small numbers $n<=65537$, a constant-time table lookup is performed.
+(The function {IsShortPrime} is used for that.)
+For numbers $n$ between $65537$ and $34155071728321$, the function uses the Rabin-Miller test together with table lookups to guarantee correct results.
+
+For even larger numbers a version of the probabilistic Rabin-Miller test is executed.
+The test can sometimes mistakenly mark a number as prime while it is in fact composite, but a prime number will never be mistakenly declared composite.
+The parameters of the test are such that the probability for a false result is less than $10^(-24)$.
+
+*E.G.
+
+	In> IsPrime(1)
+	Out> False;
+	In> IsPrime(2)
+	Out> True;
+	In> IsPrime(10)
+	Out> False;
+	In> IsPrime(23)
+	Out> True;
+	In> Select("IsPrime", 1 .. 100)
+	Out> {2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,
+	  53,59,61,67,71,73,79,83,89,97};
+
+*SEE IsPrimePower, Factors
+
+*CMD IsComposite --- test for a composite number
+*STD
+*CALL
+	IsComposite(n)
+
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+This function is the logical negation of {IsPrime}, except for the number 1, which is
+neither prime nor composite.
+
+*E.G.
+
+	In> IsComposite(1)
+	Out> False;
+	In> IsComposite(7)
+	Out> False;
+	In> IsComposite(8)
+	Out> True;
+	In> Select(IsComposite,1 .. 20)
+	Out> {4,6,8,9,10,12,14,15,16,18,20};
+
+*SEE IsPrime
+
+*CMD IsCoprime --- test if integers are coprime 
+*STD
+*CALL
+	IsCoprime(m,n)
+	IsCoprime(list)
+*PARMS
+
+{m},{n} -- positive integers
+
+{list}  -- list of positive integers
+
+*DESC
+
+This function returns {True} if the given pair or list of integers are coprime,
+also called relatively prime. A pair or list of numbers are coprime if they 
+share no common factors.
+
+*E.G.
+
+	In> IsCoprime({3,4,5,8})
+	Out> False;
+	In> IsCoprime(15,17)
+	Out> True;
+
+*SEE Prime
+
+*CMD IsSquareFree --- test for a square-free number
+*STD
+*CALL
+	IsSquareFree(n)
+
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+This function uses the {Moebius} function to tell if the given number is square-free, which
+means it has distinct prime factors. If $Moebius(n)!=0$, then {n} is square free. All prime
+numbers are trivially square-free.
+
+*E.G.
+
+	In> IsSquareFree(37)
+	Out> True;
+	In> IsSquareFree(4)
+	Out> False;
+	In> IsSquareFree(16)
+	Out> False;
+	In> IsSquareFree(18)
+	Out> False;
+
+*SEE Moebius, SquareFreeDivisorsList
+
+
+*CMD IsPrimePower --- test for a power of a prime number
+*STD
+*CALL
+	IsPrimePower(n)
+
+*PARMS
+
+{n} -- integer to test
+
+*DESC
+
+This command tests whether "n", which should be a positive integer,
+is a prime power, that is whether it is of the form $p^m$, with
+"p" prime and "m" an integer.
+
+This function does not try to decompose the number $n$ into factors.
+Instead we check for all prime numbers $r=2$, $3$, ... that the $r$-th root of $n$ is an integer, and we find such $r$ and $m$ that $n=m^r$, we check that $m$ is a prime. If it is not a prime, we execute the same function call on $m$.
+
+*E.G.
+
+	In> IsPrimePower(9)
+	Out> True;
+	In> IsPrimePower(10)
+	Out> False;
+	In> Select("IsPrimePower", 1 .. 50)
+	Out> {2,3,4,5,7,8,9,11,13,16,17,19,23,25,27,
+	  29,31,32,37,41,43,47,49};
+
+*SEE IsPrime, Factors
+
+*CMD NextPrime --- generate a prime following a number
+*STD
+*CALL
+	NextPrime(i)
+
+*PARMS
+
+{i} -- integer value
+
+*DESC
+
+The function finds the smallest prime number that is greater than the given
+integer value.
+
+The routine generates "candidate numbers" using the formula $n+2*Mod(-n,3)$
+where $n$ is an odd number (this generates the sequence 5, 7, 11, 13, 17,
+19, ...) and {IsPrime()} to test whether the next candidate number is in
+fact prime.
+
+*EG
+	In> NextPrime(5)
+	Out> 7;
+
+*SEE IsPrime
+
+*CMD IsTwinPrime --- test for a twin prime
+*STD
+*CALL
+	IsTwinPrime(n)
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+This function returns {True} if {n} is a twin prime. By definition, a twin
+prime is a prime number $n$ such that $n+2$ is also a prime number. 
+
+*E.G.
+	In> IsTwinPrime(101)
+	Out> True;
+	In> IsTwinPrime(7)
+	Out> False;
+	In> Select(IsTwinPrime, 1 .. 100)
+	Out> {3,5,11,17,29,41,59,71};
+
+*SEE IsPrime
+
+*CMD IsIrregularPrime --- test for an irregular prime
+*STD
+*CALL
+	IsIrregularPrime(n)
+
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+This function returns {True} if {n} is an irregular prime. A prime number $n$
+is irregular if and only if {n} divides the numerator of a Bernoulli number $B[2*i]$,
+where $2*i+1 < n $. Small irregular primes are quite rare; the only irregular primes under 100
+are  37, 59 and 67. Asymptotically, roughly 40{%} of primes are irregular.
+
+*E.G.
+
+	In> IsIrregularPrime(5)
+	Out> False;
+	In> Select(IsIrregularPrime,1 .. 100)
+	Out> {37,59,67};
+
+*SEE IsPrime
+
+*CMD IsCarmichaelNumber --- test for a Carmichael number
+*STD
+*CALL
+	IsCarmichaelNumber(n)
+
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+This function returns {True} if {n} is a Carmichael number, also called an absolute pseudoprime.
+They have the property that $ b^(n-1) % n == 1 $ for all $b$ satisfying $Gcd(b,n)==1$. These numbers
+cannot be proved composite by Fermat's little theorem. Because the previous property is extremely
+slow to test, the following equivalent property is tested by Yacas: for all prime factors $p[i]$ of $n$,
+$(n-1) % (p[i] - 1) == 0$ and $n$ must be square free. Also, Carmichael numbers must be odd and have
+at least three prime factors. Although these numbers are rare (there are only 43 such numbers between $1$ and $10^6$),
+it has recently been proven that there are infinitely many of them.
+
+*E.G. notest
+
+	In> IsCarmichaelNumber(561)
+	Out> True;
+	In> Time(Select(IsCarmichaelNumber,1 .. 10000))
+	504.19 seconds taken
+	Out> {561,1105,1729,2465,2821,6601,8911};
+
+*SEE IsSquareFree, IsComposite
+
+
+*CMD Factors --- factorization
+*STD
+*CALL
+	Factors(x)
+
+*PARMS
+
+{x} -- integer or univariate polynomial
+
+*DESC
+
+This function decomposes the integer number {x} into a product of
+numbers. Alternatively, if {x} is a univariate polynomial, it is
+decomposed in irreducible polynomials.
+
+The factorization is returned as a list of pairs. The first member of
+each pair is the factor, while the second member denotes the power to
+which this factor should be raised. So the factorization
+$x = p1^n1 * ... * p9^n9$
+is returned as {{{p1,n1}, ..., {p9,n9}}}.
+
+*E.G.
+
+	In> Factors(24);
+	Out> {{2,3},{3,1}};
+	In> Factors(2*x^3 + 3*x^2 - 1);
+	Out> {{2,1},{x+1,2},{x-1/2,1}};
+
+*SEE Factor, IsPrime, GaussianFactors
+
+*CMD IsAmicablePair --- test for a pair of amicable numbers
+*STD
+*CALL
+	IsAmicablePair(m,n)
+
+*PARMS
+
+{m}, {n} -- positive integers
+
+*DESC
+
+This function tests if a pair of numbers are amicable. A pair of 
+numbers $m$, $n$ has this property if the sum of the proper divisors of $m$ is
+$n$ and the sum of the proper divisors of $n$ is $m$.
+
+*E.G.
+
+	In> IsAmicablePair(200958394875, 209194708485 )
+	Out> True;
+	In> IsAmicablePair(220, 284)
+	Out> True;
+
+*SEE ProperDivisorsSum
+
+
+*CMD Factor --- factorization, in pretty form
+*STD
+*CALL
+	Factor(x)
+
+*PARMS
+
+{x} -- integer or univariate polynomial
+
+*DESC
+
+This function factorizes "x", similarly to {Factors}, but
+it shows the result in a nicer human readable format.
+
+*E.G.
+
+	In> PrettyForm(Factor(24));
+	
+	 3
+	2  * 3
+	
+	Out> True;
+	In> PrettyForm(Factor(2*x^3 + 3*x^2 - 1));
+	
+	             2   /     1 \
+	2 * ( x + 1 )  * | x - - |
+	                 \     2 /
+	
+	Out> True;
+
+*SEE Factors, IsPrime, PrettyForm
+
+*CMD Divisors --- number of divisors
+*STD
+*CALL
+	Divisors(n)
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+{Divisors} returns the number of positive divisors of a number.
+A number is prime if and only if it has two divisors, 1 and itself.
+
+*E.G.
+	In> Divisors(180)
+	Out> 18;
+	In> Divisors(37)
+	Out> 2;
+
+*SEE DivisorsSum, ProperDivisors, ProperDivisorsSum, Moebius
+
+*CMD DivisorsSum --- the sum of  divisors
+*STD
+*CALL
+	DivisorsSum(n)
+*PARMS
+
+{n}	-- positive integer
+
+*DESC
+
+{DivisorsSum} returns the sum all numbers that divide it. A number
+{n} is prime if and only if the sum of its divisors are {n+1}.
+
+*E.G.
+
+	In> DivisorsSum(180)
+	Out> 546;
+	In> DivisorsSum(37)
+	Out> 38;
+
+*SEE DivisorsSum, ProperDivisors, ProperDivisorsSum, Moebius
+
+
+*CMD ProperDivisors --- the number of proper divisors
+*STD
+*CALL
+	ProperDivisors(n)
+*PARMS
+
+{n}     -- positive integer
+
+*DESC
+
+{ProperDivisors} returns the number of proper divisors, i.e {Divisors(n)-1},
+since {n} is not counted. 
+An integer $n$ is prime if and only if it has 1 proper divisor.
+
+*E.G.
+
+	In> ProperDivisors(180)
+	Out> 17;
+	In> ProperDivisors(37)
+	Out> 1;
+
+*SEE DivisorsSum, ProperDivisors, ProperDivisorsSum, Moebius
+
+
+*CMD ProperDivisorsSum --- the sum of proper divisors
+*STD 
+*CALL
+	ProperDivisorsSum(n)
+*PARMS  
+
+{n}     -- positive integer
+
+*DESC
+
+{ProperDivisorsSum} returns the sum of proper divisors, i.e. {ProperDivisors(n)-n},
+since {n} is not counted.
+{n} is prime if and only if {ProperDivisorsSum(n)==1}.
+
+*E.G.
+	In> ProperDivisorsSum(180)
+	Out> 366;
+	In> ProperDivisorsSum(37)
+	Out> 1;
+
+
+*SEE DivisorsSum, ProperDivisors, ProperDivisorsSum, Moebius
+
+
+
+*CMD Moebius --- the Moebius function
+*STD 
+*CALL
+	Moebius(n)
+*PARMS  
+
+{n}     -- positive integer
+
+*DESC
+
+The Moebius function is 0 when a prime factor is repeated (which means it
+is not square-free) and is $(-1)^r$ if $n$ has $r$ distinct factors. Also,
+$Moebius(1)==1$.
+
+*E.G.
+	In> Moebius(10)
+	Out> 1;
+	In> Moebius(11)
+	Out> -1;
+	In> Moebius(12)
+	Out> 0;
+	In> Moebius(13)
+	Out> -1;
+
+*SEE DivisorsSum, ProperDivisors, ProperDivisorsSum, MoebiusDivisorsList
+
+*CMD CatalanNumber --- return the {n}th Catalan Number
+*STD
+*CALL
+	CatalanNumber(n)
+*PARMS
+
+{n}	-- positive integer
+
+*DESC
+
+This function returns the {n}-th Catalan number, defined as $Bin(2*n,n)/(n+1)$.
+
+*E.G.
+
+	In> CatalanNumber(10)
+	Out> 16796;
+	In> CatalanNumber(5)
+	Out> 42;
+
+*SEE Bin
+
+
+*CMD FermatNumber --- return the {n}th Fermat Number
+*STD
+*CALL
+	FermatNumber(n)
+*PARMS  
+
+{n}     -- positive integer
+
+*DESC
+
+This function returns the {n}-th Fermat number, which is defined as
+$2^(2^n) + 1$. 
+
+*E.G.
+
+	In> FermatNumber(7)
+	Out> 340282366920938463463374607431768211457;
+
+*SEE	Factor
+
+
+*CMD HarmonicNumber --- return the {n}th Harmonic Number
+*STD
+*CALL
+	HarmonicNumber(n)
+	HarmonicNumber(n,r)
+*PARMS
+
+{n}, {r}	-- positive integers
+
+*DESC
+
+This function returns the {n}-th Harmonic number, which is defined
+as $Sum(k,1,n,1/k)$. If given a second argument, the Harmonic number
+of order $r$ is returned, which is defined as $Sum(k,1,n,k^(-r))$.
+
+*E.G.
+
+	In> HarmonicNumber(10)
+	Out> 7381/2520;
+	In> HarmonicNumber(15)
+	Out> 1195757/360360;
+	In> HarmonicNumber(1)
+	Out> 1;
+	In> HarmonicNumber(4,3)
+	Out> 2035/1728;
+
+
+
+*SEE Sum
+
+*CMD StirlingNumber1 --- return the {n,m}th Stirling Number of the first kind
+*STD
+*CALL
+	StirlingNumber1(n,m)
+*PARMS
+
+{n}, {m}	-- positive integers
+
+*DESC
+
+This function returns the signed Stirling Number of the first kind.
+All Stirling Numbers are integers. If $ m > n $, then {StirlingNumber1} returns
+$0$.
+
+*E.G.
+
+	In> StirlingNumber1(10,5)
+	Out> -269325;
+	In> StirlingNumber1(3,6)
+	Out> 0;
+
+*SEE StirlingNumber2
+
+*CMD StirlingNumber2 --- return the {n,m}th Stirling Number of the second kind
+*STD
+*CALL
+        StirlingNumber1(n,m)
+*PARMS
+
+{n}, {m}        -- positive integers
+
+*DESC
+
+This function returns the Stirling Number of the second kind.
+All Stirling Numbers are positive integers. If $ m > n $, then {StirlingNumber2} returns
+$0$.
+
+*E.G.
+
+	In> StirlingNumber2(3,6)
+	Out> 0;
+	In> StirlingNumber2(10,4)
+	Out> 34105;
+
+*SEE StirlingNumber1
+
+*CMD DivisorsList --- the list of divisors
+*STD
+*CALL
+	DivisorsList(n)
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+{DivisorsList} creates a list of the divisors of $n$.
+This is useful for loops like
+
+	ForEach(d,DivisorsList(n))
+
+*E.G.
+
+	In> DivisorsList(18)
+	Out> {1,2,3,6,9,18};
+
+*SEE DivisorsSum
+
+*CMD SquareFreeDivisorsList --- the list of square-free divisors
+*STD
+*CALL
+	SquareFreeDivisorsList(n)
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+{SquareFreeDivisorsList} creates a list of the square-free divisors of $n$.
+Square-free numbers are numbers that have only simple prime factors (no prime powers).
+For example, $18=2*3*3$ is not square-free because it contains a square of $3$ as a factor.
+
+*E.G.
+
+	In> SquareFreeDivisorsList(18)
+	Out> {1,2,3,6};
+
+*SEE DivisorsList
+
+*CMD MoebiusDivisorsList --- the list of divisors and Moebius values
+*STD
+*CALL
+	MoebiusDivisorsList(n)
+*PARMS
+
+{n} -- positive integer
+
+*DESC
+
+Returns a list of pairs of the form {{d,m}}, where {d} runs through the squarefree divisors of $n$ and $m=Moebius(d)$. 
+This is more efficient than making a list of all 
+square-free divisors of $n$ and then computing {Moebius} on each of them.
+It is useful for computing the cyclotomic polynomials. 
+It can be useful in other computations based on the Moebius inversion formula. 
+
+*E.G.
+
+	In> MoebiusDivisorsList(18)
+	Out> {{1,1},{2,-1},{3,-1},{6,1}};
+
+*SEE DivisorsList, Moebius
+
+
+*CMD SumForDivisors --- loop over divisors
+*STD
+*CALL
+	SumForDivisors(var,n,expr)
+*PARMS
+
+{var} -- atom, variable name
+
+{n} -- positive integer
+
+{expr} -- expression depending on {var}
+
+*DESC
+
+This function performs the sum of the values of the expression {expr} while the variable {var} runs through 
+the divisors of {n}.
+For example, {SumForDivisors(d, 10, d^2)} sums $d^2$ where $d$ runs 
+through the divisors of $10$.
+This kind of computation is frequently used in number theory.
+
+*SEE DivisorsList
+
+*CMD RamanujanSum --- compute the "Ramanujan sum"
+*STD
+*CALL
+	RamanujanSum(k,n)
+
+*PARMS
+
+{k}, {n} -- positive integers
+
+*DESC
+This function computes the Ramanujan sum, i.e. the sum of the $n$-th powers of 
+the $k$-th primitive roots of the unit:
+
+$$ Sum(l,1,k, Exp(2*Pi*I*(l*n)/k)) $$
+
+where $l$ runs thought the integers between $1$ and $k-1$ that are coprime to $l$.
+
+The computation is done by using the formula in T. M. Apostol,
+<i>Introduction to Analytic Theory</i> (Springer-Verlag), Theorem 8.6.
+
+*CMD Cyclotomic --- construct the cyclotomic polynomial
+*STD
+*CALL
+	Cyclotomic(n,x)
+
+*PARMS
+
+{n} -- positive integer
+
+{x} -- variable
+
+*DESC
+
+Returns the cyclotomic polynomial in the variable {x}
+(which is the minimal polynomial of the $n$-th primitive
+roots of the unit, over the field of rational numbers).
+ 
+For $n$ even, we write $n= m*k$, where $k$ is a power of $2$ 
+and $m$ is odd, and reduce it to the case of even $m$ since
+$$ Cyclotomic(n,x) = Cyclotomic(m,-x^(k/2)) $$.
+
+If $m=1$, $n$ is a power of $2$, and $Cyclotomic(n,x)= x^k+1$.
+
+For $n$ odd, the algorithm is based on the formula
+$$ Cyclotomic(n,x) := Prod((x^(n/d)-1)^mu(d)) $$,
+where $d$ runs through the divisors of $n$.
+In order to compute this in a efficient way, we use the function
+{MoebiusDivisorsList}. Then we compute in {poly1} the product
+of $x^(n/d)-1$ with $mu(d)=1$ , and in {poly2} the product of these polynomials
+with  $mu(d)= -1$. Finally we compute the quotient {poly1}/{poly2}.
+
+*SEE RamanujanSum
+
+*CMD PAdicExpand --- p-adic expansion
+*STD
+*CALL
+	PAdicExpand(n, p)
+
+*PARMS
+
+{n} -- number or polynomial to expand
+
+{p} -- base to expand in
+
+*DESC
+
+This command computes the $p$-adic expansion of $n$. In other words,
+$n$ is expanded in powers of $p$. The argument $n$ can be either
+an integer or a univariate polynomial. The base $p$ should be of the
+same type.
+
+*E.G.
+
+	In> PrettyForm(PAdicExpand(1234, 10));
+	
+	               2     3
+	3 * 10 + 2 * 10  + 10  + 4
+	
+	Out> True;
+	In> PrettyForm(PAdicExpand(x^3, x-1));
+	
+	                             2            3
+	3 * ( x - 1 ) + 3 * ( x - 1 )  + ( x - 1 )  + 1
+	
+	Out> True;
+
+*SEE Mod, ContFrac, FromBase, ToBase
+
+
+*CMD IsQuadraticResidue --- functions related to finite groups
+*CMD LegendreSymbol --- functions related to finite groups
+*CMD JacobiSymbol --- functions related to finite groups
+*STD
+*CALL
+	IsQuadraticResidue(m,n)
+	LegendreSymbol(m,n)
+	JacobiSymbol(m,n)
+
+*PARMS
+{m}, {n} -- integers, $n$ must be odd and positive
+
+*DESC
+
+A number $m$ is a "quadratic residue modulo $n$" if there exists a number $k$ such that $k^2:=Mod(m,n)$.
+
+The Legendre symbol ($m$/$n$) is defined as $+1$ if $m$ is a quadratic residue modulo $n$ and $-1$ if it is a non-residue.
+The Legendre symbol is equal to $0$ if $m/n$ is an integer.
+
+
+The Jacobi symbol $[m/n;]$ is defined as the product of the Legendre symbols of the prime factors $f[i]$ of $n=f[1]^p[1]*...*f[s]^p[s]$,
+$$ [m/n;] := [m/f[1];]^p[1]*...*[m/f[s];]^p[s] $$.
+(Here we used the same notation $[a/b;]$ for the Legendre and the Jacobi symbols; this is confusing but seems to be the current practice.)
+The Jacobi symbol is equal to $0$ if $m$, $n$ are not mutually prime (have a common factor).
+The Jacobi symbol and the Legendre symbol have values $+1$, $-1$ or $0$.
+If $n$ is prime, then the Jacobi symbol is the same as the Legendre symbol.
+
+The Jacobi symbol can be efficiently computed without knowing the full factorization of the number $n$.
+
+*E.G.
+
+	In> IsQuadraticResidue(9,13)
+	Out> True;
+	In> LegendreSymbol(15,23)
+	Out> -1;
+	In> JacobiSymbol(7,15)
+	Out> -1;
+
+*SEE Gcd
+
+*CMD GaussianFactors --- factorization in Gaussian integers
+*STD
+*CALL
+	GaussianFactors(z)
+
+*PARMS
+
+{z} -- Gaussian integer
+
+*DESC
+
+This function decomposes a Gaussian integer number {z} into a product of
+Gaussian prime factors.
+A Gaussian integer is a complex number with integer real and imaginary parts.
+A Gaussian integer $z$ can be decomposed into Gaussian primes essentially in a
+unique way (up to Gaussian units and associated prime factors), i.e. one
+can write $z$ as
+$$z = u*p[1]^n[1] * ... * p[s]^n[s]$$,
+where $u$ is a Gaussian unit and $p[1]$, $p[2]$, ..., $p[s]$ are Gaussian primes. 
+
+The factorization is returned as a list of pairs. The first member of
+each pair is the factor (a Gaussian integer) and the second member denotes the power to
+which this factor should be raised. So the factorization is returned as 
+a list, e.g. {{{p1,n1}, {p2,n2}, ...}}.
+
+*E.G.
+
+	In> GaussianFactors(5)
+	Out> {{Complex(2,1),1},{Complex(2,-1),1}};
+	In> GaussianFactors(3+I)
+	Out> {{Complex(1,1),1},{Complex(2,-1),1}};
+
+*SEE Factors, IsGaussianPrime, IsGaussianUnit
+
+*CMD GaussianNorm --- norm of a Gaussian integer
+*STD
+*CALL
+	GaussianNorm(z)
+
+*PARMS
+
+{z} -- Gaussian integer
+
+*DESC
+
+This function returns the norm of a Gaussian integer $z=a+b*I$, defined as
+$a^2+b^2$.
+
+*E.G.
+
+	In> GaussianNorm(2+I)
+	Out> 5; 
+
+*SEE IsGaussianInteger
+
+*CMD IsGaussianUnit ---  test for a Gaussian unit
+*STD
+*CALL
+	IsGaussianUnit(z)
+*PARMS
+
+{z} -- a Gaussian integer	
+
+*DESC
+
+This function returns {True} if the argument is a unit in the Gaussian 
+integers and {False} otherwise. A unit in a ring is an element that divides 
+any other element.
+
+There are four "units" in the ring of Gaussian integers, which are 
+$1$, $-1$, $I$, and $-I$.
+	
+*E.G.
+	In> IsGaussianInteger(I)
+	Out> True;
+	In> IsGaussianUnit(5+6*I)
+	Out> False;
+
+*SEE  IsGaussianInteger, IsGaussianPrime, GaussianNorm
+
+
+*CMD IsGaussianPrime ---  test for a Gaussian prime
+*STD
+*CALL
+	IsGaussianPrime(z)
+*PARMS
+
+{z} -- a complex or real number
+
+*DESC
+
+This function returns {True} if the argument
+is a Gaussian prime and {False} otherwise.
+
+A prime element $x$ of a ring is divisible only by the units of
+the ring and by associates of $x$.
+("Associates" of $x$ are elements of the form $x*u$ where $u$ is
+a unit of the ring).
+
+Gaussian primes are Gaussian integers $z=a+b*I$ that satisfy one of the 
+following properties:
+
+*	If $Re(z)$ and $Im(z)$ are nonzero then $z$ is a Gaussian prime if and only 
+if $Re(z)^2 + Im(z)^2$ is an ordinary prime.
+*	If $Re(z)==0$ then $z$ is a Gaussian prime if and only if $Im(z)$ is an
+ordinary prime and $Im(z):=Mod(3,4)$.
+*	If $Im(z)==0$ then $z$ is a Gaussian prime
+if and only if $Re(z)$ is an ordinary prime and $Re(z):=Mod(3,4)$.
+
+*E.G.
+	In> IsGaussianPrime(13)
+	Out> False;
+	In> IsGaussianPrime(2+2*I)
+	Out> False;
+	In> IsGaussianPrime(2+3*I)
+	Out> True;
+	In> IsGaussianPrime(3)
+	Out> True;
+
+*SEE  IsGaussianInteger, GaussianFactors
+
+*CMD GaussianGcd --- greatest common divisor in Gaussian integers
+*STD
+*CALL
+	GaussianGcd(z,w)
+
+*PARMS
+
+{z}, {w} -- Gaussian integers 
+
+*DESC
+
+This function returns the greatest common divisor, in the ring of Gaussian
+integers, computed using Euclid's algorithm. Note that in the Gaussian
+integers, the greatest common divisor is only defined up to a Gaussian unit factor.
+
+*E.G.
+
+	In> GaussianGcd(2+I,5)
+	Out> Complex(2,1);
+The GCD of two mutually prime Gaussian integers might come out to be equal to some Gaussian unit instead of $1$:
+	In> GaussianGcd(2+I,3+I)
+	Out> -1;
+
+*SEE Gcd, Lcm, IsGaussianUnit

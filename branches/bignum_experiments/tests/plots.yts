@@ -1,0 +1,28 @@
+
+// some tests to verify that plotting works
+
+/* I stringified the results for now, as that is what the tests used to mean. The correct way to deal with this
+ * would be to compare the resulting numbers to accepted precision.
+ */
+Verify(ToString()Write(Plot2D(a,-1:1,output=data,points=4,depth=0)), "{{{-1,-1},{-0.5,-0.5},{0,0},{0.5,0.5},{1.,1.}}}");
+Verify(ToString()Write(Plot2D(b,b= -1:1,output=data,points=4)), "{{{-1,-1},{-0.5,-0.5},{0,0},{0.5,0.5},{1.,1.}}}");
+
+[
+  Local(result);
+  result:="{{{-1,-1,-1},{-1,0,-1},{-1,1.,-1},{0,-1,0},{0,0,0},{0,1.,0},{1.,-1,1.},{1.,0,1.},{1.,1.,1.}}}";
+  Verify(ToString()Write(Plot3DS(a,-1:1,-1:1,output=data,points=2)), result);
+  Verify(ToString()Write(Plot3DS(x1,x1 = -1:1,x2 = -1:1,output=data,points=2)), result);
+];
+
+
+// test NFunction
+Builtin'Precision'Set(10);
+Retract("f",1);
+Retract("f1",1);
+f(x) := N(Abs(1/x-1));
+Verify(f(0), Infinity);
+NumericEqual(RoundTo(f(3),Builtin'Precision'Get()), 0.6666666667,Builtin'Precision'Get());
+NFunction("f1", "f", {x});
+Verify(f1(0), Undefined);
+NumericEqual(RoundTo(f1(3),Builtin'Precision'Get()), 0.6666666667,Builtin'Precision'Get());
+

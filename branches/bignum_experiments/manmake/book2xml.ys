@@ -1,0 +1,321 @@
+/* book2TeX - convert Yacas docs back to XML format (Serge Winitzki)
+	version 0.1 */
+
+/* If one of these occurs inside an HtmlTerm block, it must be escaped with a backslash */
+CharsToEscape := { "<", ">", "/"};
+
+Book(x) := [	/* this is the first declaration in a file */
+	AddBody("
+<?XML title=\"I have no idea how to start a `valid' XML document.\">
+":OpenDiv("book"):"
+<BOOKTITLE>" : x : "</BOOKTITLE>
+<BOOKAUTHOR>by the <FONT FAMILY=\"csc\">Yacas<\FONT> team</BOOKAUTHOR>
+":OpenDiv("footnote") : "
+<P>This text is part of the <FONT FAMILY=\"csc\">Yacas<\FONT> software package.
+Copyright 2000--2002. Principal documentation authors:
+Ayal Zwi Pinkus, Serge Winitzki, Jitse Niesen.
+</P>
+<P>Permission is granted to copy, distribute and/or modify this
+document under the terms of the GNU Free Documentation License,
+Version 1.1 or any later version published by the Free Software
+Foundation; with no Invariant Sections, no Front-Cover Texts and
+no Back-Cover Texts.  A copy of the license is included in the
+section entitled ``GNU Free Documentation License''.
+</P>
+</FOOT>
+<DATE>
+<FONT FAMILY=\"csc\">Yacas<\FONT> version: " : Version() : "
+</DATE>
+<BLURB>" : BlurbText() : "</BLURB>
+");
+];
+
+// titles of sections are on a separate line to allow the script to catch the "" and not be confused by being inside a {} group
+
+Text(x) := AddBody(OpenDiv("paragraph"):x);
+
+havediv:={
+	{"book",          False},
+	{"chapter",       False},
+	{"chapterintro",  False},
+	{"section",       False},
+	{"subsection",    False},
+	{"subsubsection", False},
+	{"item",          False},
+	{"paragraph",     False},
+	{"footnote",      False},
+	{"enumerate",     False},
+	{"itemize",       False},
+};
+
+divtags:={
+	{"book",          "BOOK"},
+	{"chapter",       "CHAPTER"},
+	{"chapterintro",  "CHAPTERINTRO"},
+	{"section",       "SECTION"},
+	{"subsection",    "SUBSECTION"},
+	{"subsubsection", "SUBSUBSECTION"},
+	{"item",          "ITEM"},
+	{"paragraph",     "P"},
+	{"footnote",      "FOOTNOTE"},
+	{"enumerate",     "ENUMERATE"},
+	{"itemize",       "ITEMIZE"},
+};
+
+OpenTag(tag) := "<" : divtags[tag] : ">";
+CloseTag(tag) := "</" : divtags[tag] : ">";
+
+Function() OpenDiv(tag, ...);
+Function() CloseDiv(tag, ...);
+
+// open tag(s): initialize flags, return tag string
+OpenDiv(tag_IsString) <-- OpenDiv({tag});
+OpenDiv(tags_IsList) <--
+[
+	Local(tag, result);
+	result := {};
+	ForEach(tag, tags)
+	[
+		If(Not havediv[tag],
+		[
+		  havediv[tag]:=True;
+		  DestructiveAppend(result, OpenTag(tag));
+		]);
+	];
+	PrintList(result, "");
+];
+
+// close divisions, initialize flags, return tag string
+CloseDiv(tag_IsString) <-- CloseDiv({tag});
+CloseDiv(tags_IsList) <--
+[
+	Local(tag, result);
+	result := {};
+	ForEach(tag, tags)
+	[
+		If(havediv[tag],
+		[
+			havediv[tag]:=False;
+			DestructiveAppend(result, CloseTag(tag));
+		]);
+	];
+	PrintList(result, "") : Nl();
+];
+
+
+Chapter(x) := AddBody(
+CloseDiv("paragraph", "subsubsection", "subsection", "section", "chapter")
+: OpenDiv("chapter") :
+"<CHAPTERTITLE>" : x : "</CHAPTERTITLE>
+");
+
+
+Section(x) := AddBody(
+CloseDiv("paragraph", "subsubsection", "subsection", "section")
+: OpenDiv("section") :
+"<SECTIONTITLE>" : x : "</SECTIONTITLE>
+");
+
+SubSection(x) := AddBody(
+CloseDiv("paragraph", "subsubsection", "subsection")
+: OpenDiv("subsection") :
+"<SUBSECTIONTITLE>" : x : "</SUBSECTIONTITLE>
+");
+
+Itemize(body) :=
+[
+  CloseDiv("paragraph", "item", "enumerate", "itemize") 
+  : OpenDiv("itemize")
+  : body
+  : CloseDiv("paragraph", "item", "itemize");
+];
+
+Enumerate(body) :=
+[
+  CloseDiv("paragraph", "item", "enumerate", "itemize") 
+  : OpenDiv("enumerate")
+  : body
+  : CloseDiv("paragraph", "item", "enumerate");
+];
+
+Item(body) := If(havediv["item"], "</ITEM>", [havediv["item"]:=True; "";]) : "<ITEM>" : body;
+
+HtmlNewParagraph() := CloseDiv("paragraph","item","enumerate","itemize", "chapterintro") : OpenDiv("paragraph");
+
+// each line in its own tag
+HtmlCommand(x) := "<CODESAMPLE>
+<CODESAMLELINE>" : 
+[
+	Local(result, index, previndex);
+	result := {};
+
+	For(previndex:=1, previndex<=Length(x), True)
+	[
+		index := previndex;
+		While(index<=Length(x) And StringMid(index,1,x)!=Nl())
+		[
+			index++;
+		];
+		// avoid printing the first empty line
+		If(index > 1, DestructiveAppend(result, StringMid(previndex, index-previndex, x)));
+		previndex := index+1;
+	];
+	PrintList(result, "</CODESAMPLELINE>
+<CODESAMPLELINE");
+] : "</CODESAMPLELINE>
+</CODESAMPLE>
+";
+
+HtmlEmphasis(x) := "<EMPH>" : x : "</EMPH>";
+
+HtmlTerm(x) :=
+If(x = "Yacas",
+	"<FONT FAMILY=\"csc\">Yacas<\FONT>",
+	"<CODE>" : x : "</CODE>"
+);
+
+HtmlTermHeading(x) := HtmlTerm(x);
+
+HtmlBreak() := "<BR />
+";
+
+Bodied("Item",2);	/* competes with prec. 7 of ":" */
+Bodied("Book",60000);
+Bodied("Title",60000);
+Bodied("Author",60000);
+Bodied("Chapter",60000);
+Bodied("Section",60000);
+Bodied("SubSection",60000);
+Bodied("Text",60000);
+Bodied("DocumentationComment",60000);
+Bodied("Itemize",2);
+Bodied("Enumerate",2);
+
+XMLFinishUp() := AddBody(CloseDiv("paragraph", "item", "itemize", "enumerate", "subsubsection", "chapterintro", "subsection", "section", "chapter", "book"));
+
+IncludeFile(x) := Load(x);
+
+HtmlLink(text, url, param1, param2) :=
+"<LINK URL=\"" : url : If(param1 != "", "#" : param1, "") : "\">" : text : "</LINK>";
+
+RuleBase("TeXMath", {x});
+RuleBase("TeXMathD", {x});
+RuleBase("TeXMathD", {x, y});
+HoldArg("TeXMath", x);
+HoldArg("TeXMathD", x);
+/* use <-- since := would redefine everything */
+TeXMath(_x) <-- "<FORMULA latex=\"" : TeXForm(x) : "\" yacas=\"":(ToString()Write(x)):"\"  />
+";
+TeXMathD(_x) <-- "<DISPFORMULA latex=\"" : TeXForm(x) : "\" yacas=\"" : (ToString()Write(x)) : "\" endpunctuation=\"\" />
+";
+// special form: punctuation at the end of a displayed equation
+TeXMathD(_x, _string) <-- "<DISPFORMULA latex=\"" : TeXForm(x) : "\" yacas=\"":(ToString()Write(x)):"\" endpunctuation=\"" : string : "\" />
+";
+
+/* stuff for refman */
+
+ChapterIntro(string) := AddBody(OpenDiv("chapterintro") : string);
+
+Bodied("ChapterIntro", 60000);
+
+CmdDescriptionMany(cmd, desc) := AddBody(CmdDescriptionHead(cmd, desc));
+CmdDescriptionSingle(cmd, desc) := AddBody(CmdDescriptionHead(cmd, desc)
+: "<INDEXENTRY text=\"" : cmd : "\">":HtmlTerm(cmd):"</INDEXENTRY>
+");
+
+CmdDescriptionHead(cmd, desc) :=
+"<CMDHEAD commands=\"" : cmd : "\">": desc : "</CMDHEAD>
+";
+
+StandardLib() := AddBody("
+<HEADLINE label=\"STD\" />
+");
+
+UnixSpecific() := AddBody("
+<HEADLINE label=\"UNIX\" />
+");
+
+MSWinSpecific() := AddBody("
+<HEADLINE label=\"MSWIN\" />
+");
+
+MacSpecific() := AddBody("
+<HEADLINE label=\"MAC\" />
+");
+
+BuiltIn() := AddBody("
+<HEADLINE label=\"CORE\" />
+");
+
+// this could in principle also post-process the TeX code, e.g. replace " by `` '' etc., but it's faster to do it in Perl
+AddBody(string) := WriteString(string);
+
+// make SeeAlso print "See also" and do not do the Topical thing
+SeeAlso(list) := AddBody(CloseDiv("paragraph", "item", "itemize", "enumerate", "subsubsection") : "
+<SEEALSO>
+<SEEALSOITEM text=\""
+: PrintList(list, "\" />
+<SEEALSOITEM text=\"")
+: "\" />
+</SEEALSO>
+");
+
+AddAnchor(string) := "<INDEXENTRY text=\"" : string : "\">":string:"</INDEXENTRY>";
+HtmlAnchor(string) := "<INDEXENTRY text=\"" : string : "\">":HtmlTerm(string):"</INDEXENTRY>";
+
+Bodied("HtmlAnchor", 60000);
+Topical(string) := If(string = "See also:", True,
+AddBody(
+CloseDiv("paragraph", "subsubsection")
+: OpenDiv("subsubsection")
+:"<SUBSUBSECTIONTITLE>" : string : "</SUBSUBSECTIONTITLE>
+")
+);
+Bodied("Topical",60000);
+
+LocalSymbols(blurbText) [
+  blurbText := "";
+
+  Blurb(string) :=
+  [
+    blurbText := string;
+    True;
+  ];
+
+  BlurbText() := blurbText;
+
+]; // LocalSymbols(blurbText)
+
+Bodied("Blurb",60000);
+// special escapes
+Gt() := "&gt;";
+Lt() := "&lt;";
+
+// inline Yacas code
+DocEval(x) :=
+[
+	Local(result);
+	result:=Eval(x);	// this already prints anything that x printed
+	
+	If(
+		result = True,	// if the expression resulted in True, do not print "True"
+		True,
+		// otherwise print result
+		If(
+			IsString(result),
+			WriteString(result),
+			Write(result)
+		)
+	);
+	NewLine();
+];
+
+HoldArgNr("DocEval", 1, 1);
+
+DocFootnote(x) := "<FOOTNOTE>":x:"</FOOTNOTE>";
+
+// TeX representation of a Yacasdoc reference
+YacasDocLink(bookname, text, url) :=
+  If(bookname = "", "",
+   "<LINK bookname=\"" : bookname : "\" URL=\"": url : "\">" : text : "</LINK>");
+

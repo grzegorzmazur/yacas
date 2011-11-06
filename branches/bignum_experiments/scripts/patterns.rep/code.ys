@@ -1,0 +1,59 @@
+
+
+RuleBase("MakeVector",{vec,dimension});
+Rule("MakeVector",2,1,True)
+[
+    Local(res,i);
+    res:={};
+    i:=1;
+    Set(dimension,MathAdd(dimension,1));
+    While(LessThan(i,dimension))
+    [
+      DestructiveInsert(res,1,Atom(ConcatStrings(String(vec),String(i))));
+      Set(i,MathAdd(i,1));
+    ];
+    DestructiveReverse(res);
+];
+
+
+RuleBase("<--",{patternleft,patternright});
+
+Rule("<--",2,1,Equals(Type(patternleft),"#"))
+[
+  DefinePattern(patternleft[2],patternright,patternleft[1],True);
+];
+Rule("<--",2,2,IsFunction(patternleft))
+[
+ DefinePattern(patternleft,patternright,0,True);
+];
+HoldArg("<--",patternleft);
+HoldArg("<--",patternright);
+
+RuleBase("DefinePattern",
+         {patternleft,patternright,patternprecedence,postpredicate});
+Rule("DefinePattern",4,9,Equals(Type(patternleft),"_"))
+[
+ DefinePattern(patternleft[1],patternright,
+               patternprecedence,patternleft[2]);
+];
+
+Rule("DefinePattern",4,10,True)
+[
+  Local(patternflat,patternvars, patt, patternoper,arity);
+  Set(patternflat, Listify(patternleft));
+  Set(patternvars, Tail(patternflat));
+  Set(patternoper,String(Head(patternflat)));
+  Set(arity,Length(patternvars));
+  DefLoadFunction(patternoper);
+  If(Not(RuleBaseDefined(patternoper,arity)),
+     [
+      MacroRuleBase(patternoper,MakeVector(arg,arity));
+     ]
+    );
+  Set(patt,Pattern'Create(patternvars,postpredicate));
+  MacroRulePattern(patternoper,arity,patternprecedence,
+            patt)patternright;
+  True;
+];
+
+

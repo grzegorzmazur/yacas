@@ -1,0 +1,3 @@
+Main-Class: net/sf/yacas/YacasConsole
+Class-Path: yacas.jar
+Class-Path: datahub.jar

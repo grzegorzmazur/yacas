@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
+    <script type="text/javascript" src="datahub.js"></script>
+    <script type="text/javascript" src="yacas.js"></script>
+    <script type="text/javascript">
+
+      /* When deep link found, redirect to the tabbified main page */
+      if (top.location == self.location)
+      {
+        self.location.replace("yacas.html");
+      }
+
+      var prevOnLoad = window.onload;
+      window.onload = initPage;
+
+      function initPage()
+      {
+        prevOnLoad();
+        if (document.location.search)
+        {
+          var bse = document.location.search;
+          if (bse.indexOf("?") == 0)
+          {
+            bse = bse.substring(1);
+          }
+          var elem = document.getElementById("tuttext");
+          if (elem)
+          {
+            elem.contentWindow.document.location.href = bse+"1.html";
+          }
+        }
+
+
+      }
+    </script>
+  </head>
+  <body style="background-image:url('back.gif'); ">
+    <table cellpadding="0">
+      <tr>
+        <td>
+          <span class="yacasConsole" id="tutorial"></span>
+          <APPLET name="datahub" archive="yacas.jar" code="net.sf.yacas.DatahubApplet" width=1 height=1></APPLET>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <iframe id="tuttext" width=750 height=300 frameborder=0 src="tutorialtext1.html"></iframe>
+        </td>
+      </tr>
+    </table>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2425144-1";
+urchinTracker();
+</script>
+
+  </body>
+</html>

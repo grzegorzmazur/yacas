@@ -1,0 +1,221 @@
+/* Calculating Pi to multiple precision using advanced methods */
+
+/* Defined: PiMethod0(), PiMethod1(), PiMethod2(), PiBrentSalamin(), PiBorwein() */
+
+// Reference method: just use Newton's method all the time, no complicated logic to select precision steps. Slightly slower than method 1 but a lot simpler. This is implemented in Internal'Pi()
+
+PiMethod0() := [
+	Local(result, delta, k, Epsilon, prec, prec1, curprec);
+	prec := Builtin'Precision'Get();	// full required precision
+	prec1 := Ceil(N(prec/3));	// precision of the last-but-one iteration
+
+	/* initial approximation */
+	result := 3.14159265358979323846;
+	curprec := 20;
+	Builtin'Precision'Set(curprec);
+	For(k:=0, curprec < prec1, k:=k+1) [
+		curprec := Min(prec1, curprec * 3);
+		Builtin'Precision'Set(curprec);
+		Echo({"Iteration ", k, " setting precision to ", curprec});
+		result := Time(MathAdd(result, MathSin(result)));
+	];
+	// last iteration -- do by hand
+	Builtin'Precision'Set(prec);	// restore full precision
+	Echo("Iteration ", k, " setting precision to ", Builtin'Precision'Get());
+	result := Time(MathAdd(result, MathSin(result)));
+	Echo({"variable precision Newton's method: ", k, "iterations"}); 
+	result;
+];
+
+/* Brute-force method 1: start near 3.14159... and iterate using Nth order
+Newton method: x := x + ( sin(x) + 1/6*sin(x)^3 + 3/40*sin(x)^5 +
+5/112*sin(x)^7 + ...) i.e. the Taylor series for arcsin but cut at a finite
+point. Convergence is of order of the next term, i.e. x^9, but need to evaluate
+Sin() at each step. However, we don't need to evaluate them to full precision
+each time, because each iteration will correct any accumulated errors. In fact,
+first iterations can be computed with significantly lower precision than the
+final result. This makes method1 the fastest for Yacas internal math. */
+
+PiMethod1() := [
+	Local(result, delta, deltasq, k, Epsilon, prec, curprec);
+	prec := Builtin'Precision'Get();
+	N([
+    /* initial approximation */
+    curprec := 20;
+    Builtin'Precision'Set(curprec);
+    result := 3.14159265358979323846;
+    /* right now we do all but the last iteration using the 8th order scheme, and the last iteration is done using the 2nd order scheme. However it would be faster to use a very high-order scheme first, then a smaller-order scheme, etc., because it's faster to do multiplications at low precision.
+    */
+    For(k:=0, curprec*3 < prec, k := k+1) [
+      curprec := Min(Ceil((prec/3)), curprec * 9);
+      Builtin'Precision'Set(curprec);
+      Echo("Iteration ", k, " setting precision to ", Builtin'Precision'Get());
+      delta := MathSin(result);
+      deltasq := (delta*delta);
+      result := Time(result + delta*(1 + deltasq*(1/6 + deltasq*(3/40 + deltasq*5/112))));
+    ];
+    // now do the last iteration
+    Builtin'Precision'Set(prec);
+    k := k+1;
+    Echo("Iteration ", k, " setting precision to ", Builtin'Precision'Get());
+    result := Time(MathAdd(result, MathSin(result)));
+    Echo({"8th order Newton's method: ", k, "iterations"}); 
+  ]);
+	result;
+];
+
+/* Brute-force method 2: evaluate full series for arctan */
+/* x0 := 3.14159... and Pi = x0 - ( tan(x0) - tan(x0)^3/3 + tan(x0)^5/5 +...) i.e. the Taylor series for arctan - go until it converges to Pi. Convergence is linear but unlike method 1, we don't need to evaluate Sin() and Cos() at every step, and we can start at a very good initial approximation to cut computing time.
+*/
+
+PiMethod2() := [
+	Local(result, delta, tansq, k, Epsilon);
+	N([
+    Epsilon := (2*10 ^ (-Builtin'Precision'Get()));
+
+    /* initial approximation */
+    result := 3.141592653589793;
+    delta := (-Tan(result));
+    tansq := (delta^2);
+    k := 0;
+    
+    While(Abs(delta) > Epsilon) [
+  //		Echo(result);
+      result := (result + delta/(2*k+1));
+  //		Echo(delta, k);
+      delta := (-delta * tansq);
+      k := k+1;
+    ];
+    Echo({"Brute force method 2 (ArcTan series): ", k, "iterations"}); 
+  ]);
+	result;
+];
+
+/* Method due to Brent and Salamin (1976) */
+PiBrentSalamin() := [
+	Local(a, b, c, s, k, p, result, Epsilon);
+	Epsilon := N(2*10 ^ (-Builtin'Precision'Get()));
+
+	/* initialization */
+	a := 1; b := N(1/Sqrt(2)); s := N(1/2); k := 0;
+	/* this is just to make sure we stop - the algorithm does not require initialization of p */
+	p := 0; result := 1;
+	/* repeat until precision is saturated */
+	While(Abs(p-result) >= Epsilon) [
+		k := k+1;
+		result := p;
+		/* arithmetic and geometric mean */
+		{a, b} := {N((a+b)/2), N(Sqrt(a*b))};
+		/* difference between them is scaled by 2^k */
+		s := N(s - 2^k*(a^2-b^2));
+		p := N(2*a^2/s);
+	];
+	Echo({"Brent and Salamin's algorithm: ", k, "iterations"}); 
+	
+	result;
+];
+
+/* Method due to Borwein (c. 1988) -- "quartic" method */
+PiBorwein() := [
+	Local(a, y, y4s, k, result, Epsilon);
+	Epsilon := N(2*10 ^ (-Builtin'Precision'Get()));
+
+	/* initialization */
+	a:=N(6-4*Sqrt(2)); y := N(Sqrt(2)-1); k := 0;
+	result := 0;
+	/* repeat until precision is saturated */
+	While(Abs(a-result) >= Epsilon) [
+		result := a;
+		/* precompute (1-y^4)^(1/4) */
+		y4s:=N(Sqrt(Sqrt(1-y^4)));
+		/* black magic */
+		y := N((1-y4s)/(1+y4s));
+		/* more black magic */
+		a := a*(1+y)^4-2^(2*k+3)*y*(1+y+y^2);
+		k := k+1;
+	];
+	/* {a} will converge to 1/Pi */
+	result := N(1/result);
+
+	Echo({"Borwein's quartic algorithm: ", k, "iterations"}); 
+	result;
+];
+
+// iterate x := x + Cos(x) + 1/6 *Cos(x)^3 + ... to converge to x=Pi/2
+PiMethod3() :=
+[
+	Local(result, delta, deltasq, k, order, prec, curprec);
+	order := 13;	// order of approximation
+	prec := Builtin'Precision'Get();
+  N([
+    /* initial approximation */
+    curprec := 20;
+    Builtin'Precision'Set(curprec);
+    result := 3.14159265358979323846*0.5;
+    // find optimal initial precision
+    For(k:=prec, k>=curprec, k:=Div(k,order)+2) True;
+    If(k<5, curprec:=5, curprec:=k);
+  //	Echo("initial precision", curprec);
+    // now k is the iteration counter
+    For(k:=0, curprec < prec, k := k+1) [
+    // at this iteration we know the result to curprec digits
+      curprec := Min(prec, curprec * order-2);	// 2 guard digits
+      Builtin'Precision'Set(curprec+2);
+      Echo("Iteration ", k, " setting precision to ", Builtin'Precision'Get());
+  //		Echo("old result=", MathCos(result));
+      Time([
+      delta := MathCos(result);
+      ]);
+      Time([
+      deltasq := MathMultiply(delta,delta);
+      ]);
+      result := Time(result + delta*(1 + deltasq*(1/6 + deltasq*(3/40 + deltasq*(5/112 + deltasq*(35/1152 + (deltasq*63)/2816))))));
+    ];
+    Echo({"Method 3, using Pi/2 and order", order, ":", k, "iterations"});
+  ]);
+	result*2;
+];
+
+PiChudnovsky() :=
+[	// use the Ramanujan series found by Chudnovsky brothers
+	Local(A, B, C, n, result, term);
+	A:=13591409; B:=545140134; C:=640320; // black magic, Rama, Rama, Ramanujan
+	prec := Builtin'Precision'Get();
+  N([
+    n:=Div(prec*479,6793)+1;	// n> P*Ln(10)/(3*Ln(C/12))
+    Echo({"Method: Chudnovsky, using ", n, " terms"});
+    Builtin'Precision'Set(prec+IntLog(n,10)+5);
+    result := (A+n*B);
+    While(n>0)
+    [
+  //	Echo(n,result);
+      result := A+(n-1)*B-24*(6*n-1)*(2*n-1)*(6*n-5) /(C*n)^3 *result;
+      n--;
+    ];
+    result := C/12*Sqrt(C)/Abs(result);
+  ]);
+	Builtin'Precision'Set(prec);
+	RoundTo(result,prec);
+];
+
+BenchmarkPi(prec) :=
+[
+	Local(result);
+	GlobalPush(Builtin'Precision'Get());
+	Builtin'Precision'Set(prec);
+	
+	result := {
+		Time(MathPi()),
+		Time(PiMethod0()),
+		Time(PiMethod1()),
+		Time(PiMethod2()),
+		Time(PiMethod3()),
+//		Time(PiMethod4()),
+		Time(PiChudnovsky()),
+		Time(PiBrentSalamin()),
+		Time(PiBorwein()),
+	};
+	result := N(Sin(result));
+	Builtin'Precision'Set(GlobalPop());
+	result;
+];

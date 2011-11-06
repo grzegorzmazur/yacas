@@ -1,0 +1,288 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="yacas.css" TYPE="text/css" MEDIA="screen">
+    <script type="text/javascript" src="datahub.js"></script>
+    <script type="text/javascript" src="yacas.js"></script>
+
+    <script type="text/javascript">
+      /* When deep link found, redirect to the tabbified main page */
+      if (top.location == self.location)
+      {
+        self.location.replace("homepage.html?recent.html&newtonconvergence.html");
+      }
+    </script>
+
+    <script type="text/javascript">
+
+var current = 0;
+var previousValue = "";
+var usedPrecision = "87";
+var initValue = "3";
+var usedFn = "Sin(x)";
+
+function nextStep()
+{
+  nextStepTimeoutID = 0;
+  var thetable = document.getElementById("thetable");
+
+  var result;
+  var toshow;
+  var end = 0;
+  var totalend = false;
+  if (current == 0)
+  {
+    result = ""+yacas_calculate("start();");
+
+    var error = yacas_getlasterror();
+    if (error.length > 0)
+    {
+      alert("Error performing calculation, some of the input is invalid, error returned was "+error);
+      return;
+    }
+
+    toshow = "<tt>"+result+"</tt>";
+    end = 0;
+    totalend = false;
+  }
+  else
+  {
+    result = ""+yacas_calculate("iterate();");
+    var error = yacas_getlasterror();
+    if (error.length > 0)
+    {
+      alert("Error performing calculation, some of the input is invalid, error returned was "+error);
+      return;
+    }
+
+    toshow = "<tt>"+result+"</tt>";
+    end = result.length;
+    totalend = false;
+    if (previousValue.length < end) end = previousValue.length;
+    while (end > 0)
+    {
+      if (result.substring(0,end) == previousValue.substring(0,end))
+      {
+        break;
+      }
+      end--;
+    }
+    if (end > 0)
+    {
+      if (current > 5 && previousValue.length == end && end >= usedPrecision)
+      {
+        totalend = true;
+      }
+      toshow = '<tt style="color:red; ">'+previousValue.substring(0,end)+'</tt><tt>'+previousValue.substring(end)+'</tt>';
+    }
+  }
+  previousValue = result;
+  thetable.innerHTML = thetable.innerHTML + "<div>x("+current+") = "+toshow+"</div>";
+
+  if ( totalend == false && (current < 15) )
+  {
+    current = current + 1;
+    nextStepTimeoutID = setTimeout("nextStep()",50);
+  }
+  else
+  {
+    thetable.innerHTML = thetable.innerHTML + '( <a href="javascript:goNextExample();">other example</a> )';
+  }
+}
+
+var nextStepTimeoutID = 0;
+
+function goNextExample()
+{
+  example();
+}
+
+function restart()
+{
+  if (getConsoleApplet() == null) return;
+  var elem;
+  elem = document.getElementById("initValue");
+  if (elem)
+  {
+    if (initValue != elem.value)
+    {
+      if (!isNaN(parseFloat(elem.value)))
+      {
+        initValue = elem.value;
+      }
+    }
+  }
+
+  elem = document.getElementById("usedFn");
+  if (elem)
+  {
+    if (usedFn != elem.value)
+    {
+      usedFn = elem.value;
+    }
+  }
+
+  doRestart();
+}
+
+function doRestart()
+{
+  var elem;
+  yacas_calculate("[Clear(x);setup("+usedFn+");];");
+  var error = yacas_getlasterror();
+  if (error.length > 0)
+  {
+    alert("Error reading expression: "+usedFn);
+    elem = document.getElementById("usedFn");
+    if (elem)
+    {
+      elem.focus();
+    }
+    return;
+  }
+  yacas_calculate("newtonInitValue := "+initValue+";");
+  error = yacas_getlasterror();
+  if (error.length > 0)
+  {
+    alert("Error reading initial value");
+    elem = document.getElementById("initValue");
+    if (elem)
+    {
+      elem.focus();
+    }
+    return;
+  }
+  yacas_calculate("newtonPrecision := "+usedPrecision+";");
+
+  var thetable = document.getElementById("thetable");
+  thetable.innerHTML = "Trying to find x where "+
+  "<input id='usedFn' type='text'value='"+usedFn+"' />  = 0 starting at x=<input id='initValue' type='text'value='"+initValue+"' /> ( <a href='javascript:restart();'>go</a> )"+
+  "<div id='iter'> ( <a href='javascript:showIterExpr();'>show iteration equation</a> ) </div>";
+  current = 0;
+  if (nextStepTimeoutID != 0)
+  {
+    clearTimeout(nextStepTimeoutID);
+  }
+  nextStepTimeoutID = setTimeout("nextStep()",50);
+}
+
+
+function showIterExpr()
+{
+  var elem = document.getElementById("iter");
+  var iterStr = yacas_calculate("[Local(x);TeXForm(x_(i+1) == newtonIteration(x_i) );];");
+
+  var error = yacas_getlasterror();
+  if (error.length > 0)
+  {
+    alert("Error getting the current iteration expression");
+    return;
+  }
+
+  iterStr = iterStr.substring(2,iterStr.length-2);
+  elem.innerHTML = 
+    '<applet code=net.sf.yacas.FormulaViewApplet archive="yacas.jar" width=400 height=100>'+
+    '  <param name="expression" value="'+iterStr+'" />'+
+    '</applet><br />';
+}
+
+function enterInput()
+{
+  var thetable = document.getElementById("thetable");
+  thetable.innerHTML = "<input id='function' type='text' value='"+usedFn+"' /> = 0, with x starting at <input id='initValue' type='text' value='"+initValue+"' /><input type='button' value='Go' onclick='restart();'/> <input type='button' value='Other example' onclick='example();'/>";
+}
+
+var exInitValues = new Array('3'     ,'1'    , '2'      ,'1');
+var exFunctions  = new Array('Sin(x)','x^2-2', 'Ln(x)-1','1/x^2-2');
+var curExample = 0;
+
+function example()
+{
+  initValue     = exInitValues[curExample];
+  usedFn        = exFunctions [curExample];
+  curExample = (curExample+1) % exFunctions.length;
+  enterInput();
+  restart();
+}
+
+var prevInit = window.onload;
+
+window.onload = init;
+
+function waitForApplet()
+{
+  var consoleApplet = document.consoleApplet;
+  if (!consoleApplet)
+    consoleApplet = parent.document.consoleApplet;
+  if (consoleApplet)
+  {
+    if (consoleApplet.isActive)
+      if (!consoleApplet.isActive())
+      {
+        setTimeout("waitForApplet();",1000);
+        return;
+      }
+  }
+  example();
+}
+
+function init()
+{
+  if (prevInit)
+  {
+    prevInit();
+  }
+  waitForApplet();
+}
+
+    </script>
+  </head>
+  <body>
+    <h1>A demonstration of the amazingly fast convergence of Newton iteration</h1>
+
+    <div style="padding: 2px 2px 2px 2px; border: 1px solid #000000;">
+      <div id="thetable">Please wait, loading demonstration...</div>
+    </div>
+
+    <p>
+You probably played the game where you have to guess a number below one hundred, say, and where you get an indication "higher" or "lower" for each guess you make. The trick with this game is to always guess in the middle of the range known to contain the solution, so the chance that the number you are guessing at is higher is equal to the chance that the number is lower, thus halving the range with each answer. This ensures that you arrive at the correct answer in the least possible steps, on average, if this is all the information you are given.
+    </p>
+    <p>
+The method of searching by guessing in the middle of the possible solutions is called a binary search (or sometimes the bisection method), and is often the best approach when trying to find something. The speed with which you gather information with a binary search grows linearly with the number of questions you ask. Each time you get an answer, you have another bit of information, while maximizing the information content of the answer to each question. The answer you get to a question where the odds for a certain answer is 99 percent gives much less information, because you already knew what the answer was likely to be.  
+    </p>
+    <p>
+There are situations where binary search is not the best approach, and finding the zero of a smooth continuous function is one such example. For finding a zero, Newton iteration will usually outshine binary search, and it is not even a close call. The reason finding a zero of an analytic function is better done through Newton iteration is that with a smooth continuous function one <em>does</em> have more information, namely the derivative of the function! The function, together with its derivative, can be used in an ingenious way to not just determine the direction one has to consider for the zero, but also to determine an estimate of the <em>distance</em> to the final solution. 
+    </p>
+    <p>
+The speed of convergence of Newton iteration can sometimes be nothing short of astounding. It will often happen, for suitably neatly defined problems, that the amount of information you gather doubles with each question you ask! Or even triples! Imagine having an encyclopedia, where the number of volumes you have doubles each time you put in some effort to get new information (by finding the answer to a question). Each time you get an answer to a question, you double the number of words of information you have. You can see this happen in the demonstration at the top of this article, where the digits in red indicate correct digits, and black are as of yet incorrect digits. With the typical example, the number of digits precision doubles or triples with each iteration. This is very far off from the application of binary search, where you get one extra bit of information in a linear fashion, each time you ask a question. With binary search, you would have ten bits of information after ten inquiries. With a Newton iteration you are bound to have around a thousand (two to the power of ten). And the speed of growth of information keeps speeding up exponentially.
+    </p>
+    <p>
+At the top of this article is a little utility written in Javascript that demonstrates the fast convergence of the Newton iteration for a few examples. You can also enter your own. The digits in red are the digits where the value is the same as the digit in the line below it (the assumption is made that that digit has the final and correct value). As you can see, the speed at which the number of red digits increases per iteration grows exponentially for many examples.
+    </p>
+    <p>
+The  following <a href="journaldescr.html?newtonconvergence">article</a> delves deeper in to the math of Newton iteration, and presents the Yacas script code that was used for this demonstration.
+    </p>
+
+
+<applet name="consoleApplet" archive="yacas.jar" code="net.sf.yacas.ConsoleApplet" width=1 height=1>
+  <param name="programMode" value="journal">
+  <param name="progressbar" value="true">
+  <param name="boxmessage" value="Loading Yacas...">
+  <param name="init1" value="Load(''yacasinit.ys'')">
+  Your browser does not support Java, so nothing is displayed.
+</applet>
+
+<applet name="datahub" archive="yacas.jar" code="net.sf.yacas.DatahubApplet" width=1 height=1>
+  <param name="programMode" value="journal">
+  <param name="articleFromFile" value="newtonconvergence.yart">
+</applet>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2425144-1";
+urchinTracker();
+</script>
+
+  </body>
+</html>
+

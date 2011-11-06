@@ -1,0 +1,864 @@
+		Euler's Gamma function
+
+*A Gamma function
+
+Euler's Gamma function $Gamma(z)$ is defined for complex $z$ such that
+$Re(z)>0$ by the integral
+$$Gamma(z):=Integrate(z, 0, Infinity) Exp(-t)*t^(z-1)$$.
+The Gamma function satisfies several identities that can be proved by
+rearranging this integral; for example, $Gamma(z+1)=z*Gamma(z)$. This identity
+defines $Gamma(z)$ for all complex $z$. The Gamma function is regular
+everywhere except nonpositive integers ($0$, $-1$, $-2$, ...) where it diverges.
+
+	    Special arguments
+
+For real integers $n>0$, the Gamma function is the same as the factorial, 
+$$ Gamma(n+1) := n! $$,
+so the factorial notation can be used for the Gamma function too. Some formulae
+become a little simpler when written in factorials.
+
+*A Gamma function!half-integer arguments
+
+The Gamma function is implemented as {Gamma(x)}. At integer values {n} of the
+argument, {Gamma(n)} is computed exactly.
+Because of overflow, it only makes sense to compute exact integer factorials for small numbers $n$.
+Currently a warning message is printed if a factorial of $n>65535$ is requested.
+
+For half-integer arguments $Gamma(x)$ is
+also computed exactly, using the following identities (here $n$ is a
+nonnegative integer and we use the factorial notation):
+$$ (+(2*n+1)/2)! = Sqrt(Pi)*(2*n+1)! / (2^(2*n+1)*n!) $$,
+$$ (-(2*n+1)/2)! = (-1)^n*Sqrt(Pi) * (2^(2*n)*n!) / (2*n)! $$.
+For efficiency, "double factorials" are used in this calculation.
+The "double factorial" is defined as
+$n!! = n*(n-2)*...$ and satisfies the identities
+$$ (2*n-1)!! = (2*n)! /(2^n*n!) $$,
+$$ (2*n)!! = 2^n*n! $$.
+For convenience, one defines $0! = 1$, $0!! = 1$, $(-1)!! = 1$.
+
+If the factorial of a large integer or half-integer $n$ needs to be computed not exactly but only with a certain floating-point precision, it is faster (for large enough $Abs(n)$) not to evaluate an exact integer product, but to use the floating-point numerical approximation.
+This method is currently not implemented in Yacas.
+
+*A Stirling's formula
+
+There is also the famous Stirling's asymptotic formula for large factorials,
+$$Ln(n!) <=> Ln(2*Pi*n)/2+n*Ln(n/e)+1/(12*n)-1/(360*n^3)+...$$
+An analogous formula for double factorials can be easily found.
+
+	    Method 0: power series (rational arguments)
+
+*A Gamma function!rational arguments
+
+For "small" rational arguments, i.e. for numbers $s=p/q$ where $p$, $q$ are small integers, there is a faster method for computing $Gamma(s)$.
+This method was used in [Smith 2001].
+[Haible <i>et al.</i> 1998] give this method in conjunction with the binary splitting technique.
+
+Repeated partial integration gives the expansion
+$$ Gamma(s) = M^s*Exp(-M)*Sum(n,0,Infinity,M^n/(s*(s+1)*...*(s+n))) $$
+$$ + (Integrate(u,M,Infinity) u^(s-1)*Exp(-u)) $$.
+Suppose that $1<=s<=2$.
+Then the remainder is given by the last integral that is smaller than $M*Exp(-M)$.
+By choosing $M$ a large enough integer, the remainder can be made small enough to discard it.
+Then we obtain a series of rational numbers that can be evaluated directly in $O(P^2)$ time or using the binary splitting technique in $O(M(P*Ln(P))*Ln(P))$ time.
+This method is currently not implemented in Yacas.
+
+	    Method 1: the Lanczos-Spouge formula
+
+*A Gamma function!by Lanczos-Spouge method
+
+For arbitrary complex arguments with nonnegative real part, the
+function {Internal'GammaNum(x)} computes a uniform appoximation of Lanczos [Lanczos 1964] modified by Spouge [Spouge 1994].
+(See also [Godfrey 2001] for some more explanations.) This function is also triggered when in numeric mode, eg. when 
+calling {N(Gamma(x))}, which is the preferred method for end users.
+
+The method gives the $Gamma$-function only for arguments with positive
+real part; at negative values of the real part of the argument, the
+$Gamma$-function is computed via the identity
+$$Gamma(x)*Gamma(1-x) = Pi/Sin(Pi*x)$$.
+
+The Lanczos-Spouge approximation formula depends on a parameter $a$,
+$$Gamma(z) = (Sqrt(2*Pi)*(z+a)^(z-1/2)) / (z*e^(z+a)) * (1+e^(a-1)/Sqrt(2*Pi) * Sum(k, 1, N, c[k]/(z+k)))$$,
+with $N := Ceil(a)-1$. The coefficients $c[k]$ are defined by
+$$ c[k] = (-1)^(k-1)*(a-k)^(k-1/2)/(e^(k-1)*(k-1)!) $$.
+The parameter $a$ is a free parameter of the approximation that determines also
+the number of terms in the sum. Some choices of $a$ may lead to a slightly more
+precise approximation, but larger $a$ is always better. The number of terms $N$
+must be large enough to produce the required precision. The estimate of the relative error for
+this formula is valid for all $z$ such that $Re(z)>0$ and is
+$$error < (2*Pi)^(-a)/Sqrt(2*Pi*a)*(a/(a+z))$$.
+The lowest value of $a$ to produce $P$ correct digits is estimated as
+$$a = (P-Ln(P)/Ln(10)) * (Ln(10)/Ln(2*Pi))-1/2$$. In practical calculations, the integer logarithm routine {IntLog} is used and the constant $Ln(10)/Ln(2*Pi)$ is approximated from above by 659/526, so that $a$ is not underestimated.
+
+The coefficients $c[k]$ and  the parameter $a$ can be chosen to
+achieve a greater precision of the approximation formula. However, the recipe
+for the coefficients $c[k]$ given in the paper by Lanczos is too complicated
+for practical calculations in arbitrary precision: the time it would take to
+compute the array of $N$ coefficients $c[k]$ grows as $N^3$. Therefore it is
+better to use less precise but much simpler formulae derived by Spouge.
+
+
+	    Round-off error in the Lanczos method
+
+In the calculation of the sum $S:=Sum(k, 1, N, c[k]*(z+k)^(-1))$, a certain round-off error results from the changing signs in $c[k]$, and from the fact that some values $c[k]$ are much larger than the final value of the sum.
+This leads to some cancellations and as a result to a certain loss of precision.
+
+At version
+*EVAL Version() : ","
+{Yacas} is limited in its internal arbitrary precision facility that does not support
+true floating-point computation but rather uses fixed-point logic; this hinders precise calculations with
+floating-point numbers. In the current version of the {Internal'GammaNum()} function, two workarounds
+are implemented. First, a Horner scheme is used to compute the sum; this is somewhat
+faster and leads to smaller round-off errors. Second, intermediate calculations
+are performed at 40{%} higher precision than requested. This is much slower but
+allows to obtain results at desired precision.
+
+If strict floating-point logic is used, the working precision necessary to compensate for the cancellations must be $1.1515*P$ digits for $P$ digits of the result.
+This can be shown as follows.
+
+The sum converges to a certain value $S$ which is related to the correct value of the Gamma function at $z$.
+After some algebra we find that $S$ is of order $Sqrt(a)$ if $z>a$ and of order $a^(1/2-z)$ if $a>z$.
+Since $a$ is never a very large number, we can consider the value of $S$ to be roughly of order $1$, compared with exponentially large values of some of the terms $c[k]$ of this sum.
+The magnitude of a coefficient $c[k]$ is estimated by Stirling's formula,
+$$ Ln(Abs(c[k]))<=> (k-1)*Ln((a-k)/(k-1)) $$.
+(Here we have put approximately $k-1<=>k-1/2$ since $k$ is not small.)
+This function has a maximum at $k<=>1+0.2178*(a-1)$.
+Then the largest magnitude of a coefficient $c[k]$ at this $k$ is approximately $Exp(0.2785*(a-1))$.
+The constant $0.2785=W(1/e)$ is the solution of $x+Ln(x)+1=0$.
+Here $x=(k-1)/(a-k)$ and $W$ is Lambert's function.
+Now, $a-1<=>P*Ln(10)/Ln(2*Pi)$, so the maximum of $c[k]$ is $10^(0.1515*P)$.
+Therefore we have a certain cancellation in the sum $S$: adding and subtracting some numbers of order $10^(0.1515*P)$ produces an answer of order $1$.
+Therefore we need to have at least 15% more decimal digits to obtain $P$ digits of the final answer.
+(The constant $W(1/e)/Ln(2*Pi)<=>0.1515$ is independent of the base 10.)
+
+
+	    Other methods for the Gamma function
+
+More traditional ways of calculating the Gamma function are the Stirling asymptotic series and the Sweeney-Brent method of combined series.
+
+	    Method 2: Stirling's asymptotic series
+
+*A Gamma function!by asymptotic series
+
+The Stirling asymptotic series for the Gamma function is
+$$ Ln(Gamma(x)) <> (x-1/2)*Ln(x)-x+1/2*Ln(2*Pi) $$
+$$ + Sum(n,1,Infinity, B[2*n]/(2*n*(2*n-1)*x^(2*n-1))) $$.
+This series is valid asymptotically for large $Abs(x)$, also for complex values of $x$ (but excluding the negative real values).
+Computation of this series  up to $n=N$ requires finding the Bernoulli numbers $B[n]$ up to $N$.
+
+For a given (large) value of $Abs(x)$, the terms of this series decrease at first, but then start to grow.
+(Here $x$ can be a complex number.)
+There exist estimates for the error term of the asymptotic series (see [Abramowitz <i>et al.</i> 1964], 6.1.42).
+Roughly, the error is of the order of the first discarded term.
+
+We can estimate the magnitude of the terms using the asymptotic formula for the Bernoulli numbers (see below).
+After some algebra, we find that the value of $n$ at which the series starts to grow and diverge is
+$n[0]<=>Pi*Abs(x)+2$.
+Therefore at given $x$ we can only use the asymptotic series up to the $n[0]$-th term.
+
+For example, if we take $x=10$, then we find that the 32-nd term of the asymptotic series has the smallest magnitude (about $10^(-28)$) but the following terms start to grow.
+
+To be on the safe side, we should drop a few more terms from the series.
+Define the number of terms by $n[0]:=Pi*Abs(x)$.
+Then the order of magnitude of the $n[0]$-th term is $Exp(-2*Pi*Abs(x))/(2*Pi^2*Abs(x))$.
+This should be compared with the magnitude of the sum of the series which is of order $Abs(x*Ln(x))$.
+We find that the relative precision of $P$ decimal digits or better is achieved if
+$$ (2*Pi-1)*x+(x+1)*Ln(x)+3.9 > P*Ln(10) $$.
+If ($x$,$P$) do not satisfy this inequality, the asymptotic method does not provide enough precision.
+For example, with $x=10$ we obtain $P<=35$.
+So the asymptotic series gives the value of $Gamma(10)$ with not more than 35 decimal digits.
+
+For very large $P$, the inequality is satisfied when roughly $x>P*Ln(10)/Ln(P)$.
+Assuming that the Bernoulli numbers are precomputed, the complexity of this method is that of computing a Taylor series with $n[0]$ terms, which is roughly $O(Sqrt(P))*M(P)$.
+
+
+What if $x$ is not large enough? Using the identity
+$ x*Gamma(x) = Gamma(x+1) $,
+we can reduce the computation of $Gamma(x)$ to $Gamma(x+M)$ for some integer $M$.
+Then we can choose $M$ to be large enough so that the asymptotic series gives the required precision when evaluated at $x+M$.
+We shall have to divide the result $M$ times by some long numbers to obtain $Gamma(x)$.
+Therefore, the complexity of this method for given ($x$,$P$) is increased by
+$M(P)*(P*Ln(10)/Ln(P)-x)$.
+For small $x$ this will be the dominant contribution to the complexity.
+
+On the other hand, if the Bernoulli numbers are not available precomputed, then their calculation dominates the complexity of the algorithm.
+
+	    Method 3: the Sweeney-Brent trick
+
+*A Gamma function!by Sweeney-Brent method
+
+The second method for the Gamma function $Gamma(x)$ was used in R. P. Brent's Fortran MP package [Brent 1978].
+Brent refers to [Sweeney 1963] for the origin of this method.
+Therefore, we called this method the "Sweeney-Brent" method.
+
+This method works well when $1<=x<2$ (other values of $x$ need to be reduced first).
+The idea is to represent the Gamma function as a sum of two integrals,
+$$ Gamma(x) = (Integrate(u,0,M) u^(x-1)*Exp(-u)) + (Integrate(u,M,Infinity) u^(x-1)*Exp(-u)) $$.
+The above identity clearly holds for any $M$.
+Both integrals in this equation can be approximated by power series (although we may do without the second integral altogether, for a small increase of computation time).
+The parameter $M$ and the numbers of terms in the series must be chosen appropriately, as we shall see below.
+
+The first integral in this equation can be found as a sum of the Taylor series (expanding $Exp(-u)$ near $u=0$),
+$$ (Integrate(u,0,M) u^(x-1)*Exp(-u)) = M^x*Sum(n,0,Infinity, ((-1)^n*M^n)/((n+x)*n!)) $$.
+This series absolutely converges for any finite $M$.
+However, the series has alternating signs and incurs a certain round-off error.
+The second integral is smaller than $M^(x-1)*Exp(-M)$ and $M$ can be chosen large enough so that this is smaller than $10^(-P)$.
+This condition gives approximately $M>P*Ln(10)+Ln(P*Ln(10))$.
+
+Now we can estimate the number of terms in the above series.
+We know that the value of the Gamma function is of order $1$.
+The condition that $n$-th term of the series is smaller than $10^(-P)$ gives $n*Ln(n/e*M)>P*Ln(10)$.
+With the above value for $M$, we obtain $n=P*Ln(10)/W(1/e)$ where $W$ is Lambert's function; $W(1/e)<=>0.2785$.
+
+The terms of the series are however not monotonic: first the terms grow and then they start to decrease, like in the Taylor series for the exponential function evaluated at a large argument.
+The ratio of the ($k+1$)-th term to the $k$-th term is approximately $M/(k+1)$.
+Therefore the terms with $k<=>M$ will be the largest and will have the magnitude of order $M^M/M! <=>Exp(M)<=>10^P$.
+In other words, we will be adding and subtracting large numbers with $P$ digits before the decimal point, but we need to obtain a result with $P$ digits after the decimal point.
+Therefore to avoid the round-off error we need to increase the working precision to $2*P$ floating-point decimal digits.
+
+It is quicker to compute this series if $x$ is a small rational number, because then the long multiplications can be avoided, or at high enough precision the binary splitting can be used.
+Calculations are also somewhat faster if $M$ is chosen as an integer value.
+
+If the second integral is approximated by an asymptotic series instead of a constant $Exp(-M)$,
+then it turns out that the smallest error of the series is $Exp(-2*M)$.
+Therefore we can choose a smaller value of $M$ and the round-off error gets somewhat smaller.
+According to [Brent 1978], we then need only $3/2*P$ digits of working precision, rather than $2*P$, for computing the first series
+(and only $P/2$ digits for computing the second series).
+However, this computational savings may not be significant enough to justify computing a second series.
+
+
+		Euler's constant $gamma$
+
+*A Euler's constant $gamma$
+
+Euler's constant $gamma$ is defined as
+$$ gamma := Limit(n,Infinity) (Sum(k,1,n,1/k)-Ln(n)) $$.
+This constant is useful for various reasons, mostly when working with higher transcendental functions.
+For example, $gamma$ is needed to obtain a Taylor series expansion of $Gamma(x)$.
+Another useful relation is
+$$ (D(x)Gamma(x)[x=1]) = -gamma $$.
+Approximately $gamma<=>0.577216$.
+
+	    Method 1: Brent's decomposition
+
+Computing $gamma$ by the series in the definition is extremely slow.
+A much faster method can be used, based on some identities of Bessel functions.
+(See [Brent <i>et al.</i> 1980] and [Gourdon <i>et al.</i> 2001].)
+
+The basic formulae for the "fast" method (Brent's method "B1") are:
+$$gamma <=> S(n) / V(n) - Ln(n) $$,
+where $S(n)$ and $V(n)$ are some auxiliary functions, and $n$ is chosen to be high enough (precise estimates are given below).
+
+First, the sequence $H[n]$ is defined as the partial sum of the harmonic series:
+$$ H[n] := Sum(k,1,n,1/k) $$.
+We also define $H[0]:=0$ for convenience.
+The function $V(n)$ is the modified Bessel function $I0(2*n)$. It is computed as a Taylor series
+$$ V(n) := Sum(k,0,Infinity, (n^k/k!)^2) $$.
+The function $S(n)$ is defined by a series like $V(n)$ but with each term multiplied by $H[k]$:
+$$ S(n) := Sum(k,0,Infinity, (n^k/k!)^2*H[k]) $$.
+Note that we need to compute $S(n)$ and $V(n)$ with enough precision, so the sum over $k$ will have to be performed up to a large enough $k$.
+(In practice, we do not really need to know the limit $k[max]$ beforehand.
+Instead, we can simply add terms to the series for $V(n)$ and $S(n)$ until desired precision is achieved.
+Knowing $k[max]$ in advance would help only if we needed to compare this method for computing $gamma$ with some other method, or if we would use the rectangular method of evaluating the Taylor series.)
+
+According to [Brent <i>et al.</i> 1980], the error of this approximation of $gamma$, assuming that $S(n)$ and $V(n)$ are computed exactly, is
+$$ Abs(gamma-S(n)/V(n)) < Pi*Exp(-4*n) $$.
+Therefore the parameter $n$ is proportional to the number of digits we need.
+If we need $P$ decimal digits (of absolute, not relative, precision), then we have to choose
+$$ n>(P*Ln(10)+Ln(Pi))/4$$.
+
+
+The required number of terms $k[max]$ in the summation over $k$ to get $S(n)$ and $V(n)$ with this precision can be approximated as usual via Stirling's formula.
+It turns out that $k[max]$ is also proportional to the number of digits,
+$k[max]<=>2.07*P$.
+
+Therefore, this method of computing $gamma$ has "linear convergence", i.e. the number of iterations is linear in the number of correct digits we need in the result.
+Of course, all calculations need to be performed with the working precision.
+The working precision must be a few digits more than $P$ because we accumulate about $Ln(k[max])/Ln(10)$ digits of round-off error by performing $k[max]$ arithmetic operations.
+
+Brent mentions a small improvement on this method (his method "B3").
+It consists of estimating the error of the approximation of $gamma$ by an asymptotic series.
+Denote $W(n)$ the function
+$$ W(n):=(1/(4*n))*Sum(k,0,2*n, (2*k)! ^3/((k!)^4)*(16*n)^(2*k)) $$.
+This function is basically the asymptotic series for $I0(2*n)*K0(2*n)$, where $I0$ and $K0$ are modified Bessel functions.
+The sum in this series has to be evaluated until about $k=2*n$ to get a good precision.
+Then a more precise approximation for $gamma$ is
+$$ gamma <=> U(n)/V(n)-W(n)/V(n)^2 $$.
+The precision of this approximation is of order $O(Exp(-8*n))$ instead of $O(Exp(-4*n))$ in Brent's method "B1".
+However, this is not such a great savings in time, because almost as much additional work has to be done to compute $W(n)$.
+Brent estimated that the method "B3" is about 20{%} faster than "B1".
+
+	    Method 2: Brent's summation trick
+
+Computation of $S(n)$ seems to need a running computation of $H[k]$ and a long multiplication by $H[k]$ at each term.
+To compute $S(n)$ and $V(n)$ faster and more accurately, Brent suggested the following trick that avoids this long multiplication and computes $H[k]$ simultaneously with the series.
+Define the function $U(n):=S(n)-V(n)*Ln(n)$.
+Then $gamma<=>U(n)/V(n)$.
+The series for $U(n)$ is
+$ U(n) := Sum(k,0,Infinity, A[k]) $,
+with
+$$ A[k] := (n^k/k!)^2*(H[k]-Ln(n)) $$.
+If we denote
+$$ B[k] := (n^k/k!)^2 $$
+the $k$-th term of the series for $V(n)$, then we can compute $A[k]$ and $B[k]$ simultaneously using the recurrence relations
+$A[0]= -Ln(n)$, $B[0]=1$,
+$$ B[k]=B[k-1]*n^2/k^2 $$,
+$$ A[k]=1/k*(A[k-1]*n^2/k+B[k]) $$.
+
+This trick can be formulated for any sequence $A[k]$ of the form $A[k]=B[k]*C[k]$, where the sequences $B[k]$ and $C[k]$ are given by the recurrences
+$ B[k]=p(k)*B[k-1]$ and $C[k]=q(k)+C[k-1]$.
+Here we assume that $p(k)$ and $q(k)$ are known functions of $k$ that can be computed to $P$ digits using $O(P)$ operations, e.g. rational functions with short constant coefficients.
+Instead of evaluating $B[k]$ and $C[k]$ separately and multiplying them using a long multiplication, we note that $p(k)*A[k-1] = B[k]*C[k-1]$.
+This allows to compute $A[k]$ by using the following two recurrences:
+$$ B[k] = p(k)*B[k-1] $$,
+$$ A[k]=p(k)*A[k-1]+q(k)*B[k] $$.
+All multiplications and divisions in these recurrence relations are performed with short integers, so the long multiplications are avoided.
+The time complexity of this method is $O(P^2)$ where $P$ is the required number of digits.
+A variant of binary splitting method can be used to reduce the complexity to $O(M(P*Ln(P))*Ln(P))$ which gives an asymptotic advantage at very high precision.
+
+Also, it turns out that we can use a variant of the fast "rectangular method" to evaluate the series for $U(n)$ and $V(n)$ simultaneously.
+(We can consider these series as Taylor series in $n^2$.)
+This however does not speed up the evaluation of $gamma$.
+This happens because the rectangular method requires long multiplications and leads in this case to increased round-off errors.
+The rectangular method for computing a power series in $x$ is less efficient than a straightforward computation when $x$ is a "short" rational or integer number.
+
+The "rectangular method" for computing $Sum(k,0,N,x^k*A[k])$ needs to be able to convert a coefficient of the Taylor series into the next coefficient $A[k+1]$ by "short" operations, more precisely, by some multiplications and divisions by integers of order $k$.
+The $j$-th column of the rectangle ($j=0$, 1, ...) consists of numbers $x^(r*j)*A[r*j]$, $x^(r*j)*A[r*j+1]$, ..., $x^r*A[r*j+r-1]$.
+The numbers of this column are computed sequentially by short operations, starting from the $x^(r*j)*A[j*r]$ which is known from the end of the previous column.
+The recurrence relation for $A[k]$ is not just some multiplication by rational numbers, but also contains an addition of $B[k]$.
+However, if we also use the rectangular method for $V(n)$, the number $x^(r*j)*B[r*j]$ will be known and so we will be able to use the recurrence relation to get $x^(r*j)*A[r*j+1]$ and all following numbers of the column.
+
+	    Derivation of method 1
+
+Brent's "B1" method can be derived from the Taylor series for the modified Bessel function $BesselI(nu,z)$,
+$$ BesselI(nu,z) = Sum(k,0,Infinity, z^(nu+2*k)/(2^(nu+2*k)*Gamma(nu+k+1)*k!)) $$,
+and the definition of the modified Bessel function $K0(z)$,
+$$ K0(z) := - D(nu)BesselI(nu,z)[nu=0]$$.
+Here the derivative wrt $nu$ is taken at $nu=0$.
+This derivative can be evaluated using the above Taylor series for $BesselI(nu,z)$ and expressed through the series for $S(n)$.
+To compute this, we need the derivative of the Gamma function at integer arguments $n$:
+$$ (D(x) Gamma(x)[x=n+1]) = n! *(H[n]-gamma) $$.
+The resulting identity in the way it is used here is
+$$ gamma+Ln(n) = (S0(2*n)-K0(2*n))/I0(2*n) $$.
+Since $K0(2*n)$ decays very quickly at large $n$, we obtain the approximation
+$$ gamma <=> S0(2*n)/I0(2*n)-Ln(n)+O(Exp(-4*n)) $$.
+
+		Catalan's constant $G$
+
+Catalan's constant $G$ is defined by
+$$ G = Sum(n,0,Infinity,(-1)^n/(2*n+1)^2) $$.
+This series converges very slowly.
+There are several alternative methods.
+
+	    Best method so far
+
+A fast series to evaluate this constant is:
+$$ G = Pi/8*Ln(2+Sqrt(3)) + 3/8*Sum(n,0,Infinity,(n!)^2/((2*n)! *(2*n+1)^2))$$
+[Bailey <i>et al.</i> 1997].
+
+To obtain $P$ decimal digits of relative precision, we need to take at most $P*Ln(10)/Ln(4)$ terms of the series.
+The sum can be efficiently evaluated using Horner's scheme, for example
+$$ 1+1/(2*3)*(1/3+2/(2*5)*(1/5+3/(2*7)*(1/7+ ...) ) ) $$.
+This takes $O(P^2)$ operations because there are $O(P)$ short multiplications and divisions of $P$-digit numbers by small integers.
+At very high precision, the binary splitting technique can be used instead of Horner's scheme to further reduce the computation time to $O(M(P)*Ln(P)^2)$.
+
+A drawback of this scheme is that it requires a separate high-precision computation of $Pi$, $Sqrt(3)$ and of the logarithm.
+
+	    Other methods
+
+Another method is based on an identity by Ramanujan.
+The formula is
+$$ G = Sum(k,0,Infinity,(k!)^2/(2*k+1)! *2^(k-1)*Sum(j,0,k,1/(2*j+1))) $$.
+The $k$-th term of the outer sum is of order $2^(-k)$ and so we need to take slightly more than $P*Ln(10)/Ln(2)$ terms for $P$ decimal digits.
+But each term is more complicated than in the first method's series.
+The running time of this formula seems to be a few times slower than the previous method.
+
+This method combined with Brent's summation trick (see the section on the Euler constant) was used in [Fee 1990].
+Brent's trick allows to avoid a separate computation of the harmonic sum and all long multiplications.
+Catalan's constant is obtained as a limit of $G[k]$ where $G[0]=B[0]=1/2$ and
+$$ B[k]=k/(2*k+1)*B[k-1] $$,
+$$ G[k]=1/(2*k+1)*(k*G[k-1]+B[k]) $$.
+The running time is $O(P^2)$.
+Since only rational numbers are involved, the binary splitting technique can be used at high precision.
+
+A third formula is more complicated but the convergence is much faster and there is no need to evaluate any other transcendental functions.
+This formula is called "Broadhurst's series".
+$$ G = 3/2*Sum(k,0,Infinity, 1/16^k*Sum(i,0,7,a[i]/(8*k+i)^2)) - 1/4*Sum(k,0,Infinity, 1/4096^k*Sum(i,0,7,a[i]/(8*k+i)^2)) $$.
+Here the arrays of coefficients are defined as $a[i]=[0;1;-1;1/2;0;-1/4;1/4;-1/8;]$ and $b[i]=[0;1;1/2;1/8;0;-1/64;-1/128;-1/512;]$.
+
+We need to take only $P*Ln(10)/Ln(16)$ terms of the first series and $P*Ln(10)/Ln(4096)$ terms of the second series.
+However, each term is about six times more complicated than one term of the first method's series.
+So there are no computational savings (unless $Ln(x)$ is excessively slow).
+
+		Riemann's Zeta function
+
+*A Riemann's Zeta function
+
+*A Bernoulli numbers
+
+Riemann's Zeta function $Zeta(s)$ is defined for complex $s$ such that $Re(s)>0$ as a sum of inverse powers of integers:
+$$Zeta(s) := Sum(n,0,Infinity, 1/n^s)$$.
+This function can be analytically continued to the entire complex plane except
+the point $s=1$ where it diverges. It satisfies several identities, for
+example, a formula useful for negative $Re(s)$,
+$$Zeta(1-s) = (2*Gamma(s))/(2*Pi)^s*Cos((Pi*s)/2)*Zeta(s)$$,
+and a formula for even integers that helps in numerical testing,
+$$Zeta(2*n) = ((-1)^(n+1)*(2*Pi)^(2*n))/(2*(2*n)!)*B[2*n]$$,
+where $B[n]$ are Bernoulli numbers.
+(The values at negative integer $n$ are given by $Zeta(-n)= -B[n+1]/(n+1)$.)
+
+The classic book [Bateman <i>et al.</i> 1953], vol. 1, describes many results concerning the properties of $Zeta(s)$.
+
+For the numerical evaluation of Riemann's Zeta function with arbitrary
+precision to become feasible, one needs special algorithms. Recently P. Borwein [Borwein 1995]
+gave a simple and quick approximation algorithm for $Re(s)>0$. See
+also [Borwein <i>et al.</i> 1999] for a review of methods.
+
+*A Riemann's Zeta function!by Borwein's algorithm
+
+It is the "third" algorithm (the simplest one) from P. Borwein's paper which is implemented in
+Yacas. The approximation formula valid for $Re(s) > -(n-1)$ is
+$$ Zeta(s) = 1/(2^n*(1-2^(1-s)))*Sum(j,0,2*n-1, e[j]/(j+1)^s) $$,
+where the coefficients $e[j]$ for $j=0$, ..., $2*n-1$ are defined by
+$$ e[j] := (-1)^(j-1)*(Sum(k,0,j-n, n! /(k! *(n-k)!))-2^n) $$,
+and the empty sum (for $j<n$) is taken to be zero. The parameter $n$ must be
+chosen high enough to achieve the desired precision. The error estimate for this
+formula is approximately
+$$error < 8^(-n)$$
+for the relative precision, which means that to achieve $P$ correct digits we
+must have $n>P*Ln(10)$/$Ln(8)$.
+
+This method requires to compute $n$ times the exponential and the logarithm to find the power $(j+1)^(-s)$.
+This power can be computed in asymptotic time $O(M(P)*Ln(P))$, unless $s$ is an integer, in which case this computation is $O(M(P))$, the cost of one division by an integer $(j+1)^s$.
+Therefore the complexity of this method is at most $O(P*M(P)*Ln(P))$.
+
+The function {Zeta(s)} calls {Internal'ZetaNum(s)} to compute this approximation formula
+for $Re(s)>1/2$ and uses the identity above to get the value for other $s$.
+
+*A Riemann's Zeta function!by direct summation
+
+For very large values of $s$, it is faster to use more direct methods implemented in the routines {Internal'ZetaNum1(s,N)} and {Internal'ZetaNum2(s,N)}.
+If the required precision is $P$ digits and
+$s > 1 + Ln(10)/Ln(P)*P$,
+then it is more efficient to compute the defining series for $Zeta(s)$,
+$$Zeta(s) <=> Sum(k,1,N, 1/k^s)$$,
+up to a certain number of terms $N$, than to use Borwein's method.
+The required number of terms $N$ is given by $$N = 10^(P/(s-1))$$.
+This is implemented in the routine
+{Internal'ZetaNum1(s)}.
+For example, at 100 digits of precision it is advisable to use
+{Internal'ZetaNum1(s)} only for $s>50$, since it would require $N<110$ terms in
+the series, whereas the expression used in {Internal'ZetaNum(s)} uses
+$n=Ln(10)/Ln(8)*P$ terms (of a different series).
+The complexity of this method is $O(N)*M(P)$.
+
+*A Riemann's Zeta function!by product over primes
+
+Alternatively, one can use {Internal'ZetaNum2(n,N)} which computes the infinite product over prime numbers $p[i]$
+$$1/Zeta(n) <=> Factorize(k,1,M,(1-1/p[k]^s))$$.
+Here $M$ must be chosen such that the $M$-th prime number $p[M]>N$.
+To obtain $P$ digits of precision, $N$ must be chosen as above, i.e.
+$N > 10^(P/(s-1))$.
+Since only prime numbers $p[i]$ are used, this formula is asymptotically faster than {Internal'ZetaNum1}.
+(Prime numbers have to be obtained and tested but this is quick for numbers of size $n$, compared with other operations.)
+The number of primes up to $N$ is asymptotically
+$pi(N) <> N/Ln(N)$ and therefore this procedure is faster by a factor $O(Ln(N)) <> O(Ln(n))$. However, for $n<250$ it is better (with Yacas internal math) to use the {Internal'ZetaNum1} routine because it involves fewer multiplications.
+
+	    Zeta function at special arguments
+
+Recently some identities dating back to S. Ramanujan have been studied in relation to Riemann's Zeta function.
+A side result was the development of fast methods for computing the Zeta function at odd integer arguments
+(see [Borwein <i>et al.</i> 1999] for a review)
+and at small rational arguments ([Kanemitsu <i>et al.</i> 2001]).
+
+*A Riemann's Zeta function!integer arguments
+
+The value $Zeta(3)$, also known as the Apery's constant, can be computed using the following geometrically convergent series:
+$$ Zeta(3) = 5/2*Sum(k,1,Infinity, (-1)^(k-1)/(k^3*Bin(2*k,k))) $$.
+
+For other odd integers $n$ there is no general analogous formula.
+The corresponding expressions for $Zeta(5)$ and $Zeta(7)$ are
+$$ Zeta(5) =  2*Sum(k,1,Infinity, (-1)^(k-1)/(k^5*Bin(2*k,k))) - 5/2*Sum(k,1,Infinity, (-1)^(k-1)/(k^3*Bin(2*k,k))*Sum(j,1,k-1,1/j^2)) $$;
+$$ Zeta(7) =  5/2*Sum(k,1,Infinity, (-1)^(k-1)/(k^7*Bin(2*k,k))) + 25/2*Sum(k,1,Infinity, (-1)^(k-1)/(k^3*Bin(2*k,k))*Sum(j,1,k-1,1/j^4)) $$.
+
+In these series the term $Bin(2*k,k)$ grows approximately as $4^k$ and therefore one can take no more than $P*Ln(10)/Ln(4)$ terms in the series to get $P$ decimal digits of relative precision.
+
+For odd integer $n$ there are the following special relations: for $n:=Mod(3,4)$,
+$$ Zeta(n) = (2*Pi)^n/(2*(n+1)!)*Sum(k,0,(n+1)/2, (-1)^(k-1)*Bin(n+1,2*k)*B[n+1-2*k]*B[2*k]) $$
+$$ - 2*Sum(k,1,Infinity,1/(k^n*(Exp(2*Pi*k)-1))) $$,
+and for $n:=Mod(1,4)$,
+$$ Zeta(n) = (2*Pi)^n/((n+1)! *(n-1)) $$
+$$ ... *Sum(k,0,(n+1)/4,(-1)^k*(n+1-4*k)*Bin(n+1,2*k)*B[n+1-2*k]*B[2*k]) $$
+$$ -2*Sum(k,1,Infinity, (Exp(2*Pi*k)*(1+(4*Pi*k)/(k-1))-1) / (k^n*(Exp(2*Pi*k)-1)^2)) $$.
+
+These relations contain geometrically convergent series,
+and it suffices to take $P*Ln(10)/(2*Pi)$ terms to obtain $P$ decimal digits of relative precision.
+
+Finally, [Kanemitsu <i>et al.</i> 2001] gave a curious formula for the values of Riemann's Zeta function at rational values between 0 and 2 (their "Corollary 1").
+This formula is very complicated but contains a geometrically convergent series.
+
+We shall have to define several auxiliary functions to make the formula more understandable.
+We shall be interested in the values of $Zeta(p/N)$ where $p$, $N$ are integers.
+For integer $h$, $N$ such that $0<=h<=N$,
+and for arbitrary real $x$,
+$$ Zeta((2*h-1)/N) = (N*x)/Pi*((2*Pi)/x)^((2*h-1)/N) * Sin((Pi*(2*h-1))/(2*N)) * L(x,N,h) $$,
+$$ Zeta((N-2*h+1)/N) = N/Gamma((N-2*h+1)/N)*x^((N-2*h+1)/N)*L(x,N,h) $$.
+Here the function $L(x,N,h)$ (containing the "Lambert series") is defined by
+$$ L(x,N,h) := Sum(n,1,Infinity, n^(N-2*h)/(Exp(n^N*x)-1))-S(x,N,h)$$
+$$+1/2*Zeta(-N+2*h)-Zeta(2*h)/x $$,
+and the function $S(x,N,h)$ is defined by
+$$ S(x,N,h) := (-1)^(h+1)/N*((2*Pi)/x)^((N-2*h+1)/N) $$
+$$ ... * Sum(n,0,Infinity, 1/n^((2*h-1)/N) * (Sum(k,1,N/2,f(2*k-1,x,n,N,h)))) $$
+for even $N$, and by
+$$ S(x,N,h) := (-1)^(h+1)/N*((2*Pi)/x)^((N-2*h+1)/N) $$
+$$ ... * Sum(n,0,Infinity, 1/n^((2*h-1)/N) * (f(0,x,n,N) + Sum(k,1,(N-1)/2,f(2*k,x,n,N,h)))) $$
+for odd $N$.
+The auxiliary function $f(j,x,n,N,h)$ is defined by
+$$ f(0,x,n,N) := Exp(-A)/(2*Sinh(A)) $$,
+$$ f(j,x,n,N,h):=(Cos(2*B+C) - Exp(-2*A)*Cos(C)) / (Cosh(2*A)-Cos(2*B)) $$
+for integer $j>=1$, and in these expressions
+$$ A:=Pi*((2*Pi*n)/x)^(1/N)*Cos((Pi*j)/(2*N)) $$,
+$$ B:=Pi*((2*Pi*n)/x)^(1/N)*Sin((Pi*j)/(2*N)) $$,
+and $C:=(Pi*j)/2*(2*h-1)/N$.
+
+Practical calculations using this formula are of the same asymptotic complexity as Borwein's method above. (It is not clear whether this method has a significant computational advantage.)
+The value of $x$ can be chosen at will, so we should find such $x$ as to minimize the cost of computation.
+There are two series to be computed: the terms in the first one decay as $Exp(-n^N*x)$ while the terms in the second one (containing $f$) decay only as
+$$ Exp(-2*A)<>Exp(-2*Pi*((2*Pi*n)/x)^(1/N)) $$.
+Also, there are about $N$ copies of the second series.
+Clearly, a very small value should be chosen for $x$ so that the second series converges somewhat faster.
+
+For a target precision of $P$ decimal digits, the required numbers of terms $n[1]$, $n[2]$ for the first and the second series can be estimated as
+$ n[1]<=>((P*Ln(10))/x)^(1/N) $,
+$ n[2]<=>x/(2*Pi)*((P*Ln(10))/(2*Pi))^N $.
+(Here we assume that $N$, the denominator of the fraction $p/N$, is at least $10$.
+This scheme is impractical for very large $N$ because it requires to add $O(N)$ slightly different variants of the second series.)
+The total cost is proportional to the time it takes to compute $Exp(x)$ or $Cos(x)$ and to roughly $n[1]+N*n[2]$.
+The value of $x$ that minimizes this cost function is approximately
+$$ x<=>(2*Pi)/N^2*((2*Pi)/(P*Ln(10)))^(N-1) $$.
+With this choice, the asymptotic total cost is $O(P*M(P))$.
+
+		Lambert's $W$ function
+
+Lambert's $W$ function is (a multiple-valued, complex function) defined for any (complex) $z$ by
+$ W(z) * Exp(W(z)) = z$.
+This function is sometimes useful to represent solutions of transcendental equations or integrals.
+
+*A Lambert's $W$ function!asymptotics
+
+Asymptotics of Lambert's $W$ function are
+$$W((z^2-2)/2/e) = -1 + z - z^3/3 + 11/72*z^4 - ...$$ (this is only good really close to z=0);
+$W(x) = x-x^2+3/2*x^3-...$ (this is good very near x=0);
+$$W(x) = Ln(x) - Ln(Ln(x)) + Ln(Ln(x))/Ln(x) + 1/2*(Ln(Ln(x))/Ln(x))^2 + ...$$ (good for very large $x$ but it is not straightforward to find higher terms!).
+
+Here are some inequalities to help estimate $W(x)$ at large $x$ (more exactly, for $x>e$):
+$$ Ln(x/Ln(x))<W(x)<Ln(x) $$,
+$$ Ln(x/(Ln(x)-1))<W(x)<Ln(x/(Ln(x)-1))+0.13$$.
+
+*A Lambert's $W$ function!uniform approximations
+
+One can also find uniform rational approximations, e.g.:
+$$W(x) <=> Ln(1+x)*(1-Ln(1+Ln(1+x))/(2+Ln(1+x)))$$ (uniformly good for $x>0$, relative error not more than $10^(-2)$); and
+$$W(x) <=> (x*e) / (1+( (2*e*x+2)^(-1/2) -1/Sqrt(2) +1/(e-1))^(-1) )$$
+(uniformly good for $-1/e<x<0$, relative error not more than $10^(-3)$).
+
+There exists a uniform approximation of the form
+$$ W(x) <=> (a+L)*(f-Ln(1+c*Ln(1+d*Y))+2*L)/(a+1/2+L) $$,
+where $a=2.3436$, $b=0.8842$, $c=0.9294$, $d=0.5106$, $f= -1.2133$ are constants, $Y:=Sqrt(2*e*x+2)$ and $L:=Ln(1+b*Y)$.
+(The coefficients $a$, ..., $f$ are
+found numerically by matching the asymptotics at three points
+$x= -1/e$, $x=0$, $x=Infinity$.)
+This approximation miraculously works over the whole complex plane within relative error at most $0.008$.
+The behavior of this formula at the branching points $x= -1/e$ and $x=Infinity$ correctly mimics $W(x)$ if the branch cuts of the square root and of the logarithm are chosen appropriately (e.g. the common branch cut along the negative real semiaxis).
+
+*A Lambert's $W$ function!by Halley's method
+
+The numerical procedure uses Halley's method.
+Halley's iteration for the equation $W*Exp(W)=x$ can be written as
+$$ W'=W-(W-x*Exp(-W))/(W+1-(W+2)/(W+1)*(W-x*Exp(-W))/2) $$. It has cubic convergence for any initial value $W> -Exp(-1)$.
+
+The initial value is computed using one of the uniform approximation formulae.
+The good precision of the uniform approximation guarantees rapid convergence of the iteration scheme to the correct root of the equation, even for complex arguments $x$.
+
+		Bessel functions
+
+*A Bessel functions
+
+Bessel functions are a family of special functions solving the equation
+$$ (Deriv(x,2)w(x))+1/x*(D(x)w(x))+(1-n^2/x^2)*w(x)=0 $$. There are two linearly independent solutions which can be taken as the pair of Hankel functions $H1(n,x)$, $H2(n,x)$, or as the pair of Bessel-Weber functions $J[n]$, $Y[n]$.
+These pairs are linearly related,
+$J[n]=1/2*(H1(n,x)+H2(n,x))$, $J[n]=1/(2*I)*(H1(n,x)-H2(n,x))$. The function $H2(n,x)$ is the complex conjugate of $H1(n,x)$. This arrangement of four functions is very similar to the relation between $Sin(x)$, $Cos(x)$ and $Exp(I*x)$, $Exp(-I*x)$, which are all solutions of $(Deriv(x,2)f(x))+f(x)=0$.
+
+*A Bessel functions!asymptotics
+
+For large values of $Abs(x)$, there is the following asymptotic series:
+$$ H1(n,x) <> Sqrt(2/(Pi*x))*Exp(I*zeta)*Sum(k,0,Infinity, I^k*A(k,n)/x^k) $$,
+where
+$zeta:=x-1/2*n*Pi-1/4*Pi$ and
+$$ A(k, n) := ( (4*n^2-1^2)*(4*n^2-3^2)*...*(4*n^2-(2*k-1)^2))/(k! *8^k) $$.
+From this one can find the asymptotic series for
+$ J[n] <> Sqrt(2/(Pi*x))*Cos(zeta)*Sum(k,0,Infinity, (-1)^k*A(2*k,n)*x^(-2*k)) - Sqrt(2/(Pi*x))*Sin(zeta)*Sum(k,0,Infinity, (-1)^k*A(2*k+1,n)*x^(-2*k-1)) $ and
+$ Y[n] <> Sqrt(2/(Pi*x))*Sin(zeta)*Sum(k,0,Infinity, (-1)^k*A(2*k,n)*x^(-2*k)) + Sqrt(2/(Pi*x))*Cos(zeta)*Sum(k,0,Infinity, (-1)^k*A(2*k+1,n)*x^(-2*k-1)) $.
+
+The error of a truncated asymptotic series is not larger than the first discarded term if the number of terms is larger than $n-1/2$.
+(See the book [Olver 1974] for derivations.
+It seems that each asymptotic series requires special treatment and yet in all cases the error is about the same as the first discarded term.)
+
+Currently Yacas can compute {BesselJ(n,x)} for all $x$ where $n$ is an integer and for $Abs(x)<= 2*Gamma(n)$ when
+$n$ is a real number. Yacas currently uses the Taylor series
+when $Abs(x)<= 2*Gamma(n)$ to compute the numerical value:
+$$ BesselJ(n,x) := Sum(k,0,Infinity,(-1)^k*x^(2*k+n)/(2^(2*k+n)* k! * Gamma(k+n+1))) $$.
+
+*A Bessel functions!by recurrence relation
+
+If $Abs(x) > 2*Gamma(n)$ and $n$ is an integer, then Yacas uses the forward recurrence
+relation:
+$$ BesselJ(n,x) := (2*(n+1)/x)*BesselJ(n+1,x) - BesselJ(n+2,x) $$
+until the given {BesselJ} function is represented in terms of higher order terms which 
+all satisfy $Abs(x) <= 2*Gamma(n)$. Note that when $n$ is much smaller than $x$, this
+algorithm is quite slow because the number of Bessel function evaluations grows like $2^i$, where $i$ is
+the number of times the recurrence identity is used.
+
+We see from the definition that when $Abs(x)<=2*Gamma(n)$, the absolute value
+of each term is always decreasing (which is called absolutely monotonely
+decreasing). From this we know that if we stop after $i$ iterations, the error
+will be bounded by the absolute value of the next term. So given a set
+precision, turn this into a value $epsilon$, so that we can check if the current
+term will contribute to the sum at the prescribed precision. Before doing this,
+Yacas currently increases the precision by 20{%} to do interim calculations.
+This is a heuristic that works, it is not backed by theory.  The value $epsilon$
+is given by $epsilon:=5*10^(-prec)$, where $prec$ was the previous precision. This
+is directly from the definition of floating point number which is correct to
+$prec$ digits: A number correct to $prec$ digits has a rounding error no
+greater than $5*10^(-prec)$. Beware that some books incorrectly have $.5$
+instead of $5$.
+
+Bug: Something is not right with complex numbers, but pure imaginary are OK.
+
+		Bernoulli numbers and polynomials
+
+*A Bernoulli numbers!definition
+*A Bernoulli polynomials!definition
+
+The Bernoulli numbers $B[n]$ are rational numbers that are frequently used in applications.
+The first few numbers are $B[0]=1$, $B[1]= -1/2$, $B[2]=4$, $B[3]=0$,  $B[4]= -1/30$.
+The numbers $B[n]$ can be defined
+by the series expansion of the following generating function,
+$$z/(e^z-1) = Sum(n, 0, Infinity, B[n]*z^n/n!)$$.
+The Bernoulli polynomials $B(x)[n]$ are defined similarly by
+$$(z*Exp(z*x))/(e^z-1) = Sum(n, 0, Infinity, B(x)[n]*z^n/n!)$$.
+The Bernoulli polynomials are related to Bernoulli numbers by
+$$B(x)[n] = Sum(k,0,n,Bin(n,k)*x^k*B[n-k])$$,
+where $Bin(n,k)$ are binomial coefficients.
+
+*A sums of integer powers
+
+Bernoulli numbers and polynomials are used in various Taylor series expansions, in the Euler-Maclauren series resummation formula, in Riemann's Zeta function and so on. For example, the sum of (integer) $p$-th powers of consecutive integers is given by
+$$Sum(k, 0, n-1, k^p) = (B(n)[p+1] - B[p+1])/(p+1)$$.
+
+The Bernoulli polynomials $B(x)[n]$ can be found by first computing an array of Bernoulli numbers up to $B[n]$ and then applying the above formula for the coefficients.
+
+We consider two distinct computational tasks: evaluate a Bernoulli number exactly as
+a rational, or find it approximately to a specified floating-point precision.
+There are also two possible problem settings: either we need to
+evaluate <i>all</i> Bernoulli numbers $B[n]$ up to some $n$ (this situation occurs most often in practice), or we only
+need one isolated value $B[n]$ for some large $n$. Depending on how large $n$
+is, different algorithms can be chosen in these cases.
+
+	    Exact evaluation of Bernoulli numbers
+
+*A Bernoulli numbers!by recurrence
+
+In the {Bernoulli()} routine,
+Bernoulli numbers are evaluated exactly (as rational numbers) via one of the two algorithms. The first, simpler algorithm ({BernoullliArray()}) uses the recurrence relation,
+$$B[n] = -1/(n+1)*Sum(k,0,n-1,B[k]*Bin(n+1,k))$$.
+This formula requires to know the entire set of $B[k]$ with $k$ up to a given
+$n$ to compute $B[n]$. Therefore at large $n$ this algorithm
+is a very slow way to compute $B[n]$ if we do not need all other $B[k]$.
+
+*A Bernoulli numbers!by recurrence!cost estimate
+
+Here is an estimate of the cost of {BernoullliArray}.
+Suppose $M(P)$ is the time needed to multiply $P$-digit integers.
+The required number of digits $P$ to store the numerator of $B[n]$ is asymptotically $P <> n*Ln(n)$. At each of the $n$ iterations we need to multiply $O(n)$ large rational numbers by large coefficients and take a GCD to simplify the resulting fractions. The time for GCD is logarithmic in $P$. So the complexity of this algorithm is $O(n^2*M(P)*Ln(P))$ with $P <> n*Ln(n)$. 
+
+*A Bernoulli numbers!from Zeta function
+
+For large (even) values of the index $n$, a single Bernoulli number $B[n]$ can be
+computed by a more efficient procedure: the integer part and the fractional
+part of $B[n]$ are found separately
+(this method is also well explained in [Gourdon <i>et al.</i> 2001]).
+
+*A Clausen -- von Staudt, theorem of
+*A Bernoulli numbers!fractional part of
+
+First, by the theorem of Clausen -- von
+Staudt, the fractional part of ($-B[n]$) is the same as the fractional part of
+the sum of all inverse prime numbers $p$ such that $n$ is divisible by $p-1$.
+To illustrate the theorem, take $n=10$ with
+$B[10]=5/66$. The number $n=10$ is divisible only by 1, 2, 5, and 10; this
+corresponds to $p=2$, $3$, $6$ and $11$. Of these, $6$ is not a prime.
+Therefore, we exclude 6 and take the sum $1/2 + 1/3 + 1/11 = 61/66$. The
+theorem now says that $61/66$ has the same fractional part as $-B[10]$; in
+other words, $-B[10]=i+f$ where $i$ is some unknown integer and the fractional
+part $f$ is a nonnegative rational number, $0<=f<1$, which is now known to be
+$61/66$. Indeed $-B[10]= -1+61/66$. So one can find the fractional part of the Bernoulli number relatively quickly by
+just checking the numbers that might divide $n$.
+
+*A Stirling's formula
+*A Bernoulli numbers!asymptotic
+
+Now one needs to obtain the
+integer part of $B[n]$. The number $B[n]$ is positive if $Mod(n,4)=2$ and negative if
+$Mod(n,4)=0$. One can use Riemann's Zeta function identity for even integer
+values of the argument and compute the value $zeta(n)$ precisely enough so that
+the integer part of the Bernoulli number is determined. The required precision
+is found by estimating the Bernoulli number from the same identity
+in which
+one approximates $zeta(n)=1$, i.e.
+$$ Abs(B[2*n]) <=> 2*(2*n)! /(2*Pi)^(2*n) $$.
+To estimate the factorial of large numbers, we can use Stirling's asymptotic formula
+$$Ln(n!) <=> Ln(2*Pi*n)/2+n*Ln(n/e)$$. The result is that for large $n$,
+$$ Abs(B[2*n]) <>  2*(n/(Pi*e))^(2*n)$$.
+
+At such 
+large values of the argument $n$, it is feasible to use the routines {Internal'ZetaNum1(n, N)} or {Internal'ZetaNum2(n,N)} to compute the zeta function.
+These routines approximate $zeta(n)$ by the defining series
+$$zeta(n) <=> Sum(k,1,N, 1/k^n)$$.
+The remainder of the
+sum is of order $N^(-n)$. By straightforward algebra one obtains a lower bound on $N$,
+$$N > n/(2*Pi*e)$$,
+for this sum to give enough precision to compute the integer part of the
+Bernoulli number $B[n]$.
+
+*A Bernoulli numbers!from Zeta function!example
+
+For example, let us compute $B[20]$ using this method.
+*	1. We find the fractional part, using the fact that 20 is divided only by 1, 2, 4, 5, 10, and 20 and only 2, 3, 5, 11 are prime:
+	In> 1/2 + 1/3 + 1/5 + 1/11;
+	Out> 371/330;
+This number has fractional part equal to 41/330 and it's the same as the fractional part of $-B[20]$. Since $B[20]$ must be negative,
+this means that $B[20]$ is of the form $-(X+41/330)$ where $X$ is some positive integer which we now have to find.
+*	2. We estimate the magnitude of $Abs(B[20])$ to find the required precision to compute its integer part. We use the identity
+$$Abs(B[20])=(2*20!)/(2*Pi)^20*zeta(20)$$,
+Stirling's formula
+$$Ln(20!) = (Ln(2*Pi)+Ln(20))/2+20*Ln(20/e) <=> 42.3$$,
+and also the fact that $zeta(20)=1+2^(-20)+...$ is approximately equal to 1.
+We find that the number $B[20]$ has approximately
+$$ 1+Ln(Abs(B[20]))/Ln(10) = 1+(Ln(2)+Ln(20!)-20*Ln(2*Pi))/Ln(10) <=> 3.72$$
+decimal digits before the decimal point; so a precision of 3 or 4 mantissa digits would surely be enough to compute its integer part.
+*	3. We now need to compute $zeta(20)$ to 4 decimal digits. The series
+$$zeta(20) <=> Sum(k,1,N, 1/k^20)$$
+will have an error of order $N^(-20)$. We need this error to be less than
+$10^(-4)$ and this is achieved with $N>2$. Therefore it is enough to compute
+the sum up to $N=2$:
+	In> N(1+1/2^20)
+	Out> 1.0000009536;
+*	4. Now we find the integer part of $Abs(B[20])$. This time we do not use Stirling's formula for the factorial but compute the exact factorial.
+	In> N( 2*20! /(2*Pi)^20*1.0000009536 )
+	Out> 529.1242423667;
+(Note the space after the factorial sign -- it is needed for the syntax to parse correctly.) Therefore we know that the integer part of $Abs(B[20])$ is 529.
+*	5. Since $B[20] = -(X+41/330)$ and we found that $X=529$, we obtain
+	In> -(529+41/330);
+	Out> -174611/330;
+This is exactly the Bernoulli number $B[20]$.
+
+*A {Bernoulli1}
+
+All these steps are implemented in the routine {Bernoulli1}. The function {Bernoulli1Threshold()} returns the smallest $n$ for which $B[n]$ is to be computed via this routine instead of the recursion relation. Its current default value is 20. This value can be set with {SetBernoulli1Threshold(threshold)}.
+
+The complexity of {Bernoulli1} is estimated as the complexity of finding all primes up to $n$ plus the complexity of computing the factorial, the power and the Zeta function. Finding the prime numbers up to $n$ by checking all potential divisors up to $Sqrt(n)$ requires $O(n^(3/2)*M(Ln(n)))$ operations with precision $O(Ln(n))$ digits. For the second step we need to evaluate $n!$, $Pi^n$ and $zeta(n)$ with precision of $P=O(n*Ln(n))$ digits. The factorial is found in $n$ short multiplications with $P$-digit numbers (giving $O(n*P)$), the power of $pi$ in $Ln(n)$ long multiplications (giving $O(M(P)*Ln(n))$), and {Internal'ZetaNum2(n)} (the asymptotically faster algorithm) requires $O(n*M(P))$ operations. The Zeta function calculation dominates the total cost because $M(P)$ is slower than $O(P)$. So the total complexity of {Bernoulli1} is $O(n*M(P))$ with $P <> n*Ln(n)$.
+
+Note that this is the cost of finding just one Bernoulli number, as opposed to the $O(n^2*M(P)*Ln(P))$ cost of finding all Bernoulli numbers up to $B[n]$ using the first algorithm {Internal'BernoulliArray}. If we need a complete table of Bernoulli numbers, then {Internal'BernoulliArray} is only marginally (logarithmically) slower. So for finding complete Bernoulli tables, {Bernoulli1} is better only for very large $n$.
+
+	    Approximate calculation of Bernoulli numbers
+
+If Bernoulli numbers do not have to be found exactly but only to a certain floating-point precision $P$ (this is usually the case for most numerical applications), then the situation is rather different. First, all calculations can be performed using floating-point numbers instead of exact rationals. This significantly speeds up the recurrence-based algorithms.
+
+*A Bernoulli numbers!by recurrence!numerical stability
+
+However, the recurrence relation used in {Internal'BernoulliArray} turns out to be numerically unstable and needs to be replaced by another [Brent 1978].
+Brent's algorithm computes the Bernoulli numbers divided by factorials, $C[n]:=B[2*n]/(2*n)!$ using a (numerically stable) recurrence relation
+
+$$2*C[k]*(1-4^(-k)) = (2*k-1)/(4^k*(2*k)!) - Sum(j, 1, k-1, C[k-j]/(4^j*(2*j)!))$$.
+
+The numerical instability of the usual recurrence relation
+$$ Sum(j,0,k-1,C[k-j]/((2*j+1)!)) = (k-1/2)/((2*k+1)!) $$
+and the numerical stability of Brent's recurrence are not obvious. Here is one way to demonstrate them.
+Consider the usual recurrence (above). For large $k$, the number $C[k]$ is approximately $C[k] <=> 2*(-1)^k*(2*Pi)^(-2*k)$. Suppose we use this recurrence to compute $C[k]$ from previously found values $C[k-1]$, $C[k-2]$, etc. and suppose that we have small relative errors $e[k]$ of finding $C[k]$. Then instead of the correct $C[k]$ we use $C[k]*(1+e[k])$ in the recurrence. Now we can derive a relation for the error sequence $e[k]$ using the approximate values of $C[k]$. It will be a linear recurrence of the form
+$$ Sum(j,0,k-1,(-1)^(k-j)*e[k-j]*((2*Pi)^(2*j)/((2*j+1)!)) ) = (k-1/2)/((2*k+1)!) * (2*Pi)^(-2*k) $$.
+Note that the coefficients for $j>5$ are very small but the coefficients for $0<=j<=5$ are of order 1. This means that we have a cancellation in the first 5 or so terms that produces a very small number $C[k]$ and this may lead to a loss of numerical precision. To investigate this loss, we find eigenvalues of the sequence $e[k]$, i.e. we assume that $e[k] = lambda^k$ and find $lambda$. If $Abs(lambda)>1$, then a small initial error $e[1]$ will grow by a power of $lambda$ on each iteration and it would indicate a numerical instability.
+
+The eigenvalue of the sequence $e[k]$ can be found approximately for large $k$ if we notice that the recurrence relation for $e[k]$ is similar to the truncated Taylor series for $Sin(x)$. Substituting $e[k] = lambda^k$ into it and disregarding a very small number $(2*Pi)^(-2*k)$ on the right hand side, we find 
+$$ Sum(j,0,k-1,(-lambda)^(k-j)*((2*Pi)^(2*j)/((2*j+1)!)) ) <=> lambda^k*Sin((2*Pi)/Sqrt(lambda)) <=> 0 $$,
+which means that $lambda=4$ is a solution. Therefore the recurrence is unstable.
+
+By a very similar calculation one finds that the inverse powers of $4$ in Brent's recurrence make the largest eigenvalue of the error sequence $e[k]$ almost equal to $1$ and therefore the recurrence is stable. Brent gives the relative error in the computed $C[k]$ as $O(k^2)$ times the round-off error in the last digit of precision.
+
+*A Bernoulli numbers!by recurrence!cost estimate
+
+The complexity of Brent's method is given as $O(n^2*P+n*M(P))$ for finding all Bernoulli numbers up to $B[n]$ with precision $P$ digits. This computation time can be achieved if we compute the inverse factorials and powers of $4$ approximately by floating-point routines that know how much precision is needed for each term in the recurrence relation. The final long multiplication by $(2*k)!$ computed to precision $P$ adds $M(P)$ to each Bernoulli number.
+
+The non-iterative method using the Zeta function does not perform much better if a Bernoulli number $B[n]$ has to be computed with significantly fewer digits $P$ than the full $O(n*Ln(n))$ digits needed to represent the integer part of $B[n]$. (The fractional part of $B[n]$ can always be computed relatively quickly.) The Zeta function needs $10^(P/n)$ terms, so its complexity is $O(10^(P/n)*M(P))$ (here by assumption $P$ is not very large so $10^(P/n)<n/(2*Pi*e)$; if $n>P$ we can disregard the power of $10$ in the complexity formula). We should also add $O(Ln(n)*M(P))$ needed to compute the power of $2*Pi$. The total complexity of {Bernoulli1} is therefore $O(Ln(n)*M(P) + 10^(P/n)*M(P))$.
+
+If only one Bernoulli number is required, then {Bernoulli1} is always faster. If all Bernoulli numbers up to a given $n$ are required, then Brent's recurrence is faster for certain (small enough) $n$.
+
+Currently Brent's recurrence is implemented as {Internal'BernoulliArray1()} but it is not used by {Bernoulli} because the internal arithmetic is not yet able to correctly compute with floating-point precision.
+
+		Error function $Erf(x)$ and related functions
+
+The error function $Erf(z)$ is defined for any (complex) $z$ by
+$$ Erf(z) := (2/Sqrt(Pi))*Integrate(t,0,z)Exp(-t^2) $$.
+
+The complementary error function $Erfc(x)$ is defined for real $x$ as
+$$ Erfc(x) := (2/Sqrt(Pi))*(Integrate(t,x,Infinity)Exp(-t^2)) = 1-Erf(x) $$.
+
+The imaginary error function $Erfi(x)$ is defined for real $x$ as
+$$ Erfi(x) := (2/Sqrt(Pi))*Integrate(t,x,Infinity)Exp(t^2) $$.
+
+Numerical computation of the error function $Erf(z)$ needs to be performed by
+different methods depending on the value of $z$ and its position in the complex
+plane, and on the required precision.  We follow the book [Tsimring 1988] and the paper [Thacher 1963].
+(These texts, however, do not describe arbitrary-precision computations.)
+
+*A error function $Erf(x)$!summary of methods
+
+The function $Erf(z)$ has the following approximations that are useful for its
+numerical computation:
+
+*	1. The Taylor series at $z=0$,
+$$ (Sqrt(Pi)/(2*z))*Erf(z) = 1-z^2/3+z^4/(2! *5)- ... + (-z^2)^n/((2*n+1)*n!)+O(z^(2*n+1))$$
+*	2. The Taylor series for a slightly modified function,
+$$ (Sqrt(Pi)/2)*(e^(z^2)/z)*Erf(z) = 1+(2*z^2)/3+... + (2*z^2)^n/(2*n+1)!! + O(z^(2*n+1))$$.
+*	3. Asymptotic expansion of $Erfc(z)$ at $z=Infinity$:
+$$ Erfc(z) = e^(-z^2)/(z*Sqrt(Pi))*(1-1/(2*z^2) + ... + (2*n-1)!! /(-2*z^2)^n+...) $$.
+*	4. Continued fraction expansion due to Laplace:
+$$ (Sqrt(Pi)/2)*z*e^(z^2)*Erfc(z) = z/(z+1/2/(z+1/(z+3/2/(z+...)))) $$
+The continued fraction in the RHS of the above equation can be rewritten equivalently as
+$$ 1/(1+v/(1+(2*v)/(1+(3*v)/(1+...)))) $$
+if we define $v:=(2*z^2)^(-1)$.
+
+Here we shall analyze the convergence and precision of these methods.
+We need to choose a good method to compute $Erf(z)$ with (relative) precision $P$
+decimal digits for a given (complex) number $z$, and to obtain estimates for the
+necessary number of terms to take.
+
+Both Taylor series converge absolutely for all $z$, but they do not converge uniformly fast; in fact these series are not very useful for large $z$ because a very large number of slowly decreasing terms gives a significant contribution to the result, and the round-off error (especially for the first series with the alternating signs) becomes too high. Both series converge well for $Abs(z)<1$.
+
+*A error function $Erf(x)$!by Taylor series
+
+Consider method 1 (the first Taylor series). We shall use the method 1 only for $Abs(z)<=1$. If the absolute error of the truncated Taylor series is estimated as the first discarded term, the precision after taking all terms up to and including $z^(2*n)$ is approximately $z^(2*n+2)/(n+2)!$. The factorial can be approximated by Stirling's formula,
+$ n! <=> n^n * e^(-n)$. The value of $Erf(z)$ at small $z$ is of order 1, so we can take the absolute error to be equal to the relative error of the series that starts with $1$. Therefore, to obtain $P$ decimal digits of precision, we need the number of terms $n$ that satisfies the inequality
+$$ Abs(e*z^2/(n+1))^(n+1) < 10^(-P)$$.
+(We have substituted $n+1$ instead of $n+2$ which made the inequality stronger.)
+The error will be greatest when $Abs(z)=1$. For these values of $z$, the above inequality is satisfied when $n>1+Exp(1+W(P*Ln(10)/e))$ where $W$ is Lambert's $W$ function.
+
+*A error function $Erf(x)$!by asymptotic series
+
+Consider method 3 (the asymptotic series). 
+Due to limitations of the asymptotic series, we shall use the method 3 only for
+large enough values of $z$ and small enough precision.
+
+There are two important cases when calculating $Erf(z)$ for large (complex) $z$: the case of $z^2>0$ and the case of $z^2<0$. In the first case (e.g. a real $z$), the function $Erf(z)$ is approximately $1$ for large $Abs(z)$ (if $Re(z)>0$, and approximately $-1$ if $Re(z)<0$). In the second case (e.g. pure imaginary $z=I*t$) the function $Erf(z)$ rapidly grows as $Exp(-z^2)/z$ at large $Abs(z)$.
+
+
+*REM FIXME need to fill in on the details

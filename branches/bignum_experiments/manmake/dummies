@@ -1,0 +1,74 @@
+*CMD CommandName --- short command description
+*STD/*CORE/*UNIX/*MSWIN/*MAC
+*CALL
+	CommandName(parameter)
+	CommandName()
+
+*PARMS
+
+{parameter} -- parameter description
+
+*DESC
+
+{CommandName()} returns values.
+
+Sometimes it does not work. For example, when using $Sin(x)^2+Cos(x)^2$ as its {parameter}.
+
+*EG
+
+	In> CommandName();
+	Segmentation fault
+
+*SEE OtherCommands, MoreCommands
+
+*REM this is a comment -------------------------------------------
+
+*REM describe several commands:
+
+*CMD command1, command2, command3 --- manipulate entities as object-oriented services
+*CORE
+*CALL
+	command1(arg1, ...)
+	command2(arg1,arg2)
+	command3()
+
+*PARMS
+
+{arg1}, {arg2} -- atoms, names of entities to manipulate
+
+*DESC
+
+Services are best manipulated as object-oriented entities relative to
+the globally defined execution environment.
+
+The function {command1} makes entities into services.
+
+The function {command2} makes services into entities.
+
+The function {command3} orients the objects.
+
+*E.G.
+
+	In> command1(1024)
+	Out> 0;
+We have successfully created a service.
+	In> command2(0,0)
+	Error: not enough memory
+	Out> 0;
+In this example, the environment was not object-oriented enough.
+
+*SEE MakeService, MakeEntity
+
+=====================================================================
+
+
+
+
+Abs
+ExpressionDepth
+Rem
+Roots
+EigenValues
+Apart
+Together
+

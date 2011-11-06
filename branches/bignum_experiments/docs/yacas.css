@@ -1,0 +1,111 @@
+body 
+{
+  background-color:White;
+  font-family:Verdana, Arial, Helvetica, sans-serif;	
+  font-size:12;
+  scrollbar-base-color:#AAAAEE;
+}
+
+h1 
+{
+  font-family:Verdana, Arial, Helvetica, sans-serif;	
+  font-size:14;
+}
+
+h2
+{
+  font-family:Verdana, Arial, Helvetica, sans-serif;	
+  font-size:14;
+}
+
+h3
+{
+  font-family:Verdana, Arial, Helvetica, sans-serif;	
+  font-size:14;
+}
+
+table 
+{
+  background-color:White;
+  font-family:Verdana, Arial, Helvetica, sans-serif;	
+  font-size:12;
+}
+
+.codeEditor 
+{
+  background-color: #FFFFFF;	
+  border-style:none;
+}
+
+.aboutlink
+{
+  color:#0000ff;
+  font-family:Verdana, Arial, Helvetica, sans-serif;	
+  font-size:12;
+}
+
+.librarylink
+{
+  color:#000000;
+  cursor:pointer;
+}
+
+.commandlink 
+{
+  color:#0000ff;
+  cursor:pointer;
+  font-family:Verdana, Arial, Helvetica, sans-serif;
+  font-size:12;
+}
+
+.linkcalc
+{
+  text-decoration:none;
+  color:#0000ff;
+  font-family:Verdana, Arial, Helvetica, sans-serif;
+  font-size:12;
+}
+
+a
+{
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a:link
+{
+  color:#0000FF;
+}
+
+a:visited
+{
+  color:#4444AA;
+}
+
+a:hover
+{
+  color:#AAAAEE;
+}
+
+a:active
+{
+  color:#FF0000;
+}
+
+.articleTitle
+{
+  background-color: #AAAAEE;
+  color: #222266;
+  padding: 4px 4px 4px 4px;
+  border: 1px solid #555588;
+}
+
+a.articleTitleLink
+{
+  color:#222266;
+}
+a.articleTitleLink:hover
+{
+  color:#FFFFFF;
+}
+

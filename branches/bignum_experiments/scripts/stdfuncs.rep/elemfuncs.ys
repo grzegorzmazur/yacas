@@ -1,0 +1,385 @@
+/** This file contains routines for numerical evaluation of elementary functions:
+ *  MathPower, MathExp, MathSin etc.
+ *  It is assumed that the arguments are real (not complex) floating-point or integer numbers. (The {InNumericMode()} flag does not have to be set.)
+ *  The result is an exact integer or a floating-point number correct to Builtin'Precision'Get() digits.
+ *
+ *  If a better optimized version of these functions is available through the kernel,
+ *  then the kernel version will automatically shadow these functions.
+ *  These implementations are not necessarily the best optimized versions.
+ */
+
+/// BitsToDigits(n,base) and DigitsToBits(n,base). Enough to compute at low precision.
+// this is now a call to the kernel functions, so leave as a reference implementation
+BitsToDigits(n, base) := MathFloor(0.51+n*N(Ln(2)/Ln(base),10));
+DigitsToBits(n, base) := MathFloor(0.51+n*N(Ln(base)/Ln(2),10));
+
+
+
+///  MathBitCount: count number of bits in an integer or a float number.
+/*  MathBitCount is now implemented through BigNumber::BitCount() */
+/*  so this stays here as a reference implementation */
+10 # MathBitCount(0) <-- 1;
+20 # MathBitCount(_x) _ (x<0) <-- MathBitCount(-x);
+
+30 # MathBitCount(_value) <--
+[
+	Local(nbits);
+	nbits:=0;
+  	If(value<1,
+	[	// float value < 1, need to multiply by 2
+		nbits := 1;
+		While(value<1)
+		[
+			nbits--;
+			value := MathMul2Exp(value,1);
+		];
+	],
+	[	// need to divide by 2
+		While(value>=1)
+		[
+			nbits++;
+			value := MathMul2Exp(value, -1);
+		];
+	]);
+	nbits;
+];
+/**/
+
+/// MathSqrt(x).
+MathSqrt(x) := MathSqrt1(x);	// to have another function is easier for debugging
+
+/// Compute square root(x) with nonnegative x. FIXME: No precision tracking yet.
+10 # MathSqrt1(0) <-- 0;
+/// negative or non-numeric arguments give error message
+100 # MathSqrt1(_x) <-- [ Echo("MathSqrt: invalid argument: ", x); False;];
+
+// this is too slow at the moment
+30 # MathSqrt1(x_IsPositiveNumber) <-- x*NewtonNum({{r}, r+r*(1-x*r^2)/2}, FastPower(x,-0.5), 4, 2);
+
+30 # MathSqrt1(x_IsPositiveNumber) <-- MathSqrtFloat(x);
+
+// for integers, we need to compute Sqrt(x) to (the number of bits in x) + 1 bits to figure out whether Sqrt(x) is itself an integer. If Sqrt(x) for integer x is exactly equal to an integer, we should return the integer answer rather than the float answer. For this answer, the current precision might be insufficient, therefore we compute with potentially more digits. This is slower but we assume this is what the user wants when calling MathSqrt() on an integer. 
+20 # MathSqrt1(x_IsInteger) _ (GreaterThan(x,0)) <-- 
+[
+	Local(result);
+	If(MathMod(x,4)<2 And MathMod(x,3)<2 And MathMod(x+1,5)<3,
+		// now the number x has a nonzero chance of being an exact square
+		[
+			// check whether increased precision would be at all necessary
+//			Echo("checking integer case");
+			GlobalPush(Builtin'Precision'Get());
+			If(MathBitCount(x)+3>DigitsToBits(Builtin'Precision'Get(), 10),
+			  Builtin'Precision'Set(BitsToDigits(MathBitCount(x), 10)+1));
+				// need one more digit to decide whether Sqrt(x) is integer
+			// otherwise the current precision is sufficient
+
+			// convert x to float and use the float routine
+			result := MathSqrtFloat(x+0.);
+			// decide whether result is integer: decrease precision and compare
+			If(FloatIsInt(MathSetExactBits(result, MathGetExactBits(result)-3)), result:= Floor(result+0.5));
+			Builtin'Precision'Set(GlobalPop());
+		],
+		// now the number x cannot be an exact square; current precision is sufficient
+		result := MathSqrtFloat(x+0.)
+	);
+	// need to set the correct precision on the result - will have no effect on integer answers
+	MathSetExactBits(result, DigitsToBits(Builtin'Precision'Get(),10));
+];
+
+// This function is *only* for float and positive A!
+// The answer is only obtained at the current precision.
+MathSqrtFloat(_A) <-- 
+[
+	Local(bitshift, a0, x0, x0sq, targetbits, subtargetbits, gotbits, targetprec);
+	bitshift := ShiftRight(MathBitCount(A)-1,1);
+	// this is how many bits of precision we need
+	targetprec := Builtin'Precision'Get();
+	// argument reduction: a0 is between 1 and 4 and has the full target precision
+	a0 := MathMul2Exp(A, -bitshift*2);	// this bit shift would be wrong for integer A
+	Builtin'Precision'Set(10);	// enough to compute at this point
+	// cannot get more target bits than 1 + (the bits in A)
+	// if this is less than the requested precision, the result will be silently less precise, but c'est la vie
+	targetbits := Min(DigitsToBits(targetprec, 10), 1+MathGetExactBits(A));
+	// initial approximation
+	x0 := MathDivide(14+22*a0, 31+5*a0);
+	// this approximation gives at least 7 bits (relative error < 0.005) of Sqrt(a0) for 1 <= a0 <= 4
+	gotbits := 7;
+	// find the conditions for the last 2 iterations to be done in almost optimal precision
+	subtargetbits := MathDiv(targetbits+8, 9);
+	If(gotbits >= subtargetbits, subtargetbits := MathDiv(targetbits+2, 3));
+	If(gotbits >= subtargetbits, subtargetbits := targetbits*4);
+//	Echo("debug: subtargetbits=", subtargetbits, "a0=", a0, "targetbits=", targetbits, "bitshift=", bitshift, "targetprec=", targetprec);
+	// now perform Halley iterations until we get at least subtargetbits, then start with subtargetbits and perform further Halley iterations
+	While(gotbits < targetbits)
+	[
+		gotbits := 3*gotbits+1;	// Halley iteration; get 3n+2 bits, allow 1 bit for roundoff
+		// check for suboptimal last iterations
+		If(gotbits >= subtargetbits,
+		[	// it could be very suboptimal to continue with our value of gotbits, so we curb precision for the last 2 iterations which dominate the calculation time at high precision
+			gotbits := subtargetbits;
+			subtargetbits := targetbits*4;	// make sure that the above condition never becomes true again
+		]);
+		Builtin'Precision'Set(BitsToDigits(gotbits, 10)+2);	// guard digits
+		x0 := MathSetExactBits(x0, gotbits+6);	// avoid roundoff
+		x0sq := MathMultiply(x0, x0);
+// this gives too much roundoff error		x0 := MathMultiply(x0, MathDivide(3*a0+x0sq, a0+3*x0sq));
+// rather use this equivalent formula:
+		x0 := MathAdd(x0, MathMultiply(x0*2, MathDivide(a0-x0sq, a0+3*x0sq)));
+//		Echo("debug: ", gotbits, x0, MathGetExactBits(x0), Builtin'Precision'Get());
+	];
+	// avoid truncating a precise result in x0 by calling Builtin'Precision'Set() too soon
+	x0 := MathSetExactBits(MathMul2Exp(x0, bitshift), gotbits);
+	Builtin'Precision'Set(targetprec);
+//	Echo("debug: answer=", x0);
+	x0;
+];
+
+//{BisectSqrt(N)} computes the integer part of $ Sqrt(N) $ for integer $N$.
+// BisectSqrt() works only on integers
+	//sqrt(1) = 1, sqrt(0) = 0
+10 # BisectSqrt(0) <-- 0;
+10 # BisectSqrt(1) <-- 1;
+
+20 # BisectSqrt(N_IsPositiveInteger) <--
+[
+  Local(l2,u,v,u2,v2,uv2,n);
+
+  // Find highest set bit, l2
+  u  := N;
+  l2 := MathBitCount(u)-1;
+
+  // 1<<(l2/2) now would be a good under estimate 
+  // for the square root. 1<<(l2/2) is definitely 
+  // set in the result. Also it is the highest
+  // set bit.
+  l2 := l2>>1;
+
+  // initialize u and u2 (u2==u^2).
+  u  := 1 << l2;
+  u2 := u << l2;
+ 
+  // Now for each lower bit:
+  While( l2 != 0 )
+  [
+ 	 l2--;
+     // Get that bit in v, and v2 == v^2.
+      v  := 1<<l2;
+      v2 := v<<l2;
+
+      // uv2 == 2*u*v, where 2==1<<1, and 
+      // v==1<<l2, thus 2*u*v == 
+      // (1<<1)*u*(1<<l2) == u<<(l2+1)
+      uv2 := u<<(l2 + 1);
+ 
+      // n = (u+v)^2  = u^2 + 2*u*v + v^2 
+      //   = u2+uv2+v2
+       n := u2 + uv2 + v2;
+
+      // if n (possible new best estimate for 
+      // sqrt(N)^2 is smaller than N, then the 
+      // bit l2 is set in the result, and 
+      // add v to u.
+      if( n <= N )
+      [
+	u  := u+v;  // u <- u+v
+	u2 := n;    // u^2 <- u^2 + 2*u*v + v^2
+      ];
+    ];
+    u; // return result, accumulated in u.
+];
+
+/// MathGcd(x,y). Compute the GCD of two integers using the binary Euclidean algorithm.
+5 # MathGcd(x_IsNegativeInteger, y_IsInteger) <-- MathGcd(-x, y);
+5 # MathGcd(y_IsNegativeInteger, x_IsNegativeInteger) <-- MathGcd(x, -y);
+6 # MathGcd(0, _x) <-- 0;
+6 # MathGcd(_x, 0) <-- 0;
+
+10 # MathGcd(x_IsInteger, y_IsInteger) <--
+[
+	Local(z);
+	While(x!=y)
+	[
+		While(x<y)
+		[
+			y:=y-x;
+			While((y&1) = 0)
+			[
+				y := ShiftRight(y,1);
+			];
+		];
+		z:=x;
+		x:=y;
+		y:=z;
+	];
+	x;
+];
+
+/// Identity transformation, compute Exp(x)-1 from value=Exp(x/2^n)-1
+
+MathExp'Doubling1(value, n) :=
+[
+	Local(shift, result);
+	shift := n;
+	result := value;
+	While (shift>0)	// lose 'shift' bits of precision here
+	[
+		result := MathMul2Exp(result, 1) + MathMultiply(result, result);
+		shift--;
+	];
+	result;
+];
+
+/// Identity transformation, compute Exp(x) from value=Exp(x/2^n)
+/*
+MathExp'Doubling(value, n) :=
+[
+	Local(shift, result);
+	shift := n;
+	result := value;
+	While (shift>0)	// lose 'shift' bits of precision here
+	[
+		result := MathMultiply(result, result);
+		shift--;
+	];
+	result;
+];
+*/
+
+/// Compute Exp(x)-1 from the Taylor series for (Exp(x)-1)/x.
+MathExp'Taylor1(x) :=
+[
+	Local(num'terms, prec, Bx);
+	prec := MathDiv(Builtin'Precision'Get()*3919, 1702); // P*Ln(10)
+	Bx := -MathDiv(MathBitCount(x)*1143, 1649)-2; // -Ln(x)-2
+	num'terms := MathDiv( prec-1, MathDiv( MathBitCount( prec-1)*1588, 2291)+Bx)+1;
+	// (P*Ln(10)-1)/(Ln(P*Ln(10)-1)-Ln(x)-2); use Ln(x)<=B(x)*Ln(2)
+	x*SumTaylorNum(x, 1, {{k}, 1/(k+1)}, num'terms);
+];
+
+/// Compute Sin(x), Taylor series for Sin(x)/x
+MathSin'Taylor(x) :=
+[
+	Local(num'terms, prec, Bx);
+	prec := MathDiv(Builtin'Precision'Get()*3919, 1702); // P*Ln(10)
+	Bx := -MathDiv(MathBitCount(x)*1143, 1649)-2; // -Ln(x)-2
+	num'terms := MathDiv( MathDiv( prec+Bx, MathDiv( MathBitCount( prec+Bx)*1588, 2291)+Bx)+1, 2)+1;
+	// (P*Ln(10)-Ln(x)-2)/(Ln(P*Ln(10)-Ln(x)-2)-Ln(x)-2); use Ln(x)<=B(x)*Ln(2)
+	x*SumTaylorNum(MathMultiply(x,x), 1, {{k}, -1/(2*k*(2*k+1))}, num'terms);
+];
+
+/// Identity transformation, compute Sin(x) from value=Sin(x/3^n)
+
+MathSin'Tripling(value, n) :=
+[
+	Local(shift, result);
+	shift := n;
+	result := value;
+	While (shift>0)	// lose 'shift' bits of precision here
+	[	// Sin(x)*(3-4*Sin(x)^2)
+		result := MathMultiply(result, 3 - MathMul2Exp(MathMultiply(result,result), 2) );
+		shift--;
+	];
+	result;
+];
+
+
+/// Cos(x), Taylor series
+MathCos'Taylor(x) :=
+[
+	Local(num'terms, prec, Bx);
+	prec := MathDiv(Builtin'Precision'Get()*3919, 1702); // P*Ln(10)
+	Bx := -MathDiv(MathBitCount(x)*1143, 1649)-2; // -Ln(x)-2
+	num'terms := MathDiv( MathDiv( prec-1, MathDiv( MathBitCount( prec-1)*1588, 2291)+Bx), 2)+1;
+	// (P*Ln(10)-1)/(Ln(P*Ln(10)-1)-Ln(x)-2); use Ln(x)<=B(x)*Ln(2)
+	SumTaylorNum(MathMultiply(x,x), 1, {{k}, -1/(2*k*(2*k-1))}, num'terms);
+];
+
+/// Identity transformation, compute 1-Cos(x) from value=1-Cos(x/2^n)
+
+MathCos'Doubling1(value, n) :=
+[
+	Local(shift, result);
+	shift := n;
+	result := value;
+	While (shift>0)	// lose 'shift' bits of precision here
+	[
+		result := MathMultiply(MathMul2Exp(result, 1), 2 - result);
+		shift--;
+	];
+	result;
+];
+
+
+/// Ln(x), Taylor series for Ln(1+y)/y, use only with 1/2<x<3/2
+MathLn'Taylor(x) :=
+[
+	Local(num'terms, y);
+	y := x-1;
+	num'terms := MathDiv(Builtin'Precision'Get()*2136, -643*MathBitCount(y))+1;
+	// (P*Ln(10))/(-Ln(y)); use Ln(y)<=B(y)*Ln(2), only good for |y|<1/2
+	// here -Ln(y) must be positive
+	y*SumTaylorNum(-y, {{k}, 1/(k+1)}, num'terms);
+];
+
+/// Compute Ln(x) from Ln(x^(2^(1/n)))
+MathLn'Doubling(value, n) :=
+[
+	Local(shift, result);
+	shift := n;
+	result := value;
+	While (shift>0)	// lose 'shift' bits of precision here
+	[
+		result := MathMultiply(result, result);
+		shift--;
+	];
+	result;
+];
+
+/// ArcTan(x), Taylor series for ArcTan(x)/x, use only with -1/2<x<1/2
+MathArcTan'Taylor(x) :=
+[
+	Local(num'terms);
+	num'terms := MathDiv(Builtin'Precision'Get()*1068, -643*MathBitCount(x))+1;
+	// (P*Ln(10))/(-2*Ln(x)); use Ln(x)<=B(x)*Ln(2), only good for |x|<1/2
+	// here -Ln(x) must be positive
+	x*SumTaylorNum(-MathMultiply(x,x), {{k}, 1/(2*k+1)}, num'terms);
+];
+
+
+/// The constant Pi. Using a simple method, solve Cos(x)=0.
+// iterate x := x + Cos(x) + 1/6 *Cos(x)^3 + ... to converge to x=Pi/2
+MathPi() :=
+[
+	Local(result, delta, deltasq, k, order, prec, curprec);
+	order := 13;	// order of approximation
+	prec := Builtin'Precision'Get();
+  N([
+    /* initial approximation */
+    curprec := 20;
+    Builtin'Precision'Set(curprec);
+    result := 3.14159265358979323846*0.5;
+    // find optimal initial precision
+    For(k:=prec, k>=curprec, k:=Div(k,order)+2) True;
+    If(k<5, curprec:=5, curprec:=k);
+  //	Echo("initial precision", curprec);
+    // now k is the iteration counter
+    For(k:=0, curprec < prec, k := k+1) [
+    // at this iteration we know the result to curprec digits
+      curprec := Min(prec, curprec * order-2);	// 2 guard digits
+      Builtin'Precision'Set(curprec+2);
+  //		Echo("Iteration ", k, " setting precision to ", Builtin'Precision'Get());
+  //		Echo("old result=", MathCos(result));
+      /*Time*/([
+      delta := MathCos(result);
+      ]);
+      /*Time*/([
+      deltasq := MathMultiply(delta,delta);
+      ]);
+      result := /*Time*/(result + delta*(1 + deltasq*(1/6 + deltasq*(3/40 + deltasq*(5/112 + deltasq*(35/1152 + (deltasq*63)/2816))))));
+    ];
+  //	Echo({"Method 3, using Pi/2 and order", order, ":", k, "iterations"});
+  ]);
+	result*2;
+];
+
+
