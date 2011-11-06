@@ -49,6 +49,8 @@ AC_HEADER_TIME
 # Checks for library functions.
 AC_CHECK_FUNCS(select socket strtod strchr vsnprintf)
 
+AC_FUNC_ACCEPT_ARGTYPES
+
 # Check type of signal handler
 AC_MSG_CHECKING([type of argument of signal handler])
 AC_CACHE_VAL(ac_cv_sighandler_arg,dnl
