@@ -538,8 +538,6 @@ void BigNumber::ToString(LispString& aResult, LispInt aBasePrecision, LispInt aB
   }
   num.ChangePrecision(aBasePrecision);
 
-#define ENABLE_SCI_NOTATION
-#ifdef ENABLE_SCI_NOTATION
   if (!IsInt())
   {
     for(;;)
@@ -564,7 +562,6 @@ void BigNumber::ToString(LispString& aResult, LispInt aBasePrecision, LispInt aB
       num.iTensExp++;
     }
   }
-#endif
 
   ANumberToString(aResult, num, aBase,(iType == KFloat));
 }
