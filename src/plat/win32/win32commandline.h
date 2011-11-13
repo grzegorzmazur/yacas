@@ -17,9 +17,9 @@ public:
     ~CWin32CommandLine();
 public:
     virtual LispInt GetKey();
-    void ReadLineSub(LispChar * prompt);
+    void ReadLineSub(const LispChar * prompt);
     virtual void NewLine();
-    virtual void ShowLine(LispChar * prompt,LispInt promptlen,LispInt cursor);
+    virtual void ShowLine(const LispChar * prompt,LispInt promptlen,LispInt cursor);
     virtual void Pause();
 
     // new functionality
@@ -27,7 +27,7 @@ public:
     void color_read(LispChar * str, WORD text_attrib);
 protected:
   void ShowLine();
-  LispChar * iLastPrompt;
+  const LispChar * iLastPrompt;
 private:
     HANDLE out_console;
     HANDLE in_console;
