@@ -89,7 +89,7 @@ void CWin32CommandLine::Pause()
     while (clock()<i);
 }
 
-void CWin32CommandLine::ReadLineSub(LispChar * prompt){
+void CWin32CommandLine::ReadLineSub(const LispChar * prompt){
 //    if(_is_NT_or_later){
 //        char buff[BufSz];
 //        color_print(prompt, FOREGROUND_RED | FOREGROUND_INTENSITY );
@@ -104,7 +104,7 @@ void CWin32CommandLine::ShowLine(){
   ShowLine(iLastPrompt, strlen(iLastPrompt), strlen(iLastPrompt)+iSubLine.Size());
 }
 
-void CWin32CommandLine::ShowLine(LispChar * prompt, LispInt promptlen, LispInt cursor){
+void CWin32CommandLine::ShowLine(const LispChar * prompt, LispInt promptlen, LispInt cursor){
   iLastPrompt = prompt;
   putchar('\r');							// clear line
   int i;
