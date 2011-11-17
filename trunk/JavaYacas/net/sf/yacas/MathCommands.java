@@ -3581,8 +3581,19 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : PatchLoad");//TODO FIXME
-      throw new Yacasexception("Function not yet supported");
+        LispError.CHK_CORE(aEnvironment, aStackTop,aEnvironment.iSecure == false, LispError.KLispErrSecurityBreach);
+
+        LispPtr evaluated = new LispPtr();
+        evaluated.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
+
+        // Get file name
+        LispError.CHK_ARG_CORE(aEnvironment, aStackTop, evaluated.Get() != null, 1);
+        String orig = evaluated.Get().String();
+        LispError.CHK_ARG_CORE(aEnvironment, aStackTop, orig != null, 1);
+        
+        LispStandard.InternalPatchLoad(aEnvironment, orig);
+
+        LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
     }
   }
 
@@ -3590,8 +3601,22 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : PatchString");//TODO FIXME
-      throw new Yacasexception("Function not yet supported");
+        String unpatchedString = 
+            YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
+
+        LispError.CHK_ARG_CORE(aEnvironment, aStackTop, unpatchedString != null, 2);
+        
+        InputStatus oldStatus = new InputStatus(aEnvironment.iInputStatus);
+        aEnvironment.iInputStatus.SetTo("STRING");
+        
+        StringBuffer resultBuffer = new StringBuffer();
+        StringOutput resultStream = new StringOutput(resultBuffer);
+        
+        LispStandard.DoPatchString(unpatchedString, resultStream, aEnvironment);
+        
+        aEnvironment.iInputStatus.RestoreFrom(oldStatus);
+        
+        RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, resultBuffer.toString()));
     }
   }
 
