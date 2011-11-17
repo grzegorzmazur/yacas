@@ -477,6 +477,64 @@ class LispStandard
     }
   }
 
+    public static void DoPatchString(String unpatchedString, 
+                                     LispOutput aOutput, 
+                                     LispEnvironment aEnvironment) throws Exception
+    {
+        String[] tags = unpatchedString.split("\\?\\>");
+        if (tags.length > 1) {
+            for (int x = 0; x < tags.length; x++) {
+                String[] tag = tags[x].split("\\<\\?");
+                if (tag.length > 1) {
+                    aOutput.Write(tag[0]);
+                    String scriptCode = tag[1].trim();
+                    StringBuffer scriptCodeBuffer = 
+                        new StringBuffer(scriptCode);
+                    StringInput scriptStream = 
+                        new StringInput(scriptCodeBuffer, aEnvironment.iInputStatus);
+                    LispOutput previous = aEnvironment.iCurrentOutput;
+                    try {
+                        aEnvironment.iCurrentOutput = aOutput;
+                        LispStandard.DoInternalLoad(aEnvironment, scriptStream);
+                    } catch(Exception e) {
+                        throw e;
+                    } finally {
+                        aEnvironment.iCurrentOutput = previous;
+                    }
+                }
+            }
+            aOutput.Write(tags[tags.length - 1]);
+        } else {
+            aOutput.Write(unpatchedString);
+        }
+    }
+
+    public static void InternalPatchLoad(LispEnvironment aEnvironment, String aFileName) throws Exception
+    {
+        String oper = InternalUnstringify(aFileName);
+
+        String hashedname = aEnvironment.HashTable().LookUp(oper);
+
+        InputStatus oldstatus = new InputStatus(aEnvironment.iInputStatus);
+        aEnvironment.iInputStatus.SetTo(hashedname);
+        try {
+            LispInput newInput = 
+                OpenInputFile(aEnvironment, aEnvironment.iInputDirectories, hashedname, aEnvironment.iInputStatus);
+ 
+            LispError.Check(newInput != null, LispError.KLispErrFileNotFound);
+
+            String inputString = new String(newInput.StartPtr());
+            LispStandard.DoPatchString(inputString, aEnvironment.iCurrentOutput, aEnvironment);
+        }
+        catch (Exception e) {
+            throw e;
+        }
+        finally {
+            aEnvironment.iInputStatus.RestoreFrom(oldstatus);
+        }
+    }
+    
+
   static String PrintExpression(LispPtr aExpression,
                       LispEnvironment aEnvironment,
                       int aMaxChars) throws Exception
