@@ -81,20 +81,21 @@ its integer prime factors. */
 
 10 # GaussianFactors(n_IsInteger) <--
 [
- Local(ifactors,gfactors,p,alpha);
- ifactors := Factors(n);
- gfactors := {};
- ForEach(p,ifactors) 
- [
-   If (p[1]=2, [ DestructiveAppend(gfactors,{1+I,p[2]}); 
-                 DestructiveAppend(gfactors,{1-I,p[2]}); ]);
-   If (Mod(p[1],4)=3, DestructiveAppend(gfactors,p));
-   If (Mod(p[1],4)=1, [ alpha := GaussianFactorPrime(p[1]);
-                        DestructiveAppend(gfactors,{alpha,p[2]});
-                        DestructiveAppend(gfactors,{Conjugate(alpha),p[2]});
-                      ]);                    
- ]; 
-gfactors;
+    Local(ifactors,gfactors,p,alpha);
+    ifactors := Factors(n);
+    If (Contains({{-1,1}, {1,1}}, Head(ifactors)), ifactors := Tail(ifactors) );
+    gfactors := {};
+    ForEach(p,ifactors) 
+    [
+        If (p[1]=2, [ DestructiveAppend(gfactors,{1+I,p[2]}); 
+                      DestructiveAppend(gfactors,{1-I,p[2]}); ]);
+        If (Mod(p[1],4)=3, DestructiveAppend(gfactors,p));
+        If (Mod(p[1],4)=1, [ alpha := GaussianFactorPrime(p[1]);
+                             DestructiveAppend(gfactors,{alpha,p[2]});
+                             DestructiveAppend(gfactors,{Conjugate(alpha),p[2]}); ]);
+    ];
+
+    gfactors;
 ];
 
 /* If z is is a Gaussian integer, we find its possible Gassian prime factors, 
@@ -106,6 +107,7 @@ by factoring its norm */
   gfactors :={};
   n := GaussianNorm(z);
   nfactors := Factors(n);
+  If (Contains({{-1,1}, {1,1}}, Head(nfactors)), nfactors := Tail(nfactors) );
   ForEach(p,nfactors) 
   [
    If (p[1]=2, [ AddGaussianFactor(gfactors,z,1+I);]);
