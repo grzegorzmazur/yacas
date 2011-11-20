@@ -1,6 +1,6 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 
-INCLUDES = -I$(srcdir)/plat/linux32
+INCLUDES = -I$(srcdir)/plat/$(YACAS_PLATFORM)
 
 bin_PROGRAMS =  yacas
 noinst_PROGRAMS = mkfastprimes gencorefunctions @COMPRESSOR_PRG@
