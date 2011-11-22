@@ -23,6 +23,6 @@
 /** Enable long reference counts. This makes EVERY object 2 bytes
  larger, so use only if needed.
  */
-//#define USE_LONG_REF_COUNTS
+#define USE_LONG_REF_COUNTS
 
 #endif
