@@ -26,7 +26,7 @@ public:
     virtual const LispChar * Send(LispArgList& aArgList)=0;
     virtual const LispChar * TypeName()=0;
 public:
-    LispInt iReferenceCount; //TODO: perhaps share the method of reference counting with how it is done in other places
+    ReferenceType iReferenceCount; //TODO: perhaps share the method of reference counting with how it is done in other places
 };
 
 
