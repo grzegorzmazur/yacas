@@ -21,9 +21,6 @@
 #define LISPEXPORT  //__declspec(dllexport)
 #define LISPIMPORT  //__declspec(dllimport)
 
-// Number of bits in long
-#define BITS_PER_LONG 32
-
 // Number of bits to use for reference-counting. This can actually
 // grow significantly, when sub-expressions are copied (in which
 // case a LispSubList references the same sequence of LispObjects!)
