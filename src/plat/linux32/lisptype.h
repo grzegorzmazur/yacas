@@ -24,8 +24,8 @@
 // case a LispSubList references the same sequence of LispObjects!)
 #ifdef USE_LONG_REF_COUNTS
 #define ReferenceBits 32
-#define ReferenceType unsigned long
-#define ReferenceMax ((unsigned long)0xffffffff)
+#define ReferenceType unsigned
+#define ReferenceMax ((unsigned)0xffffffff)
 #else
 #define ReferenceBits 16
 #define ReferenceType unsigned short
