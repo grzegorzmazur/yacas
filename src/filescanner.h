@@ -36,13 +36,13 @@ public:
     strcat(iFullName,aName);
   }
   inline int IsDirectory() {return iIsDir;};
-  inline char* FullName() {return iFullName;};
-  inline void SetRoot(char* aDir) {iDir=aDir;};
+  inline const char* FullName() {return iFullName;};
+  inline void SetRoot(const char* aDir) {iDir=aDir;};
 private:
   int iIsDir;
-  char *iName;
+  const char *iName;
   char iFullName[500];
-  char* iDir;
+  const char* iDir;
 };
 
 class CFileScanner
@@ -50,7 +50,7 @@ class CFileScanner
 public:
   CFileScanner();
   ~CFileScanner();
-  CFileNode* First(char* base,char* dir);
+  CFileNode* First(const char* base, const char* dir);
   CFileNode* Next();
 private:
   CFileScanner(const CFileScanner& aFileScanner)
