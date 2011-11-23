@@ -23,7 +23,7 @@ CFileScanner::~CFileScanner()
 #endif
 }
 
-CFileNode* CFileScanner::First(char* base,char* dir)
+CFileNode* CFileScanner::First(const char* base, const char* dir)
 {
     strcpy(fulldir,base);
     strcat(fulldir,dir);

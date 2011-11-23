@@ -23,7 +23,6 @@ int  compressedsize[MAXFILES];
 //
 #define IN_LEN    (128*1024L)
 #define OUT_LEN    (IN_LEN + IN_LEN / 64 + 16 + 3)
-static lzo_byte in  [ IN_LEN ];
 static lzo_byte out [ OUT_LEN ];
 /* Work-memory needed for compression. Allocate memory in units
  * of `long' (instead of `char') to make sure it is properly aligned.
@@ -38,7 +37,6 @@ int CompressScript(char* contents,int &size)
     int r;
     lzo_uint in_len;
     lzo_uint out_len = size;
-    lzo_uint new_len;
     in_len = size;
     r = lzo1x_1_compress((unsigned char*)contents,in_len,out,&out_len,wrkmem);
     if (r == LZO_E_OK)
@@ -129,7 +127,7 @@ void StripScript(char *contents,int &stripsize)
 }
 
 
-void DoFile(char* base,char* file)
+void DoFile(const char* base, const char* file)
 {
     filename[totalfiles] = strdup(file);
     {
@@ -154,8 +152,12 @@ void PostProcessFile(FILE* tmpfilef,char* base,int index)
         int stripsize = ftell(f);
         fseek(f,0,SEEK_SET);
         char *contents = (char*)malloc(stripsize+10);
-        fread(contents,1,stripsize,f);
+        size_t n = fread(contents,1,stripsize,f);
         fclose(f);
+        if (n < 1) {
+            printf("Warning: failed to read %s\n",buf);
+            goto BROKEN;
+        }
 
         printf("%d:\t",stripsize);
 
@@ -189,7 +191,7 @@ void PostProcessFile(FILE* tmpfilef,char* base,int index)
         printf("Warning: could not open file %s\n",buf);
     }
 }
-void WalkDirs(char* base,char* dir)
+void WalkDirs(const char* base, const char* dir)
 {
     CFileScanner scanner;
     CFileNode* node = scanner.First(base,dir);
