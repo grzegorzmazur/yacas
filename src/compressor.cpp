@@ -199,7 +199,7 @@ void WalkDirs(const char* base, const char* dir)
     {
         if (node->IsDirectory())
         {
-            if (!strstr(node->FullName(),"CVS"))
+            if (!strstr(node->FullName(),"CVS") && !strstr(node->FullName(),".svn"))
             {
                 WalkDirs(base,node->FullName());
             }
