@@ -87,6 +87,8 @@ HoldArg("D",aFunc);
 2 # (Deriv(_var)Sqrt(_x)) <-- ((Deriv(var)x)/(2*Sqrt(x)));
 2 # (Deriv(_var)Complex(_r,_i)) <-- Complex(Deriv(var)r,Deriv(var)i);
 
+2 # (Deriv(_var)((_x)!)) <-- Gamma(1+x)*PolyGamma(0,1+x)*(Deriv(var) x);
+
 LocalSymbols(var,var2,a,b,y)[
    2 # (Deriv(_var)Integrate(_var)(_y)) <-- y;
    2 # (Deriv(_var)Integrate(_var2,_a,_b)(y_IsFreeOf(var))) <-- 
