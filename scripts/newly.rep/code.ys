@@ -59,10 +59,13 @@ Function("CharacteristicEquation",{matrix,var})
 HoldArg("CharacteristicEquation",var);
 
 // diagonal matrices will be caught by IsUpperTriangular
-10 # EigenValues(matrix_IsUpperTriangular) <-- Diagonal(matrix);
-10 # EigenValues(matrix_IsLowerTriangular) <-- Diagonal(matrix);
+10 # EigenValues(_matrix)_(IsMatrix(matrix) And IsUpperTriangular(matrix)) <-- Diagonal(matrix);
+10 # EigenValues(_matrix)_(IsMatrix(matrix) And IsLowerTriangular(matrix)) <-- Diagonal(matrix);
 
-20 # EigenValues(matrix_IsMatrix) <-- Roots(CharacteristicEquation(matrix,xx));
+20 # EigenValues(matrix_IsMatrix) <-- [
+    Check(IsSquareMatrix(matrix), "EigenValues: Argument must be a square matrix");
+    Roots(CharacteristicEquation(matrix,xx));
+];
 
 EigenVectors(_matrix,_eigenvalues) <--
 [
