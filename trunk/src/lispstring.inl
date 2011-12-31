@@ -20,9 +20,9 @@ inline LispString& LispString::operator=(LispChar * aString)
   return *this;
 }
 
-inline LispString::LispString(LispString &aString, LispBoolean aStringOwnedExternally) : iReferenceCount()
+inline LispString::LispString(const LispString &aString) : iReferenceCount()
 {
-  SetString(aString.c_str(), aStringOwnedExternally);
+  SetString(aString.c_str());
 }
 
 inline LispString::LispString(const LispChar * aString) : iReferenceCount()
@@ -38,7 +38,7 @@ inline LispString::LispString(LispChar * aString, LispBoolean aStringOwnedExtern
 inline LispString::LispString() : iReferenceCount()
 {
   LispChar s[1] = { 0 };
-  SetString(s, LispFalse);
+  SetString(s);
 }
 
 inline LispChar * LispString::c_str() const
