@@ -619,7 +619,7 @@ LispString * LispEnvironment::FindCachedFile(LispChar * aFileName)
       LispChar * contents = iArchive->iFiles.Contents(index);
       if (contents)
       {
-        LispString* result = NEW LispString(contents,LispFalse);
+        LispString* result = NEW LispString(contents);
         PlatFree(contents);
         return result;
       }
