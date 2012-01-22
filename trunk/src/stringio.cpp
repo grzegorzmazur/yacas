@@ -5,7 +5,7 @@
 
 
 StringInput::StringInput(LispString& aString,InputStatus& aStatus)
-    : LispInput(aStatus),iString(aString.c_str(),LispFalse),  iCurrent(0)
+    : LispInput(aStatus),iString(aString.c_str()),  iCurrent(0)
 {
 }
 
