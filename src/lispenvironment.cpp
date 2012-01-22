@@ -505,20 +505,12 @@ void LispEnvironment::SetCommand(YacasEvalCaller aEvaluatorFunc, const LispChar 
 {
   DBG_({ extern long theNrDefinedBuiltIn; theNrDefinedBuiltIn++; })
   YacasEvaluator eval(aEvaluatorFunc,aNrArgs,aFlags);
-  /* LispTrue below, because the string is owned externally (meaning the LispString object does not have to free it).
-   * Essentially, the string is either already in the string table, or it is some static data in the executable. Either
-   * way, destruction later on is taken care of.
-   */
-  CoreCommands().SetAssociation(eval,HashTable().LookUp(aString,LispTrue));
+  CoreCommands().SetAssociation(eval,HashTable().LookUp(aString));
 }
 
 void LispEnvironment::RemoveCoreCommand(LispChar * aString)
 {
-  /* LispTrue below, because the string is owned externally (meaning the LispString object does not have to free it).
-   * Essentially, the string is either already in the string table, or it is some static data in the executable. Either
-   * way, destruction later on is taken care of.
-   */
-  CoreCommands().Release(HashTable().LookUp(aString,LispTrue));
+  CoreCommands().Release(HashTable().LookUp(aString));
 }
 
 void LispEnvironment::SetUserError(LispChar * aErrorString)

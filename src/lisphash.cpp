@@ -135,7 +135,7 @@ LispInt LispHashPtr(const LispString * aString)
 DBG_( long theNrTokens=0; )
 
 // If string not yet in table, insert. Afterwards return the string.
-LispString * LispHashTable::LookUp(const LispChar * aString, LispBoolean aStringOwnedExternally)
+LispString * LispHashTable::LookUp(const LispChar* aString)
 {
     LispInt bin = LispHash(aString);
 
@@ -156,8 +156,8 @@ LispString * LispHashTable::LookUp(const LispChar * aString, LispBoolean aString
 
     // Append a new string
   DBG_( theNrTokens++; )
-  // The const_cast is tacky, but nearly correct.  'ownedexternally' bites.
-    LispString * result = NEW LispString(const_cast<LispChar*>(aString),aStringOwnedExternally);
+
+    LispString * result = NEW LispString(aString);
     AppendString(bin,result);
     return result;
 }
