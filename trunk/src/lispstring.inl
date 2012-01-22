@@ -30,11 +30,6 @@ inline LispString::LispString(const LispChar * aString) : iReferenceCount()
   SetString(aString);
 }
 
-inline LispString::LispString(LispChar * aString, LispBoolean aStringOwnedExternally) : iReferenceCount()
-{
-  SetString(aString, aStringOwnedExternally);
-}
-
 inline LispString::LispString() : iReferenceCount()
 {
   LispChar s[1] = { 0 };
