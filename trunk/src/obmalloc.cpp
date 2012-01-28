@@ -1,6 +1,8 @@
 #include <assert.h>
 #include <stdint.h>
 
+#include <sys/types.h>
+
 #include "yacasprivate.h"
 
 #define WITH_PYMALLOC
