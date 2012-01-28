@@ -126,9 +126,9 @@ int hideconsolewindow=0;
 
 const char* root_dir    = SCRIPT_DIR;
 #ifndef WIN32
-  char* archive     = NULL;
+  const char* archive     = NULL;
 #else
-  char* archive     = "scripts.dat";
+  const char* archive     = "scripts.dat";
   HANDLE htimer = 0;
 #endif
 const char* init_script = "yacasinit.ys";
