@@ -18,7 +18,7 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
         genericstructs.h yacasprivate.h yacasbase.h xmltokenizer.h \
         archiver.h GPL_stuff.h  
 
-yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp deffile.cpp infixparser.cpp lispatom.cpp \
+yacas_SOURCES = yacasmain.cpp stdcommandline.cpp deffile.cpp infixparser.cpp lispatom.cpp \
 	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp \
 	lispio.cpp lispobject.cpp lispparser.cpp \
 	lispuserfunc.cpp mathcommands.cpp mathenvironment.cpp \
@@ -32,6 +32,14 @@ yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp deffile.cpp
 	anumber.cpp yacasnumbers.cpp numbers.cpp \
 	platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
 	lispstring.cpp mathutil.cpp yacasbase.cpp debugmem.cpp fastprimes.c
+
+if LINUX
+yacas_SOURCES += unixcommandline.cpp
+endif
+
+if WIN32
+yacas_SOURCES += win32commandline.cpp
+endif
 
 yacas_DEPENDENCIES = fastprimes.c version.h GPL_stuff.h 
 
