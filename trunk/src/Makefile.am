@@ -84,7 +84,7 @@ EXTRA_DIST =  anumber.inl deffile.inl  \
 	README.LZO lzodefs.h lzoconf.h minilzo.c minilzo.h decompressor.cpp \
 	compressor.cpp \
 	compressedfiles.h \
-  fastprimes.c core_yacasmain.h 
+	fastprimes.c core_yacasmain.h 
 
 
 # list some extra generated files
