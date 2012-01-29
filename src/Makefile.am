@@ -92,8 +92,8 @@ CLEANFILES = fastprimes.c core_yacasmain.h
 
 $(srcdir)/platmath.cpp: fastprimes.c
 
-fastprimes.c: mkfastprimes
-	./mkfastprimes > fastprimes.c
+fastprimes.c: mkfastprimes$(EXEEXT)
+	./mkfastprimes$(EXEEXT) > fastprimes.c
 # We don't want $(srcdir)/mkfastprimes because this executable
 # is not generated inside the $(srcdir). 
 
@@ -135,16 +135,16 @@ version.h: ../config.h
 noinst_DATA = @SCRIPTS_DAT@
 compressor_SOURCES = compressor.cpp filescanner.cpp minilzo.c filescanner.h minilzo.h 
 
-scripts.dat: compressor
-	./compressor - $(top_srcdir)/scripts/ scripts.dat 
+scripts.dat: compressor$(EXEEXT)
+	./compressor$(EXEEXT) - $(top_srcdir)/scripts/ scripts.dat 
 
 check: @CHECK_ARCHIVE@ check-codereviewer
 
 check-archive: scripts.dat 
-	../src/yacas -pc --archive scripts.dat $(top_srcdir)/tests/arithmetic.yts
+	../src/yacas$(EXEEXT) -pc --archive scripts.dat $(top_srcdir)/tests/arithmetic.yts
 
-check-codereviewer: codereviewer
-	./codereviewer c *.h *.inl *.cpp plat/*/*.h
+check-codereviewer: codereviewer$(EXEEXT)
+	./codereviewer$(EXEEXT) c *.h *.inl *.cpp plat/*/*.h
 
 ## We need a bit of a hack to install the 'scripts.dat' file.
 ## Ideally, we would like to declare it as lib_LIBRARY, but then automake
