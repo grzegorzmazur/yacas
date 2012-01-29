@@ -25,6 +25,10 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 #define InternalEval aEnvironment.iEvaluator->Eval
 #define RESULT aEnvironment.iStack.GetElement(aStackTop)
 #define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
@@ -798,6 +802,7 @@ void LispTmpFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
 
+#ifndef WIN32
     LispChar fn[] = "/tmp/yacas-XXXXXX";
 
     int fd = mkstemp(fn);
@@ -810,6 +815,15 @@ void LispTmpFile(LispEnvironment& aEnvironment, LispInt aStackTop)
         close(fd);
         RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(fn)->c_str()));
     }
+#else
+    LispChar tmp_path[MAX_PATH];
+    LispChar tmp_fn[MAX_PATH];
+
+    GetTempPath(MAX_PATH, tmp_path); 
+    GetTempFileName(tmp_path, "yacas", 0, tmp_fn);
+
+    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(tmp_fn)->c_str()));
+#endif
 }
 
 /// Implements the Yacas functions \c RuleBase and \c MacroRuleBase .
