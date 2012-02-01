@@ -17,6 +17,7 @@ Verify( Limit(x,Infinity) Tan(x), Undefined ); f();
 Verify( Limit(x,Infinity) Gamma(x), Infinity ); f();
 Verify( Limit(x,Infinity) Abs(x), Infinity ); f();
 Verify( Limit(x,Infinity) x!, Infinity); f();
+
 Verify( Sin(x)/Cos(x), Tan(x) ); f();
 Verify( TrigSimpCombine(Sin(x)^2 + Cos(x)^2), 1 ); f();
 
@@ -50,6 +51,30 @@ KnownFailure( Limit(k,Infinity) ((k-phi)/k)^(k+1/2) = Exp(-phi) ); f();
 Verify(Limit(x,Infinity)(1/x * Sin(x)), 0);
 Verify(Limit(x,Infinity)Sin(x)/x, 0);
 Verify(Limit(x, Infinity) (x^2 + Sin(x)), Infinity);
+
+// Some limit tests adapted from mpreduce via mathpiper
+
+Verify(Limit(x,0)(Exp(x)-1)/x, 1);
+Verify(Limit(x,1)((1-x)/Ln(x))^2, 1);
+Verify(Limit(x,0)x/(Exp(x)-1), 1);
+Verify(Limit(x,0)x/Ln(x), 0);
+Verify(Limit(x,Infinity)Ln(1+x)/Ln(x), 1);
+Verify(Limit(x,Infinity)Ln(x)/Sqrt(x), 0);
+Verify(Limit(x,0,Right)Sqrt(x)/Sin(x), Infinity);
+Verify(Limit(x,0)x*Ln(x), 0);
+Verify(Limit(x,0)Ln(x)/Ln(2*x), 1);
+Verify(Limit(x,0)x*Ln(x)*(1+x), 0);
+Verify(Limit(x,Infinity)Ln(x)/x,0);
+Verify(Limit(x,Infinity)Ln(x)/Sqrt(x),0);
+Verify(Limit(x,Infinity)Ln(x), Infinity);
+Verify(Limit(x,0)Ln(x+1)/Sin(x), 1);
+// Seems to hang yacas
+//Verify(Limit(x,0)Ln(x+1/x)*Sin(x), 0);
+Verify(Limit(x,0)-Ln(1+x)*(x+2)/Sin(x), -2);
+Verify(Limit(x,Infinity)Ln(x+1)^2/Sqrt(x), 0);
+Verify(Limit(x,Infinity)(Ln(x+1)-Ln(x)), 0);
+Verify(Limit(x,Infinity)-Ln(x+1)^2/Ln(Ln(x)), -Infinity);
+
 
 [
   Local(z);
