@@ -89,36 +89,38 @@ void CWin32CommandLine::Pause()
     while (clock()<i);
 }
 
-void CWin32CommandLine::ReadLineSub(const LispChar * prompt){
-//    if(_is_NT_or_later){
-//        char buff[BufSz];
-//        color_print(prompt, FOREGROUND_RED | FOREGROUND_INTENSITY );
-//        color_read(buff, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-//        iSubLine = buff;
-//    }else{
+void CWin32CommandLine::ReadLineSub(const LispChar * prompt)
+{
+    if (_is_NT_or_later) {
+        char buff[BufSz];
+        color_print(prompt, FOREGROUND_RED | FOREGROUND_INTENSITY );
+        color_read(buff, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+        iSubLine = buff;
+    } else {
         CCommandLine::ReadLineSub(prompt);
-//    }
+    }
 }
 
-void CWin32CommandLine::ShowLine(){
-  ShowLine(iLastPrompt, strlen(iLastPrompt), strlen(iLastPrompt)+iSubLine.Size());
+void CWin32CommandLine::ShowLine()
+{
+    ShowLine(iLastPrompt, strlen(iLastPrompt), strlen(iLastPrompt)+iSubLine.Size());
 }
 
-void CWin32CommandLine::ShowLine(const LispChar * prompt, LispInt promptlen, LispInt cursor){
-  iLastPrompt = prompt;
-  putchar('\r');							// clear line
-  int i;
-	for (i=0;i<79;i++) putchar(' ');
+void CWin32CommandLine::ShowLine(const LispChar * prompt, LispInt promptlen, LispInt cursor)
+{
+    iLastPrompt = prompt;
+    putchar('\r');              // clear line
 
     assert(iSubLine.Size() != 0);
+    
     char str[BufSz];
-    sprintf(str, "\r%s%s", prompt, &iSubLine[0]);
+    sprintf(str, "%s%s", prompt, &iSubLine[0]);
     color_print(str, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY );
 
+    // position cursor
+    for (LispInt i = strlen(&iSubLine[0]) + promptlen; i > cursor+promptlen; i--)
+        putchar('\b');
 
-	i = strlen(&iSubLine[0]) + promptlen;		// position cursor
-	for (;i > cursor+promptlen; i--)
-		putchar('\b');
     fflush(stdout);
 }
 
