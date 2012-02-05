@@ -77,8 +77,6 @@ EXTRA_DIST =  anumber.inl deffile.inl  \
 	plat/win32/lisptype.h \
 	plat/win32/platfileio.h \
 	plat/win32/stubs.inl  \
-	plat/win32/win32commandline.cpp \
-	plat/win32/win32commandline.h \
 	debugmem.h \
 	compressedfiles.cpp \
 	README.LZO lzodefs.h lzoconf.h minilzo.c minilzo.h decompressor.cpp \
