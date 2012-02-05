@@ -32,7 +32,7 @@ static lzo_byte out [ OUT_LEN ];
 static HEAP_ALLOC(wrkmem,LZO1X_1_MEM_COMPRESS);
 
 
-int CompressScript(char* contents,int &size)
+int CompressScript(char* contents,int& size)
 {
     int r;
     lzo_uint in_len;
@@ -154,7 +154,7 @@ void PostProcessFile(FILE* tmpfilef,char* base,int index)
         char *contents = (char*)malloc(stripsize+10);
         size_t n = fread(contents,1,stripsize,f);
         fclose(f);
-        if (n < 1) {
+        if (n != size_t(stripsize)) {
             printf("Warning: failed to read %s\n",buf);
             goto BROKEN;
         }
@@ -316,10 +316,14 @@ int main(int argc, char** argv)
         {
             FILE* tmpfilef=fopen("tmpfile.tmp","rb");
             fseek(tmpfilef,0,SEEK_END);
-            int size=ftell(tmpfilef);
+            long size=ftell(tmpfilef);
             fseek(tmpfilef,0,SEEK_SET);
             char*buf = (char*)malloc(size);
-            fread(buf,1,size,tmpfilef);
+            size_t n = fread(buf,1,size,tmpfilef);
+            if (n != size_t(size)) {
+                printf("failed to read tmp file, bailing out!\n");
+                return 3;
+            }
             fclose(tmpfilef);
             fwrite(buf,1,size,fout);
             free(buf);
