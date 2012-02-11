@@ -96,6 +96,10 @@ LocalSymbols(x)
 113 # (x_IsNegativeNumber) - _y <-- -((-x)+y);
 113 # (x_IsNegativeNumber)/_y - _z <-- -((-x)/y+z);
 
+120 # ((_x-y_IsNumber) + z_IsNumber)_Not(IsNumber(x)) <-- x+(z-y);
+120 # ((_x-y_IsNumber) - z_IsNumber)_Not(IsNumber(x)) <-- x-(y+z);
+130 # ((_x-y_IsNumber) + _z)_(Not IsNumber(x) And Not IsNumber(z)) <-- (x+z)-y;
+130 # ((_x+y_IsNumber) - _z)_(Not IsNumber(x) And Not IsNumber(z)) <-- (x-z)+y;
 
 /* TODO move to this precedence everywhere? */
 LocalSymbols(x,y,xarg,yarg)
