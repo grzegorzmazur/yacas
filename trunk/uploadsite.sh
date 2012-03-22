@@ -8,5 +8,5 @@ if [ -z "$SFUSER" ]; then
 fi
 
 ssh $SFUSER,yacas@shell.sourceforge.net create
-cat homepage.tgz | ssh $SFUSER@shell.sourceforge.net 'tar zxvf - -C /home/proj#ect-web/yacas/htdocs'
+cat homepage.tgz | ssh $SFUSER@shell.sourceforge.net 'tar zxvf - -C /home/project-web/yacas/htdocs'
 ssh $SFUSER,yacas@shell.sourceforge.net shutdown
