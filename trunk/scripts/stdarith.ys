@@ -257,6 +257,33 @@ LocalSymbols(x,y,xarg,yarg)
        Set(gcd,MathGcd(x,y));
        MathDiv(x,gcd)/MathDiv(y,gcd);
      ];
+
+57 # ((x_IsNonZeroInteger * _expr) / y_IsNonZeroInteger)_(MathGcd(x,y) > 1) <--
+     [
+       Local(gcd);
+       Set(x,x);
+       Set(y,y);
+       Set(gcd,MathGcd(x,y));
+       (MathDiv(x,gcd)*expr)/MathDiv(y,gcd);
+     ];
+
+57 # ((x_IsNonZeroInteger) / (y_IsNonZeroInteger * _expr))_(MathGcd(x,y) > 1) <--
+     [
+       Local(gcd);
+       Set(x,x);
+       Set(y,y);
+       Set(gcd,MathGcd(x,y));
+       MathDiv(x,gcd)/(MathDiv(y,gcd)*expr);
+     ];
+
+57 # ((x_IsNonZeroInteger * _p) / (y_IsNonZeroInteger * _q))_(MathGcd(x,y) > 1) <--
+     [
+       Local(gcd);
+       Set(x,x);
+       Set(y,y);
+       Set(gcd,MathGcd(x,y));
+       (MathDiv(x,gcd)*p)/(MathDiv(y,gcd)*q);
+     ];
     
 
 90 # x_IsInfinity / y_IsInfinity <-- Undefined;
