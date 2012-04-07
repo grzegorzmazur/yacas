@@ -82,7 +82,7 @@ SCRIPTFILES2 = \
 	numbers.rep/GaussianIntegers.ys numbers.rep/GaussianIntegers.ys.def				    \
 	transforms.rep/code.ys transforms.rep/code.ys.def \
   base.rep/math.ys base.rep/math.ys.def \
-	stdarith.ys stdarith.ys.def 
+	stdarith.ys stdarith.ys.def calendar.rep/code.ys calendar.rep/code.ys.def
 
 EXAMPLE_SCRIPTFILES = \
 	examples/ABIN.ys examples/pi.ys \
