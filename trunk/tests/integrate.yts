@@ -20,6 +20,7 @@ Verify(Integrate(x) 1/x^2, -x^(-1));
 Verify(Integrate(x) 6/x^2, (-6)*x^-1);
 Verify(Integrate(x) (x + 4)/(x + 3)^2, Ln(x+3)-(x+3)^(-1));
 Verify(Integrate(x) 1/(4 * x^2 + 1), ArcTan(2*x)/2);
+Verify(Integrate(x) (x-1)/(x^2-1), Ln(x+1));
 
 Verify(Integrate(x) 3/Sin(x),3*Ln(1/Sin(x)-Cos(x)/Sin(x)) );
 
