@@ -6,7 +6,7 @@ bin_PROGRAMS =  yacas
 noinst_PROGRAMS = mkfastprimes gencorefunctions @COMPRESSOR_PRG@
 EXTRA_PROGRAMS = compressor codereviewer
 
-noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
+noinst_HEADERS = anumber.h dnumber.h choices.h deffile.h grower.h \
 	infixparser.h lispassert.h lispatom.h lispcleanupstack.h \
 	lispenvironment.h lisperror.h lispeval.h lispevalhash.h \
 	lispglobals.h lisphash.h lispio.h lispobject.h lispparser.h \
@@ -29,7 +29,7 @@ yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp deffile.cpp
         genericstructs.cpp \
 	xmltokenizer.cpp \
         archiver.cpp compressedfiles.cpp commandline.cpp \
-	anumber.cpp yacasnumbers.cpp numbers.cpp \
+	anumber.cpp dnumber.cpp yacasnumbers.cpp numbers.cpp \
 	platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
 	lispstring.cpp mathutil.cpp yacasbase.cpp debugmem.cpp fastprimes.c
 
