@@ -56,7 +56,6 @@ MORE:
     if (buffer[offs-1] == '\\')
         goto MORE;
     iLine.ResizeTo(offs+1);
-    //iLine.Resize(offs+1);
     strcpy(&iLine[0],buffer);
 }
 
