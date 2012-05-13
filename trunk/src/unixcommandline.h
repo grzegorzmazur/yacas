@@ -31,6 +31,7 @@ public:
 private:
   unsigned char term_chars[NCCS];
   struct termios orig_termio, rl_termio;
+  LispInt _cursor_line, _last_line;
 public:
   LispInt iMaxLines;
 };

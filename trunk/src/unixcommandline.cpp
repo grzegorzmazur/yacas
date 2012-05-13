@@ -1,13 +1,19 @@
 
 #include <time.h>
 #include <stdio.h>
+#include <sys/ioctl.h>
 
 #include "yacasprivate.h"
 #include "unixcommandline.h"
 
 void CUnixCommandLine::NewLine()
 {
+    _cursor_line = 0;
+    _last_line = 0;
+
     printf("\n");
+
+    fflush(stdout);
 }
 
 void CUnixCommandLine::Pause()
@@ -16,21 +22,54 @@ void CUnixCommandLine::Pause()
     while (clock()<i);
 }
 
-void CUnixCommandLine::ShowLine(const LispChar * prompt,LispInt promptlen,LispInt cursor)
+void CUnixCommandLine::ShowLine(
+    const LispChar* prompt,
+    LispInt promptlen,
+    LispInt cursor)
 {
-    if (iFullLineDirty)
-    {
-        printf("\r%c[K",27); //Clear line
-        printf("\r%s%s",prompt,&iSubLine[0]); // display line
+    struct winsize w;
+    ioctl(0, TIOCGWINSZ, &w);
+
+    const LispInt l = (cursor + promptlen) / w.ws_col;
+    const LispInt c = (cursor + promptlen) % w.ws_col;
+
+    if (_cursor_line)
+        printf("\x1b[%dF", _cursor_line);
+
+    if (iFullLineDirty) {
+        if (_last_line)
+            printf("\x1b[%dB", _last_line);
+
+        for (LispInt i = 0; i < _last_line; ++i)
+            printf("\r\x1b[K\x1b[F");
+
+        printf("\r\x1b[K\x1b[K%s%s", prompt, &iSubLine[0]);
+
+        if ((promptlen + strlen(&iSubLine[0])) % w.ws_col == 0)
+            printf("\x1b[E");
+
+        _last_line = (promptlen + strlen(&iSubLine[0])) / w.ws_col;
+        if (_last_line)
+            printf("\x1b[%dF", _last_line);
     }
-    printf("\r");                     // go back
-    printf("%c[%dC",27,cursor+promptlen); // position cursor
+
+    if (l)
+        printf("\r\x1b[%dB", l);
+
+    printf("\r\x1b[%dG", c + 1);
+
     fflush(stdout);
+
+    _cursor_line = l;
+
     iFullLineDirty = 0;
 }
 
 
-CUnixCommandLine::CUnixCommandLine() : orig_termio(), rl_termio(), iMaxLines(1024)
+CUnixCommandLine::CUnixCommandLine():
+    _cursor_line(0), 
+    _last_line(0), 
+    iMaxLines(1024)
 {
     /* set termio so we can do our own input processing */
     tcgetattr(0, &orig_termio);
@@ -79,8 +118,8 @@ CUnixCommandLine::CUnixCommandLine() : orig_termio(), rl_termio(), iMaxLines(102
         }
     }
     iMaxLines = 1024;
-
 }
+
 CUnixCommandLine::~CUnixCommandLine()
 {
     tcsetattr(0, TCSADRAIN, &orig_termio);
@@ -121,12 +160,10 @@ void CUnixCommandLine::MaxHistoryLinesSaved(LispInt aNrLines)
 
 LispInt CUnixCommandLine::GetKey()
 {
-    LispInt c;
-    c=getc(stdin);
-if (feof(stdin))
-{
-  exit(0);
-}
+    LispInt c = getc(stdin);
+
+    if (feof(stdin))
+        exit(0);
 
     if (c == term_chars[VERASE]) /* Backspace */
     {
