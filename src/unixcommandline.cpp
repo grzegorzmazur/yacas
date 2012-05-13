@@ -46,7 +46,7 @@ void CUnixCommandLine::ShowLine(
         printf("\r\x1b[K\x1b[K%s%s", prompt, &iSubLine[0]);
 
         if ((promptlen + strlen(&iSubLine[0])) % w.ws_col == 0)
-            printf("\x1b[E");
+            printf("\n");
 
         _last_line = (promptlen + strlen(&iSubLine[0])) / w.ws_col;
         if (_last_line)
