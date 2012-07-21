@@ -69,6 +69,9 @@ class MathCommands
          new YacasEvaluator(new LispLoad(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "Load");
     aEnvironment.CoreCommands().SetAssociation(
+         new YacasEvaluator(new LispTmpFile(), 0, YacasEvaluator.Fixed | YacasEvaluator.Function),
+         "TmpFile");
+    aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispSetVar(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
          "Set");
     aEnvironment.CoreCommands().SetAssociation(
@@ -1219,6 +1222,19 @@ class MathCommands
 
       LispStandard.InternalLoad(aEnvironment,orig);
       LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
+    }
+  }
+
+  class LispTmpFile extends YacasEvalCaller
+  {
+    public void Eval(LispEnvironment aEnvironment, int aStackTop) throws Exception
+    {
+      LispError.CHK_CORE(aEnvironment, aStackTop, aEnvironment.iSecure == false, LispError.KLispErrSecurityBreach);
+
+      File f = File.createTempFile("yacas", null);
+      f.deleteOnExit();
+
+      RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, aEnvironment.HashTable().LookUpStringify(f.getCanonicalPath())));
     }
   }
 
