@@ -7,7 +7,8 @@
 "See the GNU General Public License (GPL) for the full conditions.\n"
 
 #define Yacas_Web_info \
-"See http://yacas.sf.net for more information and documentation on Yacas.\n"
+"See http://yacas.sf.net for more information and documentation on Yacas.\n"\
+"Type ?? for help. Or type ?function for help on a function.\n"
 
 #define Yacas_help_info \
 "Type ?license or ?licence to see the GPL; type ?warranty for warranty info.\n"

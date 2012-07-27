@@ -213,7 +213,7 @@ void LispStackSize(LispEnvironment& aEnvironment, LispInt aStackTop)
 const char* ReadInputString(const char* prompt)
 {
   if (!commandline) return "False";
-  char *inpline;
+  const char* inpline;
   readmode = 1;
   commandline->ReadLine(prompt);
   readmode = 0;
@@ -221,6 +221,9 @@ const char* ReadInputString(const char* prompt)
 
   if (inpline)
   {
+    while(isspace(*inpline)) 
+        ++inpline;
+
     if(*inpline)
     {
       if (!strncmp(inpline,"restart",7))
@@ -231,9 +234,30 @@ const char* ReadInputString(const char* prompt)
       else if (!strncmp(inpline,"quit",4))
       {
         busy=LispFalse;
+      } else if (*inpline == '?') {
+          const std::string key(inpline + 1);
+
+          const std::string prefix = "http://yacas.sourceforge.net/";
+          std::string url = prefix + "ref.html?" + key;
+          if (key == "licence" || key == "license")
+              url = prefix + "refprogchapter9.html";
+          else if (key == "warranty")
+              url = prefix + "refprogchapter9.html#c9s2";
+          else if (key == "?")
+              url = prefix + "refmanual.html";
+          
+          const std::string viewer = "xdg-open";
+
+          const std::string cmd = viewer + " " + url;
+          
+          if (system(cmd.c_str()) == 0)
+              inpline = "True";
+          else
+              inpline = "False";
       }
     }
   }
+
   if (inpline)
     if(*inpline)
       return inpline;

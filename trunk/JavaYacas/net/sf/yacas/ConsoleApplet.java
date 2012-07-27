@@ -754,22 +754,38 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       {
       }
       return true;
+    } else if (inputLine.trim().startsWith("?")) {
+        String key = inputLine.trim().substring(1);
+
+        String prefix = "http://yacas.sourceforge.net/";
+          
+        try {
+            URI uri = new URI(prefix + "ref.html?" + key);
+            
+            if (key.equals("license") || key.equals("licence"))
+                uri = new URI(prefix + "refprogchapter9.html");
+            else if (key.equals("warranty"))
+                uri = new URI(prefix + "refprogchapter9.html#c9s2");
+            else if (key.equals("?"))
+                uri = new URI(prefix + "refmanual.html");
+
+            getAppletContext().showDocument(uri.toURL(), "YacasHelp");
+
+        } catch (URISyntaxException e) {
+            // it's a cold night in Hell
+            return false;
+        } catch (MalformedURLException e) {
+            // it's a cold night in Hell
+            return false;
+        }
+        
+        return true;
     }
-    else if (inputLine.equals("?license") || inputLine.equals("?licence") || inputLine.equals("?warranty"))
-    {
-      try
-      {
-        getAppletContext().showDocument( new URL("gpl.html"),"license");
-      }
-      catch (Exception e)
-      {
-      }
-      return true;
-    }
+
     return false;
   }
 
-  void PerformRequest(String outputPrompt,String inputLine, boolean doRepaint)
+  void PerformRequest(String outputPrompt, String inputLine, boolean doRepaint)
   {
     boolean succeed = false;
     if (DirectCommand(inputLine))
