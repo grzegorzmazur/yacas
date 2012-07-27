@@ -292,6 +292,10 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     gotDatahubInit = false;
     TryInitThroughDatahub();
 
+    yacas.Evaluate("Plot2D'outputs();");
+
+    yacas.Evaluate("Plot2D'outputs() := {{\"default\", \"java\"},{\"data\", \"Plot2D'data\"},{\"gnuplot\", \"Plot2D'gnuplot\"},{\"java\", \"Plot2D'java\"},};");
+
     i=1;
     while (true)
     {
