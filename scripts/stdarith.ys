@@ -234,20 +234,20 @@ LocalSymbols(x,y,xarg,yarg)
 
 400 # (_x) * (_x) <-- x^2;
 
-605 # ((_x * y_IsAtom)*z_IsAtom)_(LessThan(String(z), String(y))) <-- (x * z) * y;
-605 # ((_x * (y_IsAtom)^_p)*z_IsAtom)_(LessThan(String(z), String(y))) <-- (x * z) * y^p;
-605 # ((_x * y_IsAtom)*(z_IsAtom)^_q)_(LessThan(String(z), String(y))) <-- (x * z^q) * y;
-605 # ((_x * (y_IsAtom)^_p)*(z_IsAtom)^_q)_(LessThan(String(z), String(y))) <-- (x * z^q) * y^p;
+// 605 # ((_x * y_IsAtom)*z_IsAtom)_(LessThan(String(z), String(y))) <-- (x * z) * y;
+// 605 # ((_x * (y_IsAtom)^_p)*z_IsAtom)_(LessThan(String(z), String(y))) <-- (x * z) * y^p;
+// 605 # ((_x * y_IsAtom)*(z_IsAtom)^_q)_(LessThan(String(z), String(y))) <-- (x * z^q) * y;
+// 605 # ((_x * (y_IsAtom)^_p)*(z_IsAtom)^_q)_(LessThan(String(z), String(y))) <-- (x * z^q) * y^p;
 
-610 # (x_IsAtom * y_IsAtom)_(Not IsNumber(x) And LessThan(String(y), String(x))) <-- (y * x);
-610 # ((x_IsAtom)^_p * y_IsAtom)_(Not IsNumber(x) And LessThan(String(y), String(x))) <-- (y * x^p);
-610 # (x_IsAtom * (y_IsAtom)^_q)_(Not IsNumber(x) And LessThan(String(y), String(x))) <-- (y^q * x);
-610 # ((x_IsAtom)^_p * (y_IsAtom)^_q)_(Not IsNumber(x) And LessThan(String(y), String(x))) <-- (y^q * x^p);
+// 610 # (x_IsAtom * y_IsAtom)_(Not IsNumber(x) And LessThan(String(y), String(x))) <-- (y * x);
+// 610 # ((x_IsAtom)^_p * y_IsAtom)_(Not IsNumber(x) And LessThan(String(y), String(x))) <-- (y * x^p);
+// 610 # (x_IsAtom * (y_IsAtom)^_q)_(Not IsNumber(x) And LessThan(String(y), String(x))) <-- (y^q * x);
+// 610 # ((x_IsAtom)^_p * (y_IsAtom)^_q)_(Not IsNumber(x) And LessThan(String(y), String(x))) <-- (y^q * x^p);
 
-620 # ((_x * y_IsFunction) * z_IsAtom)_(Not Equals(Type(y),"*") And Not Equals(Type(y),"^")) <-- (x * z) * y;
-620 # ((_x * (y_IsFunction)^_p) * z_IsAtom)_(Not Equals(Type(y),"*") And Not Equals(Type(y),"^")) <-- (x * z) * y^p;
-620 # (x_IsFunction * y_IsAtom)_(Not Equals(Type(x),"*") And Not Equals(Type(x),"^") And y != Infinity) <-- y * x;
-620 # ((x_IsFunction)^_p * y_IsAtom)_(Not Equals(Type(x),"*") And Not Equals(Type(x),"^") And y != Infinity) <-- y * x^p;
+// 620 # ((_x * y_IsFunction) * z_IsAtom)_(Not Equals(Type(y),"*") And Not Equals(Type(y),"^")) <-- (x * z) * y;
+// 620 # ((_x * (y_IsFunction)^_p) * z_IsAtom)_(Not Equals(Type(y),"*") And Not Equals(Type(y),"^")) <-- (x * z) * y^p;
+// 620 # (x_IsFunction * y_IsAtom)_(Not Equals(Type(x),"*") And Not Equals(Type(x),"^") And y != Infinity) <-- y * x;
+// 620 # ((x_IsFunction)^_p * y_IsAtom)_(Not Equals(Type(x),"*") And Not Equals(Type(x),"^") And y != Infinity) <-- y * x^p;
 
 /* Division */
 
