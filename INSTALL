@@ -88,15 +88,10 @@ into the proteus/ directory and read the readme there.
 D. COMPILING UNDER WINDOWS
 --------------------------
 
-To compile under Windows using MS Developer Studion, there is a 
-"makewin.bat" batch file, located in the root directory of this distribution. 
-This batch file creates the full binary release that can also be downloaded, 
-and puts it in the subdirectory "winrel\ ".
-
 The Windows version is checked infrequently, so latest development
 releases might accidentally not compile. Please report if this is
-the case, or if you are willing to maintain the Windows (MS Dev)
-release, as it currently has no maintainer.
+the case, or if you are willing to maintain the Windows release, 
+as it currently has no maintainer.
 
 E. EXTRA INFORMATION
 --------------------
