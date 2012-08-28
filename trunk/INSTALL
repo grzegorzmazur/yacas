@@ -37,7 +37,7 @@ additionally LaTeX, dvips, and makeindex to generate PostScript and PDF files.
 To compile and install, do the following:
 
 * checkout the source tree with the command
-     svn co https://yacas.svn.sourceforge.net/svnroot/yacas/trunk yacas
+     svn checkout http://svn.code.sf.net/p/yacas/code/trunk yacas
 
 * change into the 'yacas' directory.
 
