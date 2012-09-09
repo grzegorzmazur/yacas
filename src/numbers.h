@@ -142,12 +142,24 @@ private:
 public:
   /// Internal library wrapper starts here.
     inline void SetIsInteger(LispBoolean aIsInteger) {iType = (aIsInteger ? KInt : KFloat);}
+private:
     enum ENumType
     {
       KInt = 0,
       KFloat
     };
     ENumType iType;
+
+    friend LispObject* GcdInteger(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment);
+    friend LispObject* SinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
+    friend LispObject* CosFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
+    friend LispObject* TanFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
+    friend LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
+    friend LispObject* ExpFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
+    friend LispObject* LnFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
+    friend LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
+    friend LispObject* PowerFloat(LispObject* int1, LispObject* int2,
+                           LispEnvironment& aEnvironment,LispInt aPrecision);
     ANumber* iNumber;
   /// Internal library wrapper ends here.
 };
