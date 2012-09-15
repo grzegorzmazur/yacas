@@ -75,7 +75,7 @@ class LispStandard
     LispPtr previous = new LispPtr();
     LispPtr tail = new LispPtr();
     tail.Set(aOriginal.Get());
- 
+
     while (iter.Get() != null)
     {
       tail.Set(iter.Get().Next().Get());
@@ -158,7 +158,7 @@ class LispStandard
       }
       catch (Yacasexception e) { throw e; }
       finally { aEnvironment.PopLocalFrame(); }
- 
+
   }
 
   public static void InternalTrue(LispEnvironment aEnvironment, LispPtr aResult) throws Exception
@@ -335,7 +335,7 @@ class LispStandard
             {
                 return false;
             }
- 
+
             // Step to next
             iter1.GoNext();
             iter2.GoNext();
@@ -453,7 +453,7 @@ class LispStandard
       // Open file
       LispInput newInput = // new StdFileInput(hashedname, aEnvironment.iInputStatus);
           OpenInputFile(aEnvironment, aEnvironment.iInputDirectories, hashedname, aEnvironment.iInputStatus);
- 
+
       LispError.Check(newInput != null, LispError.KLispErrFileNotFound);
       DoInternalLoad(aEnvironment,newInput);
     }
@@ -466,7 +466,7 @@ class LispStandard
       aEnvironment.iInputStatus.RestoreFrom(oldstatus);
     }
   }
- 
+
   public static void InternalUse(LispEnvironment aEnvironment,String aFileName) throws Exception
   {
     LispDefFile def = aEnvironment.iDefFiles.File(aFileName);
@@ -477,8 +477,8 @@ class LispStandard
     }
   }
 
-    public static void DoPatchString(String unpatchedString, 
-                                     LispOutput aOutput, 
+    public static void DoPatchString(String unpatchedString,
+                                     LispOutput aOutput,
                                      LispEnvironment aEnvironment) throws Exception
     {
         String[] tags = unpatchedString.split("\\?\\>");
@@ -488,9 +488,9 @@ class LispStandard
                 if (tag.length > 1) {
                     aOutput.Write(tag[0]);
                     String scriptCode = tag[1].trim();
-                    StringBuffer scriptCodeBuffer = 
+                    StringBuffer scriptCodeBuffer =
                         new StringBuffer(scriptCode);
-                    StringInput scriptStream = 
+                    StringInput scriptStream =
                         new StringInput(scriptCodeBuffer, aEnvironment.iInputStatus);
                     LispOutput previous = aEnvironment.iCurrentOutput;
                     try {
@@ -518,9 +518,9 @@ class LispStandard
         InputStatus oldstatus = new InputStatus(aEnvironment.iInputStatus);
         aEnvironment.iInputStatus.SetTo(hashedname);
         try {
-            LispInput newInput = 
+            LispInput newInput =
                 OpenInputFile(aEnvironment, aEnvironment.iInputDirectories, hashedname, aEnvironment.iInputStatus);
- 
+
             LispError.Check(newInput != null, LispError.KLispErrFileNotFound);
 
             String inputString = new String(newInput.StartPtr());
@@ -533,7 +533,7 @@ class LispStandard
             aEnvironment.iInputStatus.RestoreFrom(oldstatus);
         }
     }
-    
+
 
   static String PrintExpression(LispPtr aExpression,
                       LispEnvironment aEnvironment,
