@@ -139,17 +139,17 @@ public class YacasConsole extends Thread
             String key = input.trim().substring(1);
 
             String prefix = "http://yacas.sourceforge.net/";
-          
+
             try {
                 URI uri = new URI(prefix + "ref.html?" + key);
-              
+
                 if (key.equals("license") || key.equals("licence"))
                     uri = new URI(prefix + "refprogchapter9.html");
                 else if (key.equals("warranty"))
                     uri = new URI(prefix + "refprogchapter9.html#c9s2");
                 else if (key.equals("?"))
                     uri = new URI(prefix + "refmanual.html");
-              
+
                 try {
                     Desktop.getDesktop().browse(uri);
                 } catch (IOException e) {
