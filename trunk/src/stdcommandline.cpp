@@ -40,7 +40,7 @@ void CStdCommandLine::ReadLine(const LispChar * prompt)
 MORE:
     ok = fgets(&buffer[offs],4000-offs,stdin);
 
-    if (!ok || feof(stdin)) 
+    if (!ok || feof(stdin))
         strcpy(buffer,"quit");
 
     offs=strlen(buffer);

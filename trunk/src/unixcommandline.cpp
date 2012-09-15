@@ -67,8 +67,8 @@ void CUnixCommandLine::ShowLine(
 
 
 CUnixCommandLine::CUnixCommandLine():
-    _cursor_line(0), 
-    _last_line(0), 
+    _cursor_line(0),
+    _last_line(0),
     iMaxLines(1024)
 {
     /* set termio so we can do our own input processing */
@@ -112,7 +112,7 @@ CUnixCommandLine::CUnixCommandLine():
                 buff[i++] = '\0';
                 LispString * ptr = NEW LispString(buff);
                 iHistoryList.Append(ptr);
- 
+
             }
             fclose(f);
         }
@@ -129,7 +129,7 @@ CUnixCommandLine::~CUnixCommandLine()
 #else
     sprintf(fname,"%s/.yacas_history",getenv("HOME"));
 #endif
- 
+
     FILE*f=fopen(fname,"w");
     if (f)
     {
