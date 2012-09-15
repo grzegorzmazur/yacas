@@ -76,7 +76,7 @@ static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, Lis
     }
     CHK_ARG_CORE(varstring,1);
     CHK_ARG_CORE(!IsNumber(varstring->c_str(),LispTrue),1);
- 
+
     LispPtr result;
     InternalEval(aEnvironment, result, ARGUMENT(2));
     aEnvironment.SetVariable(varstring, result, aGlobalLazyVariable);
@@ -180,7 +180,7 @@ void LispLexCompare2(LispEnvironment& aEnvironment, LispInt aStackTop,
                             aEnvironment.HashTable(),
                             aEnvironment.Precision());
     }
- 
+
     InternalBoolean(aEnvironment,RESULT, cmp);
 }
 
@@ -418,7 +418,7 @@ static void InternalInsert(LispEnvironment& aEnvironment, LispInt aStackTop, Lis
     {
         InternalFlatCopy(copied,*evaluated->SubList());
     }
- 
+
     LispPtr index(ARGUMENT(2));
     CHK_ARG_CORE(index, 2);
     CHK_ARG_CORE(index->String(), 2);
@@ -649,7 +649,7 @@ void LispProgBody(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispLocalFrame frame(aEnvironment,LispFalse);
 
   InternalTrue(aEnvironment,RESULT);
- 
+
   // Evaluate args one by one.
 
   LispIterator iter(*ARGUMENT(1)->SubList());
@@ -680,7 +680,7 @@ void LispWhile(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispPtr& arg1 = ARGUMENT(1);
     LispPtr& arg2 = ARGUMENT(2);
- 
+
     LispPtr predicate;
     InternalEval(aEnvironment, predicate, arg1);
 
@@ -701,7 +701,7 @@ static void MultiFix(LispEnvironment& aEnvironment, LispInt aStackTop, LispOpera
     CHK_ARG_CORE(ARGUMENT(1), 1);
     LispString * orig = ARGUMENT(1)->String();
     CHK_ARG_CORE(orig, 1);
- 
+
     LispPtr precedence;
     InternalEval(aEnvironment, precedence, ARGUMENT(2));
     CHK_ARG_CORE(precedence->String(), 2);
@@ -819,7 +819,7 @@ void LispTmpFile(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispChar tmp_path[MAX_PATH];
     LispChar tmp_fn[MAX_PATH];
 
-    GetTempPath(MAX_PATH, tmp_path); 
+    GetTempPath(MAX_PATH, tmp_path);
     GetTempFileName(tmp_path, "yacas", 0, tmp_fn);
 
     RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(tmp_fn)->c_str()));
@@ -832,19 +832,19 @@ static void InternalRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop,
                              LispInt aListed)
 {
     // Get operator
- 
+
     CHK_ARG_CORE(ARGUMENT(1), 1);
     LispString * orig = ARGUMENT(1)->String();
     CHK_ARG_CORE(orig, 1);
     LispPtr args(ARGUMENT(2));
- 
+
     // The arguments
     CHK_ISLIST_CORE(args,2);
 
     // Finally define the rule base
     aEnvironment.DeclareRuleBase(SymbolName(aEnvironment,orig->c_str()),
                                  (*args->SubList())->Nixed(),aListed);
- 
+
     // Return LispTrue
     InternalTrue(aEnvironment,RESULT);
 }
@@ -865,7 +865,7 @@ void InternalDefMacroRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop, 
 {
     // Get operator
     //LispPtr body;
- 
+
     CHK_ARG_CORE(ARGUMENT(1), 1);
     LispString * orig = ARGUMENT(1)->String();
     CHK_ARG_CORE(orig, 1);
@@ -877,7 +877,7 @@ void InternalDefMacroRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop, 
     // Finally define the rule base
     aEnvironment.DeclareMacroRuleBase(SymbolName(aEnvironment,orig->c_str()),
                                  (*args->SubList())->Nixed(),aListed);
- 
+
     // Return LispTrue
     InternalTrue(aEnvironment,RESULT);
 }
@@ -927,7 +927,7 @@ static void InternalNewRule(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispPtr predicate;
     LispPtr body;
     LispString * orig=NULL;
- 
+
     // Get operator
     CHK_ARG_CORE(ARGUMENT(1), 1);
     orig = ARGUMENT(1)->String();
@@ -936,7 +936,7 @@ static void InternalNewRule(LispEnvironment& aEnvironment, LispInt aStackTop)
     pr = (ARGUMENT(3));
     predicate = (ARGUMENT(4));
     body = (ARGUMENT(5));
- 
+
     // The arity
     CHK_ARG_CORE(ar, 2);
     CHK_ARG_CORE(ar->String(), 2);
@@ -946,7 +946,7 @@ static void InternalNewRule(LispEnvironment& aEnvironment, LispInt aStackTop)
     CHK_ARG_CORE(pr, 3);
     CHK_ARG_CORE(pr->String(), 3);
     precedence = InternalAsciiToInt(pr->String());
- 
+
     // Finally define the rule base
     aEnvironment.DefineRule(SymbolName(aEnvironment,orig->c_str()),
                             arity,
@@ -982,7 +982,7 @@ void LispUnFence(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     aEnvironment.UnFenceRule(SymbolName(aEnvironment,orig->c_str()),
                             arity);
- 
+
     // Return LispTrue
     InternalTrue(aEnvironment,RESULT);
 }
@@ -1086,7 +1086,7 @@ void LispRetract(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispString * orig = evaluated->String();
     CHK_ARG_CORE(orig, 1);
     LispString * oper = SymbolName(aEnvironment,orig->c_str());
- 
+
     LispPtr arity(ARGUMENT(2));
     CHK_ARG_CORE(arity->String(), 2);
     LispInt ar = InternalAsciiToInt(arity->String());
@@ -1531,7 +1531,7 @@ void LispSecure(LispEnvironment& aEnvironment,LispInt aStackTop)
 void LispFindFile(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
     CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
- 
+
     LispPtr evaluated(ARGUMENT(1));
 
     // Get file name
@@ -1574,7 +1574,7 @@ void GenArrayCreate(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispInt size = InternalAsciiToInt(sizearg->String());
 
     LispPtr initarg(ARGUMENT(2));
- 
+
     ArrayClass *array = NEW ArrayClass(size,initarg);
     RESULT = (LispGenericClass::New(array));
 }
@@ -1729,7 +1729,7 @@ void LispType(LispEnvironment& aEnvironment,LispInt aStackTop)
         goto EMPTY;
     RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(head->String()->c_str())->c_str()));
     return;
- 
+
 EMPTY:
     RESULT = (LispAtom::New(aEnvironment,"\"\""));
     return;
@@ -1740,18 +1740,18 @@ void YacasStringMidGet(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispPtr evaluated(ARGUMENT(3));
     CHK_ISSTRING_CORE(evaluated,3);
     LispString * orig = evaluated->String();
- 
+
     LispPtr index(ARGUMENT(1));
     CHK_ARG_CORE(index, 1);
     CHK_ARG_CORE(index->String(), 1);
     LispInt from = InternalAsciiToInt(index->String());
     CHK_ARG_CORE(from>0,1);
- 
+
     index = (ARGUMENT(2));
     CHK_ARG_CORE(index, 2);
     CHK_ARG_CORE(index->String(), 2);
     LispInt count = InternalAsciiToInt(index->String());
- 
+
     LispString str;
     str.ResizeTo(0);
     str.Append('\"');
@@ -1775,7 +1775,7 @@ void YacasStringMidSet(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispInt from = InternalAsciiToInt(index->String());
 
     CHK_ARG_CORE(from>0,1);
- 
+
     LispPtr ev2(ARGUMENT(2));
     CHK_ISSTRING_CORE(ev2,2);
     LispString * replace = ev2->String();
@@ -1793,7 +1793,7 @@ void YacasStringMidSet(LispEnvironment& aEnvironment,LispInt aStackTop)
 void LispFindFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
     CHK_CORE(aEnvironment.iSecure == 0, KLispErrSecurityBreach);
- 
+
     LispPtr evaluated(ARGUMENT(1));
 
     // Get file name
@@ -1945,7 +1945,7 @@ static void InternalNewRulePattern(LispEnvironment& aEnvironment, LispInt aStack
     LispPtr predicate;
     LispPtr body;
     LispString * orig = NULL;
- 
+
     // Get operator
     CHK_ARG_CORE(ARGUMENT(1), 1);
     orig = ARGUMENT(1)->String();
@@ -1954,7 +1954,7 @@ static void InternalNewRulePattern(LispEnvironment& aEnvironment, LispInt aStack
     pr = (ARGUMENT(3));
     predicate = (ARGUMENT(4));
     body = (ARGUMENT(5));
- 
+
     // The arity
     CHK_ARG_CORE(ar, 2);
     CHK_ARG_CORE(ar->String(), 2);
@@ -1964,7 +1964,7 @@ static void InternalNewRulePattern(LispEnvironment& aEnvironment, LispInt aStack
     CHK_ARG_CORE(pr, 3);
     CHK_ARG_CORE(pr->String(), 3);
     precedence = InternalAsciiToInt(pr->String());
- 
+
     // Finally define the rule base
     aEnvironment.DefineRulePattern(SymbolName(aEnvironment,orig->c_str()),
                             arity,

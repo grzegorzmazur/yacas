@@ -155,7 +155,7 @@ static LispBoolean Busy()
 }
 
 
- 
+
 void ReportNrCurrent()
 {
 #ifdef YACAS_DEBUG
@@ -221,7 +221,7 @@ const char* ReadInputString(const char* prompt)
 
   if (inpline)
   {
-    while(isspace(*inpline)) 
+    while(isspace(*inpline))
         ++inpline;
 
     if(*inpline)
@@ -245,11 +245,11 @@ const char* ReadInputString(const char* prompt)
               url = prefix + "refprogchapter9.html#c9s2";
           else if (key == "?")
               url = prefix + "refmanual.html";
-          
+
           const std::string viewer = "xdg-open";
 
           const std::string cmd = viewer + " " + url;
-          
+
           if (system(cmd.c_str()) == 0)
               inpline = "True";
           else
@@ -329,7 +329,7 @@ void LispFileSize(LispEnvironment& aEnvironment, LispInt aStackTop)
       printf("[[%s]]\n",fname.c_str());
     }
     char buf[100];
- 
+
 #ifdef HAVE_VSNPRINTF
     snprintf(buf,100,"%ld",fileSize);
 #else
@@ -357,7 +357,7 @@ void my_exit(void)
     // deleting the Yacas environment object, at least we have a saved history
     if (commandline) delete commandline; commandline = NULL;
     if (yacas) delete yacas; yacas = NULL;
- 
+
     ReportNrCurrent();
 #ifdef YACAS_DEBUG
     CheckAllPtrs(1);
@@ -513,7 +513,7 @@ CORE_KERNEL_FUNCTION("FileSize",LispFileSize,1,YacasEvaluator::Function | YacasE
 
 
 #undef CORE_KERNEL_FUNCTION
- 
+
 
     if (archive)
     {
@@ -573,7 +573,7 @@ CORE_KERNEL_FUNCTION("FileSize",LispFileSize,1,YacasEvaluator::Function | YacasE
         {
           yacas->Evaluate("Set(LoadPlugIns,False);");
         }
- 
+
         char buf[1000];
 #ifdef HAVE_VSNPRINTF
         snprintf(buf,1000,"Load(\"%s\");",init_script);
@@ -695,7 +695,7 @@ int runserver(int argc,char** argv)
       }
    }
 #endif
- 
+
    int server_sockfd, client_sockfd;
     SOCKLEN_T server_len, client_len;
     struct sockaddr_in server_address;
@@ -766,7 +766,7 @@ int runserver(int argc,char** argv)
         perror("YacasServer Could not listen to the socket\n");
         exit(1);
     }
- 
+
     {
       int i;
       for (i=0;i<MAX_CONNECTIONS;i++)
@@ -791,7 +791,7 @@ int runserver(int argc,char** argv)
             perror("server5");
             exit(1);
         }
- 
+
 #ifndef WIN32
         int socketcount = FD_SETSIZE;
 #else
@@ -846,13 +846,13 @@ int runserver(int argc,char** argv)
                         delete used_clients[clsockindex];
                         used_clients[clsockindex] = NULL;
                         nrSessions--;
- 
+
                         if (server_single_user && nrSessions == 0)
                         {
                           exit(0);
                         }
 
- 
+
 #ifdef YACAS_DEBUG
                         printf("Removing client on %d\n",fd);
 #endif
@@ -867,7 +867,7 @@ int runserver(int argc,char** argv)
                           printf("Error: seem to have run out of memory\n");
                           exit(-1);
                         }
- 
+
                         int finalbuffersize = BUFFER_CHUNKSIZE;
                         char* finalbuffer = (char*)malloc(finalbuffersize);
                         if (!finalbuffer)
@@ -875,12 +875,12 @@ int runserver(int argc,char** argv)
                           printf("Error: seem to have run out of memory\n");
                           exit(-1);
                         }
- 
+
                         finalbuffer[0] = '\0';
 
                         int bytesread;
                         int totalbytesread = 0;
- 
+
 #ifndef WIN32
                         while((bytesread = read(fd, buffer, nread)) != 0)
 #else
@@ -889,7 +889,7 @@ int runserver(int argc,char** argv)
                        {
                            buffer[bytesread] = '\0';
                            totalbytesread += bytesread;
- 
+
                            if (totalbytesread >= finalbuffersize)
                            {
                               // If input string has exeeded the buffer size reallocate the buffer
@@ -909,7 +909,7 @@ int runserver(int argc,char** argv)
                               free(finalbuffer);
                               finalbuffer = newfinalbuffer;
                            }
- 
+
                            // Append current buffer to finalbuffer string
                            strncat(finalbuffer, buffer, bytesread);
 
@@ -935,7 +935,7 @@ int runserver(int argc,char** argv)
 #ifdef YACAS_DEBUG
 printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
 #endif
- 
+
                             if (clsockindex < maxConnections)
                             {
                                if (used_clients[clsockindex] == NULL)
@@ -968,7 +968,7 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
    #else
                                    LARGE_INTEGER timedue;
                                    timedue.QuadPart = seconds  * -10000000;
- 
+
                                    htimer = CreateWaitableTimer(NULL, true, "WaitableTimer");
                                    SetWaitableTimer(htimer, &timedue, 0, stopClient, NULL, 0);
    #endif
@@ -1019,7 +1019,7 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
                                  c = write(fd, outStrings.c_str(), strlen(outStrings.c_str()));
                                  if (c < 0)
                                      perror("yacasserver");
-                                     
+
                                  c = write(fd,"]\r\n",3);
                                  if (c < 0)
                                      perror("yacasserver");
@@ -1114,12 +1114,12 @@ int main(int argc, char** argv)
   }
 #endif
 
- 
+
 #ifdef YACAS_DEBUG
 //        PlatAlloc(100); // test the alloc memory leak checker
     CHECKPTR(NULL);
 #endif
- 
+
 /*
     printf("sizeof(LispAtom) = %d\n",sizeof(LispAtom));
     printf("sizeof(LispSubList) = %d\n",sizeof(LispSubList));
@@ -1128,7 +1128,7 @@ int main(int argc, char** argv)
 
 #define USE_TEXMACS_OUT yacas->getDefEnv().getEnv().SetPrettyPrinter(yacas->getDefEnv().getEnv().HashTable().LookUp("\"TexForm\""));
 
- 
+
     bool exit_after_files = false;
 
     int fileind=1;
@@ -1278,7 +1278,7 @@ int main(int argc, char** argv)
                 {
                     hideconsolewindow=1;
                 }
- 
+
 #ifdef HAVE_CONFIG_H
                 if (strchr(argv[fileind],'v'))
                 {
@@ -1364,7 +1364,7 @@ int main(int argc, char** argv)
         USE_TEXMACS_OUT;
     }
 
- 
+
     {
         for ( ; fileind<argc; fileind++)
         {
@@ -1480,7 +1480,7 @@ RESTART:
 #ifdef YACAS_DEBUG
         LispLocalEvaluator local(yacas->getDefEnv().getEnv(),NEW TracedStackEvaluator);
 #endif
- 
+
 #ifdef PROMPT_SHOW_FREE_MEMORY
         char full_prompt[30];
         if (show_prompt)
