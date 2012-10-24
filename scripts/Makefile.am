@@ -160,8 +160,12 @@ check:
 	@find $(srcdir)/../scripts \( -name \*.ys -o -name \*.ys.def \) -print \
 	   | sed -e 's,.*scripts/,,' | sort > contents-of-tree.txt
 	@echo "Comparing scripts listed in the Makefile against the contents of the tree"
-	@if diff scripts-listed-in-makefile.txt contents-of-tree.txt; \
-	   then echo " ... ok"; \
-	 else \
-	   false; \
-	 fi
+	@(diff scripts-listed-in-makefile.txt contents-of-tree.txt; \
+	  rm -f scripts-listed-in-makefile.txt contents-of-tree.txt; \
+	  RV=$$?; \
+	  if [[ $$RV == 0 ]] ; \
+	      then echo " ... ok"; \
+	  else \
+	      false; \
+	  fi \
+	)
