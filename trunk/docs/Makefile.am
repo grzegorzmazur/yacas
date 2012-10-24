@@ -39,6 +39,6 @@ autocompleterarray.js: autocompleter examples-static.txt ../JavaYacas/hints.txt
 	cd ../JavaYacas ; make hints.txt ; cd ../docs/
 	./autocompleter ../JavaYacas/hints.txt autocompleterarray.js
 
-check: riptestfromyart
-	for file in $(YART_FILES) ; do echo "Running test code from $$file..." ; ./riptestfromyart $$file temp.yts ; ../src/yacas -pc --rootdir ../scripts temp.yts ; done
+#check: riptestfromyart $(YART_FILES)
+#	for file in $(YART_FILES) ; do echo "Running test code from $$file..." ; ./riptestfromyart $$file temp.yts ; ../src/yacas -pc --rootdir ../scripts temp.yts ; done
 
