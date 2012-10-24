@@ -127,6 +127,11 @@ install-data-local: yacas.h
 	$(INSTALL_DATA) $$file $(DESTDIR)$(yacas_include)/plat/linux32/$$basefile; \
 	done
 
+uninstall-hook:
+	rm -rf $(DESTDIR)$(yacas_include)/*.h
+	rm -rf $(DESTDIR)$(yacas_include)/*.inl
+	rm -rf $(DESTDIR)$(yacas_include)/plat
+
 version.h: ../config.h
 	echo "#define VERSION \"$(VERSION)\"" > version.h 
 
@@ -157,6 +162,10 @@ install-archive: scripts.dat
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
 	$(INSTALL_PROGRAM) scripts.dat $(DESTDIR)$(libdir)/`echo scripts.dat|sed '$(transform)'`
 
+
+distclean-local:
+	-rm -f codereviewer$(EXEEXT)
+	-rm -f version.h
 
 # 
 # depend.dep contains a list of dependencies. gcc can generate this
