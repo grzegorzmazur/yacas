@@ -240,11 +240,25 @@ install-html: books.html
 	   $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$file; \
 	done
 
+uninstall-hook: 
+	-for file in $(DESTDIR)$(htmldir)/*; do \
+	    rm -f $$file; \
+	done
+	rm -f $(DESTDIR)$(pkgdatadir)/manmake/book2TeX.sh
+	rm -f $(DESTDIR)$(pkgdatadir)/manmake/book2TeX.ys
+	rm -f $(DESTDIR)$(pkgdatadir)/manmake/txt2yacasdoc.pl
+
+clean-local:
+	rm -f hints.unsorted
+	rm -f hints.sorted
+	rm -f hints.singlesorted
+	rm -f tail.txt
+	rm -f hints
+	rm -f config.chapt
+	rm -f addons.chapt
+
 install-ps: ps-docs
 	$(mkinstalldirs) $(DESTDIR)$(psdir)/
 	-for file in $(PS_DOCS); do \
 	   $(INSTALL_DATA) $$file $(DESTDIR)$(psdir)/$$file; \
 	done
-
-#	   gzip $(DESTDIR)$(psdir)/$$file; 
-

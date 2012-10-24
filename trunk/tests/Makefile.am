@@ -32,3 +32,8 @@ check-am:
 
 installcheck-am: 
 	@$(srcdir)/test-yacas "$(INSTALLED_YACAS)" $(srcdir) $(TESTFILES)
+
+clean-local: clean-local-check
+.PHONY: clean-local-check
+clean-local-check:
+	-rm -f yacas-logfile.txt
