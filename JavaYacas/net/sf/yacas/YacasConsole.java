@@ -39,13 +39,12 @@ public class YacasConsole extends Thread
       java.net.URL detectURL = java.lang.ClassLoader.getSystemResource("yacasinit.ys");
       if (detectURL != null)
       {
-        String detect = detectURL.getPath(); // file:/home/av/src/lib/yacas.jar!/yacasinit.ys
-        archive = detect.substring(0, detect.lastIndexOf('!')); // file:/home/av/src/lib/yacas.jar
-//System.out.println("Found archive ["+archive+"]");
+        String detect = detectURL.getPath();
+        archive = detect.substring(0, detect.lastIndexOf('!'));
       }
       else
       {
-//System.out.println("Archive not found!!!!");
+          // FIXME: report the error
       }
     }
     int i=0;
@@ -121,8 +120,6 @@ public class YacasConsole extends Thread
     //    System.out.println("Type 'restart' to restart Yacas.\n");
 
     System.out.println("To see example commands, keep typing Example();\n");
-
-//yacas.Evaluate("BubbleSort(N(PSolve(x^3-3*x^2+2*x,x)), \"<\");");
 
     System.out.println("Yacas in Java");
 
