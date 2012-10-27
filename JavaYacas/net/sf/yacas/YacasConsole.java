@@ -34,6 +34,7 @@ public class YacasConsole extends Thread
   {
     String defaultDirectory = null;
     String archive = "";
+    String expression = null;
 
     {
       java.net.URL detectURL = java.lang.ClassLoader.getSystemResource("yacasinit.ys");
@@ -60,6 +61,11 @@ public class YacasConsole extends Thread
         i++;
         archive = argv[i];
       }
+      if (argv[i].equals("-i"))
+      {
+        i++;
+        expression = argv[i];
+      }
       else
       {
         break;
@@ -75,7 +81,7 @@ public class YacasConsole extends Thread
 
     try
     {
-      String zipFileName = archive;//"file:/Users/ayalpinkus/projects/JavaYacas/yacas.jar";
+      String zipFileName = archive;
       java.util.zip.ZipFile z = new java.util.zip.ZipFile(new File(new java.net.URI(zipFileName)));
       LispStandard.zipFile = z;
     }
@@ -94,8 +100,13 @@ public class YacasConsole extends Thread
     }
     {
       String result = yacas.Evaluate("Load(\"yacasinit.ys\");");
-      if (scriptsToRun == argv.length)
+      if (scriptsToRun == argv.length && expression == null)
         System.out.println("Out> "+result);
+    }
+    if (expression != null)
+    {
+        String result = yacas.Evaluate(expression);
+        return;
     }
     if (scriptsToRun < argv.length)
     {
