@@ -196,6 +196,9 @@ LispInt CUnixCommandLine::GetKey()
         case  8:              /* ^H  (unix backspace) */
             c = eBackSpace;
             break;
+        case 11:              /* ^K (unix kill to the end of line */
+            c = eKill;
+            break;
         case 033:
             {
                 c = getc(stdin); /* check for CSI */
