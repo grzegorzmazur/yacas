@@ -153,6 +153,14 @@ void CCommandLine::ReadLineSub(const LispChar * prompt)
             }
             iFullLineDirty = 1;
             break;
+        case eKill:
+            if (cursor < iSubLine.Size() - 1)
+            {
+                iSubLine.Delete(cursor, iSubLine.Size() - cursor - 1);
+                iFullLineDirty = 1;
+                iHistoryUnchanged = 0;
+            }
+            break;
         default:
             {
                 LispChar cc=(LispChar)c;

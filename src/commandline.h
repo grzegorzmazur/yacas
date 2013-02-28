@@ -30,7 +30,8 @@ enum ESpecialChars
     eEnd,
     eEnter,
     eTab,
-    eEscape
+    eEscape,
+    eKill
 };
 
 /**
