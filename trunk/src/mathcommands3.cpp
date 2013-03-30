@@ -823,7 +823,6 @@ void LispBackQuote(LispEnvironment& aEnvironment, LispInt aStackTop)
     InternalEval(aEnvironment, RESULT, result);
 }
 
-// this function is declared in yacasapi.cpp
 void LispVersion(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     RESULT = (LispAtom::New(aEnvironment,"\"" VERSION "\""));
