@@ -43,7 +43,7 @@ endif
 
 yacas_DEPENDENCIES = fastprimes.c version.h GPL_stuff.h 
 
-
+mathcommands3.$(OBJEXT): version.h
 
 codereviewer_SOURCES = codereviewer.cpp 
 codereviewer_LDADD = 
