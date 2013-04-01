@@ -58,6 +58,7 @@ cd backups
 mv ../../yacas-*.tar.gz .
 cd ..
 # chmod -R 755 *
+chmod 664 yacas.jar
 tar -zcf ../homepage.tgz *
 cd ..
 rm -rf homepage/
