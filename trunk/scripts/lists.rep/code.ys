@@ -180,6 +180,7 @@ Function("BubbleSort",{list,compare})
 
 /// fast in-place sorting of a list (or array!)
 /// SmallSort sorts up to 3 elements, HeapSort sorts 4 and more elements
+SmallSort(_list, _first, _last, _compare) _ (list={}) <-- list;
 SmallSort(_list, _first, _last, _compare) _ (last=first) <-- list;
 SmallSort(_list, _first, _last, _compare) _ (last=first+1) <--
 [
