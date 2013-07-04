@@ -1255,10 +1255,11 @@ void LispCheck(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispTrapError(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-  LispTrap(
-  {
-    InternalEval(aEnvironment, RESULT, ARGUMENT(1));
-  },aEnvironment.iErrorOutput,aEnvironment);
+    try {
+        InternalEval(aEnvironment, RESULT, ARGUMENT(1));
+    } catch (LispInt error_code) {
+        Handle(error_code, aEnvironment, aEnvironment.iErrorOutput);
+    }
 
   if (aEnvironment.iError[0])
   {

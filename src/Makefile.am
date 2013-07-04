@@ -19,7 +19,7 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
         archiver.h GPL_stuff.h  
 
 yacas_SOURCES = yacasmain.cpp stdcommandline.cpp deffile.cpp infixparser.cpp lispatom.cpp \
-	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp \
+	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp lisperror.cpp \
 	lispio.cpp lispobject.cpp lispparser.cpp \
 	lispuserfunc.cpp mathcommands.cpp mathenvironment.cpp \
 	mathuserfunc.cpp standard.cpp  stdfileio.cpp arggetter.cpp \

@@ -49,8 +49,13 @@ template<typename T>
 inline void Check(T hastobetrue, LispInt aError)
 {
     if (!hastobetrue)
-        LispThrow(aError);
+        throw aError;
 }
+
+class LispEnvironment;
+class LispOutput;
+
+void Handle(LispInt aError, LispEnvironment& aEnvironment, LispOutput& aOutput);
 
 
 #ifdef YACAS_DEBUG
