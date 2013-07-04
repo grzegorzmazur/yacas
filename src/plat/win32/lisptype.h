@@ -15,7 +15,6 @@
 #define LispChar  char
 #define LispInt   int
 #define LispUnsLong unsigned long
-#define LispShort short
 
 #define LISPEXPORT  //__declspec(dllexport)
 #define LISPIMPORT  //__declspec(dllimport)
