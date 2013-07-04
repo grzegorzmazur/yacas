@@ -19,18 +19,8 @@
 #define LISPEXPORT  //__declspec(dllexport)
 #define LISPIMPORT  //__declspec(dllimport)
 
-// Number of bits to use for reference-counting. This can actually
-// grow significantly, when sub-expressions are copied (in which
-// case a LispSubList references the same sequence of LispObjects!)
-#ifdef USE_LONG_REF_COUNTS
-#define ReferenceBits 32
 #define ReferenceType unsigned
 #define ReferenceMax ((unsigned)0xffffffff)
-#else
-#define ReferenceBits 16
-#define ReferenceType unsigned short
-#define ReferenceMax ((unsigned short)0xffff)
-#endif
 
 #define EXE_DLL_PLUGINS // Enable plugins inside the exe by default
 

@@ -17,12 +17,8 @@
 #define LISPEXPORT
 #define LISPIMPORT
 
-// Number of bits to use for reference-counting. This can actually
-// grow significantly, when sub-expressions are copied (in which
-// case a LispSubList references the same sequence of LispObjects!)
-#define ReferenceBits 64
-#define ReferenceType unsigned int
-#define ReferenceMax ((unsigned int)0xffffffffffffffff)
+#define ReferenceType unsigned
+#define ReferenceMax ((unsigned)0xffffffffffffffff)
 
 
 #define SAFEPUSH(_env,_obj) // _env.iCleanup.Push(_obj)
