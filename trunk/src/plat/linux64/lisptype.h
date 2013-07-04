@@ -13,7 +13,6 @@
 #define LispChar  char
 #define LispInt   signed long int
 #define LispUnsLong unsigned long int
-#define LispShort short int
 
 #define LISPEXPORT
 #define LISPIMPORT
