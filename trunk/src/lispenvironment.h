@@ -76,10 +76,10 @@ public:
   /// LispGlobalVariable is constructed, and it is associated with
   /// \a aValue in #iGlobals.
   /// \sa FindLocal
-  void SetVariable(LispString * aString, LispPtr& aValue, LispBoolean aGlobalLazyVariable);
+  void SetVariable(LispString * aString, LispPtr& aValue, bool aGlobalLazyVariable);
 
   /// In debug mode, DebugModeVerifySettingGlobalVariables raises a warning if a global variable is set.
-  void DebugModeVerifySettingGlobalVariables(LispPtr & aVariable, LispBoolean aGlobalLazyVariable);
+  void DebugModeVerifySettingGlobalVariables(LispPtr & aVariable, bool aGlobalLazyVariable);
 
   /// Get the value assigned to a variable.
   /// \param aVariable name of the variable
@@ -100,7 +100,7 @@ public:
   void GetVariable(LispString * aVariable,LispPtr& aResult);
 
   void UnsetVariable(LispString * aString);
-  void PushLocalFrame(LispBoolean aFenced);
+  void PushLocalFrame(bool aFenced);
   void PopLocalFrame();
   void NewLocal(LispString * aVariable,LispObject* aValue);
   void CurrentLocals(LispPtr& aResult);
@@ -507,7 +507,7 @@ inline LispHashTable& LispEnvironment::HashTable()
 class LispLocalFrame : public LispBase
 {
 public:
-    LispLocalFrame(LispEnvironment& aEnvironment, LispBoolean aFenced)
+    LispLocalFrame(LispEnvironment& aEnvironment, bool aFenced)
         : iEnvironment(aEnvironment)
     {
         iEnvironment.PushLocalFrame(aFenced);

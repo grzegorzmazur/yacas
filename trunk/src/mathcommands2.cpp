@@ -81,7 +81,7 @@ void LispCharString(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   LispString * str = ARGUMENT(1)->String();
   CHK_ARG_CORE(str,2);
-  CHK_ARG_CORE(IsNumber(str->c_str(),LispFalse),2);
+  CHK_ARG_CORE(IsNumber(str->c_str(),false),2);
   LispInt asciiCode = InternalAsciiToInt(str);
 
   LispChar ascii[4];

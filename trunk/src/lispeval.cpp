@@ -467,7 +467,7 @@ void DefaultDebugger::Leave(LispEnvironment& aEnvironment, LispPtr& aResult,
   defaultEval.Eval(aEnvironment, result, iLeave);
 }
 
-LispBoolean DefaultDebugger::Stopped()
+bool DefaultDebugger::Stopped()
 {
   return iStopped;
 }

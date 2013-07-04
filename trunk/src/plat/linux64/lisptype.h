@@ -14,7 +14,6 @@
 #define LispInt   signed long int
 #define LispUnsLong unsigned long int
 #define LispShort short int
-#define LispBoolean int
 
 #define LISPEXPORT
 #define LISPIMPORT
@@ -25,11 +24,6 @@
 #define ReferenceBits 64
 #define ReferenceType unsigned int
 #define ReferenceMax ((unsigned int)0xffffffffffffffff)
-
-
-// Platform-independent booleans
-#define LispFalse 0
-#define LispTrue 1
 
 // System calls
 #define SystemCall system

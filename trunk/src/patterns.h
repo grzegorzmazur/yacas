@@ -34,7 +34,7 @@ public:
     /// \param aExpression the expression to test.
     /// \param arguments (input/output) actual values of the pattern
     /// variables for \a aExpression.
-    virtual LispBoolean ArgumentMatches(LispEnvironment& aEnvironment,
+    virtual bool ArgumentMatches(LispEnvironment& aEnvironment,
                                         LispPtr& aExpression,
                                         LispPtr* arguments)=0;
 };
@@ -44,7 +44,7 @@ class MatchAtom : public YacasParamMatcherBase
 {
 public:
     MatchAtom(LispString * aString);
-    virtual LispBoolean ArgumentMatches(LispEnvironment& aEnvironment,
+    virtual bool ArgumentMatches(LispEnvironment& aEnvironment,
                                         LispPtr& aExpression,
                                         LispPtr* arguments);
 protected:
@@ -56,7 +56,7 @@ class MatchNumber : public YacasParamMatcherBase
 {
 public:
     MatchNumber(BigNumber* aNumber);
-    virtual LispBoolean ArgumentMatches(LispEnvironment& aEnvironment,
+    virtual bool ArgumentMatches(LispEnvironment& aEnvironment,
                                         LispPtr& aExpression,
                                         LispPtr* arguments);
 protected:
@@ -69,7 +69,7 @@ class MatchSubList : public YacasParamMatcherBase
 public:
   MatchSubList(YacasParamMatcherBase** aMatchers, LispInt aNrMatchers);
   ~MatchSubList();
-  virtual LispBoolean ArgumentMatches(LispEnvironment& aEnvironment,
+  virtual bool ArgumentMatches(LispEnvironment& aEnvironment,
                                       LispPtr& aExpression,
                                       LispPtr* arguments);
 private:
@@ -105,7 +105,7 @@ public:
     /// pattern matches and \a aExpression is stored in this
     /// entry. Otherwise, the pattern only matches if the entry equals
     /// \a aExpression.
-    virtual LispBoolean ArgumentMatches(LispEnvironment& aEnvironment,
+    virtual bool ArgumentMatches(LispEnvironment& aEnvironment,
                                         LispPtr& aExpression,
                                         LispPtr* arguments);
 protected:
@@ -150,13 +150,13 @@ public:
     /// function also returns false. Otherwise, SetPatternVariables()
     /// is called again, but now in the current LispLocalFrame, and
     /// this function returns true.
-    LispBoolean Matches(LispEnvironment& aEnvironment,
+    bool Matches(LispEnvironment& aEnvironment,
                         LispPtr& aArguments);
 
     /// Try to match the pattern against \a aArguments.
     /// This function does the same as Matches(LispEnvironment&,LispPtr&),
     /// but differs in the type of the arguments.
-    LispBoolean Matches(LispEnvironment& aEnvironment,
+    bool Matches(LispEnvironment& aEnvironment,
                         LispPtr* aArguments);
 
 protected:
@@ -196,10 +196,10 @@ protected:
 
     /// Check whether all predicates are true.
     /// This function goes through all predicates in #iPredicates, and
-    /// evaluates them. It returns #LispFalse if at least one
+    /// evaluates them. It returns #false if at least one
     /// of these results IsFalse(). An error is raised if any result
     /// neither IsTrue() nor IsFalse().
-    LispBoolean CheckPredicates(LispEnvironment& aEnvironment);
+    bool CheckPredicates(LispEnvironment& aEnvironment);
 
 protected:
     /// List of parameter matches, one for every parameter.

@@ -26,7 +26,7 @@ LispChar StringInput::Peek()
     return iString[ iCurrent ];
 }
 
-LispBoolean StringInput::EndOfStream()
+bool StringInput::EndOfStream()
 {
     return (iString[ iCurrent ] == '\0');
 }

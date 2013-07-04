@@ -36,7 +36,7 @@ void CStdCommandLine::ReadLine(const LispChar * prompt)
     fputs(prompt, stdout); fflush(stdout);
     char buffer[4001];
     int offs=0;
-    bool ok;
+    char* ok;
 MORE:
     ok = fgets(&buffer[offs],4000-offs,stdin);
 

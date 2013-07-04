@@ -19,7 +19,7 @@ LispString * GetIntegerArgument(LispEnvironment& aEnvironment, LispInt aStackTop
 {
   LispString * str = ARGUMENT(aArgNr)->String();
   CHK_ARG_CORE(str,aArgNr);
-  CHK_ARG_CORE(IsNumber(str->c_str(),LispFalse),aArgNr);
+  CHK_ARG_CORE(IsNumber(str->c_str(),false),aArgNr);
   return str;
 }
 
@@ -77,7 +77,7 @@ void SetShortIntegerConstant(LispEnvironment& aEnvironment,
 {
   LispPtr value;
   ReturnShortInteger(aEnvironment,value, aValue);
-  aEnvironment.SetVariable( aEnvironment.HashTable().LookUp(aName),value,LispFalse);
+  aEnvironment.SetVariable( aEnvironment.HashTable().LookUp(aName),value,false);
 }
 double GetDoubleFloatArgument(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {

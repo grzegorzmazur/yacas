@@ -14,8 +14,8 @@
 
 /// Value of a Lisp global variable.
 /// The only special feature of this class is the attribute
-/// #iEvalBeforeReturn, which defaults to #LispFalse. If this
-/// attribute is set to #LispTrue, the value in #iValue needs to be
+/// #iEvalBeforeReturn, which defaults to #false. If this
+/// attribute is set to #true, the value in #iValue needs to be
 /// evaluated to get the value of the Lisp variable.
 /// \sa LispEnvironment::GetVariable()
 
@@ -23,12 +23,12 @@ class LispGlobalVariable : public YacasBase
 {
 public:
     inline LispGlobalVariable(const LispGlobalVariable& aOther);
-    LispGlobalVariable(LispPtr& aValue): iValue(aValue), iEvalBeforeReturn(LispFalse) {}
+    LispGlobalVariable(LispPtr& aValue): iValue(aValue), iEvalBeforeReturn(false) {}
     inline LispGlobalVariable& operator=(const LispGlobalVariable& aOther);
 
-    inline void SetEvalBeforeReturn(LispBoolean aEval);
+    inline void SetEvalBeforeReturn(bool aEval);
     LispPtr iValue;
-    LispBoolean iEvalBeforeReturn;
+    bool iEvalBeforeReturn;
 };
 
 /// Associated hash of LispGlobalVariable objects
@@ -40,11 +40,11 @@ class LispGlobal : public LispAssociatedHash<LispGlobalVariable>
 
 
 
-inline LispGlobalVariable::LispGlobalVariable(const LispGlobalVariable& aOther) : iValue(aOther.iValue), iEvalBeforeReturn(LispFalse)
+inline LispGlobalVariable::LispGlobalVariable(const LispGlobalVariable& aOther) : iValue(aOther.iValue), iEvalBeforeReturn(false)
 {
 }
 
-inline void LispGlobalVariable::SetEvalBeforeReturn(LispBoolean aEval)
+inline void LispGlobalVariable::SetEvalBeforeReturn(bool aEval)
 {
   iEvalBeforeReturn = aEval;
 }

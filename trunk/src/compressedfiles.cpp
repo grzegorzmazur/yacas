@@ -12,7 +12,7 @@
 
 
 CompressedFiles::CompressedFiles(unsigned char * aBuffer, LispInt aFullSize, LispInt aCompressed)
-: iFullBuffer(aBuffer),iCompressed(aCompressed),iFullSize(aFullSize),iIndex(NULL),iNrFiles(0),iIndexSize(0),iIsValid(LispFalse)
+: iFullBuffer(aBuffer),iCompressed(aCompressed),iFullSize(aFullSize),iIndex(NULL),iNrFiles(0),iIndexSize(0),iIsValid(false)
 {
     if (!iFullBuffer) return;
 
@@ -56,7 +56,7 @@ CompressedFiles::CompressedFiles(unsigned char * aBuffer, LispInt aFullSize, Lis
             iIndex[i] = ptr;
         }
     }
-    iIsValid = LispTrue;
+    iIsValid = true;
 }
 
 CompressedFiles::~CompressedFiles()

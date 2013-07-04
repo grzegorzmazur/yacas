@@ -6,12 +6,12 @@ class LispLocalFile : public LispBase
 {
 public:
   LispLocalFile(LispEnvironment& aEnvironment,
-                LispChar * aFileName, LispBoolean aRead,
+                LispChar * aFileName, bool aRead,
                 InputDirectories& aInputDirectories);
   virtual ~LispLocalFile();
   virtual void Delete();
 private:
-  LispLocalFile(const LispLocalFile& aOther) : iFile(NULL),iEnvironment(aOther.iEnvironment),iOpened(LispFalse)
+  LispLocalFile(const LispLocalFile& aOther) : iFile(NULL),iEnvironment(aOther.iEnvironment),iOpened(false)
   {
     // copy constructor not written yet, hence the assert
     LISPASSERT(0);
@@ -34,7 +34,7 @@ class StdFileInput : public LispInput
 public:
     virtual LispChar Next();
     virtual LispChar Peek();
-    virtual LispBoolean EndOfStream();
+    virtual bool EndOfStream();
     void Rewind();
     virtual LispChar * StartPtr();
     virtual LispInt Position();
@@ -57,7 +57,7 @@ public:
   ~CachedStdFileInput() ;
   virtual LispChar Next();
   virtual LispChar Peek();
-  virtual LispBoolean EndOfStream();
+  virtual bool EndOfStream();
   void Rewind();
   virtual LispChar * StartPtr();
   virtual LispInt Position();
@@ -113,7 +113,7 @@ public:
 public:
     virtual LispChar Next();
     virtual LispChar Peek();
-    virtual LispBoolean EndOfStream();
+    virtual bool EndOfStream();
     void Rewind();
     virtual LispChar * StartPtr();
     virtual LispInt Position();

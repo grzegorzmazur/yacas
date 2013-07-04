@@ -16,7 +16,6 @@
 #define LispInt   int
 #define LispUnsLong unsigned long
 #define LispShort short
-#define LispBoolean int
 
 #define LISPEXPORT  //__declspec(dllexport)
 #define LISPIMPORT  //__declspec(dllimport)
@@ -33,10 +32,6 @@
 #define ReferenceType unsigned short
 #define ReferenceMax ((unsigned short)0xffff)
 #endif
-
-// Platform-independent booleans
-#define LispFalse 0
-#define LispTrue 1
 
 #define EXE_DLL_PLUGINS // Enable plugins inside the exe by default
 

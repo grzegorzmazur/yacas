@@ -32,10 +32,10 @@ public:
 
 
 // utility functions
-LispBoolean IsDigit(LispChar c);
-LispBoolean IsAlpha(LispChar c);
-LispBoolean IsAlNum(LispChar c);
-LispBoolean IsSymbolic(LispChar c);
+bool IsDigit(LispChar c);
+bool IsAlpha(LispChar c);
+bool IsAlNum(LispChar c);
+bool IsSymbolic(LispChar c);
 
 
 

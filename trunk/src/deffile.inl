@@ -1,5 +1,5 @@
 
-inline LispBoolean LispDefFile::IsLoaded()
+inline bool LispDefFile::IsLoaded()
 {
     return iIsLoaded;
 }

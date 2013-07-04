@@ -22,20 +22,20 @@ const LispChar * PatternClass::TypeName()
     return "\"Pattern\"";
 }
 
-LispBoolean PatternClass::Matches(LispEnvironment& aEnvironment,
+bool PatternClass::Matches(LispEnvironment& aEnvironment,
                                   LispPtr& aArguments)
 {
     LISPASSERT(iPatternMatcher);
-    LispBoolean result;
+    bool result;
     result = iPatternMatcher->Matches(aEnvironment, aArguments);
     return result;
 }
 
-LispBoolean PatternClass::Matches(LispEnvironment& aEnvironment,
+bool PatternClass::Matches(LispEnvironment& aEnvironment,
                                   LispPtr* aArguments)
 {
     LISPASSERT(iPatternMatcher);
-    LispBoolean result;
+    bool result;
     result = iPatternMatcher->Matches(aEnvironment, aArguments);
     return result;
 }

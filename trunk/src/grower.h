@@ -110,7 +110,7 @@ public:
     : iArray(0)
     , iSize(0)
     , iCapacity(0)
-    , iArrayOwnedExternally(LispFalse)
+    , iArrayOwnedExternally(false)
     {
     }
   virtual ~CArrayGrower()
@@ -134,7 +134,7 @@ public:
     }
     iArray = 0;
     iCapacity = iSize = 0;
-    iArrayOwnedExternally = LispFalse;
+    iArrayOwnedExternally = false;
   }
   inline SizeType Size() const { return iSize; }
 
@@ -142,11 +142,11 @@ public:
     : iArray(0)
     , iSize(0)
     , iCapacity(0)
-    , iArrayOwnedExternally(LispFalse)
+    , iArrayOwnedExternally(false)
   {
     // Make sure we're not accidentally copying a huge array. We want this system to stay efficient...
     LISPASSERT(aOther.iSize == 0);
-    LISPASSERT(aOther.iArrayOwnedExternally == LispFalse);
+    LISPASSERT(aOther.iArrayOwnedExternally == false);
   }
 
   inline const CArrayGrower<T,TOps>& operator=(const CArrayGrower<T,TOps>& aOther)
@@ -155,10 +155,10 @@ public:
     LISPASSERT(iArray == 0);
     LISPASSERT(iSize == 0);
     LISPASSERT(iCapacity == 0);
-    LISPASSERT(iArrayOwnedExternally == LispFalse);
+    LISPASSERT(iArrayOwnedExternally == false);
 
     LISPASSERT(aOther.iSize == 0);
-    LISPASSERT(aOther.iArrayOwnedExternally == LispFalse);
+    LISPASSERT(aOther.iArrayOwnedExternally == false);
     return *this;
   }
 
@@ -210,7 +210,7 @@ public:
     LISPASSERT(aIndex>=0 && aIndex<iSize);
     ArrOps::remove((char**)&iArray, TOps(), iSize, aIndex, aCount, sizeof(ElementType));
   }
-  inline LispBoolean ArrayOwnedExternally()
+  inline bool ArrayOwnedExternally()
   {
     return iArrayOwnedExternally;
   }
@@ -250,10 +250,10 @@ public:
     */
   inline void SetExternalArray(ElementType* aArray, SizeType aSize)
   {
-    LISPASSERT(!iArray || iArrayOwnedExternally == LispTrue);
+    LISPASSERT(!iArray || iArrayOwnedExternally == true);
     iArray = aArray;
     iSize = aSize;
-    iArrayOwnedExternally = LispTrue;
+    iArrayOwnedExternally = true;
     iCapacity = -10000;  // Setting iCapacity should not strictly be necessary, setting it to hugely negative number will hopefully force a fail.
   }
 
@@ -269,7 +269,7 @@ private:
   ElementType * iArray;
   SizeType iSize;
   SizeType iCapacity;
-  LispBoolean iArrayOwnedExternally;
+  bool iArrayOwnedExternally;
 };
 
 /** \class CDeletingArrayGrower calls delete on each element in the

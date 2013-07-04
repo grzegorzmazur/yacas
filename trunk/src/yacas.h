@@ -115,7 +115,7 @@ public:
     virtual LispChar * Error();
 
     /// Whether an error occured during the last evaluation.
-    inline LispBoolean IsError();
+    inline bool IsError();
 
 private:
  
@@ -135,7 +135,7 @@ private:
     StringOutput iResultOutput;
 };
 
-inline LispBoolean CYacas::IsError()
+inline bool CYacas::IsError()
 {
     return (Error()[0] != '\0');
 }

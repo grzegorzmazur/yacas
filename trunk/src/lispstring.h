@@ -57,7 +57,7 @@ public:
 
     ~LispString();
 private:
-    inline void SetString(LispChar * aString, LispBoolean aStringOwnedExternally);
+    inline void SetString(LispChar * aString, bool aStringOwnedExternally);
   void SetString(const LispChar * aString);
 public:
   ReferenceCount iReferenceCount;

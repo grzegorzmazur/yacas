@@ -14,7 +14,7 @@ public:
   virtual ~LispArgList();
   virtual LispInt NrArguments()=0;
   virtual LispChar * GetArgument(LispInt aIndex, LispInt& aLength)=0;
-  virtual LispBoolean Compare(LispInt aIndex, LispChar * aString)=0;
+  virtual bool Compare(LispInt aIndex, LispChar * aString)=0;
 };
 
 /// Abstract class which can be put inside a LispGenericClass.
