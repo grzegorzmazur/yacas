@@ -156,7 +156,7 @@ class LispStandard
         LispError.Check(args2.Get() == null,LispError.KLispErrInvalidArg);
         aEnvironment.iEvaluator.Eval(aEnvironment, aResult, body);
       }
-      catch (Yacasexception e) { throw e; }
+      catch (YacasException e) { throw e; }
       finally { aEnvironment.PopLocalFrame(); }
 
   }
@@ -653,7 +653,7 @@ class LispStandard
             LispMultiUserFunction multiUser = aEnvironment.MultiUserFunction(str);
             if (multiUser.iFileToOpen!=null)
             {
-              throw new Yacasexception("["+str+"]"+"] : def file already chosen: "+multiUser.iFileToOpen.iFileName);
+              throw new YacasException("["+str+"]"+"] : def file already chosen: "+multiUser.iFileToOpen.iFileName);
             }
             multiUser.iFileToOpen = def;
         }
@@ -771,7 +771,7 @@ class LispStandard
         return log2_table[n-1];
       else
       {
-        throw new Yacasexception("log2_table_lookup: error: invalid argument "+n);
+        throw new YacasException("log2_table_lookup: error: invalid argument "+n);
       }
   }
   // convert the number of digits in given base to the number of bits, and back.
