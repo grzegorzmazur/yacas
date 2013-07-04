@@ -31,8 +31,6 @@
 #define ReferenceMax ((unsigned short)0xffff)
 #endif
 
-// System calls
-#define SystemCall system
 
 #define SAFEPUSH(_env,_obj) // _env.iCleanup.Push(_obj)
 #define SAFEPOP(_env) // _env.iCleanup.Pop()
