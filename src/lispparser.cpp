@@ -8,7 +8,7 @@
 LispParser::LispParser(LispTokenizer& aTokenizer, LispInput& aInput,
            LispEnvironment& aEnvironment)
     : iTokenizer(aTokenizer), iInput(aInput),iEnvironment(aEnvironment),
-    iListed(LispFalse) {}
+    iListed(false) {}
 
 LispParser::~LispParser() {}
 void LispParser::Parse(LispPtr& aResult)

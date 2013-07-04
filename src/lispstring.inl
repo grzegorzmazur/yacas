@@ -1,7 +1,7 @@
 
 // LispString inline functions.
 
-inline void LispString::SetString(LispChar * aString, LispBoolean aStringOwnedExternally)
+inline void LispString::SetString(LispChar * aString, bool aStringOwnedExternally)
 {
   if (aStringOwnedExternally)
   {

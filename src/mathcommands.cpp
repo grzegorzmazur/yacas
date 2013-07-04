@@ -35,8 +35,8 @@
 
 
 void LispLexCompare2(LispEnvironment& aEnvironment, LispInt aStackTop,
-                     LispBoolean (*lexfunc)(LispChar * f1, LispChar * f2, LispHashTable& aHashTable,LispInt aPrecision),
-                     LispBoolean (*numfunc)(BigNumber& n1, BigNumber& n2)
+                     bool (*lexfunc)(LispChar * f1, LispChar * f2, LispHashTable& aHashTable,LispInt aPrecision),
+                     bool (*numfunc)(BigNumber& n1, BigNumber& n2)
                     );
 
 
@@ -55,7 +55,7 @@ void LispEval(LispEnvironment& aEnvironment,LispInt aStackTop)
 /// should be evaluated. The real work is done by
 /// LispEnvironment::SetVariable() .
 /// \sa LispSetVar(), LispMacroSetVar()
-static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, LispBoolean aMacroMode, LispBoolean aGlobalLazyVariable)
+static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, bool aMacroMode, bool aGlobalLazyVariable)
 {
     LispString * varstring=NULL;
     if (aMacroMode)
@@ -75,7 +75,7 @@ static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, Lis
         varstring = ARGUMENT(1)->String();
     }
     CHK_ARG_CORE(varstring,1);
-    CHK_ARG_CORE(!IsNumber(varstring->c_str(),LispTrue),1);
+    CHK_ARG_CORE(!IsNumber(varstring->c_str(),true),1);
 
     LispPtr result;
     InternalEval(aEnvironment, result, ARGUMENT(2));
@@ -87,19 +87,19 @@ static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, Lis
 /// This function simply calls InternalSetVar() .
 void LispSetVar(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-  InternalSetVar(aEnvironment, aStackTop, LispFalse,LispFalse);
+  InternalSetVar(aEnvironment, aStackTop, false,false);
 }
 
 /// Corresponds to the Yacas function \c MacroSet.
 /// This function simply calls InternalSetVar() .
 void LispMacroSetVar(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-  InternalSetVar(aEnvironment, aStackTop, LispTrue,LispFalse);
+  InternalSetVar(aEnvironment, aStackTop, true,false);
 }
 
 void LispSetGlobalLazyVariable(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-  InternalSetVar(aEnvironment, aStackTop, LispFalse,LispTrue);
+  InternalSetVar(aEnvironment, aStackTop, false,true);
 }
 
 
@@ -124,22 +124,22 @@ void LispClearVar(LispEnvironment& aEnvironment,LispInt aStackTop)
  returns 0, and it returns 1 if f1>f2
  */
 // the aPrecision argument is ignored here
-static LispBoolean LexLessThan(LispChar * f1, LispChar * f2, LispHashTable& aHashTable,LispInt aPrecision)
+static bool LexLessThan(LispChar * f1, LispChar * f2, LispHashTable& aHashTable,LispInt aPrecision)
 {
     return (StrCompare(f1, f2)<0);
 }
 
 // the aPrecision argument is ignored here
-static LispBoolean LexGreaterThan(LispChar * f1, LispChar * f2, LispHashTable& aHashTable,LispInt aPrecision)
+static bool LexGreaterThan(LispChar * f1, LispChar * f2, LispHashTable& aHashTable,LispInt aPrecision)
 {
     return (StrCompare(f1, f2)>0);
 }
 
-static LispBoolean BigLessThan(BigNumber& n1, BigNumber& n2)
+static bool BigLessThan(BigNumber& n1, BigNumber& n2)
 {
   return n1.LessThan(n2) && !n1.Equals(n2);
 }
-static LispBoolean BigGreaterThan(BigNumber& n1, BigNumber& n2)
+static bool BigGreaterThan(BigNumber& n1, BigNumber& n2)
 {
   return !(n1.LessThan(n2) || n1.Equals(n2));
 }
@@ -156,13 +156,13 @@ void LispGreaterThan(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 
 void LispLexCompare2(LispEnvironment& aEnvironment, LispInt aStackTop,
-                     LispBoolean (*lexfunc)(LispChar * f1, LispChar * f2, LispHashTable& aHashTable,LispInt aPrecision),
-                     LispBoolean (*numfunc)(BigNumber& n1, BigNumber& n2)
+                     bool (*lexfunc)(LispChar * f1, LispChar * f2, LispHashTable& aHashTable,LispInt aPrecision),
+                     bool (*numfunc)(BigNumber& n1, BigNumber& n2)
                     )
 {
     LispPtr result1(ARGUMENT(1));
     LispPtr result2(ARGUMENT(2));
-    LispBoolean cmp;
+    bool cmp;
     RefPtr<BigNumber> n1; n1 = result1->Number(aEnvironment.Precision());
     RefPtr<BigNumber> n2; n2 = result2->Number(aEnvironment.Precision());
     if (!!n1 && !!n2)
@@ -205,7 +205,7 @@ void LispNth(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispString * str = ARGUMENT(2)->String();
     CHK_ARG_CORE(str,2);
-    CHK_ARG_CORE(IsNumber(str->c_str(),LispFalse),2);
+    CHK_ARG_CORE(IsNumber(str->c_str(),false),2);
     LispInt index = InternalAsciiToInt(str);
     InternalNth(RESULT, ARGUMENT(1), index);
 }
@@ -385,12 +385,12 @@ static void InternalDelete(LispEnvironment& aEnvironment, LispInt aStackTop, Lis
 
 void LispDelete(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    InternalDelete(aEnvironment, aStackTop,LispFalse);
+    InternalDelete(aEnvironment, aStackTop,false);
 }
 
 void LispDestructiveDelete(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    InternalDelete(aEnvironment, aStackTop,LispTrue);
+    InternalDelete(aEnvironment, aStackTop,true);
 }
 
 void LispFlatCopy(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -435,12 +435,12 @@ static void InternalInsert(LispEnvironment& aEnvironment, LispInt aStackTop, Lis
 
 void LispInsert(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    InternalInsert(aEnvironment, aStackTop,LispFalse);
+    InternalInsert(aEnvironment, aStackTop,false);
 }
 
 void LispDestructiveInsert(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    InternalInsert(aEnvironment, aStackTop,LispTrue);
+    InternalInsert(aEnvironment, aStackTop,true);
 }
 
 static void InternalReplace(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aDestructive)
@@ -478,12 +478,12 @@ static void InternalReplace(LispEnvironment& aEnvironment, LispInt aStackTop, Li
 
 void LispReplace(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    InternalReplace(aEnvironment, aStackTop,LispFalse);
+    InternalReplace(aEnvironment, aStackTop,false);
 }
 
 void LispDestructiveReplace(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    InternalReplace(aEnvironment, aStackTop,LispTrue);
+    InternalReplace(aEnvironment, aStackTop,true);
 }
 
 void LispNot(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -646,7 +646,7 @@ void LispWriteString(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispProgBody(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   // Allow accessing previous locals.
-  LispLocalFrame frame(aEnvironment,LispFalse);
+  LispLocalFrame frame(aEnvironment,false);
 
   InternalTrue(aEnvironment,RESULT);
 
@@ -845,7 +845,7 @@ static void InternalRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop,
     aEnvironment.DeclareRuleBase(SymbolName(aEnvironment,orig->c_str()),
                                  (*args->SubList())->Nixed(),aListed);
 
-    // Return LispTrue
+    // Return true
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -853,12 +853,12 @@ static void InternalRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop,
 /// This function simply calls InternalRuleBase().
 void LispRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    InternalRuleBase(aEnvironment, aStackTop, LispFalse);
+    InternalRuleBase(aEnvironment, aStackTop, false);
 }
 
 void LispMacroRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    InternalRuleBase(aEnvironment, aStackTop, LispFalse);
+    InternalRuleBase(aEnvironment, aStackTop, false);
 }
 
 void InternalDefMacroRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aListed)
@@ -878,28 +878,28 @@ void InternalDefMacroRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop, 
     aEnvironment.DeclareMacroRuleBase(SymbolName(aEnvironment,orig->c_str()),
                                  (*args->SubList())->Nixed(),aListed);
 
-    // Return LispTrue
+    // Return true
     InternalTrue(aEnvironment,RESULT);
 }
 
 void LispDefMacroRuleBaseListed(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-  InternalDefMacroRuleBase(aEnvironment, aStackTop, LispTrue);
+  InternalDefMacroRuleBase(aEnvironment, aStackTop, true);
 }
 
 void LispDefMacroRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-  InternalDefMacroRuleBase(aEnvironment, aStackTop, LispFalse);
+  InternalDefMacroRuleBase(aEnvironment, aStackTop, false);
 }
 
 void LispRuleBaseListed(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    InternalRuleBase(aEnvironment, aStackTop, LispTrue);
+    InternalRuleBase(aEnvironment, aStackTop, true);
 }
 
 void LispMacroRuleBaseListed(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    InternalRuleBase(aEnvironment, aStackTop, LispTrue);
+    InternalRuleBase(aEnvironment, aStackTop, true);
 }
 
 void LispHoldArg(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -913,7 +913,7 @@ void LispHoldArg(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispString * tohold = ARGUMENT(2)->String();
     CHK_ARG_CORE(tohold, 2);
     aEnvironment.HoldArgument(SymbolName(aEnvironment,orig->c_str()), tohold);
-    // Return LispTrue
+    // Return true
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -954,7 +954,7 @@ static void InternalNewRule(LispEnvironment& aEnvironment, LispInt aStackTop)
                             predicate,
                             body );
 
-    // Return LispTrue
+    // Return true
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -983,7 +983,7 @@ void LispUnFence(LispEnvironment& aEnvironment, LispInt aStackTop)
     aEnvironment.UnFenceRule(SymbolName(aEnvironment,orig->c_str()),
                             arity);
 
-    // Return LispTrue
+    // Return true
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -1147,7 +1147,7 @@ void LispFromFile(LispEnvironment& aEnvironment, LispInt aStackTop)
   else
   {
     // Open file
-    LispLocalFile localFP(aEnvironment, hashedname->c_str(),LispTrue,
+    LispLocalFile localFP(aEnvironment, hashedname->c_str(),true,
                           aEnvironment.iInputDirectories);
     CHK_CORE(localFP.iOpened != 0, KLispErrFileNotFound);
     FILEINPUT newInput(localFP,aEnvironment.iInputStatus);
@@ -1227,7 +1227,7 @@ void LispToFile(LispEnvironment& aEnvironment, LispInt aStackTop)
   InternalUnstringify(oper, orig);
 
   // Open file for writing
-  LispLocalFile localFP(aEnvironment, oper.c_str(),LispFalse, aEnvironment.iInputDirectories);
+  LispLocalFile localFP(aEnvironment, oper.c_str(),false, aEnvironment.iInputDirectories);
   CHK_CORE(localFP.iOpened != 0, KLispErrFileNotFound);
   StdFileOutput newOutput(localFP);
   LispLocalOutput localOutput(aEnvironment, &newOutput);
@@ -1673,7 +1673,7 @@ void LispCustomEvalStop(LispEnvironment& aEnvironment,LispInt aStackTop)
   {
     RaiseError("Trying to get CustomEval results while not in custom evaluation");
   }
-  aEnvironment.iDebugger->iStopped = LispTrue;
+  aEnvironment.iDebugger->iStopped = true;
 
   InternalTrue(aEnvironment,RESULT);
 }
@@ -1700,7 +1700,7 @@ void LispReadLispListed(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispParser parser(tok,
                       *aEnvironment.CurrentInput(),
                       aEnvironment);
-    parser.iListed = LispTrue;
+    parser.iListed = true;
     // Read expression
     parser.Parse(RESULT);
 }
@@ -1859,7 +1859,7 @@ void GenPatternMatches(LispEnvironment& aEnvironment,LispInt aStackTop)
   ++iter;
 
   CHK_ARG_CORE(iter.getObj(),2);
-  LispBoolean matches = patclass->Matches(aEnvironment,*iter);
+  bool matches = patclass->Matches(aEnvironment,*iter);
   InternalBoolean(aEnvironment,RESULT,matches);
 }
 
@@ -1935,7 +1935,7 @@ void LispRuleBaseArgList(LispEnvironment& aEnvironment,LispInt aStackTop)
     RESULT = (LispSubList::New(head));
 }
 
-static void InternalNewRulePattern(LispEnvironment& aEnvironment, LispInt aStackTop, LispBoolean aMacroMode)
+static void InternalNewRulePattern(LispEnvironment& aEnvironment, LispInt aStackTop, bool aMacroMode)
 {
     LispInt arity;
     LispInt precedence;
@@ -1972,16 +1972,16 @@ static void InternalNewRulePattern(LispEnvironment& aEnvironment, LispInt aStack
                             predicate,
                             body );
 
-    // Return LispTrue
+    // Return true
     InternalTrue(aEnvironment,RESULT);
 }
 
 void LispNewRulePattern(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    InternalNewRulePattern(aEnvironment, aStackTop, LispFalse);
+    InternalNewRulePattern(aEnvironment, aStackTop, false);
 }
 
 void LispMacroNewRulePattern(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    InternalNewRulePattern(aEnvironment, aStackTop, LispTrue);
+    InternalNewRulePattern(aEnvironment, aStackTop, true);
 }

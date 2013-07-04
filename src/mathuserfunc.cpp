@@ -14,7 +14,7 @@ BranchingUserFunction::BranchRuleBase::~BranchRuleBase()
 {
 }
 
-LispBoolean BranchingUserFunction::BranchRule::Matches(LispEnvironment& aEnvironment, LispPtr* aArguments)
+bool BranchingUserFunction::BranchRule::Matches(LispEnvironment& aEnvironment, LispPtr* aArguments)
 {
     LispPtr pred;
     InternalEval(aEnvironment, pred, iPredicate);
@@ -32,12 +32,12 @@ BranchingUserFunction::BranchRule::~BranchRule()
 {
 }
 
- LispBoolean BranchingUserFunction::BranchRuleTruePredicate::Matches(LispEnvironment& aEnvironment, LispPtr* aArguments)
+ bool BranchingUserFunction::BranchRuleTruePredicate::Matches(LispEnvironment& aEnvironment, LispPtr* aArguments)
 {
-    return LispTrue;
+    return true;
 }
 
-LispBoolean BranchingUserFunction::BranchPattern::Matches(LispEnvironment& aEnvironment, LispPtr* aArguments)
+bool BranchingUserFunction::BranchPattern::Matches(LispEnvironment& aEnvironment, LispPtr* aArguments)
 {
     return iPatternClass->Matches(aEnvironment,aArguments);
 }
@@ -134,7 +134,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
     }
 
     // walk the rules database, returning the evaluated result if the
-    // predicate is LispTrue.
+    // predicate is true.
     LispInt nrRules = iRules.Size();
     UserStackInformation &st = aEnvironment.iEvaluator->StackInformation();
     for (i=0;i<nrRules;i++)
@@ -144,7 +144,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
         LISPASSERT(thisRule);
 
         st.iRulePrecedence = thisRule->Precedence();
-        LispBoolean matches = thisRule->Matches(aEnvironment, arguments);
+        bool matches = thisRule->Matches(aEnvironment, arguments);
         if (matches)
         {
             st.iSide = 1;
@@ -156,7 +156,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
         while (thisRule != iRules[i] && i>0) i--;
     }
  
-    // No predicate was LispTrue: return a new expression with the evaluated
+    // No predicate was true: return a new expression with the evaluated
     // arguments.
 
     {
@@ -192,7 +192,7 @@ void BranchingUserFunction::HoldArgument(LispString * aVariable)
     for (i=0;i<nrc;i++)
     {
         if (iParameters[i].iParameter == aVariable)
-            iParameters[i].iHold = LispTrue;
+            iParameters[i].iHold = true;
     }
 }
 
@@ -341,7 +341,7 @@ MacroUserFunction::MacroUserFunction(LispPtr& aParameters)
     for (LispInt i=0; iter.getObj(); i++,++iter)
     {
         Check(iter.getObj()->String(),KLispErrCreatingUserFunction);
-        iParameters[i].iHold = LispTrue;
+        iParameters[i].iHold = true;
     }
   UnFence();
 }
@@ -402,7 +402,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
   LispPtr substedBody;
   {
     // declare a new local stack.
-    LispLocalFrame frame(aEnvironment,LispFalse);
+    LispLocalFrame frame(aEnvironment,false);
 
     // define the local variables.
     for (i=0;i<arity;i++)
@@ -413,7 +413,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
     }
 
     // walk the rules database, returning the evaluated result if the
-    // predicate is LispTrue.
+    // predicate is true.
     LispInt nrRules = iRules.Size();
     UserStackInformation &st = aEnvironment.iEvaluator->StackInformation();
     for (i=0;i<nrRules;i++)
@@ -423,7 +423,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
       LISPASSERT(thisRule);
 
       st.iRulePrecedence = thisRule->Precedence();
-      LispBoolean matches = thisRule->Matches(aEnvironment, arguments);
+      bool matches = thisRule->Matches(aEnvironment, arguments);
       if (matches)
       {
         st.iSide = 1;
@@ -443,7 +443,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
     InternalEval(aEnvironment, aResult, substedBody);
   }
   else
-  // No predicate was LispTrue: return a new expression with the evaluated
+  // No predicate was true: return a new expression with the evaluated
   // arguments.
   {
     LispPtr full(aArguments->Copy());

@@ -4,11 +4,11 @@
 LispInt PlatAsciiToInt(LispChar * aString)
 {
     LispInt result=0;
-    LispBoolean negative=LispFalse;
+    bool negative=false;
 
     if (*aString == '-')
     {
-        negative=LispTrue;
+        negative=true;
         aString++;
     }
     while (*aString)

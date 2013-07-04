@@ -19,7 +19,7 @@ LispHashTable::~LispHashTable()
 {
   LispInt bin,i,n;
 #ifdef YACAS_DEBUG
-  LispBoolean fault = LispFalse;
+  bool fault = false;
   for (bin = 0; bin < KSymTableSize; bin++)
   {
     LispStringSmartPtrArray & aBin = iHashTable[bin];
@@ -28,7 +28,7 @@ LispHashTable::~LispHashTable()
       if (aBin[i]->iReferenceCount != 1)
       {
         if (!fault) printf("ERROR: string objects with invalid reference counts during destruction of the hashtable!\n");
-        fault = LispTrue;
+        fault = true;
         printf("refcount = %d, string = \"%s\"\n", (int)(aBin[i]->iReferenceCount), aBin[i]->c_str());
       }
     }

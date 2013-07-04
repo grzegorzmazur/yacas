@@ -27,7 +27,7 @@ MatchAtom::MatchAtom(LispString * aString) : iString(aString)
 {
 }
 
-LispBoolean MatchAtom::ArgumentMatches(LispEnvironment& aEnvironment,
+bool MatchAtom::ArgumentMatches(LispEnvironment& aEnvironment,
                                        LispPtr& aExpression,
                                        LispPtr* arguments)
 {
@@ -35,7 +35,7 @@ LispBoolean MatchAtom::ArgumentMatches(LispEnvironment& aEnvironment,
     if (!!aExpression)
       if (aExpression->Number(0))
         if (!aExpression->Number(0)->IsInt())
-          return LispFalse;
+          return false;
  
     return (iString == aExpression->String());
 }
@@ -50,13 +50,13 @@ MatchNumber::MatchNumber(BigNumber* aNumber) : iNumber(aNumber)
 {
 }
 
-LispBoolean MatchNumber::ArgumentMatches(LispEnvironment& aEnvironment,
+bool MatchNumber::ArgumentMatches(LispEnvironment& aEnvironment,
                                        LispPtr& aExpression,
                                        LispPtr* arguments)
 {
   if (aExpression->Number(aEnvironment.Precision()))
     return iNumber->Equals(*aExpression->Number(aEnvironment.Precision()));
-  return LispFalse;
+  return false;
 }
 
 
@@ -65,24 +65,24 @@ LispBoolean MatchNumber::ArgumentMatches(LispEnvironment& aEnvironment,
 MatchVariable::MatchVariable(LispInt aVarIndex) : iVarIndex(aVarIndex)
 {
 }
-LispBoolean MatchVariable::ArgumentMatches(LispEnvironment& aEnvironment,
+bool MatchVariable::ArgumentMatches(LispEnvironment& aEnvironment,
                                        LispPtr& aExpression,
                                        LispPtr* arguments)
 {
     if (!arguments[iVarIndex])
     {
         arguments[iVarIndex] = (aExpression);
-        return LispTrue;
+        return true;
     }
     else
     {
         if (InternalEquals(aEnvironment, aExpression, arguments[iVarIndex]))
         {
-            return LispTrue;
+            return true;
         }
-        return LispFalse;
+        return false;
     }
-    return LispFalse;
+    return false;
 }
 
 MatchSubList::MatchSubList(YacasParamMatcherBase** aMatchers,
@@ -103,12 +103,12 @@ MatchSubList::~MatchSubList()
     }
 }
 
-LispBoolean MatchSubList::ArgumentMatches(LispEnvironment& aEnvironment,
+bool MatchSubList::ArgumentMatches(LispEnvironment& aEnvironment,
                                           LispPtr& aExpression,
                                           LispPtr* arguments)
 {
   if (!aExpression->SubList())
-    return LispFalse;
+    return false;
 
   LispIterator iter(aExpression);
   LispObject * pObj = iter.getObj();
@@ -120,13 +120,13 @@ LispBoolean MatchSubList::ArgumentMatches(LispEnvironment& aEnvironment,
   for (LispInt i=0;i<iNrMatchers;i++,++iter)
   {
     if (!iter.getObj())
-      return LispFalse;
+      return false;
     if (!iMatchers[i]->ArgumentMatches(aEnvironment,*iter,arguments))
-      return LispFalse;
+      return false;
   }
   if (iter.getObj())
-    return LispFalse;
-  return LispTrue;
+    return false;
+  return true;
 }
 
 LispInt YacasPatternPredicateBase::LookUp(LispString * aVariable)
@@ -239,7 +239,7 @@ YacasPatternPredicateBase::YacasPatternPredicateBase(LispEnvironment& aEnvironme
   iPredicates.Append(post);
 }
 
-LispBoolean YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
+bool YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
                                               LispPtr& aArguments)
 {
     LispPtr* arguments = NULL;
@@ -250,36 +250,36 @@ LispBoolean YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
     for (LispInt i=0;i<iParamMatchers.Size();i++,++iter)
   {
         if (!iter.getObj())
-            return LispFalse;
+            return false;
         if (!iParamMatchers[i]->ArgumentMatches(aEnvironment,*iter,arguments))
         {
-            return LispFalse;
+            return false;
         }
   }
     if (iter.getObj())
-        return LispFalse;
+        return false;
 
     {
         // set the local variables.
-        LispLocalFrame frame(aEnvironment,LispFalse);
+        LispLocalFrame frame(aEnvironment,false);
 
         SetPatternVariables(aEnvironment,arguments);
 
         // do the predicates
         if (!CheckPredicates(aEnvironment))
-            return LispFalse;
+            return false;
     }
 
     // set the local variables for sure now
     SetPatternVariables(aEnvironment,arguments);
  
-    return LispTrue;
+    return true;
 }
 
 
 
 
-LispBoolean YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
+bool YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
                                               LispPtr* aArguments)
 {
     LispInt i;
@@ -293,28 +293,28 @@ LispBoolean YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
     {
         if (!iParamMatchers[i]->ArgumentMatches(aEnvironment,aArguments[i],arguments))
         {
-            return LispFalse;
+            return false;
         }
     }
 
     {
         // set the local variables.
-        LispLocalFrame frame(aEnvironment,LispFalse);
+        LispLocalFrame frame(aEnvironment,false);
         SetPatternVariables(aEnvironment,arguments);
 
         // do the predicates
         if (!CheckPredicates(aEnvironment))
-            return LispFalse;
+            return false;
     }
 
     // set the local variables for sure now
     SetPatternVariables(aEnvironment,arguments);
-    return LispTrue;
+    return true;
 }
 
 
 
-LispBoolean YacasPatternPredicateBase::CheckPredicates(LispEnvironment& aEnvironment)
+bool YacasPatternPredicateBase::CheckPredicates(LispEnvironment& aEnvironment)
 {
   for (LispInt i=0;i<iPredicates.Size();i++)
   {
@@ -322,10 +322,10 @@ LispBoolean YacasPatternPredicateBase::CheckPredicates(LispEnvironment& aEnviron
     InternalEval(aEnvironment, pred, iPredicates[i]);
     if (IsFalse(aEnvironment, pred))
     {
-      return LispFalse;
+      return false;
     }
     // If the result is not False, it should be True, else probably something is wrong (the expression returned unevaluated)
-    LispBoolean isTrue = IsTrue(aEnvironment, pred);
+    bool isTrue = IsTrue(aEnvironment, pred);
     if (!isTrue)
     {
 #define LIM_AL 60
@@ -351,7 +351,7 @@ LispBoolean YacasPatternPredicateBase::CheckPredicates(LispEnvironment& aEnviron
       CHK2(isTrue,KLispErrNonBooleanPredicateInPattern);
     }
   }
-  return LispTrue;
+  return true;
 }
  
 

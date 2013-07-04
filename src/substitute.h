@@ -13,7 +13,7 @@ class SubstBehaviourBase : public YacasBase
 {
 public:
     virtual ~SubstBehaviourBase();
-    virtual LispBoolean Matches(LispPtr& aResult, LispPtr& aElement) = 0;
+    virtual bool Matches(LispPtr& aResult, LispPtr& aElement) = 0;
 };
 
 /** main routine that can perform substituting of expressions
@@ -30,7 +30,7 @@ class SubstBehaviour : public SubstBehaviourBase
 public:
     SubstBehaviour(LispEnvironment& aEnvironment,LispPtr& aToMatch,
                   LispPtr& aToReplaceWith);
-    virtual LispBoolean Matches(LispPtr& aResult, LispPtr& aElement);
+    virtual bool Matches(LispPtr& aResult, LispPtr& aElement);
 private:
     LispEnvironment& iEnvironment;
     LispPtr& iToMatch;
@@ -46,7 +46,7 @@ public:
     LocalSymbolBehaviour(LispEnvironment& aEnvironment,
                          LispString ** aOriginalNames,
                          LispString ** aNewNames, LispInt aNrNames);
-    virtual LispBoolean Matches(LispPtr& aResult, LispPtr& aElement);
+    virtual bool Matches(LispPtr& aResult, LispPtr& aElement);
 private:
     LispEnvironment& iEnvironment;
     LispString ** iOriginalNames;
@@ -67,7 +67,7 @@ class BackQuoteBehaviour : public SubstBehaviourBase
 public:
     BackQuoteBehaviour(LispEnvironment& aEnvironment)
         : iEnvironment(aEnvironment) {};
-    virtual LispBoolean Matches(LispPtr& aResult, LispPtr& aElement);
+    virtual bool Matches(LispPtr& aResult, LispPtr& aElement);
     LispEnvironment& iEnvironment;
 };
 

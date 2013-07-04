@@ -100,7 +100,7 @@ LispEnvironment::LispEnvironment(
     iComma        = LispAtom::New(*this,",");
     iList         = LispAtom::New(*this,"List");
     iProg         = LispAtom::New(*this,"Prog");
-    PushLocalFrame(LispTrue);
+    PushLocalFrame(true);
 }
 
 
@@ -145,7 +145,7 @@ LispPtr *LispEnvironment::FindLocal(LispString * aVariable)
 
 
 #ifdef YACAS_DEBUG
-void LispEnvironment::DebugModeVerifySettingGlobalVariables(LispPtr & aVariable, LispBoolean aGlobalLazyVariable)
+void LispEnvironment::DebugModeVerifySettingGlobalVariables(LispPtr & aVariable, bool aGlobalLazyVariable)
 {
   LispString *varString = aVariable->String();
   LispPtr *local = FindLocal(varString);
@@ -175,7 +175,7 @@ void LispEnvironment::DebugModeVerifySettingGlobalVariables(LispPtr & aVariable,
 }
 #endif // YACAS_DEBUG
 
-void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue, LispBoolean aGlobalLazyVariable)
+void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue, bool aGlobalLazyVariable)
 {
   LispPtr *local = FindLocal(aVariable);
   if (local)
@@ -190,7 +190,7 @@ void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue, LispB
     //TODO we just added the variable! We should not need to re-look it up! Optimize!
     LispGlobalVariable *l = iGlobals.LookUp(aVariable);
     LISPASSERT(l);
-    l->SetEvalBeforeReturn(LispTrue);
+    l->SetEvalBeforeReturn(true);
   }
 }
 
@@ -213,7 +213,7 @@ void LispEnvironment::GetVariable(LispString * aVariable,LispPtr& aResult)
       l = iGlobals.LookUp(aVariable);
 
       l->iValue = (aResult);
-      l->iEvalBeforeReturn = LispFalse;
+      l->iEvalBeforeReturn = false;
       return;
     }
     else
@@ -235,7 +235,7 @@ void LispEnvironment::UnsetVariable(LispString * aString)
     iGlobals.Release(aString);
 }
 
-void LispEnvironment::PushLocalFrame(LispBoolean aFenced)
+void LispEnvironment::PushLocalFrame(bool aFenced)
 {
     if (aFenced)
     {

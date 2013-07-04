@@ -19,11 +19,11 @@ public:
     LispDefFile(const LispDefFile& aOther);
     ~LispDefFile();
     void SetLoaded();
-    inline LispBoolean IsLoaded();
+    inline bool IsLoaded();
     inline LispString * FileName();
 
     LispStringSmartPtr iFileName;
-    LispBoolean   iIsLoaded;
+    bool   iIsLoaded;
 };
 
 /** LispDefFiles maintains an array of files that can be defloaded.

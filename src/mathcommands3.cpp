@@ -53,7 +53,7 @@ void GetNumber(RefPtr<BigNumber>& x, LispEnvironment& aEnvironment, LispInt aSta
 //FIXME remove these
 void LispArithmetic2(LispEnvironment& aEnvironment, LispInt aStackTop,
                      LispObject* (*func)(LispObject* f1, LispObject* f2,LispEnvironment& aEnvironment,LispInt aPrecision),
-                    LispBoolean arbbase=LispFalse);
+                    bool arbbase=false);
 
 void LispArithmetic1(LispEnvironment& aEnvironment, LispInt aStackTop,
                      LispObject* (*func)(LispObject* f1, LispEnvironment& aEnvironment,LispInt aPrecision));
@@ -75,7 +75,7 @@ void LispArithmetic1(LispEnvironment& aEnvironment, LispInt aStackTop,
 //FIXME remove these
 void LispArithmetic2(LispEnvironment& aEnvironment, LispInt aStackTop,
                      LispObject* (*func)(LispObject* f1, LispObject* f2,LispEnvironment& aEnvironment,LispInt aPrecision),
-                    LispBoolean arbbase)
+                    bool arbbase)
 {
     if (!arbbase)
     {
@@ -613,7 +613,7 @@ void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispString * hashedname = aEnvironment.HashTable().LookUp(oper.c_str());
   InputStatus oldstatus = aEnvironment.iInputStatus;
   aEnvironment.iInputStatus.SetTo(hashedname->c_str());
-  LispLocalFile localFP(aEnvironment, oper.c_str(), LispTrue,
+  LispLocalFile localFP(aEnvironment, oper.c_str(), true,
                         aEnvironment.iInputDirectories);
   Check(localFP.iOpened != 0, KLispErrFileNotFound);
   FILEINPUT newInput(localFP,aEnvironment.iInputStatus);

@@ -16,17 +16,17 @@
 #include "lisperror.h"
 #include "numbers.h"
 
-LispBoolean IsDigit(LispChar c)
+bool IsDigit(LispChar c)
 {
   return ((c>='0' && c<='9'));
 }
 
-LispBoolean IsAlpha(LispChar c)
+bool IsAlpha(LispChar c)
 {
   return ( (c>='a' && c<='z') || (c>='A' && c<='Z') || (c == '\'') );
 }
 
-LispBoolean IsAlNum(LispChar c)
+bool IsAlNum(LispChar c)
 {
   return (IsAlpha(c) || IsDigit(c));
 }
@@ -34,7 +34,7 @@ LispBoolean IsAlNum(LispChar c)
 static const char symbolics[] = "~`!@#$^&*-=+:<>?/\\|";
 
 
-LispBoolean IsSymbolic(LispChar c)
+bool IsSymbolic(LispChar c)
 {
   const char *ptr=symbolics;
   while (*ptr)

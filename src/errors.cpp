@@ -165,7 +165,7 @@ void RaiseError(const char* str,...)
 #else
   PlatMemCopy(GenericErrorBuf(), str, PlatStrLen(str));
 #endif
-  Check(LispFalse,KLispErrGenericFormat);
+  Check(false,KLispErrGenericFormat);
 }
 
 

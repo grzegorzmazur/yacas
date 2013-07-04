@@ -146,10 +146,10 @@ int server_port = 9734;
 
 char* execute_commnd = NULL;
 
-static LispBoolean busy=LispTrue;
-static LispBoolean restart=LispFalse;
+static bool busy=true;
+static bool restart=false;
 
-static LispBoolean Busy()
+static bool Busy()
 {
   return busy;
 }
@@ -186,7 +186,7 @@ void ReportNrCurrent()
 
 void LispExit(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    busy=LispFalse;
+    busy=false;
     InternalTrue(aEnvironment, RESULT);
 }
 
@@ -228,12 +228,12 @@ const char* ReadInputString(const char* prompt)
     {
       if (!strncmp(inpline,"restart",7))
       {
-        restart=LispTrue;
-        busy=LispFalse;
+        restart=true;
+        busy=false;
       }
       else if (!strncmp(inpline,"quit",4))
       {
-        busy=LispFalse;
+        busy=false;
       } else if (*inpline == '?') {
           const std::string key(inpline + 1);
 
@@ -494,8 +494,8 @@ void DeclarePath(const char *ptr2)
 void LoadYacas(LispOutput* aOutput=NULL)
 {
   if (yacas) return;
-  busy=LispTrue;
-  restart=LispFalse;
+  busy=true;
+  restart=false;
 
   yacas = CYacas::NewL(aOutput,stack_size);
 
@@ -1420,7 +1420,7 @@ int main(int argc, char** argv)
     {
         char buffer[4001];
         int offs=0;
-        bool ok;
+        char* ok;
     MORE:
         ok = fgets(&buffer[offs],4000-offs,stdin);
         offs=strlen(buffer);

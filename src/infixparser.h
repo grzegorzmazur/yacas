@@ -78,8 +78,8 @@ class ParsedObject : public YacasBase
 public:
     ParsedObject(InfixParser& aParser)
         : iParser(aParser),
-          iError(LispFalse),
-          iEndOfFile(LispFalse),
+          iError(false),
+          iEndOfFile(false),
           iLookAhead(NULL),iResult()  {};
     void Parse();
 private:
@@ -97,8 +97,8 @@ private:
 private:
     InfixParser& iParser;
 private:
-    LispBoolean iError;
-    LispBoolean iEndOfFile;
+    bool iError;
+    bool iEndOfFile;
     LispString * iLookAhead;
 public:
     LispPtr iResult;
