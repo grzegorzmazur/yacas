@@ -81,7 +81,8 @@ void CYacas::Evaluate(const LispChar * aExpression)
   env.iError[0]='\0';
  
     LispPtr result;
-    LispTrap(
+
+    try
      {
          LispPtr lispexpr;
 //printf("Input: [%s]\n",aExpression);
@@ -139,7 +140,10 @@ void CYacas::Evaluate(const LispChar * aExpression)
          }
          LispString * percent = env.HashTable().LookUp("%");
          env.SetVariable(percent,result,true);
-     },env.iErrorOutput,env);
+     } catch (LispInt error_code) {
+        Handle(error_code, env, env.iErrorOutput);
+     }
+
      env.iStack.PopTo(stackTop);
 }
 
