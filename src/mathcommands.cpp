@@ -1285,11 +1285,7 @@ void LispSystemCall(LispEnvironment& aEnvironment,LispInt aStackTop)
   InternalUnstringify(command, result->String());
 
 // we would like to pass the exit code back to Yacas. Right now, let's pass True/False according to whether the exit code is 0 or not.
-#ifdef SystemCall
-  InternalBoolean(aEnvironment, RESULT, SystemCall(command.c_str()) == 0);
-#else
-  InternalFalse(aEnvironment,RESULT);
-#endif
+  InternalBoolean(aEnvironment, RESULT, system(command.c_str()) == 0);
 }
 
 void LispMaxEvalDepth(LispEnvironment& aEnvironment, LispInt aStackTop)

@@ -35,8 +35,6 @@
 
 #define EXE_DLL_PLUGINS // Enable plugins inside the exe by default
 
-// System calls
-#define SystemCall system
 
 #define SAFEPUSH(_env,_obj) // _env.iCleanup.Push(_obj)
 #define SAFEPOP(_env) // _env.iCleanup.Pop()

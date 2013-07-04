@@ -25,8 +25,6 @@
 #define ReferenceType unsigned int
 #define ReferenceMax ((unsigned int)0xffffffffffffffff)
 
-// System calls
-#define SystemCall system
 
 #define SAFEPUSH(_env,_obj) // _env.iCleanup.Push(_obj)
 #define SAFEPOP(_env) // _env.iCleanup.Pop()
