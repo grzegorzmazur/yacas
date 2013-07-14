@@ -12,9 +12,13 @@
 //inline LispInt StrEqual(const LispChar * ptr1, const LispChar * ptr2);
 
 #ifdef NO_GLOBALS
-  #define PlatAlloc malloc
-  #define PlatReAlloc realloc
-  #define PlatFree free
+  void * PlatStubAlloc(LispInt aNrBytes);
+  void * PlatStubReAlloc(void * aOrig, LispInt aNrBytes);
+  void PlatStubFree(void * aOrig);
+
+  #define PlatAlloc PlatStubAlloc
+  #define PlatReAlloc PlatStubReAlloc
+  #define PlatFree PlatStubFree
   #define NEW new
   #define CHECKPTR(ptr)
 #else  // NO_GLOBALS -- goes almost to EOF
@@ -36,10 +40,6 @@
   #define NEW new
   #define CHECKPTR(ptr)
 #endif  // YACAS_DEBUG
-
-template <class T>
-inline T * PlatAllocN(LispInt aSize) { return (T*)PlatAlloc(aSize*sizeof(T)); }
-
 
 #ifdef YACAS_DEBUG  // goes almost to EOF
 
@@ -64,6 +64,9 @@ void operator delete[](void* object) DELETE_THROWER;
 #endif  // YACAS_DEBUG
 
 #endif  // NO_GLOBALS
+
+template <class T>
+inline T * PlatAllocN(LispInt aSize) { return (T*)PlatAlloc(aSize*sizeof(T)); }
 
 #include "stubs.inl"
 
