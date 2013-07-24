@@ -49,7 +49,7 @@ public:
     void SetStringStringified(const LispChar * aString);
 
   // Access
-    inline LispChar * c_str() const;  // pointer to asciz 'C-string'
+    const LispChar * c_str() const;  // pointer to asciz 'C-string'
 
     // Comparison
   // If the string is in the hash table it is faster to compare the pointers to the strings

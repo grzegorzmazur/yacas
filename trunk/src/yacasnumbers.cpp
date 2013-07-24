@@ -400,9 +400,9 @@ LispObject* ShiftRight( LispObject* int1, LispObject* int2, LispEnvironment& aEn
   return NEW LispNumber(number);
 }
 
-static void DivideInteger( ANumber& aQuotient, ANumber& aRemainder,
-                        LispChar * int1, LispChar * int2,
-                        LispInt aPrecision)
+static void DivideInteger(ANumber& aQuotient, ANumber& aRemainder,
+                          const LispChar* int1, const LispChar* int2,
+                          LispInt aPrecision)
 {
     ANumber a1(int1,aPrecision);
     ANumber a2(int2,aPrecision);

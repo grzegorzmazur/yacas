@@ -31,7 +31,7 @@ bool StringInput::EndOfStream()
     return (iString[ iCurrent ] == '\0');
 }
 
-LispChar * StringInput::StartPtr()
+const LispChar* StringInput::StartPtr()
 {
     return iString.c_str();
 }

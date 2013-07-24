@@ -1491,7 +1491,7 @@ RESTART:
 #else
         ReadInputString(inprompt);
 #endif
-        char *inpline =  commandline->iLine.c_str();
+        const char *inpline =  commandline->iLine.c_str();
         if (use_texmacs_out)
         {
             printf("%cverbatim:",TEXMACS_DATA_BEGIN);

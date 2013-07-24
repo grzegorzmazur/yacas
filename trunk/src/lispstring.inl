@@ -36,7 +36,7 @@ inline LispString::LispString() : iReferenceCount()
   SetString(s);
 }
 
-inline LispChar * LispString::c_str() const
+inline const LispChar * LispString::c_str() const
 {
     return elements();
 }

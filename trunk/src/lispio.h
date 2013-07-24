@@ -85,7 +85,7 @@ public:
    * the whole file should be in memory for the whole period the file
    * is being read.
    */
-  virtual LispChar * StartPtr() = 0;
+  virtual const LispChar* StartPtr() = 0;
   virtual LispInt Position() = 0;
   virtual void SetPosition(LispInt aPosition) = 0;
 protected:

@@ -685,7 +685,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispPtr out(ARGUMENT(1));
   CHK_ISSTRING_CORE(out,1);
 
-  LispChar * str = out->String()->c_str();
+  const LispChar* str = out->String()->c_str();
   str++;
   if (str[0] != '<')
   {

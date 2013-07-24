@@ -147,12 +147,12 @@ void CYacas::Evaluate(const LispChar * aExpression)
      env.iStack.PopTo(stackTop);
 }
 
-LispChar * CYacas::Result()
+const LispChar* CYacas::Result()
 {
   return iResult.c_str();
 }
 
-LispChar * CYacas::Error()
+const LispChar* CYacas::Error()
 {
   LispEnvironment& env = environment.getEnv();
   return env.iError.c_str();

@@ -76,7 +76,7 @@ LispInt CompressedFiles::GetInt(unsigned char*&indptr)
     return ((((((c3<<8)+c2)<<8)+c1)<<8)+c0);
 }
 
-LispInt CompressedFiles::FindFile(LispChar * aName)
+LispInt CompressedFiles::FindFile(const LispChar * aName)
 {
     LISPASSERT(IsValid());
     LispInt low=0, high=iNrFiles;

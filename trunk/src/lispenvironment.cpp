@@ -513,7 +513,7 @@ void LispEnvironment::RemoveCoreCommand(LispChar * aString)
   CoreCommands().Release(HashTable().LookUp(aString));
 }
 
-void LispEnvironment::SetUserError(LispChar * aErrorString)
+void LispEnvironment::SetUserError(const LispChar* aErrorString)
 {
     theUserError=aErrorString;
 }
@@ -601,7 +601,7 @@ const LispChar * LispEnvironment::ErrorString(LispInt aError)
 
 
 
-LispString * LispEnvironment::FindCachedFile(LispChar * aFileName)
+LispString * LispEnvironment::FindCachedFile(const LispChar * aFileName)
 {
   if (iArchive)
   {

@@ -35,7 +35,7 @@
 
 
 void LispLexCompare2(LispEnvironment& aEnvironment, LispInt aStackTop,
-                     bool (*lexfunc)(LispChar * f1, LispChar * f2, LispHashTable& aHashTable,LispInt aPrecision),
+                     bool (*lexfunc)(const LispChar* f1, const LispChar* f2, LispHashTable& aHashTable,LispInt aPrecision),
                      bool (*numfunc)(BigNumber& n1, BigNumber& n2)
                     );
 
@@ -124,13 +124,13 @@ void LispClearVar(LispEnvironment& aEnvironment,LispInt aStackTop)
  returns 0, and it returns 1 if f1>f2
  */
 // the aPrecision argument is ignored here
-static bool LexLessThan(LispChar * f1, LispChar * f2, LispHashTable& aHashTable,LispInt aPrecision)
+static bool LexLessThan(const LispChar* f1, const LispChar* f2, LispHashTable& aHashTable,LispInt aPrecision)
 {
     return (std::strcmp(f1, f2) < 0);
 }
 
 // the aPrecision argument is ignored here
-static bool LexGreaterThan(LispChar * f1, LispChar * f2, LispHashTable& aHashTable,LispInt aPrecision)
+static bool LexGreaterThan(const LispChar* f1, const LispChar* f2, LispHashTable& aHashTable,LispInt aPrecision)
 {
     return (std::strcmp(f1, f2) > 0);
 }
@@ -146,7 +146,7 @@ static bool BigGreaterThan(BigNumber& n1, BigNumber& n2)
 
 void LispLessThan(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispLexCompare2(aEnvironment, aStackTop, LexLessThan,BigLessThan);
+    LispLexCompare2(aEnvironment, aStackTop, LexLessThan, BigLessThan);
 }
 
 void LispGreaterThan(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -156,7 +156,7 @@ void LispGreaterThan(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 
 void LispLexCompare2(LispEnvironment& aEnvironment, LispInt aStackTop,
-                     bool (*lexfunc)(LispChar * f1, LispChar * f2, LispHashTable& aHashTable,LispInt aPrecision),
+                     bool (*lexfunc)(const LispChar* f1, const LispChar* f2, LispHashTable& aHashTable,LispInt aPrecision),
                      bool (*numfunc)(BigNumber& n1, BigNumber& n2)
                     )
 {
@@ -334,7 +334,7 @@ static void ConcatenateStrings(LispStringSmartPtr& aResult, LispEnvironment& aEn
   {
     CHK_ISSTRING_CORE(*iter,arg);
     LispInt length = iter.getObj()->String()->Size()-2;
-    LispChar * ptr = iter.getObj()->String()->c_str();
+    const LispChar * ptr = iter.getObj()->String()->c_str();
     LispString * str = aResult;
     LispInt curlen = str->Size();
     str->ResizeTo(curlen+length-1);

@@ -5,7 +5,7 @@
 #include "standard.h"
 #include "lispenvironment.h"
 
-static LispInt FindMarkerBegin(LispChar * aPtr, LispInt aFrom)
+static LispInt FindMarkerBegin(const LispChar* aPtr, LispInt aFrom)
 {
 REDO:
     while (aPtr[aFrom] && aPtr[aFrom] != '<') aFrom++;
@@ -18,7 +18,7 @@ REDO:
     aFrom+=2;
     goto REDO;
 }
-static LispInt FindMarkerEnd(LispChar * aPtr, LispInt aFrom)
+static LispInt FindMarkerEnd(const LispChar* aPtr, LispInt aFrom)
 {
 REDO:
     while (aPtr[aFrom] && aPtr[aFrom] != '?') aFrom++;
@@ -32,11 +32,11 @@ REDO:
     goto REDO;
 }
 
-static LispInt FindEndAscii(LispChar * aPtr, LispInt aFrom)
+static LispInt FindEndAscii(const LispChar* aPtr, LispInt aFrom)
 {
     return FindMarkerBegin(aPtr,aFrom);
 }
-static LispInt FindEndCommand(LispChar * aPtr, LispInt aFrom)
+static LispInt FindEndCommand(const LispChar* aPtr, LispInt aFrom)
 {
     return FindMarkerEnd(aPtr,aFrom);
 }
@@ -45,7 +45,7 @@ static LispInt FindEndCommand(LispChar * aPtr, LispInt aFrom)
  *  Everything between <? and ?> is evaluated. The result
  *  is thrown away.
  */
-void PatchLoad(LispChar * aFileContent, LispOutput& aOutput,
+void PatchLoad(const LispChar* aFileContent, LispOutput& aOutput,
                LispEnvironment& aEnvironment)
 {
     LispInt i=0;
