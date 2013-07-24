@@ -154,7 +154,7 @@ public:
   void HoldArgument(LispString *  aOperator,LispString * aVariable);
   //@}
 
-  LispString * FindCachedFile(LispChar * aFileName);
+  LispString * FindCachedFile(const LispChar * aFileName);
 
 public:
   /// \name Precision
@@ -196,7 +196,7 @@ public:
   LispOutput* CurrentOutput();
   void SetCurrentOutput(LispOutput* aOutput);
 public:
-  void SetUserError(LispChar * aErrorString);
+  void SetUserError(const LispChar* aErrorString);
   const LispChar * ErrorString(LispInt aError);
   //@}
 
@@ -342,7 +342,7 @@ private:
 
   LispInput* iCurrentInput;
 
-  LispChar * theUserError;
+  const LispChar* theUserError;
 
   LispString * iPrettyReader;
   LispString * iPrettyPrinter;

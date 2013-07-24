@@ -209,7 +209,7 @@ LispInt StrEqualCounted(const LispChar * ptr1, const LispChar * ptr2, LispInt le
     return 1;
 }
 
-LispString * LispHashTable::LookUpCounted(LispChar * aString, LispInt aLength)
+LispString* LispHashTable::LookUpCounted(const LispChar* aString, LispInt aLength)
 {
     LispInt bin = LispHashCounted(aString,aLength);
 

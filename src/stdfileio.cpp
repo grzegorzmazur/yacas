@@ -72,7 +72,7 @@ bool StdFileInput::EndOfStream()
   return feof(iFile);
 }
 
-LispChar * StdFileInput::StartPtr()
+const LispChar* StdFileInput::StartPtr()
 {
   LISPASSERT(0);
   return NULL;
@@ -156,7 +156,7 @@ bool CachedStdFileInput::EndOfStream()
     return (iCurrentPos >= iNrBytes);
 }
 
-LispChar * CachedStdFileInput::StartPtr()
+const LispChar* CachedStdFileInput::StartPtr()
 {
     return iBuffer;
 }
@@ -173,8 +173,8 @@ void CachedStdFileInput::SetPosition(LispInt aPosition)
 
 
 // TODO: woof -- buffer overflow problems in here?
-void InternalFindFile(LispChar * aFileName, InputDirectories& aInputDirectories,
-                     LispChar * aFoundFile)
+void InternalFindFile(const LispChar * aFileName, InputDirectories& aInputDirectories,
+                      LispChar* aFoundFile)
 {
     strcpy(aFoundFile,aFileName);
 
@@ -201,7 +201,7 @@ void InternalFindFile(LispChar * aFileName, InputDirectories& aInputDirectories,
 }
 
 LispLocalFile::LispLocalFile(LispEnvironment& aEnvironment,
-                             LispChar * aFileName, bool aRead,
+                             const LispChar * aFileName, bool aRead,
                              InputDirectories& aInputDirectories)
   : iFile(NULL),iEnvironment(aEnvironment),iOpened(false)
 {
@@ -289,7 +289,7 @@ void CachedStdUserInput::Rewind()
   iCurrentPos=0;
 }
 
-LispChar * CachedStdUserInput::StartPtr()
+const LispChar* CachedStdUserInput::StartPtr()
 {
   if (iBuffer.Size() == 0)
     Peek();

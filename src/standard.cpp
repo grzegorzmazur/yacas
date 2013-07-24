@@ -120,7 +120,7 @@ void InternalIntToAscii(LispChar * aTrg,LispInt aInt)
 // TODO: we should either pass the string by reference, or use an assert to check validity of input
 LispInt InternalAsciiToInt(LispString * aString)
 {
-  LispChar * ptr = aString->c_str();
+  const LispChar * ptr = aString->c_str();
   Check(IsNumber(ptr,false),KLispErrInvalidArg);
   return PlatAsciiToInt(ptr);
 }
@@ -587,17 +587,13 @@ void PrintExpression(LispString& aResult, LispPtr& aExpression,
     }
 }
 
-LispString * SymbolName(LispEnvironment& aEnvironment,
-                         LispChar * aSymbol)
+LispString* SymbolName(LispEnvironment& aEnvironment,
+                       const LispChar * aSymbol)
 {
     if (aSymbol[0] == '\"')
-    {
         return aEnvironment.HashTable().LookUpUnStringify(aSymbol);
-    }
     else
-    {
         return aEnvironment.HashTable().LookUp(aSymbol);
-    }
 }
 
 

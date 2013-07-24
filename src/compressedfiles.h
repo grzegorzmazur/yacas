@@ -10,7 +10,7 @@ class CompressedFiles
 public:
   CompressedFiles(unsigned char * aBuffer, LispInt aFullSize, LispInt aCompressed);
   ~CompressedFiles();
-  LispInt FindFile(LispChar * aName);
+  LispInt FindFile(const LispChar * aName);
   LispChar * Name(LispInt aIndex);
   LispChar * Contents(LispInt aIndex);
   inline LispInt NrFiles() const {return iNrFiles;}

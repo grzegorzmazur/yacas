@@ -17,7 +17,7 @@ public:
     virtual LispChar Next();
     virtual LispChar Peek();
     virtual bool EndOfStream();
-    virtual LispChar * StartPtr();
+    virtual const LispChar* StartPtr();
     virtual LispInt Position();
     virtual void SetPosition(LispInt aPosition);
 protected:
