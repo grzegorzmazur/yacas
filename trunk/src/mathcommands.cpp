@@ -273,7 +273,7 @@ void LispLength(LispEnvironment& aEnvironment, LispInt aStackTop)
     return;
   }
   GenericClass *gen = ARGUMENT(1)->Generic();
-  DYNCAST(ArrayClass,"\"Array\"",arr,gen)
+  ArrayClass* arr = dynamic_cast<ArrayClass*>(gen);
   if (arr)
   {
     LispInt size = arr->Size();
@@ -1581,7 +1581,7 @@ void GenArraySize(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispPtr evaluated(ARGUMENT(1));
 
     GenericClass *gen = evaluated->Generic();
-    DYNCAST(ArrayClass,"\"Array\"",arr,gen)
+    ArrayClass* arr = dynamic_cast<ArrayClass*>(gen);
     CHK_ARG_CORE(arr,1);
     LispInt size = arr->Size();
     LispChar s[20];
@@ -1594,7 +1594,7 @@ void GenArrayGet(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispPtr evaluated(ARGUMENT(1));
 
     GenericClass *gen = evaluated->Generic();
-    DYNCAST(ArrayClass,"\"Array\"",arr,gen)
+    ArrayClass* arr = dynamic_cast<ArrayClass*>(gen);
     CHK_ARG_CORE(arr,1);
     LispPtr sizearg(ARGUMENT(2));
 
@@ -1613,7 +1613,7 @@ void GenArraySet(LispEnvironment& aEnvironment,LispInt aStackTop)
   LispPtr evaluated(ARGUMENT(1));
 
   GenericClass *gen = evaluated->Generic();
-  DYNCAST(ArrayClass,"\"Array\"",arr,gen)
+  ArrayClass* arr = dynamic_cast<ArrayClass*>(gen);
   CHK_ARG_CORE(arr,1);
   LispPtr sizearg(ARGUMENT(2));
 
@@ -1841,8 +1841,8 @@ void GenPatternMatches(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
   LispPtr pattern(ARGUMENT(1));
   GenericClass *gen = pattern->Generic();
-  DYNCAST(PatternClass,"\"Pattern\"",patclass,gen)
-  CHK_ARG_CORE(patclass,1);
+  PatternClass* pat = dynamic_cast<PatternClass*>(gen);
+  CHK_ARG_CORE(pat, 1);
 
   LispPtr list(ARGUMENT(2));
 
@@ -1856,7 +1856,7 @@ void GenPatternMatches(LispEnvironment& aEnvironment,LispInt aStackTop)
   ++iter;
 
   CHK_ARG_CORE(iter.getObj(),2);
-  bool matches = patclass->Matches(aEnvironment,*iter);
+  bool matches = pat->Matches(aEnvironment,*iter);
   InternalBoolean(aEnvironment,RESULT,matches);
 }
 

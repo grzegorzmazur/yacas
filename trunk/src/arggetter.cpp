@@ -23,14 +23,6 @@ LispString * GetIntegerArgument(LispEnvironment& aEnvironment, LispInt aStackTop
   return str;
 }
 
-void* GetVoidStruct(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr, LispChar * aTypeString)
-{
-  GenericClass *gen = ARGUMENT(aArgNr)->Generic();
-  DYNCAST(GenericStruct,aTypeString,str,gen)
-  CHK_ARG_CORE(str,aArgNr);
-  return str->Data();
-}
-
 LispInt GetShortIntegerArgument(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
   LispString * str = GetIntegerArgument(aEnvironment, aStackTop, aArgNr);

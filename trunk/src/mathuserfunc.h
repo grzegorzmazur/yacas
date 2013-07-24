@@ -93,7 +93,7 @@ public:
     BranchPattern(LispInt aPrecedence,LispPtr& aPredicate,LispPtr& aBody) : iPrecedence(aPrecedence),iBody(aBody),iPredicate(aPredicate),iPatternClass(NULL)
     {
       GenericClass *gen = aPredicate->Generic();
-      DYNCAST(PatternClass,"\"Pattern\"",pat,gen)
+      PatternClass* pat = dynamic_cast<PatternClass*>(gen);
       Check(pat,KLispErrInvalidArg);
       iPatternClass = pat;
     }

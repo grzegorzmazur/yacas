@@ -29,16 +29,5 @@ public:
     ReferenceType iReferenceCount; //TODO: perhaps share the method of reference counting with how it is done in other places
 };
 
-
-/* Definition of DYNCAST: either the cast succeeds, or the variable is assigned NULL.
-*/
-
-#define DYNCAST(_type,_name,_var,_object) \
-    _type * _var = NULL ; \
-    if (_object != NULL) \
-    { \
-      if (!std::strcmp((_object)->TypeName(),_name)) _var = (_type *)(_object); \
-    }
-
 #endif
 
