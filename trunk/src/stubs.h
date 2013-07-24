@@ -7,10 +7,6 @@
 
 #include "lisptype.h"
 
-/** Simple function that determines if two strings are equal,
-  should be defined in stubs.inl */
-//inline LispInt StrEqual(const LispChar * ptr1, const LispChar * ptr2);
-
 #ifdef NO_GLOBALS
   void * PlatStubAlloc(LispInt aNrBytes);
   void * PlatStubReAlloc(void * aOrig, LispInt aNrBytes);
@@ -67,7 +63,5 @@ void operator delete[](void* object) DELETE_THROWER;
 
 template <class T>
 inline T * PlatAllocN(LispInt aSize) { return (T*)PlatAlloc(aSize*sizeof(T)); }
-
-#include "stubs.inl"
 
 #endif  // __stubs_h__

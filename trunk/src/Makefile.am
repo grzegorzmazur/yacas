@@ -69,14 +69,11 @@ EXTRA_DIST =  anumber.inl deffile.inl  \
 	depend.dep makefile.genericstatic \
 	version.h \
 	plat/linux32/lisptype.h \
-	plat/linux32/stubs.inl \
 	plat/linux32/platfileio.h \
 	plat/linux64/lisptype.h \
-	plat/linux64/stubs.inl \
 	plat/linux64/platfileio.h \
 	plat/win32/lisptype.h \
 	plat/win32/platfileio.h \
-	plat/win32/stubs.inl  \
 	debugmem.h \
 	compressedfiles.cpp \
 	README.LZO lzodefs.h lzoconf.h minilzo.c minilzo.h decompressor.cpp \

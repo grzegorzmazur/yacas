@@ -5,7 +5,7 @@ inline void LispString::SetString(LispChar * aString, bool aStringOwnedExternall
 {
   if (aStringOwnedExternally)
   {
-    LispInt length = PlatStrLen(aString);  // my own strlen
+    LispInt length = std::strlen(aString);
     SetExternalArray(aString, length+1);
   }
   else

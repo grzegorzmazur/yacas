@@ -49,7 +49,7 @@ CompressedFiles::CompressedFiles(unsigned char * aBuffer, LispInt aFullSize, Lis
             if (offset<=iIndexSize) return;
             if (offset+compressedsize > iFullSize) return;
  
-            ptr+=PlatStrLen((LispChar *)ptr)+1;
+            ptr+=std::strlen((LispChar *)ptr)+1;
 
             if ((ptr-iFullBuffer)>8+iIndexSize) return;
 
@@ -90,7 +90,7 @@ LispInt CompressedFiles::FindFile(LispChar * aName)
         }
         mid = (low+high)>>1;
 
-        LispInt cmp = StrCompare(aName, Name(mid));
+        LispInt cmp = std::strcmp(aName, Name(mid));
         if (cmp < 0)
         {
             high = mid;
@@ -157,7 +157,7 @@ LispChar * CompressedFiles::Contents(LispInt aIndex)
         if (compressedsize == origsize)
         {
             r = LZO_E_OK;
-            PlatMemCopy(expanded,&iFullBuffer[offset],origsize);
+            std::memcpy(expanded,&iFullBuffer[offset],origsize);
         }
     }
     expanded[origsize] = '\0';

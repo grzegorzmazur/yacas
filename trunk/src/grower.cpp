@@ -45,13 +45,13 @@ void ArrOps::resize(char** pArray, const ArrOps& opers, int& iSize, int& iCapaci
 /*static*/
 void ArrOps::remove(char** pArray, const ArrOps& opers, int& iSize, int aIndex, int aCount, int aItemSize)
 {
-  LISPASSERT(aIndex >= 0 && aCount >= 0 && aIndex+aCount <= iSize);
-  if (!opers.isPOD())
-    for (int ii = aIndex; ii < aIndex+aCount; ii++)
-      opers.destruct(*pArray + ii*aItemSize);
-    // we assume 'memcpy' suffices for moving the existing items.
-    PlatMemMove(*pArray + aIndex*aItemSize,
-                *pArray + (aIndex+aCount)*aItemSize,
-                (iSize-aCount-aIndex)*aItemSize);
-  iSize -= aCount;
+    LISPASSERT(aIndex >= 0 && aCount >= 0 && aIndex+aCount <= iSize);
+    if (!opers.isPOD())
+        for (int ii = aIndex; ii < aIndex+aCount; ii++)
+            opers.destruct(*pArray + ii*aItemSize);
+
+    std::memmove(*pArray + aIndex*aItemSize,
+                 *pArray + (aIndex+aCount)*aItemSize,
+                 (iSize-aCount-aIndex)*aItemSize);
+    iSize -= aCount;
 }

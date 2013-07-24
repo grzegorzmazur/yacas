@@ -415,7 +415,7 @@ void InfixPrinter::WriteToken(LispOutput& aOutput, const LispChar * aString)
         aOutput.Write(" ");
     }
     aOutput.Write(aString);
-  RememberLastChar(aString[PlatStrLen(aString)-1]);
+    RememberLastChar(aString[std::strlen(aString)-1]);
 }
 
 void InfixPrinter::RememberLastChar(LispChar aChar)

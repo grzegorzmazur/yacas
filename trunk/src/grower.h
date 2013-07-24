@@ -12,7 +12,9 @@
 
 #include "yacasbase.h"
 #include "lispassert.h"
+#include <cstring>
 #include <new>
+
 
 
 template <class T>
@@ -260,7 +262,7 @@ public:
   /// Copy the array to another array
   inline void CopyToExternalArray(ElementType * aArray)
   {
-    PlatMemCopy(aArray,iArray,iSize*sizeof(ElementType));
+    std::memcpy(aArray,iArray,iSize*sizeof(ElementType));
   }
 
 protected:
