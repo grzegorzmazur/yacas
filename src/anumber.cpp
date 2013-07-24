@@ -321,26 +321,13 @@ void ANumber::CopyFrom(const ANumber& aOther)
     iNegative  = aOther.iNegative;
     iPrecision = aOther.iPrecision;
     ResizeTo(aOther.Size());
-    //ResizeTo(aOther.Size());  // not needed -- ResizeTo does this
 
-    //TODO there HAS to be a faster way to copy...
-    LispInt nr = aOther.Size();
-    if (nr)
-    {
-//this is actually slower!      std::memcpy(&((*this)[0]),&( aOther[0]),nr*sizeof(ANumber::ElementType));
-
-      ANumber::ElementType * sptr = &( aOther[0]);
-      ANumber::ElementType * tptr = &((*this)[0]);
-      while (nr--)
-      {
-          *tptr++ = *sptr++;
-      }
-    }
-    else
-    {
-      ResizeTo(1);
-      //ResizeTo(1);
-      (*this)[0] = 0;
+    const LispInt nr = aOther.Size();
+    if (nr) {
+        std::memcpy(&((*this)[0]), &(aOther[0]), nr*sizeof(ANumber::ElementType));
+    } else {
+        ResizeTo(1);
+        (*this)[0] = 0;
     }
 }
 
