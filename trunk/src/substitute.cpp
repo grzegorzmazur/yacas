@@ -98,7 +98,7 @@ bool BackQuoteBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
       return true;
     }
 
-    if (std::strcmp("@", ptr->String()->c_str())) 
+    if (std::strcmp("@", ptr->String()->c_str()))
         return false;
     ptr = ptr->Nixed();
     if (!ptr) return false;
