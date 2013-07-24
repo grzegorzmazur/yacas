@@ -37,7 +37,7 @@ public:
     _type * _var = NULL ; \
     if (_object != NULL) \
     { \
-      if (StrEqual((_object)->TypeName(),_name)) _var = (_type *)(_object); \
+      if (!std::strcmp((_object)->TypeName(),_name)) _var = (_type *)(_object); \
     }
 
 #endif

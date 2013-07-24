@@ -62,7 +62,7 @@ NEXTLINE:
 void CCommandLine::ReadLineSub(const LispChar * prompt)
 {
     LispInt cursor=0;
-    int promptlen = PlatStrLen(prompt);
+    int promptlen = std::strlen(prompt);
  
     iHistoryList.ResetHistoryPosition();
     iHistoryUnchanged = 0;

@@ -148,7 +148,7 @@ LispString * LispHashTable::LookUp(const LispChar* aString)
     // aBin[i] ... LispStringSmartPtr&
     // aBin[i].operator->() ... LispString*
     // aBin[i].operator->()->c_str() ... LispChar*
-        if (StrEqual(aBin[i]->c_str(), aString))
+        if (!std::strcmp(aBin[i]->c_str(), aString))
     {
             return aBin[i];
         }
@@ -179,7 +179,7 @@ LispString * LispHashTable::LookUp(LispString * aString)
   LispStringSmartPtrArray & aBin = iHashTable[bin];
   for (LispInt i = 0, n = aBin.Size(); i < n; i++)
     {
-        if (StrEqual(aBin[i]->c_str(), aString->c_str()))
+        if (!std::strcmp(aBin[i]->c_str(), aString->c_str()))
     {
             //TODO we shouldn't be doing refcounting here???
             if (!aString->iReferenceCount)

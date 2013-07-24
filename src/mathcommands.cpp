@@ -126,13 +126,13 @@ void LispClearVar(LispEnvironment& aEnvironment,LispInt aStackTop)
 // the aPrecision argument is ignored here
 static bool LexLessThan(LispChar * f1, LispChar * f2, LispHashTable& aHashTable,LispInt aPrecision)
 {
-    return (StrCompare(f1, f2)<0);
+    return (std::strcmp(f1, f2) < 0);
 }
 
 // the aPrecision argument is ignored here
 static bool LexGreaterThan(LispChar * f1, LispChar * f2, LispHashTable& aHashTable,LispInt aPrecision)
 {
-    return (StrCompare(f1, f2)>0);
+    return (std::strcmp(f1, f2) > 0);
 }
 
 static bool BigLessThan(BigNumber& n1, BigNumber& n2)
@@ -339,7 +339,7 @@ static void ConcatenateStrings(LispStringSmartPtr& aResult, LispEnvironment& aEn
     LispInt curlen = str->Size();
     str->ResizeTo(curlen+length-1);
     LispChar * put = &(*str)[curlen-1];
-    PlatMemCopy(put+1,ptr+1,length-1);
+    std::memcpy(put+1,ptr+1,length-1);
   }
   aResult->Append('\"');
   aResult->Append('\0');

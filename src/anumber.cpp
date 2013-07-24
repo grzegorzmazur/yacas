@@ -277,7 +277,7 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
                 LispInt nrc=fraction.Size();
                 copied.ResizeTo(nrc);
               //copied.ResizeTo(nrc);  // not needed -- ResizeTo does this
-                PlatMemCopy(&copied[0],  &fraction[0], nrc*sizeof(LispString::ElementType));
+                std::memcpy(&copied[0],  &fraction[0], nrc*sizeof(LispString::ElementType));
             }
             BaseMultiply(fraction, copied, base, aBase);
 
@@ -327,7 +327,7 @@ void ANumber::CopyFrom(const ANumber& aOther)
     LispInt nr = aOther.Size();
     if (nr)
     {
-//this is actually slower!      PlatMemCopy(&((*this)[0]),&( aOther[0]),nr*sizeof(ANumber::ElementType));
+//this is actually slower!      std::memcpy(&((*this)[0]),&( aOther[0]),nr*sizeof(ANumber::ElementType));
 
       ANumber::ElementType * sptr = &( aOther[0]);
       ANumber::ElementType * tptr = &((*this)[0]);
@@ -860,7 +860,7 @@ TENSEXP:
         }
         IntToAscii(tens,tenex, 10);
         LispInt i,nr;
-        nr=PlatStrLen(&tens[0]);
+        nr=std::strlen(&tens[0]);
         for (i=0;i<nr;i++)
             aResult.Append(tens[i]);
     }

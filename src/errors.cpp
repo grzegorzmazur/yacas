@@ -163,7 +163,7 @@ void RaiseError(const char* str,...)
  #endif
   va_end (arg);
 #else
-  PlatMemCopy(GenericErrorBuf(), str, PlatStrLen(str));
+  std::memcpy(GenericErrorBuf(), str, std::strlen(str));
 #endif
   Check(false,KLispErrGenericFormat);
 }

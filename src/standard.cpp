@@ -32,7 +32,7 @@ bool InternalIsList(LispPtr& aPtr)
     if ((*aPtr->SubList())->String()->c_str() == NULL)
         return false;
     //TODO this StrEqual is far from perfect. We could pass in a LispEnvironment object...
-    if (!(StrEqual((*aPtr->SubList())->String()->c_str(), "List")))
+    if (std::strcmp((*aPtr->SubList())->String()->c_str(), "List"))
         return false;
     return true;
 }

@@ -6,6 +6,8 @@
 #ifndef __lispstring_h__
 #define __lispstring_h__
 
+#include <cstring>
+
 #include "yacasbase.h"
 #include "grower.h"
 #include "refcount.h"

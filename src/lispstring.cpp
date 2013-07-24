@@ -9,7 +9,7 @@
 
 void LispString::SetString(const LispChar * aString)
 {
-  LispInt length = PlatStrLen(aString);  // my own strlen
+  LispInt length = std::strlen(aString);
   ResizeTo(length+1);
   ElementType * aT = elements();
   for (LispInt i = 0; i <= length; i++)
@@ -31,7 +31,7 @@ void LispString::SetStringCounted(const LispChar * aString,LispInt aLength)
 
 void LispString::SetStringStringified(const LispChar * aString)
 {
-  LispInt length = PlatStrLen(aString);  // my own strlen
+  LispInt length = std::strlen(aString);
   ResizeTo(length+1 + 2);
   ElementType * aT = elements();
   aT[0] = '\"';
@@ -45,7 +45,7 @@ void LispString::SetStringStringified(const LispChar * aString)
 
 void LispString::SetStringUnStringified(const LispChar * aString)
 {
-  LispInt length = PlatStrLen(aString);  // my own strlen
+  LispInt length = std::strlen(aString);
   ResizeTo(length-1);
   ElementType * aT = elements();
   for (LispInt i = 1; i < length-1; i++)
@@ -61,7 +61,7 @@ LispInt LispString::operator==(const LispString& aString)
     return 0;
   const LispChar * ptr1 = elements();
   const LispChar * ptr2 = aString.elements();
-  return StrEqual(ptr1,ptr2);
+  return !std::strcmp(ptr1,ptr2);
 }
 
 LispString::~LispString()
