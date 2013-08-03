@@ -1,22 +1,9 @@
 
 // LispString inline functions.
 
-inline void LispString::SetString(LispChar * aString, bool aStringOwnedExternally)
+inline LispString& LispString::operator=(const LispChar* aString)
 {
-  if (aStringOwnedExternally)
-  {
-    LispInt length = std::strlen(aString);
-    SetExternalArray(aString, length+1);
-  }
-  else
-  {
-    SetString(aString);
-  }
-}
-
-inline LispString& LispString::operator=(LispChar * aString)
-{
-  SetString(aString,ArrayOwnedExternally());
+  SetString(aString);
   return *this;
 }
 
@@ -32,7 +19,7 @@ inline LispString::LispString(const LispChar * aString) : iReferenceCount()
 
 inline LispString::LispString() : iReferenceCount()
 {
-  LispChar s[1] = { 0 };
+  const LispChar s[1] = { 0 };
   SetString(s);
 }
 
