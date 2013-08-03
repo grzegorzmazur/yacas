@@ -34,11 +34,11 @@ public:
   // Use the assignment operators to set the string after this.
     inline LispString();
     inline LispString(const LispString &aString);
-    inline LispString(const LispChar * aString);
+    inline LispString(const LispChar* aString);
 
   // Assignment
   // This assignment abides by earlier functions setting the string as owned externally.
-    inline LispString& operator=(LispChar * aString);
+    inline LispString& operator = (const LispChar* aString);
 
   // Assignments (with modifications).  This string cannot be owned externally.
     // Set string by taking part of another string.
@@ -57,12 +57,10 @@ public:
     // are equal they should in fact be literally the same object.
     LispInt operator==(const LispString& aString);
 
-    ~LispString();
 private:
-    inline void SetString(LispChar * aString, bool aStringOwnedExternally);
-  void SetString(const LispChar * aString);
+    void SetString(const LispChar * aString);
 public:
-  ReferenceCount iReferenceCount;
+    ReferenceCount iReferenceCount;
 };
 
 
