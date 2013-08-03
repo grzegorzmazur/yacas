@@ -29,18 +29,16 @@ class LispStringSmartPtr;
 class LispString : public CArrayGrower<LispChar,ArrOpsPOD<LispChar> >
 {
 public:
-  // Constructors
-    // The constructors allow the caller to specify whether the storage is owned externally.
-  // Use the assignment operators to set the string after this.
+    // Constructors
+    // Use the assignment operators to set the string after this.
     inline LispString();
     inline LispString(const LispString &aString);
     inline LispString(const LispChar* aString);
 
-  // Assignment
-  // This assignment abides by earlier functions setting the string as owned externally.
+    // Assignment
     inline LispString& operator = (const LispChar* aString);
 
-  // Assignments (with modifications).  This string cannot be owned externally.
+    // Assignments (with modifications).
     // Set string by taking part of another string.
     void SetStringCounted(const LispChar * aString, LispInt aLength);
     // Set string from other string, adding quotes around the string.
@@ -48,13 +46,14 @@ public:
     // Set string from other string, removing quotes around the string.
     void SetStringStringified(const LispChar * aString);
 
-  // Access
+    // Access
     const LispChar * c_str() const;  // pointer to asciz 'C-string'
 
     // Comparison
-  // If the string is in the hash table it is faster to compare the pointers to the strings
-  // (instead of calling this routine), since in that case if they
-    // are equal they should in fact be literally the same object.
+    // If the string is in the hash table it is faster to compare the
+    // pointers to the strings (instead of calling this routine),
+    // since in that case if they are equal they should in fact be
+    // literally the same object.
     LispInt operator==(const LispString& aString);
 
 private:
