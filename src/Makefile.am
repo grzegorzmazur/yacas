@@ -1,7 +1,7 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 
 bin_PROGRAMS =  yacas
-noinst_PROGRAMS = mkfastprimes gencorefunctions @COMPRESSOR_PRG@
+noinst_PROGRAMS = mkfastprimes gencorefunctions compressor
 EXTRA_PROGRAMS = compressor codereviewer
 
 noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
