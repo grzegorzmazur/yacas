@@ -106,6 +106,7 @@ esac
 AC_SUBST([YACAS_PLATFORM])
 
 AM_CONDITIONAL(LINUX, test "$YACAS_PLATFORM" = "linux32")
+AM_CONDITIONAL(LINUX64, test "$YACAS_PLATFORM" = "linux64")
 AM_CONDITIONAL(WIN32, test "$YACAS_PLATFORM" = "win32")
 
 # Support for the debug version
