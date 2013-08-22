@@ -954,7 +954,7 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
    // enable if fork needed
    //                        if (fork() == 0)
                            {
-                               char* response = finalbuffer;
+                               const char* response = finalbuffer;
                                if (!server_single_user)
                                {
                                  used_clients[clsockindex]->getDefEnv().getEnv().iSecure = 1;
