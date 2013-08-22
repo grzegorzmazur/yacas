@@ -1,7 +1,5 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 
-INCLUDES = -I$(srcdir)/plat/$(YACAS_PLATFORM)
-
 bin_PROGRAMS =  yacas
 noinst_PROGRAMS = mkfastprimes gencorefunctions @COMPRESSOR_PRG@
 EXTRA_PROGRAMS = compressor codereviewer
@@ -68,9 +66,7 @@ EXTRA_DIST =  anumber.inl deffile.inl  \
 	lispstring.inl standard.inl \
 	depend.dep makefile.genericstatic \
 	version.h \
-	plat/linux32/lisptype.h \
-	plat/linux64/lisptype.h \
-	plat/win32/lisptype.h \
+	lisptype.h \
 	platfileio.h \
 	debugmem.h \
 	compressedfiles.cpp \
@@ -103,8 +99,6 @@ clean-compile:
 install-data-local: yacas.h
 	$(mkinstalldirs) $(DESTDIR)$(yacas_include)/
 	$(mkinstalldirs) $(DESTDIR)$(yacas_lib)/
-	$(mkinstalldirs) $(DESTDIR)$(yacas_include)/plat/
-	$(mkinstalldirs) $(DESTDIR)$(yacas_include)/plat/linux32/
 	-for file in $(srcdir)/*.h; do \
 	basefile=`basename $$file`; \
 	$(INSTALL_DATA) $$file $(DESTDIR)$(yacas_include)/$$basefile; \
@@ -113,19 +107,10 @@ install-data-local: yacas.h
 	basefile=`basename $$file`; \
 	$(INSTALL_DATA) $$file $(DESTDIR)$(yacas_include)/$$basefile; \
 	done
-	-for file in $(srcdir)/plat/linux32/*.h; do \
-	basefile=`basename $$file`; \
-	$(INSTALL_DATA) $$file $(DESTDIR)$(yacas_include)/plat/linux32/$$basefile; \
-	done
-	-for file in $(srcdir)/plat/linux32/*.inl; do \
-	basefile=`basename $$file`; \
-	$(INSTALL_DATA) $$file $(DESTDIR)$(yacas_include)/plat/linux32/$$basefile; \
-	done
 
 uninstall-hook:
 	rm -rf $(DESTDIR)$(yacas_include)/*.h
 	rm -rf $(DESTDIR)$(yacas_include)/*.inl
-	rm -rf $(DESTDIR)$(yacas_include)/plat
 
 version.h: ../config.h
 	echo "#define VERSION \"$(VERSION)\"" > version.h 
@@ -142,7 +127,7 @@ check-archive: scripts.dat
 	../src/yacas$(EXEEXT) -pc --archive scripts.dat $(top_srcdir)/tests/arithmetic.yts
 
 check-codereviewer: codereviewer$(EXEEXT)
-	./codereviewer$(EXEEXT) c *.h *.inl *.cpp plat/*/*.h
+	./codereviewer$(EXEEXT) c *.h *.inl *.cpp
 
 ## We need a bit of a hack to install the 'scripts.dat' file.
 ## Ideally, we would like to declare it as lib_LIBRARY, but then automake
