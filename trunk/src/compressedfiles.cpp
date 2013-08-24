@@ -5,8 +5,9 @@
 #include "lispassert.h"
 #include "stubs.h"
 #include "standard.h"
-#include "minilzo.h"
 
+#include <lzo/lzoconf.h>
+#include <lzo/lzo1x.h>
 
 
 

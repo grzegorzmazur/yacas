@@ -39,6 +39,8 @@ AC_CHECK_HEADERS(malloc.h memory.h stdlib.h stdio.h ctype.h dlfcn.h dl.h dld.h)
 AC_CHECK_HEADERS(dirent.h math.h stdarg.h signal.h)
 AC_CHECK_HEADERS(string.h strings.h)
 
+# Check for libraries
+AC_CHECK_LIB([lzo2], [lzo1x_decompress], [], [AC_MSG_ERROR([proper lzo library not found])])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
