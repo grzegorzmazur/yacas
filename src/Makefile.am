@@ -70,7 +70,7 @@ EXTRA_DIST =  anumber.inl deffile.inl  \
 	platfileio.h \
 	debugmem.h \
 	compressedfiles.cpp \
-	README.LZO lzodefs.h lzoconf.h minilzo.c minilzo.h decompressor.cpp \
+	decompressor.cpp \
 	compressor.cpp \
 	compressedfiles.h \
 	fastprimes.c core_yacasmain.h 
@@ -116,7 +116,7 @@ version.h: ../config.h
 	echo "#define VERSION \"$(VERSION)\"" > version.h 
 
 noinst_DATA = @SCRIPTS_DAT@
-compressor_SOURCES = compressor.cpp filescanner.cpp minilzo.c filescanner.h minilzo.h 
+compressor_SOURCES = compressor.cpp filescanner.cpp filescanner.h
 
 scripts.dat: compressor$(EXEEXT)
 	./compressor$(EXEEXT) - $(top_srcdir)/scripts/ scripts.dat 

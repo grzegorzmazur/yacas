@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "filescanner.h"
-#include "minilzo.h"
+
+#include <lzo/lzoconf.h>
+#include <lzo/lzo1x.h>
 
 //flags
 int strip_script=1;
