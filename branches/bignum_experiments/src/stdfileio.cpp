@@ -67,12 +67,12 @@ void StdFileInput::Rewind()
   fseek(iFile,0,SEEK_SET);
 }
 
-LispBoolean StdFileInput::EndOfStream()
+bool StdFileInput::EndOfStream()
 {
   return feof(iFile);
 }
 
-LispChar * StdFileInput::StartPtr()
+const LispChar* StdFileInput::StartPtr()
 {
   LISPASSERT(0);
   return NULL;
@@ -151,12 +151,12 @@ void CachedStdFileInput::Rewind()
   iCurrentPos = 0;
 }
 
-LispBoolean CachedStdFileInput::EndOfStream()
+bool CachedStdFileInput::EndOfStream()
 {
     return (iCurrentPos >= iNrBytes);
 }
 
-LispChar * CachedStdFileInput::StartPtr()
+const LispChar* CachedStdFileInput::StartPtr()
 {
     return iBuffer;
 }
@@ -173,8 +173,8 @@ void CachedStdFileInput::SetPosition(LispInt aPosition)
 
 
 // TODO: woof -- buffer overflow problems in here?
-void InternalFindFile(LispChar * aFileName, InputDirectories& aInputDirectories,
-                     LispChar * aFoundFile)
+void InternalFindFile(const LispChar * aFileName, InputDirectories& aInputDirectories,
+                      LispChar* aFoundFile)
 {
     strcpy(aFoundFile,aFileName);
 
@@ -201,9 +201,9 @@ void InternalFindFile(LispChar * aFileName, InputDirectories& aInputDirectories,
 }
 
 LispLocalFile::LispLocalFile(LispEnvironment& aEnvironment,
-                             LispChar * aFileName, LispBoolean aRead,
+                             const LispChar * aFileName, bool aRead,
                              InputDirectories& aInputDirectories)
-  : iFile(NULL),iEnvironment(aEnvironment),iOpened(LispFalse)
+  : iFile(NULL),iEnvironment(aEnvironment),iOpened(false)
 {
   LispChar othername[1024];//TODO
   if (aRead)
@@ -276,9 +276,9 @@ LispChar CachedStdUserInput::Peek()
   return iBuffer[iCurrentPos];
 }
 
-LispBoolean CachedStdUserInput::EndOfStream()
+bool CachedStdUserInput::EndOfStream()
 {
-  return LispFalse;
+  return false;
 }
 
 void CachedStdUserInput::Rewind()
@@ -289,7 +289,7 @@ void CachedStdUserInput::Rewind()
   iCurrentPos=0;
 }
 
-LispChar * CachedStdUserInput::StartPtr()
+const LispChar* CachedStdUserInput::StartPtr()
 {
   if (iBuffer.Size() == 0)
     Peek();

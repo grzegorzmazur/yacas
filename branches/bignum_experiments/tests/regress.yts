@@ -604,3 +604,8 @@ Verify(IsZero(Simplify(Simplify(((4*x)-2.25)/2)-(2*x-2.25/2))),True);
 NumericEqual([  Local(expr); expr := 1800*x/1.5 - 1800; Newton(expr, x,2,0.001); ],1.5,3);
 
 
+// Ticket 14
+Verify(Factor(0), 0);
+
+// Ticket 26
+Verify(Limit(n,Infinity)(n!)/n, Infinity);

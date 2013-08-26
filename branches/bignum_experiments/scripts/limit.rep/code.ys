@@ -2,6 +2,13 @@
 /*  Limit operator rule base  */
 /*                            */ 
 
+/* Special case: limits of polynomials as x approaches infinity */
+100 # Lim(_var, _tar, _dir, _p)_(CanBeUni(var, p) And Degree(p, var) > 0 And IsRationalOrNumber(LeadingCoef(p,var)) And IsInfinity(tar))
+    <-- LeadingCoef(p,var) * Sign(tar)^Degree(p,var) * Infinity;
+
+/* Special case: make use of the logarithm properties */
+120 # Lim(_var, _tar, _dir, Ln(_a) + Ln(_b)) <-- Lim(var, tar, dir, Ln(a*b));
+120 # Lim(_var, _tar, _dir, Ln(_a) - Ln(_b)) <-- Lim(var, tar, dir, Ln(a/b));
 
 /*  Exponentiation rules  */
 

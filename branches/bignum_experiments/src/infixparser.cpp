@@ -8,12 +8,12 @@
 #include "errors.h"
 
 
-//#define RAISE_PARSE_ERROR { iError = LispTrue; RaiseError("Error parsing expression, near token %s",iLookAhead->String()); }
+//#define RAISE_PARSE_ERROR { iError = true; RaiseError("Error parsing expression, near token %s",iLookAhead->String()); }
 
 
 void ParsedObject::Fail()
 {
-   iError = LispTrue;
+   iError = true;
    if (iLookAhead && iLookAhead->c_str())
    {
 //    if (IsSymbolic(iLookAhead->c_str()[0]))
@@ -93,13 +93,13 @@ void ParsedObject::ReadToken()
     iLookAhead = iParser.iTokenizer.NextToken(iParser.iInput,
                                               iParser.iEnvironment.HashTable());
     if (iLookAhead->c_str()[0] == '\0')
-        iEndOfFile=LispTrue;
+        iEndOfFile=true;
 }
 
 void ParsedObject::MatchToken(LispString * aToken)
 {
     if (aToken != iLookAhead)
-          RAISE_PARSE_ERROR; // iError=LispTrue;
+          RAISE_PARSE_ERROR; // iError=true;
     ReadToken();
 }
 
@@ -116,7 +116,7 @@ void ParsedObject::Parse()
 
     if (iLookAhead != iParser.iEnvironment.iEndStatement->String())
     {
-      RAISE_PARSE_ERROR; // iError = LispTrue;
+      RAISE_PARSE_ERROR; // iError = true;
     }
     if (iError)
     {
@@ -146,9 +146,9 @@ void ParsedObject::Combine(LispInt aNrArgsToCombine)
     LispIterator iter(iResult);
     for (LispInt i=0; i<aNrArgsToCombine; i++, ++iter)
     {
-    if (!iter.getObj()) { RAISE_PARSE_ERROR; return; } // iError = LispTrue;
+    if (!iter.getObj()) { RAISE_PARSE_ERROR; return; } // iError = true;
   }
-  if (!iter.getObj()) { RAISE_PARSE_ERROR; return; } // iError = LispTrue;
+  if (!iter.getObj()) { RAISE_PARSE_ERROR; return; } // iError = true;
     subList->Nixed() = (*++iter);
     *iter = (NULL);
 
@@ -193,7 +193,7 @@ void ParsedObject::ReadExpression(LispInt depth)
             // Match closing bracket
             if (iLookAhead != iParser.iEnvironment.iProgClose->String())
             {
-                RaiseError("Expecting a ] close bracket for program block, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = LispTrue;
+                RaiseError("Expecting a ] close bracket for program block, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = true;
                 return;
             }
             MatchToken(iLookAhead);
@@ -306,7 +306,7 @@ void ParsedObject::ReadAtom()
             }
             else if (iLookAhead != iParser.iEnvironment.iListClose->String())
             {
-                RaiseError("Expecting a } close bracket for a list, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = LispTrue;
+                RaiseError("Expecting a } close bracket for a list, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = true;
                 return;
             }
         }
@@ -338,7 +338,7 @@ void ParsedObject::ReadAtom()
             }
             else
             {
-                RaiseError("Expecting ; end of statement in program block, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = LispTrue;
+                RaiseError("Expecting ; end of statement in program block, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = true;
                 return;
             }
         }
@@ -374,7 +374,7 @@ void ParsedObject::ReadAtom()
                 }
                 else if (iLookAhead != iParser.iEnvironment.iBracketClose->String())
                 {
-                    RaiseError("Expecting ) closing bracket for sub-expression, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = LispTrue;
+                    RaiseError("Expecting ) closing bracket for sub-expression, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = true;
                     return;
                 }
             }
@@ -415,7 +415,7 @@ void InfixPrinter::WriteToken(LispOutput& aOutput, const LispChar * aString)
         aOutput.Write(" ");
     }
     aOutput.Write(aString);
-  RememberLastChar(aString[PlatStrLen(aString)-1]);
+    RememberLastChar(aString[std::strlen(aString)-1]);
 }
 
 void InfixPrinter::RememberLastChar(LispChar aChar)
@@ -556,12 +556,12 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
             }
             else
             {
-                LispInt bracket = LispFalse;
+                LispInt bracket = false;
                 if (bodied)
                 {
 //printf("%d > %d\n",iPrecedence, bodied->iPrecedence);
                   if (iPrecedence < bodied->iPrecedence)
-                    bracket = LispTrue;
+                    bracket = true;
                 }
                 if (bracket) WriteToken(aOutput,"(");
                 if (string)

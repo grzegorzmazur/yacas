@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "filescanner.h"
-#include "minilzo.h"
+
+#include <lzo/lzoconf.h>
+#include <lzo/lzo1x.h>
 
 //flags
 int strip_script=1;
@@ -23,7 +25,6 @@ int  compressedsize[MAXFILES];
 //
 #define IN_LEN    (128*1024L)
 #define OUT_LEN    (IN_LEN + IN_LEN / 64 + 16 + 3)
-static lzo_byte in  [ IN_LEN ];
 static lzo_byte out [ OUT_LEN ];
 /* Work-memory needed for compression. Allocate memory in units
  * of `long' (instead of `char') to make sure it is properly aligned.
@@ -33,12 +34,11 @@ static lzo_byte out [ OUT_LEN ];
 static HEAP_ALLOC(wrkmem,LZO1X_1_MEM_COMPRESS);
 
 
-int CompressScript(char* contents,int &size)
+int CompressScript(char* contents,int& size)
 {
     int r;
     lzo_uint in_len;
     lzo_uint out_len = size;
-    lzo_uint new_len;
     in_len = size;
     r = lzo1x_1_compress((unsigned char*)contents,in_len,out,&out_len,wrkmem);
     if (r == LZO_E_OK)
@@ -129,7 +129,7 @@ void StripScript(char *contents,int &stripsize)
 }
 
 
-void DoFile(char* base,char* file)
+void DoFile(const char* base, const char* file)
 {
     filename[totalfiles] = strdup(file);
     {
@@ -154,8 +154,12 @@ void PostProcessFile(FILE* tmpfilef,char* base,int index)
         int stripsize = ftell(f);
         fseek(f,0,SEEK_SET);
         char *contents = (char*)malloc(stripsize+10);
-        fread(contents,1,stripsize,f);
+        size_t n = fread(contents,1,stripsize,f);
         fclose(f);
+        if (n != size_t(stripsize)) {
+            printf("Warning: failed to read %s\n",buf);
+            goto BROKEN;
+        }
 
         printf("%d:\t",stripsize);
 
@@ -189,7 +193,7 @@ void PostProcessFile(FILE* tmpfilef,char* base,int index)
         printf("Warning: could not open file %s\n",buf);
     }
 }
-void WalkDirs(char* base,char* dir)
+void WalkDirs(const char* base, const char* dir)
 {
     CFileScanner scanner;
     CFileNode* node = scanner.First(base,dir);
@@ -197,7 +201,7 @@ void WalkDirs(char* base,char* dir)
     {
         if (node->IsDirectory())
         {
-            if (!strstr(node->FullName(),"CVS"))
+            if (!strstr(node->FullName(),"CVS") && !strstr(node->FullName(),".svn"))
             {
                 WalkDirs(base,node->FullName());
             }
@@ -305,19 +309,23 @@ int main(int argc, char** argv)
         char indexbuf[65536];
         char* indptr;
         makeindex(indexbuf,indptr,0);
-        int indexlength = indptr-indexbuf;
+        size_t indexlength = indptr-indexbuf;
         makeindex(indexbuf,indptr,2*sizeof(int)+indexlength);
-  printf("%d bytes uncompressed index\n",2*sizeof(int)+indexlength);
+        printf("%lu bytes uncompressed index\n", (unsigned long)(2*sizeof(int)+indexlength));
         putint(fout,totalfiles);
         putint(fout,indexlength);
         fwrite(indexbuf,1,indexlength,fout);
         {
             FILE* tmpfilef=fopen("tmpfile.tmp","rb");
             fseek(tmpfilef,0,SEEK_END);
-            int size=ftell(tmpfilef);
+            long size=ftell(tmpfilef);
             fseek(tmpfilef,0,SEEK_SET);
             char*buf = (char*)malloc(size);
-            fread(buf,1,size,tmpfilef);
+            size_t n = fread(buf,1,size,tmpfilef);
+            if (n != size_t(size)) {
+                printf("failed to read tmp file, bailing out!\n");
+                return 3;
+            }
             fclose(tmpfilef);
             fwrite(buf,1,size,fout);
             free(buf);

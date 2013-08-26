@@ -32,10 +32,10 @@ public:
   LispHashTable() {}
   ~LispHashTable();
   // If string not yet in table, insert. Afterwards return the string.
-  LispString * LookUp(const LispChar * aString, LispBoolean aStringOwnedExternally=LispFalse);
+  LispString * LookUp(const LispChar * aString);
   /// LookUp that takes ownership of the string
   LispString * LookUp(LispString * aString);
-  LispString * LookUpCounted(LispChar * aString,LispInt aLength);
+  LispString * LookUpCounted(const LispChar * aString,LispInt aLength);
   LispString * LookUpStringify(const LispChar * aString);
   LispString * LookUpUnStringify(const LispChar * aString);
   void GarbageCollect();

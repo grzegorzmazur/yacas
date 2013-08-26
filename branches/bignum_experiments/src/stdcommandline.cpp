@@ -33,14 +33,14 @@ LispInt CStdCommandLine::GetKey()
 
 void CStdCommandLine::ReadLine(const LispChar * prompt)
 {
-    puts(prompt); fflush(stdout);
+    fputs(prompt, stdout); fflush(stdout);
     char buffer[4001];
     int offs=0;
-    bool ok;
+    char* ok;
 MORE:
     ok = fgets(&buffer[offs],4000-offs,stdin);
 
-    if (!ok || feof(stdin)) 
+    if (!ok || feof(stdin))
         strcpy(buffer,"quit");
 
     offs=strlen(buffer);
@@ -56,7 +56,6 @@ MORE:
     if (buffer[offs-1] == '\\')
         goto MORE;
     iLine.ResizeTo(offs+1);
-    //iLine.Resize(offs+1);
     strcpy(&iLine[0],buffer);
 }
 

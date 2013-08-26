@@ -4,6 +4,10 @@ package net.sf.yacas;
 import java.io.*;
 import java.util.*;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.awt.Desktop;
+
 public class YacasConsole extends Thread
 {
     static String readLine(InputStream aStream)
@@ -30,18 +34,18 @@ public class YacasConsole extends Thread
   {
     String defaultDirectory = null;
     String archive = "";
+    String expression = null;
 
     {
       java.net.URL detectURL = java.lang.ClassLoader.getSystemResource("yacasinit.ys");
       if (detectURL != null)
       {
-        String detect = detectURL.getPath(); // file:/home/av/src/lib/yacas.jar!/yacasinit.ys
-        archive = detect.substring(0, detect.lastIndexOf('!')); // file:/home/av/src/lib/yacas.jar
-//System.out.println("Found archive ["+archive+"]");
+        String detect = detectURL.getPath();
+        archive = detect.substring(0, detect.lastIndexOf('!'));
       }
       else
       {
-//System.out.println("Archive not found!!!!");
+          // FIXME: report the error
       }
     }
     int i=0;
@@ -56,6 +60,11 @@ public class YacasConsole extends Thread
       {
         i++;
         archive = argv[i];
+      }
+      if (argv[i].equals("-i"))
+      {
+        i++;
+        expression = argv[i];
       }
       else
       {
@@ -72,7 +81,7 @@ public class YacasConsole extends Thread
 
     try
     {
-      String zipFileName = archive;//"file:/Users/ayalpinkus/projects/JavaYacas/yacas.jar";
+      String zipFileName = archive;
       java.util.zip.ZipFile z = new java.util.zip.ZipFile(new File(new java.net.URI(zipFileName)));
       LispStandard.zipFile = z;
     }
@@ -91,8 +100,13 @@ public class YacasConsole extends Thread
     }
     {
       String result = yacas.Evaluate("Load(\"yacasinit.ys\");");
-      if (scriptsToRun == argv.length)
+      if (scriptsToRun == argv.length && expression == null)
         System.out.println("Out> "+result);
+    }
+    if (expression != null)
+    {
+        String result = yacas.Evaluate(expression);
+        return;
     }
     if (scriptsToRun < argv.length)
     {
@@ -109,26 +123,57 @@ public class YacasConsole extends Thread
     System.out.println("Yacas is Free Software--Free as in Freedom--so you can redistribute Yacas or");
     System.out.println("modify it under certain conditions. Yacas comes with ABSOLUTELY NO WARRANTY.");
     System.out.println("See the GNU General Public License (GPL) for the full conditions.");
-//TODO fixme    System.out.println("Type ?license or ?licence to see the GPL; type ?warranty for warranty info.");
+    System.out.println("Type ?license or ?licence to see the GPL; type ?warranty for warranty info.");
     System.out.println("See http://yacas.sf.net for more information and documentation on Yacas.");
+    System.out.println("Type ?? for help. Or type ?function for help on a function.\n");
 
     System.out.println("To exit Yacas, enter  Exit(); or quit or Ctrl-c.\n");
-/*TODO fixme
-    System.out.println("Type ?? for help. Or type ?function for help on a function.\n");
-    System.out.println("Type 'restart' to restart Yacas.\n");
-*/
+    //    System.out.println("Type 'restart' to restart Yacas.\n");
+
     System.out.println("To see example commands, keep typing Example();\n");
 
-//yacas.Evaluate("BubbleSort(N(PSolve(x^3-3*x^2+2*x,x)), \"<\");");
-
     System.out.println("Yacas in Java");
-    while (!quitting)
-    {
-      System.out.print("In> ");
-      String input =  readLine(System.in);
-      String rs = yacas.Evaluate(input);
-      System.out.println("Out> "+rs);
-      if (input.equals("quit")) quitting = true;
+
+    while (!quitting) {
+
+        System.out.print("In> ");
+        String input = readLine(System.in);
+
+        String rs = "True";
+
+        if (input.trim().equals("quit")) {
+            quitting = true;
+        } else if (input.trim().startsWith("?")) {
+            String key = input.trim().substring(1);
+
+            String prefix = "http://yacas.sourceforge.net/";
+
+            try {
+                URI uri = new URI(prefix + "ref.html?" + key);
+
+                if (key.equals("license") || key.equals("licence"))
+                    uri = new URI(prefix + "refprogchapter9.html");
+                else if (key.equals("warranty"))
+                    uri = new URI(prefix + "refprogchapter9.html#c9s2");
+                else if (key.equals("?"))
+                    uri = new URI(prefix + "refmanual.html");
+
+                try {
+                    Desktop.getDesktop().browse(uri);
+                } catch (IOException e) {
+                    // FIXME: report the error
+                    rs = "False";
+                }
+
+            } catch (URISyntaxException e) {
+                // it's a cold night in Hell
+                rs = "False";
+            }
+        } else {
+            rs = yacas.Evaluate(input);
+        }
+
+        System.out.println("Out> " + rs);
     }
   }
 }

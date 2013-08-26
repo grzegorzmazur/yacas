@@ -59,7 +59,7 @@ void LispLocalSymbols(LispEnvironment& aEnvironment, LispInt aStackTop)
         CHK_ARG_CORE(len<64,i+1);
         char newname[100];
         newname[0] = '$';
-        PlatMemCopy(&newname[1], atomname->c_str(), len);
+        std::memcpy(&newname[1], atomname->c_str(), len);
 
         InternalIntToAscii(&newname[1+len],uniquenumber);
         LispString * variable = aEnvironment.HashTable().LookUp(newname);
@@ -81,7 +81,7 @@ void LispCharString(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   LispString * str = ARGUMENT(1)->String();
   CHK_ARG_CORE(str,2);
-  CHK_ARG_CORE(IsNumber(str->c_str(),LispFalse),2);
+  CHK_ARG_CORE(IsNumber(str->c_str(),false),2);
   LispInt asciiCode = InternalAsciiToInt(str);
 
   LispChar ascii[4];

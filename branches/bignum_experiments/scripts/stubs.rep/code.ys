@@ -257,7 +257,7 @@ Rule("Object",2,0,Apply(pred,{x})=True) x;
 15 # Sign(n_IsNumber/m_IsNumber) <-- Sign(n)*Sign(m);
 20 # Sign(n_IsList) <-- MapSingle("Sign",n);
 
-100 # Sign(_a)^n_IsEven <-- 1;
+100 # Sign(a_IsNonZero)^n_IsEven <-- 1;
 100 # Sign(_a)^n_IsOdd <-- Sign(a);
 
 5 # Floor(Infinity) <-- Infinity;
@@ -306,7 +306,7 @@ Rule("Object",2,0,Apply(pred,{x})=True) x;
 10 # Ceil (x_IsRationalOrNumber) 
    <-- 
    [
-     x:=N(x);
+     x:=N(Eval(x));
      Local(prec,result,n);
      Set(prec,Builtin'Precision'Get());
      If(IsZero(x),Set(n,2),

@@ -21,7 +21,7 @@ public:
   class BranchParameter : public YacasBase
   {
   public:
-    BranchParameter(LispString * aParameter = NULL, LispInt aHold=LispFalse)
+    BranchParameter(LispString * aParameter = NULL, LispInt aHold=false)
         : iParameter(aParameter), iHold(aHold) {}
     LispString * iParameter;
     LispInt       iHold;
@@ -32,13 +32,13 @@ public:
   {
   public:
     virtual ~BranchRuleBase();
-    virtual LispBoolean Matches(LispEnvironment& aEnvironment, LispPtr* aArguments) = 0;
+    virtual bool Matches(LispEnvironment& aEnvironment, LispPtr* aArguments) = 0;
     virtual LispInt Precedence() const = 0;
     virtual LispPtr& Body() = 0;
   };
 
   /// A rule with a predicate.
-  /// This rule matches if the predicate evaluates to #LispTrue.
+  /// This rule matches if the predicate evaluates to #true.
   class BranchRule : public BranchRuleBase
   {
   public:
@@ -50,7 +50,7 @@ public:
     /// Return true if the rule matches.
     /// #iPredicate is evaluated in \a Environment. If the result
     /// IsTrue(), this function returns true.
-    virtual LispBoolean Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
+    virtual bool Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
 
     /// Access #iPrecedence.
     virtual LispInt Precedence() const;
@@ -74,8 +74,8 @@ public:
       iPrecedence = aPrecedence;
       iBody = (aBody);
     }
-    /// Return #LispTrue, always.
-    virtual LispBoolean Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
+    /// Return #true, always.
+    virtual bool Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
   };
 
   /// A rule which matches if the corresponding PatternClass matches.
@@ -93,13 +93,13 @@ public:
     BranchPattern(LispInt aPrecedence,LispPtr& aPredicate,LispPtr& aBody) : iPrecedence(aPrecedence),iBody(aBody),iPredicate(aPredicate),iPatternClass(NULL)
     {
       GenericClass *gen = aPredicate->Generic();
-      DYNCAST(PatternClass,"\"Pattern\"",pat,gen)
+      PatternClass* pat = dynamic_cast<PatternClass*>(gen);
       Check(pat,KLispErrInvalidArg);
       iPatternClass = pat;
     }
 
     /// Return true if the corresponding pattern matches.
-    virtual LispBoolean Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
+    virtual bool Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
 
     /// Access #iPrecedence
     virtual LispInt Precedence() const;

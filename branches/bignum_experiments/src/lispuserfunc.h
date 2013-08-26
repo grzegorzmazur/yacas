@@ -18,7 +18,7 @@
 class LispUserFunction : public EvalFuncBase
 {
 public:
-    LispUserFunction() : iFenced(LispTrue),iTraced(LispFalse) {};
+    LispUserFunction() : iFenced(true),iTraced(false) {};
     virtual ~LispUserFunction();
     virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
                   LispPtr& aArguments)=0;
@@ -31,15 +31,15 @@ public:
     virtual LispPtr& ArgList() = 0;
 
 public: //unfencing
-    inline void UnFence() {iFenced = LispFalse;};
-    inline LispBoolean Fenced() {return iFenced;};
+    inline void UnFence() {iFenced = false;};
+    inline bool Fenced() {return iFenced;};
 public: //tracing
-    inline void Trace() {iTraced = LispTrue;};
-    inline void UnTrace() {iTraced = LispFalse;};
-    inline LispBoolean Traced() {return iTraced;};
+    inline void Trace() {iTraced = true;};
+    inline void UnTrace() {iTraced = false;};
+    inline bool Traced() {return iTraced;};
 private:
-    LispBoolean iFenced;
-    LispBoolean iTraced;
+    bool iFenced;
+    bool iTraced;
 };
 
 

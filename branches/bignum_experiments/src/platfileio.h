@@ -6,12 +6,12 @@ class LispLocalFile : public LispBase
 {
 public:
   LispLocalFile(LispEnvironment& aEnvironment,
-                LispChar * aFileName, LispBoolean aRead,
+                const LispChar * aFileName, bool aRead,
                 InputDirectories& aInputDirectories);
   virtual ~LispLocalFile();
   virtual void Delete();
 private:
-  LispLocalFile(const LispLocalFile& aOther) : iFile(NULL),iEnvironment(aOther.iEnvironment),iOpened(LispFalse)
+  LispLocalFile(const LispLocalFile& aOther) : iFile(NULL),iEnvironment(aOther.iEnvironment),iOpened(false)
   {
     // copy constructor not written yet, hence the assert
     LISPASSERT(0);
@@ -32,19 +32,19 @@ public:
 class StdFileInput : public LispInput
 {
 public:
-    virtual LispChar Next();
-    virtual LispChar Peek();
-    virtual LispBoolean EndOfStream();
-    void Rewind();
-    virtual LispChar * StartPtr();
-    virtual LispInt Position();
-    virtual void SetPosition(LispInt aPosition);
+  virtual LispChar Next();
+  virtual LispChar Peek();
+  virtual bool EndOfStream();
+  void Rewind();
+  virtual const LispChar* StartPtr();
+  virtual LispInt Position();
+  virtual void SetPosition(LispInt aPosition);
 
 protected:
-    StdFileInput(FILE* aFile,InputStatus& aStatus);
-    StdFileInput(LispLocalFile& aFile,InputStatus& aStatus);
+  StdFileInput(FILE* aFile,InputStatus& aStatus);
+  StdFileInput(LispLocalFile& aFile,InputStatus& aStatus);
 protected:
-    FILE* iFile;
+  FILE* iFile;
 };
 
 
@@ -57,11 +57,12 @@ public:
   ~CachedStdFileInput() ;
   virtual LispChar Next();
   virtual LispChar Peek();
-  virtual LispBoolean EndOfStream();
+  virtual bool EndOfStream();
   void Rewind();
-  virtual LispChar * StartPtr();
+  virtual const LispChar* StartPtr();
   virtual LispInt Position();
   virtual void SetPosition(LispInt aPosition);
+
 private:
   inline CachedStdFileInput(const CachedStdFileInput& aOther) : StdFileInput(aOther),iBuffer(NULL),iCurrentPos(0),iNrBytes(0)
   {
@@ -74,7 +75,6 @@ private:
     LISPASSERT(0);
     return *this;
   }
-
 private:
   LispChar * iBuffer;
   LispInt iCurrentPos;
@@ -113,9 +113,9 @@ public:
 public:
     virtual LispChar Next();
     virtual LispChar Peek();
-    virtual LispBoolean EndOfStream();
+    virtual bool EndOfStream();
     void Rewind();
-    virtual LispChar * StartPtr();
+    virtual const LispChar* StartPtr();
     virtual LispInt Position();
 
 private:
@@ -124,10 +124,7 @@ private:
 };
 
 
-
-void InternalFindFile(LispChar * aFileName, InputDirectories& aInputDirectories,
-                     LispChar * aFoundFile);
-
-
+void InternalFindFile(const LispChar * aFileName, InputDirectories& aInputDirectories,
+                      LispChar * aFoundFile);
 
 

@@ -10,7 +10,7 @@ class CompressedFiles
 public:
   CompressedFiles(unsigned char * aBuffer, LispInt aFullSize, LispInt aCompressed);
   ~CompressedFiles();
-  LispInt FindFile(LispChar * aName);
+  LispInt FindFile(const LispChar * aName);
   LispChar * Name(LispInt aIndex);
   LispChar * Contents(LispInt aIndex);
   inline LispInt NrFiles() const {return iNrFiles;}
@@ -22,7 +22,7 @@ protected:
 private:
   // copy constructor not implemented yet, so an assert is in order
   CompressedFiles(const CompressedFiles& aOther)
-    : iFullBuffer(NULL),iCompressed(0),iFullSize(0),iIndex(NULL),iNrFiles(0),iIndexSize(0),iIsValid(LispFalse)
+    : iFullBuffer(NULL),iCompressed(0),iFullSize(0),iIndex(NULL),iNrFiles(0),iIndexSize(0),iIsValid(false)
   {
     LISPASSERT(0);
   }
@@ -34,7 +34,7 @@ private:
     iIndex = NULL;
     iNrFiles = 0;
     iIndexSize = 0;
-    iIsValid = LispFalse;
+    iIsValid = false;
     LISPASSERT(0);
     return *this;
   }

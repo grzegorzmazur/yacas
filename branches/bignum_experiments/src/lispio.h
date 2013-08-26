@@ -75,7 +75,7 @@ public:
   virtual InputStatus& Status() const {return iStatus;};
 
   /// Check if the file position is past the end of the file.
-  virtual LispBoolean EndOfStream() = 0;
+  virtual bool EndOfStream() = 0;
   /** StartPtr returns the start of a buffer, if there is one.
    * Implementations of this class can keep the file in memory
    * as a whole, and return the start pointer and current position.
@@ -85,7 +85,7 @@ public:
    * the whole file should be in memory for the whole period the file
    * is being read.
    */
-  virtual LispChar * StartPtr() = 0;
+  virtual const LispChar* StartPtr() = 0;
   virtual LispInt Position() = 0;
   virtual void SetPosition(LispInt aPosition) = 0;
 protected:

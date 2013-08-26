@@ -20,31 +20,31 @@
 #define InternalEval aEnvironment.iEvaluator->Eval
 
 
-LispBoolean InternalIsList(LispPtr& aPtr)
+bool InternalIsList(LispPtr& aPtr)
 {
     if (!aPtr)
-        return LispFalse;
+        return false;
     if (!aPtr->SubList())
-        return LispFalse;
+        return false;
     if (!(*aPtr->SubList()))
-        return LispFalse;
+        return false;
     // The following happens with IsList(UnList({foo(x), a, b}))
     if ((*aPtr->SubList())->String()->c_str() == NULL)
-        return LispFalse;
+        return false;
     //TODO this StrEqual is far from perfect. We could pass in a LispEnvironment object...
-    if (!(StrEqual((*aPtr->SubList())->String()->c_str(), "List")))
-        return LispFalse;
-    return LispTrue;
+    if (std::strcmp((*aPtr->SubList())->String()->c_str(), "List"))
+        return false;
+    return true;
 }
 
 
-LispBoolean InternalIsString(LispString * aOriginal)
+bool InternalIsString(LispString * aOriginal)
 {
     if (aOriginal)
         if ((*aOriginal)[0] == '\"')
             if ((*aOriginal)[aOriginal->Size()-2] == '\"')
-                return LispTrue;
-    return LispFalse;
+                return true;
+    return false;
 }
 
 
@@ -120,12 +120,12 @@ void InternalIntToAscii(LispChar * aTrg,LispInt aInt)
 // TODO: we should either pass the string by reference, or use an assert to check validity of input
 LispInt InternalAsciiToInt(LispString * aString)
 {
-  LispChar * ptr = aString->c_str();
-  Check(IsNumber(ptr,LispFalse),KLispErrInvalidArg);
+  const LispChar * ptr = aString->c_str();
+  Check(IsNumber(ptr,false),KLispErrInvalidArg);
   return PlatAsciiToInt(ptr);
 }
 
-LispBoolean IsNumber(const LispChar * ptr,LispBoolean aAllowFloat)
+bool IsNumber(const LispChar * ptr,bool aAllowFloat)
 {
     if (*ptr == '-' || *ptr == '+')
         ptr++;
@@ -140,7 +140,7 @@ LispBoolean IsNumber(const LispChar * ptr,LispBoolean aAllowFloat)
     if (ptr[index] == '.')
     {
         if (!aAllowFloat)
-            return LispFalse;
+            return false;
         index++;
         while(ptr[index] >= '0' && ptr[index] <= '9')
         {
@@ -149,19 +149,19 @@ LispBoolean IsNumber(const LispChar * ptr,LispBoolean aAllowFloat)
         }
     }
     if (nrDigits == 0)
-        return LispFalse;
+        return false;
     if (ptr[index] == 'e' || ptr[index] == 'E')
     {
         if (!aAllowFloat)
-            return LispFalse;
+            return false;
         if (!NumericSupportForMantissa())
-            return LispFalse;
+            return false;
         index++;
         if (ptr[index] == '-' || ptr[index] == '+') index++;
         while(ptr[index] >= '0' && ptr[index] <= '9') index++;
     }
-    if (ptr[index] != '\0') return LispFalse;
-    return LispTrue;
+    if (ptr[index] != '\0') return false;
+    return true;
 }
 
 
@@ -240,14 +240,14 @@ LispInt InternalListLength(LispPtr& aOriginal)
     return length;
 }
 
-LispBoolean InternalEquals(LispEnvironment& aEnvironment,
+bool InternalEquals(LispEnvironment& aEnvironment,
                            LispPtr& aExpression1,
                            LispPtr& aExpression2)
 {
     // Handle pointers to same, or NULL
     if (aExpression1.ptr() == aExpression2.ptr())  // compare pointers to LispObject
     {
-        return LispTrue;
+        return true;
     }
 
 
@@ -259,26 +259,26 @@ LispBoolean InternalEquals(LispEnvironment& aEnvironment,
     {
         if (n1 == n2)
         {
-            return LispTrue;
+            return true;
         }
-        if (!n1) return LispFalse;
-        if (!n2) return LispFalse;
-        if (n1->Equals(*n2)) return LispTrue;
+        if (!n1) return false;
+        if (!n2) return false;
+        if (n1->Equals(*n2)) return true;
 //this should be enabled
-        return LispFalse;
+        return false;
     }
 
 
     //Pointers to strings should be the same
     if (aExpression1->String() != aExpression2->String())
     {
-        return LispFalse;
+        return false;
     }
 
     // Handle same sublists, or NULL
     if (aExpression1->SubList() == aExpression2->SubList())
     {
-        return LispTrue;
+        return true;
     }
 
     // Now check the sublists
@@ -286,7 +286,7 @@ LispBoolean InternalEquals(LispEnvironment& aEnvironment,
     {
         if (!aExpression2->SubList())
         {
-            return LispFalse;
+            return false;
         }
         LispIterator iter1(*aExpression1->SubList());
         LispIterator iter2(*aExpression2->SubList());
@@ -296,7 +296,7 @@ LispBoolean InternalEquals(LispEnvironment& aEnvironment,
             // compare two list elements
             if (!InternalEquals(aEnvironment, *iter1, *iter2))
             {
-                return LispFalse;
+                return false;
             }
  
             // Step to next
@@ -305,14 +305,14 @@ LispBoolean InternalEquals(LispEnvironment& aEnvironment,
         }
         // Lists don't have the same length
         if (iter1.getObj() != iter2.getObj())
-            return LispFalse;
+            return false;
 
         // Same!
-        return LispTrue;
+        return true;
     }
 
     // expressions sublists are not the same!
-    return LispFalse;
+    return false;
 }
  
 void DoInternalLoad(LispEnvironment& aEnvironment,LispInput* aInput)
@@ -322,7 +322,7 @@ void DoInternalLoad(LispEnvironment& aEnvironment,LispInput* aInput)
     // TODO make "EndOfFile" a global thing
     // read-parse-eval to the end of file
     LispString * eof = aEnvironment.HashTable().LookUp("EndOfFile");
-    LispBoolean endoffile = LispFalse;
+    bool endoffile = false;
 
     LispTokenizer tok;
     InfixParser parser(tok,
@@ -343,7 +343,7 @@ void DoInternalLoad(LispEnvironment& aEnvironment,LispInput* aInput)
         // Check for end of file
         if (readIn->String() == eof)
         {
-            endoffile = LispTrue;
+            endoffile = true;
             }
         // Else evaluate
         else
@@ -375,7 +375,7 @@ void InternalLoad(LispEnvironment& aEnvironment,LispString * aFileName)
     {
         //TODO make the file api platform independent!!!!
         // Open file
-        LispLocalFile localFP(aEnvironment, hashedname->c_str(),LispTrue,
+        LispLocalFile localFP(aEnvironment, hashedname->c_str(),true,
                               aEnvironment.iInputDirectories);
         Check(localFP.iOpened != 0, KLispErrFileNotFound);
         FILEINPUT newInput(localFP,aEnvironment.iInputStatus);
@@ -432,7 +432,7 @@ void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnviron
     oper2 = ((*chk2)->Nixed());
 
 //printf("3...\n");
-    LispLocalFrame frame(aEnvironment,LispFalse);
+    LispLocalFrame frame(aEnvironment,false);
 
 //printf("4...\n");
     while (!!oper2)
@@ -587,17 +587,13 @@ void PrintExpression(LispString& aResult, LispPtr& aExpression,
     }
 }
 
-LispString * SymbolName(LispEnvironment& aEnvironment,
-                         LispChar * aSymbol)
+LispString* SymbolName(LispEnvironment& aEnvironment,
+                       const LispChar * aSymbol)
 {
     if (aSymbol[0] == '\"')
-    {
         return aEnvironment.HashTable().LookUpUnStringify(aSymbol);
-    }
     else
-    {
         return aEnvironment.HashTable().LookUp(aSymbol);
-    }
 }
 
 

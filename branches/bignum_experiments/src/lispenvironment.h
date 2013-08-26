@@ -76,10 +76,10 @@ public:
   /// LispGlobalVariable is constructed, and it is associated with
   /// \a aValue in #iGlobals.
   /// \sa FindLocal
-  void SetVariable(LispString * aString, LispPtr& aValue, LispBoolean aGlobalLazyVariable);
+  void SetVariable(LispString * aString, LispPtr& aValue, bool aGlobalLazyVariable);
 
   /// In debug mode, DebugModeVerifySettingGlobalVariables raises a warning if a global variable is set.
-  void DebugModeVerifySettingGlobalVariables(LispPtr & aVariable, LispBoolean aGlobalLazyVariable);
+  void DebugModeVerifySettingGlobalVariables(LispPtr & aVariable, bool aGlobalLazyVariable);
 
   /// Get the value assigned to a variable.
   /// \param aVariable name of the variable
@@ -100,7 +100,7 @@ public:
   void GetVariable(LispString * aVariable,LispPtr& aResult);
 
   void UnsetVariable(LispString * aString);
-  void PushLocalFrame(LispBoolean aFenced);
+  void PushLocalFrame(bool aFenced);
   void PopLocalFrame();
   void NewLocal(LispString * aVariable,LispObject* aValue);
   void CurrentLocals(LispPtr& aResult);
@@ -154,7 +154,7 @@ public:
   void HoldArgument(LispString *  aOperator,LispString * aVariable);
   //@}
 
-  LispString * FindCachedFile(LispChar * aFileName);
+  LispString * FindCachedFile(const LispChar * aFileName);
 
 public:
   /// \name Precision
@@ -196,7 +196,7 @@ public:
   LispOutput* CurrentOutput();
   void SetCurrentOutput(LispOutput* aOutput);
 public:
-  void SetUserError(LispChar * aErrorString);
+  void SetUserError(const LispChar* aErrorString);
   const LispChar * ErrorString(LispInt aError);
   //@}
 
@@ -318,7 +318,7 @@ private:
 
 private:
   LocalVariableFrame *iLocalsList;
-  
+
 public:
   LispOutput* iInitialOutput;
 
@@ -342,7 +342,7 @@ private:
 
   LispInput* iCurrentInput;
 
-  LispChar * theUserError;
+  const LispChar* theUserError;
 
   LispString * iPrettyReader;
   LispString * iPrettyPrinter;
@@ -412,7 +412,7 @@ public:
   YacasArgStack iStack;
 
 private:
- 
+
   inline LispEnvironment(const LispEnvironment& aOther)
     :
     iPrecision(0),  // default user precision of 10 decimal digits
@@ -507,7 +507,7 @@ inline LispHashTable& LispEnvironment::HashTable()
 class LispLocalFrame : public LispBase
 {
 public:
-    LispLocalFrame(LispEnvironment& aEnvironment, LispBoolean aFenced)
+    LispLocalFrame(LispEnvironment& aEnvironment, bool aFenced)
         : iEnvironment(aEnvironment)
     {
         iEnvironment.PushLocalFrame(aFenced);

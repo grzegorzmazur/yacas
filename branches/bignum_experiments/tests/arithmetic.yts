@@ -27,6 +27,17 @@ VerifyArithmetic(10000,50,88);
 Verify(4!,24);
 Verify(Bin(2,1),2);
 
+Verify(a-1+1, a);
+Verify(a-1+b+1, a+b);
+Verify(a-1+b-1, a+b-2);
+
+Verify(a/3+2*a/3,a);
+Verify(a/3+(2*a)/3,a);
+Verify(a/2+3*a/2,2*a);
+Verify(a/2+(3*a)/2,2*a);
+Verify(1/(2*a)+3/(2*a),2/a);
+Verify(a/(2*b)+3*a/(2*b),(2*a)/b);
+
 NextTest("Testing math stuff");
 Verify(1*a,a);
 Verify(a*1,a);

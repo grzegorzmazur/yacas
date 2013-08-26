@@ -17,6 +17,7 @@ SCRIPTFILES1 = 	        										    \
 	factors.rep/code.ys factors.rep/code.ys.def 							    \
 	factors.rep/binaryfactors.ys factors.rep/binaryfactors.ys.def 					    \
 	functional.rep/code.ys functional.rep/code.ys.def functional.rep/om.ys				    \
+	graph.rep/code.ys graph.rep/code.ys.def								    \
 	html.rep/code.ys html.rep/code.ys.def 								    \
 	integrate.rep/code.ys integrate.rep/code.ys.def integrate.rep/om.ys   \
 	io.rep/code.ys io.rep/code.ys.def io.rep/print.ys io.rep/formula.ys io.rep/errors.ys 		    \
@@ -82,7 +83,7 @@ SCRIPTFILES2 = \
 	numbers.rep/GaussianIntegers.ys numbers.rep/GaussianIntegers.ys.def				    \
 	transforms.rep/code.ys transforms.rep/code.ys.def \
   base.rep/math.ys base.rep/math.ys.def \
-	stdarith.ys stdarith.ys.def 
+	stdarith.ys stdarith.ys.def calendar.rep/code.ys calendar.rep/code.ys.def
 
 EXAMPLE_SCRIPTFILES = \
 	examples/ABIN.ys examples/pi.ys \
@@ -151,7 +152,7 @@ $(srcdir)/packages.ys: $(srcdir)/Makefile.am
 
 $(srcdir)/corefunctions.ys: $(top_srcdir)/src/corefunctions.h $(top_srcdir)/src/yacasmain.cpp
 	(cd ../src && make gencorefunctions$(EXEEXT))
-	../src/gencorefunctions > $(srcdir)/corefunctions.ys
+	../src/gencorefunctions$(EXEEXT) > $(srcdir)/corefunctions.ys
 
 
 
@@ -160,8 +161,12 @@ check:
 	@find $(srcdir)/../scripts \( -name \*.ys -o -name \*.ys.def \) -print \
 	   | sed -e 's,.*scripts/,,' | sort > contents-of-tree.txt
 	@echo "Comparing scripts listed in the Makefile against the contents of the tree"
-	@if diff scripts-listed-in-makefile.txt contents-of-tree.txt; \
-	   then echo " ... ok"; \
-	 else \
-	   false; \
-	 fi
+	@(diff scripts-listed-in-makefile.txt contents-of-tree.txt; \
+	  rm -f scripts-listed-in-makefile.txt contents-of-tree.txt; \
+	  RV=$$?; \
+	  if [[ $$RV == 0 ]] ; \
+	      then echo " ... ok"; \
+	  else \
+	      false; \
+	  fi \
+	)

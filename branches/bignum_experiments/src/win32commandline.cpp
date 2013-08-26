@@ -10,14 +10,14 @@
 bool is_NT_or_later = false;
 
 /*
-    This displays a message box.
+  This displays a message box.
 */
 static void win_assert(BOOL condition){
     if(condition) return;
     LPVOID lpMsgBuf;
-    FormatMessage( 
-        FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-        FORMAT_MESSAGE_FROM_SYSTEM | 
+    FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER |
+        FORMAT_MESSAGE_FROM_SYSTEM |
         FORMAT_MESSAGE_IGNORE_INSERTS,
         NULL,
         GetLastError(),
@@ -79,8 +79,8 @@ void CWin32CommandLine::color_read(LispChar * str, WORD text_attrib){
 
 void CWin32CommandLine::NewLine()
 {
-  ShowLine();
-  color_print("\n", 0);
+    ShowLine();
+    color_print("\n", 0);
 }
 
 void CWin32CommandLine::Pause()
@@ -89,36 +89,38 @@ void CWin32CommandLine::Pause()
     while (clock()<i);
 }
 
-void CWin32CommandLine::ReadLineSub(LispChar * prompt){
-//    if(_is_NT_or_later){
-//        char buff[BufSz];
-//        color_print(prompt, FOREGROUND_RED | FOREGROUND_INTENSITY );
-//        color_read(buff, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-//        iSubLine = buff;
-//    }else{
+void CWin32CommandLine::ReadLineSub(const LispChar * prompt)
+{
+    if (_is_NT_or_later) {
+        char buff[BufSz];
+        color_print(prompt, FOREGROUND_RED | FOREGROUND_INTENSITY );
+        color_read(buff, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+        iSubLine = buff;
+    } else {
         CCommandLine::ReadLineSub(prompt);
-//    }
+    }
 }
 
-void CWin32CommandLine::ShowLine(){
-  ShowLine(iLastPrompt, strlen(iLastPrompt), strlen(iLastPrompt)+iSubLine.Size());
+void CWin32CommandLine::ShowLine()
+{
+    ShowLine(iLastPrompt, strlen(iLastPrompt), strlen(iLastPrompt)+iSubLine.Size());
 }
 
-void CWin32CommandLine::ShowLine(LispChar * prompt, LispInt promptlen, LispInt cursor){
-  iLastPrompt = prompt;
-  putchar('\r');							// clear line
-  int i;
-	for (i=0;i<79;i++) putchar(' ');
+void CWin32CommandLine::ShowLine(const LispChar * prompt, LispInt promptlen, LispInt cursor)
+{
+    iLastPrompt = prompt;
+    putchar('\r');              // clear line
 
     assert(iSubLine.Size() != 0);
+
     char str[BufSz];
-    sprintf(str, "\r%s%s", prompt, &iSubLine[0]);
+    sprintf(str, "%s%s", prompt, &iSubLine[0]);
     color_print(str, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY );
 
+    // position cursor
+    for (LispInt i = strlen(&iSubLine[0]) + promptlen; i > cursor+promptlen; i--)
+        putchar('\b');
 
-	i = strlen(&iSubLine[0]) + promptlen;		// position cursor
-	for (;i > cursor+promptlen; i--)
-		putchar('\b');
     fflush(stdout);
 }
 
@@ -129,17 +131,17 @@ CWin32CommandLine::CWin32CommandLine() :
 {
     win_assert(INVALID_HANDLE_VALUE != out_console);
     win_assert(INVALID_HANDLE_VALUE != in_console);
-    
+
     // figure out the version of windows
-    OSVERSIONINFO osvi; 
+    OSVERSIONINFO osvi;
     osvi.dwOSVersionInfoSize  = sizeof(OSVERSIONINFO);
     GetVersionEx(&osvi);
 
     _is_NT_or_later = (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT);
-        /* &&
-        ( (osvi.dwMajorVersion > 4) ||
-        ( (osvi.dwMajorVersion == 4) && (osvi.dwMinorVersion > 0) ) );*/
- 
+    /* &&
+       ( (osvi.dwMajorVersion > 4) ||
+       ( (osvi.dwMajorVersion == 4) && (osvi.dwMinorVersion > 0) ) );*/
+
 //    if(!_is_NT_or_later)
     {
         FILE*f=fopen("history.log", "r");
@@ -154,7 +156,7 @@ CWin32CommandLine::CWin32CommandLine() :
                     buff[i++] = '\0';
                     LispString * ptr = NEW LispString(buff);
                     iHistoryList.Append(ptr);
-                
+
                 }
                 fclose(f);
             }
@@ -186,43 +188,43 @@ LispInt CWin32CommandLine::GetKey(){
 //        return c;
 //    }
 
-	switch (c) {
-		case 8:
-			c = eBackSpace;		// Backspace
-            break;
-		case 9:					//  Tab
-            c = eTab;
-			break;
-        case 13:				// Enter
-            c = eEnter;
-            break;
-        case 0xE0:
-            c = _getch();		// Get extended scan code
-			switch (c) {
-                case 75:		// left arrow key
-                    c = eLeft;
-                    break;
-                case 77:		// right arrow key
-                    c = eRight;
-                    break;
-                case 72:		// up arrow key
-                    c = eUp;
-                    break;
-                case 80:		// down arrow key
-                    c = eDown;
-                    break;
-                case 71:		// home
-                    c = eHome;
-                    break;
-                case 79:		// end
-                    c = eEnd;
-                    break;
-				case 83:		// delete
-					c = eDelete;
-					break;
-			}
+    switch (c) {
+    case 8:
+        c = eBackSpace;         // Backspace
         break;
-	}
+    case 9:                                     //  Tab
+        c = eTab;
+        break;
+    case 13:                            // Enter
+        c = eEnter;
+        break;
+    case 0xE0:
+        c = _getch();           // Get extended scan code
+        switch (c) {
+        case 75:                // left arrow key
+            c = eLeft;
+            break;
+        case 77:                // right arrow key
+            c = eRight;
+            break;
+        case 72:                // up arrow key
+            c = eUp;
+            break;
+        case 80:                // down arrow key
+            c = eDown;
+            break;
+        case 71:                // home
+            c = eHome;
+            break;
+        case 79:                // end
+            c = eEnd;
+            break;
+        case 83:                // delete
+            c = eDelete;
+            break;
+        }
+        break;
+    }
 
     return c;
 }

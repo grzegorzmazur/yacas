@@ -1,14 +1,14 @@
 
 #include "yacasprivate.h"
 
-LispInt PlatAsciiToInt(LispChar * aString)
+LispInt PlatAsciiToInt(const LispChar* aString)
 {
     LispInt result=0;
-    LispBoolean negative=LispFalse;
+    bool negative=false;
 
     if (*aString == '-')
     {
-        negative=LispTrue;
+        negative=true;
         aString++;
     }
     while (*aString)

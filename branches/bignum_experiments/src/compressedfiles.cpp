@@ -5,14 +5,15 @@
 #include "lispassert.h"
 #include "stubs.h"
 #include "standard.h"
-#include "minilzo.h"
 
+#include <lzo/lzoconf.h>
+#include <lzo/lzo1x.h>
 
 
 
 
 CompressedFiles::CompressedFiles(unsigned char * aBuffer, LispInt aFullSize, LispInt aCompressed)
-: iFullBuffer(aBuffer),iCompressed(aCompressed),iFullSize(aFullSize),iIndex(NULL),iNrFiles(0),iIndexSize(0),iIsValid(LispFalse)
+: iFullBuffer(aBuffer),iCompressed(aCompressed),iFullSize(aFullSize),iIndex(NULL),iNrFiles(0),iIndexSize(0),iIsValid(false)
 {
     if (!iFullBuffer) return;
 
@@ -49,14 +50,14 @@ CompressedFiles::CompressedFiles(unsigned char * aBuffer, LispInt aFullSize, Lis
             if (offset<=iIndexSize) return;
             if (offset+compressedsize > iFullSize) return;
  
-            ptr+=PlatStrLen((LispChar *)ptr)+1;
+            ptr+=std::strlen((LispChar *)ptr)+1;
 
             if ((ptr-iFullBuffer)>8+iIndexSize) return;
 
             iIndex[i] = ptr;
         }
     }
-    iIsValid = LispTrue;
+    iIsValid = true;
 }
 
 CompressedFiles::~CompressedFiles()
@@ -76,7 +77,7 @@ LispInt CompressedFiles::GetInt(unsigned char*&indptr)
     return ((((((c3<<8)+c2)<<8)+c1)<<8)+c0);
 }
 
-LispInt CompressedFiles::FindFile(LispChar * aName)
+LispInt CompressedFiles::FindFile(const LispChar * aName)
 {
     LISPASSERT(IsValid());
     LispInt low=0, high=iNrFiles;
@@ -90,7 +91,7 @@ LispInt CompressedFiles::FindFile(LispChar * aName)
         }
         mid = (low+high)>>1;
 
-        LispInt cmp = StrCompare(aName, Name(mid));
+        LispInt cmp = std::strcmp(aName, Name(mid));
         if (cmp < 0)
         {
             high = mid;
@@ -157,7 +158,7 @@ LispChar * CompressedFiles::Contents(LispInt aIndex)
         if (compressedsize == origsize)
         {
             r = LZO_E_OK;
-            PlatMemCopy(expanded,&iFullBuffer[offset],origsize);
+            std::memcpy(expanded,&iFullBuffer[offset],origsize);
         }
     }
     expanded[origsize] = '\0';

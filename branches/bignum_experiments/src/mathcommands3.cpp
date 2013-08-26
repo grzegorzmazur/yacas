@@ -53,7 +53,7 @@ void GetNumber(RefPtr<BigNumber>& x, LispEnvironment& aEnvironment, LispInt aSta
 //FIXME remove these
 void LispArithmetic2(LispEnvironment& aEnvironment, LispInt aStackTop,
                      LispObject* (*func)(LispObject* f1, LispObject* f2,LispEnvironment& aEnvironment,LispInt aPrecision),
-                    LispBoolean arbbase=LispFalse);
+                    bool arbbase=false);
 
 void LispArithmetic1(LispEnvironment& aEnvironment, LispInt aStackTop,
                      LispObject* (*func)(LispObject* f1, LispEnvironment& aEnvironment,LispInt aPrecision));
@@ -75,7 +75,7 @@ void LispArithmetic1(LispEnvironment& aEnvironment, LispInt aStackTop,
 //FIXME remove these
 void LispArithmetic2(LispEnvironment& aEnvironment, LispInt aStackTop,
                      LispObject* (*func)(LispObject* f1, LispObject* f2,LispEnvironment& aEnvironment,LispInt aPrecision),
-                    LispBoolean arbbase)
+                    bool arbbase)
 {
     if (!arbbase)
     {
@@ -613,7 +613,7 @@ void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispString * hashedname = aEnvironment.HashTable().LookUp(oper.c_str());
   InputStatus oldstatus = aEnvironment.iInputStatus;
   aEnvironment.iInputStatus.SetTo(hashedname->c_str());
-  LispLocalFile localFP(aEnvironment, oper.c_str(), LispTrue,
+  LispLocalFile localFP(aEnvironment, oper.c_str(), true,
                         aEnvironment.iInputDirectories);
   Check(localFP.iOpened != 0, KLispErrFileNotFound);
   FILEINPUT newInput(localFP,aEnvironment.iInputStatus);
@@ -685,7 +685,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispPtr out(ARGUMENT(1));
   CHK_ISSTRING_CORE(out,1);
 
-  LispChar * str = out->String()->c_str();
+  const LispChar* str = out->String()->c_str();
   str++;
   if (str[0] != '<')
   {
@@ -823,7 +823,6 @@ void LispBackQuote(LispEnvironment& aEnvironment, LispInt aStackTop)
     InternalEval(aEnvironment, RESULT, result);
 }
 
-// this function is declared in yacasapi.cpp
 void LispVersion(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     RESULT = (LispAtom::New(aEnvironment,"\"" VERSION "\""));

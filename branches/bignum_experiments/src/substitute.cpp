@@ -48,14 +48,14 @@ SubstBehaviour::SubstBehaviour(LispEnvironment& aEnvironment,
 {
 }
 
-LispBoolean SubstBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
+bool SubstBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
 {
     if (InternalEquals(iEnvironment, aElement, iToMatch))
     {
         aResult = (iToReplaceWith->Copy());
-        return LispTrue;
+        return true;
     }
-    return LispFalse;
+    return false;
 }
 
 LocalSymbolBehaviour::LocalSymbolBehaviour(LispEnvironment& aEnvironment,LispString ** aOriginalNames,
@@ -64,11 +64,11 @@ LocalSymbolBehaviour::LocalSymbolBehaviour(LispEnvironment& aEnvironment,LispStr
 {
 }
 
-LispBoolean LocalSymbolBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
+bool LocalSymbolBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
 {
     LispString * name = aElement->String();
     if (!name)
-        return LispFalse;
+        return false;
 
     LispInt i;
     for (i=0;i<iNrNames;i++)
@@ -77,30 +77,31 @@ LispBoolean LocalSymbolBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
         {
             aResult = (LispAtom::New(iEnvironment,iNewNames[i]->c_str()));
             DBG_( aResult->SetFileAndLine(aElement->iFileName,aElement->iLine); )
-            return LispTrue;
+            return true;
         }
     }
-    return LispFalse;
+    return false;
 }
 
 #define InternalEval iEnvironment.iEvaluator->Eval
 
-LispBoolean BackQuoteBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
+bool BackQuoteBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
 {
-    if (!aElement->SubList()) return LispFalse;
+    if (!aElement->SubList()) return false;
     LispObject* ptr = (*aElement->SubList());
-    if (!ptr) return LispFalse;
-    if (!ptr->String()) return LispFalse;
+    if (!ptr) return false;
+    if (!ptr->String()) return false;
 
-    if (StrEqual("`", ptr->String()->c_str()))
+    if (!std::strcmp("`", ptr->String()->c_str()))
     {
       aResult = (aElement);
-      return LispTrue;
+      return true;
     }
 
-    if (!StrEqual("@", ptr->String()->c_str())) return LispFalse;
+    if (std::strcmp("@", ptr->String()->c_str()))
+        return false;
     ptr = ptr->Nixed();
-    if (!ptr) return LispFalse;
+    if (!ptr) return false;
     if (ptr->String())
     {
         LispPtr cur(ptr);
@@ -110,7 +111,7 @@ LispBoolean BackQuoteBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
         InternalSubstitute(aResult, result,*this);
 */
         InternalEval(iEnvironment, aResult, cur);
-        return LispTrue;
+        return true;
     }
     else
     {
@@ -122,8 +123,8 @@ LispBoolean BackQuoteBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
         result->Nixed() = (args);
         LispPtr result2(LispSubList::New(result));
         InternalSubstitute(aResult, result2,*this);
-        return LispTrue;
+        return true;
     }
-    return LispFalse;
+    return false;
 }
 

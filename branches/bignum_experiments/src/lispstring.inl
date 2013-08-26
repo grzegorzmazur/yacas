@@ -1,28 +1,15 @@
 
 // LispString inline functions.
 
-inline void LispString::SetString(LispChar * aString, LispBoolean aStringOwnedExternally)
+inline LispString& LispString::operator=(const LispChar* aString)
 {
-  if (aStringOwnedExternally)
-  {
-    LispInt length = PlatStrLen(aString);  // my own strlen
-    SetExternalArray(aString, length+1);
-  }
-  else
-  {
-    SetString(aString);
-  }
-}
-
-inline LispString& LispString::operator=(LispChar * aString)
-{
-  SetString(aString,ArrayOwnedExternally());
+  SetString(aString);
   return *this;
 }
 
-inline LispString::LispString(LispString &aString, LispBoolean aStringOwnedExternally) : iReferenceCount()
+inline LispString::LispString(const LispString &aString) : iReferenceCount()
 {
-  SetString(aString.c_str(), aStringOwnedExternally);
+  SetString(aString.c_str());
 }
 
 inline LispString::LispString(const LispChar * aString) : iReferenceCount()
@@ -30,17 +17,13 @@ inline LispString::LispString(const LispChar * aString) : iReferenceCount()
   SetString(aString);
 }
 
-inline LispString::LispString(LispChar * aString, LispBoolean aStringOwnedExternally) : iReferenceCount()
-{
-  SetString(aString, aStringOwnedExternally);
-}
-
 inline LispString::LispString() : iReferenceCount()
 {
-  SetString(strdup(""), LispFalse);
+  const LispChar s[1] = { 0 };
+  SetString(s);
 }
 
-inline LispChar * LispString::c_str() const
+inline const LispChar * LispString::c_str() const
 {
     return elements();
 }

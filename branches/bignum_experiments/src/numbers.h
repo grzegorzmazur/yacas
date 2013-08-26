@@ -77,13 +77,13 @@ public: // Convert back to other types
   double Double() const;
 
 public://basic object manipulation
-  LispBoolean Equals(const BigNumber& aOther) const;
-  LispBoolean IsInt() const;
-  LispBoolean IsIntValue() const;
-  LispBoolean IsSmall() const;
+  bool Equals(const BigNumber& aOther) const;
+  bool IsInt() const;
+  bool IsIntValue() const;
+  bool IsSmall() const;
   void BecomeInt();
   void BecomeFloat(LispInt aPrecision=0);
-  LispBoolean LessThan(const BigNumber& aOther) const;
+  bool LessThan(const BigNumber& aOther) const;
 public://arithmetic
   /// Multiply two numbers at given precision and put result in *this
   void Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision);
@@ -139,15 +139,27 @@ public:
 private:
   LispInt iPrecision;
 
-public:
   /// Internal library wrapper starts here.
-    inline void SetIsInteger(LispBoolean aIsInteger) {iType = (aIsInteger ? KInt : KFloat);}
+    inline void SetIsInteger(bool aIsInteger) {iType = (aIsInteger ? KInt : KFloat);}
+private:
     enum ENumType
     {
       KInt = 0,
       KFloat
     };
     ENumType iType;
+
+    friend LispObject* GcdInteger(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment);
+    friend LispObject* SinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
+    friend LispObject* CosFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
+    friend LispObject* TanFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
+    friend LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
+    friend LispObject* ExpFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
+    friend LispObject* LnFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
+    friend LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
+    friend LispObject* PowerFloat(LispObject* int1, LispObject* int2,
+                           LispEnvironment& aEnvironment,LispInt aPrecision);
+
     ANumber* iNumber;
   /// Internal library wrapper ends here.
 };

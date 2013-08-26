@@ -504,7 +504,7 @@ UnFence("GenMatrix",3);
 // should be checked
 
 // this takes N funcs in N vars
-JacobianMatrix(f,v):=GenMatrix({{i,j},Deriv(v[j])f[i]},Length(f),Length(f));
+JacobianMatrix(f,v):=GenMatrix({{i,j},Deriv(v[j])f[i]},Length(f),Length(v));
 
 // this takes 1 func in N vars
 HessianMatrix(f,v):=GenMatrix({{i,j}, Deriv(v[i]) Deriv(v[j]) f},Length(v),Length(v));

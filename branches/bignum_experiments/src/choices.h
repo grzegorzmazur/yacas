@@ -15,14 +15,4 @@
  */
 //#define USE_ASSERT
 
-/** Turn on NO_EXCEPTIONS if you want to disable run-time checking
- *  while executing commands.
- */
-//#define NO_EXCEPTIONS
-
-/** Enable long reference counts. This makes EVERY object 2 bytes
- larger, so use only if needed.
- */
-//#define USE_LONG_REF_COUNTS
-
 #endif

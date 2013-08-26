@@ -21,13 +21,11 @@
   #include <stdio.h> // Safe, only included if HAVE_STDIO_H defined
 #endif
 
-#define BITS_TO_DIGITS(x,n) (bits_to_digits(x,n))
-
 static LispObject* FloatToString(ANumber& aInt, LispEnvironment& aEnvironment, LispInt aBase = 10);
 
 LispInt NumericSupportForMantissa()
 {
-  return LispTrue;
+  return true;
 }
 
 
@@ -326,8 +324,8 @@ LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnv
         //
         ANumber x(*int1->Number(aPrecision)->iNumber);
         ANumber y(*int2->Number(aPrecision)->iNumber);
-        LispBoolean neg = y.iNegative;
-        y.iNegative=LispFalse;
+        bool neg = y.iNegative;
+        y.iNegative=false;
  
         // result <- 1
         ANumber result("1",aPrecision);
@@ -365,7 +363,7 @@ LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnv
         // result
         return FloatToString(result, aEnvironment);
     }
-    Check(LispFalse, KLispErrNotInteger);
+    Check(false, KLispErrNotInteger);
   return 0;
 }
 
@@ -402,9 +400,9 @@ LispObject* ShiftRight( LispObject* int1, LispObject* int2, LispEnvironment& aEn
   return NEW LispNumber(number);
 }
 
-static void DivideInteger( ANumber& aQuotient, ANumber& aRemainder,
-                        LispChar * int1, LispChar * int2,
-                        LispInt aPrecision)
+static void DivideInteger(ANumber& aQuotient, ANumber& aRemainder,
+                          const LispChar* int1, const LispChar* int2,
+                          LispInt aPrecision)
 {
     ANumber a1(int1,aPrecision);
     ANumber a2(int2,aPrecision);
@@ -496,8 +494,8 @@ BigNumber::BigNumber(const BigNumber& aOther)
 BigNumber::BigNumber(LispInt aPrecision)
  : iReferenceCount(),iPrecision(aPrecision),iType(KInt),iNumber(NULL)
 {
-  iNumber = NEW ANumber(BITS_TO_DIGITS(aPrecision,10));
-  SetIsInteger(LispTrue);
+  iNumber = NEW ANumber(bits_to_digits(aPrecision,10));
+  SetIsInteger(true);
 }
 
 BigNumber::~BigNumber()
@@ -543,7 +541,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aBasePrecision, LispInt aB
     for(;;)
     {
       LispInt i;
-      LispBoolean greaterOne = LispFalse;
+      bool greaterOne = false;
       if (num.iExp >= num.Size()) break;
       for (i=num.iExp;i<num.Size();i++)
       {
@@ -551,7 +549,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aBasePrecision, LispInt aB
         {
           if (!(i==num.iExp && num[i]<10000 && num.iTensExp == 0))
           {
-            greaterOne=LispTrue;
+            greaterOne=true;
             break;
           }
         }
@@ -600,7 +598,7 @@ void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrec
   if (aPrecision<aX.GetPrecision()) aPrecision=aX.GetPrecision();
   if (aPrecision<aY.GetPrecision()) aPrecision=aY.GetPrecision();
 
-  iNumber->ChangePrecision(BITS_TO_DIGITS(aPrecision,10));
+  iNumber->ChangePrecision(bits_to_digits(aPrecision,10));
 
 
 //  if (iNumber == aX.iNumber || iNumber == aY.iNumber)
@@ -715,7 +713,7 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
 
 /*
   iPrecision = DividePrecision(aX, aY, aPrecision);
-  LispInt digitPrecision = BITS_TO_DIGITS(iPrecision,10);
+  LispInt digitPrecision = bits_to_digits(iPrecision,10);
   iNumber->iPrecision = digitPrecision;
 */
 
@@ -723,7 +721,7 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
   if (aPrecision<aX.GetPrecision()) aPrecision=aX.GetPrecision();
   if (aPrecision<aY.GetPrecision()) aPrecision=aY.GetPrecision();
 
-  LispInt digitPrecision = BITS_TO_DIGITS(aPrecision,10);
+  LispInt digitPrecision = bits_to_digits(aPrecision,10);
   iPrecision = aPrecision;
   iNumber->iPrecision = digitPrecision;
 /* */
@@ -739,12 +737,12 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
   {
     Check(a1.iExp == 0, KLispErrNotInteger);
     Check(a2.iExp == 0, KLispErrNotInteger);
-    SetIsInteger(LispTrue);
+    SetIsInteger(true);
     ::IntegerDivide(*iNumber, remainder, a1, a2);
   }
   else
   {
-    SetIsInteger(LispFalse);
+    SetIsInteger(false);
     ::Divide(*iNumber,remainder,a1,a2);
   }
 }
@@ -934,7 +932,7 @@ void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
 //      a3.CopyFrom(*iNumber);
       ::Add(*iNumber, a3, a2);
     }
-    SetIsInteger(LispTrue);
+    SetIsInteger(true);
 }
 
 void BigNumber::Floor(const BigNumber& aX)
@@ -971,12 +969,12 @@ void BigNumber::Floor(const BigNumber& aX)
     }
     iNumber->ChangePrecision(iNumber->iPrecision);
     LispInt i=0;
-    LispInt fraciszero=LispTrue;
+    LispInt fraciszero=true;
     while (i<iNumber->iExp && fraciszero)
     {
         PlatWord digit = (*iNumber)[i];
         if (digit != 0)
-            fraciszero=LispFalse;
+            fraciszero=false;
         i++;
     }
     iNumber->Delete(0,iNumber->iExp);
@@ -989,7 +987,7 @@ void BigNumber::Floor(const BigNumber& aX)
         ANumber minone("-1",10);
         ::Add(*iNumber,orig,minone);
     }
-    SetIsInteger(LispTrue);
+    SetIsInteger(true);
 }
 
 
@@ -1001,7 +999,7 @@ void BigNumber::Precision(LispInt aPrecision)
   }
   else
   {
-    iNumber->ChangePrecision(BITS_TO_DIGITS(aPrecision,10));
+    iNumber->ChangePrecision(bits_to_digits(aPrecision,10));
   }
   SetIsInteger(iNumber->iExp == 0 && iNumber->iTensExp == 0);
   iPrecision = aPrecision;
@@ -1009,7 +1007,7 @@ void BigNumber::Precision(LispInt aPrecision)
 
 
 //basic object manipulation
-LispBoolean BigNumber::Equals(const BigNumber& aOther) const
+bool BigNumber::Equals(const BigNumber& aOther) const
 {
 
   if (iNumber->iExp == aOther.iNumber->iExp)
@@ -1018,15 +1016,15 @@ LispBoolean BigNumber::Equals(const BigNumber& aOther) const
     aOther.iNumber->DropTrailZeroes();
  
     if (IsZero(*iNumber))
-        iNumber->iNegative = LispFalse;
+        iNumber->iNegative = false;
     if (IsZero(*aOther.iNumber))
-        aOther.iNumber->iNegative = LispFalse;
+        aOther.iNumber->iNegative = false;
     if (iNumber->ExactlyEqual(*aOther.iNumber))
-      return LispTrue;
+      return true;
     if (IsInt())
-      return LispFalse;
+      return false;
     if (aOther.iNumber->iNegative != iNumber->iNegative)
-      return LispFalse;
+      return false;
     }
 
   {
@@ -1042,7 +1040,7 @@ LispBoolean BigNumber::Equals(const BigNumber& aOther) const
     BigNumber diff;
     BigNumber otherNeg;
     otherNeg.Negate(aOther);
-    diff.Add(*this,otherNeg,BITS_TO_DIGITS(precision,10));
+    diff.Add(*this,otherNeg,bits_to_digits(precision,10));
 
 #ifdef CORRECT_DIVISION
     // if the numbers are float, make sure they are normalized
@@ -1063,18 +1061,18 @@ LispBoolean BigNumber::Equals(const BigNumber& aOther) const
 }
 
 
-LispBoolean BigNumber::IsInt() const
+bool BigNumber::IsInt() const
 {
   return (iType == KInt);
 }
 
 
-LispBoolean BigNumber::IsIntValue() const
+bool BigNumber::IsIntValue() const
 {
 //FIXME I need to round first to get more reliable results.
-  if (IsInt()) return LispTrue;
+  if (IsInt()) return true;
   iNumber->DropTrailZeroes();
-  if (iNumber->iExp == 0 && iNumber->iTensExp == 0) return LispTrue;
+  if (iNumber->iExp == 0 && iNumber->iTensExp == 0) return true;
   BigNumber num(iPrecision);
   num.Floor(*this);
   return Equals(num);
@@ -1082,7 +1080,7 @@ LispBoolean BigNumber::IsIntValue() const
 }
 
 
-LispBoolean BigNumber::IsSmall() const
+bool BigNumber::IsSmall() const
 {
   if (IsInt())
   {
@@ -1121,7 +1119,7 @@ void BigNumber::BecomeInt()
   }
  
   iNumber->ChangePrecision(0);
-  SetIsInteger(LispTrue);
+  SetIsInteger(true);
 }
 
 /// Transform integer to float, setting a given bit precision.
@@ -1133,13 +1131,13 @@ void BigNumber::BecomeFloat(LispInt aPrecision)
     LispInt precision = aPrecision;
     if (iPrecision > aPrecision)
       precision = iPrecision;
-    iNumber->ChangePrecision(BITS_TO_DIGITS(precision,10));  // is this OK or ChangePrecision means floating-point precision?
-    SetIsInteger(LispFalse);
+    iNumber->ChangePrecision(bits_to_digits(precision,10));  // is this OK or ChangePrecision means floating-point precision?
+    SetIsInteger(false);
   }
 }
 
 
-LispBoolean BigNumber::LessThan(const BigNumber& aOther) const
+bool BigNumber::LessThan(const BigNumber& aOther) const
 {
   ANumber a1(*this->iNumber);
 //  a1.CopyFrom(*this->iNumber);
@@ -1163,7 +1161,7 @@ void BigNumber::SetTo(long aValue)
   sprintf(dummy,"%ld",aValue);
 #endif
   SetTo(dummy,iPrecision,10);
-  SetIsInteger(LispTrue);
+  SetIsInteger(true);
 #else
   //FIXME
   LISPASSERT(0);
@@ -1186,7 +1184,7 @@ void BigNumber::SetTo(double aValue)
   sprintf(dummy,format,aValue);
 #endif
   SetTo(dummy,iPrecision,BASE10);
-  SetIsInteger(LispFalse);
+  SetIsInteger(false);
 //  if (iNumber->iExp > 1)
 //    iNumber->RoundBits();
 #else
@@ -1195,7 +1193,7 @@ void BigNumber::SetTo(double aValue)
 #endif
 }
 
-LispInt CalculatePrecision(const LispChar * aString,LispInt aBasePrecision,LispInt aBase, LispBoolean& aIsFloat)
+LispInt CalculatePrecision(const LispChar * aString,LispInt aBasePrecision,LispInt aBase, bool& aIsFloat)
 {
   const LispChar * ptr = aString;
   while (*ptr)
@@ -1275,12 +1273,12 @@ FND_2:
         -- sig_digits;  // this is when we have "1.000001" where "." is not a digit, so need to decrement
     }
     // ok, so we need to represent MAX(aPrecision,sig_digits) digits in base aBase
-    aIsFloat = LispTrue;
+    aIsFloat = true;
     return (LispInt) digits_to_bits(MAX(aBasePrecision,sig_digits), aBase);
   }
   else
   {
-    aIsFloat = LispFalse;
+    aIsFloat = false;
     return 0;
   }
 }
@@ -1290,7 +1288,7 @@ FND_2:
 void BigNumber::SetTo(const LispChar * aString,LispInt aBasePrecision,LispInt aBase)
 {//FIXME -- what?
 //  iPrecision = digits_to_bits(aBasePrecision,BASE10);
-  LispBoolean isFloat = 0;
+  bool isFloat = 0;
   LispInt digits = aBasePrecision;
   iPrecision = CalculatePrecision(aString,aBasePrecision,aBase, isFloat);
 

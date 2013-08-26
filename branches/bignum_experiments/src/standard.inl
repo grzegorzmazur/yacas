@@ -22,7 +22,7 @@ inline void InternalFalse(LispEnvironment& aEnvironment, LispPtr& aResult)
 }
 
 inline void InternalBoolean(LispEnvironment& aEnvironment, LispPtr& aResult,
-                            LispBoolean aValue)
+                            bool aValue)
 {
     if (aValue)
     {
@@ -35,12 +35,12 @@ inline void InternalBoolean(LispEnvironment& aEnvironment, LispPtr& aResult,
 }
 
 
-inline LispBoolean IsTrue(LispEnvironment& aEnvironment, LispPtr& aExpression)
+inline bool IsTrue(LispEnvironment& aEnvironment, LispPtr& aExpression)
 {
     LISPASSERT(aExpression);
     return aExpression->String() == aEnvironment.iTrue->String();
 }
-inline LispBoolean IsFalse(LispEnvironment& aEnvironment, LispPtr& aExpression)
+inline bool IsFalse(LispEnvironment& aEnvironment, LispPtr& aExpression)
 {
     LISPASSERT(aExpression);
     return aExpression->String() == aEnvironment.iFalse->String();

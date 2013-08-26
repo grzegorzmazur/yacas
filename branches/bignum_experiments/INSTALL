@@ -1,6 +1,6 @@
 There are two ways to compile and install Yacas: 
 * downloading a gzipped tar file (also called a tar-ball)
-* downloading from CVS at sourceforge
+* downloading from SVN at sourceforge
 
 Please read the relevant section.
 
@@ -8,9 +8,6 @@ Please read the relevant section.
 
 A. INSTALLING FROM A TAR-BALL
 -----------------------------
-
-This distribution has been tested on a Linux box (RedHat 5.1) and on 
-Debian (stable) 2.2, 3.0.
 
 Compiling Yacas from source currently requires a Unix-like environment (CYGWIN
 may work), bash, find, sed, and grep. Building documentation requires perl for
@@ -29,24 +26,18 @@ To compile and install, do the following:
 
 
 
-B. INSTALLING FROM CVS
+B. INSTALLING FROM SVN
 ----------------------
 
-This has been tested on a Linux box (RedHat 5.1) and on Debian (stable) 2.2, 3.0.
-
-Compiling from CVS requires a GNU environment (CYGWIN may work), cvs, autoconf
-(tested with version 2.13), automake (tested with version 1.4), bash, find,
+Compiling from SVN requires a GNU environment (CYGWIN may work), svn, autoconf
+(tested with version 2.68), automake (tested with version 1.11.3), bash, find,
 sed, and grep. Building documentation requires perl for the HTML files, and
 additionally LaTeX, dvips, and makeindex to generate PostScript and PDF files.
 
 To compile and install, do the following:
 
-* login to the CVS server by giving the command
-     cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/yacas login
-  Press return when asked for a password.
-
 * checkout the source tree with the command
-     cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/yacas co yacas
+     svn checkout http://svn.code.sf.net/p/yacas/code/trunk yacas
 
 * change into the 'yacas' directory.
 
@@ -97,31 +88,13 @@ into the proteus/ directory and read the readme there.
 D. COMPILING UNDER WINDOWS
 --------------------------
 
-To compile under Windows using MS Developer Studion, there is a 
-"makewin.bat" batch file, located in the root directory of this distribution. 
-This batch file creates the full binary release that can also be downloaded, 
-and puts it in the subdirectory "winrel\ ".
-
 The Windows version is checked infrequently, so latest development
 releases might accidentally not compile. Please report if this is
-the case, or if you are willing to maintain the Windows (MS Dev)
-release, as it currently has no maintainer.
+the case, or if you are willing to maintain the Windows release, 
+as it currently has no maintainer.
 
 E. EXTRA INFORMATION
 --------------------
-
-* As a bonus, I rolled a .spec file for Yacas. You can make RPM's! To
-build source and binary RPM's, you can do:
-
-	rpm -ta yacas-1.0.12.tar.gz
-
--tb builds binary RPM's only. You can also copy the .spec file into
-/usr/src/redhat/SPECS, the tarball into /usr/src/redhat/SOURCES, go into
-the SPECS directory, and do:
-
-	rpm -ba yacas.spec
-
-to build RPMS/SRPMS, and -bb to build RPMS only.
 
 * Some targets you should know about:
 

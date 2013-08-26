@@ -19,7 +19,7 @@ LispHashTable::~LispHashTable()
 {
   LispInt bin,i,n;
 #ifdef YACAS_DEBUG
-  LispBoolean fault = LispFalse;
+  bool fault = false;
   for (bin = 0; bin < KSymTableSize; bin++)
   {
     LispStringSmartPtrArray & aBin = iHashTable[bin];
@@ -28,7 +28,7 @@ LispHashTable::~LispHashTable()
       if (aBin[i]->iReferenceCount != 1)
       {
         if (!fault) printf("ERROR: string objects with invalid reference counts during destruction of the hashtable!\n");
-        fault = LispTrue;
+        fault = true;
         printf("refcount = %d, string = \"%s\"\n", (int)(aBin[i]->iReferenceCount), aBin[i]->c_str());
       }
     }
@@ -135,7 +135,7 @@ LispInt LispHashPtr(const LispString * aString)
 DBG_( long theNrTokens=0; )
 
 // If string not yet in table, insert. Afterwards return the string.
-LispString * LispHashTable::LookUp(const LispChar * aString, LispBoolean aStringOwnedExternally)
+LispString * LispHashTable::LookUp(const LispChar* aString)
 {
     LispInt bin = LispHash(aString);
 
@@ -148,7 +148,7 @@ LispString * LispHashTable::LookUp(const LispChar * aString, LispBoolean aString
     // aBin[i] ... LispStringSmartPtr&
     // aBin[i].operator->() ... LispString*
     // aBin[i].operator->()->c_str() ... LispChar*
-        if (StrEqual(aBin[i]->c_str(), aString))
+        if (!std::strcmp(aBin[i]->c_str(), aString))
     {
             return aBin[i];
         }
@@ -156,8 +156,8 @@ LispString * LispHashTable::LookUp(const LispChar * aString, LispBoolean aString
 
     // Append a new string
   DBG_( theNrTokens++; )
-  // The const_cast is tacky, but nearly correct.  'ownedexternally' bites.
-    LispString * result = NEW LispString(const_cast<LispChar*>(aString),aStringOwnedExternally);
+
+    LispString * result = NEW LispString(aString);
     AppendString(bin,result);
     return result;
 }
@@ -179,7 +179,7 @@ LispString * LispHashTable::LookUp(LispString * aString)
   LispStringSmartPtrArray & aBin = iHashTable[bin];
   for (LispInt i = 0, n = aBin.Size(); i < n; i++)
     {
-        if (StrEqual(aBin[i]->c_str(), aString->c_str()))
+        if (!std::strcmp(aBin[i]->c_str(), aString->c_str()))
     {
             //TODO we shouldn't be doing refcounting here???
             if (!aString->iReferenceCount)
@@ -209,7 +209,7 @@ LispInt StrEqualCounted(const LispChar * ptr1, const LispChar * ptr2, LispInt le
     return 1;
 }
 
-LispString * LispHashTable::LookUpCounted(LispChar * aString, LispInt aLength)
+LispString* LispHashTable::LookUpCounted(const LispChar* aString, LispInt aLength)
 {
     LispInt bin = LispHashCounted(aString,aLength);
 

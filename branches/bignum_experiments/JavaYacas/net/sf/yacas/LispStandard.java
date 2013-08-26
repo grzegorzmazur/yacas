@@ -75,7 +75,7 @@ class LispStandard
     LispPtr previous = new LispPtr();
     LispPtr tail = new LispPtr();
     tail.Set(aOriginal.Get());
- 
+
     while (iter.Get() != null)
     {
       tail.Set(iter.Get().Next().Get());
@@ -156,9 +156,9 @@ class LispStandard
         LispError.Check(args2.Get() == null,LispError.KLispErrInvalidArg);
         aEnvironment.iEvaluator.Eval(aEnvironment, aResult, body);
       }
-      catch (Yacasexception e) { throw e; }
+      catch (YacasException e) { throw e; }
       finally { aEnvironment.PopLocalFrame(); }
- 
+
   }
 
   public static void InternalTrue(LispEnvironment aEnvironment, LispPtr aResult) throws Exception
@@ -335,7 +335,7 @@ class LispStandard
             {
                 return false;
             }
- 
+
             // Step to next
             iter1.GoNext();
             iter2.GoNext();
@@ -453,7 +453,7 @@ class LispStandard
       // Open file
       LispInput newInput = // new StdFileInput(hashedname, aEnvironment.iInputStatus);
           OpenInputFile(aEnvironment, aEnvironment.iInputDirectories, hashedname, aEnvironment.iInputStatus);
- 
+
       LispError.Check(newInput != null, LispError.KLispErrFileNotFound);
       DoInternalLoad(aEnvironment,newInput);
     }
@@ -466,7 +466,7 @@ class LispStandard
       aEnvironment.iInputStatus.RestoreFrom(oldstatus);
     }
   }
- 
+
   public static void InternalUse(LispEnvironment aEnvironment,String aFileName) throws Exception
   {
     LispDefFile def = aEnvironment.iDefFiles.File(aFileName);
@@ -476,6 +476,64 @@ class LispStandard
       InternalLoad(aEnvironment,aFileName);
     }
   }
+
+    public static void DoPatchString(String unpatchedString,
+                                     LispOutput aOutput,
+                                     LispEnvironment aEnvironment) throws Exception
+    {
+        String[] tags = unpatchedString.split("\\?\\>");
+        if (tags.length > 1) {
+            for (int x = 0; x < tags.length; x++) {
+                String[] tag = tags[x].split("\\<\\?");
+                if (tag.length > 1) {
+                    aOutput.Write(tag[0]);
+                    String scriptCode = tag[1].trim();
+                    StringBuffer scriptCodeBuffer =
+                        new StringBuffer(scriptCode);
+                    StringInput scriptStream =
+                        new StringInput(scriptCodeBuffer, aEnvironment.iInputStatus);
+                    LispOutput previous = aEnvironment.iCurrentOutput;
+                    try {
+                        aEnvironment.iCurrentOutput = aOutput;
+                        LispStandard.DoInternalLoad(aEnvironment, scriptStream);
+                    } catch(Exception e) {
+                        throw e;
+                    } finally {
+                        aEnvironment.iCurrentOutput = previous;
+                    }
+                }
+            }
+            aOutput.Write(tags[tags.length - 1]);
+        } else {
+            aOutput.Write(unpatchedString);
+        }
+    }
+
+    public static void InternalPatchLoad(LispEnvironment aEnvironment, String aFileName) throws Exception
+    {
+        String oper = InternalUnstringify(aFileName);
+
+        String hashedname = aEnvironment.HashTable().LookUp(oper);
+
+        InputStatus oldstatus = new InputStatus(aEnvironment.iInputStatus);
+        aEnvironment.iInputStatus.SetTo(hashedname);
+        try {
+            LispInput newInput =
+                OpenInputFile(aEnvironment, aEnvironment.iInputDirectories, hashedname, aEnvironment.iInputStatus);
+
+            LispError.Check(newInput != null, LispError.KLispErrFileNotFound);
+
+            String inputString = new String(newInput.StartPtr());
+            LispStandard.DoPatchString(inputString, aEnvironment.iCurrentOutput, aEnvironment);
+        }
+        catch (Exception e) {
+            throw e;
+        }
+        finally {
+            aEnvironment.iInputStatus.RestoreFrom(oldstatus);
+        }
+    }
+
 
   static String PrintExpression(LispPtr aExpression,
                       LispEnvironment aEnvironment,
@@ -595,7 +653,7 @@ class LispStandard
             LispMultiUserFunction multiUser = aEnvironment.MultiUserFunction(str);
             if (multiUser.iFileToOpen!=null)
             {
-              throw new Yacasexception("["+str+"]"+"] : def file already chosen: "+multiUser.iFileToOpen.iFileName);
+              throw new YacasException("["+str+"]"+"] : def file already chosen: "+multiUser.iFileToOpen.iFileName);
             }
             multiUser.iFileToOpen = def;
         }
@@ -713,7 +771,7 @@ class LispStandard
         return log2_table[n-1];
       else
       {
-        throw new Yacasexception("log2_table_lookup: error: invalid argument "+n);
+        throw new YacasException("log2_table_lookup: error: invalid argument "+n);
       }
   }
   // convert the number of digits in given base to the number of bits, and back.

@@ -64,7 +64,7 @@ DNumber::DNumber(const char* s):
 
     _exponent += _no_digits;
 
-    const std::size_t nb = 
+    const std::size_t nb =
         _no_digits % 2 ? (_no_digits + 1) / 2 : _no_digits / 2;
 
     _rep.resize(nb);
@@ -114,7 +114,7 @@ DNumber& DNumber::operator = (const DNumber& d)
 {
     _zero = d._zero;
     _minus = d._minus;
-    
+
     _no_digits = d._no_digits;
     _exponent = d._exponent;
     _rep = d._rep;
@@ -129,7 +129,7 @@ bool DNumber::operator == (const DNumber& rhs) const
 
     if ((_minus && !rhs._minus) || (!_minus && rhs._minus))
         return false;
-    
+
     if (_no_digits != rhs._no_digits)
         return false;
 
@@ -163,9 +163,9 @@ bool DNumber::operator < (const DNumber& rhs) const
     if (_exponent < rhs._exponent)
         return !_minus;
 
-    const bool t = 
+    const bool t =
         std::lexicographical_compare(
-            _rep.begin(), _rep.end(), 
+            _rep.begin(), _rep.end(),
             rhs._rep.begin(), rhs._rep.end());
 
     if (_minus)
@@ -190,7 +190,7 @@ bool DNumber::is_even() const
         return true;
 
     Byte b = _rep[_rep.size() - 1];
-    if (_no_digits & 1) 
+    if (_no_digits & 1)
         b = b / 10;
 
     return !(b & 1);
@@ -232,14 +232,14 @@ std::string DNumber::to_string() const
         if (_exponent <= 0) {
             s += "0.";
             const Byte* p = &_rep[0];
-            
+
             const std::size_t nb =
                 _no_digits % 2 ? (_no_digits + 1) / 2 : _no_digits / 2;
-            
+
             for (std::size_t b = 1; b < nb; ++b) {
                 s.push_back(*p / 10 + '0');
                 s.push_back(*p % 10 + '0');
-                
+
                 p += 1;
             }
 
@@ -249,7 +249,7 @@ std::string DNumber::to_string() const
                 s.push_back(*p / 10 + '0');
                 s.push_back(*p % 10 + '0');
             }
-            
+
             p += 1;
 
             if (_exponent < 0) {
@@ -258,15 +258,15 @@ std::string DNumber::to_string() const
 
                 s += "e" + os.str();
             }
-            
+
         } else {
             std::size_t d = 0;
 
-            const Byte* p = &_rep[0];            
+            const Byte* p = &_rep[0];
 
             const std::size_t nb =
                 _no_digits % 2 ? (_no_digits + 1) / 2 : _no_digits / 2;
-            
+
             for (std::size_t b = 0; b + 1 < nb; ++b) {
                 s.push_back(*p / 10 + '0');
                 if (++d == std::size_t(_exponent))
@@ -274,7 +274,7 @@ std::string DNumber::to_string() const
                 s.push_back(*p % 10 + '0');
                 if (++d == std::size_t(_exponent))
                     s += ".";
-                
+
                 p += 1;
             }
 
@@ -290,7 +290,7 @@ std::string DNumber::to_string() const
                 if (++d == std::size_t(_exponent))
                     s += ".";
             }
-            
+
             p += 1;
         }
     }
@@ -306,7 +306,7 @@ void DNumber::round(std::size_t n)
     DNumber d("5");
     d._exponent = _exponent - n - 1;
     d.normalize();
-    
+
 
     if (_minus)
         sub(d);
@@ -326,7 +326,7 @@ void DNumber::add(const DNumber& b)
         *this = b;
         return;
     }
-        
+
     if (b._zero) {
         *this = a;
         return;
@@ -391,7 +391,7 @@ void DNumber::sub(const DNumber& b)
             _minus = !_minus;
         return;
     }
-        
+
     if (b._zero) {
         *this = a;
         return;
@@ -430,7 +430,7 @@ void DNumber::sub(const DNumber& b)
         aa.scale(bb._exponent - aa._exponent);
     }
 
-    const std::size_t no_digits = 
+    const std::size_t no_digits =
         std::max(aa._no_digits, bb._no_digits);
 
     aa.expand(no_digits);
@@ -444,7 +444,7 @@ void DNumber::sub(const DNumber& b)
 
     SignedByte c = 0;
     for (std::size_t i = q->_rep.size(); i != 0; --i) {
-        const SignedByte t = 
+        const SignedByte t =
             static_cast<SignedByte>(p->_rep[i - 1]) - static_cast<SignedByte>(q->_rep[i - 1]) - c;
         if (t >= 0) {
             p->_rep[i - 1] = t;
@@ -550,14 +550,14 @@ void DNumber::div(const DNumber& b, std::size_t no_places)
         return;
     }
 
-    const unsigned trial_d = 
-        bb._no_digits >= 3 
+    const unsigned trial_d =
+        bb._no_digits >= 3
         ? 100 * static_cast<unsigned>(bb._rep[0]) + static_cast<unsigned>(bb._rep[1])
         : 100 * static_cast<unsigned>(bb._rep[0]);
-    
-    std::size_t no_iterations = 
-        _exponent > 0 
-        ? _exponent + no_places + 1 
+
+    std::size_t no_iterations =
+        _exponent > 0
+        ? _exponent + no_places + 1
         : no_places + 1;
 
     std::vector<Byte> data;
@@ -570,7 +570,7 @@ void DNumber::div(const DNumber& b, std::size_t no_places)
     }
 
     for (std::size_t m = 0; m < no_iterations; m += 2) {
-        
+
         unsigned long trial_n = 10000l * static_cast<unsigned long>(aa._rep[0]);
 
         if (aa._no_digits >= 3)
@@ -598,7 +598,7 @@ void DNumber::div(const DNumber& b, std::size_t no_places)
             q -= 1;
             qq.sub(bb);
         }
-        
+
         data.push_back(static_cast<Byte>(q));
 
         aa.sub(qq);
@@ -613,7 +613,7 @@ void DNumber::div(const DNumber& b, std::size_t no_places)
 
     _no_digits = no_iterations;
     std::swap(_rep, data);
-    
+
     normalize();
 }
 
@@ -627,7 +627,7 @@ void DNumber::dump(std::ostream& os)
 
     const std::ios_base::fmtflags flags = os.flags();
     const std::streamsize width = os.width();
-    
+
 
     const std::size_t n = _rep.size();
     for (std::size_t i = 0; i < n; ++i) {
@@ -665,7 +665,7 @@ void DNumber::normalize()
         const Byte t = _rep.back() / 10;
         _rep.back() = 10 * t;
     }
-        
+
     // get rid of leading zeros
     std::size_t i = 0;
     while (i < (_no_digits / 2) && _rep[i] == 0)
@@ -707,7 +707,7 @@ void DNumber::normalize()
         i -= 1;
 
     _no_digits -= 2 * (n - i);
-    
+
     n = i;
 
     _rep.resize(n);
@@ -723,7 +723,7 @@ void DNumber::scale(std::size_t n)
     if (n & 1) {
         if (!(_no_digits & 1))
             _rep.push_back(0);
-            
+
         for (std::size_t i = _rep.size() - 1; i > 0; --i)
             _rep[i] = 10 * (_rep[i - 1] % 10) + _rep[i] / 10;
         _rep[0] /= 10;

@@ -156,7 +156,7 @@ bool DNumber::is_positive() const
 inline
 void DNumber::neg()
 {
-    if (!_zero) 
+    if (!_zero)
         _minus = !_minus;
 }
 

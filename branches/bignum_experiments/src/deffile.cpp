@@ -56,7 +56,7 @@ static void DoLoadDefFile(LispEnvironment& aEnvironment, LispInput* aInput,
 
   LispString * eof = aEnvironment.HashTable().LookUp("EndOfFile");
   LispString * end = aEnvironment.HashTable().LookUp("}");
-  LispBoolean endoffile = LispFalse;
+  bool endoffile = false;
 
   LispTokenizer tok;
 
@@ -69,7 +69,7 @@ static void DoLoadDefFile(LispEnvironment& aEnvironment, LispInput* aInput,
     // Check for end of file
     if (token == eof || token == end)
     {
-      endoffile = LispTrue;
+      endoffile = true;
     }
     // Else evaluate
     else
@@ -117,7 +117,7 @@ void LoadDefFile(LispEnvironment& aEnvironment, LispString * aFileName)
   }
   else
   {
-    LispLocalFile localFP(aEnvironment, hashedname->c_str(),LispTrue,
+    LispLocalFile localFP(aEnvironment, hashedname->c_str(),true,
                           aEnvironment.iInputDirectories);
     Check(localFP.iOpened != 0, KLispErrFileNotFound);
     FILEINPUT newInput(localFP,aEnvironment.iInputStatus);

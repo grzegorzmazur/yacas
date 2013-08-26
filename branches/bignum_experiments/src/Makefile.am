@@ -1,9 +1,7 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 
-INCLUDES = -I$(srcdir)/plat/linux32
-
 bin_PROGRAMS =  yacas
-noinst_PROGRAMS = mkfastprimes gencorefunctions @COMPRESSOR_PRG@
+noinst_PROGRAMS = mkfastprimes gencorefunctions compressor
 EXTRA_PROGRAMS = compressor codereviewer
 
 noinst_HEADERS = anumber.h dnumber.h choices.h deffile.h grower.h \
@@ -18,8 +16,8 @@ noinst_HEADERS = anumber.h dnumber.h choices.h deffile.h grower.h \
         genericstructs.h yacasprivate.h yacasbase.h xmltokenizer.h \
         archiver.h GPL_stuff.h  
 
-yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp deffile.cpp infixparser.cpp lispatom.cpp \
-	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp \
+yacas_SOURCES = yacasmain.cpp stdcommandline.cpp deffile.cpp infixparser.cpp lispatom.cpp \
+	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp lisperror.cpp \
 	lispio.cpp lispobject.cpp lispparser.cpp \
 	lispuserfunc.cpp mathcommands.cpp mathenvironment.cpp \
 	mathuserfunc.cpp standard.cpp  stdfileio.cpp arggetter.cpp \
@@ -33,9 +31,17 @@ yacas_SOURCES = yacasmain.cpp unixcommandline.cpp stdcommandline.cpp deffile.cpp
 	platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
 	lispstring.cpp mathutil.cpp yacasbase.cpp debugmem.cpp fastprimes.c
 
+if LINUX
+yacas_SOURCES += unixcommandline.cpp
+endif
+
+if WIN32
+yacas_SOURCES += win32commandline.cpp
+endif
+
 yacas_DEPENDENCIES = fastprimes.c version.h GPL_stuff.h 
 
-
+mathcommands3.$(OBJEXT): version.h
 
 codereviewer_SOURCES = codereviewer.cpp 
 codereviewer_LDADD = 
@@ -60,23 +66,14 @@ EXTRA_DIST =  anumber.inl deffile.inl  \
 	lispstring.inl standard.inl \
 	depend.dep makefile.genericstatic \
 	version.h \
-	plat/linux32/lisptype.h \
-	plat/linux32/stubs.inl \
-	plat/linux32/platfileio.h \
-	plat/linux64/lisptype.h \
-	plat/linux64/stubs.inl \
-	plat/linux64/platfileio.h \
-	plat/win32/lisptype.h \
-	plat/win32/platfileio.h \
-	plat/win32/stubs.inl  \
-	plat/win32/win32commandline.cpp \
-	plat/win32/win32commandline.h \
+	lisptype.h \
+	platfileio.h \
 	debugmem.h \
 	compressedfiles.cpp \
-	README.LZO lzodefs.h lzoconf.h minilzo.c minilzo.h decompressor.cpp \
+	decompressor.cpp \
 	compressor.cpp \
 	compressedfiles.h \
-  fastprimes.c core_yacasmain.h 
+	fastprimes.c core_yacasmain.h 
 
 
 # list some extra generated files
@@ -84,8 +81,8 @@ CLEANFILES = fastprimes.c core_yacasmain.h
 
 $(srcdir)/platmath.cpp: fastprimes.c
 
-fastprimes.c: mkfastprimes
-	./mkfastprimes > fastprimes.c
+fastprimes.c: mkfastprimes$(EXEEXT)
+	./mkfastprimes$(EXEEXT) > fastprimes.c
 # We don't want $(srcdir)/mkfastprimes because this executable
 # is not generated inside the $(srcdir). 
 
@@ -102,8 +99,6 @@ clean-compile:
 install-data-local: yacas.h
 	$(mkinstalldirs) $(DESTDIR)$(yacas_include)/
 	$(mkinstalldirs) $(DESTDIR)$(yacas_lib)/
-	$(mkinstalldirs) $(DESTDIR)$(yacas_include)/plat/
-	$(mkinstalldirs) $(DESTDIR)$(yacas_include)/plat/linux32/
 	-for file in $(srcdir)/*.h; do \
 	basefile=`basename $$file`; \
 	$(INSTALL_DATA) $$file $(DESTDIR)$(yacas_include)/$$basefile; \
@@ -112,31 +107,27 @@ install-data-local: yacas.h
 	basefile=`basename $$file`; \
 	$(INSTALL_DATA) $$file $(DESTDIR)$(yacas_include)/$$basefile; \
 	done
-	-for file in $(srcdir)/plat/linux32/*.h; do \
-	basefile=`basename $$file`; \
-	$(INSTALL_DATA) $$file $(DESTDIR)$(yacas_include)/plat/linux32/$$basefile; \
-	done
-	-for file in $(srcdir)/plat/linux32/*.inl; do \
-	basefile=`basename $$file`; \
-	$(INSTALL_DATA) $$file $(DESTDIR)$(yacas_include)/plat/linux32/$$basefile; \
-	done
+
+uninstall-hook:
+	rm -rf $(DESTDIR)$(yacas_include)/*.h
+	rm -rf $(DESTDIR)$(yacas_include)/*.inl
 
 version.h: ../config.h
 	echo "#define VERSION \"$(VERSION)\"" > version.h 
 
 noinst_DATA = @SCRIPTS_DAT@
-compressor_SOURCES = compressor.cpp filescanner.cpp minilzo.c filescanner.h minilzo.h 
+compressor_SOURCES = compressor.cpp filescanner.cpp filescanner.h
 
-scripts.dat: compressor
-	./compressor - $(top_srcdir)/scripts/ scripts.dat 
+scripts.dat: compressor$(EXEEXT)
+	./compressor$(EXEEXT) - $(top_srcdir)/scripts/ scripts.dat 
 
 check: @CHECK_ARCHIVE@ check-codereviewer
 
 check-archive: scripts.dat 
-	../src/yacas -pc --archive scripts.dat $(top_srcdir)/tests/arithmetic.yts
+	../src/yacas$(EXEEXT) -pc --archive scripts.dat $(top_srcdir)/tests/arithmetic.yts
 
-check-codereviewer: codereviewer
-	./codereviewer c *.h *.inl *.cpp plat/*/*.h
+check-codereviewer: codereviewer$(EXEEXT)
+	./codereviewer$(EXEEXT) c *.h *.inl *.cpp
 
 ## We need a bit of a hack to install the 'scripts.dat' file.
 ## Ideally, we would like to declare it as lib_LIBRARY, but then automake
@@ -151,6 +142,10 @@ install-archive: scripts.dat
 	$(mkinstalldirs) $(DESTDIR)$(libdir)
 	$(INSTALL_PROGRAM) scripts.dat $(DESTDIR)$(libdir)/`echo scripts.dat|sed '$(transform)'`
 
+
+distclean-local:
+	-rm -f codereviewer$(EXEEXT)
+	-rm -f version.h
 
 # 
 # depend.dep contains a list of dependencies. gcc can generate this

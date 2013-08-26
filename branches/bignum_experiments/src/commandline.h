@@ -30,7 +30,8 @@ enum ESpecialChars
     eEnd,
     eEnter,
     eTab,
-    eEscape
+    eEscape,
+    eKill
 };
 
 /**
@@ -70,7 +71,7 @@ protected:
 class CCommandLine : public YacasBase
 {
 public:
-  CCommandLine() : iFullLineDirty(LispFalse),iHistoryUnchanged(0),iLine(),iSubLine(),iHistoryList() {};
+  CCommandLine() : iFullLineDirty(false),iHistoryUnchanged(0),iLine(),iSubLine(),iHistoryList() {};
   virtual ~CCommandLine();
   /// Call this function if the user needs to enter an expression.
   virtual void ReadLine(const LispChar * prompt);

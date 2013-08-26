@@ -254,8 +254,8 @@ public class Grapher
         clipHeight = r.y+r.height-ytop;
       }
     }
-    g.setClip(xleft, ytop, d.width, clipHeight); 
-    
+    g.setClip(xleft, ytop, d.width, clipHeight);
+
     // Erase the previous image
     g.setColor(Color.white);
     g.fillRect(xleft, ytop, d.width, d.height);
@@ -306,7 +306,7 @@ public class Grapher
         ytick++;
       }
     }
-    
+
     int graphClipHeight = graphHeight;
     if (r != null)
     {
@@ -315,10 +315,10 @@ public class Grapher
         graphClipHeight = r.y+r.height-graphy;
       }
     }
-    
-    g.setClip(graphx,graphy,graphWidth,graphClipHeight); 
+
+    g.setClip(graphx,graphy,graphWidth,graphClipHeight);
     RunCallList(g);
-    g.setClip(xleft, ytop, d.width, clipHeight); 
+    g.setClip(xleft, ytop, d.width, clipHeight);
     g.setColor(Color.black);
     if (g2d != null)
     {
@@ -332,11 +332,11 @@ public class Grapher
   String iCallList;
 
 
-  
+
   /*
    * Determine the ticks of the graph. The calling routine should first determine the minimum and maximum values, and
    * the number of steps (based on size of the axis to draw relative to font size).
-   * 
+   *
    * Steps will always be m*10^n, for some suitable n, with m either 1, 2 or 5.
    */
   class PlotRange

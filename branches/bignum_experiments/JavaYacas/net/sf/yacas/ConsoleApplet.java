@@ -29,7 +29,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
     out = new AppletOutput(this);
     ResetInput();
- 
+
     String hintsfilename = getDocumentBase().toString();
     int slash = hintsfilename.lastIndexOf('/');
     if (slash >= 0)
@@ -291,6 +291,10 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
     gotDatahubInit = false;
     TryInitThroughDatahub();
+
+    yacas.Evaluate("Plot2D'outputs();");
+
+    yacas.Evaluate("Plot2D'outputs() := {{\"default\", \"java\"},{\"data\", \"Plot2D'data\"},{\"gnuplot\", \"Plot2D'gnuplot\"},{\"java\", \"Plot2D'java\"},};");
 
     i=1;
     while (true)
@@ -754,22 +758,38 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       {
       }
       return true;
+    } else if (inputLine.trim().startsWith("?")) {
+        String key = inputLine.trim().substring(1);
+
+        String prefix = "http://yacas.sourceforge.net/";
+
+        try {
+            URI uri = new URI(prefix + "ref.html?" + key);
+
+            if (key.equals("license") || key.equals("licence"))
+                uri = new URI(prefix + "refprogchapter9.html");
+            else if (key.equals("warranty"))
+                uri = new URI(prefix + "refprogchapter9.html#c9s2");
+            else if (key.equals("?"))
+                uri = new URI(prefix + "refmanual.html");
+
+            getAppletContext().showDocument(uri.toURL(), "YacasHelp");
+
+        } catch (URISyntaxException e) {
+            // it's a cold night in Hell
+            return false;
+        } catch (MalformedURLException e) {
+            // it's a cold night in Hell
+            return false;
+        }
+
+        return true;
     }
-    else if (inputLine.equals("?license") || inputLine.equals("?licence") || inputLine.equals("?warranty"))
-    {
-      try
-      {
-        getAppletContext().showDocument( new URL("gpl.html"),"license");
-      }
-      catch (Exception e)
-      {
-      }
-      return true;
-    }
+
     return false;
   }
 
-  void PerformRequest(String outputPrompt,String inputLine, boolean doRepaint)
+  void PerformRequest(String outputPrompt, String inputLine, boolean doRepaint)
   {
     boolean succeed = false;
     if (DirectCommand(inputLine))
@@ -915,7 +935,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     {
       return size.height;
     }
-    Dimension size = new Dimension(320,240);   
+    Dimension size = new Dimension(320,240);
     int iIndent;
     private String iPrompt;
     private Font   iPromptFont;
@@ -1050,7 +1070,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   {
     AddLineStatic(indent, "",text,  font, Color.black);
   }
- 
+
   Color iPromptColor = new Color(128,128,128);
   Font iPromptFont = new Font("Verdana", Font.PLAIN, 12);
   void AddLineStatic(int indent, String prompt, String text,  Font aFont, Color aColor)
@@ -1082,7 +1102,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   public void paint(Graphics g)
   {
     CreateOffscreenImage();
- 
+
     // Render image
     paintToBitmap(offGra);
     // put the OffScreen image OnScreen
@@ -1102,7 +1122,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       hintWindow.draw(5,(int)(d.getHeight()-context.FontHeight()-nr_total_lines*context.FontHeight()),context);
     }
   }
- 
+
   boolean thumbMoused = false;
   int scrollWidth = 16;
   int thumbPos = 0;
@@ -1244,7 +1264,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
   int cursorPos = 0;
   final int inset = 5;
- 
+
   final static String inputPrompt = "In> ";
   final static String outputPrompt = "Out> ";
 
@@ -1366,15 +1386,15 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     HintWindow hw = new HintWindow(fontsize);
     return hw;
   }
- 
+
   void AddHintLine(HintWindow hints, String aText, String aDescription)
   {
       hints.AddLine(aText);
       if (aDescription.length() > 0)
         hints.AddDescription(aDescription);
   }
- 
- 
+
+
   HintWindow TryToHint(String text, int length)
   {
     HintWindow hints = null;

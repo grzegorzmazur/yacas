@@ -108,14 +108,14 @@ public:
 
     /// Return the result of the expression.
     /// This is stored in #iResult.
-    virtual LispChar * Result();
+    virtual const LispChar* Result();
 
     /// Return the error message produced by the last evaluation.
     /// The error is retrieved from #environment.
-    virtual LispChar * Error();
+    virtual const LispChar* Error();
 
     /// Whether an error occured during the last evaluation.
-    inline LispBoolean IsError();
+    inline bool IsError();
 
 private:
  
@@ -135,7 +135,7 @@ private:
     StringOutput iResultOutput;
 };
 
-inline LispBoolean CYacas::IsError()
+inline bool CYacas::IsError()
 {
     return (Error()[0] != '\0');
 }

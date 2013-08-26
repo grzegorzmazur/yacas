@@ -22,8 +22,8 @@ void BaseSubtract(ANumber& aResult, ANumber& a1, ANumber& a2);
 //void BaseSubtract(ANumber& aResult, ANumber& a2, LispInt offset);
 void BaseMultiplyFull(ANumber& aResult, ANumber& a1, ANumber& a2);
 void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2);
-LispBoolean BaseGreaterThan(ANumber& a1, ANumber& a2);
-LispBoolean BaseLessThan(ANumber& a1, ANumber& a2);
+bool BaseGreaterThan(ANumber& a1, ANumber& a2);
+bool BaseLessThan(ANumber& a1, ANumber& a2);
 void BaseSqrt(ANumber& aResult, ANumber& N);
 
 
@@ -84,21 +84,21 @@ ANumber::~ANumber()
 {
 }
 
-ANumber::ANumber(LispInt aPrecision) : ASuper(),iExp(0),iNegative(LispFalse),iPrecision(aPrecision),iTensExp(0)
+ANumber::ANumber(LispInt aPrecision) : ASuper(),iExp(0),iNegative(false),iPrecision(aPrecision),iTensExp(0)
 {
   LISPASSERT(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
   Append(0);
 }
 
 /* Allow use of external arrays */
-ANumber::ANumber(PlatWord *aArray, LispInt aSize, LispInt aPrecision): ASuper(),iExp(0),iNegative(LispFalse),iPrecision(aPrecision),iTensExp(0)
+ANumber::ANumber(PlatWord *aArray, LispInt aSize, LispInt aPrecision): ASuper(),iExp(0),iNegative(false),iPrecision(aPrecision),iTensExp(0)
 {
   LISPASSERT(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
   SetExternalArray(aArray, aSize);
 }
 
 /* ANumber: Constructor for an arbitrary precision number. */
-ANumber::ANumber(const LispChar * aString,LispInt aPrecision,LispInt aBase): ASuper(),iExp(0),iNegative(LispFalse),iPrecision(aPrecision),iTensExp(0)
+ANumber::ANumber(const LispChar * aString,LispInt aPrecision,LispInt aBase): ASuper(),iExp(0),iNegative(false),iPrecision(aPrecision),iTensExp(0)
 {
     SetPrecision(aPrecision);
     SetTo(aString,aBase);
@@ -122,7 +122,7 @@ void IntToAscii(LispString& aString,PlatDoubleWord aInt, LispInt aBase)
 {
 
 /*TODO handle negative integers also?
-    LispBoolean negative = false;
+    bool negative = false;
  
     // Sign will be handled separately
     if (negative)
@@ -178,7 +178,7 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
  
     LISPASSERT(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
     LISPASSERT(aBase<=36);
-    iNegative=LispFalse;
+    iNegative=false;
     iExp = 0;
     iTensExp = 0;
  
@@ -187,7 +187,7 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
     // Parse minus sign
     if (*endptr == '-')
     {
-        iNegative=LispTrue;
+        iNegative=true;
         endptr++;
     }
 
@@ -277,7 +277,7 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
                 LispInt nrc=fraction.Size();
                 copied.ResizeTo(nrc);
               //copied.ResizeTo(nrc);  // not needed -- ResizeTo does this
-                PlatMemCopy(&copied[0],  &fraction[0], nrc*sizeof(LispString::ElementType));
+                std::memcpy(&copied[0],  &fraction[0], nrc*sizeof(LispString::ElementType));
             }
             BaseMultiply(fraction, copied, base, aBase);
 
@@ -321,38 +321,25 @@ void ANumber::CopyFrom(const ANumber& aOther)
     iNegative  = aOther.iNegative;
     iPrecision = aOther.iPrecision;
     ResizeTo(aOther.Size());
-    //ResizeTo(aOther.Size());  // not needed -- ResizeTo does this
 
-    //TODO there HAS to be a faster way to copy...
-    LispInt nr = aOther.Size();
-    if (nr)
-    {
-//this is actually slower!      PlatMemCopy(&((*this)[0]),&( aOther[0]),nr*sizeof(ANumber::ElementType));
-
-      ANumber::ElementType * sptr = &( aOther[0]);
-      ANumber::ElementType * tptr = &((*this)[0]);
-      while (nr--)
-      {
-          *tptr++ = *sptr++;
-      }
-    }
-    else
-    {
-      ResizeTo(1);
-      //ResizeTo(1);
-      (*this)[0] = 0;
+    const LispInt nr = aOther.Size();
+    if (nr) {
+        std::memcpy(&((*this)[0]), &(aOther[0]), nr*sizeof(ANumber::ElementType));
+    } else {
+        ResizeTo(1);
+        (*this)[0] = 0;
     }
 }
 
 
 
-LispBoolean ANumber::ExactlyEqual(const ANumber& aOther)
+bool ANumber::ExactlyEqual(const ANumber& aOther)
 {
-  if (iExp       != aOther.iExp) return LispFalse;
-  if (iTensExp   != aOther.iTensExp) return LispFalse;
-  if (iNegative  != aOther.iNegative) return LispFalse;
-//  if (iPrecision != aOther.iPrecision) return LispFalse;
-  if (Size()     != aOther.Size()) return LispFalse;
+  if (iExp       != aOther.iExp) return false;
+  if (iTensExp   != aOther.iTensExp) return false;
+  if (iNegative  != aOther.iNegative) return false;
+//  if (iPrecision != aOther.iPrecision) return false;
+  if (Size()     != aOther.Size()) return false;
 
   //TODO there HAS to be a faster way to copy...
   LispInt nr = Size();
@@ -362,10 +349,10 @@ LispBoolean ANumber::ExactlyEqual(const ANumber& aOther)
     ANumber::ElementType * tptr = &((*this)[0]);
     while (nr--)
     {
-      if (*tptr++ != *sptr++) return LispFalse;
+      if (*tptr++ != *sptr++) return false;
     }
   }
-  return LispTrue;
+  return true;
 }
 
 
@@ -375,7 +362,7 @@ void Negate(ANumber& aNumber)
 {
     aNumber.iNegative=!aNumber.iNegative;
     if (IsZero(aNumber))
-        aNumber.iNegative = LispFalse;
+        aNumber.iNegative = false;
  
 }
 
@@ -417,11 +404,11 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
 
     // Adjust the sign
     if (IsPositive(a1) && IsPositive(a2))
-        aResult.iNegative = LispFalse;
+        aResult.iNegative = false;
     else if (IsNegative(a1) && IsNegative(a2))
-        aResult.iNegative = LispFalse;
+        aResult.iNegative = false;
     else
-        aResult.iNegative = LispTrue;
+        aResult.iNegative = true;
 
     // Adjust the exponent.
     aResult.iExp = a1.iExp+a2.iExp;
@@ -506,13 +493,13 @@ void Add(ANumber& aResult, ANumber& a1, ANumber& a2)
     if (IsPositive(a1) && IsPositive(a2))
     {
         BaseAddFull(aResult, a1, a2);
-        aResult.iNegative=LispFalse;
+        aResult.iNegative=false;
     }
     //Two negative numbers
     else if (IsNegative(a1) && IsNegative(a2))
     {
         BaseAddFull(aResult, a1, a2);
-        aResult.iNegative=LispTrue;
+        aResult.iNegative=true;
     }
     //Negative plus positive
     else if (IsNegative(a1) && IsPositive(a2))
@@ -521,12 +508,12 @@ void Add(ANumber& aResult, ANumber& a1, ANumber& a2)
         if (BaseLessThan(a1,a2))
         {
             BaseSubtract(aResult,a2,a1);
-            aResult.iNegative = LispFalse;
+            aResult.iNegative = false;
         }
         else if (BaseGreaterThan(a1,a2))
         {// else if (|a1| > |a2| Negate(BaseSubtract(a1,a2))
             BaseSubtract(aResult,a1,a2);
-            aResult.iNegative = LispTrue;
+            aResult.iNegative = true;
         }
         else
         {
@@ -542,12 +529,12 @@ void Add(ANumber& aResult, ANumber& a1, ANumber& a2)
         if (BaseGreaterThan(a1,a2))
         {
             BaseSubtract(aResult,a1,a2);
-            aResult.iNegative = LispFalse;
+            aResult.iNegative = false;
         }
         else if (BaseLessThan(a1,a2))
         {// else if (|a1| > |a2| Negate(BaseSubtract(a1,a2))
             BaseSubtract(aResult,a2,a1);
-            aResult.iNegative = LispTrue;
+            aResult.iNegative = true;
         }
         else
         {
@@ -579,12 +566,12 @@ void Subtract(ANumber& aResult, ANumber& a1, ANumber& a2)
     if (IsPositive(a1) && IsNegative(a2))
     {
         BaseAddFull(aResult, a1, a2);
-        aResult.iNegative=LispFalse;
+        aResult.iNegative=false;
     }
     else if (IsNegative(a1) && IsPositive(a2))
     {
         BaseAddFull(aResult, a1, a2);
-        aResult.iNegative=LispTrue;
+        aResult.iNegative=true;
     }
     else if (IsNegative(a1) && IsNegative(a2))
     {
@@ -592,12 +579,12 @@ void Subtract(ANumber& aResult, ANumber& a1, ANumber& a2)
         if (BaseLessThan(a1,a2))
         {
             BaseSubtract(aResult,a2,a1);
-            aResult.iNegative = LispFalse;
+            aResult.iNegative = false;
         }
         else if (BaseGreaterThan(a1,a2))
         {// else if (|a1| > |a2| Negate(BaseSubtract(a1,a2))
             BaseSubtract(aResult,a1,a2);
-            aResult.iNegative = LispTrue;
+            aResult.iNegative = true;
         }
         else
         {
@@ -613,12 +600,12 @@ void Subtract(ANumber& aResult, ANumber& a1, ANumber& a2)
         if (BaseGreaterThan(a1,a2))
         {
             BaseSubtract(aResult,a1,a2);
-            aResult.iNegative = LispFalse;
+            aResult.iNegative = false;
         }
         else if (BaseLessThan(a1,a2))
         {// else if (|a1| > |a2| Negate(BaseSubtract(a1,a2))
             BaseSubtract(aResult,a2,a1);
-            aResult.iNegative = LispTrue;
+            aResult.iNegative = true;
         }
         else
         {
@@ -632,19 +619,19 @@ void Subtract(ANumber& aResult, ANumber& a1, ANumber& a2)
 
 
 
-LispBoolean GreaterThan(ANumber& a1, ANumber& a2)
+bool GreaterThan(ANumber& a1, ANumber& a2)
 {
     BalanceFractions(a1, a2);
     if (IsNegative(a1) && IsPositive(a2))
-        return LispFalse;
+        return false;
     if (IsPositive(a1) && IsNegative(a2))
-        return LispTrue;
+        return true;
     if (IsPositive(a1) && IsPositive(a2))
         return BaseGreaterThan(a1,a2);
     return BaseLessThan(a1,a2);
 }
 
-LispBoolean LessThan(ANumber& a1, ANumber& a2)
+bool LessThan(ANumber& a1, ANumber& a2)
 {
 
 #ifdef CORRECT_DIVISION
@@ -655,16 +642,16 @@ LispBoolean LessThan(ANumber& a1, ANumber& a2)
 
     BalanceFractions(a1, a2);
     if (IsNegative(a1) && IsPositive(a2))
-        return LispTrue;
+        return true;
     if (IsPositive(a1) && IsNegative(a2))
-        return LispFalse;
+        return false;
     if (IsPositive(a1) && IsPositive(a2))
         return BaseLessThan(a1,a2);
     return BaseGreaterThan(a1,a2);
 }
 
 
-void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, LispBoolean aForceFloat)
+void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool aForceFloat)
 {
     LispInt nr = aNumber.Size();
     while (nr>1 && aNumber[nr-1] == 0) nr--;
@@ -860,7 +847,7 @@ TENSEXP:
         }
         IntToAscii(tens,tenex, 10);
         LispInt i,nr;
-        nr=PlatStrLen(&tens[0]);
+        nr=std::strlen(&tens[0]);
         for (i=0;i<nr;i++)
             aResult.Append(tens[i]);
     }
@@ -939,7 +926,7 @@ void BaseMultiplyFull(ANumber& aResult, ANumber& a1, ANumber& a2)
 }
 
 
-LispBoolean BaseGreaterThan(ANumber& a1, ANumber& a2)
+bool BaseGreaterThan(ANumber& a1, ANumber& a2)
 {
     LispInt nr1 = a1.Size();
     LispInt nr2 = a2.Size();
@@ -950,7 +937,7 @@ LispBoolean BaseGreaterThan(ANumber& a1, ANumber& a2)
         nr=nr2;
 
     // Comparison of shared words.
-    LispBoolean highSame;
+    bool highSame;
     {
         LispInt i = nr-1;
         while (i>0 && a1[i] == a2[i]) i--;
@@ -970,7 +957,7 @@ LispBoolean BaseGreaterThan(ANumber& a1, ANumber& a2)
         LispInt i;
         for (i=nr2;i<nr1;i++)
             if (a1[i] != 0)
-                return LispTrue;
+                return true;
         // Otherwise compare the shared highest word.
         return highSame;
     }
@@ -980,14 +967,14 @@ LispBoolean BaseGreaterThan(ANumber& a1, ANumber& a2)
         LispInt i;
         for (i=nr1;i<nr2;i++)
             if (a2[i] != 0)
-                return LispFalse;
+                return false;
         // Otherwise compare the shared highest word.
         return highSame;
     }
     LISPASSERT(0); //This should never happen.
-    return LispFalse;
+    return false;
 }
-LispBoolean BaseLessThan(ANumber& a1, ANumber& a2)
+bool BaseLessThan(ANumber& a1, ANumber& a2)
 {
     return BaseGreaterThan(a2,a1);
 }
@@ -1088,7 +1075,7 @@ void BaseGcd(ANumber& aResult, ANumber& a1, ANumber& a2)
     ANumber v(/*???"0",*/Precision(aResult));
     u.CopyFrom(a1);
     v.CopyFrom(a2);
-    u.iNegative = v.iNegative = LispFalse;
+    u.iNegative = v.iNegative = false;
 
      LispInt k=0;
 
@@ -1144,7 +1131,7 @@ void BaseGcd(ANumber& aResult, ANumber& a1, ANumber& a2)
         Subtract(t,u,v);
      }
     aResult.CopyFrom(u);
-    aResult.iNegative=LispFalse;
+    aResult.iNegative=false;
     BaseShiftLeft(aResult,k);
 }
 
@@ -1327,13 +1314,13 @@ void IntegerDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber
     if ( (IsPositive(a1) && IsPositive(a2)) ||
          (IsNegative(a1) && IsNegative(a2)) )
     {
-        aQuotient.iNegative = LispFalse;
-        aRemainder.iNegative = LispFalse;
+        aQuotient.iNegative = false;
+        aRemainder.iNegative = false;
     }
     else
     {
-        aQuotient.iNegative = LispTrue;
-        aRemainder.iNegative = LispTrue;
+        aQuotient.iNegative = true;
+        aRemainder.iNegative = true;
     }
 }
 
@@ -1520,7 +1507,7 @@ void Sqrt(ANumber& aResult, ANumber& N)
 /*** Significant : return whether this number is not zero, up to
  * the number of digits specified behind the dot (as per aPrecision).
  */
-LispBoolean Significant(ANumber& a)
+bool Significant(ANumber& a)
 {
 
 /*This is what I was working on */
@@ -1531,9 +1518,9 @@ LispBoolean Significant(ANumber& a)
     LispInt nrExt = (a.Size()-a.iExp)*((WordBits)/3);
     if ((-a.iTensExp) > a.iPrecision+2+nrExt)
     {
-      return LispFalse;
+      return false;
     }
-    return LispTrue;
+    return true;
 #else
 /* */
     // Calculate number of significant digits
@@ -1550,9 +1537,9 @@ LispBoolean Significant(ANumber& a)
     for (i=from;i<nr;i++)
     {
         if (a[i] != 0)
-            return LispTrue;
+            return true;
     }
-    return LispFalse;
+    return false;
 #endif // CORRECT_DIVISION
 }
 

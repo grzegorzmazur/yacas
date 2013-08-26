@@ -23,7 +23,7 @@ CFileScanner::~CFileScanner()
 #endif
 }
 
-CFileNode* CFileScanner::First(char* base,char* dir)
+CFileNode* CFileScanner::First(const char* base, const char* dir)
 {
     strcpy(fulldir,base);
     strcat(fulldir,dir);
@@ -66,9 +66,7 @@ REDO:
     iCurNode.Set(info.attrib & _A_SUBDIR, info.name);
     return &iCurNode;
 
-#endif
-
-
+#else
 #ifdef _GCC_BUILD_
     if (!dp) return NULL;
 REDO:
@@ -89,6 +87,7 @@ REDO:
     stat(dum,&statbuf);
     iCurNode.Set(S_ISDIR(statbuf.st_mode), entry->d_name);
     return &iCurNode;
+#endif
 #endif
     return NULL;
 }

@@ -19,8 +19,8 @@ OMDef( "Floor", "rounding1","floor"   );
 OMDef( "Ceil" , "rounding1","ceiling" );
 OMDef( "Round", "rounding1","round"   );
 
-OMDef( "Div"   , "yacas","div"    );
-OMDef( "Mod"   , "yacas","mod"    );
+OMDef( "Div"   , "integer1","quotient" );
+OMDef( "Mod"   , "integer1","remainder");
 OMDef( "Expand", "yacas","expand" );
 OMDef( "Object", "yacas","object" );
 OMDef( "Sign"  , "yacas","sign"   );

@@ -2,33 +2,32 @@ body
 {
   background-color:White;
   font-family:Verdana, Arial, Helvetica, sans-serif;	
-  font-size:12;
-  scrollbar-base-color:#AAAAEE;
+  font-size:12px;
 }
 
 h1 
 {
   font-family:Verdana, Arial, Helvetica, sans-serif;	
-  font-size:14;
+  font-size:14px;
 }
 
 h2
 {
   font-family:Verdana, Arial, Helvetica, sans-serif;	
-  font-size:14;
+  font-size:14px;
 }
 
 h3
 {
   font-family:Verdana, Arial, Helvetica, sans-serif;	
-  font-size:14;
+  font-size:14px;
 }
 
 table 
 {
   background-color:White;
   font-family:Verdana, Arial, Helvetica, sans-serif;	
-  font-size:12;
+  font-size:12px;
 }
 
 .codeEditor 
@@ -41,7 +40,7 @@ table
 {
   color:#0000ff;
   font-family:Verdana, Arial, Helvetica, sans-serif;	
-  font-size:12;
+  font-size:12px;
 }
 
 .librarylink
@@ -55,7 +54,7 @@ table
   color:#0000ff;
   cursor:pointer;
   font-family:Verdana, Arial, Helvetica, sans-serif;
-  font-size:12;
+  font-size:12px;
 }
 
 .linkcalc
@@ -63,7 +62,7 @@ table
   text-decoration:none;
   color:#0000ff;
   font-family:Verdana, Arial, Helvetica, sans-serif;
-  font-size:12;
+  font-size:12px;
 }
 
 a
@@ -104,6 +103,7 @@ a.articleTitleLink
 {
   color:#222266;
 }
+
 a.articleTitleLink:hover
 {
   color:#FFFFFF;

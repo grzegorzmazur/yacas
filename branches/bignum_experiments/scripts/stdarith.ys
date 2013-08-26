@@ -96,6 +96,10 @@ LocalSymbols(x)
 113 # (x_IsNegativeNumber) - _y <-- -((-x)+y);
 113 # (x_IsNegativeNumber)/_y - _z <-- -((-x)/y+z);
 
+120 # ((_x-y_IsNumber) + z_IsNumber)_Not(IsNumber(x)) <-- x+(z-y);
+120 # ((_x-y_IsNumber) - z_IsNumber)_Not(IsNumber(x)) <-- x-(y+z);
+130 # ((_x-y_IsNumber) + _z)_(Not IsNumber(x) And Not IsNumber(z)) <-- (x+z)-y;
+130 # ((_x+y_IsNumber) - _z)_(Not IsNumber(x) And Not IsNumber(z)) <-- (x-z)+y;
 
 /* TODO move to this precedence everywhere? */
 LocalSymbols(x,y,xarg,yarg)
@@ -188,6 +192,8 @@ LocalSymbols(x,y,xarg,yarg)
 100 # x_IsNumber * (y_IsNumber * _z) <-- (x*y)*z;
 100 # x_IsNumber * (_y * z_IsNumber) <-- (x*z)*y;
 
+100 # ((x_IsNumber * _y) * _z)_(Not IsNumber(y) And Not IsNumber(z)) <-- x*(y*z);
+
 100 # (_x * _y) * _y <-- x * y^2;
 100 # (_x * _y) * _x <-- y * x^2;
 100 # _y * (_x * _y) <-- x * y^2;
@@ -228,6 +234,21 @@ LocalSymbols(x,y,xarg,yarg)
 
 400 # (_x) * (_x) <-- x^2;
 
+// 605 # ((_x * y_IsAtom)*z_IsAtom)_(LessThan(String(z), String(y))) <-- (x * z) * y;
+// 605 # ((_x * (y_IsAtom)^_p)*z_IsAtom)_(LessThan(String(z), String(y))) <-- (x * z) * y^p;
+// 605 # ((_x * y_IsAtom)*(z_IsAtom)^_q)_(LessThan(String(z), String(y))) <-- (x * z^q) * y;
+// 605 # ((_x * (y_IsAtom)^_p)*(z_IsAtom)^_q)_(LessThan(String(z), String(y))) <-- (x * z^q) * y^p;
+
+// 610 # (x_IsAtom * y_IsAtom)_(Not IsNumber(x) And LessThan(String(y), String(x))) <-- (y * x);
+// 610 # ((x_IsAtom)^_p * y_IsAtom)_(Not IsNumber(x) And LessThan(String(y), String(x))) <-- (y * x^p);
+// 610 # (x_IsAtom * (y_IsAtom)^_q)_(Not IsNumber(x) And LessThan(String(y), String(x))) <-- (y^q * x);
+// 610 # ((x_IsAtom)^_p * (y_IsAtom)^_q)_(Not IsNumber(x) And LessThan(String(y), String(x))) <-- (y^q * x^p);
+
+// 620 # ((_x * y_IsFunction) * z_IsAtom)_(Not Equals(Type(y),"*") And Not Equals(Type(y),"^")) <-- (x * z) * y;
+// 620 # ((_x * (y_IsFunction)^_p) * z_IsAtom)_(Not Equals(Type(y),"*") And Not Equals(Type(y),"^")) <-- (x * z) * y^p;
+// 620 # (x_IsFunction * y_IsAtom)_(Not Equals(Type(x),"*") And Not Equals(Type(x),"^") And y != Infinity) <-- y * x;
+// 620 # ((x_IsFunction)^_p * y_IsAtom)_(Not Equals(Type(x),"*") And Not Equals(Type(x),"^") And y != Infinity) <-- y * x^p;
+
 /* Division */
 
 50 # 0 / 0 <-- Undefined;
@@ -250,6 +271,33 @@ LocalSymbols(x,y,xarg,yarg)
        Set(y,y);
        Set(gcd,MathGcd(x,y));
        MathDiv(x,gcd)/MathDiv(y,gcd);
+     ];
+
+57 # ((x_IsNonZeroInteger * _expr) / y_IsNonZeroInteger)_(MathGcd(x,y) > 1) <--
+     [
+       Local(gcd);
+       Set(x,x);
+       Set(y,y);
+       Set(gcd,MathGcd(x,y));
+       (MathDiv(x,gcd)*expr)/MathDiv(y,gcd);
+     ];
+
+57 # ((x_IsNonZeroInteger) / (y_IsNonZeroInteger * _expr))_(MathGcd(x,y) > 1) <--
+     [
+       Local(gcd);
+       Set(x,x);
+       Set(y,y);
+       Set(gcd,MathGcd(x,y));
+       MathDiv(x,gcd)/(MathDiv(y,gcd)*expr);
+     ];
+
+57 # ((x_IsNonZeroInteger * _p) / (y_IsNonZeroInteger * _q))_(MathGcd(x,y) > 1) <--
+     [
+       Local(gcd);
+       Set(x,x);
+       Set(y,y);
+       Set(gcd,MathGcd(x,y));
+       (MathDiv(x,gcd)*p)/(MathDiv(y,gcd)*q);
      ];
     
 

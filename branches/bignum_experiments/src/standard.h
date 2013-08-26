@@ -12,13 +12,13 @@
 // Prototypes
 class LispHashTable;
 
-LispBoolean InternalIsList(LispPtr& aPtr);
-LispBoolean InternalIsString(LispString * aOriginal);
+bool InternalIsList(LispPtr& aPtr);
+bool InternalIsString(LispString * aOriginal);
 void InternalUnstringify(LispString& aResult, LispString * aOriginal);
 void InternalStringify(LispString& aResult, LispString * aOriginal);
 void InternalIntToAscii(LispChar * aTrg,LispInt aInt);
 LispInt InternalAsciiToInt(LispString * aString);
-LispBoolean IsNumber(const LispChar * ptr,LispBoolean aAllowFloat);
+bool IsNumber(const LispChar * ptr,bool aAllowFloat);
 
 void InternalNth(LispPtr& aResult, LispPtr& aArg, LispInt n);
 void InternalTail(LispPtr& aResult, LispPtr& aArg);
@@ -29,7 +29,7 @@ void InternalReverseList(LispPtr& aResult, LispPtr& aOriginal);
 void InternalFlatCopy(LispPtr& aResult, LispPtr& aOriginal);
 LispInt InternalListLength(LispPtr& aOriginal);
 
-LispBoolean InternalEquals(LispEnvironment& aEnvironment,
+bool InternalEquals(LispEnvironment& aEnvironment,
                            LispPtr& aExpression1,
                            LispPtr& aExpression2);
 
@@ -39,9 +39,9 @@ inline LispPtr& Argument(LispPtr& cur, LispInt n);
 inline void InternalTrue(LispEnvironment& aEnvironment, LispPtr& aResult);
 inline void InternalFalse(LispEnvironment& aEnvironment, LispPtr& aResult);
 inline void InternalBoolean(LispEnvironment& aEnvironment, LispPtr& aResult,
-                            LispBoolean aValue);
-inline LispBoolean IsTrue(LispEnvironment& aEnvironment, LispPtr& aExpression);
-inline LispBoolean IsFalse(LispEnvironment& aEnvironment, LispPtr& aExpression);
+                            bool aValue);
+inline bool IsTrue(LispEnvironment& aEnvironment, LispPtr& aExpression);
+inline bool IsFalse(LispEnvironment& aEnvironment, LispPtr& aExpression);
 inline void InternalNot(LispPtr& aResult, LispEnvironment& aEnvironment, LispPtr& aExpression);
 
 void DoInternalLoad(LispEnvironment& aEnvironment,LispInput* aInput);
@@ -81,7 +81,7 @@ void PrintExpression(LispString& aResult, LispPtr& aExpression,
                      LispEnvironment& aEnvironment,
                      LispInt aMaxChars);
 
-LispString * SymbolName(LispEnvironment& aEnvironment,LispChar * aSymbol);
+LispString* SymbolName(LispEnvironment& aEnvironment, const LispChar* aSymbol);
 
 
 

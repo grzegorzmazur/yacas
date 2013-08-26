@@ -75,12 +75,12 @@ class LispError
     if (!hastobetrue)
     {
       String error = ErrorString(aError);//"Error number "+aError+" (//TODO FIXME still need to port over the string table)";
-      throw new Yacasexception(error);
+      throw new YacasException(error);
     }
   }
   static void RaiseError(String str) throws Exception
   {
-      throw new Yacasexception(str);
+      throw new YacasException(str);
   }
 
   public static void CheckNrArgs(int n, LispPtr aArguments, LispEnvironment aEnvironment) throws Exception
@@ -95,13 +95,13 @@ class LispError
   {
     if (aArguments.Get() == null)
     {
-      throw new Yacasexception("Error in compiled code.");
+      throw new YacasException("Error in compiled code.");
     }
     else
     {
 //TODO FIXME      ShowStack(aEnvironment);
       String error = ShowFunctionError(aArguments, aEnvironment) + "expected "+needed+" arguments, got "+passed;
-      throw new Yacasexception(error);
+      throw new YacasException(error);
 
 /*TODO FIXME
       LispChar str[20];
@@ -140,21 +140,21 @@ class LispError
         LispPtr arguments = YacasEvalCaller.ARGUMENT(aEnvironment,aStackTop,0);
         if (arguments.Get() == null)
         {
-          throw new Yacasexception("Error in compiled code\n");
+          throw new YacasException("Error in compiled code\n");
         }
         else
         {
           String error = "";
 //TODO FIXME          ShowStack(aEnvironment);
           error = error + ShowFunctionError(arguments, aEnvironment) + "generic error";
-          throw new Yacasexception(error);
+          throw new YacasException(error);
         }
       }
   }
   public static void LISPASSERT(boolean aPredicate) throws Exception
   {
     if (!aPredicate)
-      throw new Yacasexception("Assertion failed");
+      throw new YacasException("Assertion failed");
   }
   public static void CHK_ARG_CORE(LispEnvironment aEnvironment,int aStackTop,boolean aPredicate,int aArgNr) throws Exception
   {
@@ -175,7 +175,7 @@ class LispError
         LispPtr arguments = YacasEvalCaller.ARGUMENT(aEnvironment,aStackTop,0);
         if (arguments.Get() == null)
         {
-          throw new Yacasexception("Error in compiled code\n");
+          throw new YacasException("Error in compiled code\n");
         }
         else
         {
@@ -196,7 +196,7 @@ class LispError
           error = error + strout;
           error = error + "\n";
 
-          throw new Yacasexception(error);
+          throw new YacasException(error);
         }
     }
   }

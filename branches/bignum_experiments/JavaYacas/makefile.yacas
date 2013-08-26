@@ -27,7 +27,7 @@ net/sf/yacas/Article.class net/sf/yacas/DatahubApplet.class
 
 yacas.jar: $(CLASSES)
 	jar cvmf MANIFEST.MF yacas.jar net/sf/yacas/*.class 
-	cd ../scripts/ ; jar uvf ../JavaYacas/yacas.jar *
+	cd ../scripts/ ; jar uvf ../JavaYacas/yacas.jar *.ys *.ys.def *.rep/*.ys *.rep/*.ys.def
 
 .java.class:
 	$(JAVAC) $(JAVACFLAGS) $*.java 

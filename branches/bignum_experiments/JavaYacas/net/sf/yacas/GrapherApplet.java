@@ -16,7 +16,7 @@ public class GrapherApplet extends java.applet.Applet implements KeyListener
 
   String iRenderOperations;
 
-  public void init() 
+  public void init()
   {
     iRenderOperations = getParameter("CallList");
     if (iRenderOperations == null)
@@ -36,8 +36,8 @@ public class GrapherApplet extends java.applet.Applet implements KeyListener
     }
   }
 
-  public void	keyReleased(KeyEvent e) {}
-  public void	keyTyped(KeyEvent e) {}
+  public void   keyReleased(KeyEvent e) {}
+  public void   keyTyped(KeyEvent e) {}
   public void keyPressed(KeyEvent e)
   {
     double scf = 1.05;
@@ -72,12 +72,12 @@ public class GrapherApplet extends java.applet.Applet implements KeyListener
   }
 
 
-  public void start() 
+  public void start()
   {
     repaint();
   }
 
-  public void stop() 
+  public void stop()
   {
     offImage = null;
     offGraphics = null;
@@ -97,7 +97,7 @@ public class GrapherApplet extends java.applet.Applet implements KeyListener
       paintFrame(offGraphics);
     }
   }
-  public void update(Graphics g) 
+  public void update(Graphics g)
   {
     drawToOffscreen();
 
@@ -109,10 +109,10 @@ public class GrapherApplet extends java.applet.Applet implements KeyListener
     }
   }
 
-  public void paint(Graphics g) 
+  public void paint(Graphics g)
   {
     drawToOffscreen();
-    if (offImage != null) 
+    if (offImage != null)
     {
       synchronized(offImage)
       {
@@ -121,7 +121,7 @@ public class GrapherApplet extends java.applet.Applet implements KeyListener
     }
   }
 
-  synchronized public void paintFrame(Graphics g) 
+  synchronized public void paintFrame(Graphics g)
   {
     Dimension d = getSize();
     grapher.paint(g, 0, 0, d);

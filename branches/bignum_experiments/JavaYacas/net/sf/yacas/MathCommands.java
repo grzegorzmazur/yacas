@@ -69,6 +69,9 @@ class MathCommands
          new YacasEvaluator(new LispLoad(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "Load");
     aEnvironment.CoreCommands().SetAssociation(
+         new YacasEvaluator(new LispTmpFile(), 0, YacasEvaluator.Fixed | YacasEvaluator.Function),
+         "TmpFile");
+    aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispSetVar(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
          "Set");
     aEnvironment.CoreCommands().SetAssociation(
@@ -608,7 +611,7 @@ class MathCommands
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get() != null, 1);
     String orig = YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,orig != null, 1);
- 
+
     LispPtr precedence = new LispPtr();
     aEnvironment.iEvaluator.Eval(aEnvironment, precedence, YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 2));
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,precedence.Get().String() != null, 2);
@@ -662,7 +665,7 @@ class MathCommands
     }
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,varstring != null,1);
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,!LispStandard.IsNumber(varstring,true),1);
- 
+
     LispPtr result = new LispPtr();
     aEnvironment.iEvaluator.Eval(aEnvironment, result, YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 2));
     aEnvironment.SetVariable(varstring, result, aGlobalLazyVariable);
@@ -721,7 +724,7 @@ class MathCommands
     {
         LispStandard.InternalFlatCopy(copied,evaluated.Get().SubList());
     }
- 
+
     LispPtr index = new LispPtr();
     index.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 2).Get());
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,index.Get() != null, 2);
@@ -794,23 +797,23 @@ class MathCommands
   public static void InternalRuleBase(LispEnvironment aEnvironment, int aStackTop,  boolean aListed) throws Exception
   {
     //TESTARGS(3);
- 
+
     // Get operator
     LispPtr args = new LispPtr();
     String orig=null;
- 
+
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get() != null, 1);
     orig = YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,orig != null, 1);
     args.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 2).Get());
- 
+
     // The arguments
     LispError.CHK_ISLIST_CORE(aEnvironment,aStackTop,args,2);
 
     // Finally define the rule base
     aEnvironment.DeclareRuleBase(LispStandard.SymbolName(aEnvironment,orig),
                                  args.Get().SubList().Get().Next(),aListed);
- 
+
     // Return true
     LispStandard.InternalTrue(aEnvironment,YacasEvalCaller.RESULT(aEnvironment, aStackTop));
   }
@@ -827,7 +830,7 @@ class MathCommands
     LispPtr predicate = new LispPtr();
     LispPtr body = new LispPtr();
     String orig=null;
- 
+
     // Get operator
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get() != null, 1);
     orig = YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
@@ -836,7 +839,7 @@ class MathCommands
     pr.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 3).Get());
     predicate.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 4).Get());
     body.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 5).Get());
- 
+
     // The arity
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,ar.Get() != null, 2);
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,ar.Get().String() != null, 2);
@@ -846,7 +849,7 @@ class MathCommands
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,pr.Get() != null, 3);
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,pr.Get().String() != null, 3);
     precedence = Integer.parseInt(pr.Get().String(),10);
- 
+
     // Finally define the rule base
     aEnvironment.DefineRule(LispStandard.SymbolName(aEnvironment,orig),
                             arity,
@@ -867,7 +870,7 @@ class MathCommands
     LispPtr args = new LispPtr();
     LispPtr body = new LispPtr();
     String orig=null;
- 
+
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get() != null, 1);
     orig = YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,orig != null, 1);
@@ -879,7 +882,7 @@ class MathCommands
     // Finally define the rule base
     aEnvironment.DeclareMacroRuleBase(LispStandard.SymbolName(aEnvironment,orig),
                                  args.Get().SubList().Get().Next(),aListed);
- 
+
     // Return true
     LispStandard.InternalTrue(aEnvironment,YacasEvalCaller.RESULT(aEnvironment, aStackTop));
   }
@@ -897,7 +900,7 @@ class MathCommands
     LispPtr predicate = new LispPtr();
     LispPtr body = new LispPtr();
     String orig=null;
- 
+
     // Get operator
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get() != null, 1);
     orig = YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
@@ -906,7 +909,7 @@ class MathCommands
     pr.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 3).Get());
     predicate.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 4).Get());
     body.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 5).Get());
- 
+
     // The arity
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,ar.Get() != null, 2);
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,ar.Get().String() != null, 2);
@@ -916,7 +919,7 @@ class MathCommands
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,pr.Get() != null, 3);
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,pr.Get().String() != null, 3);
     precedence = Integer.parseInt(pr.Get().String(),10);
- 
+
     // Finally define the rule base
     aEnvironment.DefineRulePattern(LispStandard.SymbolName(aEnvironment,orig),
                             arity,
@@ -1222,6 +1225,19 @@ class MathCommands
     }
   }
 
+  class LispTmpFile extends YacasEvalCaller
+  {
+    public void Eval(LispEnvironment aEnvironment, int aStackTop) throws Exception
+    {
+      LispError.CHK_CORE(aEnvironment, aStackTop, aEnvironment.iSecure == false, LispError.KLispErrSecurityBreach);
+
+      File f = File.createTempFile("yacas", null);
+      f.deleteOnExit();
+
+      RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, aEnvironment.HashTable().LookUpStringify(f.getCanonicalPath())));
+    }
+  }
+
   class LispSetVar extends YacasEvalCaller
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
@@ -1449,7 +1465,7 @@ class MathCommands
     {
       aStringBuffer.append('\"');
       int arg=1;
- 
+
       LispIterator iter = new LispIterator(ARGUMENT(aEnvironment, aStackTop, 1).Get().SubList());
       iter.GoNext();
       while (iter.GetObject() != null)
@@ -1582,7 +1598,7 @@ class MathCommands
       try
       {
         LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
- 
+
         // Evaluate args one by one.
 
         LispIterator iter = new LispIterator(ARGUMENT(aEnvironment, aStackTop, 1).Get().SubList());
@@ -1607,7 +1623,7 @@ class MathCommands
     {
       LispPtr arg1 = ARGUMENT(aEnvironment, aStackTop, 1);
       LispPtr arg2 = ARGUMENT(aEnvironment, aStackTop, 2);
- 
+
       LispPtr predicate = new LispPtr();
       aEnvironment.iEvaluator.Eval(aEnvironment, predicate, arg1);
 
@@ -1831,7 +1847,7 @@ class MathCommands
       int arity = Integer.parseInt(ARGUMENT(aEnvironment, aStackTop, 2).Get().String(),10);
 
       aEnvironment.UnFenceRule(LispStandard.SymbolName(aEnvironment,orig), arity);
- 
+
       // Return true
       LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
     }
@@ -1849,7 +1865,7 @@ class MathCommands
       String orig = evaluated.Get().String();
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,orig != null, 1);
       String oper = LispStandard.SymbolName(aEnvironment,orig);
- 
+
       LispPtr arity = new LispPtr();
       arity.Set(ARGUMENT(aEnvironment, aStackTop, 2).Get());
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,arity.Get().String() != null, 2);
@@ -1905,7 +1921,7 @@ class MathCommands
               ptr.Get().Next().Set(nogos.Get());
               nogos.Set(ptr.Get());
           }
- 
+
           iter.GoNext();
       }
 
@@ -2040,7 +2056,7 @@ class MathCommands
                               aEnvironment.HashTable(),
                               aEnvironment.Precision());
       }
- 
+
       LispStandard.InternalBoolean(aEnvironment,YacasEvalCaller.RESULT(aEnvironment, aStackTop), cmp);
     }
   }
@@ -2068,7 +2084,7 @@ class MathCommands
       return !(n1.LessThan(n2) || n1.Equals(n2));
     }
   }
- 
+
 
   class LispLessThan extends YacasEvalCaller
   {
@@ -2307,7 +2323,7 @@ class MathCommands
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
- 
+
 
   class LispSetExactBits extends YacasEvalCaller
   {
@@ -2317,7 +2333,7 @@ class MathCommands
       BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
       BigNumber z = new BigNumber(aEnvironment.Precision());
       z.SetTo(x);
- 
+
     // do nothing for integers
     if (!(z.IsInt()))
       z.Precision((int)(LispStandard.bits_to_digits((long)(y.Double()), 10)));
@@ -2451,7 +2467,7 @@ class MathCommands
       }
       else
       {
-        throw new Yacasexception("BitsToDigits: error: arguments ("+x.Double()+", "+y.Double()+") must be small integers");
+        throw new YacasException("BitsToDigits: error: arguments ("+x.Double()+", "+y.Double()+") must be small integers");
       }
       BigNumber z = new BigNumber(aEnvironment.Precision());
       z.SetTo((long)result);
@@ -2474,7 +2490,7 @@ class MathCommands
       }
       else
       {
-        throw new Yacasexception("BitsToDigits: error: arguments ("+x.Double()+", "+y.Double()+") must be small integers");
+        throw new YacasException("BitsToDigits: error: arguments ("+x.Double()+", "+y.Double()+") must be small integers");
       }
       BigNumber z = new BigNumber(aEnvironment.Precision());
       z.SetTo((long)result);
@@ -2903,7 +2919,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispError.CHK_CORE(aEnvironment, aStackTop,aEnvironment.iSecure == false, LispError.KLispErrSecurityBreach);
- 
+
       LispPtr evaluated = new LispPtr();
       evaluated.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
 
@@ -2923,7 +2939,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispError.CHK_CORE(aEnvironment, aStackTop,aEnvironment.iSecure == false, LispError.KLispErrSecurityBreach);
- 
+
       LispPtr evaluated = new LispPtr();
       evaluated.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
 
@@ -2983,7 +2999,7 @@ class MathCommands
 
       LispPtr initarg = new LispPtr();
       initarg.Set(ARGUMENT(aEnvironment, aStackTop, 2).Get());
- 
+
       ArrayClass array = new ArrayClass(size,initarg.Get());
       RESULT(aEnvironment, aStackTop).Set(LispGenericClass.New(array));
     }
@@ -3062,7 +3078,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : CustomEval");////TODO fixme
-      throw new Yacasexception("Function not yet supported");
+      throw new YacasException("Function not yet supported");
     }
   }
 
@@ -3071,7 +3087,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : CustomEvalExpression");////TODO fixme
-      throw new Yacasexception("Function not yet supported");
+      throw new YacasException("Function not yet supported");
     }
   }
 
@@ -3080,7 +3096,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : CustomEvalResult");////TODO fixme
-      throw new Yacasexception("Function not yet supported");
+      throw new YacasException("Function not yet supported");
     }
   }
 
@@ -3089,7 +3105,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispCustomEvalLocals");////TODO fixme
-      throw new Yacasexception("Function not yet supported");
+      throw new YacasException("Function not yet supported");
     }
   }
 
@@ -3098,7 +3114,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispCustomEvalStop");////TODO fixme
-      throw new Yacasexception("Function not yet supported");
+      throw new YacasException("Function not yet supported");
     }
   }
 
@@ -3107,7 +3123,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispTraceRule");////TODO fixme
-      throw new Yacasexception("Function not yet supported");
+      throw new YacasException("Function not yet supported");
     }
   }
 
@@ -3116,7 +3132,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : TraceStack");////TODO fixme
-      throw new Yacasexception("Function not yet supported");
+      throw new YacasException("Function not yet supported");
     }
   }
 
@@ -3177,20 +3193,20 @@ class MathCommands
       evaluated.Set(ARGUMENT(aEnvironment, aStackTop, 3).Get());
       LispError.CHK_ISSTRING_CORE(aEnvironment,aStackTop,evaluated,3);
       String orig = evaluated.Get().String();
- 
+
       LispPtr index = new LispPtr();
       index.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,index.Get() != null, 1);
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,index.Get().String() != null, 1);
       int from = Integer.parseInt(index.Get().String(),10);
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,from>0,1);
- 
+
       index.Set(ARGUMENT(aEnvironment, aStackTop, 2).Get());
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,index.Get() != null, 2);
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,index.Get().String() != null, 2);
       int count = Integer.parseInt(index.Get().String(),10);
 
- 
+
       String str = "\""+orig.substring(from,from+count)+"\"";
       RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,str));
     }
@@ -3211,7 +3227,7 @@ class MathCommands
       int from = Integer.parseInt(index.Get().String(),10);
 
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,from>0,1);
- 
+
       LispPtr ev2 = new LispPtr();
       ev2.Set(ARGUMENT(aEnvironment, aStackTop, 2).Get());
       LispError.CHK_ISSTRING_CORE(aEnvironment,aStackTop,ev2,2);
@@ -3431,7 +3447,7 @@ class MathCommands
       // We only want people to pass in small integers
       if (n>65538)
         result = 0;
- 
+
       int i=2;
       int max = (int)(1+Math.sqrt(n));
 //System.out.println("n = "+n+" max = "+max);
@@ -3442,7 +3458,7 @@ class MathCommands
           result = 0;
         i++;
       }
- 
+
       BigNumber z = new BigNumber(aEnvironment.Precision());
       z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
@@ -3455,7 +3471,7 @@ class MathCommands
     {
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,ARGUMENT(aEnvironment, aStackTop, 1).Get().Number(0) != null,1);
       LispPtr arg = ARGUMENT(aEnvironment, aStackTop, 1);
- 
+
       //TODO fixme I am sure this can be optimized still
       int nr = (int)arg.Get().Number(0).Long();
       LispError.Check(nr>=0,LispError.KLispErrInvalidArg);
@@ -3581,8 +3597,19 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : PatchLoad");//TODO FIXME
-      throw new Yacasexception("Function not yet supported");
+        LispError.CHK_CORE(aEnvironment, aStackTop,aEnvironment.iSecure == false, LispError.KLispErrSecurityBreach);
+
+        LispPtr evaluated = new LispPtr();
+        evaluated.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
+
+        // Get file name
+        LispError.CHK_ARG_CORE(aEnvironment, aStackTop, evaluated.Get() != null, 1);
+        String orig = evaluated.Get().String();
+        LispError.CHK_ARG_CORE(aEnvironment, aStackTop, orig != null, 1);
+
+        LispStandard.InternalPatchLoad(aEnvironment, orig);
+
+        LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
     }
   }
 
@@ -3590,8 +3617,22 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.Write("Function not yet implemented : PatchString");//TODO FIXME
-      throw new Yacasexception("Function not yet supported");
+        String unpatchedString =
+            YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
+
+        LispError.CHK_ARG_CORE(aEnvironment, aStackTop, unpatchedString != null, 2);
+
+        InputStatus oldStatus = new InputStatus(aEnvironment.iInputStatus);
+        aEnvironment.iInputStatus.SetTo("STRING");
+
+        StringBuffer resultBuffer = new StringBuffer();
+        StringOutput resultStream = new StringOutput(resultBuffer);
+
+        LispStandard.DoPatchString(unpatchedString, resultStream, aEnvironment);
+
+        aEnvironment.iInputStatus.RestoreFrom(oldStatus);
+
+        RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, resultBuffer.toString()));
     }
   }
 
@@ -3646,7 +3687,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispCommonLispTokenizer");//TODO FIXME
-      throw new Yacasexception("Function not yet supported");
+      throw new YacasException("Function not yet supported");
     }
   }
 
@@ -3685,7 +3726,7 @@ class MathCommands
         strInd++;
       }
       String tag = new String();
- 
+
       tag = tag + "\"";
       while (LispTokenizer.IsAlpha(str.charAt(strInd)))
       {
@@ -3750,7 +3791,7 @@ class MathCommands
       strInd++;
       while (str.charAt(strInd) == ' ') strInd++;
     }
- 
+
     {
       LispObject ls = LispAtom.New(aEnvironment,"List");
       ls.Next().Set(info);
@@ -3775,7 +3816,7 @@ class MathCommands
       // key to find
       LispPtr key = new LispPtr();
       key.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
- 
+
       // assoc-list to find it in
       LispPtr list = new LispPtr();
       list.Set(ARGUMENT(aEnvironment, aStackTop, 2).Get());
@@ -3902,7 +3943,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispHistorySize");//TODO FIXME
-      throw new Yacasexception("Function not yet supported");
+      throw new YacasException("Function not yet supported");
     }
   }
 
@@ -3911,7 +3952,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispStackSize");//TODO FIXME
-      throw new Yacasexception("Function not yet supported");
+      throw new YacasException("Function not yet supported");
     }
   }
 
@@ -3920,7 +3961,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispIsPromptShown");//TODO FIXME
-      throw new Yacasexception("Function not yet supported");
+      throw new YacasException("Function not yet supported");
     }
   }
 
@@ -3929,7 +3970,7 @@ class MathCommands
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.Write("Function not yet implemented : LispReadCmdLineString");//TODO FIXME
-      throw new Yacasexception("Function not yet supported");
+      throw new YacasException("Function not yet supported");
     }
   }
 
@@ -3966,7 +4007,7 @@ class MathCommands
         // Open file
         LispInput newInput = // new StdFileInput(hashedname, aEnvironment.iInputStatus);
             LispStandard.OpenInputFile(aEnvironment, aEnvironment.iInputDirectories, hashedname, aEnvironment.iInputStatus);
- 
+
         LispError.Check(newInput != null, LispError.KLispErrFileNotFound);
         fileSize = newInput.StartPtr().length();
       }

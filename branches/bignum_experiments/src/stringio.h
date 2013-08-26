@@ -16,8 +16,8 @@ public:
     StringInput(LispString& aString,InputStatus& aStatus);
     virtual LispChar Next();
     virtual LispChar Peek();
-    virtual LispBoolean EndOfStream();
-    virtual LispChar * StartPtr();
+    virtual bool EndOfStream();
+    virtual const LispChar* StartPtr();
     virtual LispInt Position();
     virtual void SetPosition(LispInt aPosition);
 protected:

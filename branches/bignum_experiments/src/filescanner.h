@@ -2,22 +2,23 @@
 #ifndef __filescanner_h__
 #define __filescanner_h__
 
-#ifdef WIN32
-#include <io.h>
-#include <direct.h>
-#define DIRSEP "\\"
-#endif
-
 #include <sys/stat.h>
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+
+#ifdef WIN32
+#include <io.h>
+#include <direct.h>
+#define DIRSEP "\\"
+#else
 #ifdef HAVE_DIRENT_H
 #define _GCC_BUILD_
 #include <dirent.h>
 #define DIRSEP "/"
 #endif //HAVE_DIRENT_H
+#endif
 
 #include <string.h>
 #include "lispassert.h"
@@ -36,13 +37,13 @@ public:
     strcat(iFullName,aName);
   }
   inline int IsDirectory() {return iIsDir;};
-  inline char* FullName() {return iFullName;};
-  inline void SetRoot(char* aDir) {iDir=aDir;};
+  inline const char* FullName() {return iFullName;};
+  inline void SetRoot(const char* aDir) {iDir=aDir;};
 private:
   int iIsDir;
-  char *iName;
+  const char *iName;
   char iFullName[500];
-  char* iDir;
+  const char* iDir;
 };
 
 class CFileScanner
@@ -50,7 +51,7 @@ class CFileScanner
 public:
   CFileScanner();
   ~CFileScanner();
-  CFileNode* First(char* base,char* dir);
+  CFileNode* First(const char* base, const char* dir);
   CFileNode* Next();
 private:
   CFileScanner(const CFileScanner& aFileScanner)

@@ -11,7 +11,7 @@
 LispObject* LispAtom::New(LispEnvironment& aEnvironment, const LispChar * aString)
 {
   LispObject* self;
-  if (IsNumber(aString,LispTrue))  // check if aString is a number (int or float)
+  if (IsNumber(aString,true))  // check if aString is a number (int or float)
   {
     /// construct a number from a decimal string representation (also create a number object)
     self = NEW LispNumber(NEW LispString(aString), aEnvironment.Precision());
@@ -67,7 +67,7 @@ LispSubList::~LispSubList()
     {
         LispPtr next;
         LispIterator iter(iSubList);
-        LispBoolean busy = (iter.getObj()->iReferenceCount == 1);
+        bool busy = (iter.getObj()->iReferenceCount == 1);
         while (busy) // while there are things to delete...
         {
       // TODO: woof -- fix this ugliness!
@@ -82,11 +82,11 @@ LispSubList::~LispSubList()
                 (*iter) = (NULL);
             }
             else
-                busy=LispFalse;
+                busy=false;
             next = (nextToDelete);
             iter = next;
             if (!iter.getObj())
-                busy=LispFalse;
+                busy=false;
         }
     }
 }

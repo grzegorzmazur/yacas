@@ -410,7 +410,13 @@ void TracedEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 REENTER:
   errorStr.ResizeTo(1); errorStr[0] = '\0';
-  LispTrap(aEnvironment.iDebugger->Enter(aEnvironment, aExpression),errorOutput,aEnvironment);
+
+  try {
+      aEnvironment.iDebugger->Enter(aEnvironment, aExpression);
+  } catch(LispInt error_code) {
+      Handle(error_code, aEnvironment, errorOutput);
+  }
+
   if(aEnvironment.iDebugger->Stopped()) RaiseError("");
   if (errorStr[0])
   {
@@ -420,7 +426,11 @@ REENTER:
   }
 
   errorStr.ResizeTo(1); errorStr[0] = '\0';
-  LispTrap(BasicEvaluator::Eval(aEnvironment, aResult, aExpression),errorOutput,aEnvironment);
+  try {
+      BasicEvaluator::Eval(aEnvironment, aResult, aExpression);
+  } catch (LispInt error_code) {
+      Handle(error_code, aEnvironment, errorOutput);
+  }
 
   if (errorStr[0])
   {
@@ -467,7 +477,7 @@ void DefaultDebugger::Leave(LispEnvironment& aEnvironment, LispPtr& aResult,
   defaultEval.Eval(aEnvironment, result, iLeave);
 }
 
-LispBoolean DefaultDebugger::Stopped()
+bool DefaultDebugger::Stopped()
 {
   return iStopped;
 }

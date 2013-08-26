@@ -9,63 +9,47 @@
 
 void LispString::SetString(const LispChar * aString)
 {
-  LispInt length = PlatStrLen(aString);  // my own strlen
-  ResizeTo(length+1);
-  ElementType * aT = elements();
-  for (LispInt i = 0; i <= length; i++)
-  {
-    aT[i] = aString[i];
-  }
+    const std::size_t length = std::strlen(aString);
+    ResizeTo(length + 1);
+    std::memcpy(elements(), aString, (length + 1) * sizeof (ElementType));
 }
 
-void LispString::SetStringCounted(const LispChar * aString,LispInt aLength)
+void LispString::SetStringCounted(const LispChar* aString, LispInt aLength)
 {
-  ResizeTo(aLength+1);
-  ElementType * aT = elements();
-  for (LispInt i = 0; i < aLength; i++)
-  {
-    aT[i] = aString[i];
-  }
-  aT[aLength] = '\0';
+    ResizeTo(aLength + 1);
+    ElementType* const aT = elements();
+    std::memcpy(aT, aString, aLength * sizeof (ElementType));
+    aT[aLength] = '\0';
 }
 
-void LispString::SetStringStringified(const LispChar * aString)
+void LispString::SetStringStringified(const LispChar* aString)
 {
-  LispInt length = PlatStrLen(aString);  // my own strlen
-  ResizeTo(length+1 + 2);
-  ElementType * aT = elements();
-  aT[0] = '\"';
-  for (LispInt i = 0; i < length; i++)
-  {
-    aT[i+1] = aString[i];
-  }
-  aT[length+1] = '\"';
-  aT[length+2] = '\0';
+    const std::size_t length = std::strlen(aString);
+    ResizeTo(length + 1 + 2);
+
+    ElementType* const aT = elements();
+
+    aT[0] = '\"';
+    std::memcpy(aT + 1, aString, length * sizeof (ElementType));
+    aT[length+1] = '\"';
+    aT[length+2] = '\0';
 }
 
 void LispString::SetStringUnStringified(const LispChar * aString)
 {
-  LispInt length = PlatStrLen(aString);  // my own strlen
-  ResizeTo(length-1);
-  ElementType * aT = elements();
-  for (LispInt i = 1; i < length-1; i++)
-  {
-    aT[i-1] = aString[i];
-  }
-  aT[length-2] = '\0';
+    const std::size_t length = std::strlen(aString);
+    ResizeTo(length - 1);
+    ElementType* const aT = elements();
+    std::memcpy(aT, aString + 1, (length - 1) * sizeof (ElementType));
+    aT[length-2] = '\0';
 }
 
 LispInt LispString::operator==(const LispString& aString)
 {
-  if (Size() != aString.Size())
-    return 0;
-  const LispChar * ptr1 = elements();
-  const LispChar * ptr2 = aString.elements();
-  return StrEqual(ptr1,ptr2);
-}
+    if (Size() != aString.Size())
+        return 0;
 
-LispString::~LispString()
-{
+    return !std::strcmp(elements(), aString.elements());
 }
 
 LispStringSmartPtr& LispStringSmartPtr::operator=(LispString * aString)

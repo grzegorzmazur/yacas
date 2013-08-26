@@ -16,9 +16,9 @@ public:
   PatternClass(YacasPatternPredicateBase* aPatternMatcher);
   ~PatternClass();
 
-  LispBoolean Matches(LispEnvironment& aEnvironment,
+  bool Matches(LispEnvironment& aEnvironment,
                       LispPtr& aArguments);
-  LispBoolean Matches(LispEnvironment& aEnvironment,
+  bool Matches(LispEnvironment& aEnvironment,
                       LispPtr* aArguments);
 public: //From GenericClass
   virtual const LispChar * Send(LispArgList& aArgList);

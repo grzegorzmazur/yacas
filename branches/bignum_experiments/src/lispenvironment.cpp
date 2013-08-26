@@ -100,7 +100,7 @@ LispEnvironment::LispEnvironment(
     iComma        = LispAtom::New(*this,",");
     iList         = LispAtom::New(*this,"List");
     iProg         = LispAtom::New(*this,"Prog");
-    PushLocalFrame(LispTrue);
+    PushLocalFrame(true);
 }
 
 
@@ -145,7 +145,7 @@ LispPtr *LispEnvironment::FindLocal(LispString * aVariable)
 
 
 #ifdef YACAS_DEBUG
-void LispEnvironment::DebugModeVerifySettingGlobalVariables(LispPtr & aVariable, LispBoolean aGlobalLazyVariable)
+void LispEnvironment::DebugModeVerifySettingGlobalVariables(LispPtr & aVariable, bool aGlobalLazyVariable)
 {
   LispString *varString = aVariable->String();
   LispPtr *local = FindLocal(varString);
@@ -175,7 +175,7 @@ void LispEnvironment::DebugModeVerifySettingGlobalVariables(LispPtr & aVariable,
 }
 #endif // YACAS_DEBUG
 
-void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue, LispBoolean aGlobalLazyVariable)
+void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue, bool aGlobalLazyVariable)
 {
   LispPtr *local = FindLocal(aVariable);
   if (local)
@@ -190,7 +190,7 @@ void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue, LispB
     //TODO we just added the variable! We should not need to re-look it up! Optimize!
     LispGlobalVariable *l = iGlobals.LookUp(aVariable);
     LISPASSERT(l);
-    l->SetEvalBeforeReturn(LispTrue);
+    l->SetEvalBeforeReturn(true);
   }
 }
 
@@ -213,7 +213,7 @@ void LispEnvironment::GetVariable(LispString * aVariable,LispPtr& aResult)
       l = iGlobals.LookUp(aVariable);
 
       l->iValue = (aResult);
-      l->iEvalBeforeReturn = LispFalse;
+      l->iEvalBeforeReturn = false;
       return;
     }
     else
@@ -235,7 +235,7 @@ void LispEnvironment::UnsetVariable(LispString * aString)
     iGlobals.Release(aString);
 }
 
-void LispEnvironment::PushLocalFrame(LispBoolean aFenced)
+void LispEnvironment::PushLocalFrame(bool aFenced)
 {
     if (aFenced)
     {
@@ -505,23 +505,15 @@ void LispEnvironment::SetCommand(YacasEvalCaller aEvaluatorFunc, const LispChar 
 {
   DBG_({ extern long theNrDefinedBuiltIn; theNrDefinedBuiltIn++; })
   YacasEvaluator eval(aEvaluatorFunc,aNrArgs,aFlags);
-  /* LispTrue below, because the string is owned externally (meaning the LispString object does not have to free it).
-   * Essentially, the string is either already in the string table, or it is some static data in the executable. Either
-   * way, destruction later on is taken care of.
-   */
-  CoreCommands().SetAssociation(eval,HashTable().LookUp(aString,LispTrue));
+  CoreCommands().SetAssociation(eval,HashTable().LookUp(aString));
 }
 
 void LispEnvironment::RemoveCoreCommand(LispChar * aString)
 {
-  /* LispTrue below, because the string is owned externally (meaning the LispString object does not have to free it).
-   * Essentially, the string is either already in the string table, or it is some static data in the executable. Either
-   * way, destruction later on is taken care of.
-   */
-  CoreCommands().Release(HashTable().LookUp(aString,LispTrue));
+  CoreCommands().Release(HashTable().LookUp(aString));
 }
 
-void LispEnvironment::SetUserError(LispChar * aErrorString)
+void LispEnvironment::SetUserError(const LispChar* aErrorString)
 {
     theUserError=aErrorString;
 }
@@ -609,7 +601,7 @@ const LispChar * LispEnvironment::ErrorString(LispInt aError)
 
 
 
-LispString * LispEnvironment::FindCachedFile(LispChar * aFileName)
+LispString * LispEnvironment::FindCachedFile(const LispChar * aFileName)
 {
   if (iArchive)
   {
@@ -619,7 +611,7 @@ LispString * LispEnvironment::FindCachedFile(LispChar * aFileName)
       LispChar * contents = iArchive->iFiles.Contents(index);
       if (contents)
       {
-        LispString* result = NEW LispString(contents,LispFalse);
+        LispString* result = NEW LispString(contents);
         PlatFree(contents);
         return result;
       }

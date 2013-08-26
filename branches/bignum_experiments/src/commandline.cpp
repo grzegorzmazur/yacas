@@ -62,7 +62,7 @@ NEXTLINE:
 void CCommandLine::ReadLineSub(const LispChar * prompt)
 {
     LispInt cursor=0;
-    int promptlen = PlatStrLen(prompt);
+    int promptlen = std::strlen(prompt);
  
     iHistoryList.ResetHistoryPosition();
     iHistoryUnchanged = 0;
@@ -152,6 +152,14 @@ void CCommandLine::ReadLineSub(const LispChar * prompt)
               return;
             }
             iFullLineDirty = 1;
+            break;
+        case eKill:
+            if (cursor < iSubLine.Size() - 1)
+            {
+                iSubLine.Delete(cursor, iSubLine.Size() - cursor - 1);
+                iFullLineDirty = 1;
+                iHistoryUnchanged = 0;
+            }
             break;
         default:
             {
