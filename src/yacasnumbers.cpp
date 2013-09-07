@@ -896,7 +896,7 @@ LispInt BigNumber::Sign() const
 }
 
 
-void BigNumber::DumpDebugInfo()
+void BigNumber::DumpDebugInfo() const
 {
 #ifdef HAVE_STDIO_H
   if (!iNumber)
