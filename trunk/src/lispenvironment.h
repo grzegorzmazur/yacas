@@ -19,8 +19,6 @@
 #include "xmltokenizer.h"
 #include "errors.h"
 
-class CCompressedArchive; /* defined in archiver.h */
-
 class LispDefFiles;
 class InputDirectories : public CDeletingArrayGrower<LispString *, ArrOpsDeletingPtr<LispString> >
 {
@@ -209,7 +207,6 @@ public:
   DeletingLispCleanup iCleanup;
   LispInt iEvalDepth;
   LispInt iMaxEvalDepth;
-  CCompressedArchive *iArchive;
   LispEvaluatorBase* iEvaluator;
 
 public: // Error information when some error occurs.
@@ -421,7 +418,6 @@ private:
     iCleanup(),
     iEvalDepth(0),
     iMaxEvalDepth(0),
-    iArchive(NULL),
     iEvaluator(NULL),
     iInputStatus(),
     iSecure(0),
