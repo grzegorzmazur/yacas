@@ -77,7 +77,6 @@ else ()
 endif ()
 
 add_executable (yacas ${YACAS_SOURCES})
-target_link_libraries(yacas lzo2)
 
 add_custom_command(OUTPUT core_yacasmain.h
                    COMMAND grep 
