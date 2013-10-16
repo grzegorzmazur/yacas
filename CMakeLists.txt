@@ -65,7 +65,7 @@ add_custom_command(OUTPUT fastprimes.c
                    COMMENT "generating prime numbers"
                    VERBATIM)
 
-set (YACAS_COMMON_SOURCES src/yacasmain.cpp src/stdcommandline.cpp src/deffile.cpp src/infixparser.cpp src/lispatom.cpp src/lispcleanupstack.cpp src/lispenvironment.cpp src/lispeval.cpp src/lisperror.cpp src/lispio.cpp src/lispobject.cpp src/lispparser.cpp src/lispuserfunc.cpp src/mathcommands.cpp src/mathenvironment.cpp src/mathuserfunc.cpp src/standard.cpp src/ src/stdfileio.cpp src/arggetter.cpp src/stringio.cpp src/tokenizer.cpp src/yacasapi.cpp src/genericobject.cpp src/arrayclass.cpp src/lispevalhash.cpp src/patterns.cpp src/patternclass.cpp src/substitute.cpp src/mathcommands2.cpp src/mathcommands3.cpp src/errors.cpp src/patcher.cpp src/genericstructs.cpp src/xmltokenizer.cpp src/archiver.cpp src/compressedfiles.cpp src/commandline.cpp src/anumber.cpp src/yacasnumbers.cpp src/numbers.cpp src/platmath.cpp src/grower.cpp src/stdstubs.cpp src/obmalloc.cpp src/lisphash.cpp src/lispstring.cpp src/mathutil.cpp src/yacasbase.cpp src/debugmem.cpp fastprimes.c)
+set (YACAS_COMMON_SOURCES src/yacasmain.cpp src/stdcommandline.cpp src/deffile.cpp src/infixparser.cpp src/lispatom.cpp src/lispcleanupstack.cpp src/lispenvironment.cpp src/lispeval.cpp src/lisperror.cpp src/lispio.cpp src/lispobject.cpp src/lispparser.cpp src/lispuserfunc.cpp src/mathcommands.cpp src/mathenvironment.cpp src/mathuserfunc.cpp src/standard.cpp src/ src/stdfileio.cpp src/arggetter.cpp src/stringio.cpp src/tokenizer.cpp src/yacasapi.cpp src/genericobject.cpp src/arrayclass.cpp src/lispevalhash.cpp src/patterns.cpp src/patternclass.cpp src/substitute.cpp src/mathcommands2.cpp src/mathcommands3.cpp src/errors.cpp src/patcher.cpp src/genericstructs.cpp src/xmltokenizer.cpp src/commandline.cpp src/anumber.cpp src/yacasnumbers.cpp src/numbers.cpp src/platmath.cpp src/grower.cpp src/stdstubs.cpp src/obmalloc.cpp src/lisphash.cpp src/lispstring.cpp src/mathutil.cpp src/yacasbase.cpp src/debugmem.cpp fastprimes.c)
 
 set (YACAS_UNIX_SOURCES src/unixcommandline.cpp)
 set (YACAS_WIN32_SOURCES src/win32commandline.cpp)
@@ -91,20 +91,8 @@ add_executable (gencorefunctions src/gencorefunctions.cpp)
 
 add_executable (codereviewer src/codereviewer.cpp)
 
-add_executable (compressor src/compressor.cpp src/filescanner.cpp)
-target_link_libraries(compressor lzo2)
-
 add_executable (autocompleter docs/autocompleter.cpp)
 add_executable (riptestfromyart docs/riptestfromyart.cpp)
-
-add_custom_command(OUTPUT scripts.dat
-                   COMMAND compressor 
-                   ARGS - ${PROJECT_SOURCE_DIR}/scripts/ scripts.dat
-                   DEPENDS compressor
-                   COMMENT "generating scripts archive"
-                   VERBATIM)
-
-add_custom_target(archive ALL DEPENDS ${PROJECT_BINARY_DIR}/scripts.dat)
 
 add_executable (manripper manmake/manripper.cpp)
 add_executable (removeduplicates manmake/removeduplicates.cpp)
