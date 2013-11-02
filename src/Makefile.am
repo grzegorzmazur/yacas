@@ -12,7 +12,7 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	mathuserfunc.h numbers.h platmath.h standard.h patterns.h errors.h arggetter.h \
 	stdfileio.h stringio.h stubs.h tokenizer.h yacas.h refcount.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
-        patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
+        patternclass.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
         genericstructs.h yacasprivate.h yacasbase.h xmltokenizer.h \
         GPL_stuff.h  
 
