@@ -259,9 +259,8 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
       if (docbase.startsWith("http"))
       {
-        //jar:http://www.xs4all.nl/~apinkus/yacas.jar!/
         int pos = docbase.lastIndexOf("/");
-        String scriptBase = "jar:"+ docbase.substring(0,pos+1)+"yacas.jar!/";
+        String scriptBase = "jar:"+ docbase.substring(0,pos+1)+"yacas.jar!/scripts/";
         if (getParameter("debug") != null)
         {
           AddLineStatic(100, ""," '" + scriptBase + "'.", font, Color.red);
