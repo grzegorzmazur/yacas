@@ -1,19 +1,11 @@
-
 #include <stdio.h>
 #include <stdlib.h>
-#include "../config.h"
+#include "version.h"
 
 int main(int argc, char** argv)
 {
-  FILE*f=fopen("net/sf/yacas/CVersion.java","wb");
-  if (!f)
-  {
-    printf("Warning, could not create file CVersion.java\n");
-    exit(-1);
-  }
-  fprintf(f,"package net.sf.yacas;\n");
-  fprintf(f,"class CVersion { static String VERSION = \"%s\"; }\n",VERSION);
-  fclose(f);
+  printf("package net.sf.yacas;\n");
+  printf("class CVersion { static String VERSION = \"%s\"; }\n", VERSION);
   return 0;
 }
 
