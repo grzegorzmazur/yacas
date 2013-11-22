@@ -1,6 +1,12 @@
 
 // LispString inline functions.
 
+inline LispString& LispString::operator=(const LispString& aString)
+{
+  SetString(aString.c_str());
+  return *this;
+}
+
 inline LispString& LispString::operator=(const LispChar* aString)
 {
   SetString(aString);
