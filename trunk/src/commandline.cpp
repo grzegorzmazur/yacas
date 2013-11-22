@@ -2,23 +2,9 @@
 #include "yacasprivate.h"
 #include "commandline.h"
 
-//TODO maybe fix the assignment operator on String?
-static inline void CopyString(LispString& aTrg, LispString& aSrc)
-{
-  aTrg.ResizeTo(0);
-  LispInt i;
-  for (i=0;i<aSrc.Size();i++)
-  {
-    aTrg.Append(aSrc[i]);
-  }
-//  aTrg.Append('\0');
-}
-
-
 CCommandLine::~CCommandLine()
 {
 }
-
 
 void CCommandLine::GetHistory(LispInt aLine)
 {
@@ -231,8 +217,7 @@ void CConsoleHistory::AddLine(LispString& aString)
 
   if (historyChanged)
   {
-    LispString * ptr = NEW LispString();
-    CopyString(*ptr, aString);
+    LispString * ptr = NEW LispString(aString);
     iHistory.Append(ptr);
     return;
   }
@@ -270,7 +255,7 @@ LispInt CConsoleHistory::ArrowUp(LispString& aString,LispInt &aCursorPos)
   if (i >= 0 && i != history && histpre == prefix)
   {
     history = i;
-    CopyString(aString, (*iHistory[history]));
+    aString = *iHistory[history];
 //    if (aCursorPos == 0) aCursorPos = aString.Size()-1;
     return 1;
   }
@@ -294,13 +279,13 @@ LispInt CConsoleHistory::ArrowDown(LispString& aString,LispInt &aCursorPos)
   if (i < iHistory.Size() && histpre == prefix)
   {
     history = i;
-    CopyString(aString, (*iHistory[history]));
+    aString = *iHistory[history];
     return 1;
   }
   else
   {
     history = iHistory.Size();
-    CopyString(aString,prefix);
+    aString = prefix;
   }
   return 0;
 }
@@ -333,7 +318,7 @@ LispInt CConsoleHistory::Complete(LispString& aString,LispInt &aCursorPos)
                 goto CONTINUE;
             j++;
         }
-        CopyString(aString, (*iHistory[history]));
+        aString = *iHistory[history];
         aCursorPos = aString.Size()-1;
         break;
     CONTINUE:

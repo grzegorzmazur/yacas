@@ -36,6 +36,7 @@ public:
     inline LispString(const LispChar* aString);
 
     // Assignment
+    inline LispString& operator = (const LispString& aString);
     inline LispString& operator = (const LispChar* aString);
 
     // Assignments (with modifications).
