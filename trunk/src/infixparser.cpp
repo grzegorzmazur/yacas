@@ -8,21 +8,16 @@
 #include "errors.h"
 
 
-//#define RAISE_PARSE_ERROR { iError = true; RaiseError("Error parsing expression, near token %s",iLookAhead->String()); }
-
-
 void ParsedObject::Fail()
 {
    iError = true;
+
    if (iLookAhead && iLookAhead->c_str())
-   {
-//    if (IsSymbolic(iLookAhead->c_str()[0]))
-//       RaiseError("Error parsing expression, near token %s (maybe you forgot a space between two operators?)",iLookAhead->c_str());
       RaiseError("Error parsing expression, near token %s",iLookAhead->c_str());
-   }
+
    RaiseError("Error parsing expression");
 }
-#define RAISE_PARSE_ERROR Fail()
+
 
 InfixParser::InfixParser(LispTokenizer& aTokenizer, LispInput& aInput,
                          LispEnvironment& aEnvironment,
@@ -99,7 +94,8 @@ void ParsedObject::ReadToken()
 void ParsedObject::MatchToken(LispString * aToken)
 {
     if (aToken != iLookAhead)
-          RAISE_PARSE_ERROR; // iError=true;
+          Fail();
+
     ReadToken();
 }
 
@@ -115,22 +111,16 @@ void ParsedObject::Parse()
     ReadExpression(KMaxPrecedence);  // least precedence
 
     if (iLookAhead != iParser.iEnvironment.iEndStatement->String())
-    {
-      RAISE_PARSE_ERROR; // iError = true;
-    }
-    if (iError)
-    {
-        while ((*iLookAhead)[0] != '\0' && iLookAhead != iParser.iEnvironment.iEndStatement->String())
-        {
-            ReadToken();
-        }
-    }
+        Fail();
 
-    if (iError)
-    {
+    if (iError) {
+        while ((*iLookAhead)[0] != '\0' && iLookAhead != iParser.iEnvironment.iEndStatement->String())
+            ReadToken();
+
         iResult = (NULL);
     }
-    Check(!iError,KLispErrInvalidExpression);
+
+    Check(!iError, KLispErrInvalidExpression);
 }
 
 
@@ -145,15 +135,17 @@ void ParsedObject::Combine(LispInt aNrArgsToCombine)
 
     LispIterator iter(iResult);
     for (LispInt i=0; i<aNrArgsToCombine; i++, ++iter)
-    {
-    if (!iter.getObj()) { RAISE_PARSE_ERROR; return; } // iError = true;
-  }
-  if (!iter.getObj()) { RAISE_PARSE_ERROR; return; } // iError = true;
+        if (!iter.getObj())
+            Fail();
+
+    if (!iter.getObj())
+        Fail();
+
     subList->Nixed() = (*++iter);
     *iter = (NULL);
 
-  InternalReverseList((*subList->SubList())->Nixed(),  // TODO: woof
-                     (*subList->SubList())->Nixed());
+    InternalReverseList((*subList->SubList())->Nixed(),  // TODO: woof
+                        (*subList->SubList())->Nixed());
     iResult = subList;
 }
 
@@ -192,10 +184,8 @@ void ParsedObject::ReadExpression(LispInt depth)
             ReadExpression(KMaxPrecedence);
             // Match closing bracket
             if (iLookAhead != iParser.iEnvironment.iProgClose->String())
-            {
-                RaiseError("Expecting a ] close bracket for program block, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = true;
-                return;
-            }
+                RaiseError("Expecting a ] close bracket for program block, but got %s instead",iLookAhead->c_str());
+
             MatchToken(iLookAhead);
             // Build into Ntn(...)
             LispString * theOperator = iParser.iEnvironment.iNth->String();
@@ -306,8 +296,7 @@ void ParsedObject::ReadAtom()
             }
             else if (iLookAhead != iParser.iEnvironment.iListClose->String())
             {
-                RaiseError("Expecting a } close bracket for a list, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = true;
-                return;
+                RaiseError("Expecting a } close bracket for a list, but got %s instead",iLookAhead->c_str());
             }
         }
         MatchToken(iLookAhead);
@@ -338,8 +327,7 @@ void ParsedObject::ReadAtom()
             }
             else
             {
-                RaiseError("Expecting ; end of statement in program block, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = true;
-                return;
+                RaiseError("Expecting ; end of statement in program block, but got %s instead",iLookAhead->c_str());
             }
         }
         MatchToken(iLookAhead);
@@ -374,8 +362,7 @@ void ParsedObject::ReadAtom()
                 }
                 else if (iLookAhead != iParser.iEnvironment.iBracketClose->String())
                 {
-                    RaiseError("Expecting ) closing bracket for sub-expression, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = true;
-                    return;
+                    RaiseError("Expecting ) closing bracket for sub-expression, but got %s instead",iLookAhead->c_str());
                 }
             }
             MatchToken(iLookAhead);
