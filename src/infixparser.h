@@ -3,9 +3,8 @@
  *
  */
 
-
-#ifndef __infixparser_h__
-#define __infixparser_h__
+#ifndef YACAS_INFIXPARSER_H
+#define YACAS_INFIXPARSER_H
 
 #include "yacasbase.h"
 #include "lispparser.h"

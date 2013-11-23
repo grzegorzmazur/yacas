@@ -1,5 +1,5 @@
-#ifndef __yacasbase_h__
-#define __yacasbase_h__
+#ifndef YACAS_YACASBASE_H
+#define YACAS_YACASBASE_H
 #include "yacasprivate.h"
 
 /* /class YacasBase. All other objects should derive from YacasBase so that they use the correct

@@ -1,6 +1,5 @@
-
-#ifndef __unixcommandline_h__
-#define __unixcommandline_h__
+#ifndef YACAS_UNIXCOMMANDLINE_H
+#define YACAS_UNIXCOMMANDLINE_H
 
 #include <stdio.h>
 #include <stdlib.h>

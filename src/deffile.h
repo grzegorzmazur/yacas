@@ -4,8 +4,8 @@
  *  function.
  */
 
-#ifndef __deffile_h__
-#define __deffile_h__
+#ifndef YACAS_DEFFILE_H
+#define YACAS_DEFFILE_H
 
 #include "yacasbase.h"
 #include "lisphash.h"
