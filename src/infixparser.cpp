@@ -10,8 +10,6 @@
 
 void ParsedObject::Fail()
 {
-   iError = true;
-
    if (iLookAhead && iLookAhead->c_str())
       RaiseError("Error parsing expression, near token %s",iLookAhead->c_str());
 
@@ -19,13 +17,14 @@ void ParsedObject::Fail()
 }
 
 
-InfixParser::InfixParser(LispTokenizer& aTokenizer, LispInput& aInput,
+InfixParser::InfixParser(LispTokenizer& aTokenizer,
+                         LispInput& aInput,
                          LispEnvironment& aEnvironment,
                          LispOperators& aPrefixOperators,
                          LispOperators& aInfixOperators,
                          LispOperators& aPostfixOperators,
-                         LispOperators& aBodiedOperators)
-    : LispParser( aTokenizer,  aInput,aEnvironment),
+                         LispOperators& aBodiedOperators):
+    LispParser(aTokenizer, aInput, aEnvironment),
     iPrefixOperators(aPrefixOperators),
     iInfixOperators(aInfixOperators),
     iPostfixOperators(aPostfixOperators),
@@ -33,18 +32,11 @@ InfixParser::InfixParser(LispTokenizer& aTokenizer, LispInput& aInput,
 {
 }
 
-InfixParser::~InfixParser()
-{
-}
-
-
-
-
 void InfixParser::Parse(LispPtr& aResult )
 {
-//    iEnvironment = &aEnvironment;
     ParseCont(aResult);
 }
+
 void InfixParser::ParseCont(LispPtr& aResult)
 {
     ParsedObject object(*this);
@@ -112,24 +104,16 @@ void ParsedObject::Parse()
 
     if (iLookAhead != iParser.iEnvironment.iEndStatement->String())
         Fail();
-
-    if (iError) {
-        while ((*iLookAhead)[0] != '\0' && iLookAhead != iParser.iEnvironment.iEndStatement->String())
-            ReadToken();
-
-        iResult = (NULL);
-    }
-
-    Check(!iError, KLispErrInvalidExpression);
 }
 
 
 void ParsedObject::Combine(LispInt aNrArgsToCombine)
 {
     LispPtr subList(LispSubList::New(iResult));
+
     DBG_( subList->SetFileAndLine(
-    iParser.iInput.Status().FileName(),
-    iParser.iInput.Status().LineNumber() ); )
+              iParser.iInput.Status().FileName(),
+              iParser.iInput.Status().LineNumber() ); );
 
   // TODO: woof -- such ugliness!
 
@@ -161,9 +145,11 @@ void ParsedObject::GetOtherSide(LispInt aNrArgsToCombine, LispInt depth)
 void ParsedObject::InsertAtom(LispString * aString)
 {
     LispPtr ptr(LispAtom::New(iParser.iEnvironment,aString->c_str()));
+
     DBG_( ptr->SetFileAndLine(
-    iParser.iInput.Status().FileName(),
-    iParser.iInput.Status().LineNumber() ); )
+              iParser.iInput.Status().FileName(),
+              iParser.iInput.Status().LineNumber() ); );
+
     ptr->Nixed() = (iResult);
     iResult = (ptr);
 }
