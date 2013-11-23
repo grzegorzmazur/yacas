@@ -8,13 +8,7 @@ CCommandLine::~CCommandLine()
 
 void CCommandLine::GetHistory(LispInt aLine)
 {
-    iSubLine.ResizeTo(0);
-    LispInt i;
-    LispString * line = iHistoryList.GetLine(aLine);
-    for (i=0;i<line->Size();i++)
-    {
-        iSubLine.Append((*line)[i]);
-    }
+    iSubLine = *iHistoryList.GetLine(aLine);
 }
 
 void CCommandLine::MaxHistoryLinesSaved(LispInt aNrLines)
@@ -26,8 +20,8 @@ void CCommandLine::ReadLine(const LispChar * prompt)
     iLine.ResizeTo(0);
 
 NEXTLINE:
-    iSubLine.ResizeTo(1);
-    iSubLine[0] = '\0';
+    iSubLine = "";
+
     ReadLineSub(prompt);
 
     {
@@ -117,9 +111,8 @@ void CCommandLine::ReadLineSub(const LispChar * prompt)
             iHistoryUnchanged = 1;
             break;
         case eEscape:
-            iSubLine.ResizeTo(1);
-            iSubLine[0] = '\0';
-            cursor = iSubLine.Size()-1;
+            iSubLine = "";
+            cursor = 0;
             iFullLineDirty = 1;
             iHistoryUnchanged = 0;
             iHistoryList.ResetHistoryPosition();

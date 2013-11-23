@@ -1264,8 +1264,7 @@ void LispTrapError(LispEnvironment& aEnvironment,LispInt aStackTop)
   if (aEnvironment.iError[0])
   {
     InternalEval(aEnvironment, RESULT, ARGUMENT(2));
-    aEnvironment.iError.ResizeTo(1);
-    aEnvironment.iError[0]='\0';
+    aEnvironment.iError = "";
   }
 }
 
