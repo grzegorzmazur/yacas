@@ -3,8 +3,8 @@
  */
 
 
-#ifndef __lispstring_h__
-#define __lispstring_h__
+#ifndef YACAS_LISPSTRING_H
+#define YACAS_LISPSTRING_H
 
 #include <cstring>
 

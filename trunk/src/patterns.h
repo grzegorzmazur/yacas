@@ -1,6 +1,5 @@
-
-#ifndef __patterns_h__
-#define __patterns_h__
+#ifndef YACAS_PATTERNS_H
+#define YACAS_PATTERNS_H
 
 /// \file
 /// Pattern matching code.

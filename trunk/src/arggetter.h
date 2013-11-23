@@ -1,6 +1,6 @@
 
-#ifndef __arggetter_h__
-#define __arggetter_h__
+#ifndef YACAS_ARGGETTER_H
+#define YACAS_ARGGETTER_H
 
 #include "yacasbase.h"
 

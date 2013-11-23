@@ -3,8 +3,8 @@
  *
  */
 
-#ifndef __mathenvironment_h__
-#define __mathenvironment_h__
+#ifndef YACAS_MATHENVIRONMENT_H
+#define YACAS_MATHENVIRONMENT_H
 
 #include "yacasbase.h"
 #include "lispenvironment.h"

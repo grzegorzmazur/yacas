@@ -1,7 +1,7 @@
 /** \file genericstructs.h defines the class that handles structs and classes for plugins.
  */
-#ifndef __genericstruct_h__
-#define __genericstruct_h__
+#ifndef YACAS_GENERICSTRUCT_H
+#define YACAS_GENERICSTRUCT_H
 
 #include "yacasbase.h"
 #include "genericobject.h"

@@ -4,8 +4,8 @@
  */
 
 
-#ifndef __lisphash_h__
-#define __lisphash_h__
+#ifndef YACAS_LISPHASH_H
+#define YACAS_LISPHASH_H
 
 #include "yacasbase.h"
 #include "grower.h"

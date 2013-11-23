@@ -2,8 +2,8 @@
 /** \file stubs.h interface to platform-dependent functions
  */
 
-#ifndef __stubs_h__
-#define __stubs_h__
+#ifndef YACAS_STUBS_H
+#define YACAS_STUBS_H
 
 #include "lisptype.h"
 
@@ -64,4 +64,4 @@ void operator delete[](void* object) DELETE_THROWER;
 template <class T>
 inline T * PlatAllocN(LispInt aSize) { return (T*)PlatAlloc(aSize*sizeof(T)); }
 
-#endif  // __stubs_h__
+#endif

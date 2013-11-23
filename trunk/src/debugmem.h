@@ -1,7 +1,5 @@
-
-
-#ifndef __debugmem_h__
-#define __debugmem_h__
+#ifndef YACAS_DEBUGMEM_H
+#define YACAS_DEBUGMEM_H
 
 
 #ifdef YACAS_DEBUG

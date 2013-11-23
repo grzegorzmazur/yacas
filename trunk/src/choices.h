@@ -2,8 +2,8 @@
  *  Uncomment the defines below to allow a specific type of compilation
  */
 
-#ifndef __choices_h__
-#define __choices_h__
+#ifndef YACAS_CHOICES_H
+#define YACAS_CHOICES_H
 
 /** Turn on YACAS_DEBUG if you want to see run-time statistics
  * after typing Exit()

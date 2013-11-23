@@ -1,6 +1,5 @@
-
-#ifndef __standard_h__
-#define __standard_h__
+#ifndef YACAS_STANDARD_H
+#define YACAS_STANDARD_H
 
 #include "yacasbase.h"
 #include "lispobject.h"

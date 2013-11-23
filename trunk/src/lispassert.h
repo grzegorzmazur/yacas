@@ -1,6 +1,5 @@
-
-#ifndef __lispassert_h__
-#define __lispassert_h__
+#ifndef YACAS_LISPASSERT_H
+#define YACAS_LISPASSERT_H
 
 
 #include "choices.h"

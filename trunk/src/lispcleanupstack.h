@@ -1,4 +1,3 @@
-
 /** \file lispcleanupstack.h
  * Implementation of a cleanup stack for exception handling on platforms
  *  that don't clean up the stack automatically after an exception
@@ -8,8 +7,8 @@
  *
  */
 
-#ifndef __lispcleanupstack_h__
-#define __lispcleanupstack_h__
+#ifndef YACAS_LISPCLEANUPSTACK_H
+#define YACAS_LISPCLEANUPSTACK_H
 
 #include "yacasbase.h"
 #include "grower.h"

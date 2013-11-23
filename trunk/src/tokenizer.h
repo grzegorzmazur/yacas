@@ -3,8 +3,8 @@
  */
 
 
-#ifndef __tokenizer_h__
-#define __tokenizer_h__
+#ifndef YACAS_TOKENIZER_H
+#define YACAS_TOKENIZER_H
 
 #include "yacasbase.h"
 #include "lispstring.h"

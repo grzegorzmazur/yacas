@@ -1,6 +1,5 @@
-
-#ifndef __lisperror_h__
-#define __lisperror_h__
+#ifndef YACAS_LISPERROR_H
+#define YACAS_LISPERROR_H
 
 #include "lisptype.h"
 #include "lispstring.h"
