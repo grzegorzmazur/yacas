@@ -12,7 +12,7 @@ make distclean
 
 # Rebuild yacas and the documentation
 ./makemake
-./configure CXXFLAGS="-O9" CFLAGS="-O9" --prefix=$PREFIX --enable-server --enable-ps-doc --enable-pdf-doc --enable-archive 
+./configure CXXFLAGS="-O3" CFLAGS="-O3" --prefix=$PREFIX --enable-server --enable-ps-doc --enable-pdf-doc
 make
 make # make a second time, for adding statically linked libraries
 make install

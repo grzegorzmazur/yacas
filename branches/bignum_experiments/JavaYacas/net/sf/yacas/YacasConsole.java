@@ -37,7 +37,8 @@ public class YacasConsole extends Thread
     String expression = null;
 
     {
-      java.net.URL detectURL = java.lang.ClassLoader.getSystemResource("yacasinit.ys");
+      java.net.URL detectURL = java.lang.ClassLoader.getSystemResource("scripts/yacasinit.ys");
+
       if (detectURL != null)
       {
         String detect = detectURL.getPath();

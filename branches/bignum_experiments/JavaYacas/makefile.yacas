@@ -27,14 +27,14 @@ net/sf/yacas/Article.class net/sf/yacas/DatahubApplet.class
 
 yacas.jar: $(CLASSES)
 	jar cvmf MANIFEST.MF yacas.jar net/sf/yacas/*.class 
-	cd ../scripts/ ; jar uvf ../JavaYacas/yacas.jar *.ys *.ys.def *.rep/*.ys *.rep/*.ys.def
+	cd .. ; jar uvf JavaYacas/yacas.jar scripts/*.ys scripts/*.ys.def scripts/*.rep/*.ys scripts/*.rep/*.ys.def
 
 .java.class:
 	$(JAVAC) $(JAVACFLAGS) $*.java 
 
 net/sf/yacas/CVersion.java: ../config.h dumpversion.cpp
 	$(CXX) $(CXXFLAGS) dumpversion.cpp -o dumpversion
-	./dumpversion
+	./dumpversion > net/sf/yacas/CVersion.java
 
 
 hints.txt:

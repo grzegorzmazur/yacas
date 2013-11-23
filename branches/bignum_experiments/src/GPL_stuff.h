@@ -1,5 +1,5 @@
-#ifndef __GPL_stuff_h__
-#define __GPL_stuff_h__
+#ifndef YACAS_GPL_STUFF_H
+#define YACAS_GPL_STUFF_H
 
 #define GPL_base_text \
 "Yacas is Free Software--Free as in Freedom--so you can redistribute Yacas or\n" \

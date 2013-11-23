@@ -60,14 +60,12 @@
   #define _WIN32_WINDOWS 0x0410      // Make sure that Waitable Timer functions are declared in winbase.h
   #include "win32commandline.h"
   #define FANCY_COMMAND_LINE CWin32CommandLine
-  #define SCRIPT_DIR ""
 #endif
 
 #include "stdcommandline.h"
 #include "standard.h"
 #include "numbers.h"
 #include "arggetter.h"
-#include "archiver.h"
 
 //time.h and errors.h are only needed for LispTime
 #include <time.h>
@@ -125,10 +123,7 @@ int hideconsolewindow=0;
 #endif
 
 const char* root_dir    = SCRIPT_DIR;
-#ifndef WIN32
-  const char* archive     = NULL;
-#else
-  const char* archive     = "scripts.dat";
+#ifdef WIN32
   HANDLE htimer = 0;
 #endif
 const char* init_script = "yacasinit.ys";
@@ -137,8 +132,6 @@ const char* read_eval_print = "REP()";
 
 
 static int readmode = 0;
-
-int compressed_archive = 1;
 
 int server_mode = 0;
 int server_single_user = 0;
@@ -513,46 +506,6 @@ CORE_KERNEL_FUNCTION("FileSize",LispFileSize,1,YacasEvaluator::Function | YacasE
 
 
 #undef CORE_KERNEL_FUNCTION
-
-
-    if (archive)
-    {
-        FILE*fin = fopen(archive,"rb");
-        if (!fin)
-        {
-            printf("Error, could not open archive file %s\n",archive);
-        }
-        else
-        {
-            fseek(fin,0,SEEK_END);
-            int fullsize = ftell(fin);
-            fseek(fin,0,SEEK_SET);
-            unsigned char* fullbuf = (unsigned char*)PlatAlloc(fullsize);
-            if (fullbuf)
-            {
-                if (!fread(fullbuf,1,fullsize,fin)) {
-                    printf("Error, failed to read archive %s.\n",archive);
-                } else {
-                    CCompressedArchive *a =
-                        NEW CCompressedArchive(fullbuf, fullsize, compressed_archive);
-                    if (a->iFiles.IsValid())
-                    {
-                        yacas->getDefEnv().getEnv().iArchive = a;
-                    }
-                    else
-                    {
-                        printf("Error, %s is not a valid archive file.\n",archive);
-                        delete a;
-                    }
-                }
-            }
-            else
-            {
-                printf("Archive file %s too large, perhaps it is time we\nimplement disk-accessed compressed files.\n",archive);
-            }
-            fclose(fin);
-        }
-    }
 
     {
         /* Split up root_dir in pieces separated by colons, and run
@@ -976,8 +929,7 @@ printf("Servicing on %ld (%ld)\n",(long)fd,(long)used_clients[clsockindex]);
    #ifdef YACAS_DEBUG
                                printf("In> %s\n",finalbuffer);
    #endif
-                               outStrings.ResizeTo(1);
-                               outStrings[0] = '\0';
+                               outStrings = "";
                                used_clients[clsockindex]->Evaluate(finalbuffer);
                                free(finalbuffer);
 
@@ -1174,16 +1126,9 @@ int main(int argc, char** argv)
             }
             else if (!strcmp(argv[fileind],"--rootdir"))
             {
-                archive = NULL;
                 fileind++;
                 if (fileind<argc)
                   root_dir = argv[fileind];
-            }
-            else if (!strcmp(argv[fileind],"--archive"))
-            {
-                fileind++;
-                if (fileind<argc)
-                  archive = argv[fileind];
             }
             else if (!strcmp(argv[fileind],"--server"))
             {
@@ -1212,19 +1157,6 @@ int main(int argc, char** argv)
                 if (fileind<argc)
                 {
                   execute_commnd = argv[fileind];
-                }
-            }
-            else if (!strcmp(argv[fileind],"--uncompressed-archive"))
-            {
-                // This is just test code, to see if the engine
-                // can handle uncompressed files. Uncompressed
-                // files will not be used in general, except for
-                // platforms where minilzo.c doesn't compile.
-                fileind++;
-                if (fileind<argc)
-                {
-                  archive = argv[fileind];
-                  compressed_archive = 0;
                 }
             }
             else if (!strcmp(argv[fileind],"--disable-compiled-plugins"))

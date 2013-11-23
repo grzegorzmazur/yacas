@@ -409,7 +409,7 @@ void TracedEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
   if(aEnvironment.iDebugger->Stopped()) RaiseError("");
 
 REENTER:
-  errorStr.ResizeTo(1); errorStr[0] = '\0';
+  errorStr = "";
 
   try {
       aEnvironment.iDebugger->Enter(aEnvironment, aExpression);
@@ -425,7 +425,7 @@ REENTER:
     goto REENTER;
   }
 
-  errorStr.ResizeTo(1); errorStr[0] = '\0';
+  errorStr = "";
   try {
       BasicEvaluator::Eval(aEnvironment, aResult, aExpression);
   } catch (LispInt error_code) {

@@ -1,6 +1,5 @@
-
-#ifndef __mathutil_h__
-#define __mathutil_h__
+#ifndef YACAS_MATHUTIL_H
+#define YACAS_MATHUTIL_H
 
 LispInt PlatAsciiToInt(const LispChar* aString);
 

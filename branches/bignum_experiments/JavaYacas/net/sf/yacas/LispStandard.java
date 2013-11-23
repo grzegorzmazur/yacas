@@ -563,7 +563,7 @@ class LispStandard
     {
       if (zipFile != null)
       {
-        java.util.zip.ZipEntry e = zipFile.getEntry(aFileName);
+        java.util.zip.ZipEntry e = zipFile.getEntry("scripts/" + aFileName);
         if (e != null)
         {
           java.io.InputStream s = zipFile.getInputStream(e);

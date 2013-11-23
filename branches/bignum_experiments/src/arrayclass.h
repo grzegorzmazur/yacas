@@ -1,6 +1,5 @@
-
-#ifndef __arrayclass_h__
-#define __arrayclass_h__
+#ifndef YACAS_ARRAYCLASS_H
+#define YACAS_ARRAYCLASS_H
 
 #include "yacasbase.h"
 #include "lispobject.h"

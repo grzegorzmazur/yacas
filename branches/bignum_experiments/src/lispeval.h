@@ -3,8 +3,8 @@
  *
  */
 
-#ifndef __lispeval_h__
-#define __lispeval_h__
+#ifndef YACAS_LISPEVAL_H
+#define YACAS_LISPEVAL_H
 
 #include "yacasbase.h"
 #include "lispobject.h"

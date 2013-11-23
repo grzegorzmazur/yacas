@@ -1,6 +1,5 @@
-
-#ifndef __filescanner_h__
-#define __filescanner_h__
+#ifndef YACAS_FILESCANNER_H
+#define YACAS_FILESCANNER_H
 
 #include <sys/stat.h>
 
@@ -87,4 +86,4 @@ private:
 #endif
 };
 
-#endif // __scanfiles_h__
+#endif

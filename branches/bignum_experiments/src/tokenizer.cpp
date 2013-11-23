@@ -233,7 +233,6 @@ FALSEALARM:
   else if (c == '\"')
   {
     LispString aResult;
-    aResult.ResizeTo(0);
     aResult.Append(c);
     while (aInput.Peek() != '\"')
     {

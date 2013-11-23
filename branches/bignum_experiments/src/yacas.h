@@ -1,8 +1,8 @@
 /// \file
 /// Definitions of DefaultYacasEnvironment and CYacas.
 
-#ifndef __yacas_h__
-#define __yacas_h__
+#ifndef YACAS_YACAS_H
+#define YACAS_YACAS_H
 
 #include "yacasbase.h"
 #include "lispstring.h"

@@ -1,6 +1,5 @@
-
-#ifndef __win32commandline_h__
-#define __win32commandline_h__
+#ifndef YACAS_WIN32COMMANDLINE_H
+#define YACAS_WIN32COMMANDLINE_H
 
 #include <conio.h>
 #include <stdio.h>

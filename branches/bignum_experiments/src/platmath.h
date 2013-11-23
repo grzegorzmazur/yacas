@@ -1,6 +1,5 @@
-
-#ifndef __platmath_h__
-#define __platmath_h__
+#ifndef YACAS_PLATMATH_H
+#define YACAS_PLATMATH_H
 
 // Beware the use of these functions! They cannot be guaranteed to be
 // supported on any platform.

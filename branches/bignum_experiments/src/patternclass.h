@@ -1,6 +1,5 @@
-
-#ifndef __patternclass_h__
-#define __patternclass_h__
+#ifndef YACAS_PATTERNCLASS_H
+#define YACAS_PATTERNCLASS_H
 
 #include "lisptype.h"
 #include "lispobject.h"

@@ -2,9 +2,8 @@
  * definitions of input output classes that read and write from string.
  */
 
-
-#ifndef __stringio_h__
-#define __stringio_h__
+#ifndef YACAS_STRINGIO_H
+#define YACAS_STRINGIO_H
 
 #include "yacasbase.h"
 #include "lispio.h"

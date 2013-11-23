@@ -1,6 +1,5 @@
-
-#ifndef __anumber_h__
-#define __anumber_h__
+#ifndef YACAS_ANUMBER_H
+#define YACAS_ANUMBER_H
 
 #include "grower.h"
 #include "yacasbase.h"

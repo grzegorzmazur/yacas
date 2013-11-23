@@ -8,29 +8,23 @@
 #include "errors.h"
 
 
-//#define RAISE_PARSE_ERROR { iError = true; RaiseError("Error parsing expression, near token %s",iLookAhead->String()); }
-
-
 void ParsedObject::Fail()
 {
-   iError = true;
    if (iLookAhead && iLookAhead->c_str())
-   {
-//    if (IsSymbolic(iLookAhead->c_str()[0]))
-//       RaiseError("Error parsing expression, near token %s (maybe you forgot a space between two operators?)",iLookAhead->c_str());
       RaiseError("Error parsing expression, near token %s",iLookAhead->c_str());
-   }
+
    RaiseError("Error parsing expression");
 }
-#define RAISE_PARSE_ERROR Fail()
 
-InfixParser::InfixParser(LispTokenizer& aTokenizer, LispInput& aInput,
+
+InfixParser::InfixParser(LispTokenizer& aTokenizer,
+                         LispInput& aInput,
                          LispEnvironment& aEnvironment,
                          LispOperators& aPrefixOperators,
                          LispOperators& aInfixOperators,
                          LispOperators& aPostfixOperators,
-                         LispOperators& aBodiedOperators)
-    : LispParser( aTokenizer,  aInput,aEnvironment),
+                         LispOperators& aBodiedOperators):
+    LispParser(aTokenizer, aInput, aEnvironment),
     iPrefixOperators(aPrefixOperators),
     iInfixOperators(aInfixOperators),
     iPostfixOperators(aPostfixOperators),
@@ -38,18 +32,11 @@ InfixParser::InfixParser(LispTokenizer& aTokenizer, LispInput& aInput,
 {
 }
 
-InfixParser::~InfixParser()
-{
-}
-
-
-
-
 void InfixParser::Parse(LispPtr& aResult )
 {
-//    iEnvironment = &aEnvironment;
     ParseCont(aResult);
 }
+
 void InfixParser::ParseCont(LispPtr& aResult)
 {
     ParsedObject object(*this);
@@ -99,7 +86,8 @@ void ParsedObject::ReadToken()
 void ParsedObject::MatchToken(LispString * aToken)
 {
     if (aToken != iLookAhead)
-          RAISE_PARSE_ERROR; // iError=true;
+          Fail();
+
     ReadToken();
 }
 
@@ -115,45 +103,33 @@ void ParsedObject::Parse()
     ReadExpression(KMaxPrecedence);  // least precedence
 
     if (iLookAhead != iParser.iEnvironment.iEndStatement->String())
-    {
-      RAISE_PARSE_ERROR; // iError = true;
-    }
-    if (iError)
-    {
-        while ((*iLookAhead)[0] != '\0' && iLookAhead != iParser.iEnvironment.iEndStatement->String())
-        {
-            ReadToken();
-        }
-    }
-
-    if (iError)
-    {
-        iResult = (NULL);
-    }
-    Check(!iError,KLispErrInvalidExpression);
+        Fail();
 }
 
 
 void ParsedObject::Combine(LispInt aNrArgsToCombine)
 {
     LispPtr subList(LispSubList::New(iResult));
+
     DBG_( subList->SetFileAndLine(
-    iParser.iInput.Status().FileName(),
-    iParser.iInput.Status().LineNumber() ); )
+              iParser.iInput.Status().FileName(),
+              iParser.iInput.Status().LineNumber() ); );
 
   // TODO: woof -- such ugliness!
 
     LispIterator iter(iResult);
     for (LispInt i=0; i<aNrArgsToCombine; i++, ++iter)
-    {
-    if (!iter.getObj()) { RAISE_PARSE_ERROR; return; } // iError = true;
-  }
-  if (!iter.getObj()) { RAISE_PARSE_ERROR; return; } // iError = true;
+        if (!iter.getObj())
+            Fail();
+
+    if (!iter.getObj())
+        Fail();
+
     subList->Nixed() = (*++iter);
     *iter = (NULL);
 
-  InternalReverseList((*subList->SubList())->Nixed(),  // TODO: woof
-                     (*subList->SubList())->Nixed());
+    InternalReverseList((*subList->SubList())->Nixed(),  // TODO: woof
+                        (*subList->SubList())->Nixed());
     iResult = subList;
 }
 
@@ -169,9 +145,11 @@ void ParsedObject::GetOtherSide(LispInt aNrArgsToCombine, LispInt depth)
 void ParsedObject::InsertAtom(LispString * aString)
 {
     LispPtr ptr(LispAtom::New(iParser.iEnvironment,aString->c_str()));
+
     DBG_( ptr->SetFileAndLine(
-    iParser.iInput.Status().FileName(),
-    iParser.iInput.Status().LineNumber() ); )
+              iParser.iInput.Status().FileName(),
+              iParser.iInput.Status().LineNumber() ); );
+
     ptr->Nixed() = (iResult);
     iResult = (ptr);
 }
@@ -192,10 +170,8 @@ void ParsedObject::ReadExpression(LispInt depth)
             ReadExpression(KMaxPrecedence);
             // Match closing bracket
             if (iLookAhead != iParser.iEnvironment.iProgClose->String())
-            {
-                RaiseError("Expecting a ] close bracket for program block, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = true;
-                return;
-            }
+                RaiseError("Expecting a ] close bracket for program block, but got %s instead",iLookAhead->c_str());
+
             MatchToken(iLookAhead);
             // Build into Ntn(...)
             LispString * theOperator = iParser.iEnvironment.iNth->String();
@@ -306,8 +282,7 @@ void ParsedObject::ReadAtom()
             }
             else if (iLookAhead != iParser.iEnvironment.iListClose->String())
             {
-                RaiseError("Expecting a } close bracket for a list, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = true;
-                return;
+                RaiseError("Expecting a } close bracket for a list, but got %s instead",iLookAhead->c_str());
             }
         }
         MatchToken(iLookAhead);
@@ -338,8 +313,7 @@ void ParsedObject::ReadAtom()
             }
             else
             {
-                RaiseError("Expecting ; end of statement in program block, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = true;
-                return;
+                RaiseError("Expecting ; end of statement in program block, but got %s instead",iLookAhead->c_str());
             }
         }
         MatchToken(iLookAhead);
@@ -374,8 +348,7 @@ void ParsedObject::ReadAtom()
                 }
                 else if (iLookAhead != iParser.iEnvironment.iBracketClose->String())
                 {
-                    RaiseError("Expecting ) closing bracket for sub-expression, but got %s instead",iLookAhead->c_str()); // RAISE_PARSE_ERROR; // iError = true;
-                    return;
+                    RaiseError("Expecting ) closing bracket for sub-expression, but got %s instead",iLookAhead->c_str());
                 }
             }
             MatchToken(iLookAhead);

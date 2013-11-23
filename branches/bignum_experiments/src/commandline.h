@@ -12,8 +12,8 @@
  *
  */
 
-#ifndef __commandline_h__
-#define __commandline_h__
+#ifndef YACAS_COMMANDLINE_H
+#define YACAS_COMMANDLINE_H
 
 #include "lispstring.h"
 #include "yacasbase.h"

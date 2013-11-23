@@ -3,8 +3,8 @@
  */
 
 
-#ifndef __lispstring_h__
-#define __lispstring_h__
+#ifndef YACAS_LISPSTRING_H
+#define YACAS_LISPSTRING_H
 
 #include <cstring>
 
@@ -36,6 +36,7 @@ public:
     inline LispString(const LispChar* aString);
 
     // Assignment
+    inline LispString& operator = (const LispString& aString);
     inline LispString& operator = (const LispChar* aString);
 
     // Assignments (with modifications).

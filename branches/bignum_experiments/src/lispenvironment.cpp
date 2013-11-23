@@ -8,7 +8,6 @@
 #include "lispuserfunc.h"
 #include "mathuserfunc.h"
 #include "errors.h"
-#include "archiver.h"
 
 // we need this only for digits_to_bits
 #include "numbers.h"
@@ -40,7 +39,6 @@ LispEnvironment::LispEnvironment(
     iCleanup(),
     iEvalDepth(0),
     iMaxEvalDepth(1000),
-    iArchive(NULL),
     iEvaluator(NEW BasicEvaluator),
     iInputStatus(),
     iSecure(0),
@@ -111,7 +109,6 @@ LispEnvironment::~LispEnvironment()
   LISPASSERT(!iLocalsList);
   delete iEvaluator;
   if (iDebugger) delete iDebugger;
-  delete iArchive;
 }
 
 void LispEnvironment::SetPrecision(LispInt aPrecision)
@@ -603,20 +600,6 @@ const LispChar * LispEnvironment::ErrorString(LispInt aError)
 
 LispString * LispEnvironment::FindCachedFile(const LispChar * aFileName)
 {
-  if (iArchive)
-  {
-    LispInt index = iArchive->iFiles.FindFile(aFileName);
-    if (index>=0)
-    {
-      LispChar * contents = iArchive->iFiles.Contents(index);
-      if (contents)
-      {
-        LispString* result = NEW LispString(contents);
-        PlatFree(contents);
-        return result;
-      }
-    }
-  }
   return NULL;
 }
 

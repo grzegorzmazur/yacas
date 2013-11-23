@@ -39,9 +39,6 @@ AC_CHECK_HEADERS(malloc.h memory.h stdlib.h stdio.h ctype.h dlfcn.h dl.h dld.h)
 AC_CHECK_HEADERS(dirent.h math.h stdarg.h signal.h)
 AC_CHECK_HEADERS(string.h strings.h)
 
-# Check for libraries
-AC_CHECK_LIB([lzo2], [lzo1x_decompress], [], [AC_MSG_ERROR([proper lzo library not found])])
-
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_INLINE
@@ -180,19 +177,6 @@ if test "x$enable_pdf_doc" = xyes; then
 	PDF_DOCS=pdf-docs
 fi
 AC_SUBST(PDF_DOCS)
-
-# Generate and install library archive?
-AC_ARG_ENABLE(archive, [  --enable-archive        generate library archive [default=no]])
-if test "x$enable_archive" = xyes; then
-	COMPRESSOR_PRG=compressor
-	SCRIPTS_DAT=scripts.dat
-	CHECK_ARCHIVE=check-archive
-	INSTALL_ARCHIVE=install-archive
-fi
-AC_SUBST(COMPRESSOR_PRG)
-AC_SUBST(SCRIPTS_DAT)
-AC_SUBST(CHECK_ARCHIVE)
-AC_SUBST(INSTALL_ARCHIVE)
 
 # Choice of directories
 AC_ARG_WITH(script-dir, [  --with-script-dir=DIR   program scripts in DIR [DATADIR/yacas]])

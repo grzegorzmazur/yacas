@@ -1,6 +1,5 @@
-
-#ifndef __numbers_h__
-#define __numbers_h__
+#ifndef YACAS_NUMBERS_H
+#define YACAS_NUMBERS_H
 
 #include "lispenvironment.h"
 #include "yacasbase.h"
@@ -102,7 +101,7 @@ public://arithmetic
   void Mod(const BigNumber& aY, const BigNumber& aZ);
 
   /// For debugging purposes, dump internal state of this object into a string
-  void DumpDebugInfo();
+  void DumpDebugInfo() const;
 
 public:
   /// assign self to Floor(aX) if possible

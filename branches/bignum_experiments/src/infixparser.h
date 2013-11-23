@@ -3,9 +3,8 @@
  *
  */
 
-
-#ifndef __infixparser_h__
-#define __infixparser_h__
+#ifndef YACAS_INFIXPARSER_H
+#define YACAS_INFIXPARSER_H
 
 #include "yacasbase.h"
 #include "lispparser.h"
@@ -53,53 +52,60 @@ public:
 class InfixParser : public LispParser
 {
 public:
-    InfixParser(LispTokenizer& aTokenizer, LispInput& aInput,
+    InfixParser(LispTokenizer& aTokenizer,
+                LispInput& aInput,
                 LispEnvironment& aEnvironment,
                 LispOperators& aPrefixOperators,
                 LispOperators& aInfixOperators,
                 LispOperators& aPostfixOperators,
                 LispOperators& aBodiedOperators);
-    ~InfixParser();
  
     virtual void Parse(LispPtr& aResult);
-//private:
-    void ParseCont(LispPtr& aResult);
+
 public:
     LispOperators& iPrefixOperators;
     LispOperators& iInfixOperators;
     LispOperators& iPostfixOperators;
     LispOperators& iBodiedOperators;
 
-//    LispEnvironment* iEnvironment;
+private:
+    void ParseCont(LispPtr& aResult);
 };
 
 class ParsedObject : public YacasBase
 {
 public:
-    ParsedObject(InfixParser& aParser)
-        : iParser(aParser),
-          iError(false),
-          iEndOfFile(false),
-          iLookAhead(NULL),iResult()  {};
+    ParsedObject(InfixParser& aParser):
+        iParser(aParser),
+        iEndOfFile(false),
+        iLookAhead(0),
+        iResult(0)
+    {
+    }
+
     void Parse();
+
 private:
     void ReadToken();
     void MatchToken(LispString * aToken);
     void ReadExpression(LispInt depth);
     void ReadAtom();
+
 private:
     void GetOtherSide(LispInt aNrArgsToCombine, LispInt depth);
     void Combine(LispInt aNrArgsToCombine);
     void InsertAtom(LispString * aString);
+
 private:
     void Fail(); // called when parsing fails, raising an exception
 
 private:
     InfixParser& iParser;
+
 private:
-    bool iError;
     bool iEndOfFile;
     LispString * iLookAhead;
+
 public:
     LispPtr iResult;
 };

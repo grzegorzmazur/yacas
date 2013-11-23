@@ -1,8 +1,8 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 
 bin_PROGRAMS =  yacas
-noinst_PROGRAMS = mkfastprimes gencorefunctions compressor
-EXTRA_PROGRAMS = compressor codereviewer
+noinst_PROGRAMS = mkfastprimes gencorefunctions
+EXTRA_PROGRAMS = codereviewer
 
 noinst_HEADERS = anumber.h dnumber.h choices.h deffile.h grower.h \
 	infixparser.h lispassert.h lispatom.h lispcleanupstack.h \
@@ -12,9 +12,9 @@ noinst_HEADERS = anumber.h dnumber.h choices.h deffile.h grower.h \
 	mathuserfunc.h numbers.h platmath.h standard.h patterns.h errors.h arggetter.h \
 	stdfileio.h stringio.h stubs.h tokenizer.h yacas.h refcount.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
-        patternclass.h log.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
+        patternclass.h substitute.h stdcommandline.h arrayclass.inl mathutil.h \
         genericstructs.h yacasprivate.h yacasbase.h xmltokenizer.h \
-        archiver.h GPL_stuff.h  
+        GPL_stuff.h  
 
 yacas_SOURCES = yacasmain.cpp stdcommandline.cpp deffile.cpp infixparser.cpp lispatom.cpp \
 	lispcleanupstack.cpp lispenvironment.cpp lispeval.cpp lisperror.cpp \
@@ -26,7 +26,7 @@ yacas_SOURCES = yacasmain.cpp stdcommandline.cpp deffile.cpp infixparser.cpp lis
         substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp patcher.cpp \
         genericstructs.cpp \
 	xmltokenizer.cpp \
-        archiver.cpp compressedfiles.cpp commandline.cpp \
+        commandline.cpp \
 	anumber.cpp dnumber.cpp yacasnumbers.cpp numbers.cpp \
 	platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
 	lispstring.cpp mathutil.cpp yacasbase.cpp debugmem.cpp fastprimes.c
@@ -69,10 +69,6 @@ EXTRA_DIST =  anumber.inl deffile.inl  \
 	lisptype.h \
 	platfileio.h \
 	debugmem.h \
-	compressedfiles.cpp \
-	decompressor.cpp \
-	compressor.cpp \
-	compressedfiles.h \
 	fastprimes.c core_yacasmain.h 
 
 
@@ -115,33 +111,10 @@ uninstall-hook:
 version.h: ../config.h
 	echo "#define VERSION \"$(VERSION)\"" > version.h 
 
-noinst_DATA = @SCRIPTS_DAT@
-compressor_SOURCES = compressor.cpp filescanner.cpp filescanner.h
-
-scripts.dat: compressor$(EXEEXT)
-	./compressor$(EXEEXT) - $(top_srcdir)/scripts/ scripts.dat 
-
-check: @CHECK_ARCHIVE@ check-codereviewer
-
-check-archive: scripts.dat 
-	../src/yacas$(EXEEXT) -pc --archive scripts.dat $(top_srcdir)/tests/arithmetic.yts
+check: check-codereviewer
 
 check-codereviewer: codereviewer$(EXEEXT)
 	./codereviewer$(EXEEXT) c *.h *.inl *.cpp
-
-## We need a bit of a hack to install the 'scripts.dat' file.
-## Ideally, we would like to declare it as lib_LIBRARY, but then automake
-## (at least version 1.4) complains that it doesn't know libraries with
-## a .dat extension. So we install it by hand in $(libdir)
-## Furthermore, we need to install compressedfiles.h because plugins need it.
-
-install-exec-local: @INSTALL_ARCHIVE@
-
-install-archive: scripts.dat
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(libdir)
-	$(INSTALL_PROGRAM) scripts.dat $(DESTDIR)$(libdir)/`echo scripts.dat|sed '$(transform)'`
-
 
 distclean-local:
 	-rm -f codereviewer$(EXEEXT)

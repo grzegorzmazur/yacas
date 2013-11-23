@@ -2,33 +2,13 @@
 #include "yacasprivate.h"
 #include "commandline.h"
 
-//TODO maybe fix the assignment operator on String?
-static inline void CopyString(LispString& aTrg, LispString& aSrc)
-{
-  aTrg.ResizeTo(0);
-  LispInt i;
-  for (i=0;i<aSrc.Size();i++)
-  {
-    aTrg.Append(aSrc[i]);
-  }
-//  aTrg.Append('\0');
-}
-
-
 CCommandLine::~CCommandLine()
 {
 }
 
-
 void CCommandLine::GetHistory(LispInt aLine)
 {
-    iSubLine.ResizeTo(0);
-    LispInt i;
-    LispString * line = iHistoryList.GetLine(aLine);
-    for (i=0;i<line->Size();i++)
-    {
-        iSubLine.Append((*line)[i]);
-    }
+    iSubLine = *iHistoryList.GetLine(aLine);
 }
 
 void CCommandLine::MaxHistoryLinesSaved(LispInt aNrLines)
@@ -40,8 +20,8 @@ void CCommandLine::ReadLine(const LispChar * prompt)
     iLine.ResizeTo(0);
 
 NEXTLINE:
-    iSubLine.ResizeTo(1);
-    iSubLine[0] = '\0';
+    iSubLine = "";
+
     ReadLineSub(prompt);
 
     {
@@ -131,9 +111,8 @@ void CCommandLine::ReadLineSub(const LispChar * prompt)
             iHistoryUnchanged = 1;
             break;
         case eEscape:
-            iSubLine.ResizeTo(1);
-            iSubLine[0] = '\0';
-            cursor = iSubLine.Size()-1;
+            iSubLine = "";
+            cursor = 0;
             iFullLineDirty = 1;
             iHistoryUnchanged = 0;
             iHistoryList.ResetHistoryPosition();
@@ -231,8 +210,7 @@ void CConsoleHistory::AddLine(LispString& aString)
 
   if (historyChanged)
   {
-    LispString * ptr = NEW LispString();
-    CopyString(*ptr, aString);
+    LispString * ptr = NEW LispString(aString);
     iHistory.Append(ptr);
     return;
   }
@@ -270,7 +248,7 @@ LispInt CConsoleHistory::ArrowUp(LispString& aString,LispInt &aCursorPos)
   if (i >= 0 && i != history && histpre == prefix)
   {
     history = i;
-    CopyString(aString, (*iHistory[history]));
+    aString = *iHistory[history];
 //    if (aCursorPos == 0) aCursorPos = aString.Size()-1;
     return 1;
   }
@@ -294,13 +272,13 @@ LispInt CConsoleHistory::ArrowDown(LispString& aString,LispInt &aCursorPos)
   if (i < iHistory.Size() && histpre == prefix)
   {
     history = i;
-    CopyString(aString, (*iHistory[history]));
+    aString = *iHistory[history];
     return 1;
   }
   else
   {
     history = iHistory.Size();
-    CopyString(aString,prefix);
+    aString = prefix;
   }
   return 0;
 }
@@ -333,7 +311,7 @@ LispInt CConsoleHistory::Complete(LispString& aString,LispInt &aCursorPos)
                 goto CONTINUE;
             j++;
         }
-        CopyString(aString, (*iHistory[history]));
+        aString = *iHistory[history];
         aCursorPos = aString.Size()-1;
         break;
     CONTINUE:

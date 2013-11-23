@@ -3,8 +3,8 @@
   */
 
 
-#ifndef __lisptype_h__
-#define __lisptype_h__
+#ifndef YACAS_LISPTYPE_H
+#define YACAS_LISPTYPE_H
 
 #include <stdlib.h>
 #include "choices.h"
