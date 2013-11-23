@@ -2,9 +2,8 @@
  * definitions of input output classes that read and write from file.
  */
 
-
-#ifndef __stdfileio_h__
-#define __stdfileio_h__
+#ifndef STDFILEIO_H
+#define STDFILEIO_H
 
 #include "yacasbase.h"
 #include "lispio.h"

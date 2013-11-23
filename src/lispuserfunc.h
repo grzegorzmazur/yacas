@@ -1,7 +1,5 @@
-
-
-#ifndef __lispuserfunc_h__
-#define __lispuserfunc_h__
+#ifndef YACAS_LISPUSERFUNC_H
+#define YACAS_LISPUSERFUNC_H
 
 #include "yacasbase.h"
 #include "lispobject.h"

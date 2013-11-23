@@ -1,6 +1,5 @@
-
-#ifndef __errors_h__
-#define __errors_h__
+#ifndef YACAS_ERRORS_H
+#define YACAS_ERRORS_H
 
 void CheckArgType(LispInt aArgNr, LispPtr& aArguments, LispEnvironment& aEnvironment, LispInt aError);
 #define CHK_ARG(_pred,_argnr)           {if (!(_pred))                              CheckArgType(_argnr,aArguments, aEnvironment,KLispErrInvalidArg);}

@@ -10,8 +10,8 @@
  *
  */
 
-#ifndef __lispobject_h__
-#define __lispobject_h__
+#ifndef YACAS_LISPOBJECT_H
+#define YACAS_LISPOBJECT_H
 
 #include "yacasbase.h"
 #include "refcount.h"
