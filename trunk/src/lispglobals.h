@@ -4,8 +4,8 @@
  *
  */
 
-#ifndef __lispglobals_h__
-#define __lispglobals_h__
+#ifndef YACAS_LISPGLOBALS_H
+#define YACAS_LISPGLOBALS_H
 
 #include "yacasbase.h"
 #include "lispobject.h"

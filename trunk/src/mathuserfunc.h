@@ -1,6 +1,5 @@
-
-#ifndef __mathuserfunc_h__
-#define __mathuserfunc_h__
+#ifndef YACAS_MATHUSERFUNC_H
+#define YACAS_MATHUSERFUNC_H
 
 #include "yacasbase.h"
 #include "lispuserfunc.h"

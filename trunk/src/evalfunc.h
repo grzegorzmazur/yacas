@@ -1,6 +1,5 @@
-
-#ifndef __evalfuncbase_h__
-#define __evalfuncbase_h__
+#ifndef YACAS_EVALFUNCBASE_H
+#define YACAS_EVALFUNCBASE_H
 
 #include "yacasbase.h"
 

@@ -1,6 +1,5 @@
-
-#ifndef __yacasprivate_h__
-#define __yacasprivate_h__
+#ifndef YACAS_YACASPRIVATE_H
+#define YACAS_YACASPRIVATE_H
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>

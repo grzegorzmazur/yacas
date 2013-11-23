@@ -3,8 +3,8 @@
  */
 
 
-#ifndef __lispio_h__
-#define __lispio_h__
+#ifndef YACAS_LISPIO_H
+#define YACAS_LISPIO_H
 
 #include "yacasbase.h"
 

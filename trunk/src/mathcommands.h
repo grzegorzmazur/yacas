@@ -1,6 +1,5 @@
-
-#ifndef __mathcommands_h__
-#define __mathcommands_h__
+#ifndef YACAS_MATHCOMMANDS_H
+#define YACAS_MATHCOMMANDS_H
 
 #include "yacasbase.h"
 #include "lispenvironment.h"

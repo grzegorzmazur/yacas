@@ -1,5 +1,5 @@
-#ifndef __refcount_h__
-#define __refcount_h__
+#ifndef YACAS_REFCOUNT_H
+#define YACAS_REFCOUNT_H
 
 #include "lispassert.h"
 #include "yacasbase.h"

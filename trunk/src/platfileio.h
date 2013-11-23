@@ -1,3 +1,5 @@
+#ifndef YACAS_PLATFILEIO_H
+#define YACAS_PLATFILEIO_H
 
 #include <stdio.h>
 #include <string.h>
@@ -128,3 +130,4 @@ void InternalFindFile(const LispChar * aFileName, InputDirectories& aInputDirect
                       LispChar * aFoundFile);
 
 
+#endif

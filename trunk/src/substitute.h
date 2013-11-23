@@ -1,6 +1,5 @@
-
-#ifndef __substitute_h__
-#define __substitute_h__
+#ifndef YACAS_SUBSTITUTE_H
+#define YACAS_SUBSTITUTE_H
 
 #include "yacasbase.h"
 #include "lispobject.h"

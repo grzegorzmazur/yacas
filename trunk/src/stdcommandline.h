@@ -1,6 +1,5 @@
-
-#ifndef __stdcommandline_h__
-#define __stdcommandline_h__
+#ifndef YACAS_STDCOMMANDLINE_H
+#define YACAS_STDCOMMANDLINE_H
 
 #include <stdio.h>
 #include <stdlib.h>

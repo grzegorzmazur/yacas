@@ -1,6 +1,5 @@
-
-#ifndef __numbers_h__
-#define __numbers_h__
+#ifndef YACAS_NUMBERS_H
+#define YACAS_NUMBERS_H
 
 #include "lispenvironment.h"
 #include "yacasbase.h"

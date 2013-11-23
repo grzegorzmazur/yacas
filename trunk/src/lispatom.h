@@ -18,8 +18,8 @@
  * Conversion from string to BigNumber is done only if no BigNumber object is present.
  */
 
-#ifndef __lispatom_h__
-#define __lispatom_h__
+#ifndef YACAS_LISPATOM_H
+#define YACAS_LISPATOM_H
 
 #include "yacasbase.h"
 #include "lispobject.h"

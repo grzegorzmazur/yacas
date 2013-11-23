@@ -3,9 +3,8 @@
  *
  */
 
-
-#ifndef __lispenvironment_h__
-#define __lispenvironment_h__
+#ifndef YACAS_LISPENVIRONMENT_H
+#define YACAS_LISPENVIRONMENT_H
 
 #include "yacasbase.h"
 #include "lispobject.h"

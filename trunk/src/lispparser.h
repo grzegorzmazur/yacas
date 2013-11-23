@@ -3,8 +3,8 @@
  *
  */
 
-#ifndef __lispparser_h__
-#define __lispparser_h__
+#ifndef YACAS_LISPPARSER_H
+#define YACAS_LISPPARSER_H
 
 #include "yacasbase.h"
 #include "lispobject.h"

@@ -1,7 +1,5 @@
-
-
-#ifndef __genericobject_h__
-#define __genericobject_h__
+#ifndef YACAS_GENERICOBJECT_H
+#define YACAS_GENERICOBJECT_H
 
 #include "yacasbase.h"
 
