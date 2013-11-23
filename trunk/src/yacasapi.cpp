@@ -75,11 +75,9 @@ void CYacas::Evaluate(const LispChar * aExpression)
   LispEnvironment& env = environment.getEnv();
   LispInt stackTop = env.iStack.GetStackTop();
 
-  iResult.ResizeTo(1);
-  iResult[0]='\0';
-  env.iError.ResizeTo(1);
-  env.iError[0]='\0';
- 
+  iResult = "";
+  env.iError = "";
+
     LispPtr result;
 
     try
