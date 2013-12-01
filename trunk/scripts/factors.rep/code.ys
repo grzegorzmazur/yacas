@@ -309,3 +309,32 @@ Function("FactorQS",{n})[
 		fb[j]:=NextPrime(j);
 	];
 ];
+
+// Preliminary implementation of imple square-free factorization 
+// (Musser's algorithm)
+10 # SquareFreeFactorize(f_CanBeUni, x_IsAtom)_(VarList(f) = {x}) <--
+[
+    Local(f', g, h, m);
+
+    f' := Deriv(x)f;
+
+    g := Monic(Gcd(f, f'));
+    h := Div(f, g);
+
+    m := {};
+
+    While (h != 1) [
+        Local(gg, hh);
+
+        // FIXME: once polynomial GCD works correctly, the If will be redundant
+        hh := If (g = 1 Or g = h, g, Gcd(g, h));
+        gg := Div(g, hh);
+
+        m := DestructiveAppend(m, Monic(Div(h, hh)));
+
+        g := gg;
+        h := hh;
+    ];
+
+    m;
+];
