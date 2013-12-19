@@ -39,6 +39,10 @@ AC_CHECK_HEADERS(malloc.h memory.h stdlib.h stdio.h ctype.h dlfcn.h dl.h dld.h)
 AC_CHECK_HEADERS(dirent.h math.h stdarg.h signal.h)
 AC_CHECK_HEADERS(string.h strings.h)
 
+# Checks for libraries.
+AC_CHECK_LIB(gmp, __gmpz_init, , [AC_MSG_ERROR([GNU MP not found, see http://gmplib.org/])])
+AC_CHECK_LIB(mpfr, mpfr_init, , [AC_MSG_ERROR([GNU MPFR not found, see http://www.mpfr.org/])])
+
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_INLINE

@@ -4,7 +4,8 @@
 #include "lispenvironment.h"
 #include "yacasbase.h"
 
-
+#include <gmp.h>
+#include <mpfr.h>
 
 /// Whether the numeric library supports 1.0E-10 and such.
 LispInt NumericSupportForMantissa();
@@ -159,8 +160,12 @@ private:
     friend LispObject* PowerFloat(LispObject* int1, LispObject* int2,
                            LispEnvironment& aEnvironment,LispInt aPrecision);
 
-    ANumber* iNumber;
+    //    ANumber* iNumber;
   /// Internal library wrapper ends here.
+
+private:
+    mpz_t _integer;
+    mpfr_t _float;
 };
 
 /// bits_to_digits and digits_to_bits, utility functions

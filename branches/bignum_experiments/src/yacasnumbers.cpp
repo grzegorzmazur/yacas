@@ -1,4 +1,4 @@
-
+#include <iostream>
 
 /* Implementation of the number classes (the functionality used
  * by yacas any way
@@ -21,6 +21,8 @@
   #include <stdio.h> // Safe, only included if HAVE_STDIO_H defined
 #endif
 
+#include <sstream>
+
 static LispObject* FloatToString(ANumber& aInt, LispEnvironment& aEnvironment, LispInt aBase = 10);
 
 LispInt NumericSupportForMantissa()
@@ -41,341 +43,332 @@ LispInt NumericSupportForMantissa()
 LispObject* GcdInteger(LispObject* int1, LispObject* int2,
                          LispEnvironment& aEnvironment)
 {
-  BigNumber* i1 = int1->Number(0);
-  BigNumber* i2 = int2->Number(0);
-  Check(i1->iNumber->iExp == 0, KLispErrNotInteger);
-  Check(i2->iNumber->iExp == 0, KLispErrNotInteger);
-  BigNumber* res = NEW BigNumber();
-  BaseGcd(*res->iNumber,*i1->iNumber,*i2->iNumber);
-  return NEW LispNumber(res);
+    BigNumber* i1 = int1->Number(0);
+    BigNumber* i2 = int2->Number(0);
+    Check(i1->IsInt(), KLispErrNotInteger);
+    Check(i2->IsInt(), KLispErrNotInteger);
+    BigNumber* res = NEW BigNumber();
+
+    mpz_gcd(res->_integer, i1->_integer, i2->_integer);
+
+    return NEW LispNumber(res);
 }
 
 
 
-static void Trigonometry(ANumber& x,ANumber& i,ANumber& sum,ANumber& term)
-{
-  while (x.iTensExp<0)
-  {
-    PlatDoubleWord carry=0;
-    BaseDivideInt(x,10, WordBase, carry);
-    x.iTensExp++;
-  }
+// static void Trigonometry(ANumber& x,ANumber& i,ANumber& sum,ANumber& term)
+// {
+//   while (x.iTensExp<0)
+//   {
+//     PlatDoubleWord carry=0;
+//     BaseDivideInt(x,10, WordBase, carry);
+//     x.iTensExp++;
+//   }
 
-    ANumber x2(sum.iPrecision);
-    Multiply(x2,x,x);
-    ANumber one("1",sum.iPrecision);
-    ANumber dummy(10);
+//     ANumber x2(sum.iPrecision);
+//     Multiply(x2,x,x);
+//     ANumber one("1",sum.iPrecision);
+//     ANumber dummy(10);
 
-    LispInt requiredDigits = WordDigits(sum.iPrecision, 10)+
-        x2.Size()-x2.iExp+1;
-//    printf("WordDigits=%d\n",requiredDigits);
-//    printf("[%d,%d]:",x.Size()-x.iExp,x.iExp);
+//     LispInt requiredDigits = WordDigits(sum.iPrecision, 10)+
+//         x2.Size()-x2.iExp+1;
+// //    printf("WordDigits=%d\n",requiredDigits);
+// //    printf("[%d,%d]:",x.Size()-x.iExp,x.iExp);
 
-    // While (term>epsilon)
-    while (1 /* Significant(term)*/)
-    {
+//     // While (term>epsilon)
+//     while (1 /* Significant(term)*/)
+//     {
  
-#ifdef CORRECT_DIVISION
+// #ifdef CORRECT_DIVISION
 
-/*
-        LispInt significantDigits = WordDigits(term.iPrecision, 10);
-        NormalizeFloat(term,significantDigits);
-        if ((-term.iTensExp) > term.iPrecision+2)
-        {
-          break;
-        }
-*/
-        if (!Significant(term)) break;
-#else
-        if (!Significant(term)) break;
-#endif
-        ANumber orig(sum.iPrecision);
+// /*
+//         LispInt significantDigits = WordDigits(term.iPrecision, 10);
+//         NormalizeFloat(term,significantDigits);
+//         if ((-term.iTensExp) > term.iPrecision+2)
+//         {
+//           break;
+//         }
+// */
+//         if (!Significant(term)) break;
+// #else
+//         if (!Significant(term)) break;
+// #endif
+//         ANumber orig(sum.iPrecision);
 
-        //   term <- term*x^2/((i+1)(i+2))
-        //   i <= i+2
+//         //   term <- term*x^2/((i+1)(i+2))
+//         //   i <= i+2
 
-        // added this: truncate digits to speed up the calculation
-        {
-            LispInt toDunk = term.iExp - requiredDigits;
-            if (toDunk > 0)
-            {
-                term.Delete(0,toDunk);
-                term.iExp = requiredDigits;
-            }
-        }
+//         // added this: truncate digits to speed up the calculation
+//         {
+//             LispInt toDunk = term.iExp - requiredDigits;
+//             if (toDunk > 0)
+//             {
+//                 term.Delete(0,toDunk);
+//                 term.iExp = requiredDigits;
+//             }
+//         }
 
-        orig.CopyFrom(term);
+//         orig.CopyFrom(term);
 
-        Multiply(term,orig,x2);
-//
-        BaseAdd(i, one, WordBase);
-        orig.CopyFrom(term);
-        Divide(term, dummy, orig, i);
-//
-        BaseAdd(i, one, WordBase);
-        orig.CopyFrom(term);
-        Divide(term, dummy, orig, i);
+//         Multiply(term,orig,x2);
+// //
+//         BaseAdd(i, one, WordBase);
+//         orig.CopyFrom(term);
+//         Divide(term, dummy, orig, i);
+// //
+//         BaseAdd(i, one, WordBase);
+//         orig.CopyFrom(term);
+//         Divide(term, dummy, orig, i);
 
-        //   negate term
-        Negate(term);
-        //   sum <- sum+term
-        orig.CopyFrom(sum);
-        Add(sum, orig, term);
-
-
-    }
-
-//    printf("[%d,%d]:",sum.Size()-sum.iExp,sum.iExp);
-}
-
-static void SinFloat(ANumber& aResult, ANumber& x)
-{
-  // Sin(x)=Sum(i=0 to Inf) (-1)^i x^(2i+1) /(2i+1)!
-  // Which incrementally becomes the algorithm:
-  //
-  // i <- 1
-  ANumber i("1",aResult.iPrecision);
-  // sum <- x
-  aResult.CopyFrom(x);
-  // term <- x
-  ANumber term(aResult.iPrecision);
-  term.CopyFrom(x);
-  Trigonometry(x,i,aResult,term);
-}
+//         //   negate term
+//         Negate(term);
+//         //   sum <- sum+term
+//         orig.CopyFrom(sum);
+//         Add(sum, orig, term);
 
 
-static void CosFloat(ANumber& aResult, ANumber& x)
-{
-    // i <- 0
-    ANumber i("0",aResult.iPrecision);
-    // sum <- 1
-    aResult.SetTo("1.0");
-    // term <- 1
-    ANumber term("1.0",aResult.iPrecision);
-    Trigonometry(x,i,aResult,term);
-}
+//     }
 
+// //    printf("[%d,%d]:",sum.Size()-sum.iExp,sum.iExp);
+// }
 
 LispObject* SinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-//PrintNumber("Sin input: %s\n",*int1->Number(aPrecision)->iNumber);
-  ANumber sum(aPrecision);
-  ANumber x(*int1->Number(aPrecision)->iNumber);  // woof
-  x.ChangePrecision(aPrecision);
-  SinFloat(sum, x);
-  return FloatToString(sum, aEnvironment);
+    // //PrintNumber("Sin input: %s\n",*int1->Number(aPrecision)->iNumber);
+    // std::cout << "sin" << std::endl;
+    // ANumber sum(aPrecision);
+    // ANumber x(*int1->Number(aPrecision)->iNumber);  // woof
+    // x.ChangePrecision(aPrecision);
+    // SinFloat(sum, x);
+    // return FloatToString(sum, aEnvironment);
+    std::cout << "sin" << std::endl;
+    abort();
 }
 
 
 LispObject* CosFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-  ANumber sum(aPrecision);
-  ANumber x(*int1->Number(aPrecision)->iNumber);
-  x.ChangePrecision(aPrecision);
-  CosFloat(sum, x);
-  return FloatToString(sum, aEnvironment);
+  // ANumber sum(aPrecision);
+  // ANumber x(*int1->Number(aPrecision)->iNumber);
+  // x.ChangePrecision(aPrecision);
+  // CosFloat(sum, x);
+  // return FloatToString(sum, aEnvironment);
+    std::cout << "cos" << std::endl;
+    abort();
 }
 
 LispObject* TanFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-  // Tan(x) = Sin(x)/Cos(x)
-  ANumber s(aPrecision);
-  {
-    ANumber x(*int1->Number(aPrecision)->iNumber);
-    x.ChangePrecision(aPrecision);
-    SinFloat(s, x);
-//      SinFloat(s,int1->String()->c_str());
-  }
-  ANumber c(aPrecision);
-  {
-    ANumber x(*int1->Number(aPrecision)->iNumber);
-    x.ChangePrecision(aPrecision);
-    CosFloat(c, x);
-//      CosFloat(c,int1->String()->c_str());
-  }
-  ANumber result(aPrecision);
-  ANumber dummy(aPrecision);
-  Divide(result,dummy,s,c);
-  return FloatToString(result, aEnvironment);
+//   // Tan(x) = Sin(x)/Cos(x)
+//   ANumber s(aPrecision);
+//   {
+//     ANumber x(*int1->Number(aPrecision)->iNumber);
+//     x.ChangePrecision(aPrecision);
+//     SinFloat(s, x);
+// //      SinFloat(s,int1->String()->c_str());
+//   }
+//   ANumber c(aPrecision);
+//   {
+//     ANumber x(*int1->Number(aPrecision)->iNumber);
+//     x.ChangePrecision(aPrecision);
+//     CosFloat(c, x);
+// //      CosFloat(c,int1->String()->c_str());
+//   }
+//   ANumber result(aPrecision);
+//   ANumber dummy(aPrecision);
+//   Divide(result,dummy,s,c);
+//   return FloatToString(result, aEnvironment);
+    std::cout << "tan" << std::endl;
+    abort();
 }
 
 
 LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-//PrintNumber("ArcSin input: \n",*int1->Number(aPrecision)->iNumber);
+// //PrintNumber("ArcSin input: \n",*int1->Number(aPrecision)->iNumber);
 
-  // Use Newton's method to solve sin(x) = y by iteration:
-    // x := x - (Sin(x) - y) / Cos(x)
-  // this is similar to PiFloat()
-  // we are using PlatArcSin() as the initial guess
-  // maybe, for y very close to 1 or to -1 convergence will
-  // suffer but seems okay in some tests
-//printf("%s(%d)\n",__FILE__,__LINE__);
-//printf("input: %s\n",int1->String()->c_str());
-//PrintNumber("digits ",*int1->Number(aPrecision)->iNumber);
-  RefPtr<LispObject> iResult(PlatArcSin(aEnvironment, int1,  0));
-  ANumber result(*iResult->Number(aPrecision)->iNumber);  // hack, hack, hack
-  result.ChangePrecision(aPrecision);
+//   // Use Newton's method to solve sin(x) = y by iteration:
+//     // x := x - (Sin(x) - y) / Cos(x)
+//   // this is similar to PiFloat()
+//   // we are using PlatArcSin() as the initial guess
+//   // maybe, for y very close to 1 or to -1 convergence will
+//   // suffer but seems okay in some tests
+// //printf("%s(%d)\n",__FILE__,__LINE__);
+// //printf("input: %s\n",int1->String()->c_str());
+// //PrintNumber("digits ",*int1->Number(aPrecision)->iNumber);
+//   RefPtr<LispObject> iResult(PlatArcSin(aEnvironment, int1,  0));
+//   ANumber result(*iResult->Number(aPrecision)->iNumber);  // hack, hack, hack
+//   result.ChangePrecision(aPrecision);
 
-  // how else do I get an ANumber from the result of PlatArcSin()?
-  ANumber x(aPrecision);  // dummy variable
-//  ANumber q("10", aPrecision);  // initial value must be "significant"
+//   // how else do I get an ANumber from the result of PlatArcSin()?
+//   ANumber x(aPrecision);  // dummy variable
+// //  ANumber q("10", aPrecision);  // initial value must be "significant"
  
-  ANumber q( aPrecision);  // initial value must be "significant"
-  {
-    ANumber x(aPrecision);
-    ANumber s(aPrecision);
-    x.CopyFrom(result);
-    SinFloat(s,x);
-    ANumber orig(aPrecision);
-    orig.CopyFrom(*int1->Number(aPrecision)->iNumber);
-    Negate(orig);
-    Add(q,s,orig);
-  }
+//   ANumber q( aPrecision);  // initial value must be "significant"
+//   {
+//     ANumber x(aPrecision);
+//     ANumber s(aPrecision);
+//     x.CopyFrom(result);
+//     SinFloat(s,x);
+//     ANumber orig(aPrecision);
+//     orig.CopyFrom(*int1->Number(aPrecision)->iNumber);
+//     Negate(orig);
+//     Add(q,s,orig);
+//   }
 
-  ANumber s(aPrecision);
-  ANumber c(aPrecision);
+//   ANumber s(aPrecision);
+//   ANumber c(aPrecision);
  
-  while (Significant(q))
-  {
-    x.CopyFrom(result);
-    SinFloat(s, x);
-    Negate(s);
-    x.CopyFrom(s);
-    ANumber y(*int1->Number(aPrecision)->iNumber);
-//PrintNumber("y = ",y);
-    Add(s, x, y);
-    // now s = y - Sin(x)
-    x.CopyFrom(result);
-    CosFloat(c, x);
-    Divide(q,x,s,c);
-    // now q = (y - Sin(x)) / Cos(x)
+//   while (Significant(q))
+//   {
+//     x.CopyFrom(result);
+//     SinFloat(s, x);
+//     Negate(s);
+//     x.CopyFrom(s);
+//     ANumber y(*int1->Number(aPrecision)->iNumber);
+// //PrintNumber("y = ",y);
+//     Add(s, x, y);
+//     // now s = y - Sin(x)
+//     x.CopyFrom(result);
+//     CosFloat(c, x);
+//     Divide(q,x,s,c);
+//     // now q = (y - Sin(x)) / Cos(x)
 
-    // Calculate result:=result+q;
-    x.CopyFrom(result);
-    Add(result,x,q);
-  }
-  return FloatToString(result, aEnvironment);
+//     // Calculate result:=result+q;
+//     x.CopyFrom(result);
+//     Add(result,x,q);
+//   }
+//   return FloatToString(result, aEnvironment);
+    std::cout << "asin" << std::endl;
+    abort();
 }
 
-static void ExpFloat(ANumber& aResult, ANumber& x)
-{
-    // Exp(x)=Sum(i=0 to Inf)  x^(i) /(i)!
-    // Which incrementally becomes the algorithm:
-    //
-    ANumber one("1",aResult.iPrecision);
-    // i <- 0
-    ANumber i("0",aResult.iPrecision);
-    // sum <- 1
-    aResult.SetTo("1");
-    // term <- 1
-    ANumber term("1",aResult.iPrecision);
-    ANumber dummy(10);
+// static void ExpFloat(ANumber& aResult, ANumber& x)
+// {
+//     // // Exp(x)=Sum(i=0 to Inf)  x^(i) /(i)!
+//     // // Which incrementally becomes the algorithm:
+//     // //
+//     // ANumber one("1",aResult.iPrecision);
+//     // // i <- 0
+//     // ANumber i("0",aResult.iPrecision);
+//     // // sum <- 1
+//     // aResult.SetTo("1");
+//     // // term <- 1
+//     // ANumber term("1",aResult.iPrecision);
+//     // ANumber dummy(10);
 
-    LispInt requiredDigits = WordDigits(aResult.iPrecision, 10)+
-        x.Size()-x.iExp+1;
+//     // LispInt requiredDigits = WordDigits(aResult.iPrecision, 10)+
+//     //     x.Size()-x.iExp+1;
 
-    // While (term>epsilon)
-    while (Significant(term))
-    {
-        ANumber orig(aResult.iPrecision);
+//     // // While (term>epsilon)
+//     // while (Significant(term))
+//     // {
+//     //     ANumber orig(aResult.iPrecision);
 
-        {
-            LispInt toDunk = term.iExp - requiredDigits;
-            if (toDunk > 0)
-            {
-                term.Delete(0,toDunk);
-                term.iExp = requiredDigits;
-            }
-        }
+//     //     {
+//     //         LispInt toDunk = term.iExp - requiredDigits;
+//     //         if (toDunk > 0)
+//     //         {
+//     //             term.Delete(0,toDunk);
+//     //             term.iExp = requiredDigits;
+//     //         }
+//     //     }
 
  
-        //   i <- i+1
-        BaseAdd(i, one, WordBase);
+//     //     //   i <- i+1
+//     //     BaseAdd(i, one, WordBase);
 
-        //   term <- term*x/(i)
-        orig.CopyFrom(term);
-        Multiply(term,orig,x);
-        orig.CopyFrom(term);
-        Divide(term, dummy, orig, i);
+//     //     //   term <- term*x/(i)
+//     //     orig.CopyFrom(term);
+//     //     Multiply(term,orig,x);
+//     //     orig.CopyFrom(term);
+//     //     Divide(term, dummy, orig, i);
 
-        //   sum <- sum+term
-        orig.CopyFrom(aResult);
-        Add(aResult, orig, term);
-    }
-}
+//     //     //   sum <- sum+term
+//     //     orig.CopyFrom(aResult);
+//     //     Add(aResult, orig, term);
+//     // }
+//     std::cout << "exp" << std::endl;
+//     abort();
+// }
 
 LispObject* ExpFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-    ANumber sum(aPrecision);
-    ANumber x(*int1->Number(aPrecision)->iNumber);
-    ExpFloat(sum, x);
-    return FloatToString(sum, aEnvironment);
+    // ANumber sum(aPrecision);
+    // ANumber x(*int1->Number(aPrecision)->iNumber);
+    // ExpFloat(sum, x);
+    // return FloatToString(sum, aEnvironment);
+    std::cout << "exp" << std::endl;
+    abort();
 }
 
 LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-    // If is integer
-    if (int2->Number(aPrecision)->iNumber->iExp == 0)
-    {
-        // Raising to the power of an integer can be done fastest by squaring
-        // and bitshifting: x^(a+b) = x^a*x^b . Then, regarding each bit
-        // in y (seen as a binary number) as added, the algorithm becomes:
-        //
-        ANumber x(*int1->Number(aPrecision)->iNumber);
-        ANumber y(*int2->Number(aPrecision)->iNumber);
-        bool neg = y.iNegative;
-        y.iNegative=false;
+  //   // If is integer
+  //   if (int2->Number(aPrecision)->iNumber->iExp == 0)
+  //   {
+  //       // Raising to the power of an integer can be done fastest by squaring
+  //       // and bitshifting: x^(a+b) = x^a*x^b . Then, regarding each bit
+  //       // in y (seen as a binary number) as added, the algorithm becomes:
+  //       //
+  //       ANumber x(*int1->Number(aPrecision)->iNumber);
+  //       ANumber y(*int2->Number(aPrecision)->iNumber);
+  //       bool neg = y.iNegative;
+  //       y.iNegative=false;
  
-        // result <- 1
-        ANumber result("1",aPrecision);
-        // base <- x
-        ANumber base(aPrecision);
-        base.CopyFrom(x);
+  //       // result <- 1
+  //       ANumber result("1",aPrecision);
+  //       // base <- x
+  //       ANumber base(aPrecision);
+  //       base.CopyFrom(x);
 
-        ANumber copy(aPrecision);
+  //       ANumber copy(aPrecision);
 
-        // while (y!=0)
-        while (!IsZero(y))
-        {
-            // if (y&1 != 0)
-            if ( (y[0] & 1) != 0)
-            {
-                // result <- result*base
-                copy.CopyFrom(result);
-                Multiply(result,copy,base);
-            }
-            // base <- base*base
-            copy.CopyFrom(base);
-            Multiply(base,copy,copy);
-            // y <- y>>1
-            BaseShiftRight(y,1);
-        }
+  //       // while (y!=0)
+  //       while (!IsZero(y))
+  //       {
+  //           // if (y&1 != 0)
+  //           if ( (y[0] & 1) != 0)
+  //           {
+  //               // result <- result*base
+  //               copy.CopyFrom(result);
+  //               Multiply(result,copy,base);
+  //           }
+  //           // base <- base*base
+  //           copy.CopyFrom(base);
+  //           Multiply(base,copy,copy);
+  //           // y <- y>>1
+  //           BaseShiftRight(y,1);
+  //       }
 
-        if (neg)
-        {
-            ANumber one("1",aPrecision);
-            ANumber dummy(10);
-            copy.CopyFrom(result);
-            Divide(result,dummy,one,copy);
-        }
+  //       if (neg)
+  //       {
+  //           ANumber one("1",aPrecision);
+  //           ANumber dummy(10);
+  //           copy.CopyFrom(result);
+  //           Divide(result,dummy,one,copy);
+  //       }
  
-        // result
-        return FloatToString(result, aEnvironment);
-    }
-    Check(false, KLispErrNotInteger);
-  return 0;
+  //       // result
+  //       return FloatToString(result, aEnvironment);
+  //   }
+  //   Check(false, KLispErrNotInteger);
+  // return 0;
+    std::cout << "pow" << std::endl;
+    abort();
 }
 
 
 
 LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-    ANumber i1(*int1->Number(aPrecision)->iNumber);
-    ANumber res(aPrecision);
-    i1.ChangePrecision(aPrecision);
-    Sqrt(res,i1);
-    return FloatToString(res, aEnvironment);
+    // ANumber i1(*int1->Number(aPrecision)->iNumber);
+    // ANumber res(aPrecision);
+    // i1.ChangePrecision(aPrecision);
+    // Sqrt(res,i1);
+    // return FloatToString(res, aEnvironment);
+    std::cout << "sqrt" << std::endl;
+    abort();
 }
 
 
@@ -385,19 +378,19 @@ LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aP
 
 LispObject* ShiftLeft( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-  BigNumber *number = NEW BigNumber();
-  LispInt bits = InternalAsciiToInt(int2->String());
-  number->ShiftLeft(*int1->Number(aPrecision),bits);
-  return NEW LispNumber(number);
+    BigNumber *number = NEW BigNumber();
+    LispInt bits = InternalAsciiToInt(int2->String());
+    number->ShiftLeft(*int1->Number(aPrecision),bits);
+    return NEW LispNumber(number);
 }
 
 
 LispObject* ShiftRight( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-  BigNumber *number = NEW BigNumber();
-  LispInt bits = InternalAsciiToInt(int2->String());
-  number->ShiftRight(*int1->Number(aPrecision),bits);
-  return NEW LispNumber(number);
+    BigNumber *number = NEW BigNumber();
+    LispInt bits = InternalAsciiToInt(int2->String());
+    number->ShiftRight(*int1->Number(aPrecision),bits);
+    return NEW LispNumber(number);
 }
 
 static void DivideInteger(ANumber& aQuotient, ANumber& aRemainder,
@@ -480,347 +473,377 @@ LispString * LispFactorial(LispChar * int1, LispHashTable& aHashTable,LispInt aP
 // this will use the new BigNumber/BigInt/BigFloat scheme
 
 BigNumber::BigNumber(const LispChar * aString,LispInt aBasePrecision,LispInt aBase)
- : iReferenceCount(),iPrecision(0),iType(KInt),iNumber(NULL)
+    : iReferenceCount(),iPrecision(0),iType(KInt)
 {
-  iNumber = NULL;
-  SetTo(aString, aBasePrecision, aBase);
+    SetTo(aString, aBasePrecision, aBase);
 }
 BigNumber::BigNumber(const BigNumber& aOther)
- : iReferenceCount(),iPrecision(aOther.GetPrecision()),iType(KInt),iNumber(NULL)
+ : iReferenceCount(),iPrecision(aOther.GetPrecision()),iType(KInt)
 {
-  iNumber = NEW ANumber(*aOther.iNumber);
-  SetIsInteger(aOther.IsInt());
+    SetIsInteger(aOther.IsInt());
+
+    if (aOther.IsInt())
+        mpz_init_set(_integer, aOther._integer);
+    else {
+        mpfr_init2(_float, iPrecision);
+        mpfr_set(_float, aOther._float, MPFR_RNDN);
+    }
 }
 BigNumber::BigNumber(LispInt aPrecision)
- : iReferenceCount(),iPrecision(aPrecision),iType(KInt),iNumber(NULL)
+    : iReferenceCount(),iPrecision(aPrecision),iType(KInt)
 {
-  iNumber = NEW ANumber(bits_to_digits(aPrecision,10));
-  SetIsInteger(true);
+    SetIsInteger(true);
+
+    mpz_init(_integer);
 }
 
 BigNumber::~BigNumber()
 {
-  delete iNumber;
+    if (IsInt())
+        mpz_clear(_integer);
+    else
+        mpfr_clear(_float);
 }
 
 void BigNumber::SetTo(const BigNumber& aOther)
 {
-  iPrecision = aOther.GetPrecision();
-  if (!iNumber)
-  {
-    iNumber = NEW ANumber(*aOther.iNumber);
-  }
-  else
-  {
-    iNumber->CopyFrom(*aOther.iNumber);
-  }
-  SetIsInteger(aOther.IsInt());
+  // iPrecision = aOther.GetPrecision();
+  // if (!iNumber)
+  // {
+  //   iNumber = NEW ANumber(*aOther.iNumber);
+  // }
+  // else
+  // {
+  //   iNumber->CopyFrom(*aOther.iNumber);
+  // }
+  // SetIsInteger(aOther.IsInt());
+
+  // if (aOther._integer) {
+  //     if (_float) {
+  //         mpfr_clear(_float);
+  //         mpz_init(_integer);
+
+  //         mpz_set(_integer, aOther._integer);
+  //     } else {
+  //         mpz_set(_integer, aOther._integer);
+  //     }
+  // } else {
+  //     if (_float) {
+  //         mpfr_set(_float, aOther._float, MPFR_RNDN);
+  //     } else {
+  //         mpz_clear(_integer);
+  //         mpfr_init(_float);
+
+  //         mpfr_set(_float, aOther._float, MPFR_RNDN);
+  //     }
+  // }
+    iPrecision = aOther.GetPrecision();
+
+    if (aOther.IsInt()) {
+        BecomeInt();
+        mpz_set(_integer, aOther._integer);
+    } else {
+        BecomeFloat();
+        mpfr_set(_float, aOther._float, MPFR_RNDN);
+    }
 }
 
 /// Export a number to a string in given base to given base digits
 // FIXME API breach: aPrecision is supposed to be in digits, not bits
 void BigNumber::ToString(LispString& aResult, LispInt aBasePrecision, LispInt aBase) const
 {
-  ANumber num(*iNumber);
-//  num.CopyFrom(*iNumber);
+//   ANumber num(*iNumber);
+// //  num.CopyFrom(*iNumber);
  
-  //TODO this round-off code is not correct yet, but will work in most cases
-  // This is a bit of a messy way to round off numbers. It is probably incorrect,
-  // even. When precision drops one digit, it rounds off the last ten digits.
-  // So the following code is probably only correct if aPrecision>=num.iPrecision
-  // or if aPrecision < num.iPrecision-10
-  if (aBasePrecision<num.iPrecision)
-  {
-    if (num.iExp > 1)
-      num.RoundBits();
-  }
-  num.ChangePrecision(aBasePrecision);
+//   //TODO this round-off code is not correct yet, but will work in most cases
+//   // This is a bit of a messy way to round off numbers. It is probably incorrect,
+//   // even. When precision drops one digit, it rounds off the last ten digits.
+//   // So the following code is probably only correct if aPrecision>=num.iPrecision
+//   // or if aPrecision < num.iPrecision-10
+//   if (aBasePrecision<num.iPrecision)
+//   {
+//     if (num.iExp > 1)
+//       num.RoundBits();
+//   }
+//   num.ChangePrecision(aBasePrecision);
 
-  if (!IsInt())
-  {
-    for(;;)
-    {
-      LispInt i;
-      bool greaterOne = false;
-      if (num.iExp >= num.Size()) break;
-      for (i=num.iExp;i<num.Size();i++)
-      {
-        if (num[i] != 0)
-        {
-          if (!(i==num.iExp && num[i]<10000 && num.iTensExp == 0))
-          {
-            greaterOne=true;
-            break;
-          }
-        }
-      }
-      if (!greaterOne) break;
-      PlatDoubleWord carry=0;
-      BaseDivideInt(num,10, WordBase, carry);
-      num.iTensExp++;
+//   if (!IsInt())
+//   {
+//     for(;;)
+//     {
+//       LispInt i;
+//       bool greaterOne = false;
+//       if (num.iExp >= num.Size()) break;
+//       for (i=num.iExp;i<num.Size();i++)
+//       {
+//         if (num[i] != 0)
+//         {
+//           if (!(i==num.iExp && num[i]<10000 && num.iTensExp == 0))
+//           {
+//             greaterOne=true;
+//             break;
+//           }
+//         }
+//       }
+//       if (!greaterOne) break;
+//       PlatDoubleWord carry=0;
+//       BaseDivideInt(num,10, WordBase, carry);
+//       num.iTensExp++;
+//     }
+//   }
+
+//   ANumberToString(aResult, num, aBase,(iType == KFloat));
+
+    char* p = 0;
+
+    if (IsInt()) {
+        //gmp_asprintf(&p, "%Zd", _integer);
+        p = mpz_get_str(0, aBase, _integer);
+    } else {
+        std::ostringstream os;
+        os << "%." << bits_to_digits(iPrecision, 10) + 10 << "Rg";
+        mpfr_asprintf(&p, os.str().c_str(), _float);
     }
-  }
 
-  ANumberToString(aResult, num, aBase,(iType == KFloat));
+    aResult = p;
+
+    free(p);
 }
+
 double BigNumber::Double() const
 {
-// There are platforms that don't have strtod
-#ifdef HAVE_STRTOD
-  LispString str;
-  ANumber num(*iNumber);
-//  num.CopyFrom(*iNumber);
-  ANumberToString(str, num, 10);
-  char* endptr;
-  return strtod(str.c_str(),&endptr);
-#else
-  //FIXME
-  LISPASSERT(0);
-  return 0.0;
-#endif
+    if (IsInt())
+        return mpz_get_d(_integer);
+    else
+        return mpfr_get_d(_float, MPFR_RNDN);
 }
-
-
-
-
-
-
-
-
-
 
 void BigNumber::Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
-  SetIsInteger(aX.IsInt() && aY.IsInt());
+    const bool integer_result = aX.IsInt() && aY.IsInt();
 
+    if (aPrecision<aX.GetPrecision())
+        aPrecision=aX.GetPrecision();
+    if (aPrecision<aY.GetPrecision())
+        aPrecision=aY.GetPrecision();
 
+    if (integer_result)
+        BecomeInt();
+    else
+        BecomeFloat();
 
-  if (aPrecision<aX.GetPrecision()) aPrecision=aX.GetPrecision();
-  if (aPrecision<aY.GetPrecision()) aPrecision=aY.GetPrecision();
-
-  iNumber->ChangePrecision(bits_to_digits(aPrecision,10));
-
-
-//  if (iNumber == aX.iNumber || iNumber == aY.iNumber)
-  {
-    ANumber a1(*aX.iNumber);
-    ANumber a2(*aY.iNumber);
-    :: Multiply(*iNumber,a1,a2);
-  }
-/*TODO I don't like that multiply is destructive, but alas... x=pi;x*0.5 demonstrates this. FIXME
-  else
-  {
-    :: Multiply(*iNumber,*aX.iNumber,*aY.iNumber);
-  }
-*/
-
+    if (IsInt())
+        mpz_mul(_integer, aX._integer, aY._integer);
+    else
+        if (aX.IsInt())
+            mpfr_mul_z(_float, aY._float, aX._integer, MPFR_RNDN);
+        else if (aY.IsInt())
+            mpfr_mul_z(_float, aX._float, aY._integer, MPFR_RNDN);
+        else
+            mpfr_mul(_float, aX._float, aY._float, MPFR_RNDN);
 }
+
 void BigNumber::MultiplyAdd(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {//FIXME
   BigNumber mult;
   mult.Multiply(aX,aY,aPrecision);
   Add(*this,mult,aPrecision);
 }
+
 void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
-  SetIsInteger(aX.IsInt() && aY.IsInt());
+    const bool integer_result = aX.IsInt() && aY.IsInt();
 
-  if (aPrecision<aX.GetPrecision()) aPrecision=aX.GetPrecision();
-  if (aPrecision<aY.GetPrecision()) aPrecision=aY.GetPrecision();
+    if (aPrecision < aX.GetPrecision())
+        aPrecision = aX.GetPrecision();
 
+    if (aPrecision < aY.GetPrecision())
+        aPrecision = aY.GetPrecision();
 
-  if (iNumber != aX.iNumber && iNumber != aY.iNumber &&
-      aX.iNumber->iExp == aY.iNumber->iExp && aX.iNumber->iTensExp == aY.iNumber->iTensExp)
-  {
-    ::Add(*iNumber, *aX.iNumber, *aY.iNumber);
-  }
-  else
-  {
-    ANumber a1(*aX.iNumber );
-    ANumber a2(*aY.iNumber );
-    ::Add(*iNumber, a1, a2);
-  }
-  iNumber->SetPrecision(aPrecision);
-/* */
+    if (integer_result)
+        BecomeInt();
+    else
+        BecomeFloat();
+
+    if (IsInt())
+        mpz_add(_integer, aX._integer, aY._integer);
+    else {
+        if (aX.IsInt())
+            mpfr_add_z(_float, aY._float, aX._integer, MPFR_RNDN);
+        else if (aY.IsInt())
+            mpfr_add_z(_float, aX._float, aY._integer, MPFR_RNDN);
+        else
+            mpfr_add(_float, aX._float, aY._float, MPFR_RNDN);
+    }
 }
+
+
 void BigNumber::Negate(const BigNumber& aX)
 {
-  if (aX.iNumber != iNumber)
-  {
-    iNumber->CopyFrom(*aX.iNumber);
-  }
-  ::Negate(*iNumber);
-  SetIsInteger(aX.IsInt());
+    if (this != &aX) {
+        iPrecision = aX.iPrecision;
+
+        if (aX.IsInt()) {
+            BecomeInt();
+            mpz_neg(_integer, aX._integer);
+        } else {
+            BecomeFloat();
+            mpfr_neg(_float, aX._float, MPFR_RNDN);
+        }
+    } else {
+        if (IsInt()) {
+            mpz_t z;
+            mpz_init_set(z, _integer);
+            mpz_neg(_integer, z);
+            mpz_clear(z);
+        } else {
+            mpfr_t r;
+            mpfr_init2(r, iPrecision);
+            mpfr_set(r, _float, MPFR_RNDN);
+            mpfr_neg(_float, r, MPFR_RNDN);
+            mpfr_clear(r);
+        }
+    }
 }
 
 
-/*
-LispInt DividePrecision(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
-{
-  LispInt p=1;
-  if (aY.Sign()==0)
-  {  // zero division, report and do nothing
-    RaiseError("BigNumber::Divide: zero division request ignored\n");
-    p=0;
-  }
-  if (aX.IsInt())
-  {
-    // check for zero
-    if (aX.Sign()==0)
-    {  // divide 0 by something, set result to integer 0
-      p = 1;
-    }
-    else if (aY.IsInt())
-    {
-    }
-    else
-    {  // divide nonzero integer by nonzero float, precision is unmodified
-      p = MIN(aPrecision, aY.GetPrecision());
-    }
-  }
-  else  // aX is a float, aY is nonzero
-  {
-  // check for a floating zero
-  if (aX.Sign()==0)
-  {
-    // result is 0. with precision m-B(y)+1
-    p = aX.GetPrecision()-aY.BitCount()+1;
-  }
-    else if (aY.IsInt())
-    {  // aY is integer, must be promoted to float
-      p = (MIN(aPrecision, aX.GetPrecision()));
-    }
-    else
-    {  // both aX and aY are nonzero floats
-      p = MIN(aX.GetPrecision(), aY.GetPrecision()) - DIST(aX.GetPrecision(), aY.GetPrecision());
-      p = MIN((LispInt)aPrecision, p);
-
-      if (p<=0) p=1;
-
-      if (p<=0)
-        RaiseError("BigNumber::Divide: loss of precision with arguments %e (%d bits), %e (%d bits)", aX.Double(), aX.GetPrecision(), aY.Double(), aY.GetPrecision());
-      return p;
-    }
-  }
-  return p;
-}
-*/
 
 
 void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision)
 {
+    const bool integer_result = aX.IsInt() && aY.IsInt();
 
+    if (aPrecision<aX.GetPrecision())
+        aPrecision=aX.GetPrecision();
 
-/*
-  iPrecision = DividePrecision(aX, aY, aPrecision);
-  LispInt digitPrecision = bits_to_digits(iPrecision,10);
-  iNumber->iPrecision = digitPrecision;
-*/
+    if (aPrecision<aY.GetPrecision())
+        aPrecision=aY.GetPrecision();
 
-/* */
-  if (aPrecision<aX.GetPrecision()) aPrecision=aX.GetPrecision();
-  if (aPrecision<aY.GetPrecision()) aPrecision=aY.GetPrecision();
+    if (integer_result)
+        BecomeInt();
+    else
+        BecomeFloat();
 
-  LispInt digitPrecision = bits_to_digits(aPrecision,10);
-  iPrecision = aPrecision;
-  iNumber->iPrecision = digitPrecision;
-/* */
+    if (IsInt()) {
+        //Check(!IsZero(aY._integer),KLispErrInvalidArg);
+        mpz_div(_integer, aX._integer, aY._integer);
+    } else {
+        if (aX.IsInt()) {
+            //Check(!IsZero(aY._float),KLispErrInvalidArg);
+            mpfr_t x;
+            mpfr_init2(x, aPrecision);
+            mpfr_set_z(x, aX._integer, MPFR_RNDN);
 
-  ANumber a1(*aX.iNumber);
-//  a1.CopyFrom(*aX.iNumber);
-  ANumber a2(*aY.iNumber);
-//  a2.CopyFrom(*aY.iNumber);
-  ANumber remainder(digitPrecision);
+            mpfr_div(_float, x, aY._float, MPFR_RNDN);;
 
-  Check(!IsZero(a2),KLispErrInvalidArg);
-  if (aX.IsInt() && aY.IsInt())
-  {
-    Check(a1.iExp == 0, KLispErrNotInteger);
-    Check(a2.iExp == 0, KLispErrNotInteger);
-    SetIsInteger(true);
-    ::IntegerDivide(*iNumber, remainder, a1, a2);
-  }
-  else
-  {
-    SetIsInteger(false);
-    ::Divide(*iNumber,remainder,a1,a2);
-  }
+            mpfr_clear(x);
+
+        } else if (aY.IsInt()) {
+            //Check(!IsZero(aY._integer),KLispErrInvalidArg);
+            mpfr_div_z(_float, aX._float, aY._integer, MPFR_RNDN);
+        } else {
+            //Check(!IsZero(aY._float),KLispErrInvalidArg);
+            mpfr_div(_float, aX._float, aY._float, MPFR_RNDN);
+        }
+    }
 }
+
+
 void BigNumber::ShiftLeft(const BigNumber& aX, LispInt aNrToShift)
 {
-  if (aX.iNumber != iNumber)
-  {
-    iNumber->CopyFrom(*aX.iNumber);
-  }
-  ::BaseShiftLeft(*iNumber,aNrToShift);
+    BecomeInt();
+
+    mpz_mul_2exp(_integer, aX._integer, aNrToShift);
 }
+
 void BigNumber::ShiftRight(const BigNumber& aX, LispInt aNrToShift)
 {
-  if (aX.iNumber != iNumber)
-  {
-    iNumber->CopyFrom(*aX.iNumber);
-  }
-  ::BaseShiftRight(*iNumber,aNrToShift);
+  // if (aX.iNumber != iNumber)
+  // {
+  //   iNumber->CopyFrom(*aX.iNumber);
+  // }
+  // ::BaseShiftRight(*iNumber,aNrToShift);
+
+    BecomeInt();
+
+    if (mpz_sgn(aX._integer) >= 0)
+        mpz_tdiv_q_2exp(_integer, aX._integer, aNrToShift);
+    else
+        mpz_fdiv_q_2exp(_integer, aX._integer, aNrToShift);
 }
+
 void BigNumber::BitAnd(const BigNumber& aX, const BigNumber& aY)
 {
-  LispInt lenX=aX.iNumber->Size(), lenY=aY.iNumber->Size();
-  LispInt min=lenX,max=lenY;
-  if (min>max)
-  {
-    LispInt swap=min;
-    min=max;
-    max=swap;
-  }
-  iNumber->ResizeTo(min);
-  LispInt i;
-  for (i=0;i<min;i++)  (*iNumber)[i] = (*aX.iNumber)[i] & (*aY.iNumber)[i];
+  // LispInt lenX=aX.iNumber->Size(), lenY=aY.iNumber->Size();
+  // LispInt min=lenX,max=lenY;
+  // if (min>max)
+  // {
+  //   LispInt swap=min;
+  //   min=max;
+  //   max=swap;
+  // }
+  // iNumber->ResizeTo(min);
+  // LispInt i;
+  // for (i=0;i<min;i++)  (*iNumber)[i] = (*aX.iNumber)[i] & (*aY.iNumber)[i];
+//    std::cerr << "BigNumber::BitAnd" << std::endl;
+//    abort();
+
+    BecomeInt();
+    mpz_and(_integer, aX._integer, aY._integer);
 }
+
 void BigNumber::BitOr(const BigNumber& aX, const BigNumber& aY)
 {
-  LispInt lenX=(*aX.iNumber).Size(), lenY=(*aY.iNumber).Size();
-  LispInt min=lenX,max=lenY;
-  if (min>max)
-  {
-    LispInt swap=min;
-    min=max;
-    max=swap;
-  }
+  // LispInt lenX=(*aX.iNumber).Size(), lenY=(*aY.iNumber).Size();
+  // LispInt min=lenX,max=lenY;
+  // if (min>max)
+  // {
+  //   LispInt swap=min;
+  //   min=max;
+  //   max=swap;
+  // }
 
-  iNumber->ResizeTo(max);
+  // iNumber->ResizeTo(max);
 
-  LispInt i;
-  for (i=0;i<min;i++)    (*iNumber)[i] = (*aX.iNumber)[i] | (*aY.iNumber)[i];
-  for (;i<lenY;i++)      (*iNumber)[i] = (*aY.iNumber)[i];
-  for (;i<lenX;i++)      (*iNumber)[i] = (*aX.iNumber)[i];
+  // LispInt i;
+  // for (i=0;i<min;i++)    (*iNumber)[i] = (*aX.iNumber)[i] | (*aY.iNumber)[i];
+  // for (;i<lenY;i++)      (*iNumber)[i] = (*aY.iNumber)[i];
+  // for (;i<lenX;i++)      (*iNumber)[i] = (*aX.iNumber)[i];
+    std::cerr << "BigNumber::BitOr" << std::endl;
+    abort();
 }
+
 void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
 {
-  LispInt lenX=(*aX.iNumber).Size(), lenY=(*aY.iNumber).Size();
-  LispInt min=lenX,max=lenY;
-  if (min>max)
-  {
-    LispInt swap=min;
-    min=max;
-    max=swap;
-  }
+  // LispInt lenX=(*aX.iNumber).Size(), lenY=(*aY.iNumber).Size();
+  // LispInt min=lenX,max=lenY;
+  // if (min>max)
+  // {
+  //   LispInt swap=min;
+  //   min=max;
+  //   max=swap;
+  // }
  
-  iNumber->ResizeTo(max);
+  // iNumber->ResizeTo(max);
 
-  LispInt i;
-  for (i=0;i<min;i++)  (*iNumber)[i] = (*aX.iNumber)[i] ^ (*aY.iNumber)[i];
-  for (;i<lenY;i++)    (*iNumber)[i] = (*aY.iNumber)[i];
-  for (;i<lenX;i++)    (*iNumber)[i] = (*aX.iNumber)[i];
+  // LispInt i;
+  // for (i=0;i<min;i++)  (*iNumber)[i] = (*aX.iNumber)[i] ^ (*aY.iNumber)[i];
+  // for (;i<lenY;i++)    (*iNumber)[i] = (*aY.iNumber)[i];
+  // for (;i<lenX;i++)    (*iNumber)[i] = (*aX.iNumber)[i];
+    std::cerr << "BigNumber::BitXor" << std::endl;
+    abort();
 }
 
 void BigNumber::BitNot(const BigNumber& aX)
 {// FIXME?
-  LispInt len=(*aX.iNumber).Size();
+  // LispInt len=(*aX.iNumber).Size();
  
-  iNumber->ResizeTo(len);
+  // iNumber->ResizeTo(len);
 
-  LispInt i;
-  for (i=0;i<len;i++)  (*iNumber)[i] = ~((*aX.iNumber)[i]);
+  // LispInt i;
+  // for (i=0;i<len;i++)  (*iNumber)[i] = ~((*aX.iNumber)[i]);
+    std::cerr << "BigNumber::BitNot" << std::endl;
+    abort();
 }
 
 
@@ -828,322 +851,375 @@ void BigNumber::BitNot(const BigNumber& aX)
 // give BitCount as platform integer
 signed long BigNumber::BitCount() const
 {
-/*
-  int low=0;
-  int high = 0;
-  int i;
-  for (i=0;i<iNumber->Size();i++)
-  {
-    if ((*iNumber)[i] != 0)
-    {
-      high = i;
-    }
-  }
-  if (low > high)
-    low = high;
-  LispInt bits=(high-low)*sizeof(PlatWord)*8;
-  return bits;
-*/
+// /*
+//   int low=0;
+//   int high = 0;
+//   int i;
+//   for (i=0;i<iNumber->Size();i++)
+//   {
+//     if ((*iNumber)[i] != 0)
+//     {
+//       high = i;
+//     }
+//   }
+//   if (low > high)
+//     low = high;
+//   LispInt bits=(high-low)*sizeof(PlatWord)*8;
+//   return bits;
+// */
 
-  if (IsZero(*iNumber)) return 0;//-(1L<<30);
-  ANumber num(*iNumber);
-//  num.CopyFrom(*iNumber);
+//   if (IsZero(*iNumber)) return 0;//-(1L<<30);
+//   ANumber num(*iNumber);
+// //  num.CopyFrom(*iNumber);
 
-  if (num.iTensExp < 0)
-  {
-    LispInt digs = WordDigits(num.iPrecision, 10);
-    PlatWord zero=0;
-    while(num.iExp<digs)
-    {
-        num.Insert(0,zero);
-        num.iExp++;
-    }
-  }
-  while (num.iTensExp < 0)
-  {
-    PlatDoubleWord carry=0;
-    BaseDivideInt(num,10, WordBase, carry);
-    num.iTensExp++;
-  }
-  while (num.iTensExp > 0)
-  {
-    BaseTimesInt(num,10, WordBase);
-    num.iTensExp--;
-  }
+//   if (num.iTensExp < 0)
+//   {
+//     LispInt digs = WordDigits(num.iPrecision, 10);
+//     PlatWord zero=0;
+//     while(num.iExp<digs)
+//     {
+//         num.Insert(0,zero);
+//         num.iExp++;
+//     }
+//   }
+//   while (num.iTensExp < 0)
+//   {
+//     PlatDoubleWord carry=0;
+//     BaseDivideInt(num,10, WordBase, carry);
+//     num.iTensExp++;
+//   }
+//   while (num.iTensExp > 0)
+//   {
+//     BaseTimesInt(num,10, WordBase);
+//     num.iTensExp--;
+//   }
 
-  LispInt i,nr=num.Size();
-  for (i=nr-1;i>=0;i--)
-  {
-    if (num[i] != 0) break;
-  }
-  LispInt bits=(i-num.iExp)*sizeof(PlatWord)*8;
-  if (i>=0)
-  {
-    PlatWord w=num[i];
-    while (w)
-    {
-      w>>=1;
-      bits++;
+//   LispInt i,nr=num.Size();
+//   for (i=nr-1;i>=0;i--)
+//   {
+//     if (num[i] != 0) break;
+//   }
+//   LispInt bits=(i-num.iExp)*sizeof(PlatWord)*8;
+//   if (i>=0)
+//   {
+//     PlatWord w=num[i];
+//     while (w)
+//     {
+//       w>>=1;
+//       bits++;
+//     }
+//   }
+//   return (bits);
+
+    if (IsInt()) {
+        const int sgn = mpz_sgn(_integer);
+        return sgn * mpz_sizeinbase(_integer, 2);
     }
-  }
-  return (bits);
+
+    const int sgn = mpfr_sgn(_float);
+
+    if (sgn == 0)
+        return 0;
+
+    mpfr_t k;
+    mpfr_init2(k, iPrecision);
+    mpfr_abs(k, _float, MPFR_RNDN);
+
+    mpfr_t l;
+    mpfr_init2(l, iPrecision);
+    mpfr_log2(l, k, MPFR_RNDN);
+
+    mpz_t m;
+    mpz_init(m);
+    mpfr_get_z(m, l, MPFR_RNDD);
+    const long int n = mpz_get_si(m);
+
+    mpfr_clear(k);
+    mpfr_clear(l);
+    mpz_clear(m);
+
+    return sgn * (n + 1);
 }
+
 LispInt BigNumber::Sign() const
 {
-  if (iNumber->iNegative) return -1;
-  if (IsZero(*iNumber)) return 0;
-  return 1;
-}
+    if (IsInt())
+        return mpz_sgn(_integer);
 
+    return mpfr_sgn(_float);
+  // if (iNumber->iNegative) return -1;
+  // if (IsZero(*iNumber)) return 0;
+  // return 1;
+}
 
 void BigNumber::DumpDebugInfo() const
 {
-#ifdef HAVE_STDIO_H
-  if (!iNumber)
-  {
-    printf("No number representation\n");
-  }
-  else
-  {
-    PrintNumber("Number:",*iNumber);
-  }
-#else
-#endif
+    std::cout << "integer: " << IsInt() << std::endl;
+    LispString s;
+    ToString(s, iPrecision, 10);
+    std::cout << "value:" << s.c_str()  << std::endl;
+
+    // if (IsInt()) {
+    //     char* p = 0;
+    //     p = mpz_get_str(0, 10, _integer);
+    //     std::cout << "value: " << p << std::endl;
+    //     free(p);
+    // } else {
+    //     char* p = 0;
+    //     mp_exp_t exp;
+    //     p = mpfr_get_str(0, &exp, 10, 0, _float, MPFR_RNDN);
+    //     std::cout << "value: " << p << std::endl;
+    //     std::cout << "point: " << exp << std::endl;
+    //     free(p);
+    // }
 }
 
 
 /// integer operation: *this = y mod z
 void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
 {
-    ANumber a1(*aY.iNumber);
-    ANumber a2(*aZ.iNumber);
-//    a1.CopyFrom(*aY.iNumber);
-//    a2.CopyFrom(*aZ.iNumber);
-    Check(a1.iExp == 0, KLispErrNotInteger);
-    Check(a2.iExp == 0, KLispErrNotInteger);
-    Check(!IsZero(a2),KLispErrInvalidArg);
+//     ANumber a1(*aY.iNumber);
+//     ANumber a2(*aZ.iNumber);
+// //    a1.CopyFrom(*aY.iNumber);
+// //    a2.CopyFrom(*aZ.iNumber);
+//     Check(a1.iExp == 0, KLispErrNotInteger);
+//     Check(a2.iExp == 0, KLispErrNotInteger);
+//     Check(!IsZero(a2),KLispErrInvalidArg);
 
-    ANumber quotient(static_cast<LispInt>(0));
-    ::IntegerDivide(quotient, *iNumber, a1, a2);
+//     ANumber quotient(static_cast<LispInt>(0));
+//     ::IntegerDivide(quotient, *iNumber, a1, a2);
 
-    if (iNumber->iNegative)
-    {
-      ANumber a3(*iNumber);
-//      a3.CopyFrom(*iNumber);
-      ::Add(*iNumber, a3, a2);
-    }
-    SetIsInteger(true);
+//     if (iNumber->iNegative)
+//     {
+//       ANumber a3(*iNumber);
+// //      a3.CopyFrom(*iNumber);
+//       ::Add(*iNumber, a3, a2);
+//     }
+//     SetIsInteger(true);
+    std::cerr << "BigNumber::Mod" << std::endl;
+    abort();
 }
 
 void BigNumber::Floor(const BigNumber& aX)
 {
-    iNumber->CopyFrom(*aX.iNumber);
-    //  If iExp is zero, then we can not look at the decimals and determine the floor.
-    // This number has to have digits (see code later in this routine that does a division).
-    // Not extending the digits caused the MathFloor function to fail on n*10-m where n was an
-    // integer. The code below divides away the 10^-m, but since iExp was zero, this resulted in a
-    // premature truncation (seen when n<0)
-    if (iNumber->iExp == 0)
-      iNumber->ChangePrecision(iNumber->iPrecision);
+    // iNumber->CopyFrom(*aX.iNumber);
+    // //  If iExp is zero, then we can not look at the decimals and determine the floor.
+    // // This number has to have digits (see code later in this routine that does a division).
+    // // Not extending the digits caused the MathFloor function to fail on n*10-m where n was an
+    // // integer. The code below divides away the 10^-m, but since iExp was zero, this resulted in a
+    // // premature truncation (seen when n<0)
+    // if (iNumber->iExp == 0)
+    //   iNumber->ChangePrecision(iNumber->iPrecision);
 
-    if (iNumber->iExp>1)
-      iNumber->RoundBits();
+    // if (iNumber->iExp>1)
+    //   iNumber->RoundBits();
 
-    //TODO FIXME slow code! But correct
-    if (iNumber->iTensExp > 0)
-    {
-      while (iNumber->iTensExp > 0)
-      {
-        BaseTimesInt(*iNumber,10, WordBase);
-        iNumber->iTensExp--;
-      }
-    }
-    else if (iNumber->iTensExp < 0)
-    {
-      while (iNumber->iTensExp < 0)
-      {
-        PlatDoubleWord carry;
-        BaseDivideInt(*iNumber,10, WordBase, carry);
-        iNumber->iTensExp++;
-      }
-    }
-    iNumber->ChangePrecision(iNumber->iPrecision);
-    LispInt i=0;
-    LispInt fraciszero=true;
-    while (i<iNumber->iExp && fraciszero)
-    {
-        PlatWord digit = (*iNumber)[i];
-        if (digit != 0)
-            fraciszero=false;
-        i++;
-    }
-    iNumber->Delete(0,iNumber->iExp);
-    iNumber->iExp=0;
+    // //TODO FIXME slow code! But correct
+    // if (iNumber->iTensExp > 0)
+    // {
+    //   while (iNumber->iTensExp > 0)
+    //   {
+    //     BaseTimesInt(*iNumber,10, WordBase);
+    //     iNumber->iTensExp--;
+    //   }
+    // }
+    // else if (iNumber->iTensExp < 0)
+    // {
+    //   while (iNumber->iTensExp < 0)
+    //   {
+    //     PlatDoubleWord carry;
+    //     BaseDivideInt(*iNumber,10, WordBase, carry);
+    //     iNumber->iTensExp++;
+    //   }
+    // }
+    // iNumber->ChangePrecision(iNumber->iPrecision);
+    // LispInt i=0;
+    // LispInt fraciszero=true;
+    // while (i<iNumber->iExp && fraciszero)
+    // {
+    //     PlatWord digit = (*iNumber)[i];
+    //     if (digit != 0)
+    //         fraciszero=false;
+    //     i++;
+    // }
+    // iNumber->Delete(0,iNumber->iExp);
+    // iNumber->iExp=0;
 
-    if (iNumber->iNegative && !fraciszero)
-    {
-        ANumber orig(*iNumber);
-//        orig.CopyFrom(*iNumber););
-        ANumber minone("-1",10);
-        ::Add(*iNumber,orig,minone);
+    // if (iNumber->iNegative && !fraciszero)
+    // {
+    //     ANumber orig(*iNumber);
+    //     ANumber minone("-1",10);
+    //     ::Add(*iNumber,orig,minone);
+    // }
+    // SetIsInteger(true);
+
+    if (this != &aX) {
+        if (!IsInt()) {
+            mpz_init(_integer);
+            mpfr_clear(_float);
+            SetIsInteger(true);
+        }
+
+        if (aX.IsInt())
+            mpz_set(_integer, aX._integer);
+        else
+            mpfr_get_z(_integer, aX._float, MPFR_RNDD);
+
+    } else {
+        if (IsInt())
+            return;
+
+        mpz_init(_integer);
+        mpfr_get_z(_integer, _float, MPFR_RNDD);
+        mpfr_clear(_float);
+        SetIsInteger(true);
     }
-    SetIsInteger(true);
 }
 
-
 void BigNumber::Precision(LispInt aPrecision)
-{//FIXME
-  if (aPrecision<0) aPrecision=0;
-  if (aPrecision < iPrecision)
-  {
-  }
-  else
-  {
-    iNumber->ChangePrecision(bits_to_digits(aPrecision,10));
-  }
-  SetIsInteger(iNumber->iExp == 0 && iNumber->iTensExp == 0);
-  iPrecision = aPrecision;
+{
+    if (aPrecision<0)
+        aPrecision=0;
+
+    // if (aPrecision < iPrecision)
+    // {
+    // }
+    // else
+    // {
+    //     iNumber->ChangePrecision(bits_to_digits(aPrecision,10));
+    // }
+    // SetIsInteger(iNumber->iExp == 0 && iNumber->iTensExp == 0);
+
+    iPrecision = aPrecision;
 }
 
 
 //basic object manipulation
 bool BigNumber::Equals(const BigNumber& aOther) const
 {
-
-  if (iNumber->iExp == aOther.iNumber->iExp)
-  {
-    iNumber->DropTrailZeroes();
-    aOther.iNumber->DropTrailZeroes();
- 
-    if (IsZero(*iNumber))
-        iNumber->iNegative = false;
-    if (IsZero(*aOther.iNumber))
-        aOther.iNumber->iNegative = false;
-    if (iNumber->ExactlyEqual(*aOther.iNumber))
-      return true;
-    if (IsInt())
-      return false;
-    if (aOther.iNumber->iNegative != iNumber->iNegative)
-      return false;
-    }
-
-  {
-    //TODO optimize!!!!
-    LispInt precision = GetPrecision();
-    if (precision<aOther.GetPrecision()) precision = aOther.GetPrecision();
-/*For tiny numbers like 1e-600, the following seemed necessary to compare it with zero.
-    if (precision< (35*-iNumber->iTensExp)/10)
-      precision =  (35*-iNumber->iTensExp)/10;
-    if (precision< (35*-aOther.iNumber->iTensExp)/10)
-      precision =  (35*-aOther.iNumber->iTensExp)/10;
-*/
-    BigNumber diff;
-    BigNumber otherNeg;
-    otherNeg.Negate(aOther);
-    diff.Add(*this,otherNeg,bits_to_digits(precision,10));
-
-#ifdef CORRECT_DIVISION
-    // if the numbers are float, make sure they are normalized
-    if (diff.iNumber->iExp || diff.iNumber->iTensExp)
-    {
-      LispInt pr = diff.iNumber->iPrecision;
-      if (pr<iPrecision)
-        pr = iPrecision;
-      if (pr<aOther.iPrecision)
-        pr = aOther.iPrecision;
-      NormalizeFloat(*diff.iNumber,WordDigits(pr, 10));
-    }
-#endif // CORRECT_DIVISION
-
-
-    return !Significant(*diff.iNumber);
-  }
+    if (IsInt() && aOther.IsInt())
+        return mpz_cmp(_integer, aOther._integer) == 0;
+    else if (IsInt() && !aOther.IsInt())
+        return mpfr_cmp_z (aOther._float, _integer) == 0;
+    else if (!IsInt() && aOther.IsInt())
+        return mpfr_cmp_z (_float, aOther._integer) == 0;
+    else
+        return mpfr_cmp(_float, aOther._float) == 0;
 }
 
 
 bool BigNumber::IsInt() const
 {
-  return (iType == KInt);
+    return iType == KInt;
 }
 
 
 bool BigNumber::IsIntValue() const
 {
-//FIXME I need to round first to get more reliable results.
-  if (IsInt()) return true;
-  iNumber->DropTrailZeroes();
-  if (iNumber->iExp == 0 && iNumber->iTensExp == 0) return true;
-  BigNumber num(iPrecision);
-  num.Floor(*this);
-  return Equals(num);
-
+// //FIXME I need to round first to get more reliable results.
+//   if (IsInt()) return true;
+//   iNumber->DropTrailZeroes();
+//   if (iNumber->iExp == 0 && iNumber->iTensExp == 0) return true;
+//   BigNumber num(iPrecision);
+//   num.Floor(*this);
+//   return Equals(num);
+    std::cerr << "BigNumber::IsIntValue" << std::endl;
+    abort();
 }
 
 
 bool BigNumber::IsSmall() const
 {
-  if (IsInt())
-  {
-    PlatWord* ptr = &((*iNumber)[iNumber->Size()-1]);
-    LispInt nr=iNumber->Size();
-    while (nr>1 && *ptr == 0) {ptr--;nr--;}
-    return (nr <= iNumber->iExp+1);
-  }
-  else
-  // a function to test smallness of a float is not present in ANumber, need to code a workaround to determine whether a number fits into double.
-  {
-    LispInt tensExp = iNumber->iTensExp;
-    if (tensExp<0)tensExp = -tensExp;
-    return
-    (
-      iNumber->iPrecision <= 53  // standard float is 53 bits
-      && tensExp<1021 // 306  // 1021 bits is about 306 decimals
-    );
-    // standard range of double precision is about 53 bits of mantissa and binary exponent of about 1021
-  }
+  // if (IsInt())
+  // {
+  //   PlatWord* ptr = &((*iNumber)[iNumber->Size()-1]);
+  //   LispInt nr=iNumber->Size();
+  //   while (nr>1 && *ptr == 0) {ptr--;nr--;}
+  //   return (nr <= iNumber->iExp+1);
+  // }
+  // else
+  // // a function to test smallness of a float is not present in ANumber, need to code a workaround to determine whether a number fits into double.
+  // {
+  //   LispInt tensExp = iNumber->iTensExp;
+  //   if (tensExp<0)tensExp = -tensExp;
+  //   return
+  //   (
+  //     iNumber->iPrecision <= 53  // standard float is 53 bits
+  //     && tensExp<1021 // 306  // 1021 bits is about 306 decimals
+  //   );
+  //   // standard range of double precision is about 53 bits of mantissa and binary exponent of about 1021
+  // }
+
+    if (IsInt()) {
+        return mpz_fits_slong_p(_integer);
+    }
+
+    return true;
 }
 
 
 void BigNumber::BecomeInt()
 {
-  while (iNumber->iTensExp > 0)
-  {
-    BaseTimesInt(*iNumber,10, WordBase);
-    iNumber->iTensExp--;
-  }
-  while (iNumber->iTensExp < 0)
-  {
-    PlatDoubleWord carry=0;
-    BaseDivideInt(*iNumber,10, WordBase, carry);
-    iNumber->iTensExp++;
-  }
+  // while (iNumber->iTensExp > 0)
+  // {
+  //   BaseTimesInt(*iNumber,10, WordBase);
+  //   iNumber->iTensExp--;
+  // }
+  // while (iNumber->iTensExp < 0)
+  // {
+  //   PlatDoubleWord carry=0;
+  //   BaseDivideInt(*iNumber,10, WordBase, carry);
+  //   iNumber->iTensExp++;
+  // }
  
-  iNumber->ChangePrecision(0);
-  SetIsInteger(true);
+  // iNumber->ChangePrecision(0);
+  // SetIsInteger(true);
+    if (IsInt())
+        return;
+
+    mpz_init(_integer);
+    mpfr_get_z(_integer, _float, MPFR_RNDZ);
+    mpfr_clear(_float);
+
+    SetIsInteger(true);
 }
 
 /// Transform integer to float, setting a given bit precision.
 /// Note that aPrecision=0 means automatic setting (just enough digits to represent the integer).
 void BigNumber::BecomeFloat(LispInt aPrecision)
 {//FIXME: need to specify precision explicitly
-  if (IsInt())
-  {
+  // if (IsInt())
+  // {
+  //   LispInt precision = aPrecision;
+  //   if (iPrecision > aPrecision)
+  //     precision = iPrecision;
+  //   iNumber->ChangePrecision(bits_to_digits(precision,10));  // is this OK or ChangePrecision means floating-point precision?
+  //   SetIsInteger(false);
+  // }
+    if (!IsInt())
+        return;
+
     LispInt precision = aPrecision;
     if (iPrecision > aPrecision)
-      precision = iPrecision;
-    iNumber->ChangePrecision(bits_to_digits(precision,10));  // is this OK or ChangePrecision means floating-point precision?
+        precision = iPrecision;
+
+    mpfr_init2(_float, precision);
+    mpfr_set_z(_float, _integer, MPFR_RNDN);
+    mpz_clear(_integer);
     SetIsInteger(false);
-  }
 }
 
 
 bool BigNumber::LessThan(const BigNumber& aOther) const
 {
-  ANumber a1(*this->iNumber);
-//  a1.CopyFrom(*this->iNumber);
-  ANumber a2(*aOther.iNumber);
-//  a2.CopyFrom(*aOther.iNumber);
-  return ::LessThan(a1, a2);
+    if (IsInt() && aOther.IsInt())
+        return mpz_cmp(_integer, aOther._integer) < 0;
+    else if (IsInt() && !aOther.IsInt())
+        return mpfr_cmp_z (aOther._float, _integer) > 0;
+    else if (!IsInt() && aOther.IsInt())
+        return mpfr_cmp_z (_float, aOther._integer) < 0;
+    else
+        return mpfr_cmp(_float, aOther._float) < 0;
 }
 
 
@@ -1152,45 +1228,37 @@ bool BigNumber::LessThan(const BigNumber& aOther) const
 // assign from a platform type
 void BigNumber::SetTo(long aValue)
 {
-#ifdef HAVE_STDIO_H
-  char dummy[150];
-  //FIXME platform code
-#ifdef HAVE_VSNPRINTF
-  snprintf(dummy,150,"%ld",aValue);
-#else
-  sprintf(dummy,"%ld",aValue);
-#endif
-  SetTo(dummy,iPrecision,10);
-  SetIsInteger(true);
-#else
-  //FIXME
-  LISPASSERT(0);
-#endif
+    BecomeInt();
+
+    mpz_set_si(_integer, aValue);
 }
 
 
 void BigNumber::SetTo(double aValue)
 {
-#ifdef HAVE_STDIO_H
-  iPrecision = 53;  // standard double has 53 bits
-  char dummy[150];
-  //FIXME platform code
-  char format[20];
-#ifdef HAVE_VSNPRINTF
-  snprintf(format,20,"%%.%dg",iPrecision);
-  snprintf(dummy,150,format,aValue);
-#else
-  sprintf(format,"%%.%dg",iPrecision);
-  sprintf(dummy,format,aValue);
-#endif
-  SetTo(dummy,iPrecision,BASE10);
-  SetIsInteger(false);
-//  if (iNumber->iExp > 1)
-//    iNumber->RoundBits();
-#else
-  //FIXME
-  LISPASSERT(0);
-#endif
+// #ifdef HAVE_STDIO_H
+//   iPrecision = 53;  // standard double has 53 bits
+//   char dummy[150];
+//   //FIXME platform code
+//   char format[20];
+// #ifdef HAVE_VSNPRINTF
+//   snprintf(format,20,"%%.%dg",iPrecision);
+//   snprintf(dummy,150,format,aValue);
+// #else
+//   sprintf(format,"%%.%dg",iPrecision);
+//   sprintf(dummy,format,aValue);
+// #endif
+//   SetTo(dummy,iPrecision,BASE10);
+//   SetIsInteger(false);
+// //  if (iNumber->iExp > 1)
+// //    iNumber->RoundBits();
+// #else
+//   //FIXME
+//   LISPASSERT(0);
+// #endif
+    iPrecision = bits_to_digits(53, 10);
+    BecomeFloat();
+    mpfr_set_d(_float, aValue, MPFR_RNDN);
 }
 
 LispInt CalculatePrecision(const LispChar * aString,LispInt aBasePrecision,LispInt aBase, bool& aIsFloat)
@@ -1285,28 +1353,33 @@ FND_2:
 
 // assign from string at given precision (the API says in base digits)
 // FIXME: API breach: aPrecision is passed in digits but used as if it were bits
-void BigNumber::SetTo(const LispChar * aString,LispInt aBasePrecision,LispInt aBase)
+void BigNumber::SetTo(const LispChar* aString, LispInt aBasePrecision, LispInt aBase)
 {//FIXME -- what?
-//  iPrecision = digits_to_bits(aBasePrecision,BASE10);
-  bool isFloat = 0;
-  LispInt digits = aBasePrecision;
-  iPrecision = CalculatePrecision(aString,aBasePrecision,aBase, isFloat);
+// //  iPrecision = digits_to_bits(aBasePrecision,BASE10);
 
-/*
-  const LispChar * ptr = aString;
-  while (*ptr && *ptr != '.') ptr++;
-  if (*ptr == '.')
-  {
-    isFloat = 1;
-  }
-*/
-  if (!iNumber)   iNumber = NEW ANumber(digits);
-  iNumber->SetPrecision(digits);
-  iNumber->SetTo(aString,aBase);
+    const LispChar* ptr = aString;
+    while (*ptr && *ptr != '.')
+        ptr++;
+
+    bool is_float = *ptr == '.';
+
+    iPrecision = CalculatePrecision(aString, aBasePrecision, aBase, is_float);
+
+    if (is_float) {
+        SetIsInteger(false);
+        mpfr_init2(_float, iPrecision);
+        mpfr_set_str(_float, aString, aBase, MPFR_RNDN);
+    } else {
+        SetIsInteger(true);
+        mpz_init(_integer);
+        mpz_set_str(_integer, aString, aBase);
+    }
+
+// */
+//   if (!iNumber)   iNumber = NEW ANumber(digits);
+//   iNumber->SetPrecision(digits);
+//   iNumber->SetTo(aString,aBase);
  
-  SetIsInteger(!isFloat && iNumber->iExp == 0 && iNumber->iTensExp == 0);
+//   SetIsInteger(!isFloat && iNumber->iExp == 0 && iNumber->iTensExp == 0);
+//    std::cerr << "BigNumber::SetToString: " << aString << std::endl;
 }
-
-
-
-
