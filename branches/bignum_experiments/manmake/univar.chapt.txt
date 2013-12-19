@@ -293,6 +293,30 @@ $$ p[1]* ... * p[m] $$
 
 *SEE FindRealRoots, NumRealRoots, MinimumBound, MaximumBound, Factor
 
+*CMD SquareFreeFactorize --- return square-free decomposition of polynomial
+*STD
+*CALL
+	SquareFreeFactorize(p,x)
+
+*PARMS
+
+{p} - a polynomial in {x}
+
+*DESC
+
+Given a polynomial $p$ having square-free decomposition 
+$$ p = p[1]^n[1] * ... * p[m]^n[m] $$
+where $p[i]$ are square-free and $n[i+1]>n[i]$,
+return the list of pairs ($p[i]$, $n[i]$)
+
+*E.G.
+
+	In> Expand((x+1)^5)
+	Out> x^5+5*x^4+10*x^3+10*x^2+5*x+1
+	In> SquareFreeFactorize(%,x)
+	Out> {{x+1,5}}
+
+*SEE Factor
 
 
 
