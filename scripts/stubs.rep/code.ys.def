@@ -19,4 +19,5 @@ Lcm
 Floor
 Ceil
 Round
+PolynomialGcd
 }
