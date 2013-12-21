@@ -1,7 +1,7 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 
 bin_PROGRAMS =  yacas
-noinst_PROGRAMS = mkfastprimes gencorefunctions
+noinst_PROGRAMS = gencorefunctions
 EXTRA_PROGRAMS = codereviewer
 
 noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
@@ -29,7 +29,7 @@ yacas_SOURCES = yacasmain.cpp stdcommandline.cpp deffile.cpp infixparser.cpp lis
         commandline.cpp \
 	anumber.cpp yacasnumbers.cpp numbers.cpp \
 	platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
-	lispstring.cpp mathutil.cpp yacasbase.cpp debugmem.cpp fastprimes.c
+	lispstring.cpp mathutil.cpp yacasbase.cpp debugmem.cpp
 
 if LINUX
 yacas_SOURCES += unixcommandline.cpp
@@ -39,7 +39,7 @@ if WIN32
 yacas_SOURCES += win32commandline.cpp
 endif
 
-yacas_DEPENDENCIES = fastprimes.c version.h GPL_stuff.h 
+yacas_DEPENDENCIES = version.h GPL_stuff.h 
 
 mathcommands3.$(OBJEXT): version.h
 
@@ -58,9 +58,6 @@ $(srcdir)/gencorefunctions.cpp: core_yacasmain.h corefunctions.h
 core_yacasmain.h: $(srcdir)/yacasmain.cpp
 	grep '^CORE_KERNEL_FUNCTION' $(srcdir)/yacasmain.cpp > $@
 
-mkfastprimes_SOURCES = mkfastprimes.cpp 
-
-
 EXTRA_DIST =  anumber.inl deffile.inl  \
 	grower.inl lisphash.inl lispobject.inl \
 	lispstring.inl standard.inl \
@@ -69,19 +66,11 @@ EXTRA_DIST =  anumber.inl deffile.inl  \
 	lisptype.h \
 	platfileio.h \
 	debugmem.h \
-	fastprimes.c core_yacasmain.h 
+	core_yacasmain.h 
 
 
 # list some extra generated files
-CLEANFILES = fastprimes.c core_yacasmain.h 
-
-$(srcdir)/platmath.cpp: fastprimes.c
-
-fastprimes.c: mkfastprimes$(EXEEXT)
-	./mkfastprimes$(EXEEXT) > fastprimes.c
-# We don't want $(srcdir)/mkfastprimes because this executable
-# is not generated inside the $(srcdir). 
-
+CLEANFILES = core_yacasmain.h 
 
 yacas_include = $(datadir)/yacas/include
 
