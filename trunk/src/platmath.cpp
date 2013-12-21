@@ -11,6 +11,8 @@
 #include "platmath.h"
 #include "errors.h"
 
+#include <bitset>
+#include <iostream>
 
 double GetDouble(LispObject* aInteger)
 {
@@ -54,29 +56,39 @@ LispObject* PlatDiv(LispEnvironment& aEnvironment,LispObject* int1, LispObject* 
   return Double(aEnvironment,((long)GetDouble(int1))/((long)GetDouble(int2)));
 }
 
+namespace {
+    static const std::size_t MAX_SMALL_PRIME = 65537;
 
-/// fast checking for prime numbers
+    static std::bitset<MAX_SMALL_PRIME / 2 + 1> _primes_table;
 
-#include "fastprimes.c"
+    static class InitPrimesTable {
+    public:
+        InitPrimesTable();
+    } _init_primes_table;
 
-/* subroutine returns 1 if p is in the table of prime numbers up to primes_table_limit */
+    InitPrimesTable::InitPrimesTable()
+    {
+        for (std::size_t i = 3; i < MAX_SMALL_PRIME; i += 2)
+            for (std::size_t j = 3; j < MAX_SMALL_PRIME / i; j += 2)
+                _primes_table.set((i * j) / 2);
+    }
+}
+
 unsigned primes_table_check(unsigned long p)
 {
-  unsigned long index;
-  unsigned field;
-  if (p==0) return primes_table_limit;
-  if (p==2) return 1;
-  if (p<2 || p>primes_table_limit || (p & 1) == 0) return 0;
-  p >>= 1;
-  // get index in 8-bit chunks
-  index = p >> 3;
-  field = p & 7;
-  return ((primes_table[index] & (1 << field))==0) ? 0 : 1;
+    if (p==0)
+        return MAX_SMALL_PRIME;
+
+    if (p == 2)
+        return 1;
+
+    if (p < 2 || p > MAX_SMALL_PRIME || (p & 1) == 0)
+        return 0;
+
+    return !_primes_table.test(p / 2);
 }
 
 LispObject* PlatIsPrime(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
     return Double(aEnvironment, primes_table_check((unsigned long)(GetDouble(int1))));
 }
-
-

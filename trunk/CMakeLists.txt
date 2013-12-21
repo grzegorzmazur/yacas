@@ -60,16 +60,7 @@ include_directories(
   "${PROJECT_BINARY_DIR}"
   )
 
-add_executable (mkfastprimes src/mkfastprimes.cpp)
-
-add_custom_command(OUTPUT fastprimes.c
-                   COMMAND mkfastprimes
-                   ARGS > fastprimes.c
-                   DEPENDS mkfastprimes
-                   COMMENT "generating prime numbers"
-                   VERBATIM)
-
-set (YACAS_COMMON_SOURCES src/yacasmain.cpp src/stdcommandline.cpp src/deffile.cpp src/infixparser.cpp src/lispatom.cpp src/lispcleanupstack.cpp src/lispenvironment.cpp src/lispeval.cpp src/lisperror.cpp src/lispio.cpp src/lispobject.cpp src/lispparser.cpp src/lispuserfunc.cpp src/mathcommands.cpp src/mathenvironment.cpp src/mathuserfunc.cpp src/standard.cpp src/ src/stdfileio.cpp src/arggetter.cpp src/stringio.cpp src/tokenizer.cpp src/yacasapi.cpp src/genericobject.cpp src/arrayclass.cpp src/lispevalhash.cpp src/patterns.cpp src/patternclass.cpp src/substitute.cpp src/mathcommands2.cpp src/mathcommands3.cpp src/errors.cpp src/patcher.cpp src/genericstructs.cpp src/xmltokenizer.cpp src/commandline.cpp src/anumber.cpp src/yacasnumbers.cpp src/numbers.cpp src/platmath.cpp src/grower.cpp src/stdstubs.cpp src/obmalloc.cpp src/lisphash.cpp src/lispstring.cpp src/mathutil.cpp src/yacasbase.cpp src/debugmem.cpp fastprimes.c)
+set (YACAS_COMMON_SOURCES src/yacasmain.cpp src/stdcommandline.cpp src/deffile.cpp src/infixparser.cpp src/lispatom.cpp src/lispcleanupstack.cpp src/lispenvironment.cpp src/lispeval.cpp src/lisperror.cpp src/lispio.cpp src/lispobject.cpp src/lispparser.cpp src/lispuserfunc.cpp src/mathcommands.cpp src/mathenvironment.cpp src/mathuserfunc.cpp src/standard.cpp src/ src/stdfileio.cpp src/arggetter.cpp src/stringio.cpp src/tokenizer.cpp src/yacasapi.cpp src/genericobject.cpp src/arrayclass.cpp src/lispevalhash.cpp src/patterns.cpp src/patternclass.cpp src/substitute.cpp src/mathcommands2.cpp src/mathcommands3.cpp src/errors.cpp src/patcher.cpp src/genericstructs.cpp src/xmltokenizer.cpp src/commandline.cpp src/anumber.cpp src/yacasnumbers.cpp src/numbers.cpp src/platmath.cpp src/grower.cpp src/stdstubs.cpp src/obmalloc.cpp src/lisphash.cpp src/lispstring.cpp src/mathutil.cpp src/yacasbase.cpp src/debugmem.cpp)
 
 set (YACAS_UNIX_SOURCES src/unixcommandline.cpp)
 set (YACAS_WIN32_SOURCES src/win32commandline.cpp)
