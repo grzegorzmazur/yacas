@@ -80,7 +80,6 @@
 //#define PROMPT_SHOW_FREE_MEMORY
 
 #ifdef SUPPORT_SERVER
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>

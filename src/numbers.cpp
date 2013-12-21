@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <string.h>
 #include "lisptype.h"
 #include "numbers.h"
 #include "standard.h"
