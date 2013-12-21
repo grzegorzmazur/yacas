@@ -68,9 +68,12 @@ namespace {
 
     InitPrimesTable::InitPrimesTable()
     {
-        for (std::size_t i = 3; i < MAX_SMALL_PRIME; i += 2)
+        for (std::size_t i = 3; i < MAX_SMALL_PRIME; i += 2) {
+            if (_primes_table.test(i / 2))
+                continue;
             for (std::size_t j = 3; j < MAX_SMALL_PRIME / i; j += 2)
                 _primes_table.set((i * j) / 2);
+        }
     }
 }
 
