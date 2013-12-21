@@ -71,8 +71,8 @@ void CheckNrArgs(LispInt n, LispPtr& aArguments,
       InternalIntToAscii(str,passed);
       aEnvironment.iErrorOutput.Write(str);
       aEnvironment.iErrorOutput.Write("\n");
-      Check(passed == needed,KLispErrWrongNumberOfArgs);
     }
+  throw static_cast<LispInt>(KLispErrWrongNumberOfArgs);
 }
 
 
@@ -87,15 +87,15 @@ void CheckFuncGeneric(LispInt aError,LispPtr& aArguments,
     {
       ShowStack(aEnvironment);
       ShowFunctionError(aArguments, aEnvironment);
-      Check(0,aError);
     }
+    throw aError;
 }
 
 void CheckFuncGeneric(LispInt aError,
                       LispEnvironment& aEnvironment)
 {
     ShowStack(aEnvironment);
-    Check(0,aError);
+    throw aError;
 }
 
 void CheckArgType(LispInt aArgNr, LispPtr& aArguments,LispEnvironment& aEnvironment,
@@ -140,7 +140,7 @@ void CheckArgType(LispInt aArgNr, LispPtr& aArguments,LispEnvironment& aEnvironm
       aArguments->iFileName,
       aArguments->iLine ); )
     }
-    Check(0,aError);
+    throw aError;
 }
 
 char *GenericErrorBuf()
@@ -165,7 +165,7 @@ void RaiseError(const char* str,...)
 #else
   std::memcpy(GenericErrorBuf(), str, std::strlen(str));
 #endif
-  Check(false,KLispErrGenericFormat);
+  throw static_cast<LispInt>(KLispErrGenericFormat);
 }
 
 
