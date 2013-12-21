@@ -12,7 +12,6 @@
 #include "errors.h"
 
 #include <bitset>
-#include <iostream>
 
 double GetDouble(LispObject* aInteger)
 {
