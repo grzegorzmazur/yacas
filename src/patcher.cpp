@@ -20,16 +20,18 @@ REDO:
 }
 static LispInt FindMarkerEnd(const LispChar* aPtr, LispInt aFrom)
 {
-REDO:
-    while (aPtr[aFrom] && aPtr[aFrom] != '?') aFrom++;
+    for (;;) {
+        while (aPtr[aFrom] && aPtr[aFrom] != '?')
+            aFrom++;
 
-    if (aPtr[aFrom] == '\0')
-        return aFrom;
+        if (aPtr[aFrom] == '\0')
+            return aFrom;
 
-    if (aPtr[aFrom+1] == '>')
-        return aFrom;
-    aFrom+=2;
-    goto REDO;
+        if (aPtr[aFrom+1] == '>')
+            return aFrom;
+
+        aFrom+=2;
+    }
 }
 
 static LispInt FindEndAscii(const LispChar* aPtr, LispInt aFrom)
