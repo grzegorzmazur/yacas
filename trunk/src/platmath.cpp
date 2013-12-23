@@ -1,7 +1,4 @@
 /* Math using the standard library, if the precision is less than 13 */
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include "yacasprivate.h"
 #include "yacasbase.h"
 #include "lispobject.h"
@@ -11,7 +8,10 @@
 #include "platmath.h"
 #include "errors.h"
 
+#include <stdio.h>
+
 #include <bitset>
+#include <cmath>
 
 double GetDouble(LispObject* aInteger)
 {
@@ -37,22 +37,22 @@ LispObject* Double(LispEnvironment& aEnvironment,double aValue)
 
 LispObject* PlatArcSin(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-  return Double(aEnvironment, asin(GetDouble(int1)));
+    return Double(aEnvironment, std::asin(GetDouble(int1)));
 }
 
 LispObject* PlatLn(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
 {
-  return Double(aEnvironment, log(GetDouble(int1)));
+    return Double(aEnvironment, std::log(GetDouble(int1)));
 }
 
 LispObject* PlatPower(LispEnvironment& aEnvironment,LispObject* int1, LispObject* int2, LispInt aPrecision)
 {
-  return Double(aEnvironment, pow(GetDouble(int1),GetDouble(int2)));
+    return Double(aEnvironment, std::pow(GetDouble(int1),GetDouble(int2)));
 }
 
 LispObject* PlatDiv(LispEnvironment& aEnvironment,LispObject* int1, LispObject* int2,LispInt aPrecision)
 {
-  return Double(aEnvironment,((long)GetDouble(int1))/((long)GetDouble(int2)));
+    return Double(aEnvironment,((long)GetDouble(int1))/((long)GetDouble(int2)));
 }
 
 namespace {
