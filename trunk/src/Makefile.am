@@ -8,7 +8,7 @@ noinst_HEADERS = anumber.h choices.h deffile.h grower.h \
 	infixparser.h lispassert.h lispatom.h lispcleanupstack.h \
 	lispenvironment.h lisperror.h lispeval.h lispevalhash.h \
 	lispglobals.h lisphash.h lispio.h lispobject.h lispparser.h \
-	lispstring.h lispuserfunc.h corefunctions.h mathcommands.h mathenvironment.h patcher.h  \
+	lispstring.h lispuserfunc.h corefunctions.h core_yacasmain.h mathcommands.h mathenvironment.h patcher.h  \
 	mathuserfunc.h numbers.h platmath.h standard.h patterns.h errors.h arggetter.h \
 	stdfileio.h stringio.h stubs.h tokenizer.h yacas.h refcount.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
@@ -54,10 +54,6 @@ gencorefunctions_SOURCES = gencorefunctions.cpp
 # force core_yacasmain.h to be created
 $(srcdir)/gencorefunctions.cpp: core_yacasmain.h corefunctions.h
 
-# this file is generated from yacasmain.cpp
-core_yacasmain.h: $(srcdir)/yacasmain.cpp
-	grep '^CORE_KERNEL_FUNCTION' $(srcdir)/yacasmain.cpp > $@
-
 EXTRA_DIST =  anumber.inl deffile.inl  \
 	grower.inl lisphash.inl lispobject.inl \
 	lispstring.inl standard.inl \
@@ -65,12 +61,8 @@ EXTRA_DIST =  anumber.inl deffile.inl  \
 	version.h \
 	lisptype.h \
 	platfileio.h \
-	debugmem.h \
-	core_yacasmain.h 
+	debugmem.h
 
-
-# list some extra generated files
-CLEANFILES = core_yacasmain.h 
 
 yacas_include = $(datadir)/yacas/include
 
