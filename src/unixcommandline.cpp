@@ -209,6 +209,7 @@ LispInt CUnixCommandLine::GetKey()
                     c=eEscape;
                     break;
                 case '[':
+                case 79:
                     {
                         c = getc(stdin); /* get command character */
                         switch (c)
