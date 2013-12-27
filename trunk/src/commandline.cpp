@@ -1,4 +1,3 @@
-
 #include "yacasprivate.h"
 #include "commandline.h"
 
@@ -52,8 +51,8 @@ void CCommandLine::ReadLineSub(const LispChar * prompt)
 
     for (;;)
     {
-        int c;
-        c=GetKey();
+        const int c = GetKey();
+
         switch (c)
         {
         case eDelete:
