@@ -1,14 +1,14 @@
 ## Makefile.am -- Process this file with automake to produce Makefile.in
 
 bin_PROGRAMS =  yacas
-noinst_PROGRAMS = mkfastprimes gencorefunctions
+noinst_PROGRAMS = gencorefunctions
 EXTRA_PROGRAMS = codereviewer
 
 noinst_HEADERS = anumber.h dnumber.h choices.h deffile.h grower.h \
 	infixparser.h lispassert.h lispatom.h lispcleanupstack.h \
 	lispenvironment.h lisperror.h lispeval.h lispevalhash.h \
 	lispglobals.h lisphash.h lispio.h lispobject.h lispparser.h \
-	lispstring.h lispuserfunc.h corefunctions.h mathcommands.h mathenvironment.h patcher.h  \
+	lispstring.h lispuserfunc.h corefunctions.h core_yacasmain.h mathcommands.h mathenvironment.h patcher.h  \
 	mathuserfunc.h numbers.h platmath.h standard.h patterns.h errors.h arggetter.h \
 	stdfileio.h stringio.h stubs.h tokenizer.h yacas.h refcount.h \
 	genericobject.h arrayclass.h evalfunc.h commandline.h unixcommandline.h \
@@ -29,7 +29,7 @@ yacas_SOURCES = yacasmain.cpp stdcommandline.cpp deffile.cpp infixparser.cpp lis
         commandline.cpp \
 	anumber.cpp dnumber.cpp yacasnumbers.cpp numbers.cpp \
 	platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp lisphash.cpp \
-	lispstring.cpp mathutil.cpp yacasbase.cpp debugmem.cpp fastprimes.c
+	lispstring.cpp mathutil.cpp yacasbase.cpp debugmem.cpp
 
 if LINUX
 yacas_SOURCES += unixcommandline.cpp
@@ -39,7 +39,7 @@ if WIN32
 yacas_SOURCES += win32commandline.cpp
 endif
 
-yacas_DEPENDENCIES = fastprimes.c version.h GPL_stuff.h 
+yacas_DEPENDENCIES = version.h GPL_stuff.h 
 
 mathcommands3.$(OBJEXT): version.h
 
@@ -54,13 +54,6 @@ gencorefunctions_SOURCES = gencorefunctions.cpp
 # force core_yacasmain.h to be created
 $(srcdir)/gencorefunctions.cpp: core_yacasmain.h corefunctions.h
 
-# this file is generated from yacasmain.cpp
-core_yacasmain.h: $(srcdir)/yacasmain.cpp
-	grep '^CORE_KERNEL_FUNCTION' $(srcdir)/yacasmain.cpp > $@
-
-mkfastprimes_SOURCES = mkfastprimes.cpp 
-
-
 EXTRA_DIST =  anumber.inl deffile.inl  \
 	grower.inl lisphash.inl lispobject.inl \
 	lispstring.inl standard.inl \
@@ -68,19 +61,7 @@ EXTRA_DIST =  anumber.inl deffile.inl  \
 	version.h \
 	lisptype.h \
 	platfileio.h \
-	debugmem.h \
-	fastprimes.c core_yacasmain.h 
-
-
-# list some extra generated files
-CLEANFILES = fastprimes.c core_yacasmain.h 
-
-$(srcdir)/platmath.cpp: fastprimes.c
-
-fastprimes.c: mkfastprimes$(EXEEXT)
-	./mkfastprimes$(EXEEXT) > fastprimes.c
-# We don't want $(srcdir)/mkfastprimes because this executable
-# is not generated inside the $(srcdir). 
+	debugmem.h
 
 
 yacas_include = $(datadir)/yacas/include

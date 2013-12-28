@@ -318,7 +318,7 @@ Function("FactorQS",{n})[
 
     f' := Deriv(x)f;
 
-    g := Monic(Gcd(f, f'));
+    g := PolynomialGcd(f, f');
     h := Div(f, g);
 
     m := {};
@@ -329,7 +329,7 @@ Function("FactorQS",{n})[
         Local(gg, hh, mi);
 
         // FIXME: once polynomial GCD works correctly, the If will be redundant
-        hh := If (g = 1 Or g = h, g, Gcd(g, h));
+        hh := PolynomialGcd(g, h);
         gg := Div(g, hh);
 
         mi := Monic(Div(h, hh));

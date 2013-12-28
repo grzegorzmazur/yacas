@@ -34,9 +34,9 @@ fi;
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS(unistd.h sys/ioctl.h sys/socket.h sys/time.h sys/types.h)
-AC_CHECK_HEADERS(malloc.h memory.h stdlib.h stdio.h ctype.h dlfcn.h dl.h dld.h)
-AC_CHECK_HEADERS(dirent.h math.h stdarg.h signal.h)
+AC_CHECK_HEADERS(unistd.h sys/ioctl.h sys/socket.h sys/time.h sys/types.h sys/sysinfo.h)
+AC_CHECK_HEADERS(malloc.h memory.h stdlib.h stdio.h ctype.h)
+AC_CHECK_HEADERS(dirent.h stdarg.h signal.h)
 AC_CHECK_HEADERS(string.h strings.h)
 
 # Checks for libraries.

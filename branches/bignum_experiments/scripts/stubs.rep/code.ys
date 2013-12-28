@@ -206,6 +206,18 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
   Echo("Not simplified");
 ];
 
+5 # PolynomialGcd(1, m_CanBeUni)_(Length(VarList(m))=1) <-- 1;
+5 # PolynomialGcd(m_CanBeUni, 1)_(Length(VarList(m))=1) <-- 1;
+
+10 # PolynomialGcd(m_CanBeUni, m_CanBeUni)_(Length(VarList(m))=1) <-- Monic(m);
+
+30 # PolynomialGcd(n_CanBeUni, m_CanBeUni)_(Length(VarList(n*m))=1) <--
+[
+  Local(vars);
+  vars:=VarList(n+m);
+  Monic(NormalForm(Gcd(MakeUni(n,vars),MakeUni(m,vars))));
+];
+
 
 /* Least common multiple */
 5  # Lcm(a_IsInteger,b_IsInteger) <-- Div(a*b,Gcd(a,b));

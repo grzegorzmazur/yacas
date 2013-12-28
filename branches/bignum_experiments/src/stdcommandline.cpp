@@ -36,25 +36,23 @@ void CStdCommandLine::ReadLine(const LispChar * prompt)
     fputs(prompt, stdout); fflush(stdout);
     char buffer[4001];
     int offs=0;
-    char* ok;
-MORE:
-    ok = fgets(&buffer[offs],4000-offs,stdin);
 
-    if (!ok || feof(stdin))
-        strcpy(buffer,"quit");
+    do {
 
-    offs=strlen(buffer);
+        const char* ok = fgets(&buffer[offs],4000-offs,stdin);
 
-    if (buffer[offs-1] == '\n')
-    {
-        offs--;
-        buffer[offs] = '\0';
-    }
+        if (!ok || feof(stdin))
+            strcpy(buffer, "quit");
 
-    if (offs<1)
-        goto MORE;
-    if (buffer[offs-1] == '\\')
-        goto MORE;
+        offs=strlen(buffer);
+
+        if (buffer[offs-1] == '\n') {
+            offs -= 1;
+            buffer[offs] = '\0';
+        }
+
+    } while (offs < 1 || buffer[offs-1] == '\\');
+
     iLine.ResizeTo(offs+1);
     strcpy(&iLine[0],buffer);
 }

@@ -21,9 +21,7 @@
 #include "errors.h"
 #include "patcher.h"
 
-#ifdef HAVE_MATH_H
-  #include <math.h>
-#endif
+#include <cmath>
 
 #undef VERSION
 
@@ -386,49 +384,35 @@ void LispFastIsPrime(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 // define a macro to replace all platform math functions
 
-  #ifndef HAVE_MATH_H
-  // this warning is here just to be sure what we are compiling
-    #warning do not have math.h
-    #define PLATFORM_UNARY(LispName, PlatformName, LispBackupName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
-{ \
-      LispBackupName(aEnvironment, aStackTop); \
-}
-    #define PLATFORM_BINARY(LispName, PlatformName, LispBackupName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
-{ \
-      LispBackupName(aEnvironment, aStackTop); \
-}
-  #else  // HAVE_MATH_H
-    #define PLATFORM_UNARY(LispName, PlatformName, LispBackupName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
-{ \
-      RefPtr<BigNumber> x; \
-      GetNumber(x,aEnvironment, aStackTop, 1); \
-      double result = PlatformName(x->Double()); \
-      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision()); \
-      z->SetTo(result); \
-      RESULT = (NEW LispNumber(z)); \
-}
-    #define PLATFORM_BINARY(LispName, PlatformName, LispBackupName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
-{ \
-      RefPtr<BigNumber> x, y; \
-      GetNumber(x,aEnvironment, aStackTop, 1); \
-      GetNumber(y,aEnvironment, aStackTop, 2); \
-      double result = PlatformName(x->Double(), y->Double()); \
-      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision()); \
-      z->SetTo(result); \
-      RESULT = (NEW LispNumber(z)); \
-}
-  #endif
+#define PLATFORM_UNARY(LispName, PlatformName, LispBackupName, OldName) \
+    void LispName(LispEnvironment& aEnvironment, LispInt aStackTop)     \
+    {                                                                   \
+        RefPtr<BigNumber> x;                                            \
+        GetNumber(x,aEnvironment, aStackTop, 1);                        \
+        double result = PlatformName(x->Double());                      \
+        BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());   \
+        z->SetTo(result);                                               \
+        RESULT = (NEW LispNumber(z));                                   \
+    }
+
+#define PLATFORM_BINARY(LispName, PlatformName, LispBackupName, OldName) \
+    void LispName(LispEnvironment& aEnvironment, LispInt aStackTop)     \
+    {                                                                   \
+        RefPtr<BigNumber> x, y;                                         \
+        GetNumber(x,aEnvironment, aStackTop, 1);                        \
+        GetNumber(y,aEnvironment, aStackTop, 2);                        \
+        double result = PlatformName(x->Double(), y->Double());         \
+        BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());   \
+        z->SetTo(result);                                               \
+        RESULT = (NEW LispNumber(z));                                   \
+    }
 
 // now we can define all such functions, e.g.:
 
 // some or all of these functions should be moved to scripts
-  PLATFORM_UNARY(LispFastArcSin, asin, LispArcSin, PlatArcSin)
-  PLATFORM_UNARY(LispFastLog, log, LispLn, PlatLn)
-  PLATFORM_BINARY(LispFastPower, pow, LispPower, PlatPower)
+PLATFORM_UNARY(LispFastArcSin, std::asin, LispArcSin, PlatArcSin)
+PLATFORM_UNARY(LispFastLog, std::log, LispLn, PlatLn)
+PLATFORM_BINARY(LispFastPower, std::pow, LispPower, PlatPower)
 
 
 
