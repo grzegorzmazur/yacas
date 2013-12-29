@@ -73,7 +73,10 @@ set (YACAS_SCRIPTS scripts/corefunctions.ys scripts/packages.ys scripts/standard
 
 add_executable (yacas ${YACAS_SOURCES})
 
-set_property(SOURCE src/gencorefunctions.cpp APPEND PROPERTY OBJECT_DEPENDS core_yacasmain.h)
+if (WIN32)
+  target_link_libraries (yacas wsock32 ws2_32)
+endif()
+
 add_executable (gencorefunctions src/gencorefunctions.cpp)
 
 add_executable (codereviewer src/codereviewer.cpp)
@@ -84,13 +87,12 @@ add_executable (riptestfromyart docs/riptestfromyart.cpp)
 add_executable (manripper manmake/manripper.cpp)
 add_executable (removeduplicates manmake/removeduplicates.cpp)
 
-install (TARGETS yacas DESTINATION bin)
-install (FILES ${PROJECT_BINARY_DIR}/scripts.dat DESTINATION lib)
-install (DIRECTORY scripts/ DESTINATION share/yacas)
-install (DIRECTORY docs/ DESTINATION share/yacas/documentation FILES_MATCHING PATTERN "*.html")
-install (DIRECTORY docs/ DESTINATION share/yacas/documentation FILES_MATCHING PATTERN "*.gif")
-install (DIRECTORY docs/ DESTINATION share/yacas/documentation FILES_MATCHING PATTERN "*.css")
-install (DIRECTORY docs/ DESTINATION share/yacas/documentation FILES_MATCHING PATTERN "*.js")
+install (TARGETS yacas RUNTIME DESTINATION bin COMPONENT app)
+install (DIRECTORY scripts/ DESTINATION share/yacas COMPONENT app)
+install (DIRECTORY docs/ DESTINATION share/yacas/documentation COMPONENT doc FILES_MATCHING PATTERN "*.html")
+install (DIRECTORY docs/ DESTINATION share/yacas/documentation COMPONENT doc FILES_MATCHING PATTERN "*.gif")
+install (DIRECTORY docs/ DESTINATION share/yacas/documentation COMPONENT doc FILES_MATCHING PATTERN "*.css")
+install (DIRECTORY docs/ DESTINATION share/yacas/documentation COMPONENT doc FILES_MATCHING PATTERN "*.js")
 
 add_executable (dumpversion JavaYacas/dumpversion.cpp)
 
@@ -108,3 +110,26 @@ set (CMAKE_JAVA_INCLUDE_PATH ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/jyacas.dir/)
 set (CMAKE_JAVA_JAR_ENTRY_POINT net/sf/yacas/YacasConsole)
 
 add_jar (jyacas ${CMAKE_CURRENT_BINARY_DIR}/CVersion.java JavaYacas/net/sf/yacas/GraphicsPrimitives.java JavaYacas/net/sf/yacas/SBox.java JavaYacas/net/sf/yacas/SBoxBuilder.java JavaYacas/net/sf/yacas/TeXParser.java JavaYacas/net/sf/yacas/FormulaViewApplet.java JavaYacas/net/sf/yacas/Grapher.java JavaYacas/net/sf/yacas/GrapherApplet.java JavaYacas/net/sf/yacas/StdFileOutput.java JavaYacas/net/sf/yacas/StdFileInput.java JavaYacas/net/sf/yacas/JarInputFile.java JavaYacas/net/sf/yacas/CachedStdFileInput.java JavaYacas/net/sf/yacas/InputStatus.java JavaYacas/net/sf/yacas/LispInput.java JavaYacas/net/sf/yacas/LispDefFile.java JavaYacas/net/sf/yacas/LispDefFiles.java JavaYacas/net/sf/yacas/InputDirectories.java JavaYacas/net/sf/yacas/LispOutput.java JavaYacas/net/sf/yacas/LispHashTable.java JavaYacas/net/sf/yacas/LispAssociatedHash.java JavaYacas/net/sf/yacas/LispGlobal.java JavaYacas/net/sf/yacas/LispGlobalVariable.java JavaYacas/net/sf/yacas/LispArgList.java JavaYacas/net/sf/yacas/GenericClass.java JavaYacas/net/sf/yacas/LispGenericClass.java JavaYacas/net/sf/yacas/ArrayClass.java JavaYacas/net/sf/yacas/LispInfixOperator.java JavaYacas/net/sf/yacas/LispPtr.java JavaYacas/net/sf/yacas/LispObject.java JavaYacas/net/sf/yacas/LispPrinter.java JavaYacas/net/sf/yacas/LispError.java JavaYacas/net/sf/yacas/LispTokenizer.java JavaYacas/net/sf/yacas/LispParser.java JavaYacas/net/sf/yacas/LispAtom.java JavaYacas/net/sf/yacas/LispNumber.java JavaYacas/net/sf/yacas/LispSubList.java JavaYacas/net/sf/yacas/LispStandard.java JavaYacas/net/sf/yacas/LispUserFunctions.java JavaYacas/net/sf/yacas/LispArityUserFunction.java JavaYacas/net/sf/yacas/BranchingUserFunction.java JavaYacas/net/sf/yacas/MacroUserFunction.java JavaYacas/net/sf/yacas/ListedMacroUserFunction.java JavaYacas/net/sf/yacas/ListedBranchingUserFunction.java JavaYacas/net/sf/yacas/LispMultiUserFunction.java JavaYacas/net/sf/yacas/StringInput.java JavaYacas/net/sf/yacas/StringOutput.java JavaYacas/net/sf/yacas/InfixParser.java JavaYacas/net/sf/yacas/ParsedObject.java JavaYacas/net/sf/yacas/LispEvaluatorBase.java JavaYacas/net/sf/yacas/BigNumber.java JavaYacas/net/sf/yacas/YacasEvaluator.java JavaYacas/net/sf/yacas/YacasEvalCaller.java JavaYacas/net/sf/yacas/YacasCoreCommands.java JavaYacas/net/sf/yacas/UserStackInformation.java JavaYacas/net/sf/yacas/BasicEvaluator.java JavaYacas/net/sf/yacas/EvalFuncBase.java JavaYacas/net/sf/yacas/LispOperators.java JavaYacas/net/sf/yacas/LispUserFunction.java JavaYacas/net/sf/yacas/LispPtrArray.java JavaYacas/net/sf/yacas/LispLocalFrame.java JavaYacas/net/sf/yacas/LispIterator.java JavaYacas/net/sf/yacas/InfixPrinter.java JavaYacas/net/sf/yacas/LispEnvironment.java JavaYacas/net/sf/yacas/MathCommands.java JavaYacas/net/sf/yacas/YacasPatternPredicateBase.java JavaYacas/net/sf/yacas/PatternClass.java JavaYacas/net/sf/yacas/CYacas.java JavaYacas/net/sf/yacas/YacasConsole.java JavaYacas/net/sf/yacas/ConsoleApplet.java JavaYacas/net/sf/yacas/CDataReader.java JavaYacas/net/sf/yacas/HintItem.java JavaYacas/net/sf/yacas/HintWindow.java JavaYacas/net/sf/yacas/Hints.java JavaYacas/net/sf/yacas/SelectSymbol.java JavaYacas/net/sf/yacas/TResult.java JavaYacas/net/sf/yacas/YacasInterpreter.java JavaYacas/net/sf/yacas/YacasParamMatcherBase.java JavaYacas/net/sf/yacas/MatchSubList.java JavaYacas/net/sf/yacas/MatchNumber.java JavaYacas/net/sf/yacas/MatchAtom.java JavaYacas/net/sf/yacas/MatchVariable.java JavaYacas/net/sf/yacas/TWord.java JavaYacas/net/sf/yacas/YacasGraphicsContext.java JavaYacas/net/sf/yacas/Article.java JavaYacas/net/sf/yacas/DatahubApplet.java JavaYacas/net/sf/yacas/XmlTokenizer.java JavaYacas/net/sf/yacas/SubstBehaviourBase.java JavaYacas/net/sf/yacas/SubstBehaviour.java JavaYacas/net/sf/yacas/LocalSymbolBehaviour.java JavaYacas/net/sf/yacas/BackQuoteBehaviour.java JavaYacas/net/sf/yacas/YacasException.java ${YACAS_SCRIPTS})
+
+if (UNIX)
+  set (CPACK_GENERATOR DEB)
+  set (CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
+else ()
+  set (CPACK_GENERATOR NSIS)
+  set (CPACK_NSIS_MODIFY_PATH ON)
+endif ()
+
+set(CPACK_PACKAGE_NAME "yacas")
+set(CPACK_PACKAGE_VENDOR "CMake.org")
+set(CPACK_PACKAGE_CONTACT "yacas-devel@lists.sourceforge.net")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "MyLib - CPack Component Installation Example")
+set(CPACK_PACKAGE_VERSION ${YACAS_VERSION})
+set(CPACK_PACKAGE_VERSION_MAJOR ${YACAS_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${YACAS_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${YACAS_VERSION_MICRO})
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "yacas")
+
+set(CPACK_COMPONENT_APP_DISPLAY_NAME "Yacas Application")
+set(CPACK_COMPONENT_DOC_DISPLAY_NAME "Yacas Documentation")
+
+include (CPack)
