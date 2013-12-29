@@ -44,6 +44,7 @@
 #endif
 
 #include <ctime>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <string>
