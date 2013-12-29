@@ -94,14 +94,10 @@ install (DIRECTORY docs/ DESTINATION share/yacas/documentation COMPONENT doc FIL
 install (DIRECTORY docs/ DESTINATION share/yacas/documentation COMPONENT doc FILES_MATCHING PATTERN "*.css")
 install (DIRECTORY docs/ DESTINATION share/yacas/documentation COMPONENT doc FILES_MATCHING PATTERN "*.js")
 
-add_executable (dumpversion JavaYacas/dumpversion.cpp)
-
-add_custom_command (
-  OUTPUT CVersion.java
-  COMMAND dumpversion
-  ARGS > ${CMAKE_CURRENT_BINARY_DIR}/CVersion.java
-  COMMENT "generating java engine version"
-  VERBATIM)
+configure_file (
+  "${PROJECT_SOURCE_DIR}/JavaYacas/CVersion.java.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/CVersion.java"
+  )
 
 file (COPY ${PROJECT_SOURCE_DIR}/scripts DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/jyacas.dir)
 
