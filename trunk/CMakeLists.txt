@@ -63,7 +63,7 @@ include_directories(
 set (YACAS_COMMON_SOURCES src/yacasmain.cpp src/stdcommandline.cpp src/deffile.cpp src/infixparser.cpp src/lispatom.cpp src/lispcleanupstack.cpp src/lispenvironment.cpp src/lispeval.cpp src/lisperror.cpp src/lispio.cpp src/lispobject.cpp src/lispparser.cpp src/lispuserfunc.cpp src/mathcommands.cpp src/mathenvironment.cpp src/mathuserfunc.cpp src/standard.cpp src/ src/stdfileio.cpp src/arggetter.cpp src/stringio.cpp src/tokenizer.cpp src/yacasapi.cpp src/genericobject.cpp src/arrayclass.cpp src/lispevalhash.cpp src/patterns.cpp src/patternclass.cpp src/substitute.cpp src/mathcommands2.cpp src/mathcommands3.cpp src/errors.cpp src/patcher.cpp src/genericstructs.cpp src/xmltokenizer.cpp src/commandline.cpp src/anumber.cpp src/yacasnumbers.cpp src/numbers.cpp src/platmath.cpp src/grower.cpp src/stdstubs.cpp src/obmalloc.cpp src/lisphash.cpp src/lispstring.cpp src/mathutil.cpp src/yacasbase.cpp src/debugmem.cpp)
 
 set (YACAS_UNIX_SOURCES src/unixcommandline.cpp)
-#set (YACAS_WIN32_SOURCES src/win32commandline.cpp src/yacas.rc)
+set (YACAS_WIN32_SOURCES src/win32commandline.cpp src/yacas.rc)
 set (YACAS_WIN32_SOURCES src/win32commandline.cpp)
 
 if (UNIX)
@@ -123,7 +123,7 @@ else ()
   set (CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL "ON")
   set (CPACK_NSIS_HELP_LINK "http://yacas.sourceforge.net/")
   set (CPACK_NSIS_URL_INFO_ABOUT "http://yacas.sourceforge.net/")
-  #set (CPACK_NSIS_MUI_ICON "${PROJECT_SOURCE_DIR}/yacas.ico")
+  set (CPACK_NSIS_MUI_ICON "${PROJECT_SOURCE_DIR}/yacas.ico")
   set (CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\yacas.exe")
   set (CPACK_CREATE_DESKTOP_LINKS "yacas.exe" "yacas")
 endif ()
