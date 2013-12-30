@@ -51,7 +51,6 @@
 #include <sstream>
 #include <vector>
 
-// For all platforms, assume forward slash as path separator (handle at the lowest level).
 #define PATH_SEPARATOR   '/'
 #define PATH_SEPARATOR_2 "/"
 
@@ -65,6 +64,7 @@
 #define _WIN32_WINDOWS 0x0410      // Make sure that Waitable Timer functions are declared in winbase.h
 #include "win32commandline.h"
 #define FANCY_COMMAND_LINE CWin32CommandLine
+#include "shlwapi.h"
 #endif
 
 #include "stdcommandline.h"
@@ -235,6 +235,7 @@ const char* ReadInputString(const char* prompt)
                 else if (key == "?")
                     url = prefix + "refmanual.html";
 
+#ifndef WIN32
                 const std::string viewer = "xdg-open";
 
                 const std::string cmd = viewer + " " + url;
@@ -243,6 +244,12 @@ const char* ReadInputString(const char* prompt)
                     inpline = "True";
                 else
                     inpline = "False";
+#else
+                if ((int)ShellExecuteA(0, "open", url.c_str(), 0, 0, SW_SHOWNORMAL) > 32)
+                    inpline = "True";
+                else
+                    inpline = "False";
+#endif
             }
         }
     }
@@ -421,6 +428,9 @@ void DeclarePath(const char *ptr2)
         os << "DefaultDirectory(\"" << ptr2 << "\");";
 
     yacas->Evaluate(os.str().c_str());
+
+    if (yacas->IsError())
+        std::cout << "Failed to set default directory: " << yacas->Error() << "\n";
 }
 
 void LoadYacas(LispOutput* aOutput = 0)
@@ -446,8 +456,15 @@ void LoadYacas(LispOutput* aOutput = 0)
         const char *ptr1, *ptr2;
         ptr1 = ptr2 = root_dir;
         while (*ptr1 != '\0') {
-            while (*ptr1 != '\0' && *ptr1 != ':') ptr1++;
+#ifndef WIN32
+            while (*ptr1 != '\0' && *ptr1 != ':')
+                ptr1++;
             if (*ptr1 == ':') {
+#else
+            while (*ptr1 != '\0' && *ptr1 != ';')
+                ptr1++;
+            if (*ptr1 == ';') {
+#endif
                 const std::string path(ptr2, ptr1);
                 DeclarePath(path.c_str());
                 ptr1++;
@@ -855,11 +872,7 @@ void runconsole(const char* inprompt, const char* outprompt)
                       << GPL_blurb_nohelp << TEXMACS_DATA_END;
         } else {
             std::cout << "This is Yacas version '" << VERSION << "'.\n";
-#ifdef WIN32
-            std::cout << GPL_blurb_nohelp;
-#else
             std::cout << GPL_blurb;
-#endif
             std::cout << "To exit Yacas, enter  Exit(); or quit or Ctrl-c.\n"
                       << "Type 'restart' to restart Yacas.\n"
                       << "To see example commands, keep typing Example();\n";
@@ -1058,6 +1071,15 @@ int main(int argc, char** argv)
     unsigned char first_stack_var = 0;
     the_first_stack_var = &first_stack_var;
 
+#ifdef WIN32
+    char root_dir_buf[MAX_PATH];
+    SHRegGetPathA(HKEY_LOCAL_MACHINE, "SOFTWARE\\yacas\\yacas", 0, root_dir_buf, 0);
+    std::strcat(root_dir_buf, "\\share\\yacas");
+    for (char* p = root_dir_buf; *p; ++p)
+        if (*p == '\\')
+            *p = '/';
+    root_dir = root_dir_buf;
+#endif
 
 // #ifdef YACAS_DEBUG
 // //        PlatAlloc(100); // test the alloc memory leak checker
