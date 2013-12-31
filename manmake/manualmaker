@@ -492,14 +492,10 @@ RuleBase("TeXMath", {x});
 RuleBase("TeXMathD", {x});
 RuleBase("TeXMathD", {x,y});
 
-TeXMath(x) := "<b>" : EscapeLtGt(ToString() Write(x)) : "</b>";
-TeXMathD(_x) <-- "
-<p><center><b>" : EscapeLtGt(ToString() Write(x)) : " </b></center></p>
-";
+TeXMath(x) := EscapeLtGt(TeXForm(x));
+TeXMathD(_x) <-- "$" : EscapeLtGt(TeXForm(x)) : "$";
 // special form: punctuation at the end of a displayed equation
-TeXMathD(_x, _string) <-- "
-<p><center><b>" : EscapeLtGt(ToString() Write(x)) : string : "</b></center></p>
-";
+TeXMathD(_x, _string) <-- [ Local(s); s := TeXForm(x); "$" : EscapeLtGt(s[1 .. Length(s) - 1] : string : "$") : "$"; ];
 
 HoldArg("TeXMath",x);
 HoldArg("TeXMathD",x);
