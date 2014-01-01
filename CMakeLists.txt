@@ -90,6 +90,51 @@ add_executable (riptestfromyart docs/riptestfromyart.cpp)
 add_executable (manripper manmake/manripper.cpp)
 add_executable (removeduplicates manmake/removeduplicates.cpp)
 
+find_program (PERL perl)
+find_package (LATEX)
+
+if (NOT CMAKE_CROSSCOMPILING AND PERL AND LATEX_COMPILER)
+
+  set (CHAPTERS FDL.chapt cl-options.chapt config.chapt addons.chapt YacasDebugger.chapt ABIN-grammar.chapt SimpleTools.chapt CVS-Howto.chapt YacasDocs.chapt wester-1994.chapt new.chapt paper.chapt wordproblems.chapt BuildSystem.chapt arith.chapt calc.chapt complex.chapt solvers.chapt simplify.chapt ode.chapt linalg.chapt univar.chapt lists.chapt functional.chapt controlflow.chapt preds.chapt logic.chapt const.chapt vars.chapt io.chapt numtheory.chapt strings.chapt transforms.chapt probability-and-statistics.chapt glossary.chapt glossary.chapt algo-basic.chapt algo-numapprox.chapt algorithms-elemfunc.chapt algorithms-specfunc.chapt algorithms-numtheory.chapt algorithms-integration.chapt algorithms-multivar.chapt SturmSequences.chapt algo-refs.chapt algo-contfrac.chapt algorithms-transforms.chapt)
+  foreach (_chapter ${CHAPTERS})
+    add_custom_command (
+      OUTPUT ${_chapter}
+      COMMAND ${PERL} ${PROJECT_SOURCE_DIR}/manmake/txt2yacasdoc.pl
+      ARGS < ${PROJECT_SOURCE_DIR}/manmake/${_chapter}.txt > ${_chapter}
+      MAIN_DEPENDENCY manmake/${_chapter}.txt
+      DEPENDS manmake/txt2yacasdoc.pl)
+  endforeach()
+
+  set (BOOKS intro.book coding.book ref.book refprog.book essays.book Algo.book)
+  foreach (_book ${BOOKS})
+    add_custom_command (
+      OUTPUT ${_book}
+      COMMAND ${PERL} ${PROJECT_SOURCE_DIR}/manmake/txt2yacasdoc.pl
+      ARGS < ${PROJECT_SOURCE_DIR}/manmake/${_book}.txt > ${_book}
+      MAIN_DEPENDENCY manmake/${_book}.txt
+      DEPENDS manmake/txt2yacasdoc.pl)
+  endforeach()
+
+  add_custom_target (docs DEPENDS ${BOOKS} ${CHAPTERS})
+
+  foreach (_book ${BOOKS})
+    add_custom_command (
+      OUTPUT ${_book}.tex
+      COMMAND ${PROJECT_BINARY_DIR}/yacas --rootdir ${PROJECT_SOURCE_DIR}/scripts:${PROJECT_BINARY_DIR} -i "[ Use(\"${PROJECT_SOURCE_DIR}/manmake/book2TeX.ys\"); Load(\"${_book}\"); TeXFinishUp(); ];" > ${_book}.tex
+      MAIN_DEPENDENCY ${_book}
+      DEPENDS docs yacas
+      VERBATIM)
+  endforeach()
+
+  set (TEX_BOOKS)
+  foreach (_book ${BOOKS})
+    list (APPEND TEX_BOOKS ${_book}.tex)
+  endforeach()
+
+  add_custom_target (tex_docs DEPENDS ${TEX_BOOKS})
+
+endif()
+
 install (TARGETS yacas RUNTIME DESTINATION bin COMPONENT app)
 install (DIRECTORY scripts/ DESTINATION share/yacas COMPONENT app)
 install (DIRECTORY docs/ DESTINATION share/yacas/documentation COMPONENT doc FILES_MATCHING PATTERN "*.html")
