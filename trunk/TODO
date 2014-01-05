@@ -1,7 +1,5 @@
 
 TODO:
-- Some solve commands do not evaluate correctly the second time
-  - Solve((Ln(1/x)-1)*(1/x)^x, x)
 - Bug reports:
   - 1) Solve(x==x^3,x) produces several "MathSqrt: invalid argument: -1"
 messages.

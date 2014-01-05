@@ -110,6 +110,7 @@ LocalSymbols(x)
        If(CanBeUni(var2, expr2) And (Degree(expr2, var2) = 0 Or (Degree(expr2, var2) = 1 And Coef(expr2, var2, 1) = 1)),
           res := Failed, /* to prevent infinite recursion */
           [
+            ClearError("Solve'Fails");
     	    sol2 := Solve(expr2, var2);
 	    If(IsError("Solve'Fails"),
 	       [
