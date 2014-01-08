@@ -1,17 +1,5 @@
-
 TODO:
-- Bug reports:
-  - 1) Solve(x==x^3,x) produces several "MathSqrt: invalid argument: -1"
-messages.
-  - 2) I don't think the prettyprint version of Solve(x==x^3,x) is correct
-(seems to start with sqrt[3] which isn't in the regular version (see 2nd and
-3rd screenshots attached))
-  - 3) If you try and simplify the answers to Solve(x==x^3,x), you get some odd
-results. The first screenshot (attached) has the input and output to
-Simplify shown.
-
 - Version of the web site that you can download?
-
 
 - complete the range_control.html article
 
@@ -399,17 +387,3 @@ You can use Yacas as an applet inside a page. In effect, it acts like a little s
 - Article on splitting documentation between the two target audiences "user" and "maintainer".
 
 - poking fun at systems by caricaturizing their properties
-
-
-
-
-
-
-
-
-
-
-
-
-
-
