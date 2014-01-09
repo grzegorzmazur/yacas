@@ -499,26 +499,38 @@ Rule("PSolve", 1, 1, IsUniVar(uni) And Degree(uni) = 3)
 
     shift := -b / (3 * a);
 
-    If (D = 0,
-        {2 * R^(1/3) + shift, -R^(1/3) + shift, -R^(1/3) + shift},
-        If (D < 0, [
-            Local(theta);
-            theta := ArcCos(R / Sqrt(-Q^3));
-            {
-                2 * Sqrt(-Q) * Cos((theta + 0 * Pi) / 3) + shift, 
-                2 * Sqrt(-Q) * Cos((theta + 2 * Pi) / 3) + shift, 
-                2 * Sqrt(-Q) * Cos((theta + 4 * Pi) / 3) + shift
-            };
-        ], [
+    If (IsNumber(D),
+        If (D = 0,
+            {2 * R^(1/3) + shift, -R^(1/3) + shift, -R^(1/3) + shift},
+            If (D < 0, [
+                Local(theta);
+                theta := ArcCos(R / Sqrt(-Q^3));
+                {
+                    2 * Sqrt(-Q) * Cos((theta + 0 * Pi) / 3) + shift, 
+                    2 * Sqrt(-Q) * Cos((theta + 2 * Pi) / 3) + shift, 
+                    2 * Sqrt(-Q) * Cos((theta + 4 * Pi) / 3) + shift
+                };
+            ], [
+                Local(S, T);
+                S := (R + Sqrt(D))^(1/3);
+                T := (R - Sqrt(D))^(1/3);
+                {
+                    S + T + shift,
+                    Complex(-(S + T) / 2 + shift,  Sqrt(3) / 2 * (S - T)),
+                    Complex(-(S + T) / 2 + shift, -Sqrt(3) / 2 * (S - T))
+                };
+            ])
+        ), [
             Local(S, T);
             S := (R + Sqrt(D))^(1/3);
             T := (R - Sqrt(D))^(1/3);
+
             {
                 S + T + shift,
                 Complex(-(S + T) / 2 + shift,  Sqrt(3) / 2 * (S - T)),
                 Complex(-(S + T) / 2 + shift, -Sqrt(3) / 2 * (S - T))
             };
-        ])
+        ]
     );
 ];
 
