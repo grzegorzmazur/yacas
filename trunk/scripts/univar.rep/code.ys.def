@@ -5,6 +5,7 @@ Degree
 SetOrder
 Coef
 LeadingCoef
+ConstantTerm
 MakeUni
 UniDivide
 UniTaylor
