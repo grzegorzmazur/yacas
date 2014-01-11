@@ -76,6 +76,14 @@ LocalSymbols(res)
 
 10 # Solve'Poly(_expr, _var)_(Not CanBeUni(var, expr)) <-- Failed;
 
+15 # Solve'Poly(_expr, _var)_IsZero(ConstantTerm(expr, var)) <--
+[
+    Local(r);
+    r := Solve'Poly(NormalForm(Div(MakeUni(expr, var), MakeUni(var, var))), var);
+
+    If (Not IsList(r), r, Concat({var == 0}, r));
+];
+
 /* The call to PSolve can have three kind of results 
  *   1) PSolve returns a single root 
  *   2) PSolve returns a list of roots
