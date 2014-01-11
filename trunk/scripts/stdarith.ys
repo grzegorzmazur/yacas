@@ -221,6 +221,10 @@ LocalSymbols(x,y,xarg,yarg)
 250  # x_IsNumber * y_IsInfinity <-- Sign(x)*y;
 250  # x_IsInfinity * y_IsNumber <-- Sign(y)*x;
 
+260 # x_IsInfinity * y_IsInfinity <-- Sign(x) * Sign(y) * Infinity;
+
+275 # x_IsConstant * y_IsInfinity <-- `N(@x) * Infinity;
+275 # x_IsInfinity * y_IsConstant <-- `N(@y) * Infinity;
 
 /* Note: this rule MUST be past all the transformations on
  * matrices, since they are lists also.
