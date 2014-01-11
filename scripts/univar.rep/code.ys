@@ -276,6 +276,9 @@ Function("Coef",{expression,var,order})
   Coef(uvi,var,Degree(uvi));
 ];
 
+10 # ConstantTerm(uv_IsUniVar) <-- Coef(uv, 0);
+10 # ConstantTerm(uv_CanBeUni(var), _var) <-- Coef(MakeUni(uv, var), var, 0);
+20 # ConstantTerm(uv_CanBeUni) <-- Coef(MakeUni(uv), 0);
 
 Function("UniTaylor",{taylorfunction,taylorvariable,taylorat,taylororder})
 [
