@@ -84,22 +84,64 @@ LocalSymbols(res)
     If (Not IsList(r), r, Concat({var == 0}, r));
 ];
 
-/* The call to PSolve can have three kind of results 
- *   1) PSolve returns a single root 
- *   2) PSolve returns a list of roots
- *   3) PSolve remains unevaluated
- */
+
+Solve'Poly'Divisors(n_IsInteger) <-- [
+    Local(f, nf, p, d, i, divisors);
+    f := Factors(n);
+    nf := Length(f);
+
+    p := ZeroVector(nf + 1);
+
+    divisors := {};
+
+    While (p[nf + 1] = 0) [
+        Local(d, i, t, divisor);
+        d := ("^" @ {Transpose(f)[1], p[1 .. nf]});
+        divisor := 1;
+        ForEach (t, d) divisor := divisor * t;
+        DestructiveAppend(divisors, divisor);
+        DestructiveReplace(p, 1, p[1] + 1);
+        i := 1;
+        While (i <= nf And p[i] > f[i][2]) [
+            DestructiveReplace(p, i, 0);
+            i := i + 1;
+            DestructiveReplace(p, i, p[i] + 1);
+        ];
+    ];
+    divisors;
+];
 
 20 # Solve'Poly(_expr, _var) <--
 LocalSymbols(x)
 [
+  Local(rational'roots, p, q);
+  rational'roots := {};
+  If (("And" @ (MapSingle(Hold({{x},IsInteger(Eval(x))}), MakeUni(expr, var)[3]))), [
+    ForEach (p, Solve'Poly'Divisors(ConstantTerm(expr, var))) [
+        ForEach (q, Solve'Poly'Divisors(LeadingCoef(expr, var))) [
+            If (Eval(Subst(var, p / q) expr) = 0, [
+                DestructiveAppend(rational'roots, p / q);
+                expr := NormalForm(Div(MakeUni(expr, var), MakeUni(var - p / q, var)));
+            ]);
+            If (Eval(Subst(var, -p / q) expr) = 0, [
+                DestructiveAppend(rational'roots, -p / q);
+                expr := NormalForm(Div(MakeUni(expr, var), MakeUni(var + p / q, var)));
+            ]);
+        ];
+    ];
+  ]);
+  // The call to PSolve can have three kind of results 
+  //   1) PSolve returns a single root 
+  //   2) PSolve returns a list of roots
+  //   3) PSolve remains unevaluated
+  //
   Local(roots);
   roots := PSolve(expr, var); 
   If(Type(roots) = "PSolve",
-     Failed,                              /* Case 3 */
+     Failed,                              // Case 3
      If(Type(roots) = "List",
-        MapSingle({{x},var==x}, roots),   /* Case 2 */
-        {var == roots}));                 /* Case 1 */
+        Concat(rational'roots, MapSingle({{x},var==x}, roots)), // Case 2
+        Concat(rational'roots, {var == roots})));               // Case 1
 ];
 
 /********** Solve'Reduce **********/
