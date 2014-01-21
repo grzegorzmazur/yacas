@@ -155,7 +155,25 @@ IsOddFunction(f,x):= (f = Eval(-Subst(x,-x)f));
 
 60000 # IsInfinity(_x) <-- False;
 
-IsConstant(_n) <-- (VarList(n) = {});
+10 # IsConstant(expr_IsAtom) <-- Not IsVariable(expr);
+
+20 # IsConstant(expr_IsFunction) <-- [
+    Local(args, a, is'const);
+
+    args := Tail(Listify(expr));
+
+    is'const := True;
+
+    While (args != {} And is'const) [
+        a := Head(args);
+        args := Tail(args);
+
+        is'const := is'const And IsConstant(a);
+    ];
+
+    is'const;
+];
+
 
 Function ("IsBoolean", {x})
 	(x=True) Or (x=False) Or IsFunction(x) And Contains({"=", ">", "<", ">=", "<=", "!=", "And", "Not", "Or"}, Type(x));
