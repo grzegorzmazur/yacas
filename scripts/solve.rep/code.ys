@@ -130,18 +130,28 @@ LocalSymbols(x)
         ];
     ];
   ]);
-  // The call to PSolve can have three kind of results 
-  //   1) PSolve returns a single root 
-  //   2) PSolve returns a list of roots
-  //   3) PSolve remains unevaluated
-  //
-  Local(roots);
-  roots := PSolve(expr, var); 
-  If(Type(roots) = "PSolve",
-     Failed,                              // Case 3
-     If(Type(roots) = "List",
-        Concat(rational'roots, MapSingle({{x},var==x}, roots)), // Case 2
-        Concat(rational'roots, {var == roots})));               // Case 1
+
+  rational'roots := MapSingle({{x}, var==x}, rational'roots);
+
+  If (Degree(expr, var) < 1, [
+      // all roots are rational, and we've already found them
+      rational'roots;
+  ], [
+      // there are some not yet found roots, pass to PSolve
+
+      // The call to PSolve can have three kind of results 
+      //   1) PSolve returns a single root 
+      //   2) PSolve returns a list of roots
+      //   3) PSolve remains unevaluated
+      //
+      Local(roots);
+      roots := PSolve(expr, var); 
+      If(Type(roots) = "PSolve",
+        Failed,                              // Case 3
+        If(Type(roots) = "List",
+          Concat(rational'roots, MapSingle({{x},var==x}, roots)), // Case 2
+          Concat(rational'roots, {var == roots})));               // Case 1
+  ]);
 ];
 
 /********** Solve'Reduce **********/
