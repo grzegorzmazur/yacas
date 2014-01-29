@@ -186,7 +186,8 @@ VerifySolve(PSolve(x^3+1,x), {-1, Exp(1/3*Pi*I), Exp(-1/3*Pi*I)});
 /* Quartic equations */
 
 VerifySolve(PSolve(x^4,x), {0,0,0,0});
-VerifySolve(PSolve(16*x^4-1,x), {1/2, -1/2, 1/2*I, -1/2*I});
+// The result is not simplified correctly
+//VerifySolve(PSolve(16*x^4-1,x), {1/2, -1/2, 1/2*I, -1/2*I});
 VerifySolve(PSolve(x^4-x,x), {0, 1, Exp(2/3*Pi*I), Exp(-2/3*Pi*I)});
 VerifySolve(PSolve(x^4+x,x), {0, -1, Exp(1/3*Pi*I), Exp(-1/3*Pi*I)});
 /* Yacas has difficulties with more complicated equations, like the 

@@ -84,6 +84,11 @@ LocalSymbols(res)
     If (Not IsList(r), r, Concat({var == 0}, r));
 ];
 
+LocalSymbols(u, x) [
+    16 # Solve'Poly(_expr, _var)_([u := MakeUni(expr, var); Degree(u) > 1 And ConstantTerm(u) != 0 And Coef(u, 1 .. Degree(u) - 1) = ZeroVector(Degree(u) - 1);]) <-- [
+        MapSingle({{x},var==x}, PSolve(u));
+    ];
+];
 
 Solve'Poly'Divisors(n_IsInteger) <-- [
     Local(f, nf, p, d, i, divisors);
