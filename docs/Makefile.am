@@ -30,10 +30,10 @@ EXTRA_DIST = \
 
 YART_FILES = newtonconvergence.yart 
 
-## The file "yacaslogo.gif" is used in the HTML documentation
+## The file "yacaslogo.png" is used in the HTML documentation
 
 htmldir = $(scriptdir)/documentation
-html_DATA = yacaslogo.gif
+html_DATA = yacaslogo.png
 
 autocompleterarray.js: autocompleter examples-static.txt ../JavaYacas/hints.txt
 	cd ../JavaYacas ; make hints.txt ; cd ../docs/
