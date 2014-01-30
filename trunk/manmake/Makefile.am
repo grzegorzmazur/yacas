@@ -235,7 +235,7 @@ install-scripts: $(ytxt2tex_DEPS)
 
 install-html: books.html 
 	$(mkinstalldirs) $(DESTDIR)$(htmldir)/
-	$(INSTALL_DATA) $(top_srcdir)/docs/yacaslogo.gif $(DESTDIR)$(htmldir)/
+	$(INSTALL_DATA) $(top_srcdir)/docs/yacaslogo.png $(DESTDIR)$(htmldir)/
 	-for file in *.html; do \
 	   $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$file; \
 	done
