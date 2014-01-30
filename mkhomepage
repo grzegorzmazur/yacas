@@ -34,7 +34,7 @@ cd homepage
 
 cp ../manmake/ref.funcs.js ../manmake/refprog.funcs.js .
 cp ../manmake/*.html .
-cp ../docs/yacaslogo.gif .
+cp ../docs/yacaslogo.png .
 tar -zcvf manual.html.tar.gz *
 cp ../manmake/*.ps .
 cp ../manmake/*.pdf .
