@@ -7,7 +7,7 @@ are described.
 *CMD LaplaceTransform --- Laplace Transform
 *STD
 *CALL
-	LaplaceTransform(t,s,func)	
+	LaplaceTransform(t,s,f)	
 *PARMS
 
 {t} -- independent variable that is being transformed
@@ -18,8 +18,8 @@ are described.
 
 *DESC
 
-This function attempts to take the function {f(t)} and find the Laplace transform
-of it,{F(s)}, which is defined as {Integrate(t,0,Infinity) Exp(-s*t)*f}. This is
+This function attempts to take the function $f(t)$ and find the Laplace transform
+of it,$F(s)$, which is defined as $Integrate(t,0,Infinity) Exp(-s*t)*f(t)$. This is
 also sometimes referred to the "unilateral" Laplace tranform. {LaplaceTransform}
 can transform most elementary functions that do not require a convolution integral,
 as well as any polynomial times an elementary function. If a transform cannot
