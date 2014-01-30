@@ -25,15 +25,16 @@ orthogonal polynomials.
 
 This command brings a polynomial in expanded form, in which
 polynomials are represented in the form 
-$c0 + c1*x + c2*x^2 + ... + c[n]*x^n$. In this form, it is easier to test whether a polynomial is
-zero, namely by testing whether all coefficients are zero.
+$c0 + c1*x + c2*x^2 + ... + c[n]*x^n$. In this form, it is 
+easier to test whether a polynomial is zero, namely by testing
+whether all coefficients are zero.
 
-If the polynomial "expr" contains only one variable, the first
+If the polynomial {expr} contains only one variable, the first
 calling sequence can be used. Otherwise, the second form should be
-used which explicitly mentions that "expr" should be considered as a
-polynomial in the variable "var". The third calling form can be used
-for multivariate polynomials. Firstly, the polynomial "expr" is
-expanded with respect to the first variable in "varlist". Then the
+used which explicitly mentions that {expr} should be considered as a
+polynomial in the variable {var}. The third calling form can be used
+for multivariate polynomials. Firstly, the polynomial {expr} is
+expanded with respect to the first variable in {varlist}. Then the
 coefficients are all expanded with respect to the second variable, and
 so on.
 
@@ -71,14 +72,14 @@ so on.
 
 {expr} -- a polynomial
 
-{var} -- a variable occurring in "expr"
+{var} -- a variable occurring in {expr}
 
 *DESC
 
-This command returns the degree of the polynomial "expr" with
-respect to the variable "var". The degree is the highest power of
-"var" occurring in the polynomial. If only one variable occurs in
-"expr", the first calling sequence can be used. Otherwise the user
+This command returns the degree of the polynomial {expr} with
+respect to the variable {var}. The degree is the highest power of
+{var} occurring in the polynomial. If only one variable occurs in
+{expr}, the first calling sequence can be used. Otherwise the user
 should use the second form in which the variable is explicitly
 mentioned.
 
@@ -102,14 +103,14 @@ mentioned.
 
 {expr} -- a polynomial
 
-{var} -- a variable occurring in "expr"
+{var} -- a variable occurring in {expr}
 
 {order} -- integer or list of integers
 
 *DESC
 
-This command returns the coefficient of "var" to the power "order"
-in the polynomial "expr". The parameter "order" can also be a list
+This command returns the coefficient of {var} to the power {order}
+in the polynomial {expr}. The parameter {order} can also be a list
 of integers, in which case this function returns a list of
 coefficients.
 
@@ -198,10 +199,10 @@ polynomial.
 
 *DESC
 
-This function returns the leading coefficient of "poly", regarded as
-a polynomial in the variable "var". The leading coefficient is the
+This function returns the leading coefficient of {poly}, regarded as
+a polynomial in the variable {var}. The leading coefficient is the
 coefficient of the term of highest degree. If only one variable
-appears in the expression "poly", it is obvious that it should be
+appears in the expression {poly}, it is obvious that it should be
 regarded as a polynomial in this variable and the first calling
 sequence may be used.
 
@@ -237,11 +238,11 @@ sequence may be used.
 
 *DESC
 
-This function returns the monic part of "poly", regarded as a
-polynomial in the variable "var". The monic part of a polynomial is
+This function returns the monic part of {poly}, regarded as a
+polynomial in the variable {var}. The monic part of a polynomial is
 the quotient of this polynomial by its leading coefficient. So the
 leading coefficient of the monic part is always one. If only one
-variable appears in the expression "poly", it is obvious that it
+variable appears in the expression {poly}, it is obvious that it
 should be regarded as a polynomial in this variable and the first
 calling sequence may be used.
 
@@ -337,14 +338,14 @@ return the list of pairs ($p[i]$, $n[i]$)
 
 *PARMS
 
-{expr} -- a polynomial in "var"
+{expr} -- a polynomial in {var}
 
 {var} -- a variable
 
 *DESC
 
-This command turns the polynomial "expr", considered as a univariate
-polynomial in "var", into Horner form. A polynomial in normal form
+This command turns the polynomial {expr}, considered as a univariate
+polynomial in {var}, into Horner form. A polynomial in normal form
 is an expression such as
 $$c[0] + c[1]*x + ... + c[n]*x^n$$.
 
@@ -672,8 +673,8 @@ Most of the work is performed by the internal function {OrthoPoly}.
 *DESC
 
 These functions evaluate the Chebyshev polynomials of the first kind
-$T(n,x)$ and of the second kind $U(n,x)$, of degree "n" at the point "x". (The
-name of this Russian mathematician is also sometimes spelled "Tschebyscheff".)
+$T(n,x)$ and of the second kind $U(n,x)$, of degree {n} at the point {x}. (The
+name of this Russian mathematician is also sometimes spelled {Tschebyscheff}.)
 
 The Chebyshev polynomials are orthogonal with respect to the weight
 function $(1-x^2)^(-1/2)$. Hence they are a special case of the Gegenbauer
