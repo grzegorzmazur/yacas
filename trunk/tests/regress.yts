@@ -425,7 +425,7 @@ Verify(Simplify(x^(-2)/(1-x)^3) != 0);
 Verify(ArcCos(Cos(beta)) != beta);
 
 /* Bug #12 */
-KnownFailure((Limit(n, Infinity) n^5/2^n) = 0);
+Verify((Limit(n, Infinity) n^5/2^n) = 0);
 
 /* Bug #13 */
 /* Cannot test; TrigSimpCombine(x^500) floods stack */
