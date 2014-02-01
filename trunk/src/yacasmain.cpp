@@ -245,7 +245,7 @@ const char* ReadInputString(const char* prompt)
                 else
                     inpline = "False";
 #else
-                if ((int)ShellExecuteA(0, "open", url.c_str(), 0, 0, SW_SHOWNORMAL) > 32)
+                if ((intptr_t)ShellExecuteA(0, "open", url.c_str(), 0, 0, SW_SHOWNORMAL) > 32)
                     inpline = "True";
                 else
                     inpline = "False";
