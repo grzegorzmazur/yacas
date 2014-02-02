@@ -84,8 +84,7 @@ REFSOURCES = arith.chapt.txt calc.chapt.txt complex.chapt.txt \
 
 REFPROGCHAPTERS = FDL.chapt glossary.chapt \
 	GPL.chapt numerics.chapt
-# GPL.chapt has no .txt source
-REFPROGSOURCES = FDL.chapt.txt glossary.chapt.txt \
+REFPROGSOURCES = FDL.chapt.txt GPL.chapt.txt glossary.chapt.txt \
 	numerics.chapt.txt
 
 CODINGCHAPTERS = YacasDebugger.chapt FDL.chapt
@@ -177,11 +176,6 @@ intro.book.tex: intro.book $(INTROCHAPTERS)
 Algo.book.tex: Algo.book $(ALGOCHAPTERS)
 
 # special "virtual" chapter built from corefunctions.h. This is printed by a special program "gencorefunctions", compiled together with yacas.
-
-
-# special chapter copied from the GPL (need to replace "<" and ">")
-GPL.chapt: $(top_srcdir)/COPYING
-	cat $(top_srcdir)/COPYING | sed -e 's,<,{<},g;s,>,{>},g;' | perl $(srcdir)/txt2yacasdoc.pl > $@
 
 
 
