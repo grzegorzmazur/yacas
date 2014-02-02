@@ -1,0 +1,108 @@
+//////////////////////////////////////////////////
+/// ErrorTableau, Assert, IsError --- global error reporting
+//////////////////////////////////////////////////
+
+LocalSymbols(ErrorTableau) [
+
+  /// global error tableau. Its entries do not have to be lists.
+  Set(ErrorTableau, {});
+
+  GetErrorTableau() := ErrorTableau;
+
+  ClearErrors() <-- Set(ErrorTableau, {});
+
+  /// aux function to check for corrupt tableau
+  CheckErrorTableau() <--
+  If(
+    Not IsList(ErrorTableau),
+    Set(ErrorTableau, {{"general", "corrupted ErrorTableau"}})
+  );
+
+]; // LocalSymbols(ErrorTableau)
+
+/// check for errors
+IsError() <--
+[
+	CheckErrorTableau();
+	Length(GetErrorTableau())>0;
+];
+
+/// check for errors of a given kind
+IsError(error'class_IsString) <--
+[
+	CheckErrorTableau();
+	GetErrorTableau()[error'class] != Empty;
+];
+
+/// post an error if assertion fails
+(Assert(_error'class, _error'object) _predicate) <--
+[
+	CheckErrorTableau();
+	If(Equals(predicate, True),	// if it does not evaluate to True, it's an error
+		True,
+		[	// error occurred, need to post error'object
+			DestructiveAppend(GetErrorTableau(), {error'class, error'object});
+			False;
+		]
+	);
+];
+
+/// interface
+(Assert(_error'class) _predicate) <-- Assert(error'class, True) predicate;
+
+/// interface
+(Assert() _predicate) <-- Assert("generic", True) predicate;
+
+/// print all errors and clear the tableau
+DumpErrors() <--
+[
+	Local(error'object, error'word);
+	CheckErrorTableau();
+	ForEach(error'object, GetErrorTableau())
+	[	// error'object might be e.g. {"critical", {"bad bad", -1000}}
+		If(
+			IsList(error'object),
+			[
+				If( // special case: error class "warning"
+					Length(error'object) > 0 And error'object[1] = "warning",
+					[
+						error'word := "Warning";
+						error'object[1] := "";	// don't print the word "warning" again
+					],
+					error'word := "Error: "	// important hack: insert ": " here but not after "Warning"
+				);
+
+				If(	// special case: {"error'class", True}
+					Length(error'object)=2 And error'object[2]=True,
+					Echo(error'word, error'object[1]),
+					[
+						Echo(error'word, error'object[1], ": ",
+							PrintList(Tail(error'object)));
+					]
+				);
+			],
+			// error'object is not a list: just print it
+			Echo("Error: ", error'object)
+		);
+	];
+	ClearErrors();
+];
+
+/// obtain error object
+GetError(error'class_IsString) <--
+[
+	Local(error);
+	error := GetErrorTableau()[error'class];
+	If(
+		error != Empty,
+		error,
+		False
+	);
+];
+
+/// delete error
+ClearError(error'class_IsString) <-- AssocDelete(GetErrorTableau(), error'class);
+
+
+//////////////////////////////////////////////////
+

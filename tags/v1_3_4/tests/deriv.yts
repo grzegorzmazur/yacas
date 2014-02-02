@@ -1,0 +1,11 @@
+TestYacas(Deriv(x)Ln(x),1/x);
+TestYacas(Deriv(x)Exp(x),Exp(x));
+TestYacas(Deriv(x)(x^4+x^3+x^2+x+1),4*x^3+3*x^2+2*x+1);
+TestYacas(Deriv(x)Sin(x),Cos(x));
+TestYacas(Deriv(x)Cos(x),-Sin(x));
+TestYacas(Deriv(x)Sinh(x),Cosh(x));
+TestYacas(Deriv(x)Cosh(x),Sinh(x));
+TestYacas(Deriv(x)ArcCos(x),-1/Sqrt(1-x^2));
+TestYacas(Deriv(x)ArcSin(x),1/Sqrt(1-x^2));
+TestYacas(Deriv(x)ArcTan(x),1/(x^2+1));
+TestYacas(Deriv(x)Sech(x),-Sech(x)*Tanh(x));

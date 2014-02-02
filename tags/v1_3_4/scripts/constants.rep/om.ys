@@ -1,0 +1,6 @@
+//From code.ys.def:
+OMDef( "I", "nums1", "i" );
+OMDef( "CachedConstant",        "yacas", "CachedConstant"        );
+OMDef( "AssignCachedConstants", "yacas", "AssignCachedConstants" );
+OMDef( "ClearCachedConstants",  "yacas", "ClearCachedConstants"  );
+OMDef( "Pi", "nums1", "pi" );

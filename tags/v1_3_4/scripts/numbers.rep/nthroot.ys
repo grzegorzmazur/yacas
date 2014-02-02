@@ -1,0 +1,124 @@
+//////
+// $Id: nthroot.ys,v 1.5 2007-05-17 11:56:45 ayalpinkus Exp $
+// calculation/simplifaction of nth roots of nonnegative integers
+// NthRoot         - interface function
+// NthRoot'Calc    - actually calculate/simplifies
+// NthRoot'List    - list table entries for a given n
+// NthRoot'Restore - get a root from lookup table
+// NthRoot'Save    - save a root in lookup table
+// NthRoot'Clear   - clear lookup table
+//////
+
+// LocalSymbols(m,n,r,
+//		NthRoot'Table,
+//		NthRoot'Calc,
+//		NthRoot'List,
+//		NthRoot'Restore,
+//		NthRoot'Save,
+//		NthRoot'Clear)
+LocalSymbols(m,n,r,
+             NthRoot'Table)
+[
+
+// interface function for nth root of m
+// m>=0, n>1, integers
+// m^(1/n) --> f*(r^(1/n))
+NthRoot(m_IsNonNegativeInteger,n_IsInteger)_(n>1) <--
+[
+   Local(r);
+   r:=NthRoot'Restore(m,n);
+   If(Length(r)=0,
+   [
+      r:=NthRoot'Calc(m,n);
+      NthRoot'Save(m,n,r);
+   ]);
+   r;
+];
+
+// internal functions
+Function("NthRoot'Calc",{m,n})
+[
+   Local(i,j,f,r,in);
+   Set(i,2);
+   Set(j,Ceil(FastPower(m,N(1.0/n))+1));
+   Set(f,1);
+   Set(r,m);
+   // for large j (approx >4000)
+   // using Factors instead of the
+   // following.  would this be 
+   // faster in general?
+//Echo("i j ",i," ",j);
+   While(LessThan(i,j))
+   [
+      Set(in,MathPower(i,n));
+//Echo("r in mod ",r, " ",in," ",MathMod(r,in));
+      While(Equals(MathMod(r,in),0))
+      [
+	 Set(f,MathMultiply(f,i));
+	 Set(r,MathDiv(r,in));
+      ];
+      While(Equals(MathMod(r,i),0))   //
+	 Set(r,MathDiv(r,i));         //
+      //Set(i,NextPrime(i));
+      Set(i,NextPseudoPrime(i));
+      Set(j,Ceil(FastPower(r,N(1.0/n))+1));
+   ];
+   //List(f,r);
+   List(f,MathDiv(m,MathPower(f,n))); //
+];
+
+// lookup table utilities
+Function("NthRoot'List",{n})
+[
+   If(Length(NthRoot'Table)>0,
+   [
+      Local(p,xx);
+      p:=Select({{xx},Head(xx)=n},NthRoot'Table);
+      If(Length(p)=1,Tail(p[1]),List());
+   ],
+   List());
+];
+
+Function("NthRoot'Restore",{m,n})
+[
+   Local(p);
+   p:=NthRoot'List(n);
+   If(Length(p)>0,
+   [
+      Local(r,xx);
+      r:=Select({{xx},Head(xx)=m},p);
+      If(Length(r)=1,Head(Tail(r[1])),List());
+   ],
+   List());
+];
+
+Function("NthRoot'Save",{m,n,r})
+[
+   Local(p);
+   p:=NthRoot'List(n);
+   If(Length(p)=0,
+   // create power list and save root
+   DestructiveInsert(NthRoot'Table,1,List(n,List(m,r))),
+   [
+      Local(rr,xx);
+      rr:=Select({{xx},Head(xx)=m},p);
+      If(Length(rr)=0,
+      [
+	 // save root only
+	 DestructiveAppend(p,List(m,r));
+      ],
+      // already saved
+      False);
+   ]);
+];
+
+//TODO why is NthRoot'Table both lazy global and protected with LocalSymbols?
+Function("NthRoot'Clear",{}) SetGlobalLazyVariable(NthRoot'Table,List());
+
+// create empty table
+NthRoot'Clear();
+
+]; // LocalSymbols(m,n,r,NthRoot'Table);
+
+//////
+//////

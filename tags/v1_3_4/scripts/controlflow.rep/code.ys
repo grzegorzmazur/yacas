@@ -1,0 +1,157 @@
+
+/* Defining a For function */
+TemplateFunction("For",{start,predicate,increment,body})
+[
+  Eval(start);
+  While (Equals(Eval(predicate),True))
+  [
+    Eval(body);
+    Eval(increment);
+  ];
+];
+UnFence("For",4);
+HoldArgNr("For",4,1);
+HoldArgNr("For",4,2);
+HoldArgNr("For",4,3);
+HoldArgNr("For",4,4);
+
+
+/* 
+ * This was an experiment to try to get to using a new ForEach that works the
+ * same on lists and arrays. For some odd reason all sorts of places in the scripts
+ * break if we use this version of ForEach. We need to look into this still! I want
+ * a ForEach that works on lists as well as arrays.
+
+Macro()(ForEachRest(i,L,B));
+
+LocalSymbols(foreachtail)
+[
+  10 # ForEachRest(_i,L_IsFunction,_B) <-- 
+  [
+    Local(foreachtail);
+    Local(@i);
+    Set(foreachtail,@L);
+    While(Not(Equals(foreachtail,{})))
+    [
+      Set(@i,Head(foreachtail));
+      @B;
+      Set(foreachtail,Tail(foreachtail));
+    ];
+  ];
+];
+
+LocalSymbols(index,nr)
+[
+  20 # ForEachRest(_i,_A,_B)_(   And(
+            Equals(IsGeneric(A),True),
+            Equals(GenericTypeName(A),"Array")
+            )) <-- 
+  [
+    Local(index,nr);
+    Local(@i);
+    Set(index,1);
+    Set(nr,Length(@A));
+    While(index<=nr)
+    [
+      Set(@i,(@A)[index]);
+      @B;
+      Set(index,MathAdd(index,1));
+    ];
+  ];
+];
+
+Macro()(ForEach(i,L)(B));
+
+LocalSymbols(itm,lst,bd)
+[
+  (ForEach(_i,_L)(_B)) <-- 
+  [
+    Local(itm,lst,bd);
+//CurrentFile(),CurrentLine(),,Hold(@B)
+//Echo(CurrentFile(),CurrentLine());
+// Echo("ForEach(",Hold(@i),", ",Hold(@L),", ) ");
+    itm:=Hold(@i);
+    lst:= (@L);
+    bd:=Hold(@B);
+//Echo("1...",itm);
+    `ForEachRest(@itm,@lst,@bd);
+  ];
+];
+*/
+
+LocalSymbols(i,nr)
+[
+  TemplateFunction("ForEachInArray",{item,list,body})
+  [
+    Local(i,nr);
+    MacroLocal(item);
+    Set(i,1);
+    Set(nr,Length(list));
+    While(i<=nr)
+    [
+      MacroSet(item,list[i]);
+      Eval(body);
+      Set(i,MathAdd(i,1));
+    ];
+  ];
+];
+
+UnFence("ForEachInArray",3);
+HoldArgNr("ForEachInArray",3,1);
+HoldArgNr("ForEachInArray",3,3);
+
+
+/*TODO remove? Not yet. If the code above can be made to work we can do away with this version. */
+TemplateFunction("ForEach",{item,list,body})
+[
+  If(And(Equals(IsGeneric(list),True),
+         Equals(GenericTypeName(list),"Array")
+         ),
+    `ForEachInArray(@item,list,@body),
+    [
+      Local(foreachtail);
+      MacroLocal(item);
+      Set(foreachtail,list);
+      While(Not(Equals(foreachtail,{})))
+      [
+        MacroSet(item,Head(foreachtail));
+        Eval(body);
+        Set(foreachtail,Tail(foreachtail));
+      ];
+    ]);
+];
+UnFence("ForEach",3);
+HoldArgNr("ForEach",3,1);
+HoldArgNr("ForEach",3,3);
+/* */
+
+/* Lambda was introduced as a form of pure function that can be passed on to the function Apply as a first argument.
+ * The original method, passing it in as a list, had the disadvantage that the list was evaluated, which caused the 
+ * arguments to be evaluated too. This resulted in unwanted behaviour sometimes (expressions being prematurely evaluated
+ * in the body of the pure function). The arguments to Lambda are not evaluated.
+ */
+DefMacroRuleBase("Lambda",{args,body});
+
+
+10 # Apply(_applyoper,_applyargs) _ (Or(IsString(applyoper), IsList(applyoper))) <-- ApplyPure(applyoper,applyargs);
+20 # Apply(applyoper_IsAtom,_applyargs) <-- ApplyPure(String(applyoper),applyargs);
+
+30 # Apply(Lambda(_args,_body),_applyargs) <-- `ApplyPure(Hold({@args,@body}),applyargs);
+UnFence("Apply",2);
+
+
+TemplateFunction("Until",{predicate,body})
+[
+  Eval(body);
+  While (Equals(Eval(predicate),False))
+  [
+    Eval(body);
+  ];
+  True;
+];
+UnFence("Until",2);
+HoldArgNr("Until",2,1);
+HoldArgNr("Until",2,2);
+
+
+

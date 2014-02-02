@@ -1,0 +1,6 @@
+#! /bin/sh -v
+
+aclocal 
+autoheader
+automake --gnu --add-missing 
+autoconf 

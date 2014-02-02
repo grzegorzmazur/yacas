@@ -1,0 +1,25 @@
+// http://en.wikipedia.org/wiki/Computus#Anonymous_Gregorian_algorithm
+Easter(year) := [
+
+    Check(IsPositiveInteger(year), "Easter: the argument must be a positive integer");
+
+    Local(a,b,c,d,e,f,g,h,i,k,L,m,month,day);
+
+    a := Mod(year, 19);
+    b := Div(year, 100);
+    c := Mod(year, 100);
+    d := Div(b, 4);
+    e := Mod(b, 4);
+    f := Div(b + 8, 25);
+    g := Div(b - f + 1, 3);
+    h := Mod(19*a + b - d - g + 15, 30);
+    i := Div(c, 4);
+    k := Mod(c, 4);
+    L := Mod(32 + 2*e + 2*i - h - k, 7);
+    m := Div(a + 11*h + 22*L, 451);
+    month := Div(h + L - 7*m + 114, 31);
+    day := Mod(h + L - 7*m + 114, 31) + 1;
+
+    { month, day };
+];
+

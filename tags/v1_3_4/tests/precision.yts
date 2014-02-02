@@ -1,0 +1,154 @@
+/// Test various functions related to numerics and precision.
+
+// MathBitCount
+Verify(MathBitCount(4),3);
+Verify(MathBitCount(-3), 2);
+Verify(MathBitCount(3), 2);
+Verify(MathBitCount(0), 1);
+Verify(MathBitCount(-0.6), 0);
+Verify(MathBitCount(0.5), 0);
+Verify(MathBitCount(0.3),-1);
+Verify(MathBitCount(10),4);
+Verify(MathBitCount(-10),4);
+
+// Builtin'Precision'Get, Builtin'Precision'Set
+a:=Builtin'Precision'Get();
+Verify(a,10);	// default precision is 10
+Verify(a, Builtin'Precision'Get());
+Builtin'Precision'Set(a);
+Verify(a, Builtin'Precision'Get());
+Verify(FloatIsInt(N(Sin(355/226)) ), True);
+b:=150;
+Builtin'Precision'Set(b);
+Verify(b, Builtin'Precision'Get());
+Verify(FloatIsInt(N(Sin(355/226)) ), False);
+
+Builtin'Precision'Set(10);
+
+// IsInteger, FloatIsInt, MathFloor
+Verify(IsInteger(0), True);
+Verify(IsInteger(1), True);
+Verify(IsInteger(-1), True);
+Verify(IsInteger(0.), False);
+Verify(IsInteger(1.), False);
+Verify(IsInteger(-1.), False);
+
+Verify(FloatIsInt(0.), True);
+Verify(FloatIsInt(1.), True);
+Verify(FloatIsInt(-1.), True);
+Verify(FloatIsInt(1), True);
+
+Verify(IsInteger(Floor(-1.234)), True);
+Builtin'Precision'Set(5);
+// should keep the extra digits even though the declared precision is low
+Verify(FloatIsInt(1.0000000000000001), False);
+Verify(FloatIsInt(1.0000000000000000), True);
+Builtin'Precision'Set(10);
+
+// BitsToDigits, DigitsToBits
+Verify(BitsToDigits(22,10), 7);
+Verify(BitsToDigits(16, 4), 8);
+Verify(DigitsToBits(10, 10), 33);
+
+// MathGet/SetExactBits on integers: MathGetExactBits returns the bit count, MathSetExactBits has no effect
+
+Verify(MathGetExactBits(10), MathBitCount(10));
+Verify(MathGetExactBits(0), MathBitCount(0));
+Verify(MathGetExactBits(-10), MathBitCount(-10));
+Verify(MathSetExactBits(0, 3000),0);
+Verify(MathSetExactBits(10, 3000), 10);
+
+x:=MathSetExactBits(10, 3000);
+Verify(x,10);
+Verify(IsInteger(x), True);
+Verify(MathGetExactBits(x), 4);	// unchanged
+
+// floats are created at either current precision or at enough precision to represent all digits
+a:=8;	// decimal precision
+b:=DigitsToBits(a,10); // binary precision
+Builtin'Precision'Set(a);
+
+// creating new number objects from literals
+// a new number object is created with precision at least b
+Verify(MathGetExactBits(1.2), b);
+
+// a number with more digits than allowed by the current precision, must have at least 34 decimal digits
+Verify(BitsToDigits(MathGetExactBits(1.000000000000000000000000000000002), 10), 34);
+
+// creating new number objects and assigning to variables
+x:=1.1;
+Verify(MathGetExactBits(x), b);
+x:=1.00000000000000000000000000000000002;
+Verify(BitsToDigits(MathGetExactBits(x), 10), 36);
+
+// setting exact bits on given objects.
+
+// a number does not change after setting exact bits on it
+Verify(MathSetExactBits(-100., 11), -100.);
+// a floating-point number remains floating-point
+Verify(IsInteger(1.1), False);
+Verify(IsInteger(MathSetExactBits(1.1, 20)), False);
+Verify(IsInteger(2.), False);
+Verify(IsInteger(MathSetExactBits(2., 20)), False);
+
+// x has 11 exact bits now (previously it had more)
+x:=MathSetExactBits(1., 11);
+Verify(FloatIsInt(x), True);
+Verify(IsInteger(x), False);
+Verify(x, 1.);
+Verify(x-1., 0.);
+Verify(MathGetExactBits(x), 11);
+
+// adding, multiplying, dividing floats and integers
+a:=10;
+Builtin'Precision'Set(a);
+// these numbers should have equally many precise bits now
+x:=N(1/7);
+y:=N(1/13);
+px:=MathGetExactBits(x);
+py:=MathGetExactBits(y);
+// both should have equally many precise bits initially
+Verify(px,py);
+Verify(px, DigitsToBits(a, 10));
+
+// adding 0 should not change anything
+Verify(MathGetExactBits(MathAdd(x, 0)), px);
+
+// multiplying by an integer should not change anything
+Verify(MathGetExactBits(MathMultiply(x, 1)), px);
+
+// multiplying by an integer should not change anything
+Verify(MathGetExactBits(MathMultiply(x, 1000)), px);
+
+// multiplying by an integer power of 2 should not change anything
+Verify(MathGetExactBits(MathMul2Exp(x, 3)), px);
+
+b:=20;
+// now x has "b" precise bits
+x:=MathSetExactBits(x, b);
+
+// adding 0 should not change anything
+Verify(MathGetExactBits(MathAdd(x, 0)), b);
+
+// adding 8 should increase the precision by at least 3 bits
+Verify(MathGetExactBits(MathAdd(x, 8)), b+3);
+
+// adding 0 should not change anything
+Verify(MathGetExactBits(MathAdd(x, 0)), b);
+
+// multiplying by an integer should not change anything
+Verify(MathGetExactBits(MathMultiply(x, 1)), b);
+
+// multiplying by an integer should not change anything
+Verify(MathGetExactBits(MathMultiply(x, 1000)), b);
+
+// multiplying by an integer power of 2 should not change anything
+Verify(MathGetExactBits(MathMul2Exp(x, 3)), b);
+
+// squaring subtracts precision by 1 bit
+Verify(MathGetExactBits(MathMultiply(x,x)), b-1);
+
+// adding x and y should give the smallest of the precisions, i.e. b
+Verify(MathGetExactBits(MathAdd(x,y)), b);
+
+

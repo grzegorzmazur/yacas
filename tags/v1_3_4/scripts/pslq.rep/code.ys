@@ -1,0 +1,334 @@
+
+
+/*********************************************************************************************#
+#                       The PSLQ Integer Relation Algorithm                                   #
+#                                                                                             #
+# Aut.: Helaman R.P. Ferguson and David Bailey "A Polynomial Time, Numerically Stable         #
+#       Integer Relation Algorithm" (RNR Technical Report RNR-92-032)    helaman@super.org    #
+# Ref.: David Bailey and Simon Plouffe "Recognizing Numerical Constants" dbailey@nas.nasa.gov #
+# Cod.: Raymond Manzoni  raymman@club-internet.fr                                             #
+#*********************************************************************************************#
+# Creation:97/11                    #
+# New termination criteria:97/12/15 #
+# this code is free...              #
+
+Ported to Yacas 2000 Ayal Pinkus.
+
+Given a list of constants x find coefficients sol[i] such that
+      sum(sol[i]*x[i], i=1..n) = 0    (where n=Length(x))              
+                                                                  
+    x is the list of real expressions           
+          N(x[i]) must evaluate to floating point numbers!
+    precision is the number of digits needed for completion;         
+          must be greater or equal to log10(max(sol[i]))*n               
+    returns the list of solutions with initial precision
+          and the confidence (the lower the better)
+
+    Example:
+
+    In> Pslq({2*Pi-4*Exp(1),Pi,Exp(1)},20)
+    Out> {1,-2,4};
+
+*/
+
+Pslq(x, precision) :=
+[
+  Local (ndigits, gam, A, B, H, n, i, j, k, s, y, tmp, t, m, maxi, gami,
+	 t0, t1, t2, t3, t4, mini, Confidence, norme,result);
+  n:=Length(x);
+  ndigits:=Builtin'Precision'Get();
+  Builtin'Precision'Set(precision+10); // 10 is chosen arbitrarily, but should always be enough. Perhaps we can optimize by lowering this number
+  Confidence:=10^(-MathFloor(N(Eval(precision/3))));
+//Echo("Confidence is ",Confidence);
+
+  gam:=N(Sqrt(4/3));
+  For (i:=1, i<=n,i++) x[i]:=N(Eval(x[i]));
+
+//Echo("1...");
+
+  A:=Identity(n); /*A and B are of Integer type*/
+  B:=Identity(n); /*but this doesn't speed up*/
+  s:=ZeroVector(n);
+  y:=ZeroVector(n);
+
+//Echo("2...");
+
+  For(k:=1,k<=n,k++)
+  [
+    tmp:=0;
+    For (j:=k,j<=n,j++) tmp:=tmp + N(x[j]^2);
+//tmp:=MathDivide(tmp,1.0);
+//Echo("tmp is ",tmp);
+//MathDebugInfo(tmp);
+/*If(Not IsPositiveNumber(tmp),
+  Echo("******** not a positive number: ",tmp)
+);
+If(Not IsNumber(tmp),
+  Echo("******** not a number: ",tmp)
+);
+If(LessThan(tmp,0),
+[
+  Echo("******** not positive: ",tmp);
+]
+);*/
+
+    s[k]:=MathSqrt(tmp);
+
+
+/*If(Not IsNumber(tmp),
+[
+Echo("************** tmp = ",tmp);
+]);
+If(Not IsNumber(s[k]),
+[
+Echo("************** s[k] = ",s[k]);
+]);*/
+
+  ];
+
+//Echo("3...");
+
+  tmp:=N(Eval(s[1]));
+/*If(Not IsNumber(tmp),
+[
+Echo("************** tmp = ",tmp);
+]);*/
+
+  For (k:= 1,k<= n,k++)
+  [
+    y[k]:=N(Eval(x[k]/tmp));
+    s[k]:=N(Eval(s[k]/tmp));
+
+//Echo("1..."," ",y[k]," ",s[k]);
+/*If(Not IsNumber(y[k]),
+[
+Echo("************** y[k] = ",y[k]);
+]);
+If(Not IsNumber(s[k]),
+[
+Echo("************** s[k] = ",s[k]);
+]);*/
+
+  ];
+  H:=ZeroMatrix(n, n-1);
+
+//Echo("4...",n);
+  For (i:=1,i<= n,i++)
+  [
+
+    if (i <= n-1)  [ H[i][i]:=N(s[i + 1]/s[i]); ];
+
+//Echo("4.1...");
+    For (j:= 1,j<=i-1,j++)
+    [
+//Echo("4.2...");
+      H[i][j]:= N(-(y[i]*y[j])/(s[j]*s[j + 1]));
+//Echo("4.3...");
+
+/*If(Not IsNumber(H[i][j]),
+[
+Echo("************** H[i][j] = ",H[i][j]);
+]
+);*/
+
+    ];
+  ];
+
+//Echo("5...");
+
+  For (i:=2,i<=n,i++)
+  [
+    For (j:=i-1,j>= 1,j--)
+    [
+//Echo("5.1...");
+      t:=Round(H[i][j]/H[j][j]);
+//Echo("5.2...");
+      y[j]:=y[j] + t*y[i];
+//Echo("2..."," ",y[j]);
+      For (k:=1,k<=j,k++) [ H[i][k]:=H[i][k]-t*H[j][k]; ];
+      For (k:=1,k<=n,k++)
+      [
+        A[i][k]:=A[i][k]-t*A[j][k];
+        B[k][j]:=B[k][j] + t*B[k][i];
+      ];
+    ];
+  ];
+  Local(found);
+  found:=False;
+
+//Echo("Enter loop");
+
+  While (Not(found))
+  [
+    m:=1;
+//Echo("maxi 1...",maxi);
+    maxi:=N(gam*Abs(H[1][1]));
+//Echo("maxi 2...",maxi);
+    gami:=gam;
+//Echo("3...");
+    For (i:= 2,i<= n-1,i++)
+    [
+      gami:=gami*gam;
+      tmp:=N(gami*Abs(H[i][i]));
+      if (maxi < tmp)
+      [
+        maxi:=tmp;
+//Echo("maxi 3...",maxi);
+        m:=i;
+      ];
+    ];
+//Echo("4...",maxi);
+    tmp:=y[m + 1];
+    y[m + 1]:=y[m];
+    y[m]:=tmp;
+//Echo("3..."," ",y[m]);
+//Echo("5...");
+    For (i:= 1,i<=n,i++)
+    [
+      tmp:=A[m + 1][ i];
+      A[m + 1][ i]:=A[m][ i];
+      A[m][ i]:=tmp;
+      tmp:=B[i][ m + 1];
+      B[i][ m + 1]:=B[i][ m];
+      B[i][ m]:=tmp;
+    ];
+    For (i:=1,i<=n-1,i++)
+    [
+      tmp:=H[m + 1][ i];
+
+      H[m + 1][ i]:=H[m][ i];
+      H[m][ i]:=tmp;
+    ];
+//Echo("7...");
+    if (m < n-1)
+    [
+      t0:=N(Eval(Sqrt(H[m][ m]^2 + H[m][ m + 1]^2)));
+
+      t1:=H[m][ m]/t0;
+      t2:=H[m][ m + 1]/t0;
+
+//      If(IsZero(t0),t0:=N(Confidence));
+//Echo("");
+//Echo("H[m][ m] = ",N(H[m][ m]));
+//Echo("H[m][ m+1] = ",N(H[m][ m+1]));
+
+//If(IsZero(t0),[t1:=Infinity;t2:=Infinity;]);
+//Echo("t0=",N(t0));
+//Echo("t1=",N(t1));
+//Echo("t2=",N(t2));
+
+      For (i:=m,i<=n,i++)
+      [
+        t3:=H[i][ m];
+        t4:=H[i][ m + 1];
+//Echo("    t1 = ",t1);
+//Echo("    t2 = ",t2);
+//Echo("    t3 = ",t3);
+//Echo("    t4 = ",t4);
+        H[i][ m]:=t1*t3 + t2*t4;
+//Echo("7.1... ",H[i][ m]);
+        H[i][ m + 1]:= -t2*t3 + t1*t4;
+//Echo("7.2... ",H[i][ m+1]);
+      ];
+    ];
+//Echo("8...");
+    For (i:= 1,i<= n,i++)
+    [
+      For (j := Min(i-1, m + 1),j>= 1,j--)
+      [
+        t:=Round(H[i][ j]/H[j][ j]);
+//Echo("MATRIX",H[i][ j]," ",H[j][ j]);
+//Echo("5... before"," ",y[j]," ",t," ",y[i]);
+        y[j]:=y[j] + t*y[i];
+//Echo("5... after"," ",y[j]);
+        For (k:=1,k<=j,k++) H[i][ k]:=H[i][ k]-t*H[j][ k];
+        For (k:= 1,k<=n,k++)
+        [
+          A[i][ k]:=A[i][ k]-t*A[j][ k];
+          B[k][ j]:=B[k][ j] + t*B[k][ i];
+        ];
+      ];
+    ];
+//Echo("9...",N(H[1],10));
+
+    /* Builtin'Precision'Set(10);*/ /*low precision*/
+//    maxi := N(H[1] .  H[1],10);
+    maxi := N(H[1] .  H[1]);
+//Echo("H[1] = ",H[1]);
+//Echo("N(H[1]) = ",N(H[1]));
+//Echo("N(H[1] . H[1]) = ",N(H[1] . H[1]));
+//Echo("maxi 4...",maxi);
+
+//Echo("9... maxi = ",maxi);
+
+    For (j:=2,j<=n,j++)
+    [
+//Echo("9.1...");
+      tmp:=N(H[j] . H[j],10);
+//Echo("9.2...");
+      if (maxi < tmp) [ maxi:=tmp; ];
+//Echo("maxi 5...",maxi);
+//Echo("9.3...");
+    ];
+//Echo("10...");
+    norme:=N(Eval(1/Sqrt(maxi)));
+    m:=1;
+    mini:=N(Eval(Abs(y[1])));
+//Echo("y[1] = ",y[1]," mini = ",mini);
+    maxi:=mini;
+
+//Echo("maxi 6...",maxi);
+//Echo("11...");
+    For (j:=2,j<=n,j++)
+    [
+      tmp:=N(Eval(Abs(y[j])));
+      if (tmp < mini)
+      [
+        mini:=tmp;
+        m:=j;
+      ];
+      if (tmp > maxi) [ maxi:=tmp; ];
+//Echo("maxi 7...",maxi);
+    ];
+    /* following line may be commented */
+//Echo({"Norm bound:",norme," Min=",mini," Conf=",mini/maxi," required ",Confidence}); 
+    if ((mini/maxi) < Confidence) /*prefered to : if mini < 10^(- precision) then*/
+    [
+    /* following line may be commented */
+/*      Echo({"Found with Confidence ",mini/maxi}); */
+      Builtin'Precision'Set(ndigits);
+      result:=Transpose(B)[m];
+      found:=True;
+    ]
+    else
+    [
+      maxi:=Abs(A[1][ 1]);
+      For (i:=1,i<=n,i++)
+      [
+//Echo("i = ",i," n = ",n);
+        For (j:=1,j<=n,j++)
+        [
+//Echo("j = ",j," n = ",n);
+          tmp:=Abs(A[i][ j]);
+          if (maxi < tmp) [ maxi:=tmp;];
+        ];
+      ];
+//Echo("maxi = ",maxi);
+      if (maxi > 10^(precision))
+      [
+        Builtin'Precision'Set(ndigits);
+        result:=Fail;
+        found:=True;
+      ];
+      Builtin'Precision'Set(precision+2);
+//Echo("CLOSE");
+    ];
+  ];
+  result;
+];
+
+/* end of file */
+
+
+
+

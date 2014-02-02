@@ -1,0 +1,64 @@
+
+
+Testing("Apply");
+Verify(Apply("+",{2,3}),5);
+[
+  Local(x,y);
+  Verify(Apply({{x,y},x+y},{2,3}),5);
+  Verify(Apply(Lambda({x,y},x+y),{2,3}),5);
+  Verify(Lambda({x,y},x+y) @ {2,3},5);
+
+  /* Basically the next line is to check that {{x},Length(x)}
+   * behaves in an undesirable way (Length being evaluated 
+   * prematurely), so that the next test can then check that
+   * Lambda solves the problem.
+   */
+  Verify(Apply({{x},Length(x)},{"aaa"}),Length); 
+  Verify(Apply(Lambda({x},Length(x)),{"aaa"}),3);
+
+  Verify(x,x);
+  Verify(y,y);
+
+  Testing("ThreadingListables");
+  x:={bb,cc,dd};
+  Verify(Sin(aa*x),{Sin(aa*bb),Sin(aa*cc),Sin(aa*dd)});
+];
+
+
+
+Testing("MapSingle");
+Verify(MapSingle("!",{1,2,3,4}),{1,2,6,24});
+
+/* Example: using the for function. */
+Function("count",{from,to})
+[
+   Local(i);
+   Local(sum);
+   Set(sum,0);
+   For(i:=from,i<to,i:=i+1)
+   [
+     Set(sum,sum+i);
+   ];
+   sum;
+];
+
+Testing("Function definitions");
+Verify(count(1,11),55);
+
+Retract("count",2);
+
+Testing("LocalVariables");
+[
+  Verify(IsBound({}),False);
+  Local(a);
+  Verify(IsBound(a),False);
+  a:=1;
+  Verify(IsBound(a),True);
+  Clear(a);
+  Verify(IsBound(a),False);
+];
+
+Verify(Atom("a"),a);
+Verify(String(a),"a");
+Verify(ConcatStrings("a","b","c"),"abc");
+

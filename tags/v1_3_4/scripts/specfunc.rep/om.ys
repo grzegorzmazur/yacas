@@ -1,0 +1,24 @@
+// From code.ys.def:
+OMDef( "Gamma", "nums1", "gamma" );
+OMDef( "LnGamma"        , "yacas", "LnGamma" );
+OMDef( "Zeta"           , "yacas", "Zeta" );
+OMDef( "Bernoulli"      , "yacas", "Bernoulli" );
+OMDef( "ApproxInfSum"   , "yacas", "ApproxInfSum" );
+OMDef( "BesselJ"        , "yacas", "BesselJ" );
+OMDef( "BesselI"        , "yacas", "BesselI" );
+OMDef( "BesselY"        , "yacas", "BesselY" );
+OMDef( "Erf"            , "yacas", "Erf" );
+OMDef( "Erfc"           , "yacas", "Erfc" );
+OMDef( "Erfi"           , "yacas", "Erfi" );
+OMDef( "FresnelSin"     , "yacas", "FresnelSin" );
+OMDef( "FresnelCos"     , "yacas", "FresnelCos" );
+OMDef( "LambertW"       , "yacas", "LambertW" );
+OMDef( "Beta"           , "yacas", "Beta" );
+OMDef( "DirichletEta"   , "yacas", "DirichletEta" );
+OMDef( "DirichletLambda", "yacas", "DirichletLambda" );
+OMDef( "DirichletBeta"  , "yacas", "DirichletBeta" );
+OMDef( "Sinc"           , "yacas", "Sinc" );
+OMDef( "PolyLog"        , "yacas", "PolyLog" );
+OMDef( "CatalanConstNum", "yacas", "CatalanConstNum" );
+OMDef( "Digamma"        , "yacas", "Digamma" );
+OMDef( "DawsonIntegral" , "yacas", "DawsonIntegral" );

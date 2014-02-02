@@ -1,0 +1,61 @@
+
+/* Operators for functional programming.
+ * Examples:
+ *  a:b:c:{}       ->  {a,b,c}
+ *  "Sin" @ a      ->   Sin(a)
+ *  "Sin" @ {a,b}  ->   Sin(a,b)
+ *  "Sin" /@ {a,b} ->   {Sin(a),Sin(b)}
+ *  1 .. 4         ->   {1,2,3,4}
+ */
+
+
+/* a : b will now return unevaluated (rather than cause error of invalid argument in Concat) if neither a nor b is a list and if one of them is not a string
+*/
+RuleBase(":",{head,tail});
+Rule(":",2,20,IsList(head) And Not IsList(tail) ) Concat(head,{tail});
+Rule(":",2,30,IsList(tail) ) Concat({head},tail);
+Rule(":",2,10,IsString(tail) And IsString(head)) ConcatStrings(head,tail);
+UnFence(":",2);
+
+
+RuleBase("@",{func,arg});
+Rule("@",2,1,IsList(arg)) Apply(func,arg);
+Rule("@",2,2,True       ) Apply(func,{arg});
+
+Function("/@",{func,lst}) Apply("MapSingle",{func,lst});
+
+10 # (count'from_IsInteger .. count'to_IsInteger)_(count'from <= count'to) 
+   <-- Table(i,i,count'from,count'to,1);
+20 # (count'from_IsInteger .. count'to_IsInteger) 
+   <-- Table(i,i,count'from,count'to,-1);
+
+/* NFunction("new'func", "old'func" {arg'list}) will define a wrapper function
+around  "old'func", called "new'func", which will return "old'func(arg'list)"
+only when all arguments are numbers and will return unevaluated
+"new'func(arg'list)" otherwise. */
+LocalSymbols(NFunction'Numberize)
+[
+NFunction(new'name_IsString, old'name_IsString, arg'list_IsList) <-- [
+	MacroRuleBase(new'name, arg'list);
+	MacroRule(new'name, Length(arg'list), 0,	// check whether all args are numeric
+		UnList({IsNumericList, arg'list})
+	)
+
+		/* this is the rule defined for the new function.
+		// this expression should evaluate to the body of the rule.
+		// the body looks like this:
+		// NFunction'Numberize(old'name(arg'list))
+		*/ 
+			NFunction'Numberize(UnList({Atom("@"), old'name, arg'list}));
+			// cannot use bare '@' b/c get a syntax error
+
+];
+
+// this function is local to NFunction.
+// special handling for numerical errors: return Undefined unless given a number.
+10 # NFunction'Numberize(x_IsNumber) <-- x;
+20 # NFunction'Numberize(x_IsAtom) <-- Undefined;
+// do nothing unless given an atom
+
+];	// LocalSymbols()
+

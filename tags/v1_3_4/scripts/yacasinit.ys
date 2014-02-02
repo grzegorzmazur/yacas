@@ -1,0 +1,99 @@
+
+
+/* This is the basic initialization file for Yacas. It gets loaded
+ * each time Yacas is started. All the basic files are loaded.
+ */
+
+/* Set up drivers, configurable in the .yacasrc
+ *   Set(MultiNomialDriver,"multivar.rep/sparsenomial.ys");
+ *     or
+ *   Set(MultiNomialDriver,"multivar.rep/partialdensenomial.ys");
+ */
+
+/* The truly required files (Yacas NEEDS to load). */
+// syntax must be loaded first
+Use("stdopers.ys");
+
+/* Set of functions to define very simple functions. There are scripts that can
+   be compiled to plugins. So Yacas either loads the plugin, or loads the 
+   scripts at this point. The functions in these plugins need to be defined with 
+   these "Defun" functions.
+ */
+DefMacroRuleBase("Defun",{func,args,body});
+Rule("Defun",3,0,True)
+[
+  Local(nrargs);
+  Set(nrargs,Length(@args));
+  Retract(@func, `(@nrargs));
+  RuleBase(@func,@args);
+  Local(fn,bd);
+  Set(fn,Hold(@func)); Set(bd,Hold(@body));
+  `Rule(@fn, @nrargs, 0,True)(@bd);
+];
+
+//TODO remove? Use("base.rep/math.ys");
+
+Use("patterns.rep/code.ys");
+// at this point <-- can be used
+
+Use("deffunc.rep/code.ys");
+
+// at this point := and Function() can be used
+
+Use("constants.rep/code.ys");
+Use("standard.ys");
+Use("stdarith.ys");
+
+// at this point arithmetic can be used
+
+/* Load the def files for the other modules. The def files contain lists
+ * of functions defined in that file. So, in solve.def you can find the
+ * functions defined in the file solve. Each time a function is invoked
+ * for which the interpreter can not find a definition, the file is loaded.
+ */
+
+RuleBase(LoadPackages,{packages});
+Rule(LoadPackages, 1, 1, True)
+[
+	If(Equals(packages,{}), True,
+	[
+		DefLoad(Head(packages));
+		LoadPackages(Tail(packages));
+	]);
+];
+
+Use("packages.ys");
+LoadPackages(DefFileList());
+
+
+/* The read-eval-print loop */
+RuleBase("REP",{});
+LocalSymbols(input,stringOut,result,errorString)
+Rule("REP",0,1,True)
+[
+  Local(input,stringOut,result);
+  While(Not(IsExitRequested()))
+  [
+    Set(errorString, "");
+    If(And(IsString(PrettyReader'Get()),Not(PrettyReader'Get() = "")),
+      TrapError(Set(input, FromString(ReadCmdLineString("In> "))ApplyPure(PrettyReader'Get(),{})),Set(errorString,GetCoreError())),
+      TrapError(Set(input, FromString(ConcatStrings(ReadCmdLineString("In> "),";"))Read()),Set(errorString,GetCoreError())));
+    If(Not(errorString = ""), WriteString(errorString));
+    If (Not(IsExitRequested()) And errorString="",
+    [
+      Set(stringOut,"");
+      Set(result,False);
+      Set(stringOut,ToString()[TrapError(Set(result,Eval(input)),Set(errorString,GetCoreError()));]);
+      If(Not(stringOut = ""), WriteString(stringOut));
+      If(Not(errorString = ""), WriteString(errorString));
+      SetGlobalLazyVariable(%,result);
+      If(PrettyPrinter'Get()="",
+      [
+        Write(Atom("Out> "),result);
+        NewLine();
+      ],
+      Apply(PrettyPrinter'Get(),{result}));
+    ]);
+  ];
+];
+              

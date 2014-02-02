@@ -1,0 +1,66 @@
+// From code.ys.def:
+OMDef( "BellNumber",      "yacas","BellNumber" );
+OMDef( "CatalanNumber",   "yacas","CatalanNumber" );
+OMDef( "DigitalRoot",     "yacas","DigitalRoot" );
+OMDef( "Divisors",        "yacas","Divisors" );
+OMDef( "DivisorsSum",     "yacas","DivisorsSum" );
+OMDef( "Euler",           "yacas","Euler" );
+OMDef( "EulerArray",      "yacas","EulerArray" );
+OMDef( "Eulerian",        "yacas","Eulerian" );
+OMDef( "FermatNumber",    "yacas","FermatNumber" );
+OMDef( "GetPrimePower",   "yacas","GetPrimePower" );
+OMDef( "HarmonicNumber",  "yacas","HarmonicNumber" );
+OMDef( "IntLog",          "yacas","IntLog" );
+OMDef( "IntNthRoot",      "yacas","IntNthRoot" );
+OMDef( "IsAmicablePair",  "yacas","IsAmicablePair" );
+OMDef( "IsCarmichaelNumber", "yacas","IsCarmichaelNumber" );
+OMDef( "IsComposite",     "yacas","IsComposite" );
+OMDef( "IsCoprime",       "yacas","IsCoprime" );
+OMDef( "IsIrregularPrime", "yacas","IsIrregularPrime" );
+OMDef( "IsPerfect",       "yacas","IsPerfect" );
+OMDef( "IsPrime",         "yacas","IsPrime" );
+OMDef( "IsPrimePower",    "yacas","IsPrimePower" );
+OMDef( "IsQuadraticResidue", "yacas","IsQuadraticResidue" );
+OMDef( "IsSmallPrime",    "yacas","IsSmallPrime" );
+OMDef( "IsSquareFree",    "yacas","IsSquareFree" );
+OMDef( "IsTwinPrime",     "yacas","IsTwinPrime" );
+OMDef( "LegendreSymbol",  "yacas","LegendreSymbol" );
+OMDef( "Moebius",         "yacas","Moebius" );
+OMDef( "NextPrime",       "yacas","NextPrime" );
+OMDef( "NextPseudoPrime", "yacas","NextPseudoPrime" );
+OMDef( "PartitionsP",     "yacas","PartitionsP" );
+OMDef( "ProductPrimesTo257", "yacas","ProductPrimesTo257" );
+OMDef( "ProperDivisors",  "yacas","ProperDivisors" );
+OMDef( "ProperDivisorsSum", "yacas","ProperDivisorsSum" );
+OMDef( "Repunit",         "yacas","Repunit" );
+OMDef( "StirlingNumber1", "yacas","StirlingNumber1" );
+OMDef( "StirlingNumber2", "yacas","StirlingNumber2" );
+OMDef( "Totient",         "yacas","Totient" );
+
+// From GaussianIntegers.ys.def
+OMDef( "IsGaussianUnit",    "yacas","IsGaussianUnit" );
+OMDef( "IsGaussianInteger", "yacas","IsGaussianInteger" );
+OMDef( "IsGaussianPrime",   "yacas","IsGaussianPrime" );
+OMDef( "GaussianFactorPrime", "yacas","GaussianFactorPrime" );
+OMDef( "GaussianNorm",      "yacas","GaussianNorm" );
+OMDef( "GaussianMod",       "yacas","GaussianMod" );
+OMDef( "GaussianFactors",   "yacas","GaussianFactors" );
+OMDef( "AddGaussianFactor", "yacas","AddGaussianFactor" );
+OMDef( "FactorGaussianInteger", "yacas","FactorGaussianInteger" );
+OMDef( "GaussianGcd",       "yacas","GaussianGcd" );
+
+// From nthroot.ys.def
+OMDef( "NthRoot",      "yacas","NthRoot" );
+OMDef( "NthRoot'Calc", "yacas","NthRoot'Calc" );
+OMDef( "NthRoot'List", "yacas","NthRoot'List" );
+OMDef( "NthRoot'Save", "yacas","NthRoot'Save" );
+OMDef( "NthRoot'Restore", "yacas","NthRoot'Restore" );
+OMDef( "NthRoot'Clear", "yacas","NthRoot'Clear" );
+
+// From NumberTheory.ys.def
+OMDef( "DivisorsList", "yacas","DivisorsList" );
+OMDef( "SquareFreeDivisorsList", "yacas","SquareFreeDivisorsList" );
+OMDef( "MoebiusDivisorsList",    "yacas","MoebiusDivisorsList" );
+OMDef( "SumForDivisors", "yacas","SumForDivisors" );
+OMDef( "RamanujanSum",   "yacas","RamanujanSum" );
+OMDef( "JacobiSymbol",   "yacas","JacobiSymbol" );

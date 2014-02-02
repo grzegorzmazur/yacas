@@ -1,0 +1,23 @@
+Verify( Limit(z,2*I) (I*z^4+3*z^2-10*I), Complex(-12,6) );
+KnownFailure( (Limit(n,Infinity) (n^2*I^n)/(n^3+1)) = 0 );
+Verify( Limit(n,Infinity) n*I^n, Undefined );
+
+Verify(1/I, -I);
+Verify(I^2, -1);
+Verify(2/(1+I), 1-I);
+Verify(I^3, -I);
+Verify(I^4, 1);
+Verify(I^5, I);
+Verify(1^I, 1);
+Verify(0^I, Undefined);
+Verify(I^(-I), Exp(Pi/2));
+Verify((1+I)^33, 65536+I*65536);
+Verify((1+I)^(-33), (1-I)/131072);
+Verify(Exp(I*Pi), -1);
+TestYacas((a+b*I)*(c+d*I), (a*c-b*d)+I*(a*d+b*c));
+Verify(Ln(-1), I*Pi);
+Verify(Ln(3+4*I), Ln(5)+I*ArcTan(4/3));
+
+Verify(Re(2*I-4), -4);
+Verify(Im(2*I-4), 2);
+

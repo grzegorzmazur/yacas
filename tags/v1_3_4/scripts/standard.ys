@@ -1,0 +1,194 @@
+
+/* See the documentation on the assignment of the precedence of the rules.
+ */
+
+/* Some very basic functions that are used always any way... */
+
+
+/* Implementation of Nth that allows extending. */
+RuleBase("Nth",{alist,aindex});
+Rule("Nth",2,10,
+    And(Equals(IsFunction(alist),True),
+            Equals(IsInteger(aindex),True),
+            Not(Equals(Head(Listify(alist)),Nth))
+            ))
+     MathNth(alist,aindex);
+
+
+
+
+Rule("Nth",2,14,
+     And(Equals(IsString(alist),True),IsList(aindex))
+    )
+[
+  Local(result);
+  result:="";
+  ForEach(i,aindex) [ result := result : StringMid'Get(i,1,alist); ];
+  result;
+];
+
+Rule("Nth",2,15,Equals(IsString(alist),True))
+[
+  StringMid'Get(aindex,1,alist);
+];
+
+
+Rule("Nth",2,20,Equals(IsList(aindex),True))
+[
+  Map({{ii},alist[ii]},{aindex});
+];
+
+Rule("Nth",2,30,
+   And(
+           Equals(IsGeneric(alist),True),
+           Equals(GenericTypeName(alist),"Array"),
+           Equals(IsInteger(aindex),True)
+          )
+    )
+[
+  Array'Get(alist,aindex);
+];
+
+
+
+Rule("Nth",2,40,Equals(IsString(aindex),True))
+[
+  Local(as);
+  as := Assoc(aindex,alist);
+  If (Not(Equals(as,Empty)),Set(as,Nth(as,2)));
+  as;
+];
+
+Function("NrArgs",{aLeft}) Length(Listify(aLeft))-1;
+
+10 # IsNonObject(Object(_x)) <-- False;
+20 # IsNonObject(_x)         <-- True;
+
+1 # Numer(_x / _y)      <-- x;
+2 # Numer(x_IsNumber)   <-- x;
+1 # Denom(_x / _y)      <-- y;
+2 # Denom(x_IsNumber)   <-- 1;
+
+/* Implementation of numeric mode */
+LocalSymbols(Numeric) [
+  Set(Numeric,False);
+
+  // evaluate numerically with given precision
+  LocalSymbols(prev'Numeric, prev'digits, numeric'result) Macro("N",{expr,digits})
+  [ // we were in non-numeric mode
+      Local(prev'Numeric, prev'digits, numeric'result,errorString);
+      Set(prev'digits, Builtin'Precision'Get());
+      Builtin'Precision'Set(@digits);
+      AssignCachedConstantsN();
+      Set(prev'Numeric,Numeric);
+      Set(Numeric, True);
+      Set(errorString,"");
+      TrapError(Set(numeric'result, @expr),Set(errorString,GetCoreError()));
+      Set(Numeric,prev'Numeric);
+      If(Not Numeric,[
+          // clear constants
+          ClearCachedConstantsN();
+      ]);
+      Builtin'Precision'Set(prev'digits);
+      Check(errorString="",errorString);
+      numeric'result;
+  ];
+
+  LocalSymbols(dig,ex) Macro("N",{expr})
+  [
+    Local(dig,ex);
+    Set(dig,Builtin'Precision'Get());
+    Set(ex,Hold(@expr));
+    `N(@ex,@dig);
+  ];
+
+  LocalSymbols(result) Macro("NonN",{expr})
+  [
+    Local(result);
+    GlobalPush(Numeric);
+    Numeric := False;
+    result := (@expr);
+    Numeric := GlobalPop();
+    result;
+  ];
+
+  Function("InNumericMode",{}) Numeric;
+
+]; //LocalSymbols(Numeric)
+
+LocalSymbols(Verbose) [
+  Set(Verbose,False);
+  Function("V",{aNumberBody})
+  [
+    Local(prevVerbose,result);
+    Set(prevVerbose,Verbose);
+    Set(Verbose,True);
+    Set(result,Eval(aNumberBody));
+    Set(Verbose,prevVerbose);
+    result;
+  ];
+  Function("InVerboseMode",{}) Verbose;
+  
+]; // LocalSymbols(Verbose)
+HoldArg("V",aNumberBody);
+UnFence("V",1);
+
+Function("++",{aVar})
+[
+   MacroSet(aVar,MathAdd(Eval(aVar),1));
+];
+UnFence("++",1);
+HoldArg("++",aVar);
+
+
+Function("--",{aVar})
+[
+   MacroSet(aVar,MathSubtract(Eval(aVar),1));
+];
+UnFence("--",1);
+HoldArg("--",aVar);
+
+
+Function("TableForm",{list})
+[
+  Local(i);
+  ForEach(i,list)
+  [
+    Write(i);
+    NewLine();
+  ];
+  True;
+];
+
+RuleBase("NormalForm",{expression});
+Rule("NormalForm",1,1000,True) expression;
+
+
+
+
+RuleBase("==",{left,right});
+RuleBase("!==",{left,right});
+
+
+a_IsNonNegativeInteger & b_IsNonNegativeInteger <-- BitAnd(a,b);
+a_IsNonNegativeInteger | b_IsNonNegativeInteger <-- BitOr(a,b);
+a_IsNonNegativeInteger % b_IsPositiveInteger <-- Mod(a,b);
+
+RuleBase("if",{predicate,body});
+(if(True) _body) <-- Eval(body);
+HoldArg("if",body);
+UnFence("if",2);
+
+RuleBase("else",{ifthen,otherwise});
+0 # (if (_predicate) _body else _otherwise)_(Eval(predicate) = True) <--
+     Eval(body);
+0 # (if (_predicate) _body else _otherwise)_(Eval(predicate) = False) <--
+     Eval(otherwise);
+1 # (if (_predicate) _body else _otherwise) <--
+    UnList({Atom("else"),
+            UnList({Atom("if"), (Eval(predicate)), body}),
+            otherwise});
+HoldArg("else",ifthen);
+HoldArg("else",otherwise);
+UnFence("else",2);
+

@@ -1,0 +1,31 @@
+
+
+LocalSymbols(st)
+[
+  st:=NewStack();
+  Verify(IsOnStack(st,"c"),False);
+  PushStackFrame(st,fenced);
+    AddToStack(st,"a");
+    AddToStack(st,"b");
+    Verify(IsOnStack(st,"a"),True);
+    Verify(IsOnStack(st,"c"),False);
+    Verify(FindOnStack(st,"a"),{});
+    FindOnStack(st,"b")["set"]:=True;
+    Verify(FindOnStack(st,"b"),{{"set",True}});
+    PushStackFrame(st,unfenced);
+      AddToStack(st,"c");
+      Verify(IsOnStack(st,"c"),True);
+      Verify(IsOnStack(st,"a"),True);
+    PopStackFrame(st);
+
+    PushStackFrame(st,fenced);
+      AddToStack(st,"c");
+      Verify(IsOnStack(st,"c"),True);
+      Verify(IsOnStack(st,"a"),False);
+    PopStackFrame(st);
+
+  PopStackFrame(st);
+  Verify(StackDepth(st),0);
+];
+
+

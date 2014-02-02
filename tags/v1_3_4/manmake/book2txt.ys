@@ -1,0 +1,113 @@
+/* convert Yacas docs back to plain text format */
+
+Text(x) := WriteString(Nl() : x : Nl());
+Book(x) := WriteString(Nl() : "				" : x : Nl());
+Chapter(x) := WriteString(Nl() : "			" : x : Nl());
+Section(x) := WriteString(Nl() : "		" : x : Nl());
+SubSection(x) := WriteString(Nl() : "	    " : x : Nl());
+
+Itemize(x) := Nl() : LineByLineMarkup(x, "*	") : Nl();
+Enumerate(x) := Nl() : LineByLineMarkup(x, "*	0. ") : Nl();
+
+/* Insert padding after each newline in text, except first newline and last newline */
+LineByLineMarkup(x, padding) := [
+	Local(i, result);
+	i:=1;
+	If (x[1]=Nl(), i:=2);	/* we always start with padding even if we don't have initial newline */
+	For(result:=Nl() : padding, i<=Length(x), i:=i+1) [
+		result := result : x[i];
+		If(x[i]=Nl() And i != Length(x), result := result : padding);
+	];
+	Nl() : result : Nl();
+];
+
+Item(x) := StripNl(x) : Nl(); /* markup to be inserted later */
+
+ResetEnvs() := [
+	inEnum := False;
+	inItemize := False;
+];
+
+HtmlNewParagraph() := [
+	ResetEnvs();
+	Nl() : Nl();
+];
+
+HtmlCommand(x) := Nl() : LineByLineMarkup(x, "	") : Nl();
+
+StripNl(x) := [ /* replace all newlines by spaces */
+	Local(i, result);
+	result := "";
+	For(i:=1, i<=Length(x), i:=i+1)
+		If(x[i] != Nl(), result := result : x[i], result := result : " ");
+	result;
+];
+
+HtmlEmphasis(x) := "<i>" : StripNl(x) : "</i>";
+HtmlTerm(x) := "{" : StripNl(x) : "}";
+HtmlBreak() := Nl();
+
+HtmlAnchor(string) := "
+*A " : string : Nl();
+Bodied("HtmlAnchor", 60000);
+AddBody(string) := WriteString(string);
+SeeAlso(list) := WriteString(
+Nl() : "*SEE " : PrintList(list) : Nl() : Nl()
+);
+
+ChapterIntro(string) := WriteString("
+*INTRO " : string : "
+
+");
+
+TopicalStrings := {
+	{"Calling Sequence", "*CALL"},
+	{"Calling sequence", "*CALL"},
+	{"See Also", ""},
+	{"See also", ""},
+	{"Parameters", "*PARMS"},
+	{"parameters", "*PARMS"},
+	{"Description", "*DESC"},
+	{"Descriptions", "*DESC"},
+	{"Examples", "*E.G."},
+	{"Example", "*E.G."},
+};
+
+Topical(string) := WriteString(
+Nl() : If(Contains(AssocIndices(TopicalStrings), string),
+	TopicalStrings[string], "*HEAD " : string)
+: Nl()
+);
+
+Bodied("Item",1);
+Bodied("Book",60000);
+Bodied("Title",60000);
+Bodied("Author",60000);
+Bodied("Chapter",60000);
+Bodied("Section",60000);
+Bodied("SubSection",60000);
+Bodied("Topical",60000);
+Bodied("Text",60000);
+Bodied("Blurb",60000);
+Bodied("Itemize",2);
+Bodied("Enumerate",2);
+//Bodied("ChapterIntro", 60000);
+
+IncludeFile(x) := WriteString(Nl() : "*INCLUDE " : x : Nl());
+
+StandardLib() := WriteString("
+*STD
+");
+BuiltIn() := WriteString("
+*CORE
+");
+
+CmdDescription(cmd, desc) := WriteString("
+*CMD " : cmd : " --- " : desc : Nl()
+);
+
+Gt() := "\\>";
+Lt() := "\\<";
+
+AddAnchor(string) := AddBody("
+*AA " : string : Nl());

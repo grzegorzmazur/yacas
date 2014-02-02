@@ -1,0 +1,216 @@
+			Running Yacas off-line
+
+		Interactive session commands
+
+*INTRO
+This section describes the special commands for the Yacas interactive sessions (for example, to restart or to exit the interpreter).
+These commands are not functions but special directives that only apply while running Yacas interactively.
+They should not be used in scripts.
+
+
+
+*CMD quit --- stop Yacas from running, from the command line
+*CMD restart --- restart Yacas (to start with a clean slate)
+*CORE
+*CALL
+	quit
+	restart
+
+*DESC
+
+Type {quit} or {restart} at the Yacas prompt to exit or to restart the interpreter.
+
+The directives {quit} and {restart} are <i>not</i> reserved words or variable names.
+They take effect only when typed as first characters at a prompt.
+
+Pressing {Ctrl-C} will stop the currently running calculation.
+If there is no currently running calculation, {Ctrl-C} will quit the interpreter.
+
+When the interpreter quits, it saves the command history
+(so quitting by {Ctrl-C} does not mean a "crash").
+
+*E.G.
+
+To be effective, the directive must be typed immediately after the prompt:
+	In> quit
+	Quitting...
+We can use variables named {quit}:
+	In> 1+quit
+	Out> quit+1;
+There is no effect if we type some spaces first: 
+	In>       restart
+	Out> restart;
+
+*SEE Exit
+
+		Command-line options
+
+*A options
+*INCLUDE cl-options.chapt
+
+
+			Startup configuration
+
+*INTRO
+Yacas allows you to configure a few things at startup. The file
+{~/.yacasrc} is written in the Yacas language and
+will be executed when Yacas is run. The
+following functions can be useful in the {~/.yacasrc} file.
+
+*CMD DefaultDirectory --- add directory to path for Yacas scripts
+*CORE
+*CALL
+	DefaultDirectory(path)
+
+*PARMS
+
+{path} -- a string containing a full path where yacas script files reside
+
+*DESC
+
+When loading files, yacas is also allowed to
+look in the folder "path". {path} will be prepended
+to the file name before trying to load the file.
+This means that "path" should end with a forward slash (under Unix-like
+operating systems).
+
+Yacas first tries to load a file from the current
+directory, and otherwise it tries to load from
+directories defined with this function, in the
+order they are defined. Note there will be at least one directory
+specified at start-up time, defined during compilation. This
+is the directory Yacas searches for the initialization scripts
+and standard scripts.
+
+*E.G.
+
+	In> DefaultDirectory("/home/user/myscripts/");
+	Out> True;
+
+*SEE Load, Use, DefLoad, FindFile
+
+
+*CMD PrettyPrinter'Set --- set routine to use as pretty-printer
+*CMD PrettyPrinter'Get --- get routine to use as pretty-printer
+
+*STD
+
+*CALL
+	PrettyPrinter'Set(printer)
+	PrettyPrinter'Set()
+	PrettyPrinter'Get()
+
+*PARMS
+
+{printer} -- a string containing the name of a function that can "pretty-print" an expression.
+
+
+*DESC
+
+This function sets up the function printer to print out the results on
+the command line. This can be reset to the internal printer with {PrettyPrinter'Set()} (when no argument is given, the system returns to the default).
+
+Currently implemented prettyprinters are: {PrettyForm}, {TeXForm}, {Print}, {OMForm}, {CForm} and {DefaultPrint}.
+
+{PrettyPrinter'Get()} returns the current pretty printer, or it returns
+an empty string if the default pretty printer is used.
+
+*E.G.
+
+	In> Taylor(x,0,5)Sin(x)
+	Out> x-x^3/6+x^5/120;
+	In> PrettyPrinter'Set("PrettyForm");
+	
+	True
+	
+	In> Taylor(x,0,5)Sin(x)
+	
+	     3    5
+	    x    x
+	x - -- + ---
+	    6    120
+	
+	In> PrettyPrinter'Set();
+	Out> True;
+	In> Taylor(x,0,5)Sin(x)
+	Out> x-x^3/6+x^5/120;
+
+*SEE PrettyForm, Write, TeXForm, CForm, OMForm, PrettyReader'Set, PrettyReader'Get
+
+
+
+
+*CMD PrettyReader'Set --- set routine to use as pretty-reader
+*CMD PrettyReader'Get --- get routine that is currently used as pretty-reader
+
+*STD
+
+*CALL
+	PrettyReader'Set(reader)
+	PrettyReader'Set()
+	PrettyReader'Get()
+
+*PARMS
+
+{reader} -- a string containing the name of a function that can read an expression from current input.
+
+
+*DESC
+
+This function sets up the function reader to read in the input on
+the command line. This can be reset to the internal reader with {PrettyReader'Set()} (when no argument is given, the system returns to the default).
+
+Currently implemented PrettyReaders are: {LispRead}, {OMRead}.
+
+{PrettyReader'Get()} returns the current reader, or it returns
+an empty string if the default pretty printer is used.
+
+*E.G.
+
+	In> Taylor(x,0,5)Sin(x)
+	Out> x-x^3/6+x^5/120
+	In> PrettyReader'Set("LispRead")
+	Out> True
+	In> (Taylor x 0 5 (Sin x))
+	Out> x-x^3/6+x^5/120
+
+*SEE Read, LispRead, OMRead, PrettyPrinter'Set, PrettyPrinter'Get
+
+
+
+
+*CMD MaxEvalDepth --- set depth of recursion stack
+*CORE
+*CALL
+	MaxEvalDepth(n)
+*PARMS
+{n} -- integer
+*DESC
+Sets the maximum depth of recursive function call. An error message is printed when too many recursive calls are executed, and this function can be used to increase or decrease the limit as necessary.
+
+
+
+*CMD HistorySize --- set size of history file
+*CORE
+*CALL
+	HistorySize(n)
+
+*PARMS
+
+{n} -- number of lines to store in history file
+
+*DESC
+
+When exiting, yacas saves the command line history to a
+file {~/.yacas_history}. By default it will
+save the last 1024 lines. The default can be
+overridden with this function. Passing -1 tells the system to save <i>all</i>
+lines.
+
+*E.G.
+
+	In> HistorySize(200)
+	Out> True;
+	In> quit
+
+*SEE quit

@@ -1,0 +1,295 @@
+
+
+LocalSymbols(lastcoef,OrdBuild, AddFoundSolutionSingle , AddFoundSolution, Fct, MkfactD)
+[
+
+LastCoef(_vector,_p) <-- 
+[
+  Local(n);
+  n:=Length(vector);
+  Add(vector*p^(0 .. (n-1)));
+];
+
+/*
+Ord(vector,q):=
+[
+  Local(n);
+  n:=Length(vector);
+  q*Coef(Simplify(LastCoef(vector,p+q)-LastCoef(vector,p)),q,1);
+];
+*/
+
+OrdBuild(vector,q):=
+[
+  Local(i,result,n);
+  Set(i,2);
+  Set(result, 0);
+  Set(n, Length(vector));
+  While (i<=n)
+  [
+    Set(result,result+(i-1)*vector[i]*p^(i-2));
+    Set(i, i+2);
+  ];
+  q*result;
+];
+
+
+Function(AddFoundSolutionSingle,{p})
+[
+  Local(calc);
+//  If ( Not Contains(result,p),
+//  [
+    Set(calc, Eval(lastcoef));
+    If (Equals(calc, 0),
+    [
+      Local(newlist,count,root);
+      count:=0;
+      root := p;
+      Local(rem);
+
+      rem:={-root,1};
+      {testpoly,rem}:=MkfactD(testpoly,rem);
+
+      rem:={-root,1};
+      {newlist,rem}:=MkfactD(poly,rem);
+      While (rem = {})
+      [
+        count++;
+        Set(poly,newlist);
+        rem:={-root,1};
+        {newlist,rem}:=MkfactD(poly,rem);
+      ];
+
+      Local(lgcd,lc);
+      Set(lgcd,Gcd({andiv,an,root}));
+      Set(lc,Div(an,lgcd));
+      Set(result,{var+ (-(Div(root,lgcd)/lc)),count}:result);
+      Set(andiv,Div(andiv,lgcd^count));
+      Set(anmul,anmul*lc^count);
+
+//      factor:=(x-root);
+//      Set(result,{factor,count}:result);
+
+      Local(p,q);
+      Set(lastcoef, LastCoef(testpoly,p));
+      Set(ord, OrdBuild(testpoly,q));
+    ]);
+//  ]);
+];
+UnFence(AddFoundSolutionSingle,1);
+
+Function(AddFoundSolution,{p})
+[
+  AddFoundSolutionSingle(p);
+  AddFoundSolutionSingle(-2*q+p);
+];
+UnFence(AddFoundSolution,1);
+
+Function(Fct,{poly,var})
+[
+  Local(maxNrRoots,result,ord,p,q,accu,calc,twoq,mask);
+
+  Local(gcd);
+  [
+    Set(gcd,Gcd(poly));
+    If(poly[Length(poly)] < 0,Set(gcd, gcd * -1));
+    Set(poly,poly/gcd);
+  ];
+
+  Local(unrat);
+  Set(unrat,Lcm(MapSingle("Denom",poly)));
+  Set(poly,unrat*poly);
+
+  Local(origdegree);
+  Set(origdegree,Length(poly)-1);
+
+  Local(an,andiv,anmul);
+  Set(an,poly[Length(poly)]);
+  Set(poly,poly* (an^((origdegree-1) .. -1)));
+  Set(andiv,an^(origdegree-1));
+  Set(anmul,1);
+
+  Local(leadingcoef,lowestcoef);
+  Set(leadingcoef,poly[Length(poly)]);
+  [ 
+    Local(i);
+    Set(i,1);
+    Set(lowestcoef,Abs(poly[i]));
+    While (lowestcoef = 0 And i<=Length(poly))
+    [
+      Set(i,i+1);
+      Set(lowestcoef,Abs(poly[i]));
+    ];
+  ];
+  // testpoly is the square-free version of the polynomial, used for finding
+  // the factors. the original polynomials is kept around to find the
+  // multiplicity of the factor.
+  Local(testpoly);
+//  Set(testpoly,Mkc(Div(polynom,Monic(Gcd(polynom,Deriv(var)polynom))),var));
+  Local(deriv);
+  // First determine a derivative of the original polynomial
+  deriv:=Tail(poly);
+  [
+    Local(i);
+    For (i:=1,i<=Length(deriv),i++)
+    [
+      deriv[i] := deriv[i]*i;
+    ];
+//    Echo("POLY = ",poly);
+//    Echo("DERIV = ",deriv);
+  ];
+  [
+    Local(q,r,next);
+    q:=poly;
+    r:=deriv;
+    While(r != {})
+    [
+//Echo(q,r);
+      next := MkfactD(q,r)[2];
+      q:=r;
+      r:=next;
+    ];
+    // now q is the gcd of the polynomial and its first derivative.
+    
+    // Make it monic
+    q:=q/q[Length(q)];
+    testpoly:=MkfactD(poly,q)[1];
+//Echo("TESTPOLY = ",testpoly);
+  ];
+  
+//  Set(testpoly,poly); //@@@
+
+  Set(maxNrRoots,Length(testpoly)-1);
+  Set(result, {});
+
+  Set(lastcoef, LastCoef(testpoly,p));
+  Set(ord, OrdBuild(testpoly,q));
+
+  Set(accu,{});
+  Set(q,1);
+  Set(twoq,MathMultiply(q,2));
+  Set(mask,MathAdd(twoq,MathNegate(1)));
+  if (IsEven(testpoly[1]))
+  [
+    Set(accu,0:accu);
+    AddFoundSolutionSingle(0);
+  ];
+  Set(p,1);
+  Set(calc, Eval(lastcoef));
+  If (IsEven(calc),
+  [
+    Set(accu,1:accu);
+    AddFoundSolution(1);
+  ]);
+  Set(q,twoq);
+  Set(twoq,MathMultiply(q,2));
+  Set(mask,MathAdd(twoq,MathNegate(1)));
+  While(Length(result)<maxNrRoots And Length(accu)>0 And q<=Abs(testpoly[1]))
+  [
+    Local(newaccu);
+    Set(newaccu,{});
+    ForEach(p,accu)
+    [
+      Set(calc,Eval(lastcoef));
+      If (LessThan(calc,0), 
+        Set(calc, MathAdd(calc,MathMultiply(twoq,MathDiv(MathAdd(MathNegate(calc),twoq),twoq))))
+         );
+      Set(calc, BitAnd(calc, mask));
+      If ( Equals(calc, 0),
+      [
+        Set(newaccu, p:newaccu);
+        AddFoundSolutionSingle(-2*q+p);
+      ]);
+      Set(calc, MathAdd(calc, Eval(ord)));
+      If (LessThan(calc,0), 
+        Set(calc, MathAdd(calc,MathMultiply(twoq,MathDiv(MathAdd(MathNegate(calc),twoq),twoq))))
+         );
+      Set(calc, BitAnd(calc, mask));
+      If ( Equals(calc, 0),
+      [
+        Set(newaccu, MathAdd(p,q):newaccu);
+        AddFoundSolution(MathAdd(p,q));
+      ]);
+    ];
+    Set(accu, newaccu);
+    Set(q,twoq);
+    Set(twoq,MathMultiply(q,2));
+    Set(mask,MathAdd(twoq,MathNegate(1)));
+
+//Echo("q = ",q);
+//Echo("Length is",Length(accu),"accu = ",accu);
+//Echo("result = ",result);
+  ];
+
+  // If the polynom is not one, it is a polynomial which is not reducible any further
+  // with this algorithm, return as is.
+  Set(poly,poly*an^(0 .. (Length(poly)-1)));
+  Set(poly,gcd*anmul*poly);
+  //TODO had to add this if statement, what was andiv again, and why would it become zero? This happens with for example Factor(2*x^2)
+  If(Not IsZero(unrat * andiv ),Set(poly,poly/(unrat * andiv )));
+  If(poly != {1},
+  [
+    result:={(Add(poly*var^(0 .. (Length(poly)-1)))),1}:result;
+  ]);
+  result;
+];
+
+
+
+BinaryFactors(expr):=
+[
+  Local(result,uni,coefs);
+  uni:=MakeUni(expr,VarList(expr)[1]);
+  uni:=Listify(uni);
+  coefs:=uni[4];
+  coefs:=Concat(ZeroVector(uni[3]),coefs);
+  result:=Fct(coefs,uni[2]);
+//  Echo(result,list);
+//  Echo((Add(list*x^(0 .. (Length(list)-1)))));
+//  Factorize(x-result)*(Add(list*x^(0 .. (Length(list)-1))));
+  result;
+];
+
+
+
+MkfactD(numer,denom):=
+[
+  Local(q,r,i,j,ln,ld,nq);
+  DropEndZeroes(numer);
+  DropEndZeroes(denom);
+  Set(numer,Reverse(numer));
+  Set(denom,Reverse(denom));
+  Set(ln,Length(numer));
+  Set(ld,Length(denom));
+  Set(q,FillList(0,ln));
+  Set(r,FillList(0,ln));
+
+  Set(i,1);
+  If(ld>0,
+  [
+    While(Length(numer)>=Length(denom))
+    [
+      Set(nq,numer[1]/denom[1]);
+      q[ln-(Length(numer)-ld)] := nq;
+      For(j:=1,j<=Length(denom),j++)
+      [
+        numer[j] := (numer[j] - nq*denom[j]);
+      ];
+      r[i] := r[1] + numer[1];
+
+      Set(numer, Tail(numer));
+      i++;
+    ];
+  ]);
+  For(j:=0,j<Length(numer),j++)
+  [
+    r[i+j] := r[i+j] + numer[j+1];
+  ];
+  Set(q,Reverse(q));
+  Set(r,Reverse(r));
+  DropEndZeroes(q);
+  DropEndZeroes(r);
+  {q,r};
+];
+
+]; //LocalSymbols

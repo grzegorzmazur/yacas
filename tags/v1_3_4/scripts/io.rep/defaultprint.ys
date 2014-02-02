@@ -1,0 +1,11 @@
+/// The new default pretty-printer: DefaultPrint
+Function("DefaultPrint", {x})
+[
+	DumpErrors();
+	WriteString("Out> ");
+	Write(x);
+	WriteString(";
+");
+];
+HoldArg("DefaultPrint", x);
+

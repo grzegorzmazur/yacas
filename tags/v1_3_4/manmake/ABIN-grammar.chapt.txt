@@ -1,0 +1,150 @@
+		Example: implementing a formal grammar
+
+To illustrate the use of rules, consider a theorem prover in a simple formal
+grammar. (The example is the "ABIN system" from the book: W. Robinson,
+<i>Computers, minds and robots</i>, Temple University Press, 1992. Warning: the book is about philosophy.)
+
+Well-formed expressions consist of symbols {A}, {B}, {I}, {N} and are either
+
+*	1. {B} followed by zero or more of {I}'s, e.g. {B} , {BIII} ; or
+*	2. {N} followed by a well-formed expression; or
+*	3. {A} followed by <i>two</i> well-formed expressions.
+
+This defines a certain set of well-formed expressions (statements of the ABIN
+language); for example, {NBII} is a statement of the language but {AB} is not.
+The truth/falsehood interpretation of the ABIN language is the following. All
+well-formed expressions starting with {NB} are interpreted as true statements
+(they are "axioms" of the system). In addition, there is one deduction rule
+allowing one to prove "theorems":
+
+*	If <i>x</i> and <i>y</i> are well-formed, then from {N}<i>x</i> follows {NA}<i>xy</i>.
+
+Thus, {NABIBI} can be proved starting from the axiom {NBI}, but {NANBB} cannot
+be proved. The task at hand is to decide whether a given sequence of symbols is
+a provable statement of the ABIN language.
+
+(The idea behind this interpretation is to assume that all {B}, {BI} etc. are
+some false statements that one could denote "B0", "B1" according to the number
+of "I" symbols; "N" is the logical {Not} and "A" is the logical {And}. Then the
+statement {NABIB} would mean "it is false that both B0 and B1 are true" and
+{NANBB} would mean "it is false that both B0 and negation of B0 are true". The
+{NANBB} statement is true in this interpretation but the deductive system of
+ABIN is too weak to obtain its proof.)
+
+	    Implementation using predicates
+
+The easiest way to model the ABIN language in Yacas is by using predicates. Our
+goal will be to define a predicate {IsProvable(x)} that will return {True} when
+{x} is a provable ABIN statement and {False} otherwise. We shall define
+{IsProvable(x)} recursively through several auxiliary predicates. Naturally, we
+would like to have a predicate to test well-formedness: {IsExpr(x)}. It is
+necessary also to have predicates for {B}-expressions, {N}-expressions and
+{A}-expressions, as well as for axioms and theorems. We might implement
+expressions by lists of symbols, e.g. {{"B", "I"}} and begin to code by
+
+	IsExpr(x_IsList) <-- IsBExpr(x) Or
+	  IsNExpr(x) Or IsAExpr(x);
+	IsProvable(x_IsList) <-- IsAxiom(x) Or
+	  IsTheorem(x);
+	IsAxiom(x_IsList) <-- IsNExpr(x) And
+	  IsBExpr(Tail(x));
+
+The definitions of {IsBExpr(x)} and {IsNExpr(x)} are simple recursion to
+express the rules 1 and 2 of the ABIN grammar. Note the use of {Take} to create
+a copy of a list (we'd better not modify the value of {x} in the body of the
+rule).
+
+	10 # IsBExpr({}) <-- False;
+	10 # IsBExpr({"B"}) <-- True;
+	20 # IsBExpr(x_IsList) <-- x[Length(x)]="I"
+	  And IsBExpr(Take(x, {1, Length(x)-1}));
+	
+	10 # IsNExpr({}) <-- False;
+	20 # IsNExpr(x_IsList) <-- x[1] = "N" And
+	  IsExpr(Tail(x));
+
+The predicate {IsAExpr(x)} is a little bit more complicated because our rule 3
+requires to find two well-formed expressions that follow {A}. Also, for proving
+theorems we need to be able to extract the first of these expressions. With
+this in mind, we define another auxiliary function, {FindTwoExprs(x)}, that
+returns the results of search for two well-formed expressions in the list {x}.
+The return value of this function will be a pair such as {{True, 3}} to
+indicate that two well-formed expressions were found, the first expression
+being of length 3. We shall use a {For} loop for this function:
+
+	FindTwoExprs(x_IsList) <-- [
+	 Local(iter, result);
+	 For( [ iter:=1; result:=False; ],
+	  iter < Length(x) And Not result,
+	    iter:=iter+1 )
+	   [
+	    result := IsExpr(Take(x, iter))
+	     And IsExpr(Take(x, {iter+1,
+		   Length(x)}));
+	   ];
+	 {result, iter-1};
+	];
+
+Now we can define the remaining predicates:
+
+	10 # IsAExpr(x_IsList)_(Length(x) <= 1)
+	  <-- False;
+	20 # IsAExpr(x_IsList) <-- x[1] = "A" And
+	  FindTwoExprs(Tail(x))[1];
+	
+	IsTheorem(x_IsList) <-- If(IsNExpr(x) And
+	  IsAExpr(Tail(x)) And IsProvable(
+	    Concat({"N"}, Take(Tail(Tail(x)),
+	   FindTwoExprs(Tail(Tail(x)))[2]) ));
+
+
+The ABIN language is now complete. Let us try some simple examples:
+
+	In> IsExpr({"A","B"});
+	Out> False;
+	In> IsExpr({"N","B","I"});
+	Out> True;
+	In> IsAxiom({"N","B","I"});
+	Out> True;
+	In> IsTheorem({"N","B","I"});
+	Out> False;
+	In> IsProvable({"N","B","I"});
+	Out> True;
+	In> IsProvable({"N","A","B","I","B"});
+	Out> True;
+
+It is somewhat inconvenient to type long lists of characters. So we can create
+an interface function to convert atomic arguments to lists of characters, e.g.
+{AtomToCharList(BII)} will return {{"B","I","I"}} (provided that the symbol
+{BII} has not been given a definition). Then we define a function {ABIN(x)} to
+replace {IsProvable}.
+
+	AtomToCharList(x_IsAtom) <-- [
+	  Local(index, result);
+	  For( [ index:=Length(String(x));
+	     result:={}; ],
+	   index > 0, index:=index-1 )
+	   Push(result, StringMid'Get(index, 1,
+	     String(x)));
+	  result;
+	];
+	Holdarg(AtomToCharList, 1);
+	ABIN(x) := IsProvable(AtomToCharList(x));
+
+	In> AtomToCharList(NBII);
+	Out> {"N", "B","I","I"};
+	In> ABIN(NANBB);
+	Out> False;
+
+It is easy to modify the predicates {IsTheorem()} and {IsAxiom()} so that they
+print the sequence of intermediate theorems and axioms used for deriving a
+particular theorem. The final version of the code is in the file
+{examples/ABIN.ys}. Now we can try to check a "complicated" theorem and see an outline of
+its proof:
+
+	In> ABIN(NAAABIIBIBNB);
+	Axiom {"NBII"}
+	Theorem NABIIBI derived
+	Theorem NAABIIBIB derived
+	Theorem NAAABIIBIBNB derived
+	Out> True;
