@@ -53,6 +53,11 @@ configure_file (
   "${PROJECT_BINARY_DIR}/version.h"
   )
 
+configure_file (
+  "${PROJECT_SOURCE_DIR}/version.h.in"
+  "${PROJECT_BINARY_DIR}/yacas_version.h"
+  )
+
 add_definitions(-DHAVE_CONFIG_H)
 
 include_directories(
@@ -64,7 +69,6 @@ set (YACAS_COMMON_SOURCES src/yacasmain.cpp src/stdcommandline.cpp src/deffile.c
 
 set (YACAS_UNIX_SOURCES src/unixcommandline.cpp)
 set (YACAS_WIN32_SOURCES src/win32commandline.cpp src/yacas.rc)
-set (YACAS_WIN32_SOURCES src/win32commandline.cpp)
 
 if (UNIX)
   set (YACAS_SOURCES ${YACAS_COMMON_SOURCES} ${YACAS_UNIX_SOURCES})
@@ -93,9 +97,15 @@ add_executable (removeduplicates manmake/removeduplicates.cpp)
 find_program (PERL perl)
 find_package (LATEX)
 
-if (NOT CMAKE_CROSSCOMPILING AND PERL AND LATEX_COMPILER)
+if (CMAKE_CROSSCOMPILING)
+  set (YACAS ${YACAS_NATIVE_BUILD}/yacas)
+else ()
+  set (YACAS ${PROJECT_BINARY_DIR}/yacas)
+endif ()
 
-  set (CHAPTERS FDL.chapt cl-options.chapt config.chapt addons.chapt YacasDebugger.chapt ABIN-grammar.chapt SimpleTools.chapt CVS-Howto.chapt YacasDocs.chapt wester-1994.chapt new.chapt paper.chapt wordproblems.chapt BuildSystem.chapt arith.chapt calc.chapt complex.chapt solvers.chapt simplify.chapt ode.chapt linalg.chapt univar.chapt lists.chapt functional.chapt controlflow.chapt preds.chapt logic.chapt const.chapt vars.chapt io.chapt numtheory.chapt strings.chapt transforms.chapt probability-and-statistics.chapt glossary.chapt glossary.chapt algo-basic.chapt algo-numapprox.chapt algorithms-elemfunc.chapt algorithms-specfunc.chapt algorithms-numtheory.chapt algorithms-integration.chapt algorithms-multivar.chapt SturmSequences.chapt algo-refs.chapt algo-contfrac.chapt algorithms-transforms.chapt)
+if (PERL AND YACAS AND LATEX_COMPILER)
+
+  set (CHAPTERS FDL.chapt GPL.chapt cl-options.chapt config.chapt addons.chapt YacasDebugger.chapt ABIN-grammar.chapt SimpleTools.chapt CVS-Howto.chapt YacasDocs.chapt wester-1994.chapt new.chapt paper.chapt wordproblems.chapt BuildSystem.chapt arith.chapt calc.chapt complex.chapt solvers.chapt simplify.chapt ode.chapt linalg.chapt univar.chapt lists.chapt functional.chapt controlflow.chapt preds.chapt logic.chapt const.chapt vars.chapt io.chapt numtheory.chapt strings.chapt transforms.chapt probability-and-statistics.chapt glossary.chapt glossary.chapt algo-basic.chapt algo-numapprox.chapt algorithms-elemfunc.chapt algorithms-specfunc.chapt algorithms-numtheory.chapt algorithms-integration.chapt algorithms-multivar.chapt SturmSequences.chapt algo-refs.chapt algo-contfrac.chapt algorithms-transforms.chapt numerics.chapt)
   foreach (_chapter ${CHAPTERS})
     add_custom_command (
       OUTPUT ${_chapter}
@@ -120,7 +130,7 @@ if (NOT CMAKE_CROSSCOMPILING AND PERL AND LATEX_COMPILER)
   foreach (_book ${BOOKS})
     add_custom_command (
       OUTPUT ${_book}.tex
-      COMMAND ${PROJECT_BINARY_DIR}/yacas --rootdir ${PROJECT_SOURCE_DIR}/scripts:${PROJECT_BINARY_DIR} -i "[ Use(\"${PROJECT_SOURCE_DIR}/manmake/book2TeX.ys\"); Load(\"${_book}\"); TeXFinishUp(); ];" > ${_book}.tex
+      COMMAND ${YACAS} --rootdir ${PROJECT_SOURCE_DIR}/scripts:${PROJECT_BINARY_DIR} -i "[ Use(\"${PROJECT_SOURCE_DIR}/manmake/book2TeX.ys\"); Load(\"${_book}\"); TeXFinishUp(); ];" > ${_book}.tex
       MAIN_DEPENDENCY ${_book}
       DEPENDS docs yacas
       VERBATIM)
@@ -133,14 +143,34 @@ if (NOT CMAKE_CROSSCOMPILING AND PERL AND LATEX_COMPILER)
 
   add_custom_target (tex_docs DEPENDS ${TEX_BOOKS})
 
+  foreach (_book ${BOOKS})
+    add_custom_command ( 
+      OUTPUT    ${PROJECT_BINARY_DIR}/${_book}.pdf
+      COMMAND   ${PDFLATEX_COMPILER}
+      ARGS      ${PROJECT_BINARY_DIR}/${_book}.tex
+      DEPENDS   ${PROJECT_BINARY_DIR}/${_book}.tex
+      COMMENT   "LaTeX"
+  )
+  endforeach()
+
+  set (PDF_BOOKS)
+  foreach (_book ${BOOKS})
+    list (APPEND PDF_BOOKS ${_book}.pdf)
+  endforeach()
+
+  add_custom_target (pdf_docs ALL DEPENDS ${PDF_BOOKS})
+
+  set (PDF_BOOK_PATHS)
+  foreach (_book ${PDF_BOOKS})
+    list (APPEND PDF_BOOK_PATHS ${PROJECT_BINARY_DIR}/${_book})
+  endforeach()
+
+  install (FILES ${PDF_BOOK_PATHS} DESTINATION share/yacas/documentation COMPONENT doc)
+
 endif()
 
 install (TARGETS yacas RUNTIME DESTINATION bin COMPONENT app)
 install (DIRECTORY scripts/ DESTINATION share/yacas COMPONENT app)
-install (DIRECTORY docs/ DESTINATION share/yacas/documentation COMPONENT doc FILES_MATCHING PATTERN "*.html")
-install (DIRECTORY docs/ DESTINATION share/yacas/documentation COMPONENT doc FILES_MATCHING PATTERN "*.gif")
-install (DIRECTORY docs/ DESTINATION share/yacas/documentation COMPONENT doc FILES_MATCHING PATTERN "*.css")
-install (DIRECTORY docs/ DESTINATION share/yacas/documentation COMPONENT doc FILES_MATCHING PATTERN "*.js")
 
 if (NOT CMAKE_CROSSCOMPILING)
 
