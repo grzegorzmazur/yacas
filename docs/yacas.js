@@ -566,4 +566,3 @@ function animateExpressionMover()
   }
 }
 
-
