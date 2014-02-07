@@ -198,25 +198,6 @@ LispInt StrEqualStringified(const LispChar * ptr1, const LispChar * ptr2)
     return 1;
 }
 
-LispInt StrEqualUnStringified(const LispChar * ptr1, const LispChar * ptr2)
-{
-    if (*ptr2 != '\"')
-        return 0;
-    ptr2++;
-    while (*ptr1 != 0 && ptr2[1] != 0)
-    {
-        if (*ptr1++ != *ptr2)
-            return 0;
-        ptr2++;
-    }
-    if (*ptr2 != '\"')
-        return 0;
-    ptr2++;
-    if (*ptr1 != *ptr2)
-        return 0;
-    return 1;
-}
-
 // If string not yet in table, insert. Afterwards return the string.
 LispString * LispHashTable::LookUpStringify(const LispChar * aString)
 {
