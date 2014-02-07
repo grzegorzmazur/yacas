@@ -134,33 +134,6 @@ LispInt LispHashPtr(const LispString * aString)
 
 DBG_( long theNrTokens=0; )
 
-// If string not yet in table, insert. Afterwards return the string.
-LispString * LispHashTable::LookUp(const LispChar* aString)
-{
-    LispInt bin = LispHash(aString);
-
-    // Find existing version of string
-  LispStringSmartPtrArray & aBin = iHashTable[bin];
-  for (LispInt i = 0, n = aBin.Size(); i < n; i++)
-    {
-    // expr ... typeof(expr)
-    // aBin ... LispStringSmartPtrArray&
-    // aBin[i] ... LispStringSmartPtr&
-    // aBin[i].operator->() ... LispString*
-    // aBin[i].operator->()->c_str() ... LispChar*
-        if (!std::strcmp(aBin[i]->c_str(), aString))
-    {
-            return aBin[i];
-        }
-    }
-
-    // Append a new string
-  DBG_( theNrTokens++; )
-
-    LispString * result = NEW LispString(aString);
-    AppendString(bin,result);
-    return result;
-}
 
 void LispHashTable::AppendString(LispInt bin,LispString * result)
 {
@@ -168,32 +141,6 @@ void LispHashTable::AppendString(LispInt bin,LispString * result)
   int index = iHashTable[bin].Size();
   iHashTable[bin].ResizeTo(index+1);  // change to GrowBy sometime
   iHashTable[bin][index] = result;
-}
-
-// If string not yet in table, insert. Afterwards return the string.
-LispString * LispHashTable::LookUp(LispString * aString)
-{
-    LispInt bin = LispHash(aString->c_str());
-
-    // Find existing version of string
-  LispStringSmartPtrArray & aBin = iHashTable[bin];
-  for (LispInt i = 0, n = aBin.Size(); i < n; i++)
-    {
-        if (!std::strcmp(aBin[i]->c_str(), aString->c_str()))
-    {
-            //TODO we shouldn't be doing refcounting here???
-            if (!aString->iReferenceCount)
-            {
-                delete aString;
-            }
-            return aBin[i];
-    }
-    }
-
-    // Append a new string
-  DBG_( theNrTokens++; )
-    AppendString(bin,aString);
-    return aString;
 }
 
 LispInt StrEqualCounted(const LispChar * ptr1, const LispChar * ptr2, LispInt length)
@@ -211,7 +158,7 @@ LispInt StrEqualCounted(const LispChar * ptr1, const LispChar * ptr2, LispInt le
 
 LispString* LispHashTable::LookUpCounted(const LispChar* aString, LispInt aLength)
 {
-    LispInt bin = LispHashCounted(aString,aLength);
+    LispInt bin = LispHashCounted(aString, aLength);
 
     // Find existing version of string
   LispStringSmartPtrArray & aBin = iHashTable[bin];
@@ -290,30 +237,6 @@ LispString * LispHashTable::LookUpStringify(const LispChar * aString)
     LispString * str = NEW LispString();
     str->SetStringStringified(aString);
 
-    AppendString(bin,str);
-    return str;
-}
-
-// If string not yet in table, insert. Afterwards return the string.
-LispString * LispHashTable::LookUpUnStringify(const LispChar * aString)
-{
-    Check(aString[0] == '\"',KLispErrInvalidArg);
-    LispInt bin = LispHashUnStringify(aString);
-
-    // Find existing version of string
-  LispStringSmartPtrArray & aBin = iHashTable[bin];
-  for (LispInt i = 0, n = aBin.Size(); i < n; i++)
-    {
-        if (StrEqualUnStringified(aBin[i]->c_str(), aString))
-        {
-            return aBin[i];
-        }
-  }
-
-    // Append a new string
-  DBG_( theNrTokens++; )
-    LispString * str = NEW LispString();
-    str->SetStringUnStringified(aString);
     AppendString(bin,str);
     return str;
 }

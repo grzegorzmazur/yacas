@@ -766,9 +766,9 @@ void LispAtomize(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     // Get operator
     CHK_ARG_CORE(evaluated, 1);
-    LispString * orig = evaluated->String();
+    const LispString* orig = evaluated->String();
     CHK_ARG_CORE(orig, 1);
-    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpUnStringify(orig->c_str())->c_str()));
+    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpCounted(orig->c_str() + 1, std::strlen(orig->c_str()) - 2)->c_str()));
 }
 
 void LispStringify(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1130,7 +1130,7 @@ void LispFromFile(LispEnvironment& aEnvironment, LispInt aStackTop)
   CHK_ARG_CORE(orig, 1);
 
   LispString * contents = aEnvironment.FindCachedFile(orig->c_str());
-  LispString * hashedname = aEnvironment.HashTable().LookUpUnStringify(orig->c_str());
+  LispString * hashedname = aEnvironment.HashTable().LookUpCounted(orig->c_str() + 1, std::strlen(orig->c_str()));
 
   InputStatus oldstatus = aEnvironment.iInputStatus;
   aEnvironment.iInputStatus.SetTo(hashedname->c_str());
