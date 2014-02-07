@@ -459,7 +459,7 @@ void LispFromBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     // Added, unquote a string
     CHK_ARG_CORE(InternalIsString(str2),2);
-    str2 = aEnvironment.HashTable().LookUpUnStringify(str2->c_str());
+    str2 = aEnvironment.HashTable().LookUpCounted(str2->c_str() + 1, std::strlen(str2->c_str()) - 2);
 
     // convert using correct base
   // FIXME: API breach, must pass precision in base digits and not in bits!

@@ -32,12 +32,10 @@ public:
   LispHashTable() {}
   ~LispHashTable();
   // If string not yet in table, insert. Afterwards return the string.
-  LispString * LookUp(const LispChar * aString);
   /// LookUp that takes ownership of the string
-  LispString * LookUp(LispString * aString);
-  LispString * LookUpCounted(const LispChar * aString,LispInt aLength);
+  LispString * LookUp(const LispChar * aString);
+  LispString * LookUpCounted(const LispChar * aString, LispInt aLength);
   LispString * LookUpStringify(const LispChar * aString);
-  LispString * LookUpUnStringify(const LispChar * aString);
   void GarbageCollect();
 private:
   void AppendString(LispInt bin,LispString * result);
@@ -45,6 +43,11 @@ private:
   CArrayGrower<LispStringSmartPtr, ArrOpsCustomObj<LispStringSmartPtr> > iHashTable[KSymTableSize];
 };
 
+inline
+LispString* LispHashTable::LookUp(const LispChar* aString)
+{
+    return LookUpCounted(aString, std::strlen(aString));
+}
 
 
 

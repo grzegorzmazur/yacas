@@ -591,7 +591,7 @@ LispString* SymbolName(LispEnvironment& aEnvironment,
                        const LispChar * aSymbol)
 {
     if (aSymbol[0] == '\"')
-        return aEnvironment.HashTable().LookUpUnStringify(aSymbol);
+        return aEnvironment.HashTable().LookUpCounted(aSymbol + 1, std::strlen(aSymbol) - 2);
     else
         return aEnvironment.HashTable().LookUp(aSymbol);
 }
