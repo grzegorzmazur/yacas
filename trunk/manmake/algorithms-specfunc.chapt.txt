@@ -77,7 +77,7 @@ $Gamma$-function is computed via the identity
 $$Gamma(x)*Gamma(1-x) = Pi/Sin(Pi*x)$$.
 
 The Lanczos-Spouge approximation formula depends on a parameter $a$,
-$$Gamma(z) = (Sqrt(2*Pi)*(z+a)^(z-1/2)) / (z*e^(z+a)) * (1+e^(a-1)/Sqrt(2*Pi) * Sum(k, 1, N, c[k]/(z+k)))$$,
+$$Gamma(z) = (Sqrt(2*Pi)*(z+a)^(z+1/2)) / (z*e^(z+a)) * (1+e^(a-1)/Sqrt(2*Pi) * Sum(k, 1, N, c[k]/(z+k)))$$,
 with $N := Ceil(a)-1$. The coefficients $c[k]$ are defined by
 $$ c[k] = (-1)^(k-1)*(a-k)^(k-1/2)/(e^(k-1)*(k-1)!) $$.
 The parameter $a$ is a free parameter of the approximation that determines also
