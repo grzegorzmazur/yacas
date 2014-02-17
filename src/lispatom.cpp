@@ -1,10 +1,10 @@
 
-#include "yacasprivate.h"
-#include "lispatom.h"
-#include "lispassert.h"
-#include "lisperror.h"
-#include "numbers.h"
-#include "standard.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/lispatom.h"
+#include "yacas/lispassert.h"
+#include "yacas/lisperror.h"
+#include "yacas/numbers.h"
+#include "yacas/standard.h"
 
 
 /// construct an atom from a string representation.

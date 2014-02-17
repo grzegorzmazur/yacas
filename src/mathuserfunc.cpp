@@ -1,12 +1,12 @@
 
-#include "yacasprivate.h"
-#include "mathuserfunc.h"
-#include "lispobject.h"
-#include "lispeval.h"
-#include "standard.h"
-#include "patterns.h"
-#include "patternclass.h"
-#include "substitute.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/mathuserfunc.h"
+#include "yacas/lispobject.h"
+#include "yacas/lispeval.h"
+#include "yacas/standard.h"
+#include "yacas/patterns.h"
+#include "yacas/patternclass.h"
+#include "yacas/substitute.h"
 
 #define InternalEval aEnvironment.iEvaluator->Eval
 

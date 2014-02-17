@@ -1,8 +1,8 @@
 
 #include <stdio.h>
 
-#include "yacasprivate.h"
-#include "stdcommandline.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/stdcommandline.h"
 
 #define KMaxStdLen 4001
 

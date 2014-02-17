@@ -1,12 +1,12 @@
 /* Math using the standard library, if the precision is less than 13 */
-#include "yacasprivate.h"
-#include "yacasbase.h"
-#include "lispobject.h"
-#include "lispatom.h"
-#include "lispenvironment.h"
-#include "numbers.h"
-#include "platmath.h"
-#include "errors.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/yacasbase.h"
+#include "yacas/lispobject.h"
+#include "yacas/lispatom.h"
+#include "yacas/lispenvironment.h"
+#include "yacas/numbers.h"
+#include "yacas/platmath.h"
+#include "yacas/errors.h"
 
 #include <stdio.h>
 

@@ -150,7 +150,7 @@ $(srcdir)/packages.ys: $(srcdir)/Makefile.am
 	   | uniq | sed 's/^/"/;s/$$/",/;s/\.def//'	       >> $@
 	@echo "};"                                            >> $@
 
-$(srcdir)/corefunctions.ys: $(top_srcdir)/src/corefunctions.h $(top_srcdir)/src/yacasmain.cpp
+$(srcdir)/corefunctions.ys: $(top_srcdir)/include/yacas/corefunctions.h $(top_srcdir)/src/yacasmain.cpp
 	(cd ../src && make gencorefunctions$(EXEEXT))
 	../src/gencorefunctions$(EXEEXT) > $(srcdir)/corefunctions.ys
 

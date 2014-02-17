@@ -1,6 +1,6 @@
 
 #include <stdio.h>
-#include "lispevalhash.h"
+#include "yacas/lispevalhash.h"
 
 /// Print some documentation based on the list of kernel functions.
 /// Usage: gencorefunctions [option]
@@ -71,10 +71,10 @@ int main(int number_of_main_args, char**)
 #define CORE_KERNEL_FUNCTION_ALIAS(iname,fname,nrargs,flags) Emit(iname,#fname,flags, nrargs, (number_of_main_args>1) ? 1 : -1);
 #define OPERATOR(kind,precedence,yacas_name) print_operator_info(#kind,#precedence,#yacas_name, (number_of_main_args>1) ? 1 : -1);
 
-#include "corefunctions.h"
+#include "yacas/corefunctions.h"
 
   // this file is generated from core_yacasmain.h
-#include "core_yacasmain.h"
+#include "yacas/core_yacasmain.h"
 
 #undef CORE_KERNEL_FUNCTION
 #undef CORE_KERNEL_FUNCTION_ALIAS

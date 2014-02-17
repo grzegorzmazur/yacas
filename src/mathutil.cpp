@@ -1,5 +1,5 @@
 
-#include "yacasprivate.h"
+#include "yacas/yacasprivate.h"
 
 LispInt PlatAsciiToInt(const LispChar* aString)
 {

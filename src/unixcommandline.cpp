@@ -5,8 +5,8 @@
 
 #include <sstream>
 
-#include "yacasprivate.h"
-#include "unixcommandline.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/unixcommandline.h"
 
 void CUnixCommandLine::NewLine()
 {

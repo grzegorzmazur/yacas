@@ -1,8 +1,8 @@
 
-#include "yacasprivate.h"
-#include "lispcleanupstack.h"
-#include "lispassert.h"
-#include "lisptype.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/lispcleanupstack.h"
+#include "yacas/lispassert.h"
+#include "yacas/lisptype.h"
 
 
 LispCleanup::~LispCleanup()

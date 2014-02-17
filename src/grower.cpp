@@ -1,7 +1,7 @@
 
-#include "yacasprivate.h"
-#include "grower.h"
-#include "lispassert.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/grower.h"
+#include "yacas/lispassert.h"
 
 /*static*/
 void ArrOps::reserve(char** pArray, int& iCapacity, int aSize, int aItemSize)

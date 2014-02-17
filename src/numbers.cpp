@@ -1,7 +1,7 @@
-#include "lisptype.h"
-#include "numbers.h"
-#include "standard.h"
-#include "errors.h"
+#include "yacas/lisptype.h"
+#include "yacas/numbers.h"
+#include "yacas/standard.h"
+#include "yacas/errors.h"
 
 #include <cmath>
 #include <sstream>

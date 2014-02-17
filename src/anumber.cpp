@@ -8,9 +8,9 @@
 
 //#include <stdio.h>
 
-#include "yacasprivate.h"
-#include "anumber.h"
-#include "mathutil.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/anumber.h"
+#include "yacas/mathutil.h"
 
 
 
