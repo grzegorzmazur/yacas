@@ -21,6 +21,9 @@
   #include <stdio.h> // Safe, only included if HAVE_STDIO_H defined
 #endif
 
+#include <iomanip>
+#include <sstream>
+
 static LispObject* FloatToString(ANumber& aInt, LispEnvironment& aEnvironment, LispInt aBase = 10);
 
 LispInt NumericSupportForMantissa()
@@ -1152,45 +1155,19 @@ bool BigNumber::LessThan(const BigNumber& aOther) const
 // assign from a platform type
 void BigNumber::SetTo(long aValue)
 {
-#ifdef HAVE_STDIO_H
-  char dummy[150];
-  //FIXME platform code
-#ifdef HAVE_VSNPRINTF
-  snprintf(dummy,150,"%ld",aValue);
-#else
-  sprintf(dummy,"%ld",aValue);
-#endif
-  SetTo(dummy,iPrecision,10);
-  SetIsInteger(true);
-#else
-  //FIXME
-  LISPASSERT(0);
-#endif
+    std::ostringstream buf;
+    buf << aValue;
+    SetTo(buf.str().c_str(), iPrecision, BASE10);
+    SetIsInteger(true);
 }
 
 
 void BigNumber::SetTo(double aValue)
 {
-#ifdef HAVE_STDIO_H
-  iPrecision = 53;  // standard double has 53 bits
-  char dummy[150];
-  //FIXME platform code
-  char format[20];
-#ifdef HAVE_VSNPRINTF
-  snprintf(format,20,"%%.%dg",iPrecision);
-  snprintf(dummy,150,format,aValue);
-#else
-  sprintf(format,"%%.%dg",iPrecision);
-  sprintf(dummy,format,aValue);
-#endif
-  SetTo(dummy,iPrecision,BASE10);
-  SetIsInteger(false);
-//  if (iNumber->iExp > 1)
-//    iNumber->RoundBits();
-#else
-  //FIXME
-  LISPASSERT(0);
-#endif
+    std::ostringstream buf;
+    buf << std::setprecision(53) << aValue;
+    SetTo(buf.str().c_str(), iPrecision, BASE10);
+    SetIsInteger(false);
 }
 
 LispInt CalculatePrecision(const LispChar * aString,LispInt aBasePrecision,LispInt aBase, bool& aIsFloat)

@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <sys/ioctl.h>
 
+#include <sstream>
+
 #include "yacasprivate.h"
 #include "unixcommandline.h"
 
@@ -91,13 +93,9 @@ CUnixCommandLine::CUnixCommandLine():
     rl_termio.c_cc[VSUSP] = 0;
     tcsetattr(0, TCSADRAIN, &rl_termio);
 
-    char fname[256];
-#ifdef HAVE_VSNPRINTF
-    snprintf(fname,256,"%s/.yacas_history",getenv("HOME"));
-#else
-    sprintf(fname,"%s/.yacas_history",getenv("HOME"));
-#endif
-    FILE*f=fopen(fname,"r");
+    std::ostringstream fname;
+    fname << getenv("HOME") << "/.yacas_history";
+    FILE* f = fopen(fname.str().c_str(), "r");
     if (f)
     {
         if(f)
@@ -123,14 +121,11 @@ CUnixCommandLine::CUnixCommandLine():
 CUnixCommandLine::~CUnixCommandLine()
 {
     tcsetattr(0, TCSADRAIN, &orig_termio);
-    char fname[256];
-#ifdef HAVE_VSNPRINTF
-    snprintf(fname,256,"%s/.yacas_history",getenv("HOME"));
-#else
-    sprintf(fname,"%s/.yacas_history",getenv("HOME"));
-#endif
 
-    FILE*f=fopen(fname,"w");
+    std::ostringstream fname;
+    fname << getenv("HOME") << "/.yacas_history";
+
+    FILE* f = fopen(fname.str().c_str(), "w");
     if (f)
     {
         int i;

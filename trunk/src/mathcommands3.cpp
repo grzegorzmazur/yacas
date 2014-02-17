@@ -27,7 +27,7 @@
 
 #include "version.h"
 
-
+#include <sstream>
 
 
 #define InternalEval aEnvironment.iEvaluator->Eval
@@ -829,7 +829,9 @@ void LispBitsToDigits(LispEnvironment& aEnvironment, LispInt aStackTop)
   }
   else
   {
-    RaiseError("BitsToDigits: error: arguments (%f, %f) must be small integers", x->Double(), y->Double());
+      std::ostringstream buf;
+      buf << "BitsToDigits: error: arguments (" << x->Double() << ", " << y->Double() << " must be small integers";
+      RaiseError(buf.str().c_str());
   }
   BigNumber *z = NEW BigNumber();
   z->SetTo(result);
@@ -852,7 +854,9 @@ void LispDigitsToBits(LispEnvironment& aEnvironment, LispInt aStackTop)
   }
   else
   {
-    RaiseError("DigitsToBits: error: arguments (%f, %f) must be small integers", x->Double(), y->Double());
+      std::ostringstream buf;
+      buf << "BitsToDigits: error: arguments (" << x->Double() << ", " << y->Double() << " must be small integers";
+      RaiseError(buf.str().c_str());
   }
   BigNumber *z = NEW BigNumber();
   z->SetTo(result);

@@ -30,13 +30,13 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
         extern int verbose_debug;
         if (verbose_debug)
         {
-          char buf[1024];
-        #ifdef HAVE_VSNPRINTF
-          snprintf(buf,1024,"Debug> Loading file %s for function %s\n",def->iFileName->c_str(),head->String()->c_str());
-        #else
-          sprintf(buf,      "Debug> Loading file %s for function %s\n",def->iFileName->c_str(),head->String()->c_str());
-        #endif
-          aEnvironment.CurrentOutput()->Write(buf);
+            std::string msg =
+                std::string("Debug> Loading file ") +
+                std::string(def->iFileName->c_str()) +
+                std::string(" for function ") +
+                std::string(head->String()->c_str()) +
+                std::string("\n");
+            aEnvironment.CurrentOutput()->Write(buf.c_str());
         }
       }
 #endif
@@ -48,13 +48,11 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
         extern int verbose_debug;
         if (verbose_debug)
         {
-          char buf[1024];
-          #ifdef HAVE_VSNPRINTF
-            snprintf(buf,1024,"Debug> Finished loading file %s\n",def->iFileName->c_str());
-          #else
-            sprintf(buf,      "Debug> Finished loading file %s\n",def->iFileName->c_str());
-          #endif
-          aEnvironment.CurrentOutput()->Write(buf);
+            std::string msg =
+                std::string("Debug> Finished loading file ") +
+                std::string(def->iFileName->c_str()) +
+                std::string("\n");
+            aEnvironment.CurrentOutput()->Write(buf.c_str());
         }
       }
 #endif

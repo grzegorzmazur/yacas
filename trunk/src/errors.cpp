@@ -6,16 +6,7 @@
 #include "errors.h"
 #include "infixparser.h"
 
-#ifdef HAVE_STDIO_H
-  #include <stdio.h> // Safe, only included if HAVE_STDIO_H defined
-#endif
-
-#ifdef HAVE_STDARG_H
-  #include <stdarg.h>
-#endif
-
 #define InternalEval aEnvironment.iEvaluator->Eval
-
 
 void ShowStack(LispEnvironment& aEnvironment)
 {
@@ -143,29 +134,17 @@ void CheckArgType(LispInt aArgNr, LispPtr& aArguments,LispEnvironment& aEnvironm
     throw aError;
 }
 
-char *GenericErrorBuf()
+std::string& GenericErrorBuf()
 {
    // PLEASECHECK TODO This is a global!
-   static char theGenericErrorBuf[512];
+    static std::string theGenericErrorBuf;
    return theGenericErrorBuf;
 }
 
-void RaiseError(const char* str,...)
+void RaiseError(const char* str)
 {
-#ifdef HAVE_STDARG_H
-  va_list arg;
-  va_start (arg, str);
- #ifdef HAVE_VSNPRINTF
-  vsnprintf (GenericErrorBuf(), 500, str, arg);
- #else
-  /* Just cross fingers and hope the buffer is large enough */
-  vsprintf (GenericErrorBuf(), str, arg);
- #endif
-  va_end (arg);
-#else
-  std::memcpy(GenericErrorBuf(), str, std::strlen(str));
-#endif
-  throw static_cast<LispInt>(KLispErrGenericFormat);
+    GenericErrorBuf() = str;
+    throw static_cast<LispInt>(KLispErrGenericFormat);
 }
 
 

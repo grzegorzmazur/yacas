@@ -1,6 +1,8 @@
 #ifndef YACAS_ERRORS_H
 #define YACAS_ERRORS_H
 
+#include <string>
+
 #ifdef __GNUC__
 #  define YACAS_NORETURN __attribute__((noreturn))
 #else
@@ -24,7 +26,7 @@ void CheckFuncGeneric(LispInt aError,LispEnvironment& aEnvironment) YACAS_NORETU
 #define CHK_CORE(_pred,_err) {if (!(_pred)) CheckFuncGeneric(_err,ARGUMENT(0),aEnvironment);}
 #define CHK2(_pred,_err)     {if (!(_pred)) CheckFuncGeneric(_err,aEnvironment);}
 
-char *GenericErrorBuf(); // called (only) from errors.cpp and LispEnvironment::ErrorString()
-void RaiseError(const char* str,...);
+std::string& GenericErrorBuf(); // called (only) from errors.cpp and LispEnvironment::ErrorString()
+void RaiseError(const char* str);
 
 #endif

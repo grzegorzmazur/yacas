@@ -12,26 +12,25 @@
 
 #include <bitset>
 #include <cmath>
+#include <sstream>
 
 double GetDouble(LispObject* aInteger)
 {
   BigNumber* number = aInteger->Number(0);
   if (!number)
   {
-    RaiseError("Argument is not a number: %s",aInteger->String());
+      std::ostringstream buf;
+      buf << "Argument is not a number: " << aInteger->String();
+      RaiseError(buf.str().c_str());
   }
   return number->Double();
 }
 
 LispObject* Double(LispEnvironment& aEnvironment,double aValue)
 {
-  char buf[150];
-#ifdef HAVE_VSNPRINTF
-    snprintf(buf,150,"%g",aValue);
-#else
-    sprintf(buf,"%g",aValue);
-#endif
-  return LispAtom::New(aEnvironment,buf);
+    std::ostringstream buf;
+    buf << aValue;
+    return LispAtom::New(aEnvironment, buf.str().c_str());
 }
 
 

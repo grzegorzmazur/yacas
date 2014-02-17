@@ -589,7 +589,7 @@ const LispChar * LispEnvironment::ErrorString(LispInt aError)
         break;
     case KLispErrNonBooleanPredicateInPattern:
         return "Predicate doesn't evaluate to a boolean in pattern";
-     case KLispErrGenericFormat: return GenericErrorBuf();
+    case KLispErrGenericFormat: return GenericErrorBuf().c_str();
     }
     return "Unspecified Error";
 }
