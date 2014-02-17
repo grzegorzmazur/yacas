@@ -9,6 +9,8 @@
 ## suite in "tests". In addition, one of the tests to be run is generated in
 ## "manmake".
 
+ACLOCAL_AMFLAGS= -I m4
+
 SUBDIRS = . docs src scripts manmake tests JavaYacas 
 
 ## A script to be installed in the directory for binaries
