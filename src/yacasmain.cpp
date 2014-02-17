@@ -76,8 +76,8 @@
 #include "errors.h"
 
 
-#ifndef VERSION
-#include "version.h"
+#ifndef YACAS_VERSION
+#include "yacas_version.h"
 #endif
 
 //#define PROMPT_SHOW_FREE_MEMORY

@@ -23,9 +23,7 @@
 
 #include <cmath>
 
-#undef VERSION
-
-#include "version.h"
+#include "yacas_version.h"
 
 #include <sstream>
 
@@ -809,7 +807,7 @@ void LispBackQuote(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispVersion(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    RESULT = (LispAtom::New(aEnvironment,"\"" VERSION "\""));
+    RESULT = (LispAtom::New(aEnvironment,"\"" YACAS_VERSION "\""));
 }
 
 
