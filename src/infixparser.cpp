@@ -7,11 +7,12 @@
 #include "lisperror.h"
 #include "errors.h"
 
+#include <string>
 
 void ParsedObject::Fail()
 {
    if (iLookAhead && iLookAhead->c_str())
-      RaiseError("Error parsing expression, near token %s",iLookAhead->c_str());
+       RaiseError((std::string("Error parsing expression, near token ") +  std::string(iLookAhead->c_str())).c_str());
 
    RaiseError("Error parsing expression");
 }
@@ -170,7 +171,7 @@ void ParsedObject::ReadExpression(LispInt depth)
             ReadExpression(KMaxPrecedence);
             // Match closing bracket
             if (iLookAhead != iParser.iEnvironment.iProgClose->String())
-                RaiseError("Expecting a ] close bracket for program block, but got %s instead",iLookAhead->c_str());
+                RaiseError((std::string("Expecting a ] close bracket for program block, but got ") + std::string(iLookAhead->c_str()) + std::string(" instead")).c_str());
 
             MatchToken(iLookAhead);
             // Build into Ntn(...)
@@ -282,7 +283,7 @@ void ParsedObject::ReadAtom()
             }
             else if (iLookAhead != iParser.iEnvironment.iListClose->String())
             {
-                RaiseError("Expecting a } close bracket for a list, but got %s instead",iLookAhead->c_str());
+                RaiseError((std::string("Expecting a } close bracket for program block, but got ") + std::string(iLookAhead->c_str()) + std::string(" instead")).c_str());
             }
         }
         MatchToken(iLookAhead);
@@ -313,7 +314,7 @@ void ParsedObject::ReadAtom()
             }
             else
             {
-                RaiseError("Expecting ; end of statement in program block, but got %s instead",iLookAhead->c_str());
+                RaiseError((std::string("Expecting ; end of statement in program block, but got ") + std::string(iLookAhead->c_str()) + std::string(" instead")).c_str());
             }
         }
         MatchToken(iLookAhead);
@@ -348,7 +349,7 @@ void ParsedObject::ReadAtom()
                 }
                 else if (iLookAhead != iParser.iEnvironment.iBracketClose->String())
                 {
-                    RaiseError("Expecting ) closing bracket for sub-expression, but got %s instead",iLookAhead->c_str());
+                    RaiseError((std::string("Expecting a ) closing bracket for sub-expression, but got ") + std::string(iLookAhead->c_str()) + std::string(" instead")).c_str());
                 }
             }
             MatchToken(iLookAhead);

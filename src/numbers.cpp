@@ -4,6 +4,7 @@
 #include "errors.h"
 
 #include <cmath>
+#include <sstream>
 
 //////////////////////////////////////////////////
 ///// bits_to_digits and digits_to_bits implementation
@@ -64,7 +65,9 @@ double log2_table_lookup(unsigned n)
         return log2_table[n-1];
 
 
-    RaiseError("log2_table_lookup: error: invalid argument %d\n", n);
+    std::ostringstream buf;
+    buf << "log2_table_lookup: error: invalid argument " << n;
+    RaiseError(buf.str().c_str());
     return 0;
 }
 
