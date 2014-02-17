@@ -1,13 +1,13 @@
  
-#include "yacasprivate.h"
-#include "lispeval.h"
-#include "lispuserfunc.h"
-#include "standard.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/lispeval.h"
+#include "yacas/lispuserfunc.h"
+#include "yacas/standard.h"
 
-#include "lispio.h"
-#include "platfileio.h"
-#include "infixparser.h"
-#include "errors.h"
+#include "yacas/lispio.h"
+#include "yacas/platfileio.h"
+#include "yacas/infixparser.h"
+#include "yacas/errors.h"
 
 LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
                                   LispPtr* subList)

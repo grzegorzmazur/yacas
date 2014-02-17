@@ -3,9 +3,9 @@
  *  implementation of the more heavy functions that should not be inlined.
  */
 
-#include "yacasprivate.h"
-#include "lispstring.h"
-#include "stubs.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/lispstring.h"
+#include "yacas/stubs.h"
 
 void LispString::SetString(const LispChar * aString)
 {

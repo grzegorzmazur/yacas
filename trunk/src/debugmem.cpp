@@ -1,10 +1,10 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "yacasprivate.h"
-#include "debugmem.h"
-#include "stubs.h"
-#include "lispassert.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/debugmem.h"
+#include "yacas/stubs.h"
+#include "yacas/lispassert.h"
 
 #ifdef YACAS_DEBUG
 

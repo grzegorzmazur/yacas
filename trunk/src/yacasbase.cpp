@@ -1,5 +1,5 @@
 
-#include "yacasprivate.h"
-#include "yacasbase.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/yacasbase.h"
 
 

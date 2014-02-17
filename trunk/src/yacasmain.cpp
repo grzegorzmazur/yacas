@@ -32,7 +32,7 @@
 //          showing no prompts, and with no readline functionality.
 //
 
-#include "yacasprivate.h"
+#include "yacas/yacasprivate.h"
 
 #ifndef WIN32
 #include <dirent.h>
@@ -54,30 +54,30 @@
 #define PATH_SEPARATOR   '/'
 #define PATH_SEPARATOR_2 "/"
 
-#include "yacas.h"
+#include "yacas/yacas.h"
 
 #ifndef WIN32
-#include "unixcommandline.h"
+#include "yacas/unixcommandline.h"
 #define FANCY_COMMAND_LINE CUnixCommandLine
 #else
 #define _WINSOCKAPI_            // Prevent inclusion of winsock.h in windows.h
 #define _WIN32_WINDOWS 0x0410      // Make sure that Waitable Timer functions are declared in winbase.h
-#include "win32commandline.h"
+#include "yacas/win32commandline.h"
 #define FANCY_COMMAND_LINE CWin32CommandLine
 #include "shlwapi.h"
 #endif
 
-#include "stdcommandline.h"
-#include "standard.h"
-#include "numbers.h"
-#include "arggetter.h"
+#include "yacas/stdcommandline.h"
+#include "yacas/standard.h"
+#include "yacas/numbers.h"
+#include "yacas/arggetter.h"
 
 #include <ctime>
-#include "errors.h"
+#include "yacas/errors.h"
 
 
 #ifndef YACAS_VERSION
-#include "yacas_version.h"
+#include "yacas/yacas_version.h"
 #endif
 
 //#define PROMPT_SHOW_FREE_MEMORY
@@ -100,7 +100,7 @@
 #define SOCKLEN_T unsigned int //socklen_t
 #endif
 
-#include "GPL_stuff.h"
+#include "yacas/GPL_stuff.h"
 
 CYacas* yacas = 0;
 CCommandLine *commandline = 0;
@@ -446,7 +446,7 @@ void LoadYacas(LispOutput* aOutput = 0)
 
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) yacas->getDefEnv().getEnv().SetCommand(fname,iname,nrargs,flags);
 
-#include "core_yacasmain.h"
+#include "yacas/core_yacasmain.h"
 
 #undef CORE_KERNEL_FUNCTION
 

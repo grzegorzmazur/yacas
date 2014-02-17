@@ -1,14 +1,14 @@
 
-#include "yacasprivate.h"
-#include "lispenvironment.h"
-#include "lispstring.h"
-#include "standard.h"
-#include "errors.h"
-#include "lispeval.h"
-#include "arggetter.h"
-#include "platmath.h"
-#include "genericstructs.h"
-#include "errors.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/lispenvironment.h"
+#include "yacas/lispstring.h"
+#include "yacas/standard.h"
+#include "yacas/errors.h"
+#include "yacas/lispeval.h"
+#include "yacas/arggetter.h"
+#include "yacas/platmath.h"
+#include "yacas/genericstructs.h"
+#include "yacas/errors.h"
 
 #define ARGUMENT(i)  aEnvironment.iStack.GetElement(aStackTop+i)
 

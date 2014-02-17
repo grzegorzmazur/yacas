@@ -1,9 +1,9 @@
 
-#include "yacasprivate.h"
-#include "substitute.h"
-#include "lispatom.h"
-#include "standard.h"
-#include "lispeval.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/substitute.h"
+#include "yacas/lispatom.h"
+#include "yacas/standard.h"
+#include "yacas/lispeval.h"
 
 SubstBehaviourBase::~SubstBehaviourBase()
 {

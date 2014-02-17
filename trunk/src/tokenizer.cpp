@@ -1,6 +1,6 @@
 
-#include "yacasprivate.h"
-#include "tokenizer.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/tokenizer.h"
 
 /* Default parse algorithm:
  *
@@ -11,10 +11,10 @@
  *
  */
 
-#include "yacasprivate.h"
-#include "lispassert.h"
-#include "lisperror.h"
-#include "numbers.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/lispassert.h"
+#include "yacas/lisperror.h"
+#include "yacas/numbers.h"
 
 bool IsDigit(LispChar c)
 {

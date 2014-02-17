@@ -9,7 +9,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "GPL_stuff.h"
+#include "yacas/GPL_stuff.h"
 
 int java_mode=0;
 int c_mode   =0;

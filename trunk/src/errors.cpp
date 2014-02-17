@@ -1,10 +1,10 @@
 
-#include "yacasprivate.h"
-#include "lispenvironment.h"
-#include "standard.h"
-#include "lispeval.h"
-#include "errors.h"
-#include "infixparser.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/lispenvironment.h"
+#include "yacas/standard.h"
+#include "yacas/lispeval.h"
+#include "yacas/errors.h"
+#include "yacas/infixparser.h"
 
 #define InternalEval aEnvironment.iEvaluator->Eval
 

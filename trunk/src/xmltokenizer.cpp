@@ -1,7 +1,7 @@
 
-#include "yacasprivate.h"
-#include "lisperror.h"
-#include "xmltokenizer.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/lisperror.h"
+#include "yacas/xmltokenizer.h"
 
 static int IsSpace(int c)
 {

@@ -1,16 +1,16 @@
 
-#include "yacasbase.h"
-#include "choices.h"
-#include "lispenvironment.h"
-#include "lispeval.h"
-#include "lispatom.h"
-#include "standard.h"
-#include "lispuserfunc.h"
-#include "mathuserfunc.h"
-#include "errors.h"
+#include "yacas/yacasbase.h"
+#include "yacas/choices.h"
+#include "yacas/lispenvironment.h"
+#include "yacas/lispeval.h"
+#include "yacas/lispatom.h"
+#include "yacas/standard.h"
+#include "yacas/lispuserfunc.h"
+#include "yacas/mathuserfunc.h"
+#include "yacas/errors.h"
 
 // we need this only for digits_to_bits
-#include "numbers.h"
+#include "yacas/numbers.h"
 
 #ifdef YACAS_DEBUG
 #include <stdio.h> // Safe, only included if YACAS_DEBUG is defined

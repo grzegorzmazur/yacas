@@ -1,7 +1,7 @@
 
 
-#include "yacasprivate.h"
-#include "stringio.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/stringio.h"
 
 
 StringInput::StringInput(LispString& aString,InputStatus& aStatus)

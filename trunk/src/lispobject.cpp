@@ -1,6 +1,6 @@
 
-#include "yacasprivate.h"
-#include "lispobject.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/lispobject.h"
 
 #ifdef YACAS_DEBUG
 long theNrCurrent=0;

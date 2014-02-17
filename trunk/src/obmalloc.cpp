@@ -4,7 +4,7 @@
 
 #include <sys/types.h>
 
-#include "yacasprivate.h"
+#include "yacas/yacasprivate.h"
 
 #define WITH_PYMALLOC
 

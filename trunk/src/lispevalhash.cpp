@@ -1,11 +1,11 @@
 
 
-#include "yacasprivate.h"
-#include "lispevalhash.h"
-#include "lispenvironment.h"
-#include "lispatom.h"
-#include "lispeval.h"
-#include "errors.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/lispevalhash.h"
+#include "yacas/lispenvironment.h"
+#include "yacas/lispatom.h"
+#include "yacas/lispeval.h"
+#include "yacas/errors.h"
 
 
 

@@ -1,11 +1,11 @@
 
-#include "yacasprivate.h"
-#include "lispassert.h"
-#include "infixparser.h"
-#include "lispatom.h"
-#include "standard.h"
-#include "lisperror.h"
-#include "errors.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/lispassert.h"
+#include "yacas/infixparser.h"
+#include "yacas/lispatom.h"
+#include "yacas/standard.h"
+#include "yacas/lisperror.h"
+#include "yacas/errors.h"
 
 #include <string>
 

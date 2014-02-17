@@ -4,14 +4,14 @@
  * by yacas any way
  */
 
-#include "yacasprivate.h"
-#include "yacasbase.h"
-#include "numbers.h"
-#include "standard.h"
-#include "anumber.h"
-#include "platmath.h"
-#include "lisperror.h"
-#include "errors.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/yacasbase.h"
+#include "yacas/numbers.h"
+#include "yacas/standard.h"
+#include "yacas/anumber.h"
+#include "yacas/platmath.h"
+#include "yacas/lisperror.h"
+#include "yacas/errors.h"
 
 #ifdef HAVE_CONFIG_H
   #include <config.h>

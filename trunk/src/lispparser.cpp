@@ -1,9 +1,9 @@
 
-#include "yacasprivate.h"
-#include "lispparser.h"
-#include "lispatom.h"
-#include "lisperror.h"
-#include "lispenvironment.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/lispparser.h"
+#include "yacas/lispatom.h"
+#include "yacas/lisperror.h"
+#include "yacas/lispenvironment.h"
 
 LispParser::LispParser(LispTokenizer& aTokenizer, LispInput& aInput,
            LispEnvironment& aEnvironment)

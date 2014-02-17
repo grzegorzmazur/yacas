@@ -1,9 +1,9 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include "yacasprivate.h"
-#include "lisperror.h"
-#include "stubs.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/lisperror.h"
+#include "yacas/stubs.h"
 
 void * PlatStubAlloc(LispInt aNrBytes)
 {

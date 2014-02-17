@@ -1,7 +1,7 @@
 
 
-#include "yacasprivate.h"
-#include "stdfileio.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/stdfileio.h"
 
 #ifdef WIN32
 #define MAP_TO_WIN32_PATH_SEPARATOR

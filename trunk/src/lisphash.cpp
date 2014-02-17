@@ -1,7 +1,7 @@
-#include "yacasprivate.h"
-#include "yacasbase.h"
-#include "lisperror.h"
-#include "lisphash.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/yacasbase.h"
+#include "yacas/lisperror.h"
+#include "yacas/lisphash.h"
 
 #ifdef YACAS_DEBUG
 #include <stdio.h> // Safe, only included if YACAS_DEBUG is defined

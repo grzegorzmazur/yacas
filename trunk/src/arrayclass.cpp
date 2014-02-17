@@ -1,6 +1,6 @@
 
-#include "yacasprivate.h"
-#include "arrayclass.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/arrayclass.h"
 
 ArrayClass::ArrayClass(LispInt aSize,LispObject* aInitialItem) : iArray()
 {

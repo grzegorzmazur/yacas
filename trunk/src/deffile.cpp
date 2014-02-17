@@ -1,13 +1,13 @@
 
-#include "yacasprivate.h"
-#include "deffile.h"
-#include "lispuserfunc.h"
-#include "standard.h"
-#include "lispio.h"
-#include "platfileio.h"
-#include "lispenvironment.h"
-#include "tokenizer.h"
-#include "stringio.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/deffile.h"
+#include "yacas/lispuserfunc.h"
+#include "yacas/standard.h"
+#include "yacas/lispio.h"
+#include "yacas/platfileio.h"
+#include "yacas/lispenvironment.h"
+#include "yacas/tokenizer.h"
+#include "yacas/stringio.h"
 
 LispDefFile::LispDefFile(const LispDefFile& aOther) : iFileName(aOther.iFileName),iIsLoaded(aOther.iIsLoaded)
 {

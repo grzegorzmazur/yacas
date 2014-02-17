@@ -1,6 +1,6 @@
-#include "lisperror.h"
-#include "lispenvironment.h"
-#include "standard.h"
+#include "yacas/lisperror.h"
+#include "yacas/lispenvironment.h"
+#include "yacas/standard.h"
 
 void Handle(LispInt aError, LispEnvironment& aEnvironment, LispOutput& aOutput)
 {

@@ -1,7 +1,7 @@
 
-#include "yacasprivate.h"
-#include "lispuserfunc.h"
-#include "standard.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/lispuserfunc.h"
+#include "yacas/standard.h"
 
 LispUserFunction::~LispUserFunction()
 {

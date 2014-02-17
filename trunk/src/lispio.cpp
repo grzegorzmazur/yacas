@@ -1,6 +1,6 @@
 
-#include "yacasprivate.h"
-#include "lispio.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/lispio.h"
 
 void InputStatus::SetTo(const LispChar * aFileName)
 {

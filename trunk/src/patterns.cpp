@@ -1,14 +1,14 @@
 
 
 
-#include "yacasprivate.h"
-#include "yacasbase.h"
-#include "patterns.h"
-#include "standard.h"
-#include "mathuserfunc.h"
-#include "lispobject.h"
-#include "lispeval.h"
-#include "standard.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/yacasbase.h"
+#include "yacas/patterns.h"
+#include "yacas/standard.h"
+#include "yacas/mathuserfunc.h"
+#include "yacas/lispobject.h"
+#include "yacas/lispeval.h"
+#include "yacas/standard.h"
 
 #ifdef YACAS_DEBUG
 #include <stdio.h>

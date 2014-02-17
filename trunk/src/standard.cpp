@@ -1,21 +1,21 @@
 // \file standard.cpp
 // Implementation of some standard lisp operations
 //
-#include "yacasprivate.h"
-#include "standard.h"
-#include "lispatom.h"
-#include "lisperror.h"
-#include "lispenvironment.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/standard.h"
+#include "yacas/lispatom.h"
+#include "yacas/lisperror.h"
+#include "yacas/lispenvironment.h"
 
-#include "lispio.h"
-#include "platfileio.h"
-#include "mathutil.h"
-#include "lispenvironment.h"
-#include "tokenizer.h"
-#include "infixparser.h"
-#include "lispeval.h"
-#include "stringio.h"
-#include "numbers.h"
+#include "yacas/lispio.h"
+#include "yacas/platfileio.h"
+#include "yacas/mathutil.h"
+#include "yacas/lispenvironment.h"
+#include "yacas/tokenizer.h"
+#include "yacas/infixparser.h"
+#include "yacas/lispeval.h"
+#include "yacas/stringio.h"
+#include "yacas/numbers.h"
 
 #define InternalEval aEnvironment.iEvaluator->Eval
 

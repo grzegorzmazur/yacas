@@ -1,9 +1,9 @@
 
-#include "yacasprivate.h"
-#include "yacasbase.h"
-#include "yacas.h"
-#include "mathcommands.h"
-#include "standard.h"
+#include "yacas/yacasprivate.h"
+#include "yacas/yacasbase.h"
+#include "yacas/yacas.h"
+#include "yacas/mathcommands.h"
+#include "yacas/standard.h"
 
 #ifdef YACAS_DEBUG
 long theNrDefinedBuiltIn=0;
@@ -44,7 +44,7 @@ DefaultYacasEnvironment::DefaultYacasEnvironment(LispOutput* aOutput, LispInt aS
     // to a kernel callable routine.
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) iEnvironment.SetCommand(fname,iname,nrargs,flags);
 #define CORE_KERNEL_FUNCTION_ALIAS(iname,fname,nrargs,flags) iEnvironment.SetCommand(fname,iname,nrargs,flags);
-#include "corefunctions.h"
+#include "yacas/corefunctions.h"
 #undef CORE_KERNEL_FUNCTION
 #undef CORE_KERNEL_FUNCTION_ALIAS
 #undef OPERATOR
