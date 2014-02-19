@@ -183,19 +183,19 @@ fi
 AC_SUBST(PDF_DOCS)
 
 # Choice of directories
-AC_ARG_WITH(script-dir, [  --with-script-dir=DIR   program scripts in DIR [DATADIR/yacas]])
+AC_ARG_WITH(script-dir, [  --with-script-dir=DIR   program scripts in DIR [DATADIR/yacas/scripts]])
 if test -n "$with_script_dir" ; then
 	scriptdir=$with_script_dir
 else
-	scriptdir=${datadir}/yacas/
+	scriptdir=${datadir}/yacas/scripts/
 fi
 AC_SUBST(scriptdir)
 
-AC_ARG_WITH(html-dir, [  --with-html-dir=DIR     HTML documentation in DIR [SCRIPTDIR/documentation]])
+AC_ARG_WITH(html-dir, [  --with-html-dir=DIR     HTML documentation in DIR [DATADIR/yacas/documentation]])
 if test -n "$with_html_dir" ; then
 	htmldir=$with_html_dir
 else
-	htmldir=${scriptdir}/documentation/
+	htmldir=${datadir}/yacas/documentation/
 fi
 AC_SUBST(htmldir)
 
