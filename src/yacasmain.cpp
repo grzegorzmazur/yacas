@@ -867,11 +867,11 @@ void runconsole(const char* inprompt, const char* outprompt)
         if (use_texmacs_out) {
             std::cout << TEXMACS_DATA_BEGIN << "verbatim:"
                       << "This is Yacas version `"
-                      << VERSION
+                      << YACAS_VERSION
                       << "' under TeXmacs\n"
                       << GPL_blurb_nohelp << TEXMACS_DATA_END;
         } else {
-            std::cout << "This is Yacas version '" << VERSION << "'.\n";
+            std::cout << "This is Yacas version '" << YACAS_VERSION << "'.\n";
             std::cout << GPL_blurb;
             std::cout << "To exit Yacas, enter  Exit(); or quit or Ctrl-c.\n"
                       << "Type 'restart' to restart Yacas.\n"
@@ -1037,7 +1037,7 @@ int parse_options(int argc, char** argv)
 
 #ifdef HAVE_CONFIG_H
                 if (strchr(argv[fileind],'v')) {
-                    std::cout << VERSION << "\n";
+                    std::cout << YACAS_VERSION << "\n";
                     return -1;
                 }
 #endif
