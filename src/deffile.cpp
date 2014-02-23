@@ -81,7 +81,8 @@ static void DoLoadDefFile(LispEnvironment& aEnvironment, LispInput* aInput,
         aEnvironment.CurrentOutput()->Write("[");
         aEnvironment.CurrentOutput()->Write(&(*str)[0]);
         aEnvironment.CurrentOutput()->Write("]\n");
-        Check(multiUser->iFileToOpen==NULL,KLispErrDefFileAlreadyChosen);
+        if (multiUser->iFileToOpen)
+            throw LispErrDefFileAlreadyChosen();
       }
       multiUser->iFileToOpen = def;
     }
@@ -119,7 +120,9 @@ void LoadDefFile(LispEnvironment& aEnvironment, LispString * aFileName)
   {
     LispLocalFile localFP(aEnvironment, hashedname->c_str(),true,
                           aEnvironment.iInputDirectories);
-    Check(localFP.iOpened != 0, KLispErrFileNotFound);
+    if (!localFP.iOpened)
+        throw LispErrFileNotFound();
+
     FILEINPUT newInput(localFP,aEnvironment.iInputStatus);
     DoLoadDefFile(aEnvironment, &newInput,def);
   }

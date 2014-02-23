@@ -8,14 +8,20 @@
 void * PlatStubAlloc(LispInt aNrBytes)
 {
     void * result = malloc(aNrBytes);
-    Check(result!=NULL,KLispErrNotEnoughMemory);
+
+    if (!result)
+        throw LispErrNotEnoughMemory();
+
     return result;
 }
 
 void * PlatStubReAlloc(void * aOrig, LispInt aNrBytes)
 {
     void * result = realloc(aOrig, aNrBytes);
-    Check(result!=NULL,KLispErrNotEnoughMemory);
+
+    if (!result)
+        throw LispErrNotEnoughMemory();
+
     return result;
 }
 

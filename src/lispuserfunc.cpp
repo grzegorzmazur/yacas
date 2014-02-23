@@ -68,8 +68,9 @@ void LispMultiUserFunction::DefineRuleBase(LispArityUserFunction* aNewFunction)
     {
         LISPASSERT(iFunctions[i]);
         LISPASSERT(aNewFunction);
-        Check(!iFunctions[i]->IsArity(aNewFunction->Arity()),KLispErrArityAlreadyDefined);
-        Check(!aNewFunction->IsArity(iFunctions[i]->Arity()),KLispErrArityAlreadyDefined);
+        if (iFunctions[i]->IsArity(aNewFunction->Arity()) || aNewFunction->IsArity(iFunctions[i]->Arity()))
+            throw LispErrArityAlreadyDefined();
+
     }
     iFunctions.Append(aNewFunction);
 }

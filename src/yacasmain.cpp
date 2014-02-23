@@ -262,8 +262,8 @@ const char* ReadInputString(const char* prompt)
 
 static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
+    CheckArgIsString(1, aEnvironment, aStackTop);
     LispPtr promptObject = (ARGUMENT(1));
-    CHK_ISSTRING_CORE(promptObject,1);
     LispString prompt;
     InternalUnstringify(prompt, promptObject->String());
     const char* output = ReadInputString(prompt.c_str());
@@ -295,8 +295,8 @@ void LispTime(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispFileSize(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
+    CheckArgIsString(1, aEnvironment, aStackTop);
     LispPtr fnameObject = (ARGUMENT(1));
-    CHK_ISSTRING_CORE(fnameObject,1);
     LispString fname;
     InternalUnstringify(fname, fnameObject->String());
 

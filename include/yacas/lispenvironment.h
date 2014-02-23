@@ -192,9 +192,6 @@ public:
 public:
   LispOutput* CurrentOutput();
   void SetCurrentOutput(LispOutput* aOutput);
-public:
-  void SetUserError(const LispChar* aErrorString);
-  const LispChar * ErrorString(LispInt aError);
   //@}
 
 protected:
@@ -338,8 +335,6 @@ private:
 
   LispInput* iCurrentInput;
 
-  const LispChar* theUserError;
-
   LispString * iPrettyReader;
   LispString * iPrettyPrinter;
 public:
@@ -362,7 +357,7 @@ public:
     inline LispInt GetStackTop() const {return iStackCnt;}
     inline void RaiseStackOverflowError() const
     {
-      RaiseError("Argument stack reached maximum. Please extend argument stack with --stack argument on the command line.");
+      throw LispErrGeneric("Argument stack reached maximum. Please extend argument stack with --stack argument on the command line.");
     }
     inline void PushArgOnStack(LispObject* aObject)
     {
@@ -452,7 +447,6 @@ private:
     iPostFixOperators(aOther.iPostFixOperators),
     iBodiedOperators(aOther.iBodiedOperators),
     iCurrentInput(aOther.iCurrentInput),
-    theUserError(NULL),
     iPrettyReader(NULL),
     iPrettyPrinter(NULL),
     iDefaultTokenizer(),

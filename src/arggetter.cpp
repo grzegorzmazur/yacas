@@ -16,8 +16,8 @@ static
 LispString * GetIntegerArgument(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
   LispString * str = ARGUMENT(aArgNr)->String();
-  CHK_ARG_CORE(str,aArgNr);
-  CHK_ARG_CORE(IsNumber(str->c_str(),false),aArgNr);
+  CheckArg(str, aArgNr, aEnvironment, aStackTop);
+  CheckArg(IsNumber(str->c_str(),false), aArgNr, aEnvironment, aStackTop);
   return str;
 }
 

@@ -87,7 +87,10 @@ REDO:
     aInput.Next(); //consume *
 FALSEALARM:
     while (aInput.Next() != '*' && !aInput.EndOfStream());
-    Check(!aInput.EndOfStream(),KLispErrCommentToEndOfFile);
+
+    if (aInput.EndOfStream())
+        throw LispErrCommentToEndOfFile();
+
     if (aInput.Peek() == '/')
     {
       aInput.Next();  // consume /
@@ -112,10 +115,14 @@ FALSEALARM:
       if (aInput.Peek() == '\\')
       {
         aInput.Next();
-        Check(!aInput.EndOfStream(),KLispErrParsingInput);
+
+        if (aInput.EndOfStream())
+            throw LispErrParsingInput();
       }
       aResult.Append(aInput.Next());
-      Check(!aInput.EndOfStream(),KLispErrParsingInput);
+
+      if (aInput.EndOfStream())
+          throw LispErrParsingInput();
     }
     aResult.Append(aInput.Next()); // consume the close quote
     aResult.Append('\0');
@@ -216,7 +223,10 @@ REDO:
     aInput.Next(); //consume *
 FALSEALARM:
     while (aInput.Next() != '*' && !aInput.EndOfStream());
-    Check(!aInput.EndOfStream(),KLispErrCommentToEndOfFile);
+
+    if (aInput.EndOfStream())
+        throw LispErrCommentToEndOfFile();
+
     if (aInput.Peek() == '/')
     {
       aInput.Next();  // consume /
@@ -239,10 +249,14 @@ FALSEALARM:
       if (aInput.Peek() == '\\')
       {
         aInput.Next();
-        Check(!aInput.EndOfStream(),KLispErrParsingInput);
+
+        if (aInput.EndOfStream())
+            throw LispErrParsingInput();
       }
       aResult.Append(aInput.Next());
-      Check(!aInput.EndOfStream(),KLispErrParsingInput);
+
+      if (aInput.EndOfStream())
+          throw LispErrParsingInput();
     }
     aResult.Append(aInput.Next()); // consume the close quote
     aResult.Append('\0');

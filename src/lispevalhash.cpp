@@ -38,7 +38,9 @@ void YacasEvaluator::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,Lis
   {
     for (i=0;i<nr;i++)
     {
-      Check(iter.getObj(), KLispErrWrongNumberOfArgs);
+      if (!iter.getObj())
+          throw LispErrWrongNumberOfArgs();
+
       aEnvironment.iStack.PushArgOnStack(iter.getObj()->Copy());
       ++iter;
     }
@@ -54,7 +56,9 @@ void YacasEvaluator::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,Lis
     LispPtr arg;
     for (i=0;i<nr;i++)
     {
-      Check(iter.getObj(), KLispErrWrongNumberOfArgs);
+      if (!iter.getObj())
+          throw LispErrWrongNumberOfArgs();
+
       InternalEval(aEnvironment, arg, *iter);
       aEnvironment.iStack.PushArgOnStack(arg);
       ++iter;

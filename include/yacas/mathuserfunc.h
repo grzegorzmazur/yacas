@@ -93,7 +93,8 @@ public:
     {
       GenericClass *gen = aPredicate->Generic();
       PatternClass* pat = dynamic_cast<PatternClass*>(gen);
-      Check(pat,KLispErrInvalidArg);
+      if (!pat)
+        throw LispErrInvalidArg();
       iPatternClass = pat;
     }
 
