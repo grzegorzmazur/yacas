@@ -56,7 +56,9 @@ void LispParser::ParseList(LispPtr& aResult)
         //Get token.
       LispString * token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());
         // if token is empty string, error!
-        Check(token->c_str()[0],KInvalidToken);
+      if (!token->c_str()[0])
+          throw InvalidToken();
+
         // if token is ")" return result.
         if (token == iEnvironment.HashTable().LookUp(")"))
         {

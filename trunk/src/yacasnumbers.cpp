@@ -46,8 +46,10 @@ LispObject* GcdInteger(LispObject* int1, LispObject* int2,
 {
   BigNumber* i1 = int1->Number(0);
   BigNumber* i2 = int2->Number(0);
-  Check(i1->iNumber->iExp == 0, KLispErrNotInteger);
-  Check(i2->iNumber->iExp == 0, KLispErrNotInteger);
+
+  if (i1->iNumber->iExp != 0 || i2->iNumber->iExp != 0)
+      throw LispErrNotInteger();
+
   BigNumber* res = NEW BigNumber();
   BaseGcd(*res->iNumber,*i1->iNumber,*i2->iNumber);
   return NEW LispNumber(res);
@@ -318,56 +320,53 @@ LispObject* ExpFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPr
 
 LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-    // If is integer
-    if (int2->Number(aPrecision)->iNumber->iExp == 0)
+    if (int2->Number(aPrecision)->iNumber->iExp != 0)
+        throw LispErrNotInteger();
+
+    // Raising to the power of an integer can be done fastest by squaring
+    // and bitshifting: x^(a+b) = x^a*x^b . Then, regarding each bit
+    // in y (seen as a binary number) as added, the algorithm becomes:
+    //
+    ANumber x(*int1->Number(aPrecision)->iNumber);
+    ANumber y(*int2->Number(aPrecision)->iNumber);
+    bool neg = y.iNegative;
+    y.iNegative=false;
+ 
+    // result <- 1
+    ANumber result("1",aPrecision);
+    // base <- x
+    ANumber base(aPrecision);
+    base.CopyFrom(x);
+
+    ANumber copy(aPrecision);
+
+    // while (y!=0)
+    while (!IsZero(y))
     {
-        // Raising to the power of an integer can be done fastest by squaring
-        // and bitshifting: x^(a+b) = x^a*x^b . Then, regarding each bit
-        // in y (seen as a binary number) as added, the algorithm becomes:
-        //
-        ANumber x(*int1->Number(aPrecision)->iNumber);
-        ANumber y(*int2->Number(aPrecision)->iNumber);
-        bool neg = y.iNegative;
-        y.iNegative=false;
- 
-        // result <- 1
-        ANumber result("1",aPrecision);
-        // base <- x
-        ANumber base(aPrecision);
-        base.CopyFrom(x);
-
-        ANumber copy(aPrecision);
-
-        // while (y!=0)
-        while (!IsZero(y))
+        // if (y&1 != 0)
+        if ( (y[0] & 1) != 0)
         {
-            // if (y&1 != 0)
-            if ( (y[0] & 1) != 0)
-            {
-                // result <- result*base
-                copy.CopyFrom(result);
-                Multiply(result,copy,base);
-            }
-            // base <- base*base
-            copy.CopyFrom(base);
-            Multiply(base,copy,copy);
-            // y <- y>>1
-            BaseShiftRight(y,1);
-        }
-
-        if (neg)
-        {
-            ANumber one("1",aPrecision);
-            ANumber dummy(10);
+            // result <- result*base
             copy.CopyFrom(result);
-            Divide(result,dummy,one,copy);
+            Multiply(result,copy,base);
         }
- 
-        // result
-        return FloatToString(result, aEnvironment);
+        // base <- base*base
+        copy.CopyFrom(base);
+        Multiply(base,copy,copy);
+        // y <- y>>1
+        BaseShiftRight(y,1);
     }
-    Check(false, KLispErrNotInteger);
-  return 0;
+
+    if (neg)
+    {
+        ANumber one("1",aPrecision);
+        ANumber dummy(10);
+        copy.CopyFrom(result);
+        Divide(result,dummy,one,copy);
+    }
+ 
+    // result
+    return FloatToString(result, aEnvironment);
 }
 
 
@@ -410,9 +409,12 @@ static void DivideInteger(ANumber& aQuotient, ANumber& aRemainder,
     ANumber a1(int1,aPrecision);
     ANumber a2(int2,aPrecision);
  
-    Check(a1.iExp == 0, KLispErrNotInteger);
-    Check(a2.iExp == 0, KLispErrNotInteger);
-    Check(!IsZero(a2),KLispErrInvalidArg);
+    if (a1.iExp != 0 || a2.iExp != 0)
+          throw LispErrNotInteger();
+
+    if (IsZero(a2))
+          throw LispErrInvalidArg();
+
     IntegerDivide(aQuotient, aRemainder, a1, a2);
 }
 
@@ -439,7 +441,10 @@ static LispObject* FloatToString(ANumber& aInt,
 LispObject* LispFactorial(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
     LispInt nr = InternalAsciiToInt(int1->String());
-    Check(nr>=0,KLispErrInvalidArg);
+
+    if (nr < 0)
+        throw LispErrInvalidArg();
+
     ANumber fac("1",aPrecision);
     LispInt i;
     for (i=2;i<=nr;i++)
@@ -470,7 +475,10 @@ void tree_factorial(ANumber& result, LispInt iLeft, LispInt iRight, LispInt aPre
 LispString * LispFactorial(LispChar * int1, LispHashTable& aHashTable,LispInt aPrecision)
 {
     LispInt nr = InternalAsciiToInt(int1);
-    Check(nr>=0,KLispErrInvalidArg);
+
+    if (nr < 0)
+        throw LispErrInvalidArg();
+
   ANumber fac("1",aPrecision);
   tree_factorial(fac, 1, nr, aPrecision);
     return FloatToString(fac, aEnvironment);
@@ -663,7 +671,7 @@ LispInt DividePrecision(const BigNumber& aX, const BigNumber& aY, LispInt aPreci
   LispInt p=1;
   if (aY.Sign()==0)
   {  // zero division, report and do nothing
-    RaiseError("BigNumber::Divide: zero division request ignored\n");
+    throw LispErrGeneric("BigNumber::Divide: zero division request ignored");
     p=0;
   }
   if (aX.IsInt())
@@ -735,11 +743,14 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
 //  a2.CopyFrom(*aY.iNumber);
   ANumber remainder(digitPrecision);
 
-  Check(!IsZero(a2),KLispErrInvalidArg);
+  if (IsZero(a2))
+      throw LispErrInvalidArg();
+
   if (aX.IsInt() && aY.IsInt())
   {
-    Check(a1.iExp == 0, KLispErrNotInteger);
-    Check(a2.iExp == 0, KLispErrNotInteger);
+      if (a1.iExp != 0 || a2.iExp != 0)
+          throw LispErrNotInteger();
+
     SetIsInteger(true);
     ::IntegerDivide(*iNumber, remainder, a1, a2);
   }
@@ -922,9 +933,12 @@ void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
     ANumber a2(*aZ.iNumber);
 //    a1.CopyFrom(*aY.iNumber);
 //    a2.CopyFrom(*aZ.iNumber);
-    Check(a1.iExp == 0, KLispErrNotInteger);
-    Check(a2.iExp == 0, KLispErrNotInteger);
-    Check(!IsZero(a2),KLispErrInvalidArg);
+
+    if (a1.iExp != 0 || a2.iExp != 0)
+          throw LispErrNotInteger();
+
+    if (IsZero(a2))
+          throw LispErrInvalidArg();
 
     ANumber quotient(static_cast<LispInt>(0));
     ::IntegerDivide(quotient, *iNumber, a1, a2);

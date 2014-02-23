@@ -74,7 +74,6 @@ LispEnvironment::LispEnvironment(
     iPostFixOperators(aPostFixOperators),
     iBodiedOperators(aBodiedOperators),
     iCurrentInput(aCurrentInput),
-    theUserError(NULL),
     iPrettyReader(NULL),
     iPrettyPrinter(NULL),
     iDefaultTokenizer(),
@@ -125,8 +124,9 @@ LispInt LispEnvironment::GetUniqueId()
 
 LispPtr *LispEnvironment::FindLocal(LispString * aVariable)
 {
-    Check(iLocalsList,KLispErrInvalidStack);
-//    Check(iLocalsList->iFirst,KLispErrInvalidStack);
+    if (!iLocalsList)
+        throw LispErrInvalidStack();
+
     LispLocalVariable *t = iLocalsList->iFirst;
 
     while (t)
@@ -361,9 +361,14 @@ void LispEnvironment::UnFenceRule(LispString * aOperator,LispInt aArity)
     LispMultiUserFunction* multiUserFunc =
         iUserFunctions.LookUp(aOperator);
 
-    Check(multiUserFunc, KLispErrInvalidArg);
+    if (!multiUserFunc)
+        throw LispErrInvalidArg();
+
     LispUserFunction* userFunc = multiUserFunc->UserFunc(aArity);
-    Check(userFunc, KLispErrInvalidArg);
+
+    if (!userFunc)
+        throw LispErrInvalidArg();
+
     userFunc->UnFence();
 }
 
@@ -437,7 +442,9 @@ LispMultiUserFunction* LispEnvironment::MultiUserFunction(LispString * aOperator
         iUserFunctions.SetAssociation(newMulti, aOperator);
         multiUserFunc =
             iUserFunctions.LookUp(aOperator);
-        Check(multiUserFunc, KLispErrCreatingUserFunction);
+
+        if (!multiUserFunc)
+            throw LispErrCreatingUserFunction();
     }
     return multiUserFunc;
 }
@@ -451,7 +458,10 @@ void LispEnvironment::HoldArgument(LispString *  aOperator, LispString * aVariab
 {
     LispMultiUserFunction* multiUserFunc =
         iUserFunctions.LookUp(aOperator);
-    Check(multiUserFunc,KLispErrInvalidArg);
+
+    if (!multiUserFunc)
+        throw LispErrInvalidArg();
+
     multiUserFunc->HoldArgument(aVariable);
 }
 
@@ -463,12 +473,16 @@ void LispEnvironment::DefineRule(LispString * aOperator,LispInt aArity,
     // Find existing multiuser func.
     LispMultiUserFunction* multiUserFunc =
         iUserFunctions.LookUp(aOperator);
-    Check(multiUserFunc, KLispErrCreatingRule);
+
+    if (!multiUserFunc)
+        throw LispErrCreatingRule();
 
     // Get the specific user function with the right arity
     LispUserFunction* userFunc = multiUserFunc->UserFunc(aArity);
-    Check(userFunc, KLispErrCreatingRule);
- 
+
+    if (!userFunc)
+        throw LispErrCreatingRule();
+
     // Declare a new evaluation rule
  
 
@@ -488,12 +502,16 @@ void LispEnvironment::DefineRulePattern(LispString * aOperator,LispInt aArity,
     // Find existing multiuser func.
     LispMultiUserFunction* multiUserFunc =
         iUserFunctions.LookUp(aOperator);
-    Check(multiUserFunc, KLispErrCreatingRule);
+
+    if (!multiUserFunc)
+        throw LispErrCreatingRule();
 
     // Get the specific user function with the right arity
     LispUserFunction* userFunc = multiUserFunc->UserFunc(aArity);
-    Check(userFunc, KLispErrCreatingRule);
- 
+
+    if (!userFunc)
+        throw LispErrCreatingRule();
+
     // Declare a new evaluation rule
     userFunc->DeclarePattern(aPrecedence, aPredicate,aBody);
 }
@@ -509,94 +527,6 @@ void LispEnvironment::RemoveCoreCommand(LispChar * aString)
 {
   CoreCommands().Release(HashTable().LookUp(aString));
 }
-
-void LispEnvironment::SetUserError(const LispChar* aErrorString)
-{
-    theUserError=aErrorString;
-}
-
-const LispChar * LispEnvironment::ErrorString(LispInt aError)
-{
-    LISPASSERT(aError>=0 && aError < KLispNrErrors);
-    switch (aError)
-    {
-    case KLispErrNone:
-        return "No error";
-    case KLispErrInvalidArg:
-        return "Invalid argument";
-    case KLispErrWrongNumberOfArgs:
-        return "Wrong number of arguments";
-    case KLispErrNotList:
-        return "Argument is not a list";
-    case KLispErrListNotLongEnough:
-        return "List not long enough";
-    case KLispErrInvalidStack:
-        return "Invalid stack";
-    case KQuitting:
-        return "Quitting...";
-    case KLispErrNotEnoughMemory:
-        return "Not enough memory";
-    case KInvalidToken:
-        return "Empty token during parsing";
-    case KLispErrInvalidExpression:
-        return "Error parsing expression";
-    case KLispErrUnprintableToken:
-        return "Unprintable atom";
-    case KLispErrFileNotFound:
-        return "File not found";
-    case KLispErrReadingFile:
-        return "Error reading file";
-    case KLispErrCreatingUserFunction:
-        return "Could not create user function";
-    case KLispErrCreatingRule:
-        return "Could not create rule";
-    case KLispErrArityAlreadyDefined:
-        return "Rule base with this arity already defined";
-    case KLispErrCommentToEndOfFile:
-        return "Reaching end of file within a comment block";
-    case KLispErrNotString:
-        return "Argument is not a string";
-    case KLispErrNotInteger:
-        return "Argument is not an integer";
-    case KLispErrParsingInput:
-        return "Error while parsing input";
-    case KLispErrMaxRecurseDepthReached:
-        return "Max evaluation stack depth reached.\nPlease use MaxEvalDepth to increase the stack size as needed.";
-    case KLispErrDefFileAlreadyChosen:
-        return "DefFile already chosen for function";
-    case KLispErrDivideByZero:
-        return "Divide by zero";
-    case KLispErrNotAnInFixOperator:
-        return "Trying to make a non-infix operator right-associative";
-    case KLispErrIsNotInFix:
-        return "Trying to get precedence of non-infix operator";
-    case KLispErrSecurityBreach:
-        return "Trying to perform an insecure action";
-    case KLispErrLibraryNotFound:
-        return "Could not find library";
-    case KLispErrUserInterrupt:
-        return "User interrupted calculation";
-    case KLispErrUser:
-        {
-          // There should be something seriously wrong if this error were raised but no string set for it...
-          LISPASSERT(theUserError != NULL);
-          // Defensive coding, fallthrough
-          if (theUserError)
-            return theUserError;
-          else
-            return "Unspecified user error (this should never happen!)";
-        }
-        break;
-    case KLispErrNonBooleanPredicateInPattern:
-        return "Predicate doesn't evaluate to a boolean in pattern";
-    case KLispErrGenericFormat: return GenericErrorBuf().c_str();
-    }
-    return "Unspecified Error";
-}
-
-
-
-
 
 LispString * LispEnvironment::FindCachedFile(const LispChar * aFileName)
 {

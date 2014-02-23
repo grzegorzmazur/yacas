@@ -138,8 +138,8 @@ void CYacas::Evaluate(const LispChar * aExpression)
          }
          LispString * percent = env.HashTable().LookUp("%");
          env.SetVariable(percent,result,true);
-     } catch (LispInt error_code) {
-        Handle(error_code, env, env.iErrorOutput);
+     } catch (const LispError& error) {
+        Handle(error, env, env.iErrorOutput);
      }
 
      env.iStack.PopTo(stackTop);

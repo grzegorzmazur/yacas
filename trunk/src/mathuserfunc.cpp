@@ -60,7 +60,9 @@ BranchingUserFunction::BranchingUserFunction(LispPtr& aParameters)
   LispIterator iter(aParameters);
   for ( ; iter.getObj(); ++iter)
   {
-    Check(iter.getObj()->String(),KLispErrCreatingUserFunction);
+    if (!iter.getObj()->String())
+        throw LispErrCreatingUserFunction();
+
     BranchParameter param(iter.getObj()->String());
     iParameters.Append(param);
   }
@@ -101,7 +103,9 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
     // Walk over all arguments, evaluating them as necessary
   for (i=0;i<arity;i++,++iter)
   {
-        Check(iter.getObj(), KLispErrWrongNumberOfArgs);
+        if (!iter.getObj())
+            throw LispErrWrongNumberOfArgs();
+
         if (iParameters[i].iHold)
         {
             arguments[i] = (iter.getObj()->Copy());
@@ -211,7 +215,9 @@ void BranchingUserFunction::DeclareRule(LispInt aPrecedence, LispPtr& aPredicate
 {
     // New branching rule.
     BranchRule* newRule = NEW BranchRule(aPrecedence,aPredicate,aBody);
-    Check(newRule,KLispErrCreatingRule);
+
+    if (!newRule)
+        throw LispErrCreatingRule();
 
     InsertRule(aPrecedence,newRule);
 }
@@ -220,7 +226,9 @@ void BranchingUserFunction::DeclareRule(LispInt aPrecedence, LispPtr& aBody)
 {
     // New branching rule.
     BranchRule* newRule = NEW BranchRuleTruePredicate(aPrecedence,aBody);
-    Check(newRule,KLispErrCreatingRule);
+
+    if (!newRule)
+        throw LispErrCreatingRule();
 
     InsertRule(aPrecedence,newRule);
 }
@@ -230,7 +238,9 @@ void BranchingUserFunction::DeclarePattern(LispInt aPrecedence, LispPtr& aPredic
 {
     // New branching rule.
     BranchPattern* newRule = NEW BranchPattern(aPrecedence,aPredicate,aBody);
-    Check(newRule,KLispErrCreatingRule);
+
+    if (!newRule)
+        throw LispErrCreatingRule();
 
     InsertRule(aPrecedence,newRule);
 }
@@ -340,7 +350,9 @@ MacroUserFunction::MacroUserFunction(LispPtr& aParameters)
     LispIterator iter(aParameters);
     for (LispInt i=0; iter.getObj(); i++,++iter)
     {
-        Check(iter.getObj()->String(),KLispErrCreatingUserFunction);
+        if (!iter.getObj()->String())
+            throw LispErrCreatingUserFunction();
+
         iParameters[i].iHold = true;
     }
   UnFence();
@@ -376,7 +388,9 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
   // Walk over all arguments, evaluating them as necessary
   for (i=0;i<arity;i++,++iter)
   {
-    Check(iter.getObj(), KLispErrWrongNumberOfArgs);
+      if (!iter.getObj())
+          throw LispErrWrongNumberOfArgs();
+
     if (iParameters[i].iHold)
     {
       arguments[i] = (iter.getObj()->Copy());

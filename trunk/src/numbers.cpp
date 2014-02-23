@@ -67,7 +67,7 @@ double log2_table_lookup(unsigned n)
 
     std::ostringstream buf;
     buf << "log2_table_lookup: error: invalid argument " << n;
-    RaiseError(buf.str().c_str());
+    throw LispErrGeneric(buf.str());
     return 0;
 }
 

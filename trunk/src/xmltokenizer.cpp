@@ -37,7 +37,9 @@ LispString * XmlTokenizer::NextToken(LispInput& aInput,
         while (c != '>')
         {
             c = aInput.Next();
-            Check(!aInput.EndOfStream(),KLispErrCommentToEndOfFile);
+
+            if (aInput.EndOfStream())
+                throw LispErrCommentToEndOfFile();
         }
     }
     else

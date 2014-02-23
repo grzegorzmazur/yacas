@@ -55,7 +55,9 @@ inline void InternalNot(LispPtr& aResult, LispEnvironment& aEnvironment, LispPtr
     }
     else
     {
-        Check(IsFalse(aEnvironment, aExpression),KLispErrInvalidArg);
+        if (!IsFalse(aEnvironment, aExpression))
+            throw LispErrInvalidArg();
+
         InternalTrue(aEnvironment,aResult);
     }
 }

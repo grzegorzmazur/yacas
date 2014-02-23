@@ -112,9 +112,15 @@ bool MatchSubList::ArgumentMatches(LispEnvironment& aEnvironment,
 
   LispIterator iter(aExpression);
   LispObject * pObj = iter.getObj();
-  Check(pObj,KLispErrInvalidArg);
+
+  if (!pObj)
+      throw LispErrInvalidArg();
+
   LispPtr * pPtr = pObj->SubList();
-  Check(pPtr,KLispErrNotList);
+
+  if (!pPtr)
+      throw LispErrNotList();
+
   iter = *pPtr;
 
   for (LispInt i=0;i<iNrMatchers;i++,++iter)
@@ -347,8 +353,8 @@ bool YacasPatternPredicateBase::CheckPredicates(LispEnvironment& aEnvironment)
       aEnvironment.iErrorOutput.Write(strout.c_str());
       aEnvironment.iErrorOutput.Write("\n");
 
-
-      CHK2(isTrue,KLispErrNonBooleanPredicateInPattern);
+      ShowStack(aEnvironment);
+      throw LispErrMaxRecurseDepthReached();
     }
   }
   return true;

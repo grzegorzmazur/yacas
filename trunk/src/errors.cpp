@@ -35,117 +35,115 @@ void ShowFunctionError(LispPtr& aArguments,
   }
 }
 
+void ShowArgTypeErrorInfo(LispInt aArgNr, LispPtr& aArguments, LispEnvironment& aEnvironment)
+{
+    if (!aArguments) {
+        aEnvironment.iErrorOutput.Write("Error in compiled code\n");
+        return;
+    }
+
+    ShowStack(aEnvironment);
+    ShowFunctionError(aArguments, aEnvironment);
+ 
+    aEnvironment.iErrorOutput.Write("bad argument number ");
+    LispChar str[20];
+    InternalIntToAscii(str,aArgNr);
+    aEnvironment.iErrorOutput.Write(str);
+    aEnvironment.iErrorOutput.Write(" (counting from 1)\n");
+ 
+    const int LIM_AL = 60;
+
+    LispPtr& arg = Argument(aArguments,aArgNr);
+    LispString strout;
+ 
+    aEnvironment.iErrorOutput.Write("The offending argument ");
+    PrintExpression(strout, arg, aEnvironment, LIM_AL);
+    aEnvironment.iErrorOutput.Write(strout.c_str());
+ 
+    LispPtr eval;
+    aEnvironment.iEvaluator->Eval(aEnvironment, eval, arg);
+    aEnvironment.iErrorOutput.Write(" evaluated to ");
+    PrintExpression(strout, eval, aEnvironment, LIM_AL);
+    aEnvironment.iErrorOutput.Write(strout.c_str());
+    aEnvironment.iErrorOutput.Write("\n");
+
+    DBG_( printf("Problem occurred at %s(%d)\n",
+                 aArguments->iFileName,
+                 aArguments->iLine ); )
+}
+
+void CheckArg(bool pred, LispInt arg_idx, LispEnvironment& env, LispInt stack_top)
+{
+    if (!pred) {
+        ShowArgTypeErrorInfo(arg_idx, env.iStack.GetElement(stack_top), env);
+        throw LispErrInvalidArg();
+    }
+}
+
+void CheckArgIsString(LispPtr arg, LispInt arg_idx, LispEnvironment& env, LispInt stack_top)
+{
+    if (!InternalIsString(arg->String())) {
+        ShowArgTypeErrorInfo(arg_idx, env.iStack.GetElement(stack_top), env);
+        throw LispErrNotString();
+    }
+}
+
+
+void CheckArgIsString(LispInt arg_idx, LispEnvironment& env, LispInt stack_top)
+{
+    CheckArgIsString(env.iStack.GetElement(stack_top + arg_idx), arg_idx, env, stack_top);
+}
+
+void CheckArgIsList(LispPtr arg, LispInt arg_idx, LispEnvironment& env, LispInt stack_top)
+{
+    if (!InternalIsList(arg)) {
+        ShowArgTypeErrorInfo(arg_idx, env.iStack.GetElement(stack_top), env);
+        throw LispErrNotList();
+    }
+}
+
+
+void CheckArgIsList(LispInt arg_idx, LispEnvironment& env, LispInt stack_top)
+{
+    CheckArgIsList(env.iStack.GetElement(stack_top + arg_idx), arg_idx, env, stack_top);
+}
 
 void CheckNrArgs(LispInt n, LispPtr& aArguments,
                  LispEnvironment& aEnvironment)
 {
-    LispInt nrArguments = InternalListLength(aArguments);
-    if (nrArguments == n) return;
+    const LispInt nrArguments = InternalListLength(aArguments);
+
+    if (nrArguments == n)
+        return;
  
-  LispInt needed = n-1;
-  LispInt passed = nrArguments-1;
+    const LispInt needed = n-1;
+    const LispInt passed = nrArguments-1;
 
-  if (!aArguments)
-    {
-      aEnvironment.iErrorOutput.Write("Error in compiled code\n");
-    }
-    else
-    {
-      ShowStack(aEnvironment);
-      ShowFunctionError(aArguments, aEnvironment);
-
-      LispChar str[20];
-      aEnvironment.iErrorOutput.Write("expected ");
-      InternalIntToAscii(str,needed);
-      aEnvironment.iErrorOutput.Write(str);
-      aEnvironment.iErrorOutput.Write(" arguments, got ");
-      InternalIntToAscii(str,passed);
-      aEnvironment.iErrorOutput.Write(str);
-      aEnvironment.iErrorOutput.Write("\n");
-    }
-  throw static_cast<LispInt>(KLispErrWrongNumberOfArgs);
-}
-
-
-void CheckFuncGeneric(LispInt aError,LispPtr& aArguments,
-                      LispEnvironment& aEnvironment)
-{
-    if (!aArguments)
-    {
-      aEnvironment.iErrorOutput.Write("Error in compiled code\n");
-    }
-    else
-    {
-      ShowStack(aEnvironment);
-      ShowFunctionError(aArguments, aEnvironment);
-    }
-    throw aError;
-}
-
-void CheckFuncGeneric(LispInt aError,
-                      LispEnvironment& aEnvironment)
-{
-    ShowStack(aEnvironment);
-    throw aError;
-}
-
-void CheckArgType(LispInt aArgNr, LispPtr& aArguments,LispEnvironment& aEnvironment,
-                  LispInt aError)
-{
-  if (!aArguments)
-    {
+    if (!aArguments) {
         aEnvironment.iErrorOutput.Write("Error in compiled code\n");
-    }
-    else
-    {
+    } else {
         ShowStack(aEnvironment);
         ShowFunctionError(aArguments, aEnvironment);
- 
-        aEnvironment.iErrorOutput.Write("bad argument number ");
+
         LispChar str[20];
-        InternalIntToAscii(str,aArgNr);
+        aEnvironment.iErrorOutput.Write("expected ");
+        InternalIntToAscii(str,needed);
         aEnvironment.iErrorOutput.Write(str);
-        aEnvironment.iErrorOutput.Write(" (counting from 1)\n");
- 
-#define LIM_AL 60
-        LispPtr& arg = Argument(aArguments,aArgNr);
-        LispString strout;
- 
-        aEnvironment.iErrorOutput.Write("The offending argument ");
-        PrintExpression(strout, arg, aEnvironment, LIM_AL);
-        aEnvironment.iErrorOutput.Write(strout.c_str());
-  //        aEnvironment.iErrorOutput.Write("\n");
- 
-  //        aEnvironment.iErrorOutput.Write("Argument ");
-  //        PrintExpression(strout, arg, aEnvironment, LIM_AL);
-  //        aEnvironment.iErrorOutput.Write(strout.String());
- 
-        LispPtr eval;
-        InternalEval(aEnvironment, eval, arg);
-        aEnvironment.iErrorOutput.Write(" evaluated to ");
-        PrintExpression(strout, eval, aEnvironment, LIM_AL);
-        aEnvironment.iErrorOutput.Write(strout.c_str());
+        aEnvironment.iErrorOutput.Write(" arguments, got ");
+        InternalIntToAscii(str,passed);
+        aEnvironment.iErrorOutput.Write(str);
         aEnvironment.iErrorOutput.Write("\n");
-
-        DBG_( printf("Problem occurred at %s(%d)\n",
-      aArguments->iFileName,
-      aArguments->iLine ); )
     }
-    throw aError;
+
+    throw LispErrWrongNumberOfArgs();
 }
 
-std::string& GenericErrorBuf()
+void CheckSecure(LispEnvironment& env, LispInt stack_top)
 {
-   // PLEASECHECK TODO This is a global!
-    static std::string theGenericErrorBuf;
-   return theGenericErrorBuf;
+    if (env.iSecure) {
+        ShowStack(env);
+        ShowFunctionError(env.iStack.GetElement(stack_top), env);
+        throw LispErrSecurityBreach();
+    }    
 }
-
-void RaiseError(const char* str)
-{
-    GenericErrorBuf() = str;
-    throw static_cast<LispInt>(KLispErrGenericFormat);
-}
-
-
 

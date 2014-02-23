@@ -43,7 +43,7 @@
 void GetNumber(RefPtr<BigNumber>& x, LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
     x = ARGUMENT(aArgNr)->Number(aEnvironment.Precision());
-    CHK_ARG_CORE(x,aArgNr);  // was: x.Ptr()
+    CheckArg(x, aArgNr, aEnvironment, aStackTop);
 }
 
 //FIXME remove these
@@ -63,7 +63,7 @@ void LispArithmetic1(LispEnvironment& aEnvironment, LispInt aStackTop,
 void LispArithmetic1(LispEnvironment& aEnvironment, LispInt aStackTop,
                      LispObject* (*func)(LispObject* f1, LispEnvironment& aEnvironment,LispInt aPrecision))
 {
-    CHK_ARG_CORE(ARGUMENT(1)->Number(0) != NULL,1);
+    CheckArg(ARGUMENT(1)->Number(0), 1, aEnvironment, aStackTop);
     RESULT = (func(ARGUMENT(1), aEnvironment, aEnvironment.Precision()));
 }
 
@@ -75,8 +75,8 @@ void LispArithmetic2(LispEnvironment& aEnvironment, LispInt aStackTop,
 {
     if (!arbbase)
     {
-        CHK_ARG_CORE(ARGUMENT(1)->Number(0)  != NULL,1);
-        CHK_ARG_CORE(ARGUMENT(2)->Number(0)  != NULL,2);
+        CheckArg(ARGUMENT(1)->Number(0), 1, aEnvironment, aStackTop);
+        CheckArg(ARGUMENT(2)->Number(0), 2, aEnvironment, aStackTop);
     }
     RESULT = (func(ARGUMENT(1),ARGUMENT(2),
                                    aEnvironment,
@@ -107,8 +107,9 @@ void LispMultiply(LispEnvironment& aEnvironment, LispInt aStackTop)
 //TODO we need to have Gcd in BigNumber!
 void LispGcd(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    CHK_ARG_CORE(ARGUMENT(1)->Number(0)  != NULL,1);
-    CHK_ARG_CORE(ARGUMENT(1)->Number(0)  != NULL,2);
+    CheckArg(ARGUMENT(1)->Number(0), 1, aEnvironment, aStackTop);
+    CheckArg(ARGUMENT(2)->Number(0), 2, aEnvironment, aStackTop);
+
     RESULT = (GcdInteger(ARGUMENT(1),ARGUMENT(2),aEnvironment));
 }
 
@@ -442,10 +443,9 @@ void LispFromBase(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispPtr oper(ARGUMENT(1));
     // Check that result is a number, and that it is in fact an integer
     RefPtr<BigNumber> num; num = oper->Number(aEnvironment.BinaryPrecision());
-    CHK_ARG_CORE(num,1);  // was: num.Ptr()
+    CheckArg(num, 1, aEnvironment, aStackTop);
   // check that the base is an integer between 2 and 32
-    CHK_ARG_CORE(num->IsInt()
-        && num->Double() >= BASE2 && num->Double() <= log2_table_range(), 1);
+    CheckArg(num->IsInt() && num->Double() >= BASE2 && num->Double() <= log2_table_range(), 1, aEnvironment, aStackTop);
 
     // Get a short platform integer from the first argument
     LispInt base = (LispInt)(num->Double());
@@ -453,10 +453,10 @@ void LispFromBase(LispEnvironment& aEnvironment, LispInt aStackTop)
     // Get the number to convert
     LispPtr fromNum(ARGUMENT(2));
     LispString * str2 = fromNum->String();
-    CHK_ARG_CORE(str2,2);
+    CheckArg(str2, 2, aEnvironment, aStackTop);
 
     // Added, unquote a string
-    CHK_ARG_CORE(InternalIsString(str2),2);
+    CheckArg(InternalIsString(str2), 2, aEnvironment, aStackTop);
     str2 = aEnvironment.HashTable().LookUpCounted(str2->c_str() + 1, std::strlen(str2->c_str()) - 2);
 
     // convert using correct base
@@ -473,10 +473,9 @@ void LispToBase(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispPtr oper(ARGUMENT(1));
     // Check that result is a number, and that it is in fact an integer
     RefPtr<BigNumber> num; num = oper->Number(aEnvironment.BinaryPrecision());
-    CHK_ARG_CORE(num,1);
+    CheckArg(num, 1, aEnvironment, aStackTop);
   // check that the base is an integer between 2 and 32
-    CHK_ARG_CORE(num->IsInt()
-        && num->Double() >= BASE2 && num->Double() <= log2_table_range(), 1);
+    CheckArg(num->IsInt() && num->Double() >= BASE2 && num->Double() <= log2_table_range(), 1, aEnvironment, aStackTop);
 
     // Get a short platform integer from the first argument
     LispInt base = (LispInt)(num->Double());
@@ -503,8 +502,8 @@ void LispApplyPure(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispPtr oper(ARGUMENT(1));
     LispPtr args(ARGUMENT(2));
 
-    CHK_ARG_CORE(args->SubList(),2);
-    CHK_CORE((*args->SubList()),2);
+    CheckArg(args->SubList(), 2, aEnvironment, aStackTop);
+    CheckArg(*args->SubList(), 2, aEnvironment, aStackTop);
 
  
 
@@ -518,8 +517,8 @@ void LispApplyPure(LispEnvironment& aEnvironment, LispInt aStackTop)
     else
     {   // Apply a pure function {args,body}.
         LispPtr args2((*args->SubList())->Nixed());
-        CHK_ARG_CORE(oper->SubList(),1);
-        CHK_ARG_CORE((*oper->SubList()),1);
+        CheckArg(oper->SubList(), 1, aEnvironment, aStackTop);
+        CheckArg(*oper->SubList(), 1, aEnvironment, aStackTop);
         InternalApplyPure(oper,args2,RESULT,aEnvironment);
     }
 }
@@ -535,10 +534,10 @@ void YacasPrettyReaderSet(LispEnvironment& aEnvironment, LispInt aStackTop)
   }
   else
   {
-    CHK_CORE(nrArguments == 2,KLispErrWrongNumberOfArgs);
+    CheckNrArgs(2, ARGUMENT(0), aEnvironment);
     LispPtr oper(ARGUMENT(0));
     oper = oper->Nixed(); // oper.GoNext();  // woof woof woof
-    CHK_ISSTRING_CORE(oper,1);
+    CheckArgIsString(oper, 1, aEnvironment, aStackTop);
     aEnvironment.SetPrettyReader(oper->String());
   }
   InternalTrue(aEnvironment,RESULT);
@@ -562,10 +561,10 @@ void YacasPrettyPrinterSet(LispEnvironment& aEnvironment, LispInt aStackTop)
   }
   else
   {
-    CHK_CORE(nrArguments == 2,KLispErrWrongNumberOfArgs);
+    CheckNrArgs(2, ARGUMENT(0), aEnvironment);
     LispPtr oper(ARGUMENT(0));
     oper = oper->Nixed(); // oper.GoNext();  // woof woof woof
-    CHK_ISSTRING_CORE(oper,1);
+    CheckArgIsString(oper, 1, aEnvironment, aStackTop);
     aEnvironment.SetPrettyPrinter(oper->String());
   }
   InternalTrue(aEnvironment,RESULT);
@@ -589,7 +588,7 @@ void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   LispPtr evaluated(ARGUMENT(1));
   LispString * string = evaluated->String();
-  CHK_ARG_CORE(string, 1);
+  CheckArg(string, 1, aEnvironment, aStackTop);
   LispString oper;
   InternalUnstringify(oper, string);
   LispString * hashedname = aEnvironment.HashTable().LookUp(oper.c_str());
@@ -597,7 +596,10 @@ void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
   aEnvironment.iInputStatus.SetTo(hashedname->c_str());
   LispLocalFile localFP(aEnvironment, oper.c_str(), true,
                         aEnvironment.iInputDirectories);
-  Check(localFP.iOpened != 0, KLispErrFileNotFound);
+
+  if (!localFP.iOpened)
+      throw LispErrFileNotFound();
+
   FILEINPUT newInput(localFP,aEnvironment.iInputStatus);
   PatchLoad(newInput.StartPtr(),
             *aEnvironment.CurrentOutput(),
@@ -610,7 +612,7 @@ void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   LispPtr evaluated(ARGUMENT(1));
   LispString * string = evaluated->String();
-  CHK_ARG_CORE(string, 1);
+  CheckArg(string, 1, aEnvironment, aStackTop);
   LispString oper;
   InternalUnstringify(oper, string);
   LispString str;
@@ -665,7 +667,7 @@ void LispXmlTokenizer(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   LispPtr out(ARGUMENT(1));
-  CHK_ISSTRING_CORE(out,1);
+  CheckArgIsString(1, aEnvironment, aStackTop);
 
   const LispChar* str = out->String()->c_str();
   str++;
@@ -708,9 +710,9 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
     }
     name.Append('\"');
     name.Append('\0');
-    CHK_ARG_CORE(str[0] == '=',1);
+    CheckArg(str[0] == '=', 1, aEnvironment, aStackTop);
     str++;
-    CHK_ARG_CORE(str[0] == '\"',1);
+    CheckArg(str[0] == '\"', 1, aEnvironment, aStackTop);
     LispString value;
     value.ResizeTo(0);
     value.Append(*str++);
@@ -756,9 +758,9 @@ void YacasBuiltinAssoc(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispObject* t;
 
     //Check that it is a compound object
-    CHK_ARG_CORE(list->SubList(), 2);
+    CheckArg(list->SubList(), 2, aEnvironment, aStackTop);
     t = (*list->SubList());
-    CHK_ARG_CORE(t, 2);
+    CheckArg(t, 2, aEnvironment, aStackTop);
     t = t->Nixed();
 
     while (t)
@@ -829,7 +831,7 @@ void LispBitsToDigits(LispEnvironment& aEnvironment, LispInt aStackTop)
   {
       std::ostringstream buf;
       buf << "BitsToDigits: error: arguments (" << x->Double() << ", " << y->Double() << " must be small integers";
-      RaiseError(buf.str().c_str());
+      throw LispErrGeneric(buf.str());
   }
   BigNumber *z = NEW BigNumber();
   z->SetTo(result);
@@ -854,7 +856,7 @@ void LispDigitsToBits(LispEnvironment& aEnvironment, LispInt aStackTop)
   {
       std::ostringstream buf;
       buf << "BitsToDigits: error: arguments (" << x->Double() << ", " << y->Double() << " must be small integers";
-      RaiseError(buf.str().c_str());
+      throw LispErrGeneric(buf.str());
   }
   BigNumber *z = NEW BigNumber();
   z->SetTo(result);

@@ -44,19 +44,21 @@ void LispLocalSymbols(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispString * *names      = PlatAllocN<LispString *>(nrSymbols);
     LispString * *localnames = PlatAllocN<LispString *>(nrSymbols);
     //TODO names and localnames should be pushed on the cleanup stack!!!
-    CHK_CORE(names,KLispErrNotEnoughMemory);
-    CHK_CORE(localnames,KLispErrNotEnoughMemory);
+    if (!names || !localnames) {
+        ShowStack(aEnvironment);
+        throw LispErrNotEnoughMemory();
+    }
 
     LispInt uniquenumber = aEnvironment.GetUniqueId();
     LispInt i;
     for (i=0;i<nrSymbols;i++)
     {
         LispString * atomname = Argument(ARGUMENT(0), i+1)->String();
-        CHK_ARG_CORE(atomname, i+1);
+        CheckArg(atomname, i + 1, aEnvironment, aStackTop);
         names[i] = atomname;
 
         LispInt len = atomname->Size()-1;
-        CHK_ARG_CORE(len<64,i+1);
+        CheckArg(len < 64, i + 1, aEnvironment, aStackTop);
         char newname[100];
         newname[0] = '$';
         std::memcpy(&newname[1], atomname->c_str(), len);
@@ -80,8 +82,8 @@ void LispLocalSymbols(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispCharString(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   LispString * str = ARGUMENT(1)->String();
-  CHK_ARG_CORE(str,2);
-  CHK_ARG_CORE(IsNumber(str->c_str(),false),2);
+  CheckArg(str, 2, aEnvironment, aStackTop);
+  CheckArg(IsNumber(str->c_str(), false), 2, aEnvironment, aStackTop);
   LispInt asciiCode = InternalAsciiToInt(str);
 
   LispChar ascii[4];
@@ -105,7 +107,7 @@ void LispInDebugMode(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispDebugFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
 #ifndef YACAS_DEBUG
-  RaiseError("Cannot call DebugFile in non-debug version of Yacas");
+    throw LispErrGeneric("Cannot call DebugFile in non-debug version of Yacas");
 #else
   LispChar * file = ARGUMENT(1)->iFileName;
   if (!file) file = "";
@@ -117,7 +119,7 @@ void LispDebugFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispDebugLine(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
 #ifndef YACAS_DEBUG
-  RaiseError("Cannot call DebugLine in non-debug version of Yacas");
+    throw LispErrGeneric("Cannot call DebugLine in non-debug version of Yacas");
 #else
   LispChar number[30];
   InternalIntToAscii(number,ARGUMENT(1)->iLine);

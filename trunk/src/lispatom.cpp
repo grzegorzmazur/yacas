@@ -20,7 +20,10 @@ LispObject* LispAtom::New(LispEnvironment& aEnvironment, const LispChar * aStrin
   {
     self = NEW LispAtom(aEnvironment.HashTable().LookUp(aString));
   }
-  Check(self!=NULL,KLispErrNotEnoughMemory);
+
+  if (!self)
+      throw LispErrNotEnoughMemory();
+
   return self;
 }
 
@@ -54,7 +57,10 @@ LispString * LispAtom::String()
 LispSubList* LispSubList::New(LispObject* aSubList)
 {
     LispSubList* self = NEW LispSubList(aSubList);
-    Check(self!=NULL,KLispErrNotEnoughMemory);
+
+    if (!self)
+      throw LispErrNotEnoughMemory();
+
     return self;
 }
 
@@ -97,7 +103,10 @@ LispSubList::~LispSubList()
 LispGenericClass* LispGenericClass::New(GenericClass* aClass)
 {
     LispGenericClass* self = NEW LispGenericClass(aClass);
-    Check(self!=NULL,KLispErrNotEnoughMemory);
+
+    if (!self)
+      throw LispErrNotEnoughMemory();
+
     return self;
 }
 

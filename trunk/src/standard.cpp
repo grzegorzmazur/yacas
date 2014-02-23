@@ -61,10 +61,13 @@ void InternalUnstringify(LispString& aResult, LispString * aOriginal)
    *
    * Also do not forget to make the change in the Java version then, and find the other places where this is relevant.
    */
-  Check(aOriginal,KLispErrInvalidArg);
-  Check((*aOriginal)[0] == '\"',KLispErrInvalidArg);
+    if (!aOriginal || (*aOriginal)[0] != '\"')
+        throw LispErrInvalidArg();
+
   LispInt nrc = aOriginal->Size()-2;
-  Check((*aOriginal)[nrc] == '\"',KLispErrInvalidArg);
+
+  if (!aOriginal || (*aOriginal)[nrc] != '\"')
+      throw LispErrInvalidArg();
 
   aResult.ResizeTo(nrc);
   for (LispInt i = 1; i < nrc; i++)
@@ -74,7 +77,8 @@ void InternalUnstringify(LispString& aResult, LispString * aOriginal)
 
 void InternalStringify(LispString& aResult, LispString * aOriginal)
 {
-    Check(aOriginal,KLispErrInvalidArg);
+    if (!aOriginal)
+        throw LispErrInvalidArg();
 
     LispInt nrc=aOriginal->Size()-1;
     aResult.ResizeTo(nrc+3);
@@ -121,7 +125,10 @@ void InternalIntToAscii(LispChar * aTrg,LispInt aInt)
 LispInt InternalAsciiToInt(LispString * aString)
 {
   const LispChar * ptr = aString->c_str();
-  Check(IsNumber(ptr,false),KLispErrInvalidArg);
+
+  if (!IsNumber(ptr, false))
+      throw LispErrInvalidArg();
+
   return PlatAsciiToInt(ptr);
 }
 
@@ -167,29 +174,36 @@ bool IsNumber(const LispChar * ptr,bool aAllowFloat)
 
 void InternalNth(LispPtr& aResult, LispPtr& aArg, LispInt n)
 {
-    Check(!!aArg,KLispErrInvalidArg);
-    Check(aArg->SubList(),KLispErrInvalidArg);
-    Check(n>=0,KLispErrInvalidArg);
+    if (n < 0 || !aArg || !aArg->SubList())
+        throw LispErrInvalidArg();
+
     LispIterator iter(*aArg->SubList());
 
     while (n>0)
     {
-        Check(iter.getObj(),KLispErrInvalidArg);
+        if (!iter.getObj())
+            throw LispErrInvalidArg();
+
         ++iter;
         n--;
     }
-    Check(iter.getObj(),KLispErrInvalidArg);
+
+    if (!iter.getObj())
+        throw LispErrInvalidArg();
+
     aResult = (iter.getObj()->Copy());
 }
 
 void InternalTail(LispPtr& aResult, LispPtr& aArg)
 {
-    Check(!!aArg,KLispErrInvalidArg);
+    if (!aArg)
+        throw LispErrInvalidArg();
 
     LispPtr* iter = aArg->SubList();
 
-    Check(iter,KLispErrInvalidArg);
-    Check(!!(*iter),KLispErrInvalidArg);
+    if (!iter || !*iter)
+        throw LispErrInvalidArg();
+
     aResult = (LispSubList::New((*iter)->Nixed()));
 }
 
@@ -339,7 +353,9 @@ void DoInternalLoad(LispEnvironment& aEnvironment,LispInput* aInput)
         // Read expression
         parser.Parse(readIn);
 
-        Check(!!readIn, KLispErrReadingFile);
+        if (!readIn)
+            throw LispErrReadingFile();
+
         // Check for end of file
         if (readIn->String() == eof)
         {
@@ -377,7 +393,10 @@ void InternalLoad(LispEnvironment& aEnvironment,LispString * aFileName)
         // Open file
         LispLocalFile localFP(aEnvironment, hashedname->c_str(),true,
                               aEnvironment.iInputDirectories);
-        Check(localFP.iOpened != 0, KLispErrFileNotFound);
+
+        if (!localFP.iOpened)
+            throw LispErrFileNotFound();
+
         FILEINPUT newInput(localFP,aEnvironment.iInputStatus);
         DoInternalLoad(aEnvironment,&newInput);
     }
@@ -397,7 +416,8 @@ void InternalUse(LispEnvironment& aEnvironment,LispString * aFileName)
 void InternalApplyString(LispEnvironment& aEnvironment, LispPtr& aResult,
                  LispString * aOperator,LispPtr& aArgs)
 {
-    Check(InternalIsString(aOperator),KLispErrNotString);
+    if (!InternalIsString(aOperator))
+        throw LispErrNotString();
 
     LispObject *head =
         LispAtom::New(aEnvironment,SymbolName(aEnvironment, aOperator->c_str())->c_str());
@@ -408,67 +428,52 @@ void InternalApplyString(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnvironment& aEnvironment)
 {
-//LispString text;
-//    {
-//        PrintExpression(text, oper,aEnvironment, 80);
-//        printf("oper %s\n",text.String());
-//
-//    }
-//printf("0...\n");
-  LispPtr * chk1 = oper->SubList();
-    Check(chk1,KLispErrInvalidArg);
-    Check(!!(*chk1),KLispErrInvalidArg);
+    LispPtr * chk1 = oper->SubList();
+  
+    if (!chk1)
+        throw LispErrInvalidArg();
+
     LispPtr oper2((*chk1)->Nixed());
-    Check(!!oper2,KLispErrInvalidArg);
-//printf("1...\n");
+
+    if (!oper2)
+        throw LispErrInvalidArg();
 
     LispPtr body(oper2->Nixed());
-    Check(!!body,KLispErrInvalidArg);
+  
+    if (!body)
+        throw LispErrInvalidArg();
 
-//printf("2...\n");
-  LispPtr * chk2 = oper2->SubList();
-    Check(chk2,KLispErrInvalidArg);
-    Check(!!(*chk2),KLispErrInvalidArg);
+    LispPtr * chk2 = oper2->SubList();
+
+    if (!chk2 || !*chk2)
+        throw LispErrInvalidArg();
+
     oper2 = ((*chk2)->Nixed());
 
-//printf("3...\n");
     LispLocalFrame frame(aEnvironment,false);
 
-//printf("4...\n");
-    while (!!oper2)
-    {
-//printf("4.1..\n");
-        Check(!!args2,KLispErrInvalidArg);
+    while (!!oper2)  {
+        if (!args2)
+            throw LispErrInvalidArg();
 
-//printf("4.2..\n");
-        LispString * var = oper2->String();
-        Check(var,KLispErrInvalidArg);
+        LispString* var = oper2->String();
 
-//PrintExpression(text, args2,aEnvironment, 80);
-//printf("arg %s\n",text.String());
-//printf("4.3..\n");
+        if (!var)
+            throw LispErrInvalidArg();
+
         LispPtr newly(args2->Copy());
-//printf("4.4..\n");
+
         aEnvironment.NewLocal(var,newly);
 
-//printf("4.5..\n");
         oper2 = (oper2->Nixed());
-//printf("4.6..\n");
+      
         args2 = (args2->Nixed());
-//printf("4.7..\n");
     }
-//printf("5...\n");
 
-    Check(!args2,KLispErrInvalidArg);
-//printf("Before eval\n");
+    if (args2)
+        throw LispErrInvalidArg();
+
     InternalEval(aEnvironment, aResult, body);
-
-//    {
-//        PrintExpression(text, aResult,aEnvironment, 80);
-//        printf("result %s\n",text.String());
-//
-//    }
-
 }
 
 

@@ -91,11 +91,13 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
   LISPASSERT(aExpression);
 
   aEnvironment.iEvalDepth++;
-  if (aEnvironment.iEvalDepth>=aEnvironment.iMaxEvalDepth)
-  {
-    CHK2(aEnvironment.iEvalDepth<aEnvironment.iMaxEvalDepth,
-    (aEnvironment.iEvalDepth>aEnvironment.iMaxEvalDepth+20)
-    ? KLispErrUserInterrupt : KLispErrMaxRecurseDepthReached);
+  if (aEnvironment.iEvalDepth >= aEnvironment.iMaxEvalDepth) {
+      ShowStack(aEnvironment, *aEnvironment.CurrentOutput());
+
+      if (aEnvironment.iEvalDepth > aEnvironment.iMaxEvalDepth + 20)
+          throw LispErrUserInterrupt();
+
+      throw LispErrMaxRecurseDepthReached();
   }
 
   LispString * str = aExpression->String();
@@ -364,9 +366,8 @@ void TracedStackEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
 {
   if (aEnvironment.iEvalDepth>=aEnvironment.iMaxEvalDepth)
   {
-    ShowStack(aEnvironment, *aEnvironment.CurrentOutput());
-    CHK2(aEnvironment.iEvalDepth<aEnvironment.iMaxEvalDepth,
-         KLispErrMaxRecurseDepthReached);
+      ShowStack(aEnvironment, *aEnvironment.CurrentOutput());
+      throw LispErrMaxRecurseDepthReached();
   }
 
   LispPtr* subList = aExpression->SubList();
@@ -403,19 +404,23 @@ void TracedStackEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
 void TracedEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
                            LispPtr& aExpression)
 {
-  if(!aEnvironment.iDebugger) RaiseError("Internal error: debugging failing");
-  if(aEnvironment.iDebugger->Stopped()) RaiseError("");
+  if(!aEnvironment.iDebugger)
+      throw LispErrGeneric("Internal error: debugging failing");
+  if(aEnvironment.iDebugger->Stopped())
+      throw LispErrGeneric("");
 
 REENTER:
   errorStr = "";
 
   try {
       aEnvironment.iDebugger->Enter(aEnvironment, aExpression);
-  } catch(LispInt error_code) {
-      Handle(error_code, aEnvironment, errorOutput);
+  } catch(const LispError& error) {
+      Handle(error, aEnvironment, errorOutput);
   }
 
-  if(aEnvironment.iDebugger->Stopped()) RaiseError("");
+  if(aEnvironment.iDebugger->Stopped())
+      throw LispErrGeneric("");
+
   if (errorStr[0])
   {
     aEnvironment.CurrentOutput()->Write(errorStr.c_str());
@@ -426,8 +431,8 @@ REENTER:
   errorStr = "";
   try {
       BasicEvaluator::Eval(aEnvironment, aResult, aExpression);
-  } catch (LispInt error_code) {
-      Handle(error_code, aEnvironment, errorOutput);
+  } catch(const LispError& error) {
+      Handle(error, aEnvironment, errorOutput);
   }
 
   if (errorStr[0])
@@ -438,10 +443,12 @@ REENTER:
     goto REENTER;
   }
 
-  if(aEnvironment.iDebugger->Stopped()) RaiseError("");
+  if(aEnvironment.iDebugger->Stopped())
+      throw LispErrGeneric("");
 
   aEnvironment.iDebugger->Leave(aEnvironment, aResult, aExpression);
-  if(aEnvironment.iDebugger->Stopped()) RaiseError("");
+  if(aEnvironment.iDebugger->Stopped())
+      throw LispErrGeneric("");
 }
 
 YacasDebuggerBase::~YacasDebuggerBase()

@@ -21,7 +21,7 @@ double GetDouble(LispObject* aInteger)
   {
       std::ostringstream buf;
       buf << "Argument is not a number: " << aInteger->String();
-      RaiseError(buf.str().c_str());
+      throw LispErrGeneric(buf.str());
   }
   return number->Double();
 }
