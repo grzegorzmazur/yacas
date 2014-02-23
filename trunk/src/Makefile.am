@@ -122,7 +122,7 @@ include/yacas/yacas_version.h: ../config.h
 check: check-codereviewer
 
 check-codereviewer: codereviewer$(EXEEXT)
-	./codereviewer$(EXEEXT) c include/yacas/*.h include/yacas/*.inl *.cpp
+	./codereviewer$(EXEEXT) c ../include/yacas/*.h ../include/yacas/*.inl *.cpp
 
 distclean-local:
 	-rm -f codereviewer$(EXEEXT)
