@@ -429,7 +429,7 @@ void InternalApplyString(LispEnvironment& aEnvironment, LispPtr& aResult,
 void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnvironment& aEnvironment)
 {
     LispPtr * chk1 = oper->SubList();
-  
+
     if (!chk1)
         throw LispErrInvalidArg();
 
@@ -439,7 +439,7 @@ void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnviron
         throw LispErrInvalidArg();
 
     LispPtr body(oper2->Nixed());
-  
+
     if (!body)
         throw LispErrInvalidArg();
 
@@ -466,7 +466,7 @@ void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnviron
         aEnvironment.NewLocal(var,newly);
 
         oper2 = (oper2->Nixed());
-      
+
         args2 = (args2->Nixed());
     }
 

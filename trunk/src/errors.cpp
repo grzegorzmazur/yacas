@@ -144,6 +144,6 @@ void CheckSecure(LispEnvironment& env, LispInt stack_top)
         ShowStack(env);
         ShowFunctionError(env.iStack.GetElement(stack_top), env);
         throw LispErrSecurityBreach();
-    }    
+    }
 }
 
