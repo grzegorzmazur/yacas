@@ -434,3 +434,5 @@ LocalSymbols(x,y,xarg,yarg)
 
 
 400 # _x ^ 0 <-- 1;
+
+500 # ((x_IsPositiveInteger)^(1/y_IsPositiveInteger))_(IsEven(y) And IsInteger(MathSqrt(x))) <-- MathSqrt(x)^(1/(y/2));
