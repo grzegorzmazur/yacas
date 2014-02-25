@@ -42,6 +42,10 @@ IsComplexII(_c) <-- (ImII(c) != 0);
 6 # Complex(Undefined,_x) <-- Undefined;
 6 # Complex(_x,Undefined) <-- Undefined;
 
+10 # _a + Complex(0, x_IsNegativeNumber) <-- a - Complex(0, Abs(x));
+10 # _a + Complex(x_IsNegativeNumber, y_IsNegativeNumber) <-- a - Complex(Abs(x), Abs(y));
+10 # _a + Complex(x_IsNegativeNumber, y_IsNegativeNumber) * _b <-- a - Complex(Abs(x), Abs(y)) * b;
+
 /*Real parts */
 110 # Re(Complex(_r,_i)) <-- r;
 120 # Re(Undefined) <-- Undefined;
