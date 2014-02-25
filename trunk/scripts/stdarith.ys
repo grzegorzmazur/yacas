@@ -101,6 +101,8 @@ LocalSymbols(x)
 130 # ((_x-y_IsNumber) + _z)_(Not IsNumber(x) And Not IsNumber(z)) <-- (x+z)-y;
 130 # ((_x+y_IsNumber) - _z)_(Not IsNumber(x) And Not IsNumber(z)) <-- (x-z)+y;
 
+140 # (x_IsNumber - _y) + z_IsNumber <-- x+z-y;
+
 /* TODO move to this precedence everywhere? */
 LocalSymbols(x,y,xarg,yarg)
 [
