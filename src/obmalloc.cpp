@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <string.h>
 #include <stdint.h>
+#include <pthread.h>
 
 #include <sys/types.h>
 
@@ -235,11 +236,24 @@ static int running_on_valgrind = -1;
 /*
  * Python's threads are serialized, so object malloc locking is disabled.
  */
+
+namespace {
+    static bool _yacas_threadsafe_malloc = false;
+}
+
+#if 0
 #define SIMPLELOCK_DECL(lock)   /* simple lock declaration              */
 #define SIMPLELOCK_INIT(lock)   /* allocate (if needed) and initialize  */
 #define SIMPLELOCK_FINI(lock)   /* free/destroy an existing lock        */
 #define SIMPLELOCK_LOCK(lock)   /* acquire released lock */
 #define SIMPLELOCK_UNLOCK(lock) /* release acquired lock */
+#else
+#define SIMPLELOCK_DECL(lock) pthread_mutex_t lock;
+#define SIMPLELOCK_INIT(lock) { if (_yacas_threadsafe_malloc) pthread_mutex_init(&lock); }
+#define SIMPLELOCK_FINI(lock) { if (_yacas_threadsafe_malloc) pthread_mutex_destroy(&lock); }
+#define SIMPLELOCK_LOCK(lock) { if (_yacas_threadsafe_malloc) pthread_mutex_lock(&lock); }
+#define SIMPLELOCK_UNLOCK(lock) { if (_yacas_threadsafe_malloc) pthread_mutex_unlock(&lock); }
+#endif
 
 /*
  * Basic types
@@ -1960,3 +1974,7 @@ void *PlatObReAlloc(void *p, size_t nbytes)
     return PyObject_Realloc(p, nbytes);
 }
 
+void PlatObSetThreadSafe(bool ts)
+{
+    _yacas_threadsafe_malloc = ts;
+}
