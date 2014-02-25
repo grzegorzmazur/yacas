@@ -21,7 +21,7 @@
   void *PlatObAlloc(size_t nbytes);
   void PlatObFree(void *p);
   void *PlatObReAlloc(void *p, size_t nbytes);
-
+  void PlatObSetThreadSafe(bool);
 #ifdef YACAS_DEBUG
   #include "debugmem.h"
   #define PlatAlloc(nr)        YacasMallocPrivate((size_t)nr,__FILE__,__LINE__)
