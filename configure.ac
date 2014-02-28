@@ -17,10 +17,8 @@ AC_PROG_CPP
 AC_PROG_CXX
 
 AC_CHECK_PROG(have_perl, perl, yes, no)
-AC_CHECK_PROG(have_latex, latex, yes, no)
-AC_CHECK_PROG(have_makeindex, makeindex, yes, no)
 AC_CHECK_PROG(have_pdflatex, pdflatex, yes, no)
-AC_CHECK_PROG(have_dvips, dvips, yes, no)
+AC_CHECK_PROG(have_makeindex, makeindex, yes, no)
 AC_CHECK_PROG(have_gzip, gzip, yes, no)
 AC_CHECK_TOOL(AR, ar, :)
 
@@ -157,25 +155,11 @@ fi
 AC_SUBST(BOOKS_HTML)
 AC_SUBST(INSTALL_HTML)
 
-# Generate PS documentation?
-AC_ARG_ENABLE(ps-doc, [  --enable-ps-doc         generate PostScript documentation [default=no]])
-if test "x$enable_ps_doc" = xyes; then
-	if test "x$have_perl" = xno || test "x$have_latex" = xno \
-	   || test "x$have_makeindex" = xno || test "x$have_dvips" = xno \
-	   || test "x$have_gzip" = xno; then
-		AC_MSG_ERROR([need perl, latex, makeindex, dvips, and gzip to generate Postscript])
-	fi
-	PS_DOCS=ps-docs
-	INSTALL_PS=install-ps
-fi
-AC_SUBST(PS_DOCS)
-AC_SUBST(INSTALL_PS)
-
 # Generate PDF documentation?
 AC_ARG_ENABLE(pdf-doc, [  --enable-pdf-doc        generate PDF documentation [default=no]])
 if test "x$enable_pdf_doc" = xyes; then
 	if test "x$have_perl" = xno || test "x$have_pdflatex" = xno \
-	   || test "x$have_makeindex" = xno || test "x$have_dvips" = xno; then
+	   || test "x$have_makeindex" = xno; then
 		AC_MSG_ERROR([need perl, pdflatex, and makeindex to generate PDF docs])
 	fi
 	PDF_DOCS=pdf-docs
@@ -199,13 +183,13 @@ else
 fi
 AC_SUBST(htmldir)
 
-AC_ARG_WITH(ps-dir, [  --with-ps-dir=DIR       PostScript documentation in DIR [HTMLDIR]])
-if test -n "$with_ps_dir" ; then
-	psdir=$with_ps_dir
+AC_ARG_WITH(pdf-dir, [  --with-pdf-dir=DIR       PDF documentation in DIR [HTMLDIR]])
+if test -n "$with_pdf_dir" ; then
+	psdir=$with_pdf_dir
 else
 	psdir=${htmldir}
 fi
-AC_SUBST(psdir)
+AC_SUBST(pdfdir)
 
 dnl jb_PREFIX_EXPAND(VARNAME)
 dnl -------------------------

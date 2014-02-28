@@ -28,7 +28,7 @@ test: check
 dvi: texdocs
 
 texdocs:
-	cd manmake ; make ps-docs pdf-docs
+	cd manmake ; make pdf-docs
 
 # this target will create all HTML docs in case they are disabled by configure
 
