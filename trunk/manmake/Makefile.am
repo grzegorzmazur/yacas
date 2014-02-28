@@ -8,9 +8,8 @@ ouryacas = ../src/yacas --rootdir $(top_srcdir)/scripts/:../scripts/
 
 # top target
 ## BOOKS_HTML is either "manicon.html" or empty
-## PS_DOCS    is either "ps-docs" or empty
 ## PDF_DOCS   is either "pdf-docs" or empty
-all-am: @BOOKS_HTML@ @PS_DOCS@ @PDF_DOCS@ hints
+all-am: @BOOKS_HTML@ @PDF_DOCS@ hints
 
 noinst_PROGRAMS = manripper removeduplicates
 
@@ -37,9 +36,6 @@ BOOKS = intro.book coding.book ref.book refprog.book essays.book \
 
 BOOKSOURCES = intro.book.txt coding.book.txt ref.book.txt refprog.book.txt \
 	essays.book.txt Algo.book.txt 
-
-PS_DOCS = intro.book.ps coding.book.ps essays.book.ps ref.book.ps \
-	refprog.book.ps Algo.book.ps 
 
 PDF_DOCS = intro.book.pdf coding.book.pdf essays.book.pdf ref.book.pdf \
 	refprog.book.pdf Algo.book.pdf 
@@ -120,7 +116,7 @@ EXTRA_DIST = txt2example.pl book2txt.sh book2txt.ys \
 
 # Stuff for automatic generation of Yacas books
 
-SUFFIXES = .chapt.txt .chapt .book.tex .book.txt .book .tex .dvi .ps .pdf .ys
+SUFFIXES = .chapt.txt .chapt .book.tex .book.txt .book .tex .pdf .ys
 
 .chapt.txt.chapt:
 	perl $(srcdir)/txt2yacasdoc.pl < $< > $@
@@ -131,24 +127,16 @@ SUFFIXES = .chapt.txt .chapt .book.tex .book.txt .book .tex .dvi .ps .pdf .ys
 .book.book.tex: 
 	sh $(srcdir)/book2TeX.sh -run "$(ouryacas)" $< $@
 
-.tex.dvi:
-	latex $< > /dev/null
-	latex $< > /dev/null
+.tex.pdf:
+	pdflatex $< > /dev/null
+	pdflatex $< > /dev/null
 # The perl filter is used to help the 'makeindex' command: 
 # 1) replace \verb|...| by \verb=...= 
 # 2) escape ()|@! using a preceding quote "
 # Note that @ and ! are not always escaped because they are sometimes part of the index entry and sometimes control chars. Heuristics are used to guess correctly.
 	@perl -pe 's/(\\verb)\|([^|]*)\|/$$1=$$2=/g;s/([()|])/"$$1/g;if(/\@/){s/!/"!/g;};s/\@([^\\])/"\@$$1/g;'<$*.idx>$*.1.idx
 	@makeindex $*.1.idx -o $*.ind || echo "***Warning: a problem with 'makeindex'"
-	latex $< > /dev/null
-
-.dvi.ps:
-	dvips -q -o $@ $<
-	@echo "***Documentation created:" $*.ps
-
-.dvi.pdf:
-	pdflatex $* > /dev/null
-	@echo "***Documentation created:" $*.pdf
+	pdflatex $< > /dev/null
 
 .chapt.ys:
 	sh $(srcdir)/book2ys.sh -run "$(ouryacas)" $< $@
@@ -179,10 +167,9 @@ Algo.book.tex: Algo.book $(ALGOCHAPTERS)
 
 
 
-ps-docs: $(PS_DOCS)
 pdf-docs: $(PDF_DOCS)
 
-CLEANFILES = books.html *.tex *.dvi *.aux *.idx *.ind *.ilg *.toc *.log *.ps *.pdf *.funcs.js \
+CLEANFILES = books.html *.tex *.aux *.idx *.ind *.ilg *.toc *.log *.pdf *.funcs.js \
 	coding*.html intro*.html ref*.html essays*.html Algo*.html  *.o core *~ texdocs.c \
 	$(REFCHAPTERS) $(ESSAYCHAPTERS) $(REFPROGCHAPTERS) $(CODINGCHAPTERS)  \
 	$(TESTCODESNIPPETS) $(ALGOCHAPTERS) $(BOOKS) manicon.html 
@@ -215,7 +202,7 @@ Algomanual.html : Algo.book $(ALGOCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styl
 	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("Algo");];' | $(ouryacas) -fpc
 
 ## Hook to install documentation
-install-data-local: @INSTALL_HTML@ @INSTALL_PS@ install-scripts install-hints
+install-data-local: @INSTALL_HTML@ install-scripts install-hints
 
 install-hints: hints
 	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/documentation
@@ -234,6 +221,12 @@ install-html: books.html
 	   $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/$$file; \
 	done
 
+install-pdf: pdf-docs
+	$(mkinstalldirs) $(DESTDIR)$(pdfdir)/
+	-for file in $(PDF_DOCS); do \
+	   $(INSTALL_DATA) $$file $(DESTDIR)$(pdfdir)/$$file; \
+	done
+
 uninstall-hook: 
 	-for file in $(DESTDIR)$(htmldir)/*; do \
 	    rm -f $$file; \
@@ -250,9 +243,3 @@ clean-local:
 	rm -f hints
 	rm -f config.chapt
 	rm -f addons.chapt
-
-install-ps: ps-docs
-	$(mkinstalldirs) $(DESTDIR)$(psdir)/
-	-for file in $(PS_DOCS); do \
-	   $(INSTALL_DATA) $$file $(DESTDIR)$(psdir)/$$file; \
-	done
