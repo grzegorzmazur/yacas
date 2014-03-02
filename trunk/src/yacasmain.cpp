@@ -1074,7 +1074,7 @@ int main(int argc, char** argv)
 #ifdef WIN32
     char root_dir_buf[MAX_PATH];
     SHRegGetPathA(HKEY_LOCAL_MACHINE, "SOFTWARE\\yacas\\yacas", 0, root_dir_buf, 0);
-    std::strcat(root_dir_buf, "\\share\\yacas");
+    std::strcat(root_dir_buf, "\\share\\yacas\\scripts");
     for (char* p = root_dir_buf; *p; ++p)
         if (*p == '\\')
             *p = '/';
