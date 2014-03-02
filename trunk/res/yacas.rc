@@ -1,0 +1,29 @@
+#include "winver.h"
+#include "yacas_version.h"
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION     YACAS_VERSION_MAJOR, YACAS_VERSION_MINOR, YACAS_VERSION_MICRO, 0
+PRODUCTVERSION  YACAS_VERSION_MAJOR, YACAS_VERSION_MINOR, YACAS_VERSION_MICRO, 0
+FILEFLAGSMASK  	VS_FFI_FILEFLAGSMASK
+FILEFLAGS      	VS_FF_PRERELEASE
+FILEOS          VOS__WINDOWS32
+FILETYPE        VFT_APP
+
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904E4"
+        BEGIN
+            VALUE "FileVersion",      YACAS_VERSION
+            VALUE "LegalCopyright",   "GPL2"
+            VALUE "ProductName",      "yacas"
+            VALUE "ProductVersion",   YACAS_VERSION
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+100             ICON "yacas.ico"
