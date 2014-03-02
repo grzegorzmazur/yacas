@@ -68,7 +68,7 @@ set (YACAS_LIB_SOURCES src/stdcommandline.cpp src/deffile.cpp src/infixparser.cp
 set (YACAS_COMMON_SOURCES src/yacasmain.cpp)
 
 set (YACAS_UNIX_SOURCES src/unixcommandline.cpp)
-set (YACAS_WIN32_SOURCES src/win32commandline.cpp src/yacas.rc)
+set (YACAS_WIN32_SOURCES src/win32commandline.cpp res/yacas.rc)
 
 if (UNIX)
   set (YACAS_SOURCES ${YACAS_COMMON_SOURCES} ${YACAS_UNIX_SOURCES})
@@ -80,6 +80,8 @@ set (YACAS_SCRIPTS scripts/corefunctions.ys scripts/packages.ys scripts/standard
 
 add_library (libyacas ${YACAS_LIB_SOURCES})
 set_target_properties(libyacas PROPERTIES OUTPUT_NAME "yacas" SOVERSION 1.0.0) 
+
+install (TARGETS libyacas RUNTIME DESTINATION bin COMPONENT app)
 
 add_executable (yacas ${YACAS_SOURCES})
 
@@ -191,7 +193,10 @@ if (ENABLE_JYACAS)
   set (CMAKE_JAVA_JAR_ENTRY_POINT net/sf/yacas/YacasConsole)
 
   add_jar (jyacas ${CMAKE_CURRENT_BINARY_DIR}/CVersion.java JavaYacas/net/sf/yacas/GraphicsPrimitives.java JavaYacas/net/sf/yacas/SBox.java JavaYacas/net/sf/yacas/SBoxBuilder.java JavaYacas/net/sf/yacas/TeXParser.java JavaYacas/net/sf/yacas/FormulaViewApplet.java JavaYacas/net/sf/yacas/Grapher.java JavaYacas/net/sf/yacas/GrapherApplet.java JavaYacas/net/sf/yacas/StdFileOutput.java JavaYacas/net/sf/yacas/StdFileInput.java JavaYacas/net/sf/yacas/JarInputFile.java JavaYacas/net/sf/yacas/CachedStdFileInput.java JavaYacas/net/sf/yacas/InputStatus.java JavaYacas/net/sf/yacas/LispInput.java JavaYacas/net/sf/yacas/LispDefFile.java JavaYacas/net/sf/yacas/LispDefFiles.java JavaYacas/net/sf/yacas/InputDirectories.java JavaYacas/net/sf/yacas/LispOutput.java JavaYacas/net/sf/yacas/LispHashTable.java JavaYacas/net/sf/yacas/LispAssociatedHash.java JavaYacas/net/sf/yacas/LispGlobal.java JavaYacas/net/sf/yacas/LispGlobalVariable.java JavaYacas/net/sf/yacas/LispArgList.java JavaYacas/net/sf/yacas/GenericClass.java JavaYacas/net/sf/yacas/LispGenericClass.java JavaYacas/net/sf/yacas/ArrayClass.java JavaYacas/net/sf/yacas/LispInfixOperator.java JavaYacas/net/sf/yacas/LispPtr.java JavaYacas/net/sf/yacas/LispObject.java JavaYacas/net/sf/yacas/LispPrinter.java JavaYacas/net/sf/yacas/LispError.java JavaYacas/net/sf/yacas/LispTokenizer.java JavaYacas/net/sf/yacas/LispParser.java JavaYacas/net/sf/yacas/LispAtom.java JavaYacas/net/sf/yacas/LispNumber.java JavaYacas/net/sf/yacas/LispSubList.java JavaYacas/net/sf/yacas/LispStandard.java JavaYacas/net/sf/yacas/LispUserFunctions.java JavaYacas/net/sf/yacas/LispArityUserFunction.java JavaYacas/net/sf/yacas/BranchingUserFunction.java JavaYacas/net/sf/yacas/MacroUserFunction.java JavaYacas/net/sf/yacas/ListedMacroUserFunction.java JavaYacas/net/sf/yacas/ListedBranchingUserFunction.java JavaYacas/net/sf/yacas/LispMultiUserFunction.java JavaYacas/net/sf/yacas/StringInput.java JavaYacas/net/sf/yacas/StringOutput.java JavaYacas/net/sf/yacas/InfixParser.java JavaYacas/net/sf/yacas/ParsedObject.java JavaYacas/net/sf/yacas/LispEvaluatorBase.java JavaYacas/net/sf/yacas/BigNumber.java JavaYacas/net/sf/yacas/YacasEvaluator.java JavaYacas/net/sf/yacas/YacasEvalCaller.java JavaYacas/net/sf/yacas/YacasCoreCommands.java JavaYacas/net/sf/yacas/UserStackInformation.java JavaYacas/net/sf/yacas/BasicEvaluator.java JavaYacas/net/sf/yacas/EvalFuncBase.java JavaYacas/net/sf/yacas/LispOperators.java JavaYacas/net/sf/yacas/LispUserFunction.java JavaYacas/net/sf/yacas/LispPtrArray.java JavaYacas/net/sf/yacas/LispLocalFrame.java JavaYacas/net/sf/yacas/LispIterator.java JavaYacas/net/sf/yacas/InfixPrinter.java JavaYacas/net/sf/yacas/LispEnvironment.java JavaYacas/net/sf/yacas/MathCommands.java JavaYacas/net/sf/yacas/YacasPatternPredicateBase.java JavaYacas/net/sf/yacas/PatternClass.java JavaYacas/net/sf/yacas/CYacas.java JavaYacas/net/sf/yacas/YacasConsole.java JavaYacas/net/sf/yacas/ConsoleApplet.java JavaYacas/net/sf/yacas/CDataReader.java JavaYacas/net/sf/yacas/HintItem.java JavaYacas/net/sf/yacas/HintWindow.java JavaYacas/net/sf/yacas/Hints.java JavaYacas/net/sf/yacas/SelectSymbol.java JavaYacas/net/sf/yacas/TResult.java JavaYacas/net/sf/yacas/YacasInterpreter.java JavaYacas/net/sf/yacas/YacasParamMatcherBase.java JavaYacas/net/sf/yacas/MatchSubList.java JavaYacas/net/sf/yacas/MatchNumber.java JavaYacas/net/sf/yacas/MatchAtom.java JavaYacas/net/sf/yacas/MatchVariable.java JavaYacas/net/sf/yacas/TWord.java JavaYacas/net/sf/yacas/YacasGraphicsContext.java JavaYacas/net/sf/yacas/Article.java JavaYacas/net/sf/yacas/DatahubApplet.java JavaYacas/net/sf/yacas/XmlTokenizer.java JavaYacas/net/sf/yacas/SubstBehaviourBase.java JavaYacas/net/sf/yacas/SubstBehaviour.java JavaYacas/net/sf/yacas/LocalSymbolBehaviour.java JavaYacas/net/sf/yacas/BackQuoteBehaviour.java JavaYacas/net/sf/yacas/YacasException.java ${YACAS_SCRIPTS})
+endif ()
 
+if (WIN32)
+  install (FILES /usr/lib/gcc/i686-w64-mingw32/4.6/libgcc_s_sjlj-1.dll DESTINATION bin COMPONENT app)
 endif ()
 
 if (UNIX)
@@ -203,7 +208,7 @@ else ()
   set (CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL "ON")
   set (CPACK_NSIS_HELP_LINK "http://yacas.sourceforge.net/")
   set (CPACK_NSIS_URL_INFO_ABOUT "http://yacas.sourceforge.net/")
-  set (CPACK_NSIS_MUI_ICON "${PROJECT_SOURCE_DIR}/yacas.ico")
+  set (CPACK_NSIS_MUI_ICON "${PROJECT_SOURCE_DIR}/res/yacas.ico")
   set (CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\yacas.exe")
   set (CPACK_CREATE_DESKTOP_LINKS "yacas.exe" "yacas")
 endif ()
