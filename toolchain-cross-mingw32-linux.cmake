@@ -6,7 +6,8 @@ set (CMAKE_C_COMPILER i686-w64-mingw32-gcc)
 set (CMAKE_CXX_COMPILER i686-w64-mingw32-g++)
 set (CMAKE_RC_COMPILER i686-w64-mingw32-windres)
 
-set (CMAKE_EXE_LINKER_FLAGS_INIT "-static-libgcc -static-libstdc++")
+set (CMAKE_EXE_LINKER_FLAGS_INIT "-static-libstdc++")
+set (CMAKE_SHARED_LINKER_FLAGS_INIT "-static-libstdc++")
 
 # adjust the default behaviour of the FIND_XXX() commands:
 # search headers and libraries in the target environment, search 
