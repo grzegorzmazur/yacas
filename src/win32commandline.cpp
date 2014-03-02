@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <windows.h>
 
-#include "win32commandline.h"
+#include "yacas/win32commandline.h"
 
 #define BufSz 1024
 
