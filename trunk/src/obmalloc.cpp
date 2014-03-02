@@ -1,7 +1,12 @@
 #include <assert.h>
 #include <string.h>
 #include <stdint.h>
+
+#ifndef WIN32
 #include <pthread.h>
+#else
+#include <windows.h>
+#endif
 
 #include <sys/types.h>
 
@@ -241,12 +246,12 @@ namespace {
     static bool _yacas_threadsafe_malloc = false;
 }
 
-#if 0
-#define SIMPLELOCK_DECL(lock)   /* simple lock declaration              */
-#define SIMPLELOCK_INIT(lock)   /* allocate (if needed) and initialize  */
-#define SIMPLELOCK_FINI(lock)   /* free/destroy an existing lock        */
-#define SIMPLELOCK_LOCK(lock)   /* acquire released lock */
-#define SIMPLELOCK_UNLOCK(lock) /* release acquired lock */
+#ifdef WIN32
+#define SIMPLELOCK_DECL(lock) CRITICAL_SECTION lock;
+#define SIMPLELOCK_INIT(lock) { if (_yacas_threadsafe_malloc) InitializeCriticalSectionAndSpinCount(&lock, 0x00000400); }
+#define SIMPLELOCK_FINI(lock) { if (_yacas_threadsafe_malloc) DeleteCriticalSection(&lock); }
+#define SIMPLELOCK_LOCK(lock) { if (_yacas_threadsafe_malloc) EnterCriticalSection(&lock); }
+#define SIMPLELOCK_UNLOCK(lock) { if (_yacas_threadsafe_malloc) LeaveCriticalSection(&lock); }
 #else
 #define SIMPLELOCK_DECL(lock) pthread_mutex_t lock;
 #define SIMPLELOCK_INIT(lock) { if (_yacas_threadsafe_malloc) pthread_mutex_init(&lock); }
