@@ -87,11 +87,8 @@ public:
 class CYacas : public YacasBase
 {
 public:
-
-    /// Pseudo-constructor.
-    /// \return A new instance of CYacas, with output connected to \p aOutput.
-    /// If aOutput is NULL, connect to a new instance of  StdUserOutput.
-    LISPIMPORT static CYacas* NewL(LispOutput* aOutput=0, LispInt aStackSize=50000);
+    /// Constructor
+    LISPIMPORT CYacas(LispOutput* aOutput = 0, LispInt aStackSize = 50000);
 
     /// Destructor.
     LISPIMPORT virtual ~CYacas();
@@ -116,12 +113,6 @@ public:
 
     /// Whether an error occured during the last evaluation.
     inline bool IsError();
-
-private:
- 
-    /// Constructor.
-    /// The output of #environment is directed to \p aOutput.
-    CYacas(LispOutput* aOutput,LispInt aStackSize);
 
 private:
 

@@ -51,22 +51,17 @@ DefaultYacasEnvironment::DefaultYacasEnvironment(LispOutput* aOutput, LispInt aS
 }
 
 
-LISPEXPORT CYacas* CYacas::NewL(LispOutput* aOutput,LispInt aStackSize)
+CYacas::CYacas(LispOutput* aOutput, LispInt aStackSize):
+    environment(aOutput ? aOutput : NEW StdUserOutput(), aStackSize),
+    iResultOutput(iResult)
 {
-  CYacas* self = NEW CYacas(
-    aOutput ? aOutput : NEW StdUserOutput(), aStackSize);
-  return self;
 }
+
 
 LISPEXPORT CYacas::~CYacas()
 {
 }
 
-
-CYacas::CYacas(LispOutput* aOutput,LispInt aStackSize)
-: environment(aOutput,aStackSize),iResult(),iResultOutput(iResult)
-{
-}
 
 
 
