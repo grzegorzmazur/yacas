@@ -158,7 +158,13 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 ];
 
 0 # Rem(n_IsNumber,m_IsNumber) <-- n-m*Div(n,m);
-30 # Rem(n_CanBeUni,m_CanBeUni) <-- Mod(n,m);
+30 # Rem(n_CanBeUni,m_CanBeUni) <--
+[
+  Local(vars);
+  vars:=VarList(n+m);
+  NormalForm(Mod(MakeUni(n,vars),MakeUni(m,vars)));
+];
+
 
 
 0 # Gcd(0,0) <-- 1;
