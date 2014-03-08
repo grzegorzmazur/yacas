@@ -22,4 +22,5 @@ InverseTaylor
 Series
 MatchLinear
 MatchPureSquared
+HermiteReduce
 }
