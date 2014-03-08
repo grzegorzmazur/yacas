@@ -106,15 +106,30 @@ Echo({});
      i++;
    ];
 
-/*
-TableForm({i,r,s,t}); 
-Echo({});
-*/
-
    {r[i],s[i],t[i]};
 ];
 
-
+// Manuel Bronstein, Symbolic Integration I: Transcendental Functions
+// Extended Euclidean algorithm, diophantine version
+ExtendedEuclidean(a_CanBeUni, b_CanBeUni, _CanBeUni) <--
+[
+    Local(s, t, g, q, r);
+    // Note: ExtendedEuclidean as implemented in yacas returns
+    // results in different order than the version in Bronstein's book
+    {g, s, t} := ExtendedEuclidean(a, b);
+    q := Div(c, g);
+    r := Rem(c, g);
+    Check(r = 0, "not an ideal");
+    s := Expand(q * s);
+    t := Expand(q * t);
+    If (s != 0 And Degree(s) >= Degree(b), [
+        q := Div(s, b);
+        r := Rem(s, b);
+        s := r;
+        t := Expand(t + q * a);
+    ]);
+    {s, t};
+];
 
 
 
