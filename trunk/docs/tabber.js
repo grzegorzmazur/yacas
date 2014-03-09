@@ -448,7 +448,7 @@ tabberObj.prototype.navSetActive = function(tabberIndex)
       elem.innerHTML = 
 "<center>"+
 "<h1>Loading page, one moment please.</h1>"+
-"<p style='width:100% ; height:50% ; background-image:url(\"back.gif\"); ' >"+
+"<p style='width:100% ; height:50% ; ' >"+
 "If this page includes a Yacas calculation center, and you are visiting this page for the first time, "+
 "it could take a minute to download the program."+
 "</p></center>";
