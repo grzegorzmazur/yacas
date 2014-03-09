@@ -111,7 +111,7 @@ Echo({});
 
 // Manuel Bronstein, Symbolic Integration I: Transcendental Functions
 // Extended Euclidean algorithm, diophantine version
-ExtendedEuclidean(a_CanBeUni, b_CanBeUni, _CanBeUni) <--
+ExtendedEuclidean(a_CanBeUni, b_CanBeUni, c_CanBeUni) <--
 [
     Local(s, t, g, q, r);
     // Note: ExtendedEuclidean as implemented in yacas returns
