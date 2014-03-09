@@ -99,11 +99,13 @@ ul.tabbernav li.tabberactive a:hover
 }
 
 /* Example of using an ID to set different styles for the tabs on the page */
+/*
 .tabberlive#tab1 {
 }
 .tabberlive#tab2 {
 }
 .tabberlive#tab2 .tabbertab {
- height:200px;
+ height:500px;
  overflow:auto;
 }
+*/
