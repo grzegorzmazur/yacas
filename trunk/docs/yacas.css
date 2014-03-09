@@ -1,8 +1,11 @@
 body 
 {
-  background-color:White;
   font-family:Verdana, Arial, Helvetica, sans-serif;	
   font-size:12px;
+}
+
+.mainbody {
+  background-image:url('back.gif');
 }
 
 h1 
@@ -25,7 +28,6 @@ h3
 
 table 
 {
-  background-color:White;
   font-family:Verdana, Arial, Helvetica, sans-serif;	
   font-size:12px;
 }
