@@ -18,6 +18,15 @@
  margin-top:1em;
 }
 
+.tabbertab {
+ background-color:white;
+}
+
+.tabbernav {
+ background-color:white;
+}
+
+
 /*--------------------------------------------------
   ul.tabbernav = the tab navigation list
   li.tabberactive = the active tab
