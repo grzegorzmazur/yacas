@@ -109,7 +109,7 @@ EmitBookIndex():=
     WriteString(
       HtmlTag(html,
               HtmlTitle("Yacas documentation") :
-"<body style=\"background-image:url('back.gif'); \">
+"<body>
 <center>
 <h1>Yacas documentation</h1>
 <table cellpadding=\"0\">
