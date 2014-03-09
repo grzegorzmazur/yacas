@@ -490,7 +490,7 @@ function initTabPageIFrame(id)
       }
     }
 
-    elem.innerHTML = '<iframe name="'+fields[0]+'" id="'+fields[0]+'" frameborder="0" width="'+width+'" height="80%" src="'+target+'"></iframe>';
+    elem.innerHTML = '<iframe name="'+fields[0]+'" id="'+fields[0]+'" frameborder="0" width="'+width+'" height="85%" src="'+target+'"></iframe>';
   }
 }
 
