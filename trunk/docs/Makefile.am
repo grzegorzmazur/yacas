@@ -24,7 +24,7 @@ EXTRA_DIST = \
 	$(YART_FILES) newtonconvergence.html newdesign.html \
 	range_control.html range_control.css range_control.js \
 	journaldescr.html \
-        downloads.html.in \
+        downloads.html \
 	README autocompleteraccess.js examples-static.txt \
 	paper1.tex paper2.tex 
 
