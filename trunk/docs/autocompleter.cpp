@@ -3,6 +3,8 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <string>
+
 char lastKey[128];
 char lastVal[16384];
 char lastDes[16384];
@@ -27,8 +29,8 @@ int first = 1;
 
 struct Example
 {
-  char name[32];
-  char example[512];
+    std::string name;
+    std::string example;
 };
 
 Example examples[1024];
@@ -38,7 +40,7 @@ int exampleCompare(const void *v1, const void *v2)
 {
   Example* e1 = (Example*)v1;
   Example* e2 = (Example*)v2;
-  return strcmp(e1->name,e2->name);
+  return strcmp(e1->name.c_str(), e2->name.c_str());
 }
 
 char *items[10];
@@ -68,10 +70,10 @@ void getfields(char* buffer)
 const char* findexample(char* name)
 {
   Example key;
-  strcpy(key.name,name);
+  key.name = name;
   void *found = bsearch(&key, examples, nrExamples, sizeof(Example),exampleCompare);
   if (found)
-    return ((Example*) found)->example;
+      return ((Example*) found)->example.c_str();
   return "";
 }
 
@@ -118,8 +120,8 @@ int main(int argc, char** argv)
       getfields(buffer);
       if (nrItems>1)
       {
-        strcpy(examples[nrExamples].name,items[0]);
-        strcpy(examples[nrExamples].example,items[1]);
+        examples[nrExamples].name = items[0];
+        examples[nrExamples].example = items[1];
         nrExamples++;
       }
     } 
@@ -129,10 +131,10 @@ int main(int argc, char** argv)
       int i;
       for (i=0;i<nrExamples-1;i++)
       {
-        if (!strcmp(examples[i].name,examples[i+1].name))
-        {
-          printf("ERROR generating autocompleter array: duplicate entries found for %s\n",examples[i].name);
-          exit(-1);
+          if (!strcmp(examples[i].name.c_str(), examples[i+1].name.c_str()))
+          {
+              printf("ERROR generating autocompleter array: duplicate entries found for %s\n",examples[i].name.c_str());
+              exit(-1);
         }
       }
     }
