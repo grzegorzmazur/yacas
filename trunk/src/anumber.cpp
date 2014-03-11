@@ -374,7 +374,7 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
 
 #ifdef CORRECT_DIVISION
     if (a1.iExp || a1.iTensExp) NormalizeFloat(a1,WordDigits(a1.iPrecision, 10));
-    if (a2.iExp || a2.iTensExp) NormalizeFloat(a1,WordDigits(a2.iPrecision, 10));
+    if (a2.iExp || a2.iTensExp) NormalizeFloat(a2,WordDigits(a2.iPrecision, 10));
 #endif // CORRECT_DIVISION
 
 
