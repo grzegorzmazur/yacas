@@ -26,6 +26,14 @@ static void MapPathSeparators(char* filename)
 //  printf("-> [%s]\n",ptr);
 }
 
+static void MapPathSeparators(std::string& filename)
+{
+#ifdef MAP_TO_WIN32_PATH_SEPARATOR
+    for (std::size_t i = 0; i < filename.size(); ++i)
+        if (filename[i] == '/')
+            filename[i] = '\\';
+#endif
+}
 
 
 
@@ -211,28 +219,29 @@ LispLocalFile::LispLocalFile(LispEnvironment& aEnvironment,
                              InputDirectories& aInputDirectories)
   : iFile(NULL),iEnvironment(aEnvironment),iOpened(false)
 {
-  LispChar othername[1024];//TODO
+  std::string othername;
+
   if (aRead)
   {
-    strcpy(othername,aFileName);
+    othername = aFileName;
     MapPathSeparators(othername);
 
-    iFile = fopen(othername,"rb");
+    iFile = fopen(othername.c_str(), "rb");
     LispInt i=0;
     while (!iFile && i<aInputDirectories.Size())
     {
-      strcpy(othername,aInputDirectories[i]->c_str());
-      strcat(othername,aFileName);
+      othername = aInputDirectories[i]->c_str();
+      othername += aFileName;
       MapPathSeparators(othername);
-      iFile = fopen(othername,"rb");
+      iFile = fopen(othername.c_str(), "rb");
       i++;
     }
   }
   else
   {
-    strcpy(othername,aFileName);
+    othername = aFileName;
     MapPathSeparators(othername);
-    iFile = fopen(othername,"w");
+    iFile = fopen(othername.c_str(),"w");
   }
 
   if (!iFile)
