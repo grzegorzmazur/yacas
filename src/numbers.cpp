@@ -64,11 +64,9 @@ double log2_table_lookup(unsigned n)
     if (n <= log2_table_size && n >= BASE2)
         return log2_table[n-1];
 
-
     std::ostringstream buf;
     buf << "log2_table_lookup: error: invalid argument " << n;
     throw LispErrGeneric(buf.str());
-    return 0;
 }
 
 // convert the number of digits in given base to the number of bits, and back.
