@@ -331,7 +331,6 @@ void ListedBranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEn
   if (!iter.getObj()->Nixed())
   {
     (*ptr) = (iter.getObj()->Copy());
-    ptr = &((*ptr)->Nixed());
     ++iter;
     LISPASSERT(!iter.getObj());
   }
