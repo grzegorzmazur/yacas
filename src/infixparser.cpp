@@ -372,7 +372,7 @@ void ParsedObject::ReadAtom()
 
     // Parse postfix operators
 
-    while ((op = iParser.iPostfixOperators.LookUp(iLookAhead)))
+    while (iParser.iPostfixOperators.LookUp(iLookAhead))
     {
         InsertAtom(iLookAhead);
         MatchToken(iLookAhead);
