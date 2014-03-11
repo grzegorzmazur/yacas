@@ -437,14 +437,9 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
     }
 
     LispPtr* subList = aExpression->SubList();
-    if (!subList)
+    if (!subList) {
         throw LispErrUnprintableToken();
-    if (!subList)
-    {
-        WriteToken(aOutput,"( )");
-    }
-    else
-    {
+    } else {
         LispInt length = InternalListLength(*subList);
         string = (*subList)->String();
         LispInFixOperator* prefix  = iPrefixOperators.LookUp(string);
