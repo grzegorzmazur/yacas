@@ -566,8 +566,10 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
                         WriteToken(aOutput,",");
                 }
                 WriteToken(aOutput,")");
-                if (iter.getObj())
+                if (iter.getObj()) {
+                    LISPASSERT(bodied);
                     Print(*iter, aOutput, bodied->iPrecedence);
+                }
 
                 if (bracket) WriteToken(aOutput,")");
             }
