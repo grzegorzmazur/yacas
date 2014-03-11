@@ -509,19 +509,17 @@ void ListedMacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnviro
     i++;
     ++iter;
   }
-  if (!iter.getObj()->Nixed())
-  {
-    (*ptr) = (iter.getObj()->Copy());
-    ptr = &((*ptr)->Nixed());
-    i++;
+
+  if (!iter.getObj()->Nixed()) {
+    *ptr = iter.getObj()->Copy();
+    (*ptr)->Nixed();
     ++iter;
     LISPASSERT(!iter.getObj());
-  }
-  else
-  {
+  } else {
     LispPtr head(aEnvironment.iList->Copy());
-    head->Nixed() = (iter.getObj());
-    (*ptr) = (LispSubList::New(head));
+    head->Nixed() = iter.getObj();
+    *ptr = LispSubList::New(head);
   }
+
   MacroUserFunction::Evaluate(aResult, aEnvironment, newArgs);
 }
