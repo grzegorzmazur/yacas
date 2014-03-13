@@ -12,9 +12,9 @@ public:
   inline YacasBase() {};
 #ifdef YACAS_DEBUG
   // New operators with additional debug arguments need to be handled differently
-  static inline void* operator new(size_t size, char* aFile, int aLine)
+  static inline void* operator new(size_t size, const char* aFile, int aLine)
     { return YacasMallocPrivate(size,aFile,aLine); }
-  static inline void* operator new[](size_t size, char* aFile, int aLine)
+  static inline void* operator new[](size_t size, const char* aFile, int aLine)
     { return YacasMallocPrivate(size,aFile,aLine); }
 #else
   // Normal versions of operator new
