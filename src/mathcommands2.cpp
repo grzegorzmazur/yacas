@@ -109,7 +109,7 @@ void LispDebugFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 #ifndef YACAS_DEBUG
     throw LispErrGeneric("Cannot call DebugFile in non-debug version of Yacas");
 #else
-  LispChar * file = ARGUMENT(1)->iFileName;
+  const LispChar * file = ARGUMENT(1)->iFileName;
   if (!file) file = "";
   LispString * str = aEnvironment.HashTable().LookUpStringify(file);
   RESULT = (LispAtom::New(aEnvironment,str->c_str()));

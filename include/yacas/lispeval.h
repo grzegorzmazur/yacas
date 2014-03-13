@@ -29,7 +29,7 @@ public:
     LispPtr iExpression;
     LispInt iRulePrecedence;
     LispInt iSide; // 0=pattern, 1=body
-    DBG_( LispChar * iFileName; )
+    DBG_( const LispChar * iFileName; )
     DBG_( LispInt iLine; )
 };
 
