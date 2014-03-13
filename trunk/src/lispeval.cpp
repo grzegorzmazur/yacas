@@ -36,7 +36,7 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
                 std::string(" for function ") +
                 std::string(head->String()->c_str()) +
                 std::string("\n");
-            aEnvironment.CurrentOutput()->Write(buf.c_str());
+            aEnvironment.CurrentOutput()->Write(msg.c_str());
         }
       }
 #endif
@@ -52,7 +52,7 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
                 std::string("Debug> Finished loading file ") +
                 std::string(def->iFileName->c_str()) +
                 std::string("\n");
-            aEnvironment.CurrentOutput()->Write(buf.c_str());
+            aEnvironment.CurrentOutput()->Write(msg.c_str());
         }
       }
 #endif
