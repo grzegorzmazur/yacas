@@ -441,7 +441,7 @@ void LoadYacas(LispOutput* aOutput = 0)
     busy = true;
     restart = false;
 
-    yacas = new CYacas(aOutput, stack_size);
+    yacas = NEW CYacas(aOutput, stack_size);
 
 
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) yacas->getDefEnv().getEnv().SetCommand(fname,iname,nrargs,flags);
