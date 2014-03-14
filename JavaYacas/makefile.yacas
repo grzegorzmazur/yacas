@@ -32,8 +32,8 @@ yacas.jar: $(CLASSES)
 .java.class:
 	$(JAVAC) $(JAVACFLAGS) $*.java 
 
-net/sf/yacas/CVersion.java: ../src/version.h dumpversion.cpp
-	$(CXX) $(CXXFLAGS) -I ../src dumpversion.cpp -o dumpversion
+net/sf/yacas/CVersion.java: ../include/yacas/yacas_version.h dumpversion.cpp
+	$(CXX) $(CXXFLAGS) -I ../include dumpversion.cpp -o dumpversion
 	./dumpversion > net/sf/yacas/CVersion.java
 
 
