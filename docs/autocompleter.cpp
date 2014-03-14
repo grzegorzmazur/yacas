@@ -5,25 +5,22 @@
 
 #include <string>
 
-char lastKey[128];
-char lastVal[16384];
-char lastDes[16384];
-char escaped[16384];
-char* escape(char* text)
-{
-  char* trg = escaped;
-  while (*text)
-  {
-    if (*text == '\'')
-    {
-      *trg++ = '\\';
-    }
-    *trg++ = *text++;
-  }
-  *trg = '\0';
+std::string lastKey;
+std::string lastVal;
+std::string lastDes;
 
-  return escaped;
+std::string escape(const std::string& text)
+{
+    std::string r;
+    for (std::string::const_iterator i = text.begin(); i != text.end(); ++i) {
+        if (*i == '\'')
+            r += '\\';
+        r += *i;
+    }
+
+    return r;
 }
+
 FILE*fout;
 int first = 1;
 
@@ -67,7 +64,7 @@ void getfields(char* buffer)
   }
 }
 
-const char* findexample(char* name)
+const char* findexample(const char* name)
 {
   Example key;
   key.name = name;
@@ -79,17 +76,17 @@ const char* findexample(char* name)
 
 void WriteLine()
 {
-  if (lastKey[0])
+  if (!lastKey.empty())
   {
     if (!first)
     {
       fprintf(fout,",\n");
     }
     first = 0;
-    fprintf(fout,"\'%s\',\n",escape(lastKey));
-    fprintf(fout,"\'<ul>%s</ul>\',\n",escape(lastVal));
-    fprintf(fout,"\'%s\',\n",escape(lastDes));
-    fprintf(fout,"\'%s\'\n",findexample(lastKey)); // placeholder for examples
+    fprintf(fout,"\'%s\',\n",escape(lastKey).c_str());
+    fprintf(fout,"\'<ul>%s</ul>\',\n",escape(lastVal).c_str());
+    fprintf(fout,"\'%s\',\n",escape(lastDes).c_str());
+    fprintf(fout,"\'%s\'\n",findexample(lastKey.c_str())); // placeholder for examples
     lastKey[0] = '\0';
     lastVal[0] = '\0';
     lastDes[0] = '\0';
@@ -152,39 +149,39 @@ int main(int argc, char** argv)
     getfields(buffer);
     if (nrItems>3)
     {
-      if (strcmp(lastKey,items[1]))
+      if (strcmp(lastKey.c_str(), items[1]))
       {
         WriteLine();
-        strcpy(lastKey,items[1]);
-        strcpy(lastVal,"");
-        if (!strncmp(lastKey,items[2],strlen(lastKey)))
+        lastKey = items[1];
+        lastVal = "";
+        if (!strncmp(lastKey.c_str(),items[2],lastKey.length()))
         {
-          strcat(lastVal,"<li><b>");
-          strcat(lastVal,lastKey);
-          strcat(lastVal,"</b>");
-          strcat(lastVal,&items[2][strlen(lastKey)]);
+          lastVal += "<li><b>";
+          lastVal += lastKey;
+          lastVal += "</b>";
+          lastVal += &items[2][lastKey.length()];
         }
         else
         {
-          strcat(lastVal,items[2]);
+          lastVal += items[2];
         }
-        strcpy(lastDes,items[3]);
+        lastDes = items[3];
       }
       else
       {
 //        strcat(lastVal,", \\n");
-        if (!strncmp(lastKey,items[2],strlen(lastKey)))
+        if (!strncmp(lastKey.c_str(),items[2],lastKey.length()))
         {
-          strcat(lastVal,"<li><b>");
-          strcat(lastVal,lastKey);
-          strcat(lastVal,"</b>");
-          strcat(lastVal,&items[2][strlen(lastKey)]);
+          lastVal += "<li><b>";
+          lastVal += lastKey;
+          lastVal += "</b>";
+          lastVal += &items[2][lastKey.length()];
         }
         else
         {
-          strcat(lastVal,items[2]);
+          lastVal += items[2];
         }
-        strcat(lastDes,items[3]);
+        lastDes += items[3];
       }
     }
   } 
