@@ -11,7 +11,6 @@ pkginclude_HEADERS = $(top_srcdir)/include/yacas/anumber.h	\
 	$(top_srcdir)/include/yacas/deffile.h					\
 	$(top_srcdir)/include/yacas/grower.h					\
 	$(top_srcdir)/include/yacas/infixparser.h				\
-	$(top_srcdir)/include/yacas/lispassert.h				\
 	$(top_srcdir)/include/yacas/lispatom.h					\
 	$(top_srcdir)/include/yacas/lispcleanupstack.h			\
 	$(top_srcdir)/include/yacas/lispenvironment.h			\
