@@ -95,7 +95,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
         arguments = NULL;
     else
     {
-        LISPASSERT(arity>0);
+        assert(arity>0);
     arguments = NEW LispPtr[arity];
     }
     LocalArgs args(arguments);
@@ -145,7 +145,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
     {
         BranchRuleBase* thisRule = iRules[i];
         CHECKPTR(thisRule);
-        LISPASSERT(thisRule);
+        assert(thisRule);
 
         st.iRulePrecedence = thisRule->Precedence();
         bool matches = thisRule->Matches(aEnvironment, arguments);
@@ -332,7 +332,7 @@ void ListedBranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEn
   {
     (*ptr) = (iter.getObj()->Copy());
     ++iter;
-    LISPASSERT(!iter.getObj());
+    assert(!iter.getObj());
   }
   else
   {
@@ -379,7 +379,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
     arguments = NULL;
   else
   {
-    LISPASSERT(arity>0);
+    assert(arity>0);
     arguments = NEW LispPtr[arity];
   }
   LocalArgs args(arguments);
@@ -433,7 +433,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
     {
       BranchRuleBase* thisRule = iRules[i];
       CHECKPTR(thisRule);
-      LISPASSERT(thisRule);
+      assert(thisRule);
 
       st.iRulePrecedence = thisRule->Precedence();
       bool matches = thisRule->Matches(aEnvironment, arguments);
@@ -513,7 +513,7 @@ void ListedMacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnviro
     *ptr = iter.getObj()->Copy();
     (*ptr)->Nixed();
     ++iter;
-    LISPASSERT(!iter.getObj());
+    assert(!iter.getObj());
   } else {
     LispPtr head(aEnvironment.iList->Copy());
     head->Nixed() = iter.getObj();

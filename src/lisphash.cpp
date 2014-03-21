@@ -3,6 +3,8 @@
 #include "yacas/lisperror.h"
 #include "yacas/lisphash.h"
 
+#include <cassert>
+
 #ifdef YACAS_DEBUG
 #include <stdio.h> // Safe, only included if YACAS_DEBUG is defined
 #endif
@@ -33,7 +35,7 @@ LispHashTable::~LispHashTable()
       }
     }
   }
-  LISPASSERT(!fault);
+  assert(!fault);
 #endif // YACAS_DEBUG
   for (bin = 0; bin < KSymTableSize; bin++)
   {
@@ -44,7 +46,6 @@ LispHashTable::~LispHashTable()
       aBin[i] = (NULL);
     }
   }
-  LISPASSERT(!fault);
 }
 
 LispInt  LispHash( const char *s )
@@ -126,7 +127,7 @@ LispInt LispHashPtr(const LispString * aString)
     case 1: HashByte( h, *p++);
     break;
     default:
-        LISPASSERT(0); //Extend it then...
+        assert(0); //Extend it then...
  
     }
     return (HASHBIN(h));

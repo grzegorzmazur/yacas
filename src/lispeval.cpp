@@ -88,7 +88,7 @@ BasicEvaluator::~BasicEvaluator()
 // be a unique (copied) element! Eg. its Nixed might be set...
 void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression)
 {
-  LISPASSERT(aExpression);
+  assert(aExpression);
 
   aEnvironment.iEvalDepth++;
   if (aEnvironment.iEvalDepth >= aEnvironment.iMaxEvalDepth) {
@@ -264,7 +264,7 @@ void TracedStackEvaluator::PushFrame()
 
 void TracedStackEvaluator::PopFrame()
 {
-  LISPASSERT (objs.Size() > 0);
+  assert (objs.Size() > 0);
   if (objs[objs.Size()-1])
   {
     delete objs[objs.Size()-1];

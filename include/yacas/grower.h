@@ -11,7 +11,7 @@
 #define _GROWER_H_
 
 #include "yacasbase.h"
-#include "lispassert.h"
+#include <cassert>
 #include <cstring>
 #include <new>
 
@@ -147,20 +147,20 @@ public:
     , iArrayOwnedExternally(false)
   {
     // Make sure we're not accidentally copying a huge array. We want this system to stay efficient...
-    LISPASSERT(aOther.iSize == 0);
-    LISPASSERT(aOther.iArrayOwnedExternally == false);
+    assert(aOther.iSize == 0);
+    assert(aOther.iArrayOwnedExternally == false);
   }
 
   inline const CArrayGrower<T,TOps>& operator=(const CArrayGrower<T,TOps>& aOther)
   {
     // Make sure we're not accidentally copying a huge array. We want this system to stay efficient...
-    LISPASSERT(iArray == 0);
-    LISPASSERT(iSize == 0);
-    LISPASSERT(iCapacity == 0);
-    LISPASSERT(iArrayOwnedExternally == false);
+    assert(iArray == 0);
+    assert(iSize == 0);
+    assert(iCapacity == 0);
+    assert(iArrayOwnedExternally == false);
 
-    LISPASSERT(aOther.iSize == 0);
-    LISPASSERT(aOther.iArrayOwnedExternally == false);
+    assert(aOther.iSize == 0);
+    assert(aOther.iArrayOwnedExternally == false);
     return *this;
   }
 
@@ -168,8 +168,8 @@ private:
 
   void moreCapacity(SizeType aSize, int g)  // almost independent of T
   {
-    LISPASSERT(!iArrayOwnedExternally);
-    LISPASSERT(iCapacity >= 0);
+    assert(!iArrayOwnedExternally);
+    assert(iCapacity >= 0);
     // Compute a new iCapacity >= aSize, with iCapacity % g == 0.
     // We assume g is a power of 2.  (fwiw, in two's-complement, ~(g-1) == -g.
     iCapacity = (aSize + g) & ~(g-1);
@@ -186,7 +186,7 @@ private:
 public:
   inline void ResizeTo(SizeType aSize)
   {
-    LISPASSERT(!iArrayOwnedExternally);
+    assert(!iArrayOwnedExternally);
     TOps opers;
     if (aSize > iCapacity)
     {
@@ -209,7 +209,7 @@ public:
   }
   void Delete(SizeType aIndex, SizeType aCount=1)
   {
-    LISPASSERT(aIndex>=0 && aIndex<iSize);
+    assert(aIndex>=0 && aIndex<iSize);
     ArrOps::remove((char**)&iArray, TOps(), iSize, aIndex, aCount, sizeof(ElementType));
   }
   inline bool ArrayOwnedExternally()
@@ -236,7 +236,7 @@ public:
   inline void Insert(SizeType aIndex, const ElementType& aObj, SizeType aCount=1)
   {
     const SizeType oldItems = iSize;
-    LISPASSERT(aIndex <= oldItems && aCount >= 0);
+    assert(aIndex <= oldItems && aCount >= 0);
     ResizeTo(iSize+aCount);
     ElementType * pOld = iArray+oldItems;
     ElementType * pEnd = iArray+iSize;
@@ -252,7 +252,7 @@ public:
     */
   inline void SetExternalArray(ElementType* aArray, SizeType aSize)
   {
-    LISPASSERT(!iArray || iArrayOwnedExternally == true);
+    assert(!iArray || iArrayOwnedExternally == true);
     iArray = aArray;
     iSize = aSize;
     iArrayOwnedExternally = true;

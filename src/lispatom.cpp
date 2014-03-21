@@ -1,11 +1,11 @@
 
 #include "yacas/yacasprivate.h"
 #include "yacas/lispatom.h"
-#include "yacas/lispassert.h"
 #include "yacas/lisperror.h"
 #include "yacas/numbers.h"
 #include "yacas/standard.h"
 
+#include <cassert>
 
 /// construct an atom from a string representation.
 LispObject* LispAtom::New(LispEnvironment& aEnvironment, const LispChar * aString)
@@ -29,7 +29,7 @@ LispObject* LispAtom::New(LispEnvironment& aEnvironment, const LispChar * aStrin
 
 LispAtom::LispAtom(LispString * aString) : iString(aString)
 {
-    LISPASSERT(aString!=NULL);
+    assert(aString!=NULL);
     ++aString->iReferenceCount;
     CHECKPTR(iString);
 }
@@ -112,7 +112,7 @@ LispGenericClass* LispGenericClass::New(GenericClass* aClass)
 
 LispGenericClass::LispGenericClass(GenericClass* aClass) : iClass(aClass)
 {
-    LISPASSERT(aClass!=NULL);
+    assert(aClass!=NULL);
     aClass->iReferenceCount++;
 }
 
@@ -140,7 +140,7 @@ LispString * LispNumber::String()
 {
   if (!iString)
   {
-    LISPASSERT(iNumber.ptr());  // either the string is null or the number but not both
+    assert(iNumber.ptr());  // either the string is null or the number but not both
     LispString *str = NEW LispString;
     // export the current number to string and store it as LispNumber::iString
     iNumber->ToString(*str, bits_to_digits(MAX(1,iNumber->GetPrecision()),BASE10), BASE10);
@@ -155,7 +155,7 @@ BigNumber* LispNumber::Number(LispInt aBasePrecision)
 {
   if (!iNumber)
   {  // create and store a BigNumber out of string
-    LISPASSERT(iString.ptr());
+    assert(iString.ptr());
     RefPtr<LispString> str;
     str = iString;
     // aBasePrecision is in digits, not in bits, ok

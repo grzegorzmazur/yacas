@@ -1,7 +1,8 @@
 
 #include "yacas/yacasprivate.h"
 #include "yacas/grower.h"
-#include "yacas/lispassert.h"
+
+#include <cassert>
 
 /*static*/
 void ArrOps::reserve(char** pArray, int& iCapacity, int aSize, int aItemSize)
@@ -45,7 +46,7 @@ void ArrOps::resize(char** pArray, const ArrOps& opers, int& iSize, int& iCapaci
 /*static*/
 void ArrOps::remove(char** pArray, const ArrOps& opers, int& iSize, int aIndex, int aCount, int aItemSize)
 {
-    LISPASSERT(aIndex >= 0 && aCount >= 0 && aIndex+aCount <= iSize);
+    assert(aIndex >= 0 && aCount >= 0 && aIndex+aCount <= iSize);
     if (!opers.isPOD())
         for (int ii = aIndex; ii < aIndex+aCount; ii++)
             opers.destruct(*pArray + ii*aItemSize);

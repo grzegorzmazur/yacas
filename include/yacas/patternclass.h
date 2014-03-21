@@ -27,12 +27,12 @@ private:
   PatternClass(const PatternClass& aOther): iPatternMatcher(NULL)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
   }
   PatternClass& operator=(const PatternClass& aOther)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
     return *this;
   }
 protected:

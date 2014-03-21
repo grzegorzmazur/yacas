@@ -3,10 +3,9 @@
 
 #include "grower.h"
 #include "yacasbase.h"
-#include "lispassert.h"
 #include "lispstring.h"
 
-
+#include <cassert>
 
 /* Quantities derived from the platform-dependent types for doing
  * arithmetic.

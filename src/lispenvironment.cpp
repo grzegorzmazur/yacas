@@ -105,7 +105,7 @@ LispEnvironment::~LispEnvironment()
 {
   PopLocalFrame();
 
-  LISPASSERT(!iLocalsList);
+  assert(!iLocalsList);
   delete iEvaluator;
   if (iDebugger) delete iDebugger;
 }
@@ -186,7 +186,7 @@ void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue, bool 
   {
     //TODO we just added the variable! We should not need to re-look it up! Optimize!
     LispGlobalVariable *l = iGlobals.LookUp(aVariable);
-    LISPASSERT(l);
+    assert(l);
     l->SetEvalBeforeReturn(true);
   }
 }
@@ -250,7 +250,7 @@ void LispEnvironment::PushLocalFrame(bool aFenced)
 
 void LispEnvironment::PopLocalFrame()
 {
-    LISPASSERT(iLocalsList);
+    assert(iLocalsList);
     LocalVariableFrame *nextFrame = iLocalsList->iNext;
     delete iLocalsList;
     iLocalsList = nextFrame;
@@ -258,7 +258,7 @@ void LispEnvironment::PopLocalFrame()
 
 void LispEnvironment::NewLocal(LispString * aVariable,LispObject* aValue)
 {
-    LISPASSERT(iLocalsList);
+    assert(iLocalsList);
     iLocalsList->Add(NEW LispLocalVariable(aVariable, aValue));
 }
 

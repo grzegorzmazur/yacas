@@ -10,9 +10,4 @@
  */
 //#define YACAS_DEBUG
 
-/** Turn on USE_ASSERT to find programming errors through the asserts
- *  placed in various places of the application.
- */
-//#define USE_ASSERT
-
 #endif

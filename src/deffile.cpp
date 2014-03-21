@@ -93,7 +93,7 @@ static void DoLoadDefFile(LispEnvironment& aEnvironment, LispInput* aInput,
 
 void LoadDefFile(LispEnvironment& aEnvironment, LispString * aFileName)
 {
-  LISPASSERT(aFileName!=NULL);
+  assert(aFileName!=NULL);
 
   LispString flatfile;
   InternalUnstringify(flatfile, aFileName);

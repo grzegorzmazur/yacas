@@ -254,12 +254,12 @@ private:
     LispLocalVariable(const LispLocalVariable& aOther) : iNext(NULL), iVariable(NULL),iValue(NULL)
     {
       // copy constructor not written yet, hence the assert
-      LISPASSERT(0);
+      assert(0);
     }
     LispLocalVariable& operator=(const LispLocalVariable& aOther)
     {
       // copy constructor not written yet, hence the assert
-      LISPASSERT(0);
+      assert(0);
       return *this;
     }
 
@@ -295,12 +295,12 @@ private:
     LocalVariableFrame(const LocalVariableFrame& aOther) : iNext(NULL),iFirst(NULL),iLast(NULL)
     {
       // copy constructor not written yet, hence the assert
-      LISPASSERT(0);
+      assert(0);
     }
     LocalVariableFrame& operator=(const LocalVariableFrame& aOther)
     {
       // copy constructor not written yet, hence the assert
-      LISPASSERT(0);
+      assert(0);
       return *this;
     }
   public:
@@ -380,13 +380,13 @@ public:
     }
     inline LispPtr& GetElement(LispInt aPos)
     {
-      LISPASSERT(0<=aPos && aPos<iStackCnt);
+      assert(0<=aPos && aPos<iStackCnt);
       //LISPASSERT(aPos>=0 && aPos<iStack.Size());
       return iStack[aPos];
     }
     inline void PopTo(LispInt aTop)
     {
-      LISPASSERT(0<=aTop && aTop<=iStackCnt);
+      assert(0<=aTop && aTop<=iStackCnt);
       while (iStackCnt>aTop)
       {
         iStackCnt--;
@@ -456,12 +456,12 @@ private:
     iStack(0)
   {
     // copy constructor has not been made yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
   }
   LispEnvironment& operator=(const LispEnvironment& aOther)
   {
     // copy constructor has not been made yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
     return *this;
   }
 
@@ -555,12 +555,12 @@ private:
   LispLocalInput(const LispLocalInput& aOther): iEnvironment(aOther.iEnvironment),iPreviousInput(iEnvironment.CurrentInput())
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
   };
   LispLocalInput& operator=(const LispLocalInput& aOther)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
     return *this;
   };
 
@@ -591,12 +591,12 @@ private:
   LispLocalOutput(const LispLocalOutput& aOther): iEnvironment(aOther.iEnvironment), iPreviousOutput(iEnvironment.CurrentOutput())
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
   }
   LispLocalOutput& operator=(const LispLocalOutput& aOther)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
     return *this;
   }
 private:
@@ -615,12 +615,12 @@ private:
   LispLocalEvaluator(const LispLocalEvaluator& aOther) : iPreviousEvaluator(NULL), iEnvironment(aOther.iEnvironment)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
   }
   LispLocalEvaluator& operator=(const LispLocalEvaluator& aOther)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
     return *this;
   }
 
@@ -638,12 +638,12 @@ private:
   LispLocalTrace(const LispLocalTrace& aOther) : iUserFunc(NULL)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
   }
   LispLocalTrace& operator=(const LispLocalTrace& aOther)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
     return *this;
   }
 private:
@@ -663,12 +663,12 @@ private:
   LocalArgs(const LocalArgs& aOther) : iPtrs(NULL)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
   }
   LocalArgs& operator=(const LocalArgs& aOther)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
     return *this;
   }
 private:

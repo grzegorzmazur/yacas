@@ -5,7 +5,8 @@
 #include "yacas/yacasprivate.h"
 #include "yacas/debugmem.h"
 #include "yacas/stubs.h"
-#include "yacas/lispassert.h"
+
+#include <cassert>
 
 #ifdef YACAS_DEBUG
 
@@ -54,27 +55,27 @@ void CheckPtr( void * anAllocatedPtr, const char* file, int line )
     YacasMemBlock * t = ((YacasMemBlock*)anAllocatedPtr)-1;
 
     CheckPred ( t->iMagicPrefix[0] == 'x',file,line );
-    LISPASSERT( t->iMagicPrefix[0] == 'x' );
+    assert( t->iMagicPrefix[0] == 'x' );
     CheckPred ( t->iMagicPrefix[1] == 'y',file,line );
-    LISPASSERT( t->iMagicPrefix[1] == 'y' );
+    assert( t->iMagicPrefix[1] == 'y' );
     CheckPred ( t->iMagicPrefix[2] == 'z',file,line );
-    LISPASSERT( t->iMagicPrefix[2] == 'z' );
+    assert( t->iMagicPrefix[2] == 'z' );
     CheckPred ( t->iMagicPrefix[3] == 0,file,line );
-    LISPASSERT( t->iMagicPrefix[3] == 0 );
+    assert( t->iMagicPrefix[3] == 0 );
 
     CheckPred ( t->iData    == ptr,file,line );
-    LISPASSERT( t->iData    == ptr );
+    assert( t->iData    == ptr );
     CheckPred ( (unsigned char*)t->iMagicPostfix  == ptr+t->iSize,file,line );
-    LISPASSERT( (unsigned char*)t->iMagicPostfix  == ptr+t->iSize );
+    assert( (unsigned char*)t->iMagicPostfix  == ptr+t->iSize );
 
     CheckPred ( t->iMagicPostfix[0] == 'x',file,line );
-    LISPASSERT( t->iMagicPostfix[0] == 'x' );
+    assert( t->iMagicPostfix[0] == 'x' );
     CheckPred ( t->iMagicPostfix[1] == 'y',file,line );
-    LISPASSERT( t->iMagicPostfix[1] == 'y' );
+    assert( t->iMagicPostfix[1] == 'y' );
     CheckPred ( t->iMagicPostfix[2] == 'z',file,line );
-    LISPASSERT( t->iMagicPostfix[2] == 'z' );
+    assert( t->iMagicPostfix[2] == 'z' );
     CheckPred ( t->iMagicPostfix[3] == 0,file,line );
-    LISPASSERT( t->iMagicPostfix[3] == 0 );
+    assert( t->iMagicPostfix[3] == 0 );
 }
 
 void CheckAllPtrs(int final /*=0*/)
@@ -138,7 +139,7 @@ void* YacasMallocPrivate(unsigned long aSize, const char* aFile, int aLine)
   CheckPtr( ptr, aFile, aLine );
 #endif
 
-  LISPASSERT(ptr);
+  assert(ptr);
   return ptr;
 }
 
@@ -191,7 +192,7 @@ void YacasFreePrivate(void* aOrig)
     }
     else // not the first!
     {
-        LISPASSERT( t->iPREV!=NULL );
+        assert( t->iPREV!=NULL );
 
         if ( t->iNEXT )
         {

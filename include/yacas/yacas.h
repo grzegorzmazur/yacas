@@ -44,12 +44,12 @@ private:
     input(aOther.input.Status())
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
   }
   DefaultYacasEnvironment& operator=(const DefaultYacasEnvironment& aOther)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
     return *this;
   }
 

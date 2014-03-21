@@ -12,9 +12,10 @@
  */
 
 #include "yacas/yacasprivate.h"
-#include "yacas/lispassert.h"
 #include "yacas/lisperror.h"
 #include "yacas/numbers.h"
+
+#include <cassert>
 
 bool IsDigit(LispChar c)
 {

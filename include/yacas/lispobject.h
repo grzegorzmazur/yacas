@@ -210,7 +210,7 @@ public:
   inline LispIterator& operator++()  // preincrement
   {
     //precondition: _Ptr != NULL
-    LISPASSERT(_Ptr != NULL);
+    assert(_Ptr != NULL);
     //expand: _Ptr = _Nextnode(_Ptr);
     LispObject * pObj = _Ptr->operator->();
     _Ptr = pObj ? &(pObj->Nixed()) : NULL;

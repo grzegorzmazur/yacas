@@ -130,7 +130,7 @@ private:
   BigNumber& operator=(const BigNumber& aOther)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
     return *this;
   }
 public:

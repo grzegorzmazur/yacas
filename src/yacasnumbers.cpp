@@ -586,7 +586,7 @@ double BigNumber::Double() const
   return strtod(str.c_str(),&endptr);
 #else
   //FIXME
-  LISPASSERT(0);
+  assert(0);
   return 0.0;
 #endif
 }

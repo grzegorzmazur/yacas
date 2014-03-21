@@ -1,9 +1,9 @@
 
 #include "yacas/yacasprivate.h"
 #include "yacas/lispcleanupstack.h"
-#include "yacas/lispassert.h"
 #include "yacas/lisptype.h"
 
+#include <cassert>
 
 LispCleanup::~LispCleanup()
 {
@@ -28,7 +28,7 @@ void LispCleanup::Delete()
 
 void LispCleanup::CheckStackEmpty()
 {
-    LISPASSERT(iObjects.Size() == 0);
+    assert(iObjects.Size() == 0);
 }
 
 void DeletingLispCleanup::Push(LispBase& aObject)
