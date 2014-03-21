@@ -15,7 +15,7 @@ void InternalSubstitute(LispPtr& aTarget, LispPtr& aSource,
                         SubstBehaviourBase& aBehaviour)
 {
     LispObject* object = aSource;
-    LISPASSERT(object);
+    assert(object);
     if (!aBehaviour.Matches(aTarget,aSource))
     {
         LispPtr* oldList = object->SubList();

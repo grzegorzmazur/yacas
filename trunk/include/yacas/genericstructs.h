@@ -5,7 +5,8 @@
 
 #include "yacasbase.h"
 #include "genericobject.h"
-#include "lispassert.h"
+
+#include <cassert>
 
 /** \class GenericStruct This class maintains a pointer to some arbitrary
  *  object (which can be any thing). The plugin is responsible for supplying
@@ -30,12 +31,12 @@ private:
   GenericStruct(const GenericStruct& aOther) : iData(NULL),iTypeName(NULL),iDestructor(NULL)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
   }
   GenericStruct& operator=(const GenericStruct& aOther)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
     return *this;
   }
 public:

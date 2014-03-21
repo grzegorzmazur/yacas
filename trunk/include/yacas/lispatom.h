@@ -50,7 +50,7 @@ private:
   LispAtom& operator=(const LispAtom& aOther)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
     return *this;
   }
 public:
@@ -98,7 +98,7 @@ private:
   LispGenericClass& operator=(const LispGenericClass& other)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
     return *this;
   }
 private:

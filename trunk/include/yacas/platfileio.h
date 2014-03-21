@@ -16,12 +16,12 @@ private:
   LispLocalFile(const LispLocalFile& aOther) : iFile(NULL),iEnvironment(aOther.iEnvironment),iOpened(false)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
   }
   LispLocalFile& operator=(const LispLocalFile& aOther)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
     return *this;
   }
 public:
@@ -69,12 +69,12 @@ private:
   inline CachedStdFileInput(const CachedStdFileInput& aOther) : StdFileInput(aOther),iBuffer(NULL),iCurrentPos(0),iNrBytes(0)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
   }
   inline CachedStdFileInput& operator=(const CachedStdFileInput& aOther)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
     return *this;
   }
 private:

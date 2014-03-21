@@ -3,7 +3,7 @@
 
 inline LispPtr& Argument(LispPtr& cur, LispInt n)
 {
-    LISPASSERT(n>=0);
+    assert(n>=0);
 
     LispPtr* loop = &cur;
     while(n--) loop = &(*loop)->Nixed();
@@ -37,12 +37,12 @@ inline void InternalBoolean(LispEnvironment& aEnvironment, LispPtr& aResult,
 
 inline bool IsTrue(LispEnvironment& aEnvironment, LispPtr& aExpression)
 {
-    LISPASSERT(aExpression);
+    assert(aExpression);
     return aExpression->String() == aEnvironment.iTrue->String();
 }
 inline bool IsFalse(LispEnvironment& aEnvironment, LispPtr& aExpression)
 {
-    LISPASSERT(aExpression);
+    assert(aExpression);
     return aExpression->String() == aEnvironment.iFalse->String();
 }
 

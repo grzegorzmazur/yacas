@@ -25,7 +25,7 @@ const LispChar * PatternClass::TypeName()
 bool PatternClass::Matches(LispEnvironment& aEnvironment,
                                   LispPtr& aArguments)
 {
-    LISPASSERT(iPatternMatcher);
+    assert(iPatternMatcher);
     bool result;
     result = iPatternMatcher->Matches(aEnvironment, aArguments);
     return result;
@@ -34,7 +34,7 @@ bool PatternClass::Matches(LispEnvironment& aEnvironment,
 bool PatternClass::Matches(LispEnvironment& aEnvironment,
                                   LispPtr* aArguments)
 {
-    LISPASSERT(iPatternMatcher);
+    assert(iPatternMatcher);
     bool result;
     result = iPatternMatcher->Matches(aEnvironment, aArguments);
     return result;

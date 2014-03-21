@@ -1,5 +1,5 @@
 
-#include "lispassert.h"
+#include <cassert>
 #include "lisperror.h"
 
 inline LispPtr& LispObject::Nixed()

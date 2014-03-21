@@ -75,12 +75,12 @@ private:
   MatchSubList(const MatchSubList& aOther) : iMatchers(NULL),iNrMatchers(0)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
   }
   MatchSubList& operator=(const MatchSubList& aOther)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(0);
+    assert(0);
     return *this;
   }
 protected:

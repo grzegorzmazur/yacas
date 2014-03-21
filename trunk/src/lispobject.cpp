@@ -32,7 +32,7 @@ LispInt LispObject::Equal(LispObject& aOther)
     //So, no strings.
     LispPtr *iter1 = SubList();
     LispPtr *iter2 = aOther.SubList();
-    LISPASSERT(!!iter1 && !!iter2);
+    assert(!!iter1 && !!iter2);
 
     // check all elements in sublist
     while (!!(*iter1) && !!(*iter2))

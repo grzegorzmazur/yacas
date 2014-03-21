@@ -29,7 +29,7 @@ inline void BaseTimesInt(T& a,PlatDoubleWord aNumber, PlatDoubleWord aBase)
     a.Append((typename T::ElementType)carry);
     carry = 0;
   }
-  LISPASSERT(carry == 0);
+  assert(carry == 0);
 }
 
 template<class T>
@@ -54,7 +54,7 @@ inline void BaseTimesInt(T& a,PlatDoubleWord aNumber)
     a.Append((typename T::ElementType)carry);
     carry = 0;
   }
-  LISPASSERT(carry == 0);
+  assert(carry == 0);
 }
 
 
@@ -206,7 +206,7 @@ inline void BaseSubtract(T& aResult, T& a2, LispInt offset)
 {
     if (IsZero(a2))
         return;
-    LISPASSERT(!IsZero(a2));
+    assert(!IsZero(a2));
     // Initialize result
     LispInt nr = a2.Size();
 
@@ -237,7 +237,7 @@ inline void BaseSubtract(T& aResult, T& a2, LispInt offset)
 
     while (carry != 0)
     {
-        LISPASSERT(nr+offset<aResult.Size());
+        assert(nr+offset<aResult.Size());
 
         LispInt newCarry = 0;
         PlatSignedDoubleWord ww = resultPtr[nr+offset]+carry;
@@ -339,7 +339,7 @@ inline void WordBaseAddMultiply(T& aTarget, T& x, T& y)
             PlatDoubleWord word = static_cast<PlatDoubleWord>(targetPtr[ix+nry])+carry;
             targetPtr[ix+nry] = (typename T::ElementType)(word);
             carry          = word >> WordBits;
-            LISPASSERT(carry == 0);
+            assert(carry == 0);
 
 //          targetPtr[ix+nry] += (typename T::ElementType)(carry);
         }
@@ -394,12 +394,12 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
     // Find the values n and m as described in Knuth II:
     LispInt n,m;
     n=a2.Size();
-    LISPASSERT(n>0);
-    LISPASSERT(a2[n-1] != 0);
+    assert(n>0);
+    assert(a2[n-1] != 0);
  
     //a1.Size() = m+n => m = a1.Size()-n
     m = a1.Size()-n;
-    LISPASSERT(m>=0);
+    assert(m>=0);
 
     aQuotient.ResizeTo(m+1);
  
@@ -484,7 +484,7 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
                 a1[digit+j] = ((PlatWord)(word));
             }
         }
-        LISPASSERT(carry == 0);
+        assert(carry == 0);
  
         //D5:
         aQuotient[j] = (typename T::ElementType)q;

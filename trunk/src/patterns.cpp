@@ -171,7 +171,7 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
     {
         // See if it is a variable template:
         LispPtr* sublist = aPattern->SubList();
-        LISPASSERT(sublist);
+        assert(sublist);
 
         LispInt num = InternalListLength(*sublist);
 
@@ -222,7 +222,7 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
         for (LispInt i=0;i<num;i++,++iter)
         {
             matchers[i] = MakeParamMatcher(aEnvironment,iter.getObj());
-            LISPASSERT(matchers[i]);
+            assert(matchers[i]);
         }
     return NEW MatchSubList(matchers, num);
     }
@@ -238,7 +238,7 @@ YacasPatternPredicateBase::YacasPatternPredicateBase(LispEnvironment& aEnvironme
     for ( ; iter.getObj(); ++iter)
   {
         YacasParamMatcherBase* matcher = MakeParamMatcher(aEnvironment,iter.getObj());
-        LISPASSERT(matcher!=NULL);
+        assert(matcher!=NULL);
         iParamMatchers.Append(matcher);
   }
   LispPtr post(aPostPredicate);

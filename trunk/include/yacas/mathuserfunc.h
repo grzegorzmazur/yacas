@@ -111,12 +111,12 @@ public:
     BranchPattern(const BranchPattern& aOther) : iPrecedence(0),iBody(),iPredicate(),iPatternClass(NULL)
     {
       // copy constructor not written yet, hence the assert
-      LISPASSERT(0);
+      assert(0);
     }
     BranchPattern& operator=(const BranchPattern& aOther)
     {
       // copy constructor not written yet, hence the assert
-      LISPASSERT(0);
+      assert(0);
       return *this;
     }
 

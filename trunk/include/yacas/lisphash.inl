@@ -19,7 +19,7 @@ template<class T>
 inline LAssoc<T>::LAssoc(LispString * aString,const T& aData)
 : iString(),iData(aData)
 {
-  LISPASSERT((bool)(aString != NULL));
+  assert((bool)(aString != NULL));
   iString = (aString);
 }
 

@@ -82,18 +82,18 @@ bool StdFileInput::EndOfStream()
 
 const LispChar* StdFileInput::StartPtr()
 {
-  LISPASSERT(0);
+  assert(0);
   return NULL;
 }
 LispInt StdFileInput::Position()
 {
-    LISPASSERT(0);
+    assert(0);
   return 0;
 }
 
 void StdFileInput::SetPosition(LispInt aPosition)
 {
-  LISPASSERT(0);
+  assert(0);
 }
 
 
@@ -143,7 +143,7 @@ CachedStdFileInput::CachedStdFileInput(LispLocalFile& aFile,InputStatus& aStatus
 LispChar CachedStdFileInput::Next()
 {
     LispChar c;
-    LISPASSERT(iCurrentPos < iNrBytes);
+    assert(iCurrentPos < iNrBytes);
     c = iBuffer[iCurrentPos++];
 
     if (c == '\n')
@@ -155,7 +155,7 @@ LispChar CachedStdFileInput::Next()
 
 LispChar CachedStdFileInput::Peek()
 {
-    LISPASSERT(iCurrentPos < iNrBytes);
+    assert(iCurrentPos < iNrBytes);
     return iBuffer[iCurrentPos];
 }
 
@@ -180,8 +180,8 @@ LispInt CachedStdFileInput::Position()
 }
 void CachedStdFileInput::SetPosition(LispInt aPosition)
 {
-  LISPASSERT(aPosition>=0);
-  LISPASSERT(aPosition<iNrBytes);
+  assert(aPosition>=0);
+  assert(aPosition<iNrBytes);
   iCurrentPos = aPosition;
 }
 

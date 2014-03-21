@@ -1,7 +1,7 @@
 #ifndef YACAS_REFCOUNT_H
 #define YACAS_REFCOUNT_H
 
-#include "lispassert.h"
+#include <cassert>
 #include "yacasbase.h"
 
 //------------------------------------------------------------------------------

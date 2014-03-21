@@ -324,7 +324,7 @@ static void ConcatenateStrings(LispStringSmartPtr& aResult, LispEnvironment& aEn
   /* aResult passed in by reference to avoid over-application of copy-constructors, smart pointer so the result
    * gets cleaned up automatically afterwards. aResult acts like a string buffer we can append substrings to.
    */
-  LISPASSERT(aResult);
+  assert(aResult);
   aResult->ResizeTo(0);
   aResult->Append('\"');
 

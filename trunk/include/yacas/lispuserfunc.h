@@ -75,17 +75,17 @@ public:
    */
   inline LispMultiUserFunction(const LispMultiUserFunction& aOther) : iFunctions(), iFileToOpen(NULL)
   {
-    LISPASSERT(aOther.iFileToOpen == 0);
-    LISPASSERT(aOther.iFunctions.Size() == 0);
+    assert(aOther.iFileToOpen == 0);
+    assert(aOther.iFunctions.Size() == 0);
   }
   inline LispMultiUserFunction& operator=(const LispMultiUserFunction& aOther)
   {
     // copy constructor not written yet, hence the assert
-    LISPASSERT(aOther.iFileToOpen == 0);
-    LISPASSERT(aOther.iFunctions.Size() == 0);
+    assert(aOther.iFileToOpen == 0);
+    assert(aOther.iFunctions.Size() == 0);
 
-    LISPASSERT(iFileToOpen == 0);
-    LISPASSERT(iFunctions.Size() == 0);
+    assert(iFileToOpen == 0);
+    assert(iFunctions.Size() == 0);
     return *this;
   }
 

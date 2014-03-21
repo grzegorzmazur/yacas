@@ -14,7 +14,7 @@ LispUserFunction* LispMultiUserFunction::UserFunc(LispInt aArity)
     LispInt nrc=iFunctions.Size();
     for (i=0;i<nrc;i++)
     {
-        LISPASSERT(iFunctions[i]);
+        assert(iFunctions[i]);
         if (iFunctions[i]->IsArity(aArity))
         {
             return iFunctions[i];
@@ -33,7 +33,7 @@ void LispMultiUserFunction::DeleteBase(LispInt aArity)
     LispInt nrc=iFunctions.Size();
     for (i=0;i<nrc;i++)
     {
-        LISPASSERT(iFunctions[i]);
+        assert(iFunctions[i]);
         if (iFunctions[i]->IsArity(aArity))
         {
             delete iFunctions[i];
@@ -54,7 +54,7 @@ void LispMultiUserFunction::HoldArgument(LispString * aVariable)
     LispInt i;
     for (i=0;i<iFunctions.Size();i++)
     {
-        LISPASSERT(iFunctions[i]);
+        assert(iFunctions[i]);
         iFunctions[i]->HoldArgument(aVariable);
     }
 }
@@ -66,8 +66,8 @@ void LispMultiUserFunction::DefineRuleBase(LispArityUserFunction* aNewFunction)
     LispInt nrc=iFunctions.Size();
     for (i=0;i<nrc;i++)
     {
-        LISPASSERT(iFunctions[i]);
-        LISPASSERT(aNewFunction);
+        assert(iFunctions[i]);
+        assert(aNewFunction);
         if (iFunctions[i]->IsArity(aNewFunction->Arity()) || aNewFunction->IsArity(iFunctions[i]->Arity()))
             throw LispErrArityAlreadyDefined();
 

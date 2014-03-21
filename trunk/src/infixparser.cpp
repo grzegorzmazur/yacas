@@ -1,12 +1,12 @@
 
 #include "yacas/yacasprivate.h"
-#include "yacas/lispassert.h"
 #include "yacas/infixparser.h"
 #include "yacas/lispatom.h"
 #include "yacas/standard.h"
 #include "yacas/lisperror.h"
 #include "yacas/errors.h"
 
+#include <cassert>
 #include <string>
 
 void ParsedObject::Fail()
@@ -410,7 +410,7 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
 void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
                          LispInt iPrecedence)
 {
-    LISPASSERT(aExpression);
+    assert(aExpression);
 
     LispString * string = aExpression->String();
     if (string)
@@ -567,7 +567,7 @@ void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
                 }
                 WriteToken(aOutput,")");
                 if (iter.getObj()) {
-                    LISPASSERT(bodied);
+                    assert(bodied);
                     Print(*iter, aOutput, bodied->iPrecedence);
                 }
 

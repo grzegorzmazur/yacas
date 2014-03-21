@@ -86,14 +86,14 @@ ANumber::~ANumber()
 
 ANumber::ANumber(LispInt aPrecision) : ASuper(),iExp(0),iNegative(false),iPrecision(aPrecision),iTensExp(0)
 {
-  LISPASSERT(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
+  assert(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
   Append(0);
 }
 
 /* Allow use of external arrays */
 ANumber::ANumber(PlatWord *aArray, LispInt aSize, LispInt aPrecision): ASuper(),iExp(0),iNegative(false),iPrecision(aPrecision),iTensExp(0)
 {
-  LISPASSERT(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
+  assert(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
   SetExternalArray(aArray, aSize);
 }
 
@@ -176,8 +176,8 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
 {
     ResizeTo(0);
  
-    LISPASSERT(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
-    LISPASSERT(aBase<=36);
+    assert(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
+    assert(aBase<=36);
     iNegative=false;
     iExp = 0;
     iTensExp = 0;
@@ -524,7 +524,7 @@ void Add(ANumber& aResult, ANumber& a1, ANumber& a2)
     //Positive plus Negative
     else
     {
-        LISPASSERT(IsPositive(a1) && IsNegative(a2));
+        assert(IsPositive(a1) && IsNegative(a2));
         //if |a1|>|a2| then BaseSubtract(a2,a1)
         if (BaseGreaterThan(a1,a2))
         {
@@ -595,7 +595,7 @@ void Subtract(ANumber& aResult, ANumber& a1, ANumber& a2)
     //Positive plus Negative
     else
     {
-        LISPASSERT(IsPositive(a1) && IsPositive(a2));
+        assert(IsPositive(a1) && IsPositive(a2));
         //if |a1|>|a2| then BaseSubtract(a2,a1)
         if (BaseGreaterThan(a1,a2))
         {
@@ -698,7 +698,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
         ANumber number(aNumber.iPrecision);
         number.CopyFrom(aNumber);
 
-        LISPASSERT(aBase<=36);
+        assert(aBase<=36);
         // Reset number
         aResult.ResizeTo(0);
         aResult.Append(0);
@@ -710,7 +710,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
         LispString factor3;
         BaseIntNumber(factor3, WordBase, aBase);
 
-        LISPASSERT(number.iExp >= 0);
+        assert(number.iExp >= 0);
 
         LispInt i;
         for (i=number.iExp;i<number.Size();i++)
@@ -971,7 +971,7 @@ bool BaseGreaterThan(ANumber& a1, ANumber& a2)
         // Otherwise compare the shared highest word.
         return highSame;
     }
-    LISPASSERT(0); //This should never happen.
+    assert(0); //This should never happen.
     return false;
 }
 bool BaseLessThan(ANumber& a1, ANumber& a2)
@@ -1146,12 +1146,12 @@ void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a
     // Find the values n and m as described in Knuth II:
     LispInt n,m;
     n=a2.Size();
-    LISPASSERT(n>0);
-    LISPASSERT(a2[n-1] != 0);
+    assert(n>0);
+    assert(a2[n-1] != 0);
  
     //a1.Size() = m+n => m = a1.Size()-n
     m = a1.Size()-n;
-    LISPASSERT(m>=0);
+    assert(m>=0);
 
     aQuotient.ResizeTo(m+1);
  
@@ -1233,7 +1233,7 @@ void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a
                 a1[digit+j] = ((PlatWord)(word));
             }
         }
-        LISPASSERT(carry == 0);
+        assert(carry == 0);
  
         //D5:
         aQuotient[j] = (PlatWord)q;
@@ -1252,7 +1252,7 @@ void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a
 
 void IntegerDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
 {
-    LISPASSERT(!IsZero(a2));
+    assert(!IsZero(a2));
 
     LispInt n=a2.Size();
 
