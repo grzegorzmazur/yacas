@@ -1,4 +1,0 @@
-#! /bin/sh
-
-g++ -c unipoly.cpp -o unipoly.o
-g++ -o unipoly unipoly.o libyacas.a  libyacasnumbers.a  libyacasplatform.a
