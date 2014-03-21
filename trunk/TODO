@@ -221,10 +221,7 @@ like 'Gcd(10,Pi)' and 'Gcd(Exp(1),Exp(2))' do
 - Limit(n,Infinity) Sqrt(n+1) - Sqrt(n), the limit is zero, but exhausts
 the stack
 - [A:={{1,2,3,4},{0,1,2,3},{0,0,1,2},{I,0,I,I}}; EigenValues(A);] hangs
-- ArcCos(Cos(beta)) returns beta, but this is not strictly correct for all
-values of beta. If I fix this I need to fix it in the tutorial also.
-- Limit(n, Infinity) n^5/2^n returns Infinity/(Infinity*Ln(2)), wrong
-answer -- L'Hopital's theorem is not always the correct thing to do. There
+- L'Hopital's theorem is not always the correct thing to do. There
 is a paper by Richardson, Salvy et al "Asymptotic expansions of exp-log
 functions" that may be helpful.
 - TrigSimpCombine(x^500)' exhausts the stack
