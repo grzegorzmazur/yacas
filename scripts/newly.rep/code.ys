@@ -543,6 +543,26 @@ Matched'b() := b;
 ]; // LocalSymbols a,b
 
 // Manuel Bronstein, Symbolic Integration I: Transcendental Functions
+// Polynomial Pseudo-Division
+PolyPseudoDivide(A_CanBeUni, B_CanBeUni, x_IsAtom) <-- [
+    Local(b, N, Q, R, delta);
+    b := LeadingCoef(B);
+    N := Degree(A) - Degree(B) + 1;
+    Q := 0;
+    R := A;
+    delta := Degree(R) - Degree(B);
+    While (R != 0 And delta >= 0) [
+        T := LeadingCoef(R)*x^delta;
+        N := N - 1;
+        Q := b * Q + T;
+        R := b * R - T * B;
+        delta := Degree(R) - Degree(B);
+    ];
+    {NormalForm(MakeUni(b^N * Q, x)), NormalForm(MakeUni(b^N * R, x))};
+];
+
+
+// Manuel Bronstein, Symbolic Integration I: Transcendental Functions
 // Hermite Reduction, Mack's linear version
 HermiteReduce(A_CanBeUni, D_CanBeUni, x_IsAtom) <-- [
     Local(g, Dm, Ds);
