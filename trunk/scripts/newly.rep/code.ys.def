@@ -22,5 +22,6 @@ InverseTaylor
 Series
 MatchLinear
 MatchPureSquared
+PolyPseudoDivide
 HermiteReduce
 }
