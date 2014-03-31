@@ -185,6 +185,28 @@ if (ENABLE_DOCS)
 
 endif()
 
+foreach (_script ${YACAS_SCRIPTS})
+  if (${_script} MATCHES ".+def$")
+    string (REPLACE scripts/ "" _script ${_script})
+    string (REPLACE .def "" _script ${_script})
+    list (APPEND YACAS_PACKAGES ${_script})
+  endif ()
+endforeach ()
+
+list (SORT YACAS_PACKAGES)
+list (REMOVE_DUPLICATES YACAS_PACKAGES)
+
+file (REMOVE ${PROJECT_BINARY_DIR}/scripts/packages.ys)
+
+file (APPEND ${PROJECT_BINARY_DIR}/scripts/packages.ys "Defun(DefFileList,{}) {\n")
+
+foreach (_package ${YACAS_PACKAGES})
+  file (APPEND ${PROJECT_BINARY_DIR}/scripts/packages.ys "    \"${_package}\",\n")
+endforeach ()
+
+file (APPEND ${PROJECT_BINARY_DIR}/scripts/packages.ys "};\n")
+
+add_dependencies (yacas ${PROJECT_BINARY_DIR}/scripts/packages.ys)
 
 install (TARGETS yacas RUNTIME DESTINATION bin COMPONENT app)
 install (DIRECTORY ${PROJECT_BINARY_DIR}/scripts/ DESTINATION share/yacas/scripts COMPONENT app)
