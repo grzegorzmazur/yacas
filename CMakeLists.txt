@@ -214,7 +214,7 @@ install (DIRECTORY scripts/ DESTINATION share/yacas/scripts COMPONENT app)
 install (DIRECTORY include/ DESTINATION include COMPONENT dev)
 install (FILES ${PROJECT_BINARY_DIR}/include/yacas/yacas_version.h DESTINATION include/yacas COMPONENT dev)
 
-set (YACAS_TESTS openmath.yts macro.yts arithmetic.yts c_tex_form.yts calculus.yts canprove.yts comments.yts complex.yts deriv.yts dimensions.yts dot.yts journal.yts integrate.yts lists.yts logic_simplify_test.yts matrixpower.yts nthroot.yts outer.yts predicates.yts ode.yts tensors.yts trace.yts tr.yts multivar.yts numbers.yts io.yts programming.yts simplify.yts solve.yts sums.yts transforms.yts radsimp.yts linalg.yts orthopoly.yts poly.yts numerics.yts scopestack.yts plots.yts GaussianIntegers.yts nummethods.yts sturm.yts cyclotomic.yts binaryfactors.yts padic.yts calendar.yts regress.yts)
+set (YACAS_TESTS openmath.yts macro.yts arithmetic.yts c_tex_form.yts calculus.yts canprove.yts comments.yts complex.yts deriv.yts dimensions.yts dot.yts journal.yts integrate.yts lists.yts logic_simplify_test.yts matrixpower.yts nthroot.yts outer.yts predicates.yts ode.yts tensors.yts trace.yts tr.yts multivar.yts numbers.yts io.yts programming.yts simplify.yts solve.yts sums.yts transforms.yts radsimp.yts linalg.yts orthopoly.yts poly.yts numerics.yts scopestack.yts plots.yts GaussianIntegers.yts nummethods.yts sturm.yts cyclotomic.yts binaryfactors.yts padic.yts calendar.yts newly.yts regress.yts)
 
 foreach (_test ${YACAS_TESTS})
   add_test(NAME ${_test} WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND ${PROJECT_SOURCE_DIR}/tests/test-yacas "${PROJECT_BINARY_DIR}/yacas -pc --rootdir ${PROJECT_SOURCE_DIR}/scripts:${PROJECT_BINARY_DIR}/scripts" ${PROJECT_SOURCE_DIR}/tests ${_test})
