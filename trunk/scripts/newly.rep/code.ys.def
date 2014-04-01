@@ -23,5 +23,6 @@ Series
 MatchLinear
 MatchPureSquared
 PolyPseudoDivide
+SubResultant
 HermiteReduce
 }
