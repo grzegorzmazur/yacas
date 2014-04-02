@@ -1,11 +1,15 @@
-
-
-Maintainers/copyright holders:
+Original/primary authors (with last-known email addresses mangled in an obvious way):
 Ayal Pinkus                  apinkus "AT" xs4all "DOT" nl
 Serge Winitzki               serge "AT" cosmos "DOT" phy "DOT" tufts "DOT" edu
 Jitse Niesen                 jn221 "AT" damtp "DOT" cam "DOT" ac "DOT" uk
 
+Maintainer:
+Grzegorz Mazur               teoretyk "AT" gmail "DOT" com
+
+
 Contributors (with last-known email addresses mangled in an obvious way):
+Marta Noga                   marta.noga "AT" gmail "DOT" com
+Grzegorz Mazur               teoretyk "AT" gmail "DOT" com
 John Lapeyre
 Juan Pablo Romero            jpablo_romero "AT" hotmail "DOT" com
 Doreen Pinkus                d "DOT" pinkus "AT" hccnet "DOT" nl
@@ -23,9 +27,9 @@ Mark Arrasmith               arrasmith "AT" math "DOT" twsu "DOT" edu
 Robert V Schipper            rvs "AT" achilles "DOT" nfia "DOT" org
 Gopal Narayanan              gopal "AT" debian "DOT" org
 Christian Obrecht            christian "DOT" obrecht "AT" wanadoo "DOT" fr
-Pablo De N·poli              pdenapo "AT" yahoo "DOT" com
+Pablo De N√°poli              pdenapo "AT" yahoo "DOT" com
 Joris van der Hoeven         TeXmacs "AT" math "DOT" u-psud "DOT" fr
-Alberto Gonz·lez Palomo
+Alberto Gonz√°lez Palomo
 Savario Prinz                yacas "AT" mac "DOT" com
 Jonathan Leto                jonathan "AT" leto "DOT" net
 Mark Hatsell                 mark "AT" autograph-maths "DOT" com
@@ -34,7 +38,7 @@ Franz Hack                   franz.hack "AT" web "DOT" de
 Mike Pinna                   mike "AT" autograph-maths "DOT" com
 Sebastian Ferraro            sferraro "AT" criba "DOT" edu "DOT" ar
 Jim Apple                    japple "AT" freeshell "DOT" org
-Wolfgang Hönig               pocket_software "AT" web "DOT" de 
+Wolfgang H√∂nig               pocket_software "AT" web "DOT" de 
 Rene Grothmann               2004 "AT" rene-grothmann "DOT" de
 Peter Gilbert                peterdgilbert "AT" gmail "DOT" com
 Adrian V.                    qwert2003 "AT" users "DOT" sourceforge "DOT" net
