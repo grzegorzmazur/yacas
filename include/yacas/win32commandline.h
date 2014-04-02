@@ -17,17 +17,17 @@ public:
     ~CWin32CommandLine();
 public:
     virtual LispInt GetKey();
-    void ReadLineSub(const LispChar * prompt);
+    void ReadLineSub(const std::string& prompt);
     virtual void NewLine();
-    virtual void ShowLine(const LispChar * prompt,LispInt promptlen,LispInt cursor);
+    virtual void ShowLine(const std::string& prompt, LispInt cursor);
     virtual void Pause();
 
     // new functionality
-    void color_print(const LispChar * str, WORD text_attrib);
+    void color_print(const std::string& str, WORD text_attrib);
     void color_read(LispChar * str, WORD text_attrib);
 protected:
-  void ShowLine();
-  const LispChar * iLastPrompt;
+    void ShowLine();
+    std::string last_prompt;
 private:
     HANDLE out_console;
     HANDLE in_console;

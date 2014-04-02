@@ -14,7 +14,7 @@ void CStdCommandLine::Pause()
 {
 }
 
-void CStdCommandLine::ShowLine(const LispChar * prompt,LispInt promptlen,LispInt cursor)
+void CStdCommandLine::ShowLine(const std::string& prompt, LispInt cursor)
 {
 }
 
@@ -31,9 +31,11 @@ LispInt CStdCommandLine::GetKey()
     return '\n';
 }
 
-void CStdCommandLine::ReadLine(const LispChar * prompt)
+void CStdCommandLine::ReadLine(const std::string& prompt)
 {
-    fputs(prompt, stdout); fflush(stdout);
+    fputs(prompt.c_str(), stdout);
+    fflush(stdout);
+    
     char buffer[4001];
     int offs=0;
 
@@ -53,8 +55,7 @@ void CStdCommandLine::ReadLine(const LispChar * prompt)
 
     } while (offs < 1 || buffer[offs-1] == '\\');
 
-    iLine.ResizeTo(offs+1);
-    strcpy(&iLine[0],buffer);
+    iLine = buffer;
 }
 
 

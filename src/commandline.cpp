@@ -1,53 +1,46 @@
 #include "yacas/yacasprivate.h"
 #include "yacas/commandline.h"
 
-CCommandLine::~CCommandLine()
-{
-}
 
 void CCommandLine::GetHistory(LispInt aLine)
 {
-    iSubLine = *iHistoryList.GetLine(aLine);
+    iSubLine = iHistoryList.GetLine(aLine).c_str();
 }
 
 void CCommandLine::MaxHistoryLinesSaved(LispInt aNrLines)
 {
 }
 
-void CCommandLine::ReadLine(const LispChar * prompt)
+void CCommandLine::ReadLine(const std::string& prompt)
 {
-    iLine.ResizeTo(0);
+    iLine.clear();
 
-NEXTLINE:
-    iSubLine = "";
+    bool next_line;
+    
+    do {
+        next_line = false;
+        iSubLine.clear();
 
-    ReadLineSub(prompt);
+        ReadLineSub(prompt);
 
-    {
-        LispInt i,nr;
-        nr = iSubLine.Size()-1;
-        for(i=0;i<nr;i++)
-            iLine.Append(iSubLine[i]);
-        if (nr>0)
-            if (iSubLine[nr-1] == '\\')
-            {
-                iLine.ResizeTo(iLine.Size()-1);
-                goto NEXTLINE;
-            }
-    }
-    iLine.Append('\0');
+        iLine.append(iSubLine);
+        const std::size_t n = iLine.size();
+        if (n && iLine[n - 1] == '\\') {
+            iLine.resize(n - 1);
+            next_line = true;
+        }
+    } while (next_line);
 }
 
-void CCommandLine::ReadLineSub(const LispChar * prompt)
+void CCommandLine::ReadLineSub(const std::string& prompt)
 {
     LispInt cursor=0;
-    int promptlen = std::strlen(prompt);
  
     iHistoryList.ResetHistoryPosition();
-    iHistoryUnchanged = 0;
+    history_unchanged = false;
 
-    iFullLineDirty = 1;
-    ShowLine(prompt,promptlen,cursor);
+    full_line_dirty = true;
+    ShowLine(prompt, cursor);
 
     for (;;)
     {
@@ -56,20 +49,19 @@ void CCommandLine::ReadLineSub(const LispChar * prompt)
         switch (c)
         {
         case eDelete:
-            if (cursor<iSubLine.Size()-1)
+            if (cursor < iSubLine.size())
             {
-                iSubLine.Delete(cursor);
-                iFullLineDirty = 1;
-                iHistoryUnchanged = 0;
+                iSubLine.erase(cursor, 1);
+                full_line_dirty = true;
+                history_unchanged = false;
             }
             break;
         case eBackSpace:
             if (cursor>0)
             {
-                cursor--;
-                iSubLine.Delete(cursor);
-                iFullLineDirty = 1;
-                iHistoryUnchanged = 0;
+                iSubLine.erase(--cursor, 1);
+                full_line_dirty = true;
+                history_unchanged = false;
             }
             break;
         case eLeft:
@@ -77,7 +69,7 @@ void CCommandLine::ReadLineSub(const LispChar * prompt)
                 cursor--;
             break;
         case eRight:
-            if (cursor<iSubLine.Size()-1)
+            if (cursor<iSubLine.size())
                 cursor++;
             break;
 
@@ -85,83 +77,84 @@ void CCommandLine::ReadLineSub(const LispChar * prompt)
       case eUp:
         if (iHistoryList.ArrowUp(iSubLine,cursor))
         {
-          iFullLineDirty = 1;
-          iHistoryUnchanged = 1;
+          full_line_dirty = true;
+          history_unchanged = true;
         }
         break;
       case eDown:
 
         if (iHistoryList.ArrowDown(iSubLine,cursor))
           {
-            iFullLineDirty = 1;
-            iHistoryUnchanged = 1;
+            full_line_dirty = true;
+            history_unchanged = true;
           }
           else
           {
-            iFullLineDirty = 1;
-            iHistoryUnchanged = 1;
+            full_line_dirty = true;
+            history_unchanged = true;
           }
         break;
 
 
         case eTab:
             iHistoryList.Complete(iSubLine,cursor);
-            iFullLineDirty = 1;
-            iHistoryUnchanged = 1;
+            full_line_dirty = true;
+            history_unchanged = true;
             break;
         case eEscape:
             iSubLine = "";
             cursor = 0;
-            iFullLineDirty = 1;
-            iHistoryUnchanged = 0;
+            full_line_dirty = true;
+            history_unchanged = false;
             iHistoryList.ResetHistoryPosition();
             break;
         case eHome:
             cursor=0;
             break;
         case eEnd:
-            cursor=iSubLine.Size()-1;
+            cursor=iSubLine.size();
             break;
         case eEnter:
-            if (iSubLine.Size()>1)
+            if (!iSubLine.empty())
             {
               NewLine();
               iHistoryList.AddLine(iSubLine);
               return;
             }
-            iFullLineDirty = 1;
+            full_line_dirty = true;
             break;
         case eKill:
-            if (cursor < iSubLine.Size() - 1)
+            if (cursor < iSubLine.size())
             {
-                iSubLine.Delete(cursor, iSubLine.Size() - cursor - 1);
-                iFullLineDirty = 1;
-                iHistoryUnchanged = 0;
+                iSubLine.erase(cursor);
+                full_line_dirty = true;
+                history_unchanged = false;
             }
             break;
         default:
             {
                 LispChar cc=(LispChar)c;
-                iSubLine.Insert(cursor,cc);
-                iFullLineDirty = 1;
-                iHistoryUnchanged = 0;
+                iSubLine.insert(cursor, 1, cc);
+                full_line_dirty = true;
+                history_unchanged = false;
             }
             cursor++;
             break;
         }
         switch (c)
         {
-        case ')': ShowOpen(prompt,promptlen,'(',')',cursor); break;
-        case '}': ShowOpen(prompt,promptlen,'{','}',cursor); break;
-        case ']': ShowOpen(prompt,promptlen,'[',']',cursor); break;
-        case '\"': ShowOpen(prompt,promptlen,'\"','\"',cursor); break;
+        case ')': ShowOpen(prompt, '(', ')', cursor); break;
+        case '}': ShowOpen(prompt, '{', '}', cursor); break;
+        case ']': ShowOpen(prompt, '[', ']', cursor); break;
+        case '\"': ShowOpen(prompt, '\"', '\"', cursor); break;
         }
-        ShowLine(prompt,promptlen,cursor);
+        ShowLine(prompt, cursor);
     }
 }
 
-void CCommandLine::ShowOpen(const LispChar * prompt,LispInt promptlen,
-                            LispChar aOpen, LispChar aClose, LispInt aCurPos)
+void CCommandLine::ShowOpen(const std::string& prompt,
+                            LispChar aOpen, LispChar aClose,
+                            LispInt aCurPos)
 {
     LispInt count=1;
     aCurPos--;
@@ -180,146 +173,132 @@ void CCommandLine::ShowOpen(const LispChar * prompt,LispInt promptlen,
     }
     if (count == 0)
     {
-        ShowLine(prompt,promptlen,aCurPos+1);
+        ShowLine(prompt, aCurPos+1);
         Pause();
     }
 }
 
-void CConsoleHistory::Append(LispString * aString)
+void CConsoleHistory::Append(const std::string& s)
 {
-  iHistory.Append(aString);
-  history=iHistory.Size();
+    iHistory.push_back(s);
+    history = iHistory.size();
 }
 
-void CConsoleHistory::AddLine(LispString& aString)
+void CConsoleHistory::AddLine(const std::string& aString)
 {
-
-
-  LispInt historyChanged = 0;
-  if (!(history<iHistory.Size()))
-  {
-    historyChanged=1;
-    history++;
-  }
-  else if (!(*iHistory[history] == aString))
-  {
-    historyChanged = 1;
-  }
+    bool history_changed = false;
+  
+    if (history >= iHistory.size()) {
+        history_changed = true;
+        history++;
+    } else if (iHistory[history] != aString) {
+        history_changed = true;
+    }
  
 
-  if (historyChanged)
-  {
-    LispString * ptr = NEW LispString(aString);
-    iHistory.Append(ptr);
-    return;
-  }
-  else
-  {
-    LispString * orig = iHistory[history];
-    LispInt i;
-    for (i=history;i<iHistory.Size()-1;i++)
-    {
-      iHistory[i] = iHistory[i+1];
+    if (history_changed) {
+        iHistory.push_back(aString);
+        return;
     }
-    iHistory[iHistory.Size()-1] = orig;
-    return;
-  }
+  
+    const std::string orig = iHistory[history];
+    iHistory.erase(iHistory.begin() + history);
+    iHistory.push_back(orig);
 }
 
 
-LispInt CConsoleHistory::ArrowUp(LispString& aString,LispInt &aCursorPos)
+bool CConsoleHistory::ArrowUp(std::string& aString, LispInt& aCursorPos)
 {
-  LispString prefix;
+  const std::string prefix(aString.c_str(), aCursorPos);
   //if (aCursorPos == aString.Size()-1) aCursorPos = 0;
-  prefix.SetStringCounted(aString.c_str(),aCursorPos);
 
   int i = history - 1;
 
 //printf("Searching for [%s] starting at %d (of %d)\n",prefix.c_str(),i,iHistory.Size());
-  LispString histpre;
-  while (i >= 0)
-  {
-    histpre.SetStringCounted(iHistory[i]->c_str(),aCursorPos);
+  std::string histpre;
+  while (i >= 0) {
+    histpre = std::string(iHistory[i].c_str(), aCursorPos);
     if (histpre == prefix)
       break;
     i--;
   }
+  
   if (i >= 0 && i != history && histpre == prefix)
   {
     history = i;
-    aString = *iHistory[history];
+    aString = iHistory[history];
 //    if (aCursorPos == 0) aCursorPos = aString.Size()-1;
-    return 1;
+    return true;
   }
-  return 0;
+  return false;
 }
 
-LispInt CConsoleHistory::ArrowDown(LispString& aString,LispInt &aCursorPos)
+bool CConsoleHistory::ArrowDown(std::string& aString, LispInt& aCursorPos)
 {
-  LispString prefix;
+  const std::string prefix(aString.c_str(), aCursorPos);
   //  if (aCursorPos == aString.Size()-1) aCursorPos = 0;
-  prefix.SetStringCounted(aString.c_str(),aCursorPos);
+
   int i = history + 1;
-  LispString histpre;
-  while (i < iHistory.Size())
+  std::string histpre;
+  while (i < iHistory.size())
   {
-    histpre.SetStringCounted(iHistory[i]->c_str(),aCursorPos);
+    histpre = std::string(iHistory[i].c_str(), aCursorPos);
     if (histpre == prefix)
       break;
     i++;
   }
-  if (i < iHistory.Size() && histpre == prefix)
+  if (i < iHistory.size() && histpre == prefix)
   {
     history = i;
-    aString = *iHistory[history];
-    return 1;
+    aString = iHistory[history];
+    return true;
   }
   else
   {
-    history = iHistory.Size();
+    history = iHistory.size();
     aString = prefix;
   }
-  return 0;
+  return false;
 }
 
 LispInt CConsoleHistory::NrLines()
 {
-  return iHistory.Size();
+  return iHistory.size();
 }
 
-LispString * CConsoleHistory::GetLine(LispInt aLine)
+const std::string& CConsoleHistory::GetLine(LispInt aLine)
 {
   return iHistory[aLine];
 }
 void CConsoleHistory::ResetHistoryPosition()
 {
-  history=iHistory.Size();
+  history = iHistory.size();
 }
 
-LispInt CConsoleHistory::Complete(LispString& aString,LispInt &aCursorPos)
+bool CConsoleHistory::Complete(std::string& aString,LispInt& aCursorPos)
 {
-    LispInt prevhistory=history;
-    history = iHistory.Size()-1;
+    LispInt prevhistory = history;
+    history = iHistory.size() - 1;
     while (history>=0)
     {
         LispInt j=0;
-        while (j<aString.Size()-1 &&
-                j<iHistory[history]->Size())
+        while (j < aString.size() &&
+               j < iHistory[history].size())
         {
-            if (aString[j] != (*iHistory[history])[j])
+            if (aString[j] != iHistory[history][j])
                 goto CONTINUE;
             j++;
         }
-        aString = *iHistory[history];
-        aCursorPos = aString.Size()-1;
+        aString = iHistory[history];
+        aCursorPos = aString.size();
         break;
     CONTINUE:
         history--;
     }
-    if (history<0)
+    if (history < 0)
         history = prevhistory;
 
-    return 1;
+    return true;
 }
 
 

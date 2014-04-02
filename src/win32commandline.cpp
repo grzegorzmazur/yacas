@@ -32,9 +32,9 @@ static void win_assert(BOOL condition){
     exit(1);
 }
 
-void CWin32CommandLine::color_print(const LispChar * str, WORD text_attrib){
+void CWin32CommandLine::color_print(const std::string& str, WORD text_attrib)
+{
     BOOL status;
-    unsigned len = strlen(str);
     CONSOLE_SCREEN_BUFFER_INFO old_info;
 
     out_console = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -48,7 +48,7 @@ void CWin32CommandLine::color_print(const LispChar * str, WORD text_attrib){
     win_assert(status);
 
     DWORD written;
-    status = WriteConsole(out_console, str, len, &written, NULL);
+    status = WriteConsole(out_console, str.c_str(), str.length(), &written, NULL);
     win_assert(status);
     // restore the attributes
     status = SetConsoleTextAttribute(out_console, old_attrib);
@@ -89,7 +89,7 @@ void CWin32CommandLine::Pause()
     while (clock()<i);
 }
 
-void CWin32CommandLine::ReadLineSub(const LispChar * prompt)
+void CWin32CommandLine::ReadLineSub(const std::string& prompt)
 {
     if (_is_NT_or_later) {
         char buff[BufSz];
@@ -103,22 +103,21 @@ void CWin32CommandLine::ReadLineSub(const LispChar * prompt)
 
 void CWin32CommandLine::ShowLine()
 {
-    ShowLine(iLastPrompt, strlen(iLastPrompt), strlen(iLastPrompt)+iSubLine.Size());
+    ShowLine(last_prompt, last_prompt.length() + iSubLine.length());
 }
 
-void CWin32CommandLine::ShowLine(const LispChar * prompt, LispInt promptlen, LispInt cursor)
+void CWin32CommandLine::ShowLine(const std::string& prompt, LispInt cursor)
 {
-    iLastPrompt = prompt;
+    last_prompt = prompt;
     putchar('\r');              // clear line
 
-    assert(iSubLine.Size() != 0);
-
     char str[BufSz];
-    sprintf(str, "%s%s", prompt, &iSubLine[0]);
+    sprintf(str, "%s%s", prompt.c_str(), &iSubLine[0]);
     color_print(str, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY );
 
     // position cursor
-    for (LispInt i = strlen(&iSubLine[0]) + promptlen; i > cursor+promptlen; i--)
+    const std::size_t prompt_len = prompt.length();
+    for (LispInt i = iSubLine.length() + prompt_len; i > cursor + prompt_len; --i)
         putchar('\b');
 
     fflush(stdout);
@@ -154,8 +153,7 @@ CWin32CommandLine::CWin32CommandLine() :
                     for(i=0;buff[i] && buff[i] != '\n';++i)
                         ;
                     buff[i++] = '\0';
-                    LispString * ptr = NEW LispString(buff);
-                    iHistoryList.Append(ptr);
+                    iHistoryList.Append(buff);
 
                 }
                 fclose(f);
@@ -173,7 +171,7 @@ CWin32CommandLine::~CWin32CommandLine()
             int i;
             for (i=0;i<iHistoryList.NrLines();i++)
             {
-                fprintf(f,"%s\n",iHistoryList.GetLine(i)->c_str());
+                fprintf(f,"%s\n",iHistoryList.GetLine(i).c_str());
             }
             fclose(f);
         }
