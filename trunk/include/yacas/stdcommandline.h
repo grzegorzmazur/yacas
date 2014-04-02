@@ -22,11 +22,11 @@ class CStdCommandLine : public CCommandLine
 public:
     CStdCommandLine();
     ~CStdCommandLine();
-    virtual void ReadLine(const LispChar * prompt);
+    virtual void ReadLine(const std::string& prompt);
 public:
     virtual LispInt GetKey();
     virtual void NewLine();
-    virtual void ShowLine(const LispChar * prompt,LispInt promptlen,LispInt cursor);
+    virtual void ShowLine(const std::string& prompt, LispInt cursor);
     virtual void Pause();
 };
 

@@ -24,7 +24,7 @@ public:
 public:
   virtual LispInt GetKey();
   virtual void NewLine();
-  virtual void ShowLine(const LispChar * prompt,LispInt promptlen,LispInt cursor);
+  virtual void ShowLine(const std::string& prompt, LispInt cursor);
   virtual void Pause();
   virtual void MaxHistoryLinesSaved(LispInt aNrLines);
 private:

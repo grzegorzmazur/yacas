@@ -15,6 +15,9 @@
 #ifndef YACAS_COMMANDLINE_H
 #define YACAS_COMMANDLINE_H
 
+#include <string>
+#include <vector>
+
 #include "lispstring.h"
 #include "yacasbase.h"
 
@@ -54,27 +57,39 @@ enum ESpecialChars
 class CConsoleHistory
 {
 public:
-  CConsoleHistory() : iHistory(),history(0) {}
+  CConsoleHistory():
+      history(0)
+  {
+  }
+
   void ResetHistoryPosition();
-  void AddLine(LispString& aString);
-  void Append(LispString * aString);
-  LispInt ArrowUp(LispString& aString,LispInt &aCursorPos);
-  LispInt ArrowDown(LispString& aString,LispInt &aCursorPos);
-  LispInt Complete(LispString& aString,LispInt &aCursorPos);
+  void AddLine(const std::string& aString);
+  void Append(const std::string& aString);
+  bool ArrowUp(std::string& aString, LispInt& aCursorPos);
+  bool ArrowDown(std::string& aString, LispInt& aCursorPos);
+  bool Complete(std::string& aString, LispInt& aCursorPos);
   LispInt NrLines();
-  LispString * GetLine(LispInt aLine);
+  const std::string& GetLine(LispInt aLine);
 protected:
-  CDeletingArrayGrower<LispString *, ArrOpsDeletingPtr<LispString> > iHistory;
+  std::vector<std::string> iHistory;
   LispInt history;
 };
 
 class CCommandLine : public YacasBase
 {
 public:
-  CCommandLine() : iFullLineDirty(false),iHistoryUnchanged(0),iLine(),iSubLine(),iHistoryList() {};
-  virtual ~CCommandLine();
+  CCommandLine():
+      full_line_dirty(false),
+      history_unchanged(false)
+  {
+  }
+    
+  virtual ~CCommandLine()
+  {
+  }
+  
   /// Call this function if the user needs to enter an expression.
-  virtual void ReadLine(const LispChar * prompt);
+  virtual void ReadLine(const std::string& prompt);
 public: //platform stuff
   /** return a key press, which is either an ascii value, or one
    * of the values specified in ESpecialChars
@@ -85,8 +100,7 @@ public: //platform stuff
   /** Show the current line (in iSubLine), with the required prompt,
    *  and the cursor position at cursor (starting from the prompt).
    */
-  virtual void ShowLine(const LispChar * prompt,
-                        LispInt promptlen,LispInt cursor) = 0;
+  virtual void ShowLine(const std::string& prompt, LispInt cursor) = 0;
   /// Pause for a short while. Used when matching brackets.
   virtual void Pause() = 0;
 
@@ -94,18 +108,19 @@ public: //platform stuff
   virtual void MaxHistoryLinesSaved(LispInt aNrLines);
 
 protected:
-  virtual void ReadLineSub(const LispChar * prompt);
+  virtual void ReadLineSub(const std::string& prompt);
 private:
   void GetHistory(LispInt aLine);
-  void ShowOpen(const LispChar * prompt,LispInt promptlen,
-                LispChar aOpen, LispChar aClose, LispInt aCurPos);
+  void ShowOpen(const std::string& prompt,
+                 LispChar aOpen, LispChar aClose,
+                 LispInt aCurPos);
 protected:
-  LispInt iFullLineDirty;
-  LispInt iHistoryUnchanged;
+  bool full_line_dirty;
+  bool history_unchanged;
 
 public:
-  LispString iLine;
-  LispString iSubLine;
+  std::string iLine;
+  std::string iSubLine;
 
   CConsoleHistory iHistoryList;
 };

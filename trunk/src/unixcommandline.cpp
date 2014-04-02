@@ -24,33 +24,32 @@ void CUnixCommandLine::Pause()
     while (clock()<i);
 }
 
-void CUnixCommandLine::ShowLine(
-    const LispChar* prompt,
-    LispInt promptlen,
-    LispInt cursor)
+void CUnixCommandLine::ShowLine(const std::string& prompt, LispInt cursor)
 {
     struct winsize w;
     ioctl(0, TIOCGWINSZ, &w);
 
-    const LispInt l = (cursor + promptlen) / w.ws_col;
-    const LispInt c = (cursor + promptlen) % w.ws_col;
+    const std::size_t prompt_len = prompt.length();
+    
+    const LispInt l = (cursor + prompt_len) / w.ws_col;
+    const LispInt c = (cursor + prompt_len) % w.ws_col;
 
     if (_cursor_line)
         printf("\x1b[%dF", _cursor_line);
 
-    if (iFullLineDirty) {
+    if (full_line_dirty) {
         if (_last_line)
             printf("\x1b[%dB", _last_line);
 
         for (LispInt i = 0; i < _last_line; ++i)
             printf("\r\x1b[K\x1b[F");
 
-        printf("\r\x1b[K\x1b[K%s%s", prompt, &iSubLine[0]);
+        printf("\r\x1b[K\x1b[K%s%s", prompt.c_str(), &iSubLine[0]);
 
-        if ((promptlen + strlen(&iSubLine[0])) % w.ws_col == 0)
+        if ((prompt_len + std::strlen(&iSubLine[0])) % w.ws_col == 0)
             printf("\n");
 
-        _last_line = (promptlen + strlen(&iSubLine[0])) / w.ws_col;
+        _last_line = (prompt_len + strlen(&iSubLine[0])) / w.ws_col;
         if (_last_line)
             printf("\x1b[%dF", _last_line);
     }
@@ -64,7 +63,7 @@ void CUnixCommandLine::ShowLine(
 
     _cursor_line = l;
 
-    iFullLineDirty = 0;
+    full_line_dirty = 0;
 }
 
 
@@ -108,8 +107,7 @@ CUnixCommandLine::CUnixCommandLine():
                 for(i=0;buff[i] && buff[i] != '\n';++i)
                     ;
                 buff[i++] = '\0';
-                LispString * ptr = NEW LispString(buff);
-                iHistoryList.Append(ptr);
+                iHistoryList.Append(buff);
 
             }
             fclose(f);
@@ -139,9 +137,7 @@ CUnixCommandLine::~CUnixCommandLine()
         }
         for (i=from;i<iHistoryList.NrLines();i++)
         {
-          LispString * ptr = iHistoryList.GetLine(i);
-
-            fprintf(f,"%s\n",ptr->c_str());
+            fprintf(f,"%s\n",iHistoryList.GetLine(i).c_str());
         }
         fclose(f);
     }
