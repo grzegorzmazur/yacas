@@ -35,7 +35,7 @@ void CStdCommandLine::ReadLine(const std::string& prompt)
 {
     fputs(prompt.c_str(), stdout);
     fflush(stdout);
-    
+
     char buffer[4001];
     int offs=0;
 
