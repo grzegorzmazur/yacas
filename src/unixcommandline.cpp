@@ -30,7 +30,7 @@ void CUnixCommandLine::ShowLine(const std::string& prompt, LispInt cursor)
     ioctl(0, TIOCGWINSZ, &w);
 
     const std::size_t prompt_len = prompt.length();
-    
+
     const LispInt l = (cursor + prompt_len) / w.ws_col;
     const LispInt c = (cursor + prompt_len) % w.ws_col;
 

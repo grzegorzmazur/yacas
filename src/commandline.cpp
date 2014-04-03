@@ -16,7 +16,7 @@ void CCommandLine::ReadLine(const std::string& prompt)
     iLine.clear();
 
     bool next_line;
-    
+
     do {
         next_line = false;
         iSubLine.clear();
@@ -187,7 +187,7 @@ void CConsoleHistory::Append(const std::string& s)
 void CConsoleHistory::AddLine(const std::string& aString)
 {
     bool history_changed = false;
-  
+
     if (history >= iHistory.size()) {
         history_changed = true;
         history++;
@@ -200,7 +200,7 @@ void CConsoleHistory::AddLine(const std::string& aString)
         iHistory.push_back(aString);
         return;
     }
-  
+
     const std::string orig = iHistory[history];
     iHistory.erase(iHistory.begin() + history);
     iHistory.push_back(orig);
@@ -222,7 +222,7 @@ bool CConsoleHistory::ArrowUp(std::string& aString, LispInt& aCursorPos)
       break;
     i--;
   }
-  
+
   if (i >= 0 && i != history && histpre == prefix)
   {
     history = i;
