@@ -34,7 +34,7 @@ void CCommandLine::ReadLine(const std::string& prompt)
 
 void CCommandLine::ReadLineSub(const std::string& prompt)
 {
-    LispInt cursor=0;
+    unsigned cursor = 0;
  
     iHistoryList.ResetHistoryPosition();
     history_unchanged = false;
@@ -97,7 +97,7 @@ void CCommandLine::ReadLineSub(const std::string& prompt)
 
 
         case eTab:
-            iHistoryList.Complete(iSubLine,cursor);
+            iHistoryList.Complete(iSubLine, cursor);
             full_line_dirty = true;
             history_unchanged = true;
             break;
@@ -207,12 +207,15 @@ void CConsoleHistory::AddLine(const std::string& aString)
 }
 
 
-bool CConsoleHistory::ArrowUp(std::string& aString, LispInt& aCursorPos)
+bool CConsoleHistory::ArrowUp(std::string& aString, unsigned& aCursorPos)
 {
   const std::string prefix(aString.c_str(), aCursorPos);
   //if (aCursorPos == aString.Size()-1) aCursorPos = 0;
 
-  int i = history - 1;
+  if (!history)
+      return false;
+
+  std::size_t i = history - 1;
 
 //printf("Searching for [%s] starting at %d (of %d)\n",prefix.c_str(),i,iHistory.Size());
   std::string histpre;
@@ -233,12 +236,12 @@ bool CConsoleHistory::ArrowUp(std::string& aString, LispInt& aCursorPos)
   return false;
 }
 
-bool CConsoleHistory::ArrowDown(std::string& aString, LispInt& aCursorPos)
+bool CConsoleHistory::ArrowDown(std::string& aString, unsigned& aCursorPos)
 {
   const std::string prefix(aString.c_str(), aCursorPos);
   //  if (aCursorPos == aString.Size()-1) aCursorPos = 0;
 
-  int i = history + 1;
+  std::size_t i = history + 1;
   std::string histpre;
   while (i < iHistory.size())
   {
@@ -275,13 +278,16 @@ void CConsoleHistory::ResetHistoryPosition()
   history = iHistory.size();
 }
 
-bool CConsoleHistory::Complete(std::string& aString,LispInt& aCursorPos)
+bool CConsoleHistory::Complete(std::string& aString, unsigned& aCursorPos)
 {
-    LispInt prevhistory = history;
+    if (!history)
+        return false;
+
+    std::size_t prevhistory = history;
     history = iHistory.size() - 1;
     while (history>=0)
     {
-        LispInt j=0;
+        std::size_t j = 0;
         while (j < aString.size() &&
                j < iHistory[history].size())
         {
