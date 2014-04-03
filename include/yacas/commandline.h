@@ -65,14 +65,14 @@ public:
   void ResetHistoryPosition();
   void AddLine(const std::string& aString);
   void Append(const std::string& aString);
-  bool ArrowUp(std::string& aString, LispInt& aCursorPos);
-  bool ArrowDown(std::string& aString, LispInt& aCursorPos);
-  bool Complete(std::string& aString, LispInt& aCursorPos);
+  bool ArrowUp(std::string& aString, unsigned& aCursorPos);
+  bool ArrowDown(std::string& aString, unsigned& aCursorPos);
+  bool Complete(std::string& aString, unsigned& aCursorPos);
   LispInt NrLines();
   const std::string& GetLine(LispInt aLine);
 protected:
   std::vector<std::string> iHistory;
-  LispInt history;
+  std::size_t history;
 };
 
 class CCommandLine : public YacasBase
@@ -83,11 +83,11 @@ public:
       history_unchanged(false)
   {
   }
-    
+
   virtual ~CCommandLine()
   {
   }
-  
+
   /// Call this function if the user needs to enter an expression.
   virtual void ReadLine(const std::string& prompt);
 public: //platform stuff
