@@ -92,9 +92,14 @@ CUnixCommandLine::CUnixCommandLine():
     rl_termio.c_cc[VSUSP] = 0;
     tcsetattr(0, TCSADRAIN, &rl_termio);
 
-    std::ostringstream fname;
-    fname << getenv("HOME") << "/.yacas_history";
-    FILE* f = fopen(fname.str().c_str(), "r");
+    const char* home_dir = getenv("HOME");
+    
+    if (!home_dir)
+        return;
+    
+    const std::string fname = std::string(home_dir) + "/.yacas_history";
+
+    FILE* f = fopen(fname.c_str(), "r");
     if (f)
     {
         if(f)
