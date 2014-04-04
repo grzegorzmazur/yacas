@@ -111,10 +111,15 @@ CUnixCommandLine::~CUnixCommandLine()
 {
     tcsetattr(0, TCSADRAIN, &orig_termio);
 
-    std::ostringstream fname;
-    fname << getenv("HOME") << "/.yacas_history";
+    const char* home_dir = getenv("HOME");
+    
+    if (!home_dir)
+        return;
+    
+    const std::string fname = std::string(home_dir) + "/.yacas_history";
 
-    FILE* f = fopen(fname.str().c_str(), "w");
+    
+    FILE* f = fopen(fname.c_str(), "w");
     if (f)
     {
         int i;
