@@ -113,7 +113,6 @@ CUnixCommandLine::CUnixCommandLine():
             fclose(f);
         }
     }
-    iMaxLines = 1024;
 }
 
 CUnixCommandLine::~CUnixCommandLine()
