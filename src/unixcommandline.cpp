@@ -118,24 +118,17 @@ CUnixCommandLine::~CUnixCommandLine()
     
     const std::string fname = std::string(home_dir) + "/.yacas_history";
 
-    
-    FILE* f = fopen(fname.c_str(), "w");
-    if (f)
-    {
-        int i;
-        int from=0;
-        if (iMaxLines>=0)
-        {
-            if (iHistoryList.NrLines()>iMaxLines)
-            {
-                from = iHistoryList.NrLines()-iMaxLines;
-            }
-        }
-        for (i=from;i<iHistoryList.NrLines();i++)
-        {
-            fprintf(f,"%s\n",iHistoryList.GetLine(i).c_str());
-        }
-        fclose(f);
+    std::ofstream os(fname.c_str());
+
+    if (os) {
+        std::size_t from = 0;
+
+        if (iMaxLines >= 0 && iHistoryList.NrLines() > iMaxLines) 
+            from = iHistoryList.NrLines() - iMaxLines;
+
+
+        for (std::size_t i = from; i < iHistoryList.NrLines(); ++i)
+            os << iHistoryList.GetLine(i) << "\n";
     }
 }
 
