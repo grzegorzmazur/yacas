@@ -63,7 +63,7 @@ void CUnixCommandLine::ShowLine(const std::string& prompt, LispInt cursor)
 
     _cursor_line = l;
 
-    full_line_dirty = 0;
+    full_line_dirty = false;
 }
 
 
