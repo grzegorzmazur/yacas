@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <sys/ioctl.h>
 
+#include <fstream>
 #include <sstream>
 
 #include "yacas/yacasprivate.h"
@@ -99,25 +100,11 @@ CUnixCommandLine::CUnixCommandLine():
     
     const std::string fname = std::string(home_dir) + "/.yacas_history";
 
-    FILE* f = fopen(fname.c_str(), "r");
-    if (f)
-    {
-        if(f)
-        {
-#define BufSz 256
-            char buff[BufSz];
-            while(fgets(buff,BufSz-2,f))
-            {
-                int i;
-                for(i=0;buff[i] && buff[i] != '\n';++i)
-                    ;
-                buff[i++] = '\0';
-                iHistoryList.Append(buff);
-
-            }
-            fclose(f);
-        }
-    }
+    std::ifstream is(fname.c_str());
+    
+    std::string line;
+    while (std::getline(is, line))
+        iHistoryList.Append(line);
 }
 
 CUnixCommandLine::~CUnixCommandLine()
