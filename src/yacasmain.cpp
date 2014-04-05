@@ -67,7 +67,6 @@
 #include "yacas/numbers.h"
 #include "yacas/arggetter.h"
 
-#include <ctime>
 #include "yacas/errors.h"
 
 
