@@ -34,11 +34,6 @@
 
 #include "yacas/yacasprivate.h"
 
-#ifndef WIN32
-#include <dirent.h>
-#include <sys/stat.h>
-#endif
-
 #ifdef HAVE_SIGNAL_H
 #include <signal.h>
 #endif
