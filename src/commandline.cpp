@@ -1,13 +1,29 @@
 #include "yacas/yacasprivate.h"
 #include "yacas/commandline.h"
 
+#include <algorithm>
 
-void CCommandLine::GetHistory(LispInt aLine)
+namespace {
+    struct IsPrefix {
+        
+        IsPrefix(const std::string& p): _p(p), _l(p.length()) {}
+        
+        bool operator() (const std::string& s) const {
+            return _p.compare(0, _l, s, 0, _l) == 0;
+        }
+        
+    private:
+        std::string _p;
+        std::size_t _l;
+    };
+}
+
+void CCommandLine::GetHistory(std::size_t aLine)
 {
     iSubLine = iHistoryList.GetLine(aLine).c_str();
 }
 
-void CCommandLine::MaxHistoryLinesSaved(LispInt aNrLines)
+void CCommandLine::MaxHistoryLinesSaved(std::size_t aNrLines)
 {
 }
 
@@ -133,7 +149,7 @@ void CCommandLine::ReadLineSub(const std::string& prompt)
             break;
         default:
             {
-                LispChar cc=(LispChar)c;
+                LispChar cc = c;
                 iSubLine.insert(cursor, 1, cc);
                 full_line_dirty = true;
                 history_unchanged = false;
@@ -153,8 +169,8 @@ void CCommandLine::ReadLineSub(const std::string& prompt)
 }
 
 void CCommandLine::ShowOpen(const std::string& prompt,
-                            LispChar aOpen, LispChar aClose,
-                            LispInt aCurPos)
+                             LispChar aOpen, LispChar aClose,
+                             unsigned aCurPos)
 {
     LispInt count=1;
     aCurPos--;
@@ -178,26 +194,31 @@ void CCommandLine::ShowOpen(const std::string& prompt,
     }
 }
 
+CConsoleHistory::CConsoleHistory():
+    history(0)
+{
+}
+
 void CConsoleHistory::Append(const std::string& s)
 {
     iHistory.push_back(s);
     history = iHistory.size();
 }
 
-void CConsoleHistory::AddLine(const std::string& aString)
+void CConsoleHistory::AddLine(const std::string& s)
 {
     bool history_changed = false;
 
     if (history >= iHistory.size()) {
         history_changed = true;
         history++;
-    } else if (iHistory[history] != aString) {
+    } else if (iHistory[history] != s) {
         history_changed = true;
     }
  
 
     if (history_changed) {
-        iHistory.push_back(aString);
+        iHistory.push_back(s);
         return;
     }
 
@@ -207,104 +228,89 @@ void CConsoleHistory::AddLine(const std::string& aString)
 }
 
 
-bool CConsoleHistory::ArrowUp(std::string& aString, unsigned& aCursorPos)
+bool CConsoleHistory::ArrowUp(std::string& s, unsigned c)
 {
-  const std::string prefix(aString.c_str(), aCursorPos);
-  //if (aCursorPos == aString.Size()-1) aCursorPos = 0;
+    if (history == 0)
+        return false;
 
-  if (!history)
-      return false;
+    const std::string prefix(s.c_str(), c);
 
-  std::size_t i = history - 1;
-
-//printf("Searching for [%s] starting at %d (of %d)\n",prefix.c_str(),i,iHistory.Size());
-  std::string histpre;
-  while (i >= 0) {
-    histpre = std::string(iHistory[i].c_str(), aCursorPos);
-    if (histpre == prefix)
-      break;
-    i--;
-  }
-
-  if (i >= 0 && i != history && histpre == prefix)
-  {
-    history = i;
-    aString = iHistory[history];
-//    if (aCursorPos == 0) aCursorPos = aString.Size()-1;
+    std::vector<std::string>::reverse_iterator p = iHistory.rbegin();
+    std::advance(p, iHistory.size() - history);
+    
+    const std::vector<std::string>::reverse_iterator q =
+            std::find_if(p, iHistory.rend(), IsPrefix(prefix));
+    
+    if (q == iHistory.rend())
+        return false;
+    
+    s = *q;
+    history -= std::distance(p, q) + 1;
     return true;
-  }
-  return false;
 }
 
-bool CConsoleHistory::ArrowDown(std::string& aString, unsigned& aCursorPos)
+bool CConsoleHistory::ArrowDown(std::string& s, unsigned c)
 {
-  const std::string prefix(aString.c_str(), aCursorPos);
-  //  if (aCursorPos == aString.Size()-1) aCursorPos = 0;
+    if (history > iHistory.size())
+        return false;
+    
+    const std::string prefix(s.c_str(), c);
 
-  std::size_t i = history + 1;
-  std::string histpre;
-  while (i < iHistory.size())
-  {
-    histpre = std::string(iHistory[i].c_str(), aCursorPos);
-    if (histpre == prefix)
-      break;
-    i++;
-  }
-  if (i < iHistory.size() && histpre == prefix)
-  {
-    history = i;
-    aString = iHistory[history];
-    return true;
-  }
-  else
-  {
-    history = iHistory.size();
-    aString = prefix;
-  }
-  return false;
+    std::vector<std::string>::iterator p = iHistory.begin();
+    std::advance(p, history + 1);
+
+    const std::vector<std::string>::iterator q =
+            std::find_if(p, iHistory.end(), IsPrefix(prefix));
+
+    if (q != iHistory.end()) {
+        s = *q;
+        history += std::distance(p, q) + 1;
+        return true;
+    } else {
+        history = iHistory.size();
+        s = prefix;
+        return false;
+    }
 }
 
-LispInt CConsoleHistory::NrLines()
+std::size_t CConsoleHistory::NrLines()
 {
   return iHistory.size();
 }
 
-const std::string& CConsoleHistory::GetLine(LispInt aLine)
+const std::string& CConsoleHistory::GetLine(std::size_t n)
 {
-  return iHistory[aLine];
+  return iHistory[n];
 }
 void CConsoleHistory::ResetHistoryPosition()
 {
   history = iHistory.size();
 }
 
-bool CConsoleHistory::Complete(std::string& aString, unsigned& aCursorPos)
+bool CConsoleHistory::Complete(std::string& s, unsigned& c)
 {
-    if (!history)
+    if (history == 0)
         return false;
 
-    std::size_t prevhistory = history;
+    const std::size_t old_history = history;
+    
     history = iHistory.size() - 1;
-    while (history>=0)
-    {
-        std::size_t j = 0;
-        while (j < aString.size() &&
-               j < iHistory[history].size())
-        {
-            if (aString[j] != iHistory[history][j])
-                goto CONTINUE;
-            j++;
-        }
-        aString = iHistory[history];
-        aCursorPos = aString.size();
-        break;
-    CONTINUE:
-        history--;
-    }
-    if (history < 0)
-        history = prevhistory;
+    
+    const std::string prefix(s.c_str(), c);
 
+    std::vector<std::string>::reverse_iterator p = iHistory.rbegin();
+    std::advance(p, iHistory.size() - history);
+    
+    const std::vector<std::string>::reverse_iterator q =
+            std::find_if(p, iHistory.rend(), IsPrefix(prefix));
+    
+    if (q == iHistory.rend()) {
+        history = old_history;
+        return false;
+    }
+    
+    s = *q;
+    c = s.length();
+    history -= std::distance(p, q) + 1;
     return true;
 }
-
-
