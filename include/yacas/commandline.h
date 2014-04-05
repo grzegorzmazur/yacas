@@ -98,11 +98,11 @@ public: //platform stuff
   /** Show the current line (in iSubLine), with the required prompt,
    *  and the cursor position at cursor (starting from the prompt).
    */
-  virtual void ShowLine(const std::string& prompt, LispInt cursor) = 0;
+  virtual void ShowLine(const std::string& prompt, unsigned cursor) = 0;
   /// Pause for a short while. Used when matching brackets.
   virtual void Pause() = 0;
 
-  /// Maximum number of history lines to be saved (-1 is all)
+  /// Maximum number of history lines to be saved
   virtual void MaxHistoryLinesSaved(std::size_t aNrLines);
 
 protected:

@@ -22,7 +22,7 @@ void CUnixCommandLine::Pause()
     while (clock()<i);
 }
 
-void CUnixCommandLine::ShowLine(const std::string& prompt, LispInt cursor)
+void CUnixCommandLine::ShowLine(const std::string& prompt, unsigned cursor)
 {
     struct winsize w;
     ioctl(0, TIOCGWINSZ, &w);
@@ -129,7 +129,7 @@ CUnixCommandLine::~CUnixCommandLine()
     }
 }
 
-void CUnixCommandLine::MaxHistoryLinesSaved(LispInt aNrLines)
+void CUnixCommandLine::MaxHistoryLinesSaved(std::size_t aNrLines)
 {
     iMaxLines = aNrLines;
 }
