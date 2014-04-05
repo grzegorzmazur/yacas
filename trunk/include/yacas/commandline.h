@@ -57,19 +57,17 @@ enum ESpecialChars
 class CConsoleHistory
 {
 public:
-  CConsoleHistory():
-      history(0)
-  {
-  }
+  CConsoleHistory();
 
   void ResetHistoryPosition();
-  void AddLine(const std::string& aString);
-  void Append(const std::string& aString);
-  bool ArrowUp(std::string& aString, unsigned& aCursorPos);
-  bool ArrowDown(std::string& aString, unsigned& aCursorPos);
-  bool Complete(std::string& aString, unsigned& aCursorPos);
-  LispInt NrLines();
-  const std::string& GetLine(LispInt aLine);
+  void AddLine(const std::string& s);
+  void Append(const std::string& s);
+  bool ArrowUp(std::string& s, unsigned c);
+  bool ArrowDown(std::string& s, unsigned c);
+  bool Complete(std::string& s, unsigned& c);
+  std::size_t NrLines();
+  const std::string& GetLine(std::size_t);
+
 protected:
   std::vector<std::string> iHistory;
   std::size_t history;
@@ -105,15 +103,15 @@ public: //platform stuff
   virtual void Pause() = 0;
 
   /// Maximum number of history lines to be saved (-1 is all)
-  virtual void MaxHistoryLinesSaved(LispInt aNrLines);
+  virtual void MaxHistoryLinesSaved(std::size_t aNrLines);
 
 protected:
   virtual void ReadLineSub(const std::string& prompt);
 private:
-  void GetHistory(LispInt aLine);
+  void GetHistory(std::size_t aLine);
   void ShowOpen(const std::string& prompt,
                  LispChar aOpen, LispChar aClose,
-                 LispInt aCurPos);
+                 unsigned aCurPos);
 protected:
   bool full_line_dirty;
   bool history_unchanged;
