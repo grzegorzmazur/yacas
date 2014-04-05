@@ -120,7 +120,7 @@ CUnixCommandLine::~CUnixCommandLine()
     if (os) {
         std::size_t from = 0;
 
-        if (iMaxLines >= 0 && iHistoryList.NrLines() > iMaxLines) 
+        if (iMaxLines > 0 && iHistoryList.NrLines() > iMaxLines) 
             from = iHistoryList.NrLines() - iMaxLines;
 
 
