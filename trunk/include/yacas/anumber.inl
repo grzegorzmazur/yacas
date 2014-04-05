@@ -314,8 +314,6 @@ inline void WordBaseAddMultiply(T& aTarget, T& x, T& y)
     GrowDigits(aTarget,nrx+nry+1);
     LispInt ix,iy;
 
-//printf("nrx=%d,nry=%d\n",nrx,nry);
-
     typename T::ElementType *targetPtr = &aTarget[0];
     typename T::ElementType *xPtr = &x[0];
     typename T::ElementType *yPtr = &y[0];
@@ -344,8 +342,6 @@ inline void WordBaseAddMultiply(T& aTarget, T& x, T& y)
 //          targetPtr[ix+nry] += (typename T::ElementType)(carry);
         }
     }
-
-//printf("TARGET: %d words, %d decimal\n",aTarget.Size(),aTarget.iExp);
 }
 
 

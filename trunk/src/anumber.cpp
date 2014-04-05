@@ -6,13 +6,11 @@
  *
  */
 
-//#include <stdio.h>
+#include <iostream>
 
 #include "yacas/yacasprivate.h"
 #include "yacas/anumber.h"
 #include "yacas/mathutil.h"
-
-
 
 /* The Base... functions perform actions on the mantissa part of the
  * number, that is, it treats them as unsigned integers.
@@ -26,34 +24,34 @@ bool BaseGreaterThan(ANumber& a1, ANumber& a2);
 bool BaseLessThan(ANumber& a1, ANumber& a2);
 void BaseSqrt(ANumber& aResult, ANumber& N);
 
-
-#ifdef HAVE_STDIO_H
-#include <stdio.h> // Safe, only included if HAVE_STDIO_H is defined
-#endif
 void PrintNumber(const char* prefix,ANumber& aNumber)
 {
-#ifdef HAVE_STDIO_H
-  printf("%s\n",prefix);
-  printf("%d words, %d after point (x10^%d), 10-prec. %d\n",
-        aNumber.Size(),aNumber.iExp, aNumber.iTensExp,aNumber.iPrecision);
-  int i;
-  for (i=aNumber.Size()-1;i>=0;i--)
-  {
-    if (aNumber.iExp == i+1) printf(".\n");
-    PlatWord w = (aNumber)[i];
-    PlatWord bit = (WordBase)>>1;
-    int k=0;
-    while (bit)
+    std::cout << prefix << "\n";
+    std::cout << aNumber.Size() << " words, " << aNumber.iExp 
+              << " after point (x10^" << aNumber.iTensExp << "), 10-prec " 
+              << aNumber.iPrecision << "\n";
+
+    for (int i = aNumber.Size() - 1; i >= 0; --i)
     {
-      if ((k&3)==0) printf(" ");
-      k++;
-      if (w&bit) printf("1");
-      else printf("0");
-      bit>>=1;
+        if (aNumber.iExp == i+1)
+            std::cout << ".\n";
+        
+        PlatWord w = (aNumber)[i];
+        PlatWord bit = (WordBase)>>1;
+        
+        int k=0;
+        while (bit) {
+            if ((k&3)==0)
+                std::cout << " ";
+            k++;
+            if (w & bit)
+                std::cout << "1";
+            else
+                std::cout << "0";
+            bit>>=1;
+        }
+        std::cout << "\n";
     }
-    printf("\n");
-  }
-#endif
 }
 
 static LispInt DigitIndex(LispInt c)
@@ -209,10 +207,6 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
         endIntIndex = endFloatIndex;
     if (endFloatIndex == endIntIndex+1)
         endFloatIndex = endIntIndex;
-//printf("%s\n",aString);
-//printf("\tendint = %d, endfloat = %d, endnumber = %d\n",endIntIndex,endFloatIndex,endNumberIndex);
-
-//printf("%d digits\n",endFloatIndex-endIntIndex-1);
 
     if (endFloatIndex-endIntIndex-1 > iPrecision)
     {
@@ -307,7 +301,6 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
       if (aString[endFloatIndex+1] == '+') endFloatIndex++;
 
         iTensExp = PlatAsciiToInt((LispChar *)&aString[endFloatIndex+1]);
-//printf("%s mapped to %d\n",&aString[endFloatIndex+1],iTensExp);
     }
 
     DropTrailZeroes();
@@ -1256,42 +1249,19 @@ void IntegerDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber
 
     LispInt n=a2.Size();
 
-//hier
-//    printf("1: n=%d\n",n);
-
     while (a2[n-1] == 0) n--;
     a2.ResizeTo(n);
 
-//    printf("1: n=%d\n",n);
-
     if (n==1)
     {
-//        printf("DivideInt: %d\n",a2[0]);
-
         PlatDoubleWord carry;
         aQuotient.CopyFrom(a1);
         aQuotient.iExp = a1.iExp-a2.iExp;
         aQuotient.iTensExp = a1.iTensExp-a2.iTensExp;
 
-//        printf("aQuotient.iExp = %d\n",aQuotient.iExp);
-
         BaseDivideInt(aQuotient,a2[0], WordBase, carry);
         aRemainder.ResizeTo(1);
         aRemainder[0] = (PlatWord)carry;
-
-        /*
-         {
-            int i;
-            for (i=0;i<aQuotient.Size();i++)
-            {
-                printf("%d ",aQuotient[i]);
-            }
-            printf("\n");
-            }
-            */
- 
-//        printf("carry = %d\n",carry);
- 
     }
     // if |a1| < |a2| then result is zero.
     else if (BaseLessThan(a1,a2))
