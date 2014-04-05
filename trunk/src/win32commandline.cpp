@@ -106,7 +106,7 @@ void CWin32CommandLine::ShowLine()
     ShowLine(last_prompt, last_prompt.length() + iSubLine.length());
 }
 
-void CWin32CommandLine::ShowLine(const std::string& prompt, LispInt cursor)
+void CWin32CommandLine::ShowLine(const std::string& prompt, unsigned cursor)
 {
     last_prompt = prompt;
     putchar('\r');              // clear line

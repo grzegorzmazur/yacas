@@ -17,15 +17,15 @@ public:
 public:
   virtual LispInt GetKey();
   virtual void NewLine();
-  virtual void ShowLine(const std::string& prompt, LispInt cursor);
+  virtual void ShowLine(const std::string& prompt, unsigned cursor);
   virtual void Pause();
-  virtual void MaxHistoryLinesSaved(LispInt aNrLines);
+  virtual void MaxHistoryLinesSaved(std::size_t);
 private:
   unsigned char term_chars[NCCS];
   struct termios orig_termio, rl_termio;
   LispInt _cursor_line, _last_line;
 public:
-  LispInt iMaxLines;
+  std::size_t iMaxLines;
 };
 
 

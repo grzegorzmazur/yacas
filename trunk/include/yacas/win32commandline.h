@@ -19,7 +19,7 @@ public:
     virtual LispInt GetKey();
     void ReadLineSub(const std::string& prompt);
     virtual void NewLine();
-    virtual void ShowLine(const std::string& prompt, LispInt cursor);
+    virtual void ShowLine(const std::string& prompt, unsigned cursor);
     virtual void Pause();
 
     // new functionality

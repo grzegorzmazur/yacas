@@ -26,7 +26,7 @@ public:
 public:
     virtual LispInt GetKey();
     virtual void NewLine();
-    virtual void ShowLine(const std::string& prompt, LispInt cursor);
+    virtual void ShowLine(const std::string& prompt, unsigned cursor);
     virtual void Pause();
 };
 

@@ -14,7 +14,7 @@ void CStdCommandLine::Pause()
 {
 }
 
-void CStdCommandLine::ShowLine(const std::string& prompt, LispInt cursor)
+void CStdCommandLine::ShowLine(const std::string& prompt, unsigned cursor)
 {
 }
 
