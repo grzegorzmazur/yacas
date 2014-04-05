@@ -1,17 +1,10 @@
 #ifndef YACAS_UNIXCOMMANDLINE_H
 #define YACAS_UNIXCOMMANDLINE_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <signal.h>
-#include <unistd.h>
-#include <termios.h>
-#include <time.h>
-
-#include "yacasbase.h"
 #include "commandline.h"
+
+#include <termios.h>
+
 
 /** Unix command line class, using assorted termios functionality
  *  and sending ansi character sequences to the console.

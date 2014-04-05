@@ -1,22 +1,19 @@
-
-#include <time.h>
-#include <stdio.h>
-#include <sys/ioctl.h>
-
-#include <fstream>
-#include <sstream>
-
 #include "yacas/yacasprivate.h"
 #include "yacas/unixcommandline.h"
+
+#include <sys/ioctl.h>
+
+#include <iostream>
+#include <fstream>
+
+
 
 void CUnixCommandLine::NewLine()
 {
     _cursor_line = 0;
     _last_line = 0;
 
-    printf("\n");
-
-    fflush(stdout);
+    std::cout << std::endl;
 }
 
 void CUnixCommandLine::Pause()
@@ -36,31 +33,31 @@ void CUnixCommandLine::ShowLine(const std::string& prompt, LispInt cursor)
     const LispInt c = (cursor + prompt_len) % w.ws_col;
 
     if (_cursor_line)
-        printf("\x1b[%dF", _cursor_line);
+        std::cout << "\x1b[" << _cursor_line << "F";
 
     if (full_line_dirty) {
         if (_last_line)
-            printf("\x1b[%dB", _last_line);
+            std::cout << "\x1b[" << _last_line << "B";
 
         for (LispInt i = 0; i < _last_line; ++i)
-            printf("\r\x1b[K\x1b[F");
+            std::cout << "\r\x1b[K\x1b[F";
 
-        printf("\r\x1b[K\x1b[K%s%s", prompt.c_str(), &iSubLine[0]);
+        std::cout << "\r\x1b[K\x1b[K" << prompt.c_str() << &iSubLine[0];
 
         if ((prompt_len + std::strlen(&iSubLine[0])) % w.ws_col == 0)
-            printf("\n");
+            std::cout << "\n";
 
         _last_line = (prompt_len + strlen(&iSubLine[0])) / w.ws_col;
         if (_last_line)
-            printf("\x1b[%dF", _last_line);
+            std::cout << "\x1b[" << _last_line << "F";
     }
 
     if (l)
-        printf("\r\x1b[%dB", l);
+        std::cout << "\r\x1b[" << l << "B";
 
-    printf("\r\x1b[%dG", c + 1);
+    std::cout << "\r\x1b[" << c + 1 << "G";
 
-    fflush(stdout);
+    std::cout << std::flush;
 
     _cursor_line = l;
 
@@ -222,6 +219,3 @@ LispInt CUnixCommandLine::GetKey()
     }
     return c;
 }
-
-
-
