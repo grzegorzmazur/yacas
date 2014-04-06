@@ -1,7 +1,16 @@
 cmake_minimum_required (VERSION 2.8.7)
 
+
 option (ENABLE_DOCS "generate documentation" OFF)
 option (ENABLE_JYACAS "build the Java yacas engine" OFF)
+
+if (APPLE)
+#  if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+    SET(CMAKE_INSTALL_PREFIX "/usr/" CACHE PATH "Yacas install prefix" FORCE)
+#  endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+
+  set(CMAKE_MACOSX_RPATH 1)
+endif()
 
 if (ENABLE_JYACAS)
   find_package (Java)
@@ -88,11 +97,25 @@ add_library (libyacas_shared SHARED ${YACAS_LIB_SOURCES})
 
 set_target_properties(libyacas_static PROPERTIES OUTPUT_NAME "yacas")
 set_target_properties(libyacas_shared PROPERTIES OUTPUT_NAME "yacas" SOVERSION 1.0.0) 
+#to generate yacas framework on macos:
+#set_target_properties(libyacas_shared PROPERTIES OUTPUT_NAME "yacas" VERSION ${YACAS_VERSION} SOVERSION 1.0.0 FRAMEWORK ON)
+#dla FRAMEWORKA jest FRAMEWORK DESTINATION i kopiowanie skryptów
+#if ( APPLE )
+#  add_custom_command(TARGET libyacas_shared POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/scripts $<TARGET_FILE_DIR:libyacas>/Resources)
+#  add_custom_command(TARGET libyacas_shared POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory include $<TARGET_FILE_DIR:libyacas>/Headers)
+#  add_custom_command(TARGET libyacas_shared POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/include/yacas/yacas_version.h $<TARGET_FILE_DIR:libyacas>/Headers)
+#  install (TARGETS libyacas_shared FRAMEWORK DESTINATION lib COMPONENT app)
+#endif()
 
 install (TARGETS libyacas_static ARCHIVE DESTINATION lib COMPONENT dev)
-install (TARGETS libyacas_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin COMPONENT app)
+#install (TARGETS libyacas_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin COMPONENT app)
+install (TARGETS libyacas_shared LIBRARY DESTINATION lib COMPONENT app)
 
 add_executable (yacas ${YACAS_SOURCES})
+
+if (APPLE)
+    set_target_properties(yacas PROPERTIES INSTALL_RPATH "@loader_path/../lib")
+endif()
 
 target_link_libraries (yacas libyacas_shared)
 
@@ -245,10 +268,10 @@ set (CPACK_COMPONENTS_IGNORE_GROUPS 1)
 set (CPACK_COMPONENTS_ALL app doc dev)
 set (CPACK_COMPONENTS_GROUPING ONE_PER_GROUP)
 
-if (UNIX)
+if (LINUX)
   set (CPACK_GENERATOR DEB)
   set (CPACK_DEBIAN_PACKAGE_ARCHITECTURE "amd64")
-else ()
+elseif (WIN32)
   set (CPACK_GENERATOR NSIS)
   set (CPACK_NSIS_MODIFY_PATH "ON")
   set (CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL "ON")
@@ -264,8 +287,8 @@ set (CPACK_PACKAGE_VENDOR "yacas")
 set (CPACK_PACKAGE_CONTACT "yacas-devel@lists.sourceforge.net")
 set (CPACK_PACKAGE_DESCRIPTION_SUMMARY "YACAS is an easy to use, general purpose computer algebra system.")
 set (CPACK_PACKAGE_DESCRIPTION_FILE "${PROJECT_SOURCE_DIR}/README")
-set (CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/COPYING")
-set (CPACK_RESOURCE_FILE_README "${PROJECT_SOURCE_DIR}/README")
+#set (CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/COPYING")
+#set (CPACK_RESOURCE_FILE_README "${PROJECT_SOURCE_DIR}/README")
 set (CPACK_PACKAGE_VERSION ${YACAS_VERSION})
 set (CPACK_PACKAGE_VERSION_MAJOR ${YACAS_VERSION_MAJOR})
 set (CPACK_PACKAGE_VERSION_MINOR ${YACAS_VERSION_MINOR})
