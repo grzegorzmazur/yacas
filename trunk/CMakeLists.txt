@@ -220,22 +220,22 @@ foreach (_script ${YACAS_SCRIPTS})
   if (${_script} MATCHES ".+def$")
     string (REPLACE scripts/ "" _script ${_script})
     string (REPLACE .def "" _script ${_script})
-    list (APPEND YACAS_PACKAGES ${_script})
+    list (APPEND YACAS_PACKAGES_LIST ${_script})
   endif ()
 endforeach ()
 
-list (SORT YACAS_PACKAGES)
-list (REMOVE_DUPLICATES YACAS_PACKAGES)
+list (SORT YACAS_PACKAGES_LIST)
+list (REMOVE_DUPLICATES YACAS_PACKAGES_LIST)
 
-file (REMOVE ${PROJECT_BINARY_DIR}/scripts/packages.ys)
-
-file (APPEND ${PROJECT_BINARY_DIR}/scripts/packages.ys "Defun(DefFileList,{}) {\n")
-
-foreach (_package ${YACAS_PACKAGES})
-  file (APPEND ${PROJECT_BINARY_DIR}/scripts/packages.ys "    \"${_package}\",\n")
+set (YACAS_PACKAGES "Defun(DefFileList,{}) {\n")
+foreach (_package ${YACAS_PACKAGES_LIST})
+  set (YACAS_PACKAGES "${YACAS_PACKAGES}    \"${_package}\",\n")
 endforeach ()
+set (YACAS_PACKAGES "${YACAS_PACKAGES}};\n")
 
-file (APPEND ${PROJECT_BINARY_DIR}/scripts/packages.ys "};\n")
+configure_file(
+  "${PROJECT_SOURCE_DIR}/packages.ys.in"
+  "${PROJECT_BINARY_DIR}/scripts/packages.ys")
 
 add_dependencies (yacas ${PROJECT_BINARY_DIR}/scripts/packages.ys)
 
