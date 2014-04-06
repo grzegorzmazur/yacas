@@ -272,7 +272,10 @@ if (WIN32)
   install (FILES /usr/lib/gcc/i686-w64-mingw32/4.6/libgcc_s_sjlj-1.dll DESTINATION bin COMPONENT app)
 endif ()
 
-set (CPACK_SET_DESTDIR TRUE) #framework goes to /Library/frameworks without Access Denied during compilation, better calculating size in installer
+if (APPLE)
+  set (CPACK_SET_DESTDIR TRUE) #framework goes to /Library/frameworks without Access Denied during compilation, better calculating size in installer
+endif ()
+
 set (CPACK_DEB_COMPONENT_INSTALL on)
 set (CPACK_COMPONENTS_IGNORE_GROUPS 1)
 set (CPACK_COMPONENTS_ALL app doc dev)
