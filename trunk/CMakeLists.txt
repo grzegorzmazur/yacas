@@ -10,6 +10,7 @@ if (APPLE)
 #  endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 
   set(CMAKE_MACOSX_RPATH 1)
+  set(CMAKE_FRAMEWORK_INSTALL_DIR "/Library/Frameworks" CACHE STRING "Directory to install frameworks to.")
 endif()
 
 if (ENABLE_JYACAS)
@@ -107,7 +108,7 @@ if (APPLE)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/scripts $<TARGET_FILE_DIR:libyacas_framework>/Resources/scripts)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/include $<TARGET_FILE_DIR:libyacas_framework>/Headers)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_BINARY_DIR}/include $<TARGET_FILE_DIR:libyacas_framework>/Headers)
-  install (TARGETS libyacas_framework FRAMEWORK DESTINATION lib COMPONENT dev)
+  install (TARGETS libyacas_framework FRAMEWORK DESTINATION ${CMAKE_FRAMEWORK_INSTALL_DIR} COMPONENT dev)
 endif()
 
 install (TARGETS libyacas_static ARCHIVE DESTINATION lib COMPONENT dev)
@@ -271,6 +272,7 @@ if (WIN32)
   install (FILES /usr/lib/gcc/i686-w64-mingw32/4.6/libgcc_s_sjlj-1.dll DESTINATION bin COMPONENT app)
 endif ()
 
+set (CPACK_SET_DESTDIR TRUE) #framework goes to /Library/frameworks without Access Denied during compilation, better calculating size in installer
 set (CPACK_DEB_COMPONENT_INSTALL on)
 set (CPACK_COMPONENTS_IGNORE_GROUPS 1)
 set (CPACK_COMPONENTS_ALL app doc dev)
