@@ -95,21 +95,29 @@ set (YACAS_SCRIPTS scripts/corefunctions.ys scripts/packages.ys scripts/standard
 add_library (libyacas_static STATIC ${YACAS_LIB_SOURCES})
 add_library (libyacas_shared SHARED ${YACAS_LIB_SOURCES})
 
+
+
 set_target_properties(libyacas_static PROPERTIES OUTPUT_NAME "yacas")
 set_target_properties(libyacas_shared PROPERTIES OUTPUT_NAME "yacas" SOVERSION 1.0.0) 
+
 #to generate yacas framework on macos:
-#set_target_properties(libyacas_shared PROPERTIES OUTPUT_NAME "yacas" VERSION ${YACAS_VERSION} SOVERSION 1.0.0 FRAMEWORK ON)
-#dla FRAMEWORKA jest FRAMEWORK DESTINATION i kopiowanie skryptów
-#if ( APPLE )
-#  add_custom_command(TARGET libyacas_shared POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/scripts $<TARGET_FILE_DIR:libyacas>/Resources)
-#  add_custom_command(TARGET libyacas_shared POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory include $<TARGET_FILE_DIR:libyacas>/Headers)
-#  add_custom_command(TARGET libyacas_shared POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${PROJECT_BINARY_DIR}/include/yacas/yacas_version.h $<TARGET_FILE_DIR:libyacas>/Headers)
-#  install (TARGETS libyacas_shared FRAMEWORK DESTINATION lib COMPONENT app)
-#endif()
+if (APPLE)
+  add_library (libyacas_framework SHARED ${YACAS_LIB_SOURCES})
+  set_target_properties(libyacas_framework PROPERTIES OUTPUT_NAME "yacas" VERSION ${YACAS_VERSION} SOVERSION 1.0.0 FRAMEWORK ON)
+  add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/scripts $<TARGET_FILE_DIR:libyacas_framework>/Resources/scripts)
+  add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/include $<TARGET_FILE_DIR:libyacas_framework>/Headers)
+  add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_BINARY_DIR}/include $<TARGET_FILE_DIR:libyacas_framework>/Headers)
+  install (TARGETS libyacas_framework FRAMEWORK DESTINATION lib COMPONENT dev)
+endif()
 
 install (TARGETS libyacas_static ARCHIVE DESTINATION lib COMPONENT dev)
-#install (TARGETS libyacas_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin COMPONENT app)
-install (TARGETS libyacas_shared LIBRARY DESTINATION lib COMPONENT app)
+
+   if (APPLE)
+  install (TARGETS libyacas_shared LIBRARY DESTINATION lib COMPONENT app)
+else()
+  install (TARGETS libyacas_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin COMPONENT app)
+endif()
+
 
 add_executable (yacas ${YACAS_SOURCES})
 
