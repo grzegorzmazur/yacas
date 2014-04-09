@@ -546,17 +546,17 @@ Matched'b() := b;
 // Polynomial Pseudo-Division
 PolyPseudoDivide(A_CanBeUni, B_CanBeUni, x_IsAtom) <-- [
     Local(b, N, Q, R, delta);
-    b := LeadingCoef(B);
-    N := Degree(A) - Degree(B) + 1;
+    b := LeadingCoef(B, x);
+    N := Degree(A, x) - Degree(B, x) + 1;
     Q := 0;
     R := A;
-    delta := Degree(R) - Degree(B);
+    delta := Degree(R, x) - Degree(B, x);
     While (R != 0 And delta >= 0) [
-        T := LeadingCoef(R)*x^delta;
+        T := LeadingCoef(R,x)*x^delta;
         N := N - 1;
         Q := b * Q + T;
         R := Expand(b * R - T * B);
-        delta := Degree(R) - Degree(B);
+        delta := Degree(R, x) - Degree(B, x);
     ];
     {NormalForm(MakeUni(b^N * Q, x)), NormalForm(MakeUni(b^N * R, x))};
 ];
@@ -569,36 +569,35 @@ SubResultant(A_CanBeUni, B_CanBeUni, x_IsAtom) <-- [
     R := {A, B};
     i := 1;
     gamma := {-1};
-    delta := {Degree(A) - Degree(B)};
+    delta := {Degree(A, x) - Degree(B, x)};
     beta := {(-1)^(delta[1] + 1)};
     r := {};
 
-    While (R[i + 1] != 0) [
-        DestructiveAppend(r, LeadingCoef(R[i + 1]));
+    While (Not IsZero(R[i + 1])) [
+        DestructiveAppend(r, LeadingCoef(R[i + 1], x));
         {Q, RR} := PolyPseudoDivide(R[i], R[i + 1], x);
-        DestructiveAppend(R, RR / beta[i]);
-        DestructiveAppend(R, 0);
+        DestructiveAppend(R, Expand(RR / beta[i]));
         DestructiveAppend(gamma, (-r[i])^delta[i]*gamma[i]^(1-delta[i]));
         i := i + 1;
-        DestructiveAppend(delta, Degree(R[i]) - Degree(R[i + 1]));
+        DestructiveAppend(delta, Degree(R[i], x) - Degree(R[i + 1], x));
         DestructiveAppend(beta, -r[i-1] * gamma[i]^delta[i]);
     ];
 
     k := i - 1;
-    If (Degree(R[k + 1]) > 0, [
+    If (Degree(R[k + 1], x) > 0, [
         { 0, Append(R[1 .. k + 1], 0) };
     ], [
-        If (R[k] = 1, [
-            { R[k-1], { R[1 .. k + 1], 0} };
+        If (Degree(R[k], x) = 1, [
+            { R[k + 1], { R[1 .. k + 1], 0} };
         ], [
             Local(s, c);
             s := 1;
             c := 1;
             For (j := 1, j < k, j++) [
-                If (IsOdd(Degree(R[j])) And IsOdd(Degree(R[j + 1])), s := -s);
-                c := c * (beta[j] / r[j]^(1 + delta[j]))^Degree(R[j + 1]) * r[j]^(Degree(R[j]) - Degree(R[j + 2]));
+                If (IsOdd(Degree(R[j], x)) And IsOdd(Degree(R[j + 1], x)), s := -s);
+                c := c * (beta[j] / r[j]^(1 + delta[j]))^Degree(R[j + 1], x) * r[j]^(Degree(R[j], x) - Degree(R[j + 2], x));
             ];
-            {s * c * R[k + 1]^Degree(R[k]), Append(R[1 .. k + 1], 0)};
+            {s * c * R[k + 1]^Degree(R[k], x), Append(R[1 .. k + 1], 0)};
         ]);
     ]);
 ];
