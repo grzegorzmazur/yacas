@@ -1278,7 +1278,7 @@ void LispTrapError(LispEnvironment& aEnvironment,LispInt aStackTop)
     try {
         InternalEval(aEnvironment, RESULT, ARGUMENT(1));
     } catch (const LispError& error) {
-        Handle(error, aEnvironment, aEnvironment.iErrorOutput);
+        HandleError(error, aEnvironment, aEnvironment.iErrorOutput);
     }
 
   if (aEnvironment.iError[0])

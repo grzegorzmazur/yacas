@@ -2,7 +2,7 @@
 #include "yacas/lispenvironment.h"
 #include "yacas/standard.h"
 
-void Handle(const LispError& error, LispEnvironment& aEnvironment, LispOutput& aOutput)
+void HandleError(const LispError& error, LispEnvironment& aEnvironment, LispOutput& aOutput)
 {
     if (aEnvironment.iInputStatus.LineNumber() >= 0) {
         LispChar linenum[20];
