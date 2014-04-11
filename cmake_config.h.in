@@ -20,7 +20,6 @@
 
 #cmakedefine HAVE_SELECT
 #cmakedefine HAVE_SOCKET
-#cmakedefine HAVE_STRTOD
 #cmakedefine HAVE_STRCHR
 #cmakedefine HAVE_VSNPRINTF
 

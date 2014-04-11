@@ -576,19 +576,13 @@ void BigNumber::ToString(LispString& aResult, LispInt aBasePrecision, LispInt aB
 }
 double BigNumber::Double() const
 {
-// There are platforms that don't have strtod
-#ifdef HAVE_STRTOD
-  LispString str;
-  ANumber num(*iNumber);
-//  num.CopyFrom(*iNumber);
-  ANumberToString(str, num, 10);
-  char* endptr;
-  return strtod(str.c_str(),&endptr);
-#else
-  //FIXME
-  assert(0);
-  return 0.0;
-#endif
+    LispString str;
+    ANumber num(*iNumber);
+    ANumberToString(str, num, 10);
+    std::istringstream is(str.c_str());
+    double d;
+    is >> d;
+    return d;
 }
 
 
