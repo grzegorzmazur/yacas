@@ -28,7 +28,9 @@ void GetBf(char* buf, int size, FILE*f)
   }
 
   fileline++;
-  if (buf[strlen(buf)-1] == '\n') buf[strlen(buf)-1] = '\0';
+  const std::size_t n = std::strlen(buf);
+  if (n && buf[n - 1] == '\n')
+      buf[n] = '\0';
   char* ptr=buf;
   while (*ptr != '\0')
   {
@@ -48,7 +50,9 @@ void ProcessFile(char* fname)
   while (!feof(f))
   {
     GetBf(buf,2048,f);
-    if (buf[strlen(buf)-1] == '\n') buf[strlen(buf)-1] = '\0';
+    const std::size_t n = std::strlen(buf);
+    if (n && buf[n - 1] == '\n')
+        buf[n - 1] = '\0';
 
     //*CMD Sin, Cos, Tan --- trigonometric functions
     if (!strncmp(buf,"*CMD",4))
