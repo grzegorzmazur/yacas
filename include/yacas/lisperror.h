@@ -213,7 +213,7 @@ public:
 class LispEnvironment;
 class LispOutput;
 
-void Handle(const LispError&, LispEnvironment& aEnvironment, LispOutput& aOutput);
+void HandleError(const LispError&, LispEnvironment& aEnvironment, LispOutput& aOutput);
 
 
 #ifdef YACAS_DEBUG

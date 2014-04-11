@@ -415,7 +415,7 @@ REENTER:
   try {
       aEnvironment.iDebugger->Enter(aEnvironment, aExpression);
   } catch(const LispError& error) {
-      Handle(error, aEnvironment, errorOutput);
+      HandleError(error, aEnvironment, errorOutput);
   }
 
   if(aEnvironment.iDebugger->Stopped())
@@ -432,7 +432,7 @@ REENTER:
   try {
       BasicEvaluator::Eval(aEnvironment, aResult, aExpression);
   } catch(const LispError& error) {
-      Handle(error, aEnvironment, errorOutput);
+      HandleError(error, aEnvironment, errorOutput);
   }
 
   if (errorStr[0])
