@@ -56,7 +56,6 @@ include (${CMAKE_ROOT}/Modules/CheckFunctionExists.cmake)
 
 check_function_exists (select HAVE_SELECT)
 check_function_exists (socket HAVE_SOCKET)
-check_function_exists (strtod HAVE_STRTOD)
 check_function_exists (strchr HAVE_STRCHR)
 check_function_exists (vsnprintf HAVE_VSNPRINTF)
 

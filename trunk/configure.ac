@@ -47,7 +47,7 @@ AC_C_INLINE
 AC_HEADER_TIME
 
 # Checks for library functions.
-AC_CHECK_FUNCS(select socket strtod strchr)
+AC_CHECK_FUNCS(select socket strchr)
 
 # Check type of signal handler
 AC_MSG_CHECKING([type of argument of signal handler])
