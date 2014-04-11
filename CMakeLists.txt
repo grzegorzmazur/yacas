@@ -109,6 +109,8 @@ if (APPLE)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_BINARY_DIR}/scripts $<TARGET_FILE_DIR:libyacas_framework>/Resources/scripts)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/include $<TARGET_FILE_DIR:libyacas_framework>/Headers)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_BINARY_DIR}/include $<TARGET_FILE_DIR:libyacas_framework>/Headers)
+  add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ln -sf  $<TARGET_FILE_DIR:libyacas_framework>/Headers $<TARGET_FILE_DIR:libyacas_framework>/../../Headers)
+
   install (TARGETS libyacas_framework FRAMEWORK DESTINATION ${CMAKE_FRAMEWORK_INSTALL_DIR} COMPONENT dev)
 endif()
 
