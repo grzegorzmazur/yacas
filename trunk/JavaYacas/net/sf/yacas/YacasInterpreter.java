@@ -31,7 +31,7 @@ public class YacasInterpreter {
      * yacasinit.ys is inside yacas.jar.
      * Returns true if successful.*/
     private boolean loadScripts() {
-        java.net.URL detectURL = java.lang.ClassLoader.getSystemResource("yacasinit.ys");
+        java.net.URL detectURL = java.lang.ClassLoader.getSystemResource("scripts/yacasinit.ys");
         // if yacasinit.ys not found:
         if (detectURL == null) return false;
  
