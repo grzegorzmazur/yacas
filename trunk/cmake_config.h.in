@@ -15,7 +15,6 @@
 #cmakedefine HAVE_MATH_H
 #cmakedefine HAVE_SIGNAL_H
 #cmakedefine HAVE_STRING_H
-#cmakedefine HAVE_STRINGS_H
 
 #cmakedefine HAVE_SELECT
 #cmakedefine HAVE_SOCKET

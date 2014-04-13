@@ -47,8 +47,6 @@ check_include_files (ctype.h HAVE_CTYPE_H)
 check_include_files (dirent.h HAVE_DIRENT_H)
 check_include_files (signal.h HAVE_SIGNAL_H)
 check_include_files (string.h HAVE_STRING_H)
-check_include_files (strings.h HAVE_STRINGS_H)
-
 
 include (${CMAKE_ROOT}/Modules/CheckFunctionExists.cmake)
 
