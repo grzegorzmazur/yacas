@@ -12,7 +12,6 @@
 #cmakedefine HAVE_DL_H
 #cmakedefine HAVE_DLD_H
 #cmakedefine HAVE_DIRENT_H
-#cmakedefine HAVE_MATH_H
 #cmakedefine HAVE_SIGNAL_H
 #cmakedefine HAVE_STRING_H
 
