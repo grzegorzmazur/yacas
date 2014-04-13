@@ -166,7 +166,7 @@ private:
 /// bits_to_digits and digits_to_bits, utility functions
 /// to convert the number of digits in some base (usually 10) to bits and back
 
-// lookup table for Ln(n)/Ln(2). This works whether or not we have math.h.
+// lookup table for Ln(n)/Ln(2)
 // table range is from 2 to this value:
 unsigned log2_table_range();
 // convert the number of digits in given base to the number of bits, and back.
