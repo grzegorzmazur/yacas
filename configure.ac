@@ -39,7 +39,7 @@ AC_HEADER_STDC
 AC_CHECK_HEADERS(unistd.h sys/ioctl.h sys/socket.h sys/time.h sys/types.h sys/sysinfo.h)
 AC_CHECK_HEADERS(malloc.h memory.h stdlib.h stdio.h ctype.h)
 AC_CHECK_HEADERS(dirent.h signal.h)
-AC_CHECK_HEADERS(string.h strings.h)
+AC_CHECK_HEADERS(string.h)
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
