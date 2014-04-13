@@ -1,0 +1,115 @@
+#!/bin/env python
+
+"""
+pre-commit hook script checking for yacas whitespace policy
+
+adapted from http://justanyone.blogspot.com/2013/05/subversion-pre-commit-hook-script.html
+"""
+
+import sys
+import os
+import traceback
+from optparse import OptionParser
+
+def command_output(cmd):
+    " Capture a command's standard output. "
+    import subprocess
+    return subprocess.Popen(cmd.split(), stdout=subprocess.PIPE).communicate()[0]
+
+def files_changed(look_cmd):
+    """ List the files added or updated by this transaction.
+
+        "svnlook changed" gives output like:
+          U   trunk/file1.cpp
+          A   trunk/file2.py
+    """
+    def filename(line):
+        return line[4:]
+
+    def added_or_updated(line):
+        return line and line[0] in ("A", "U")
+
+    retval = []
+    for line in command_output(look_cmd % "changed").split("\n"):
+        if added_or_updated(line):
+            retval.append(filename(line))
+
+    return retval
+
+def file_contents(filename, look_cmd):
+    " Return a file's contents for this transaction. "
+    return command_output("%s %s" % (look_cmd % "cat", filename))
+
+def file_get_properties(filename, look_cmd):
+    propslines = command_output("%s %s" % (look_cmd % "proplist -v", filename))
+    res = {}
+    for line in propslines.split('\n'):
+        line = line.strip()
+        if not line:
+            continue
+        k, v = line.split(' : ')
+        res[k] = v
+    return res
+
+def contains_tabs(filename, look_cmd):
+    " Return True if this version of the file contains tabs. "
+    return "\t" in file_contents(filename, look_cmd)
+
+def contains_trailing_spaces(filename, look_cmd):
+    " Return True if this version of the file contains trailing whitespaces. "
+    return " \n" in file_contents(filename, look_cmd)
+
+def check_src_files(look_cmd):
+    " Check Python files in this transaction are tab-free. "
+
+    def is_src_file(fname):
+        return os.path.splitext(fname)[1] in [".h", ".inl", ".cpp", ".java", ".ys", ".yts"]
+
+    src_files_with_tabs = set()
+    src_files_with_trailing_spaces = set()
+
+    for ff in files_changed(look_cmd):
+        if not is_src_file(ff):
+            continue
+
+    if contains_tabs(ff, look_cmd):
+        src_files_with_tabs.add(ff)
+
+    if contains_trailing_spaces(ff, look_cmd):
+        src_files_with_trailing_spaces.add(ff)
+
+    prevent_commit = False
+
+    if len(src_files_with_tabs) > 0:
+        sys.stderr.write("The following files contain tabs:\n%s\n"                                                                              % "\n".join(src_files_with_tabs))
+        prevent_commit = True
+
+    if len(src_files_with_trailing_spaces) > 0:
+        sys.stderr.write("The following files contain trailing whitespces:\n%s\n"                                                               % "\n".join(src_files_with_tabs))
+        prevent_commit = True
+
+    return prevent_commit
+
+def main():
+    usage = """usage: %prog REPOS TXN
+        Run pre-commit options on a repository transaction."""
+
+    parser = OptionParser(usage=usage)
+    parser.add_option("-r", "--revision",
+                      help="Test mode. TXN actually refers to a revision.",
+                      action="store_true", default=False)
+    errors = 0
+    try:
+        (opts, (repos, txn_or_rvn)) = parser.parse_args()
+        look_opt = ("--transaction", "--revision")[opts.revision]
+        look_cmd = "svnlook %s %s %s %s" % (
+            "%s", repos, look_opt, txn_or_rvn)
+        errors += check_src_files(look_cmd)
+    except:
+        parser.print_help()
+        errors += 1
+        sys.stderr.write("Pre-commit hook traceback: %s" % (traceback.format_exc()))
+    return errors
+
+if __name__ == "__main__":
+    sys.exit(main())
