@@ -132,8 +132,6 @@ endif()
 
 add_executable (gencorefunctions src/gencorefunctions.cpp)
 
-add_executable (codereviewer src/codereviewer.cpp)
-
 add_executable (autocompleter docs/autocompleter.cpp)
 add_executable (riptestfromyart docs/riptestfromyart.cpp)
 

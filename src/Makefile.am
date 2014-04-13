@@ -85,7 +85,6 @@ libyacas_la_SOURCES = $(libyacas_la_HEADERS) stdcommandline.cpp		\
 
 bin_PROGRAMS =  yacas
 noinst_PROGRAMS = gencorefunctions
-EXTRA_PROGRAMS = codereviewer
 
 
 yacas_SOURCES = yacasmain.cpp
@@ -99,31 +98,21 @@ if WIN32
 yacas_SOURCES += win32commandline.cpp
 endif
 
-yacas_DEPENDENCIES = $(builddir)/../include/yacas/yacas_version.h $(top_srcdir)/include/yacas/GPL_stuff.h 
+yacas_DEPENDENCIES = $(builddir)/../include/yacas/yacas_version.h $(top_srcdir)/include/yacas/GPL_stuff.h
 
 mathcommands3.lo: $(builddir)/../include/yacas/yacas_version.h
 mathcommands3.o: $(builddir)/../include/yacas/yacas_version.h
 
-codereviewer_SOURCES = codereviewer.cpp 
-codereviewer_LDADD = 
-codereviewer_DEPENDENCIES = 
-
 
 # the program 'gencorefunctions' will prepare a listing of all core functions
-gencorefunctions_SOURCES = gencorefunctions.cpp 
+gencorefunctions_SOURCES = gencorefunctions.cpp
 
 # force core_yacasmain.h to be created
 $(srcdir)/gencorefunctions.cpp: $(top_srcdir)/include/yacas/core_yacasmain.h $(top_srcdir)/include/yacas/corefunctions.h
 
 $(builddir)/../include/yacas/yacas_version.h: ../config.h
 	mkdir -p $(builddir)/../include/yacas
-	echo -e "#ifndef YACAS_VERSION_H\n#define YACAS_VERSION \"$(VERSION)\"\n#endif" > $(builddir)/../include/yacas/yacas_version.h 
-
-check: check-codereviewer
-
-check-codereviewer: codereviewer$(EXEEXT)
-	./codereviewer$(EXEEXT) c ../include/yacas/*.h ../include/yacas/*.inl *.cpp
+	echo -e "#ifndef YACAS_VERSION_H\n#define YACAS_VERSION \"$(VERSION)\"\n#endif" > $(builddir)/../include/yacas/yacas_version.h
 
 distclean-local:
-	-rm -f codereviewer$(EXEEXT)
 	-rm -f $(builddir)/../include/yacas/yacas_version.h
