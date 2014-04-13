@@ -72,11 +72,11 @@ def check_src_files(look_cmd):
         if not is_src_file(ff):
             continue
 
-    if contains_tabs(ff, look_cmd):
-        src_files_with_tabs.add(ff)
+        if contains_tabs(ff, look_cmd):
+            src_files_with_tabs.add(ff)
 
-    if contains_trailing_spaces(ff, look_cmd):
-        src_files_with_trailing_spaces.add(ff)
+        if contains_trailing_spaces(ff, look_cmd):
+            src_files_with_trailing_spaces.add(ff)
 
     prevent_commit = False
 
