@@ -36,7 +36,7 @@ bool MatchAtom::ArgumentMatches(LispEnvironment& aEnvironment,
       if (aExpression->Number(0))
         if (!aExpression->Number(0)->IsInt())
           return false;
- 
+
     return (iString == aExpression->String());
 }
 
@@ -145,6 +145,7 @@ LispInt YacasPatternPredicateBase::LookUp(LispString * aVariable)
             return i;
         }
     }
+    aVariable->iReferenceCount += 1;
     iVariables.Append(aVariable);
     return iVariables.Size()-1;
 }
@@ -226,7 +227,7 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
         }
     return NEW MatchSubList(matchers, num);
     }
- 
+
     return NULL;
 }
 
@@ -278,7 +279,7 @@ bool YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
 
     // set the local variables for sure now
     SetPatternVariables(aEnvironment,arguments);
- 
+
     return true;
 }
 
@@ -359,7 +360,7 @@ bool YacasPatternPredicateBase::CheckPredicates(LispEnvironment& aEnvironment)
   }
   return true;
 }
- 
+
 
 void YacasPatternPredicateBase::SetPatternVariables(LispEnvironment& aEnvironment,
                                                     LispPtr* arguments)
@@ -375,5 +376,9 @@ void YacasPatternPredicateBase::SetPatternVariables(LispEnvironment& aEnvironmen
 
 YacasPatternPredicateBase::~YacasPatternPredicateBase()
 {
+    for (int i = 0; i < iVariables.Size(); ++i) {
+        if (--iVariables[i]->iReferenceCount == 0)
+            delete iVariables[i];
+    }
 }
 
