@@ -22,13 +22,7 @@
 #  define LISPIMPORT  //__declspec(dllimport)
 #endif
 
-#ifndef LINUX64
-#  define ReferenceType unsigned
-#  define ReferenceMax ((unsigned)0xffffffff)
-#else
-#  define ReferenceType unsigned
-#  define ReferenceMax ((unsigned)0xffffffffffffffff)
-#endif
+typedef unsigned ReferenceType;
 
 #define SAFEPUSH(_env,_obj) // _env.iCleanup.Push(_obj)
 #define SAFEPOP(_env) // _env.iCleanup.Pop()
