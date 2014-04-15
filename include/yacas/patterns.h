@@ -25,8 +25,7 @@ class YacasParamMatcherBase : public YacasBase
 {
 public:
     /// Destructor.
-    /// This function contains no code.
-    virtual ~YacasParamMatcherBase();
+    virtual ~YacasParamMatcherBase() {}
 
     /// Check whether some expression matches to the pattern.
     /// \param aEnvironment the underlying Lisp environment.

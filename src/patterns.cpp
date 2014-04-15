@@ -15,14 +15,6 @@
 #endif // YACAS_DEBUG
 
 
-#define InternalEval aEnvironment.iEvaluator->Eval
-
-
-YacasParamMatcherBase::~YacasParamMatcherBase()
-{
-}
-
-
 MatchAtom::MatchAtom(LispString * aString) : iString(aString)
 {
 }
@@ -326,7 +318,7 @@ bool YacasPatternPredicateBase::CheckPredicates(LispEnvironment& aEnvironment)
   for (LispInt i=0;i<iPredicates.Size();i++)
   {
     LispPtr pred;
-    InternalEval(aEnvironment, pred, iPredicates[i]);
+    aEnvironment.iEvaluator->Eval(aEnvironment, pred, iPredicates[i]);
     if (IsFalse(aEnvironment, pred))
     {
       return false;
