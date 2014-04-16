@@ -36,13 +36,6 @@ static void MapPathSeparators(std::string& filename)
 }
 
 
-
-// For lack of better place to put it...
-InputStatus::~InputStatus()
-{
-}
-
-
 StdFileInput::StdFileInput(FILE* aFile,InputStatus& aStatus)
     : LispInput(aStatus),  iFile(aFile)
 {
@@ -69,7 +62,7 @@ LispChar StdFileInput::Peek()
   ungetc(c,iFile);
   return c;
 }
- 
+
 void StdFileInput::Rewind()
 {
   fseek(iFile,0,SEEK_SET);
