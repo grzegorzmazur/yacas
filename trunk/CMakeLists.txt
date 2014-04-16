@@ -13,6 +13,8 @@ if (APPLE)
   set(CMAKE_FRAMEWORK_INSTALL_DIR "/Library/Frameworks" CACHE STRING "Directory to install frameworks to.")
 endif()
 
+set (CMAKE_CXX_FLAGS_INIT "-std=c++11 ${CMAKE_CXX_FLAGS_INIT}"}
+
 if (ENABLE_JYACAS)
   find_package (Java)
   include (${CMAKE_ROOT}/Modules/UseJava.cmake)
