@@ -31,7 +31,7 @@ if test "$GCC" = yes; then
   CFLAGS="$CFLAGS -Wall -pedantic "
 fi;
 if test "$GXX" = yes; then
-  CXXFLAGS="$CXXFLAGS -Wall -pedantic "
+  CXXFLAGS="$CXXFLAGS -std=c++11 -Wall -pedantic "
 fi;
 
 # Checks for header files.
