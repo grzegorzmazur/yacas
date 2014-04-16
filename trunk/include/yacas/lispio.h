@@ -13,8 +13,8 @@ class InputDirectories;
 class InputStatus : public YacasBase
 {
 public:
-  InputStatus() : iFileName("none") , iLineNumber(-1)  {};
-  ~InputStatus();
+  InputStatus() : iFileName("none") , iLineNumber(-1)  {}
+
   void SetTo(const LispChar * aFileName);
   void RestoreFrom(InputStatus& aPreviousStatus);
   inline LispInt LineNumber();
