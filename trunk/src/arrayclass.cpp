@@ -19,10 +19,6 @@ ArrayClass::~ArrayClass()
 {
 }
 
-const LispChar * ArrayClass::Send(LispArgList& aArgList)
-{
-    return NULL;
-}
 const LispChar * ArrayClass::TypeName()
 {
     return "\"Array\"";

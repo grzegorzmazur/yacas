@@ -20,7 +20,6 @@ public:
   bool Matches(LispEnvironment& aEnvironment,
                       LispPtr* aArguments);
 public: //From GenericClass
-  virtual const LispChar * Send(LispArgList& aArgList);
   virtual const LispChar * TypeName();
 
 private:

@@ -69,19 +69,18 @@ pkginclude_HEADERS = $(top_srcdir)/include/yacas/anumber.h	\
 	$(top_srcdir)/include/yacas/platfileio.h				\
 	$(top_srcdir)/include/yacas/debugmem.h
 
-libyacas_la_SOURCES = $(libyacas_la_HEADERS) stdcommandline.cpp		\
-	deffile.cpp infixparser.cpp lispatom.cpp lispcleanupstack.cpp	\
-	lispenvironment.cpp lispeval.cpp lisperror.cpp lispio.cpp		\
-	lispobject.cpp lispparser.cpp lispuserfunc.cpp mathcommands.cpp	\
-	mathenvironment.cpp mathuserfunc.cpp standard.cpp stdfileio.cpp	\
-	arggetter.cpp stringio.cpp tokenizer.cpp yacasapi.cpp			\
-	genericobject.cpp arrayclass.cpp lispevalhash.cpp patterns.cpp	\
-	patternclass.cpp substitute.cpp mathcommands2.cpp				\
-	mathcommands3.cpp errors.cpp patcher.cpp genericstructs.cpp		\
-	xmltokenizer.cpp commandline.cpp anumber.cpp yacasnumbers.cpp	\
-	numbers.cpp platmath.cpp grower.cpp stdstubs.cpp obmalloc.cpp	\
-	lisphash.cpp lispstring.cpp mathutil.cpp yacasbase.cpp			\
-	debugmem.cpp
+libyacas_la_SOURCES = $(libyacas_la_HEADERS) stdcommandline.cpp		 \
+	deffile.cpp infixparser.cpp lispatom.cpp lispcleanupstack.cpp	 \
+	lispenvironment.cpp lispeval.cpp lisperror.cpp lispio.cpp		 \
+	lispobject.cpp lispparser.cpp lispuserfunc.cpp mathcommands.cpp	 \
+	mathenvironment.cpp mathuserfunc.cpp standard.cpp stdfileio.cpp	 \
+	arggetter.cpp stringio.cpp tokenizer.cpp yacasapi.cpp			 \
+	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp	 \
+	substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp	 \
+	patcher.cpp genericstructs.cpp xmltokenizer.cpp commandline.cpp	 \
+	anumber.cpp yacasnumbers.cpp numbers.cpp platmath.cpp grower.cpp \
+	stdstubs.cpp obmalloc.cpp lisphash.cpp lispstring.cpp			 \
+	mathutil.cpp yacasbase.cpp debugmem.cpp
 
 bin_PROGRAMS =  yacas
 noinst_PROGRAMS = gencorefunctions
