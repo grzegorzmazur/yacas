@@ -17,10 +17,7 @@
 #include "yacas/stringio.h"
 #include "yacas/numbers.h"
 
-#define InternalEval aEnvironment.iEvaluator->Eval
-
-
-bool InternalIsList(LispPtr& aPtr)
+bool InternalIsList(const LispPtr& aPtr)
 {
     if (!aPtr)
         return false;
@@ -172,7 +169,7 @@ bool IsNumber(const LispChar * ptr,bool aAllowFloat)
 }
 
 
-void InternalNth(LispPtr& aResult, LispPtr& aArg, LispInt n)
+void InternalNth(LispPtr& aResult, const LispPtr& aArg, LispInt n)
 {
     if (n < 0 || !aArg || !aArg->SubList())
         throw LispErrInvalidArg();
@@ -194,7 +191,7 @@ void InternalNth(LispPtr& aResult, LispPtr& aArg, LispInt n)
     aResult = (iter.getObj()->Copy());
 }
 
-void InternalTail(LispPtr& aResult, LispPtr& aArg)
+void InternalTail(LispPtr& aResult, const LispPtr& aArg)
 {
     if (!aArg)
         throw LispErrInvalidArg();
@@ -209,12 +206,12 @@ void InternalTail(LispPtr& aResult, LispPtr& aArg)
 
 
 
-void InternalReverseList(LispPtr& aResult, LispPtr& aOriginal)
+void InternalReverseList(LispPtr& aResult, const LispPtr& aOriginal)
 {
     LispPtr iter(aOriginal);
     LispPtr previous;
     LispPtr tail(aOriginal);
- 
+
     while (!!iter)
     {
         tail = iter->Nixed();
@@ -312,7 +309,7 @@ bool InternalEquals(LispEnvironment& aEnvironment,
             {
                 return false;
             }
- 
+
             // Step to next
             ++iter1;
             ++iter2;
@@ -328,7 +325,7 @@ bool InternalEquals(LispEnvironment& aEnvironment,
     // expressions sublists are not the same!
     return false;
 }
- 
+
 void DoInternalLoad(LispEnvironment& aEnvironment,LispInput* aInput)
 {
     LispLocalInput localInput(aEnvironment, aInput);
@@ -365,7 +362,7 @@ void DoInternalLoad(LispEnvironment& aEnvironment,LispInput* aInput)
         else
         {
             LispPtr result;
-            InternalEval(aEnvironment, result, readIn);
+            aEnvironment.iEvaluator->Eval(aEnvironment, result, readIn);
         }
     }
 }
@@ -402,7 +399,7 @@ void InternalLoad(LispEnvironment& aEnvironment,LispString * aFileName)
     }
     aEnvironment.iInputStatus.RestoreFrom(oldstatus);
 }
- 
+
 void InternalUse(LispEnvironment& aEnvironment,LispString * aFileName)
 {
     LispDefFile* def = aEnvironment.DefFiles().File(aFileName);
@@ -423,7 +420,7 @@ void InternalApplyString(LispEnvironment& aEnvironment, LispPtr& aResult,
         LispAtom::New(aEnvironment,SymbolName(aEnvironment, aOperator->c_str())->c_str());
     head->Nixed() = (aArgs);
     LispPtr body(LispSubList::New(head));
-    InternalEval(aEnvironment, aResult, body);
+    aEnvironment.iEvaluator->Eval(aEnvironment, aResult, body);
 }
 
 void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnvironment& aEnvironment)
@@ -473,7 +470,7 @@ void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnviron
     if (args2)
         throw LispErrInvalidArg();
 
-    InternalEval(aEnvironment, aResult, body);
+    aEnvironment.iEvaluator->Eval(aEnvironment, aResult, body);
 }
 
 
@@ -494,7 +491,7 @@ void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
                        aEnvironment.Bodied());
     parser.Parse(lispexpr);
 
-    InternalEval(aEnvironment, aResult, lispexpr);
+    aEnvironment.iEvaluator->Eval(aEnvironment, aResult, lispexpr);
 }
 
 /*TODO put somewhere else? Platform-independent strcmp
@@ -532,7 +529,7 @@ LispObject* operator+(const LispObjectAdder& left, const LispObjectAdder& right)
   return left.iPtr;
 }
 
-void ParseExpression(LispPtr& aResult,LispChar * aString,LispEnvironment& aEnvironment)
+void ParseExpression(LispPtr& aResult, const LispChar* aString,LispEnvironment& aEnvironment)
 {
     LispString full((LispChar *)aString);
     full[full.Size()-1] = ';';

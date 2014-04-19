@@ -11,7 +11,7 @@
 // Prototypes
 class LispHashTable;
 
-bool InternalIsList(LispPtr& aPtr);
+bool InternalIsList(const LispPtr& aPtr);
 bool InternalIsString(LispString * aOriginal);
 void InternalUnstringify(LispString& aResult, LispString * aOriginal);
 void InternalStringify(LispString& aResult, LispString * aOriginal);
@@ -19,12 +19,12 @@ void InternalIntToAscii(LispChar * aTrg,LispInt aInt);
 LispInt InternalAsciiToInt(LispString * aString);
 bool IsNumber(const LispChar * ptr,bool aAllowFloat);
 
-void InternalNth(LispPtr& aResult, LispPtr& aArg, LispInt n);
-void InternalTail(LispPtr& aResult, LispPtr& aArg);
-void InternalAssociate(LispPtr& aResult, LispPtr& aKey,
-                      LispPtr& aAssociationList);
+void InternalNth(LispPtr& aResult, const LispPtr& aArg, LispInt n);
+void InternalTail(LispPtr& aResult, const LispPtr& aArg);
+void InternalAssociate(LispPtr& aResult, const LispPtr& aKey,
+                      const LispPtr& aAssociationList);
 
-void InternalReverseList(LispPtr& aResult, LispPtr& aOriginal);
+void InternalReverseList(LispPtr& aResult, const LispPtr& aOriginal);
 void InternalFlatCopy(LispPtr& aResult, LispPtr& aOriginal);
 LispInt InternalListLength(LispPtr& aOriginal);
 
@@ -66,8 +66,7 @@ public:
 
 LispObject* operator+(const LispObjectAdder& left, const LispObjectAdder& right);
 
-#define PARSE(_r,_s) ParseExpression(_r,_s,aEnvironment)
-void ParseExpression(LispPtr& aResult,LispChar * aString,LispEnvironment& aEnvironment);
+void ParseExpression(LispPtr& aResult, const LispChar* aString, LispEnvironment& aEnvironment);
 
 void ReturnUnEvaluated(LispPtr& aResult,LispPtr& aArguments,
                        LispEnvironment& aEnvironment);
