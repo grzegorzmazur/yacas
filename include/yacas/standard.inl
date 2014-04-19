@@ -11,12 +11,12 @@ inline LispPtr& Argument(LispPtr& cur, LispInt n)
 }
 
 // Boolean operations
-inline void InternalTrue(LispEnvironment& aEnvironment, LispPtr& aResult)
+inline void InternalTrue(const LispEnvironment& aEnvironment, LispPtr& aResult)
 {
     aResult = (aEnvironment.iTrue->Copy());
 }
 
-inline void InternalFalse(LispEnvironment& aEnvironment, LispPtr& aResult)
+inline void InternalFalse(const LispEnvironment& aEnvironment, LispPtr& aResult)
 {
     aResult = (aEnvironment.iFalse->Copy());
 }
@@ -35,12 +35,12 @@ inline void InternalBoolean(LispEnvironment& aEnvironment, LispPtr& aResult,
 }
 
 
-inline bool IsTrue(LispEnvironment& aEnvironment, LispPtr& aExpression)
+inline bool IsTrue(LispEnvironment& aEnvironment, const LispPtr& aExpression)
 {
     assert(aExpression);
     return aExpression->String() == aEnvironment.iTrue->String();
 }
-inline bool IsFalse(LispEnvironment& aEnvironment, LispPtr& aExpression)
+inline bool IsFalse(LispEnvironment& aEnvironment, const LispPtr& aExpression)
 {
     assert(aExpression);
     return aExpression->String() == aEnvironment.iFalse->String();

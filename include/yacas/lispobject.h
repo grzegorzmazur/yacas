@@ -91,7 +91,7 @@ public: //Derivables
    */
   virtual BigNumber* Number(LispInt aPrecision) { return NULL; }
 
-  virtual LispObject* Copy() = 0;
+  virtual LispObject* Copy() const = 0;
 
  /** Return a pointer to extra info. This allows for annotating
   *  an object. Returns NULL by default.
@@ -227,6 +227,43 @@ protected:
 public:
   inline LispObject* getObj() const { return (*_Ptr).operator->(); }
 };
+
+class LispConstIterator : public YacasBase
+{
+public:
+  // ala TEMPLATE CLASS iterator
+  //typedef forward_iterator_tag iterator_category;
+  typedef const LispPtr    value_type;
+  typedef int /*ptrdiff_t*/  difference_type;
+  typedef const LispPtr*  pointer;
+  typedef const LispPtr&  reference;
+public:
+  LispConstIterator() : _Ptr(0) {}  // construct with null node pointer
+  LispConstIterator(pointer ptr) : _Ptr(ptr) {}  // construct with node pointer
+  /*non-standard*/ LispConstIterator(reference ref) : _Ptr(&ref) {}  // construct with node reference
+  reference operator*() const { return (*(_Ptr)); }  // return designated value
+  pointer operator->() const { return (_Ptr); }  // return pointer to class object
+  inline LispConstIterator& operator++()  // preincrement
+  {
+    //precondition: _Ptr != NULL
+    assert(_Ptr != NULL);
+    //expand: _Ptr = _Nextnode(_Ptr);
+    LispObject * pObj = _Ptr->operator->();
+    _Ptr = pObj ? &(pObj->Nixed()) : NULL;
+    return (*this);
+  }
+  LispConstIterator operator++(int) { LispConstIterator _Tmp = *this; ++*this; return (_Tmp); }  // postincrement
+  bool operator==(const LispConstIterator& other) const { return (_Ptr == other._Ptr); }  // test for iterator equality
+  bool operator!=(const LispConstIterator& other) const { return (!(*this == other)); }  // test for iterator inequality
+  // The following operators are not used yet, and would need to be tested before used.
+  //LispConstIterator& operator--() { _Ptr = _Prevnode(_Ptr); return (*this); }  // predecrement
+  //LispConstIterator operator--(int) { LispConstIterator _Tmp = *this; --*this; return (_Tmp); }  // postdecrement
+protected:
+  pointer _Ptr;  // pointer to node
+public:
+  inline const LispObject* getObj() const { return (*_Ptr).operator->(); }
+};
+
 
 #include "lispobject.inl"
 

@@ -49,7 +49,7 @@ bool InternalIsString(LispString * aOriginal)
    result by reference. Result string passed in by reference to avoid copy-constructors etcetera (allowing
    the code to share the same LispString in different places).
  */
-void InternalUnstringify(LispString& aResult, LispString * aOriginal)
+void InternalUnstringify(LispString& aResult, const LispString * aOriginal)
 {
   /*TODO: should these not be checked also higher up, and should this not be an assert at this level?
    * ideally this function should be as efficient as possible (allowing for a code generator to generate
@@ -72,7 +72,7 @@ void InternalUnstringify(LispString& aResult, LispString * aOriginal)
   aResult[nrc-1]='\0';
 }
 
-void InternalStringify(LispString& aResult, LispString * aOriginal)
+void InternalStringify(LispString& aResult, const LispString* aOriginal)
 {
     if (!aOriginal)
         throw LispErrInvalidArg();
@@ -119,7 +119,7 @@ void InternalIntToAscii(LispChar * aTrg,LispInt aInt)
 }
 
 // TODO: we should either pass the string by reference, or use an assert to check validity of input
-LispInt InternalAsciiToInt(LispString * aString)
+LispInt InternalAsciiToInt(const LispString* aString)
 {
   const LispChar * ptr = aString->c_str();
 
@@ -222,9 +222,9 @@ void InternalReverseList(LispPtr& aResult, const LispPtr& aOriginal)
     aResult = previous;
 }
 
-void InternalFlatCopy(LispPtr& aResult, LispPtr& aOriginal)
+void InternalFlatCopy(LispPtr& aResult, const LispPtr& aOriginal)
 {
-    LispIterator orig(aOriginal);
+    LispConstIterator orig(aOriginal);
     LispIterator res(aResult);
 
     while (orig.getObj())
@@ -235,9 +235,9 @@ void InternalFlatCopy(LispPtr& aResult, LispPtr& aOriginal)
     }
 }
 
-LispInt InternalListLength(LispPtr& aOriginal)
+LispInt InternalListLength(const LispPtr& aOriginal)
 {
-    LispIterator iter(aOriginal);
+    LispConstIterator iter(aOriginal);
     LispInt length = 0;
     while (iter.getObj())
     {
@@ -252,8 +252,8 @@ LispInt InternalListLength(LispPtr& aOriginal)
 }
 
 bool InternalEquals(LispEnvironment& aEnvironment,
-                           LispPtr& aExpression1,
-                           LispPtr& aExpression2)
+                    const LispPtr& aExpression1,
+                    const LispPtr& aExpression2)
 {
     // Handle pointers to same, or NULL
     if (aExpression1.ptr() == aExpression2.ptr())  // compare pointers to LispObject
@@ -367,7 +367,7 @@ void DoInternalLoad(LispEnvironment& aEnvironment,LispInput* aInput)
     }
 }
 
-void InternalLoad(LispEnvironment& aEnvironment,LispString * aFileName)
+void InternalLoad(LispEnvironment& aEnvironment, const LispString* aFileName)
 {
     LispString oper;
     InternalUnstringify(oper, aFileName);
@@ -475,7 +475,7 @@ void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnviron
 
 
 void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
-                        LispChar * aString)
+                        const LispChar* aString)
 {
     LispString full(aString);
     full[full.Size()-1] = ';';
@@ -567,7 +567,8 @@ void ReturnUnEvaluated(LispPtr& aResult,LispPtr& aArguments,
     full->Nixed() = (NULL);
 }
 
-void PrintExpression(LispString& aResult, LispPtr& aExpression,
+void PrintExpression(LispString& aResult,
+                     LispPtr& aExpression,
                      LispEnvironment& aEnvironment,
                      LispInt aMaxChars)
 {

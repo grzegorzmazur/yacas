@@ -44,7 +44,7 @@ public:
   static LispObject* New(LispEnvironment& aEnvironment, const LispChar * aString);
   virtual ~LispAtom();
   virtual LispString * String();
-  virtual LispObject* Copy() { return NEW LispAtom(*this); }
+  virtual LispObject* Copy() const { return NEW LispAtom(*this); }
 private:
   LispAtom(LispString * aString);
   LispAtom& operator=(const LispAtom& aOther)
@@ -68,7 +68,7 @@ public:
   static LispSubList* New(LispObject* aSubList);
   virtual ~LispSubList();
   virtual LispPtr* SubList() { return &iSubList; }
-  virtual LispObject* Copy() { return NEW LispSubList(*this); }
+  virtual LispObject* Copy() const { return NEW LispSubList(*this); }
 private:
   // Constructor is private -- use New() instead
   LispSubList(LispObject* aSubList) : iSubList(aSubList) {}  // iSubList's constructor is messed up (it's a LispPtr, duh)
@@ -88,7 +88,7 @@ public:
   static LispGenericClass* New(GenericClass* aClass);
   virtual ~LispGenericClass();
   virtual GenericClass* Generic();
-  virtual LispObject* Copy() { return NEW LispGenericClass(*this); }
+  virtual LispObject* Copy() const { return NEW LispGenericClass(*this); }
 private:
   // Constructor is private -- use New() instead
   LispGenericClass(GenericClass* aClass);
@@ -117,7 +117,7 @@ public:
   LispNumber(LispString * aString, LispInt aBasePrecision) : iNumber(NULL), iString(aString) { Number(aBasePrecision); }
 
   virtual ~LispNumber() {}
-  virtual LispObject* Copy() { return NEW LispNumber(*this); }
+  virtual LispObject* Copy() const { return NEW LispNumber(*this); }
   /// return a string representation in decimal with maximum decimal precision allowed by the inherent accuracy of the number
   virtual LispString * String();
   /// give access to the BigNumber object; if necessary, will create a BigNumber object out of the stored string, at given precision (in decimal?)
