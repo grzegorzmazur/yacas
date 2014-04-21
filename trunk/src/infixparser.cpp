@@ -400,19 +400,23 @@ void InfixPrinter::RememberLastChar(LispChar aChar)
   iPrevLastChar = aChar;
 }
 
-void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
-                       LispEnvironment& aEnvironment)
+void InfixPrinter::Print(
+    const LispPtr& aExpression,
+    LispOutput& aOutput,
+    LispEnvironment& aEnvironment)
 {
     iCurrentEnvironment = &aEnvironment;
     Print(aExpression, aOutput, KMaxPrecedence);
 }
 
-void InfixPrinter::Print(LispPtr& aExpression, LispOutput& aOutput,
-                         LispInt iPrecedence)
+void InfixPrinter::Print(
+    const LispPtr& aExpression,
+    LispOutput& aOutput,
+    LispInt iPrecedence)
 {
     assert(aExpression);
 
-    LispString * string = aExpression->String();
+    LispString* string = aExpression->String();
     if (string)
     {
         LispInt bracket=0;

@@ -76,9 +76,12 @@ void LispParser::ParseList(LispPtr& aResult)
 LispPrinter::~LispPrinter() {}
 
 
-void LispPrinter::Print(LispPtr& aExpression, LispOutput& aOutput, LispEnvironment& aEnvironment)
+void LispPrinter::Print(
+    const LispPtr& aExpression,
+    LispOutput& aOutput,
+    LispEnvironment& aEnvironment)
 {
-  PrintExpression(aExpression, aOutput, aEnvironment,0);
+    PrintExpression(aExpression, aOutput, aEnvironment, 0);
 }
 
 void LispPrinter::Indent(LispOutput& aOutput, LispInt aDepth)
@@ -91,11 +94,13 @@ void LispPrinter::Indent(LispOutput& aOutput, LispInt aDepth)
   }
 }
 
-void LispPrinter::PrintExpression(LispPtr& aExpression, LispOutput& aOutput,
-                     LispEnvironment& aEnvironment,
-                   LispInt aDepth)
+void LispPrinter::PrintExpression(
+    const LispPtr& aExpression,
+    LispOutput& aOutput,
+    LispEnvironment& aEnvironment,
+    LispInt aDepth)
 {
-    LispPtr* iter = &aExpression;
+    const LispPtr* iter = &aExpression;
     LispInt item = 0;
     while (!!(*iter))
     {

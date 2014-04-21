@@ -59,7 +59,7 @@ public:
                 LispOperators& aInfixOperators,
                 LispOperators& aPostfixOperators,
                 LispOperators& aBodiedOperators);
- 
+
     virtual void Parse(LispPtr& aResult);
 
 public:
@@ -124,13 +124,21 @@ public:
           iBodiedOperators(aBodiedOperators),
           iPrevLastChar(0),iCurrentEnvironment(NULL){}
 
-    virtual void Print(LispPtr& aExpression, LispOutput& aOutput,
-                       LispEnvironment& aEnvironment);
-  virtual void RememberLastChar(LispChar aChar);
+    virtual void Print(
+        const LispPtr& aExpression,
+        LispOutput& aOutput,
+        LispEnvironment& aEnvironment);
+
+    virtual void RememberLastChar(LispChar aChar);
+
 private:
-    void Print(LispPtr& aExpression, LispOutput& aOutput,
-               LispInt iPrecedence);
-    void WriteToken(LispOutput& aOutput,const LispChar * aString);
+    void Print(
+        const LispPtr& aExpression,
+        LispOutput& aOutput,
+        LispInt iPrecedence);
+
+    void WriteToken(LispOutput& aOutput, const LispChar* aString);
+
 private:
     LispOperators& iPrefixOperators;
     LispOperators& iInfixOperators;
