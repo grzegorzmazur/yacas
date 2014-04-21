@@ -85,7 +85,7 @@ def check_src_files(look_cmd):
         prevent_commit = True
 
     if len(src_files_with_trailing_spaces) > 0:
-        sys.stderr.write("The following files contain trailing whitespces:\n%s\n"                                                               % "\n".join(src_files_with_tabs))
+        sys.stderr.write("The following files contain trailing whitespaces:\n%s\n"                                                              % "\n".join(src_files_with_trailing_spaces))
         prevent_commit = True
 
     return prevent_commit
