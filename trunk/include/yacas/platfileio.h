@@ -1,33 +1,28 @@
 #ifndef YACAS_PLATFILEIO_H
 #define YACAS_PLATFILEIO_H
 
-#include <stdio.h>
-#include <string.h>
+#include <fstream>
+#include <iostream>
 
-class LispLocalFile : public LispBase
-{
+class LispLocalFile: public LispBase {
 public:
-  LispLocalFile(LispEnvironment& aEnvironment,
-                const LispChar * aFileName, bool aRead,
-                InputDirectories& aInputDirectories);
-  virtual ~LispLocalFile();
-  virtual void Delete();
+    LispLocalFile(
+        LispEnvironment& environment,
+        const LispChar* fname,
+        bool read,
+        InputDirectories& aInputDirectories);
+    virtual ~LispLocalFile();
+
+    virtual void Delete();
+
 private:
-  LispLocalFile(const LispLocalFile& aOther) : iFile(NULL),iEnvironment(aOther.iEnvironment),iOpened(false)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-  }
-  LispLocalFile& operator=(const LispLocalFile& aOther)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-    return *this;
-  }
+    // not implemented
+    LispLocalFile(const LispLocalFile& aOther);
+    LispLocalFile& operator=(const LispLocalFile&);
+
 public:
-  FILE* iFile;
-  LispEnvironment& iEnvironment;
-  LispInt iOpened;
+    std::fstream stream;
+    LispEnvironment& environment;
 };
 
 
@@ -43,76 +38,67 @@ public:
   virtual void SetPosition(LispInt aPosition);
 
 protected:
-  StdFileInput(FILE* aFile,InputStatus& aStatus);
-  StdFileInput(LispLocalFile& aFile,InputStatus& aStatus);
-protected:
-  FILE* iFile;
+    StdFileInput(std::istream&, InputStatus& aStatus);
+    StdFileInput(LispLocalFile& aFile,InputStatus& aStatus);
+
+    std::istream& stream;
 };
 
 
 /** CachedStdFileInput : same as StdFileInput, but with caching
  * for speed */
-class CachedStdFileInput : public StdFileInput
-{
+class CachedStdFileInput: public StdFileInput {
 public:
-  CachedStdFileInput(LispLocalFile& aFile,InputStatus& aStatus);
-  ~CachedStdFileInput() ;
-  virtual LispChar Next();
-  virtual LispChar Peek();
-  virtual bool EndOfStream();
-  void Rewind();
-  virtual const LispChar* StartPtr();
-  virtual LispInt Position();
-  virtual void SetPosition(LispInt aPosition);
+    CachedStdFileInput(LispLocalFile& aFile,InputStatus& aStatus);
+    ~CachedStdFileInput() ;
+    virtual LispChar Next();
+    virtual LispChar Peek();
+    virtual bool EndOfStream();
+    void Rewind();
+    virtual const LispChar* StartPtr();
+    virtual LispInt Position();
+    virtual void SetPosition(LispInt aPosition);
 
 private:
-  inline CachedStdFileInput(const CachedStdFileInput& aOther) : StdFileInput(aOther),iBuffer(NULL),iCurrentPos(0),iNrBytes(0)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-  }
-  inline CachedStdFileInput& operator=(const CachedStdFileInput& aOther)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-    return *this;
-  }
-private:
-  LispChar * iBuffer;
-  LispInt iCurrentPos;
-  LispInt iNrBytes;
+    // not implemented
+    CachedStdFileInput(const CachedStdFileInput&);
+    CachedStdFileInput& operator=(const CachedStdFileInput&);
+
+    LispChar* iBuffer;
+    LispInt iCurrentPos;
+    LispInt iNrBytes;
 };
 
-#define FILEINPUT CachedStdFileInput
-
-
-class StdFileOutput : public LispOutput
-{
+class StdFileOutput: public LispOutput {
 public:
     StdFileOutput(LispLocalFile& aFile);
-    StdFileOutput(FILE* aFile);
+    StdFileOutput(std::ostream&);
+
     virtual void PutChar(LispChar aChar);
-public:
-    FILE* iFile;
+
+    std::ostream& stream;
 };
 
-class StdUserOutput : public StdFileOutput
-{
+class StdUserOutput: public StdFileOutput {
 public:
-    StdUserOutput() : StdFileOutput(stdout) {};
+    StdUserOutput():
+        StdFileOutput(std::cout)
+    {
+    }
 };
 
-class StdUserInput : public StdFileInput
-{
+class StdUserInput: public StdFileInput {
 public:
-    StdUserInput(InputStatus& aStatus) : StdFileInput(stdin,aStatus) {};
+    StdUserInput(InputStatus& aStatus):
+        StdFileInput(std::cin, aStatus)
+    {
+    }
 };
 
-class CachedStdUserInput : public StdUserInput
-{
+class CachedStdUserInput: public StdUserInput {
 public:
     CachedStdUserInput(InputStatus& aStatus);
-public:
+
     virtual LispChar Next();
     virtual LispChar Peek();
     virtual bool EndOfStream();

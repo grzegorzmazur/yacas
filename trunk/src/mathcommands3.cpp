@@ -505,7 +505,7 @@ void LispApplyPure(LispEnvironment& aEnvironment, LispInt aStackTop)
     CheckArg(args->SubList(), 2, aEnvironment, aStackTop);
     CheckArg(*args->SubList(), 2, aEnvironment, aStackTop);
 
- 
+
 
     // Apply a pure string
     if (oper->String())
@@ -597,10 +597,10 @@ void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispLocalFile localFP(aEnvironment, oper.c_str(), true,
                         aEnvironment.iInputDirectories);
 
-  if (!localFP.iOpened)
+  if (!localFP.stream.is_open())
       throw LispErrFileNotFound();
 
-  FILEINPUT newInput(localFP,aEnvironment.iInputStatus);
+  CachedStdFileInput newInput(localFP,aEnvironment.iInputStatus);
   PatchLoad(newInput.StartPtr(),
             *aEnvironment.CurrentOutput(),
             aEnvironment);
@@ -732,7 +732,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
     str++;
     while (*str == ' ') str++;
   }
- 
+
   info = LIST(LA(ATOML("List")) + LA(info));
   RESULT = (
               LIST(
@@ -751,7 +751,7 @@ void YacasBuiltinAssoc(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     // key to find
     LispPtr key(ARGUMENT(1));
- 
+
     // assoc-list to find it in
     LispPtr list(ARGUMENT(2));
 
@@ -777,13 +777,12 @@ void YacasBuiltinAssoc(LispEnvironment& aEnvironment, LispInt aStackTop)
                     RESULT = (t);
                     return;
                 }
- 
+
             }
         }
         t = t->Nixed();
     }
 
- 
     RESULT = (ATOML("Empty"));
 }
 
