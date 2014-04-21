@@ -120,10 +120,10 @@ void LoadDefFile(LispEnvironment& aEnvironment, LispString * aFileName)
   {
     LispLocalFile localFP(aEnvironment, hashedname->c_str(),true,
                           aEnvironment.iInputDirectories);
-    if (!localFP.iOpened)
+    if (!localFP.stream.is_open())
         throw LispErrFileNotFound();
 
-    FILEINPUT newInput(localFP,aEnvironment.iInputStatus);
+    CachedStdFileInput newInput(localFP,aEnvironment.iInputStatus);
     DoLoadDefFile(aEnvironment, &newInput,def);
   }
   aEnvironment.iInputStatus.RestoreFrom(oldstatus);

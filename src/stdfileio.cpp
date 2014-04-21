@@ -1,5 +1,3 @@
-
-
 #include "yacas/yacasprivate.h"
 #include "yacas/stdfileio.h"
 
@@ -36,12 +34,15 @@ static void MapPathSeparators(std::string& filename)
 }
 
 
-StdFileInput::StdFileInput(FILE* aFile,InputStatus& aStatus)
-    : LispInput(aStatus),  iFile(aFile)
+StdFileInput::StdFileInput(std::istream& stream, InputStatus& aStatus):
+    LispInput(aStatus),
+    stream(stream)
 {
 }
-StdFileInput::StdFileInput(LispLocalFile& aFile,InputStatus& aStatus)
-    : LispInput(aStatus),iFile(aFile.iFile)
+
+StdFileInput::StdFileInput(LispLocalFile& file, InputStatus& aStatus):
+    LispInput(aStatus),
+    stream(file.stream)
 {
 }
 
@@ -49,39 +50,37 @@ StdFileInput::StdFileInput(LispLocalFile& aFile,InputStatus& aStatus)
 
 LispChar StdFileInput::Next()
 {
-  LispChar c;
-  c=fgetc(iFile);
-  if (c == '\n')
-    iStatus.NextLine();
-  return c;
+    const LispChar c = stream.get();
+    if (c == '\n')
+        iStatus.NextLine();
+    return c;
 }
 
 LispChar StdFileInput::Peek()
 {
-  LispChar c = fgetc(iFile);
-  ungetc(c,iFile);
-  return c;
+    return stream.peek();
 }
 
 void StdFileInput::Rewind()
 {
-  fseek(iFile,0,SEEK_SET);
+    stream.seekg(0);
 }
 
 bool StdFileInput::EndOfStream()
 {
-  return feof(iFile);
+    return stream.eof();
 }
 
 const LispChar* StdFileInput::StartPtr()
 {
-  assert(0);
-  return NULL;
+    assert(0);
+    return 0;
 }
+
 LispInt StdFileInput::Position()
 {
     assert(0);
-  return 0;
+    return 0;
 }
 
 void StdFileInput::SetPosition(LispInt aPosition)
@@ -91,14 +90,19 @@ void StdFileInput::SetPosition(LispInt aPosition)
 
 
 
-
-StdFileOutput::StdFileOutput(FILE* aFile) : iFile(aFile) { }
-StdFileOutput::StdFileOutput(LispLocalFile& aFile) : iFile(aFile.iFile) { }
-
-
-void StdFileOutput::PutChar(LispChar aChar)
+StdFileOutput::StdFileOutput(std::ostream& stream):
+    stream(stream)
 {
-    fputc(aChar, iFile);
+}
+
+StdFileOutput::StdFileOutput(LispLocalFile& file):
+    stream(file.stream)
+{
+}
+
+void StdFileOutput::PutChar(LispChar c)
+{
+    stream.put(c);
 }
 
 
@@ -112,25 +116,29 @@ CachedStdFileInput::~CachedStdFileInput()
     PlatFree(iBuffer);
 }
 
-CachedStdFileInput::CachedStdFileInput(LispLocalFile& aFile,InputStatus& aStatus) : StdFileInput(aFile,aStatus),iBuffer(NULL),iCurrentPos(0),iNrBytes(0)
+CachedStdFileInput::CachedStdFileInput(LispLocalFile& file, InputStatus& status):
+    StdFileInput(file, status),
+    iBuffer(0),
+    iCurrentPos(0)
 {
-  // Get size of file
-  fseek(iFile,0,SEEK_END);
-  iNrBytes = ftell(iFile);
-  fseek(iFile,0,SEEK_SET);
-  // Read in the full buffer
-  char * ptr = PlatAllocN<char>(iNrBytes+1);      // sizeof(char) == 1
-  iBuffer = (LispChar *)ptr;                                        // sizeof(LispChar) == not so sure
+    // Get size of file
+    stream.seekg(0, std::ios_base::end);
+    iNrBytes = stream.tellg();
+    stream.seekg(0);
 
-  if (!ptr)
-      throw LispErrNotEnoughMemory();
+    // Read in the full buffer
+    char * ptr = PlatAllocN<char>(iNrBytes+1);      // sizeof(char) == 1
+    iBuffer = (LispChar *)ptr;                      // sizeof(LispChar) == not so sure
 
-  const LispInt n = fread(ptr,iNrBytes,1,iFile);
+    if (!ptr)
+        throw LispErrNotEnoughMemory();
 
-  if (n != 1)
-      throw LispErrReadingFile();
+    stream.read(ptr, iNrBytes);
 
-  ptr[iNrBytes] = '\0';
+    // if (n != 1)
+    //     throw LispErrReadingFile();
+
+    ptr[iNrBytes] = '\0';
 }
 
 LispChar CachedStdFileInput::Next()
@@ -207,42 +215,34 @@ void InternalFindFile(const LispChar * aFileName, InputDirectories& aInputDirect
     }
 }
 
-LispLocalFile::LispLocalFile(LispEnvironment& aEnvironment,
-                             const LispChar * aFileName, bool aRead,
-                             InputDirectories& aInputDirectories)
-  : iFile(NULL),iEnvironment(aEnvironment),iOpened(false)
+LispLocalFile::LispLocalFile(
+    LispEnvironment& environment,
+    const LispChar* fname,
+    bool read,
+    InputDirectories& input_directories):
+    environment(environment)
 {
-  std::string othername;
+    std::string othername;
 
-  if (aRead)
-  {
-    othername = aFileName;
-    MapPathSeparators(othername);
+    if (read) {
+        othername = fname;
+        MapPathSeparators(othername);
 
-    iFile = fopen(othername.c_str(), "rb");
-    LispInt i=0;
-    while (!iFile && i<aInputDirectories.Size())
-    {
-      othername = aInputDirectories[i]->c_str();
-      othername += aFileName;
-      MapPathSeparators(othername);
-      iFile = fopen(othername.c_str(), "rb");
-      i++;
+        stream.open(othername, std::ios_base::in | std::ios_base::binary);
+
+        for (LispInt i = 0; !stream.is_open() && i < input_directories.Size(); ++i) {
+            othername = input_directories[i]->c_str();
+            othername += fname;
+            MapPathSeparators(othername);
+            stream.open(othername, std::ios_base::in | std::ios_base::binary);
+        }
+    } else {
+        othername = fname;
+        MapPathSeparators(othername);
+        stream.open(othername, std::ios_base::out);
     }
-  }
-  else
-  {
-    othername = aFileName;
-    MapPathSeparators(othername);
-    iFile = fopen(othername.c_str(),"w");
-  }
 
-  if (!iFile)
-    iOpened=0;
-  else
-    iOpened=1;
-
-  SAFEPUSH(iEnvironment,*this);
+    SAFEPUSH(iEnvironment, *this);
 }
 
 //aRead is for opening in read mode (otherwise opened in write mode)
@@ -254,9 +254,8 @@ LispLocalFile::~LispLocalFile()
 
 void LispLocalFile::Delete()
 {
-  if (iFile)
-    fclose(iFile);
-  iFile = NULL;
+    if (stream.is_open())
+        stream.close();
 }
 
 
@@ -277,11 +276,10 @@ LispChar CachedStdUserInput::Next()
 
 LispChar CachedStdUserInput::Peek()
 {
-  if (iCurrentPos == iBuffer.Size())
-  {
-    iBuffer.Append(fgetc(iFile));
-  }
-  return iBuffer[iCurrentPos];
+    if (iCurrentPos == iBuffer.Size())
+        iBuffer.Append(stream.get());
+
+    return iBuffer[iCurrentPos];
 }
 
 bool CachedStdUserInput::EndOfStream()
@@ -308,5 +306,3 @@ LispInt CachedStdUserInput::Position()
 {
   return iCurrentPos;
 }
-
-

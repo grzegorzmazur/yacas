@@ -1163,11 +1163,11 @@ void LispFromFile(LispEnvironment& aEnvironment, LispInt aStackTop)
     // Open file
     LispLocalFile localFP(aEnvironment, hashedname->c_str(),true,
                           aEnvironment.iInputDirectories);
-    if (!localFP.iOpened) {
+    if (!localFP.stream.is_open()) {
         ShowStack(aEnvironment);
         throw LispErrFileNotFound();
     }
-    FILEINPUT newInput(localFP,aEnvironment.iInputStatus);
+    CachedStdFileInput newInput(localFP,aEnvironment.iInputStatus);
     LispLocalInput localInput(aEnvironment, &newInput);
 
     // Evaluate the body
@@ -1245,7 +1245,7 @@ void LispToFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 
   // Open file for writing
   LispLocalFile localFP(aEnvironment, oper.c_str(),false, aEnvironment.iInputDirectories);
-  if (!localFP.iOpened) {
+  if (!localFP.stream.is_open()) {
       ShowStack(aEnvironment);
       throw LispErrFileNotFound();
   }
