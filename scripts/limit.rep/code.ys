@@ -1,6 +1,6 @@
 /*                            */
 /*  Limit operator rule base  */
-/*                            */ 
+/*                            */
 
 /* Special case: limits of polynomials as x approaches infinity */
 100 # Lim(_var, _tar, _dir, _p)_(CanBeUni(var, p) And Degree(p, var) > 0 And IsRationalOrNumber(LeadingCoef(p,var)) And IsInfinity(tar))
@@ -30,13 +30,13 @@
 /*  Special limit #4:  0 / 0;  #5:  Infinity / Infinity  */
 300 # Lim(_var, _tar, _dir, _x / _y)_
 ( [
-    Local(lx,ly,infx,infy); 
-     lx := Lim(var, tar, dir, x); 
+    Local(lx,ly,infx,infy);
+     lx := Lim(var, tar, dir, x);
      ly := Lim(var, tar, dir, y);
      infx := (IsInfinity(lx) Or (IsZero(Re(lx)) And IsInfinity(Im(lx))));
      infy := (IsInfinity(ly) Or (IsZero(Re(ly)) And IsInfinity(Im(ly))));
-    ((IsZero(lx) And IsZero(ly)) Or 
-     (infx And infy) 
+    ((IsZero(lx) And IsZero(ly)) Or
+     (infx And infy)
      );
 ] )
 <-- Lim(var, tar, dir, ApplyPure("D", {var, x})/ApplyPure("D", {var, y}));
@@ -57,7 +57,7 @@ Sign(_var, _tar, _dir, _exp, _n)
        (Sign(coef)*Dir(dir)) ^ n
      );
 ];
-  
+
 /*  To avoid infinite recursion (with 1/Exp(-x) for instance)  */
 310 # Lim(_var, _tar, _dir, _x / _y)_
 (IsInfinity(tar) And IsZero(Lim(var, tar, dir, y)))
@@ -79,7 +79,7 @@ Sign(_var, _tar, _dir, _exp, _n)
     If (u = Undefined And IsInfinity(v), [
         Local(li, ls);
 
-        li := LimInf(var,tar,dir,x); 
+        li := LimInf(var,tar,dir,x);
         ls := LimSup(var,tar,dir,x);
         r := (li * ls) / v;
     ]);
@@ -105,8 +105,7 @@ Sign(_var, _tar, _dir, _exp, _n)
 410 # Lim(_var, _tar, _dir, _x * _y)_
 ((IsZero(Lim(var, tar, dir, x)) And IsInfinity(Lim(var, tar, dir, y)))
   Or (IsInfinity(Lim(var, tar, dir, x)) And IsZero(Lim(var, tar, dir, y))))
-<-- Lim(var, tar, dir, Simplify(ApplyPure("D", {var, y})/ApplyPure("D",
-{var, 1/x})));
+<-- Lim(var, tar, dir, Simplify(ApplyPure("D", {var, y})/ApplyPure("D", {var, 1/x})));
 
 /*  Default rule  */
 420 # Lim(_var, _tar, _dir, _x * _y) <-- [
@@ -119,12 +118,12 @@ Sign(_var, _tar, _dir, _exp, _n)
 
     If (u = 0 And v = Undefined, [
         Local(li, ls);
-        li := LimInf(var,tar,dir,y); 
+        li := LimInf(var,tar,dir,y);
         ls := LimSup(var,tar,dir,y);
         r := u * li * ls;
     ], If (u = Undefined And v = 0, [
         Local(li, ls);
-        li := LimInf(var,tar,dir,x); 
+        li := LimInf(var,tar,dir,x);
         ls := LimSup(var,tar,dir,x);
         r := v * li * ls;
     ]));
@@ -135,8 +134,15 @@ Sign(_var, _tar, _dir, _exp, _n)
 
 /*  Substraction rules  */
 
-/*  Special limit #8:  Infinity - Infinity  */
-500 # Lim(_var, _tar, _dir, _x - _y)_
+/*  Special limit #8a:  Sqrt(Infinity) - Sqrt(Infinity)  */
+500 # Lim(_var, _tar, _dir, Sqrt(_x) - Sqrt(_y))_
+( [
+    Lim(var, tar, dir, x) = Infinity And Lim(var, tar, dir, y) = Infinity;
+] )
+<-- Lim(var, tar, dir, (x - y)/(Sqrt(x)+Sqrt(y)));
+
+/*  Special limit #8b:  Infinity - Infinity  */
+505 # Lim(_var, _tar, _dir, _x - _y)_
 ( [
     Local(lx,ly); lx := Lim(var, tar, dir, x); ly := Lim(var, tar, dir, y);
     ((lx = Infinity) And (ly = Infinity)) Or ((lx = -Infinity) And (ly = -Infinity));
@@ -186,9 +192,9 @@ UnFence("LimitArgs",1); /* Allow LimitArgs to have access to the local variables
 701 # Lim(_var, _tar, _dir, _exp)
 <-- Eval(ApplyPure("Subst", {var, tar, exp}));
 
-  
+
 /*  Limit without direction  */
-  
+
 10 # Lim(_var, tar_IsInfinity, _exp) <-- Lim(var, tar, None, exp);
 
 20 # Lim(_var, _tar, _exp)
