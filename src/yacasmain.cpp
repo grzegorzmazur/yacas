@@ -23,7 +23,6 @@
 //            read statement only.
 //      - p : plain mode. No fancy readline functionality.
 //      - c : inhibits printing the prompt to the console
-//      - t : follow history when entering on the command line
 //      - w : hides the console window in Windows
 //   4)
 //  -i <command> : execute <command>
@@ -103,7 +102,6 @@ bool use_stdin = false;
 bool use_plain = false;
 bool show_prompt = true;
 bool use_texmacs_out = false;
-bool compiled_plugins = true;
 
 int stack_size = 50000;
 
@@ -466,8 +464,6 @@ void LoadYacas(LispOutput* aOutput = 0)
             }
         }
         DeclarePath(ptr2);
-        if (!compiled_plugins)
-            yacas->Evaluate("Set(LoadPlugIns,False);");
 
         std::ostringstream os;
         os << "Load(\"" << init_script << "\");";
@@ -987,8 +983,6 @@ int parse_options(int argc, char** argv)
                 fileind++;
                 if (fileind < argc)
                     execute_commnd = argv[fileind];
-            } else if (!std::strcmp(argv[fileind],"--disable-compiled-plugins")) {
-                compiled_plugins = false;
             } else if (!std::strcmp(argv[fileind],"-i")) {
                 fileind++;
                 if (fileind < argc) {
@@ -1017,9 +1011,6 @@ int parse_options(int argc, char** argv)
                 }
                 if (strchr(argv[fileind],'c')) {
                     show_prompt = false;
-                }
-                if (strchr(argv[fileind],'t')) {
-                    // Not sure what we should do with -t ... it used to be trace_history
                 }
                 if (strchr(argv[fileind],'d')) {
                     std::cout << SCRIPT_DIR << "\n";
