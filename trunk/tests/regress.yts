@@ -57,7 +57,7 @@ LocalSymbols(f,p,a,b,x,n)
 LocalSymbols(f,p,a,b,x,n,simple,u,v)
 [
   simple := {
-            Exp(_a)*Exp(_b) <- Exp(a+b), 
+            Exp(_a)*Exp(_b) <- Exp(a+b),
             Exp(_a)*_u*Exp(_b) <- u*Exp(a+b),
             _u*Exp(_a)*Exp(_b) <- u*Exp(a+b),
             Exp(_a)*Exp(_b)*_u <- u*Exp(a+b),
@@ -72,7 +72,7 @@ LocalSymbols(f,p,a,b,x,n,simple,u,v)
 
   a:= (a /: simple);
   b:= (b /: simple);
-  
+
   Verify(Simplify(a-(1-x)),0);
   Verify(Simplify(b-(1-x)),0);
 
@@ -112,10 +112,10 @@ Verify(Taylor(x,0,5) 1/Sin(x),Undefined);
 TestYacas(2*Pi/3,(Pi-Pi/3));
 
 TestYacas(( a*(Sqrt(Pi))^2/2), (a*Pi)/2);
-TestYacas(( 3*(Sqrt(Pi))^2/2), (3*Pi)/2); 
+TestYacas(( 3*(Sqrt(Pi))^2/2), (3*Pi)/2);
 TestYacas(( a*(Sqrt(b ))^2/2), (a*b)/2);
 
-// Bug was found: gcd sometimes returned 0! Very bad, since the 
+// Bug was found: gcd sometimes returned 0! Very bad, since the
 // value returned by gcd is usually used to divide out greatest
 // common divisors, and dividing by zero is not a good idea.
 Verify(Gcd(0,0),1);
@@ -133,7 +133,7 @@ TestYacas(Cos(Pi-22), Cos(22-Pi));
 
 // Verify that some matrix functions accept only positive
 // integer arguments. Regression test for the fact that the functions
-// in linalg.rep/ didn't check their arguments. 
+// in linalg.rep/ didn't check their arguments.
 
 // Note: Jonathan, perhaps some functions could return something
 // useful if the argument passed in is just a number? I'd imagine
@@ -274,7 +274,7 @@ Verify( 2^(-10), 1/1024 );
 // The following line catches a bug reported where Simplify
 // would go into an infinite loop. It doesn't check the correctness
 // of the returned value as such, but merely the fact that this
-// simplification terminates in the first place. 
+// simplification terminates in the first place.
 //
 // The problem was caused by a gcd calculation (from the multivariate
 // code) not terminating.
@@ -304,7 +304,7 @@ Verify(Undefined <= -4, False);
 Builtin'Precision'Set(10);
 NumericEqual(N(Cos(Pi*.5)), 0,Builtin'Precision'Get());
 
-/* Jitse's bug report, extended with the changes that do not coerce integers to floats automatically 
+/* Jitse's bug report, extended with the changes that do not coerce integers to floats automatically
    any more (just enter a dot and the number becomes float if that is what is intended).
  */
 Verify(CForm(4), "4");
@@ -327,7 +327,7 @@ Verify(Groebner({x*(y-1),y*(x-1)}),{x*y-x,x*y-y,y-x,y^2-y});
 Verify((Integrate(x,a,b)Cos(x)^2) - ((b-Sin((-2)*b)/2)/2-(a-Sin((-2)*a)/2)/2),0);
 Verify(D(t) Integrate(x,a,b) f(x,t),Integrate(x,a,b)Deriv(t)f(x,t));
 
-// This was returning FWatom(Sin(x)) 
+// This was returning FWatom(Sin(x))
 Verify( Factor(Sin(x)), Factor(Sin(x)) );
 
 // should return unevaled
@@ -357,7 +357,7 @@ Verify(FromBase(16,"1e"),30);
 
 // numbers are too small because of wrong precision handling
 Builtin'Precision'Set(30);
-Verify(0.00000000000000000005421010862 = 0, False);	// 2^(-64)
+Verify(0.00000000000000000005421010862 = 0, False); // 2^(-64)
 Verify(0.00000000000000000005421010862 / 1 = 0, False);
 Verify(0.00000000000000000005421010862 / 2 = 0, False);
 Verify(0.00000000000000000001 = 0, False);
@@ -402,9 +402,7 @@ Verify(Gcd(0, -10), 10);
 /* Bug says: at startup, 2^Infinity does not simplify to Infinity */
 
 /* Bug #5 */
-/* How can we test for this? */
-/* Bug says: Limit(n,Infinity) Sqrt(n+1)-Sqrt(n) floods stack */
-/* but 'MaxEvalDepth reached' exits Yacas, even inside TrapError */
+Verify(Limit(n,Infinity) Sqrt(n+1)-Sqrt(n), 0);
 
 /* Bug #6 */
 KnownFailure((D(z) Conjugate(z)) = Undefined);
@@ -455,17 +453,17 @@ Verify(a[2]*Sin(x)/:{Sin(_x) <- sin(x)},a[2]*sin(x));
 
 // There was a bug, reported by Sebastian Ferraro, which caused the determinant
 // to return "Undefined" when one of the elements of the diagonal of a matrix
-// was zero. This was due to the numeric determinant algorithm applying 
+// was zero. This was due to the numeric determinant algorithm applying
 // Gaussian elimination, but taking the elements on the diagonal as pivot points.
 Verify(IsZero(Determinant( {{1,-1,0,0},{0,0,-1,1},{1,0,0,1},{0,1,1,0}} )),True);
 
-// The following failed when numerics changed so that 0e-1 was not matched to 0 any more in 
+// The following failed when numerics changed so that 0e-1 was not matched to 0 any more in
 // a transformation rule defining the less than operator.
 Verify(ExpNum(0),1);
 NumericEqual(ExpNum(0e-1),1.,Builtin'Precision'Get());
 Verify(500 < 0e-1,False);
 
-// version 1.0.56: Due to MathBitCount returning negative values sometimes, functions depending on 
+// version 1.0.56: Due to MathBitCount returning negative values sometimes, functions depending on
 // proper functioning failed. MathSqrtFloat failed for instance on N(1/2). It did give the right
 // result for 0.5.
 NumericEqual(N(Sqrt(500000e-6),20),N(Sqrt(0.0000005e6),20),20);
@@ -530,13 +528,13 @@ Verify(MathBitCount(-0.0125),-6);
 Verify(Integrate(x,0,0)1,0);
 
 // This code verifies that if integrating over a zero domain, the result
-// is zero. 
+// is zero.
 Verify(Integrate(x,1,1)Sin(Exp(x^2)),0);
 
 /* Reverse and FlatCopy (and some friends) would segfault in the past if passed a string as argument.
  * I am not opposed to overloading these functions to also work on strings per se, but for now just
  * check that they return an error in stead of segfaulting.
- */ 
+ */
 Verify(TrapError(Reverse("abc"),True),True);
 Verify(TrapError(FlatCopy("abc"),True),True);
 
@@ -552,7 +550,7 @@ Verify(Mod({5,1},4),{1,1});
   Local(a,b,A);
   a:=mystr;
   A:=mystr;
-  /* The real test here is that no error is generated due to the 
+  /* The real test here is that no error is generated due to the
    * fact that variables a or A are set.
    */
   Verify(Simplify((Integrate(x,a,b)Sin(x))-Cos(a)+Cos(b)),0);
@@ -591,7 +589,7 @@ TestYacas(Diverge({x*y,x*y,x*y},{x,y,z}),x+y);
   Verify(F<0.6, False);
 ];
 
-/* Bug reported by Michael Borcherds: Simplify(((4*x)-2.25)/2) 
+/* Bug reported by Michael Borcherds: Simplify(((4*x)-2.25)/2)
    returned some expression with three calls to Gcd, which was technically
    correct, but not the intended simplification.
  */
