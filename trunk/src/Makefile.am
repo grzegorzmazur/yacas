@@ -51,7 +51,6 @@ pkginclude_HEADERS = $(top_srcdir)/include/yacas/anumber.h	\
 	$(top_srcdir)/include/yacas/substitute.h				\
 	$(top_srcdir)/include/yacas/stdcommandline.h			\
 	$(top_srcdir)/include/yacas/arrayclass.inl				\
-	$(top_srcdir)/include/yacas/mathutil.h					\
 	$(top_srcdir)/include/yacas/genericstructs.h			\
 	$(top_srcdir)/include/yacas/yacasprivate.h				\
 	$(top_srcdir)/include/yacas/yacasbase.h					\
@@ -80,7 +79,7 @@ libyacas_la_SOURCES = $(libyacas_la_HEADERS) stdcommandline.cpp		 \
 	patcher.cpp genericstructs.cpp xmltokenizer.cpp commandline.cpp	 \
 	anumber.cpp yacasnumbers.cpp numbers.cpp platmath.cpp grower.cpp \
 	stdstubs.cpp obmalloc.cpp lisphash.cpp lispstring.cpp			 \
-	mathutil.cpp yacasbase.cpp debugmem.cpp
+	yacasbase.cpp debugmem.cpp
 
 bin_PROGRAMS =  yacas
 noinst_PROGRAMS = gencorefunctions
