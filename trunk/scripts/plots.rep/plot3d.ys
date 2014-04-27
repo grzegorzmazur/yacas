@@ -278,14 +278,18 @@ y1  11  31  21
     // condition for the values not to oscillate too rapidly
     If (Not refine,
         refine :=
-            sign'change(f11,f13,f12) + sign'change(f13,f12,f32) + sign'change(f12,f32,f22) <= 2 And
-            sign'change(f22,f23,f21) + sign'change(f23,f21,f31) + sign'change(f21,f31,f11) <= 2);
+            sign'change(f11,f13,f12) + sign'change(f13,f12,f32) + sign'change(f12,f32,f22) > 2 Or
+            sign'change(f22,f23,f21) + sign'change(f23,f21,f31) + sign'change(f21,f31,f11) > 2);
 
     // condition for the values not to change too rapidly
-    If (Not refine, refine := N(Eval(Abs( (f11-f23)/2-(f12-f21)/3+(f22-f13)/6+2*(f32-f33)/3 )))
-            <= N(Eval( epsilon*(
-        (f11 + f12 + f21 + f22)/12 + 2*f33/3
-        - Min({f11, f12, f21, f22, f13, f31, f33, f32, f23}) ) ) ));
+    If (Not refine,
+        refine :=
+            N(Eval(Abs((f11-f23)/2-(f12-f21)/3+(f22-f13)/6+2*(f32-f33)/3)))
+            >
+            N(Eval(epsilon*(
+                (f11 + f12 + f21 + f22)/12 + 2*f33/3 -
+                Min({f11, f12, f21, f22, f13, f31, f33, f32, f23}))))
+    );
 
     If(Not refine,
         // okay, do not refine any more
