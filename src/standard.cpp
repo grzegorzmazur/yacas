@@ -9,7 +9,6 @@
 
 #include "yacas/lispio.h"
 #include "yacas/platfileio.h"
-#include "yacas/mathutil.h"
 #include "yacas/lispenvironment.h"
 #include "yacas/tokenizer.h"
 #include "yacas/infixparser.h"
@@ -126,7 +125,7 @@ LispInt InternalAsciiToInt(const LispString* aString)
   if (!IsNumber(ptr, false))
       throw LispErrInvalidArg();
 
-  return PlatAsciiToInt(ptr);
+  return std::atoi(ptr);
 }
 
 bool IsNumber(const LispChar * ptr,bool aAllowFloat)
