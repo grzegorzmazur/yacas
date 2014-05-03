@@ -210,7 +210,7 @@ public:
 
 public: // Error information when some error occurs.
   InputStatus iInputStatus;
-  LispInt iSecure;
+  bool secure;
 public: // pre-found
   RefPtr<LispObject> iTrue;
   RefPtr<LispObject> iFalse;
@@ -417,7 +417,7 @@ private:
     iMaxEvalDepth(0),
     iEvaluator(NULL),
     iInputStatus(),
-    iSecure(0),
+    secure(false),
     iTrue(),
     iFalse(),
     iEndOfFile(),
@@ -520,10 +520,10 @@ private:
 class LispSecureFrame : public LispBase
 {
 public:
-  LispSecureFrame(LispEnvironment& aEnvironment)
-      : iEnvironment(aEnvironment),iPreviousSecure(aEnvironment.iSecure)
+  LispSecureFrame(LispEnvironment& aEnvironment):
+      iEnvironment(aEnvironment), previous_secure(aEnvironment.secure)
   {
-    iEnvironment.iSecure = 1;
+    iEnvironment.secure = true;
     SAFEPUSH(iEnvironment,*this);
   };
   virtual ~LispSecureFrame()
@@ -534,7 +534,7 @@ public:
   virtual void Delete();
 private:
   LispEnvironment& iEnvironment;
-  LispInt iPreviousSecure;
+  bool previous_secure;
 };
 
 
