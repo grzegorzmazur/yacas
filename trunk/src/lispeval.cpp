@@ -1,4 +1,4 @@
- 
+
 #include "yacas/yacasprivate.h"
 #include "yacas/lispeval.h"
 #include "yacas/lispuserfunc.h"
@@ -90,13 +90,15 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
 {
   assert(aExpression);
 
+  if (aEnvironment.stop_evaluation) {
+      aEnvironment.stop_evaluation = false;
+      ShowStack(aEnvironment, *aEnvironment.CurrentOutput());
+      throw LispErrUserInterrupt();
+  }
+
   aEnvironment.iEvalDepth++;
   if (aEnvironment.iEvalDepth >= aEnvironment.iMaxEvalDepth) {
       ShowStack(aEnvironment, *aEnvironment.CurrentOutput());
-
-      if (aEnvironment.iEvalDepth > aEnvironment.iMaxEvalDepth + 20)
-          throw LispErrUserInterrupt();
-
       throw LispErrMaxRecurseDepthReached();
   }
 
@@ -298,7 +300,7 @@ void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, LispOutput& 
   LispInt i;
   LispInt from=0;
   LispInt upto = objs.Size();
- 
+
   for (i=from;i<upto;i++)
   {
     LispChar str[20];

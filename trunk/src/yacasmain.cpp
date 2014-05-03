@@ -504,7 +504,7 @@ void InterruptHandler(void)
 #endif
 {
     std::cout << "^C pressed\n";
-    yacas->getDefEnv().getEnv().iEvalDepth = yacas->getDefEnv().getEnv().iMaxEvalDepth+100;
+    yacas->getDefEnv().getEnv().stop_evaluation = true;
 
     if (readmode)
         std::exit(EXIT_SUCCESS);
