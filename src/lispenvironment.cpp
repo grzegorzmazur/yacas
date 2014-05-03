@@ -39,6 +39,7 @@ LispEnvironment::LispEnvironment(
     iCleanup(),
     iEvalDepth(0),
     iMaxEvalDepth(1000),
+    stop_evaluation(false),
     iEvaluator(NEW BasicEvaluator),
     iInputStatus(),
     iSecure(0),
@@ -393,7 +394,7 @@ void LispEnvironment::DeclareRuleBase(LispString * aOperator,
         LISPASSERT(multiUserFunc->iFileToOpen->iIsLoaded);
         }
         */
- 
+
     // add an operator with this arity to the multiuserfunc.
     BranchingUserFunction *newFunc;
     if (aListed)
@@ -484,7 +485,7 @@ void LispEnvironment::DefineRule(LispString * aOperator,LispInt aArity,
         throw LispErrCreatingRule();
 
     // Declare a new evaluation rule
- 
+
 
     if (IsTrue(*this, aPredicate))
     {

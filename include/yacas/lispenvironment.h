@@ -6,6 +6,8 @@
 #ifndef YACAS_LISPENVIRONMENT_H
 #define YACAS_LISPENVIRONMENT_H
 
+#include <atomic>
+
 #include "yacasbase.h"
 #include "lispobject.h"
 #include "lisphash.h"
@@ -203,6 +205,7 @@ public:
   DeletingLispCleanup iCleanup;
   LispInt iEvalDepth;
   LispInt iMaxEvalDepth;
+  std::atomic_bool stop_evaluation;
   LispEvaluatorBase* iEvaluator;
 
 public: // Error information when some error occurs.
