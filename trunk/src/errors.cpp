@@ -46,22 +46,22 @@ void ShowArgTypeErrorInfo(LispInt aArgNr, LispPtr& aArguments, LispEnvironment& 
 
     ShowStack(aEnvironment);
     ShowFunctionError(aArguments, aEnvironment);
- 
+
     aEnvironment.iErrorOutput.Write("bad argument number ");
     LispChar str[20];
     InternalIntToAscii(str,aArgNr);
     aEnvironment.iErrorOutput.Write(str);
     aEnvironment.iErrorOutput.Write(" (counting from 1)\n");
- 
+
     const int LIM_AL = 60;
 
     LispPtr& arg = Argument(aArguments,aArgNr);
     LispString strout;
- 
+
     aEnvironment.iErrorOutput.Write("The offending argument ");
     PrintExpression(strout, arg, aEnvironment, LIM_AL);
     aEnvironment.iErrorOutput.Write(strout.c_str());
- 
+
     LispPtr eval;
     aEnvironment.iEvaluator->Eval(aEnvironment, eval, arg);
     aEnvironment.iErrorOutput.Write(" evaluated to ");
@@ -117,7 +117,7 @@ void CheckNrArgs(LispInt n, LispPtr& aArguments,
 
     if (nrArguments == n)
         return;
- 
+
     const LispInt needed = n-1;
     const LispInt passed = nrArguments-1;
 
@@ -142,7 +142,7 @@ void CheckNrArgs(LispInt n, LispPtr& aArguments,
 
 void CheckSecure(LispEnvironment& env, LispInt stack_top)
 {
-    if (env.iSecure) {
+    if (env.secure) {
         ShowStack(env);
         ShowFunctionError(env.iStack.GetElement(stack_top), env);
         throw LispErrSecurityBreach();

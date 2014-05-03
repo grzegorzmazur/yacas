@@ -737,7 +737,7 @@ int runserver(int argc,char** argv)
                             {
                                 const char* response = finalbuffer.c_str();
                                 if (!server_single_user)
-                                    used_clients[clsockindex]->getDefEnv().getEnv().iSecure = 1;
+                                    used_clients[clsockindex]->getDefEnv().getEnv().secure = true;
 
 
                                 if (seconds > 0) {

@@ -42,7 +42,7 @@ LispEnvironment::LispEnvironment(
     stop_evaluation(false),
     iEvaluator(NEW BasicEvaluator),
     iInputStatus(),
-    iSecure(0),
+    secure(false),
     iTrue(),
     iFalse(),
     iEndOfFile(),
@@ -544,7 +544,7 @@ void LispLocalFrame::Delete()
 
 void LispSecureFrame::Delete()
 {
-    iEnvironment.iSecure = iPreviousSecure;
+    iEnvironment.secure = previous_secure;
 }
 
 void LispLocalInput::Delete()
