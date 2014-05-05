@@ -216,9 +216,9 @@ Rule("Degree",1,0, IsUniVar(expr))
 
 
 ShiftUniVar(UniVariate(_var,_first,_coefs),_fact,_shift)
-   <-- 
+   <--
    [
-//Echo("fact, coefs = ",fact,coefs);   
+//Echo("fact, coefs = ",fact,coefs);
      UniVariate(var,first+shift,fact*coefs);
    ];
 
@@ -308,7 +308,7 @@ Function("MakeUni",{expression}) MakeUni(expression,UniVarList(expression));
 RuleBase("MakeUni",{expression,var});
 
 5 # MakeUni(_expr,{}) <-- UniVariate(dummyvar,0,{expression});
-6 # MakeUni(_expr,var_IsList) <-- 
+6 # MakeUni(_expr,var_IsList) <--
 [
   Local(result,item);
   result:=expression;
@@ -500,7 +500,7 @@ Rule("PSolve", 1, 10, IsUniVar(uni) And Degree(uni) = 2)
         If (d < 0,
             {Complex(-b,Sqrt(-d))/(2*a),Complex(-b,-Sqrt(-d))/(2*a)},
             {(-b+Sqrt(d))/(2*a),(-b-Sqrt(d))/(2*a)});
-         
+
      ], [
         {(-b+Sqrt(d))/(2*a),(-b-Sqrt(d))/(2*a)};
      ]);
@@ -532,8 +532,8 @@ Rule("PSolve", 1, 20, IsUniVar(uni) And Degree(uni) = 3)
                 Local(theta);
                 theta := ArcCos(R / Sqrt(-Q^3));
                 {
-                    2 * Sqrt(-Q) * Cos((theta + 0 * Pi) / 3) + shift, 
-                    2 * Sqrt(-Q) * Cos((theta + 2 * Pi) / 3) + shift, 
+                    2 * Sqrt(-Q) * Cos((theta + 0 * Pi) / 3) + shift,
+                    2 * Sqrt(-Q) * Cos((theta + 2 * Pi) / 3) + shift,
                     2 * Sqrt(-Q) * Cos((theta + 4 * Pi) / 3) + shift
                 };
             ], [
@@ -560,12 +560,12 @@ Rule("PSolve", 1, 20, IsUniVar(uni) And Degree(uni) = 3)
     );
 ];
 
-/* 
+/*
 How to solve the quartic equation?
 
 The equation is x^4 + a1 x^3 + a2 x^2 + a3 x + a4 = 0.
 The idea is to write the left-hand side as the difference of two
-squares: (x^2 + p x + q)^2 - (s x + t)^2. 
+squares: (x^2 + p x + q)^2 - (s x + t)^2.
 Eliminating the parentheses and equation coefficients yields four
 equations for the four unknowns p, q, s and t:
   a1 = 2p              (1)
@@ -587,7 +587,7 @@ nonzero, we can compute s from (6). Note that we cannot compute s from
 if t is zero, then no extra solution was introduced and we can safely
 use (5). Having found the values of p, q, s and t, we can factor the
 difference of squares and solve the quartic:
-  x^4 + a1 x^3 + a2 x^2 + a3 x + a4 = (x^2 + p x + q)^2 - (s x + t)^2 
+  x^4 + a1 x^3 + a2 x^2 + a3 x + a4 = (x^2 + p x + q)^2 - (s x + t)^2
                  = (x^2 + p x + q + s x + t) (x^2 + p x + q - sx - t).
 The four roots of the quartic are the two roots of the first quadratic
 factor plus the two roots of the second quadratic factor.
@@ -661,11 +661,11 @@ Function("CanBeUni",{expression}) CanBeUni(UniVarList(expression),expression);
 
 
 
-10 # Content(UniVariate(_var,_first,_coefs)) <-- Gcd(coefs)*var^first;
+10 # Content(UniVariate(_var,_first,_coefs)) <-- Gcd(coefs) * Sign(LeadingCoef(UniVariate(var, first, coefs)));
 20 # Content(poly_CanBeUni) <-- NormalForm(Content(MakeUni(poly)));
 
 10 # PrimitivePart(UniVariate(_var,_first,_coefs)) <--
-	UniVariate(var,0,coefs/Gcd(coefs));
+    UniVariate(var,0,coefs/Gcd(coefs));
 20 # PrimitivePart(poly_CanBeUni) <-- NormalForm(PrimitivePart(MakeUni(poly)));
 
 10 # Monic(UniVariate(_var,_first,_coefs)) <--

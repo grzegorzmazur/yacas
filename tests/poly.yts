@@ -2,6 +2,11 @@
 NextTest("Polynomials");
 TestYacas(Expand((1+x)^2),1+2*x+x^2);
 
+NextTest("Content");
+
+Verify(Content(x^8+6*x^6+12*x^4+8*x^2), 1);
+Verify(Content(-10*x^2+5*x+5), -5);
+
 NextTest("Square-free factorization");
 
 Verify(SquareFreeFactorize(x^2 + 2*x + 1, x), {{x+1,2}});
