@@ -661,7 +661,9 @@ Function("CanBeUni",{expression}) CanBeUni(UniVarList(expression),expression);
 
 
 
-10 # Content(UniVariate(_var,_first,_coefs)) <-- Gcd(coefs) * Sign(LeadingCoef(UniVariate(var, first, coefs)));
+10 # Content(UniVariate(_var,_first,_coefs))_(Apply(And, IsInteger /@ coefs)) <-- Gcd(coefs) * Sign(LeadingCoef(UniVariate(var, first, coefs)));
+15 # Content(UniVariate(_var,_first,_coefs))_(Apply(And, IsRational /@ coefs)) <-- Sign(LeadingCoef(UniVariate(var, first, coefs))) / Lcm(Denom /@ coefs);
+
 20 # Content(poly_CanBeUni) <-- NormalForm(Content(MakeUni(poly)));
 
 10 # PrimitivePart(UniVariate(_var,_first,_coefs)) <--
