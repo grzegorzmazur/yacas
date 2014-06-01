@@ -14,15 +14,6 @@ void InputStatus::RestoreFrom(InputStatus& aPreviousStatus)
     iFileName = aPreviousStatus.iFileName;
 }
 
-
-LispInput::~LispInput()
-{
-}
-
-LispOutput::~LispOutput()
-{
-}
-
 void LispOutput::Write(const LispChar * aString)
 {
     while (*aString != '\0')

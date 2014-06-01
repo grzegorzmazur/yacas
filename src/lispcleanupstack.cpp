@@ -5,14 +5,6 @@
 
 #include <cassert>
 
-LispCleanup::~LispCleanup()
-{
-}
-
-DeletingLispCleanup::~DeletingLispCleanup()
-{
-}
-
 void LispCleanup::Push(LispBase& aObject)
 {
 }
@@ -50,5 +42,3 @@ void DeletingLispCleanup::Delete()
     }
     iObjects.ResizeTo(0);
 }
-
-

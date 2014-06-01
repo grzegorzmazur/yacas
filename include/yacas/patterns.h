@@ -18,6 +18,7 @@
 #include "lisptype.h"
 #include "grower.h"
 #include "lispenvironment.h"
+#include "noncopyable.h"
 
 
 /// Abstract class for matching one argument to a pattern.
@@ -62,7 +63,7 @@ protected:
 };
 
 /// Class for matching against a list of YacasParamMatcherBase objects.
-class MatchSubList : public YacasParamMatcherBase
+class MatchSubList : public YacasParamMatcherBase, NonCopyable
 {
 public:
   MatchSubList(YacasParamMatcherBase** aMatchers, LispInt aNrMatchers);
@@ -70,18 +71,6 @@ public:
   virtual bool ArgumentMatches(LispEnvironment& aEnvironment,
                                       LispPtr& aExpression,
                                       LispPtr* arguments);
-private:
-  MatchSubList(const MatchSubList& aOther) : iMatchers(NULL),iNrMatchers(0)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-  }
-  MatchSubList& operator=(const MatchSubList& aOther)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-    return *this;
-  }
 protected:
   YacasParamMatcherBase** iMatchers;
   LispInt iNrMatchers;

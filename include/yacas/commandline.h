@@ -82,9 +82,7 @@ public:
   {
   }
 
-  virtual ~CCommandLine()
-  {
-  }
+  virtual ~CCommandLine() = default;
 
   /// Call this function if the user needs to enter an expression.
   virtual void ReadLine(const std::string& prompt);

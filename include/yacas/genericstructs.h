@@ -5,8 +5,8 @@
 
 #include "yacasbase.h"
 #include "genericobject.h"
+#include "noncopyable.h"
 
-#include <cassert>
 
 /** \class GenericStruct This class maintains a pointer to some arbitrary
  *  object (which can be any thing). The plugin is responsible for supplying
@@ -19,26 +19,14 @@
  *  type of the object (useful for testing if the type passed as an argument
  *  to a function is correct).
  */
-class GenericStruct : public GenericClass
+class GenericStruct : public GenericClass, NonCopyable
 {
 public:
   GenericStruct(LispChar * aTypeName, void* aData, void (*aDestructor)(void*));
   virtual ~GenericStruct();
   virtual const LispChar * TypeName();
   inline void* Data() {return iData;}
-private:
-  GenericStruct(const GenericStruct& aOther) : iData(NULL),iTypeName(NULL),iDestructor(NULL)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-  }
-  GenericStruct& operator=(const GenericStruct& aOther)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-    return *this;
-  }
-public:
+
   void* iData;
   LispChar * iTypeName;
   void (*iDestructor)(void* data);

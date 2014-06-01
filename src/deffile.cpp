@@ -9,30 +9,21 @@
 #include "yacas/tokenizer.h"
 #include "yacas/stringio.h"
 
-LispDefFile::LispDefFile(const LispDefFile& aOther) : iFileName(aOther.iFileName),iIsLoaded(aOther.iIsLoaded)
+LispDefFile::LispDefFile(const LispDefFile& aOther):
+    iFileName(aOther.iFileName),
+    iIsLoaded(aOther.iIsLoaded)
 {
-//  iFileName = (aOther.iFileName);
-//  iIsLoaded = aOther.iIsLoaded;
-//printf("1... %s ",iFileName->c_str());
-//printf("refcount = %d\n",(int)iFileName->iReferenceCount);
 }
 
-LispDefFile::LispDefFile(LispString * aFileName) : iFileName(aFileName),iIsLoaded(0)
+LispDefFile::LispDefFile(LispString* aFileName):
+    iFileName(aFileName),
+    iIsLoaded(false)
 {
-//  iFileName = aFileName;
-//printf("2... %s ",iFileName->c_str());
-//printf("refcount = %d\n",(int)iFileName->iReferenceCount);
-}
-
-
-LispDefFile::~LispDefFile()
-{
-  iFileName = (NULL);
 }
 
 void LispDefFile::SetLoaded()
 {
-  iIsLoaded=1;
+  iIsLoaded = true;
 }
 
 LispDefFile* LispDefFiles::File(LispString * aFileName)

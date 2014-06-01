@@ -8,7 +8,7 @@ class GenericClass : public YacasBase
 {
 public:
     GenericClass() : iReferenceCount(0) {};
-    virtual ~GenericClass() {}
+    virtual ~GenericClass() = default;
     virtual const LispChar * TypeName()=0;
 public:
     ReferenceType iReferenceCount; //TODO: perhaps share the method of reference counting with how it is done in other places

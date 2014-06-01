@@ -18,6 +18,7 @@
 #include "lispglobals.h"
 #include "lisperror.h"
 #include "lispuserfunc.h"
+#include "noncopyable.h"
 
 
 /// The default environment for a Yacas session.
@@ -26,32 +27,13 @@
 /// functions are listed in corefunctions.h . Examples of core
 /// functions are \c Head, \c Set and \c Eval.
 
-class DefaultYacasEnvironment : public YacasBase
+class DefaultYacasEnvironment : public YacasBase, NonCopyable
 {
 public:
   DefaultYacasEnvironment();
   DefaultYacasEnvironment(LispOutput* aOutput, LispInt aStackSize);
   virtual ~DefaultYacasEnvironment();
   LispEnvironment& getEnv() {return iEnvironment;}
-
-private:
-  DefaultYacasEnvironment(const DefaultYacasEnvironment& aOther)
-    : output(NULL),hash(),printer(),coreCommands(),globals(),prefixoperators(),infixoperators(),postfixoperators(),bodiedoperators(),infixprinter(aOther.infixprinter),userFunctions(),
-      iEnvironment(coreCommands,userFunctions,
-                 globals,hash,output,infixprinter,
-                 prefixoperators,infixoperators,
-                 postfixoperators,bodiedoperators,&input,0),
-    input(aOther.input.Status())
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-  }
-  DefaultYacasEnvironment& operator=(const DefaultYacasEnvironment& aOther)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-    return *this;
-  }
 
 private:
   LispOutput* output;

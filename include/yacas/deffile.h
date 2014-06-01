@@ -17,7 +17,7 @@ class LispDefFile : public YacasBase
 public:
     LispDefFile(LispString * aFile);
     LispDefFile(const LispDefFile& aOther);
-    ~LispDefFile();
+
     void SetLoaded();
     inline bool IsLoaded();
     inline LispString * FileName();

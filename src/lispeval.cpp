@@ -75,14 +75,6 @@ void LispEvaluatorBase::ShowStack(LispEnvironment& aEnvironment, LispOutput& aOu
 {
 }
 
-LispEvaluatorBase::~LispEvaluatorBase()
-{
-}
-
-BasicEvaluator::~BasicEvaluator()
-{
-}
-
 
 // Eval: evaluates an expression. The result of this operation must
 // be a unique (copied) element! Eg. its Nixed might be set...

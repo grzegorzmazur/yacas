@@ -4,8 +4,8 @@
 #include "yacasbase.h"
 #include "lispuserfunc.h"
 #include "grower.h"
-
 #include "patternclass.h"
+#include "noncopyable.h"
 
 /// A mathematical function defined by several rules.
 /// This is the basic class which implements functions in Yacas.
@@ -78,7 +78,7 @@ public:
   };
 
   /// A rule which matches if the corresponding PatternClass matches.
-  class BranchPattern : public BranchRuleBase
+  class BranchPattern : public BranchRuleBase, NonCopyable
   {
   public:
     /// Destructor.
@@ -106,19 +106,6 @@ public:
 
     /// Access #iBody
     virtual LispPtr& Body();
-
-  private:
-    BranchPattern(const BranchPattern& aOther) : iPrecedence(0),iBody(),iPredicate(),iPatternClass(NULL)
-    {
-      // copy constructor not written yet, hence the assert
-      assert(0);
-    }
-    BranchPattern& operator=(const BranchPattern& aOther)
-    {
-      // copy constructor not written yet, hence the assert
-      assert(0);
-      return *this;
-    }
 
   protected:
     /// The precedence of this rule.
