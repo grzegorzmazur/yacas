@@ -27,8 +27,8 @@
 class LispBase : public YacasBase
 {
 public:
-    virtual void Delete()=0;
-    virtual ~LispBase(){};
+    virtual void Delete() = 0;
+    virtual ~LispBase() = default;
 };
 
 /** Clean up stack that doesn't actually delete objects itself.
@@ -40,7 +40,7 @@ class LispCleanup : public YacasBase
 {
 public:
    inline LispCleanup() : iObjects() {}
-    virtual ~LispCleanup();
+    virtual ~LispCleanup() = default;
     /// Push an object onto the cleanup stack for guarding
     virtual void Push(LispBase& aObject);
     /// Pop an object from the cleanup stack (the system is finished using it)
@@ -63,7 +63,7 @@ protected:
 class DeletingLispCleanup : public LispCleanup
 {
 public:
-    virtual ~DeletingLispCleanup();
+    virtual ~DeletingLispCleanup() = default;
     virtual void Push(LispBase& aObject);
     virtual void Pop();
     virtual void Delete();

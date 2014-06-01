@@ -14,15 +14,7 @@ ArrayClass::ArrayClass(LispInt aSize,LispObject* aInitialItem) : iArray()
   }
 }
 
-
-ArrayClass::~ArrayClass()
-{
-}
-
 const LispChar * ArrayClass::TypeName()
 {
     return "\"Array\"";
 }
-
-
-

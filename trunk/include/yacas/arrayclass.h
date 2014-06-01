@@ -9,7 +9,7 @@ class ArrayClass : public GenericClass
 {
 public: //required
     ArrayClass(LispInt aSize,LispObject* aInitialItem);
-    virtual ~ArrayClass();
+    virtual ~ArrayClass() = default;
     virtual const LispChar * TypeName();
 public: //array-specific
     inline LispInt Size();

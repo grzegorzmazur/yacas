@@ -41,7 +41,7 @@ class LispEvaluatorBase : public YacasBase
 {
 public:
   LispEvaluatorBase() : iBasicInfo() {}
-  virtual ~LispEvaluatorBase();
+  virtual ~LispEvaluatorBase() = default;
   virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression)=0;
   virtual void ResetStack();
   virtual UserStackInformation& StackInformation();
@@ -89,7 +89,7 @@ public:
   /// The LispPtr it can be stored in to is passed in as argument, so it
   /// does not need to be constructed by the calling environment.
   virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
-  virtual ~BasicEvaluator();
+  virtual ~BasicEvaluator() = default;
 };
 
 class TracedEvaluator : public BasicEvaluator

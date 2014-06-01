@@ -5,11 +5,12 @@
 #include "lispobject.h"
 #include "genericobject.h"
 #include "patterns.h"
+#include "noncopyable.h"
 
 /// Wrapper for YacasPatternPredicateBase.
 /// This class allows a YacasPatternPredicateBase to be put in a
 /// LispGenericObject.
-class PatternClass : public GenericClass
+class PatternClass : public GenericClass, NonCopyable
 {
 public:
   PatternClass(YacasPatternPredicateBase* aPatternMatcher);
@@ -22,18 +23,6 @@ public:
 public: //From GenericClass
   virtual const LispChar * TypeName();
 
-private:
-  PatternClass(const PatternClass& aOther): iPatternMatcher(NULL)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-  }
-  PatternClass& operator=(const PatternClass& aOther)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-    return *this;
-  }
 protected:
   YacasPatternPredicateBase* iPatternMatcher;
 };

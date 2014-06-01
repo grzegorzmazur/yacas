@@ -62,7 +62,7 @@ public:
    * closed.
    */
   LispInput(InputStatus& aStatus) : iStatus(aStatus) {};
-  virtual ~LispInput();
+  virtual ~LispInput() = default;
 
   /// Return the next character in the file
   virtual LispChar Next() = 0;
@@ -97,7 +97,7 @@ protected:
 class LispOutput : public YacasBase
 {
 public:
-    virtual ~LispOutput();
+    virtual ~LispOutput() = default;
     /// Write out one character.
     virtual void PutChar(LispChar aChar) = 0;
 

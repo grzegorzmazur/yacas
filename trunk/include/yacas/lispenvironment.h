@@ -19,6 +19,7 @@
 #include "lispglobals.h"
 #include "xmltokenizer.h"
 #include "errors.h"
+#include "noncopyable.h"
 
 class LispDefFiles;
 class InputDirectories : public CDeletingArrayGrower<LispString *, ArrOpsDeletingPtr<LispString> >
@@ -42,7 +43,7 @@ class LispEnvironment;
 /// This huge class is the central class of the Yacas program. It
 /// implements a dialect of Lisp.
 
-class LispEnvironment : public YacasBase
+class LispEnvironment : public YacasBase, NonCopyable
 {
 public:
   /// \name Constructor and destructor
@@ -240,7 +241,7 @@ private:
 
 private:
 
-  class LispLocalVariable : public YacasBase
+  class LispLocalVariable : public YacasBase, NonCopyable
   {
   public:
     LispLocalVariable(LispString * aVariable,
@@ -253,25 +254,13 @@ private:
     {
       --iVariable->iReferenceCount;
     }
-  private:
-    LispLocalVariable(const LispLocalVariable& aOther) : iNext(NULL), iVariable(NULL),iValue(NULL)
-    {
-      // copy constructor not written yet, hence the assert
-      assert(0);
-    }
-    LispLocalVariable& operator=(const LispLocalVariable& aOther)
-    {
-      // copy constructor not written yet, hence the assert
-      assert(0);
-      return *this;
-    }
 
   public:
     LispLocalVariable* iNext;
     LispString * iVariable;
     LispPtr iValue;
   };
-  class LocalVariableFrame : public YacasBase
+  class LocalVariableFrame : public YacasBase, NonCopyable
   {
   public:
     LocalVariableFrame(LocalVariableFrame *aNext,
@@ -294,18 +283,6 @@ private:
       }
     }
 
-  private:
-    LocalVariableFrame(const LocalVariableFrame& aOther) : iNext(NULL),iFirst(NULL),iLast(NULL)
-    {
-      // copy constructor not written yet, hence the assert
-      assert(0);
-    }
-    LocalVariableFrame& operator=(const LocalVariableFrame& aOther)
-    {
-      // copy constructor not written yet, hence the assert
-      assert(0);
-      return *this;
-    }
   public:
     LocalVariableFrame *iNext;
     LispLocalVariable* iFirst;
@@ -404,70 +381,6 @@ public:
     LispInt iStackCnt;    // number of items on the stack
   };
   YacasArgStack iStack;
-
-private:
-
-  inline LispEnvironment(const LispEnvironment& aOther)
-    :
-    iPrecision(0),  // default user precision of 10 decimal digits
-    iBinaryPrecision(0),  // same as 34 bits
-    iInputDirectories(),
-    iCleanup(),
-    iEvalDepth(0),
-    iMaxEvalDepth(0),
-    iEvaluator(NULL),
-    iInputStatus(),
-    secure(false),
-    iTrue(),
-    iFalse(),
-    iEndOfFile(),
-    iEndStatement(),
-    iProgOpen(),
-    iProgClose(),
-    iNth(),
-    iBracketOpen(),
-    iBracketClose(),
-    iListOpen(),
-    iListClose(),
-    iComma(),
-    iList(),
-    iProg(),
-    iLastUniqueId(0),
-    iError(),
-    iErrorOutput(aOther.iErrorOutput),
-    iDebugger(NULL),
-    iLocalsList(NULL),
-    iInitialOutput(aOther.iInitialOutput),
-    iCoreCommands(aOther.iCoreCommands),
-    iUserFunctions(aOther.iUserFunctions),
-    iHashTable(aOther.iHashTable),
-    iDefFiles(),
-    iPrinter(aOther.iPrinter),
-    iCurrentOutput(aOther.iCurrentOutput),
-    iGlobals(aOther.iGlobals),
-    iPreFixOperators(aOther.iPreFixOperators),
-    iInFixOperators(aOther.iInFixOperators),
-    iPostFixOperators(aOther.iPostFixOperators),
-    iBodiedOperators(aOther.iBodiedOperators),
-    iCurrentInput(aOther.iCurrentInput),
-    iPrettyReader(NULL),
-    iPrettyPrinter(NULL),
-    iDefaultTokenizer(),
-    iCommonLispTokenizer(),
-    iXmlTokenizer(),
-    iCurrentTokenizer(NULL),
-    iStack(0)
-  {
-    // copy constructor has not been made yet, hence the assert
-    assert(0);
-  }
-  LispEnvironment& operator=(const LispEnvironment& aOther)
-  {
-    // copy constructor has not been made yet, hence the assert
-    assert(0);
-    return *this;
-  }
-
 };
 
 inline LispInt LispEnvironment::Precision(void) const
@@ -539,7 +452,7 @@ private:
 
 
 // LispLocalInput takes ownership over the LispInput class
-class LispLocalInput : public LispBase
+class LispLocalInput : public LispBase, NonCopyable
 {
 public:
   LispLocalInput(LispEnvironment& aEnvironment, LispInput* aInput)
@@ -554,18 +467,6 @@ public:
     Delete();
   };
   virtual void Delete();
-private:
-  LispLocalInput(const LispLocalInput& aOther): iEnvironment(aOther.iEnvironment),iPreviousInput(iEnvironment.CurrentInput())
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-  };
-  LispLocalInput& operator=(const LispLocalInput& aOther)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-    return *this;
-  };
 
 private:
   LispEnvironment& iEnvironment;
@@ -574,7 +475,7 @@ private:
 
 
 // LispLocalInput takes ownership over the LispInput class
-class LispLocalOutput : public LispBase
+class LispLocalOutput : public LispBase, NonCopyable
 {
 public:
   LispLocalOutput(LispEnvironment& aEnvironment, LispOutput* aOutput)
@@ -590,42 +491,17 @@ public:
     Delete();
   };
   virtual void Delete();
-private:
-  LispLocalOutput(const LispLocalOutput& aOther): iEnvironment(aOther.iEnvironment), iPreviousOutput(iEnvironment.CurrentOutput())
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-  }
-  LispLocalOutput& operator=(const LispLocalOutput& aOther)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-    return *this;
-  }
+
 private:
   LispEnvironment& iEnvironment;
   LispOutput* iPreviousOutput;
 };
 
-
-class LispLocalEvaluator : public YacasBase
+class LispLocalEvaluator : public YacasBase, NonCopyable
 {
 public:
   LispLocalEvaluator(LispEnvironment& aEnvironment,LispEvaluatorBase* aNewEvaluator);
   ~LispLocalEvaluator();
-
-private:
-  LispLocalEvaluator(const LispLocalEvaluator& aOther) : iPreviousEvaluator(NULL), iEnvironment(aOther.iEnvironment)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-  }
-  LispLocalEvaluator& operator=(const LispLocalEvaluator& aOther)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-    return *this;
-  }
 
 private:
   LispEvaluatorBase* iPreviousEvaluator;
@@ -653,7 +529,7 @@ private:
   LispUserFunction* iUserFunc;
 };
 
-class LocalArgs : public YacasBase
+class LocalArgs : public YacasBase, NonCopyable
 {
 public:
   LocalArgs(LispPtr* aPtrs) : iPtrs(aPtrs) {};
@@ -662,18 +538,7 @@ public:
     if (iPtrs)
       delete[] iPtrs;
   }
-private:
-  LocalArgs(const LocalArgs& aOther) : iPtrs(NULL)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-  }
-  LocalArgs& operator=(const LocalArgs& aOther)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-    return *this;
-  }
+
 private:
   LispPtr* iPtrs;
 };
@@ -700,5 +565,3 @@ inline LispString * LispEnvironment::PrettyPrinter(void)
 
 
 #endif
-
-
