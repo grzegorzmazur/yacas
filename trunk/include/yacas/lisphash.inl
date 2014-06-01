@@ -1,6 +1,3 @@
- 
-
-
 /** LAssoc is a helper class for LispAssociatedHash
  */
 template<class T>
@@ -19,14 +16,14 @@ template<class T>
 inline LAssoc<T>::LAssoc(LispString * aString,const T& aData)
 : iString(),iData(aData)
 {
-  assert((bool)(aString != NULL));
-  iString = (aString);
+  assert(aString);
+  iString = aString;
 }
 
 template<class T>
 inline LAssoc<T>::~LAssoc()
 {
-   iString = (NULL);
+   iString = nullptr;
 }
 
 
@@ -47,7 +44,7 @@ inline T* LispAssociatedHash<T>::LookUp(LispString * aString)
       return &((LAssoc<T>*)iHashTable[bin][i])->iData;
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 template<class T>
@@ -55,7 +52,7 @@ inline void LispAssociatedHash<T>::SetAssociation(const T& aData, LispString * a
 {
   LispInt bin = LH;
   LispInt i;
- 
+
   // Find existing version of string
   for (i=0;i<iHashTable[bin].Size();i++)
   {
@@ -78,7 +75,7 @@ inline void LispAssociatedHash<T>::Release(LispString * aString)
 {
   LispInt bin = LH;
   LispInt i;
- 
+
   // Find existing version of string
   for (i=0;i<iHashTable[bin].Size();i++)
   {
@@ -88,7 +85,7 @@ inline void LispAssociatedHash<T>::Release(LispString * aString)
     {
       //change existing version of association
       delete ((LAssoc<T>*)iHashTable[bin][i]);
-      iHashTable[bin][i] = NULL;
+      iHashTable[bin][i] = nullptr;
       iHashTable[bin].Delete(i);
       return;
     }

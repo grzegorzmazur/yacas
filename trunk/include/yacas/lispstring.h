@@ -72,10 +72,10 @@ class LispStringSmartPtr
 {
 public:
   // Default constructor (not explicit, so it auto-initializes)
-  LispStringSmartPtr() : iString(NULL) {}
+  LispStringSmartPtr() : iString(nullptr) {}
 
   // Construct from pointer to LispString
-  LispStringSmartPtr(LispString * aString) : iString(NULL)
+  LispStringSmartPtr(LispString * aString) : iString(nullptr)
   {
     this->operator=(aString);
   }
@@ -100,7 +100,7 @@ public:
   // Expected pointer behavior.
   operator LispString*()    const { return  iString; }  // implicit conversion to pointer to T
   LispString *operator->()  const { return  iString; }  // so (smartPtr->member) accesses T's member
- 
+
   // Operators below are not used yet, so they are commented out. If you want to use them you need to test if they work.
   //LispString &operator*() const { return *iString; }  // so (*smartPtr) is a reference to T
   //LispString *ptr()       const { return  iString; }  // so (smartPtr.ptr()) returns the pointer to T (boost calls this method 'get')

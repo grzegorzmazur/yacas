@@ -146,7 +146,7 @@ LispInt YacasPatternPredicateBase::LookUp(LispString * aVariable)
 YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironment& aEnvironment, LispObject* aPattern)
 {
     if (!aPattern)
-        return NULL;
+        return nullptr;
 
     if (aPattern->Number(aEnvironment.Precision()))
     {
@@ -220,7 +220,7 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
     return NEW MatchSubList(matchers, num);
     }
 
-    return NULL;
+    return nullptr;
 }
 
 YacasPatternPredicateBase::YacasPatternPredicateBase(LispEnvironment& aEnvironment, LispPtr& aPattern,
@@ -231,7 +231,7 @@ YacasPatternPredicateBase::YacasPatternPredicateBase(LispEnvironment& aEnvironme
     for ( ; iter.getObj(); ++iter)
   {
         YacasParamMatcherBase* matcher = MakeParamMatcher(aEnvironment,iter.getObj());
-        assert(matcher!=NULL);
+        assert(matcher!=nullptr);
         iParamMatchers.Append(matcher);
   }
   LispPtr post(aPostPredicate);
@@ -241,7 +241,7 @@ YacasPatternPredicateBase::YacasPatternPredicateBase(LispEnvironment& aEnvironme
 bool YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
                                               LispPtr& aArguments)
 {
-    LispPtr* arguments = NULL;
+    LispPtr* arguments = nullptr;
     if (iVariables.Size() > 0)
     arguments = NEW LispPtr[iVariables.Size()];
     LocalArgs args(arguments); //Deal with destruction
@@ -283,7 +283,7 @@ bool YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
 {
     LispInt i;
 
-    LispPtr* arguments = NULL;
+    LispPtr* arguments = nullptr;
     if (iVariables.Size() > 0)
         arguments = NEW LispPtr[iVariables.Size()];
     LocalArgs args(arguments); //Deal with destruction

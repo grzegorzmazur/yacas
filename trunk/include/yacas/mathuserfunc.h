@@ -20,7 +20,7 @@ public:
   class BranchParameter : public YacasBase
   {
   public:
-    BranchParameter(LispString * aParameter = NULL, LispInt aHold=false)
+    BranchParameter(LispString * aParameter = nullptr, LispInt aHold=false)
         : iParameter(aParameter), iHold(aHold) {}
     LispString * iParameter;
     LispInt       iHold;
@@ -89,7 +89,7 @@ public:
     /// \param aPrecedence precedence of the rule
     /// \param aPredicate generic object of type \c Pattern
     /// \param aBody body of the rule
-    BranchPattern(LispInt aPrecedence,LispPtr& aPredicate,LispPtr& aBody) : iPrecedence(aPrecedence),iBody(aBody),iPredicate(aPredicate),iPatternClass(NULL)
+    BranchPattern(LispInt aPrecedence,LispPtr& aPredicate,LispPtr& aBody) : iPrecedence(aPrecedence),iBody(aBody),iPredicate(aPredicate),iPatternClass(nullptr)
     {
       GenericClass *gen = aPredicate->Generic();
       PatternClass* pat = dynamic_cast<PatternClass*>(gen);

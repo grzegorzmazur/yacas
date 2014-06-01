@@ -18,10 +18,10 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
   {
     return userFunc;
   }
-  else if (head->String()!=NULL)
+  else if (head->String()!=nullptr)
   {
     LispMultiUserFunction* multiUserFunc = aEnvironment.MultiUserFunction(head->String());
-    if (multiUserFunc->iFileToOpen!=NULL)
+    if (multiUserFunc->iFileToOpen!=nullptr)
     {
       LispDefFile* def = multiUserFunc->iFileToOpen;
 #ifdef YACAS_DEBUG
@@ -40,7 +40,7 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
         }
       }
 #endif
-      multiUserFunc->iFileToOpen=NULL;
+      multiUserFunc->iFileToOpen=nullptr;
       InternalUse(aEnvironment,def->iFileName);
 
 #ifdef YACAS_DEBUG
@@ -262,7 +262,7 @@ void TracedStackEvaluator::PopFrame()
   if (objs[objs.Size()-1])
   {
     delete objs[objs.Size()-1];
-    objs[objs.Size()-1] = NULL;
+    objs[objs.Size()-1] = nullptr;
   }
   objs.Delete(objs.Size()-1);
 }
@@ -310,7 +310,7 @@ void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, LispOutput& 
     aEnvironment.CurrentPrinter().Print(objs[i]->iOperator, *aEnvironment.CurrentOutput(),aEnvironment);
 
     LispInt internal;
-    internal = (NULL != aEnvironment.CoreCommands().LookUp(objs[i]->iOperator->String()));
+    internal = (nullptr != aEnvironment.CoreCommands().LookUp(objs[i]->iOperator->String()));
     if (internal)
     {
       aEnvironment.CurrentOutput()->Write(" (Internal function) ");
@@ -365,7 +365,7 @@ void TracedStackEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
   }
 
   LispPtr* subList = aExpression->SubList();
-  LispString * str = NULL;
+  LispString * str = nullptr;
   if (subList)
   {
     LispObject* head = (*subList);

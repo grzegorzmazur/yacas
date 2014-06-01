@@ -130,7 +130,7 @@ void ParsedObject::Combine(LispInt aNrArgsToCombine)
         Fail();
 
     subList->Nixed() = (*++iter);
-    *iter = (NULL);
+    *iter = nullptr;
 
     InternalReverseList((*subList->SubList())->Nixed(),  // TODO: woof
                         (*subList->SubList())->Nixed());
@@ -221,7 +221,7 @@ void ParsedObject::ReadExpression(LispInt depth)
 //printf("Pushhback %s\n",&input.StartPtr()[input.Position()]);
                       break;
                     }
-                    else op=NULL;
+                    else op=nullptr;
                   }
                 }
                 if (!op) return;
@@ -450,16 +450,16 @@ void InfixPrinter::Print(
         LispInFixOperator* infix   = iInfixOperators.LookUp(string);
         LispInFixOperator* postfix = iPostfixOperators.LookUp(string);
         LispInFixOperator* bodied  = iBodiedOperators.LookUp(string);
-        LispInFixOperator* op = NULL;
+        LispInFixOperator* op = nullptr;
 
         if (length!=2)
         {
-            prefix=NULL;
-            postfix=NULL;
+            prefix=nullptr;
+            postfix=nullptr;
         }
         if (length!=3)
         {
-            infix=NULL;
+            infix=nullptr;
         }
         if (prefix  )  op=prefix;
         if (postfix )  op=postfix;
@@ -467,8 +467,8 @@ void InfixPrinter::Print(
 
         if (op)
         {
-            LispPtr* left  = NULL;
-            LispPtr* right = NULL;
+            LispPtr* left  = nullptr;
+            LispPtr* right = nullptr;
 
             if (prefix)
             {

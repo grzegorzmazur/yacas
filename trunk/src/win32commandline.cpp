@@ -19,14 +19,14 @@ static void win_assert(BOOL condition){
         FORMAT_MESSAGE_ALLOCATE_BUFFER |
         FORMAT_MESSAGE_FROM_SYSTEM |
         FORMAT_MESSAGE_IGNORE_INSERTS,
-        NULL,
+        nullptr,
         GetLastError(),
         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
         (LPTSTR) &lpMsgBuf,
         0,
-        NULL);
+        nullptr);
 
-    MessageBox( NULL, (LPCTSTR)lpMsgBuf, "Error", MB_OK | MB_ICONINFORMATION );
+    MessageBox( nullptr, (LPCTSTR)lpMsgBuf, "Error", MB_OK | MB_ICONINFORMATION );
     // Free the buffer.
     LocalFree(lpMsgBuf);
     exit(1);
@@ -48,7 +48,7 @@ void CWin32CommandLine::color_print(const std::string& str, WORD text_attrib)
     win_assert(status);
 
     DWORD written;
-    status = WriteConsole(out_console, str.c_str(), str.length(), &written, NULL);
+    status = WriteConsole(out_console, str.c_str(), str.length(), &written, nullptr);
     win_assert(status);
     // restore the attributes
     status = SetConsoleTextAttribute(out_console, old_attrib);
@@ -69,7 +69,7 @@ void CWin32CommandLine::color_read(LispChar * str, WORD text_attrib){
     status = SetConsoleTextAttribute(out_console, text_attrib);
 
     DWORD read;
-    status = ReadConsole(in_console, str, 80, &read, NULL);
+    status = ReadConsole(in_console, str, 80, &read, nullptr);
     str[read - 2] = '\0';
     win_assert(status);
     // restore the attributes

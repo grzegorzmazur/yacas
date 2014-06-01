@@ -67,7 +67,7 @@ static void DoLoadDefFile(LispEnvironment& aEnvironment, LispInput* aInput,
     {
       LispString * str = token;
       LispMultiUserFunction* multiUser = aEnvironment.MultiUserFunction(str);
-      if (multiUser->iFileToOpen!=NULL)
+      if (multiUser->iFileToOpen!=nullptr)
       {
         aEnvironment.CurrentOutput()->Write("[");
         aEnvironment.CurrentOutput()->Write(&(*str)[0]);
@@ -84,7 +84,7 @@ static void DoLoadDefFile(LispEnvironment& aEnvironment, LispInput* aInput,
 
 void LoadDefFile(LispEnvironment& aEnvironment, LispString * aFileName)
 {
-  assert(aFileName!=NULL);
+  assert(aFileName!=nullptr);
 
   LispString flatfile;
   InternalUnstringify(flatfile, aFileName);

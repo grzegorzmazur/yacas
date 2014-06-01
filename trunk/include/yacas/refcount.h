@@ -21,7 +21,7 @@ class RefPtr : public YacasBase  // derived, so we can 'NEW LispPtr[nnn]'
 {
 public:
   // Default constructor (not explicit, so it auto-initializes)
-  inline RefPtr() : iPtr(NULL) {}
+  inline RefPtr() : iPtr(nullptr) {}
   // Construct from pointer to T
   explicit RefPtr(T *ptr) : iPtr(ptr) { if (ptr) { ptr->iReferenceCount++; } }
   // Copy constructor

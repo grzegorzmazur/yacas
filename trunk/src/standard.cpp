@@ -25,7 +25,7 @@ bool InternalIsList(const LispPtr& aPtr)
     if (!(*aPtr->SubList()))
         return false;
     // The following happens with IsList(UnList({foo(x), a, b}))
-    if ((*aPtr->SubList())->String()->c_str() == NULL)
+    if ((*aPtr->SubList())->String()->c_str() == nullptr)
         return false;
     //TODO this StrEqual is far from perfect. We could pass in a LispEnvironment object...
     if (std::strcmp((*aPtr->SubList())->String()->c_str(), "List"))
@@ -254,7 +254,7 @@ bool InternalEquals(LispEnvironment& aEnvironment,
                     const LispPtr& aExpression1,
                     const LispPtr& aExpression2)
 {
-    // Handle pointers to same, or NULL
+    // Handle pointers to same, or nullptr
     if (aExpression1.ptr() == aExpression2.ptr())  // compare pointers to LispObject
     {
         return true;
@@ -285,7 +285,7 @@ bool InternalEquals(LispEnvironment& aEnvironment,
         return false;
     }
 
-    // Handle same sublists, or NULL
+    // Handle same sublists, or nullptr
     if (aExpression1->SubList() == aExpression2->SubList())
     {
         return true;
@@ -563,7 +563,7 @@ void ReturnUnEvaluated(LispPtr& aResult,LispPtr& aArguments,
         full = (next);
         ++iter;
     }
-    full->Nixed() = (NULL);
+    full->Nixed() = (nullptr);
 }
 
 void PrintExpression(LispString& aResult,

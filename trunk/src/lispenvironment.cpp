@@ -60,8 +60,8 @@ LispEnvironment::LispEnvironment(
     iLastUniqueId(1),
     iError(),
     iErrorOutput(iError),
-    iDebugger(NULL),
-    iLocalsList(NULL),
+    iDebugger(nullptr),
+    iLocalsList(nullptr),
     iInitialOutput(aOutput),
     iCoreCommands(aCoreCommands),
     iUserFunctions(aUserFunctions),
@@ -75,8 +75,8 @@ LispEnvironment::LispEnvironment(
     iPostFixOperators(aPostFixOperators),
     iBodiedOperators(aBodiedOperators),
     iCurrentInput(aCurrentInput),
-    iPrettyReader(NULL),
-    iPrettyPrinter(NULL),
+    iPrettyReader(nullptr),
+    iPrettyPrinter(nullptr),
     iDefaultTokenizer(),
     iCommonLispTokenizer(),
     iXmlTokenizer(),
@@ -138,7 +138,7 @@ LispPtr *LispEnvironment::FindLocal(LispString * aVariable)
         }
         t = t->iNext;
     }
-    return NULL;
+    return nullptr;
 }
 
 
@@ -194,7 +194,7 @@ void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue, bool 
 
 void LispEnvironment::GetVariable(LispString * aVariable,LispPtr& aResult)
 {
-  aResult = (NULL);
+  aResult = (nullptr);
   LispPtr *local = FindLocal(aVariable);
   if (local)
   {
@@ -227,7 +227,7 @@ void LispEnvironment::UnsetVariable(LispString * aString)
     LispPtr *local = FindLocal(aString);
     if (local)
     {
-        (*local) = (NULL);
+        (*local) = (nullptr);
         return;
     }
     iGlobals.Release(aString);
@@ -238,7 +238,7 @@ void LispEnvironment::PushLocalFrame(bool aFenced)
     if (aFenced)
     {
         LocalVariableFrame *newFrame =
-            NEW LocalVariableFrame(iLocalsList, NULL);
+            NEW LocalVariableFrame(iLocalsList, nullptr);
         iLocalsList = newFrame;
     }
     else
@@ -269,7 +269,7 @@ void LispEnvironment::CurrentLocals(LispPtr& aResult)
   LispEnvironment::LispLocalVariable* ptr = fr->iFirst;
 
   LispEnvironment& aEnvironment = *this; //Pity, but we need this for the macros to work
-  LispObject* locals = NULL;
+  LispObject* locals = nullptr;
   while (ptr)
   {
     locals = LA(ATOML(ptr->iVariable->c_str()))+LA(locals);
@@ -341,7 +341,7 @@ LispUserFunction* LispEnvironment::UserFunction(LispPtr& aArguments)
         CHECKPTR(multiUserFunc->UserFunc(arity));
         return  multiUserFunc->UserFunc(arity);
     }
-    return NULL;
+    return nullptr;
 }
 
 
@@ -352,7 +352,7 @@ LispUserFunction* LispEnvironment::UserFunction(LispString * aName,LispInt aArit
     {
         return  multiUserFunc->UserFunc(aArity);
     }
-    return NULL;
+    return nullptr;
 }
 
 
@@ -531,7 +531,7 @@ void LispEnvironment::RemoveCoreCommand(LispChar * aString)
 
 LispString * LispEnvironment::FindCachedFile(const LispChar * aFileName)
 {
-  return NULL;
+  return nullptr;
 }
 
 
@@ -571,12 +571,12 @@ LispLocalEvaluator::~LispLocalEvaluator()
 
 LispLocalTrace::LispLocalTrace(LispUserFunction* aUserFunc) : iUserFunc(aUserFunc)
 {
-  if (iUserFunc!=NULL)
+  if (iUserFunc!=nullptr)
     iUserFunc->Trace();
 }
 LispLocalTrace::~LispLocalTrace()
 {
-  if (iUserFunc!=NULL)
+  if (iUserFunc!=nullptr)
     iUserFunc->UnTrace();
 }
 

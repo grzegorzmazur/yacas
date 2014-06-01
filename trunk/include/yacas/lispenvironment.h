@@ -96,7 +96,7 @@ public:
   ///   result is assigned back to the variable, its
   ///   #iEvalBeforeReturn is set to false, and a copy of the result
   ///   is returned in \a aResult.
-  /// - Otherwise, \a aResult is set to #NULL.
+  /// - Otherwise, \a aResult is set to #nullptr.
   void GetVariable(LispString * aVariable,LispPtr& aResult);
 
   void UnsetVariable(LispString * aString);
@@ -246,7 +246,7 @@ private:
   public:
     LispLocalVariable(LispString * aVariable,
                       LispObject* aValue)
-      : iNext(NULL), iVariable(aVariable),iValue(aValue)
+      : iNext(nullptr), iVariable(aVariable),iValue(aValue)
     {
       ++aVariable->iReferenceCount;
     };
@@ -370,13 +370,13 @@ public:
       while (iStackCnt>aTop)
       {
         iStackCnt--;
-        iStack[iStackCnt] = (NULL);
+        iStack[iStackCnt] = (nullptr);
       }
     }
   protected:
     // Invariants:
     //    0 <= iStackCnt <= iStack.Size()
-    //    iStack[iStackCnt..iStack.Size()-1] = NULL
+    //    iStack[iStackCnt..iStack.Size()-1] = nullptr
     LispPtrArray iStack;
     LispInt iStackCnt;    // number of items on the stack
   };
@@ -514,7 +514,7 @@ public:
   LispLocalTrace(LispUserFunction* aUserFunc);
   ~LispLocalTrace();
 private:
-  LispLocalTrace(const LispLocalTrace& aOther) : iUserFunc(NULL)
+  LispLocalTrace(const LispLocalTrace& aOther) : iUserFunc(nullptr)
   {
     // copy constructor not written yet, hence the assert
     assert(0);

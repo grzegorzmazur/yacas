@@ -32,8 +32,8 @@ typedef struct YacasMemBlock
     YacasMemBlock*      iNEXT;
 } YacasMemBlock;
 
-YacasMemBlock*  iFirst  = NULL;
-YacasMemBlock*  iLast  = NULL;
+YacasMemBlock*  iFirst  = nullptr;
+YacasMemBlock*  iLast  = nullptr;
 
 //------------------------------------------------------------------------------
 // Three low-level check routines: CheckPred, CheckPtr, and CheckAllPtrs.
@@ -48,7 +48,7 @@ void CheckPred(int pred, const char* file, int line)
 
 void CheckPtr( void * anAllocatedPtr, const char* file, int line )
 {
-    if (anAllocatedPtr == NULL)
+    if (anAllocatedPtr == nullptr)
         return;
 
   unsigned char * ptr = (unsigned char*)anAllocatedPtr;
@@ -80,7 +80,7 @@ void CheckPtr( void * anAllocatedPtr, const char* file, int line )
 
 void CheckAllPtrs(int final /*=0*/)
 {
-    if (final && iFirst!= NULL)
+    if (final && iFirst!= nullptr)
         printf("\n\n********** Memory leaks detected!!! ***********\n\n");
 
     for (YacasMemBlock * p = iFirst; p; p = p->iNEXT)
@@ -88,7 +88,7 @@ void CheckAllPtrs(int final /*=0*/)
         if (final) printf("%s(%d) : error C6666: memory leak! (0x%p)\n",p->iFile,p->iLine,(void*)(p+1));
         CheckPtr(p + 1, __FILE__, __LINE__);
     }
-    if (final && iFirst!= NULL)
+    if (final && iFirst!= nullptr)
         printf("\n\n***********************************************\n\n");
 }
 
@@ -97,7 +97,7 @@ void CheckAllPtrs(int final /*=0*/)
 
 void* YacasMallocPrivate(unsigned long aSize, const char* aFile, int aLine)
 {
-  if (aSize<=0) return NULL;
+  if (aSize<=0) return nullptr;
 
   YacasMemBlock* t = (YacasMemBlock*)PlatObAlloc(aSize+sizeof(YacasMemBlock)+4);
   unsigned char* ptr = (unsigned char*)(t+1);
@@ -118,9 +118,9 @@ void* YacasMallocPrivate(unsigned long aSize, const char* aFile, int aLine)
   t->iMagicPostfix[3] = 0  ;
 
   // maintain list of claimed elements!
-  t->iNEXT = NULL;
-  t->iPREV = NULL;
-  if ( iLast==NULL )
+  t->iNEXT = nullptr;
+  t->iPREV = nullptr;
+  if ( iLast==nullptr )
   {
     iFirst  = t;
     iLast  = t;
@@ -182,17 +182,17 @@ void YacasFreePrivate(void* aOrig)
             // it becomes the first
             iFirst = t->iNEXT;
             // that first does not have a previous!
-            iFirst->iPREV=NULL;
+            iFirst->iPREV=nullptr;
         }
         else // this was the first AND the last
         {
             // list is now empty!
-            iFirst=iLast=NULL;
+            iFirst=iLast=nullptr;
         }
     }
     else // not the first!
     {
-        assert( t->iPREV!=NULL );
+        assert( t->iPREV!=nullptr );
 
         if ( t->iNEXT )
         {
@@ -202,7 +202,7 @@ void YacasFreePrivate(void* aOrig)
         else // this was the last one!
         {
             iLast = t->iPREV;
-            iLast->iNEXT = NULL;
+            iLast->iNEXT = nullptr;
         }
     }
 #if INTENSE & (1<<4)
@@ -232,28 +232,28 @@ namespace {
 void* operator new(size_t size) NEW_THROWER
 {
   static Warn w(5, "WARNING! Global new called%s\n"); w.warn();
-  DBG_(while(0)) { int* ptr = NULL; *ptr = 1; }
+  DBG_(while(0)) { int* ptr = nullptr; *ptr = 1; }
     return PlatAlloc(size);
 }
 
 void* operator new[](size_t size) NEW_THROWER
 {
   static Warn w(5, "WARNING! Global new[] called%s\n"); w.warn();
-  DBG_(while(0)) { int* ptr = NULL; *ptr = 1; }
+  DBG_(while(0)) { int* ptr = nullptr; *ptr = 1; }
     return PlatAlloc(size);
 }
 
 void operator delete(void* object) DELETE_THROWER
 {
   static Warn w(5, "WARNING! Global delete called%s\n"); w.warn();
-  DBG_(while(0)) { int* ptr = NULL; *ptr = 1; }
+  DBG_(while(0)) { int* ptr = nullptr; *ptr = 1; }
     PlatFree(object);
 }
 
 void operator delete[](void* object) DELETE_THROWER
 {
   static Warn w(5, "WARNING! Global delete[] called%s\n"); w.warn();
-  DBG_(while(0)) { int* ptr = NULL; *ptr = 1; }
+  DBG_(while(0)) { int* ptr = nullptr; *ptr = 1; }
     PlatFree(object);
 }
 

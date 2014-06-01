@@ -1,4 +1,3 @@
-
 #include "yacas/yacasprivate.h"
 #include "yacas/mathuserfunc.h"
 #include "yacas/lispobject.h"
@@ -83,7 +82,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
     {
         LispPtr tr(LispSubList::New(aArguments));
         TraceShowEnter(aEnvironment,tr);
-        tr = (NULL);
+        tr = (nullptr);
     }
 
     LispIterator iter(aArguments);
@@ -92,7 +91,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
     // unrollable arguments
     LispPtr* arguments;
     if (arity==0)
-        arguments = NULL;
+        arguments = nullptr;
     else
     {
         assert(arity>0);
@@ -125,7 +124,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
             TraceShowArg(aEnvironment,*++iter,arguments[i]);
         }
   }
- 
+
     // declare a new local stack.
     LispLocalFrame frame(aEnvironment,Fenced());
 
@@ -159,7 +158,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
         // If rules got inserted, walk back
         while (thisRule != iRules[i] && i>0) i--;
     }
- 
+
     // No predicate was true: return a new expression with the evaluated
     // arguments.
 
@@ -167,7 +166,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
         LispPtr full(aArguments->Copy());
         if (arity == 0)
         {
-            full->Nixed() = (NULL);
+            full->Nixed() = (nullptr);
         }
         else
         {
@@ -185,7 +184,7 @@ FINISH:
     {
         LispPtr tr(LispSubList::New(aArguments));
         TraceShowLeave(aEnvironment, aResult,tr);
-        tr = (NULL);
+        tr = (nullptr);
     }
 }
 
@@ -367,7 +366,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
   {
     LispPtr tr(LispSubList::New(aArguments));
     TraceShowEnter(aEnvironment,tr);
-    tr = (NULL);
+    tr = (nullptr);
   }
 
   LispIterator iter(aArguments);
@@ -376,7 +375,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
   // unrollable arguments
   LispPtr* arguments;
   if (arity==0)
-    arguments = NULL;
+    arguments = nullptr;
   else
   {
     assert(arity>0);
@@ -445,7 +444,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
         InternalSubstitute(substedBody, thisRule->Body(), behaviour);
         break;
       }
- 
+
       // If rules got inserted, walk back
       while (thisRule != iRules[i] && i>0) i--;
     }
@@ -462,7 +461,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
     LispPtr full(aArguments->Copy());
     if (arity == 0)
     {
-      full->Nixed() = (NULL);
+      full->Nixed() = (nullptr);
     }
     else
     {
@@ -478,7 +477,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
   {
     LispPtr tr(LispSubList::New(aArguments));
     TraceShowLeave(aEnvironment, aResult,tr);
-    tr = (NULL);
+    tr = (nullptr);
   }
 }
 

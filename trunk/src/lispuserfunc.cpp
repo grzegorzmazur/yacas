@@ -22,8 +22,8 @@ LispUserFunction* LispMultiUserFunction::UserFunc(LispInt aArity)
     }
 
     // if function not found, just unaccept!
-    // User-defined function not found! Returning NULL
-    return NULL;
+    // User-defined function not found! Returning nullptr
+    return nullptr;
 }
 
 void LispMultiUserFunction::DeleteBase(LispInt aArity)
@@ -37,7 +37,7 @@ void LispMultiUserFunction::DeleteBase(LispInt aArity)
         if (iFunctions[i]->IsArity(aArity))
         {
             delete iFunctions[i];
-            iFunctions[i] = NULL;
+            iFunctions[i] = nullptr;
             iFunctions.Delete(i,1);
             return;
         }

@@ -87,7 +87,7 @@ void CYacas::Evaluate(const LispChar * aExpression)
             full.Append('\0');
             StringInput input(full,env.iInputStatus);
             LispLocalInput localInput(env, &input);
-            LispPtr args(NULL);
+            LispPtr args(nullptr);
             InternalApplyString(env, lispexpr,
                                prettyReader,
                                args);

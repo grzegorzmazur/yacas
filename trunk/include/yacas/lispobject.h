@@ -64,8 +64,8 @@ template <> struct Undefined<1>{};
 /** class LispObject is the base object class that can be put in
  *  linked lists. It either has a pointer to a string, obtained through
  *  String(), or it is a holder for a sublist, obtainable through SubList(),
- *  or it is a generic object, in which case Generic() returns non-NULL.
- *  Only one of these three functions should return a non-NULL value.
+ *  or it is a generic object, in which case Generic() returns non-nullptr.
+ *  Only one of these three functions should return a non-nullptr value.
  *  It is a reference-counted object. LispPtr handles the reference counting.
  */
 class LispObject : public YacasBase
@@ -76,28 +76,28 @@ public:
 public: //Derivables
   virtual ~LispObject();
 
-  /** Return string representation, or NULL if the object doesn't have one.
+  /** Return string representation, or nullptr if the object doesn't have one.
    *  the string representation is only relevant if the object is a
-   *  simple atom. This method returns NULL by default.
+   *  simple atom. This method returns nullptr by default.
    */
-  virtual LispString * String()  { return NULL; }
+  virtual LispString * String()  { return nullptr; }
   /** If this object is a list, return a pointer to it.
-   *  Default behaviour is to return NULL.
+   *  Default behaviour is to return nullptr.
    */
-  virtual LispPtr* SubList()      { return NULL; }
-  virtual GenericClass* Generic() { return NULL; }
+  virtual LispPtr* SubList()      { return nullptr; }
+  virtual GenericClass* Generic() { return nullptr; }
 
   /** If this is a number, return a BigNumber representation
    */
-  virtual BigNumber* Number(LispInt aPrecision) { return NULL; }
+  virtual BigNumber* Number(LispInt aPrecision) { return nullptr; }
 
   virtual LispObject* Copy() const = 0;
 
  /** Return a pointer to extra info. This allows for annotating
-  *  an object. Returns NULL by default.
+  *  an object. Returns nullptr by default.
   *  LispObject's implementation of this handles almost all derived classes.
   */
-  virtual LispObject* ExtraInfo() { return NULL; }
+  virtual LispObject* ExtraInfo() { return nullptr; }
   virtual LispObject* SetExtraInfo(LispObject* aData) = 0;
 public:
   LispInt Equal(LispObject& aOther);
@@ -113,12 +113,12 @@ public:
 protected:
   inline LispObject() :
 #ifdef YACAS_DEBUG
-   iFileName(NULL),iLine(0),
+   iFileName(nullptr),iLine(0),
 #endif // YACAS_DEBUG
    iNext(),iReferenceCount()
   {
     IncNrObjects();
-    DBG_( iFileName = NULL; )
+    DBG_( iFileName = nullptr; )
     DBG_( iLine = 0; )
   }
   inline LispObject(const LispObject& other) :
@@ -209,11 +209,11 @@ public:
   pointer operator->() const { return (_Ptr); }  // return pointer to class object
   inline LispIterator& operator++()  // preincrement
   {
-    //precondition: _Ptr != NULL
-    assert(_Ptr != NULL);
+    //precondition: _Ptr != nullptr
+    assert(_Ptr != nullptr);
     //expand: _Ptr = _Nextnode(_Ptr);
     LispObject * pObj = _Ptr->operator->();
-    _Ptr = pObj ? &(pObj->Nixed()) : NULL;
+    _Ptr = pObj ? &(pObj->Nixed()) : nullptr;
     return (*this);
   }
   LispIterator operator++(int) { LispIterator _Tmp = *this; ++*this; return (_Tmp); }  // postincrement
@@ -245,11 +245,11 @@ public:
   pointer operator->() const { return (_Ptr); }  // return pointer to class object
   inline LispConstIterator& operator++()  // preincrement
   {
-    //precondition: _Ptr != NULL
-    assert(_Ptr != NULL);
+    //precondition: _Ptr != nullptr
+    assert(_Ptr != nullptr);
     //expand: _Ptr = _Nextnode(_Ptr);
     LispObject * pObj = _Ptr->operator->();
-    _Ptr = pObj ? &(pObj->Nixed()) : NULL;
+    _Ptr = pObj ? &(pObj->Nixed()) : nullptr;
     return (*this);
   }
   LispConstIterator operator++(int) { LispConstIterator _Tmp = *this; ++*this; return (_Tmp); }  // postincrement

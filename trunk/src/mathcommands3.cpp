@@ -530,7 +530,7 @@ void YacasPrettyReaderSet(LispEnvironment& aEnvironment, LispInt aStackTop)
 
   if (nrArguments == 1)
   {
-    aEnvironment.SetPrettyReader(NULL);
+    aEnvironment.SetPrettyReader(nullptr);
   }
   else
   {
@@ -557,7 +557,7 @@ void YacasPrettyPrinterSet(LispEnvironment& aEnvironment, LispInt aStackTop)
 
   if (nrArguments == 1)
   {
-    aEnvironment.SetPrettyPrinter(NULL);
+    aEnvironment.SetPrettyPrinter(nullptr);
   }
   else
   {
@@ -692,7 +692,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
   tag.Append('\"');
   tag.Append('\0');
 
-  LispObject* info = NULL;
+  LispObject* info = nullptr;
 
   while (*str == ' ') str++;
   while (*str != '>' && *str != '/')

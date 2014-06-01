@@ -122,7 +122,7 @@ public:
           iInfixOperators(aInfixOperators),
           iPostfixOperators(aPostfixOperators),
           iBodiedOperators(aBodiedOperators),
-          iPrevLastChar(0),iCurrentEnvironment(NULL){}
+          iPrevLastChar(0),iCurrentEnvironment(nullptr){}
 
     virtual void Print(
         const LispPtr& aExpression,

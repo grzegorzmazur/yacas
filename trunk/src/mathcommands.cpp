@@ -57,7 +57,7 @@ void LispEval(LispEnvironment& aEnvironment,LispInt aStackTop)
 /// \sa LispSetVar(), LispMacroSetVar()
 static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, bool aMacroMode, bool aGlobalLazyVariable)
 {
-    LispString * varstring=NULL;
+    LispString * varstring=nullptr;
     if (aMacroMode)
     {
         LispPtr result;
@@ -401,7 +401,7 @@ void LispFlatCopy(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispPtr copied;
 
-    if (ARGUMENT(1)->SubList() == NULL)
+    if (ARGUMENT(1)->SubList() == nullptr)
         CheckArgIsList(1, aEnvironment, aStackTop);
 
     InternalFlatCopy(copied,*ARGUMENT(1)->SubList());
@@ -676,7 +676,7 @@ void LispNewLocal(LispEnvironment& aEnvironment, LispInt aStackTop)
       LispString * variable = iter.getObj()->String();
       CheckArg(variable, nr, aEnvironment, aStackTop);
 // printf("Variable %s\n",variable->String());
-      aEnvironment.NewLocal(variable,NULL);
+      aEnvironment.NewLocal(variable,nullptr);
     }
   }
   InternalTrue(aEnvironment,RESULT);
@@ -936,7 +936,7 @@ static void InternalNewRule(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispPtr pr;
     LispPtr predicate;
     LispPtr body;
-    LispString * orig=NULL;
+    LispString * orig=nullptr;
 
     // Get operator
     CheckArg(ARGUMENT(1), 1, aEnvironment, aStackTop);
@@ -1001,20 +1001,20 @@ void LispIsFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
     LispPtr result(ARGUMENT(1));
     InternalBoolean(aEnvironment,RESULT,
-                    result->SubList()!=NULL);
+                    result->SubList()!=nullptr);
 }
 
 void LispIsAtom(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
     LispPtr result(ARGUMENT(1));
     InternalBoolean(aEnvironment,RESULT,
-                    result->String()!=NULL);
+                    result->String()!=nullptr);
 }
 
 void LispIsNumber(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
   LispPtr result(ARGUMENT(1));
-  InternalBoolean(aEnvironment, RESULT, result->Number(aEnvironment.Precision()) != NULL);
+  InternalBoolean(aEnvironment, RESULT, result->Number(aEnvironment.Precision()) != nullptr);
 }
 
 void LispIsInteger(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -1412,7 +1412,7 @@ void LispIsInFix(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispInFixOperator* op = OperatorInfo(aEnvironment,
                                        aStackTop,
                                        aEnvironment.InFix());
-  InternalBoolean(aEnvironment, RESULT, op != NULL);
+  InternalBoolean(aEnvironment, RESULT, op != nullptr);
 }
 
 void LispIsBodied(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1420,7 +1420,7 @@ void LispIsBodied(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispInFixOperator* op = OperatorInfo(aEnvironment,
                                        aStackTop,
                                        aEnvironment.Bodied());
-  InternalBoolean(aEnvironment, RESULT, op != NULL);
+  InternalBoolean(aEnvironment, RESULT, op != nullptr);
 }
 
 void LispGetPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1505,7 +1505,7 @@ void LispIsPreFix(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispInFixOperator* op = OperatorInfo(aEnvironment,
                                          aStackTop,
                                          aEnvironment.PreFix());
-  InternalBoolean(aEnvironment, RESULT, op != NULL);
+  InternalBoolean(aEnvironment, RESULT, op != nullptr);
 }
 
 void LispIsPostFix(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1514,7 +1514,7 @@ void LispIsPostFix(LispEnvironment& aEnvironment, LispInt aStackTop)
                                        aStackTop,
                                        aEnvironment.PostFix());
 
-  InternalBoolean(aEnvironment, RESULT, op != NULL);
+  InternalBoolean(aEnvironment, RESULT, op != nullptr);
 }
 
 void YacasBuiltinPrecisionGet(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1575,7 +1575,7 @@ void LispIsGeneric(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
   LispPtr evaluated(ARGUMENT(1));
 
-  InternalBoolean(aEnvironment, RESULT, evaluated->Generic() != NULL);
+  InternalBoolean(aEnvironment, RESULT, evaluated->Generic() != nullptr);
 }
 
 void LispGenericTypeName(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -1664,7 +1664,7 @@ void LispCustomEval(LispEnvironment& aEnvironment,LispInt aStackTop)
   InternalEval(aEnvironment, RESULT, ARGUMENT(4));
   aEnvironment.iDebugger->Finish();
   delete aEnvironment.iDebugger;
-  aEnvironment.iDebugger = NULL;
+  aEnvironment.iDebugger = nullptr;
 }
 
 void LispCustomEvalExpression(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -1728,7 +1728,7 @@ void LispReadLispListed(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispTraceRule(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
     LispPtr *ptr = ARGUMENT(0)->Nixed()->SubList();
-    LispUserFunction* userfunc=NULL;
+    LispUserFunction* userfunc=nullptr;
     if (ptr)
         userfunc = GetUserFunction(aEnvironment,ptr);
     LispLocalTrace trace(userfunc);
@@ -1739,7 +1739,7 @@ void LispType(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
     LispPtr evaluated(ARGUMENT(1));
     LispPtr* subList = evaluated->SubList();
-    LispObject* head = NULL;
+    LispObject* head = nullptr;
     if (!subList)
     {
         goto EMPTY;
@@ -1916,7 +1916,7 @@ void LispDefLoadFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
         aEnvironment.MultiUserFunction(aEnvironment.HashTable().LookUp(oper.c_str()));
     if (multiUserFunc)
     {
-        if (multiUserFunc->iFileToOpen!=NULL)
+        if (multiUserFunc->iFileToOpen!=nullptr)
         {
             LispDefFile* def = multiUserFunc->iFileToOpen;
             if (!def->iIsLoaded)
@@ -1927,7 +1927,7 @@ void LispDefLoadFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
                 if (verbose_debug)
                     printf("Debug> Loading file %s for function %s\n",def->iFileName->c_str(),oper.c_str());
 #endif
-                multiUserFunc->iFileToOpen=NULL;
+                multiUserFunc->iFileToOpen=nullptr;
                 InternalUse(aEnvironment,def->iFileName);
       }
         }
@@ -1967,7 +1967,7 @@ static void InternalNewRulePattern(LispEnvironment& aEnvironment, LispInt aStack
     LispPtr pr;
     LispPtr predicate;
     LispPtr body;
-    LispString * orig = NULL;
+    LispString * orig = nullptr;
 
     // Get operator
     CheckArg(ARGUMENT(1), 1, aEnvironment, aStackTop);
