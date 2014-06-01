@@ -264,7 +264,7 @@ static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispInt aStackT
 
 static void LispHistorySize(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    ShortIntegerArgument(depth, 1);
+    LispInt depth = GetShortIntegerArgument(aEnvironment, aStackTop, 1);
 
     if (commandline)
         commandline->MaxHistoryLinesSaved(depth);
