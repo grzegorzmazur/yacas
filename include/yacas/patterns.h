@@ -164,7 +164,7 @@ protected:
     ///   calls itself on any of the entries in this list. The
     ///   resulting YacasParamMatcherBase objects are collected in a
     ///   MatchSubList, which is returned.
-    /// - Otherwise, this function returns #NULL.
+    /// - Otherwise, this function returns #nullptr.
     YacasParamMatcherBase* MakeParamMatcher(LispEnvironment& aEnvironment, LispObject* aPattern);
 
     /// Look up a variable name in #iVariables

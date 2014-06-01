@@ -111,10 +111,10 @@ class LispNumber : public ObjectHelper<LispNumber>
 public:
     /// constructors:
     /// construct from another LispNumber
-  LispNumber(BigNumber* aNumber, LispString * aString = NULL) : iNumber(aNumber), iString(aString) {}
+  LispNumber(BigNumber* aNumber, LispString * aString = nullptr) : iNumber(aNumber), iString(aString) {}
   LispNumber(const LispNumber& other) : ASuper(other), iNumber(other.iNumber), iString(other.iString) {}
   /// construct from a decimal string representation (also create a number object) and use aBasePrecision decimal digits
-  LispNumber(LispString * aString, LispInt aBasePrecision) : iNumber(NULL), iString(aString) { Number(aBasePrecision); }
+  LispNumber(LispString * aString, LispInt aBasePrecision) : iNumber(nullptr), iString(aString) { Number(aBasePrecision); }
 
   virtual ~LispNumber() {}
   virtual LispObject* Copy() const { return NEW LispNumber(*this); }
@@ -123,9 +123,9 @@ public:
   /// give access to the BigNumber object; if necessary, will create a BigNumber object out of the stored string, at given precision (in decimal?)
   virtual BigNumber* Number(LispInt aPrecision);
 private:
-  /// number object; NULL if not yet converted from string
+  /// number object; nullptr if not yet converted from string
   RefPtr<BigNumber> iNumber;
-  /// string representation in decimal; NULL if not yet converted from BigNumber
+  /// string representation in decimal; nullptr if not yet converted from BigNumber
   RefPtr<LispString> iString;
 };
 

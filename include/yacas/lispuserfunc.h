@@ -66,14 +66,14 @@ class LispMultiUserFunction : public YacasBase
 {
 public:
   /// Constructor.
-  LispMultiUserFunction() : iFunctions(),iFileToOpen(NULL) {};
+  LispMultiUserFunction() : iFunctions(),iFileToOpen(nullptr) {};
 
   /** When adding a multi-user function to the association hash table, the copy constructor is used.
    *  We should at least make sure that iFunctions is empty, so there is no copying needed (for efficiency).
    *  Casually having a copy-constructor on CDeletingArrayGrower should be avoided, to make sure it is
    *  not used accidentally.
    */
-  inline LispMultiUserFunction(const LispMultiUserFunction& aOther) : iFunctions(), iFileToOpen(NULL)
+  inline LispMultiUserFunction(const LispMultiUserFunction& aOther) : iFunctions(), iFileToOpen(nullptr)
   {
     assert(aOther.iFileToOpen == 0);
     assert(aOther.iFunctions.Size() == 0);

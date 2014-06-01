@@ -43,7 +43,7 @@ LispHashTable::~LispHashTable()
     for (i = 0, n = aBin.Size(); i < n; i++)
     {
       // Check that this LispHashTable is a unique pool!?
-      aBin[i] = (NULL);
+      aBin[i] = (nullptr);
     }
   }
 }
@@ -128,7 +128,7 @@ LispInt LispHashPtr(const LispString * aString)
     break;
     default:
         assert(0); //Extend it then...
- 
+
     }
     return (HASHBIN(h));
 }
@@ -234,9 +234,9 @@ void LispHashTable::GarbageCollect()
       if (aBin[i]->iReferenceCount != 1)
         continue;
       //printf("deleting [%s]\n",aBin[i]->String());
-      // this should be cheaper than 'aBin[i]=NULL;aBin.Delete(i)'
+      // this should be cheaper than 'aBin[i]=nullptr;aBin.Delete(i)'
       aBin[i] = aBin[n-1];
-      aBin[n-1] = (NULL);
+      aBin[n-1] = (nullptr);
       aBin.ResizeTo(n-1);
       i--;
       n--;

@@ -73,7 +73,7 @@ class LispAssociatedHash : public YacasBase
 public:
   /// Find the data associated to \a aString.
   /// If \a aString is not stored in the hash table, this function
-  /// returns #NULL.
+  /// returns #nullptr.
   inline T* LookUp(LispString * aString);
 
   /// Add an association to the hash table.

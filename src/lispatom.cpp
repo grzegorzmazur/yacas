@@ -29,7 +29,7 @@ LispObject* LispAtom::New(LispEnvironment& aEnvironment, const LispChar * aStrin
 
 LispAtom::LispAtom(LispString * aString) : iString(aString)
 {
-    assert(aString!=NULL);
+    assert(aString!=nullptr);
     ++aString->iReferenceCount;
     CHECKPTR(iString);
 }
@@ -83,9 +83,9 @@ LispSubList::~LispSubList()
             // Separate out the current element...
             if (iter.getObj()->iReferenceCount == 1)
             {// Destructive operation only if necessary...
-                iter.getObj()->Nixed() = (NULL);
+                iter.getObj()->Nixed() = (nullptr);
                 // And delete it.
-                (*iter) = (NULL);
+                (*iter) = (nullptr);
             }
             else
                 busy=false;
@@ -112,7 +112,7 @@ LispGenericClass* LispGenericClass::New(GenericClass* aClass)
 
 LispGenericClass::LispGenericClass(GenericClass* aClass) : iClass(aClass)
 {
-    assert(aClass!=NULL);
+    assert(aClass!=nullptr);
     aClass->iReferenceCount++;
 }
 
@@ -123,7 +123,7 @@ LispGenericClass::~LispGenericClass()
     {
         delete iClass;
     }
-    iClass=NULL;
+    iClass=nullptr;
 }
 
 GenericClass* LispGenericClass::Generic()

@@ -13,7 +13,7 @@ LispParser::LispParser(LispTokenizer& aTokenizer, LispInput& aInput,
 LispParser::~LispParser() {}
 void LispParser::Parse(LispPtr& aResult)
 {
-    aResult = (NULL);
+    aResult = nullptr;
 
     // Get token.
     LispString * token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());

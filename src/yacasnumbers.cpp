@@ -1,5 +1,3 @@
-
-
 /* Implementation of the number classes (the functionality used
  * by yacas any way
  */
@@ -79,7 +77,7 @@ static void Trigonometry(ANumber& x,ANumber& i,ANumber& sum,ANumber& term)
     // While (term>epsilon)
     while (1 /* Significant(term)*/)
     {
- 
+
 #ifdef CORRECT_DIVISION
 
 /*
@@ -225,7 +223,7 @@ LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt 
   // how else do I get an ANumber from the result of PlatArcSin()?
   ANumber x(aPrecision);  // dummy variable
 //  ANumber q("10", aPrecision);  // initial value must be "significant"
- 
+
   ANumber q( aPrecision);  // initial value must be "significant"
   {
     ANumber x(aPrecision);
@@ -240,7 +238,7 @@ LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt 
 
   ANumber s(aPrecision);
   ANumber c(aPrecision);
- 
+
   while (Significant(q))
   {
     x.CopyFrom(result);
@@ -294,7 +292,7 @@ static void ExpFloat(ANumber& aResult, ANumber& x)
             }
         }
 
- 
+
         //   i <- i+1
         BaseAdd(i, one, WordBase);
 
@@ -331,7 +329,7 @@ LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnv
     ANumber y(*int2->Number(aPrecision)->iNumber);
     bool neg = y.iNegative;
     y.iNegative=false;
- 
+
     // result <- 1
     ANumber result("1",aPrecision);
     // base <- x
@@ -364,7 +362,7 @@ LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnv
         copy.CopyFrom(result);
         Divide(result,dummy,one,copy);
     }
- 
+
     // result
     return FloatToString(result, aEnvironment);
 }
@@ -408,7 +406,7 @@ static void DivideInteger(ANumber& aQuotient, ANumber& aRemainder,
 {
     ANumber a1(int1,aPrecision);
     ANumber a2(int2,aPrecision);
- 
+
     if (a1.iExp != 0 || a2.iExp != 0)
           throw LispErrNotInteger();
 
@@ -491,19 +489,19 @@ LispString * LispFactorial(LispChar * int1, LispHashTable& aHashTable,LispInt aP
 // this will use the new BigNumber/BigInt/BigFloat scheme
 
 BigNumber::BigNumber(const LispChar * aString,LispInt aBasePrecision,LispInt aBase)
- : iReferenceCount(),iPrecision(0),iType(KInt),iNumber(NULL)
+ : iReferenceCount(),iPrecision(0),iType(KInt),iNumber(nullptr)
 {
-  iNumber = NULL;
+  iNumber = nullptr;
   SetTo(aString, aBasePrecision, aBase);
 }
 BigNumber::BigNumber(const BigNumber& aOther)
- : iReferenceCount(),iPrecision(aOther.GetPrecision()),iType(KInt),iNumber(NULL)
+ : iReferenceCount(),iPrecision(aOther.GetPrecision()),iType(KInt),iNumber(nullptr)
 {
   iNumber = NEW ANumber(*aOther.iNumber);
   SetIsInteger(aOther.IsInt());
 }
 BigNumber::BigNumber(LispInt aPrecision)
- : iReferenceCount(),iPrecision(aPrecision),iType(KInt),iNumber(NULL)
+ : iReferenceCount(),iPrecision(aPrecision),iType(KInt),iNumber(nullptr)
 {
   iNumber = NEW ANumber(bits_to_digits(aPrecision,10));
   SetIsInteger(true);
@@ -534,7 +532,7 @@ void BigNumber::ToString(LispString& aResult, LispInt aBasePrecision, LispInt aB
 {
   ANumber num(*iNumber);
 //  num.CopyFrom(*iNumber);
- 
+
   //TODO this round-off code is not correct yet, but will work in most cases
   // This is a bit of a messy way to round off numbers. It is probably incorrect,
   // even. When precision drops one digit, it rounds off the last ten digits.
@@ -812,7 +810,7 @@ void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
     min=max;
     max=swap;
   }
- 
+
   iNumber->ResizeTo(max);
 
   LispInt i;
@@ -824,7 +822,7 @@ void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
 void BigNumber::BitNot(const BigNumber& aX)
 {// FIXME?
   LispInt len=(*aX.iNumber).Size();
- 
+
   iNumber->ResizeTo(len);
 
   LispInt i;
@@ -1025,7 +1023,7 @@ bool BigNumber::Equals(const BigNumber& aOther) const
   {
     iNumber->DropTrailZeroes();
     aOther.iNumber->DropTrailZeroes();
- 
+
     if (IsZero(*iNumber))
         iNumber->iNegative = false;
     if (IsZero(*aOther.iNumber))
@@ -1128,7 +1126,7 @@ void BigNumber::BecomeInt()
     BaseDivideInt(*iNumber,10, WordBase, carry);
     iNumber->iTensExp++;
   }
- 
+
   iNumber->ChangePrecision(0);
   SetIsInteger(true);
 }
@@ -1288,7 +1286,7 @@ void BigNumber::SetTo(const LispChar * aString,LispInt aBasePrecision,LispInt aB
   if (!iNumber)   iNumber = NEW ANumber(digits);
   iNumber->SetPrecision(digits);
   iNumber->SetTo(aString,aBase);
- 
+
   SetIsInteger(!isFloat && iNumber->iExp == 0 && iNumber->iTensExp == 0);
 }
 
