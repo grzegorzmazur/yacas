@@ -22,6 +22,7 @@ InverseTaylor
 Series
 MatchLinear
 MatchPureSquared
+StringReplace
 PolyPseudoDivide
 SubResultant
 HermiteReduce

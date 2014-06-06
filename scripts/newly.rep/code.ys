@@ -47,7 +47,7 @@ TemplateFunction("WithValue",{var,val,expr})
   If(IsList(var),
      ApplyPure("MacroLocal",var),
      MacroLocal(var)
-    ); 
+    );
   ApplyPure(":=",{var,val});
   Eval(expr);
 ];
@@ -98,9 +98,9 @@ Function("RationalizeNumber",{x})
   n:=1;
   i:=0;
   // We can not take for granted that the internal representation is rounded properly...
-  While(i<=Builtin'Precision'Get() And Not(FloatIsInt(x)))  
-  [ 
-    n:=n*10; x:=x*10; 
+  While(i<=Builtin'Precision'Get() And Not(FloatIsInt(x)))
+  [
+    n:=n*10; x:=x*10;
     i:=i+1;
 //Echo(x,"/",n);
   ];
@@ -150,7 +150,7 @@ DecimalFindPeriod(_list) <--
       [
         period:=i;
         i:=nr;
-      ]  
+      ]
       );
   ];
 
@@ -249,7 +249,7 @@ ReversePoly(_f,_g,_var,_newvar,_degree) <--
     W[n]:=newsum;
   ];
   DestructiveInsert(W,1,Coef(origg,0));
-  Subst(newvar,newvar-initval) 
+  Subst(newvar,newvar-initval)
     NormalForm(UniVariate(newvar,0,W));
 ];
 
@@ -380,71 +380,71 @@ ContFracEval(list_IsList) <-- ContFracEval(list, 0);
 /// See: HAKMEM, MIT AI Memo 239, 02/29/1972, Item 101C
 NearRational(_x) <-- NearRational(x, Floor(1/2*Builtin'Precision'Get()));
 NearRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
-	Local(x1, x2, i,  old'prec);
-	old'prec := Builtin'Precision'Get();
-  Builtin'Precision'Set(prec + 8);	// 8 guard digits (?)
-	x1 := ContFracList(N(Eval(x+10^(-prec))));
-	x2 := ContFracList(N(Eval(x-10^(-prec))));
+    Local(x1, x2, i,  old'prec);
+    old'prec := Builtin'Precision'Get();
+  Builtin'Precision'Set(prec + 8);  // 8 guard digits (?)
+    x1 := ContFracList(N(Eval(x+10^(-prec))));
+    x2 := ContFracList(N(Eval(x-10^(-prec))));
 
-	If(InVerboseMode(), Echo("NearRational: x      = ", N(Eval(x           ))));
-	If(InVerboseMode(), Echo("NearRational: xplus  = ", N(Eval(x+10^(-prec)))));
-	If(InVerboseMode(), Echo("NearRational: xmin   = ", N(Eval(x-10^(-prec)))));
+    If(InVerboseMode(), Echo("NearRational: x      = ", N(Eval(x           ))));
+    If(InVerboseMode(), Echo("NearRational: xplus  = ", N(Eval(x+10^(-prec)))));
+    If(InVerboseMode(), Echo("NearRational: xmin   = ", N(Eval(x-10^(-prec)))));
 
-	If(InVerboseMode(), Echo("NearRational: Length(x1) = ", Length(x1)," ",x1));
-	If(InVerboseMode(), Echo("NearRational: Length(x2) = ", Length(x2)," ",x1));
-	// find where the continued fractions for "x1" and "x2" differ
-	// prepare result in "x1" and length of result in "i"
-	For (i:=1, i<=Length(x1) And i<=Length(x2) And x1[i]=x2[i], i++ ) True;
-	If(
-		i>Length(x1),
-		// "x1" ended but matched, so use "x2" as "x1"
-		x1:=x2,
-		If(
-			i>Length(x2),
-		// "x2" ended but matched, so use "x1"
-			True,
-		// neither "x1" nor "x2" ended and there is a mismatch at "i"
-		// apply recipe: select the smalest of the differing terms
-			x1[i]:=Min(x1[i],x2[i])
-		)
-	);
-	// recipe: x1dd 1 to the lx1st term unless it's the lx1st in the originx1l sequence
-	//Ayal added this line, i could become bigger than Length(x1)!
-	If(InVerboseMode(), Echo({"NearRational: using ", i, "terms of the continued fraction"}));
-	If(i>Length(x1),i:=Length(x1));
-	x1[i] := x1[i] + If(i=Length(x1), 0, 1);
-	Builtin'Precision'Set(old'prec);
-	ContFracEval(Take(x1, i));
+    If(InVerboseMode(), Echo("NearRational: Length(x1) = ", Length(x1)," ",x1));
+    If(InVerboseMode(), Echo("NearRational: Length(x2) = ", Length(x2)," ",x1));
+    // find where the continued fractions for "x1" and "x2" differ
+    // prepare result in "x1" and length of result in "i"
+    For (i:=1, i<=Length(x1) And i<=Length(x2) And x1[i]=x2[i], i++ ) True;
+    If(
+        i>Length(x1),
+        // "x1" ended but matched, so use "x2" as "x1"
+        x1:=x2,
+        If(
+            i>Length(x2),
+        // "x2" ended but matched, so use "x1"
+            True,
+        // neither "x1" nor "x2" ended and there is a mismatch at "i"
+        // apply recipe: select the smalest of the differing terms
+            x1[i]:=Min(x1[i],x2[i])
+        )
+    );
+    // recipe: x1dd 1 to the lx1st term unless it's the lx1st in the originx1l sequence
+    //Ayal added this line, i could become bigger than Length(x1)!
+    If(InVerboseMode(), Echo({"NearRational: using ", i, "terms of the continued fraction"}));
+    If(i>Length(x1),i:=Length(x1));
+    x1[i] := x1[i] + If(i=Length(x1), 0, 1);
+    Builtin'Precision'Set(old'prec);
+    ContFracEval(Take(x1, i));
 ];
 
 /// guess the rational number behind an imprecise number
 /// prec parameter is the max number of digits you can have in the denominator
 GuessRational(_x) <-- GuessRational(x, Floor(1/2*Builtin'Precision'Get()));
 GuessRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
-	Local(denom'estimate, cf, i);
-	denom'estimate := 1;
-	cf := ContFracList(x);
-	For(i:=2, i<=Length(cf) And denom'estimate < 10^prec, i++)
-		[	// estimate the denominator
-			denom'estimate := denom'estimate * If(
-				cf[i] = 1,
-				If(
-					i+2<=Length(cf),	// have at least two more terms, do a full estimate
-					RoundTo(N(Eval(cf[i]+1/(cf[i+1]+1/cf[i+2]))), 3),
-					// have only one more term
-					RoundTo(N(Eval(cf[i]+1/cf[i+1])), 3)
-				),
-				// term is not 1, use the simple estimate
-				cf[i]
-			);
-		];
-	If (denom'estimate < 10^prec,
-		If(InVerboseMode(), Echo({"GuessRational: all ", i, "terms are within limits"})),
-		i--	// do not use the last term
-	);
-	i--;	// loop returns one more number
-	If(InVerboseMode(), Echo({"GuessRational: using ", i, "terms of the continued fraction"}));
-	ContFracEval(Take(cf, i));
+    Local(denom'estimate, cf, i);
+    denom'estimate := 1;
+    cf := ContFracList(x);
+    For(i:=2, i<=Length(cf) And denom'estimate < 10^prec, i++)
+        [   // estimate the denominator
+            denom'estimate := denom'estimate * If(
+                cf[i] = 1,
+                If(
+                    i+2<=Length(cf),    // have at least two more terms, do a full estimate
+                    RoundTo(N(Eval(cf[i]+1/(cf[i+1]+1/cf[i+2]))), 3),
+                    // have only one more term
+                    RoundTo(N(Eval(cf[i]+1/cf[i+1])), 3)
+                ),
+                // term is not 1, use the simple estimate
+                cf[i]
+            );
+        ];
+    If (denom'estimate < 10^prec,
+        If(InVerboseMode(), Echo({"GuessRational: all ", i, "terms are within limits"})),
+        i-- // do not use the last term
+    );
+    i--;    // loop returns one more number
+    If(InVerboseMode(), Echo({"GuessRational: using ", i, "terms of the continued fraction"}));
+    ContFracEval(Take(cf, i));
 ];
 
 //////////////////////////////////////////////////
@@ -454,28 +454,28 @@ GuessRational(x_IsRationalOrNumber, prec_IsInteger) <-- [
 /// Return a list of two rational numbers r1, r2 such that r1<r<r2 and |r2-r1| < eps*|r|
 BracketRational(r,eps):=
 [
-	Local(n,cflist, r1, r2);
-	cflist := ContFracList(r);
-	n:=2;
-	r1 := ContFracEval(Take(cflist,n));
-	r2 := -r1;
-	// find two successive approximations and check that they differ by less than |eps*r|
-	While (n<Length(cflist) And ( Abs(N(Eval(r2-r1))) > Abs(N(Eval(eps*r)) ) ) )
-	[
-		r2 := r1;
-		n++;
-		r1 := ContFracEval(Take(cflist,n));
-	];
-	// now r1 and r2 are some rational numbers.
-	// decide whether the search was successful.
-	If(
-		n=Length(cflist),
-		{},	// return empty list if not enough precision
-		If(N(Eval(r-r1))>0,
-			{r1, r2},	// successive approximations are always bracketing, we only need to decide their order
-			{r2, r1}
-		)
-	);
+    Local(n,cflist, r1, r2);
+    cflist := ContFracList(r);
+    n:=2;
+    r1 := ContFracEval(Take(cflist,n));
+    r2 := -r1;
+    // find two successive approximations and check that they differ by less than |eps*r|
+    While (n<Length(cflist) And ( Abs(N(Eval(r2-r1))) > Abs(N(Eval(eps*r)) ) ) )
+    [
+        r2 := r1;
+        n++;
+        r1 := ContFracEval(Take(cflist,n));
+    ];
+    // now r1 and r2 are some rational numbers.
+    // decide whether the search was successful.
+    If(
+        n=Length(cflist),
+        {}, // return empty list if not enough precision
+        If(N(Eval(r-r1))>0,
+            {r1, r2},   // successive approximations are always bracketing, we only need to decide their order
+            {r2, r1}
+        )
+    );
 ];
 
 /** MatchLinear(variable,expression)
@@ -515,13 +515,13 @@ UnFence("MatchLinear",2);
 ];
 20 # MatchPureSquared(_var,_sign2,_sign0,_expr) <-- False;
 
-10 # MatchPureSquared(_expr,_sign2,_sign0)_(Degree(expr,var)=2 And 
-                                    Coef(expr,1) = 0 And   
-				    IsNumber(Coef(expr,0)) And
-				    IsNumber(Coef(expr,2)) And
-				    Coef(expr,0)*sign0 > 0 And
-				    Coef(expr,2)*sign2 > 0
-				    ) <--
+10 # MatchPureSquared(_expr,_sign2,_sign0)_(Degree(expr,var)=2 And
+                                    Coef(expr,1) = 0 And
+                    IsNumber(Coef(expr,0)) And
+                    IsNumber(Coef(expr,2)) And
+                    Coef(expr,0)*sign0 > 0 And
+                    Coef(expr,2)*sign2 > 0
+                    ) <--
 [
   Check(IsUniVar(expr),ToString()Echo({"Incorrect argument ",expr," passed to MatchLinear"}));
 //TODO if I enable these checks, then integration fails (only users of this function any way). Can this be removed? Where are these variables cleared any way?
@@ -541,6 +541,22 @@ Matched'b() := b;
 
 
 ]; // LocalSymbols a,b
+
+StringReplace(from_IsString, to_IsString, s_IsString) <-- [
+    Local(i, m, n, r, d);
+
+    m := Length(from);
+    n := Length(s);
+
+    r := "";
+
+    For (i := 1, i <= n - m + 1, i := i + d)
+        If (s[i .. i + m - 1] = from, [ r := r : to; d := m; ], [ r := r : s[i]; d := 1; ]);
+
+    If (m > 1, r := r : s[n - m + 2 .. n]);
+
+    r;
+];
 
 // Manuel Bronstein, Symbolic Integration I: Transcendental Functions
 // Polynomial Pseudo-Division
