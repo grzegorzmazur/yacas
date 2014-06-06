@@ -55,7 +55,7 @@ Plot2D'gnuplot(values_IsList, _options'hash) <--
         WriteString("plot ");
         For(item:=1, item<=Length(values), item++)
         [
-                WriteString("\"" : filename'list[item] : "\" smooth csplines title \"" : options'hash["yname"][item] : "\" with lines");
+                WriteString("\"" : StringReplace("\\", "\\\\", filename'list[item]) : "\" smooth csplines title \"" : options'hash["yname"][item] : "\" with lines");
                 If(item<Length(values), WriteString(", "));
         ];
         WriteString(Nl());
@@ -92,7 +92,7 @@ Plot2D'png(values_IsList, _options'hash) <--
         WriteString("plot ");
         For(item:=1, item<=Length(values), item++)
         [
-                WriteString("\"" : filename'list[item] : "\" smooth csplines title \"" : options'hash["yname"][item] : "\" with lines");
+                WriteString("\"" : StringReplace("\\", "\\\\", filename'list[item]) : "\" smooth csplines title \"" : options'hash["yname"][item] : "\" with lines");
                 If(item<Length(values), WriteString(", "));
         ];
         WriteString(Nl());
