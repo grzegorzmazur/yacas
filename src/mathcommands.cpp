@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include <windows.h>
 #endif
 
@@ -808,7 +808,7 @@ void LispTmpFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     CheckSecure(aEnvironment, aStackTop);
 
-#ifndef WIN32
+#ifndef _WIN32
     LispChar fn[] = "/tmp/yacas-XXXXXX";
 
     int fd = mkstemp(fn);
