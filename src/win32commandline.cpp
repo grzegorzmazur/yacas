@@ -117,7 +117,7 @@ void CWin32CommandLine::ShowLine(const std::string& prompt, unsigned cursor)
 
     // position cursor
     const std::size_t prompt_len = prompt.length();
-    for (LispInt i = iSubLine.length() + prompt_len; i > cursor + prompt_len; --i)
+    for (std::size_t i = iSubLine.length() + prompt_len; i > cursor + prompt_len; --i)
         putchar('\b');
 
     fflush(stdout);
@@ -167,12 +167,11 @@ CWin32CommandLine::~CWin32CommandLine()
 //    if(!_is_NT_or_later)
     {
         FILE*f=fopen("history.log","w");
-        if (f){
-            int i;
-            for (i=0;i<iHistoryList.NrLines();i++)
-            {
+        if (f) {
+
+            for (std::size_t i=0;i<iHistoryList.NrLines();i++)
                 fprintf(f,"%s\n",iHistoryList.GetLine(i).c_str());
-            }
+
             fclose(f);
         }
     }
