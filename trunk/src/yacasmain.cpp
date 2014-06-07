@@ -50,7 +50,7 @@
 
 #include "yacas/yacas.h"
 
-#ifndef WIN32
+#ifndef _WIN32
 #include "yacas/unixcommandline.h"
 #define FANCY_COMMAND_LINE CUnixCommandLine
 #else
