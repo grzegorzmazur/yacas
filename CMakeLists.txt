@@ -1,6 +1,5 @@
 cmake_minimum_required (VERSION 2.8.7)
 
-
 option (ENABLE_DOCS "generate documentation" OFF)
 option (ENABLE_JYACAS "build the Java yacas engine" OFF)
 
@@ -267,7 +266,7 @@ if (ENABLE_JYACAS)
 endif ()
 
 if (WIN32)
-  install (FILES /usr/lib/gcc/i686-w64-mingw32/4.6/libgcc_s_sjlj-1.dll DESTINATION bin COMPONENT app)
+  install (FILES /usr/lib/gcc/i686-w64-mingw32/4.8/libgcc_s_sjlj-1.dll /usr/i686-w64-mingw32/lib/libwinpthread-1.dll DESTINATION bin COMPONENT app)
 endif ()
 
 if (APPLE)
