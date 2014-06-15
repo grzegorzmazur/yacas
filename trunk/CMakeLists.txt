@@ -187,7 +187,7 @@ if (ENABLE_DOCS)
   foreach (_book ${BOOKS})
     add_custom_command (
       OUTPUT ${_book}.tex
-      COMMAND ${YACAS} --rootdir ${PROJECT_SOURCE_DIR}/scripts:${PROJECT_BINARY_DIR} -i "[ Use(\"${PROJECT_SOURCE_DIR}/manmake/book2TeX.ys\"); Load(\"${_book}\"); TeXFinishUp(); ];" > ${_book}.tex
+      COMMAND ${YACAS} --rootdir ${PROJECT_SOURCE_DIR}/scripts:${PROJECT_BINARY_DIR}/scripts -i "[ Use(\"${PROJECT_SOURCE_DIR}/manmake/book2TeX.ys\"); Load(\"${_book}\"); TeXFinishUp(); ];" > ${_book}.tex
       MAIN_DEPENDENCY ${_book}
       DEPENDS docs yacas
       VERBATIM)
