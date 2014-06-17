@@ -1,6 +1,6 @@
 // needed to read html.rep/code.ys, or else get error at bodied function HtmlAnchor()
 SetHtmlDirectory("");	// reads html.rep/code.ys
-Use("styleplain");  /* style sheet for the documentation */
+//Use("styleplain");  /* style sheet for the documentation */
 
 Book(title) :=
 [

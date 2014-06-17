@@ -224,6 +224,59 @@ if (ENABLE_DOCS)
 
   install (FILES ${PDF_BOOK_PATHS} DESTINATION share/yacas/documentation COMPONENT doc)
 
+  foreach (_book ${BOOKS})
+    string (REPLACE .book "" _book ${_book})
+    add_custom_command (
+      OUTPUT ${_book}manual.html
+      COMMAND ${YACAS} --rootdir ${PROJECT_SOURCE_DIR}/scripts:${PROJECT_BINARY_DIR}/scripts:${PROJECT_BINARY_DIR}/manmake -i "[ DefaultDirectory(\"${PROJECT_SOURCE_DIR}/manmake\"); Use(\"${PROJECT_SOURCE_DIR}/manmake/styleplain\"); Use(\"${PROJECT_SOURCE_DIR}/manmake/manualmaker\"); GenerateBook(\"${_book}\"); ];"
+      MAIN_DEPENDENCY ${_book}.book
+      DEPENDS docs yacas
+      VERBATIM)
+  endforeach()
+
+  add_custom_command (
+    OUTPUT books.html
+    COMMAND ${YACAS} --rootdir ${PROJECT_SOURCE_DIR}/scripts:${PROJECT_BINARY_DIR}/scripts:${PROJECT_BINARY_DIR}/manmake -i "[ DefaultDirectory(\"${PROJECT_SOURCE_DIR}/manmake\"); Use(\"${PROJECT_SOURCE_DIR}/manmake/styleplain\"); Use(\"${PROJECT_SOURCE_DIR}/manmake/indexmaker\"); GenerateIndex(); ];"
+    DEPENDS docs yacas
+    VERBATIM)
+
+  set (HTML_BOOKS)
+  foreach (_book ${BOOKS})
+    string (REPLACE .book "" _book ${_book})
+    list (APPEND HTML_BOOKS ${_book}manual.html)
+  endforeach()
+
+  set (HTML_CHAPTERS)
+  foreach (_chapter RANGE 1 6)
+    list (APPEND HTML_CHAPTERS "introchapter${_chapter}.html")
+  endforeach ()
+
+  foreach (_chapter RANGE 1 9)
+    list (APPEND HTML_CHAPTERS "codingchapter${_chapter}.html")
+  endforeach ()
+
+  foreach (_chapter RANGE 1 8)
+    list (APPEND HTML_CHAPTERS "Algochapter${_chapter}.html")
+  endforeach ()
+
+  foreach (_chapter RANGE 1 8)
+    list (APPEND HTML_CHAPTERS "essayschapter${_chapter}.html")
+  endforeach ()
+
+  foreach (_chapter RANGE 1 32)
+    list (APPEND HTML_CHAPTERS "refchapter${_chapter}.html")
+  endforeach ()
+
+  foreach (_chapter RANGE 1 10)
+    list (APPEND HTML_CHAPTERS "refprogchapter${_chapter}.html")
+  endforeach ()
+
+  list (APPEND HTML_BOOKS books.html)
+
+  add_custom_target (html_docs ALL DEPENDS ${HTML_BOOKS})
+
+  install (FILES ${HTML_BOOKS} ${HTML_CHAPTERS} DESTINATION share/yacas/documentation COMPONENT doc)
+
 endif()
 
 foreach (_script ${YACAS_SCRIPTS})

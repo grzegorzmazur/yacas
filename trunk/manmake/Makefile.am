@@ -181,25 +181,25 @@ manicon.html:  books.html $(HTMLBOOKS)
 
 # books.html only depends on top book files (*.book.txt).
 books.html:  $(BOOKS) $(srcdir)/indexmaker $(srcdir)/styleplain
-	-echo '[DefaultDirectory("$(srcdir)/"); Use("indexmaker"); GenerateIndex();];' | $(ouryacas) -fpc
+	-echo '[DefaultDirectory("$(srcdir)/"); Use("styleplain"); Use("indexmaker"); GenerateIndex();];' | $(ouryacas) -fpc
 
 intromanual.html : intro.book $(INTROCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
-	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("intro");];' | $(ouryacas) -fpc
+	-@echo '[DefaultDirectory("$(srcdir)/"); Use("styleplain"); Use("manualmaker"); GenerateBook("intro");];' | $(ouryacas) -fpc
 
 codingmanual.html : coding.book $(CODINGCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
-	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("coding");];' | $(ouryacas) -fpc
+	-@echo '[DefaultDirectory("$(srcdir)/"); Use("styleplain"); Use("manualmaker"); GenerateBook("coding");];' | $(ouryacas) -fpc
 
 essaysmanual.html : essays.book $(ESSAYCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
-	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("essays");];' | $(ouryacas) -fpc
+	-@echo '[DefaultDirectory("$(srcdir)/"); Use("styleplain"); Use("manualmaker"); GenerateBook("essays");];' | $(ouryacas) -fpc
 
 refmanual.html : ref.book $(REFCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
-	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("ref");];'    | $(ouryacas) -fpc
+	-@echo '[DefaultDirectory("$(srcdir)/"); Use("styleplain"); Use("manualmaker"); GenerateBook("ref");];'    | $(ouryacas) -fpc
 
 refprogmanual.html : ref.book $(REFCHAPTERS) refprog.book $(REFPROGCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
-	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("refprog");];' | $(ouryacas) -fpc
+	-@echo '[DefaultDirectory("$(srcdir)/"); Use("styleplain"); Use("manualmaker"); GenerateBook("refprog");];' | $(ouryacas) -fpc
 
 Algomanual.html : Algo.book $(ALGOCHAPTERS) $(srcdir)/manualmaker $(srcdir)/styleplain
-	-@echo '[DefaultDirectory("$(srcdir)/"); Use("manualmaker"); GenerateBook("Algo");];' | $(ouryacas) -fpc
+	-@echo '[DefaultDirectory("$(srcdir)/"); Use("styleplain"); Use("manualmaker"); GenerateBook("Algo");];' | $(ouryacas) -fpc
 
 ## Hook to install documentation
 install-data-local: @INSTALL_HTML@ install-scripts install-hints
