@@ -206,7 +206,7 @@ GenerateIndex() :=
 [
 
 	SetHtmlDirectory("");
-	Use("styleplain");
+	//Use("styleplain");
 	
 	ToFile("manicon.html")
 	WriteString("
@@ -236,7 +236,7 @@ GenerateIndex() :=
 ");
 
 	SetHtmlDirectory("");
-	Use("styleplain");  /* style sheet for the documentation */
+	//Use("styleplain");  /* style sheet for the documentation */
 
 	InitBooks();        /* Initialize book building */
 
