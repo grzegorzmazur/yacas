@@ -7,8 +7,6 @@
 
 #define BufSz 1024
 
-bool is_NT_or_later = false;
-
 /*
   This displays a message box.
 */
@@ -91,14 +89,10 @@ void CWin32CommandLine::Pause()
 
 void CWin32CommandLine::ReadLineSub(const std::string& prompt)
 {
-    if (_is_NT_or_later) {
-        char buff[BufSz];
-        color_print(prompt, FOREGROUND_RED | FOREGROUND_INTENSITY );
-        color_read(buff, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-        iSubLine = buff;
-    } else {
-        CCommandLine::ReadLineSub(prompt);
-    }
+    char buff[BufSz];
+    color_print(prompt, FOREGROUND_RED | FOREGROUND_INTENSITY );
+    color_read(buff, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+    iSubLine = buff;
 }
 
 void CWin32CommandLine::ShowLine()
@@ -125,8 +119,7 @@ void CWin32CommandLine::ShowLine(const std::string& prompt, unsigned cursor)
 
 CWin32CommandLine::CWin32CommandLine() :
     out_console(GetStdHandle(STD_OUTPUT_HANDLE)),
-    in_console(GetStdHandle(STD_INPUT_HANDLE)),
-    _is_NT_or_later(false)
+    in_console(GetStdHandle(STD_INPUT_HANDLE))
 {
     win_assert(INVALID_HANDLE_VALUE != out_console);
     win_assert(INVALID_HANDLE_VALUE != in_console);
@@ -136,29 +129,19 @@ CWin32CommandLine::CWin32CommandLine() :
     osvi.dwOSVersionInfoSize  = sizeof(OSVERSIONINFO);
     GetVersionEx(&osvi);
 
-    _is_NT_or_later = (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT);
-    /* &&
-       ( (osvi.dwMajorVersion > 4) ||
-       ( (osvi.dwMajorVersion == 4) && (osvi.dwMinorVersion > 0) ) );*/
+    FILE*f=fopen("history.log", "r");
 
-//    if(!_is_NT_or_later)
-    {
-        FILE*f=fopen("history.log", "r");
-        if(f){
-            if(f){
-                char buff[BufSz];
-                while(fgets(buff,BufSz-2,f))
-                {
-                    int i;
-                    for(i=0;buff[i] && buff[i] != '\n';++i)
-                        ;
-                    buff[i++] = '\0';
-                    iHistoryList.Append(buff);
+    if(f) {
+        char buff[BufSz];
+        while(fgets(buff,BufSz-2,f)) {
+            int i;
+            for(i=0;buff[i] && buff[i] != '\n';++i)
+                ;
+            buff[i++] = '\0';
+            iHistoryList.Append(buff);
 
-                }
-                fclose(f);
-            }
         }
+        fclose(f);
     }
 }
 
