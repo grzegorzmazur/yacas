@@ -1,12 +1,9 @@
 #ifndef YACAS_WIN32COMMANDLINE_H
 #define YACAS_WIN32COMMANDLINE_H
 
-#include <conio.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <windows.h>
+#include <memory>
 
-#include <assert.h>
+#include <windows.h>
 
 #include "commandline.h"
 
@@ -31,6 +28,8 @@ protected:
 private:
     HANDLE out_console;
     HANDLE in_console;
+    static const std::size_t BUF_SIZE = 16384;
+    std::unique_ptr<char []> _buf;
 };
 
 #endif

@@ -1,11 +1,13 @@
-#include <time.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <windows.h>
-
 #include "yacas/win32commandline.h"
 
-#define BufSz 1024
+#include <cassert>
+
+#include <conio.h>
+#include <stdio.h>
+
+#include <windows.h>
+
+
 
 /*
   This displays a message box.
@@ -83,16 +85,14 @@ void CWin32CommandLine::NewLine()
 
 void CWin32CommandLine::Pause()
 {
-    int i = clock()+CLOCKS_PER_SEC/4;
-    while (clock()<i);
+    Sleep(250);
 }
 
 void CWin32CommandLine::ReadLineSub(const std::string& prompt)
 {
-    char buff[BufSz];
     color_print(prompt, FOREGROUND_RED | FOREGROUND_INTENSITY );
-    color_read(buff, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-    iSubLine = buff;
+    color_read(_buf.get(), FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+    iSubLine = _buf.get();
 }
 
 void CWin32CommandLine::ShowLine()
@@ -105,9 +105,8 @@ void CWin32CommandLine::ShowLine(const std::string& prompt, unsigned cursor)
     last_prompt = prompt;
     putchar('\r');              // clear line
 
-    char str[BufSz];
-    sprintf(str, "%s%s", prompt.c_str(), &iSubLine[0]);
-    color_print(str, FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY );
+    sprintf(_buf.get(), "%s%s", prompt.c_str(), &iSubLine[0]);
+    color_print(_buf.get(), FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY );
 
     // position cursor
     const std::size_t prompt_len = prompt.length();
@@ -119,26 +118,21 @@ void CWin32CommandLine::ShowLine(const std::string& prompt, unsigned cursor)
 
 CWin32CommandLine::CWin32CommandLine() :
     out_console(GetStdHandle(STD_OUTPUT_HANDLE)),
-    in_console(GetStdHandle(STD_INPUT_HANDLE))
+    in_console(GetStdHandle(STD_INPUT_HANDLE)),
+    _buf(new char [BUF_SIZE])
 {
     win_assert(INVALID_HANDLE_VALUE != out_console);
     win_assert(INVALID_HANDLE_VALUE != in_console);
 
-    // figure out the version of windows
-    OSVERSIONINFO osvi;
-    osvi.dwOSVersionInfoSize  = sizeof(OSVERSIONINFO);
-    GetVersionEx(&osvi);
-
     FILE*f=fopen("history.log", "r");
 
     if(f) {
-        char buff[BufSz];
-        while(fgets(buff,BufSz-2,f)) {
+        while (fgets(_buf.get(), BUF_SIZE - 2, f)) {
             int i;
-            for(i=0;buff[i] && buff[i] != '\n';++i)
+            for(i=0;_buf[i] && _buf[i] != '\n';++i)
                 ;
-            buff[i++] = '\0';
-            iHistoryList.Append(buff);
+            _buf[i++] = '\0';
+            iHistoryList.Append(_buf.get());
 
         }
         fclose(f);
@@ -147,26 +141,19 @@ CWin32CommandLine::CWin32CommandLine() :
 
 CWin32CommandLine::~CWin32CommandLine()
 {
-//    if(!_is_NT_or_later)
-    {
-        FILE*f=fopen("history.log","w");
-        if (f) {
+    FILE*f=fopen("history.log","w");
+    if (f) {
 
-            for (std::size_t i=0;i<iHistoryList.NrLines();i++)
-                fprintf(f,"%s\n",iHistoryList.GetLine(i).c_str());
+        for (std::size_t i=0;i<iHistoryList.NrLines();i++)
+            fprintf(f,"%s\n",iHistoryList.GetLine(i).c_str());
 
-            fclose(f);
-        }
+        fclose(f);
     }
 }
 
 LispInt CWin32CommandLine::GetKey(){
     LispInt c;
     c = _getch();
-
-//    if(!_is_NT_or_later){
-//        return c;
-//    }
 
     switch (c) {
     case 8:
