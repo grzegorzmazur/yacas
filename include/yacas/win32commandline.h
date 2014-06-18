@@ -31,7 +31,6 @@ protected:
 private:
     HANDLE out_console;
     HANDLE in_console;
-    bool _is_NT_or_later;
 };
 
 #endif
