@@ -12,20 +12,21 @@
 class CUnixCommandLine : public CCommandLine
 {
 public:
-  CUnixCommandLine();
-  ~CUnixCommandLine();
-public:
-  virtual LispInt GetKey();
-  virtual void NewLine();
-  virtual void ShowLine(const std::string& prompt, unsigned cursor);
-  virtual void Pause();
-  virtual void MaxHistoryLinesSaved(std::size_t);
+    CUnixCommandLine();
+    ~CUnixCommandLine();
+
+    LispInt GetKey();
+    void NewLine();
+    void ShowLine(const std::string& prompt, unsigned cursor);
+    void Pause();
+    void MaxHistoryLinesSaved(std::size_t);
+
 private:
-  unsigned char term_chars[NCCS];
-  struct termios orig_termio, rl_termio;
-  LispInt _cursor_line, _last_line;
-public:
-  std::size_t iMaxLines;
+    unsigned char term_chars[NCCS];
+    struct termios orig_termio, rl_termio;
+    int _cursor_line, _last_line;
+
+    std::size_t _max_lines;
 };
 
 

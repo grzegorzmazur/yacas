@@ -68,7 +68,7 @@ void CUnixCommandLine::ShowLine(const std::string& prompt, unsigned cursor)
 CUnixCommandLine::CUnixCommandLine():
     _cursor_line(0),
     _last_line(0),
-    iMaxLines(1024)
+    _max_lines(1024)
 {
     /* set termio so we can do our own input processing */
     tcgetattr(0, &orig_termio);
@@ -91,14 +91,14 @@ CUnixCommandLine::CUnixCommandLine():
     tcsetattr(0, TCSADRAIN, &rl_termio);
 
     const char* home_dir = getenv("HOME");
-    
+
     if (!home_dir)
         return;
-    
+
     const std::string fname = std::string(home_dir) + "/.yacas_history";
 
     std::ifstream is(fname.c_str());
-    
+
     std::string line;
     while (std::getline(is, line))
         iHistoryList.Append(line);
@@ -109,10 +109,10 @@ CUnixCommandLine::~CUnixCommandLine()
     tcsetattr(0, TCSADRAIN, &orig_termio);
 
     const char* home_dir = getenv("HOME");
-    
+
     if (!home_dir)
         return;
-    
+
     const std::string fname = std::string(home_dir) + "/.yacas_history";
 
     std::ofstream os(fname.c_str());
@@ -120,18 +120,17 @@ CUnixCommandLine::~CUnixCommandLine()
     if (os) {
         std::size_t from = 0;
 
-        if (iMaxLines > 0 && iHistoryList.NrLines() > iMaxLines) 
-            from = iHistoryList.NrLines() - iMaxLines;
-
+        if (_max_lines > 0 && iHistoryList.NrLines() > _max_lines)
+            from = iHistoryList.NrLines() - _max_lines;
 
         for (std::size_t i = from; i < iHistoryList.NrLines(); ++i)
             os << iHistoryList.GetLine(i) << "\n";
     }
 }
 
-void CUnixCommandLine::MaxHistoryLinesSaved(std::size_t aNrLines)
+void CUnixCommandLine::MaxHistoryLinesSaved(std::size_t n)
 {
-    iMaxLines = aNrLines;
+    _max_lines = n;
 }
 
 
