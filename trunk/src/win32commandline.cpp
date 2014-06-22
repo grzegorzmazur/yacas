@@ -1,19 +1,22 @@
 #include "yacas/win32commandline.h"
 
-#include <cassert>
+#include <fstream>
+#include <string>
 
 #include <conio.h>
-#include <stdio.h>
 
 #include <windows.h>
-
-
+#include <shlobj.h>
+#include <shlwapi.h>
 
 /*
   This displays a message box.
 */
-static void win_assert(BOOL condition){
-    if(condition) return;
+static void win_assert(BOOL condition)
+{
+    if (condition)
+        return;
+
     LPVOID lpMsgBuf;
     FormatMessage(
         FORMAT_MESSAGE_ALLOCATE_BUFFER |
@@ -27,8 +30,9 @@ static void win_assert(BOOL condition){
         nullptr);
 
     MessageBox( nullptr, (LPCTSTR)lpMsgBuf, "Error", MB_OK | MB_ICONINFORMATION );
-    // Free the buffer.
+
     LocalFree(lpMsgBuf);
+
     exit(1);
 }
 
@@ -37,8 +41,6 @@ void CWin32CommandLine::color_print(const std::string& str, WORD text_attrib)
     BOOL status;
     CONSOLE_SCREEN_BUFFER_INFO old_info;
 
-    out_console = GetStdHandle(STD_OUTPUT_HANDLE);
-    win_assert(INVALID_HANDLE_VALUE != out_console);
     status = GetConsoleScreenBufferInfo(out_console, &old_info);
     win_assert(status);
 
@@ -55,31 +57,11 @@ void CWin32CommandLine::color_print(const std::string& str, WORD text_attrib)
     win_assert(status);
 }
 
-void CWin32CommandLine::color_read(LispChar * str, WORD text_attrib){
-    BOOL status;
-    CONSOLE_SCREEN_BUFFER_INFO old_info;
-
-    out_console = GetStdHandle(STD_OUTPUT_HANDLE);
-    win_assert(INVALID_HANDLE_VALUE != out_console);
-    status = GetConsoleScreenBufferInfo(out_console, &old_info);
-    win_assert(status);
-
-    WORD old_attrib = old_info.wAttributes;
-
-    status = SetConsoleTextAttribute(out_console, text_attrib);
-
-    DWORD read;
-    status = ReadConsole(in_console, str, 80, &read, nullptr);
-    str[read - 2] = '\0';
-    win_assert(status);
-    // restore the attributes
-    status = SetConsoleTextAttribute(out_console, old_attrib);
-    win_assert(status);
-}
-
 void CWin32CommandLine::NewLine()
 {
-    ShowLine();
+    _cursor_line = 0;
+    _last_line = 0;
+
     color_print("\n", 0);
 }
 
@@ -88,67 +70,102 @@ void CWin32CommandLine::Pause()
     Sleep(250);
 }
 
-void CWin32CommandLine::ReadLineSub(const std::string& prompt)
-{
-    color_print(prompt, FOREGROUND_RED | FOREGROUND_INTENSITY );
-    color_read(_buf.get(), FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-    iSubLine = _buf.get();
-}
-
-void CWin32CommandLine::ShowLine()
-{
-    ShowLine(last_prompt, last_prompt.length() + iSubLine.length());
-}
-
 void CWin32CommandLine::ShowLine(const std::string& prompt, unsigned cursor)
 {
-    last_prompt = prompt;
-    putchar('\r');              // clear line
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
 
-    sprintf(_buf.get(), "%s%s", prompt.c_str(), &iSubLine[0]);
-    color_print(_buf.get(), FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY );
+    const SHORT no_cols = csbi.dwSize.X;
+    const SHORT no_rows = csbi.dwSize.Y;
 
-    // position cursor
     const std::size_t prompt_len = prompt.length();
-    for (std::size_t i = iSubLine.length() + prompt_len; i > cursor + prompt_len; --i)
-        putchar('\b');
 
-    fflush(stdout);
+    const unsigned l = (cursor + prompt_len) / no_cols;
+    const unsigned c = (cursor + prompt_len) % no_cols;
+
+    COORD coords;
+
+    coords.X = 0;
+    coords.Y = csbi.dwCursorPosition.Y - _cursor_line;
+
+    SetConsoleCursorPosition(out_console, coords);
+
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+
+    if (full_line_dirty) {
+        for (int i = 0; i <= _last_line; ++i) {
+            coords.X = 0;
+            coords.Y = csbi.dwCursorPosition.Y + i;
+            DWORD no_written;
+            FillConsoleOutputCharacter(out_console, ' ', no_cols, coords, &no_written);
+        }
+
+        const std::string line = prompt + iSubLine.c_str();
+        color_print(line.c_str(), FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY );
+
+        _last_line = line.length() / no_cols;
+
+        if (csbi.dwCursorPosition.Y + _last_line >= no_rows)
+            csbi.dwCursorPosition.Y -= csbi.dwCursorPosition.Y + _last_line + 1 - no_rows;
+    }
+
+    coords.X = c;
+    coords.Y = csbi.dwCursorPosition.Y + l;
+    SetConsoleCursorPosition(out_console, coords);
+
+    _cursor_line = l;
+
+    full_line_dirty = false;
 }
 
 CWin32CommandLine::CWin32CommandLine() :
     out_console(GetStdHandle(STD_OUTPUT_HANDLE)),
-    in_console(GetStdHandle(STD_INPUT_HANDLE)),
-    _buf(new char [BUF_SIZE])
+    _cursor_line(0),
+    _last_line(0),
+    _max_lines(1024)
 {
     win_assert(INVALID_HANDLE_VALUE != out_console);
-    win_assert(INVALID_HANDLE_VALUE != in_console);
 
-    FILE*f=fopen("history.log", "r");
+    char appdata_dir_buf[MAX_PATH];
+    SHGetFolderPathA(nullptr, CSIDL_APPDATA, nullptr, SHGFP_TYPE_CURRENT, appdata_dir_buf);
 
-    if(f) {
-        while (fgets(_buf.get(), BUF_SIZE - 2, f)) {
-            int i;
-            for(i=0;_buf[i] && _buf[i] != '\n';++i)
-                ;
-            _buf[i++] = '\0';
-            iHistoryList.Append(_buf.get());
+    const std::string yacas_data_dir = std::string(appdata_dir_buf) + "\\yacas";
 
-        }
-        fclose(f);
+    std::ifstream is((yacas_data_dir + "\\history.log").c_str());
+
+    while (is) {
+        std::string line;
+        std::getline(is, line);
+        iHistoryList.Append(line.c_str());
     }
 }
 
 CWin32CommandLine::~CWin32CommandLine()
 {
-    FILE*f=fopen("history.log","w");
-    if (f) {
+    char appdata_dir_buf[MAX_PATH];
+    SHGetFolderPathA(nullptr, CSIDL_APPDATA, nullptr, SHGFP_TYPE_CURRENT, appdata_dir_buf);
 
-        for (std::size_t i=0;i<iHistoryList.NrLines();i++)
-            fprintf(f,"%s\n",iHistoryList.GetLine(i).c_str());
+    const std::string yacas_data_dir = std::string(appdata_dir_buf) + "\\yacas";
 
-        fclose(f);
+    if (!PathFileExistsA(yacas_data_dir.c_str()))
+        CreateDirectoryA(yacas_data_dir.c_str(), nullptr);
+
+    std::ofstream os((yacas_data_dir + "\\history.log").c_str());
+
+    if (os) {
+        std::size_t from = 0;
+
+        if (_max_lines > 0 && iHistoryList.NrLines() > _max_lines)
+            from = iHistoryList.NrLines() - _max_lines;
+
+        for (std::size_t i = from; i < iHistoryList.NrLines(); ++i)
+            os << iHistoryList.GetLine(i).c_str() << "\n";
     }
+}
+
+void CWin32CommandLine::MaxHistoryLinesSaved(std::size_t n)
+{
+    _max_lines = n;
 }
 
 LispInt CWin32CommandLine::GetKey(){
