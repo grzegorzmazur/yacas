@@ -72,7 +72,7 @@ Plot3DS'gnuplot(values_IsList, _options'hash) <--
         ];
         WriteString(Nl());
   ];
-  SystemCall("gnuplot --persist " : control'file : " < /dev/null > /dev/null");
+  SystemCall("gnuplot --persist " : control'file);
 ];
 
 /// backend: use gnuplot to generate png
@@ -122,7 +122,7 @@ Plot3DS'png(values_IsList, _options'hash) <--
         ];
         WriteString(Nl());
   ];
-  SystemCall("gnuplot " : control'file : " < /dev/null > /dev/null");
+  SystemCall("gnuplot " : control'file);
   png'file;
 ];
 
