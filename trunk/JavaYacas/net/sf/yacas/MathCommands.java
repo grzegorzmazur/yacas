@@ -2523,6 +2523,12 @@ class MathCommands
       // get its output (your input) stream
       BufferedReader ls_in = new BufferedReader(new InputStreamReader(ls_proc.getInputStream()));
 
+      // FIXME: This way we may lose latent output, but without the
+      // check we risk hanging in never-ending loop. Unfortunately,
+      // the whole thing requires a complete rewrite to work properly.
+      if (!ls_in.ready())
+          return;
+
       while ((ls_str = ls_in.readLine()) != null)
       {
         aEnvironment.iCurrentOutput.Write(ls_str);
