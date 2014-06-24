@@ -60,7 +60,7 @@ Plot2D'gnuplot(values_IsList, _options'hash) <--
         ];
         WriteString(Nl());
   ];
-  SystemCall("gnuplot --persist " : control'file");
+  SystemCall("gnuplot --persist " : control'file);
 ];
 
 /// backend: use gnuplot to generate png
