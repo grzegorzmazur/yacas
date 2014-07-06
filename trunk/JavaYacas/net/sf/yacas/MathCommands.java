@@ -1,7 +1,7 @@
 package net.sf.yacas;
 
-
 import java.io.*;
+import java.util.ArrayList;
 
 class MathCommands
 {
@@ -2520,19 +2520,25 @@ class MathCommands
       String oper = LispStandard.InternalUnstringify(orig);
       String ls_str;
       Process ls_proc = Runtime.getRuntime().exec(oper);
-      // get its output (your input) stream
-      BufferedReader ls_in = new BufferedReader(new InputStreamReader(ls_proc.getInputStream()));
 
-      // FIXME: This way we may lose latent output, but without the
-      // check we risk hanging in never-ending loop. Unfortunately,
-      // the whole thing requires a complete rewrite to work properly.
-      if (!ls_in.ready())
-          return;
+      StreamGobbler og = new StreamGobbler(ls_proc.getInputStream());
+      StreamGobbler eg = new StreamGobbler(ls_proc.getErrorStream());
 
-      while ((ls_str = ls_in.readLine()) != null)
-      {
-        aEnvironment.iCurrentOutput.Write(ls_str);
-        aEnvironment.iCurrentOutput.Write("\n");
+      og.start();
+      eg.start();
+
+      int rc = ls_proc.waitFor();
+
+      ArrayList<String> output = og.shutdown();
+      for (String s: output) {
+          aEnvironment.iCurrentOutput.Write(s);
+          aEnvironment.iCurrentOutput.Write("\n");
+      }
+
+      ArrayList<String> errors = eg.shutdown();
+      for (String s: errors) {
+          aEnvironment.iCurrentOutput.Write(s);
+          aEnvironment.iCurrentOutput.Write("\n");
       }
     }
   }
