@@ -1307,6 +1307,21 @@ void LispSystemCall(LispEnvironment& aEnvironment,LispInt aStackTop)
   InternalBoolean(aEnvironment, RESULT, system(command.c_str()) == 0);
 }
 
+void LispSystemName(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+    const char* s = "Unknown";
+
+#if defined(_WIN32)
+    s = "Windows";
+#elif defined(__APPLE__)
+    s = "MacOSX";
+#elif defined (__linux__)
+    s = "Linux";
+#endif
+
+    RESULT = LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(s)->c_str());
+}
+
 void LispMaxEvalDepth(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispPtr index(ARGUMENT(1));
