@@ -324,6 +324,9 @@ class MathCommands
          new YacasEvaluator(new LispSystemCall(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "SystemCall");
     aEnvironment.CoreCommands().SetAssociation(
+         new YacasEvaluator(new LispSystemName(), 0, YacasEvaluator.Fixed | YacasEvaluator.Function),
+         "SystemName");
+    aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispFastArcSin(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
          "FastArcSin");
     aEnvironment.CoreCommands().SetAssociation(
@@ -2541,6 +2544,30 @@ class MathCommands
           aEnvironment.iCurrentOutput.Write("\n");
       }
     }
+  }
+
+  class LispSystemName extends YacasEvalCaller
+  {
+      public void Eval(LispEnvironment aEnvironment, int aStackTop) throws Exception
+      {
+          String os = System.getProperty("os.name");
+
+          if (os == null) {
+              RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, aEnvironment.HashTable().LookUpStringify("Unknown")));
+              return;
+          }
+
+          os = os.toLowerCase();
+
+          if (os.equals("mac os x"))
+              RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, aEnvironment.HashTable().LookUpStringify("MacOSX")));
+          else if (os.indexOf("windows") != -1)
+              RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, aEnvironment.HashTable().LookUpStringify("Windows")));
+          else if (os.indexOf("linux") != -1)
+              RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, aEnvironment.HashTable().LookUpStringify("Linux")));
+          else
+              RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, aEnvironment.HashTable().LookUpStringify("Unknown")));
+      }
   }
 
   class LispFastArcSin extends YacasEvalCaller
