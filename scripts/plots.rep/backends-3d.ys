@@ -26,6 +26,9 @@ Plot3DS'outputs() := {
 /// trivial backend: return data list (do not confuse with Plot3DS'get'data() defined in the main code which is the middle-level plotting routine)
 Plot3DS'data(values_IsList, _options'hash) <-- values;
 
+Plot3DS'gnuplot'command(_file) <--
+    If (SystemName() = "Windows", "cmd /c start /b gnuplot --persist " : file, "gnuplot --persist " : file);
+
 /// backend: display graph using gnuplot
 Plot3DS'gnuplot(values_IsList, _options'hash) <--
 [
@@ -72,7 +75,7 @@ Plot3DS'gnuplot(values_IsList, _options'hash) <--
         ];
         WriteString(Nl());
   ];
-  SystemCall("gnuplot --persist " : control'file);
+  SystemCall(Plot3DS'gnuplot'command(control'file));
 ];
 
 /// backend: use gnuplot to generate png
@@ -122,7 +125,7 @@ Plot3DS'png(values_IsList, _options'hash) <--
         ];
         WriteString(Nl());
   ];
-  SystemCall("gnuplot " : control'file);
+  SystemCall(Plot3DS'gnuplot'command(control'file));
   png'file;
 ];
 

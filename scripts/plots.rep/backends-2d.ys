@@ -26,6 +26,9 @@ Plot2D'outputs() := {
 /// trivial backend: return data list (do not confuse with Plot2D'get'data() defined in the main code which is the middle-level plotting routine)
 Plot2D'data(values_IsList, _options'hash) <-- values;
 
+Plot2D'gnuplot'command(_file) <--
+    If (SystemName() = "Windows", "cmd /c start /b gnuplot --persist " : file, "gnuplot --persist " : file);
+
 /// backend: display graph using gnuplot
 Plot2D'gnuplot(values_IsList, _options'hash) <--
 [
@@ -60,7 +63,7 @@ Plot2D'gnuplot(values_IsList, _options'hash) <--
         ];
         WriteString(Nl());
   ];
-  SystemCall("gnuplot --persist " : control'file);
+  SystemCall(Plot2D'gnuplot'command(control'file));
 ];
 
 /// backend: use gnuplot to generate png
@@ -97,7 +100,8 @@ Plot2D'png(values_IsList, _options'hash) <--
         ];
         WriteString(Nl());
   ];
-  SystemCall("gnuplot " : control'file);
+
+  SystemCall(Plot2D'gnuplot'command(control'file));
   png'file;
 ];
 
