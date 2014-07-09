@@ -56,11 +56,6 @@ void DecNrObjects();
 #define DecNrObjects_destructor()  DECNROBJECTS_CHOOSE(,DecNrObjects())
 #define DECNROBJECTS_CHOOSE(bydelete,bydestructor) bydestructor
 
-
-template <int> struct Undefined;
-template <> struct Undefined<1>{};
-
-
 /** class LispObject is the base object class that can be put in
  *  linked lists. It either has a pointer to a string, obtained through
  *  String(), or it is a holder for a sublist, obtainable through SubList(),
