@@ -2532,11 +2532,15 @@ class MathCommands
 
       int rc = ls_proc.waitFor();
 
+      og.join();
+
       ArrayList<String> output = og.shutdown();
       for (String s: output) {
           aEnvironment.iCurrentOutput.Write(s);
           aEnvironment.iCurrentOutput.Write("\n");
       }
+
+      eg.join();
 
       ArrayList<String> errors = eg.shutdown();
       for (String s: errors) {
