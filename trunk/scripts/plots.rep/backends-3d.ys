@@ -87,7 +87,7 @@ Plot3DS'png(values_IsList, _options'hash) <--
   png'file := If (options'hash["filename"] != Empty, options'hash["filename"], TmpFile());
   ToFile(control'file)
   [
-        WriteString("set output \"" : png'file : "\"" : Nl());
+        WriteString("set output \"" : StringReplace("\\", "\\\\", png'file) : "\"" : Nl());
         WriteString("set terminal png" : Nl());
         WriteString("set surface" : Nl() : If(options'hash["hidden"], "set hidden3d" : Nl(), ""));
         WriteString("set xrange [");
