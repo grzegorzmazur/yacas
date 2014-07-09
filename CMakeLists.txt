@@ -243,35 +243,35 @@ if (ENABLE_DOCS)
   set (HTML_BOOKS)
   foreach (_book ${BOOKS})
     string (REPLACE .book "" _book ${_book})
-    list (APPEND HTML_BOOKS ${_book}manual.html)
+    list (APPEND HTML_BOOKS ${CMAKE_BINARY_DIR}/${_book}manual.html)
   endforeach()
 
   set (HTML_CHAPTERS)
   foreach (_chapter RANGE 1 6)
-    list (APPEND HTML_CHAPTERS "introchapter${_chapter}.html")
+    list (APPEND HTML_CHAPTERS "${CMAKE_BINARY_DIR}/introchapter${_chapter}.html")
   endforeach ()
 
   foreach (_chapter RANGE 1 9)
-    list (APPEND HTML_CHAPTERS "codingchapter${_chapter}.html")
+    list (APPEND HTML_CHAPTERS "${CMAKE_BINARY_DIR}/codingchapter${_chapter}.html")
   endforeach ()
 
   foreach (_chapter RANGE 1 8)
-    list (APPEND HTML_CHAPTERS "Algochapter${_chapter}.html")
+    list (APPEND HTML_CHAPTERS "${CMAKE_BINARY_DIR}/Algochapter${_chapter}.html")
   endforeach ()
 
   foreach (_chapter RANGE 1 8)
-    list (APPEND HTML_CHAPTERS "essayschapter${_chapter}.html")
+    list (APPEND HTML_CHAPTERS "${CMAKE_BINARY_DIR}/essayschapter${_chapter}.html")
   endforeach ()
 
   foreach (_chapter RANGE 1 32)
-    list (APPEND HTML_CHAPTERS "refchapter${_chapter}.html")
+    list (APPEND HTML_CHAPTERS "${CMAKE_BINARY_DIR}/refchapter${_chapter}.html")
   endforeach ()
 
   foreach (_chapter RANGE 1 10)
-    list (APPEND HTML_CHAPTERS "refprogchapter${_chapter}.html")
+    list (APPEND HTML_CHAPTERS "${CMAKE_BINARY_DIR}/refprogchapter${_chapter}.html")
   endforeach ()
 
-  list (APPEND HTML_BOOKS books.html)
+  list (APPEND HTML_BOOKS ${CMAKE_BINARY_DIR}/books.html)
 
   add_custom_target (html_docs ALL DEPENDS ${HTML_BOOKS})
 
