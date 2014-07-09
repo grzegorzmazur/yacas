@@ -35,15 +35,6 @@ void LispString::SetStringStringified(const LispChar* aString)
     aT[length+2] = '\0';
 }
 
-void LispString::SetStringUnStringified(const LispChar * aString)
-{
-    const std::size_t length = std::strlen(aString);
-    ResizeTo(length - 1);
-    ElementType* const aT = elements();
-    std::memcpy(aT, aString + 1, (length - 1) * sizeof (ElementType));
-    aT[length-2] = '\0';
-}
-
 LispInt LispString::operator==(const LispString& aString)
 {
     if (Size() != aString.Size())

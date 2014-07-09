@@ -42,8 +42,7 @@ public:
     // Assignments (with modifications).
     // Set string by taking part of another string.
     void SetStringCounted(const LispChar * aString, LispInt aLength);
-    // Set string from other string, adding quotes around the string.
-    void SetStringUnStringified(const LispChar * aString);
+
     // Set string from other string, removing quotes around the string.
     void SetStringStringified(const LispChar * aString);
 
