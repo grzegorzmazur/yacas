@@ -16,7 +16,6 @@ const LispInt KSymTableSize = 211;
 LispInt LispHash( const char *s );
 LispInt LispHashCounted( const char *s, LispInt length );
 LispInt LispHashStringify( const char *s );
-LispInt LispHashUnStringify( const char *s );
 LispInt LispHashPtr(const LispString * aString);  // hash the *address*!
 
 /**

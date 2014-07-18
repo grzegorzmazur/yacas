@@ -4,6 +4,7 @@
 #include "yacas/lisphash.h"
 
 #include <cassert>
+#include <cstring>
 
 #ifdef YACAS_DEBUG
 #include <stdio.h> // Safe, only included if YACAS_DEBUG is defined
@@ -95,21 +96,6 @@ LispInt  LispHashStringify( const char *s )
     return HASHBIN(h);
 }
 
-LispInt  LispHashUnStringify( const char *s )
-//
-// Simple hash function
-//
-{
-    const LispChar *p;
-    LispUnsLong h=0;
-
-    for (p=s+1;p[1]!='\0';p++)
-    {
-        HashByte( h, *p);
-    }
-    return HASHBIN(h);
-}
-
 LispInt LispHashPtr(const LispString * aString)
 {
     LispChar * p = (LispChar *)(&aString);
@@ -144,35 +130,18 @@ void LispHashTable::AppendString(LispInt bin,LispString * result)
   iHashTable[bin][index] = result;
 }
 
-LispInt StrEqualCounted(const LispChar * ptr1, const LispChar * ptr2, LispInt length)
-{
-    LispInt i;
-    for (i=0;i<length;i++)
-    {
-        if (ptr1[i] != ptr2[i])
-            return 0;
-    }
-    if (ptr1[length] != '\0')
-        return 0;
-    return 1;
-}
-
 LispString* LispHashTable::LookUpCounted(const LispChar* aString, LispInt aLength)
 {
     LispInt bin = LispHashCounted(aString, aLength);
 
     // Find existing version of string
-  LispStringSmartPtrArray & aBin = iHashTable[bin];
-  for (LispInt i = 0, n = aBin.Size(); i < n; i++)
-    {
-        if (StrEqualCounted(aBin[i]->c_str(), aString, aLength))
-        {
+    LispStringSmartPtrArray & aBin = iHashTable[bin];
+    for (LispInt i = 0, n = aBin.Size(); i < n; i++)
+        if (!std::strncmp(aBin[i]->c_str(), aString, aLength))
             return aBin[i];
-        }
-    }
 
     // Append a new string
-  DBG_( theNrTokens++; )
+    DBG_( theNrTokens++; )
     LispString * str = NEW LispString();
     str->SetStringCounted(aString,aLength);
 
