@@ -17,36 +17,15 @@
 
 #include <cassert>
 
-bool IsDigit(LispChar c)
-{
-  return ((c>='0' && c<='9'));
-}
-
-bool IsAlpha(LispChar c)
-{
-  return ( (c>='a' && c<='z') || (c>='A' && c<='Z') || (c == '\'') );
-}
-
-bool IsAlNum(LispChar c)
-{
-  return (IsAlpha(c) || IsDigit(c));
-}
-
 static const char symbolics[] = "~`!@#$^&*-=+:<>?/\\|";
-
 
 bool IsSymbolic(LispChar c)
 {
-  const char *ptr=symbolics;
-  while (*ptr)
-  {
-    if ((*ptr) == c)
-    {
-      return 1;
-    }
-    ptr++;
-  }
-  return 0;
+    for (const char *ptr = symbolics; *ptr; ++ptr)
+        if (*ptr == c)
+            return true;
+
+    return false;
 }
 
 LispString * LispTokenizer::NextToken(LispInput& aInput,
@@ -75,7 +54,7 @@ REDO:
   else if (c == ',') {}
   else if (c == ';') {}
   else if (c == '%') {}
-  else if (c == '.' && !IsDigit(aInput.Peek()) )
+  else if (c == '.' && !std::isdigit(aInput.Peek()) )
   {
     while (aInput.Peek() == '.')
     {
@@ -152,13 +131,13 @@ FALSEALARM:
       aInput.Next();
     }
   }
-  else if (IsDigit(c) || c == '.')
+  else if (std::isdigit(c) || c == '.')
   {
-    while (IsDigit( aInput.Peek())) aInput.Next();
+    while (std::isdigit( aInput.Peek())) aInput.Next();
     if (aInput.Peek() == '.')
     {
       aInput.Next();
-      while (IsDigit( aInput.Peek())) aInput.Next();
+      while (std::isdigit( aInput.Peek())) aInput.Next();
     }
     if (NumericSupportForMantissa())
     {
@@ -167,7 +146,7 @@ FALSEALARM:
         aInput.Next();
         if (aInput.Peek() == '-' || aInput.Peek() == '+')
             aInput.Next();
-        while (IsDigit( aInput.Peek())) aInput.Next();
+        while (std::isdigit( aInput.Peek())) aInput.Next();
       }
     }
   }
@@ -211,7 +190,7 @@ REDO:
   else if (c == ',') {}
   else if (c == '\'') {}
   else if (c == '%') {}
-  else if (c == '.' && !IsDigit(aInput.Peek()) )
+  else if (c == '.' && !std::isdigit(aInput.Peek()) )
   {
     while (aInput.Peek() == '.')
     {
@@ -278,13 +257,13 @@ FALSEALARM:
       aInput.Next();
     }
   }
-  else if (IsDigit(c) || c == '.')
+  else if (std::isdigit(c) || c == '.')
   {
-    while (IsDigit( aInput.Peek())) aInput.Next();
+    while (std::isdigit( aInput.Peek())) aInput.Next();
     if (aInput.Peek() == '.')
     {
       aInput.Next();
-      while (IsDigit( aInput.Peek())) aInput.Next();
+      while (std::isdigit( aInput.Peek())) aInput.Next();
     }
     if (NumericSupportForMantissa())
     {
@@ -293,7 +272,7 @@ FALSEALARM:
         aInput.Next();
         if (aInput.Peek() == '-' || aInput.Peek() == '+')
           aInput.Next();
-        while (IsDigit( aInput.Peek())) aInput.Next();
+        while (std::isdigit( aInput.Peek())) aInput.Next();
       }
     }
   }

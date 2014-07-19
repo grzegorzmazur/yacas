@@ -422,7 +422,7 @@ void InfixPrinter::Print(
         LispInt bracket=0;
         if (iPrecedence<KMaxPrecedence &&
             (*string)[0] == '-' &&
-            (IsDigit((*string)[1]) || (*string)[1] == '.')
+            (std::isdigit((*string)[1]) || (*string)[1] == '.')
            )
         {
             bracket=1;
