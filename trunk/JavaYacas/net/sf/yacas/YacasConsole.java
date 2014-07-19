@@ -42,7 +42,7 @@ public class YacasConsole extends Thread
       if (detectURL != null)
       {
         String detect = detectURL.getPath();
-        archive = detect.substring(0, detect.lastIndexOf('!'));
+        if (detect.contains("!")) archive = detect.substring(0, detect.lastIndexOf('!'));
       }
       else
       {
@@ -57,12 +57,12 @@ public class YacasConsole extends Thread
         i++;
         defaultDirectory = argv[i];
       }
-      if (argv[i].equals("--archive"))
+      else if (argv[i].equals("--archive"))
       {
         i++;
         archive = argv[i];
       }
-      if (argv[i].equals("-i"))
+      else if (argv[i].equals("-i"))
       {
         i++;
         expression = argv[i];
