@@ -136,9 +136,11 @@ LispString* LispHashTable::LookUpCounted(const LispChar* aString, LispInt aLengt
 
     // Find existing version of string
     LispStringSmartPtrArray & aBin = iHashTable[bin];
-    for (LispInt i = 0, n = aBin.Size(); i < n; i++)
-        if (!std::strncmp(aBin[i]->c_str(), aString, aLength))
+    for (LispInt i = 0, n = aBin.Size(); i < n; i++) {
+        const char* const p = aBin[i]->c_str();
+        if (p[aLength] == '\0' && !std::strncmp(p, aString, aLength))
             return aBin[i];
+    }
 
     // Append a new string
     DBG_( theNrTokens++; )
