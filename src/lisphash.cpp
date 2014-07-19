@@ -138,7 +138,7 @@ LispString* LispHashTable::LookUpCounted(const LispChar* aString, LispInt aLengt
     LispStringSmartPtrArray & aBin = iHashTable[bin];
     for (LispInt i = 0, n = aBin.Size(); i < n; i++) {
         const char* const p = aBin[i]->c_str();
-        if (p[aLength] == '\0' && !std::strncmp(p, aString, aLength))
+        if (!std::strncmp(p, aString, aLength) && p[aLength] == '\0')
             return aBin[i];
     }
 
