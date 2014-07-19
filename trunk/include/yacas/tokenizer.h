@@ -10,6 +10,9 @@
 #include "lispstring.h"
 #include "lispio.h"
 #include "lisphash.h"
+
+#include <cctype>
+
 class LispTokenizer : public YacasBase
 {
 public:
@@ -32,12 +35,19 @@ public:
 
 
 // utility functions
-bool IsDigit(LispChar c);
-bool IsAlpha(LispChar c);
-bool IsAlNum(LispChar c);
+inline
+bool IsAlpha(LispChar c)
+{
+    return std::isalpha(c) || c == '\'';
+}
+
+inline
+bool IsAlNum(LispChar c)
+{
+  return IsAlpha(c) || std::isdigit(c);
+}
+
 bool IsSymbolic(LispChar c);
-
-
 
 #endif
 
