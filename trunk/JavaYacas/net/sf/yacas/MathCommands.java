@@ -2522,7 +2522,7 @@ class MathCommands
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,orig != null, 1);
       String oper = LispStandard.InternalUnstringify(orig);
       String ls_str;
-      Process ls_proc = Runtime.getRuntime().exec(oper);
+      final Process ls_proc = Runtime.getRuntime().exec(oper);
 
       StreamGobbler og = new StreamGobbler(ls_proc.getInputStream());
       StreamGobbler eg = new StreamGobbler(ls_proc.getErrorStream());
@@ -2530,18 +2530,38 @@ class MathCommands
       og.start();
       eg.start();
 
-      int rc = ls_proc.waitFor();
+      // Wait for the process. Therefore a separate thread is used.
+      // Thus yacas can continue even if the process is running.
+      Thread waitForProcess = new Thread() {
+          @Override
+          public void run() {
+              int returncode = -1;
+              try {
+                  while (returncode < 0 && !isInterrupted()) {
+                      returncode = ls_proc.waitFor();
+                  }
+                  if (returncode != 0) System.out.println("Subprocess terminated with return code " + returncode);
+              } catch (InterruptedException ex) {
+                  interrupt();
+                  System.err.println("Subprocess still running. Yacas will not wait for it.");
+              }
+          }
+      };
+      waitForProcess.start();
+      // Wait for the process to terminate. If it does not within 9500 ms
+      // yacas will continue (without destroing the subprocess).
+      waitForProcess.join(9500);
+      waitForProcess.interrupt();
 
-      og.join();
-
+      // Wait (at most 250 ms) for the process output stream thread to die.
+      og.join(250);
       ArrayList<String> output = og.shutdown();
       for (String s: output) {
           aEnvironment.iCurrentOutput.Write(s);
           aEnvironment.iCurrentOutput.Write("\n");
       }
-
-      eg.join();
-
+      // Wait (at most 250 ms) for the process error stream thread to die.
+      eg.join(250);
       ArrayList<String> errors = eg.shutdown();
       for (String s: errors) {
           aEnvironment.iCurrentOutput.Write(s);
