@@ -223,6 +223,7 @@ Plot3DS'get'data(_func, _var, _init'values, _deltas, _options'hash) <--
             fa := fb;
             DestructiveAppend(result, {xa, ya, fa});
         ];
+        row'cache[options'hash["ypoints"] + 1] := {xa, ya, fa};
     ];
 
     result;
