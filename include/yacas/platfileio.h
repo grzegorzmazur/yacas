@@ -112,8 +112,6 @@ private:
 };
 
 
-void InternalFindFile(const LispChar * aFileName, InputDirectories& aInputDirectories,
-                      LispChar * aFoundFile);
-
+std::string InternalFindFile(const LispChar* fname, InputDirectories& dirs);
 
 #endif

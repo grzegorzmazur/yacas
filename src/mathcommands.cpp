@@ -1581,10 +1581,10 @@ void LispFindFile(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispString oper;
     InternalUnstringify(oper, orig);
 
-    LispChar filename[PATH_MAX];//TODO FIXME
-    InternalFindFile(oper.c_str(), aEnvironment.iInputDirectories,
-                     filename);
-    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(filename)->c_str()));
+    const std::string path =
+            InternalFindFile(oper.c_str(), aEnvironment.iInputDirectories);
+
+    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(path.c_str())->c_str()));
 }
 
 void LispIsGeneric(LispEnvironment& aEnvironment,LispInt aStackTop)
