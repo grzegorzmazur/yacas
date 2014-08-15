@@ -8,9 +8,8 @@
 #define YACAS_LISPHASH_H
 
 #include "yacasbase.h"
-#include "grower.h"
 #include "lispstring.h"
-
+#include <vector>
 
 const LispInt KSymTableSize = 211;
 LispInt LispHash( const char *s );
@@ -39,7 +38,7 @@ public:
 private:
   void AppendString(LispInt bin,LispString * result);
 private:
-  CArrayGrower<LispStringSmartPtr, ArrOpsCustomObj<LispStringSmartPtr> > iHashTable[KSymTableSize];
+  std::vector<LispStringSmartPtr> iHashTable[KSymTableSize];
 };
 
 inline

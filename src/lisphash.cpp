@@ -16,7 +16,7 @@
 #define DBG_(xxx) /*xxx*/
 #endif
 
-typedef CArrayGrower<LispStringSmartPtr, ArrOpsCustomObj<LispStringSmartPtr> > LispStringSmartPtrArray;
+typedef std::vector<LispStringSmartPtr> LispStringSmartPtrArray;
 
 LispHashTable::~LispHashTable()
 {
@@ -41,7 +41,7 @@ LispHashTable::~LispHashTable()
   for (bin = 0; bin < KSymTableSize; bin++)
   {
     LispStringSmartPtrArray & aBin = iHashTable[bin];
-    for (i = 0, n = aBin.Size(); i < n; i++)
+    for (i = 0, n = aBin.size(); i < n; i++)
     {
       // Check that this LispHashTable is a unique pool!?
       aBin[i] = (nullptr);
@@ -122,12 +122,9 @@ LispInt LispHashPtr(const LispString * aString)
 DBG_( long theNrTokens=0; )
 
 
-void LispHashTable::AppendString(LispInt bin,LispString * result)
+void LispHashTable::AppendString(LispInt bin, LispString* result)
 {
-  LispStringSmartPtr smartptr;
-  int index = iHashTable[bin].Size();
-  iHashTable[bin].ResizeTo(index+1);  // change to GrowBy sometime
-  iHashTable[bin][index] = result;
+    iHashTable[bin].push_back(result);
 }
 
 LispString* LispHashTable::LookUpCounted(const LispChar* aString, LispInt aLength)
@@ -136,7 +133,7 @@ LispString* LispHashTable::LookUpCounted(const LispChar* aString, LispInt aLengt
 
     // Find existing version of string
     LispStringSmartPtrArray & aBin = iHashTable[bin];
-    for (LispInt i = 0, n = aBin.Size(); i < n; i++) {
+    for (LispInt i = 0, n = aBin.size(); i < n; i++) {
         const char* const p = aBin[i]->c_str();
         if (!std::strncmp(p, aString, aLength) && p[aLength] == '\0')
             return aBin[i];
@@ -177,7 +174,7 @@ LispString * LispHashTable::LookUpStringify(const LispChar * aString)
 
     // Find existing version of string
   LispStringSmartPtrArray & aBin = iHashTable[bin];
-  for (LispInt i = 0, n = aBin.Size(); i < n; i++)
+  for (LispInt i = 0, n = aBin.size(); i < n; i++)
     {
         if (StrEqualStringified(aBin[i]->c_str(), aString))
         {
@@ -200,7 +197,7 @@ void LispHashTable::GarbageCollect()
   for (LispInt bin = 0; bin < KSymTableSize; bin++)
   {
     LispStringSmartPtrArray & aBin = iHashTable[bin];
-    for (LispInt i = 0, n = aBin.Size(); i < n; i++)
+    for (LispInt i = 0, n = aBin.size(); i < n; i++)
     {
       if (aBin[i]->iReferenceCount != 1)
         continue;
@@ -208,7 +205,7 @@ void LispHashTable::GarbageCollect()
       // this should be cheaper than 'aBin[i]=nullptr;aBin.Delete(i)'
       aBin[i] = aBin[n-1];
       aBin[n-1] = (nullptr);
-      aBin.ResizeTo(n-1);
+      aBin.resize(n-1);
       i--;
       n--;
     }
