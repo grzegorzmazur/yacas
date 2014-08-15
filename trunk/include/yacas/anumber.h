@@ -36,7 +36,6 @@ public:
 public:
     ANumber(const LispChar * aString,LispInt aPrecision,LispInt aBase=10);
     ANumber(LispInt aPrecision);
-    ANumber(PlatWord *aArray, LispInt aSize, LispInt aPrecision);
     //TODO the properties of this object are set in the member initialization list, but then immediately overwritten by the CopyFrom. We can make this slightly cleaner by only initializing once.
     inline ANumber(const ANumber& aOther) : ASuper(),iExp(0),iNegative(false),iPrecision(0),iTensExp(0)
     {

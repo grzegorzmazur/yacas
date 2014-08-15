@@ -6,7 +6,7 @@
  * grower started 1998 ayal Pinkus
  *
  */
- 
+
 #ifndef _GROWER_H_
 #define _GROWER_H_
 
@@ -112,7 +112,6 @@ public:
     : iArray(0)
     , iSize(0)
     , iCapacity(0)
-    , iArrayOwnedExternally(false)
     {
     }
   virtual ~CArrayGrower()
@@ -130,13 +129,12 @@ public:
         opers.destruct(iArray + --iSize);
       }
     }
-    if (!iArrayOwnedExternally)
-    {
-      PlatFree(iArray);
-    }
+
+    if (iArray)
+        PlatFree(iArray);
+
     iArray = 0;
     iCapacity = iSize = 0;
-    iArrayOwnedExternally = false;
   }
   inline SizeType Size() const { return iSize; }
 
@@ -144,11 +142,9 @@ public:
     : iArray(0)
     , iSize(0)
     , iCapacity(0)
-    , iArrayOwnedExternally(false)
   {
     // Make sure we're not accidentally copying a huge array. We want this system to stay efficient...
     assert(aOther.iSize == 0);
-    assert(aOther.iArrayOwnedExternally == false);
   }
 
   inline const CArrayGrower<T,TOps>& operator=(const CArrayGrower<T,TOps>& aOther)
@@ -157,10 +153,8 @@ public:
     assert(iArray == 0);
     assert(iSize == 0);
     assert(iCapacity == 0);
-    assert(iArrayOwnedExternally == false);
 
     assert(aOther.iSize == 0);
-    assert(aOther.iArrayOwnedExternally == false);
     return *this;
   }
 
@@ -168,7 +162,6 @@ private:
 
   void moreCapacity(SizeType aSize, int g)  // almost independent of T
   {
-    assert(!iArrayOwnedExternally);
     assert(iCapacity >= 0);
     // Compute a new iCapacity >= aSize, with iCapacity % g == 0.
     // We assume g is a power of 2.  (fwiw, in two's-complement, ~(g-1) == -g.
@@ -186,7 +179,6 @@ private:
 public:
   inline void ResizeTo(SizeType aSize)
   {
-    assert(!iArrayOwnedExternally);
     TOps opers;
     if (aSize > iCapacity)
     {
@@ -212,10 +204,7 @@ public:
     assert(aIndex>=0 && aIndex<iSize);
     ArrOps::remove((char**)&iArray, TOps(), iSize, aIndex, aCount, sizeof(ElementType));
   }
-  inline bool ArrayOwnedExternally()
-  {
-    return iArrayOwnedExternally;
-  }
+
 public:
   /// Access to an element in the array
   inline ElementType& operator[](const SizeType aIndex) const
@@ -247,18 +236,6 @@ public:
       *--pEnd = aObj;
   }
 
-  /** Set the array to an external array. This means the array will
-    * not be freed at destruction time
-    */
-  inline void SetExternalArray(ElementType* aArray, SizeType aSize)
-  {
-    assert(!iArray || iArrayOwnedExternally == true);
-    iArray = aArray;
-    iSize = aSize;
-    iArrayOwnedExternally = true;
-    iCapacity = -10000;  // Setting iCapacity should not strictly be necessary, setting it to hugely negative number will hopefully force a fail.
-  }
-
   /// Copy the array to another array
   inline void CopyToExternalArray(ElementType * aArray)
   {
@@ -271,7 +248,6 @@ private:
   ElementType * iArray;
   SizeType iSize;
   SizeType iCapacity;
-  bool iArrayOwnedExternally;
 };
 
 /** \class CDeletingArrayGrower calls delete on each element in the
