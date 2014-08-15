@@ -8,6 +8,12 @@
 #include <windows.h>
 #endif
 
+
+#ifdef WIN32
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
+#endif
+
 #include <sys/types.h>
 
 #include "yacas/yacasprivate.h"
