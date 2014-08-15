@@ -87,12 +87,6 @@ ANumber::ANumber(LispInt aPrecision) : ASuper(),iExp(0),iNegative(false),iPrecis
   Append(0);
 }
 
-/* Allow use of external arrays */
-ANumber::ANumber(PlatWord *aArray, LispInt aSize, LispInt aPrecision): ASuper(),iExp(0),iNegative(false),iPrecision(aPrecision),iTensExp(0)
-{
-  assert(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
-  SetExternalArray(aArray, aSize);
-}
 
 /* ANumber: Constructor for an arbitrary precision number. */
 ANumber::ANumber(const LispChar * aString,LispInt aPrecision,LispInt aBase): ASuper(),iExp(0),iNegative(false),iPrecision(aPrecision),iTensExp(0)
