@@ -23,10 +23,11 @@
 
 #include <limits.h>
 #include <stdlib.h>
-#include <unistd.h>
 
 #ifdef _WIN32
 #include <windows.h>
+#else
+#include <unistd.h>
 #endif
 
 #define InternalEval aEnvironment.iEvaluator->Eval
