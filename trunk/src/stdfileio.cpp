@@ -1,28 +1,9 @@
 #include "yacas/yacasprivate.h"
 #include "yacas/stdfileio.h"
 
-#ifdef WIN32
+#ifdef _WIN32
 #define MAP_TO_WIN32_PATH_SEPARATOR
 #endif // WIN32
-
-//#define MAP_TO_WIN32_PATH_SEPARATOR
-
-static void MapPathSeparators(char* filename)
-{
-//  printf("File name [%s]",filename);
-//  char* ptr = filename;
-#ifdef MAP_TO_WIN32_PATH_SEPARATOR
-  while (*filename)
-  {
-    switch (*filename)
-    {
-      case '/': *filename = '\\';
-      default: filename++;
-    }
-  }
-#endif // MAP_TO_WIN32_PATH_SEPARATOR
-//  printf("-> [%s]\n",ptr);
-}
 
 static void MapPathSeparators(std::string& filename)
 {
@@ -186,33 +167,27 @@ void CachedStdFileInput::SetPosition(LispInt aPosition)
   iCurrentPos = aPosition;
 }
 
-
-// TODO: woof -- buffer overflow problems in here?
-void InternalFindFile(const LispChar * aFileName, InputDirectories& aInputDirectories,
-                      LispChar* aFoundFile)
+std::string InternalFindFile(const LispChar* fname, InputDirectories& dirs)
 {
-    strcpy(aFoundFile,aFileName);
+    std::string path(fname);
 
-    MapPathSeparators(aFoundFile);
+    MapPathSeparators(path);
 
-    FILE* file = fopen(aFoundFile,"rb");
-    LispInt i=0;
-    while (!file && i<aInputDirectories.Size())
-    {
-        strcpy(aFoundFile,aInputDirectories[i]->c_str());
-        strcat(aFoundFile,aFileName);
-        MapPathSeparators(aFoundFile);
-        file = fopen(aFoundFile,"rb");
-        i++;
+    FILE* file = fopen(path.c_str(), "rb");
+    for (int i = 0; !file && i < dirs.Size(); ++i) {
+        path = dirs[i]->c_str();
+        path += fname;
+        MapPathSeparators(path);
+        file = fopen(path.c_str(), "rb");
     }
+
     if (file)
-    {
         fclose(file);
-    }
-    else
-    {
-        aFoundFile[0] = '\0';
-    }
+
+    if (!file)
+        return "";
+
+    return path;
 }
 
 LispLocalFile::LispLocalFile(
