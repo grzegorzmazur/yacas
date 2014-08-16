@@ -129,17 +129,14 @@ bool MatchSubList::ArgumentMatches(LispEnvironment& aEnvironment,
 
 LispInt YacasPatternPredicateBase::LookUp(LispString * aVariable)
 {
-    LispInt i;
-    for (i=0;i<iVariables.Size();i++)
-    {
+    const std::size_t n = iVariables.size();
+    for (std::size_t i = 0; i < n; ++i)
         if (iVariables[i] == aVariable)
-        {
             return i;
-        }
-    }
+
     aVariable->iReferenceCount += 1;
-    iVariables.Append(aVariable);
-    return iVariables.Size()-1;
+    iVariables.push_back(aVariable);
+    return iVariables.size() - 1;
 }
 
 
@@ -203,7 +200,7 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
                         LispPtr pred(LispSubList::New(third));
                         DBG_( third->Nixed()->SetFileAndLine(second->iFileName,second->iLine); )
                         DBG_( pred->SetFileAndLine(head->iFileName,head->iLine); )
-                        iPredicates.Append(pred);
+                        iPredicates.push_back(pred);
                     }
                     return NEW MatchVariable(index);
                 }
@@ -235,15 +232,15 @@ YacasPatternPredicateBase::YacasPatternPredicateBase(LispEnvironment& aEnvironme
         iParamMatchers.Append(matcher);
   }
   LispPtr post(aPostPredicate);
-  iPredicates.Append(post);
+  iPredicates.push_back(post);
 }
 
 bool YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
                                               LispPtr& aArguments)
 {
     LispPtr* arguments = nullptr;
-    if (iVariables.Size() > 0)
-    arguments = NEW LispPtr[iVariables.Size()];
+    if (!iVariables.empty())
+        arguments = NEW LispPtr[iVariables.size()];
     LocalArgs args(arguments); //Deal with destruction
     LispIterator iter(aArguments);
     for (LispInt i=0;i<iParamMatchers.Size();i++,++iter)
@@ -284,8 +281,8 @@ bool YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
     LispInt i;
 
     LispPtr* arguments = nullptr;
-    if (iVariables.Size() > 0)
-        arguments = NEW LispPtr[iVariables.Size()];
+    if (!iVariables.empty())
+        arguments = NEW LispPtr[iVariables.size()];
     LocalArgs args(arguments); //Deal with destruction
 
     for (i=0;i<iParamMatchers.Size();i++)
@@ -315,7 +312,8 @@ bool YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
 
 bool YacasPatternPredicateBase::CheckPredicates(LispEnvironment& aEnvironment)
 {
-  for (LispInt i=0;i<iPredicates.Size();i++)
+    const std::size_t n = iPredicates.size();
+  for (std::size_t i = 0; i < n; ++i)
   {
     LispPtr pred;
     aEnvironment.iEvaluator->Eval(aEnvironment, pred, iPredicates[i]);
@@ -357,20 +355,17 @@ bool YacasPatternPredicateBase::CheckPredicates(LispEnvironment& aEnvironment)
 void YacasPatternPredicateBase::SetPatternVariables(LispEnvironment& aEnvironment,
                                                     LispPtr* arguments)
 {
-    LispInt i;
-    for (i=0;i<iVariables.Size();i++)
-    {
-        // set the variable to the new value
+    const std::size_t n = iVariables.size();
+    for (std::size_t i = 0; i < n; ++i)
         aEnvironment.NewLocal(iVariables[i],arguments[i]);
-    }
 }
 
 
 YacasPatternPredicateBase::~YacasPatternPredicateBase()
 {
-    for (int i = 0; i < iVariables.Size(); ++i) {
+    const std::size_t n = iVariables.size();
+    for (std::size_t i = 0; i < n; ++i)
         if (--iVariables[i]->iReferenceCount == 0)
             delete iVariables[i];
-    }
 }
 

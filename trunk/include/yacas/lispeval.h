@@ -116,7 +116,7 @@ private:
   void PushFrame();
   void PopFrame();
 private:
-  CArrayGrower<UserStackInformation*, ArrOpsCustomPtr<UserStackInformation> > objs;
+  std::vector<UserStackInformation*> objs;
 };
 
 

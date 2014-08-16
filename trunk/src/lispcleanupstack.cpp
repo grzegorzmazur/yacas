@@ -15,30 +15,28 @@ void LispCleanup::Pop()
 
 void LispCleanup::Delete()
 {
-    iObjects.ResizeTo(0);
+    iObjects.clear();
 }
 
 void LispCleanup::CheckStackEmpty()
 {
-    assert(iObjects.Size() == 0);
+    assert(iObjects.size() == 0);
 }
 
 void DeletingLispCleanup::Push(LispBase& aObject)
 {
-    iObjects.Append(&aObject);
+    iObjects.push_back(&aObject);
 }
 
 void DeletingLispCleanup::Pop()
 {
-    iObjects.ResizeTo(iObjects.Size()-1);
+    iObjects.pop_back();
 }
 
 void DeletingLispCleanup::Delete()
 {
-    LispInt i;
-    for (i=iObjects.Size()-1;i>=0;i--)
-    {
-        iObjects[i]->Delete();
+    while (!iObjects.empty()) {
+        iObjects.back()->Delete();
+        iObjects.pop_back();
     }
-    iObjects.ResizeTo(0);
 }

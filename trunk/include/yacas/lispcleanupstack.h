@@ -11,7 +11,7 @@
 #define YACAS_LISPCLEANUPSTACK_H
 
 #include "yacasbase.h"
-#include "grower.h"
+#include <vector>
 
 /** Base class that specifies one pure abstract method Delete.
  *  Only classes derived from this one can be pushed onto
@@ -53,7 +53,7 @@ public:
     void CheckStackEmpty();
 
 protected:
-    CArrayGrower<LispBase*, ArrOpsCustomPtr<LispBase> > iObjects;
+    std::vector<LispBase*> iObjects;
 };
 
 /** Clean up stack that deletes objects itself when needed.

@@ -253,31 +253,25 @@ void TraceShowLeave(LispEnvironment& aEnvironment, LispPtr& aResult,
 void TracedStackEvaluator::PushFrame()
 {
   UserStackInformation *op = NEW UserStackInformation;
-  objs.Append(op);
+  objs.push_back(op);
 }
 
 void TracedStackEvaluator::PopFrame()
 {
-  assert (objs.Size() > 0);
-  if (objs[objs.Size()-1])
-  {
-    delete objs[objs.Size()-1];
-    objs[objs.Size()-1] = nullptr;
-  }
-  objs.Delete(objs.Size()-1);
+    assert (!objs.empty());
+    delete objs.back();
+    objs.pop_back();
 }
 
 void TracedStackEvaluator::ResetStack()
 {
-  while (objs.Size()>0)
-  {
-    PopFrame();
-  }
+    while (!objs.empty())
+        PopFrame();
 }
 
 UserStackInformation& TracedStackEvaluator::StackInformation()
 {
-  return *(objs[objs.Size()-1]);
+    return *objs.back();
 }
 
 TracedStackEvaluator::~TracedStackEvaluator()
@@ -291,7 +285,7 @@ void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, LispOutput& 
 
   LispInt i;
   LispInt from=0;
-  LispInt upto = objs.Size();
+  LispInt upto = objs.size();
 
   for (i=from;i<upto;i++)
   {
