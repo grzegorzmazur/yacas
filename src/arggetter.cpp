@@ -22,6 +22,6 @@ LispString * GetIntegerArgument(LispEnvironment& aEnvironment, LispInt aStackTop
 LispInt GetShortIntegerArgument(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
   LispString* str = GetIntegerArgument(aEnvironment, aStackTop, aArgNr);
-  return InternalAsciiToInt(str);
+  return InternalAsciiToInt(*str);
 }
 

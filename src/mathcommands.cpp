@@ -207,7 +207,7 @@ void LispNth(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispString * str = ARGUMENT(2)->String();
     CheckArg(str, 2, aEnvironment, aStackTop);
     CheckArg(IsNumber(str->c_str(), false), 2, aEnvironment, aStackTop);
-    LispInt index = InternalAsciiToInt(str);
+    LispInt index = InternalAsciiToInt(*str);
     InternalNth(RESULT, ARGUMENT(1), index);
 }
 
@@ -373,7 +373,7 @@ static void InternalDelete(LispEnvironment& aEnvironment, LispInt aStackTop, Lis
     LispPtr index(ARGUMENT(2));
     CheckArg(index, 2, aEnvironment, aStackTop);
     CheckArg(index->String(), 2, aEnvironment, aStackTop);
-    LispInt ind = InternalAsciiToInt(index->String());
+    LispInt ind = InternalAsciiToInt(*index->String());
     CheckArg(ind > 0, 2, aEnvironment, aStackTop);
 
     LispIterator iter(copied);
@@ -428,7 +428,7 @@ static void InternalInsert(LispEnvironment& aEnvironment, LispInt aStackTop, Lis
     LispPtr index(ARGUMENT(2));
     CheckArg(index, 2, aEnvironment, aStackTop);
     CheckArg(index->String(), 2, aEnvironment, aStackTop);
-    LispInt ind = InternalAsciiToInt(index->String());
+    LispInt ind = InternalAsciiToInt(*index->String());
     CheckArg(ind > 0, 2, aEnvironment, aStackTop);
 
     LispIterator iter(copied);
@@ -459,7 +459,7 @@ static void InternalReplace(LispEnvironment& aEnvironment, LispInt aStackTop, Li
     LispPtr index(ARGUMENT(2));
     CheckArg(index, 2, aEnvironment, aStackTop);
     CheckArg(index->String(), 2, aEnvironment, aStackTop);
-    LispInt ind = InternalAsciiToInt(index->String());
+    LispInt ind = InternalAsciiToInt(*index->String());
 
     LispPtr copied;
     if (aDestructive)
@@ -712,7 +712,7 @@ static void MultiFix(LispEnvironment& aEnvironment, LispInt aStackTop, LispOpera
     LispPtr precedence;
     InternalEval(aEnvironment, precedence, ARGUMENT(2));
     CheckArg(precedence->String(), 2, aEnvironment, aStackTop);
-    LispInt prec = InternalAsciiToInt(precedence->String());
+    LispInt prec = InternalAsciiToInt(*precedence->String());
     CheckArg(prec <= KMaxPrecedence, 2, aEnvironment, aStackTop);
     aOps.SetOperator(prec,SymbolName(aEnvironment,orig->c_str()));
     InternalTrue(aEnvironment,RESULT);
@@ -951,12 +951,12 @@ static void InternalNewRule(LispEnvironment& aEnvironment, LispInt aStackTop)
     // The arity
     CheckArg(ar, 2, aEnvironment, aStackTop);
     CheckArg(ar->String(), 2, aEnvironment, aStackTop);
-    arity = InternalAsciiToInt(ar->String());
+    arity = InternalAsciiToInt(*ar->String());
 
     // The precedence
     CheckArg(pr, 3, aEnvironment, aStackTop);
     CheckArg(pr->String(), 3, aEnvironment, aStackTop);
-    precedence = InternalAsciiToInt(pr->String());
+    precedence = InternalAsciiToInt(*pr->String());
 
     // Finally define the rule base
     aEnvironment.DefineRule(SymbolName(aEnvironment,orig->c_str()),
@@ -989,7 +989,7 @@ void LispUnFence(LispEnvironment& aEnvironment, LispInt aStackTop)
     // The arity
     CheckArg(ARGUMENT(2), 2, aEnvironment, aStackTop);
     CheckArg(ARGUMENT(2)->String(), 2, aEnvironment, aStackTop);
-    LispInt arity = InternalAsciiToInt(ARGUMENT(2)->String());
+    LispInt arity = InternalAsciiToInt(*ARGUMENT(2)->String());
 
     aEnvironment.UnFenceRule(SymbolName(aEnvironment,orig->c_str()),
                             arity);
@@ -1103,7 +1103,7 @@ void LispRetract(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     LispPtr arity(ARGUMENT(2));
     CheckArg(arity->String(), 2, aEnvironment, aStackTop);
-    LispInt ar = InternalAsciiToInt(arity->String());
+    LispInt ar = InternalAsciiToInt(*arity->String());
     aEnvironment.Retract(oper, ar);
     InternalTrue(aEnvironment,RESULT);
 }
@@ -1114,7 +1114,7 @@ void YacasBuiltinPrecisionSet(LispEnvironment& aEnvironment, LispInt aStackTop)
     CheckArg(index, 1, aEnvironment, aStackTop);
     CheckArg(index->String(), 1, aEnvironment, aStackTop);
 
-    LispInt ind = InternalAsciiToInt(index->String());
+    LispInt ind = InternalAsciiToInt(*index->String());
     CheckArg(ind > 0, 1, aEnvironment, aStackTop);
     aEnvironment.SetPrecision(ind);
     InternalTrue(aEnvironment,RESULT);
@@ -1329,7 +1329,7 @@ void LispMaxEvalDepth(LispEnvironment& aEnvironment, LispInt aStackTop)
     CheckArg(index, 1, aEnvironment, aStackTop);
     CheckArg(index->String(), 1, aEnvironment, aStackTop);
 
-    LispInt ind = InternalAsciiToInt(index->String());
+    LispInt ind = InternalAsciiToInt(*index->String());
     aEnvironment.iMaxEvalDepth = ind;
     InternalTrue(aEnvironment,RESULT);
 }
@@ -1384,7 +1384,7 @@ void LispLeftPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
     InternalEval(aEnvironment, index, ARGUMENT(2));
     CheckArg(index, 2, aEnvironment, aStackTop);
     CheckArg(index->String(), 2, aEnvironment, aStackTop);
-    LispInt ind = InternalAsciiToInt(index->String());
+    LispInt ind = InternalAsciiToInt(*index->String());
 
     aEnvironment.InFix().SetLeftPrecedence(SymbolName(aEnvironment,orig->c_str()),ind);
     InternalTrue(aEnvironment,RESULT);
@@ -1401,7 +1401,7 @@ void LispRightPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
     InternalEval(aEnvironment, index, ARGUMENT(2));
     CheckArg(index, 2, aEnvironment, aStackTop);
     CheckArg(index->String(), 2, aEnvironment, aStackTop);
-    LispInt ind = InternalAsciiToInt(index->String());
+    LispInt ind = InternalAsciiToInt(*index->String());
 
     aEnvironment.InFix().SetRightPrecedence(SymbolName(aEnvironment,orig->c_str()),ind);
     InternalTrue(aEnvironment,RESULT);
@@ -1610,7 +1610,7 @@ void GenArrayCreate(LispEnvironment& aEnvironment,LispInt aStackTop)
     CheckArg(sizearg, 1, aEnvironment, aStackTop);
     CheckArg(sizearg->String(), 1, aEnvironment, aStackTop);
 
-    LispInt size = InternalAsciiToInt(sizearg->String());
+    LispInt size = InternalAsciiToInt(*sizearg->String());
 
     LispPtr initarg(ARGUMENT(2));
 
@@ -1643,7 +1643,7 @@ void GenArrayGet(LispEnvironment& aEnvironment,LispInt aStackTop)
     CheckArg(sizearg, 2, aEnvironment, aStackTop);
     CheckArg(sizearg->String(), 2, aEnvironment, aStackTop);
 
-    LispInt size = InternalAsciiToInt(sizearg->String());
+    LispInt size = InternalAsciiToInt(*sizearg->String());
 
     CheckArg(size > 0 && size <= arr->Size(), 2, aEnvironment, aStackTop);
     LispObject* object = arr->GetElement(size);
@@ -1662,7 +1662,7 @@ void GenArraySet(LispEnvironment& aEnvironment,LispInt aStackTop)
   CheckArg(sizearg, 2, aEnvironment, aStackTop);
   CheckArg(sizearg->String(), 2, aEnvironment, aStackTop);
 
-  LispInt size = InternalAsciiToInt(sizearg->String());
+  LispInt size = InternalAsciiToInt(*sizearg->String());
 
   CheckArg(size > 0 && size <= arr->Size(), 2, aEnvironment, aStackTop);
   LispPtr obj(ARGUMENT(3));
@@ -1781,14 +1781,14 @@ void YacasStringMidGet(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispPtr index(ARGUMENT(1));
     CheckArg(index, 1, aEnvironment, aStackTop);
     CheckArg(index->String(), 1, aEnvironment, aStackTop);
-    const LispInt sfrom = InternalAsciiToInt(index->String());
+    const LispInt sfrom = InternalAsciiToInt(*index->String());
     CheckArg(sfrom > 0, 1, aEnvironment, aStackTop);
     const std::size_t from = sfrom;
 
     index = (ARGUMENT(2));
     CheckArg(index, 2, aEnvironment, aStackTop);
     CheckArg(index->String(), 2, aEnvironment, aStackTop);
-    const LispInt scount = InternalAsciiToInt(index->String());
+    const LispInt scount = InternalAsciiToInt(*index->String());
     const std::size_t count = scount;
 
     std::string str = "\"";
@@ -1808,7 +1808,7 @@ void YacasStringMidSet(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispPtr index(ARGUMENT(1));
     CheckArg(index, 1, aEnvironment, aStackTop);
     CheckArg(index->String(), 1, aEnvironment, aStackTop);
-    const LispInt sfrom = InternalAsciiToInt(index->String());
+    const LispInt sfrom = InternalAsciiToInt(*index->String());
     CheckArg(sfrom > 0, 1, aEnvironment, aStackTop);
     const std::size_t from = sfrom;
 
@@ -1911,7 +1911,7 @@ void LispRuleBaseDefined(LispEnvironment& aEnvironment,LispInt aStackTop)
     CheckArg(sizearg, 2, aEnvironment, aStackTop);
     CheckArg(sizearg->String(), 2, aEnvironment, aStackTop);
 
-    LispInt arity = InternalAsciiToInt(sizearg->String());
+    LispInt arity = InternalAsciiToInt(*sizearg->String());
 
     LispUserFunction* userFunc = aEnvironment.UserFunction(aEnvironment.HashTable().LookUp(oper.c_str()),arity);
     InternalBoolean(aEnvironment,RESULT,!!userFunc);
@@ -1960,7 +1960,7 @@ void LispRuleBaseArgList(LispEnvironment& aEnvironment,LispInt aStackTop)
     CheckArg(sizearg, 2, aEnvironment, aStackTop);
     CheckArg(sizearg->String(), 2, aEnvironment, aStackTop);
 
-    LispInt arity = InternalAsciiToInt(sizearg->String());
+    LispInt arity = InternalAsciiToInt(*sizearg->String());
 
     LispUserFunction* userFunc = aEnvironment.UserFunction(aEnvironment.HashTable().LookUp(oper.c_str()),arity);
     CheckArg(userFunc, 1, aEnvironment, aStackTop);
@@ -1994,12 +1994,12 @@ static void InternalNewRulePattern(LispEnvironment& aEnvironment, LispInt aStack
     // The arity
     CheckArg(ar, 2, aEnvironment, aStackTop);
     CheckArg(ar->String(), 2, aEnvironment, aStackTop);
-    arity = InternalAsciiToInt(ar->String());
+    arity = InternalAsciiToInt(*ar->String());
 
     // The precedence
     CheckArg(ar, 3, aEnvironment, aStackTop);
     CheckArg(ar->String(), 3, aEnvironment, aStackTop);
-    precedence = InternalAsciiToInt(pr->String());
+    precedence = InternalAsciiToInt(*pr->String());
 
     // Finally define the rule base
     aEnvironment.DefineRulePattern(SymbolName(aEnvironment,orig->c_str()),

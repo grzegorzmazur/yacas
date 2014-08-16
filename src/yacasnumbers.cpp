@@ -386,7 +386,7 @@ LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aP
 LispObject* ShiftLeft( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
   BigNumber *number = NEW BigNumber();
-  LispInt bits = InternalAsciiToInt(int2->String());
+  LispInt bits = InternalAsciiToInt(*int2->String());
   number->ShiftLeft(*int1->Number(aPrecision),bits);
   return NEW LispNumber(number);
 }
@@ -395,7 +395,7 @@ LispObject* ShiftLeft( LispObject* int1, LispObject* int2, LispEnvironment& aEnv
 LispObject* ShiftRight( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
   BigNumber *number = NEW BigNumber();
-  LispInt bits = InternalAsciiToInt(int2->String());
+  LispInt bits = InternalAsciiToInt(*int2->String());
   number->ShiftRight(*int1->Number(aPrecision),bits);
   return NEW LispNumber(number);
 }
@@ -438,7 +438,7 @@ static LispObject* FloatToString(ANumber& aInt,
 
 LispObject* LispFactorial(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-    LispInt nr = InternalAsciiToInt(int1->String());
+    LispInt nr = InternalAsciiToInt(*int1->String());
 
     if (nr < 0)
         throw LispErrInvalidArg();
