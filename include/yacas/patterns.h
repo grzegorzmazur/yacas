@@ -193,10 +193,10 @@ protected:
     CDeletingArrayGrower<YacasParamMatcherBase*, ArrOpsDeletingPtr<YacasParamMatcherBase> > iParamMatchers;
 
     /// List of variables appearing in the pattern.
-    CArrayGrower<LispString *, ArrOpsCustomPtr<LispString> > iVariables;
+    std::vector<LispString*> iVariables;
 
     /// List of predicates which need to be true for a match.
-    CArrayGrower<LispPtr, ArrOpsCustomObj<LispPtr> > iPredicates;
+    std::vector<LispPtr> iPredicates;
 };
 
 
