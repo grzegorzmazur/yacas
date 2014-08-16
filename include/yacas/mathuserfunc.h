@@ -3,9 +3,10 @@
 
 #include "yacasbase.h"
 #include "lispuserfunc.h"
-#include "grower.h"
 #include "patternclass.h"
 #include "noncopyable.h"
+
+#include <vector>
 
 /// A mathematical function defined by several rules.
 /// This is the basic class which implements functions in Yacas.
@@ -184,7 +185,7 @@ public:
 
 protected:
   /// List of arguments, with corresponding \c iHold property.
-  CArrayGrower<BranchParameter, ArrOpsPOD<BranchParameter> > iParameters;
+  std::vector<BranchParameter> iParameters;
 
   /// List of rules, sorted on precedence.
   CDeletingArrayGrower<BranchRuleBase*, ArrOpsDeletingPtr<BranchRuleBase> >     iRules;

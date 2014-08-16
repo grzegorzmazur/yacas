@@ -63,7 +63,7 @@ BranchingUserFunction::BranchingUserFunction(LispPtr& aParameters)
         throw LispErrCreatingUserFunction();
 
     BranchParameter param(iter.getObj()->String());
-    iParameters.Append(param);
+    iParameters.push_back(param);
   }
 }
 
@@ -190,9 +190,8 @@ FINISH:
 
 void BranchingUserFunction::HoldArgument(LispString * aVariable)
 {
-    LispInt i;
-    LispInt nrc=iParameters.Size();
-    for (i=0;i<nrc;i++)
+    const std::size_t nrc = iParameters.size();
+    for (std::size_t i=0; i < nrc; ++i)
     {
         if (iParameters[i].iParameter == aVariable)
             iParameters[i].iHold = true;
@@ -201,7 +200,7 @@ void BranchingUserFunction::HoldArgument(LispString * aVariable)
 
 LispInt BranchingUserFunction::Arity() const
 {
-    return iParameters.Size();
+    return iParameters.size();
 }
 
 LispInt BranchingUserFunction::IsArity(LispInt aArity) const
