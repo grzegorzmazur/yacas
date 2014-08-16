@@ -48,14 +48,6 @@ LispString* LispHashTable::LookUp(const LispChar* aString)
 }
 
 
-
-
-/** VoidGrow is a helper class for LispAssociatedHash
- */
-class VoidGrow : public CArrayGrower<void*, ArrOpsCustomPtr<void> >
-{
-};
-
 /** LispAssociatedHash allows you to associate arbitrary
  * information with a string in the above hash table. You can
  * specify what type of information to link to the string, and
@@ -91,7 +83,7 @@ protected:
 
 private:
   // The next array is in fact an array of arrays of type LAssoc<T>
-  VoidGrow iHashTable[KSymTableSize];
+  std::vector<void*> iHashTable[KSymTableSize];
 };
 
 

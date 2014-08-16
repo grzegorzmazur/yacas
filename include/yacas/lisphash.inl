@@ -35,7 +35,7 @@ inline T* LispAssociatedHash<T>::LookUp(LispString * aString)
   LispInt bin = LH;
   LispInt i=0;
   // Find existing version of string
-  for (i = iHashTable[bin].Size()-1 ; i >= 0 ; i --)
+  for (i = iHashTable[bin].size()-1 ; i >= 0 ; i --)
   {
     // Get a reference to avoid creating a new object and calling the copy-constructor for it (performance optimization).
     LispStringSmartPtr &ptr = (((LAssoc<T>*)iHashTable[bin][i])->iString);
@@ -54,7 +54,7 @@ inline void LispAssociatedHash<T>::SetAssociation(const T& aData, LispString * a
   LispInt i;
 
   // Find existing version of string
-  for (i=0;i<iHashTable[bin].Size();i++)
+  for (i=0;i<iHashTable[bin].size();i++)
   {
     // Get a reference to avoid creating a new object and calling the copy-constructor for it (performance optimization).
     LispStringSmartPtr &ptr = (((LAssoc<T>*)iHashTable[bin][i])->iString);
@@ -66,7 +66,7 @@ inline void LispAssociatedHash<T>::SetAssociation(const T& aData, LispString * a
     }
   }
   // Append a new string association
-  iHashTable[bin].Append(NEW LAssoc<T>(aString,aData));
+  iHashTable[bin].push_back(NEW LAssoc<T>(aString,aData));
   return;
 }
 
@@ -77,7 +77,7 @@ inline void LispAssociatedHash<T>::Release(LispString * aString)
   LispInt i;
 
   // Find existing version of string
-  for (i=0;i<iHashTable[bin].Size();i++)
+  for (i=0;i<iHashTable[bin].size();i++)
   {
     // Get a reference to avoid creating a new object and calling the copy-constructor for it (performance optimization).
     LispStringSmartPtr &ptr = (((LAssoc<T>*)iHashTable[bin][i])->iString);
@@ -86,7 +86,7 @@ inline void LispAssociatedHash<T>::Release(LispString * aString)
       //change existing version of association
       delete ((LAssoc<T>*)iHashTable[bin][i]);
       iHashTable[bin][i] = nullptr;
-      iHashTable[bin].Delete(i);
+      iHashTable[bin].erase(iHashTable[bin].begin() + i);
       return;
     }
   }
@@ -100,7 +100,7 @@ inline LispAssociatedHash<T>::~LispAssociatedHash()
   for (bin=0;bin<KSymTableSize;bin++)
   {
     LispInt j;
-    LispInt nritems = iHashTable[bin].Size();
+    LispInt nritems = iHashTable[bin].size();
     for (j=0;j<nritems;j++)
     {
       delete ((LAssoc<T>*)iHashTable[bin][j]);
