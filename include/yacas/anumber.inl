@@ -1,10 +1,4 @@
 
-
-
-
-#define WordBaseTimesInt(a,n) BaseTimesInt(a,n)
-#define WordBaseAdd(a,b)      BaseAdd(a,b)
-
 /* BaseTimesInt : multiply a with one digit in the range 0..(aBase-1)
  */
 template<class T>
@@ -33,7 +27,7 @@ inline void BaseTimesInt(T& a,PlatDoubleWord aNumber, PlatDoubleWord aBase)
 }
 
 template<class T>
-inline void BaseTimesInt(T& a,PlatDoubleWord aNumber)
+inline void WordBaseTimesInt(T& a,PlatDoubleWord aNumber)
 {
   PlatDoubleWord carry=0;
   LispInt i;
@@ -111,27 +105,14 @@ inline void GrowDigits(T& a,LispInt aDigits)
 /* GrowDigits : add digits to a until it has aDigits digits
  */
 template<>
-inline void GrowDigits(LispString& a,LispInt aDigits)
+inline void GrowDigits(LispString& a, LispInt sdigits)
 {
-    LispInt i;
+    const std::size_t digits = sdigits;
 
-    if (aDigits <= a.size())
+    if (digits <= a.size())
         return;
 
-    /*
-     LispInt nrToAdd = aDigits-a.Size();
-
-    for (i=0;i<nrToAdd;i++)
-        a.Append(0);
-*/
-    LispInt origSize = a.size();
-    a.resize(aDigits);
-    //a.ResizeTo(aDigits);
-    if (aDigits<=origSize)
-        return;
-    typename LispString::value_type* ptr = &a[origSize];
-    for (i=origSize;i<aDigits;i++)
-        *ptr++ = 0;
+    a.resize(digits, 0);
 }
 
 /* BaseAdd : destructively add aSource to aTarget, in base aBase.
@@ -181,7 +162,7 @@ inline void BaseAdd(T& aTarget, const T& aSource, PlatDoubleWord aBase)
 
 
 template<class T>
-inline void BaseAdd(T& aTarget, const T& aSource)
+inline void WordBaseAdd(T& aTarget, const T& aSource)
 {
     // Initialize result
 
