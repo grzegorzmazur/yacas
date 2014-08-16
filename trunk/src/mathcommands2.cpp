@@ -84,7 +84,7 @@ void LispCharString(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispString * str = ARGUMENT(1)->String();
   CheckArg(str, 2, aEnvironment, aStackTop);
   CheckArg(IsNumber(str->c_str(), false), 2, aEnvironment, aStackTop);
-  LispInt asciiCode = InternalAsciiToInt(str);
+  LispInt asciiCode = InternalAsciiToInt(*str);
 
   LispChar ascii[4];
   ascii[0] = '\"';

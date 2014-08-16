@@ -117,15 +117,14 @@ void InternalIntToAscii(LispChar * aTrg,LispInt aInt)
     }
 }
 
-// TODO: we should either pass the string by reference, or use an assert to check validity of input
-LispInt InternalAsciiToInt(const LispString* aString)
+LispInt InternalAsciiToInt(const LispString& aString)
 {
-  const LispChar * ptr = aString->c_str();
+    const LispChar* ptr = aString.c_str();
 
-  if (!IsNumber(ptr, false))
-      throw LispErrInvalidArg();
+    if (!IsNumber(ptr, false))
+        throw LispErrInvalidArg();
 
-  return std::atoi(ptr);
+    return std::atoi(ptr);
 }
 
 bool IsNumber(const LispChar * ptr,bool aAllowFloat)
