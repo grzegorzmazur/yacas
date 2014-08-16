@@ -190,7 +190,7 @@ void ParsedObject::ReadExpression(LispInt depth)
 //printf("op [%s]\n",iLookAhead->c_str());
               if (IsSymbolic((*iLookAhead)[0]))
               {
-                LispInt origlen = iLookAhead->Size()-1;
+                LispInt origlen = iLookAhead->size()-1;
                 LispInt len = origlen;
 //printf("IsSymbolic, len=%d\n",len);
 

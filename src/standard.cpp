@@ -38,7 +38,7 @@ bool InternalIsString(LispString * aOriginal)
 {
     if (aOriginal)
         if ((*aOriginal)[0] == '\"')
-            if ((*aOriginal)[aOriginal->Size()-2] == '\"')
+            if ((*aOriginal)[aOriginal->size()-2] == '\"')
                 return true;
     return false;
 }
@@ -60,12 +60,12 @@ void InternalUnstringify(LispString& aResult, const LispString * aOriginal)
     if (!aOriginal || (*aOriginal)[0] != '\"')
         throw LispErrInvalidArg();
 
-  LispInt nrc = aOriginal->Size()-2;
+  LispInt nrc = aOriginal->size()-2;
 
   if (!aOriginal || (*aOriginal)[nrc] != '\"')
       throw LispErrInvalidArg();
 
-  aResult.ResizeTo(nrc);
+  aResult.resize(nrc);
   for (LispInt i = 1; i < nrc; i++)
     aResult[i-1] = (*aOriginal)[i];
   aResult[nrc-1]='\0';
@@ -76,8 +76,8 @@ void InternalStringify(LispString& aResult, const LispString* aOriginal)
     if (!aOriginal)
         throw LispErrInvalidArg();
 
-    LispInt nrc=aOriginal->Size()-1;
-    aResult.ResizeTo(nrc+3);
+    LispInt nrc=aOriginal->size()-1;
+    aResult.resize(nrc+3);
     LispInt i;
     aResult[0] = '\"';
     for (i=0;i<nrc;i++)
@@ -477,8 +477,8 @@ void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
                         const LispChar* aString)
 {
     LispString full(aString);
-    full[full.Size()-1] = ';';
-    full.Append('\0');
+    full[full.size()-1] = ';';
+    full.push_back('\0');
     StringInput input(full,aEnvironment.iInputStatus);
     LispPtr lispexpr;
     LispTokenizer &tok = *aEnvironment.iCurrentTokenizer;
@@ -531,8 +531,8 @@ LispObject* operator+(const LispObjectAdder& left, const LispObjectAdder& right)
 void ParseExpression(LispPtr& aResult, const LispChar* aString,LispEnvironment& aEnvironment)
 {
     LispString full((LispChar *)aString);
-    full[full.Size()-1] = ';';
-    full.Append('\0');
+    full[full.size()-1] = ';';
+    full.push_back('\0');
     StringInput input(full,aEnvironment.iInputStatus);
     aEnvironment.iInputStatus.SetTo("String");
     LispTokenizer &tok = *aEnvironment.iCurrentTokenizer;
@@ -571,21 +571,21 @@ void PrintExpression(LispString& aResult,
                      LispEnvironment& aEnvironment,
                      LispInt aMaxChars)
 {
-    aResult.ResizeTo(0);
-    aResult.Append('\0');
+    aResult.resize(0);
+    aResult.push_back('\0');
     StringOutput newOutput(aResult);
     InfixPrinter infixprinter(aEnvironment.PreFix(),
                               aEnvironment.InFix(),
                               aEnvironment.PostFix(),
                               aEnvironment.Bodied());
     infixprinter.Print(aExpression, newOutput, aEnvironment);
-    if (aMaxChars > 0 && aResult.Size()>aMaxChars)
+    if (aMaxChars > 0 && aResult.size()>aMaxChars)
     {
         aResult[aMaxChars-3] = '.';
         aResult[aMaxChars-2] = '.';
         aResult[aMaxChars-1] = '.';
         aResult[aMaxChars] = '\0';
-        aResult.ResizeTo(aMaxChars+1);
+        aResult.resize(aMaxChars+1);
     }
 }
 

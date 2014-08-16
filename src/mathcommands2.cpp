@@ -57,7 +57,7 @@ void LispLocalSymbols(LispEnvironment& aEnvironment, LispInt aStackTop)
         CheckArg(atomname, i + 1, aEnvironment, aStackTop);
         names[i] = atomname;
 
-        LispInt len = atomname->Size()-1;
+        LispInt len = atomname->size()-1;
         CheckArg(len < 64, i + 1, aEnvironment, aStackTop);
         char newname[100];
         newname[0] = '$';

@@ -679,18 +679,18 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
   str++;
   const LispChar * type = (str[0] == '/') ? (str++, "\"Close\"") : "\"Open\"";
   LispString tag;
-  tag.ResizeTo(0);
+  tag.resize(0);
 
-  tag.Append('\"');
+  tag.push_back('\"');
   while (IsAlpha(*str))
   {
     LispChar c = *str++;
     if (c >= 'a' && c <= 'z')
       c = c + ('A'-'a');
-    tag.Append(c);
+    tag.push_back(c);
   }
-  tag.Append('\"');
-  tag.Append('\0');
+  tag.push_back('\"');
+  tag.push_back('\0');
 
   LispObject* info = nullptr;
 
@@ -698,30 +698,30 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
   while (*str != '>' && *str != '/')
   {
     LispString name;
-    name.ResizeTo(0);
-    name.Append('\"');
+    name.resize(0);
+    name.push_back('\"');
 
     while (IsAlpha(*str))
     {
       LispChar c = *str++;
       if (c >= 'a' && c <= 'z')
         c = c + ('A'-'a');
-      name.Append(c);
+      name.push_back(c);
     }
-    name.Append('\"');
-    name.Append('\0');
+    name.push_back('\"');
+    name.push_back('\0');
     CheckArg(str[0] == '=', 1, aEnvironment, aStackTop);
     str++;
     CheckArg(str[0] == '\"', 1, aEnvironment, aStackTop);
     LispString value;
-    value.ResizeTo(0);
-    value.Append(*str++);
+    value.resize(0);
+    value.push_back(*str++);
     while (*str != '\"')
     {
-      value.Append(*str++);
+      value.push_back(*str++);
     }
-    value.Append(*str++);
-    value.Append('\0');
+    value.push_back(*str++);
+    value.push_back('\0');
 
     info =  LIST(LA(ATOML("List")) + LA(ATOML(name.c_str())) + LA(ATOML(value.c_str()))) + LA(info);
     while (*str == ' ') str++;

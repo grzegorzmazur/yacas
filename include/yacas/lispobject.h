@@ -14,6 +14,7 @@
 #define YACAS_LISPOBJECT_H
 
 #include "yacasbase.h"
+#include "grower.h"
 #include "refcount.h"
 #include "lispstring.h"
 #include "genericobject.h"

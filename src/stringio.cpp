@@ -55,8 +55,8 @@ StringOutput::~StringOutput()
 
 void StringOutput::PutChar(LispChar aChar)
 {
-    iString[iString.Size()-1]=aChar;
-    iString.Append('\0');
+    iString[iString.size()-1]=aChar;
+    iString.push_back('\0');
 }
 
 

@@ -251,8 +251,8 @@ LispChar CachedStdUserInput::Next()
 
 LispChar CachedStdUserInput::Peek()
 {
-    if (iCurrentPos == iBuffer.Size())
-        iBuffer.Append(stream.get());
+    if (iCurrentPos == iBuffer.size())
+        iBuffer.push_back(stream.get());
 
     return iBuffer[iCurrentPos];
 }
@@ -265,14 +265,14 @@ bool CachedStdUserInput::EndOfStream()
 void CachedStdUserInput::Rewind()
 {
   // Make sure there is a buffer to point to.
-  iBuffer.ResizeTo(10);
-  iBuffer.ResizeTo(0);
+  iBuffer.resize(10);
+  iBuffer.resize(0);
   iCurrentPos=0;
 }
 
 const LispChar* CachedStdUserInput::StartPtr()
 {
-  if (iBuffer.Size() == 0)
+  if (iBuffer.size() == 0)
     Peek();
   return &iBuffer[0];
 }
