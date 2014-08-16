@@ -177,10 +177,10 @@ void ShowExpression(LispString& outString, LispEnvironment& aEnvironment,
   infixprinter.Print(aExpression, stream,aEnvironment);
 
   // Escape quotes
-  for (LispInt i = outString.Size()-1; i >= 0; --i)
+  for (LispInt i = outString.size()-1; i >= 0; --i)
   {
     if (outString[i] == '\"')
-      outString.Insert(i, LispChar('\\'));
+      outString.insert(outString.begin() + i, LispChar('\\'));
   }
 }
 

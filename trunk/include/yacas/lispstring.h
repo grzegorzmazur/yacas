@@ -6,11 +6,11 @@
 #ifndef YACAS_LISPSTRING_H
 #define YACAS_LISPSTRING_H
 
-#include <cstring>
-
 #include "yacasbase.h"
-#include "grower.h"
 #include "refcount.h"
+
+#include <cstring>
+#include <vector>
 
 class LispStringSmartPtr;
 
@@ -26,7 +26,7 @@ class LispStringSmartPtr;
  * by another part of the system, in which case it cannot be resized.
  * The array will then not be freed by this class.
  */
-class LispString : public CArrayGrower<LispChar,ArrOpsPOD<LispChar> >
+class LispString : public std::vector<LispChar>
 {
 public:
     // Constructors

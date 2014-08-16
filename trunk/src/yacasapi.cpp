@@ -83,8 +83,8 @@ void CYacas::Evaluate(const LispChar * aExpression)
          {
             LispString * prettyReader = env.PrettyReader();
             LispString full(const_cast<LispChar *>(aExpression));  // TODO: woof
-            full[full.Size()-1] = ';';
-            full.Append('\0');
+            full[full.size()-1] = ';';
+            full.push_back('\0');
             StringInput input(full,env.iInputStatus);
             LispLocalInput localInput(env, &input);
             LispPtr args(nullptr);
@@ -95,8 +95,8 @@ void CYacas::Evaluate(const LispChar * aExpression)
          else
          {
            LispString full((LispChar *)aExpression);
-           full[full.Size()-1] = ';';
-           full.Append('\0');
+           full[full.size()-1] = ';';
+           full.push_back('\0');
            StringInput input(full,env.iInputStatus);
            env.iInputStatus.SetTo("CommandLine");
            LispTokenizer &tok = *env.iCurrentTokenizer;

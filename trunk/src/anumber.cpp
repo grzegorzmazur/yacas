@@ -98,11 +98,11 @@ ANumber::ANumber(const LispChar * aString,LispInt aPrecision,LispInt aBase): ASu
 void IntToBaseString(LispString& aString,PlatDoubleWord aInt, LispInt aBase)
 {
     // Build the string
-    aString.ResizeTo(0);
+    aString.resize(0);
     LispInt i=0;
     while (aInt!=0)
     {
-    aString.Append((LispChar)(aInt%aBase));
+    aString.push_back((LispChar)(aInt%aBase));
     aInt/=aBase;
         i++;
     }
@@ -122,7 +122,7 @@ void IntToAscii(LispString& aString,PlatDoubleWord aInt, LispInt aBase)
 
     IntToBaseString(aString,aInt,aBase);
     LispInt i;
-    LispInt nr = aString.Size();
+    LispInt nr = aString.size();
     for (i=0;i<(nr>>1);i++)
     {
         LispChar c = aString[i];
@@ -140,7 +140,7 @@ void IntToAscii(LispString& aString,PlatDoubleWord aInt, LispInt aBase)
         aString.Insert(0,c);
     }
 */
-    aString.Append('\0');
+    aString.push_back('\0');
 }
 
 LispInt WordDigits(LispInt aPrecision, LispInt aBase)
@@ -236,7 +236,7 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
         // Map to a char base number
         LispInt nr;// = fraction.Size()-1; //Excluding the zero terminator
         nr = endFloatIndex - endIntIndex-1;
-        LispString::ElementType * fractionPtr = &fraction[0];
+        LispString::value_type * fractionPtr = &fraction[0];
 
         for (i=0;i<(nr>>1);i++)
         {
@@ -261,16 +261,16 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
 
             //TODO!!! This is probably not the good way to copy!
             {
-                LispInt nrc=fraction.Size();
-                copied.ResizeTo(nrc);
+                LispInt nrc=fraction.size();
+                copied.resize(nrc);
               //copied.ResizeTo(nrc);  // not needed -- ResizeTo does this
-                std::memcpy(&copied[0],  &fraction[0], nrc*sizeof(LispString::ElementType));
+                std::memcpy(&copied[0],  &fraction[0], nrc*sizeof(LispString::value_type));
             }
             BaseMultiply(fraction, copied, base, aBase);
 
             {
-                LispInt nrc=fraction.Size();
-                LispString::ElementType * fractionPtr = &fraction[0];
+                LispInt nrc=fraction.size();
+                LispString::value_type * fractionPtr = &fraction[0];
                 PlatDoubleWord factor=1;
                 for (j=nr;j<nrc;j++)
                 {
@@ -278,7 +278,7 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
                     factor = factor*aBase;
                 }
             }
-            fraction.ResizeTo(nr);
+            fraction.resize(nr);
             Insert(0,word);
             iExp++;
         }
@@ -649,14 +649,14 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
     if (aNumber.iExp == 0 && nr == 1)
     {
         BaseIntNumber(aResult, aNumber[0], aBase);
-        nr=aResult.Size();
+        nr=aResult.size();
         // swap order of the digits, and map to ascii
         {
             LispInt i;
-            LispString::ElementType * rptr = &aResult[0];
+            LispString::value_type * rptr = &aResult[0];
             for (i=0;i<(nr>>1);i++)
             {
-                LispString::ElementType c=rptr[i];
+                LispString::value_type c=rptr[i];
                 rptr[i] = Digit(rptr[nr-i-1]);
                 rptr[nr-i-1] = Digit(c);
             }
@@ -666,15 +666,15 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
 
         if (aForceFloat)
         {
-          if (!(aResult.Size()==1 && aResult[0] == '0'))
-            aResult.Append('.');
+          if (!(aResult.size()==1 && aResult[0] == '0'))
+            aResult.push_back('.');
         }
         if (aNumber.iNegative)
         {
-            if (aResult.Size()>1 || aResult[0] != '0')
+            if (aResult.size()>1 || aResult[0] != '0')
             {
                 LispChar c='-';
-                aResult.Insert(0,c);
+                aResult.insert(aResult.begin(),c);
             }
         }
 
@@ -686,8 +686,8 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
 
         assert(aBase<=36);
         // Reset number
-        aResult.ResizeTo(0);
-        aResult.Append(0);
+        aResult.resize(0);
+        aResult.push_back(0);
 
         // Create the number
         LispString factor2;
@@ -710,11 +710,11 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
             //factor2 = factor2*factor3
 
             {
-                LispInt nr = factor2.Size();
-                term.ResizeTo(nr);
+                LispInt nr = factor2.size();
+                term.resize(nr);
                 LispInt j;
-                LispString::ElementType * fptr = &factor2[0];
-                LispString::ElementType * tptr = &term[0];
+                LispString::value_type * fptr = &factor2[0];
+                LispString::value_type * tptr = &term[0];
                 for (j=0;j<nr;j++)
                 {
                     *tptr++ = *fptr++;
@@ -724,16 +724,16 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
         }
 
         //Remove trailing zeroes (most significant side)
-        nr = aResult.Size();
+        nr = aResult.size();
         while (nr>1 && aResult[nr-1] == 0) nr--;
-        aResult.ResizeTo(nr);
+        aResult.resize(nr);
 
         // swap order of the digits, and map to ascii
         {
-            LispString::ElementType * rptr = &aResult[0];
+            LispString::value_type * rptr = &aResult[0];
             for (i=0;i<(nr>>1);i++)
             {
-                LispString::ElementType c=rptr[i];
+                LispString::value_type c=rptr[i];
                 rptr[i] = rptr[nr-i-1];
                 rptr[nr-i-1] = c;
             }
@@ -745,7 +745,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
         number.ResizeTo(number.iExp);
         if (aForceFloat || (number.iExp > 0 && !IsZero(number)))
         {
-            LispInt digitPos = aResult.Size();
+            LispInt digitPos = aResult.size();
 
             LispInt i;
             // Build the fraction
@@ -754,21 +754,21 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
                 WordBaseTimesInt(number, aBase);
                 if (number.Size() > number.iExp)
                 {
-                    aResult.Append((LispChar)(number[number.iExp]));
+                    aResult.push_back((LispChar)(number[number.iExp]));
                     number.ResizeTo(number.iExp);
                 }
                 else
                 {
-                    aResult.Append(0);
+                    aResult.push_back(0);
                 }
             }
 
             // Round off
-            if (aResult[aResult.Size()-1] >= (aBase>>1))
+            if (aResult[aResult.size()-1] >= (aBase>>1))
             {
                 //TODO code bloat!
                 LispInt carry=1;
-                for (i=aResult.Size()-1;i>=0;i--)
+                for (i=aResult.size()-1;i>=0;i--)
                 {
                     LispInt word = aResult[i]+carry;
                     aResult[i] = word%aBase;
@@ -777,30 +777,30 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
                 if (carry)
                 {
                     LispChar c = carry;
-                    aResult.Insert(0,c);
+                    aResult.insert(aResult.begin(),c);
                     digitPos++;
                 }
             }
-            aResult.ResizeTo(aResult.Size()-1);
+            aResult.resize(aResult.size()-1);
             // Insert dot
             LispChar c='.';
-            aResult.Insert(digitPos,c);
+            aResult.insert(aResult.begin() + digitPos,c);
 
             //Remove trailing zeros
-            LispInt nr = aResult.Size();
+            LispInt nr = aResult.size();
             while (nr>1 && aResult[nr-1] == 0)
             {
                 nr--;
             }
             if (aResult[nr-1] == '.' && nr == 2 && aResult[0] == 0)
                 nr--;
-            aResult.ResizeTo(nr);
+            aResult.resize(nr);
         }
 
         // Map to ascii
         {
-            LispString::ElementType * rptr = &aResult[0];
-            LispInt nr = aResult.Size();
+            LispString::value_type * rptr = &aResult[0];
+            LispInt nr = aResult.size();
             for (i=0;i<nr;i++)
             {
                 *rptr = Digit(*rptr);
@@ -810,36 +810,36 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
 
         // If signed, insert a minus sign
         if (number.iNegative)
-            if (aResult.Size()>1 || aResult[0] != '0')
+            if (aResult.size()>1 || aResult[0] != '0')
             {
                 LispChar c='-';
-                aResult.Insert(0,c);
+                aResult.insert(aResult.begin(),c);
             }
     }
 
     //Handle tens exp
 TENSEXP:
     if (tensExp != 0 &&
-        !(aResult[0] == '0' && aResult.Size() == 1))
+        !(aResult[0] == '0' && aResult.size() == 1))
     {
-        aResult.Append('e');
+        aResult.push_back('e');
         LispString tens;
         //hier
         LispInt tenex = tensExp;
         if (tenex<0)
         {
-          aResult.Append('-');
+          aResult.push_back('-');
           tenex = -tenex;
         }
         IntToAscii(tens,tenex, 10);
         LispInt i,nr;
         nr=std::strlen(&tens[0]);
         for (i=0;i<nr;i++)
-            aResult.Append(tens[i]);
+            aResult.push_back(tens[i]);
     }
 
     // Zero-terminate the resulting string
-    aResult.Append('\0');
+    aResult.push_back('\0');
     return;
 }
 

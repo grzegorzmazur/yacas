@@ -31,5 +31,5 @@ inline LispString::LispString() : iReferenceCount()
 
 inline const LispChar * LispString::c_str() const
 {
-    return elements();
+    return data();
 }

@@ -88,8 +88,8 @@ FALSEALARM:
   else if (c == '\"')
   {
     LispString aResult;
-    aResult.ResizeTo(0);
-    aResult.Append(c);
+    aResult.resize(0);
+    aResult.push_back(c);
     while (aInput.Peek() != '\"')
     {
       if (aInput.Peek() == '\\')
@@ -99,13 +99,13 @@ FALSEALARM:
         if (aInput.EndOfStream())
             throw LispErrParsingInput();
       }
-      aResult.Append(aInput.Next());
+      aResult.push_back(aInput.Next());
 
       if (aInput.EndOfStream())
           throw LispErrParsingInput();
     }
-    aResult.Append(aInput.Next()); // consume the close quote
-    aResult.Append('\0');
+    aResult.push_back(aInput.Next()); // consume the close quote
+    aResult.push_back('\0');
     return aHashTable.LookUp(aResult.c_str());
   }
   //parse atoms
@@ -223,7 +223,7 @@ FALSEALARM:
   else if (c == '\"')
   {
     LispString aResult;
-    aResult.Append(c);
+    aResult.push_back(c);
     while (aInput.Peek() != '\"')
     {
       if (aInput.Peek() == '\\')
@@ -233,13 +233,13 @@ FALSEALARM:
         if (aInput.EndOfStream())
             throw LispErrParsingInput();
       }
-      aResult.Append(aInput.Next());
+      aResult.push_back(aInput.Next());
 
       if (aInput.EndOfStream())
           throw LispErrParsingInput();
     }
-    aResult.Append(aInput.Next()); // consume the close quote
-    aResult.Append('\0');
+    aResult.push_back(aInput.Next()); // consume the close quote
+    aResult.push_back('\0');
     return aHashTable.LookUp(aResult.c_str());
   }
   //parse atoms
