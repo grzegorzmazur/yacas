@@ -78,7 +78,7 @@ void ReturnUnEvaluated(LispPtr& aResult,LispPtr& aArguments,
 void PrintExpression(LispString& aResult,
                      LispPtr& aExpression,
                      LispEnvironment& aEnvironment,
-                     LispInt aMaxChars);
+                     std::size_t aMaxChars);
 
 LispString* SymbolName(LispEnvironment& aEnvironment, const LispChar* aSymbol);
 

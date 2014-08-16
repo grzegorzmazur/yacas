@@ -569,7 +569,7 @@ void ReturnUnEvaluated(LispPtr& aResult,LispPtr& aArguments,
 void PrintExpression(LispString& aResult,
                      LispPtr& aExpression,
                      LispEnvironment& aEnvironment,
-                     LispInt aMaxChars)
+                     std::size_t aMaxChars)
 {
     aResult.resize(0);
     aResult.push_back('\0');
