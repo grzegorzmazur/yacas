@@ -10,7 +10,7 @@ public:
         LispEnvironment& environment,
         const LispChar* fname,
         bool read,
-        InputDirectories& aInputDirectories);
+        const std::vector<std::string>& dirs);
     virtual ~LispLocalFile();
 
     virtual void Delete();
@@ -112,6 +112,6 @@ private:
 };
 
 
-std::string InternalFindFile(const LispChar* fname, InputDirectories& dirs);
+std::string InternalFindFile(const LispChar* fname, const std::vector<std::string>& dirs);
 
 #endif

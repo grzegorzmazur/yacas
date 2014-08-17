@@ -6,8 +6,6 @@
 #ifndef YACAS_LISPENVIRONMENT_H
 #define YACAS_LISPENVIRONMENT_H
 
-#include <atomic>
-
 #include "yacasbase.h"
 #include "lispobject.h"
 #include "lisphash.h"
@@ -21,10 +19,11 @@
 #include "errors.h"
 #include "noncopyable.h"
 
+#include <atomic>
+#include <string>
+#include <vector>
+
 class LispDefFiles;
-class InputDirectories : public CDeletingArrayGrower<LispString *, ArrOpsDeletingPtr<LispString> >
-{
-};
 
 class LispInput;
 class LispOutput;
@@ -202,7 +201,7 @@ protected:
   LispInt iPrecision;
   LispInt iBinaryPrecision;
 public:
-  InputDirectories iInputDirectories;
+  std::vector<std::string> iInputDirectories;
   DeletingLispCleanup iCleanup;
   LispInt iEvalDepth;
   LispInt iMaxEvalDepth;

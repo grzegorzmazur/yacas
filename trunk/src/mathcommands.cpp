@@ -1128,7 +1128,7 @@ void LispDefaultDirectory(LispEnvironment& aEnvironment, LispInt aStackTop)
     CheckArg(orig, 1, aEnvironment, aStackTop);
     LispString oper;
     InternalUnstringify(oper, orig);
-    aEnvironment.iInputDirectories.Append(NEW LispString(oper.c_str()));
+    aEnvironment.iInputDirectories.push_back(oper.c_str());
     InternalTrue(aEnvironment,RESULT);
 }
 

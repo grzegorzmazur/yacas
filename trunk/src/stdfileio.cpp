@@ -167,15 +167,15 @@ void CachedStdFileInput::SetPosition(LispInt aPosition)
   iCurrentPos = aPosition;
 }
 
-std::string InternalFindFile(const LispChar* fname, InputDirectories& dirs)
+std::string InternalFindFile(const LispChar* fname, const std::vector<std::string>& dirs)
 {
     std::string path(fname);
 
     MapPathSeparators(path);
 
     FILE* file = fopen(path.c_str(), "rb");
-    for (int i = 0; !file && i < dirs.Size(); ++i) {
-        path = dirs[i]->c_str();
+    for (std::size_t i = 0; !file && i < dirs.size(); ++i) {
+        path = dirs[i];
         path += fname;
         MapPathSeparators(path);
         file = fopen(path.c_str(), "rb");
@@ -194,7 +194,7 @@ LispLocalFile::LispLocalFile(
     LispEnvironment& environment,
     const LispChar* fname,
     bool read,
-    InputDirectories& input_directories):
+    const std::vector<std::string>& dirs):
     environment(environment)
 {
     std::string othername;
@@ -205,8 +205,8 @@ LispLocalFile::LispLocalFile(
 
         stream.open(othername, std::ios_base::in | std::ios_base::binary);
 
-        for (LispInt i = 0; !stream.is_open() && i < input_directories.Size(); ++i) {
-            othername = input_directories[i]->c_str();
+        for (std::size_t i = 0; !stream.is_open() && i < dirs.size(); ++i) {
+            othername = dirs[i];
             othername += fname;
             MapPathSeparators(othername);
             stream.open(othername, std::ios_base::in | std::ios_base::binary);
