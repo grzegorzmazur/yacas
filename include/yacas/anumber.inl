@@ -1,4 +1,7 @@
 
+#include "anumber.h"
+
+
 /* BaseTimesInt : multiply a with one digit in the range 0..(aBase-1)
  */
 template<class T>
@@ -509,4 +512,9 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
     aRemainder.CopyFrom(a1);
 }
 
-
+inline
+void ANumber::Expand()
+{
+    while (iExp+1>LispInt(size()))
+        push_back(0);
+}

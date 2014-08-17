@@ -549,10 +549,11 @@ void BigNumber::ToString(LispString& aResult, LispInt aBasePrecision, LispInt aB
   {
     for(;;)
     {
-      LispInt i;
+
+      const LispInt ns = num.size();
       bool greaterOne = false;
-      if (num.iExp >= num.size()) break;
-      for (i=num.iExp;i<num.size();i++)
+      if (num.iExp >= LispInt(ns)) break;
+      for (LispInt i=num.iExp;i<ns;i++)
       {
         if (num[i] != 0)
         {
