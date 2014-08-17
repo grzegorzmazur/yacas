@@ -5,6 +5,8 @@
 #include "lispobject.h"
 #include "genericobject.h"
 
+#include <vector>
+
 class ArrayClass : public GenericClass
 {
 public: //required

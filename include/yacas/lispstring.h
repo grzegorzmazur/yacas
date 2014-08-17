@@ -11,7 +11,6 @@
 
 #include <cstring>
 #include <string>
-#include <vector>
 
 class LispStringSmartPtr;
 
@@ -19,7 +18,7 @@ class LispStringSmartPtr;
 /** \class LispString : zero-terminated byte-counted string.
  * Also keeps a reference count for any one interested.
  */
-class LispString : public std::string//std::vector<LispChar>
+class LispString : public std::string
 {
 public:
     // Constructors
@@ -32,15 +31,8 @@ public:
     inline LispString& operator = (const LispString& aString);
     inline LispString& operator = (const LispChar* aString);
 
-    // Assignments (with modifications).
-    // Set string by taking part of another string.
-    void SetStringCounted(const LispChar * aString, LispInt aLength);
-
     // Set string from other string, removing quotes around the string.
     void SetStringStringified(const LispChar * aString);
-
-    // Access
-    const LispChar * c_str() const;  // pointer to asciz 'C-string'
 
     // Comparison
     // If the string is in the hash table it is faster to compare the
@@ -49,8 +41,6 @@ public:
     // literally the same object.
     LispInt operator==(const LispString& aString) const;
 
-private:
-    void SetString(const LispChar * aString);
 public:
     ReferenceCount iReferenceCount;
 };

@@ -142,7 +142,7 @@ LispString* LispHashTable::LookUpCounted(const LispChar* aString, LispInt aLengt
     // Append a new string
     DBG_( theNrTokens++; )
     LispString * str = NEW LispString();
-    str->SetStringCounted(aString,aLength);
+    str->assign(aString,aLength);
 
     AppendString(bin,str);
     return str;

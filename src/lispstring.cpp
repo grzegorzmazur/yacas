@@ -7,16 +7,6 @@
 #include "yacas/lispstring.h"
 #include "yacas/stubs.h"
 
-void LispString::SetString(const LispChar * aString)
-{
-    assign(aString);
-}
-
-void LispString::SetStringCounted(const LispChar* aString, LispInt aLength)
-{
-    assign(aString, aLength);
-}
-
 void LispString::SetStringStringified(const LispChar* aString)
 {
     assign("\"");
