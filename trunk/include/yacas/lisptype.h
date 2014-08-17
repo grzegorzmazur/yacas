@@ -10,9 +10,9 @@
 #include "choices.h"
 
 // Type definitions for the base types
-#define LispChar  char
-#define LispInt   signed int
-#define LispUnsLong unsigned long
+typedef char LispChar;
+typedef signed int LispInt;
+typedef unsigned long LispUnsLong;
 
 #ifndef WIN32
 #  define LISPEXPORT
@@ -37,18 +37,18 @@ typedef unsigned ReferenceType;
 #ifndef LINUX64
 //#define SUPPORT_LONG_LONG
 #  ifdef  SUPPORT_LONG_LONG
-#    define PlatWord unsigned long
-#    define PlatDoubleWord unsigned long long
-#    define PlatSignedDoubleWord signed long long
+typedef unsigned long PlatWord;
+typedef unsigned long long PlatDoubleWord;
+typedef signed long long PlatSignedDoubleWord;
 #  else
-#    define PlatWord unsigned short
-#    define PlatDoubleWord unsigned long
-#    define PlatSignedDoubleWord signed long
+typedef unsigned short PlatWord;
+typedef unsigned long PlatDoubleWord;
+typedef signed long PlatSignedDoubleWord;
 #  endif
 #else
-#  define PlatWord unsigned int
-#  define PlatDoubleWord unsigned long int
-#  define PlatSignedDoubleWord signed long int
+typedef unsigned int PlatWord;
+typedef unsigned long int PlatDoubleWord;
+typedef signed long int PlatSignedDoubleWord;
 #endif
 
 
