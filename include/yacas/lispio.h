@@ -72,10 +72,10 @@ public:
    */
   virtual LispChar Peek() = 0;
 
-  virtual InputStatus& Status() const {return iStatus;};
+  virtual const InputStatus& Status() const {return iStatus;};
 
   /// Check if the file position is past the end of the file.
-  virtual bool EndOfStream() = 0;
+  virtual bool EndOfStream() const = 0;
   /** StartPtr returns the start of a buffer, if there is one.
    * Implementations of this class can keep the file in memory
    * as a whole, and return the start pointer and current position.
