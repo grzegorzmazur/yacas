@@ -9,7 +9,6 @@ libyacas_la_LDFLAGS = -version-info $(YACAS_LIBRARY_VERSION)
 pkginclude_HEADERS = $(top_srcdir)/include/yacas/anumber.h	\
 	$(top_srcdir)/include/yacas/choices.h					\
 	$(top_srcdir)/include/yacas/deffile.h					\
-	$(top_srcdir)/include/yacas/grower.h					\
 	$(top_srcdir)/include/yacas/infixparser.h				\
 	$(top_srcdir)/include/yacas/lispatom.h					\
 	$(top_srcdir)/include/yacas/lispcleanupstack.h			\
@@ -58,7 +57,6 @@ pkginclude_HEADERS = $(top_srcdir)/include/yacas/anumber.h	\
 	$(top_srcdir)/include/yacas/GPL_stuff.h					\
 	$(top_srcdir)/include/yacas/anumber.inl					\
 	$(top_srcdir)/include/yacas/deffile.inl					\
-	$(top_srcdir)/include/yacas/grower.inl					\
 	$(top_srcdir)/include/yacas/lisphash.inl				\
 	$(top_srcdir)/include/yacas/lispobject.inl				\
 	$(top_srcdir)/include/yacas/lispstring.inl				\
@@ -78,7 +76,7 @@ libyacas_la_SOURCES = $(libyacas_la_HEADERS) stdcommandline.cpp		 \
 	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp	 \
 	substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp	 \
 	patcher.cpp genericstructs.cpp xmltokenizer.cpp commandline.cpp	 \
-	anumber.cpp yacasnumbers.cpp numbers.cpp platmath.cpp grower.cpp \
+	anumber.cpp yacasnumbers.cpp numbers.cpp platmath.cpp            \
 	stdstubs.cpp obmalloc.cpp lisphash.cpp lispstring.cpp			 \
 	yacasbase.cpp debugmem.cpp
 

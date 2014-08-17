@@ -5,8 +5,9 @@
 #include "lispobject.h"
 #include "lispenvironment.h"
 #include "lisphash.h"
-#include "grower.h"
 #include "evalfunc.h"
+
+#include <vector>
 
 /// Abstract class providing the basic user function API.
 /// Instances of this class are associated to the name of the function
@@ -106,7 +107,7 @@ public:
 
 private:
   /// Set of LispArityUserFunction's provided by this LispMultiUserFunction.
-  CDeletingArrayGrower<LispArityUserFunction*, ArrOpsDeletingPtr<LispArityUserFunction> > iFunctions;
+  std::vector<LispArityUserFunction*> iFunctions;
 
 public:
   /// File to read for the definition of this function.

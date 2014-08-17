@@ -9,16 +9,13 @@ LispUserFunction::~LispUserFunction()
 
 LispUserFunction* LispMultiUserFunction::UserFunc(LispInt aArity)
 {
-    LispInt i;
     //Find function body with the right arity
-    LispInt nrc=iFunctions.Size();
-    for (i=0;i<nrc;i++)
+    const std::size_t nrc=iFunctions.size();
+    for (std::size_t i = 0; i < nrc; ++i)
     {
         assert(iFunctions[i]);
         if (iFunctions[i]->IsArity(aArity))
-        {
             return iFunctions[i];
-        }
     }
 
     // if function not found, just unaccept!
@@ -28,17 +25,15 @@ LispUserFunction* LispMultiUserFunction::UserFunc(LispInt aArity)
 
 void LispMultiUserFunction::DeleteBase(LispInt aArity)
 {
-    LispInt i;
     //Find function body with the right arity
-    LispInt nrc=iFunctions.Size();
-    for (i=0;i<nrc;i++)
+    const std::size_t nrc = iFunctions.size();
+    for (std::size_t i = 0; i < nrc; ++i)
     {
         assert(iFunctions[i]);
         if (iFunctions[i]->IsArity(aArity))
         {
             delete iFunctions[i];
-            iFunctions[i] = nullptr;
-            iFunctions.Delete(i,1);
+            iFunctions.erase(iFunctions.begin() + i);
             return;
         }
     }
@@ -47,13 +42,14 @@ void LispMultiUserFunction::DeleteBase(LispInt aArity)
 
 LispMultiUserFunction::~LispMultiUserFunction()
 {
+    for (LispArityUserFunction* p: iFunctions)
+        delete p;
 }
 
 void LispMultiUserFunction::HoldArgument(LispString * aVariable)
 {
-    LispInt i;
-    for (i=0;i<iFunctions.Size();i++)
-    {
+    const std::size_t n = iFunctions.size();
+    for (std::size_t i = 0; i < n; ++i) {
         assert(iFunctions[i]);
         iFunctions[i]->HoldArgument(aVariable);
     }
@@ -61,10 +57,9 @@ void LispMultiUserFunction::HoldArgument(LispString * aVariable)
 
 void LispMultiUserFunction::DefineRuleBase(LispArityUserFunction* aNewFunction)
 {
-    LispInt i;
     //Find function body with the right arity
-    LispInt nrc=iFunctions.Size();
-    for (i=0;i<nrc;i++)
+    const std::size_t nrc = iFunctions.size();
+    for (std::size_t i = 0; i < nrc; ++i)
     {
         assert(iFunctions[i]);
         assert(aNewFunction);
@@ -72,6 +67,6 @@ void LispMultiUserFunction::DefineRuleBase(LispArityUserFunction* aNewFunction)
             throw LispErrArityAlreadyDefined();
 
     }
-    iFunctions.Append(aNewFunction);
+    iFunctions.push_back(aNewFunction);
 }
 
