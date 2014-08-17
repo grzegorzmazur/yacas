@@ -77,13 +77,13 @@ public:
   inline LispMultiUserFunction(const LispMultiUserFunction& aOther) : iFunctions(), iFileToOpen(nullptr)
   {
     assert(aOther.iFileToOpen == 0);
-    assert(aOther.iFunctions.Size() == 0);
+    assert(aOther.iFunctions.size() == 0);
   }
   inline LispMultiUserFunction& operator=(const LispMultiUserFunction& aOther)
   {
     // copy constructor not written yet, hence the assert
     assert(aOther.iFileToOpen == 0);
-    assert(aOther.iFunctions.Size() == 0);
+    assert(aOther.iFunctions.size() == 0);
 
     assert(iFileToOpen == 0);
     assert(iFunctions.Size() == 0);

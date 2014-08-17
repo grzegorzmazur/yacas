@@ -6,7 +6,7 @@ inline LispInt ArrayClass::Size()
 
 inline LispObject* ArrayClass::GetElement(LispInt aItem)
 {
-  assert(aItem>0 && aItem<=iArray.Size());
+  assert(aItem>0 && aItem<=iArray.size());
   //LISPASSERT(aItem-1>=0 && aItem-1<iArray.Size());
   return iArray[aItem-1];
 }
