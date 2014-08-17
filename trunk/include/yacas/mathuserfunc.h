@@ -129,7 +129,6 @@ public:
   BranchingUserFunction(LispPtr& aParameters);
 
   /// Destructor.
-  /// There is no code inside this function.
   virtual ~BranchingUserFunction();
 
   /// Evaluate the function on given arguments.
@@ -188,7 +187,7 @@ protected:
   std::vector<BranchParameter> iParameters;
 
   /// List of rules, sorted on precedence.
-  CDeletingArrayGrower<BranchRuleBase*, ArrOpsDeletingPtr<BranchRuleBase> >     iRules;
+  std::vector<BranchRuleBase*> iRules;
 
   /// List of arguments
   LispPtr iParamList;

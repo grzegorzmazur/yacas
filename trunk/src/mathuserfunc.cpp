@@ -69,6 +69,8 @@ BranchingUserFunction::BranchingUserFunction(LispPtr& aParameters)
 
 BranchingUserFunction::~BranchingUserFunction()
 {
+    for (BranchRuleBase* p: iRules)
+        delete p;
 }
 
 void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
@@ -138,9 +140,9 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
 
     // walk the rules database, returning the evaluated result if the
     // predicate is true.
-    LispInt nrRules = iRules.Size();
+    const std::size_t nrRules = iRules.size();
     UserStackInformation &st = aEnvironment.iEvaluator->StackInformation();
-    for (i=0;i<nrRules;i++)
+    for (std::size_t i=0;i<nrRules;i++)
     {
         BranchRuleBase* thisRule = iRules[i];
         CHECKPTR(thisRule);
@@ -248,7 +250,7 @@ void BranchingUserFunction::InsertRule(LispInt aPrecedence,BranchRuleBase* newRu
     // Find place to insert
     LispInt low,high,mid;
     low=0;
-    high=iRules.Size();
+    high=iRules.size();
 
     // Constant time: find out if the precedence is before any of the
     // currently defined rules or past them.
@@ -291,7 +293,7 @@ void BranchingUserFunction::InsertRule(LispInt aPrecedence,BranchRuleBase* newRu
     }
     CONTINUE:
     // Insert it
-    iRules.Insert(mid,newRule);
+    iRules.insert(iRules.begin() + mid, newRule);
 }
 
 LispPtr& BranchingUserFunction::ArgList()
@@ -425,9 +427,9 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
 
     // walk the rules database, returning the evaluated result if the
     // predicate is true.
-    LispInt nrRules = iRules.Size();
+    const std::size_t nrRules = iRules.size();
     UserStackInformation &st = aEnvironment.iEvaluator->StackInformation();
-    for (i=0;i<nrRules;i++)
+    for (std::size_t i=0;i<nrRules;i++)
     {
       BranchRuleBase* thisRule = iRules[i];
       CHECKPTR(thisRule);

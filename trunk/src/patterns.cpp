@@ -229,7 +229,7 @@ YacasPatternPredicateBase::YacasPatternPredicateBase(LispEnvironment& aEnvironme
   {
         YacasParamMatcherBase* matcher = MakeParamMatcher(aEnvironment,iter.getObj());
         assert(matcher!=nullptr);
-        iParamMatchers.Append(matcher);
+        iParamMatchers.push_back(matcher);
   }
   LispPtr post(aPostPredicate);
   iPredicates.push_back(post);
@@ -243,7 +243,8 @@ bool YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
         arguments = NEW LispPtr[iVariables.size()];
     LocalArgs args(arguments); //Deal with destruction
     LispIterator iter(aArguments);
-    for (LispInt i=0;i<iParamMatchers.Size();i++,++iter)
+    const std::size_t n = iParamMatchers.size();
+    for (std::size_t i = 0; i < n; ++i, ++iter)
   {
         if (!iter.getObj())
             return false;
@@ -278,14 +279,13 @@ bool YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
 bool YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
                                               LispPtr* aArguments)
 {
-    LispInt i;
-
     LispPtr* arguments = nullptr;
     if (!iVariables.empty())
         arguments = NEW LispPtr[iVariables.size()];
     LocalArgs args(arguments); //Deal with destruction
 
-    for (i=0;i<iParamMatchers.Size();i++)
+    const std::size_t n = iParamMatchers.size();
+    for (std::size_t i = 0; i < n; ++i)
     {
         if (!iParamMatchers[i]->ArgumentMatches(aEnvironment,aArguments[i],arguments))
         {
@@ -363,9 +363,11 @@ void YacasPatternPredicateBase::SetPatternVariables(LispEnvironment& aEnvironmen
 
 YacasPatternPredicateBase::~YacasPatternPredicateBase()
 {
-    const std::size_t n = iVariables.size();
-    for (std::size_t i = 0; i < n; ++i)
-        if (--iVariables[i]->iReferenceCount == 0)
-            delete iVariables[i];
+    for (LispString* p: iVariables)
+        if (--p->iReferenceCount == 0)
+            delete p;
+
+    for (YacasParamMatcherBase* p: iParamMatchers)
+        delete p;
 }
 

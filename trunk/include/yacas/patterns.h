@@ -16,10 +16,10 @@
 
 #include "yacasbase.h"
 #include "lisptype.h"
-#include "grower.h"
 #include "lispenvironment.h"
 #include "noncopyable.h"
 
+#include <vector>
 
 /// Abstract class for matching one argument to a pattern.
 class YacasParamMatcherBase : public YacasBase
@@ -124,7 +124,6 @@ public:
                               LispPtr& aPostPredicate);
 
     /// Destructor.
-    /// This function contains no code.
     ~YacasPatternPredicateBase();
 
     /// Try to match the pattern against \a aArguments.
@@ -190,7 +189,7 @@ protected:
 
 protected:
     /// List of parameter matches, one for every parameter.
-    CDeletingArrayGrower<YacasParamMatcherBase*, ArrOpsDeletingPtr<YacasParamMatcherBase> > iParamMatchers;
+    std::vector<YacasParamMatcherBase*> iParamMatchers;
 
     /// List of variables appearing in the pattern.
     std::vector<LispString*> iVariables;
