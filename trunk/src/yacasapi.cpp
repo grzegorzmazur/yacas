@@ -82,7 +82,7 @@ void CYacas::Evaluate(const LispChar * aExpression)
          if (env.PrettyReader())
          {
             LispString * prettyReader = env.PrettyReader();
-            LispString full(const_cast<LispChar *>(aExpression));  // TODO: woof
+            LispString full(aExpression);
             full[full.size()-1] = ';';
             full.push_back('\0');
             StringInput input(full,env.iInputStatus);
@@ -94,7 +94,7 @@ void CYacas::Evaluate(const LispChar * aExpression)
          }
          else
          {
-           LispString full((LispChar *)aExpression);
+           LispString full(aExpression);
            full[full.size()-1] = ';';
            full.push_back('\0');
            StringInput input(full,env.iInputStatus);
