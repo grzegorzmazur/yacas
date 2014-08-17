@@ -42,7 +42,7 @@ LispInt StringInput::Position()
 void StringInput::SetPosition(LispInt aPosition)
 {
   assert(aPosition>=0);
-  assert(aPosition<iString.Size());
+  assert(aPosition<iString.size());
   iCurrent = aPosition;
 }
 
