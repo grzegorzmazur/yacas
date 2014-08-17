@@ -268,7 +268,7 @@ void LispLength(LispEnvironment& aEnvironment, LispInt aStackTop)
   if (InternalIsString(string))
   {
     LispChar s[20];
-    LispInt num = string->size()-3;
+    LispInt num = string->size()-2;
     InternalIntToAscii(s,num);
     RESULT = (LispAtom::New(aEnvironment,s));
     return;
@@ -326,7 +326,7 @@ static void ConcatenateStrings(LispStringSmartPtr& aResult, LispEnvironment& aEn
    * gets cleaned up automatically afterwards. aResult acts like a string buffer we can append substrings to.
    */
   assert(aResult);
-  aResult->resize(0);
+  aResult->clear();
   aResult->push_back('\"');
 
   LispIterator iter(*ARGUMENT(1)->SubList());
@@ -334,7 +334,7 @@ static void ConcatenateStrings(LispStringSmartPtr& aResult, LispEnvironment& aEn
   for (arg=1; (++iter).getObj(); arg++)
   {
     CheckArgIsString(*iter, arg, aEnvironment, aStackTop);
-    LispInt length = iter.getObj()->String()->size()-2;
+    LispInt length = iter.getObj()->String()->size()-1;
     const LispChar * ptr = iter.getObj()->String()->c_str();
     LispString * str = aResult;
     LispInt curlen = str->size();
@@ -343,7 +343,6 @@ static void ConcatenateStrings(LispStringSmartPtr& aResult, LispEnvironment& aEn
     std::memcpy(put+1,ptr+1,length-1);
   }
   aResult->push_back('\"');
-  aResult->push_back('\0');
 }
 
 void LispConcatenateStrings(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -636,10 +635,10 @@ void LispWriteString(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispString * str = ARGUMENT(1)->String();
   CheckArg(str, 1, aEnvironment, aStackTop);
   CheckArg((*str)[0] == '\"', 1, aEnvironment, aStackTop);
-  CheckArg((*str)[str->size()-2] == '\"', 1, aEnvironment, aStackTop);
+  CheckArg((*str)[str->size()-1] == '\"', 1, aEnvironment, aStackTop);
 
   LispInt i=1;
-  LispInt nr=str->size()-2;
+  LispInt nr=str->size()-1;
   //((*str)[i] != '\"')
   for (i=1;i<nr;i++)
   {
@@ -1793,7 +1792,7 @@ void YacasStringMidGet(LispEnvironment& aEnvironment,LispInt aStackTop)
 
     std::string str = "\"";
     // FIXME: it's actually the set of args which is wrong, not the specific one
-    CheckArg(from + count + 1 < orig->size(), 1, aEnvironment, aStackTop);
+    CheckArg(from + count < orig->size(), 1, aEnvironment, aStackTop);
     for (std::size_t i = from; i < from + count; ++i)
         str.push_back((*orig)[i]);
     str.push_back('\"');

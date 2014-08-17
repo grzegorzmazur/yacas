@@ -9,38 +9,24 @@
 
 void LispString::SetString(const LispChar * aString)
 {
-    const std::size_t length = std::strlen(aString);
-    resize(length + 1);
-    std::memcpy(data(), aString, (length + 1) * sizeof (value_type));
+    assign(aString);
 }
 
 void LispString::SetStringCounted(const LispChar* aString, LispInt aLength)
 {
-    resize(aLength + 1);
-    value_type* const aT = data();
-    std::memcpy(aT, aString, aLength * sizeof (value_type));
-    aT[aLength] = '\0';
+    assign(aString, aLength);
 }
 
 void LispString::SetStringStringified(const LispChar* aString)
 {
-    const std::size_t length = std::strlen(aString);
-    resize(length + 1 + 2);
-
-    value_type* const aT = data();
-
-    aT[0] = '\"';
-    std::memcpy(aT + 1, aString, length * sizeof (value_type));
-    aT[length+1] = '\"';
-    aT[length+2] = '\0';
+    assign("\"");
+    append(aString);
+    append("\"");
 }
 
-LispInt LispString::operator==(const LispString& aString)
+LispInt LispString::operator==(const LispString& aString) const
 {
-    if (size() != aString.size())
-        return 0;
-
-    return !std::strcmp(data(), aString.data());
+    return static_cast<const std::string&>(*this) == static_cast<const std::string&>(aString);
 }
 
 LispStringSmartPtr& LispStringSmartPtr::operator=(LispString * aString)
