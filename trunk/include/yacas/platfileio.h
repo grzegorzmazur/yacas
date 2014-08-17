@@ -108,7 +108,7 @@ public:
 
 private:
     LispString iBuffer;
-    LispInt iCurrentPos;
+    std::size_t iCurrentPos;
 };
 
 
