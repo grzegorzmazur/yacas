@@ -327,59 +327,51 @@ public:
   /** YacasArgStack implements a stack of pointers to objects that can be used to pass
   *  arguments to functions, and receive results back.
   */
-  class YacasArgStack
-  {
+  class YacasArgStack {
   public:
-    YacasArgStack(LispInt aStackSize) : iStack(),iStackCnt(0)
+    explicit YacasArgStack(std::size_t aStackSize):
+      iStackCnt(0)
     {
-      iStack.ResizeTo( aStackSize );
+      iStack.resize( aStackSize );
     }
-    inline LispInt GetStackTop() const {return iStackCnt;}
-    inline void RaiseStackOverflowError() const
+
+    std::size_t GetStackTop() const
+    {
+        return iStackCnt;
+    }
+
+    void PushArgOnStack(LispObject* aObject)
+    {
+      if (iStackCnt >= iStack.size())
+        RaiseStackOverflowError();
+
+      iStack[iStackCnt++] = aObject;
+    }
+
+    LispPtr& GetElement(std::size_t aPos)
+    {
+      assert(aPos<iStackCnt);
+      return iStack[aPos];
+    }
+
+    void PopTo(std::size_t aTop)
+    {
+      assert(aTop<=iStackCnt);
+      iStackCnt=aTop;
+    }
+
+  private:
+    void RaiseStackOverflowError() const
     {
       throw LispErrGeneric("Argument stack reached maximum. Please extend argument stack with --stack argument on the command line.");
     }
-    inline void PushArgOnStack(LispObject* aObject)
-    {
-      if (iStackCnt >= iStack.Size())
-      {
-        RaiseStackOverflowError();
-      }
-      //LISPASSERT(iStackCnt>=0 /*&& iStackCnt<iStack.Size()*/);
-      iStack[iStackCnt] = (aObject);
-      iStackCnt++;
-    }
-    inline void PushNulls(LispInt aNr)
-    {
-      LispInt aStackCnt = iStackCnt + aNr;
-      if (aStackCnt > iStack.Size() || aStackCnt < 0)
-      {
-        RaiseStackOverflowError();
-      }
-      iStackCnt = aStackCnt;
-    }
-    inline LispPtr& GetElement(LispInt aPos)
-    {
-      assert(0<=aPos && aPos<iStackCnt);
-      //LISPASSERT(aPos>=0 && aPos<iStack.Size());
-      return iStack[aPos];
-    }
-    inline void PopTo(LispInt aTop)
-    {
-      assert(0<=aTop && aTop<=iStackCnt);
-      while (iStackCnt>aTop)
-      {
-        iStackCnt--;
-        iStack[iStackCnt] = (nullptr);
-      }
-    }
-  protected:
+
     // Invariants:
     //    0 <= iStackCnt <= iStack.Size()
-    //    iStack[iStackCnt..iStack.Size()-1] = nullptr
-    LispPtrArray iStack;
-    LispInt iStackCnt;    // number of items on the stack
+    std::vector<LispPtr> iStack;
+    std::size_t iStackCnt;    // number of items on the stack
   };
+
   YacasArgStack iStack;
 };
 

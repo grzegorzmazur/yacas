@@ -37,11 +37,6 @@ class BigNumber;
  */
 typedef RefPtr<LispObject> LispPtr;
 
-/** \class LispPtrArray is similar to LispPtr, but implements an array
- *  of pointers to objects.
- */
-typedef CArrayGrower<LispPtr, ArrOpsCustomObj<LispPtr> > LispPtrArray;
-
 
 #ifdef YACAS_DEBUG
 void IncNrObjects();

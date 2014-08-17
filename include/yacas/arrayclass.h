@@ -17,7 +17,7 @@ public: //array-specific
     inline void SetElement(LispInt aItem,LispObject* aObject);
 
 private:
-    LispPtrArray iArray;
+    std::vector<LispPtr> iArray;
 };
 
 #include "arrayclass.inl"
