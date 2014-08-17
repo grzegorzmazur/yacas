@@ -275,7 +275,7 @@ inline void BaseIntNumber(LispString& aTarget, PlatSignedDoubleWord aNumber, Pla
     while (aNumber != 0)
     {
         PlatDoubleWord digit = aNumber%aBase;
-        aTarget.push_back((typename LispString::value_type)(digit));
+        aTarget.push_back((LispString::value_type)(digit));
         aNumber/=aBase;
     }
     if (aTarget.size() == 0)
@@ -291,9 +291,9 @@ inline void BaseAddMultiply(LispString& aTarget, LispString& x, LispString& y, P
     GrowDigits(aTarget,nrx+nry+1);
     LispInt ix,iy;
 
-    typename LispString::value_type *targetPtr = &aTarget[0];
-    typename LispString::value_type *xPtr = &x[0];
-    typename LispString::value_type *yPtr = &y[0];
+    LispString::value_type *targetPtr = &aTarget[0];
+    LispString::value_type *xPtr = &x[0];
+    LispString::value_type *yPtr = &y[0];
     for (ix=0;ix<nrx;ix++)
     {
         PlatDoubleWord carry = 0;
@@ -306,10 +306,10 @@ inline void BaseAddMultiply(LispString& aTarget, LispString& x, LispString& y, P
             // This calculates aTarget[ix+iy]+x[ix]*y[iy]+carry;
 
 
-            targetPtr[ix+iy] = (typename LispString::value_type)(word % aBase);
+            targetPtr[ix+iy] = (LispString::value_type)(word % aBase);
             carry          = word / aBase;
         }
-        targetPtr[ix+nry] += (typename LispString::value_type)(carry);
+        targetPtr[ix+nry] += (LispString::value_type)(carry);
     }
 }
 
