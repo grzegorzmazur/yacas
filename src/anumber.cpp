@@ -26,11 +26,11 @@ void BaseSqrt(ANumber& aResult, ANumber& N);
 void PrintNumber(const char* prefix,ANumber& aNumber)
 {
     std::cout << prefix << "\n";
-    std::cout << aNumber.Size() << " words, " << aNumber.iExp
+    std::cout << aNumber.size() << " words, " << aNumber.iExp
               << " after point (x10^" << aNumber.iTensExp << "), 10-prec "
               << aNumber.iPrecision << "\n";
 
-    for (int i = aNumber.Size() - 1; i >= 0; --i)
+    for (int i = aNumber.size() - 1; i >= 0; --i)
     {
         if (aNumber.iExp == i+1)
             std::cout << ".\n";
@@ -81,15 +81,15 @@ ANumber::~ANumber()
 {
 }
 
-ANumber::ANumber(LispInt aPrecision) : ASuper(),iExp(0),iNegative(false),iPrecision(aPrecision),iTensExp(0)
+ANumber::ANumber(LispInt aPrecision) : iExp(0),iNegative(false),iPrecision(aPrecision),iTensExp(0)
 {
   assert(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
-  Append(0);
+  push_back(0);
 }
 
 
 /* ANumber: Constructor for an arbitrary precision number. */
-ANumber::ANumber(const LispChar * aString,LispInt aPrecision,LispInt aBase): ASuper(),iExp(0),iNegative(false),iPrecision(aPrecision),iTensExp(0)
+ANumber::ANumber(const LispChar * aString,LispInt aPrecision,LispInt aBase): iExp(0),iNegative(false),iPrecision(aPrecision),iTensExp(0)
 {
     SetPrecision(aPrecision);
     SetTo(aString,aBase);
@@ -165,7 +165,7 @@ LispInt WordDigits(LispInt aPrecision, LispInt aBase)
 
 void ANumber::SetTo(const LispChar * aString,LispInt aBase)
 {
-    ResizeTo(0);
+    resize(0);
 
     assert(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
     assert(aBase<=36);
@@ -234,7 +234,7 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
         LispInt i;
 
         // Map to a char base number
-        LispInt nr;// = fraction.Size()-1; //Excluding the zero terminator
+        LispInt nr;// = fraction.size()-1; //Excluding the zero terminator
         nr = endFloatIndex - endIntIndex-1;
         LispString::value_type * fractionPtr = &fraction[0];
 
@@ -263,7 +263,7 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
             {
                 LispInt nrc=fraction.size();
                 copied.resize(nrc);
-              //copied.ResizeTo(nrc);  // not needed -- ResizeTo does this
+              //copied.resize(nrc);  // not needed -- resize does this
                 std::memcpy(&copied[0],  &fraction[0], nrc*sizeof(LispString::value_type));
             }
             BaseMultiply(fraction, copied, base, aBase);
@@ -279,7 +279,7 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
                 }
             }
             fraction.resize(nr);
-            Insert(0,word);
+            insert(begin(),word);
             iExp++;
         }
 //        Delete(0);
@@ -306,13 +306,13 @@ void ANumber::CopyFrom(const ANumber& aOther)
     iTensExp   = aOther.iTensExp;
     iNegative  = aOther.iNegative;
     iPrecision = aOther.iPrecision;
-    ResizeTo(aOther.Size());
+    resize(aOther.size());
 
-    const LispInt nr = aOther.Size();
+    const LispInt nr = aOther.size();
     if (nr) {
-        std::memcpy(&((*this)[0]), &(aOther[0]), nr*sizeof(ANumber::ElementType));
+        std::memcpy(&((*this)[0]), &(aOther[0]), nr*sizeof(ANumber::value_type));
     } else {
-        ResizeTo(1);
+        resize(1);
         (*this)[0] = 0;
     }
 }
@@ -325,14 +325,14 @@ bool ANumber::ExactlyEqual(const ANumber& aOther)
   if (iTensExp   != aOther.iTensExp) return false;
   if (iNegative  != aOther.iNegative) return false;
 //  if (iPrecision != aOther.iPrecision) return false;
-  if (Size()     != aOther.Size()) return false;
+  if (size()     != aOther.size()) return false;
 
   //TODO there HAS to be a faster way to copy...
-  LispInt nr = Size();
+  LispInt nr = size();
   if (nr)
   {
-    ANumber::ElementType * sptr = &( aOther[0]);
-    ANumber::ElementType * tptr = &((*this)[0]);
+    const ANumber::value_type * sptr = &( aOther[0]);
+    ANumber::value_type * tptr = &((*this)[0]);
     while (nr--)
     {
       if (*tptr++ != *sptr++) return false;
@@ -368,19 +368,19 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
     // any trailing zeroes at all, regardless of the value of iExp
     LispInt end;
 
-    end=a1.Size();
+    end=a1.size();
     while (end>1 && a1[end-1]==0)
     {
         end--;
     }
-    a1.ResizeTo(end);
+    a1.resize(end);
 
-    end=a2.Size();
+    end=a2.size();
     while (end>1 && a2[end-1]==0)
     {
         end--;
     }
-    a2.ResizeTo(end);
+    a2.resize(end);
 
     // Multiply
     BaseMultiplyFull(aResult,a1,a2);
@@ -400,12 +400,12 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
     aResult.iExp = a1.iExp+a2.iExp;
     aResult.iTensExp = a1.iTensExp+a2.iTensExp;
 
-    while(a1.Size()<a1.iExp+1)
-        a1.Append(0);
-    while(a2.Size()<a2.iExp+1)
-        a2.Append(0);
-    while(aResult.Size()<aResult.iExp+1)
-        aResult.Append(0);
+    while(a1.size()<a1.iExp+1)
+        a1.push_back(0);
+    while(a2.size()<a2.iExp+1)
+        a2.push_back(0);
+    while(aResult.size()<aResult.iExp+1)
+        aResult.push_back(0);
 
 
     aResult.DropTrailZeroes();
@@ -429,14 +429,14 @@ static void BalanceFractions(ANumber& a1, ANumber& a2)
     // a2 has more decimal digits...
     if (nr>0)
     {
-        a1.Insert(0,word,nr);
+        a1.insert(a1.begin(), nr, word);
         a1.iExp+=nr;
     }
     nr = a1.iExp - a2.iExp;
     // a1 has more decimal digits...
     if (nr>0)
     {
-        a2.Insert(0,word,nr);
+        a2.insert(a2.begin(), nr, word);
         a2.iExp+=nr;
     }
 
@@ -639,9 +639,9 @@ bool LessThan(ANumber& a1, ANumber& a2)
 
 void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool aForceFloat)
 {
-    LispInt nr = aNumber.Size();
+    LispInt nr = aNumber.size();
     while (nr>1 && aNumber[nr-1] == 0) nr--;
-    aNumber.ResizeTo(nr);
+    aNumber.resize(nr);
 
     LispInt tensExp = aNumber.iTensExp;
 
@@ -699,7 +699,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
         assert(number.iExp >= 0);
 
         LispInt i;
-        for (i=number.iExp;i<number.Size();i++)
+        for (i=number.iExp;i<number.size();i++)
         {
             //aResult = aResult + number[i] * factor2
             LispString term;
@@ -740,9 +740,9 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
         }
 
         // Get the fraction
-        while(number.Size()<number.iExp)
-            number.Append(0);
-        number.ResizeTo(number.iExp);
+        while(number.size()<number.iExp)
+            number.push_back(0);
+        number.resize(number.iExp);
         if (aForceFloat || (number.iExp > 0 && !IsZero(number)))
         {
             LispInt digitPos = aResult.size();
@@ -752,10 +752,10 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
             for (i=0;i<number.iPrecision+1;i++)
             {
                 WordBaseTimesInt(number, aBase);
-                if (number.Size() > number.iExp)
+                if (number.size() > number.iExp)
                 {
                     aResult.push_back((LispChar)(number[number.iExp]));
-                    number.ResizeTo(number.iExp);
+                    number.resize(number.iExp);
                 }
                 else
                 {
@@ -865,7 +865,7 @@ void BaseSubtract(ANumber& aResult, ANumber& a2, LispInt offset)
         return;
     LISPASSERT(!IsZero(a2));
     // Initialize result
-    LispInt nr = a2.Size();
+    LispInt nr = a2.size();
     while (a2[nr-1] == 0)
         nr--;
 
@@ -889,7 +889,7 @@ void BaseSubtract(ANumber& aResult, ANumber& a2, LispInt offset)
 
     while (carry != 0)
     {
-        LISPASSERT(nr+offset<aResult.Size());
+        LISPASSERT(nr+offset<aResult.size());
 
         LispInt newCarry = 0;
         PlatSignedDoubleWord ww = aResult[nr+offset]+carry;
@@ -914,8 +914,8 @@ void BaseMultiplyFull(ANumber& aResult, ANumber& a1, ANumber& a2)
 
 bool BaseGreaterThan(ANumber& a1, ANumber& a2)
 {
-    LispInt nr1 = a1.Size();
-    LispInt nr2 = a2.Size();
+    LispInt nr1 = a1.size();
+    LispInt nr2 = a2.size();
 
     // Nr is the number of words the two numbers share.
     LispInt nr  = nr1;
@@ -982,11 +982,11 @@ void BaseShiftRight(ANumber& a, LispInt aNrBits)
 
     LispInt i;
 
-    LispInt nr = a.Size();
+    LispInt nr = a.size();
 
-    ANumber::ElementType * ptr = &a[0];
-    ANumber::ElementType * ptrshifted = &a[wordsShifted];
-    ANumber::ElementType * endp = ptr +nr - wordsShifted;
+    ANumber::value_type * ptr = &a[0];
+    ANumber::value_type * ptrshifted = &a[wordsShifted];
+    ANumber::value_type * endp = ptr +nr - wordsShifted;
     if (ptr<endp)
     {
       *ptr = ((*ptrshifted)>>residue);
@@ -1027,14 +1027,14 @@ void BaseShiftLeft(ANumber& a, LispInt aNrBits)
     LispInt bitMask = ((1L<<residue)-1)<<otherSideBits;
 
     LispInt i;
-    LispInt nr = a.Size();
+    LispInt nr = a.size();
 
     for (i=0;i<=wordsShifted;i++)
     {
-        a.Append(0);
+        a.push_back(0);
     }
 
-    ANumber::ElementType * ptr = &a[0];
+    ANumber::value_type * ptr = &a[0];
 
     for (i=nr+wordsShifted;i>=wordsShifted;i--)
     {
@@ -1131,22 +1131,22 @@ void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a
 {
     // Find the values n and m as described in Knuth II:
     LispInt n,m;
-    n=a2.Size();
+    n=a2.size();
     assert(n>0);
     assert(a2[n-1] != 0);
 
-    //a1.Size() = m+n => m = a1.Size()-n
-    m = a1.Size()-n;
+    //a1.size() = m+n => m = a1.size()-n
+    m = a1.size()-n;
     assert(m>=0);
 
-    aQuotient.ResizeTo(m+1);
+    aQuotient.resize(m+1);
 
     //D1:
     PlatDoubleWord d = WordBase/(a2[n-1]+1);
     WordBaseTimesInt(a1, d);
     WordBaseTimesInt(a2, d);
-    a1.Append(0);
-    a2.Append(0);
+    a1.push_back(0);
+    a2.push_back(0);
 
     //D2:
     LispInt j = m;
@@ -1170,7 +1170,7 @@ void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a
         ANumber sub(Precision(aQuotient));
         sub.CopyFrom(a2);
         WordBaseTimesInt(sub, q);
-        sub.Append(0);
+        sub.push_back(0);
 
         PlatSignedDoubleWord carry;
         LispInt digit;
@@ -1200,7 +1200,7 @@ void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a
                 q--;
                 sub.CopyFrom(a2);
                 WordBaseTimesInt(sub, q);
-                sub.Append(0);
+                sub.push_back(0);
             }
 
             carry = 0;
@@ -1229,7 +1229,7 @@ void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a
     }
 
     //D8:
-    a1.ResizeTo(n);
+    a1.resize(n);
     PlatDoubleWord carry;
     BaseDivideInt(a1, d, WordBase,carry);
     aRemainder.CopyFrom(a1);
@@ -1240,10 +1240,10 @@ void IntegerDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber
 {
     assert(!IsZero(a2));
 
-    LispInt n=a2.Size();
+    LispInt n=a2.size();
 
     while (a2[n-1] == 0) n--;
-    a2.ResizeTo(n);
+    a2.resize(n);
 
     if (n==1)
     {
@@ -1253,7 +1253,7 @@ void IntegerDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber
         aQuotient.iTensExp = a1.iTensExp-a2.iTensExp;
 
         BaseDivideInt(aQuotient,a2[0], WordBase, carry);
-        aRemainder.ResizeTo(1);
+        aRemainder.resize(1);
         aRemainder[0] = (PlatWord)carry;
     }
     // if |a1| < |a2| then result is zero.
@@ -1261,7 +1261,7 @@ void IntegerDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber
     {
         aQuotient.iExp = 0;
         aQuotient.iTensExp = 0;
-        aQuotient.ResizeTo(1);
+        aQuotient.resize(1);
         aQuotient[0] = 0;
         aRemainder.CopyFrom(a1);
     }
@@ -1291,20 +1291,20 @@ void NormalizeFloat(ANumber& a2, LispInt digitsNeeded)
 {
   if (a2.iExp - digitsNeeded > 0)
   {
-    a2.Delete(0,a2.iExp-digitsNeeded);
+    a2.erase(a2.begin(), a2.begin() + a2.iExp - digitsNeeded);
     a2.iExp -= (a2.iExp-digitsNeeded);
   }
 
   LispInt min = 1+digitsNeeded;
   if (a2.iExp+1>min)
     min = a2.iExp+1;
-  while (a2.Size()>min ||
-          (a2.Size()==min && a2[a2.Size()-1]>10))
+  while (a2.size()>min ||
+          (a2.size()==min && a2[a2.size()-1]>10))
   {
     PlatDoubleWord carry = 0;
     BaseDivideInt(a2, 10, WordBase,carry);
-    if (a2[a2.Size()-1] == 0)
-      a2.ResizeTo(a2.Size()-1);
+    if (a2[a2.size()-1] == 0)
+      a2.resize(a2.size()-1);
     a2.iTensExp++;
   }
 }
@@ -1329,14 +1329,14 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
           PlatWord zero=0;
           for (i=0;i<toadd;i++)
           {
-              a1.Insert(0,zero);
+              a1.insert(a1.begin(),zero);
               a1.iExp++;
           }
         }
 
         if (!IsZero(a1))
         {
-          while (a1.Size()<a2.Size()+digitsNeeded || a1[a1.Size()-1]<a2[a2.Size()-1])
+          while (a1.size()<a2.size()+digitsNeeded || a1[a1.size()-1]<a2[a2.size()-1])
           {
             WordBaseTimesInt(a1, 10);
             a1.iTensExp--;
@@ -1447,7 +1447,7 @@ void Sqrt(ANumber& aResult, ANumber& N)
     }
     while(N.iExp<2*digs || (N.iExp&1))
     {
-        N.Insert(0,zero);
+        N.insert(N.begin(),zero);
         N.iExp++;
     }
 /*hier
@@ -1478,7 +1478,7 @@ bool Significant(ANumber& a)
     LispInt significantDigits = WordDigits(a.iPrecision, 10);
     NormalizeFloat(a,significantDigits);
     //hier
-    LispInt nrExt = (a.Size()-a.iExp)*((WordBits)/3);
+    LispInt nrExt = (a.size()-a.iExp)*((WordBits)/3);
     if ((-a.iTensExp) > a.iPrecision+2+nrExt)
     {
       return false;
@@ -1496,7 +1496,7 @@ bool Significant(ANumber& a)
 
     // Check for non-zeroness from the significant digits
     LispInt i;
-    LispInt nr = a.Size();
+    LispInt nr = a.size();
     for (i=from;i<nr;i++)
     {
         if (a[i] != 0)
@@ -1509,7 +1509,7 @@ bool Significant(ANumber& a)
 
 void ANumber::RoundBits(void)
 {
-  PlatWord* ptr = elements();
+  PlatWord* ptr = data();
   if (*ptr < (WordBase/2))
   {
     *ptr = 0;
@@ -1518,7 +1518,7 @@ void ANumber::RoundBits(void)
   {
     *ptr = 0;
     PlatDoubleWord carry = 1;
-    for (LispInt i = 1, nr = Size(); i < nr; i++)
+    for (LispInt i = 1, nr = size(); i < nr; i++)
     {
         PlatDoubleWord dword = ptr[i]+carry;
         ptr[i] = (PlatWord)dword;
@@ -1526,7 +1526,7 @@ void ANumber::RoundBits(void)
     }
     if (carry)
     {
-    Append((ANumber::ElementType)(carry));  // PDG - cast to avoid compile-time warning
+    push_back((ANumber::value_type)(carry));  // PDG - cast to avoid compile-time warning
     }
   }
 }
@@ -1544,7 +1544,7 @@ void ANumber::ChangePrecision(LispInt aPrecision)
 
   //FIXME the following line is there to assure there are enough words. Somehow this got truncated?
   //FIXME numerics.yts fails
-  while (iExp+1>Size()) Append(0);
+  while (iExp+1>size()) push_back(0);
 
   LispInt oldExp = iExp;
 
@@ -1553,13 +1553,13 @@ void ANumber::ChangePrecision(LispInt aPrecision)
   if (newExp < oldExp)
   {
     iExp = newExp;
-    Delete(0,oldExp-iExp);
+    erase(begin(),begin()+oldExp-iExp);
   }
   else if (newExp > oldExp)
   {
     iExp = newExp;
     PlatWord zero = 0;
-    Insert(0,zero,newExp-oldExp);
+    insert(begin(), newExp-oldExp, zero);
   }
 }
 
@@ -1567,19 +1567,19 @@ void ANumber::ChangePrecision(LispInt aPrecision)
 
 void ANumber::DropTrailZeroes()
 {
-  while (iExp+1>Size()) Append(0);
+  while (iExp+1>size()) push_back(0);
 
   {
-    LispInt nr=Size();
+    LispInt nr=size();
     while (nr>iExp+1 && (*this)[nr-1] == 0) nr--;
-    ResizeTo(nr);
+    resize(nr);
   }
   {
     LispInt low=0;
     while (low<iExp && (*this)[low] == 0) low++;
     if (low)
     {
-      Delete(0,low);
+      erase(begin(), begin() + low);
       iExp-=low;
     }
   }
