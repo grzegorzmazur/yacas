@@ -86,7 +86,7 @@ public:
     assert(aOther.iFunctions.size() == 0);
 
     assert(iFileToOpen == 0);
-    assert(iFunctions.Size() == 0);
+    assert(iFunctions.size() == 0);
     return *this;
   }
 
