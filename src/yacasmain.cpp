@@ -1077,9 +1077,17 @@ int main(int argc, char** argv)
     unsigned char first_stack_var = 0;
     the_first_stack_var = &first_stack_var;
 
-#ifdef WIN32
+#ifdef _WIN32
     char root_dir_buf[MAX_PATH];
-    SHRegGetPathA(HKEY_LOCAL_MACHINE, "SOFTWARE\\yacas\\yacas", 0, root_dir_buf, 0);
+
+    const LSTATUS rc =
+        SHRegGetPathA(HKEY_LOCAL_MACHINE, "SOFTWARE\\yacas\\yacas", 0, root_dir_buf, 0);
+
+    if (rc != ERROR_SUCCESS) {
+        MessageBox(nullptr, "Cannot find scripts directory, bailing out", "Error", MB_OK);
+        std::exit(1);
+    }
+
     std::strcat(root_dir_buf, "\\share\\yacas\\scripts");
     for (char* p = root_dir_buf; *p; ++p)
         if (*p == '\\')
