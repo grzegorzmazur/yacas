@@ -6,10 +6,11 @@
  *
  */
 
-#include <iostream>
-
 #include "yacas/yacasprivate.h"
 #include "yacas/anumber.h"
+
+#include <algorithm>
+#include <iostream>
 
 /* The Base... functions perform actions on the mantissa part of the
  * number, that is, it treats them as unsigned integers.
