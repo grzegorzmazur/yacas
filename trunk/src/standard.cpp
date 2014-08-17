@@ -38,7 +38,7 @@ bool InternalIsString(LispString * aOriginal)
 {
     if (aOriginal)
         if ((*aOriginal)[0] == '\"')
-            if ((*aOriginal)[aOriginal->size()-2] == '\"')
+            if ((*aOriginal)[aOriginal->size()-1] == '\"')
                 return true;
     return false;
 }
@@ -60,7 +60,7 @@ void InternalUnstringify(LispString& aResult, const LispString * aOriginal)
     if (!aOriginal || (*aOriginal)[0] != '\"')
         throw LispErrInvalidArg();
 
-  LispInt nrc = aOriginal->size()-2;
+  LispInt nrc = aOriginal->size()-1;
 
   if (!aOriginal || (*aOriginal)[nrc] != '\"')
       throw LispErrInvalidArg();
@@ -68,7 +68,6 @@ void InternalUnstringify(LispString& aResult, const LispString * aOriginal)
   aResult.resize(nrc);
   for (LispInt i = 1; i < nrc; i++)
     aResult[i-1] = (*aOriginal)[i];
-  aResult[nrc-1]='\0';
 }
 
 void InternalStringify(LispString& aResult, const LispString* aOriginal)
@@ -476,8 +475,7 @@ void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
                         const LispChar* aString)
 {
     LispString full(aString);
-    full[full.size()-1] = ';';
-    full.push_back('\0');
+    full.push_back(';');
     StringInput input(full,aEnvironment.iInputStatus);
     LispPtr lispexpr;
     LispTokenizer &tok = *aEnvironment.iCurrentTokenizer;
@@ -505,9 +503,8 @@ LispObject* operator+(const LispObjectAdder& left, const LispObjectAdder& right)
 
 void ParseExpression(LispPtr& aResult, const LispChar* aString,LispEnvironment& aEnvironment)
 {
-    LispString full((LispChar *)aString);
-    full[full.size()-1] = ';';
-    full.push_back('\0');
+    LispString full(aString);
+    full.push_back(';');
     StringInput input(full,aEnvironment.iInputStatus);
     aEnvironment.iInputStatus.SetTo("String");
     LispTokenizer &tok = *aEnvironment.iCurrentTokenizer;
@@ -546,8 +543,7 @@ void PrintExpression(LispString& aResult,
                      LispEnvironment& aEnvironment,
                      std::size_t aMaxChars)
 {
-    aResult.resize(0);
-    aResult.push_back('\0');
+    aResult.clear();
     StringOutput newOutput(aResult);
     InfixPrinter infixprinter(aEnvironment.PreFix(),
                               aEnvironment.InFix(),
@@ -556,11 +552,8 @@ void PrintExpression(LispString& aResult,
     infixprinter.Print(aExpression, newOutput, aEnvironment);
     if (aMaxChars > 0 && aResult.size()>aMaxChars)
     {
-        aResult[aMaxChars-3] = '.';
-        aResult[aMaxChars-2] = '.';
-        aResult[aMaxChars-1] = '.';
-        aResult[aMaxChars] = '\0';
-        aResult.resize(aMaxChars+1);
+        aResult.resize(aMaxChars - 3);
+        aResult += "...";
     }
 }
 

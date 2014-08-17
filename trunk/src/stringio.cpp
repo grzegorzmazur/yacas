@@ -55,8 +55,7 @@ StringOutput::~StringOutput()
 
 void StringOutput::PutChar(LispChar aChar)
 {
-    iString[iString.size()-1]=aChar;
-    iString.push_back('\0');
+    iString.push_back(aChar);
 }
 
 

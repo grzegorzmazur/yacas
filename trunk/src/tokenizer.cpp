@@ -88,7 +88,6 @@ FALSEALARM:
   else if (c == '\"')
   {
     LispString aResult;
-    aResult.resize(0);
     aResult.push_back(c);
     while (aInput.Peek() != '\"')
     {
@@ -105,7 +104,6 @@ FALSEALARM:
           throw LispErrParsingInput();
     }
     aResult.push_back(aInput.Next()); // consume the close quote
-    aResult.push_back('\0');
     return aHashTable.LookUp(aResult.c_str());
   }
   //parse atoms
@@ -239,7 +237,6 @@ FALSEALARM:
           throw LispErrParsingInput();
     }
     aResult.push_back(aInput.Next()); // consume the close quote
-    aResult.push_back('\0');
     return aHashTable.LookUp(aResult.c_str());
   }
   //parse atoms

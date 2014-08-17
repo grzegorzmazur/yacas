@@ -10,6 +10,7 @@
 #include "refcount.h"
 
 #include <cstring>
+#include <string>
 #include <vector>
 
 class LispStringSmartPtr;
@@ -17,16 +18,8 @@ class LispStringSmartPtr;
 
 /** \class LispString : zero-terminated byte-counted string.
  * Also keeps a reference count for any one interested.
- * LispString is derived from CArrayGrower, so the function
- * Size returns the length of the buffer. Since the string
- * is also zero-terminated (for better interfacing with the normal
- * c functions), the string length is Size()-1.
- *
- * This class also allows the string to point to a buffer which is owned
- * by another part of the system, in which case it cannot be resized.
- * The array will then not be freed by this class.
  */
-class LispString : public std::vector<LispChar>
+class LispString : public std::string//std::vector<LispChar>
 {
 public:
     // Constructors
@@ -54,7 +47,7 @@ public:
     // pointers to the strings (instead of calling this routine),
     // since in that case if they are equal they should in fact be
     // literally the same object.
-    LispInt operator==(const LispString& aString);
+    LispInt operator==(const LispString& aString) const;
 
 private:
     void SetString(const LispChar * aString);
