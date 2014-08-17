@@ -4,7 +4,7 @@
 
 ArrayClass::ArrayClass(LispInt aSize,LispObject* aInitialItem) : iArray()
 {
-  iArray.ResizeTo(aSize);
+  iArray.resize(aSize);
   if (aInitialItem)
   {
     for (LispInt i=0;i<aSize;i++)

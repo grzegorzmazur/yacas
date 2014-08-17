@@ -1,7 +1,7 @@
 
 inline LispInt ArrayClass::Size()
 {
-    return iArray.Size();
+    return iArray.size();
 }
 
 inline LispObject* ArrayClass::GetElement(LispInt aItem)
