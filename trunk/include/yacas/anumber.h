@@ -37,10 +37,11 @@ public:
     void ChangePrecision(LispInt aPrecision);
     void RoundBits(void);
     void DropTrailZeroes();
+    void Expand();
 
 public:
     LispInt iExp;
-    LispInt iNegative;
+    bool iNegative;
     LispInt iPrecision;
     LispInt iTensExp;
 };

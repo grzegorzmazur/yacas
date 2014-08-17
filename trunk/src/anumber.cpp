@@ -366,20 +366,18 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
 
     // this does some additional removing, as for the multiplication we don't need
     // any trailing zeroes at all, regardless of the value of iExp
-    LispInt end;
+    std::size_t end;
 
     end=a1.size();
     while (end>1 && a1[end-1]==0)
-    {
         end--;
-    }
+
     a1.resize(end);
 
     end=a2.size();
     while (end>1 && a2[end-1]==0)
-    {
         end--;
-    }
+
     a2.resize(end);
 
     // Multiply
@@ -400,13 +398,8 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
     aResult.iExp = a1.iExp+a2.iExp;
     aResult.iTensExp = a1.iTensExp+a2.iTensExp;
 
-    while(a1.size()<a1.iExp+1)
-        a1.push_back(0);
-    while(a2.size()<a2.iExp+1)
-        a2.push_back(0);
-    while(aResult.size()<aResult.iExp+1)
-        aResult.push_back(0);
-
+    a1.Expand();
+    a2.Expand();
 
     aResult.DropTrailZeroes();
 #ifdef CORRECT_DIVISION
@@ -639,7 +632,7 @@ bool LessThan(ANumber& a1, ANumber& a2)
 
 void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool aForceFloat)
 {
-    LispInt nr = aNumber.size();
+    std::size_t nr = aNumber.size();
     while (nr>1 && aNumber[nr-1] == 0) nr--;
     aNumber.resize(nr);
 
@@ -652,9 +645,8 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
         nr=aResult.size();
         // swap order of the digits, and map to ascii
         {
-            LispInt i;
             LispString::value_type * rptr = &aResult[0];
-            for (i=0;i<(nr>>1);i++)
+            for (std::size_t i = 0; i < (nr>>1); ++i)
             {
                 LispString::value_type c=rptr[i];
                 rptr[i] = Digit(rptr[nr-i-1]);
@@ -698,8 +690,8 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
 
         assert(number.iExp >= 0);
 
-        LispInt i;
-        for (i=number.iExp;i<number.size();i++)
+        const std::size_t ns = number.size();
+        for (std::size_t i=number.iExp; i < ns; ++i)
         {
             //aResult = aResult + number[i] * factor2
             LispString term;
@@ -731,7 +723,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
         // swap order of the digits, and map to ascii
         {
             LispString::value_type * rptr = &aResult[0];
-            for (i=0;i<(nr>>1);i++)
+            for (std::size_t i = 0; i < (nr>>1); ++i)
             {
                 LispString::value_type c=rptr[i];
                 rptr[i] = rptr[nr-i-1];
@@ -740,9 +732,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
         }
 
         // Get the fraction
-        while(number.size()<number.iExp)
-            number.push_back(0);
-        number.resize(number.iExp);
+        number.resize(number.iExp, 0);
         if (aForceFloat || (number.iExp > 0 && !IsZero(number)))
         {
             LispInt digitPos = aResult.size();
@@ -752,7 +742,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
             for (i=0;i<number.iPrecision+1;i++)
             {
                 WordBaseTimesInt(number, aBase);
-                if (number.size() > number.iExp)
+                if (LispInt(number.size()) > number.iExp)
                 {
                     aResult.push_back((LispChar)(number[number.iExp]));
                     number.resize(number.iExp);
@@ -800,8 +790,8 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
         // Map to ascii
         {
             LispString::value_type * rptr = &aResult[0];
-            LispInt nr = aResult.size();
-            for (i=0;i<nr;i++)
+            const std::size_t nr = aResult.size();
+            for (std::size_t i = 0; i < nr; ++i)
             {
                 *rptr = Digit(*rptr);
                 rptr++;
@@ -1295,16 +1285,14 @@ void NormalizeFloat(ANumber& a2, LispInt digitsNeeded)
     a2.iExp -= (a2.iExp-digitsNeeded);
   }
 
-  LispInt min = 1+digitsNeeded;
-  if (a2.iExp+1>min)
-    min = a2.iExp+1;
+  const std::size_t min = std::max(1+digitsNeeded, a2.iExp+1);
   while (a2.size()>min ||
           (a2.size()==min && a2[a2.size()-1]>10))
   {
     PlatDoubleWord carry = 0;
     BaseDivideInt(a2, 10, WordBase,carry);
-    if (a2[a2.size()-1] == 0)
-      a2.resize(a2.size()-1);
+    if (a2.back() == 0)
+        a2.pop_back();
     a2.iTensExp++;
   }
 }
@@ -1544,7 +1532,7 @@ void ANumber::ChangePrecision(LispInt aPrecision)
 
   //FIXME the following line is there to assure there are enough words. Somehow this got truncated?
   //FIXME numerics.yts fails
-  while (iExp+1>size()) push_back(0);
+  Expand();
 
   LispInt oldExp = iExp;
 
@@ -1567,7 +1555,7 @@ void ANumber::ChangePrecision(LispInt aPrecision)
 
 void ANumber::DropTrailZeroes()
 {
-  while (iExp+1>size()) push_back(0);
+  Expand();
 
   {
     LispInt nr=size();
