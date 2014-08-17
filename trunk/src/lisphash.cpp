@@ -185,7 +185,10 @@ LispString * LispHashTable::LookUpStringify(const LispChar * aString)
     // Append a new string
   DBG_( theNrTokens++; )
     LispString * str = NEW LispString();
-    str->SetStringStringified(aString);
+
+    str->assign("\"");
+    str->append(aString);
+    str->append("\"");
 
     AppendString(bin,str);
     return str;

@@ -7,13 +7,6 @@
 #include "yacas/lispstring.h"
 #include "yacas/stubs.h"
 
-void LispString::SetStringStringified(const LispChar* aString)
-{
-    assign("\"");
-    append(aString);
-    append("\"");
-}
-
 LispInt LispString::operator==(const LispString& aString) const
 {
     return static_cast<const std::string&>(*this) == static_cast<const std::string&>(aString);
