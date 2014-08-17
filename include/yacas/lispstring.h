@@ -31,9 +31,6 @@ public:
     inline LispString& operator = (const LispString& aString);
     inline LispString& operator = (const LispChar* aString);
 
-    // Set string from other string, removing quotes around the string.
-    void SetStringStringified(const LispChar * aString);
-
     // Comparison
     // If the string is in the hash table it is faster to compare the
     // pointers to the strings (instead of calling this routine),
