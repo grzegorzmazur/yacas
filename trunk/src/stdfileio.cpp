@@ -147,7 +147,7 @@ void CachedStdFileInput::Rewind()
   iCurrentPos = 0;
 }
 
-bool CachedStdFileInput::EndOfStream()
+bool CachedStdFileInput::EndOfStream() const
 {
     return (iCurrentPos >= iNrBytes);
 }
@@ -257,7 +257,7 @@ LispChar CachedStdUserInput::Peek()
     return iBuffer[iCurrentPos];
 }
 
-bool CachedStdUserInput::EndOfStream()
+bool CachedStdUserInput::EndOfStream() const
 {
   return false;
 }

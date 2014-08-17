@@ -53,7 +53,7 @@ public:
     ~CachedStdFileInput() ;
     virtual LispChar Next();
     virtual LispChar Peek();
-    virtual bool EndOfStream();
+    virtual bool EndOfStream() const;
     void Rewind();
     virtual const LispChar* StartPtr();
     virtual LispInt Position();
@@ -101,7 +101,7 @@ public:
 
     virtual LispChar Next();
     virtual LispChar Peek();
-    virtual bool EndOfStream();
+    virtual bool EndOfStream() const;
     void Rewind();
     virtual const LispChar* StartPtr();
     virtual LispInt Position();

@@ -12,10 +12,10 @@
 class StringInput : public LispInput
 {
 public:
-    StringInput(LispString& aString,InputStatus& aStatus);
+    StringInput(const LispString& aString, InputStatus& aStatus);
     virtual LispChar Next();
     virtual LispChar Peek();
-    virtual bool EndOfStream();
+    virtual bool EndOfStream() const;
     virtual const LispChar* StartPtr();
     virtual LispInt Position();
     virtual void SetPosition(LispInt aPosition);
@@ -28,13 +28,22 @@ class StringOutput : public LispOutput
 {
 public:
     StringOutput(LispString& aString);
-    virtual ~StringOutput();
-    virtual void PutChar(LispChar aChar);
+    void PutChar(LispChar aChar);
 public:
     LispString& iString;
 };
 
+inline
+StringOutput::StringOutput(LispString& aString):
+    iString(aString)
+{
+}
 
+inline
+void StringOutput::PutChar(LispChar aChar)
+{
+    iString.push_back(aChar);
+}
 
 #endif
 
