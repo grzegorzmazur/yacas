@@ -58,7 +58,9 @@
 #define _WIN32_WINDOWS 0x0410      // Make sure that Waitable Timer functions are declared in winbase.h
 #include "yacas/win32commandline.h"
 #define FANCY_COMMAND_LINE CWin32CommandLine
-#include "shlwapi.h"
+#include <windows.h>
+#include <shlobj.h>
+#include <shlwapi.h>
 #endif
 
 #include "yacas/stdcommandline.h"
@@ -481,6 +483,24 @@ void LoadYacas(LispOutput* aOutput = 0)
     if (use_texmacs_out)
         std::cout << TEXMACS_DATA_BEGIN << "verbatim:";
 
+#ifdef _WIN32
+    char appdata_dir_buf[MAX_PATH];
+    SHGetFolderPathA(nullptr, CSIDL_APPDATA, nullptr, SHGFP_TYPE_CURRENT, appdata_dir_buf);
+
+    const std::string yacas_data_dir = std::string(appdata_dir_buf) + "\\yacas";
+    std::string yacasrc_path = yacas_data_dir + "\\yacasrc";
+
+    std::ifstream test(yacasrc_path.c_str());
+    if (test) {
+        for (char& c: yacasrc_path)
+            if (c == '\\')
+                c = '/';
+
+        std::ostringstream os;
+        os << "Load(\"" << yacasrc_path << "\");";
+        yacas->Evaluate(os.str().c_str());
+    }
+#else
     std::ostringstream os;
     os << getenv("HOME") << "/.yacasrc";
 
@@ -490,6 +510,7 @@ void LoadYacas(LispOutput* aOutput = 0)
         os << "Load(\"" << getenv("HOME") << "/.yacasrc" << "\");";
         yacas->Evaluate(os.str().c_str());
     }
+#endif
 
     if (use_texmacs_out)
         std::cout << TEXMACS_DATA_END;
