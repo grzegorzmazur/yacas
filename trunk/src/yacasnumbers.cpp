@@ -70,9 +70,9 @@ static void Trigonometry(ANumber& x,ANumber& i,ANumber& sum,ANumber& term)
     ANumber dummy(10);
 
     LispInt requiredDigits = WordDigits(sum.iPrecision, 10)+
-        x2.Size()-x2.iExp+1;
+        x2.size()-x2.iExp+1;
 //    printf("WordDigits=%d\n",requiredDigits);
-//    printf("[%d,%d]:",x.Size()-x.iExp,x.iExp);
+//    printf("[%d,%d]:",x.size()-x.iExp,x.iExp);
 
     // While (term>epsilon)
     while (1 /* Significant(term)*/)
@@ -102,7 +102,7 @@ static void Trigonometry(ANumber& x,ANumber& i,ANumber& sum,ANumber& term)
             LispInt toDunk = term.iExp - requiredDigits;
             if (toDunk > 0)
             {
-                term.Delete(0,toDunk);
+                term.erase(term.begin(),term.begin()+toDunk);
                 term.iExp = requiredDigits;
             }
         }
@@ -128,7 +128,7 @@ static void Trigonometry(ANumber& x,ANumber& i,ANumber& sum,ANumber& term)
 
     }
 
-//    printf("[%d,%d]:",sum.Size()-sum.iExp,sum.iExp);
+//    printf("[%d,%d]:",sum.size()-sum.iExp,sum.iExp);
 }
 
 static void SinFloat(ANumber& aResult, ANumber& x)
@@ -276,7 +276,7 @@ static void ExpFloat(ANumber& aResult, ANumber& x)
     ANumber dummy(10);
 
     LispInt requiredDigits = WordDigits(aResult.iPrecision, 10)+
-        x.Size()-x.iExp+1;
+        x.size()-x.iExp+1;
 
     // While (term>epsilon)
     while (Significant(term))
@@ -287,7 +287,7 @@ static void ExpFloat(ANumber& aResult, ANumber& x)
             LispInt toDunk = term.iExp - requiredDigits;
             if (toDunk > 0)
             {
-                term.Delete(0,toDunk);
+                term.erase(term.begin(),term.begin()+toDunk);
                 term.iExp = requiredDigits;
             }
         }
@@ -551,8 +551,8 @@ void BigNumber::ToString(LispString& aResult, LispInt aBasePrecision, LispInt aB
     {
       LispInt i;
       bool greaterOne = false;
-      if (num.iExp >= num.Size()) break;
-      for (i=num.iExp;i<num.Size();i++)
+      if (num.iExp >= num.size()) break;
+      for (i=num.iExp;i<num.size();i++)
       {
         if (num[i] != 0)
         {
@@ -770,7 +770,7 @@ void BigNumber::ShiftRight(const BigNumber& aX, LispInt aNrToShift)
 }
 void BigNumber::BitAnd(const BigNumber& aX, const BigNumber& aY)
 {
-  LispInt lenX=aX.iNumber->Size(), lenY=aY.iNumber->Size();
+  LispInt lenX=aX.iNumber->size(), lenY=aY.iNumber->size();
   LispInt min=lenX,max=lenY;
   if (min>max)
   {
@@ -778,13 +778,13 @@ void BigNumber::BitAnd(const BigNumber& aX, const BigNumber& aY)
     min=max;
     max=swap;
   }
-  iNumber->ResizeTo(min);
+  iNumber->resize(min);
   LispInt i;
   for (i=0;i<min;i++)  (*iNumber)[i] = (*aX.iNumber)[i] & (*aY.iNumber)[i];
 }
 void BigNumber::BitOr(const BigNumber& aX, const BigNumber& aY)
 {
-  LispInt lenX=(*aX.iNumber).Size(), lenY=(*aY.iNumber).Size();
+  LispInt lenX=(*aX.iNumber).size(), lenY=(*aY.iNumber).size();
   LispInt min=lenX,max=lenY;
   if (min>max)
   {
@@ -793,7 +793,7 @@ void BigNumber::BitOr(const BigNumber& aX, const BigNumber& aY)
     max=swap;
   }
 
-  iNumber->ResizeTo(max);
+  iNumber->resize(max);
 
   LispInt i;
   for (i=0;i<min;i++)    (*iNumber)[i] = (*aX.iNumber)[i] | (*aY.iNumber)[i];
@@ -802,7 +802,7 @@ void BigNumber::BitOr(const BigNumber& aX, const BigNumber& aY)
 }
 void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
 {
-  LispInt lenX=(*aX.iNumber).Size(), lenY=(*aY.iNumber).Size();
+  LispInt lenX=(*aX.iNumber).size(), lenY=(*aY.iNumber).size();
   LispInt min=lenX,max=lenY;
   if (min>max)
   {
@@ -811,7 +811,7 @@ void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
     max=swap;
   }
 
-  iNumber->ResizeTo(max);
+  iNumber->resize(max);
 
   LispInt i;
   for (i=0;i<min;i++)  (*iNumber)[i] = (*aX.iNumber)[i] ^ (*aY.iNumber)[i];
@@ -821,9 +821,9 @@ void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
 
 void BigNumber::BitNot(const BigNumber& aX)
 {// FIXME?
-  LispInt len=(*aX.iNumber).Size();
+  LispInt len=(*aX.iNumber).size();
 
-  iNumber->ResizeTo(len);
+  iNumber->resize(len);
 
   LispInt i;
   for (i=0;i<len;i++)  (*iNumber)[i] = ~((*aX.iNumber)[i]);
@@ -838,7 +838,7 @@ signed long BigNumber::BitCount() const
   int low=0;
   int high = 0;
   int i;
-  for (i=0;i<iNumber->Size();i++)
+  for (i=0;i<iNumber->size();i++)
   {
     if ((*iNumber)[i] != 0)
     {
@@ -861,7 +861,7 @@ signed long BigNumber::BitCount() const
     PlatWord zero=0;
     while(num.iExp<digs)
     {
-        num.Insert(0,zero);
+        num.insert(num.begin(),zero);
         num.iExp++;
     }
   }
@@ -877,7 +877,7 @@ signed long BigNumber::BitCount() const
     num.iTensExp--;
   }
 
-  LispInt i,nr=num.Size();
+  LispInt i,nr=num.size();
   for (i=nr-1;i>=0;i--)
   {
     if (num[i] != 0) break;
@@ -986,7 +986,7 @@ void BigNumber::Floor(const BigNumber& aX)
             fraciszero=false;
         i++;
     }
-    iNumber->Delete(0,iNumber->iExp);
+    iNumber->erase(iNumber->begin(),iNumber->begin()+iNumber->iExp);
     iNumber->iExp=0;
 
     if (iNumber->iNegative && !fraciszero)
@@ -1093,8 +1093,8 @@ bool BigNumber::IsSmall() const
 {
   if (IsInt())
   {
-    PlatWord* ptr = &((*iNumber)[iNumber->Size()-1]);
-    LispInt nr=iNumber->Size();
+    PlatWord* ptr = &((*iNumber)[iNumber->size()-1]);
+    LispInt nr=iNumber->size();
     while (nr>1 && *ptr == 0) {ptr--;nr--;}
     return (nr <= iNumber->iExp+1);
   }

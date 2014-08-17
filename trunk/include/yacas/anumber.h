@@ -1,11 +1,11 @@
 #ifndef YACAS_ANUMBER_H
 #define YACAS_ANUMBER_H
 
-#include "grower.h"
 #include "yacasbase.h"
 #include "lispstring.h"
 
 #include <cassert>
+#include <vector>
 
 /* Quantities derived from the platform-dependent types for doing
  * arithmetic.
@@ -15,29 +15,17 @@
 #define WordBase  (((PlatDoubleWord)1)<<WordBits)
 #define WordMask  (WordBase-1)
 
-// The default is 8, but it is suspected mose numbers will be short integers that fit into
-// one or two words. For these numbers memory allocation will be a lot more friendly.
-class ANumberOps : public ArrOpsPOD<PlatWord>
-{
-public:
-  ANumberOps() {}
-  inline int granularity() const { return 2; }
-};
-
-
 /* Class ANumber represents an arbitrary precision number. it is
  * basically an array of PlatWord objects, with the first element
  * being the least significant. iExp <= 0 for integers.
  */
-class ANumber : public CArrayGrower<PlatWord,ANumberOps>
+class ANumber : public std::vector<PlatWord>
 {
-public:
-  typedef CArrayGrower<PlatWord,ANumberOps> ASuper;
 public:
     ANumber(const LispChar * aString,LispInt aPrecision,LispInt aBase=10);
     ANumber(LispInt aPrecision);
     //TODO the properties of this object are set in the member initialization list, but then immediately overwritten by the CopyFrom. We can make this slightly cleaner by only initializing once.
-    inline ANumber(const ANumber& aOther) : ASuper(),iExp(0),iNegative(false),iPrecision(0),iTensExp(0)
+    inline ANumber(const ANumber& aOther) : iExp(0),iNegative(false),iPrecision(0),iTensExp(0)
     {
       CopyFrom(aOther);
     }
