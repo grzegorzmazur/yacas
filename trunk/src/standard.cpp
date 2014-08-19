@@ -48,7 +48,7 @@ bool InternalIsString(LispString * aOriginal)
    result by reference. Result string passed in by reference to avoid copy-constructors etcetera (allowing
    the code to share the same LispString in different places).
  */
-void InternalUnstringify(LispString& aResult, const LispString * aOriginal)
+void InternalUnstringify(LispString& aResult, const LispString& aOriginal)
 {
   /*TODO: should these not be checked also higher up, and should this not be an assert at this level?
    * ideally this function should be as efficient as possible (allowing for a code generator to generate
@@ -57,10 +57,10 @@ void InternalUnstringify(LispString& aResult, const LispString * aOriginal)
    *
    * Also do not forget to make the change in the Java version then, and find the other places where this is relevant.
    */
-    if (!aOriginal || aOriginal->size() < 2 || aOriginal->front() != '\"' || aOriginal->back() != '\"')
+    if (aOriginal.size() < 2 || aOriginal.front() != '\"' || aOriginal.back() != '\"')
         throw LispErrInvalidArg();
 
-    aResult.assign(aOriginal->c_str() + 1, aOriginal->size() - 2);
+    aResult.assign(aOriginal.c_str() + 1, aOriginal.size() - 2);
 }
 
 void InternalStringify(LispString& aResult, const LispString* aOriginal)
@@ -360,7 +360,7 @@ void DoInternalLoad(LispEnvironment& aEnvironment,LispInput* aInput)
 void InternalLoad(LispEnvironment& aEnvironment, const LispString* aFileName)
 {
     LispString oper;
-    InternalUnstringify(oper, aFileName);
+    InternalUnstringify(oper, *aFileName);
 
     LispString * contents = aEnvironment.FindCachedFile(oper.c_str());
     LispString * hashedname = aEnvironment.HashTable().LookUp(oper.c_str());

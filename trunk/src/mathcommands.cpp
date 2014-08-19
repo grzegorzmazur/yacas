@@ -1126,7 +1126,7 @@ void LispDefaultDirectory(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispString * orig = ARGUMENT(1)->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
     LispString oper;
-    InternalUnstringify(oper, orig);
+    InternalUnstringify(oper, *orig);
     aEnvironment.iInputDirectories.push_back(oper.c_str());
     InternalTrue(aEnvironment,RESULT);
 }
@@ -1187,7 +1187,7 @@ void LispFromString(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispString * orig = evaluated->String();
   CheckArg(orig, 1, aEnvironment, aStackTop);
   LispString oper;
-  InternalUnstringify(oper, orig);
+  InternalUnstringify(oper, *orig);
 
   InputStatus oldstatus = aEnvironment.iInputStatus;
   aEnvironment.iInputStatus.SetTo("String");
@@ -1241,7 +1241,7 @@ void LispToFile(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispString * orig = evaluated->String();
   CheckArg(orig, 1, aEnvironment, aStackTop);
   LispString oper;
-  InternalUnstringify(oper, orig);
+  InternalUnstringify(oper, *orig);
 
   // Open file for writing
   LispLocalFile localFP(aEnvironment, oper.c_str(),false, aEnvironment.iInputDirectories);
@@ -1301,7 +1301,7 @@ void LispSystemCall(LispEnvironment& aEnvironment,LispInt aStackTop)
   CheckArgIsString(1, aEnvironment, aStackTop);
 
   LispString command;
-  InternalUnstringify(command, result->String());
+  InternalUnstringify(command, *result->String());
 
 // we would like to pass the exit code back to Yacas. Right now, let's pass True/False according to whether the exit code is 0 or not.
   InternalBoolean(aEnvironment, RESULT, system(command.c_str()) == 0);
@@ -1578,7 +1578,7 @@ void LispFindFile(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispString * orig = evaluated->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
     LispString oper;
-    InternalUnstringify(oper, orig);
+    InternalUnstringify(oper, *orig);
 
     const std::string path =
             InternalFindFile(oper.c_str(), aEnvironment.iInputDirectories);
@@ -1836,7 +1836,7 @@ void LispFindFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispString * orig = evaluated->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
     LispString oper;
-    InternalUnstringify(oper, orig);
+    InternalUnstringify(oper, *orig);
 
     LispMultiUserFunction* multiUserFunc =
         aEnvironment.MultiUserFunction(aEnvironment.HashTable().LookUp(oper.c_str()));
@@ -1904,7 +1904,7 @@ void LispRuleBaseDefined(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispString * orig = name->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
     LispString oper;
-    InternalUnstringify(oper, orig);
+    InternalUnstringify(oper, *orig);
 
     LispPtr sizearg(ARGUMENT(2));
     CheckArg(sizearg, 2, aEnvironment, aStackTop);
@@ -1922,7 +1922,7 @@ void LispDefLoadFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispString * orig = name->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
     LispString oper;
-    InternalUnstringify(oper, orig);
+    InternalUnstringify(oper, *orig);
 
     LispMultiUserFunction* multiUserFunc =
         aEnvironment.MultiUserFunction(aEnvironment.HashTable().LookUp(oper.c_str()));
@@ -1953,7 +1953,7 @@ void LispRuleBaseArgList(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispString * orig = name->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
     LispString oper;
-    InternalUnstringify(oper, orig);
+    InternalUnstringify(oper, *orig);
 
     LispPtr sizearg(ARGUMENT(2));
     CheckArg(sizearg, 2, aEnvironment, aStackTop);
