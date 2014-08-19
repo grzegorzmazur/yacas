@@ -590,7 +590,7 @@ void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispString * string = evaluated->String();
   CheckArg(string, 1, aEnvironment, aStackTop);
   LispString oper;
-  InternalUnstringify(oper, string);
+  InternalUnstringify(oper, *string);
   LispString * hashedname = aEnvironment.HashTable().LookUp(oper.c_str());
   InputStatus oldstatus = aEnvironment.iInputStatus;
   aEnvironment.iInputStatus.SetTo(hashedname->c_str());
@@ -614,7 +614,7 @@ void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispString * string = evaluated->String();
   CheckArg(string, 1, aEnvironment, aStackTop);
   LispString oper;
-  InternalUnstringify(oper, string);
+  InternalUnstringify(oper, *string);
   LispString str;
   StringOutput newOutput(str);
   LispLocalOutput localOutput(aEnvironment, &newOutput);
