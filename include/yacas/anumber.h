@@ -29,7 +29,6 @@ public:
     {
       CopyFrom(aOther);
     }
-    ~ANumber();
     void CopyFrom(const ANumber& aOther);
     bool ExactlyEqual(const ANumber& aOther);
     void SetTo(const LispChar * aString,LispInt aBase=10);
