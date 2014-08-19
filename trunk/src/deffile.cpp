@@ -88,12 +88,7 @@ void LoadDefFile(LispEnvironment& aEnvironment, LispString * aFileName)
 
   LispString flatfile;
   InternalUnstringify(flatfile, aFileName);
-  flatfile[flatfile.size()-1]='.';
-  flatfile.push_back('d');
-  flatfile.push_back('e');
-  flatfile.push_back('f');
-  flatfile.push_back('\0');
-
+  flatfile.append(".def");
   LispDefFile* def = aEnvironment.DefFiles().File(aFileName);
   LispString * contents = aEnvironment.FindCachedFile(flatfile.c_str());
   LispString * hashedname = aEnvironment.HashTable().LookUp(flatfile.c_str());
