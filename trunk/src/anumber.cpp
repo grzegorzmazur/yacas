@@ -78,10 +78,6 @@ static LispInt Digit(LispInt c)
     return 'a'+c-10;
 }
 
-ANumber::~ANumber()
-{
-}
-
 ANumber::ANumber(LispInt aPrecision) : iExp(0),iNegative(false),iPrecision(aPrecision),iTensExp(0)
 {
   assert(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
@@ -141,7 +137,6 @@ void IntToAscii(LispString& aString,PlatDoubleWord aInt, LispInt aBase)
         aString.Insert(0,c);
     }
 */
-    aString.push_back('\0');
 }
 
 LispInt WordDigits(LispInt aPrecision, LispInt aBase)
@@ -823,15 +818,8 @@ TENSEXP:
           tenex = -tenex;
         }
         IntToAscii(tens,tenex, 10);
-        LispInt i,nr;
-        nr=std::strlen(&tens[0]);
-        for (i=0;i<nr;i++)
-            aResult.push_back(tens[i]);
+        aResult.append(tens);
     }
-
-    // Zero-terminate the resulting string
-    aResult.push_back('\0');
-    return;
 }
 
 void BaseAddFull(ANumber& aResult, ANumber& a1, ANumber& a2)
