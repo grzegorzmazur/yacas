@@ -501,14 +501,16 @@ void LoadYacas(LispOutput* aOutput = 0)
         yacas->Evaluate(os.str().c_str());
     }
 #else
-    std::ostringstream os;
-    os << getenv("HOME") << "/.yacasrc";
-
-    std::ifstream test(os.str().c_str(), std::ios::binary);
-    if (test) {
+    if (const char* home = getenv("HOME")) {
         std::ostringstream os;
-        os << "Load(\"" << getenv("HOME") << "/.yacasrc" << "\");";
-        yacas->Evaluate(os.str().c_str());
+        os << home << "/.yacasrc";
+
+        std::ifstream test(os.str().c_str(), std::ios::binary);
+        if (test) {
+            std::ostringstream os;
+            os << "Load(\"" << home << "/.yacasrc" << "\");";
+            yacas->Evaluate(os.str().c_str());
+        }
     }
 #endif
 
