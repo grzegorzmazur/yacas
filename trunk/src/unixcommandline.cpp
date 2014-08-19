@@ -42,12 +42,12 @@ void CUnixCommandLine::ShowLine(const std::string& prompt, unsigned cursor)
         for (LispInt i = 0; i < _last_line; ++i)
             std::cout << "\r\x1b[K\x1b[F";
 
-        std::cout << "\r\x1b[K\x1b[K" << prompt.c_str() << &iSubLine[0];
+        std::cout << "\r\x1b[K\x1b[K" << prompt << iSubLine;
 
-        if ((prompt_len + std::strlen(&iSubLine[0])) % w.ws_col == 0)
+        if ((prompt_len + iSubLine.size()) % w.ws_col == 0)
             std::cout << "\n";
 
-        _last_line = (prompt_len + strlen(&iSubLine[0])) / w.ws_col;
+        _last_line = (prompt_len + iSubLine.size()) / w.ws_col;
         if (_last_line)
             std::cout << "\x1b[" << _last_line << "F";
     }
