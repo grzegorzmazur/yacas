@@ -57,17 +57,10 @@ void InternalUnstringify(LispString& aResult, const LispString * aOriginal)
    *
    * Also do not forget to make the change in the Java version then, and find the other places where this is relevant.
    */
-    if (!aOriginal || (*aOriginal)[0] != '\"')
+    if (!aOriginal || aOriginal->size() < 2 || aOriginal->front() != '\"' || aOriginal->back() != '\"')
         throw LispErrInvalidArg();
 
-  LispInt nrc = aOriginal->size()-1;
-
-  if (!aOriginal || (*aOriginal)[nrc] != '\"')
-      throw LispErrInvalidArg();
-
-  aResult.resize(nrc);
-  for (LispInt i = 1; i < nrc; i++)
-    aResult[i-1] = (*aOriginal)[i];
+    aResult.assign(aOriginal->c_str() + 1, aOriginal->size() - 2);
 }
 
 void InternalStringify(LispString& aResult, const LispString* aOriginal)
