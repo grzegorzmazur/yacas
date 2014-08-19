@@ -14,7 +14,6 @@ class LispHashTable;
 bool InternalIsList(const LispPtr& aPtr);
 bool InternalIsString(LispString * aOriginal);
 void InternalUnstringify(LispString& aResult, const LispString& aOriginal);
-void InternalStringify(LispString& aResult, const LispString* aOriginal);
 void InternalIntToAscii(LispChar * aTrg,LispInt aInt);
 LispInt InternalAsciiToInt(const LispString& aString);
 bool IsNumber(const LispChar * ptr, bool aAllowFloat);

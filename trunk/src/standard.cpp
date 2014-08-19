@@ -63,21 +63,6 @@ void InternalUnstringify(LispString& aResult, const LispString& aOriginal)
     aResult.assign(aOriginal.c_str() + 1, aOriginal.size() - 2);
 }
 
-void InternalStringify(LispString& aResult, const LispString* aOriginal)
-{
-    if (!aOriginal)
-        throw LispErrInvalidArg();
-
-    LispInt nrc=aOriginal->size()-1;
-    aResult.resize(nrc+3);
-    LispInt i;
-    aResult[0] = '\"';
-    for (i=0;i<nrc;i++)
-        aResult[i+1] = (*aOriginal)[i];
-    aResult[nrc+1] = '\"';
-    aResult[nrc+2] = '\0';
-}
-
 void InternalIntToAscii(LispChar * aTrg,LispInt aInt)
 {
     LispInt ind=0;
