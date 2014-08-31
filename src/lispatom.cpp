@@ -29,9 +29,8 @@ LispObject* LispAtom::New(LispEnvironment& aEnvironment, const LispChar * aStrin
 
 LispAtom::LispAtom(LispString * aString) : iString(aString)
 {
-    assert(aString!=nullptr);
+    assert(aString);
     ++aString->iReferenceCount;
-    CHECKPTR(iString);
 }
 
 LispAtom::LispAtom(const LispAtom& other) : ASuper(other), iString(other.iString)
@@ -45,9 +44,9 @@ LispAtom::~LispAtom()
 }
 
 
-LispString * LispAtom::String()
+LispString* LispAtom::String()
 {
-    CHECKPTR(iString);
+    assert(iString);
     return iString;
 }
 

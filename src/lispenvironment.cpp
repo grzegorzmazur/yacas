@@ -338,7 +338,7 @@ LispUserFunction* LispEnvironment::UserFunction(LispPtr& aArguments)
     if (multiUserFunc)
     {
         LispInt arity = InternalListLength(aArguments)-1;
-        CHECKPTR(multiUserFunc->UserFunc(arity));
+        assert(multiUserFunc->UserFunc(arity));
         return  multiUserFunc->UserFunc(arity);
     }
     return nullptr;
