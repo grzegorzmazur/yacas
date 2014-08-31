@@ -1644,7 +1644,7 @@ void GenArrayGet(LispEnvironment& aEnvironment,LispInt aStackTop)
 
     LispInt size = InternalAsciiToInt(*sizearg->String());
 
-    CheckArg(size > 0 && size <= arr->Size(), 2, aEnvironment, aStackTop);
+    CheckArg(size > 0 && static_cast<std::size_t>(size) <= arr->Size(), 2, aEnvironment, aStackTop);
     LispObject* object = arr->GetElement(size);
     RESULT = (object->Copy());
 }
@@ -1663,7 +1663,7 @@ void GenArraySet(LispEnvironment& aEnvironment,LispInt aStackTop)
 
   LispInt size = InternalAsciiToInt(*sizearg->String());
 
-  CheckArg(size > 0 && size <= arr->Size(), 2, aEnvironment, aStackTop);
+  CheckArg(size > 0 && static_cast<std::size_t>(size) <= arr->Size(), 2, aEnvironment, aStackTop);
   LispPtr obj(ARGUMENT(3));
   arr->SetElement(size,obj);
 
