@@ -132,8 +132,9 @@ LispString* LispHashTable::LookUpCounted(const LispChar* aString, LispInt aLengt
     LispInt bin = LispHashCounted(aString, aLength);
 
     // Find existing version of string
-    LispStringSmartPtrArray & aBin = iHashTable[bin];
-    for (LispInt i = 0, n = aBin.size(); i < n; i++) {
+    const LispStringSmartPtrArray& aBin = iHashTable[bin];
+    const std::size_t n = aBin.size();
+    for (std::size_t i = 0; i < n; ++i) {
         const char* const p = aBin[i]->c_str();
         if (!std::strncmp(p, aString, aLength) && p[aLength] == '\0')
             return aBin[i];
