@@ -7,16 +7,16 @@
 #ifndef YACAS_DEFFILE_H
 #define YACAS_DEFFILE_H
 
-#include "yacasbase.h"
-#include "lisphash.h"
+#include "yacas/lispstring.h"
+
+#include <unordered_map>
 
 /** LispDefFile represents one file that can be loaded just-in-time.
  */
-class LispDefFile : public YacasBase
+class LispDefFile
 {
 public:
-    LispDefFile(LispString * aFile);
-    LispDefFile(const LispDefFile& aOther);
+    LispDefFile(LispString* aFile);
 
     void SetLoaded();
     bool IsLoaded() const;
@@ -34,17 +34,22 @@ private:
  * the engine looks up the correct file to load from this associated
  * has class.
  */
-class LispEnvironment;
-class LispDefFiles : public LispAssociatedHash<LispDefFile>
+class LispDefFiles
 {
 public:
     LispDefFile* File(LispString* aFileName);
+
+private:
+    std::unordered_map<LispStringSmartPtr, LispDefFile, std::hash<LispString*> > _map;
 };
+
+class LispEnvironment;
 
 void LoadDefFile(LispEnvironment& aEnvironment, LispString * aFileName);
 
 
-inline bool LispDefFile::IsLoaded() const
+inline
+bool LispDefFile::IsLoaded() const
 {
     return iIsLoaded;
 }

@@ -9,12 +9,6 @@
 #include "yacas/tokenizer.h"
 #include "yacas/stringio.h"
 
-LispDefFile::LispDefFile(const LispDefFile& aOther):
-    iFileName(aOther.iFileName),
-    iIsLoaded(aOther.iIsLoaded)
-{
-}
-
 LispDefFile::LispDefFile(LispString* aFileName):
     iFileName(aFileName),
     iIsLoaded(false)
@@ -26,22 +20,20 @@ void LispDefFile::SetLoaded()
   iIsLoaded = true;
 }
 
-LispDefFile* LispDefFiles::File(LispString * aFileName)
+LispDefFile* LispDefFiles::File(LispString* aFileName)
 {
-  // Create a new entry
-  LispDefFile* file = LookUp(aFileName);
-  if (!file)
-  {
-    LispDefFile newfile(aFileName);
-    // Add the new entry to the hash table
-    SetAssociation(newfile, aFileName);
-    file = LookUp(aFileName);
-  }
-  return file;
+    auto i = _map.find(aFileName);
+
+    if (i == _map.end())
+        i = _map.emplace(aFileName, aFileName).first;
+
+    return &i->second;
 }
 
-static void DoLoadDefFile(LispEnvironment& aEnvironment, LispInput* aInput,
-                          LispDefFile* def)
+static void DoLoadDefFile(
+    LispEnvironment& aEnvironment,
+    LispInput* aInput,
+    LispDefFile* def)
 {
   LispLocalInput localInput(aEnvironment, aInput);
 
@@ -80,8 +72,6 @@ static void DoLoadDefFile(LispEnvironment& aEnvironment, LispInput* aInput,
   }
 }
 
-
-
 void LoadDefFile(LispEnvironment& aEnvironment, LispString * aFileName)
 {
   assert(aFileName!=nullptr);
@@ -114,7 +104,3 @@ void LoadDefFile(LispEnvironment& aEnvironment, LispString * aFileName)
   }
   aEnvironment.iInputStatus.RestoreFrom(oldstatus);
 }
-
-
-
-
