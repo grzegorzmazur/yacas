@@ -34,8 +34,8 @@ public:
   virtual bool EndOfStream();
   void Rewind();
   virtual const LispChar* StartPtr();
-  virtual LispInt Position();
-  virtual void SetPosition(LispInt aPosition);
+  virtual std::size_t Position();
+  virtual void SetPosition(std::size_t aPosition);
 
 protected:
     StdFileInput(std::istream&, InputStatus& aStatus);
@@ -51,13 +51,13 @@ class CachedStdFileInput: public StdFileInput {
 public:
     CachedStdFileInput(LispLocalFile& aFile,InputStatus& aStatus);
     ~CachedStdFileInput() ;
-    virtual LispChar Next();
-    virtual LispChar Peek();
-    virtual bool EndOfStream() const;
+    LispChar Next();
+    LispChar Peek();
+    bool EndOfStream() const;
     void Rewind();
-    virtual const LispChar* StartPtr();
-    virtual LispInt Position();
-    virtual void SetPosition(LispInt aPosition);
+    const LispChar* StartPtr();
+    std::size_t Position() const;
+    void SetPosition(std::size_t aPosition);
 
 private:
     // not implemented
@@ -65,8 +65,8 @@ private:
     CachedStdFileInput& operator=(const CachedStdFileInput&);
 
     LispChar* iBuffer;
-    LispInt iCurrentPos;
-    LispInt iNrBytes;
+    std::size_t iCurrentPos;
+    std::size_t iNrBytes;
 };
 
 class StdFileOutput: public LispOutput {
@@ -104,7 +104,7 @@ public:
     virtual bool EndOfStream() const;
     void Rewind();
     virtual const LispChar* StartPtr();
-    virtual LispInt Position();
+    virtual std::size_t Position() const;
 
 private:
     LispString iBuffer;
