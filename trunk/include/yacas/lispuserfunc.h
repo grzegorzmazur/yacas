@@ -27,7 +27,7 @@ public:
     virtual void DeclareRule(LispInt aPrecedence, LispPtr& aBody) = 0;
     virtual void DeclarePattern(LispInt aPrecedence, LispPtr& aPredicate,
                              LispPtr& aBody) = 0;
-    virtual LispPtr& ArgList() = 0;
+    virtual const LispPtr& ArgList() const = 0;
 
 public: //unfencing
     inline void UnFence() {iFenced = false;};
