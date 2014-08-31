@@ -1964,7 +1964,7 @@ void LispRuleBaseArgList(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispUserFunction* userFunc = aEnvironment.UserFunction(aEnvironment.HashTable().LookUp(oper.c_str()),arity);
     CheckArg(userFunc, 1, aEnvironment, aStackTop);
 
-    LispPtr& list = userFunc->ArgList();
+    const LispPtr& list = userFunc->ArgList();
     LispPtr head(aEnvironment.iList->Copy());
     head->Nixed() = (list);
     RESULT = (LispSubList::New(head));
