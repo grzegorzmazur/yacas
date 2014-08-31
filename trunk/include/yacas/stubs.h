@@ -16,7 +16,6 @@
   #define PlatReAlloc PlatStubReAlloc
   #define PlatFree PlatStubFree
   #define NEW new
-  #define CHECKPTR(ptr)
 #else  // NO_GLOBALS -- goes almost to EOF
   void *PlatObAlloc(size_t nbytes);
   void PlatObFree(void *p);
@@ -28,13 +27,11 @@
   #define PlatReAlloc(orig,nr) YacasReAllocPrivate(orig,(size_t)nr,__FILE__,__LINE__)
   #define PlatFree(orig)       YacasFreePrivate(orig)
   #define NEW new (__FILE__,__LINE__)
-  #define CHECKPTR(ptr) CheckPtr(ptr,__FILE__,__LINE__)
 #else  // YACAS_DEBUG
   #define PlatAlloc(nr)        PlatObAlloc((size_t)nr)
   #define PlatReAlloc(orig,nr) PlatObReAlloc(orig,(size_t)nr)
   #define PlatFree(orig)       PlatObFree(orig)
   #define NEW new
-  #define CHECKPTR(ptr)
 #endif  // YACAS_DEBUG
 
 #ifdef YACAS_DEBUG  // goes almost to EOF
