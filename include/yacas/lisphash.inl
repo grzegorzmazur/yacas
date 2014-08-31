@@ -26,13 +26,10 @@ inline LAssoc<T>::~LAssoc()
    iString = nullptr;
 }
 
-
-#define LH  LispHashPtr(aString) // LispHash(aString->String())
-
 template<class T>
 inline T* LispAssociatedHash<T>::LookUp(LispString * aString)
 {
-  LispInt bin = LH;
+  LispInt bin = LispHashPtr(aString);
   LispInt i=0;
   // Find existing version of string
   for (i = iHashTable[bin].size()-1 ; i >= 0 ; i --)
@@ -50,7 +47,7 @@ inline T* LispAssociatedHash<T>::LookUp(LispString * aString)
 template<class T>
 inline void LispAssociatedHash<T>::SetAssociation(const T& aData, LispString * aString)
 {
-  LispInt bin = LH;
+  LispInt bin = LispHashPtr(aString);
   LispInt i;
 
   // Find existing version of string
@@ -73,7 +70,7 @@ inline void LispAssociatedHash<T>::SetAssociation(const T& aData, LispString * a
 template<class T>
 inline void LispAssociatedHash<T>::Release(LispString * aString)
 {
-  LispInt bin = LH;
+  LispInt bin = LispHashPtr(aString);
   LispInt i;
 
   // Find existing version of string
