@@ -38,14 +38,13 @@ const LispChar* StringInput::StartPtr()
     return iString.c_str();
 }
 
-LispInt StringInput::Position()
+std::size_t StringInput::Position() const
 {
     return iCurrent;
 }
 
-void StringInput::SetPosition(LispInt aPosition)
+void StringInput::SetPosition(std::size_t aPosition)
 {
-  assert(aPosition>=0);
   assert(aPosition<iString.size());
   iCurrent = aPosition;
 }

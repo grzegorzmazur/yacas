@@ -17,11 +17,11 @@ public:
     virtual LispChar Peek();
     virtual bool EndOfStream() const;
     virtual const LispChar* StartPtr();
-    virtual LispInt Position();
-    virtual void SetPosition(LispInt aPosition);
+    virtual std::size_t Position() const;
+    virtual void SetPosition(std::size_t aPosition);
 protected:
     LispString iString;
-    LispInt iCurrent;
+    std::size_t iCurrent;
 };
 
 class StringOutput : public LispOutput

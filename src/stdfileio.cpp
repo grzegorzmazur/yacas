@@ -58,13 +58,13 @@ const LispChar* StdFileInput::StartPtr()
     return 0;
 }
 
-LispInt StdFileInput::Position()
+std::size_t StdFileInput::Position()
 {
     assert(0);
     return 0;
 }
 
-void StdFileInput::SetPosition(LispInt aPosition)
+void StdFileInput::SetPosition(std::size_t aPosition)
 {
   assert(0);
 }
@@ -156,13 +156,12 @@ const LispChar* CachedStdFileInput::StartPtr()
 {
     return iBuffer;
 }
-LispInt CachedStdFileInput::Position()
+std::size_t CachedStdFileInput::Position() const
 {
     return iCurrentPos;
 }
-void CachedStdFileInput::SetPosition(LispInt aPosition)
+void CachedStdFileInput::SetPosition(std::size_t aPosition)
 {
-  assert(aPosition>=0);
   assert(aPosition<iNrBytes);
   iCurrentPos = aPosition;
 }
@@ -277,7 +276,7 @@ const LispChar* CachedStdUserInput::StartPtr()
   return &iBuffer[0];
 }
 
-LispInt CachedStdUserInput::Position()
+std::size_t CachedStdUserInput::Position() const
 {
   return iCurrentPos;
 }

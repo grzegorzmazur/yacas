@@ -8,6 +8,8 @@
 
 #include "yacasbase.h"
 
+#include <cstddef>
+
 // Hope this forward declaration doesn't screw us over...
 class InputDirectories;
 class InputStatus : public YacasBase
@@ -86,8 +88,8 @@ public:
    * is being read.
    */
   virtual const LispChar* StartPtr() = 0;
-  virtual LispInt Position() = 0;
-  virtual void SetPosition(LispInt aPosition) = 0;
+  virtual std::size_t Position() const = 0;
+  virtual void SetPosition(std::size_t aPosition) = 0;
 protected:
   InputStatus& iStatus;
 };
