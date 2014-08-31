@@ -19,9 +19,10 @@ public:
     LispDefFile(const LispDefFile& aOther);
 
     void SetLoaded();
-    inline bool IsLoaded();
-    inline LispString * FileName();
+    bool IsLoaded() const;
+    LispString* FileName() const;
 
+private:
     LispStringSmartPtr iFileName;
     bool   iIsLoaded;
 };
@@ -37,11 +38,20 @@ class LispEnvironment;
 class LispDefFiles : public LispAssociatedHash<LispDefFile>
 {
 public:
-    LispDefFile* File(LispString * aFileName);
+    LispDefFile* File(LispString* aFileName);
 };
 
 void LoadDefFile(LispEnvironment& aEnvironment, LispString * aFileName);
 
-#include "deffile.inl"
+
+inline bool LispDefFile::IsLoaded() const
+{
+    return iIsLoaded;
+}
+
+inline LispString* LispDefFile::FileName() const
+{
+  return iFileName;
+}
 
 #endif

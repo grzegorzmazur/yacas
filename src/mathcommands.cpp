@@ -1845,7 +1845,7 @@ void LispFindFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
         LispDefFile* def = multiUserFunc->iFileToOpen;
         if (def)
         {
-            RESULT = (LispAtom::New(aEnvironment,def->iFileName->c_str()));
+            RESULT = (LispAtom::New(aEnvironment,def->FileName()->c_str()));
       return;
         }
     }
@@ -1931,7 +1931,7 @@ void LispDefLoadFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
         if (multiUserFunc->iFileToOpen!=nullptr)
         {
             LispDefFile* def = multiUserFunc->iFileToOpen;
-            if (!def->iIsLoaded)
+            if (!def->IsLoaded())
             {
 #ifdef YACAS_DEBUG
                 /*Show loading... */
@@ -1940,7 +1940,7 @@ void LispDefLoadFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
                     printf("Debug> Loading file %s for function %s\n",def->iFileName->c_str(),oper.c_str());
 #endif
                 multiUserFunc->iFileToOpen=nullptr;
-                InternalUse(aEnvironment,def->iFileName);
+                InternalUse(aEnvironment, def->FileName());
       }
         }
     }
