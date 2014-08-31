@@ -31,7 +31,7 @@ public:
   class BranchRuleBase : public YacasBase
   {
   public:
-    virtual ~BranchRuleBase();
+    virtual ~BranchRuleBase() = default;
     virtual bool Matches(LispEnvironment& aEnvironment, LispPtr* aArguments) = 0;
     virtual LispInt Precedence() const = 0;
     virtual LispPtr& Body() = 0;
@@ -42,7 +42,6 @@ public:
   class BranchRule : public BranchRuleBase
   {
   public:
-    virtual ~BranchRule();
     BranchRule(LispInt aPrecedence,LispPtr& aPredicate,LispPtr& aBody) : iPrecedence(aPrecedence),iBody(aBody),iPredicate(aPredicate)
     {
     }
@@ -50,13 +49,13 @@ public:
     /// Return true if the rule matches.
     /// #iPredicate is evaluated in \a Environment. If the result
     /// IsTrue(), this function returns true.
-    virtual bool Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
+    bool Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
 
     /// Access #iPrecedence.
-    virtual LispInt Precedence() const;
+    LispInt Precedence() const;
 
     /// Access #iBody.
-    virtual LispPtr& Body();
+    LispPtr& Body();
   protected:
     BranchRule() : iPrecedence(0),iBody(),iPredicate() {};
   protected:
@@ -75,17 +74,13 @@ public:
       iBody = (aBody);
     }
     /// Return #true, always.
-    virtual bool Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
+    bool Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
   };
 
   /// A rule which matches if the corresponding PatternClass matches.
   class BranchPattern : public BranchRuleBase, NonCopyable
   {
   public:
-    /// Destructor.
-    /// This function contains no code.
-    virtual ~BranchPattern();
-
     /// Constructor.
     /// \param aPrecedence precedence of the rule
     /// \param aPredicate generic object of type \c Pattern
@@ -100,13 +95,13 @@ public:
     }
 
     /// Return true if the corresponding pattern matches.
-    virtual bool Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
+    bool Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
 
     /// Access #iPrecedence
-    virtual LispInt Precedence() const;
+    LispInt Precedence() const;
 
     /// Access #iBody
-    virtual LispPtr& Body();
+    LispPtr& Body();
 
   protected:
     /// The precedence of this rule.
@@ -129,7 +124,7 @@ public:
   BranchingUserFunction(LispPtr& aParameters);
 
   /// Destructor.
-  virtual ~BranchingUserFunction();
+  ~BranchingUserFunction();
 
   /// Evaluate the function on given arguments.
   /// \param aResult (on output) the result of the evaluation
@@ -145,7 +140,7 @@ public:
   /// first rule that matches is evaluated, and the result is put in
   /// \a aResult. If no rule matches, \a aResult will recieve a new
   /// expression with evaluated arguments.
-  virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
+  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
 
   /// Put an argument on hold.
   /// \param aVariable name of argument to put un hold
@@ -180,7 +175,7 @@ public:
   void InsertRule(LispInt aPrecedence,BranchRuleBase* newRule);
 
   /// Return the argument list, stored in #iParamList
-  virtual LispPtr& ArgList();
+  virtual const LispPtr& ArgList() const;
 
 protected:
   /// List of arguments, with corresponding \c iHold property.
@@ -197,8 +192,8 @@ class ListedBranchingUserFunction : public BranchingUserFunction
 {
 public:
   ListedBranchingUserFunction(LispPtr& aParameters);
-  virtual LispInt IsArity(LispInt aArity) const;
-  virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
+  LispInt IsArity(LispInt aArity) const;
+  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
 };
 
 
@@ -206,7 +201,7 @@ class MacroUserFunction : public BranchingUserFunction
 {
 public:
   MacroUserFunction(LispPtr& aParameters);
-  virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
+  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
 };
 
 
@@ -214,8 +209,8 @@ class ListedMacroUserFunction : public MacroUserFunction
 {
 public:
   ListedMacroUserFunction(LispPtr& aParameters);
-  virtual LispInt IsArity(LispInt aArity) const;
-  virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
+  LispInt IsArity(LispInt aArity) const;
+  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
 };
 
 

@@ -9,10 +9,6 @@
 
 #define InternalEval aEnvironment.iEvaluator->Eval
 
-BranchingUserFunction::BranchRuleBase::~BranchRuleBase()
-{
-}
-
 bool BranchingUserFunction::BranchRule::Matches(LispEnvironment& aEnvironment, LispPtr* aArguments)
 {
     LispPtr pred;
@@ -26,9 +22,6 @@ LispInt BranchingUserFunction::BranchRule::Precedence() const
 LispPtr& BranchingUserFunction::BranchRule::Body()
 {
     return iBody;
-}
-BranchingUserFunction::BranchRule::~BranchRule()
-{
 }
 
  bool BranchingUserFunction::BranchRuleTruePredicate::Matches(LispEnvironment& aEnvironment, LispPtr* aArguments)
@@ -48,16 +41,12 @@ LispPtr& BranchingUserFunction::BranchPattern::Body()
 {
     return iBody;
 }
-BranchingUserFunction::BranchPattern::~BranchPattern()
-{
-}
 
 
 BranchingUserFunction::BranchingUserFunction(LispPtr& aParameters)
   : iParameters(),iRules(),iParamList(aParameters)
 {
-  LispIterator iter(aParameters);
-  for ( ; iter.getObj(); ++iter)
+  for (LispIterator iter(aParameters); iter.getObj(); ++iter)
   {
     if (!iter.getObj()->String())
         throw LispErrCreatingUserFunction();
@@ -145,7 +134,6 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
     for (std::size_t i=0;i<nrRules;i++)
     {
         BranchRuleBase* thisRule = iRules[i];
-        CHECKPTR(thisRule);
         assert(thisRule);
 
         st.iRulePrecedence = thisRule->Precedence();
@@ -296,7 +284,7 @@ void BranchingUserFunction::InsertRule(LispInt aPrecedence,BranchRuleBase* newRu
     iRules.insert(iRules.begin() + mid, newRule);
 }
 
-LispPtr& BranchingUserFunction::ArgList()
+const LispPtr& BranchingUserFunction::ArgList() const
 {
     return iParamList;
 }
@@ -310,7 +298,7 @@ LispInt ListedBranchingUserFunction::IsArity(LispInt aArity) const
 {
     // nr arguments handled is bound by a minimum: the number of arguments
     // to this function.
-    return (Arity() <= aArity);
+    return Arity() <= aArity;
 }
 
 void ListedBranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
@@ -319,15 +307,15 @@ void ListedBranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEn
   LispPtr newArgs;
   LispIterator iter(aArguments);
   LispPtr* ptr =  &newArgs;
-  LispInt arity = Arity();
+  const LispInt arity = Arity();
   // Make a copy of the arguments first
   // TODO: if we were to change the internal representation to a cons cell, this copying would not be needed
-  LispInt i;
-  for (i = 0; i < arity && iter.getObj(); i++,++iter)
+  for (LispInt i = 0; i < arity && iter.getObj(); ++i,++iter)
   {
-    (*ptr) = (iter.getObj()->Copy());
+    *ptr = iter.getObj()->Copy();
     ptr = &((*ptr)->Nixed());
   }
+
   if (!iter.getObj()->Nixed())
   {
     (*ptr) = (iter.getObj()->Copy());
@@ -337,8 +325,8 @@ void ListedBranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEn
   else
   {
     LispPtr head(aEnvironment.iList->Copy());
-    head->Nixed() = (iter.getObj());
-    (*ptr) = (LispSubList::New(head));
+    head->Nixed() = iter.getObj();
+    *ptr = (LispSubList::New(head));
   }
   BranchingUserFunction::Evaluate(aResult, aEnvironment, newArgs);
 }
@@ -432,7 +420,6 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
     for (std::size_t i=0;i<nrRules;i++)
     {
       BranchRuleBase* thisRule = iRules[i];
-      CHECKPTR(thisRule);
       assert(thisRule);
 
       st.iRulePrecedence = thisRule->Precedence();
@@ -489,7 +476,7 @@ ListedMacroUserFunction::ListedMacroUserFunction(LispPtr& aParameters)
 
 LispInt ListedMacroUserFunction::IsArity(LispInt aArity) const
 {
-    return (Arity() <= aArity);
+    return Arity() <= aArity;
 }
 
 void ListedMacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
