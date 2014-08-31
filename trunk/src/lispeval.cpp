@@ -41,7 +41,7 @@ LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
       }
 #endif
       multiUserFunc->iFileToOpen=nullptr;
-      InternalUse(aEnvironment,def->iFileName);
+      InternalUse(aEnvironment, def->FileName());
 
 #ifdef YACAS_DEBUG
       {
