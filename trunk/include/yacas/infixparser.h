@@ -9,44 +9,50 @@
 #include "yacasbase.h"
 #include "lispparser.h"
 
+#include <unordered_map>
 
-#define KMaxPrecedence 60000
+constexpr LispInt KMaxPrecedence = 60000;
 
-class LispInFixOperator : public YacasBase
-{
+class LispInFixOperator {
 public:
-    inline LispInFixOperator(LispInt aPrecedence)
-        : iPrecedence(aPrecedence),
+    explicit constexpr LispInFixOperator(LispInt aPrecedence = KMaxPrecedence):
+        iPrecedence(aPrecedence),
         iLeftPrecedence(aPrecedence),
         iRightPrecedence(aPrecedence),
-        iRightAssociative(0)
-    {};
-    inline void SetRightAssociative(void)
+        iRightAssociative(false)
+    {}
+
+    void SetRightAssociative()
     {
-        iRightAssociative = 1;
+        iRightAssociative = true;
     }
-    inline void SetLeftPrecedence(LispInt aPrecedence)
+
+    void SetLeftPrecedence(LispInt aPrecedence)
     {
         iLeftPrecedence = aPrecedence;
     }
-    inline void SetRightPrecedence(LispInt aPrecedence)
+
+    void SetRightPrecedence(LispInt aPrecedence)
     {
         iRightPrecedence = aPrecedence;
     }
-public:
+
     LispInt iPrecedence;
     LispInt iLeftPrecedence;
     LispInt iRightPrecedence;
-    LispInt iRightAssociative;
+    bool iRightAssociative;
 };
 
-class LispOperators : public LispAssociatedHash<LispInFixOperator>
-{
+class LispOperators {
 public:
-    void SetOperator(LispInt aPrecedence,LispString * aString);
-    void SetRightAssociative(LispString * aString);
-    void SetLeftPrecedence(LispString * aString,LispInt aPrecedence);
-    void SetRightPrecedence(LispString * aString,LispInt aPrecedence);
+    void SetOperator(LispInt aPrecedence,LispString* aString);
+    void SetRightAssociative(LispString* aString);
+    void SetLeftPrecedence(LispString* aString, LispInt aPrecedence);
+    void SetRightPrecedence(LispString* aString, LispInt aPrecedence);
+    LispInFixOperator* LookUp(LispString* aString);
+
+private:
+    std::unordered_map<LispStringSmartPtr, LispInFixOperator, std::hash<LispString*> > _map;
 };
 
 class InfixParser : public LispParser

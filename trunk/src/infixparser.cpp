@@ -48,35 +48,41 @@ void InfixParser::ParseCont(LispPtr& aResult)
 
 void LispOperators::SetOperator(LispInt aPrecedence, LispString * aString)
 {
-    LispInFixOperator op(aPrecedence);
-    SetAssociation(op, aString);
+    _map[aString] = LispInFixOperator(aPrecedence);
 }
 
 
 void LispOperators::SetRightAssociative(LispString * aString)
 {
-    LispInFixOperator* op = LookUp(aString);
-    if (!op)
+    auto i = _map.find(aString);
+    if (i == _map.end())
         throw LispErrNotAnInFixOperator();
-    op->SetRightAssociative();
+    i->second.SetRightAssociative();
 }
 
 void LispOperators::SetLeftPrecedence(LispString * aString,LispInt aPrecedence)
 {
-    LispInFixOperator* op = LookUp(aString);
-    if (!op)
+    auto i = _map.find(aString);
+    if (i == _map.end())
         throw LispErrNotAnInFixOperator();
-    op->SetLeftPrecedence(aPrecedence);
+    i->second.SetLeftPrecedence(aPrecedence);
 }
 
 void LispOperators::SetRightPrecedence(LispString * aString,LispInt aPrecedence)
 {
-    LispInFixOperator* op = LookUp(aString);
-    if (!op)
+    auto i = _map.find(aString);
+    if (i == _map.end())
         throw LispErrNotAnInFixOperator();
-    op->SetRightPrecedence(aPrecedence);
+    i->second.SetRightPrecedence(aPrecedence);
 }
 
+LispInFixOperator* LispOperators::LookUp(LispString* aString)
+{
+    const auto i = _map.find(aString);
+    if (i != _map.end())
+        return &i->second;
+    return 0;
+}
 
 void ParsedObject::ReadToken()
 {
