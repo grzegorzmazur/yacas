@@ -127,13 +127,11 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
         if (head->String())
         {
           {
-            YacasEvaluator* evaluator = aEnvironment.CoreCommands().LookUp(head->String());
-            // Try to find a built-in command
-            if (evaluator)
-            {
-              evaluator->Evaluate(aResult, aEnvironment, *subList);
-              goto FINISH;
-            }
+              const auto i = aEnvironment.CoreCommands().find(head->String());
+              if (i != aEnvironment.CoreCommands().end()) {
+                  i->second.Evaluate(aResult, aEnvironment, *subList);
+                  goto FINISH;
+              }
           }
 
           {
@@ -304,7 +302,8 @@ void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, LispOutput& 
     aEnvironment.CurrentPrinter().Print(objs[i]->iOperator, *aEnvironment.CurrentOutput(),aEnvironment);
 
     LispInt internal;
-    internal = (nullptr != aEnvironment.CoreCommands().LookUp(objs[i]->iOperator->String()));
+    internal =
+            aEnvironment.CoreCommands().find(objs[i]->iOperator->String()) != aEnvironment.CoreCommands().end();
     if (internal)
     {
       aEnvironment.CurrentOutput()->Write(" (Internal function) ");

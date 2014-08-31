@@ -8,13 +8,14 @@
 
 #include "yacasbase.h"
 #include "lispobject.h"
-#include "lisphash.h"
 #include "evalfunc.h"
 
 
+#include <unordered_map>
+
 // new-style evaluator, passing arguments onto the stack in LispEnvironment
 typedef void (*YacasEvalCaller)(LispEnvironment& aEnvironment,LispInt aStackTop);
-class YacasEvaluator : public EvalFuncBase
+class YacasEvaluator: public EvalFuncBase
 {
 public:
   // FunctionFlags can be orred when passed to the constructor of this function
@@ -29,18 +30,16 @@ public:
     : iCaller(aCaller), iNrArgs(aNrArgs), iFlags(aFlags)
   {
   }
-  virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
-                          LispPtr& aArguments);
+  void Evaluate(LispPtr& aResult,
+                LispEnvironment& aEnvironment,
+                LispPtr& aArguments);
 private:
   YacasEvalCaller iCaller;
   LispInt iNrArgs;
   LispInt iFlags;
 };
 
-class YacasCoreCommands : public LispAssociatedHash<YacasEvaluator>
-{
-};
-
+typedef std::unordered_map<LispStringSmartPtr, YacasEvaluator, std::hash<LispString*> > YacasCoreCommands;
 
 
 #endif

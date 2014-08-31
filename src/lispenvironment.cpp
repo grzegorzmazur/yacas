@@ -520,13 +520,18 @@ void LispEnvironment::DefineRulePattern(LispString * aOperator,LispInt aArity,
 void LispEnvironment::SetCommand(YacasEvalCaller aEvaluatorFunc, const LispChar * aString,LispInt aNrArgs,LispInt aFlags)
 {
   DBG_({ extern long theNrDefinedBuiltIn; theNrDefinedBuiltIn++; })
+  LispString* name = HashTable().LookUp(aString);
   YacasEvaluator eval(aEvaluatorFunc,aNrArgs,aFlags);
-  CoreCommands().SetAssociation(eval,HashTable().LookUp(aString));
+  auto i = CoreCommands().find(name);
+  if (i != CoreCommands().end())
+      i->second = eval;
+  else
+      CoreCommands().insert(std::make_pair(name, eval));
 }
 
-void LispEnvironment::RemoveCoreCommand(LispChar * aString)
+void LispEnvironment::RemoveCoreCommand(LispChar* aString)
 {
-  CoreCommands().Release(HashTable().LookUp(aString));
+  CoreCommands().erase(HashTable().LookUp(aString));
 }
 
 LispString * LispEnvironment::FindCachedFile(const LispChar * aFileName)

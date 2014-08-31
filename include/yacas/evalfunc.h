@@ -6,7 +6,7 @@
 // class EvalFuncBase defines the interface to 'something that can
 // evaluate'
 class LispEnvironment;
-class EvalFuncBase : public YacasBase
+class EvalFuncBase
 {
 public:
     virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
