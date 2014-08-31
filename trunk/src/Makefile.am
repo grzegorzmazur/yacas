@@ -49,7 +49,6 @@ pkginclude_HEADERS = $(top_srcdir)/include/yacas/anumber.h	\
 	$(top_srcdir)/include/yacas/patternclass.h				\
 	$(top_srcdir)/include/yacas/substitute.h				\
 	$(top_srcdir)/include/yacas/stdcommandline.h			\
-	$(top_srcdir)/include/yacas/arrayclass.inl				\
 	$(top_srcdir)/include/yacas/genericstructs.h			\
 	$(top_srcdir)/include/yacas/yacasprivate.h				\
 	$(top_srcdir)/include/yacas/yacasbase.h					\
@@ -73,7 +72,7 @@ libyacas_la_SOURCES = $(libyacas_la_HEADERS) stdcommandline.cpp		 \
 	lispobject.cpp lispparser.cpp lispuserfunc.cpp mathcommands.cpp	 \
 	mathenvironment.cpp mathuserfunc.cpp standard.cpp stdfileio.cpp	 \
 	arggetter.cpp stringio.cpp tokenizer.cpp yacasapi.cpp			 \
-	arrayclass.cpp lispevalhash.cpp patterns.cpp patternclass.cpp	 \
+	lispevalhash.cpp patterns.cpp patternclass.cpp			 \
 	substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp	 \
 	patcher.cpp genericstructs.cpp xmltokenizer.cpp commandline.cpp	 \
 	anumber.cpp yacasnumbers.cpp numbers.cpp platmath.cpp            \
