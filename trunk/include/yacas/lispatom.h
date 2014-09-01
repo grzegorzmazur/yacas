@@ -107,7 +107,7 @@ class LispNumber : public ObjectHelper<LispNumber>
 public:
     /// constructors:
     /// construct from another LispNumber
-  LispNumber(BigNumber* aNumber, LispString * aString = nullptr) : iNumber(aNumber), iString(aString) {}
+  LispNumber(BigNumber* aNumber) : iNumber(aNumber), iString(nullptr) {}
   LispNumber(const LispNumber& other) : ASuper(other), iNumber(other.iNumber), iString(other.iString) {}
   /// construct from a decimal string representation (also create a number object) and use aBasePrecision decimal digits
   LispNumber(LispString * aString, LispInt aBasePrecision) : iNumber(nullptr), iString(aString) { Number(aBasePrecision); }
