@@ -25,16 +25,13 @@
 #include "lispobject.h"
 #include "lispstring.h"
 #include "numbers.h"  // RefPtr<BigNumber> needs definition of BigNumber
+#include "noncopyable.h"
 
 /// This should be used whenever constants 2, 10 mean binary and decimal.
 // maybe move somewhere else?
-#define BASE10 10
-#define BASE2 2
+constexpr int BASE10 = 10;
+constexpr int BASE2 = 2;
 
-// Flags used for atom types. These are not strictly necessary, but
-// do speed up certain evaluations by avoiding a lot of overhead.
-#define KFlagIsNumeric 0x01  // Quoted (after executing the args for
-                          // a LispLambda, or for a LispSetQuoted)
 
 class LispEnvironment;
 

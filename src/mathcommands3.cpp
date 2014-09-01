@@ -723,7 +723,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
     value.push_back(*str++);
     value.push_back('\0');
 
-    info =  LIST(LA(ATOML("List")) + LA(ATOML(name.c_str())) + LA(ATOML(value.c_str()))) + LA(info);
+    info =  LispSubList::New(LispObjectAdder(LispAtom::New(aEnvironment, "List")) + LispObjectAdder(LispAtom::New(aEnvironment, name.c_str())) + LispObjectAdder(LispAtom::New(aEnvironment, value.c_str()))) + LispObjectAdder(info);
     while (*str == ' ') str++;
   }
   if (*str == '/')
@@ -733,13 +733,13 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
     while (*str == ' ') str++;
   }
 
-  info = LIST(LA(ATOML("List")) + LA(info));
+  info = LispSubList::New(LispObjectAdder(LispAtom::New(aEnvironment, "List")) + LispObjectAdder(info));
   RESULT = (
-              LIST(
-                   LA(ATOML("XmlTag")) +
-                   LA(ATOML(tag.c_str())) +
-                   LA(info) +
-                   LA(ATOML(type))
+              LispSubList::New(
+                   LispObjectAdder(LispAtom::New(aEnvironment, "XmlTag")) +
+                   LispObjectAdder(LispAtom::New(aEnvironment, tag.c_str())) +
+                   LispObjectAdder(info) +
+                   LispObjectAdder(LispAtom::New(aEnvironment, type))
                   )
              );
 }
@@ -783,7 +783,7 @@ void YacasBuiltinAssoc(LispEnvironment& aEnvironment, LispInt aStackTop)
         t = t->Nixed();
     }
 
-    RESULT = (ATOML("Empty"));
+    RESULT = (LispAtom::New(aEnvironment, "Empty"));
 }
 
 void LispCurrentFile(LispEnvironment& aEnvironment, LispInt aStackTop)
