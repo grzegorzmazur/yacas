@@ -1258,7 +1258,7 @@ FND_2:
     }
     // ok, so we need to represent MAX(aPrecision,sig_digits) digits in base aBase
     aIsFloat = true;
-    return (LispInt) digits_to_bits(MAX(aBasePrecision,sig_digits), aBase);
+    return (LispInt) digits_to_bits(std::max(aBasePrecision,sig_digits), aBase);
   }
   else
   {

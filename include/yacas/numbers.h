@@ -33,9 +33,6 @@ LispObject* LispFactorial(LispObject* int1, LispEnvironment& aEnvironment,LispIn
 // methods generally useful for all numeric libraries
 const unsigned GUARD_BITS = 8;  // we leave this many guard bits untruncated in various situations when we need to truncate precision by hand
 
-template<class T> inline T MAX(T x, T y) { if (x<y) return y; else return x; }
-template<class T> inline T MIN(T x, T y) { if (x>y) return y; else return x; }
-
 const long DIST_BITS = 1;  // at least this many bits of difference - used in precision tracking
 
 /// DIST(x, y) returns 1 if abs(x-y) >= DIST_BITS. See documentation for precision tracking.
@@ -44,12 +41,12 @@ template<class T> inline T DIST(T x, T y) { return (x>=y+DIST_BITS || y>=x+DIST_
 
 /** Base number class.
  */
- 
+
 
 class ANumber;
 
 
- 
+
 /// Main class for multiple-precision arithmetic.
 /// All calculations are done at given precision. Integers grow as needed, floats don't grow beyond given precision.
 class BigNumber : public YacasBase
@@ -119,7 +116,7 @@ public:/// Bitwise operations, return result in *this.
   /// Bit count operation: return the number of significant bits if integer, return the binary exponent if float (shortcut for binary logarithm)
   /// give bit count as a platform integer
   signed long BitCount() const;
- 
+
   /// Give sign (-1, 0, 1)
   LispInt Sign() const;
 
