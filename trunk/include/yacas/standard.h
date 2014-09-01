@@ -52,8 +52,6 @@ void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnviron
 void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
                         const LispChar* aString);
 
-#define ATOML(_s) LispAtom::New(aEnvironment,_s)
-#define LIST(_c) LispSubList::New(_c)
 class LispObjectAdder : public YacasBase
 {
 public:
@@ -61,7 +59,6 @@ public:
         : iPtr(aPtr) {};
    LispObject* iPtr;
 };
-#define LA(_o) LispObjectAdder(_o)
 
 LispObject* operator+(const LispObjectAdder& left, const LispObjectAdder& right);
 

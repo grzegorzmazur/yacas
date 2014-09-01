@@ -267,11 +267,11 @@ void LispEnvironment::CurrentLocals(LispPtr& aResult)
   LispObject* locals = nullptr;
   while (ptr)
   {
-    locals = LA(ATOML(ptr->iVariable->c_str()))+LA(locals);
+    locals = LispObjectAdder(LispAtom::New(aEnvironment, ptr->iVariable->c_str()))+LispObjectAdder(locals);
 //    printf("%s ",ptr->iVariable->c_str());
     ptr = ptr->iNext;
   }
-  aResult = (LIST(LA(ATOML("List")) + LA(locals)));
+  aResult = (LispSubList::New(LispObjectAdder(LispAtom::New(aEnvironment, "List")) + LispObjectAdder(locals)));
 }
 
 
