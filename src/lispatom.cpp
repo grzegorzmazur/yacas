@@ -117,12 +117,8 @@ LispGenericClass::LispGenericClass(GenericClass* aClass) : iClass(aClass)
 
 LispGenericClass::~LispGenericClass()
 {
-    iClass->iReferenceCount--;
-    if (iClass->iReferenceCount == 0)
-    {
+    if (--iClass->iReferenceCount == 0)
         delete iClass;
-    }
-    iClass=nullptr;
 }
 
 GenericClass* LispGenericClass::Generic()
