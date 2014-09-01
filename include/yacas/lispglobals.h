@@ -22,40 +22,39 @@
 class LispGlobalVariable : public YacasBase
 {
 public:
-    inline LispGlobalVariable(const LispGlobalVariable& aOther);
+    LispGlobalVariable(const LispGlobalVariable& aOther);
     LispGlobalVariable(LispPtr& aValue): iValue(aValue), iEvalBeforeReturn(false) {}
-    inline LispGlobalVariable& operator=(const LispGlobalVariable& aOther);
+    LispGlobalVariable& operator=(const LispGlobalVariable& aOther);
 
-    inline void SetEvalBeforeReturn(bool aEval);
+    void SetEvalBeforeReturn(bool aEval);
+
     LispPtr iValue;
     bool iEvalBeforeReturn;
 };
 
-/// Associated hash of LispGlobalVariable objects
-
-class LispGlobal : public LispAssociatedHash<LispGlobalVariable>
-{
-};
+typedef std::unordered_map<LispStringSmartPtr, LispGlobalVariable, std::hash<LispString*> > LispGlobal;
 
 
-
-
-inline LispGlobalVariable::LispGlobalVariable(const LispGlobalVariable& aOther) : iValue(aOther.iValue), iEvalBeforeReturn(false)
+inline
+LispGlobalVariable::LispGlobalVariable(const LispGlobalVariable& aOther):
+    iValue(aOther.iValue),
+    iEvalBeforeReturn(false)
 {
 }
 
-inline void LispGlobalVariable::SetEvalBeforeReturn(bool aEval)
+inline
+void LispGlobalVariable::SetEvalBeforeReturn(bool aEval)
 {
-  iEvalBeforeReturn = aEval;
+    iEvalBeforeReturn = aEval;
 }
 
 
-inline LispGlobalVariable& LispGlobalVariable::operator=(const LispGlobalVariable& aOther)
+inline
+LispGlobalVariable& LispGlobalVariable::operator=(const LispGlobalVariable& aOther)
 {
-  iValue = (aOther.iValue);
-  return *this;
+    iValue = aOther.iValue;
+    return *this;
 }
-
 
 #endif
 

@@ -182,14 +182,14 @@ void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue, bool 
     return;
   }
 
-  iGlobals.SetAssociation(LispGlobalVariable(aValue), aVariable);
-  if (aGlobalLazyVariable)
-  {
-    //TODO we just added the variable! We should not need to re-look it up! Optimize!
-    LispGlobalVariable *l = iGlobals.LookUp(aVariable);
-    assert(l);
-    l->SetEvalBeforeReturn(true);
-  }
+    LispGlobal::iterator i = iGlobals.find(aVariable);
+    if (i != iGlobals.end())
+        i->second = LispGlobalVariable(aValue);
+    else
+        i = iGlobals.insert(std::make_pair(aVariable, LispGlobalVariable(aValue))).first;
+
+    if (aGlobalLazyVariable)
+        i->second.SetEvalBeforeReturn(true);
 }
 
 void LispEnvironment::GetVariable(LispString * aVariable,LispPtr& aResult)
@@ -201,25 +201,20 @@ void LispEnvironment::GetVariable(LispString * aVariable,LispPtr& aResult)
     aResult = ((*local));
     return;
   }
-  LispGlobalVariable *l = iGlobals.LookUp(aVariable);
-  if (l)
-  {
-    if (l->iEvalBeforeReturn)
-    {
-      InternalEval(*this, aResult, l->iValue);
-      // re-lookup the global variable, as this pointer might now be invalid due to the evaluation actually changing the global itself.
-      l = iGlobals.LookUp(aVariable);
+    LispGlobal::iterator i = iGlobals.find(aVariable);
+    if (i != iGlobals.end()) {
+        LispGlobalVariable* l = &i->second;
+        if (l->iEvalBeforeReturn) {
+            InternalEval(*this, aResult, l->iValue);
+            // re-lookup the global variable, as this pointer might now be invalid due to the evaluation actually changing the global itself.
+            l = &iGlobals.find(aVariable)->second;
 
-      l->iValue = (aResult);
-      l->iEvalBeforeReturn = false;
-      return;
+            l->iValue = aResult;
+            l->iEvalBeforeReturn = false;
+        } else {
+            aResult = l->iValue;
+        }
     }
-    else
-    {
-      aResult = (l->iValue);
-      return;
-    }
-  }
 }
 
 void LispEnvironment::UnsetVariable(LispString * aString)
@@ -230,7 +225,7 @@ void LispEnvironment::UnsetVariable(LispString * aString)
         (*local) = (nullptr);
         return;
     }
-    iGlobals.Release(aString);
+    iGlobals.erase(aString);
 }
 
 void LispEnvironment::PushLocalFrame(bool aFenced)
