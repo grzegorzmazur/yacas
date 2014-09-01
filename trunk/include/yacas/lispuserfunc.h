@@ -3,11 +3,12 @@
 
 #include "yacasbase.h"
 #include "lispobject.h"
-#include "lispenvironment.h"
-#include "lisphash.h"
 #include "evalfunc.h"
 
 #include <vector>
+#include <unordered_map>
+
+class LispEnvironment;
 
 /// Abstract class providing the basic user function API.
 /// Instances of this class are associated to the name of the function
@@ -116,10 +117,7 @@ public:
 
 
 /// Associated hash of LispMultiUserFunction objects.
-
-class LispUserFunctions : public LispAssociatedHash<LispMultiUserFunction>
-{
-};
+typedef std::unordered_map<LispStringSmartPtr, LispMultiUserFunction, std::hash<LispString*> > LispUserFunctions;
 
 
 #endif
