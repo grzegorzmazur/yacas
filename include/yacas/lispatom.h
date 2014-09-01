@@ -102,7 +102,6 @@ private:
     GenericClass* iClass;
 };
 
-class LispHashTable;
 class LispNumber : public ObjectHelper<LispNumber>
 {
 public:
