@@ -11,6 +11,7 @@
 #include "lisphash.h"
 #include "lispevalhash.h"
 #include "lispcleanupstack.h"
+#include "lispuserfunc.h"
 #include "deffile.h"
 #include "lispio.h"
 #include "stringio.h"
@@ -29,7 +30,6 @@ class LispInput;
 class LispOutput;
 class LispPrinter;
 class LispOperators;
-class LispUserFunctions;
 class LispUserFunction;
 class LispMultiUserFunction;
 class LispEvaluatorBase;

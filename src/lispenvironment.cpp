@@ -328,10 +328,9 @@ void LispEnvironment::SetCurrentOutput(LispOutput* aOutput)
 
 LispUserFunction* LispEnvironment::UserFunction(LispPtr& aArguments)
 {
-    LispMultiUserFunction* multiUserFunc =
-        iUserFunctions.LookUp(aArguments->String());
-    if (multiUserFunc)
-    {
+    LispUserFunctions::iterator i = iUserFunctions.find(aArguments->String());
+    if (i != iUserFunctions.end()) {
+        LispMultiUserFunction* multiUserFunc = &i->second;
         LispInt arity = InternalListLength(aArguments)-1;
         assert(multiUserFunc->UserFunc(arity));
         return  multiUserFunc->UserFunc(arity);
@@ -340,25 +339,25 @@ LispUserFunction* LispEnvironment::UserFunction(LispPtr& aArguments)
 }
 
 
-LispUserFunction* LispEnvironment::UserFunction(LispString * aName,LispInt aArity)
+LispUserFunction* LispEnvironment::UserFunction(LispString* aName,LispInt aArity)
 {
-    LispMultiUserFunction* multiUserFunc = iUserFunctions.LookUp(aName);
-    if (multiUserFunc)
-    {
-        return  multiUserFunc->UserFunc(aArity);
-    }
+    LispUserFunctions::iterator i = iUserFunctions.find(aName);
+    if (i != iUserFunctions.end())
+        return i->second.UserFunc(aArity);
+
     return nullptr;
 }
 
 
 
-void LispEnvironment::UnFenceRule(LispString * aOperator,LispInt aArity)
+void LispEnvironment::UnFenceRule(LispString* aOperator,LispInt aArity)
 {
-    LispMultiUserFunction* multiUserFunc =
-        iUserFunctions.LookUp(aOperator);
+    LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
 
-    if (!multiUserFunc)
+    if (i == iUserFunctions.end())
         throw LispErrInvalidArg();
+
+    LispMultiUserFunction* multiUserFunc = &i->second;
 
     LispUserFunction* userFunc = multiUserFunc->UserFunc(aArity);
 
@@ -370,11 +369,10 @@ void LispEnvironment::UnFenceRule(LispString * aOperator,LispInt aArity)
 
 void LispEnvironment::Retract(LispString * aOperator,LispInt aArity)
 {
-    LispMultiUserFunction* multiUserFunc = iUserFunctions.LookUp(aOperator);
-    if (multiUserFunc)
-    {
-        multiUserFunc->DeleteBase(aArity);
-    }
+    LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
+
+    if (i != iUserFunctions.end())
+        i->second.DeleteBase(aArity);
 }
 
 void LispEnvironment::DeclareRuleBase(LispString * aOperator,
@@ -402,7 +400,7 @@ void LispEnvironment::DeclareRuleBase(LispString * aOperator,
     }
     multiUserFunc->DefineRuleBase(newFunc);
 
-  DBG_({ extern long theNrDefinedUser; theNrDefinedUser++; })
+    DBG_({ extern long theNrDefinedUser; theNrDefinedUser++; })
 }
 
 void LispEnvironment::DeclareMacroRuleBase(LispString * aOperator, LispPtr& aParameters, LispInt aListed)
@@ -425,38 +423,27 @@ void LispEnvironment::DeclareMacroRuleBase(LispString * aOperator, LispPtr& aPar
 
 
 
-LispMultiUserFunction* LispEnvironment::MultiUserFunction(LispString * aOperator)
+LispMultiUserFunction* LispEnvironment::MultiUserFunction(LispString* aOperator)
 {
-    // Find existing multiuser func.
-    LispMultiUserFunction* multiUserFunc =
-        iUserFunctions.LookUp(aOperator);
+    LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
 
-    // If none exists, add one to the user functions list
-    if (!multiUserFunc)
-    {
-        LispMultiUserFunction newMulti;
-        iUserFunctions.SetAssociation(newMulti, aOperator);
-        multiUserFunc =
-            iUserFunctions.LookUp(aOperator);
+    if (i != iUserFunctions.end())
+        return &i->second;
 
-        if (!multiUserFunc)
-            throw LispErrCreatingUserFunction();
-    }
-    return multiUserFunc;
+    LispMultiUserFunction newMulti;
+    return &iUserFunctions.insert(std::make_pair(aOperator, newMulti)).first->second;
+    //SetAssociation(newMulti, aOperator);
 }
 
 
-
-
-
-
-void LispEnvironment::HoldArgument(LispString *  aOperator, LispString * aVariable)
+void LispEnvironment::HoldArgument(LispString*  aOperator, LispString* aVariable)
 {
-    LispMultiUserFunction* multiUserFunc =
-        iUserFunctions.LookUp(aOperator);
+    LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
 
-    if (!multiUserFunc)
+    if (i == iUserFunctions.end())
         throw LispErrInvalidArg();
+
+    LispMultiUserFunction* multiUserFunc = &i->second;
 
     multiUserFunc->HoldArgument(aVariable);
 }
@@ -467,11 +454,12 @@ void LispEnvironment::DefineRule(LispString * aOperator,LispInt aArity,
                                  LispPtr& aBody)
 {
     // Find existing multiuser func.
-    LispMultiUserFunction* multiUserFunc =
-        iUserFunctions.LookUp(aOperator);
+    LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
 
-    if (!multiUserFunc)
+    if (i == iUserFunctions.end())
         throw LispErrCreatingRule();
+
+    LispMultiUserFunction* multiUserFunc = &i->second;
 
     // Get the specific user function with the right arity
     LispUserFunction* userFunc = multiUserFunc->UserFunc(aArity);
@@ -496,11 +484,12 @@ void LispEnvironment::DefineRulePattern(LispString * aOperator,LispInt aArity,
                                         LispPtr& aBody)
 {
     // Find existing multiuser func.
-    LispMultiUserFunction* multiUserFunc =
-        iUserFunctions.LookUp(aOperator);
+    LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
 
-    if (!multiUserFunc)
+    if (i == iUserFunctions.end())
         throw LispErrCreatingRule();
+
+    LispMultiUserFunction* multiUserFunc = &i->second;
 
     // Get the specific user function with the right arity
     LispUserFunction* userFunc = multiUserFunc->UserFunc(aArity);
