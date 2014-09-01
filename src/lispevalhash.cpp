@@ -9,9 +9,6 @@
 
 
 
-#define InternalEval aEnvironment.iEvaluator->Eval
-
-
 void YacasEvaluator::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,LispPtr& aArguments)
 {
 
@@ -59,7 +56,7 @@ void YacasEvaluator::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,Lis
       if (!iter.getObj())
           throw LispErrWrongNumberOfArgs();
 
-      InternalEval(aEnvironment, arg, *iter);
+      aEnvironment.iEvaluator->Eval(aEnvironment, arg, *iter);
       aEnvironment.iStack.PushArgOnStack(arg);
       ++iter;
     }
@@ -79,7 +76,7 @@ PrintExpression(res, list,aEnvironment,100);
 printf("before %s\n",res.String());
 */
 
-      InternalEval(aEnvironment, arg, list);
+      aEnvironment.iEvaluator->Eval(aEnvironment, arg, list);
 
 /*
 PrintExpression(res, arg,aEnvironment,100);
