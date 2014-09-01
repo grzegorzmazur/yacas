@@ -16,6 +16,21 @@
 #define DBG_(xxx) /*xxx*/
 #endif
 
+inline
+void HashByte(LispUnsLong& h, LispChar c)
+{
+    h=(h<<4)+c;
+    LispUnsLong g = h&0xf0000000L;
+    if (g)
+    {
+        h=h^(g>>24);
+        h=h^g;
+    }
+}
+
+#define HASHBIN(_h)    (LispInt)((_h)%KSymTableSize)
+
+
 typedef std::vector<LispStringSmartPtr> LispStringSmartPtrArray;
 
 LispHashTable::~LispHashTable()

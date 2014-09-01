@@ -47,48 +47,4 @@ LispString* LispHashTable::LookUp(const LispChar* aString)
     return LookUpCounted(aString, std::strlen(aString));
 }
 
-
-/** LispAssociatedHash allows you to associate arbitrary
- * information with a string in the above hash table. You can
- * specify what type of information to link to the string, and
- * this class then stores that information for a string. It is
- * in a sense a way to extend the string object without modifying
- * the string class itself. This class does not own the strings it
- * points to, but instead relies on the fact that the strings
- * are maintained in a hash table (like LispHashTable above).
- */
-template<class T>
-class LispAssociatedHash : public YacasBase
-{
-public:
-  /// Find the data associated to \a aString.
-  /// If \a aString is not stored in the hash table, this function
-  /// returns #nullptr.
-  inline T* LookUp(LispString * aString);
-
-  /// Add an association to the hash table.
-  /// If \a aString is already stored in the hash table, its
-  /// association is changed to \a aData. Otherwise, a new
-  /// association is added.
-  inline void SetAssociation(const T& aData, LispString * aString);
-
-  /// Delete an association from the hash table.
-  inline void Release(LispString * aString);
-
-protected:
-  /** The destructor is made protected because we do not want the outside world to directly
-   *  call this destructor. The alternative would be to make the destructor virtual.
-   */
-  inline ~LispAssociatedHash();
-
-private:
-  // The next array is in fact an array of arrays of type LAssoc<T>
-  std::vector<void*> iHashTable[KSymTableSize];
-};
-
-
-
-#include "lisphash.inl"
-
-
 #endif
