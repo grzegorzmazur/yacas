@@ -263,15 +263,14 @@ void LispEnvironment::CurrentLocals(LispPtr& aResult)
   LispEnvironment::LocalVariableFrame* fr = iLocalsList;
   LispEnvironment::LispLocalVariable* ptr = fr->iFirst;
 
-  LispEnvironment& aEnvironment = *this; //Pity, but we need this for the macros to work
   LispObject* locals = nullptr;
   while (ptr)
   {
-    locals = LispObjectAdder(LispAtom::New(aEnvironment, ptr->iVariable->c_str()))+LispObjectAdder(locals);
+    locals = LispObjectAdder(LispAtom::New(*this, ptr->iVariable->c_str()))+LispObjectAdder(locals);
 //    printf("%s ",ptr->iVariable->c_str());
     ptr = ptr->iNext;
   }
-  aResult = (LispSubList::New(LispObjectAdder(LispAtom::New(aEnvironment, "List")) + LispObjectAdder(locals)));
+  aResult = (LispSubList::New(LispObjectAdder(LispAtom::New(*this, "List")) + LispObjectAdder(locals)));
 }
 
 
