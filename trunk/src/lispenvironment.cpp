@@ -104,11 +104,13 @@ LispEnvironment::LispEnvironment(
 
 LispEnvironment::~LispEnvironment()
 {
-  PopLocalFrame();
+    // normally, there should be only the initial local frame left,
+    // but this doesn't hold in case of exception
+    while (iLocalsList)
+        PopLocalFrame();
 
-  assert(!iLocalsList);
-  delete iEvaluator;
-  if (iDebugger) delete iDebugger;
+    delete iEvaluator;
+    delete iDebugger;
 }
 
 void LispEnvironment::SetPrecision(LispInt aPrecision)
