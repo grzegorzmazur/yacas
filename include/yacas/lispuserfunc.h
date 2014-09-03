@@ -19,7 +19,6 @@ class LispUserFunction : public EvalFuncBase
 {
 public:
     LispUserFunction() : iFenced(true),iTraced(false) {};
-    virtual ~LispUserFunction();
     virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
                   LispPtr& aArguments)=0;
     virtual void HoldArgument(LispString * aVariable) = 0;

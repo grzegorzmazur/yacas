@@ -3,10 +3,6 @@
 #include "yacas/lispuserfunc.h"
 #include "yacas/standard.h"
 
-LispUserFunction::~LispUserFunction()
-{
-}
-
 LispUserFunction* LispMultiUserFunction::UserFunc(LispInt aArity)
 {
     //Find function body with the right arity
