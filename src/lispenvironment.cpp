@@ -333,7 +333,6 @@ LispUserFunction* LispEnvironment::UserFunction(LispPtr& aArguments)
     if (i != iUserFunctions.end()) {
         LispMultiUserFunction* multiUserFunc = &i->second;
         LispInt arity = InternalListLength(aArguments)-1;
-        assert(multiUserFunc->UserFunc(arity));
         return  multiUserFunc->UserFunc(arity);
     }
     return nullptr;
