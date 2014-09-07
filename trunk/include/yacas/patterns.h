@@ -18,15 +18,15 @@
 #include "lisptype.h"
 #include "lispenvironment.h"
 #include "noncopyable.h"
+#include "numbers.h"
 
 #include <vector>
 
 /// Abstract class for matching one argument to a pattern.
-class YacasParamMatcherBase : public YacasBase
-{
+class YacasParamMatcherBase: public YacasBase {
 public:
     /// Destructor.
-    virtual ~YacasParamMatcherBase() {}
+    virtual ~YacasParamMatcherBase() = default;
 
     /// Check whether some expression matches to the pattern.
     /// \param aEnvironment the underlying Lisp environment.
@@ -35,52 +35,78 @@ public:
     /// variables for \a aExpression.
     virtual bool ArgumentMatches(LispEnvironment& aEnvironment,
                                         LispPtr& aExpression,
-                                        LispPtr* arguments)=0;
+                                        LispPtr* arguments) const = 0;
 };
 
 /// Class for matching an expression to a given atom.
 class MatchAtom : public YacasParamMatcherBase
 {
 public:
-    MatchAtom(LispString * aString);
+    explicit MatchAtom(LispString* aString);
     virtual bool ArgumentMatches(LispEnvironment& aEnvironment,
                                         LispPtr& aExpression,
-                                        LispPtr* arguments);
+                                        LispPtr* arguments) const;
 protected:
-    LispString * iString;
+    LispString* iString;
 };
+
+inline
+MatchAtom::MatchAtom(LispString* aString):
+    iString(aString)
+{
+}
 
 /// Class for matching an expression to a given number.
 class MatchNumber : public YacasParamMatcherBase
 {
 public:
-    MatchNumber(BigNumber* aNumber);
+    explicit MatchNumber(BigNumber* aNumber);
     virtual bool ArgumentMatches(LispEnvironment& aEnvironment,
                                         LispPtr& aExpression,
-                                        LispPtr* arguments);
+                                        LispPtr* arguments) const;
 protected:
     RefPtr<BigNumber> iNumber;
 };
 
-/// Class for matching against a list of YacasParamMatcherBase objects.
-class MatchSubList : public YacasParamMatcherBase, NonCopyable
+inline
+MatchNumber::MatchNumber(BigNumber* aNumber):
+    iNumber(aNumber)
 {
+}
+
+/// Class for matching against a list of YacasParamMatcherBase objects.
+class MatchSubList : public YacasParamMatcherBase, NonCopyable {
 public:
-  MatchSubList(YacasParamMatcherBase** aMatchers, LispInt aNrMatchers);
-  ~MatchSubList();
-  virtual bool ArgumentMatches(LispEnvironment& aEnvironment,
-                                      LispPtr& aExpression,
-                                      LispPtr* arguments);
+    explicit MatchSubList(const std::vector<YacasParamMatcherBase*>&& aMatchers);
+    ~MatchSubList();
+
+    bool ArgumentMatches(
+        LispEnvironment& aEnvironment,
+        LispPtr& aExpression,
+        LispPtr* arguments) const;
+
 protected:
-  YacasParamMatcherBase** iMatchers;
-  LispInt iNrMatchers;
+    std::vector<YacasParamMatcherBase*> iMatchers;
 };
 
+inline
+MatchSubList::MatchSubList(const std::vector<YacasParamMatcherBase*>&& aMatchers):
+    iMatchers(aMatchers)
+{
+}
+
+inline
+MatchSubList::~MatchSubList()
+{
+    for (YacasParamMatcherBase* m: iMatchers)
+        delete m;
+}
+
 /// Class for matching against a pattern variable.
-class MatchVariable : public YacasParamMatcherBase
+class MatchVariable: public YacasParamMatcherBase
 {
 public:
-    MatchVariable(LispInt aVarIndex);
+    explicit MatchVariable(LispInt aVarIndex);
 
     /// Matches an expression against the pattern variable.
     /// \param aEnvironment the underlying Lisp environment.
@@ -94,20 +120,23 @@ public:
     /// \a aExpression.
     virtual bool ArgumentMatches(LispEnvironment& aEnvironment,
                                         LispPtr& aExpression,
-                                        LispPtr* arguments);
+                                        LispPtr* arguments) const;
 protected:
     /// Index of variable in YacasPatternPredicateBase::iVariables.
     LispInt iVarIndex;
 };
 
+inline
+MatchVariable::MatchVariable(LispInt aVarIndex):
+    iVarIndex(aVarIndex)
+{
+}
 
 /// Class that matches function arguments to a pattern.
 /// This class (specifically, the Matches() member function) can match
 /// function parameters to a pattern, check for predicates on the
 /// arguments, and return whether there was a match.
-
-class YacasPatternPredicateBase : public YacasBase
-{
+class YacasPatternPredicateBase : public YacasBase, NonCopyable {
 public:
     /// Constructor.
     /// \param aEnvironment the underlying Lisp environment
@@ -124,7 +153,7 @@ public:
                               LispPtr& aPostPredicate);
 
     /// Destructor.
-    ~YacasPatternPredicateBase();
+    virtual ~YacasPatternPredicateBase();
 
     /// Try to match the pattern against \a aArguments.
     /// First, every argument in \a aArguments is matched against the

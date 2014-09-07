@@ -11,14 +11,9 @@
 #include <stdio.h>
 #endif // YACAS_DEBUG
 
-
-MatchAtom::MatchAtom(LispString * aString) : iString(aString)
-{
-}
-
 bool MatchAtom::ArgumentMatches(LispEnvironment& aEnvironment,
                                        LispPtr& aExpression,
-                                       LispPtr* arguments)
+                                       LispPtr* arguments) const
 {
     // If it is a floating point, don't even bother comparing
     if (!!aExpression)
@@ -30,33 +25,18 @@ bool MatchAtom::ArgumentMatches(LispEnvironment& aEnvironment,
 }
 
 
-
-
-
-
-
-MatchNumber::MatchNumber(BigNumber* aNumber) : iNumber(aNumber)
-{
-}
-
 bool MatchNumber::ArgumentMatches(LispEnvironment& aEnvironment,
                                        LispPtr& aExpression,
-                                       LispPtr* arguments)
+                                       LispPtr* arguments) const
 {
   if (aExpression->Number(aEnvironment.Precision()))
     return iNumber->Equals(*aExpression->Number(aEnvironment.Precision()));
   return false;
 }
 
-
-
-
-MatchVariable::MatchVariable(LispInt aVarIndex) : iVarIndex(aVarIndex)
-{
-}
 bool MatchVariable::ArgumentMatches(LispEnvironment& aEnvironment,
                                        LispPtr& aExpression,
-                                       LispPtr* arguments)
+                                       LispPtr* arguments) const
 {
     if (!arguments[iVarIndex])
     {
@@ -74,27 +54,9 @@ bool MatchVariable::ArgumentMatches(LispEnvironment& aEnvironment,
     return false;
 }
 
-MatchSubList::MatchSubList(YacasParamMatcherBase** aMatchers,
-                           LispInt aNrMatchers)
-: iMatchers(aMatchers),iNrMatchers(aNrMatchers)
-
-{
-}
-
-MatchSubList::~MatchSubList()
-{
-    if (iMatchers)
-    {
-        LispInt i;
-        for (i=0;i<iNrMatchers;i++)
-            delete iMatchers[i];
-        PlatFree(iMatchers);
-    }
-}
-
 bool MatchSubList::ArgumentMatches(LispEnvironment& aEnvironment,
                                           LispPtr& aExpression,
-                                          LispPtr* arguments)
+                                          LispPtr* arguments) const
 {
   if (!aExpression->SubList())
     return false;
@@ -112,6 +74,7 @@ bool MatchSubList::ArgumentMatches(LispEnvironment& aEnvironment,
 
   iter = *pPtr;
 
+  const LispInt iNrMatchers = iMatchers.size();
   for (LispInt i=0;i<iNrMatchers;i++,++iter)
   {
     if (!iter.getObj())
@@ -204,14 +167,14 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
             }
         }
 
-        YacasParamMatcherBase** matchers = PlatAllocN<YacasParamMatcherBase*>(num);
+        std::vector<YacasParamMatcherBase*> matchers;
+        matchers.reserve(num);
         LispIterator iter(*sublist);
-        for (LispInt i=0;i<num;i++,++iter)
-        {
-            matchers[i] = MakeParamMatcher(aEnvironment,iter.getObj());
+        for (LispInt i = 0; i < num; ++i, ++iter) {
+            matchers.push_back(MakeParamMatcher(aEnvironment,iter.getObj()));
             assert(matchers[i]);
         }
-    return NEW MatchSubList(matchers, num);
+        return NEW MatchSubList(std::move(matchers));
     }
 
     return nullptr;
