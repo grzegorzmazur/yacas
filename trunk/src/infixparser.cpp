@@ -387,18 +387,16 @@ void ParsedObject::ReadAtom()
 }
 
 
-void InfixPrinter::WriteToken(LispOutput& aOutput, const LispChar * aString)
+void InfixPrinter::WriteToken(std::ostream& aOutput, const LispChar * aString)
 {
     if (IsAlNum(iPrevLastChar) && (IsAlNum(aString[0]) || aString[0]=='_'))
-    {
-        aOutput.Write(" ");
-    }
+        aOutput.put(' ');
     else if (IsSymbolic(iPrevLastChar) && IsSymbolic(aString[0]))
-    {
-        aOutput.Write(" ");
-    }
-    aOutput.Write(aString);
-    RememberLastChar(aString[std::strlen(aString)-1]);
+        aOutput.put(' ');
+
+    const std::size_t n = std::strlen(aString);
+    aOutput.write(aString, n);
+    RememberLastChar(aString[n-1]);
 }
 
 void InfixPrinter::RememberLastChar(LispChar aChar)
@@ -408,7 +406,7 @@ void InfixPrinter::RememberLastChar(LispChar aChar)
 
 void InfixPrinter::Print(
     const LispPtr& aExpression,
-    LispOutput& aOutput,
+    std::ostream& aOutput,
     LispEnvironment& aEnvironment)
 {
     iCurrentEnvironment = &aEnvironment;
@@ -417,7 +415,7 @@ void InfixPrinter::Print(
 
 void InfixPrinter::Print(
     const LispPtr& aExpression,
-    LispOutput& aOutput,
+    std::ostream& aOutput,
     LispInt iPrecedence)
 {
     assert(aExpression);

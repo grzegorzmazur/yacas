@@ -20,6 +20,8 @@
 #include "lispuserfunc.h"
 #include "noncopyable.h"
 
+#include <sstream>
+
 
 /// The default environment for a Yacas session.
 /// This class constructs a LispEnvironment (to be found in
@@ -27,16 +29,14 @@
 /// functions are listed in corefunctions.h . Examples of core
 /// functions are \c Head, \c Set and \c Eval.
 
-class DefaultYacasEnvironment : public YacasBase, NonCopyable
+class DefaultYacasEnvironment: NonCopyable
 {
 public:
-  DefaultYacasEnvironment();
-  DefaultYacasEnvironment(LispOutput* aOutput, LispInt aStackSize);
-  virtual ~DefaultYacasEnvironment();
+  DefaultYacasEnvironment(std::ostream&, LispInt aStackSize);
   LispEnvironment& getEnv() {return iEnvironment;}
 
 private:
-  LispOutput* output;
+  std::ostream& output;
   LispHashTable hash;
   LispPrinter printer;
 
@@ -66,53 +66,57 @@ public:
 
 
 
-class CYacas : public YacasBase
-{
+class CYacas {
 public:
     /// Constructor
-    LISPIMPORT CYacas(LispOutput* aOutput = 0, LispInt aStackSize = 50000);
-
-    /// Destructor.
-    LISPIMPORT virtual ~CYacas();
+    LISPIMPORT CYacas(std::ostream&, LispInt aStackSize = 50000);
 
     /// Return the underlying Yacas environment.
-    inline DefaultYacasEnvironment& getDefEnv() {return environment;}
+    DefaultYacasEnvironment& getDefEnv() {return environment;}
 
     /// Evaluate a Yacas expression.
     /// First, \p aExpression is parsed by an InfixParser. Then it is
     /// evaluated in the underlying Lisp environment. Finally, the
     /// result is printed to #iResultOutput via the pretty printer or,
     /// if this is not defined, via an InfixPrinter.
-    virtual void Evaluate(const LispChar * aExpression);
+    void Evaluate(const LispChar * aExpression);
 
     /// Return the result of the expression.
     /// This is stored in #iResult.
-    virtual const LispChar* Result();
+    const std::string& Result() const;
 
     /// Return the error message produced by the last evaluation.
     /// The error is retrieved from #environment.
-    virtual const LispChar* Error();
+    const std::string& Error() const;
 
     /// Whether an error occured during the last evaluation.
-    inline bool IsError();
+    bool IsError() const;
 
 private:
 
     /// The underlying Yacas environment
     DefaultYacasEnvironment environment;
 
-    /// String containing the result of the last evaluation
-    LispString iResult;
-
-    /// Stream pointing to #iResult.
-    StringOutput iResultOutput;
+    std::string _result;
+    std::string _error;
 };
 
-inline bool CYacas::IsError()
+inline
+const std::string& CYacas::Result() const
 {
-    return (Error()[0] != '\0');
+  return _result;
+}
+
+inline
+const std::string& CYacas::Error() const
+{
+  return _error;
+}
+
+inline
+bool CYacas::IsError() const
+{
+    return !Error().empty();
 }
 
 #endif
-
-

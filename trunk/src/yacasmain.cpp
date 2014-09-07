@@ -427,7 +427,7 @@ void DeclarePath(const char *ptr2)
         std::cout << "Failed to set default directory: " << yacas->Error() << "\n";
 }
 
-void LoadYacas(LispOutput* aOutput = 0)
+void LoadYacas(std::ostream& os)
 {
     if (yacas)
         return;
@@ -435,7 +435,7 @@ void LoadYacas(LispOutput* aOutput = 0)
     busy = true;
     restart = false;
 
-    yacas = NEW CYacas(aOutput, stack_size);
+    yacas = NEW CYacas(os, stack_size);
 
 
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) yacas->getDefEnv().getEnv().SetCommand(fname,iname,nrargs,flags);
@@ -1011,7 +1011,7 @@ int parse_options(int argc, char** argv)
                 if (fileind < argc) {
                     const char* immediate = argv[fileind];
                     if (immediate) {
-                        LoadYacas();
+                        LoadYacas(std::cout);
 
                         if (use_texmacs_out)
                             yacas->getDefEnv().getEnv().SetPrettyPrinter(yacas->getDefEnv().getEnv().HashTable().LookUp("\"TexForm\""));
@@ -1136,7 +1136,7 @@ int main(int argc, char** argv)
         outprompt = "Out> ";
     }
 
-    LoadYacas();
+    LoadYacas(std::cout);
 
     if (use_texmacs_out)
         yacas->getDefEnv().getEnv().SetPrettyPrinter(yacas->getDefEnv().getEnv().HashTable().LookUp("\"TexForm\""));
@@ -1196,7 +1196,7 @@ int main(int argc, char** argv)
         if (restart) {
             delete yacas;
             yacas = 0;
-            LoadYacas();
+            LoadYacas(std::cout);
         }
 
     } while (restart);

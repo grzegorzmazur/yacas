@@ -10,7 +10,6 @@ LispParser::LispParser(LispTokenizer& aTokenizer, LispInput& aInput,
     : iTokenizer(aTokenizer), iInput(aInput),iEnvironment(aEnvironment),
     iListed(false) {}
 
-LispParser::~LispParser() {}
 void LispParser::Parse(LispPtr& aResult)
 {
     aResult = nullptr;
@@ -73,30 +72,27 @@ void LispParser::ParseList(LispPtr& aResult)
 }
 
 
-LispPrinter::~LispPrinter() {}
-
-
 void LispPrinter::Print(
     const LispPtr& aExpression,
-    LispOutput& aOutput,
+    std::ostream& aOutput,
     LispEnvironment& aEnvironment)
 {
     PrintExpression(aExpression, aOutput, aEnvironment, 0);
 }
 
-void LispPrinter::Indent(LispOutput& aOutput, LispInt aDepth)
+void LispPrinter::Indent(std::ostream& aOutput, LispInt aDepth)
 {
-  aOutput.Write("\n");
+  aOutput.put('\n');
   LispInt i;
   for (i=aDepth;i>0;i--)
   {
-    aOutput.Write("  ");
+    aOutput.write("  ", 2);
   }
 }
 
 void LispPrinter::PrintExpression(
     const LispPtr& aExpression,
-    LispOutput& aOutput,
+    std::ostream& aOutput,
     LispEnvironment& aEnvironment,
     LispInt aDepth)
 {
@@ -109,8 +105,7 @@ void LispPrinter::PrintExpression(
 
         if (string)
         {
-            aOutput.Write(string->c_str());
-            aOutput.PutChar(' ');
+            aOutput << *string << ' ';
         }
         // else print "(", print sublist, and print ")"
         else if ((*iter)->SubList())
@@ -119,14 +114,14 @@ void LispPrinter::PrintExpression(
       {
         Indent(aOutput,aDepth+1);
       }
-            aOutput.Write("(");
+            aOutput.put('(');
             PrintExpression(*((*iter)->SubList()),aOutput, aEnvironment,aDepth+1);
-            aOutput.Write(")");
+            aOutput.put(')');
       item=0;
         }
         else
         {
-            aOutput.Write("[GenericObject]");
+            aOutput << "[GenericObject]";
         }
         iter = &((*iter)->Nixed());
   item++;

@@ -1,6 +1,3 @@
-
-
-
 #include "yacas/yacasprivate.h"
 #include "yacas/yacasbase.h"
 #include "yacas/patterns.h"
@@ -336,13 +333,12 @@ bool YacasPatternPredicateBase::CheckPredicates(LispEnvironment& aEnvironment)
 #endif
 
 
-      aEnvironment.iErrorOutput.Write("The predicate\n\t");
+      aEnvironment.iErrorOutput << "The predicate\n\t";
       PrintExpression(strout, iPredicates[i], aEnvironment, LIM_AL);
-      aEnvironment.iErrorOutput.Write(strout.c_str());
-      aEnvironment.iErrorOutput.Write("\nevaluated to\n\t");
+      aEnvironment.iErrorOutput << strout;
+      aEnvironment.iErrorOutput << "\nevaluated to\n\t";
       PrintExpression(strout, pred, aEnvironment, LIM_AL);
-      aEnvironment.iErrorOutput.Write(strout.c_str());
-      aEnvironment.iErrorOutput.Write("\n");
+      aEnvironment.iErrorOutput << strout << '\n';
 
       ShowStack(aEnvironment);
       throw LispErrMaxRecurseDepthReached();
@@ -370,4 +366,3 @@ YacasPatternPredicateBase::~YacasPatternPredicateBase()
     for (YacasParamMatcherBase* p: iParamMatchers)
         delete p;
 }
-

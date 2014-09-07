@@ -24,6 +24,8 @@
 #include <limits.h>
 #include <stdlib.h>
 
+#include <sstream>
+
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -191,8 +193,8 @@ void LispFullForm(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     RESULT = (ARGUMENT(1));
     LispPrinter printer;
-    printer.Print(RESULT, *aEnvironment.CurrentOutput(), aEnvironment);
-    aEnvironment.CurrentOutput()->Write("\n");
+    printer.Print(RESULT, aEnvironment.CurrentOutput(), aEnvironment);
+    aEnvironment.CurrentOutput().put('\n');
 }
 
 
@@ -623,7 +625,7 @@ void LispWrite(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispIterator iter(*subList);
     while ((++iter).getObj())
     {
-      aEnvironment.CurrentPrinter().Print(*iter,*aEnvironment.CurrentOutput(),aEnvironment);
+      aEnvironment.CurrentPrinter().Print(*iter,aEnvironment.CurrentOutput(),aEnvironment);
     }
   }
   InternalTrue(aEnvironment,RESULT);
@@ -642,7 +644,7 @@ void LispWriteString(LispEnvironment& aEnvironment, LispInt aStackTop)
   //((*str)[i] != '\"')
   for (i=1;i<nr;i++)
   {
-    aEnvironment.CurrentOutput()->PutChar((*str)[i]);
+    aEnvironment.CurrentOutput().put((*str)[i]);
   }
   // pass last printed character to the current printer
   aEnvironment.CurrentPrinter().RememberLastChar((*str)[nr-1]);  // hacky hacky
@@ -1249,8 +1251,7 @@ void LispToFile(LispEnvironment& aEnvironment, LispInt aStackTop)
       ShowStack(aEnvironment);
       throw LispErrFileNotFound();
   }
-  StdFileOutput newOutput(localFP);
-  LispLocalOutput localOutput(aEnvironment, &newOutput);
+  LispLocalOutput localOutput(aEnvironment, localFP.stream);
 
   // Evaluate the body
   InternalEval(aEnvironment, RESULT, ARGUMENT(2));
@@ -1268,9 +1269,9 @@ void LispCheck(LispEnvironment& aEnvironment,LispInt aStackTop)
     InternalEval(aEnvironment, evaluated, ARGUMENT(2));
     CheckArgIsString(evaluated, 2, aEnvironment, aStackTop);
     ShowStack(aEnvironment);
-    throw LispErrUser(evaluated->String()->c_str());
+    throw LispErrUser(*evaluated->String());
   }
-  RESULT = (pred);
+  RESULT = pred;
 }
 
 void LispTrapError(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -1281,16 +1282,17 @@ void LispTrapError(LispEnvironment& aEnvironment,LispInt aStackTop)
         HandleError(error, aEnvironment, aEnvironment.iErrorOutput);
     }
 
-  if (aEnvironment.iError[0])
+  if (!aEnvironment.iErrorOutput.str().empty())
   {
     InternalEval(aEnvironment, RESULT, ARGUMENT(2));
-    aEnvironment.iError = "";
+    aEnvironment.iErrorOutput.clear();
+    aEnvironment.iErrorOutput.str("");
   }
 }
 
 void LispGetCoreError(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-  RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(aEnvironment.iError.c_str())->c_str()));
+  RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(aEnvironment.iErrorOutput.str().c_str())->c_str()));
 }
 
 void LispSystemCall(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -1542,21 +1544,20 @@ void YacasBuiltinPrecisionGet(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispToString(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispString oper;
-    StringOutput newOutput(oper);
+    std::ostringstream os;
 
-    LispLocalOutput localOutput(aEnvironment, &newOutput);
+    LispLocalOutput localOutput(aEnvironment, os);
 
     // Evaluate the body
     InternalEval(aEnvironment, RESULT, ARGUMENT(1));
 
     //Return the result
-    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(oper.c_str())->c_str()));
+    RESULT = LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(os.str().c_str())->c_str());
 }
 
 void LispToStdout(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispLocalOutput localOutput(aEnvironment, aEnvironment.iInitialOutput);
+    LispLocalOutput localOutput(aEnvironment, *aEnvironment.iInitialOutput);
     // Evaluate the body
     InternalEval(aEnvironment, RESULT, ARGUMENT(1));
 }

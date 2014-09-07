@@ -2,17 +2,14 @@
 #include "yacas/lispenvironment.h"
 #include "yacas/standard.h"
 
-void HandleError(const LispError& error, LispEnvironment& aEnvironment, LispOutput& aOutput)
+void HandleError(const LispError& error, LispEnvironment& aEnvironment, std::ostream& aOutput)
 {
     if (aEnvironment.iInputStatus.LineNumber() >= 0) {
-        LispChar linenum[20];
-        InternalIntToAscii(linenum,aEnvironment.iInputStatus.LineNumber());
-        aOutput.Write(aEnvironment.iInputStatus.FileName());
-        aOutput.Write("(");
-        aOutput.Write(linenum);
-        aOutput.Write(") : ");
+        aOutput << aEnvironment.iInputStatus.FileName();
+        aOutput << "(";
+        aOutput << aEnvironment.iInputStatus.LineNumber();
+        aOutput << ") : ";
     }
     aEnvironment.iCleanup.Delete();
-    aOutput.Write(error.what());
-    aOutput.Write("\n");
+    aOutput << error.what() << '\n';
 }

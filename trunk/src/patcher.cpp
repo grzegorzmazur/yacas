@@ -47,7 +47,7 @@ static LispInt FindEndCommand(const LispChar* aPtr, LispInt aFrom)
  *  Everything between <? and ?> is evaluated. The result
  *  is thrown away.
  */
-void PatchLoad(const LispChar* aFileContent, LispOutput& aOutput,
+void PatchLoad(const LispChar* aFileContent, std::ostream& aOutput,
                LispEnvironment& aEnvironment)
 {
     LispInt i=0;
@@ -57,7 +57,7 @@ REDO:
     next = FindEndAscii(aFileContent,i);
     while (i<next)
     {
-        aOutput.PutChar(aFileContent[i]);
+        aOutput.put(aFileContent[i]);
         i++;
     }
     if (aFileContent[i] == '<')
