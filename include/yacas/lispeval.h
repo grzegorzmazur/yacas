@@ -45,7 +45,7 @@ public:
   virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression)=0;
   virtual void ResetStack();
   virtual UserStackInformation& StackInformation();
-  virtual void ShowStack(LispEnvironment& aEnvironment, LispOutput& aOutput);
+  virtual void ShowStack(LispEnvironment& aEnvironment, std::ostream& aOutput);
 private:
   UserStackInformation iBasicInfo;
 };
@@ -95,11 +95,9 @@ public:
 class TracedEvaluator : public BasicEvaluator
 {
 public:
-  TracedEvaluator() :  BasicEvaluator(),errorStr(),errorOutput(errorStr){}
-  virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
+  void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
 protected:
-  LispString errorStr;
-  StringOutput errorOutput;
+  std::ostringstream errorOutput;
 };
 
 
@@ -111,7 +109,7 @@ public:
   virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
   virtual void ResetStack();
   virtual UserStackInformation& StackInformation();
-  virtual void ShowStack(LispEnvironment& aEnvironment, LispOutput& aOutput);
+  virtual void ShowStack(LispEnvironment& aEnvironment, std::ostream& aOutput);
 private:
   void PushFrame();
   void PopFrame();

@@ -602,7 +602,7 @@ void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 
   CachedStdFileInput newInput(localFP,aEnvironment.iInputStatus);
   PatchLoad(newInput.StartPtr(),
-            *aEnvironment.CurrentOutput(),
+            aEnvironment.CurrentOutput(),
             aEnvironment);
   aEnvironment.iInputStatus.RestoreFrom(oldstatus);
   InternalTrue(aEnvironment,RESULT);
@@ -615,11 +615,11 @@ void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
   CheckArg(string, 1, aEnvironment, aStackTop);
   LispString oper;
   InternalUnstringify(oper, *string);
-  LispString str;
-  StringOutput newOutput(str);
-  LispLocalOutput localOutput(aEnvironment, &newOutput);
-  PatchLoad(oper.c_str(), newOutput, aEnvironment);
-  RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(str.c_str())->c_str()));
+
+  std::ostringstream os;
+  LispLocalOutput localOutput(aEnvironment, os);
+  PatchLoad(oper.c_str(), os, aEnvironment);
+  RESULT = LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(os.str().c_str())->c_str());
 }
 
 void YacasExtraInfoSet(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -861,4 +861,3 @@ void LispDigitsToBits(LispEnvironment& aEnvironment, LispInt aStackTop)
   z->SetTo(result);
   RESULT = (NEW LispNumber(z));
 }
-

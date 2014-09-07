@@ -9,6 +9,7 @@
 #include "yacasbase.h"
 #include "lispparser.h"
 
+#include <ostream>
 #include <unordered_map>
 
 constexpr LispInt KMaxPrecedence = 60000;
@@ -132,7 +133,7 @@ public:
 
     virtual void Print(
         const LispPtr& aExpression,
-        LispOutput& aOutput,
+        std::ostream& aOutput,
         LispEnvironment& aEnvironment);
 
     virtual void RememberLastChar(LispChar aChar);
@@ -140,10 +141,10 @@ public:
 private:
     void Print(
         const LispPtr& aExpression,
-        LispOutput& aOutput,
+        std::ostream& aOutput,
         LispInt iPrecedence);
 
-    void WriteToken(LispOutput& aOutput, const LispChar* aString);
+    void WriteToken(std::ostream& aOutput, const LispChar* aString);
 
 private:
     LispOperators& iPrefixOperators;

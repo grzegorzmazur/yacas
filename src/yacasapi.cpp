@@ -19,26 +19,17 @@ long theNrDefinedUser=0;
 //    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("While"));
 
 
-DefaultYacasEnvironment::~DefaultYacasEnvironment()
-{
-  delete output;
-}
-
-
-
-DefaultYacasEnvironment::DefaultYacasEnvironment(LispOutput* aOutput, LispInt aStackSize)
-  : output(aOutput),hash(),printer(),coreCommands(),globals(),
-    prefixoperators(),infixoperators(),postfixoperators(),bodiedoperators(),
+DefaultYacasEnvironment::DefaultYacasEnvironment(std::ostream& os, LispInt aStackSize)
+  : output(os),
     infixprinter(prefixoperators,
                  infixoperators,
                  postfixoperators,
                  bodiedoperators),
-    userFunctions(),
     iEnvironment(coreCommands,userFunctions,
                  globals,hash,output,infixprinter,
                  prefixoperators,infixoperators,
                  postfixoperators,bodiedoperators,&input,aStackSize),
-     input(iEnvironment.iInputStatus)
+    input(iEnvironment.iInputStatus)
 {
     // Define the built-in functions by tying their string representation
     // to a kernel callable routine.
@@ -51,27 +42,18 @@ DefaultYacasEnvironment::DefaultYacasEnvironment(LispOutput* aOutput, LispInt aS
 }
 
 
-CYacas::CYacas(LispOutput* aOutput, LispInt aStackSize):
-    environment(aOutput ? aOutput : NEW StdUserOutput(), aStackSize),
-    iResultOutput(iResult)
+CYacas::CYacas(std::ostream& os, LispInt aStackSize):
+    environment(os, aStackSize)
 {
 }
-
-
-LISPEXPORT CYacas::~CYacas()
-{
-}
-
-
-
 
 void CYacas::Evaluate(const LispChar * aExpression)
 {
-  LispEnvironment& env = environment.getEnv();
-  LispInt stackTop = env.iStack.GetStackTop();
 
-  iResult = "";
-  env.iError = "";
+    std::ostringstream iResultOutput;
+
+    LispEnvironment& env = environment.getEnv();
+    LispInt stackTop = env.iStack.GetStackTop();
 
     LispPtr result;
 
@@ -127,7 +109,7 @@ void CYacas::Evaluate(const LispChar * aExpression)
                                        env.Bodied());
 
              infixprinter.Print(result, iResultOutput, env);
-             iResultOutput.Write(";");
+             iResultOutput.put(';');
          }
          LispString * percent = env.HashTable().LookUp("%");
          env.SetVariable(percent,result,true);
@@ -136,18 +118,7 @@ void CYacas::Evaluate(const LispChar * aExpression)
      }
 
      env.iStack.PopTo(stackTop);
+
+     _result = iResultOutput.str();
+     _error = env.iErrorOutput.str();
 }
-
-const LispChar* CYacas::Result()
-{
-  return iResult.c_str();
-}
-
-const LispChar* CYacas::Error()
-{
-  LispEnvironment& env = environment.getEnv();
-  return env.iError.c_str();
-}
-
-
-

@@ -57,17 +57,13 @@ static void DoLoadDefFile(
     // Else evaluate
     else
     {
-      LispString * str = token;
-      LispMultiUserFunction* multiUser = aEnvironment.MultiUserFunction(str);
-      if (multiUser->iFileToOpen!=nullptr)
-      {
-        aEnvironment.CurrentOutput()->Write("[");
-        aEnvironment.CurrentOutput()->Write(&(*str)[0]);
-        aEnvironment.CurrentOutput()->Write("]\n");
-        if (multiUser->iFileToOpen)
-            throw LispErrDefFileAlreadyChosen();
-      }
-      multiUser->iFileToOpen = def;
+        LispMultiUserFunction* multiUser = aEnvironment.MultiUserFunction(token);
+        if (multiUser->iFileToOpen != nullptr) {
+            aEnvironment.CurrentOutput() << '[' << *token << "]\n";
+            if (multiUser->iFileToOpen)
+               throw LispErrDefFileAlreadyChosen();
+        }
+        multiUser->iFileToOpen = def;
     }
   }
 }

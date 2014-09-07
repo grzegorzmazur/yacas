@@ -24,7 +24,7 @@ LispEnvironment::LispEnvironment(
                     LispUserFunctions& aUserFunctions,
                     LispGlobal& aGlobals,
                     LispHashTable& aHashTable,
-                    LispOutput* aOutput,
+                    std::ostream& aOutput,
                     LispPrinter& aPrinter,
                     LispOperators &aPreFixOperators,
                     LispOperators &aInFixOperators,
@@ -58,17 +58,15 @@ LispEnvironment::LispEnvironment(
     iList(),
     iProg(),
     iLastUniqueId(1),
-    iError(),
-    iErrorOutput(iError),
     iDebugger(nullptr),
     iLocalsList(nullptr),
-    iInitialOutput(aOutput),
+    iInitialOutput(&aOutput),
     iCoreCommands(aCoreCommands),
     iUserFunctions(aUserFunctions),
     iHashTable(aHashTable),
     iDefFiles(),
     iPrinter(aPrinter),
-    iCurrentOutput(aOutput),
+    iCurrentOutput(&aOutput),
     iGlobals(aGlobals),
     iPreFixOperators(aPreFixOperators),
     iInFixOperators(aInFixOperators),
@@ -315,14 +313,14 @@ void LispEnvironment::SetCurrentInput(LispInput* aInput)
     iCurrentInput = aInput;
 }
 
-LispOutput* LispEnvironment::CurrentOutput()
+std::ostream& LispEnvironment::CurrentOutput()
 {
-    return iCurrentOutput;
+    return *iCurrentOutput;
 }
 
-void LispEnvironment::SetCurrentOutput(LispOutput* aOutput)
+void LispEnvironment::SetCurrentOutput(std::ostream& aOutput)
 {
-    iCurrentOutput = aOutput;
+    iCurrentOutput = &aOutput;
 }
 
 
@@ -543,7 +541,7 @@ void LispLocalInput::Delete()
 
 void LispLocalOutput::Delete()
 {
-    iEnvironment.SetCurrentOutput(iPreviousOutput);
+    iEnvironment.SetCurrentOutput(*iPreviousOutput);
 }
 
 

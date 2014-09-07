@@ -12,12 +12,14 @@
 #include "lispio.h"
 #include "evalfunc.h"
 
+#include <ostream>
+
 class LispParser : public YacasBase
 {
 public:
     LispParser(LispTokenizer& aTokenizer, LispInput& aInput,
                LispEnvironment& aEnvironment);
-    virtual ~LispParser();
+
     virtual void Parse(LispPtr& aResult );
 protected:
     void ParseList(LispPtr& aResult);
@@ -30,17 +32,12 @@ public:
     LispInt iListed;
 };
 
-
-
-
 class LispPrinter : public YacasBase
 {
 public:
-    virtual ~LispPrinter();
-
     virtual void Print(
         const LispPtr& aExpression,
-        LispOutput& aOutput,
+        std::ostream& aOutput,
         LispEnvironment& aEnvironment);
 
     virtual void RememberLastChar(LispChar aChar);
@@ -48,11 +45,11 @@ public:
 private:
     void PrintExpression(
         const LispPtr& aExpression,
-        LispOutput& aOutput,
+        std::ostream& aOutput,
         LispEnvironment& aEnvironment,
         LispInt aDepth=0);
 
-    void Indent(LispOutput& aOutput, LispInt aDepth);
+    void Indent(std::ostream& aOutput, LispInt aDepth);
 };
 
 

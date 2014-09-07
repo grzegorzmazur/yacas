@@ -16,6 +16,8 @@
 #include "yacas/stringio.h"
 #include "yacas/numbers.h"
 
+#include <sstream>
+
 bool InternalIsList(const LispPtr& aPtr)
 {
     if (!aPtr)
@@ -521,13 +523,13 @@ void PrintExpression(LispString& aResult,
                      LispEnvironment& aEnvironment,
                      std::size_t aMaxChars)
 {
-    aResult.clear();
-    StringOutput newOutput(aResult);
+    std::ostringstream stream;
     InfixPrinter infixprinter(aEnvironment.PreFix(),
                               aEnvironment.InFix(),
                               aEnvironment.PostFix(),
                               aEnvironment.Bodied());
-    infixprinter.Print(aExpression, newOutput, aEnvironment);
+    infixprinter.Print(aExpression, stream, aEnvironment);
+    aResult.assign(stream.str());
     if (aMaxChars > 0 && aResult.size()>aMaxChars)
     {
         aResult.resize(aMaxChars - 3);
@@ -543,5 +545,3 @@ LispString* SymbolName(LispEnvironment& aEnvironment,
     else
         return aEnvironment.HashTable().LookUp(aSymbol);
 }
-
-

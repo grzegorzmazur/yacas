@@ -22,6 +22,7 @@
 
 #include <atomic>
 #include <string>
+#include <sstream>
 #include <vector>
 
 class LispDefFiles;
@@ -51,7 +52,7 @@ public:
                   LispUserFunctions& aUserFunctions,
                   LispGlobal& aGlobals,
                   LispHashTable& aHashTable,
-                  LispOutput* aOutput,
+                  std::ostream& aOutput,
                   LispPrinter& aPrinter,
                   LispOperators &aPreFixOperators,
                   LispOperators &aInFixOperators,
@@ -192,8 +193,8 @@ public:
   LispInput* CurrentInput();
   void SetCurrentInput(LispInput* aInput);
 public:
-  LispOutput* CurrentOutput();
-  void SetCurrentOutput(LispOutput* aOutput);
+  std::ostream& CurrentOutput();
+  void SetCurrentOutput(std::ostream&);
   //@}
 
 protected:
@@ -231,8 +232,7 @@ public: // pre-found
   LispInt iLastUniqueId;
 
 public: // Error reporting
-  LispString iError;
-  StringOutput iErrorOutput;
+  std::ostringstream iErrorOutput;
   DefaultDebugger* iDebugger;
 
 private:
@@ -292,7 +292,7 @@ private:
   LocalVariableFrame *iLocalsList;
 
 public:
-  LispOutput* iInitialOutput;
+  std::ostream* iInitialOutput;
 
 private:
   /// Hash of core commands with associated YacasEvaluator
@@ -302,7 +302,7 @@ private:
   LispHashTable& iHashTable;
   LispDefFiles   iDefFiles;
   LispPrinter&   iPrinter;
-  LispOutput*    iCurrentOutput;
+  std::ostream*    iCurrentOutput;
 
   /// Hash of global variables with their values
   LispGlobal&    iGlobals;
@@ -469,10 +469,10 @@ private:
 class LispLocalOutput : public LispBase, NonCopyable
 {
 public:
-  LispLocalOutput(LispEnvironment& aEnvironment, LispOutput* aOutput)
-      : iEnvironment(aEnvironment), iPreviousOutput(iEnvironment.CurrentOutput())
+  LispLocalOutput(LispEnvironment& aEnvironment, std::ostream& aOutput)
+      : iEnvironment(aEnvironment), iPreviousOutput(&iEnvironment.CurrentOutput())
   {
-    iPreviousOutput = iEnvironment.CurrentOutput();
+    iPreviousOutput = &iEnvironment.CurrentOutput();
     iEnvironment.SetCurrentOutput(aOutput);
     SAFEPUSH(iEnvironment,*this);
   };
@@ -485,7 +485,7 @@ public:
 
 private:
   LispEnvironment& iEnvironment;
-  LispOutput* iPreviousOutput;
+  std::ostream* iPreviousOutput;
 };
 
 class LispLocalEvaluator : public YacasBase, NonCopyable
@@ -499,23 +499,11 @@ private:
   LispEnvironment& iEnvironment;
 };
 
-class LispLocalTrace : public YacasBase
+class LispLocalTrace : public YacasBase, NonCopyable
 {
 public:
   LispLocalTrace(LispUserFunction* aUserFunc);
   ~LispLocalTrace();
-private:
-  LispLocalTrace(const LispLocalTrace& aOther) : iUserFunc(nullptr)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-  }
-  LispLocalTrace& operator=(const LispLocalTrace& aOther)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-    return *this;
-  }
 private:
   LispUserFunction* iUserFunc;
 };
