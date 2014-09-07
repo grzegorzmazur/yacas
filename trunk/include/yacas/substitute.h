@@ -5,6 +5,7 @@
 #include "lispobject.h"
 #include "lispenvironment.h"
 
+#include <vector>
 
 /** Behaviour for substituting sub-expressions.
  */
@@ -42,15 +43,17 @@ private:
 class LocalSymbolBehaviour : public SubstBehaviourBase
 {
 public:
-    LocalSymbolBehaviour(LispEnvironment& aEnvironment,
-                         LispString ** aOriginalNames,
-                         LispString ** aNewNames, LispInt aNrNames);
+    LocalSymbolBehaviour(
+        LispEnvironment& aEnvironment,
+        const std::vector<LispString*>&& aOriginalNames,
+        const std::vector<LispString*>&& aNewNames);
+
     virtual bool Matches(LispPtr& aResult, LispPtr& aElement);
+
 private:
     LispEnvironment& iEnvironment;
-    LispString ** iOriginalNames;
-    LispString ** iNewNames;
-    LispInt iNrNames;
+    std::vector<LispString*> iOriginalNames;
+    std::vector<LispString*> iNewNames;
 };
 
 /** subst behaviour for backquote mechanism as in LISP.

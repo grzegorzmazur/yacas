@@ -52,15 +52,19 @@ bool SubstBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
 {
     if (InternalEquals(iEnvironment, aElement, iToMatch))
     {
-        aResult = (iToReplaceWith->Copy());
+        aResult = iToReplaceWith->Copy();
         return true;
     }
     return false;
 }
 
-LocalSymbolBehaviour::LocalSymbolBehaviour(LispEnvironment& aEnvironment,LispString ** aOriginalNames,
-                     LispString ** aNewNames, LispInt aNrNames)
-: iEnvironment(aEnvironment),iOriginalNames(aOriginalNames),iNewNames(aNewNames), iNrNames(aNrNames)
+LocalSymbolBehaviour::LocalSymbolBehaviour(
+    LispEnvironment& aEnvironment,
+    const std::vector<LispString*>&& aOriginalNames,
+    const std::vector<LispString*>&& aNewNames):
+    iEnvironment(aEnvironment),
+    iOriginalNames(aOriginalNames),
+    iNewNames(aNewNames)
 {
 }
 
@@ -70,8 +74,8 @@ bool LocalSymbolBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
     if (!name)
         return false;
 
-    LispInt i;
-    for (i=0;i<iNrNames;i++)
+    const LispInt iNrNames = iOriginalNames.size();
+    for (LispInt i=0;i<iNrNames;i++)
     {
         if (name == iOriginalNames[i])
         {

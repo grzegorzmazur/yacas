@@ -41,13 +41,8 @@ void LispLocalSymbols(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     LispInt nrSymbols = nrArguments-2;
 
-    LispString * *names      = PlatAllocN<LispString *>(nrSymbols);
-    LispString * *localnames = PlatAllocN<LispString *>(nrSymbols);
-    //TODO names and localnames should be pushed on the cleanup stack!!!
-    if (!names || !localnames) {
-        ShowStack(aEnvironment);
-        throw LispErrNotEnoughMemory();
-    }
+    std::vector<LispString*> names(nrSymbols);
+    std::vector<LispString*> localnames(nrSymbols);
 
     LispInt uniquenumber = aEnvironment.GetUniqueId();
     LispInt i;
@@ -68,11 +63,9 @@ void LispLocalSymbols(LispEnvironment& aEnvironment, LispInt aStackTop)
         localnames[i] = variable;
     }
 
-    LocalSymbolBehaviour behaviour(aEnvironment,names,localnames,nrSymbols);
+    LocalSymbolBehaviour behaviour(aEnvironment, std::move(names), std::move(localnames));
     LispPtr result;
     InternalSubstitute(result, Argument(ARGUMENT(0), nrArguments-1), behaviour);
-    PlatFree(names);
-    PlatFree(localnames);
 
     InternalEval(aEnvironment, RESULT, result);
 }
