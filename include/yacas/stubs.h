@@ -58,7 +58,4 @@ void operator delete[](void* object) DELETE_THROWER;
 
 #endif  // NO_GLOBALS
 
-template <class T>
-inline T * PlatAllocN(LispInt aSize) { return (T*)PlatAlloc(aSize*sizeof(T)); }
-
 #endif
