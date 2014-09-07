@@ -50,7 +50,7 @@ protected:
 class CachedStdFileInput: public StdFileInput {
 public:
     CachedStdFileInput(LispLocalFile& aFile,InputStatus& aStatus);
-    ~CachedStdFileInput() ;
+
     LispChar Next();
     LispChar Peek();
     bool EndOfStream() const;
@@ -64,9 +64,8 @@ private:
     CachedStdFileInput(const CachedStdFileInput&);
     CachedStdFileInput& operator=(const CachedStdFileInput&);
 
-    LispChar* iBuffer;
+    std::vector<LispChar> _buf;
     std::size_t iCurrentPos;
-    std::size_t iNrBytes;
 };
 
 class StdFileOutput: public LispOutput {
