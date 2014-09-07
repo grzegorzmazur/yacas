@@ -86,59 +86,38 @@ void StdFileOutput::PutChar(LispChar c)
     stream.put(c);
 }
 
-
-
-
-
-
-
-CachedStdFileInput::~CachedStdFileInput()
-{
-    PlatFree(iBuffer);
-}
-
 CachedStdFileInput::CachedStdFileInput(LispLocalFile& file, InputStatus& status):
     StdFileInput(file, status),
-    iBuffer(0),
     iCurrentPos(0)
 {
     // Get size of file
     stream.seekg(0, std::ios_base::end);
-    iNrBytes = stream.tellg();
+    const std::size_t n = stream.tellg();
     stream.seekg(0);
 
     // Read in the full buffer
-    char * ptr = PlatAllocN<char>(iNrBytes+1);      // sizeof(char) == 1
-    iBuffer = (LispChar *)ptr;                      // sizeof(LispChar) == not so sure
+    _buf.resize(n + 1);
 
-    if (!ptr)
-        throw LispErrNotEnoughMemory();
+    stream.read(_buf.data(), n);
 
-    stream.read(ptr, iNrBytes);
-
-    // if (n != 1)
-    //     throw LispErrReadingFile();
-
-    ptr[iNrBytes] = '\0';
+    _buf.back() = '\0';
 }
 
 LispChar CachedStdFileInput::Next()
 {
-    LispChar c;
-    assert(iCurrentPos < iNrBytes);
-    c = iBuffer[iCurrentPos++];
+    assert(iCurrentPos + 1 < _buf.size());
+    const LispChar c = _buf[iCurrentPos++];
 
     if (c == '\n')
-    {
         iStatus.NextLine();
-    }
+
     return c;
 }
 
 LispChar CachedStdFileInput::Peek()
 {
-    assert(iCurrentPos < iNrBytes);
-    return iBuffer[iCurrentPos];
+    assert(iCurrentPos + 1 < _buf.size());
+    return _buf[iCurrentPos];
 }
 
 
@@ -149,20 +128,21 @@ void CachedStdFileInput::Rewind()
 
 bool CachedStdFileInput::EndOfStream() const
 {
-    return (iCurrentPos >= iNrBytes);
+    return iCurrentPos + 1 >= _buf.size();
 }
 
 const LispChar* CachedStdFileInput::StartPtr()
 {
-    return iBuffer;
+    return _buf.data();
 }
+
 std::size_t CachedStdFileInput::Position() const
 {
     return iCurrentPos;
 }
 void CachedStdFileInput::SetPosition(std::size_t aPosition)
 {
-  assert(aPosition<iNrBytes);
+  assert(aPosition + 1 < _buf.size());
   iCurrentPos = aPosition;
 }
 
