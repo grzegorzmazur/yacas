@@ -4,7 +4,6 @@
 #include "yacas/lisphash.h"
 
 #include <cassert>
-#include <cstring>
 
 #ifdef YACAS_DEBUG
 #include <stdio.h> // Safe, only included if YACAS_DEBUG is defined
@@ -35,8 +34,8 @@ typedef std::vector<LispStringSmartPtr> LispStringSmartPtrArray;
 
 LispHashTable::~LispHashTable()
 {
-  LispInt bin,i,n;
 #ifdef YACAS_DEBUG
+  LispInt bin,i,n;
   bool fault = false;
   for (bin = 0; bin < KSymTableSize; bin++)
   {
@@ -53,30 +52,9 @@ LispHashTable::~LispHashTable()
   }
   assert(!fault);
 #endif // YACAS_DEBUG
-  for (bin = 0; bin < KSymTableSize; bin++)
-  {
-    LispStringSmartPtrArray & aBin = iHashTable[bin];
-    for (i = 0, n = aBin.size(); i < n; i++)
-    {
-      // Check that this LispHashTable is a unique pool!?
-      aBin[i] = (nullptr);
-    }
-  }
-}
-
-LispInt  LispHash( const char *s )
-//
-// Simple hash function
-//
-{
-    const LispChar *p;
-    LispUnsLong h=0;
-
-    for (p=s;*p!='\0';p++)
-    {
-        HashByte( h, *p);
-    }
-    return HASHBIN(h);
+  for (std::size_t bin = 0; bin < KSymTableSize; ++bin)
+      for (LispStringSmartPtr& p: iHashTable[bin])
+          p = nullptr;
 }
 
 LispInt  LispHashCounted( const char *s,LispInt length )
@@ -88,9 +66,8 @@ LispInt  LispHashCounted( const char *s,LispInt length )
     LispUnsLong h=0;
 
     for (i=0;i<length;i++)
-    {
         HashByte( h, s[i]);
-    }
+
     return HASHBIN(h);
 }
 
@@ -111,31 +88,12 @@ LispInt  LispHashStringify( const char *s )
     return HASHBIN(h);
 }
 
-LispInt LispHashPtr(const LispString * aString)
+LispInt LispHashStringify(const std::string& s)
 {
-    LispChar * p = (LispChar *)(&aString);
-    LispUnsLong h=0;
-
-    switch (sizeof(LispString *))
-    {
-    case 8: HashByte( h, *p++);
-    case 7: HashByte( h, *p++);
-    case 6: HashByte( h, *p++);
-    case 5: HashByte( h, *p++);
-    case 4: HashByte( h, *p++);
-    case 3: HashByte( h, *p++);
-    case 2: HashByte( h, *p++);
-    case 1: HashByte( h, *p++);
-    break;
-    default:
-        assert(0); //Extend it then...
-
-    }
-    return (HASHBIN(h));
+    return LispHashStringify(s.c_str());
 }
 
 DBG_( long theNrTokens=0; )
-
 
 void LispHashTable::AppendString(LispInt bin, LispString* result)
 {
@@ -184,29 +142,27 @@ LispInt StrEqualStringified(const LispChar * ptr1, const LispChar * ptr2)
 }
 
 // If string not yet in table, insert. Afterwards return the string.
-LispString * LispHashTable::LookUpStringify(const LispChar * aString)
+
+LispString * LispHashTable::LookUpStringify(const std::string& aString)
 {
-    LispInt bin = LispHashStringify(aString);
+    const LispInt bin = LispHashStringify(aString);
 
     // Find existing version of string
-  LispStringSmartPtrArray & aBin = iHashTable[bin];
-  for (LispInt i = 0, n = aBin.size(); i < n; i++)
-    {
-        if (StrEqualStringified(aBin[i]->c_str(), aString))
-        {
+    LispStringSmartPtrArray& aBin = iHashTable[bin];
+    for (LispInt i = 0, n = aBin.size(); i < n; i++) {
+        if (aBin[i]->size() == (aString.size() + 2) && StrEqualStringified(aBin[i]->c_str(), aString.c_str()))
             return aBin[i];
-        }
     }
 
     // Append a new string
-  DBG_( theNrTokens++; )
+    DBG_(theNrTokens++;)
     LispString * str = NEW LispString();
 
     str->assign("\"");
     str->append(aString);
     str->append("\"");
 
-    AppendString(bin,str);
+    AppendString(bin, str);
     return str;
 }
 

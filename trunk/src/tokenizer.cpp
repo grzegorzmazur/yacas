@@ -104,7 +104,7 @@ FALSEALARM:
           throw LispErrParsingInput();
     }
     aResult.push_back(aInput.Next()); // consume the close quote
-    return aHashTable.LookUp(aResult.c_str());
+    return aHashTable.LookUp(aResult);
   }
   //parse atoms
   else if (IsAlpha(c))
@@ -237,7 +237,7 @@ FALSEALARM:
           throw LispErrParsingInput();
     }
     aResult.push_back(aInput.Next()); // consume the close quote
-    return aHashTable.LookUp(aResult.c_str());
+    return aHashTable.LookUp(aResult);
   }
   //parse atoms
   else if (IsAlpha(c) || IsSymbolic(c))

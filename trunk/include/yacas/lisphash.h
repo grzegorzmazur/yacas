@@ -11,11 +11,7 @@
 #include "lispstring.h"
 #include <vector>
 
-const LispInt KSymTableSize = 211;
-LispInt LispHash( const char *s );
-LispInt LispHashCounted( const char *s, LispInt length );
-LispInt LispHashStringify( const char *s );
-LispInt LispHashPtr(const LispString * aString);  // hash the *address*!
+constexpr LispInt KSymTableSize = 211;
 
 /**
  * This is the symbol table, implemented as a hash table for fast
@@ -27,13 +23,12 @@ LispInt LispHashPtr(const LispString * aString);  // hash the *address*!
 class LispHashTable : public YacasBase
 {
 public:
-  LispHashTable() {}
+  LispHashTable() = default;
   ~LispHashTable();
   // If string not yet in table, insert. Afterwards return the string.
-  /// LookUp that takes ownership of the string
-  LispString * LookUp(const LispChar * aString);
+  LispString * LookUp(const std::string&);
   LispString * LookUpCounted(const LispChar * aString, LispInt aLength);
-  LispString * LookUpStringify(const LispChar * aString);
+  LispString * LookUpStringify(const std::string&);
   void GarbageCollect();
 private:
   void AppendString(LispInt bin,LispString * result);
@@ -42,9 +37,9 @@ private:
 };
 
 inline
-LispString* LispHashTable::LookUp(const LispChar* aString)
+LispString* LispHashTable::LookUp(const std::string& s)
 {
-    return LookUpCounted(aString, std::strlen(aString));
+    return LookUpCounted(s.c_str(), s.size());
 }
 
 #endif

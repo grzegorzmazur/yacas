@@ -788,7 +788,7 @@ void LispStringify(LispEnvironment& aEnvironment, LispInt aStackTop)
     LispString * orig = evaluated->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
 
-    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(orig->c_str())->c_str()));
+    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(*orig)->c_str()));
 }
 
 void LispLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1292,7 +1292,7 @@ void LispTrapError(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispGetCoreError(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-  RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(aEnvironment.iErrorOutput.str().c_str())->c_str()));
+  RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(aEnvironment.iErrorOutput.str())->c_str()));
 }
 
 void LispSystemCall(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -1552,7 +1552,7 @@ void LispToString(LispEnvironment& aEnvironment, LispInt aStackTop)
     InternalEval(aEnvironment, RESULT, ARGUMENT(1));
 
     //Return the result
-    RESULT = LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(os.str().c_str())->c_str());
+    RESULT = LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(os.str())->c_str());
 }
 
 void LispToStdout(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1584,7 +1584,7 @@ void LispFindFile(LispEnvironment& aEnvironment,LispInt aStackTop)
     const std::string path =
             InternalFindFile(oper.c_str(), aEnvironment.iInputDirectories);
 
-    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(path.c_str())->c_str()));
+    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(path)->c_str()));
 }
 
 void LispIsGeneric(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -1763,7 +1763,7 @@ void LispType(LispEnvironment& aEnvironment,LispInt aStackTop)
     head = (*subList);
     if (!head->String())
         goto EMPTY;
-    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(head->String()->c_str())->c_str()));
+    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(*head->String())->c_str()));
     return;
 
 EMPTY:
@@ -1840,7 +1840,7 @@ void LispFindFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
     InternalUnstringify(oper, *orig);
 
     LispMultiUserFunction* multiUserFunc =
-        aEnvironment.MultiUserFunction(aEnvironment.HashTable().LookUp(oper.c_str()));
+        aEnvironment.MultiUserFunction(aEnvironment.HashTable().LookUp(oper));
     if (multiUserFunc)
     {
         LispDefFile* def = multiUserFunc->iFileToOpen;
@@ -1913,7 +1913,7 @@ void LispRuleBaseDefined(LispEnvironment& aEnvironment,LispInt aStackTop)
 
     LispInt arity = InternalAsciiToInt(*sizearg->String());
 
-    LispUserFunction* userFunc = aEnvironment.UserFunction(aEnvironment.HashTable().LookUp(oper.c_str()),arity);
+    LispUserFunction* userFunc = aEnvironment.UserFunction(aEnvironment.HashTable().LookUp(oper),arity);
     InternalBoolean(aEnvironment,RESULT,!!userFunc);
 }
 
@@ -1926,7 +1926,7 @@ void LispDefLoadFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
     InternalUnstringify(oper, *orig);
 
     LispMultiUserFunction* multiUserFunc =
-        aEnvironment.MultiUserFunction(aEnvironment.HashTable().LookUp(oper.c_str()));
+        aEnvironment.MultiUserFunction(aEnvironment.HashTable().LookUp(oper));
     if (multiUserFunc)
     {
         if (multiUserFunc->iFileToOpen!=nullptr)
@@ -1962,7 +1962,7 @@ void LispRuleBaseArgList(LispEnvironment& aEnvironment,LispInt aStackTop)
 
     LispInt arity = InternalAsciiToInt(*sizearg->String());
 
-    LispUserFunction* userFunc = aEnvironment.UserFunction(aEnvironment.HashTable().LookUp(oper.c_str()),arity);
+    LispUserFunction* userFunc = aEnvironment.UserFunction(aEnvironment.HashTable().LookUp(oper),arity);
     CheckArg(userFunc, 1, aEnvironment, aStackTop);
 
     const LispPtr& list = userFunc->ArgList();
