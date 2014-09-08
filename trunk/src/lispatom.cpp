@@ -8,10 +8,10 @@
 #include <cassert>
 
 /// construct an atom from a string representation.
-LispObject* LispAtom::New(LispEnvironment& aEnvironment, const LispChar * aString)
+LispObject* LispAtom::New(LispEnvironment& aEnvironment, const std::string& aString)
 {
   LispObject* self;
-  if (IsNumber(aString,true))  // check if aString is a number (int or float)
+  if (IsNumber(aString.c_str(),true))  // check if aString is a number (int or float)
   {
     /// construct a number from a decimal string representation (also create a number object)
     self = NEW LispNumber(NEW LispString(aString), aEnvironment.Precision());

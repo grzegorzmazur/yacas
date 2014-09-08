@@ -38,7 +38,7 @@ class LispEnvironment;
 class LispAtom : public ObjectHelper<LispAtom>
 {
 public:
-  static LispObject* New(LispEnvironment& aEnvironment, const LispChar * aString);
+  static LispObject* New(LispEnvironment& aEnvironment, const std::string& aString);
   virtual ~LispAtom();
   virtual LispString * String();
   virtual LispObject* Copy() const { return NEW LispAtom(*this); }
