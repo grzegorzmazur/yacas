@@ -137,15 +137,12 @@ FALSEALARM:
       aInput.Next();
       while (std::isdigit( aInput.Peek())) aInput.Next();
     }
-    if (NumericSupportForMantissa())
-    {
-      if (aInput.Peek() == 'e' || aInput.Peek() == 'E')
-      {
+    if (aInput.Peek() == 'e' || aInput.Peek() == 'E') {
         aInput.Next();
         if (aInput.Peek() == '-' || aInput.Peek() == '+')
             aInput.Next();
-        while (std::isdigit( aInput.Peek())) aInput.Next();
-      }
+        while (std::isdigit( aInput.Peek()))
+            aInput.Next();
     }
   }
   // Treat the char as a space.
@@ -262,15 +259,12 @@ FALSEALARM:
       aInput.Next();
       while (std::isdigit( aInput.Peek())) aInput.Next();
     }
-    if (NumericSupportForMantissa())
-    {
-      if (aInput.Peek() == 'e' || aInput.Peek() == 'E')
-      {
+    if (aInput.Peek() == 'e' || aInput.Peek() == 'E') {
         aInput.Next();
         if (aInput.Peek() == '-' || aInput.Peek() == '+')
-          aInput.Next();
-        while (std::isdigit( aInput.Peek())) aInput.Next();
-      }
+            aInput.Next();
+        while (std::isdigit( aInput.Peek()))
+            aInput.Next();
     }
   }
   // Treat the char as a space.

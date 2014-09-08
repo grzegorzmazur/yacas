@@ -113,17 +113,17 @@ bool IsNumber(const LispChar * ptr,bool aAllowFloat)
 
     LispInt nrDigits=0;
     LispInt index=0;
-    while(ptr[index] >= '0' && ptr[index] <= '9')
-    {
+    while(std::isdigit(ptr[index])) {
         nrDigits++;
         index++;
     }
+
     if (ptr[index] == '.')
     {
         if (!aAllowFloat)
             return false;
         index++;
-        while(ptr[index] >= '0' && ptr[index] <= '9')
+        while(std::isdigit(ptr[index]))
         {
             nrDigits++;
             index++;
@@ -134,8 +134,6 @@ bool IsNumber(const LispChar * ptr,bool aAllowFloat)
     if (ptr[index] == 'e' || ptr[index] == 'E')
     {
         if (!aAllowFloat)
-            return false;
-        if (!NumericSupportForMantissa())
             return false;
         index++;
         if (ptr[index] == '-' || ptr[index] == '+') index++;
