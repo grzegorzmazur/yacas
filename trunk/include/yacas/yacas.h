@@ -14,7 +14,6 @@
 #include "stdfileio.h"
 #include "lispatom.h"
 #include "lispeval.h"
-#include "mathenvironment.h"
 #include "lispglobals.h"
 #include "lisperror.h"
 #include "lispuserfunc.h"
