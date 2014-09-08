@@ -56,7 +56,6 @@ pkginclude_HEADERS = $(top_srcdir)/include/yacas/anumber.h	\
 	$(top_srcdir)/include/yacas/GPL_stuff.h					\
 	$(top_srcdir)/include/yacas/anumber.inl					\
 	$(top_srcdir)/include/yacas/lispobject.inl				\
-	$(top_srcdir)/include/yacas/lispstring.inl				\
 	$(top_srcdir)/include/yacas/standard.inl				\
 	$(top_srcdir)/include/yacas/yacas_version.h				\
 	$(top_srcdir)/include/yacas/lisptype.h					\
