@@ -24,12 +24,13 @@ public:
     // Constructors
     // Use the assignment operators to set the string after this.
     inline LispString();
-    inline LispString(const LispString &aString);
-    inline LispString(const LispChar* aString);
+    explicit LispString(const std::string&);
+    explicit LispString(const LispString& aString);
+    explicit LispString(const LispChar* aString);
 
     // Assignment
-    inline LispString& operator = (const LispString& aString);
-    inline LispString& operator = (const LispChar* aString);
+    LispString& operator = (const LispString& aString);
+    LispString& operator = (const LispChar* aString);
 
     // Comparison
     // If the string is in the hash table it is faster to compare the
@@ -42,6 +43,43 @@ public:
     ReferenceCount iReferenceCount;
 };
 
+
+// LispString inline functions.
+
+inline LispString& LispString::operator=(const LispString& aString)
+{
+  assign(aString.c_str());
+  return *this;
+}
+
+inline LispString& LispString::operator=(const LispChar* aString)
+{
+  assign(aString);
+  return *this;
+}
+
+inline LispString::LispString(const std::string& s):
+    std::string(s),
+    iReferenceCount(0)
+{
+}
+
+inline LispString::LispString(const LispString& s):
+    std::string(s),
+    iReferenceCount(0)
+{
+}
+
+inline LispString::LispString(const LispChar* s):
+    std::string(s),
+    iReferenceCount(0)
+{
+}
+
+inline LispString::LispString():
+    iReferenceCount(0)
+{
+}
 
 /** \class LispStringSmartPtr for managing strings outside
  of normal objects. This is the equivalent of LispPtr, maintaining
@@ -89,7 +127,6 @@ private:
   LispString * iString;
 };
 
-#include "lispstring.inl"
 #endif
 
 
