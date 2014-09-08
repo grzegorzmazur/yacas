@@ -77,7 +77,7 @@ void LoadDefFile(LispEnvironment& aEnvironment, LispString * aFileName)
   flatfile.append(".def");
   LispDefFile* def = aEnvironment.DefFiles().File(aFileName);
   LispString * contents = aEnvironment.FindCachedFile(flatfile.c_str());
-  LispString * hashedname = aEnvironment.HashTable().LookUp(flatfile.c_str());
+  LispString * hashedname = aEnvironment.HashTable().LookUp(flatfile);
 
   InputStatus oldstatus = aEnvironment.iInputStatus;
   aEnvironment.iInputStatus.SetTo(hashedname->c_str());

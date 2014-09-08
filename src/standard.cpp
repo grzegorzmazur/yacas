@@ -350,7 +350,7 @@ void InternalLoad(LispEnvironment& aEnvironment, const LispString* aFileName)
     InternalUnstringify(oper, *aFileName);
 
     LispString * contents = aEnvironment.FindCachedFile(oper.c_str());
-    LispString * hashedname = aEnvironment.HashTable().LookUp(oper.c_str());
+    LispString * hashedname = aEnvironment.HashTable().LookUp(oper);
 
     InputStatus oldstatus = aEnvironment.iInputStatus;
     aEnvironment.iInputStatus.SetTo(hashedname->c_str());

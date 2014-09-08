@@ -492,7 +492,7 @@ void LispToBase(LispEnvironment& aEnvironment, LispInt aStackTop)
     x->ToString(str,aEnvironment.BinaryPrecision(),base);
     // Get unique string from hash table, and create an atom from it.
 
-    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(str.c_str())->c_str()));
+    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(str)->c_str()));
 }
 
 
@@ -591,7 +591,7 @@ void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
   CheckArg(string, 1, aEnvironment, aStackTop);
   LispString oper;
   InternalUnstringify(oper, *string);
-  LispString * hashedname = aEnvironment.HashTable().LookUp(oper.c_str());
+  LispString * hashedname = aEnvironment.HashTable().LookUp(oper);
   InputStatus oldstatus = aEnvironment.iInputStatus;
   aEnvironment.iInputStatus.SetTo(hashedname->c_str());
   LispLocalFile localFP(aEnvironment, oper.c_str(), true,
@@ -619,7 +619,7 @@ void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
   std::ostringstream os;
   LispLocalOutput localOutput(aEnvironment, os);
   PatchLoad(oper.c_str(), os, aEnvironment);
-  RESULT = LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(os.str().c_str())->c_str());
+  RESULT = LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(os.str())->c_str());
 }
 
 void YacasExtraInfoSet(LispEnvironment& aEnvironment, LispInt aStackTop)
