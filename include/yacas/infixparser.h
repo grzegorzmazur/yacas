@@ -12,11 +12,19 @@
 #include <ostream>
 #include <unordered_map>
 
+#ifdef YACAS_NO_CONSTEXPR
+const LispInt KMaxPrecedence = 60000;
+#else
 constexpr LispInt KMaxPrecedence = 60000;
+#endif
 
 class LispInFixOperator {
 public:
-    explicit constexpr LispInFixOperator(LispInt aPrecedence = KMaxPrecedence):
+    explicit
+#ifndef YACAS_NO_CONSTEXPR
+    constexpr
+#endif
+    LispInFixOperator(LispInt aPrecedence = KMaxPrecedence):
         iPrecedence(aPrecedence),
         iLeftPrecedence(aPrecedence),
         iRightPrecedence(aPrecedence),

@@ -29,9 +29,13 @@
 
 /// This should be used whenever constants 2, 10 mean binary and decimal.
 // maybe move somewhere else?
+#ifdef YACAS_NO_CONSTEXPR
+const int BASE10 = 10;
+const int BASE2 = 2;
+#else
 constexpr int BASE10 = 10;
 constexpr int BASE2 = 2;
-
+#endif
 
 class LispEnvironment;
 

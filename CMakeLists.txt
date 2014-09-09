@@ -24,6 +24,10 @@ if (CMAKE_COMPILER_IS_GNUCXX)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -std=c++11")
 endif()
 
+if (MSVC)
+    add_definitions(-DYACAS_NO_CONSTEXPR)
+endif ()
+
 set (YACAS_VERSION_MAJOR 1)
 set (YACAS_VERSION_MINOR 3)
 set (YACAS_VERSION_MICRO 5)
