@@ -3,7 +3,10 @@
 
 class NonCopyable {
 protected:
-    constexpr NonCopyable() = default;
+#ifndef YACAS_NO_CONSTEXPR
+    constexpr
+#endif
+    NonCopyable() = default;
     ~NonCopyable() = default;
 private:
     NonCopyable(const NonCopyable&) = delete;

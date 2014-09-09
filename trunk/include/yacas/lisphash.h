@@ -11,7 +11,11 @@
 #include "lispstring.h"
 #include <vector>
 
+#ifdef YACAS_NO_CONSTEXPR
+const LispInt KSymTableSize = 211;
+#else
 constexpr LispInt KSymTableSize = 211;
+#endif
 
 /**
  * This is the symbol table, implemented as a hash table for fast
