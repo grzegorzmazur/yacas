@@ -834,7 +834,7 @@ void LispTmpFile(LispEnvironment& aEnvironment, LispInt aStackTop)
     GetTempPath(MAX_PATH, tmp_path);
     GetTempFileName(tmp_path, "yacas", 0, tmp_fn);
 
-    RESULT = LispAtom::New(aEnvironment, *aEnvironment.HashTable().LookUpStringify(tmp_fn);
+    RESULT = LispAtom::New(aEnvironment, *aEnvironment.HashTable().LookUpStringify(tmp_fn));
 #endif
 }
 
