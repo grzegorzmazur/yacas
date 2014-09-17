@@ -261,7 +261,7 @@ static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispInt aStackT
     LispString prompt;
     InternalUnstringify(prompt, *promptObject->String());
     const char* output = ReadInputString(prompt.c_str());
-    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpStringify(output)->c_str()));
+    RESULT = LispAtom::New(aEnvironment, *aEnvironment.HashTable().LookUpStringify(output));
 }
 
 static void LispHistorySize(LispEnvironment& aEnvironment, LispInt aStackTop)
