@@ -19,5 +19,3 @@
 #cmakedefine HAVE_SOCKET
 #cmakedefine HAVE_STRCHR
 #cmakedefine HAVE_VSNPRINTF
-
-#define SCRIPT_DIR "@CMAKE_INSTALL_PREFIX@/share/yacas/scripts"
