@@ -166,14 +166,6 @@ if test "x$enable_pdf_doc" = xyes; then
 fi
 AC_SUBST(PDF_DOCS)
 
-# Choice of directories
-AC_ARG_WITH(script-dir, [  --with-script-dir=DIR   program scripts in DIR [DATADIR/yacas/scripts]])
-if test -n "$with_script_dir" ; then
-	scriptdir=$with_script_dir
-else
-	scriptdir=${datadir}/yacas/scripts/
-fi
-AC_SUBST(scriptdir)
 
 AC_ARG_WITH(html-dir, [  --with-html-dir=DIR     HTML documentation in DIR [DATADIR/yacas/documentation]])
 if test -n "$with_html_dir" ; then
@@ -206,10 +198,7 @@ AC_DEFUN([jb_PREFIX_EXPAND],[
             eval eval echo \""[$]$1"\"
         )`])
 
-jb_PREFIX_EXPAND([scriptdir])
 jb_PREFIX_EXPAND([libdir])
-
-AC_DEFINE_UNQUOTED(SCRIPT_DIR, "$jb_expanded_scriptdir", [ Directory in which scripts are installed ])
 
 # All done
 AC_OUTPUT(Makefile

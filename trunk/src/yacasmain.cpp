@@ -51,6 +51,11 @@
 #include "yacas/yacas.h"
 
 #ifndef _WIN32
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <libgen.h>
+
 #include "yacas/unixcommandline.h"
 #define FANCY_COMMAND_LINE CUnixCommandLine
 #else
@@ -81,13 +86,12 @@
 #include <cstdlib>
 #include <sys/types.h>
 
-#ifndef WIN32
-#include <sys/wait.h>
+#ifndef _WIN32
+#include <sys/ioctl.h>
 #include <sys/socket.h>
+#include <sys/wait.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <unistd.h>
-#include <sys/ioctl.h>
 #else
 #include <winsock2.h>
 #endif
@@ -115,11 +119,7 @@ bool winsockinitialised = false;
 bool hideconsolewindow = false;
 bool exit_after_files = false;
 
-#ifndef SCRIPT_DIR
-#define SCRIPT_DIR "none"
-#endif
-
-const char* root_dir = SCRIPT_DIR;
+std::string root_dir;
 #ifdef WIN32
 HANDLE htimer = 0;
 #endif
@@ -448,7 +448,7 @@ void LoadYacas(std::ostream& os)
         /* Split up root_dir in pieces separated by colons, and run
            DefaultDirectory on each of them. */
         const char *ptr1, *ptr2;
-        ptr1 = ptr2 = root_dir;
+        ptr1 = ptr2 = root_dir.c_str();
         while (*ptr1 != '\0') {
 #ifndef WIN32
             while (*ptr1 != '\0' && *ptr1 != ':')
@@ -1036,8 +1036,8 @@ int parse_options(int argc, char** argv)
                     show_prompt = false;
                 }
                 if (strchr(argv[fileind],'d')) {
-                    std::cout << SCRIPT_DIR << "\n";
-                    return -1;
+                    std::cout << root_dir << "\n";
+                    std::exit(EXIT_SUCCESS);
                 }
                 if (strchr(argv[fileind],'w')) {
                     hideconsolewindow = true;
@@ -1079,7 +1079,36 @@ int main(int argc, char** argv)
     unsigned char first_stack_var = 0;
     the_first_stack_var = &first_stack_var;
 
-#ifdef _WIN32
+#ifdef __linux__
+
+    {
+        struct stat sb;
+        if (stat("/proc/self/exe", &sb) == -1) {
+            std::cerr << "yacas: failed to stat /proc/self/exe, bailing out\n";
+            exit(EXIT_FAILURE);
+        }
+
+        std::vector<char> buf(sb.st_size + 1);
+
+        const ssize_t r = readlink("/proc/self/exe", buf.data(), sb.st_size + 1);
+
+        if (r == -1) {
+            std::cerr << "yacas: failed to read /proc/self/exe, bailing out\n";
+            std::exit(EXIT_FAILURE);
+        }
+
+        if (r > sb.st_size) {
+            std::cerr << "yacas: /proc/self/exe changed between stat and readlink\n";
+            std::exit(EXIT_FAILURE);
+        }
+
+        buf[r] = '\0';
+
+        root_dir = dirname(dirname(buf.data()));
+        root_dir += "/share/yacas/scripts";
+    }
+
+#elif defined(_WIN32)
     char root_dir_buf[MAX_PATH];
 
     const LSTATUS rc =
@@ -1095,6 +1124,8 @@ int main(int argc, char** argv)
         if (*p == '\\')
             *p = '/';
     root_dir = root_dir_buf;
+#else
+#error "This platform is not yet supported. Please contact developers at yacas-devel@sourceforge.net"
 #endif
 
 // #ifdef YACAS_DEBUG
