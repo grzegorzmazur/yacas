@@ -11,8 +11,6 @@ long theNrDefinedUser=0;
 #endif
 
 
-#define InternalEval env.iEvaluator->Eval
-
 #define OPERATOR(kind,prec,name) \
   kind##operators.SetOperator(prec,hash.LookUp(#name));
 // for example: OPERATOR(bodied,KMaxPrecedence,While) produces:
@@ -91,7 +89,7 @@ void CYacas::Evaluate(const LispChar * aExpression)
 
          env.iEvalDepth=0;
          env.iEvaluator->ResetStack();
-         InternalEval(env, result, lispexpr);
+         env.iEvaluator->Eval(env, result, lispexpr);
 
          // If no error encountered, print result
          if (env.PrettyPrinter())

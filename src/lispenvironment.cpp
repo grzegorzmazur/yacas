@@ -16,9 +16,6 @@
 #include <stdio.h> // Safe, only included if YACAS_DEBUG is defined
 #endif
 
-#define InternalEval iEvaluator->Eval
-
-
 LispEnvironment::LispEnvironment(
                     YacasCoreCommands& aCoreCommands,
                     LispUserFunctions& aUserFunctions,
@@ -205,7 +202,7 @@ void LispEnvironment::GetVariable(LispString * aVariable,LispPtr& aResult)
     if (i != iGlobals.end()) {
         LispGlobalVariable* l = &i->second;
         if (l->iEvalBeforeReturn) {
-            InternalEval(*this, aResult, l->iValue);
+            iEvaluator->Eval(*this, aResult, l->iValue);
             // re-lookup the global variable, as this pointer might now be invalid due to the evaluation actually changing the global itself.
             l = &iGlobals.find(aVariable)->second;
 
