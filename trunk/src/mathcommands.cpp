@@ -1037,7 +1037,7 @@ void LispIsInteger(LispEnvironment& aEnvironment,LispInt aStackTop)
 void LispIsList(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
     LispPtr result(ARGUMENT(1));
-    InternalBoolean(aEnvironment,RESULT,InternalIsList(result));
+    InternalBoolean(aEnvironment,RESULT,InternalIsList(aEnvironment, result));
 }
 
 void LispIsString(LispEnvironment& aEnvironment,LispInt aStackTop)

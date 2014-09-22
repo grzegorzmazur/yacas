@@ -18,7 +18,7 @@
 
 #include <sstream>
 
-bool InternalIsList(const LispPtr& aPtr)
+bool InternalIsList(const LispEnvironment& env, const LispPtr& aPtr)
 {
     if (!aPtr)
         return false;
@@ -30,7 +30,7 @@ bool InternalIsList(const LispPtr& aPtr)
     if ((*aPtr->SubList())->String()->c_str() == nullptr)
         return false;
     //TODO this StrEqual is far from perfect. We could pass in a LispEnvironment object...
-    if (std::strcmp((*aPtr->SubList())->String()->c_str(), "List"))
+    if ((*aPtr->SubList())->String() != env.iList->String())
         return false;
     return true;
 }

@@ -79,7 +79,7 @@ void CheckArgIsString(LispInt arg_idx, LispEnvironment& env, LispInt stack_top)
 
 void CheckArgIsList(LispPtr arg, LispInt arg_idx, LispEnvironment& env, LispInt stack_top)
 {
-    if (!InternalIsList(arg)) {
+    if (!InternalIsList(env, arg)) {
         ShowArgTypeErrorInfo(arg_idx, env.iStack.GetElement(stack_top), env);
         throw LispErrNotList();
     }
