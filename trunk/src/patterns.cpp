@@ -155,7 +155,7 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
                         while (!!last->Nixed())
                             last = last->Nixed();
 
-                        last->Nixed() = (LispAtom::New(aEnvironment,second->String()->c_str()));
+                        last->Nixed() = LispAtom::New(aEnvironment, *second->String());
 
                         LispPtr pred(LispSubList::New(third));
                         DBG_( third->Nixed()->SetFileAndLine(second->iFileName,second->iLine); )

@@ -392,7 +392,7 @@ void InternalApplyString(LispEnvironment& aEnvironment, LispPtr& aResult,
         throw LispErrNotString();
 
     LispObject *head =
-        LispAtom::New(aEnvironment,SymbolName(aEnvironment, aOperator->c_str())->c_str());
+        LispAtom::New(aEnvironment, *SymbolName(aEnvironment, aOperator->c_str()));
     head->Nixed() = (aArgs);
     LispPtr body(LispSubList::New(head));
     aEnvironment.iEvaluator->Eval(aEnvironment, aResult, body);

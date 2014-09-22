@@ -192,7 +192,7 @@ void LispStackSize(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispChar buf[30];
     InternalIntToAscii(buf, (int)(the_first_stack_var-(unsigned char*)&buf[0]));
-    RESULT = (LispAtom::New(aEnvironment,buf));
+    RESULT = LispAtom::New(aEnvironment,buf);
 }
 
 
@@ -261,7 +261,7 @@ static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispInt aStackT
     LispString prompt;
     InternalUnstringify(prompt, *promptObject->String());
     const char* output = ReadInputString(prompt.c_str());
-    RESULT = LispAtom::New(aEnvironment, *aEnvironment.HashTable().LookUpStringify(output));
+    RESULT = LispAtom::New(aEnvironment, Stringify(output));
 }
 
 static void LispHistorySize(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -284,7 +284,7 @@ void LispTime(LispEnvironment& aEnvironment, LispInt aStackTop)
     std::ostringstream os;
     os << static_cast<double>(endtime - starttime) / CLOCKS_PER_SEC;
 
-    RESULT = (LispAtom::New(aEnvironment, os.str().c_str()));
+    RESULT = LispAtom::New(aEnvironment, os.str());
 }
 
 void LispFileSize(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -298,7 +298,7 @@ void LispFileSize(LispEnvironment& aEnvironment, LispInt aStackTop)
     in.seekg(0, std::ifstream::end);
     std::ostringstream os;
     os << in.tellg();
-    RESULT = LispAtom::New(aEnvironment, os.str().c_str());
+    RESULT = LispAtom::New(aEnvironment, os.str());
 }
 
 

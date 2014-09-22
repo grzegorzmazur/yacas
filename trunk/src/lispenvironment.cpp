@@ -270,7 +270,7 @@ void LispEnvironment::CurrentLocals(LispPtr& aResult)
 //    printf("%s ",ptr->iVariable->c_str());
     ptr = ptr->iNext;
   }
-  aResult = (LispSubList::New(LispObjectAdder(LispAtom::New(*this, "List")) + LispObjectAdder(locals)));
+  aResult = LispSubList::New(LispObjectAdder(LispAtom::New(*this, "List")) + LispObjectAdder(locals));
 }
 
 

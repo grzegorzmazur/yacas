@@ -366,8 +366,8 @@ void TracedStackEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
       {
         PushFrame();
         UserStackInformation& st = StackInformation();
-        st.iOperator = (LispAtom::New(aEnvironment,str->c_str()));
-        st.iExpression = (aExpression);
+        st.iOperator = LispAtom::New(aEnvironment, *str);
+        st.iExpression = aExpression;
 #ifdef YACAS_DEBUG
         if (aExpression->iFileName)
         {

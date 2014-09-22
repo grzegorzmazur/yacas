@@ -154,7 +154,7 @@ void ParsedObject::GetOtherSide(LispInt aNrArgsToCombine, LispInt depth)
 
 void ParsedObject::InsertAtom(LispString * aString)
 {
-    LispPtr ptr(LispAtom::New(iParser.iEnvironment,aString->c_str()));
+    LispPtr ptr(LispAtom::New(iParser.iEnvironment, *aString));
 
     DBG_( ptr->SetFileAndLine(
               iParser.iInput.Status().FileName(),

@@ -492,7 +492,7 @@ void LispToBase(LispEnvironment& aEnvironment, LispInt aStackTop)
     x->ToString(str,aEnvironment.BinaryPrecision(),base);
     // Get unique string from hash table, and create an atom from it.
 
-    RESULT = LispAtom::New(aEnvironment, *aEnvironment.HashTable().LookUpStringify(str));
+    RESULT = LispAtom::New(aEnvironment, Stringify(str));
 }
 
 
@@ -546,9 +546,9 @@ void YacasPrettyReaderSet(LispEnvironment& aEnvironment, LispInt aStackTop)
 void YacasPrettyReaderGet(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   if (!aEnvironment.PrettyReader())
-    RESULT = (LispAtom::New(aEnvironment,"\"\""));
+    RESULT = LispAtom::New(aEnvironment, "\"\"");
   else
-    RESULT = (LispAtom::New(aEnvironment,aEnvironment.PrettyReader()->c_str()));
+    RESULT = LispAtom::New(aEnvironment, *aEnvironment.PrettyReader());
 }
 
 void YacasPrettyPrinterSet(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -573,9 +573,9 @@ void YacasPrettyPrinterSet(LispEnvironment& aEnvironment, LispInt aStackTop)
 void YacasPrettyPrinterGet(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   if (!aEnvironment.PrettyPrinter())
-    RESULT = (LispAtom::New(aEnvironment,"\"\""));
+    RESULT = LispAtom::New(aEnvironment, "\"\"");
   else
-    RESULT = (LispAtom::New(aEnvironment,aEnvironment.PrettyPrinter()->c_str()));
+    RESULT = LispAtom::New(aEnvironment, *aEnvironment.PrettyPrinter());
 }
 
 void LispGarbageCollect(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -619,7 +619,7 @@ void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
   std::ostringstream os;
   LispLocalOutput localOutput(aEnvironment, os);
   PatchLoad(oper.c_str(), os, aEnvironment);
-  RESULT = LispAtom::New(aEnvironment, *aEnvironment.HashTable().LookUpStringify(os.str()));
+  RESULT = LispAtom::New(aEnvironment, Stringify(os.str()));
 }
 
 void YacasExtraInfoSet(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -678,8 +678,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
   }
   str++;
   const LispChar * type = (str[0] == '/') ? (str++, "\"Close\"") : "\"Open\"";
-  LispString tag;
-  tag.resize(0);
+  std::string tag;
 
   tag.push_back('\"');
   while (IsAlpha(*str))
@@ -690,15 +689,13 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
     tag.push_back(c);
   }
   tag.push_back('\"');
-  tag.push_back('\0');
 
   LispObject* info = nullptr;
 
   while (*str == ' ') str++;
   while (*str != '>' && *str != '/')
   {
-    LispString name;
-    name.resize(0);
+    std::string name;
     name.push_back('\"');
 
     while (IsAlpha(*str))
@@ -709,35 +706,34 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
       name.push_back(c);
     }
     name.push_back('\"');
-    name.push_back('\0');
+
     CheckArg(str[0] == '=', 1, aEnvironment, aStackTop);
     str++;
     CheckArg(str[0] == '\"', 1, aEnvironment, aStackTop);
-    LispString value;
-    value.resize(0);
+
+    std::string value;
     value.push_back(*str++);
     while (*str != '\"')
-    {
       value.push_back(*str++);
-    }
-    value.push_back(*str++);
-    value.push_back('\0');
 
-    info =  LispSubList::New(LispObjectAdder(LispAtom::New(aEnvironment, "List")) + LispObjectAdder(LispAtom::New(aEnvironment, name.c_str())) + LispObjectAdder(LispAtom::New(aEnvironment, value.c_str()))) + LispObjectAdder(info);
+    value.push_back(*str++);
+
+    info =  LispSubList::New(LispObjectAdder(LispAtom::New(aEnvironment, "List")) + LispObjectAdder(LispAtom::New(aEnvironment, name)) + LispObjectAdder(LispAtom::New(aEnvironment, value))) + LispObjectAdder(info);
     while (*str == ' ') str++;
   }
   if (*str == '/')
   {
     type = "\"OpenClose\"";
     str++;
-    while (*str == ' ') str++;
+    while (*str == ' ')
+        ++str;
   }
 
   info = LispSubList::New(LispObjectAdder(LispAtom::New(aEnvironment, "List")) + LispObjectAdder(info));
   RESULT = (
               LispSubList::New(
                    LispObjectAdder(LispAtom::New(aEnvironment, "XmlTag")) +
-                   LispObjectAdder(LispAtom::New(aEnvironment, tag.c_str())) +
+                   LispObjectAdder(LispAtom::New(aEnvironment, tag)) +
                    LispObjectAdder(info) +
                    LispObjectAdder(LispAtom::New(aEnvironment, type))
                   )
@@ -788,7 +784,7 @@ void YacasBuiltinAssoc(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispCurrentFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    RESULT = LispAtom::New(aEnvironment, *aEnvironment.HashTable().LookUpStringify(aEnvironment.iInputStatus.FileName()));
+    RESULT = LispAtom::New(aEnvironment, Stringify(aEnvironment.iInputStatus.FileName()));
 }
 
 void LispCurrentLine(LispEnvironment& aEnvironment, LispInt aStackTop)

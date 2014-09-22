@@ -79,7 +79,7 @@ bool LocalSymbolBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
     {
         if (name == iOriginalNames[i])
         {
-            aResult = (LispAtom::New(iEnvironment,iNewNames[i]->c_str()));
+            aResult = LispAtom::New(iEnvironment, *iNewNames[i]);
             DBG_( aResult->SetFileAndLine(aElement->iFileName,aElement->iLine); )
             return true;
         }

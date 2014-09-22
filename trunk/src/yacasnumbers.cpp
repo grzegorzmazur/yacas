@@ -432,7 +432,7 @@ static LispObject* FloatToString(ANumber& aInt,
 {
     LispString result;
     ANumberToString(result, aInt, aBase);
-    return LispAtom::New(aEnvironment, result.c_str());
+    return LispAtom::New(aEnvironment, result);
 }
 
 
