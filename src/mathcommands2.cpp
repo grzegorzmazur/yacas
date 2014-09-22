@@ -105,7 +105,7 @@ void LispDebugFile(LispEnvironment& aEnvironment, LispInt aStackTop)
   const LispChar * file = ARGUMENT(1)->iFileName;
   if (!file) file = "";
   LispString * str = aEnvironment.HashTable().LookUpStringify(file);
-  RESULT = (LispAtom::New(aEnvironment,str->c_str()));
+  RESULT = LispAtom::New(aEnvironment, *str);
 #endif
 }
 

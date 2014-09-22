@@ -122,50 +122,6 @@ LispString* LispHashTable::LookUpCounted(const LispChar* aString, LispInt aLengt
     return str;
 }
 
-LispInt StrEqualStringified(const LispChar * ptr1, const LispChar * ptr2)
-{
-    if (*ptr1 != '\"')
-        return 0;
-    ptr1++;
-    while (ptr1[1] != 0 && *ptr2 != 0)
-    {
-        if (*ptr1 != *ptr2++)
-            return 0;
-        ptr1++;
-    }
-    if (*ptr1 != '\"')
-        return 0;
-    ptr1++;
-    if (*ptr1 != *ptr2)
-        return 0;
-    return 1;
-}
-
-// If string not yet in table, insert. Afterwards return the string.
-
-LispString * LispHashTable::LookUpStringify(const std::string& aString)
-{
-    const LispInt bin = LispHashStringify(aString);
-
-    // Find existing version of string
-    LispStringSmartPtrArray& aBin = iHashTable[bin];
-    for (LispInt i = 0, n = aBin.size(); i < n; i++) {
-        if (aBin[i]->size() == (aString.size() + 2) && StrEqualStringified(aBin[i]->c_str(), aString.c_str()))
-            return aBin[i];
-    }
-
-    // Append a new string
-    DBG_(theNrTokens++;)
-    LispString * str = NEW LispString();
-
-    str->assign("\"");
-    str->append(aString);
-    str->append("\"");
-
-    AppendString(bin, str);
-    return str;
-}
-
 // GarbageCollect
 void LispHashTable::GarbageCollect()
 {

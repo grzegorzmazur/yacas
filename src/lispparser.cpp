@@ -35,11 +35,11 @@ void LispParser::ParseAtom(LispPtr& aResult, LispString * aToken)
     {
         LispPtr subList;
         ParseList(subList);
-        aResult = (LispSubList::New(subList));
+        aResult = LispSubList::New(subList);
         return;
     }
     // else make a simple atom, and return it.
-    aResult = (LispAtom::New(iEnvironment,aToken->c_str()));
+    aResult = LispAtom::New(iEnvironment, *aToken);
 }
 
 void LispParser::ParseList(LispPtr& aResult)

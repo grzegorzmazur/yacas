@@ -32,13 +32,18 @@ public:
   // If string not yet in table, insert. Afterwards return the string.
   LispString * LookUp(const std::string&);
   LispString * LookUpCounted(const LispChar * aString, LispInt aLength);
-  LispString * LookUpStringify(const std::string&);
   void GarbageCollect();
 private:
   void AppendString(LispInt bin,LispString * result);
 private:
   std::vector<LispStringSmartPtr> iHashTable[KSymTableSize];
 };
+
+inline
+std::string Stringify(const std::string& s)
+{
+    return "\"" + s + "\"";
+}
 
 inline
 LispString* LispHashTable::LookUp(const std::string& s)

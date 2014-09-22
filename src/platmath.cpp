@@ -30,7 +30,7 @@ LispObject* Double(LispEnvironment& aEnvironment,double aValue)
 {
     std::ostringstream buf;
     buf << aValue;
-    return LispAtom::New(aEnvironment, buf.str().c_str());
+    return LispAtom::New(aEnvironment, buf.str());
 }
 
 
