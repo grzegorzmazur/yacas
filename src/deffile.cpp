@@ -37,8 +37,9 @@ static void DoLoadDefFile(
 {
   LispLocalInput localInput(aEnvironment, aInput);
 
-  LispString * eof = aEnvironment.HashTable().LookUp("EndOfFile");
-  LispString * end = aEnvironment.HashTable().LookUp("}");
+  const LispString* eof = aEnvironment.iEndOfFile->String();
+  const LispString* end = aEnvironment.iListClose->String();
+
   bool endoffile = false;
 
   LispTokenizer tok;

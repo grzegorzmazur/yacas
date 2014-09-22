@@ -18,7 +18,7 @@ void LispParser::Parse(LispPtr& aResult)
     LispString * token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());
     if (token->c_str()[0] == '\0')
     {
-        aResult = (LispAtom::New(iEnvironment,"EndOfFile"));
+        aResult = iEnvironment.iEndOfFile->Copy();
         return;
     }
     ParseAtom(aResult,token);
@@ -31,7 +31,7 @@ void LispParser::ParseAtom(LispPtr& aResult, LispString * aToken)
         return;
     // else if token is "(" read in a whole array of objects until ")",
     //   and make a sublist
-    if (aToken == iEnvironment.HashTable().LookUp("("))
+    if (aToken == iEnvironment.iBracketOpen->String())
     {
         LispPtr subList;
         ParseList(subList);
@@ -47,7 +47,7 @@ void LispParser::ParseList(LispPtr& aResult)
     LispPtr* iter = &aResult;
     if (iListed)
     {
-        aResult = (LispAtom::New(iEnvironment,"List"));
+        aResult = iEnvironment.iList->Copy();
         iter  = &(aResult->Nixed());
     }
     for (;;)
@@ -59,7 +59,7 @@ void LispParser::ParseList(LispPtr& aResult)
           throw InvalidToken();
 
         // if token is ")" return result.
-        if (token == iEnvironment.HashTable().LookUp(")"))
+        if (token == iEnvironment.iBracketClose->String())
         {
             return;
         }

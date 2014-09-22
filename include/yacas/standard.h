@@ -11,7 +11,7 @@
 // Prototypes
 class LispHashTable;
 
-bool InternalIsList(const LispPtr& aPtr);
+bool InternalIsList(const LispEnvironment& env, const LispPtr& aPtr);
 bool InternalIsString(LispString * aOriginal);
 void InternalUnstringify(LispString& aResult, const LispString& aOriginal);
 void InternalIntToAscii(LispChar * aTrg,LispInt aInt);

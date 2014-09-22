@@ -718,7 +718,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     value.push_back(*str++);
 
-    info =  LispSubList::New(LispObjectAdder(LispAtom::New(aEnvironment, "List")) + LispObjectAdder(LispAtom::New(aEnvironment, name)) + LispObjectAdder(LispAtom::New(aEnvironment, value))) + LispObjectAdder(info);
+    info =  LispSubList::New(LispObjectAdder(aEnvironment.iList->Copy()) + LispObjectAdder(LispAtom::New(aEnvironment, name)) + LispObjectAdder(LispAtom::New(aEnvironment, value))) + LispObjectAdder(info);
     while (*str == ' ') str++;
   }
   if (*str == '/')
@@ -729,7 +729,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
         ++str;
   }
 
-  info = LispSubList::New(LispObjectAdder(LispAtom::New(aEnvironment, "List")) + LispObjectAdder(info));
+  info = LispSubList::New(LispObjectAdder(aEnvironment.iList->Copy()) + LispObjectAdder(info));
   RESULT = (
               LispSubList::New(
                    LispObjectAdder(LispAtom::New(aEnvironment, "XmlTag")) +
