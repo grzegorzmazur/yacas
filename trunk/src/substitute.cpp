@@ -87,8 +87,6 @@ bool LocalSymbolBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
     return false;
 }
 
-#define InternalEval iEnvironment.iEvaluator->Eval
-
 bool BackQuoteBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
 {
     if (!aElement->SubList()) return false;
@@ -111,10 +109,10 @@ bool BackQuoteBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
         LispPtr cur(ptr);
 /*
         LispPtr result;
-        InternalEval(iEnvironment, result, cur);
+        iEnvironment.iEvaluator->Eval(iEnvironment, result, cur);
         InternalSubstitute(aResult, result,*this);
 */
-        InternalEval(iEnvironment, aResult, cur);
+        iEnvironment.iEvaluator->Eval(iEnvironment, aResult, cur);
         return true;
     }
     else
@@ -123,7 +121,7 @@ bool BackQuoteBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
         LispPtr cur(ptr);
         LispPtr args(ptr->Nixed());
         LispPtr result;
-        InternalEval(iEnvironment, result, cur);
+        iEnvironment.iEvaluator->Eval(iEnvironment, result, cur);
         result->Nixed() = (args);
         LispPtr result2(LispSubList::New(result));
         InternalSubstitute(aResult, result2,*this);
