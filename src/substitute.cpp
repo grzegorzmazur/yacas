@@ -5,11 +5,6 @@
 #include "yacas/standard.h"
 #include "yacas/lispeval.h"
 
-SubstBehaviourBase::~SubstBehaviourBase()
-{
-}
-
-
 //Subst, Substitute, FullSubstitute
 void InternalSubstitute(LispPtr& aTarget, LispPtr& aSource,
                         SubstBehaviourBase& aBehaviour)
@@ -94,16 +89,19 @@ bool BackQuoteBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
     if (!ptr) return false;
     if (!ptr->String()) return false;
 
-    if (!std::strcmp("`", ptr->String()->c_str()))
+    if (*ptr->String() == "`")
     {
       aResult = (aElement);
       return true;
     }
 
-    if (std::strcmp("@", ptr->String()->c_str()))
+    if (*ptr->String() != "@")
         return false;
+
     ptr = ptr->Nixed();
-    if (!ptr) return false;
+    if (!ptr)
+        return false;
+
     if (ptr->String())
     {
         LispPtr cur(ptr);
