@@ -13,10 +13,3 @@ void InputStatus::RestoreFrom(InputStatus& aPreviousStatus)
     iLineNumber = aPreviousStatus.iLineNumber;
     iFileName = aPreviousStatus.iFileName;
 }
-
-void LispOutput::Write(const LispChar * aString)
-{
-    while (*aString != '\0')
-        PutChar(*aString++);
-}
-

@@ -69,23 +69,6 @@ void StdFileInput::SetPosition(std::size_t aPosition)
   assert(0);
 }
 
-
-
-StdFileOutput::StdFileOutput(std::ostream& stream):
-    stream(stream)
-{
-}
-
-StdFileOutput::StdFileOutput(LispLocalFile& file):
-    stream(file.stream)
-{
-}
-
-void StdFileOutput::PutChar(LispChar c)
-{
-    stream.put(c);
-}
-
 CachedStdFileInput::CachedStdFileInput(LispLocalFile& file, InputStatus& status):
     StdFileInput(file, status),
     iCurrentPos(0)
