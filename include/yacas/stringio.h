@@ -24,26 +24,5 @@ protected:
     std::size_t iCurrent;
 };
 
-class StringOutput : public LispOutput
-{
-public:
-    StringOutput(LispString& aString);
-    void PutChar(LispChar aChar);
-public:
-    LispString& iString;
-};
-
-inline
-StringOutput::StringOutput(LispString& aString):
-    iString(aString)
-{
-}
-
-inline
-void StringOutput::PutChar(LispChar aChar)
-{
-    iString.push_back(aChar);
-}
-
 #endif
 

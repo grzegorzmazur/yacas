@@ -94,18 +94,5 @@ protected:
   InputStatus& iStatus;
 };
 
-/** \class LispOutput : interface an output object should adhere to.
- */
-class LispOutput : public YacasBase
-{
-public:
-    virtual ~LispOutput() = default;
-    /// Write out one character.
-    virtual void PutChar(LispChar aChar) = 0;
-
-public:
-    void Write(const LispChar * aString);
-};
-
 #endif
 

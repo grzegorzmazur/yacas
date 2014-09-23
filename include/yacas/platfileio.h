@@ -68,23 +68,23 @@ private:
     std::size_t iCurrentPos;
 };
 
-class StdFileOutput: public LispOutput {
-public:
-    StdFileOutput(LispLocalFile& aFile);
-    StdFileOutput(std::ostream&);
-
-    virtual void PutChar(LispChar aChar);
-
-    std::ostream& stream;
-};
-
-class StdUserOutput: public StdFileOutput {
-public:
-    StdUserOutput():
-        StdFileOutput(std::cout)
-    {
-    }
-};
+//class StdFileOutput: public LispOutput {
+//public:
+//    StdFileOutput(LispLocalFile& aFile);
+//    StdFileOutput(std::ostream&);
+//
+//    virtual void PutChar(LispChar aChar);
+//
+//    std::ostream& stream;
+//};
+//
+//class StdUserOutput: public StdFileOutput {
+//public:
+//    StdUserOutput():
+//        StdFileOutput(std::cout)
+//    {
+//    }
+//};
 
 class StdUserInput: public StdFileInput {
 public:
