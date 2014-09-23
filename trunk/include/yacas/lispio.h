@@ -9,19 +9,20 @@
 #include "yacasbase.h"
 
 #include <cstddef>
+#include <string>
 
 // Hope this forward declaration doesn't screw us over...
 class InputDirectories;
-class InputStatus : public YacasBase
+class InputStatus
 {
 public:
   InputStatus() : iFileName("none") , iLineNumber(-1)  {}
 
-  void SetTo(const LispChar * aFileName);
+  void SetTo(const std::string& aFileName);
   void RestoreFrom(InputStatus& aPreviousStatus);
-  inline LispInt LineNumber();
-  inline const LispChar * FileName();
-  inline void NextLine();
+  LispInt LineNumber();
+  const std::string& FileName();
+  void NextLine();
 
   inline InputStatus(const InputStatus& aOther) : iFileName(aOther.iFileName) , iLineNumber(aOther.iLineNumber)
   {
@@ -35,19 +36,24 @@ public:
   }
 
 private:
-  const LispChar * iFileName;
+  std::string iFileName;
   LispInt  iLineNumber;
 };
 
-inline LispInt InputStatus::LineNumber()
+inline
+LispInt InputStatus::LineNumber()
 {
   return iLineNumber;
 }
-inline const LispChar * InputStatus::FileName()
+
+inline
+const std::string& InputStatus::FileName()
 {
   return iFileName;
 }
-inline void InputStatus::NextLine()
+
+inline
+void InputStatus::NextLine()
 {
   iLineNumber++;
 }
