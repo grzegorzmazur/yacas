@@ -776,7 +776,7 @@ void LispAtomize(LispEnvironment& aEnvironment, LispInt aStackTop)
     CheckArg(evaluated, 1, aEnvironment, aStackTop);
     const LispString* orig = evaluated->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
-    RESULT = (LispAtom::New(aEnvironment,aEnvironment.HashTable().LookUpCounted(orig->c_str() + 1, std::strlen(orig->c_str()) - 2)->c_str()));
+    RESULT = LispAtom::New(aEnvironment, orig->substr(1, orig->length() - 2));
 }
 
 void LispStringify(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1146,10 +1146,11 @@ void LispFromFile(LispEnvironment& aEnvironment, LispInt aStackTop)
   CheckArg(orig, 1, aEnvironment, aStackTop);
 
   LispString * contents = aEnvironment.FindCachedFile(orig->c_str());
-  LispString * hashedname = aEnvironment.HashTable().LookUpCounted(orig->c_str() + 1, std::strlen(orig->c_str()));
+
+  const std::string fname = orig->substr(1, orig->length() - 2);
 
   InputStatus oldstatus = aEnvironment.iInputStatus;
-  aEnvironment.iInputStatus.SetTo(hashedname->c_str());
+  aEnvironment.iInputStatus.SetTo(fname);
 
   if (contents)
   {
@@ -1163,7 +1164,7 @@ void LispFromFile(LispEnvironment& aEnvironment, LispInt aStackTop)
   else
   {
     // Open file
-    LispLocalFile localFP(aEnvironment, hashedname->c_str(),true,
+    LispLocalFile localFP(aEnvironment, fname, true,
                           aEnvironment.iInputDirectories);
     if (!localFP.stream.is_open()) {
         ShowStack(aEnvironment);
@@ -1246,7 +1247,7 @@ void LispToFile(LispEnvironment& aEnvironment, LispInt aStackTop)
   InternalUnstringify(oper, *orig);
 
   // Open file for writing
-  LispLocalFile localFP(aEnvironment, oper.c_str(),false, aEnvironment.iInputDirectories);
+  LispLocalFile localFP(aEnvironment, oper, false, aEnvironment.iInputDirectories);
   if (!localFP.stream.is_open()) {
       ShowStack(aEnvironment);
       throw LispErrFileNotFound();

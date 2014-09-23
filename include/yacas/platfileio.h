@@ -8,7 +8,7 @@ class LispLocalFile: public LispBase {
 public:
     LispLocalFile(
         LispEnvironment& environment,
-        const LispChar* fname,
+        const std::string& fname,
         bool read,
         const std::vector<std::string>& dirs);
     virtual ~LispLocalFile();

@@ -594,7 +594,7 @@ void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispString * hashedname = aEnvironment.HashTable().LookUp(oper);
   InputStatus oldstatus = aEnvironment.iInputStatus;
   aEnvironment.iInputStatus.SetTo(hashedname->c_str());
-  LispLocalFile localFP(aEnvironment, oper.c_str(), true,
+  LispLocalFile localFP(aEnvironment, oper, true,
                         aEnvironment.iInputDirectories);
 
   if (!localFP.stream.is_open())

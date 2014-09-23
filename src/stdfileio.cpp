@@ -154,7 +154,7 @@ std::string InternalFindFile(const LispChar* fname, const std::vector<std::strin
 
 LispLocalFile::LispLocalFile(
     LispEnvironment& environment,
-    const LispChar* fname,
+    const std::string& fname,
     bool read,
     const std::vector<std::string>& dirs):
     environment(environment)
