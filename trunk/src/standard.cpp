@@ -363,7 +363,7 @@ void InternalLoad(LispEnvironment& aEnvironment, const LispString* aFileName)
     {
         //TODO make the file api platform independent!!!!
         // Open file
-        LispLocalFile localFP(aEnvironment, hashedname->c_str(),true,
+        LispLocalFile localFP(aEnvironment, *hashedname, true,
                               aEnvironment.iInputDirectories);
 
         if (!localFP.stream.is_open())

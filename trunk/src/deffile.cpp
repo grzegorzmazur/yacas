@@ -91,7 +91,7 @@ void LoadDefFile(LispEnvironment& aEnvironment, LispString * aFileName)
   }
   else
   {
-    LispLocalFile localFP(aEnvironment, hashedname->c_str(),true,
+    LispLocalFile localFP(aEnvironment, *hashedname,true,
                           aEnvironment.iInputDirectories);
     if (!localFP.stream.is_open())
         throw LispErrFileNotFound();
