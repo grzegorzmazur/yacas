@@ -29,28 +29,24 @@ bool MatchNumber::ArgumentMatches(LispEnvironment& aEnvironment,
                                        LispPtr& aExpression,
                                        LispPtr* arguments) const
 {
-  if (aExpression->Number(aEnvironment.Precision()))
-    return iNumber->Equals(*aExpression->Number(aEnvironment.Precision()));
-  return false;
+    if (aExpression->Number(aEnvironment.Precision()))
+        return iNumber->Equals(*aExpression->Number(aEnvironment.Precision()));
+
+    return false;
 }
 
 bool MatchVariable::ArgumentMatches(LispEnvironment& aEnvironment,
                                        LispPtr& aExpression,
                                        LispPtr* arguments) const
 {
-    if (!arguments[iVarIndex])
-    {
-        arguments[iVarIndex] = (aExpression);
+    if (!arguments[iVarIndex]) {
+        arguments[iVarIndex] = aExpression;
         return true;
     }
-    else
-    {
-        if (InternalEquals(aEnvironment, aExpression, arguments[iVarIndex]))
-        {
-            return true;
-        }
-        return false;
-    }
+
+    if (InternalEquals(aEnvironment, aExpression, arguments[iVarIndex]))
+        return true;
+
     return false;
 }
 
@@ -100,21 +96,17 @@ LispInt YacasPatternPredicateBase::LookUp(const LispString * aVariable)
 }
 
 
-YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironment& aEnvironment, LispObject* aPattern)
+const YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironment& aEnvironment, LispObject* aPattern)
 {
     if (!aPattern)
         return nullptr;
 
     if (aPattern->Number(aEnvironment.Precision()))
-    {
         return NEW MatchNumber(aPattern->Number(aEnvironment.Precision()));
-    }
 
     // Deal with atoms
     if (aPattern->String())
-    {
         return NEW MatchAtom(aPattern->String());
-    }
 
     // Else it must be a sublist
     if (aPattern->SubList())
@@ -167,7 +159,7 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
             }
         }
 
-        std::vector<YacasParamMatcherBase*> matchers;
+        std::vector<const YacasParamMatcherBase*> matchers;
         matchers.reserve(num);
         LispIterator iter(*sublist);
         for (LispInt i = 0; i < num; ++i, ++iter) {
@@ -180,19 +172,18 @@ YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnvironme
     return nullptr;
 }
 
-YacasPatternPredicateBase::YacasPatternPredicateBase(LispEnvironment& aEnvironment, LispPtr& aPattern,
-                                                     LispPtr& aPostPredicate)
-  : iParamMatchers(),iVariables(),iPredicates()
+YacasPatternPredicateBase::YacasPatternPredicateBase(
+    LispEnvironment& aEnvironment,
+    LispPtr& aPattern,
+    LispPtr& aPostPredicate)
 {
-    LispIterator iter(aPattern);
-    for ( ; iter.getObj(); ++iter)
-  {
-        YacasParamMatcherBase* matcher = MakeParamMatcher(aEnvironment,iter.getObj());
+    for (LispIterator iter(aPattern); iter.getObj(); ++iter) {
+        const YacasParamMatcherBase* matcher = MakeParamMatcher(aEnvironment, iter.getObj());
         assert(matcher!=nullptr);
         iParamMatchers.push_back(matcher);
-  }
-  LispPtr post(aPostPredicate);
-  iPredicates.push_back(post);
+    }
+
+    iPredicates.push_back(aPostPredicate);
 }
 
 bool YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
@@ -326,6 +317,6 @@ YacasPatternPredicateBase::~YacasPatternPredicateBase()
         if (--p->iReferenceCount == 0)
             delete p;
 
-    for (YacasParamMatcherBase* p: iParamMatchers)
+    for (const YacasParamMatcherBase* p: iParamMatchers)
         delete p;
 }

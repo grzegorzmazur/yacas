@@ -77,7 +77,7 @@ MatchNumber::MatchNumber(BigNumber* aNumber):
 /// Class for matching against a list of YacasParamMatcherBase objects.
 class MatchSubList : public YacasParamMatcherBase, NonCopyable {
 public:
-    explicit MatchSubList(const std::vector<YacasParamMatcherBase*>&& aMatchers);
+    explicit MatchSubList(const std::vector<const YacasParamMatcherBase*>&& aMatchers);
     ~MatchSubList();
 
     bool ArgumentMatches(
@@ -86,11 +86,11 @@ public:
         LispPtr* arguments) const;
 
 protected:
-    std::vector<YacasParamMatcherBase*> iMatchers;
+    std::vector<const YacasParamMatcherBase*> iMatchers;
 };
 
 inline
-MatchSubList::MatchSubList(const std::vector<YacasParamMatcherBase*>&& aMatchers):
+MatchSubList::MatchSubList(const std::vector<const YacasParamMatcherBase*>&& aMatchers):
     iMatchers(aMatchers)
 {
 }
@@ -98,7 +98,7 @@ MatchSubList::MatchSubList(const std::vector<YacasParamMatcherBase*>&& aMatchers
 inline
 MatchSubList::~MatchSubList()
 {
-    for (YacasParamMatcherBase* m: iMatchers)
+    for (const YacasParamMatcherBase* m: iMatchers)
         delete m;
 }
 
@@ -193,7 +193,7 @@ protected:
     ///   resulting YacasParamMatcherBase objects are collected in a
     ///   MatchSubList, which is returned.
     /// - Otherwise, this function returns #nullptr.
-    YacasParamMatcherBase* MakeParamMatcher(LispEnvironment& aEnvironment, LispObject* aPattern);
+    const YacasParamMatcherBase* MakeParamMatcher(LispEnvironment& aEnvironment, LispObject* aPattern);
 
     /// Look up a variable name in #iVariables
     /// \returns index in #iVariables array where \a aVariable
@@ -218,7 +218,7 @@ protected:
 
 protected:
     /// List of parameter matches, one for every parameter.
-    std::vector<YacasParamMatcherBase*> iParamMatchers;
+    std::vector<const YacasParamMatcherBase*> iParamMatchers;
 
     /// List of variables appearing in the pattern.
     std::vector<const LispString*> iVariables;
