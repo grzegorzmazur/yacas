@@ -182,8 +182,7 @@ inline ObjectHelper<T,U>::~ObjectHelper() {}
  * reference counting, so it should be faster.  Use LispIterator
  * (instead of LispPtr) to traverse a lisp expression non-destructively.
  */
-class LispIterator : public YacasBase
-{
+class LispIterator {
 public:
   // ala TEMPLATE CLASS iterator
   //typedef forward_iterator_tag iterator_category;
@@ -218,8 +217,7 @@ public:
   inline LispObject* getObj() const { return (*_Ptr).operator->(); }
 };
 
-class LispConstIterator : public YacasBase
-{
+class LispConstIterator {
 public:
   // ala TEMPLATE CLASS iterator
   //typedef forward_iterator_tag iterator_category;
