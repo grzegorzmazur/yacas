@@ -9,7 +9,7 @@
 #include "yacas/tokenizer.h"
 #include "yacas/stringio.h"
 
-LispDefFile::LispDefFile(LispString* aFileName):
+LispDefFile::LispDefFile(const LispString* aFileName):
     iFileName(aFileName),
     iIsLoaded(false)
 {
@@ -20,7 +20,7 @@ void LispDefFile::SetLoaded()
   iIsLoaded = true;
 }
 
-LispDefFile* LispDefFiles::File(LispString* aFileName)
+LispDefFile* LispDefFiles::File(const LispString* aFileName)
 {
     auto i = _map.find(aFileName);
 
@@ -47,8 +47,8 @@ static void DoLoadDefFile(
   while (!endoffile)
   {
     // Read expression
-    LispString * token = tok.NextToken(*aEnvironment.CurrentInput(),
-                          aEnvironment.HashTable());
+    const LispString* token =
+        tok.NextToken(*aEnvironment.CurrentInput(), aEnvironment.HashTable());
 
     // Check for end of file
     if (token == eof || token == end)
@@ -69,7 +69,7 @@ static void DoLoadDefFile(
   }
 }
 
-void LoadDefFile(LispEnvironment& aEnvironment, LispString * aFileName)
+void LoadDefFile(LispEnvironment& aEnvironment, const LispString* aFileName)
 {
   assert(aFileName!=nullptr);
 
@@ -77,8 +77,8 @@ void LoadDefFile(LispEnvironment& aEnvironment, LispString * aFileName)
   InternalUnstringify(flatfile, *aFileName);
   flatfile.append(".def");
   LispDefFile* def = aEnvironment.DefFiles().File(aFileName);
-  LispString * contents = aEnvironment.FindCachedFile(flatfile.c_str());
-  LispString * hashedname = aEnvironment.HashTable().LookUp(flatfile);
+  const LispString* contents = aEnvironment.FindCachedFile(flatfile.c_str());
+  const LispString* hashedname = aEnvironment.HashTable().LookUp(flatfile);
 
   InputStatus oldstatus = aEnvironment.iInputStatus;
   aEnvironment.iInputStatus.SetTo(hashedname->c_str());

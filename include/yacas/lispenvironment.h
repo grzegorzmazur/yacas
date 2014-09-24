@@ -76,7 +76,7 @@ public:
   /// LispGlobalVariable is constructed, and it is associated with
   /// \a aValue in #iGlobals.
   /// \sa FindLocal
-  void SetVariable(LispString * aString, LispPtr& aValue, bool aGlobalLazyVariable);
+  void SetVariable(const LispString* aString, LispPtr& aValue, bool aGlobalLazyVariable);
 
   /// In debug mode, DebugModeVerifySettingGlobalVariables raises a warning if a global variable is set.
   void DebugModeVerifySettingGlobalVariables(LispPtr & aVariable, bool aGlobalLazyVariable);
@@ -97,12 +97,12 @@ public:
   ///   #iEvalBeforeReturn is set to false, and a copy of the result
   ///   is returned in \a aResult.
   /// - Otherwise, \a aResult is set to #nullptr.
-  void GetVariable(LispString * aVariable,LispPtr& aResult);
+  void GetVariable(const LispString* aVariable, LispPtr& aResult);
 
-  void UnsetVariable(LispString * aString);
+  void UnsetVariable(const LispString * aString);
   void PushLocalFrame(bool aFenced);
   void PopLocalFrame();
-  void NewLocal(LispString * aVariable,LispObject* aValue);
+  void NewLocal(const LispString* aVariable, LispObject* aValue);
   void CurrentLocals(LispPtr& aResult);
   //@}
 
@@ -125,7 +125,7 @@ public:
 
   inline  LispHashTable& HashTable();
   LispUserFunction* UserFunction(LispPtr& aArguments);
-  LispUserFunction* UserFunction(LispString * aName,LispInt aArity);
+  LispUserFunction* UserFunction(const LispString* aName,LispInt aArity);
 
   /// Return LispMultiUserFunction with given name.
   /// \param aArguments name of the multi user function
@@ -134,27 +134,27 @@ public:
   /// a user function with the given name exists, it is returned.
   /// Otherwise, a new LispMultiUserFunction is constructed, added
   /// to #iUserFunctions, and returned.
-  LispMultiUserFunction* MultiUserFunction(LispString * aArguments);
+  LispMultiUserFunction* MultiUserFunction(const LispString* aArguments);
 
   LispDefFiles& DefFiles();
-  void DeclareRuleBase(LispString * aOperator, LispPtr& aParameters,
+  void DeclareRuleBase(const LispString* aOperator, LispPtr& aParameters,
                        LispInt aListed);
-  void DeclareMacroRuleBase(LispString * aOperator, LispPtr& aParameters,
+  void DeclareMacroRuleBase(const LispString* aOperator, LispPtr& aParameters,
                        LispInt aListed);
-  void DefineRule(LispString * aOperator,LispInt aArity,
+  void DefineRule(const LispString* aOperator,LispInt aArity,
                           LispInt aPrecedence, LispPtr& aPredicate,
                           LispPtr& aBody);
-  void DefineRulePattern(LispString * aOperator,LispInt aArity,
-                          LispInt aPrecedence, LispPtr& aPredicate,
-                          LispPtr& aBody);
+  void DefineRulePattern(const LispString* aOperator,LispInt aArity,
+                         LispInt aPrecedence, LispPtr& aPredicate,
+                         LispPtr& aBody);
 
 
-  void UnFenceRule(LispString * aOperator,LispInt aArity);
-  void Retract(LispString * aOperator,LispInt aArity);
-  void HoldArgument(LispString *  aOperator,LispString * aVariable);
+  void UnFenceRule(const LispString* aOperator,LispInt aArity);
+  void Retract(const LispString* aOperator,LispInt aArity);
+  void HoldArgument(const LispString* aOperator, const LispString* aVariable);
   //@}
 
-  LispString * FindCachedFile(const LispChar * aFileName);
+  const LispString * FindCachedFile(const LispChar * aFileName);
 
 public:
   /// \name Precision
@@ -162,16 +162,16 @@ public:
 
   /// set precision to a given number of decimal digits
   void SetPrecision(LispInt aPrecision);
-  inline LispInt Precision(void) const;
-  inline LispInt BinaryPrecision(void) const;
+  LispInt Precision(void) const;
+  LispInt BinaryPrecision(void) const;
   //@}
 
 public:
-  inline void SetPrettyPrinter(LispString * aPrettyPrinter);
-  inline LispString * PrettyPrinter(void);
+  void SetPrettyPrinter(const LispString* aPrettyPrinter);
+  const LispString* PrettyPrinter();
 
-  inline void SetPrettyReader(LispString * aPrettyReader);
-  inline LispString * PrettyReader(void);
+  void SetPrettyReader(const LispString* aPrettyReader);
+  const LispString* PrettyReader();
 
 public:
   LispInt GetUniqueId();
@@ -236,10 +236,10 @@ public: // Error reporting
   DefaultDebugger* iDebugger;
 
 private:
-    LispPtr *FindLocal(LispString * aVariable);
+    LispPtr *FindLocal(const LispString * aVariable);
 
     struct LispLocalVariable {
-        LispLocalVariable(LispString* var, LispObject* val):
+        LispLocalVariable(const LispString* var, LispObject* val):
         var(var), val(val)
         {
             ++var->iReferenceCount;
@@ -256,7 +256,7 @@ private:
             --var->iReferenceCount;
         }
 
-        LispString* var;
+        const LispString* var;
         LispPtr val;
     };
 
@@ -296,8 +296,8 @@ private:
 
   LispInput* iCurrentInput;
 
-  LispString * iPrettyReader;
-  LispString * iPrettyPrinter;
+  const LispString* iPrettyReader;
+  const LispString* iPrettyPrinter;
 public:
   LispTokenizer iDefaultTokenizer;
   CommonLispTokenizer iCommonLispTokenizer;
@@ -506,20 +506,20 @@ private:
 
 
 
-inline void LispEnvironment::SetPrettyReader(LispString * aPrettyReader)
+inline void LispEnvironment::SetPrettyReader(const LispString* aPrettyReader)
 {
   iPrettyReader = aPrettyReader;
 }
-inline LispString * LispEnvironment::PrettyReader(void)
+inline const LispString* LispEnvironment::PrettyReader()
 {
   return iPrettyReader;
 }
 
-inline void LispEnvironment::SetPrettyPrinter(LispString * aPrettyPrinter)
+inline void LispEnvironment::SetPrettyPrinter(const LispString * aPrettyPrinter)
 {
   iPrettyPrinter = aPrettyPrinter;
 }
-inline LispString * LispEnvironment::PrettyPrinter(void)
+inline const LispString* LispEnvironment::PrettyPrinter()
 {
   return iPrettyPrinter;
 }

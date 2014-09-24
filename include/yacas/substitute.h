@@ -45,15 +45,15 @@ class LocalSymbolBehaviour : public SubstBehaviourBase
 public:
     LocalSymbolBehaviour(
         LispEnvironment& aEnvironment,
-        const std::vector<LispString*>&& aOriginalNames,
-        const std::vector<LispString*>&& aNewNames);
+        const std::vector<const LispString*>&& aOriginalNames,
+        const std::vector<const LispString*>&& aNewNames);
 
     virtual bool Matches(LispPtr& aResult, LispPtr& aElement);
 
 private:
     LispEnvironment& iEnvironment;
-    std::vector<LispString*> iOriginalNames;
-    std::vector<LispString*> iNewNames;
+    std::vector<const LispString*> iOriginalNames;
+    std::vector<const LispString*> iNewNames;
 };
 
 /** subst behaviour for backquote mechanism as in LISP.

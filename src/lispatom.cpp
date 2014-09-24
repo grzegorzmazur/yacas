@@ -16,7 +16,7 @@ LispObject* LispAtom::New(LispEnvironment& aEnvironment, const std::string& aStr
     return NEW LispAtom(aEnvironment.HashTable().LookUp(aString));
 }
 
-LispAtom::LispAtom(LispString * aString) : iString(aString)
+LispAtom::LispAtom(const LispString* aString) : iString(aString)
 {
     assert(aString);
     ++aString->iReferenceCount;
@@ -33,7 +33,7 @@ LispAtom::~LispAtom()
 }
 
 
-LispString* LispAtom::String()
+const LispString* LispAtom::String()
 {
     assert(iString);
     return iString;

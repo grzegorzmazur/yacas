@@ -21,10 +21,10 @@ public:
   class BranchParameter : public YacasBase
   {
   public:
-    BranchParameter(LispString * aParameter = nullptr, LispInt aHold=false)
+    BranchParameter(const LispString* aParameter = nullptr, LispInt aHold=false)
         : iParameter(aParameter), iHold(aHold) {}
-    LispString * iParameter;
-    LispInt       iHold;
+    const LispString* iParameter;
+    LispInt iHold;
   };
 
   /// Abstract base class for rules.
@@ -147,7 +147,7 @@ public:
   ///
   /// The \c iHold flag of the corresponding argument is set. This
   /// implies that this argument is not evaluated by Evaluate().
-  virtual void HoldArgument(LispString * aVariable);
+  virtual void HoldArgument(const LispString* aVariable);
 
   /// Return true if the arity of the function equals \a aArity.
   virtual LispInt IsArity(LispInt aArity) const;

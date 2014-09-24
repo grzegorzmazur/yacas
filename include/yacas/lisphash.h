@@ -7,8 +7,8 @@
 #ifndef YACAS_LISPHASH_H
 #define YACAS_LISPHASH_H
 
-#include "yacasbase.h"
 #include "lispstring.h"
+
 #include <vector>
 
 #ifdef YACAS_NO_CONSTEXPR
@@ -24,31 +24,23 @@ constexpr LispInt KSymTableSize = 211;
  * This also allows fast comparison of two strings (two strings
  * are equal iff the pointers to the strings are equal).
  */
-class LispHashTable : public YacasBase
-{
+class LispHashTable {
 public:
-  LispHashTable() = default;
-  ~LispHashTable();
-  // If string not yet in table, insert. Afterwards return the string.
-  LispString * LookUp(const std::string&);
-  LispString * LookUpCounted(const LispChar * aString, LispInt aLength);
-  void GarbageCollect();
+    LispHashTable() = default;
+    ~LispHashTable();
+    // If string not yet in table, insert. Afterwards return the string.
+    const LispString* LookUp(const std::string&);
+    void GarbageCollect();
+
 private:
-  void AppendString(LispInt bin,LispString * result);
-private:
-  std::vector<LispStringSmartPtr> iHashTable[KSymTableSize];
+    std::hash<std::string> _hash;
+    std::vector<LispStringSmartPtr> _rep[KSymTableSize];
 };
 
 inline
 std::string Stringify(const std::string& s)
 {
     return "\"" + s + "\"";
-}
-
-inline
-LispString* LispHashTable::LookUp(const std::string& s)
-{
-    return LookUpCounted(s.c_str(), s.size());
 }
 
 #endif

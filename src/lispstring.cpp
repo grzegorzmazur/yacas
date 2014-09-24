@@ -12,7 +12,7 @@ LispInt LispString::operator==(const LispString& aString) const
     return static_cast<const std::string&>(*this) == static_cast<const std::string&>(aString);
 }
 
-LispStringSmartPtr& LispStringSmartPtr::operator=(LispString * aString)
+LispStringSmartPtr& LispStringSmartPtr::operator=(const LispString* aString)
 {
   // Increment first.
   if (aString)

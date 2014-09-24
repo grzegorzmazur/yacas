@@ -18,8 +18,7 @@ static int IsSpace(int c)
 }
 
 
-LispString * XmlTokenizer::NextToken(LispInput& aInput,
-                                LispHashTable& aHashTable)
+const LispString* XmlTokenizer::NextToken(LispInput& aInput, LispHashTable& aHashTable)
 {
     LispChar c;
     LispInt firstpos=0;
@@ -30,7 +29,7 @@ LispString * XmlTokenizer::NextToken(LispInput& aInput,
     //skipping spaces
     while (IsSpace(aInput.Peek())) aInput.Next();
     firstpos = aInput.Position();
- 
+
     c = aInput.Next();
     if (c == '<')
     {
@@ -50,11 +49,6 @@ LispString * XmlTokenizer::NextToken(LispInput& aInput,
         }
     }
 FINISH:
-    return aHashTable.LookUpCounted(&aInput.StartPtr()[firstpos],aInput.Position()-firstpos);
-}
-
-
-XmlTokenizer::~XmlTokenizer()
-{
+    return aHashTable.LookUp(std::string(&aInput.StartPtr()[firstpos],aInput.Position()-firstpos));
 }
 

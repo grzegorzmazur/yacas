@@ -46,13 +46,13 @@ void InfixParser::ParseCont(LispPtr& aResult)
     return ;
 }
 
-void LispOperators::SetOperator(LispInt aPrecedence, LispString * aString)
+void LispOperators::SetOperator(LispInt aPrecedence, const LispString* aString)
 {
     _map[aString] = LispInFixOperator(aPrecedence);
 }
 
 
-void LispOperators::SetRightAssociative(LispString * aString)
+void LispOperators::SetRightAssociative(const LispString* aString)
 {
     auto i = _map.find(aString);
     if (i == _map.end())
@@ -60,7 +60,7 @@ void LispOperators::SetRightAssociative(LispString * aString)
     i->second.SetRightAssociative();
 }
 
-void LispOperators::SetLeftPrecedence(LispString * aString,LispInt aPrecedence)
+void LispOperators::SetLeftPrecedence(const LispString* aString, LispInt aPrecedence)
 {
     auto i = _map.find(aString);
     if (i == _map.end())
@@ -68,7 +68,7 @@ void LispOperators::SetLeftPrecedence(LispString * aString,LispInt aPrecedence)
     i->second.SetLeftPrecedence(aPrecedence);
 }
 
-void LispOperators::SetRightPrecedence(LispString * aString,LispInt aPrecedence)
+void LispOperators::SetRightPrecedence(const LispString* aString, LispInt aPrecedence)
 {
     auto i = _map.find(aString);
     if (i == _map.end())
@@ -76,7 +76,7 @@ void LispOperators::SetRightPrecedence(LispString * aString,LispInt aPrecedence)
     i->second.SetRightPrecedence(aPrecedence);
 }
 
-LispInFixOperator* LispOperators::LookUp(LispString* aString)
+LispInFixOperator* LispOperators::LookUp(const LispString* aString)
 {
     const auto i = _map.find(aString);
     if (i != _map.end())
@@ -93,7 +93,7 @@ void ParsedObject::ReadToken()
         iEndOfFile=true;
 }
 
-void ParsedObject::MatchToken(LispString * aToken)
+void ParsedObject::MatchToken(const LispString* aToken)
 {
     if (aToken != iLookAhead)
           Fail();
@@ -145,14 +145,14 @@ void ParsedObject::Combine(LispInt aNrArgsToCombine)
 
 void ParsedObject::GetOtherSide(LispInt aNrArgsToCombine, LispInt depth)
 {
-    LispString * theOperator = iLookAhead;
+    const LispString* theOperator = iLookAhead;
     MatchToken(iLookAhead);
     ReadExpression(depth);
     InsertAtom(theOperator);
     Combine(aNrArgsToCombine);
 }
 
-void ParsedObject::InsertAtom(LispString * aString)
+void ParsedObject::InsertAtom(const LispString* aString)
 {
     LispPtr ptr(LispAtom::New(iParser.iEnvironment, *aString));
 
@@ -180,11 +180,11 @@ void ParsedObject::ReadExpression(LispInt depth)
             ReadExpression(KMaxPrecedence);
             // Match closing bracket
             if (iLookAhead != iParser.iEnvironment.iProgClose->String())
-                throw LispErrGeneric(std::string("Expecting a ] close bracket for program block, but got ") + std::string(iLookAhead->c_str()) + std::string(" instead"));
+                throw LispErrGeneric(std::string("Expecting a ] close bracket for program block, but got ") + *iLookAhead + std::string(" instead"));
 
             MatchToken(iLookAhead);
             // Build into Ntn(...)
-            LispString * theOperator = iParser.iEnvironment.iNth->String();
+            const LispString* theOperator = iParser.iEnvironment.iNth->String();
             InsertAtom(theOperator);
             Combine(2);
         }
@@ -203,8 +203,8 @@ void ParsedObject::ReadExpression(LispInt depth)
                 while (len>1)
                 {
                   len--;
-                  LispString * lookUp =
-                    iParser.iEnvironment.HashTable().LookUpCounted(iLookAhead->c_str(),len);
+                  const LispString* lookUp =
+                    iParser.iEnvironment.HashTable().LookUp(iLookAhead->substr(0, len));
 
 //printf("trunc %s\n",lookUp->c_str());
                   op = iParser.iInfixOperators.LookUp(lookUp);
@@ -212,8 +212,8 @@ void ParsedObject::ReadExpression(LispInt depth)
                   if (op)
                   {
 
-                    LispString * lookUpRight =
-                      iParser.iEnvironment.HashTable().LookUpCounted(&(iLookAhead->c_str()[len]),origlen-len);
+                    const LispString* lookUpRight =
+                        iParser.iEnvironment.HashTable().LookUp(iLookAhead->substr(len, origlen - len));
 
 //printf("right: %s (%d)\n",lookUpRight->c_str(),origlen-len);
 
@@ -261,7 +261,7 @@ void ParsedObject::ReadAtom()
     op = iParser.iPrefixOperators.LookUp(iLookAhead);
     if (op)
     {
-        LispString * theOperator = iLookAhead;
+        const LispString* theOperator = iLookAhead;
         MatchToken(iLookAhead);
         {
             ReadExpression(op->iPrecedence);
@@ -296,7 +296,7 @@ void ParsedObject::ReadAtom()
             }
         }
         MatchToken(iLookAhead);
-        LispString * theOperator = iParser.iEnvironment.iList->String();
+        const LispString* theOperator = iParser.iEnvironment.iList->String();
         InsertAtom(theOperator);
         Combine(nrargs);
 
@@ -327,7 +327,7 @@ void ParsedObject::ReadAtom()
             }
         }
         MatchToken(iLookAhead);
-        LispString * theOperator = iParser.iEnvironment.iProg->String();
+        const LispString* theOperator = iParser.iEnvironment.iProg->String();
         InsertAtom(theOperator);
 
         Combine(nrargs);
@@ -339,7 +339,7 @@ void ParsedObject::ReadAtom()
     // Else we have an atom.
     else
     {
-        LispString * theOperator = iLookAhead;
+        const LispString* theOperator = iLookAhead;
         MatchToken(iLookAhead);
 
         LispInt nrargs=-1;
@@ -420,7 +420,7 @@ void InfixPrinter::Print(
 {
     assert(aExpression);
 
-    LispString* string = aExpression->String();
+    const LispString* string = aExpression->String();
     if (string)
     {
         LispInt bracket=0;

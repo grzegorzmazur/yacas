@@ -36,7 +36,7 @@ bool InternalIsList(const LispEnvironment& env, const LispPtr& aPtr)
 }
 
 
-bool InternalIsString(LispString * aOriginal)
+bool InternalIsString(const LispString* aOriginal)
 {
     if (aOriginal)
         if ((*aOriginal)[0] == '\"')
@@ -307,7 +307,7 @@ void DoInternalLoad(LispEnvironment& aEnvironment,LispInput* aInput)
 
     // TODO make "EndOfFile" a global thing
     // read-parse-eval to the end of file
-    LispString * eof = aEnvironment.HashTable().LookUp("EndOfFile");
+    const LispString* eof = aEnvironment.HashTable().LookUp("EndOfFile");
     bool endoffile = false;
 
     LispTokenizer tok;
@@ -347,8 +347,8 @@ void InternalLoad(LispEnvironment& aEnvironment, const LispString* aFileName)
     LispString oper;
     InternalUnstringify(oper, *aFileName);
 
-    LispString * contents = aEnvironment.FindCachedFile(oper.c_str());
-    LispString * hashedname = aEnvironment.HashTable().LookUp(oper);
+    const LispString* contents = aEnvironment.FindCachedFile(oper.c_str());
+    const LispString* hashedname = aEnvironment.HashTable().LookUp(oper);
 
     InputStatus oldstatus = aEnvironment.iInputStatus;
     aEnvironment.iInputStatus.SetTo(hashedname->c_str());
@@ -375,7 +375,7 @@ void InternalLoad(LispEnvironment& aEnvironment, const LispString* aFileName)
     aEnvironment.iInputStatus.RestoreFrom(oldstatus);
 }
 
-void InternalUse(LispEnvironment& aEnvironment,LispString * aFileName)
+void InternalUse(LispEnvironment& aEnvironment, const LispString* aFileName)
 {
     LispDefFile* def = aEnvironment.DefFiles().File(aFileName);
     if (!def->IsLoaded())
@@ -386,7 +386,7 @@ void InternalUse(LispEnvironment& aEnvironment,LispString * aFileName)
 }
 
 void InternalApplyString(LispEnvironment& aEnvironment, LispPtr& aResult,
-                 LispString * aOperator,LispPtr& aArgs)
+                 const LispString* aOperator,LispPtr& aArgs)
 {
     if (!InternalIsString(aOperator))
         throw LispErrNotString();
@@ -428,7 +428,7 @@ void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnviron
         if (!args2)
             throw LispErrInvalidArg();
 
-        LispString* var = oper2->String();
+        const LispString* var = oper2->String();
 
         if (!var)
             throw LispErrInvalidArg();
@@ -535,11 +535,11 @@ void PrintExpression(LispString& aResult,
     }
 }
 
-LispString* SymbolName(LispEnvironment& aEnvironment,
-                       const LispChar * aSymbol)
+const LispString* SymbolName(LispEnvironment& aEnvironment,
+                       const std::string& aSymbol)
 {
     if (aSymbol[0] == '\"')
-        return aEnvironment.HashTable().LookUpCounted(aSymbol + 1, std::strlen(aSymbol) - 2);
+        return aEnvironment.HashTable().LookUp(aSymbol.substr(1, aSymbol.size() - 2));
     else
         return aEnvironment.HashTable().LookUp(aSymbol);
 }

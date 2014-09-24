@@ -70,7 +70,7 @@ public: //Derivables
    *  the string representation is only relevant if the object is a
    *  simple atom. This method returns nullptr by default.
    */
-  virtual LispString * String()  { return nullptr; }
+  virtual const LispString* String()  { return nullptr; }
   /** If this object is a list, return a pointer to it.
    *  Default behaviour is to return nullptr.
    */

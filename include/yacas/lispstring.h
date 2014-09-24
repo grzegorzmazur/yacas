@@ -40,7 +40,7 @@ public:
     LispInt operator==(const LispString& aString) const;
 
 public:
-    ReferenceCount iReferenceCount;
+    mutable ReferenceCount iReferenceCount;
 };
 
 
@@ -92,9 +92,9 @@ public:
   LispStringSmartPtr() : iString(nullptr) {}
 
   // Construct from pointer to LispString
-  LispStringSmartPtr(LispString * aString) : iString(nullptr)
+  LispStringSmartPtr(const LispString* aString) : iString(nullptr)
   {
-    this->operator=(aString);
+    this->operator = (aString);
   }
 
   // Copy constructor
@@ -108,15 +108,15 @@ public:
 
   // Assignment from pointer.  (PDG - new method)
   // (we return void, not *this).
-  LispStringSmartPtr& operator=(LispString * aString);
+  LispStringSmartPtr& operator = (const LispString* aString);
 
   // Assignment from another (the *default* simply assigns members, not what we want).
   // (we return void, not *this).
   LispStringSmartPtr& operator=(const LispStringSmartPtr &aOther) { this->operator=(aOther.iString); return *this; }
 
   // Expected pointer behavior.
-  operator LispString*()    const { return  iString; }  // implicit conversion to pointer to T
-  LispString *operator->()  const { return  iString; }  // so (smartPtr->member) accesses T's member
+  operator const LispString*()    const { return  iString; }  // implicit conversion to pointer to T
+  const LispString* operator->()  const { return  iString; }  // so (smartPtr->member) accesses T's member
 
   // Operators below are not used yet, so they are commented out. If you want to use them you need to test if they work.
   //LispString &operator*() const { return *iString; }  // so (*smartPtr) is a reference to T
@@ -124,7 +124,7 @@ public:
   //bool operator!()        const { return !iString; }  // is null pointer
 
 private:
-  LispString * iString;
+  const LispString* iString;
 };
 
 #endif

@@ -96,14 +96,14 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
       throw LispErrMaxRecurseDepthReached();
   }
 
-  LispString * str = aExpression->String();
+  const LispString* str = aExpression->String();
 
   // Evaluate an atom: find the bound value (treat it as a variable)
   if (str)
   {
     if (str->c_str()[0] == '\"')
     {
-      aResult = (aExpression->Copy());
+      aResult = aExpression->Copy();
       goto FINISH;
     }
 
@@ -355,7 +355,7 @@ void TracedStackEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult,
   }
 
   LispPtr* subList = aExpression->SubList();
-  LispString * str = nullptr;
+  const LispString* str = nullptr;
   if (subList)
   {
     LispObject* head = (*subList);

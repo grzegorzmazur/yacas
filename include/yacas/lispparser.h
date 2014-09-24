@@ -23,7 +23,7 @@ public:
     virtual void Parse(LispPtr& aResult );
 protected:
     void ParseList(LispPtr& aResult);
-    void ParseAtom(LispPtr& aResult,LispString * aToken);
+    void ParseAtom(LispPtr& aResult, const LispString* aToken);
 
 public:
     LispTokenizer& iTokenizer;

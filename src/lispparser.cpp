@@ -15,7 +15,7 @@ void LispParser::Parse(LispPtr& aResult)
     aResult = nullptr;
 
     // Get token.
-    LispString * token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());
+    const LispString* token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());
     if (token->c_str()[0] == '\0')
     {
         aResult = iEnvironment.iEndOfFile->Copy();
@@ -24,7 +24,7 @@ void LispParser::Parse(LispPtr& aResult)
     ParseAtom(aResult,token);
 }
 
-void LispParser::ParseAtom(LispPtr& aResult, LispString * aToken)
+void LispParser::ParseAtom(LispPtr& aResult, const LispString* aToken)
 {
     // if token is empty string, return null pointer (no expression)
     if (!aToken->c_str()[0])
@@ -53,10 +53,10 @@ void LispParser::ParseList(LispPtr& aResult)
     for (;;)
     {
         //Get token.
-      LispString * token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());
+        const LispString* token = iTokenizer.NextToken(iInput,iEnvironment.HashTable());
         // if token is empty string, error!
-      if (!token->c_str()[0])
-          throw InvalidToken();
+        if (!token->c_str()[0])
+            throw InvalidToken();
 
         // if token is ")" return result.
         if (token == iEnvironment.iBracketClose->String())
@@ -101,7 +101,7 @@ void LispPrinter::PrintExpression(
     while (!!(*iter))
     {
         // if String not null pointer: print string
-        LispString * string = (*iter)->String();
+        const LispString* string = (*iter)->String();
 
         if (string)
         {

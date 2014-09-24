@@ -114,7 +114,7 @@ LispInt LispEnvironment::GetUniqueId()
 }
 
 
-LispPtr* LispEnvironment::FindLocal(LispString* aVariable)
+LispPtr* LispEnvironment::FindLocal(const LispString* aVariable)
 {
     assert(!_local_frames.empty());
 
@@ -166,7 +166,7 @@ void LispEnvironment::DebugModeVerifySettingGlobalVariables(LispPtr & aVariable,
 }
 #endif // YACAS_DEBUG
 
-void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue, bool aGlobalLazyVariable)
+void LispEnvironment::SetVariable(const LispString* aVariable, LispPtr& aValue, bool aGlobalLazyVariable)
 {
     if (LispPtr *local = FindLocal(aVariable)) {
         *local = aValue;
@@ -183,7 +183,7 @@ void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue, bool 
         i->second.SetEvalBeforeReturn(true);
 }
 
-void LispEnvironment::GetVariable(LispString * aVariable, LispPtr& aResult)
+void LispEnvironment::GetVariable(const LispString* aVariable, LispPtr& aResult)
 {
     aResult = nullptr;
 
@@ -209,7 +209,7 @@ void LispEnvironment::GetVariable(LispString * aVariable, LispPtr& aResult)
     }
 }
 
-void LispEnvironment::UnsetVariable(LispString* var)
+void LispEnvironment::UnsetVariable(const LispString* var)
 {
     if (LispPtr* local = FindLocal(var))
         *local = nullptr;
@@ -230,7 +230,7 @@ void LispEnvironment::PopLocalFrame()
     _local_frames.pop_back();
 }
 
-void LispEnvironment::NewLocal(LispString* var, LispObject* val)
+void LispEnvironment::NewLocal(const LispString* var, LispObject* val)
 {
     assert(!_local_frames.empty());
 
@@ -322,7 +322,7 @@ LispUserFunction* LispEnvironment::UserFunction(LispPtr& aArguments)
 }
 
 
-LispUserFunction* LispEnvironment::UserFunction(LispString* aName,LispInt aArity)
+LispUserFunction* LispEnvironment::UserFunction(const LispString* aName, LispInt aArity)
 {
     LispUserFunctions::iterator i = iUserFunctions.find(aName);
     if (i != iUserFunctions.end())
@@ -333,7 +333,7 @@ LispUserFunction* LispEnvironment::UserFunction(LispString* aName,LispInt aArity
 
 
 
-void LispEnvironment::UnFenceRule(LispString* aOperator,LispInt aArity)
+void LispEnvironment::UnFenceRule(const LispString* aOperator, LispInt aArity)
 {
     LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
 
@@ -350,7 +350,7 @@ void LispEnvironment::UnFenceRule(LispString* aOperator,LispInt aArity)
     userFunc->UnFence();
 }
 
-void LispEnvironment::Retract(LispString * aOperator,LispInt aArity)
+void LispEnvironment::Retract(const LispString* aOperator, LispInt aArity)
 {
     LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
 
@@ -358,7 +358,7 @@ void LispEnvironment::Retract(LispString * aOperator,LispInt aArity)
         i->second.DeleteBase(aArity);
 }
 
-void LispEnvironment::DeclareRuleBase(LispString * aOperator,
+void LispEnvironment::DeclareRuleBase(const LispString* aOperator,
                                       LispPtr& aParameters,
                                       LispInt aListed)
 {
@@ -386,7 +386,7 @@ void LispEnvironment::DeclareRuleBase(LispString * aOperator,
     DBG_({ extern long theNrDefinedUser; theNrDefinedUser++; })
 }
 
-void LispEnvironment::DeclareMacroRuleBase(LispString * aOperator, LispPtr& aParameters, LispInt aListed)
+void LispEnvironment::DeclareMacroRuleBase(const LispString* aOperator, LispPtr& aParameters, LispInt aListed)
 {
     LispMultiUserFunction* multiUserFunc = MultiUserFunction(aOperator);
     MacroUserFunction *newFunc;
@@ -406,7 +406,7 @@ void LispEnvironment::DeclareMacroRuleBase(LispString * aOperator, LispPtr& aPar
 
 
 
-LispMultiUserFunction* LispEnvironment::MultiUserFunction(LispString* aOperator)
+LispMultiUserFunction* LispEnvironment::MultiUserFunction(const LispString* aOperator)
 {
     LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
 
@@ -419,7 +419,7 @@ LispMultiUserFunction* LispEnvironment::MultiUserFunction(LispString* aOperator)
 }
 
 
-void LispEnvironment::HoldArgument(LispString*  aOperator, LispString* aVariable)
+void LispEnvironment::HoldArgument(const LispString*  aOperator, const LispString* aVariable)
 {
     LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
 
@@ -432,7 +432,7 @@ void LispEnvironment::HoldArgument(LispString*  aOperator, LispString* aVariable
 }
 
 
-void LispEnvironment::DefineRule(LispString * aOperator,LispInt aArity,
+void LispEnvironment::DefineRule(const LispString* aOperator,LispInt aArity,
                                  LispInt aPrecedence, LispPtr& aPredicate,
                                  LispPtr& aBody)
 {
@@ -462,7 +462,7 @@ void LispEnvironment::DefineRule(LispString * aOperator,LispInt aArity,
         userFunc->DeclareRule(aPrecedence, aPredicate,aBody);
 }
 
-void LispEnvironment::DefineRulePattern(LispString * aOperator,LispInt aArity,
+void LispEnvironment::DefineRulePattern(const LispString* aOperator,LispInt aArity,
                                         LispInt aPrecedence, LispPtr& aPredicate,
                                         LispPtr& aBody)
 {
@@ -487,7 +487,7 @@ void LispEnvironment::DefineRulePattern(LispString * aOperator,LispInt aArity,
 void LispEnvironment::SetCommand(YacasEvalCaller aEvaluatorFunc, const LispChar * aString,LispInt aNrArgs,LispInt aFlags)
 {
   DBG_({ extern long theNrDefinedBuiltIn; theNrDefinedBuiltIn++; })
-  LispString* name = HashTable().LookUp(aString);
+  const LispString* name = HashTable().LookUp(aString);
   YacasEvaluator eval(aEvaluatorFunc,aNrArgs,aFlags);
   auto i = CoreCommands().find(name);
   if (i != CoreCommands().end())
@@ -501,7 +501,7 @@ void LispEnvironment::RemoveCoreCommand(LispChar* aString)
   CoreCommands().erase(HashTable().LookUp(aString));
 }
 
-LispString * LispEnvironment::FindCachedFile(const LispChar * aFileName)
+const LispString* LispEnvironment::FindCachedFile(const LispChar * aFileName)
 {
   return nullptr;
 }

@@ -41,14 +41,14 @@ void LispLocalSymbols(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     LispInt nrSymbols = nrArguments-2;
 
-    std::vector<LispString*> names(nrSymbols);
-    std::vector<LispString*> localnames(nrSymbols);
+    std::vector<const LispString*> names(nrSymbols);
+    std::vector<const LispString*> localnames(nrSymbols);
 
     LispInt uniquenumber = aEnvironment.GetUniqueId();
     LispInt i;
     for (i=0;i<nrSymbols;i++)
     {
-        LispString * atomname = Argument(ARGUMENT(0), i+1)->String();
+        const LispString* atomname = Argument(ARGUMENT(0), i+1)->String();
         CheckArg(atomname, i + 1, aEnvironment, aStackTop);
         names[i] = atomname;
 
@@ -59,7 +59,7 @@ void LispLocalSymbols(LispEnvironment& aEnvironment, LispInt aStackTop)
         std::memcpy(&newname[1], atomname->c_str(), len);
 
         InternalIntToAscii(&newname[1+len],uniquenumber);
-        LispString * variable = aEnvironment.HashTable().LookUp(newname);
+        const LispString* variable = aEnvironment.HashTable().LookUp(newname);
         localnames[i] = variable;
     }
 
@@ -74,7 +74,7 @@ void LispLocalSymbols(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispCharString(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-  LispString * str = ARGUMENT(1)->String();
+  const LispString* str = ARGUMENT(1)->String();
   CheckArg(str, 2, aEnvironment, aStackTop);
   CheckArg(IsNumber(str->c_str(), false), 2, aEnvironment, aStackTop);
   LispInt asciiCode = InternalAsciiToInt(*str);

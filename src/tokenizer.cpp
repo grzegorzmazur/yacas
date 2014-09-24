@@ -28,8 +28,8 @@ bool IsSymbolic(LispChar c)
     return false;
 }
 
-LispString * LispTokenizer::NextToken(LispInput& aInput,
-                                       LispHashTable& aHashTable)
+const LispString* LispTokenizer::NextToken(LispInput& aInput,
+                                           LispHashTable& aHashTable)
 {
   LispChar c;
   LispInt firstpos;
@@ -152,7 +152,7 @@ FALSEALARM:
   }
 
 FINISH:
-  return aHashTable.LookUpCounted(&aInput.StartPtr()[firstpos],aInput.Position()-firstpos);
+  return aHashTable.LookUp(std::string(&aInput.StartPtr()[firstpos],aInput.Position()-firstpos));
 }
 
 
@@ -160,7 +160,7 @@ FINISH:
 /*TODO the ugly thing here is this routine is a copy-and-tweak
  of the default tokenizer.
  */
-LispString * CommonLispTokenizer::NextToken(LispInput& aInput, LispHashTable& aHashTable)
+const LispString* CommonLispTokenizer::NextToken(LispInput& aInput, LispHashTable& aHashTable)
 {
   LispChar c;
   LispInt firstpos;
@@ -274,7 +274,7 @@ FALSEALARM:
   }
 
 FINISH:
-  return aHashTable.LookUpCounted(&aInput.StartPtr()[firstpos],aInput.Position()-firstpos);
+  return aHashTable.LookUp(std::string(&aInput.StartPtr()[firstpos],aInput.Position()-firstpos));
 }
 
 

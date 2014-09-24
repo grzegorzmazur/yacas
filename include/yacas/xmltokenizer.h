@@ -11,9 +11,8 @@ public:
   XmlTokenizer() {}
   /// NextToken returns a string representing the next token,
   /// or an empty list.
-  virtual LispString * NextToken(LispInput& aInput,
-                                  LispHashTable& aHashTable);
-  virtual ~XmlTokenizer();
+  const LispString* NextToken(LispInput& aInput,
+                              LispHashTable& aHashTable);
 };
 
 #endif

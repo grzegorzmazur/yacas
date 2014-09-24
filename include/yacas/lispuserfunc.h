@@ -21,7 +21,7 @@ public:
     LispUserFunction() : iFenced(true),iTraced(false) {};
     virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
                   LispPtr& aArguments)=0;
-    virtual void HoldArgument(LispString * aVariable) = 0;
+    virtual void HoldArgument(const LispString* aVariable) = 0;
     virtual void DeclareRule(LispInt aPrecedence, LispPtr& aPredicate,
                              LispPtr& aBody) = 0;
     virtual void DeclareRule(LispInt aPrecedence, LispPtr& aBody) = 0;
@@ -97,7 +97,7 @@ public:
   virtual ~LispMultiUserFunction();
 
   /// Specify that some argument should be held.
-  virtual void HoldArgument(LispString * aVariable);
+  virtual void HoldArgument(const LispString* aVariable);
 
   /// Add another LispArityUserFunction to #iFunctions.
   virtual void DefineRuleBase(LispArityUserFunction* aNewFunction);
@@ -116,7 +116,7 @@ public:
 
 
 /// Associated hash of LispMultiUserFunction objects.
-typedef std::unordered_map<LispStringSmartPtr, LispMultiUserFunction, std::hash<LispString*> > LispUserFunctions;
+typedef std::unordered_map<LispStringSmartPtr, LispMultiUserFunction, std::hash<const LispString*> > LispUserFunctions;
 
 
 #endif
