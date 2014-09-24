@@ -11,9 +11,9 @@
 #include "yacas/errors.h"
 
 static
-LispString * GetIntegerArgument(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
+const LispString* GetIntegerArgument(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
-  LispString* str = aEnvironment.iStack.GetElement(aStackTop + aArgNr)->String();
+  const LispString* str = aEnvironment.iStack.GetElement(aStackTop + aArgNr)->String();
   CheckArg(str, aArgNr, aEnvironment, aStackTop);
   CheckArg(IsNumber(str->c_str(),false), aArgNr, aEnvironment, aStackTop);
   return str;
@@ -21,7 +21,7 @@ LispString * GetIntegerArgument(LispEnvironment& aEnvironment, LispInt aStackTop
 
 LispInt GetShortIntegerArgument(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
-  LispString* str = GetIntegerArgument(aEnvironment, aStackTop, aArgNr);
+  const LispString* str = GetIntegerArgument(aEnvironment, aStackTop, aArgNr);
   return InternalAsciiToInt(*str);
 }
 

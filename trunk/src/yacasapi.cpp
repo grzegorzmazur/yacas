@@ -61,7 +61,7 @@ void CYacas::Evaluate(const LispChar * aExpression)
 //printf("Input: [%s]\n",aExpression);
          if (env.PrettyReader())
          {
-            LispString * prettyReader = env.PrettyReader();
+            const LispString* prettyReader = env.PrettyReader();
             LispString full(aExpression);
             full.push_back(';');
             StringInput input(full,env.iInputStatus);
@@ -109,7 +109,7 @@ void CYacas::Evaluate(const LispChar * aExpression)
              infixprinter.Print(result, iResultOutput, env);
              iResultOutput.put(';');
          }
-         LispString * percent = env.HashTable().LookUp("%");
+         const LispString* percent = env.HashTable().LookUp("%");
          env.SetVariable(percent,result,true);
      } catch (const LispError& error) {
         HandleError(error, env, env.iErrorOutput);

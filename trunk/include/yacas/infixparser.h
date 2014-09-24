@@ -54,14 +54,14 @@ public:
 
 class LispOperators {
 public:
-    void SetOperator(LispInt aPrecedence,LispString* aString);
-    void SetRightAssociative(LispString* aString);
-    void SetLeftPrecedence(LispString* aString, LispInt aPrecedence);
-    void SetRightPrecedence(LispString* aString, LispInt aPrecedence);
-    LispInFixOperator* LookUp(LispString* aString);
+    void SetOperator(LispInt aPrecedence, const LispString* aString);
+    void SetRightAssociative(const LispString* aString);
+    void SetLeftPrecedence(const LispString* aString, LispInt aPrecedence);
+    void SetRightPrecedence(const LispString* aString, LispInt aPrecedence);
+    LispInFixOperator* LookUp(const LispString* aString);
 
 private:
-    std::unordered_map<LispStringSmartPtr, LispInFixOperator, std::hash<LispString*> > _map;
+    std::unordered_map<const LispStringSmartPtr, LispInFixOperator, std::hash<const LispString*> > _map;
 };
 
 class InfixParser : public LispParser
@@ -102,14 +102,14 @@ public:
 
 private:
     void ReadToken();
-    void MatchToken(LispString * aToken);
+    void MatchToken(const LispString * aToken);
     void ReadExpression(LispInt depth);
     void ReadAtom();
 
 private:
     void GetOtherSide(LispInt aNrArgsToCombine, LispInt depth);
     void Combine(LispInt aNrArgsToCombine);
-    void InsertAtom(LispString * aString);
+    void InsertAtom(const LispString* aString);
 
 private:
     void Fail(); // called when parsing fails, raising an exception
@@ -119,7 +119,7 @@ private:
 
 private:
     bool iEndOfFile;
-    LispString * iLookAhead;
+    const LispString* iLookAhead;
 
 public:
     LispPtr iResult;

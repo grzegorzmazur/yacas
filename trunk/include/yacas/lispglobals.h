@@ -32,7 +32,7 @@ public:
     bool iEvalBeforeReturn;
 };
 
-typedef std::unordered_map<LispStringSmartPtr, LispGlobalVariable, std::hash<LispString*> > LispGlobal;
+typedef std::unordered_map<LispStringSmartPtr, LispGlobalVariable, std::hash<const LispString*> > LispGlobal;
 
 
 inline

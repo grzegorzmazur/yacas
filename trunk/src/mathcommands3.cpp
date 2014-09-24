@@ -452,12 +452,13 @@ void LispFromBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     // Get the number to convert
     LispPtr fromNum(ARGUMENT(2));
-    LispString * str2 = fromNum->String();
+    const LispString* str2 = fromNum->String();
     CheckArg(str2, 2, aEnvironment, aStackTop);
 
     // Added, unquote a string
     CheckArg(InternalIsString(str2), 2, aEnvironment, aStackTop);
-    str2 = aEnvironment.HashTable().LookUpCounted(str2->c_str() + 1, std::strlen(str2->c_str()) - 2);
+    //str2 = aEnvironment.HashTable().LookUpCounted(str2->c_str() + 1, std::strlen(str2->c_str()) - 2);
+    str2 = aEnvironment.HashTable().LookUp(str2->substr(1, str2->length() - 2));
 
     // convert using correct base
   // FIXME: API breach, must pass precision in base digits and not in bits!
@@ -587,11 +588,11 @@ void LispGarbageCollect(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   LispPtr evaluated(ARGUMENT(1));
-  LispString * string = evaluated->String();
+  const LispString* string = evaluated->String();
   CheckArg(string, 1, aEnvironment, aStackTop);
   LispString oper;
   InternalUnstringify(oper, *string);
-  LispString * hashedname = aEnvironment.HashTable().LookUp(oper);
+  const LispString* hashedname = aEnvironment.HashTable().LookUp(oper);
   InputStatus oldstatus = aEnvironment.iInputStatus;
   aEnvironment.iInputStatus.SetTo(hashedname->c_str());
   LispLocalFile localFP(aEnvironment, oper, true,
@@ -611,7 +612,7 @@ void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   LispPtr evaluated(ARGUMENT(1));
-  LispString * string = evaluated->String();
+  const LispString* string = evaluated->String();
   CheckArg(string, 1, aEnvironment, aStackTop);
   LispString oper;
   InternalUnstringify(oper, *string);

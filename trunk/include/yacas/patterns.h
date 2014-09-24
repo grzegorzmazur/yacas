@@ -42,16 +42,16 @@ public:
 class MatchAtom : public YacasParamMatcherBase
 {
 public:
-    explicit MatchAtom(LispString* aString);
+    explicit MatchAtom(const LispString* aString);
     virtual bool ArgumentMatches(LispEnvironment& aEnvironment,
                                         LispPtr& aExpression,
                                         LispPtr* arguments) const;
 protected:
-    LispString* iString;
+    const LispString* iString;
 };
 
 inline
-MatchAtom::MatchAtom(LispString* aString):
+MatchAtom::MatchAtom(const LispString* aString):
     iString(aString)
 {
 }
@@ -200,7 +200,7 @@ protected:
     /// appears.
     ///
     /// If \a aVariable is not in #iVariables, it is added.
-    LispInt LookUp(LispString * aVariable);
+    LispInt LookUp(const LispString* aVariable);
 
 protected:
     /// Set local variables corresponding to the pattern variables.
@@ -221,7 +221,7 @@ protected:
     std::vector<YacasParamMatcherBase*> iParamMatchers;
 
     /// List of variables appearing in the pattern.
-    std::vector<LispString*> iVariables;
+    std::vector<const LispString*> iVariables;
 
     /// List of predicates which need to be true for a match.
     std::vector<LispPtr> iPredicates;

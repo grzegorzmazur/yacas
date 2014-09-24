@@ -19,8 +19,8 @@ public:
   LispTokenizer() : iToken() {}
   /// NextToken returns a string representing the next token,
   /// or an empty list.
-  virtual LispString * NextToken(LispInput& aInput,
-                                  LispHashTable& aHashTable);
+  virtual const LispString* NextToken(LispInput& aInput,
+                                      LispHashTable& aHashTable);
   virtual ~LispTokenizer(){}
 protected:
   LispString iToken; //Can be used as a token container.
@@ -29,8 +29,8 @@ protected:
 class CommonLispTokenizer : public LispTokenizer
 {
 public:
-    virtual LispString * NextToken(LispInput& aInput,
-                                    LispHashTable& aHashTable);
+    virtual const LispString* NextToken(LispInput& aInput,
+                                        LispHashTable& aHashTable);
 };
 
 

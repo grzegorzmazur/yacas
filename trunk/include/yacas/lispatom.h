@@ -44,10 +44,10 @@ class LispAtom : public ObjectHelper<LispAtom>
 public:
   static LispObject* New(LispEnvironment& aEnvironment, const std::string& aString);
   virtual ~LispAtom();
-  virtual LispString * String();
+  virtual const LispString* String();
   virtual LispObject* Copy() const { return NEW LispAtom(*this); }
 private:
-  LispAtom(LispString * aString);
+  LispAtom(const LispString* aString);
   LispAtom& operator=(const LispAtom& aOther)
   {
     // copy constructor not written yet, hence the assert
@@ -57,7 +57,7 @@ private:
 public:
   LispAtom(const LispAtom& other);
 private:
-  LispString * iString;
+  const LispString* iString;
 };
 
 //------------------------------------------------------------------------------

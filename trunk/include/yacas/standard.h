@@ -12,7 +12,7 @@
 class LispHashTable;
 
 bool InternalIsList(const LispEnvironment& env, const LispPtr& aPtr);
-bool InternalIsString(LispString * aOriginal);
+bool InternalIsString(const LispString* aOriginal);
 void InternalUnstringify(LispString& aResult, const LispString& aOriginal);
 void InternalIntToAscii(LispChar * aTrg,LispInt aInt);
 LispInt InternalAsciiToInt(const LispString& aString);
@@ -44,9 +44,9 @@ inline void InternalNot(LispPtr& aResult, LispEnvironment& aEnvironment, LispPtr
 
 void DoInternalLoad(LispEnvironment& aEnvironment,LispInput* aInput);
 void InternalLoad(LispEnvironment& aEnvironment,const LispString* aFileName);
-void InternalUse(LispEnvironment& aEnvironment,LispString * aFileName);
+void InternalUse(LispEnvironment& aEnvironment, const LispString* aFileName);
 void InternalApplyString(LispEnvironment& aEnvironment, LispPtr& aResult,
-                         LispString * aOperator,LispPtr& aArgs);
+                         const LispString* aOperator,LispPtr& aArgs);
 void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnvironment& aEnvironment);
 
 void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
@@ -76,7 +76,7 @@ void PrintExpression(LispString& aResult,
                      LispEnvironment& aEnvironment,
                      std::size_t aMaxChars);
 
-LispString* SymbolName(LispEnvironment& aEnvironment, const LispChar* aSymbol);
+const LispString* SymbolName(LispEnvironment& aEnvironment, const std::string& aSymbol);
 
 
 

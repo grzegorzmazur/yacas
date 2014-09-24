@@ -87,7 +87,7 @@ bool MatchSubList::ArgumentMatches(LispEnvironment& aEnvironment,
   return true;
 }
 
-LispInt YacasPatternPredicateBase::LookUp(LispString * aVariable)
+LispInt YacasPatternPredicateBase::LookUp(const LispString * aVariable)
 {
     const std::size_t n = iVariables.size();
     for (std::size_t i = 0; i < n; ++i)
@@ -322,7 +322,7 @@ void YacasPatternPredicateBase::SetPatternVariables(LispEnvironment& aEnvironmen
 
 YacasPatternPredicateBase::~YacasPatternPredicateBase()
 {
-    for (LispString* p: iVariables)
+    for (const LispString* p: iVariables)
         if (--p->iReferenceCount == 0)
             delete p;
 

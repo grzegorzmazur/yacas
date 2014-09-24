@@ -39,7 +39,7 @@ private:
   LispInt iFlags;
 };
 
-typedef std::unordered_map<LispStringSmartPtr, YacasEvaluator, std::hash<LispString*> > YacasCoreCommands;
+typedef std::unordered_map<LispStringSmartPtr, YacasEvaluator, std::hash<const LispString*> > YacasCoreCommands;
 
 
 #endif

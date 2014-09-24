@@ -42,7 +42,7 @@ LispMultiUserFunction::~LispMultiUserFunction()
         delete p;
 }
 
-void LispMultiUserFunction::HoldArgument(LispString * aVariable)
+void LispMultiUserFunction::HoldArgument(const LispString* aVariable)
 {
     const std::size_t n = iFunctions.size();
     for (std::size_t i = 0; i < n; ++i) {

@@ -122,7 +122,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironm
     // define the local variables.
     for (i=0;i<arity;i++)
     {
-        LispString * variable = iParameters[i].iParameter;
+        const LispString* variable = iParameters[i].iParameter;
         // set the variable to the new value
         aEnvironment.NewLocal(variable,arguments[i]);
     }
@@ -178,7 +178,7 @@ FINISH:
     }
 }
 
-void BranchingUserFunction::HoldArgument(LispString * aVariable)
+void BranchingUserFunction::HoldArgument(const LispString * aVariable)
 {
     const std::size_t nrc = iParameters.size();
     for (std::size_t i=0; i < nrc; ++i)
@@ -408,7 +408,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
     // define the local variables.
     for (i=0;i<arity;i++)
     {
-      LispString * variable = iParameters[i].iParameter;
+      const LispString* variable = iParameters[i].iParameter;
       // set the variable to the new value
       aEnvironment.NewLocal(variable,arguments[i]);
     }

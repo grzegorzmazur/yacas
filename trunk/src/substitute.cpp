@@ -55,8 +55,8 @@ bool SubstBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
 
 LocalSymbolBehaviour::LocalSymbolBehaviour(
     LispEnvironment& aEnvironment,
-    const std::vector<LispString*>&& aOriginalNames,
-    const std::vector<LispString*>&& aNewNames):
+    const std::vector<const LispString*>&& aOriginalNames,
+    const std::vector<const LispString*>&& aNewNames):
     iEnvironment(aEnvironment),
     iOriginalNames(aOriginalNames),
     iNewNames(aNewNames)
@@ -65,7 +65,7 @@ LocalSymbolBehaviour::LocalSymbolBehaviour(
 
 bool LocalSymbolBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
 {
-    LispString * name = aElement->String();
+    const LispString* name = aElement->String();
     if (!name)
         return false;
 
