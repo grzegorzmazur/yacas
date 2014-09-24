@@ -3,20 +3,7 @@
 #include "yacas/lisperror.h"
 #include "yacas/xmltokenizer.h"
 
-static int IsSpace(int c)
-{
-    switch (c)
-    {
-    case 0x20:
-    case 0x0D:
-    case 0x0A:
-    case 0x09:
-        return 1;
-    default:
-        return 0;
-    }
-}
-
+#include <cctype>
 
 const LispString* XmlTokenizer::NextToken(LispInput& aInput, LispHashTable& aHashTable)
 {
@@ -27,7 +14,9 @@ const LispString* XmlTokenizer::NextToken(LispInput& aInput, LispHashTable& aHas
         goto FINISH;
 
     //skipping spaces
-    while (IsSpace(aInput.Peek())) aInput.Next();
+    while (std::isspace(aInput.Peek()))
+        aInput.Next();
+
     firstpos = aInput.Position();
 
     c = aInput.Next();
