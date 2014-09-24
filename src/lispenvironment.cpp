@@ -56,7 +56,6 @@ LispEnvironment::LispEnvironment(
     iProg(),
     iLastUniqueId(1),
     iDebugger(nullptr),
-    iLocalsList(nullptr),
     iInitialOutput(&aOutput),
     iCoreCommands(aCoreCommands),
     iUserFunctions(aUserFunctions),
@@ -99,11 +98,6 @@ LispEnvironment::LispEnvironment(
 
 LispEnvironment::~LispEnvironment()
 {
-    // normally, there should be only the initial local frame left,
-    // but this doesn't hold in case of exception
-    while (iLocalsList)
-        PopLocalFrame();
-
     delete iEvaluator;
     delete iDebugger;
 }
@@ -120,20 +114,22 @@ LispInt LispEnvironment::GetUniqueId()
 }
 
 
-LispPtr *LispEnvironment::FindLocal(LispString * aVariable)
+LispPtr* LispEnvironment::FindLocal(LispString* aVariable)
 {
-    if (!iLocalsList)
-        throw LispErrInvalidStack();
+    assert(!_local_frames.empty());
 
-    LispLocalVariable *t = iLocalsList->iFirst;
+    std::size_t last = _local_vars.size();
 
-    while (t)
-    {
-        if (t->iVariable == aVariable)
-        {
-            return &t->iValue;
-        }
-        t = t->iNext;
+    for (std::vector<LocalVariableFrame>::const_reverse_iterator f = _local_frames.rbegin(); f != _local_frames.rend(); ++f) {
+        const std::size_t first = f->first;
+        for (std::size_t i = last; i > first; --i)
+            if (_local_vars.at(i - 1).var == aVariable)
+                return &_local_vars[i - 1].val;
+
+        if (f->fenced)
+            break;
+
+        last = first;
     }
     return nullptr;
 }
@@ -172,12 +168,10 @@ void LispEnvironment::DebugModeVerifySettingGlobalVariables(LispPtr & aVariable,
 
 void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue, bool aGlobalLazyVariable)
 {
-  LispPtr *local = FindLocal(aVariable);
-  if (local)
-  {
-    (*local) = (aValue);
-    return;
-  }
+    if (LispPtr *local = FindLocal(aVariable)) {
+        *local = aValue;
+        return;
+    }
 
     LispGlobal::iterator i = iGlobals.find(aVariable);
     if (i != iGlobals.end())
@@ -189,16 +183,17 @@ void LispEnvironment::SetVariable(LispString * aVariable, LispPtr& aValue, bool 
         i->second.SetEvalBeforeReturn(true);
 }
 
-void LispEnvironment::GetVariable(LispString * aVariable,LispPtr& aResult)
+void LispEnvironment::GetVariable(LispString * aVariable, LispPtr& aResult)
 {
-  aResult = (nullptr);
-  LispPtr *local = FindLocal(aVariable);
-  if (local)
-  {
-    aResult = ((*local));
-    return;
-  }
+    aResult = nullptr;
+
+    if (LispPtr* local = FindLocal(aVariable)) {
+        aResult = *local;
+        return;
+    }
+
     LispGlobal::iterator i = iGlobals.find(aVariable);
+
     if (i != iGlobals.end()) {
         LispGlobalVariable* l = &i->second;
         if (l->iEvalBeforeReturn) {
@@ -214,60 +209,53 @@ void LispEnvironment::GetVariable(LispString * aVariable,LispPtr& aResult)
     }
 }
 
-void LispEnvironment::UnsetVariable(LispString * aString)
+void LispEnvironment::UnsetVariable(LispString* var)
 {
-    LispPtr *local = FindLocal(aString);
-    if (local)
-    {
-        (*local) = (nullptr);
-        return;
-    }
-    iGlobals.erase(aString);
+    if (LispPtr* local = FindLocal(var))
+        *local = nullptr;
+    else
+        iGlobals.erase(var);
 }
 
-void LispEnvironment::PushLocalFrame(bool aFenced)
+void LispEnvironment::PushLocalFrame(bool fenced)
 {
-    if (aFenced)
-    {
-        LocalVariableFrame *newFrame =
-            NEW LocalVariableFrame(iLocalsList, nullptr);
-        iLocalsList = newFrame;
-    }
-    else
-    {
-        LocalVariableFrame *newFrame =
-            NEW LocalVariableFrame(iLocalsList, iLocalsList->iFirst);
-        iLocalsList = newFrame;
-    }
+    _local_frames.emplace_back(_local_vars.size(), fenced);
 }
 
 void LispEnvironment::PopLocalFrame()
 {
-    assert(iLocalsList);
-    LocalVariableFrame *nextFrame = iLocalsList->iNext;
-    delete iLocalsList;
-    iLocalsList = nextFrame;
+    assert(!_local_frames.empty());
+
+    _local_vars.erase(_local_vars.begin() + _local_frames.back().first, _local_vars.end());
+    _local_frames.pop_back();
 }
 
-void LispEnvironment::NewLocal(LispString * aVariable,LispObject* aValue)
+void LispEnvironment::NewLocal(LispString* var, LispObject* val)
 {
-    assert(iLocalsList);
-    iLocalsList->Add(NEW LispLocalVariable(aVariable, aValue));
+    assert(!_local_frames.empty());
+
+    _local_vars.emplace_back(var, val);
 }
 
 void LispEnvironment::CurrentLocals(LispPtr& aResult)
 {
-  LispEnvironment::LocalVariableFrame* fr = iLocalsList;
-  LispEnvironment::LispLocalVariable* ptr = fr->iFirst;
+    assert(!_local_frames.empty());
 
-  LispObject* locals = nullptr;
-  while (ptr)
-  {
-    locals = LispObjectAdder(LispAtom::New(*this, ptr->iVariable->c_str()))+LispObjectAdder(locals);
-//    printf("%s ",ptr->iVariable->c_str());
-    ptr = ptr->iNext;
-  }
-  aResult = LispSubList::New(LispObjectAdder(iList->Copy()) + LispObjectAdder(locals));
+    LispObject* locals = nullptr;
+
+    std::size_t last = _local_vars.size();
+
+    for (std::vector<LocalVariableFrame>::const_reverse_iterator f = _local_frames.rbegin(); f != _local_frames.rend(); ++f) {
+        const std::size_t first = f->first;
+        for (std::size_t i = last; i > first; --i)
+            locals = LispObjectAdder(LispAtom::New(*this, *_local_vars[i - 1].var)) + LispObjectAdder(locals);
+
+        if (f->fenced)
+            break;
+
+        last = first;
+    }
+    aResult = LispSubList::New(LispObjectAdder(iList->Copy()) + LispObjectAdder(locals));
 }
 
 

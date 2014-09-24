@@ -236,60 +236,42 @@ public: // Error reporting
   DefaultDebugger* iDebugger;
 
 private:
-  LispPtr *FindLocal(LispString * aVariable);
+    LispPtr *FindLocal(LispString * aVariable);
 
-private:
+    struct LispLocalVariable {
+        LispLocalVariable(LispString* var, LispObject* val):
+        var(var), val(val)
+        {
+            ++var->iReferenceCount;
+        }
 
-  class LispLocalVariable : public YacasBase, NonCopyable
-  {
-  public:
-    LispLocalVariable(LispString * aVariable,
-                      LispObject* aValue)
-      : iNext(nullptr), iVariable(aVariable),iValue(aValue)
-    {
-      ++aVariable->iReferenceCount;
+        LispLocalVariable(const LispLocalVariable& v):
+        var(v.var), val(v.val)
+        {
+            ++var->iReferenceCount;
+        }
+
+        ~LispLocalVariable()
+        {
+            --var->iReferenceCount;
+        }
+
+        LispString* var;
+        LispPtr val;
     };
-    ~LispLocalVariable()
-    {
-      --iVariable->iReferenceCount;
-    }
 
-  public:
-    LispLocalVariable* iNext;
-    LispString * iVariable;
-    LispPtr iValue;
-  };
-  class LocalVariableFrame : public YacasBase, NonCopyable
-  {
-  public:
-    LocalVariableFrame(LocalVariableFrame *aNext,
-                       LispLocalVariable* aFirst)
-        : iNext(aNext), iFirst(aFirst), iLast(aFirst) { }
-    void Add(LispLocalVariable* aNew)
-    {
-      aNew->iNext = iFirst;
-      iFirst = aNew;
-    }
-    ~LocalVariableFrame()
-    {
-      LispLocalVariable* t = iFirst;
-      LispLocalVariable* next;
-      while (t != iLast)
-      {
-        next = t->iNext;
-        delete t;
-        t = next;
-      }
-    }
+    struct LocalVariableFrame {
+        LocalVariableFrame(std::size_t first, bool fenced):
+        first(first), fenced(fenced)
+        {
+        }
 
-  public:
-    LocalVariableFrame *iNext;
-    LispLocalVariable* iFirst;
-    LispLocalVariable* iLast;
-  };
+        std::size_t first;
+        bool fenced;
+    };
 
-private:
-  LocalVariableFrame *iLocalsList;
+    std::vector<LispLocalVariable> _local_vars;
+    std::vector<LocalVariableFrame> _local_frames;
 
 public:
   std::ostream* iInitialOutput;
