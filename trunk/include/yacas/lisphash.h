@@ -9,13 +9,7 @@
 
 #include "lispstring.h"
 
-#include <vector>
-
-#ifdef YACAS_NO_CONSTEXPR
-const LispInt KSymTableSize = 211;
-#else
-constexpr LispInt KSymTableSize = 211;
-#endif
+#include <unordered_map>
 
 /**
  * This is the symbol table, implemented as a hash table for fast
@@ -26,15 +20,12 @@ constexpr LispInt KSymTableSize = 211;
  */
 class LispHashTable {
 public:
-    LispHashTable() = default;
-    ~LispHashTable();
     // If string not yet in table, insert. Afterwards return the string.
     const LispString* LookUp(const std::string&);
     void GarbageCollect();
 
 private:
-    std::hash<std::string> _hash;
-    std::vector<LispStringSmartPtr> _rep[KSymTableSize];
+    std::unordered_map<std::string, LispStringSmartPtr> _rep;
 };
 
 inline

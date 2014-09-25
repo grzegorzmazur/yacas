@@ -21,9 +21,9 @@
 #include "yacas/errors.h"
 #include "yacas/arggetter.h"
 
+#include <cstring>
 #include <limits.h>
 #include <stdlib.h>
-
 #include <sstream>
 
 #ifdef _WIN32

@@ -152,7 +152,7 @@ private:
         std::ostream& aOutput,
         LispInt iPrecedence);
 
-    void WriteToken(std::ostream& aOutput, const LispChar* aString);
+    void WriteToken(std::ostream& aOutput, const std::string&  aString);
 
 private:
     LispOperators& iPrefixOperators;

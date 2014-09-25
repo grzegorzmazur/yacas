@@ -10,6 +10,7 @@
 #include "yacas/anumber.h"
 
 #include <algorithm>
+#include <cstring>
 #include <iostream>
 
 /* The Base... functions perform actions on the mantissa part of the

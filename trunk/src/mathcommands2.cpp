@@ -20,6 +20,8 @@
 #include "yacas/substitute.h"
 #include "yacas/errors.h"
 
+#include <cstring>
+
 #define InternalEval aEnvironment.iEvaluator->Eval
 #define RESULT aEnvironment.iStack.GetElement(aStackTop)
 #define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)

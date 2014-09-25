@@ -6,10 +6,8 @@
 #ifndef YACAS_LISPSTRING_H
 #define YACAS_LISPSTRING_H
 
-#include "yacasbase.h"
 #include "refcount.h"
 
-#include <cstring>
 #include <string>
 
 class LispStringSmartPtr;
@@ -21,62 +19,15 @@ class LispStringSmartPtr;
 class LispString : public std::string
 {
 public:
-    // Constructors
-    // Use the assignment operators to set the string after this.
-    inline LispString();
-    explicit LispString(const std::string&);
-    explicit LispString(const LispString& aString);
-    explicit LispString(const LispChar* aString);
-
-    // Assignment
-    LispString& operator = (const LispString& aString);
-    LispString& operator = (const LispChar* aString);
-
-    // Comparison
-    // If the string is in the hash table it is faster to compare the
-    // pointers to the strings (instead of calling this routine),
-    // since in that case if they are equal they should in fact be
-    // literally the same object.
-    LispInt operator==(const LispString& aString) const;
+    explicit LispString(const std::string& = "");
 
 public:
     mutable ReferenceCount iReferenceCount;
 };
 
 
-// LispString inline functions.
-
-inline LispString& LispString::operator=(const LispString& aString)
-{
-  assign(aString.c_str());
-  return *this;
-}
-
-inline LispString& LispString::operator=(const LispChar* aString)
-{
-  assign(aString);
-  return *this;
-}
-
 inline LispString::LispString(const std::string& s):
     std::string(s),
-    iReferenceCount(0)
-{
-}
-
-inline LispString::LispString(const LispString& s):
-    std::string(s),
-    iReferenceCount(0)
-{
-}
-
-inline LispString::LispString(const LispChar* s):
-    std::string(s),
-    iReferenceCount(0)
-{
-}
-
-inline LispString::LispString():
     iReferenceCount(0)
 {
 }
@@ -127,6 +78,27 @@ private:
   const LispString* iString;
 };
 
+inline
+LispStringSmartPtr& LispStringSmartPtr::operator=(const LispString* aString)
+{
+  // Increment first.
+  if (aString)
+    ++aString->iReferenceCount;
+  if (iString)
+  {
+    --iString->iReferenceCount;
+    if (iString->iReferenceCount == 0) delete iString;
+  }
+  iString = aString;
+  return *this;
+}
+
+inline
+LispStringSmartPtr::~LispStringSmartPtr()
+{
+  if (iString && !--iString->iReferenceCount)
+    delete iString;
+}
+
+
 #endif
-
-
