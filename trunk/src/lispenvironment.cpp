@@ -123,7 +123,7 @@ LispPtr* LispEnvironment::FindLocal(const LispString* aVariable)
     for (std::vector<LocalVariableFrame>::const_reverse_iterator f = _local_frames.rbegin(); f != _local_frames.rend(); ++f) {
         const std::size_t first = f->first;
         for (std::size_t i = last; i > first; --i)
-            if (_local_vars.at(i - 1).var == aVariable)
+            if (_local_vars[i - 1].var == aVariable)
                 return &_local_vars[i - 1].val;
 
         if (f->fenced)
