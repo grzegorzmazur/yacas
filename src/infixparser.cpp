@@ -387,16 +387,15 @@ void ParsedObject::ReadAtom()
 }
 
 
-void InfixPrinter::WriteToken(std::ostream& aOutput, const LispChar * aString)
+void InfixPrinter::WriteToken(std::ostream& aOutput, const std::string& aString)
 {
     if (IsAlNum(iPrevLastChar) && (IsAlNum(aString[0]) || aString[0]=='_'))
         aOutput.put(' ');
     else if (IsSymbolic(iPrevLastChar) && IsSymbolic(aString[0]))
         aOutput.put(' ');
 
-    const std::size_t n = std::strlen(aString);
-    aOutput.write(aString, n);
-    RememberLastChar(aString[n-1]);
+    aOutput.write(aString.c_str(), aString.size());
+    RememberLastChar(aString.back());
 }
 
 void InfixPrinter::RememberLastChar(LispChar aChar)
@@ -432,7 +431,7 @@ void InfixPrinter::Print(
             bracket=1;
         }
         if (bracket) WriteToken(aOutput,"(");
-        WriteToken(aOutput,string->c_str());
+        WriteToken(aOutput, *string);
         if (bracket) WriteToken(aOutput,")");
         return;
     }
@@ -497,7 +496,7 @@ void InfixPrinter::Print(
             }
             if (left)
                 Print(*left, aOutput,op->iLeftPrecedence);
-            WriteToken(aOutput,string->c_str());
+            WriteToken(aOutput, *string);
             if (right)
                 Print(*right, aOutput,op->iRightPrecedence);
             if (iPrecedence < op->iPrecedence)
@@ -547,7 +546,7 @@ void InfixPrinter::Print(
                 if (bracket) WriteToken(aOutput,"(");
                 if (string)
                 {
-                  WriteToken(aOutput,string->c_str());
+                  WriteToken(aOutput, *string);
                 }
                 else
                 {

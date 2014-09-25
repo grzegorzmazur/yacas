@@ -161,9 +161,9 @@ class ObjectHelper : public U
 {
 protected:
   typedef ObjectHelper ASuper;  // for use by the derived class
-  ObjectHelper() {}
+  ObjectHelper() = default;
   ObjectHelper(const ObjectHelper& other) : U(other) {}
-  virtual ~ObjectHelper() = 0;  // so we're abstract
+  virtual ~ObjectHelper() = default;
   virtual LispObject* SetExtraInfo(LispObject* aData)
   {
     if (!aData) return this;
@@ -172,10 +172,6 @@ protected:
     return pObject;
   }
 };
-
-template <typename T, class U>
-inline ObjectHelper<T,U>::~ObjectHelper() {}
-
 
 /**
  * class LispIterator works almost like LispPtr, but doesn't enforce

@@ -38,6 +38,7 @@
 #endif
 
 #include <ctime>
+#include <cstring>
 #include <cstdlib>
 #include <fstream>
 #include <iostream>

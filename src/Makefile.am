@@ -72,7 +72,7 @@ libyacas_la_SOURCES = $(libyacas_la_HEADERS) stdcommandline.cpp		 \
 	substitute.cpp mathcommands2.cpp mathcommands3.cpp errors.cpp	 \
 	patcher.cpp genericstructs.cpp xmltokenizer.cpp commandline.cpp	 \
 	anumber.cpp yacasnumbers.cpp numbers.cpp platmath.cpp            \
-	stdstubs.cpp obmalloc.cpp lisphash.cpp lispstring.cpp			 \
+	stdstubs.cpp obmalloc.cpp lisphash.cpp				 \
 	yacasbase.cpp debugmem.cpp
 
 bin_PROGRAMS =  yacas
