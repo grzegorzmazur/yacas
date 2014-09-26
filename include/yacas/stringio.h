@@ -12,7 +12,7 @@
 class StringInput : public LispInput
 {
 public:
-    StringInput(const LispString& aString, InputStatus& aStatus);
+    StringInput(const std::string& aString, InputStatus& aStatus);
     virtual LispChar Next();
     virtual LispChar Peek();
     virtual bool EndOfStream() const;
@@ -20,7 +20,7 @@ public:
     virtual std::size_t Position() const;
     virtual void SetPosition(std::size_t aPosition);
 protected:
-    LispString iString;
+    std::string iString;
     std::size_t iCurrent;
 };
 

@@ -4,7 +4,7 @@
 #include "yacas/stringio.h"
 
 
-StringInput::StringInput(const LispString& aString, InputStatus& aStatus):
+StringInput::StringInput(const std::string& aString, InputStatus& aStatus):
     LispInput(aStatus),
     iString(aString),
     iCurrent(0)
