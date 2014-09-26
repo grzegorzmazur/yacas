@@ -1,10 +1,7 @@
-
-#include <stdio.h>
-
 #include "yacas/yacasprivate.h"
 #include "yacas/stdcommandline.h"
 
-#define KMaxStdLen 4001
+#include <iostream>
 
 void CStdCommandLine::NewLine()
 {
@@ -18,14 +15,6 @@ void CStdCommandLine::ShowLine(const std::string& prompt, unsigned cursor)
 {
 }
 
-
-CStdCommandLine::CStdCommandLine()
-{
-}
-CStdCommandLine::~CStdCommandLine()
-{
-}
-
 LispInt CStdCommandLine::GetKey()
 {
     return '\n';
@@ -33,29 +22,17 @@ LispInt CStdCommandLine::GetKey()
 
 void CStdCommandLine::ReadLine(const std::string& prompt)
 {
-    fputs(prompt.c_str(), stdout);
-    fflush(stdout);
+    std::cout << prompt << std::flush;
 
-    char buffer[4001];
-    int offs=0;
+    iLine.clear();
 
     do {
 
-        const char* ok = fgets(&buffer[offs],4000-offs,stdin);
+        std::getline(std::cin, iLine);
+        if (!std::cin.good())
+            iLine = "quit";
 
-        if (!ok || feof(stdin))
-            strcpy(buffer, "quit");
-
-        offs=strlen(buffer);
-
-        if (buffer[offs-1] == '\n') {
-            offs -= 1;
-            buffer[offs] = '\0';
-        }
-
-    } while (offs < 1 || buffer[offs-1] == '\\');
-
-    iLine = buffer;
+    } while (iLine.empty() || iLine.back() == '\\');
 }
 
 
