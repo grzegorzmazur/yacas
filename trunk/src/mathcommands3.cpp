@@ -790,9 +790,7 @@ void LispCurrentFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispCurrentLine(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispChar s[30];
-    InternalIntToAscii(s, aEnvironment.iInputStatus.LineNumber());
-    RESULT = (LispAtom::New(aEnvironment,s));
+    RESULT = LispAtom::New(aEnvironment, std::to_string(aEnvironment.iInputStatus.LineNumber()));
 }
 
 void LispBackQuote(LispEnvironment& aEnvironment, LispInt aStackTop)

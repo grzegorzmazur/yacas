@@ -257,36 +257,18 @@ void LispDestructiveReverse(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispLength(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-  LispPtr* subList = ARGUMENT(1)->SubList();
-  if (subList)
-  {
-    LispChar s[20];
-    LispInt num = InternalListLength((*subList)->Nixed());
-    InternalIntToAscii(s,num);
-    RESULT = (LispAtom::New(aEnvironment,s));
-    return;
+    LispInt size = 0;
+    if (LispPtr* subList = ARGUMENT(1)->SubList())
+        size = InternalListLength((*subList)->Nixed());
+    else if (const LispString* string = ARGUMENT(1)->String())
+        size = string->size()-2;
+    else if (ArrayClass* arr = dynamic_cast<ArrayClass*>(ARGUMENT(1)->Generic()))
+        size = arr->Size();
+    else
+        return;
+
+    RESULT = (LispAtom::New(aEnvironment,std::to_string(size)));
   }
-  const LispString* string = ARGUMENT(1)->String();
-  if (InternalIsString(string))
-  {
-    LispChar s[20];
-    LispInt num = string->size()-2;
-    InternalIntToAscii(s,num);
-    RESULT = (LispAtom::New(aEnvironment,s));
-    return;
-  }
-  GenericClass *gen = ARGUMENT(1)->Generic();
-  ArrayClass* arr = dynamic_cast<ArrayClass*>(gen);
-  if (arr)
-  {
-    LispInt size = arr->Size();
-    LispChar s[20];
-    InternalIntToAscii(s,size);
-    RESULT = (LispAtom::New(aEnvironment,s));
-    return;
-  }
-//  CHK_ISLIST_CORE(ARGUMENT(1),1);
-}
 
 void LispList(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
@@ -1449,9 +1431,7 @@ void LispGetPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
       }
     }
   }
-  LispChar buf[30];
-  InternalIntToAscii(buf, op->iPrecedence);
-  RESULT = (LispAtom::New(aEnvironment,buf));
+  RESULT = LispAtom::New(aEnvironment, std::to_string(op->iPrecedence));
 }
 
 void LispGetLeftPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1469,9 +1449,7 @@ void LispGetLeftPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
       }
   }
 
-    LispChar buf[30];
-    InternalIntToAscii(buf, op->iLeftPrecedence);
-    RESULT = (LispAtom::New(aEnvironment,buf));
+    RESULT = LispAtom::New(aEnvironment,std::to_string(op->iLeftPrecedence));
 }
 
 void LispGetRightPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1494,9 +1472,7 @@ void LispGetRightPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
         }
     }
 
-    LispChar buf[30];
-    InternalIntToAscii(buf, op->iRightPrecedence);
-    RESULT = (LispAtom::New(aEnvironment,buf));
+    RESULT = LispAtom::New(aEnvironment, std::to_string(op->iRightPrecedence));
 }
 
 void LispIsPreFix(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1518,10 +1494,7 @@ void LispIsPostFix(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void YacasBuiltinPrecisionGet(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispChar buf[30];
-  // decimal precision
-    InternalIntToAscii(buf, aEnvironment.Precision());
-    RESULT = (LispAtom::New(aEnvironment,buf));
+    RESULT = LispAtom::New(aEnvironment, std::to_string(aEnvironment.Precision()));
 }
 
 void LispToString(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1607,10 +1580,7 @@ void GenArraySize(LispEnvironment& aEnvironment,LispInt aStackTop)
     GenericClass *gen = evaluated->Generic();
     ArrayClass* arr = dynamic_cast<ArrayClass*>(gen);
     CheckArg(arr, 1, aEnvironment, aStackTop);
-    LispInt size = arr->Size();
-    LispChar s[20];
-    InternalIntToAscii(s,size);
-    RESULT = (LispAtom::New(aEnvironment,s));
+    RESULT = LispAtom::New(aEnvironment, std::to_string(arr->Size()));
 }
 
 void GenArrayGet(LispEnvironment& aEnvironment,LispInt aStackTop)

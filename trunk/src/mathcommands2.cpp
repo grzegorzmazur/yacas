@@ -54,15 +54,10 @@ void LispLocalSymbols(LispEnvironment& aEnvironment, LispInt aStackTop)
         CheckArg(atomname, i + 1, aEnvironment, aStackTop);
         names[i] = atomname;
 
-        LispInt len = atomname->size();
-        CheckArg(len < 64, i + 1, aEnvironment, aStackTop);
-        char newname[100];
-        newname[0] = '$';
-        std::memcpy(&newname[1], atomname->c_str(), len);
-
-        InternalIntToAscii(&newname[1+len],uniquenumber);
-        const LispString* variable = aEnvironment.HashTable().LookUp(newname);
-        localnames[i] = variable;
+        std::string newname = "$";
+        newname.append(*atomname);
+        newname.append(std::to_string(uniquenumber));
+        localnames[i] = aEnvironment.HashTable().LookUp(newname);
     }
 
     LocalSymbolBehaviour behaviour(aEnvironment, std::move(names), std::move(localnames));
@@ -116,8 +111,6 @@ void LispDebugLine(LispEnvironment& aEnvironment, LispInt aStackTop)
 #ifndef YACAS_DEBUG
     throw LispErrGeneric("Cannot call DebugLine in non-debug version of Yacas");
 #else
-  LispChar number[30];
-  InternalIntToAscii(number,ARGUMENT(1)->iLine);
-  RESULT = (LispAtom::New(aEnvironment,number));
+  RESULT = LispAtom::New(aEnvironment, std::to_string(ARGUMENT(1)->iLine));
 #endif
 }
