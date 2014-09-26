@@ -258,17 +258,18 @@ void LispDestructiveReverse(LispEnvironment& aEnvironment, LispInt aStackTop)
 void LispLength(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     LispInt size = 0;
-    if (LispPtr* subList = ARGUMENT(1)->SubList())
-        size = InternalListLength((*subList)->Nixed());
-    else if (const LispString* string = ARGUMENT(1)->String())
-        size = string->size()-2;
-    else if (ArrayClass* arr = dynamic_cast<ArrayClass*>(ARGUMENT(1)->Generic()))
-        size = arr->Size();
-    else
-        return;
 
-    RESULT = (LispAtom::New(aEnvironment,std::to_string(size)));
-  }
+    if (LispPtr* subList = ARGUMENT(1)->SubList()) {
+        size = InternalListLength((*subList)->Nixed());
+    } else if (InternalIsString(ARGUMENT(1)->String())) {
+        size = ARGUMENT(1)->String()->size()-2;
+    } else if (ArrayClass* arr = dynamic_cast<ArrayClass*>(ARGUMENT(1)->Generic())) {
+        size = arr->Size();
+    } else
+        CheckArg(false, 1, aEnvironment, aStackTop);
+
+    RESULT = LispAtom::New(aEnvironment, std::to_string(size));
+}
 
 void LispList(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
