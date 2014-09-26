@@ -191,9 +191,8 @@ unsigned char *the_first_stack_var;
 
 void LispStackSize(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispChar buf[30];
-    InternalIntToAscii(buf, (int)(the_first_stack_var-(unsigned char*)&buf[0]));
-    RESULT = LispAtom::New(aEnvironment,buf);
+    unsigned char x;
+    RESULT = LispAtom::New(aEnvironment, std::to_string(the_first_stack_var-&x));
 }
 
 

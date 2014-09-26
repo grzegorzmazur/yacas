@@ -65,37 +65,6 @@ void InternalUnstringify(LispString& aResult, const LispString& aOriginal)
     aResult.assign(aOriginal.c_str() + 1, aOriginal.size() - 2);
 }
 
-void InternalIntToAscii(LispChar * aTrg,LispInt aInt)
-{
-    LispInt ind=0;
-    if (aInt < 0)
-    {
-        *aTrg++ = '-';
-        aInt = -aInt;
-    }
-    while (aInt != 0)
-    {
-        aTrg[ind] = '0'+(aInt%10);
-        ind++;
-        aInt/=10;
-    }
-
-    //zero
-    if (ind == 0)
-    {
-        aTrg[0] = '0';
-        ind++;
-    }
-    aTrg[ind]='\0';
-    LispInt i;
-    for (i=0;i<(ind>>1);i++)
-    {
-        LispChar swap=aTrg[i];
-        aTrg[i] = aTrg[ind-i-1];
-        aTrg[ind-i-1] = swap;
-    }
-}
-
 LispInt InternalAsciiToInt(const LispString& aString)
 {
     const LispChar* ptr = aString.c_str();
@@ -103,7 +72,7 @@ LispInt InternalAsciiToInt(const LispString& aString)
     if (!IsNumber(ptr, false))
         throw LispErrInvalidArg();
 
-    return std::atoi(ptr);
+    return std::stoi(aString);
 }
 
 bool IsNumber(const LispChar * ptr,bool aAllowFloat)

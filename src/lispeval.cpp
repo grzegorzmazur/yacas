@@ -224,12 +224,9 @@ void TraceShowEnter(LispEnvironment& aEnvironment,
   TraceShowExpression(aEnvironment, aExpression);
   aEnvironment.CurrentOutput() << "\",\"";
 #ifdef YACAS_DEBUG
-  aEnvironment.CurrentOutput()->Write(
-  aExpression->iFileName ? aExpression->iFileName : ""); //file
-  aEnvironment.CurrentOutput()->Write("\",");
-  LispChar buf[30];
-  InternalIntToAscii(buf,aExpression->iLine);
-  aEnvironment.CurrentOutput()->Write(buf); //line
+  aEnvironment.CurrentOutput() << aExpression->iFileName ? aExpression->iFileName : "";
+  aEnvironment.CurrentOutput() << "\",";
+  aEnvironment.CurrentOutput() << aExpression->iLine;
 #else
   aEnvironment.CurrentOutput() << ""; //file
   aEnvironment.CurrentOutput() << "\",";
@@ -290,12 +287,11 @@ void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, std::ostream
   for (i=from;i<upto;i++)
   {
 #ifdef YACAS_DEBUG
-    aEnvironment.CurrentOutput()->Write(objs[i]->iFileName);
-    aEnvironment.CurrentOutput()->Write("(");
-    InternalIntToAscii(str,objs[i]->iLine);
-    aEnvironment.CurrentOutput()->Write(str);
-    aEnvironment.CurrentOutput()->Write(") : ");
-    aEnvironment.CurrentOutput()->Write("Debug> ");
+    aEnvironment.CurrentOutput() << objs[i]->iFileName;
+    aEnvironment.CurrentOutput() << "(";
+    aEnvironment.CurrentOutput() << objs[i]->iLine;
+    aEnvironment.CurrentOutput() << ") : ";
+    aEnvironment.CurrentOutput() << "Debug> ";
 #endif
     aEnvironment.CurrentOutput() << i << ": ";
     aEnvironment.CurrentPrinter().Print(objs[i]->iOperator, aEnvironment.CurrentOutput(),aEnvironment);
