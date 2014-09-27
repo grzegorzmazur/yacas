@@ -1026,32 +1026,32 @@ int parse_options(int argc, char** argv)
                     }
                 }
             } else {
-                if (strchr(argv[fileind],'f')) {
+                if (std::strchr(argv[fileind],'f')) {
                     use_stdin = true;
                 }
-                if (strchr(argv[fileind],'p')) {
+                if (std::strchr(argv[fileind],'p')) {
                     use_plain = true;
                 }
-                if (strchr(argv[fileind],'c')) {
+                if (std::strchr(argv[fileind],'c')) {
                     show_prompt = false;
                 }
-                if (strchr(argv[fileind],'d')) {
+                if (std::strchr(argv[fileind],'d')) {
                     std::cout << root_dir << "\n";
                     std::exit(EXIT_SUCCESS);
                 }
-                if (strchr(argv[fileind],'w')) {
+                if (std::strchr(argv[fileind],'w')) {
                     hideconsolewindow = true;
                 }
 
 #ifdef HAVE_CONFIG_H
-                if (strchr(argv[fileind],'v')) {
+                if (std::strchr(argv[fileind],'v')) {
                     std::cout << YACAS_VERSION << "\n";
                     return -1;
                 }
 #endif
 
 #ifndef NO_GLOBALS
-                if (strchr(argv[fileind],'m')) {
+                if (std::strchr(argv[fileind],'m')) {
                     extern void
                         Malloc_SetHooks( void *(*malloc_func)(size_t),
                                          void *(*calloc_func)(size_t, size_t),
