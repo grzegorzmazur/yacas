@@ -105,19 +105,6 @@ inline void GrowDigits(T& a,LispInt aDigits)
         *ptr++ = 0;
 }
 
-/* GrowDigits : add digits to a until it has aDigits digits
- */
-template<>
-inline void GrowDigits(LispString& a, LispInt sdigits)
-{
-    const std::size_t digits = sdigits;
-
-    if (digits <= a.size())
-        return;
-
-    a.resize(digits, 0);
-}
-
 /* BaseAdd : destructively add aSource to aTarget, in base aBase.
  */
 template<class T>
@@ -284,16 +271,16 @@ inline void BaseIntNumber(LispString& aTarget, PlatSignedDoubleWord aNumber, Pla
 
 // BaseAddMultiply : multiply x and y, and add result to aTarget
 //
-inline void BaseAddMultiply(LispString& aTarget, LispString& x, LispString& y, PlatDoubleWord aBase)
+inline void BaseAddMultiply(std::string& aTarget, std::string& x, std::string& y, PlatDoubleWord aBase)
 {
     LispInt nrx=x.size();
     LispInt nry=y.size();
     GrowDigits(aTarget,nrx+nry+1);
     LispInt ix,iy;
 
-    LispString::value_type *targetPtr = &aTarget[0];
-    LispString::value_type *xPtr = &x[0];
-    LispString::value_type *yPtr = &y[0];
+    std::string::value_type *targetPtr = &aTarget[0];
+    std::string::value_type *xPtr = &x[0];
+    std::string::value_type *yPtr = &y[0];
     for (ix=0;ix<nrx;ix++)
     {
         PlatDoubleWord carry = 0;
@@ -366,15 +353,6 @@ inline void BaseMultiply(T& aTarget, T& x, T& y, PlatDoubleWord aBase)
     BaseAddMultiply(aTarget, x, y, aBase);
 }
 
-template<>
-inline void BaseMultiply(LispString& aTarget, LispString& x, LispString& y, PlatDoubleWord aBase)
-{
-    aTarget.resize(1);
-    aTarget[0] = 0;
-    BaseAddMultiply(aTarget, x, y, aBase);
-}
-
-
 template<class T>
 inline void WordBaseMultiply(T& aTarget, T& x, T& y)
 {
@@ -394,7 +372,7 @@ inline bool IsZero(T& a)
   {
     if (*ptr++ != 0)
       return false;
-  }
+}
   return true;
 }
 
