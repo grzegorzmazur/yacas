@@ -49,7 +49,7 @@ inline bool IsPositive(ANumber& a) { return !a.iNegative; }
 inline bool IsNegative(ANumber& a) { return a.iNegative;  }
 inline bool IsEven(ANumber& a) { return ((a[0]&1) == 0); }
 inline bool IsOdd(ANumber& a)  { return ((a[0]&1) == 1); }
-inline LispInt     Precision(ANumber& a) { return !a.iPrecision; }
+inline LispInt     Precision(ANumber& a) { return a.iPrecision; }
 
 bool BaseLessThan(ANumber& a1, ANumber& a2);
 void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2);
