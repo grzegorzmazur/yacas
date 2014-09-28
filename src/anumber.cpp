@@ -321,11 +321,10 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
     a1.DropTrailZeroes();
     a2.DropTrailZeroes();
 
-#ifdef CORRECT_DIVISION
-    if (a1.iExp || a1.iTensExp) NormalizeFloat(a1,WordDigits(a1.iPrecision, 10));
-    if (a2.iExp || a2.iTensExp) NormalizeFloat(a2,WordDigits(a2.iPrecision, 10));
-#endif // CORRECT_DIVISION
-
+    if (a1.iExp || a1.iTensExp)
+        NormalizeFloat(a1,WordDigits(a1.iPrecision, 10));
+    if (a2.iExp || a2.iTensExp)
+        NormalizeFloat(a2,WordDigits(a2.iPrecision, 10));
 
     // this does some additional removing, as for the multiplication we don't need
     // any trailing zeroes at all, regardless of the value of iExp
@@ -365,9 +364,8 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
     a2.Expand();
 
     aResult.DropTrailZeroes();
-#ifdef CORRECT_DIVISION
-    if (aResult.iExp || aResult.iTensExp) NormalizeFloat(aResult,WordDigits(aResult.iPrecision, 10));
-#endif // CORRECT_DIVISION
+    if (aResult.iExp || aResult.iTensExp)
+        NormalizeFloat(aResult,WordDigits(aResult.iPrecision, 10));
 }
 
 static void BalanceFractions(ANumber& a1, ANumber& a2)
@@ -423,11 +421,11 @@ static void BalanceFractions(ANumber& a1, ANumber& a2)
 void Add(ANumber& aResult, ANumber& a1, ANumber& a2)
 {
 
-#ifdef CORRECT_DIVISION
     // if the numbers are float, make sure they are normalized
-    if (a1.iExp || a1.iTensExp) NormalizeFloat(a1,WordDigits(a1.iPrecision, 10));
-    if (a2.iExp || a2.iTensExp) NormalizeFloat(a2,WordDigits(a2.iPrecision, 10));
-#endif // CORRECT_DIVISION
+    if (a1.iExp || a1.iTensExp)
+        NormalizeFloat(a1,WordDigits(a1.iPrecision, 10));
+    if (a2.iExp || a2.iTensExp)
+        NormalizeFloat(a2,WordDigits(a2.iPrecision, 10));
 
     //Two positive numbers
     BalanceFractions(a1, a2);
@@ -486,7 +484,6 @@ void Add(ANumber& aResult, ANumber& a1, ANumber& a2)
     }
     aResult.DropTrailZeroes();
 
-#ifdef CORRECT_DIVISION
     if (aResult.iExp || aResult.iTensExp)
     {
       if (aResult.iPrecision < a2.iPrecision)
@@ -496,8 +493,6 @@ void Add(ANumber& aResult, ANumber& a1, ANumber& a2)
 
       NormalizeFloat(aResult,WordDigits(aResult.iPrecision, 10));
     }
-#endif // CORRECT_DIVISION
-
 }
 
 
@@ -576,11 +571,11 @@ bool GreaterThan(ANumber& a1, ANumber& a2)
 bool LessThan(ANumber& a1, ANumber& a2)
 {
 
-#ifdef CORRECT_DIVISION
     // if the numbers are float, make sure they are normalized
-    if (a1.iExp || a1.iTensExp) NormalizeFloat(a1,WordDigits(a1.iPrecision, 10));
-    if (a2.iExp || a2.iTensExp) NormalizeFloat(a2,WordDigits(a2.iPrecision, 10));
-#endif // CORRECT_DIVISION
+    if (a1.iExp || a1.iTensExp)
+        NormalizeFloat(a1,WordDigits(a1.iPrecision, 10));
+    if (a2.iExp || a2.iTensExp)
+        NormalizeFloat(a2,WordDigits(a2.iPrecision, 10));
 
     BalanceFractions(a1, a2);
     if (IsNegative(a1) && IsPositive(a2))
@@ -1254,8 +1249,6 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
     // by WordDigits-(a1.iExp-a2.iExp) = WordDigits+a2.iExp-a1.iExp
     LispInt digitsNeeded = WordDigits(aQuotient.iPrecision, 10);
     {
-#ifdef CORRECT_DIVISION
-
         NormalizeFloat(a2,digitsNeeded);
 
         LispInt toadd = a2.iExp-a1.iExp;
@@ -1277,29 +1270,11 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
             a1.iTensExp--;
           }
         }
-
-
-#else // CORRECT_DIVISION
-
-        LispInt toadd = digitsNeeded+a2.iExp-a1.iExp;
-        LispInt i;
-        PlatWord zero=0;
-        for (i=0;i<toadd;i++)
-        {
-            a1.Insert(0,zero);
-            a1.iExp++;
-        }
-#endif // CORRECT_DIVISION
     }
 
     IntegerDivide(aQuotient,aRemainder,a1,a2);
 
-#ifdef CORRECT_DIVISION
-
-        NormalizeFloat(aQuotient,digitsNeeded);
-
-#endif // CORRECT_DIVISION
-
+    NormalizeFloat(aQuotient,digitsNeeded);
 }
 
 
@@ -1407,9 +1382,6 @@ void Sqrt(ANumber& aResult, ANumber& N)
  */
 bool Significant(ANumber& a)
 {
-
-/*This is what I was working on */
-#ifdef CORRECT_DIVISION
     LispInt significantDigits = WordDigits(a.iPrecision, 10);
     NormalizeFloat(a,significantDigits);
     //hier
@@ -1419,26 +1391,6 @@ bool Significant(ANumber& a)
       return false;
     }
     return true;
-#else
-/* */
-    // Calculate number of significant digits
-    LispInt significantDigits = WordDigits(a.iPrecision, 10);
-
-    // Calculate from where to check
-    LispInt from = a.iExp-significantDigits;
-    if (from<0)
-        from = 0;
-
-    // Check for non-zeroness from the significant digits
-    LispInt i;
-    LispInt nr = a.size();
-    for (i=from;i<nr;i++)
-    {
-        if (a[i] != 0)
-            return true;
-    }
-    return false;
-#endif // CORRECT_DIVISION
 }
 
 
