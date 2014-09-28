@@ -77,21 +77,8 @@ static void Trigonometry(ANumber& x,ANumber& i,ANumber& sum,ANumber& term)
     // While (term>epsilon)
     while (1 /* Significant(term)*/)
     {
-
-#ifdef CORRECT_DIVISION
-
-/*
-        LispInt significantDigits = WordDigits(term.iPrecision, 10);
-        NormalizeFloat(term,significantDigits);
-        if ((-term.iTensExp) > term.iPrecision+2)
-        {
-          break;
-        }
-*/
         if (!Significant(term)) break;
-#else
-        if (!Significant(term)) break;
-#endif
+
         ANumber orig(sum.iPrecision);
 
         //   term <- term*x^2/((i+1)(i+2))
@@ -1052,7 +1039,6 @@ bool BigNumber::Equals(const BigNumber& aOther) const
     otherNeg.Negate(aOther);
     diff.Add(*this,otherNeg,bits_to_digits(precision,10));
 
-#ifdef CORRECT_DIVISION
     // if the numbers are float, make sure they are normalized
     if (diff.iNumber->iExp || diff.iNumber->iTensExp)
     {
@@ -1063,8 +1049,6 @@ bool BigNumber::Equals(const BigNumber& aOther) const
         pr = aOther.iPrecision;
       NormalizeFloat(*diff.iNumber,WordDigits(pr, 10));
     }
-#endif // CORRECT_DIVISION
-
 
     return !Significant(*diff.iNumber);
   }
