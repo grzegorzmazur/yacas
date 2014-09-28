@@ -93,10 +93,10 @@ ANumber::ANumber(const LispChar * aString,LispInt aPrecision,LispInt aBase): iEx
     SetTo(aString,aBase);
 }
 
-void IntToBaseString(LispString& aString,PlatDoubleWord aInt, LispInt aBase)
+void IntToBaseString(std::string& aString,PlatDoubleWord aInt, LispInt aBase)
 {
     // Build the string
-    aString.resize(0);
+    aString.clear();
     LispInt i=0;
     while (aInt!=0)
     {
@@ -104,40 +104,6 @@ void IntToBaseString(LispString& aString,PlatDoubleWord aInt, LispInt aBase)
     aInt/=aBase;
         i++;
     }
-}
-
-
-void IntToAscii(LispString& aString,PlatDoubleWord aInt, LispInt aBase)
-{
-
-/*TODO handle negative integers also?
-    bool negative = false;
-
-    // Sign will be handled separately
-    if (negative)
-        aInt = -aInt;
-*/
-
-    IntToBaseString(aString,aInt,aBase);
-    LispInt i;
-    LispInt nr = aString.size();
-    for (i=0;i<(nr>>1);i++)
-    {
-        LispChar c = aString[i];
-        aString[i] = Digit(aString[nr-i-1]);
-        aString[nr-i-1] = Digit(c);
-    }
-    if (nr&1)
-    {
-        aString[(nr>>1)] = Digit(aString[(nr>>1)]);
-    }
-/*TODO handle negative integers also?
-    if (negative)
-    {
-        LispChar c = '-';
-        aString.Insert(0,c);
-    }
-*/
 }
 
 LispInt WordDigits(LispInt aPrecision, LispInt aBase)
@@ -227,7 +193,7 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
     //Parse the fraction
     if (endFloatIndex > endIntIndex)
     {
-        LispString fraction((LispChar *)&aString[endIntIndex+1]);
+        std::string fraction((LispChar *)&aString[endIntIndex+1]);
         LispInt i;
 
         // Map to a char base number
@@ -244,7 +210,7 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
         if (nr&1)
             fractionPtr[nr>>1] = DigitIndex(fractionPtr[nr>>1]);
 
-        LispString base;
+        std::string base;
         IntToBaseString(base,WordBase,aBase);
 
         LispInt nrDigits;
@@ -253,7 +219,7 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
         for (i=0;i<nrDigits;i++)
         {
             PlatWord word=0;
-            LispString copied;
+            std::string copied;
             LispInt j;
 
             //TODO!!! This is probably not the good way to copy!
@@ -810,16 +776,7 @@ TENSEXP:
         !(aResult[0] == '0' && aResult.size() == 1))
     {
         aResult.push_back('e');
-        LispString tens;
-        //hier
-        LispInt tenex = tensExp;
-        if (tenex<0)
-        {
-          aResult.push_back('-');
-          tenex = -tenex;
-        }
-        IntToAscii(tens,tenex, 10);
-        aResult.append(tens);
+        aResult.append(std::to_string(tensExp));
     }
 }
 
