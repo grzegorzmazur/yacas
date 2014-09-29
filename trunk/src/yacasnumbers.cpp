@@ -15,11 +15,8 @@
   #include <config.h>
 #endif
 
-#ifdef HAVE_STDIO_H
-  #include <stdio.h> // Safe, only included if HAVE_STDIO_H defined
-#endif
-
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 
 static LispObject* FloatToString(ANumber& aInt, LispEnvironment& aEnvironment, LispInt aBase = 10);
@@ -107,7 +104,7 @@ static void Trigonometry(ANumber& x,ANumber& i,ANumber& sum,ANumber& term)
         Divide(term, dummy, orig, i);
 
         //   negate term
-        Negate(term);
+        term.Negate();
         //   sum <- sum+term
         orig.CopyFrom(sum);
         Add(sum, orig, term);
@@ -219,7 +216,7 @@ LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt 
     SinFloat(s,x);
     ANumber orig(aPrecision);
     orig.CopyFrom(*int1->Number(aPrecision)->iNumber);
-    Negate(orig);
+    orig.Negate();
     Add(q,s,orig);
   }
 
@@ -230,7 +227,7 @@ LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt 
   {
     x.CopyFrom(result);
     SinFloat(s, x);
-    Negate(s);
+    s.Negate();
     x.CopyFrom(s);
     ANumber y(*int1->Number(aPrecision)->iNumber);
 //PrintNumber("y = ",y);
@@ -326,7 +323,7 @@ LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnv
     ANumber copy(aPrecision);
 
     // while (y!=0)
-    while (!IsZero(y))
+    while (!y.IsZero())
     {
         // if (y&1 != 0)
         if ( (y[0] & 1) != 0)
@@ -397,7 +394,7 @@ static void DivideInteger(ANumber& aQuotient, ANumber& aRemainder,
     if (a1.iExp != 0 || a2.iExp != 0)
           throw LispErrNotInteger();
 
-    if (IsZero(a2))
+    if (a2.IsZero())
           throw LispErrInvalidArg();
 
     IntegerDivide(aQuotient, aRemainder, a1, a2);
@@ -640,7 +637,7 @@ void BigNumber::Negate(const BigNumber& aX)
   {
     iNumber->CopyFrom(*aX.iNumber);
   }
-  ::Negate(*iNumber);
+  iNumber->Negate();
   SetIsInteger(aX.IsInt());
 }
 
@@ -723,7 +720,7 @@ void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecis
 //  a2.CopyFrom(*aY.iNumber);
   ANumber remainder(digitPrecision);
 
-  if (IsZero(a2))
+  if (a2.IsZero())
       throw LispErrInvalidArg();
 
   if (aX.IsInt() && aY.IsInt())
@@ -839,7 +836,7 @@ signed long BigNumber::BitCount() const
   return bits;
 */
 
-  if (IsZero(*iNumber)) return 0;//-(1L<<30);
+  if (iNumber->IsZero()) return 0;//-(1L<<30);
   ANumber num(*iNumber);
 //  num.CopyFrom(*iNumber);
 
@@ -885,24 +882,17 @@ signed long BigNumber::BitCount() const
 LispInt BigNumber::Sign() const
 {
   if (iNumber->iNegative) return -1;
-  if (IsZero(*iNumber)) return 0;
+  if (iNumber->IsZero()) return 0;
   return 1;
 }
 
 
 void BigNumber::DumpDebugInfo() const
 {
-#ifdef HAVE_STDIO_H
-  if (!iNumber)
-  {
-    printf("No number representation\n");
-  }
-  else
-  {
-    PrintNumber("Number:",*iNumber);
-  }
-#else
-#endif
+    if (!iNumber)
+        std::cout << "No number representation\n";
+    else
+        iNumber->Print("Number:");
 }
 
 
@@ -917,7 +907,7 @@ void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
     if (a1.iExp != 0 || a2.iExp != 0)
           throw LispErrNotInteger();
 
-    if (IsZero(a2))
+    if (a2.IsZero())
           throw LispErrInvalidArg();
 
     ANumber quotient(static_cast<LispInt>(0));
@@ -1012,9 +1002,9 @@ bool BigNumber::Equals(const BigNumber& aOther) const
     iNumber->DropTrailZeroes();
     aOther.iNumber->DropTrailZeroes();
 
-    if (IsZero(*iNumber))
+    if (iNumber->IsZero())
         iNumber->iNegative = false;
-    if (IsZero(*aOther.iNumber))
+    if (aOther.iNumber->IsZero())
         aOther.iNumber->iNegative = false;
     if (iNumber->ExactlyEqual(*aOther.iNumber))
       return true;

@@ -201,9 +201,9 @@ inline void WordBaseAdd(T& aTarget, const T& aSource)
 template<class T>
 inline void BaseSubtract(T& aResult, T& a2, LispInt offset)
 {
-    if (IsZero(a2))
+    if (a2.IsZero())
         return;
-    assert(!IsZero(a2));
+
     // Initialize result
     LispInt nr = a2.size();
 
@@ -422,7 +422,7 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
         }
 
         //D4:
-        ANumber sub(Precision(aQuotient));
+        ANumber sub(aQuotient.Precision());
         sub.CopyFrom(a2);
         WordBaseTimesInt(sub, q);
         sub.push_back(0);

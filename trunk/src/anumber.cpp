@@ -25,19 +25,19 @@ bool BaseGreaterThan(ANumber& a1, ANumber& a2);
 bool BaseLessThan(ANumber& a1, ANumber& a2);
 void BaseSqrt(ANumber& aResult, ANumber& N);
 
-void PrintNumber(const char* prefix,ANumber& aNumber)
+void ANumber::Print(const std::string& prefix) const
 {
     std::cout << prefix << "\n";
-    std::cout << aNumber.size() << " words, " << aNumber.iExp
-              << " after point (x10^" << aNumber.iTensExp << "), 10-prec "
-              << aNumber.iPrecision << "\n";
+    std::cout << size() << " words, " << iExp
+              << " after point (x10^" << iTensExp << "), 10-prec "
+              << iPrecision << "\n";
 
-    for (int i = aNumber.size() - 1; i >= 0; --i)
+    for (int i = size() - 1; i >= 0; --i)
     {
-        if (aNumber.iExp == i+1)
+        if (iExp == i+1)
             std::cout << ".\n";
 
-        PlatWord w = (aNumber)[i];
+        PlatWord w = at(i);
         PlatWord bit = (WordBase)>>1;
 
         int k=0;
@@ -304,17 +304,6 @@ bool ANumber::ExactlyEqual(const ANumber& aOther)
   return true;
 }
 
-
-
-/* Negate negates a number. */
-void Negate(ANumber& aNumber)
-{
-    aNumber.iNegative=!aNumber.iNegative;
-    if (IsZero(aNumber))
-        aNumber.iNegative = false;
-
-}
-
 void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
 {
     // Truncate zeroes (the multiplication is heavy enough as it is...)
@@ -347,14 +336,8 @@ void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2)
 
 //PrintNumber("Mult",aResult);
 
-
     // Adjust the sign
-    if (IsPositive(a1) && IsPositive(a2))
-        aResult.iNegative = false;
-    else if (IsNegative(a1) && IsNegative(a2))
-        aResult.iNegative = false;
-    else
-        aResult.iNegative = true;
+    aResult.iNegative = a1.IsNegative() != a2.IsNegative();
 
     // Adjust the exponent.
     aResult.iExp = a1.iExp+a2.iExp;
@@ -430,19 +413,19 @@ void Add(ANumber& aResult, ANumber& a1, ANumber& a2)
     //Two positive numbers
     BalanceFractions(a1, a2);
 
-    if (IsPositive(a1) && IsPositive(a2))
+    if (!(a1.IsNegative() || a2.IsNegative()))
     {
         BaseAddFull(aResult, a1, a2);
         aResult.iNegative=false;
     }
     //Two negative numbers
-    else if (IsNegative(a1) && IsNegative(a2))
+    else if (a1.IsNegative() && a2.IsNegative())
     {
         BaseAddFull(aResult, a1, a2);
         aResult.iNegative=true;
     }
     //Negative plus positive
-    else if (IsNegative(a1) && IsPositive(a2))
+    else if (a1.IsNegative() && !a2.IsNegative())
     {
         //if |a1|<|a2| then BaseSubtract(a2,a1)
         if (BaseLessThan(a1,a2))
@@ -464,7 +447,7 @@ void Add(ANumber& aResult, ANumber& a1, ANumber& a2)
     //Positive plus Negative
     else
     {
-        assert(IsPositive(a1) && IsNegative(a2));
+        assert(!a1.IsNegative() && a2.IsNegative());
         //if |a1|>|a2| then BaseSubtract(a2,a1)
         if (BaseGreaterThan(a1,a2))
         {
@@ -500,17 +483,17 @@ void Add(ANumber& aResult, ANumber& a1, ANumber& a2)
 void Subtract(ANumber& aResult, ANumber& a1, ANumber& a2)
 {
     BalanceFractions(a1, a2);
-    if (IsPositive(a1) && IsNegative(a2))
+    if (!a1.IsNegative() && a2.IsNegative())
     {
         BaseAddFull(aResult, a1, a2);
         aResult.iNegative=false;
     }
-    else if (IsNegative(a1) && IsPositive(a2))
+    else if (a1.IsNegative() && !a2.IsNegative())
     {
         BaseAddFull(aResult, a1, a2);
         aResult.iNegative=true;
     }
-    else if (IsNegative(a1) && IsNegative(a2))
+    else if (a1.IsNegative() && a2.IsNegative())
     {
         //if |a1|<|a2| then BaseSubtract(a2,a1)
         if (BaseLessThan(a1,a2))
@@ -532,7 +515,7 @@ void Subtract(ANumber& aResult, ANumber& a1, ANumber& a2)
     //Positive plus Negative
     else
     {
-        assert(IsPositive(a1) && IsPositive(a2));
+        assert(!(a1.IsNegative() || a2.IsNegative()));
         //if |a1|>|a2| then BaseSubtract(a2,a1)
         if (BaseGreaterThan(a1,a2))
         {
@@ -559,11 +542,11 @@ void Subtract(ANumber& aResult, ANumber& a1, ANumber& a2)
 bool GreaterThan(ANumber& a1, ANumber& a2)
 {
     BalanceFractions(a1, a2);
-    if (IsNegative(a1) && IsPositive(a2))
+    if (a1.IsNegative() && !a2.IsNegative())
         return false;
-    if (IsPositive(a1) && IsNegative(a2))
+    if (!a1.IsNegative() && a2.IsNegative())
         return true;
-    if (IsPositive(a1) && IsPositive(a2))
+    if (!a1.IsNegative() && !a2.IsNegative())
         return BaseGreaterThan(a1,a2);
     return BaseLessThan(a1,a2);
 }
@@ -578,11 +561,11 @@ bool LessThan(ANumber& a1, ANumber& a2)
         NormalizeFloat(a2,WordDigits(a2.iPrecision, 10));
 
     BalanceFractions(a1, a2);
-    if (IsNegative(a1) && IsPositive(a2))
+    if (a1.IsNegative() && !a2.IsNegative())
         return true;
-    if (IsPositive(a1) && IsNegative(a2))
+    if (!a1.IsNegative() && a2.IsNegative())
         return false;
-    if (IsPositive(a1) && IsPositive(a2))
+    if (!a1.IsNegative() && !a2.IsNegative() )
         return BaseLessThan(a1,a2);
     return BaseGreaterThan(a1,a2);
 }
@@ -691,7 +674,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
 
         // Get the fraction
         number.resize(number.iExp, 0);
-        if (aForceFloat || (number.iExp > 0 && !IsZero(number)))
+        if (aForceFloat || (number.iExp > 0 && !number.IsZero()))
         {
             LispInt digitPos = aResult.size();
 
@@ -988,9 +971,9 @@ void BaseShiftLeft(ANumber& a, LispInt aNrBits)
 /* Binary Greatest common divisor algorithm. */
 void BaseGcd(ANumber& aResult, ANumber& a1, ANumber& a2)
 {
-    ANumber zero(/*???"0",*/Precision(aResult)/*???,10*/);
-    ANumber u(/*???"0",*/Precision(aResult));
-    ANumber v(/*???"0",*/Precision(aResult));
+    ANumber zero(aResult.Precision());
+    ANumber u(aResult.Precision());
+    ANumber v(aResult.Precision());
     u.CopyFrom(a1);
     v.CopyFrom(a2);
     u.iNegative = v.iNegative = false;
@@ -1013,10 +996,10 @@ void BaseGcd(ANumber& aResult, ANumber& a1, ANumber& a2)
     }
     ANumber t(/*???"0",*/10);
 
-    if (IsOdd(u))
+    if (!u.IsEven())
     {
         t.CopyFrom(v);
-        Negate(t);
+        t.Negate();
     }
     else
         t.CopyFrom(u);
@@ -1044,7 +1027,7 @@ void BaseGcd(ANumber& aResult, ANumber& a1, ANumber& a2)
         else
         {
             v.CopyFrom(t);
-            Negate(v);
+            v.Negate();
         }
         Subtract(t,u,v);
      }
@@ -1099,7 +1082,7 @@ void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a
         }
 
         //D4:
-        ANumber sub(Precision(aQuotient));
+        ANumber sub(aQuotient.Precision());
         sub.CopyFrom(a2);
         WordBaseTimesInt(sub, q);
         sub.push_back(0);
@@ -1170,7 +1153,7 @@ void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a
 
 void IntegerDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
 {
-    assert(!IsZero(a2));
+    assert(!a2.IsZero());
 
     LispInt n=a2.size();
 
@@ -1206,8 +1189,7 @@ void IntegerDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber
     }
 
     // Correct for signs
-    if ( (IsPositive(a1) && IsPositive(a2)) ||
-         (IsNegative(a1) && IsNegative(a2)) )
+    if (a1.IsNegative() == a2.IsNegative())
     {
         aQuotient.iNegative = false;
         aRemainder.iNegative = false;
@@ -1262,7 +1244,7 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
           }
         }
 
-        if (!IsZero(a1))
+        if (!a1.IsZero())
         {
           while (a1.size()<a2.size()+digitsNeeded || a1[a1.size()-1]<a2[a2.size()-1])
           {
@@ -1282,12 +1264,12 @@ void BaseSqrt(ANumber& aResult, ANumber& N)
 {
 
     LispInt l2;
-    ANumber u  (Precision(aResult));
-    ANumber v  (Precision(aResult));
-    ANumber u2 (Precision(aResult));
-    ANumber v2 (Precision(aResult));
-    ANumber uv2(Precision(aResult));
-    ANumber n  (Precision(aResult));
+    ANumber u  (aResult.Precision());
+    ANumber v  (aResult.Precision());
+    ANumber u2 (aResult.Precision());
+    ANumber v2 (aResult.Precision());
+    ANumber uv2(aResult.Precision());
+    ANumber n  (aResult.Precision());
     ANumber two("2",10);
 
     //sqrt(1) = 1, sqrt(0) = 0
@@ -1300,7 +1282,7 @@ void BaseSqrt(ANumber& aResult, ANumber& N)
     // Find highest set bit, l2
     u.CopyFrom(N);
     l2 = 0;
-    while( !IsZero(u) )
+    while (!u.IsZero())
     {
         BaseShiftRight(u,1);
         l2++;
