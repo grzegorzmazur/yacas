@@ -100,6 +100,10 @@
 #define SOCKLEN_T unsigned int //socklen_t
 #endif
 
+#if defined(__APPLE__)
+#include <mach-o/dyld.h>
+#endif
+
 #include "yacas/GPL_stuff.h"
 
 CYacas* yacas = 0;
@@ -1079,8 +1083,16 @@ int main(int argc, char** argv)
     unsigned char first_stack_var = 0;
     the_first_stack_var = &first_stack_var;
 
-#ifdef __linux__
+#if defined (__APPLE__)
+    char buf[PATH_MAX];
+    uint32_t size = sizeof (buf);
+    _NSGetExecutablePath(buf, &size);
 
+    char path[PATH_MAX];
+    realpath(buf, path);
+    root_dir = dirname(dirname(path));
+    root_dir += "/share/yacas/scripts";
+#elif defined(__linux__)
     {
         struct stat sb;
         if (stat("/proc/self/exe", &sb) == -1) {
