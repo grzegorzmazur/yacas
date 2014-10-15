@@ -623,10 +623,10 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
         aResult.push_back(0);
 
         // Create the number
-        LispString factor2;
+        std::string factor2;
         BaseIntNumber(factor2, 1, aBase);
 
-        LispString factor3;
+        std::string factor3;
         BaseIntNumber(factor3, WordBase, aBase);
 
         assert(number.iExp >= 0);
@@ -635,7 +635,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
         for (std::size_t i=number.iExp; i < ns; ++i)
         {
             //aResult = aResult + number[i] * factor2
-            LispString term;
+            std::string term;
             BaseIntNumber(term, number[i], aBase);
             BaseAddMultiply(aResult, term, factor2, aBase);
 
@@ -646,8 +646,8 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
                 LispInt nr = factor2.size();
                 term.resize(nr);
                 LispInt j;
-                LispString::value_type * fptr = &factor2[0];
-                LispString::value_type * tptr = &term[0];
+                std::string::value_type * fptr = &factor2[0];
+                std::string::value_type * tptr = &term[0];
                 for (j=0;j<nr;j++)
                 {
                     *tptr++ = *fptr++;

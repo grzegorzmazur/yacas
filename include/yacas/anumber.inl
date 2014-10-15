@@ -251,7 +251,7 @@ inline void BaseSubtract(T& aResult, T& a2, LispInt offset)
 
 /* BaseIntNumber : convert a number into a different base,
  */
-inline void BaseIntNumber(LispString& aTarget, PlatSignedDoubleWord aNumber, PlatWord aBase)
+inline void BaseIntNumber(std::string& aTarget, PlatSignedDoubleWord aNumber, PlatWord aBase)
 {
   // Assume aBase is an integer > 0.
   // Assume aNumber is an integer > 0.
