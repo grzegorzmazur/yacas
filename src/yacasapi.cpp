@@ -47,11 +47,13 @@ CYacas::CYacas(std::ostream& os, LispInt aStackSize):
 
 void CYacas::Evaluate(const LispChar * aExpression)
 {
-
-    std::ostringstream iResultOutput;
-
     LispEnvironment& env = environment.getEnv();
     LispInt stackTop = env.iStack.GetStackTop();
+
+    env.iErrorOutput.clear();
+    env.iErrorOutput.str("");
+
+    std::ostringstream iResultOutput;
 
     LispPtr result;
 
