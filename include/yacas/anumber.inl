@@ -82,27 +82,12 @@ inline void BaseDivideInt(T& a,PlatDoubleWord aNumber, PlatDoubleWord aBase, Pla
 /* GrowDigits : add digits to a until it has aDigits digits
  */
 template<class T>
-inline void GrowDigits(T& a,LispInt aDigits)
+inline void GrowDigits(T& a, std::size_t aDigits)
 {
-    LispInt i;
-
     if (aDigits <= a.size())
         return;
 
-    /*
-     LispInt nrToAdd = aDigits-a.size();
-
-    for (i=0;i<nrToAdd;i++)
-        a.push_back(0);
-*/
-    LispInt origSize = a.size();
-    a.resize(aDigits);
-    //a.resize(aDigits);
-    if (aDigits<=origSize)
-        return;
-    typename T::value_type* ptr = &a[origSize];
-    for (i=origSize;i<aDigits;i++)
-        *ptr++ = 0;
+    a.resize(aDigits, 0);
 }
 
 /* BaseAdd : destructively add aSource to aTarget, in base aBase.
