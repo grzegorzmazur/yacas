@@ -1,0 +1,48 @@
+		The Yacas Debugger
+
+	    Why introduce a debug version?
+
+The reason for introducing a debug version is that for a debugger 
+it is often necessary to introduce features that make the interpreter
+slower. For the main kernel this is unacceptable, but for a debugging
+version this is defendable. It is good for testing small programs,
+to see where a calculation breaks. Having certain features only
+in the debug version keeps the release executable can be kept lean 
+and mean, while still offering advanced debug features.
+
+	    How to build the debug version of Yacas ?
+
+The debug version has to be built separately from the "production"
+version of Yacas (all source files have to be recompiled).
+
+To build the debug version of yacas, run configure with
+
+	./configure --enable-debug
+
+and after that
+
+	make
+
+as usual.
+
+	    What does the debug version of yacas offer?
+
+The Yacas debugger is in development still, but already has
+some useful features. 
+
+When you build the debug version of yacas, and run a command, it will:
+*	keep track of the memory allocated and freed, and show any memory leaks
+when you quit the program.
+*	show which files are loaded to read function definitions and when. This is only done when the {--verbose-debug} flag is passed to the program at startup.
+*	keep a file name and line number for each object loaded from file, for
+debugging purposes.
+*	show you the stack trace when evaluation goes into an infinite recursion
+(equivalent of always using {TraceStack}) and print file names and line numbers
+for all rules.
+
+Future versions will have the ability to step through code and to
+watch local and global variables while executing, modifying them
+on the fly.
+
+
+

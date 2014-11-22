@@ -1,0 +1,12 @@
+Verify
+KnownFailure
+Echo
+VerifyArithmetic
+RandVerifyArithmetic
+VerifyDiv
+TestYacas
+RoundTo
+NumericEqual
+LogicVerify
+LogicTest
+}

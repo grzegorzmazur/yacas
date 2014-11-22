@@ -1,0 +1,35 @@
+//////
+// test for MatrixPower (dr)
+//////
+
+Testing("-- MatrixPower");
+
+//Verify(MatrixPower(,),);
+Verify(MatrixPower(a,0),Hold(MatrixPower(a,0)));
+Verify(MatrixPower(a,n),Hold(MatrixPower(a,n)));
+Verify(MatrixPower({a},0),Hold(MatrixPower({a},0)));
+Verify(MatrixPower({a},n),Hold(MatrixPower({a},n)));
+Verify(MatrixPower({{a}},0),{{1}});
+Verify(MatrixPower({{a}},1),{{a}});
+Verify(MatrixPower({{a}},-1),{{1/a}});
+Verify(MatrixPower({{a}},3/5),Hold(MatrixPower({{a}},3/5)));
+Verify(MatrixPower({{a}},10),{{a^10}});
+Verify(MatrixPower({{a}},-10),{{1/a^10}});
+Verify(MatrixPower({{a}},n),Hold(MatrixPower({{a}},n)));
+
+Verify(MatrixPower({{1,2},{3,4}},0),{{1,0},{0,1}});
+Verify(MatrixPower({{1,2},{3,4}},1),{{1,2},{3,4}});
+Verify(MatrixPower({{1,2},{3,4}},2),{{7,10},{15,22}});
+Verify(MatrixPower({{1,2},{3,4}},3),{{37,54},{81,118}});
+Verify(MatrixPower({{1,2},{3,4}},4),{{199,290},{435,634}});
+Verify(MatrixPower({{1,2},{3,4}},5),{{1069,1558},{2337,3406}});
+Verify(MatrixPower({{1,2},{3,4}},7),{{30853,44966},{67449,98302}});
+Verify(MatrixPower({{1,2},{3,4}},13),{{741736909,1081027478},{1621541217,2363278126}});
+
+Verify(MatrixPower({{1,2},{3,4}},-1),{{-2,1},{3/2,-1/2}});
+Verify(MatrixPower({{1,2},{3,4}},-2),{{11/2,-5/2},{-15/4,7/4}});
+Verify(MatrixPower({{1,2},{3,4}},-3),{{-59/4,27/4},{81/8,-37/8}});
+Verify(MatrixPower({{1,2},{3,4}},-4),{{317/8,-145/8},{-435/16,199/16}});
+Verify(MatrixPower({{1,2},{3,4}},-5),{{-1703/16,779/16},{2337/32,-1069/32}});
+//////
+//////

@@ -1,0 +1,16 @@
+/* Guard against distribution objects with senseless parameters 
+   Anti-nominalism */
+BernoulliDistribution(p_IsRationalOrNumber)_(p<0 Or p>1) <-- Undefined;
+BinomialDistribution(_p, _n)_
+	(If(IsRationalOrNumber(p),p<0 Or p>1, False)
+	 Or (IsConstant(n) And Not IsPositiveInteger(n)) ) 
+	<-- Undefined;
+DiscreteUniformDistribution(a_IsRationalOrNumber, b_IsRationalOrNumber)_(a>=b) 
+   <-- Undefined;
+PoissonDistribution(l_IsRationalOrNumber)_(l<=0) <-- Undefined;
+GeometricDistribution(p_IsRationalOrNumber)_(p<0 Or p>1) <-- Undefined;
+
+ExponentialDistribution(l_IsRationalOrNumber)_(l<0) <-- Undefined;
+NormalDistribution( _m , s2_IsRationalOrNumber)_(s2<=0) <-- Undefined;
+ChiSquareDistribution(m_IsRationalOrNumber)_(m<=0) <-- Undefined;
+tDistribution(m_IsRationalOrNumber)_(Not IsPositiveInteger(m)) <-- Undefined;

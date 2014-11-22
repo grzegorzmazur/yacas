@@ -1,0 +1,29 @@
+TopologicalSort(A_IsSquareMatrix) <--
+[
+    Local(mark, n, L, visit);
+
+    mark := ZeroVector(Length(A));
+    L := {};
+
+    dfs(A, n, mark, L) := [
+        Check(mark[n] != 1, "TopologicalSort: cycle detected");
+        If (mark[n] = 0, [
+            Local(m, row);
+            DestructiveReplace(mark, n, 1);
+            row := A[n];
+            For (m := 1, m <= Length(row), m++)
+                If (row[m] != 0, dfs(A, m, mark, L));
+            DestructiveReplace(mark, n, 2);
+            DestructiveInsert(L, 1, n);
+        ]);
+    ];    
+
+    n := Find(mark, 0);
+
+    While (n > 0) [
+        dfs(A, n, mark, L);
+        n := Find(mark, 0);
+    ];
+
+    L;
+];

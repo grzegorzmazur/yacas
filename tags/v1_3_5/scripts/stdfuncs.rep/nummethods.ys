@@ -1,0 +1,379 @@
+/// coded by Serge Winitzki. See essays documentation for algorithms.
+
+//////////////////////////////////////////////////
+/// Numerical method: AGM sequence
+//////////////////////////////////////////////////
+
+/// compute the AGM sequence up to a given precision
+AG'Mean(a, b, eps) :=
+[
+	Local(a1, b1);
+	If(InVerboseMode(), Echo("AG'Mean: Info: at prec. ", Builtin'Precision'Get()));
+	// AGM main loop
+	While(Abs(a-b)>=eps)
+	[
+		a1 := MathDivide(a+b, 2);
+		b1 := MathSqrt(MathMultiply(a, b));	// avoid Sqrt() which uses N() inside it
+		a := a1;
+		b := b1;
+	];
+	MathDivide(a+b, 2);
+];
+//UnFence(AG'Mean, 3);
+
+//////////////////////////////////////////////////
+/// Numerical method: Taylor series, rectangular summation
+//////////////////////////////////////////////////
+
+/// Fast summation of Taylor series using a rectangular scheme.
+/// SumTaylorNum(x, nth'term'func, n'terms) = Sum(k, 0, n'terms, nth'term'func(k)*x^k)
+/// Note that sufficient precision must be preset to avoid roundoff errors (these methods do not modify precision).
+/// The only reason to try making these functions HoldArg is to make sure that the closures nth'term'func and next'term'factor are passed intact. But it's probably not desired in most cases because a closure might contain parameters that should be evaluated.
+
+/// The short form is used when only the nth term is known but no simple relation between a term and the next term.
+/// The long form is used when there is a simple relation between consecutive terms. In that case, the n'th term function is not needed, only the 0th term value.
+
+/// SumTaylorNum0 is summing the terms with direct methods (Horner's scheme or simple summation). SumTaylorNum1 is for the rectangular method.
+
+/// nth'term'func and next'term'func must be functions applicable to one argument.
+
+/// interface
+SumTaylorNum0(_x, _nth'term'func, _n'terms) <-- SumTaylorNum0(x, nth'term'func, {}, n'terms);
+
+SumTaylorNum1(_x, _nth'term'func, _n'terms) <-- SumTaylorNum1(x, nth'term'func, {}, n'terms);
+
+/// interface
+SumTaylorNum(_x, _nth'term'func, _n'terms) <--
+If(
+	n'terms >= 30,	// threshold for calculation with next'term'factor
+	// use the rectangular algorithm for large enough number of terms
+	SumTaylorNum1(x, nth'term'func, n'terms),
+	SumTaylorNum0(x, nth'term'func, n'terms)
+);
+
+SumTaylorNum(_x, _nth'term'func, _next'term'factor, _n'terms) <--
+If(
+	n'terms >= 5,	// threshold for calculation with next'term'factor
+	SumTaylorNum1(x, nth'term'func, next'term'factor, n'terms),
+	SumTaylorNum0(x, nth'term'func, next'term'factor, n'terms)
+);
+//HoldArgNr(SumTaylorNum, 3, 2);
+
+/// straightforward algorithms for a small number of terms
+1# SumTaylorNum0(_x, _nth'term'func, {}, _n'terms) <--
+[
+	Local(sum, k);
+  N([
+    // use Horner scheme starting from the last term
+    x:=Eval(x);
+    sum := 0;
+    For(k:=n'terms, k>=0, k--)
+      sum := MathAdd(sum*x, nth'term'func @ k);
+  ]);
+	sum;
+];
+
+//HoldArgNr(SumTaylorNum0, 3, 2);
+
+2# SumTaylorNum0(_x, _nth'term'func, _next'term'factor, _n'terms) <--
+[
+	Local(sum, k, term, delta);
+  N([
+    x:=Eval(x);	// x must be floating-point
+    If (IsConstant(nth'term'func),
+      term := nth'term'func,
+      term := (nth'term'func @ {0}),
+    );
+    sum := term;	// sum must be floating-point
+  ]);
+  NonN([
+    delta := 1;
+    For(k:=1, k<=n'terms And delta != 0, k++)
+    [
+      term := MultiplyNum(term, next'term'factor @ {k}, x);	// want to keep exact fractions here, but the result is floating-point
+      delta := sum;
+      sum := sum + term;	// term must be floating-point
+      delta := Abs(sum-delta);	// check for underflow
+    ];
+  ]);
+	sum;
+];
+
+/// interface
+SumTaylorNum0(_x, _nth'term'func, _n'terms) <-- SumTaylorNum0(x, nth'term'func, {}, n'terms);
+
+//HoldArgNr(SumTaylorNum0, 4, 2);
+//HoldArgNr(SumTaylorNum0, 4, 3);
+
+/// this is to be used when a simple relation between a term and the next term is known.
+/// next'term'factor must be a function applicable to one argument, so that if term = nth'term'func(k-1), then nth'term'func(k) = term / next'term'factor(k). (This is optimized for Taylor series of elementary functions.) In this case, nth'term'func is either a number, value of the 0th term, or a function.
+/// A special case: when next'term'factor is an empty list; then we act as if there is no next'term'factor available.
+/// In this case, nth'term'func must be a function applicable to one argument.
+/// Need IntLog(n'terms, 10) + 1 guard digits due to accumulated roundoff error.
+SumTaylorNum1(x, nth'term'func, next'term'factor, n'terms) :=
+[
+	// need Sqrt(n'terms/2) units of storage (rows) and Sqrt(n'terms*2) columns. Let's underestimate the storage.
+	Local(sum, rows, cols, rows'tmp, last'power, i, j, x'power, term'tmp);
+  N([ // want to keep exact fractions
+    x:=Eval(x);	// x must be floating-point
+    rows := IntNthRoot(n'terms+1, 2);
+    cols := Div(n'terms+rows, rows);	// now: rows*cols >= n'terms+1
+    Check(rows>1 And cols>1, "SumTaylorNum1: Internal error: number of Taylor sum terms must be at least 4");
+    rows'tmp := Array'Create(rows, 0);
+    x'power := x ^ rows;	// do not use MathPower b/c x might be complex
+    // initialize partial sums (array rows'tmp) - the 0th column (i:=0)
+    // prepare term'tmp for the first element
+    // if we are using next'term'factor, then term'tmp is x^(rows*i)*a[rows*i]
+    // if we are not using it, then term'tmp is x^(rows*i)
+    If(
+      next'term'factor = {},
+      term'tmp := 1,
+  //		term'tmp := (nth'term'func @ 0)	// floating-point
+      If (IsConstant(nth'term'func),
+        term'tmp := nth'term'func,
+        term'tmp := (nth'term'func @ {0}),
+      )
+    );
+  ]);
+  NonN([ // want to keep exact fractions below
+    // do horizontal summation using term'tmp to get the first element
+    For(i:=0, i<cols, i++)
+    [
+      // add i'th term to each row
+      For(j:=0, j<rows And (i<cols-1 Or i*rows+j<=n'terms), j++)	// do this unless we are beyond the last term in the last column
+      [
+        // if we are using next'term'factor, then term'tmp is x^(rows*i)*a[rows*i]
+        // if we are not using it, then term'tmp is x^(rows*i)
+        If(
+          next'term'factor = {},	// no next'term'factor, so nth'term'func must be given
+          [
+            rows'tmp[j+1] := rows'tmp[j+1] + MultiplyNum(term'tmp, nth'term'func @ {i*rows+j});
+          ],
+          [
+            rows'tmp[j+1] := rows'tmp[j+1] + term'tmp;	// floating-point
+            term'tmp := MultiplyNum(term'tmp, next'term'factor @ {i*rows+j+1});	// arguments may be rational but the result is floating-point
+          ]
+        );
+      ];
+      // update term'tmp for the next column
+      term'tmp := term'tmp*x'power;	// both floating-point
+    ];
+    // do vertical summation using Horner's scheme
+    // now x'power = x^cols
+    For([j:=rows; sum:=0;], j>0, j--)
+      sum := sum*x + rows'tmp[j];
+  ]);
+	sum;
+];
+
+//HoldArgNr(SumTaylorNum, 4, 2);
+//HoldArgNr(SumTaylorNum, 4, 3);
+
+/* 
+Examples:
+In> SumTaylorNum(1,{{k}, 1/k!},{{k}, 1/k}, 10 )
+Out> 2.7182818006;
+In> SumTaylorNum(1,{{k},1/k!}, 10 )
+Out> 2.7182818007;
+*/
+
+//////////////////////////////////////////////////
+/// Numerical method: multiply floats by rationals
+//////////////////////////////////////////////////
+
+/// aux function: optimized numerical multiplication. Use MathMultiply() and MathDivide().
+/// optimization consists of multiplying or dividing by integers if one of the arguments is a rational number. This is presumably always better than floating-point calculations, except if we use Rationalize() on everything.
+/// note that currently this is not a big optimization b/c of slow arithmetic but it already helps for rational numbers under InNumericMode() returns True and it will help even more when faster math is done
+
+Function() MultiplyNum(x, y, ...);
+Function() MultiplyNum(x);
+
+10 # MultiplyNum(x_IsList)_(Length(x)>1) <-- MultiplyNum(Head(x), Tail(x));
+
+10 # MultiplyNum(x_IsRational, y_IsRationalOrNumber) <--
+[
+	If(
+        Type(y) = "/",  // IsRational(y), changed by Nobbi before redefinition of IsRational
+		MathDivide(Numer(x)*Numer(y), Denom(x)*Denom(y)),
+		// y is floating-point
+		// avoid multiplication or division by 1
+		If(
+			Numer(x)=1,
+			MathDivide(y, Denom(x)),
+			If(
+				Denom(x)=1,
+				MathMultiply(y, Numer(x)),
+				MathDivide(MathMultiply(y, Numer(x)), Denom(x))
+			)
+		)
+	);
+];
+
+20 # MultiplyNum(x_IsNumber, y_IsRational) <-- MultiplyNum(y, x);
+
+25 # MultiplyNum(x_IsNumber, y_IsNumber) <-- MathMultiply(x,y);
+
+30 # MultiplyNum(Complex(r_IsNumber, i_IsNumber), y_IsRationalOrNumber) <-- Complex(MultiplyNum(r, y), MultiplyNum(i, y));
+
+35 # MultiplyNum(y_IsNumber, Complex(r_IsNumber, i_IsRationalOrNumber)) <-- MultiplyNum(Complex(r, i), y);
+
+40 # MultiplyNum(Complex(r1_IsNumber, i1_IsNumber), Complex(r2_IsNumber, i2_IsNumber)) <-- Complex(MultiplyNum(r1,r2)-MultiplyNum(i1,i2), MultiplyNum(r1,i2)+MultiplyNum(i1,r2));
+
+/// more than 2 operands
+30 # MultiplyNum(x_IsRationalOrNumber, y_IsNumericList)_(Length(y)>1) <-- MultiplyNum(MultiplyNum(x, Head(y)), Tail(y));
+40 # MultiplyNum(x_IsRationalOrNumber, y_IsNumericList)_(Length(y)=1) <-- MultiplyNum(x, Head(y));
+
+//////////////////////////////////////////////////
+/// Numerical method: Newton-like superconvergent iteration
+//////////////////////////////////////////////////
+
+// Newton's method, generalized, with precision control and diagnostics
+
+/// auxiliary utility: compute the number of common decimal digits of x and y (using relative precision)
+Common'digits(x,y) :=
+[
+	Local(diff);
+	diff := Abs(x-y);
+	If(
+		diff=0,
+		Infinity,
+		// use approximation Ln(2)/Ln(10) > 351/1166
+		Div(IntLog(MathFloor(MathDivide(Max(Abs(x), Abs(y)), diff)), 2)*351, 1166)
+	); 	// this many decimal digits in common
+];
+
+///interface
+NewtonNum(_func, _x0) <-- NewtonNum(func, x0, 5);	// default prec0
+NewtonNum(_func, _x0, _prec0) <-- NewtonNum(func, x0, prec0, 2);
+
+// func is the function to iterate, i.e. x' = func(x).
+// prec0 is the initial precision necessary to get convergence started.
+// order is the order of convergence of the given sequence (e.g. 2 or 3).
+// x0 must be close enough so that x1 has a few common digits with x0 after at most 5 iterations.
+NewtonNum(_func, _x'init, _prec0, _order) <--
+[
+	Check(prec0>=4, "NewtonNum: Error: initial precision must be at least 4");
+	Check(IsInteger(order) And order>1, "NewtonNum: Error: convergence order must be an integer and at least 2");
+	Local(x0, x1, prec, exact'digits, int'part, initial'tries);
+  N([
+    x0 := x'init;
+    prec := Builtin'Precision'Get();
+    int'part := IntLog(Ceil(Abs(x0)), 10);	// how many extra digits for numbers like 100.2223
+    // int'part must be set to 0 if we have true floating-point semantics of Builtin'Precision'Set()
+    Builtin'Precision'Set(2+prec0-int'part);	// 2 guard digits
+    x1 := (func @ x0);	// let's run one more iteration by hand
+    // first, we get prec0 exact digits
+    exact'digits := 0;
+    initial'tries := 5;	// stop the loop the the initial value is not good
+    While(exact'digits*order < prec0 And initial'tries>0)
+    [
+      initial'tries--;
+      x0 := x1;
+      x1 := (func @ x0);
+      exact'digits := Common'digits(x0, x1);
+  //		If(InVerboseMode(), Echo("NewtonNum: Info: got", exact'digits, "exact digits at prec. ", Builtin'Precision'Get()));
+    ];
+    // need to check that the initial precision is achieved
+    If(
+      Assert("value", {"NewtonNum: Error: need a more accurate initial value than", x'init})
+        exact'digits >= 1,
+    [
+    exact'digits :=Min(exact'digits, prec0+2);
+    // run until get prec/order exact digits
+    int'part := IntLog(Ceil(Abs(x1)), 10);	// how many extra digits for numbers like 100.2223
+    While(exact'digits*order <= prec)
+    [
+      exact'digits := exact'digits*order;
+      Builtin'Precision'Set(2+Min(exact'digits, Div(prec,order)+1)-int'part);
+      x0 := x1;
+      x1 := (func @ x0);
+  //		If(InVerboseMode(), Echo("NewtonNum: Info: got", Common'digits(x0, x1), "exact digits at prec. ", Builtin'Precision'Get()));
+    ];
+    // last iteration by hand
+    Builtin'Precision'Set(2+prec);
+    x1 := RoundTo( (func @ x1), prec);
+    ],
+    // did not get a good initial value, so return what we were given
+    x1 := x'init
+    );
+    Builtin'Precision'Set(prec);
+  ]);
+	x1;
+];
+
+/*
+example: logarithm function using cubically convergent Newton iteration for
+Exp(x/2)-a*Exp(-x/2)=0:
+
+x' := x - 2 * (Exp(x)-a) / (Exp(x)+a)
+
+LN(x_IsNumber)_(x>1 ) <--
+	LocalSymbols(y)
+[
+// initial guess is obtained as Ln(x^2)/Ln(2) * (Ln(2)/2)
+	NewtonNum({{y},4*x/(Exp(y)+x)-2+y}, N(794/2291*IntLog(Floor(x*x),2),5), 10, 3);
+];
+/**/
+
+//////////////////////////////////////////////////
+/// Numerical method: integer powers by binary reduction
+//////////////////////////////////////////////////
+
+/// generalized integer Power function using the classic binary method.
+5 # IntPowerNum(_x, 0, _func, _unity) <-- unity;
+10 # IntPowerNum(_x, n_IsInteger, _func, _unity) <--
+[
+	// use binary method
+	Local(result);
+	// unity might be of non-scalar type, avoid assignment
+	While(n > 0)
+	[
+		If(
+			(n&1) = 1,
+			If(
+				IsBound(result), // if result is already assigned
+				result := Apply(func, {result,x}),
+				result := x, // avoid multiplication
+			)
+		);
+		x := Apply(func, {x,x});
+		n := n>>1;
+	];
+	result;
+];
+
+//////////////////////////////////////////////////
+/// Numerical method: binary splitting technique for simple series
+//////////////////////////////////////////////////
+
+/// Binary splitting for series of the form
+/// S(m,n) = Sum(k,m,n, a(k)/b(k)*(p(0)*...*p(k))/(q(0)*...*q(k)))
+
+
+/// High-level interface routine
+BinSplitNum(m,n,a,b,p,q) := BinSplitFinal(BinSplitData(m,n,a,b,p,q));
+
+/// Low-level routine: compute the floating-point answer from P, Q, B, T data
+BinSplitFinal({_P,_Q,_B,_T}) <-- MathDivide(T, MathMultiply(B, Q));
+
+/// Low-level routine: combine two binary-split intermediate results
+BinSplitCombine({_P1, _Q1, _B1, _T1}, {_P2, _Q2, _B2, _T2}) <-- {P1*P2, Q1*Q2, B1*B2, B1*P1*T2+B2*Q2*T1};
+
+/// Low-level routine: compute the list of four integers P, Q, B, T. (T=BQS)
+/// Input: m, n and four functions a,b,p,q of one integer argument.
+
+// base of recursion
+10 # BinSplitData(_m, _n, _a, _b, _p, _q)_(m>n) <-- {1,1,1,0};
+
+10 # BinSplitData(_m, _n, _a, _b, _p, _q)_(m=n) <-- {p@m, q@m, b@m, (a@m)*(p@m)};
+
+10 # BinSplitData(_m, _n, _a, _b, _p, _q)_(m+1=n) <-- {(p@m)*(p@n), (q@m)*(q@n), (b@m)*(b@n), (p@m)*((a@m)*(b@n)*(q@n)+(a@n)*(b@m)*(p@n))};
+
+// could implement some more cases of recursion base, to improve speed
+
+// main recursion step
+20 # BinSplitData(_m, _n, _a, _b, _p, _q) <--
+[
+	BinSplitCombine(BinSplitData(m,(m+n)>>1, a,b,p,q), BinSplitData(1+((m+n)>>1),n, a,b,p,q));
+];
+

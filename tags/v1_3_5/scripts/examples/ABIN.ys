@@ -1,0 +1,67 @@
+/* Implementation of the ABIN formal grammar
+	(see Yacas tutorial essays) */
+
+IsExpr(x_IsList) <-- IsBExpr(x) Or IsNExpr(x) Or IsAExpr(x);
+
+IsProvable(x_IsList) <-- IsAxiom(x) Or IsTheorem(x);
+
+IsAxiom(x_IsList) <-- If(IsNExpr(x) And IsBExpr(Tail(x)),
+ [Echo({"Axiom ", Map("ConcatStrings", x)});
+  True; ], False);
+
+10 # IsBExpr({}) <-- False;
+
+10 # IsBExpr({"B"}) <-- True;
+
+20 # IsBExpr(x_IsList) <-- x[Length(x)]="I" And
+ IsBExpr(Take(x, {1, Length(x)-1}));
+
+10 # IsNExpr({}) <-- False;
+
+20 # IsNExpr(x_IsList) <-- x[1] = "N" And IsExpr(Tail(x));
+
+FindTwoExprs(x_IsList) <-- [
+ Local(iter, result);
+ For([iter:=1; result:=False;],
+  iter < Length(x) And Not result, iter:=iter+1 )
+   [
+    result := IsExpr(Take(x, iter))
+     And IsExpr(Take(x, {iter+1, Length(x)}));
+   ];
+ {result, iter-1};
+];
+
+10 # IsAExpr(x_IsList)_(Length(x) <= 1) <-- False;
+
+20 # IsAExpr(x_IsList) <-- x[1] = "A" And FindTwoExprs(Tail(x))[1];
+
+IsTheorem(x_IsList) <-- If(IsNExpr(x) And IsAExpr(Tail(x)) And
+  IsProvable(Concat({"N"}, Take(Tail(Tail(x)),
+  FindTwoExprs(Tail(Tail(x)))[2]) )),
+ [ Echo({"Theorem ", Map("ConcatStrings", x)[1], " derived"});
+  True; ], False);
+
+AtomToCharList(x_IsAtom) <-- [
+  Local(index, result);
+  For([ index:=Length(String(x)); result:={}; ],
+   index > 0, index:=index-1 )
+   Push(result,
+    StringMid'Get(index, 1, String(x)));
+  result;
+];
+
+ABIN(x_IsAtom) <-- If(IsProvable(AtomToCharList(x)),
+ True,
+ [Echo({x, "cannot be proved"}); False; ]);
+
+/* Examples */
+IsProvable({"N", "A", "B", "I", "B", "I"});
+ABIN(NAAABIBBB);
+ABIN(NAAABNBIIABBIINB);
+ABIN(NAABIBIBIII);
+ABIN(NAABIIBIABINABIBI);
+ABIN(NABNANBB);
+ABIN(NAABIBIIBI);
+ABIN(NAAABBIBNB);
+ABIN(NAABIIBIABINABIBI);
+/* True but unprovable */ ABIN(NANBB);

@@ -1,0 +1,88 @@
+
+//Use("logic.ys");
+
+
+NextTest("CNF");
+
+
+/*
+    The main point is that CNF should return an answer in CNF, that is,
+    as a conjunction of disjuncts.
+*/
+Verify(CNF(A And A),      A);
+Verify(CNF(A And True),   A);
+
+
+Verify(CNF(A And False),  False);
+Verify(CNF(A Or  True),   True);
+Verify(CNF(A Or  False),  A);
+Verify(CNF(A Or  Not A),  True);
+Verify(CNF(A And Not A),  False);
+
+
+Verify(CNF((A And B) Or (A And B)),             A And B);
+Verify(CNF(A Or (A And B)),                     A And(A Or B));
+Verify(CNF((A => B) And A),                     (Not A Or B)And A);
+Verify(CNF((A And B) And A),                    (A And B) And A);
+Verify(CNF(Not (A And B) And A),                (Not A Or Not B) And A);
+
+Verify(CanProve((A Or B) And Not A),            B And Not A);
+Verify(CanProve((A Or B) And (Not A Or C)),     (A Or B) And (C Or Not A));
+Verify(CanProve((B Or A) And (Not A Or C)),     (A Or B) And (C Or Not A));
+Verify(CanProve( A And (A Or B Or C)),       A);
+Verify(CanProve( A And (Not A Or B Or C)),  A And (B Or C));
+
+// this is a test of contradication, A==3 should kick A==2 out as they're contradictory
+Verify(CanProve( A==3 And (A==2 Or B Or C)),  A-3==0 And (B Or C));
+//TODO Verify(CanProve( A==3 And (A<2  Or B Or C)),  A-3==0 And (B Or C));
+//TODO Verify(CanProve( A==3 And (A>2  Or B Or C)),  (A-3==0) And (((A-2) > 0) Or B Or C));
+
+Verify(CanProve(Not(Not (p_2-NULL==0))Or Not(p_2-NULL==0)), True);
+
+
+
+
+LogicTest({A},A And A,      A);
+LogicTest({A},A And True,   A);
+LogicTest({A},A And False,  False);
+LogicTest({A},A Or  True,   True);
+LogicTest({A},A Or  False,  A);
+LogicTest({A},A Or  Not A,  True);
+LogicTest({A},A And Not A,  False);
+LogicTest({A,B},(A And B) Or (A And B),             A And B);
+LogicTest({A,B},A Or (A And B),                     A And(A Or B));
+LogicTest({A,B},(A And B) And A,                    (A And B) And A);
+LogicTest({A,B},Not (A And B) And A,                (Not A Or Not B) And A);
+LogicTest({A,B},(A Or B) And Not A,            B And Not A);
+LogicTest({A,B,C},(A Or B) And (Not A Or C),     (A Or B) And (C Or Not A));
+LogicTest({A,B,C},(B Or A) And (Not A Or C),     (A Or B) And (C Or Not A));
+LogicTest({A,B,C}, A And (A Or B Or C),       A);
+LogicTest({A,B,C}, A And (Not A Or B Or C),  A And (B Or C));
+
+
+
+
+LogicTest({A},CNF(A And A),      A);
+LogicTest({A},CNF(A And True),   A);
+
+
+LogicTest({A},CNF(A And False),  False);
+LogicTest({A},CNF(A Or  True),   True);
+LogicTest({A},CNF(A Or  False),  A);
+LogicTest({A},CNF(A Or  Not A),  True);
+LogicTest({A},CNF(A And Not A),  False);
+
+
+LogicTest({A,B},CNF((A And B) Or (A And B)),             A And B);
+LogicTest({A,B},CNF(A Or (A And B)),                     A And(A Or B));
+LogicTest({A,B},CNF((A => B) And A),                     (Not A Or B)And A);
+LogicTest({A,B},CNF((A And B) And A),                    (A And B) And A);
+LogicTest({A,B},CNF(Not (A And B) And A),                (Not A Or Not B) And A);
+
+LogicTest({A,B},CanProve((A Or B) And Not A),            B And Not A);
+LogicTest({A,B,C},CanProve((A Or B) And (Not A Or C)),     (A Or B) And (C Or Not A));
+LogicTest({A,B,C},CanProve((B Or A) And (Not A Or C)),     (A Or B) And (C Or Not A));
+LogicTest({A,B,C},CanProve( A And (A Or B Or C)),       A);
+LogicTest({A,B,C},CanProve( A And (Not A Or B Or C)),  A And (B Or C));
+
+

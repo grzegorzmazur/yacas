@@ -1,0 +1,130 @@
+
+/* Definition of constants. */
+
+
+/* TODO:
+ * There is a problem with defining I this way: if I is used, but the
+ * file "complex" has not been loaded, the interpreter can not deal
+ * with "Complex".
+ */
+
+SetGlobalLazyVariable(I,Complex(0,1));
+
+//////////////////////////////////////////////////
+/// Cached constants support and definition of Pi
+//////////////////////////////////////////////////
+
+//TODO: here we wrap the entire file in LocalSymbols, this is inefficient in that it slows loading of this file. Needs optimization.
+LocalSymbols(CacheOfConstantsN) [
+
+/// declare a new cached constant C'atom and its associated function C'atom().
+/// C'atom() will call C'func() at current precision to evaluate C'atom if it has not yet been cached at that precision. (note: any arguments to C'func() must be included)
+RuleBase("CachedConstant", {C'cache, C'atom, C'func});
+UnFence("CachedConstant", 3);	// not sure if this is useful
+HoldArg("CachedConstant", C'func);
+HoldArg("CachedConstant", C'cache);	// name of the cache
+// check syntax: must be called on an atom and a function
+Rule("CachedConstant", 3, 10, And(IsAtom(C'atom), IsFunction(C'func)))
+[
+ 	Local(C'name,C'functionName);
+	Set(C'name, String(C'atom));	// this is for later conveniences
+  Set(C'functionName,ConcatStrings("Internal'",C'name));
+
+	If(	// create the cache it if it does not already exist
+		IsAtom(Eval(C'cache)),
+		MacroSet(Eval(C'cache), {})
+	);
+//	Write({"debug step 0: ", C'cache, Eval(C'cache), C'atom, C'func, C'name});
+	// check that the constant is not already defined
+	If(
+	  Equals(Builtin'Assoc(C'name, Eval(C'cache)), Empty),	// the constant is not already defined, so need to define "C'atom" and the corresponding function "C'atom"()
+	  [	// e.g. C'atom evaluates to Pi, C'cache to a name e.g. CacheOfConstantsN, which is bound to a hash
+		MacroClear(C'atom);
+//		Write({"debug step 1: ", Cache'name, C'cache, Eval(C'cache)});
+		// add the new constant to the cache
+//		MacroSet(Cache'name, Insert(Eval(C'cache), 1, {C'name, 0, 0}));
+		DestructiveInsert(Eval(C'cache), 1, {C'name, 0, 0});
+//		Write({"debug step 2: ", Cache'name, C'cache, Eval(C'cache)});
+		// define the new function "C'atom"()
+		// note: this should not use N() because it may be called from inside N() itself
+
+		MacroRuleBase(C'functionName, {});
+		`( Rule(@C'functionName, 0, 1024, True)
+		[
+			Local(new'prec, new'C, cached'C);
+			Set(new'prec, Builtin'Precision'Get());
+			// fetch the cache entry for this constant
+			// note that this procedure will store the name of the cache here in this statement as Eval(C'cache)
+			Set(cached'C, Builtin'Assoc(@C'name, @C'cache));
+			If(
+			  LessThan(MathNth(cached'C, 2), new'prec),
+			  [	// need to recalculate at current precision
+				If(Equals(InVerboseMode(),True), Echo("CachedConstant: Info: constant ", @C'name, " is being recalculated at precision ", new'prec));
+				Set(new'C, Eval(@C'func));
+				DestructiveReplace(cached'C, 2, new'prec);
+				DestructiveReplace(cached'C, 3, new'C);
+				new'C;
+			  ],
+			  // return cached value of C'atom
+			  MathNth(cached'C, 3)
+			);
+		]);
+
+		// calculate C'atom at current precision for the first time
+//		Eval(UnList({C'atom}));	// "C'name"();
+		// we do not need this until the constant is used; it will just slow us down
+	  ],
+	  // the constant is defined
+	  Echo("CachedConstant: Warning: constant ", C'atom, " already defined")		
+	);
+];
+
+Rule("CachedConstant", 3, 20, True)
+	Echo("CachedConstant: Error: ", C'atom, " must be an atom and ", C'func, " must be a function.");
+
+/// assign numerical values to all cached constants: using fixed cache "CacheOfConstantsN"
+// this is called from N()
+Function("AssignCachedConstantsN", {})
+[
+	Local(var,fname);
+	ForEach(var, AssocIndices(CacheOfConstantsN))
+	[
+		MacroClear(Atom(var));
+    Set(fname,ConcatStrings("Internal'",var));
+    Set(var,Atom(var));
+		// this way the routine Internal'Pi() will be actually called only when the variable 'Pi' is used, etcetera.
+    `SetGlobalLazyVariable((@var), UnList({Atom(fname)}));
+	];
+];
+UnFence("AssignCachedConstantsN", 0);
+
+/// clear values from all cached constants: using fixed cache "CacheOfConstantsN"
+// this is called from N()
+Function("ClearCachedConstantsN", {})
+[
+	Local(c'entry);
+	ForEach(c'entry, CacheOfConstantsN)
+		MacroClear(Atom(c'entry[1]));
+];
+UnFence("ClearCachedConstantsN", 0);
+
+/// declare some constants now
+CachedConstant(CacheOfConstantsN, Pi,
+[// it seems necessary to precompute Pi to a few more digits
+// so that Cos(0.5*Pi)=0 at precision 10
+// FIXME: find a better solution
+	Local(result,old'prec);
+  Set(old'prec,Builtin'Precision'Get());
+If(Equals(InVerboseMode(),True), Echo("Recalculating Pi at precision ",old'prec+5));
+	Builtin'Precision'Set(Builtin'Precision'Get()+5);
+	result := MathPi();
+If(Equals(InVerboseMode(),True),Echo("Switching back to precision ",old'prec));
+	Builtin'Precision'Set(old'prec);
+	result;
+]
+);
+CachedConstant(CacheOfConstantsN, gamma, GammaConstNum());
+CachedConstant(CacheOfConstantsN, GoldenRatio, N( (1+Sqrt(5))/2 ) );
+CachedConstant(CacheOfConstantsN, Catalan, CatalanConstNum() );
+
+]; // LocalSymbols(CacheOfConstantsN)

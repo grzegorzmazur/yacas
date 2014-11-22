@@ -1,0 +1,18 @@
+
+
+Array'CreateFromList(list):=
+[
+  Local(result,i);
+  result:=Array'Create(Length(list),0);
+  i:=1;
+  While (list != {})
+  [
+    result[i]:=Head(list);
+    i++;
+    list:=Tail(list);
+  ];
+  result;
+];
+
+Array'ToList(array):= (array[1 .. Array'Size(array) ]);
+

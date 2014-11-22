@@ -1,0 +1,193 @@
+
+
+/* Taylor3, implementation of Taylor series expansion by doing calculation on series directly.
+ */
+
+Defun("Taylor3'MultiplyCoefs",{coefs1,coefs2,degree})
+[
+  Local(result,i,j,jset,ilimit,jlimit);
+  Set(result, Array'Create(MathAdd(degree,1),0));
+  Set(i,1);
+  Set(ilimit,MathAdd(degree,2));
+  While (Not Equals(i,ilimit))
+  [
+//Echo(coefs1,coefs2);
+    Set(j,1);
+    Set(jlimit,MathAdd(degree,MathSubtract(3,i)));
+    While (Not Equals(j,jlimit))
+    [
+      Set(jset,MathAdd(i,MathSubtract(j,1)));
+//Echo("index = ",i+j-1);
+      Array'Set(result,jset,Array'Get(result,jset) + Array'Get(coefs1,i)*Array'Get(coefs2,j));
+      Set(j,MathAdd(j,1));
+    ];
+    Set(i,MathAdd(i,1));
+  ];
+  result;
+];
+
+
+Bodied("Taylor3'TaylorCoefs",0);
+10 # (Taylor3'TaylorCoefs(_var,_degree)(_var)) <-- 
+[
+  Local(result);
+  Set(result,Array'Create(degree+1,0));
+  Array'Set(result,2, 1);
+  result;
+//Echo("degree = ",degree);
+//  BaseVector(2,degree+1);
+];
+20 # (Taylor3'TaylorCoefs(_var,_degree)(_atom))_(IsFreeOf(var,atom)) 
+   <-- 
+   [
+    Local(result);
+    Set(result,Array'Create(degree+1,0));
+    Array'Set(result,1, atom);
+    result;
+//     atom*BaseVector(1,degree+1);
+   ];
+30 # (Taylor3'TaylorCoefs(_var,_degree)(_X + _Y)) 
+   <-- 
+   [
+     Local(result,add,i);
+     Set(result,Taylor3'TaylorCoefs(var,degree)(X));
+     Set(add, Taylor3'TaylorCoefs(var,degree)(Y));
+     For(i:=1,i<=degree+1,i++)
+     [
+       Array'Set(result,i,Array'Get(result,i)+Array'Get(add,i));
+     ];
+     result;
+   ];
+   
+30 # (Taylor3'TaylorCoefs(_var,_degree)(_X - _Y)) 
+   <-- 
+   [
+     Local(result,add,i);
+     Set(result,Taylor3'TaylorCoefs(var,degree)(X));
+     Set(add, Taylor3'TaylorCoefs(var,degree)(Y));
+     For(i:=1,i<=degree+1,i++)
+     [
+       Array'Set(result,i,Array'Get(result,i)-Array'Get(add,i));
+     ];
+     result;
+   ];
+
+30 # (Taylor3'TaylorCoefs(_var,_degree)(   - _Y))
+   <-- 
+   [
+     Local(result,add,i);
+     Set(result,Taylor3'TaylorCoefs(var,degree)(Y));
+     For(i:=1,i<=degree+1,i++)
+     [
+       Array'Set(result,i,-Array'Get(result,i));
+     ];
+     result;
+   ];
+
+30 # (Taylor3'TaylorCoefs(_var,_degree)(_X * _Y)) 
+   <-- Taylor3'MultiplyCoefs(
+         Taylor3'TaylorCoefs(var,degree)(X),
+         Taylor3'TaylorCoefs(var,degree)(Y),
+         degree);
+
+30 # (Taylor3'TaylorCoefs(_var,_degree)((_X) ^ N_IsPositiveInteger)) 
+  <-- 
+[
+  Local(result,factor);
+  factor:=Taylor3'TaylorCoefs(var,degree)(X);
+  result:=Array'Create(degree+1,0);
+  result[1] := 1;
+  //TODO@@@ optimize
+  While(N>0)
+  [
+    result:=Taylor3'MultiplyCoefs(result,factor,degree);
+    N--;
+  ];
+  result;
+];
+
+60 # Taylor3'UniFunction("Exp")     <-- True;
+60 # Taylor3'CompCoeff("Exp", _n) <-- 1/n!;
+
+80 # Taylor3'UniFunction("Ln")     <-- False; // False because this rule is only applicable for Ln(x+1)
+80 # Taylor3'CompCoeff("Ln", 0) <-- 0;
+81 # Taylor3'CompCoeff("Ln", _n) <-- (-1)^(n+1)/n;
+
+90 # Taylor3'UniFunction("Sin")           <-- True;
+90 # Taylor3'CompCoeff("Sin", n_IsOdd)  <-- (-1)^((n-1)/2) / n!;
+90 # Taylor3'CompCoeff("Sin", n_IsEven) <-- 0;
+
+100 # Taylor3'UniFunction("Cos")           <-- True;
+100 # Taylor3'CompCoeff("Cos", n_IsOdd)  <-- 0;
+100 # Taylor3'CompCoeff("Cos", n_IsEven) <-- (-1)^(n/2) / n!;
+
+
+210 # Taylor3'UniFunction(_any)_
+      (
+        [
+          Local(result);
+          result:= Deriv(var)UnList({Atom(any),var});
+          Type(result) != "Deriv";
+        ]
+      )           <-- 
+      [
+        True;
+      ];
+210 # Taylor3'CompCoeff(_any, n_IsInteger)  
+    <-- 
+    [
+      Limit(var,0)(Deriv(var,n)(UnList({Atom(any),var}))/n!);
+    ];
+
+
+
+60000 # Taylor3'UniFunction(_any) <-- False;
+
+
+Taylor3'FuncCoefs(_fname,_degree) <--
+[
+  Local(sins,i);
+  Set(sins, Array'Create(degree+1,0));
+  For (i:=0,i<=degree,Set(i,i+1))
+  [
+    Array'Set(sins,i+1, Taylor3'CompCoeff(fname,i));
+  ];
+  sins;
+];
+
+
+100 # (Taylor3'TaylorCoefs(_var,_degree)(Ln(_f)))_(Simplify(f-1) = var) <-- Taylor3'FuncCoefs("Ln",degree);
+
+
+110 # (Taylor3'TaylorCoefs(_var,_degree)(f_IsFunction))_(NrArgs(f) = 1 And (Taylor3'UniFunction(Type(f)))) <-- 
+[
+  Local(sins,i,j,result,xx,expr,sinfact);
+  expr := f[1];
+  sins:=Taylor3'FuncCoefs(Type(f),degree);
+//Echo("sins = ",sins);
+  expr:=Taylor3'TaylorCoefs(var,degree)expr;
+  result:=Array'Create(degree+1,0);
+  Array'Set(result,1, Array'Get(sins,1));
+  xx:=expr;
+//Echo("8...",sins,expr);
+  For (i:=2,i<=degree+1,i++)
+  [
+    Set(sinfact,sins[i]);
+//Echo("8.1..",i," ",j);
+    For (j:=1,j<=degree+1,j++)
+    [
+      Array'Set(result,j,Array'Get(result,j) + (Array'Get(xx,j) * sinfact));
+    ];    
+//Echo("8.2..");
+    Set(xx,Taylor3'MultiplyCoefs(xx,expr,degree));    
+//Echo("8.3..");
+  ];
+  result;
+];
+
+
+(Taylor3(_var,_degree)(_expr)) <-- Add((Taylor3'TaylorCoefs(var,degree)(expr))[1 .. degree+1]*var^(0 .. degree));
+10 # (Taylor3(_x,  0, _n) _y) <--              Taylor3(x,n)              y;
+20 # (Taylor3(_x, _a, _n) _y) <-- Subst(x,x-a) Taylor3(x,n) Subst(x,x+a) y;
+
+

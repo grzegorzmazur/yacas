@@ -1,0 +1,61 @@
+/* IncompleteGamma function \int\limits_{0}^xt^{a-1}e^{-t}dt
+
+   Calculation is based on series
+   IncompleteGamma(x,a)=x^a*Sum(k,0,infinity,(-1)^k*x^k/k!/(a+k)
+   (see D.S.Kouznetsov. Special functions. Vysshaia Shkola, Moscow, 1965)
+   for small x, and on asymptotic expansion
+   IncompleteGamma(x,a)=Gamma(x)-x^(a-1)*Exp(-x)*(1+(a-1)/z+(a-1)(a-2)/z^2+...)
+   (see O.E.Barndorf-Nielsen & D.R.Cox. Asymptotic techniques for Use 
+   in Statistics.. Russian translation is also available)
+   for large x.
+*/
+
+IncompleteGamma(_x, _a)_(x<=a+1) <--
+[ 
+   Local(prec,eps);
+   prec:=Builtin'Precision'Get();
+   Builtin'Precision'Set(Ceil(prec+1)); // this is a guess
+   eps:=5*10^(-prec);
+
+   Local(term,result,k);
+   
+   term:=1/a;
+   k:=0;
+   result:=0;
+   While( Abs(term) >= eps )[
+		  k:=k+1;
+		  result:=result+term;
+		  term:= -x*(a+k-1)*term/k/(a+k);
+   ];
+   result:= N(x^a*result);
+   Builtin'Precision'Set(prec);
+   // This should not round, only truncate
+   // some outputs will be off by one in the last digit
+   RoundTo(result,prec);
+];
+
+
+100 # IncompleteGamma(_x, _a)_(x>a+1) <--
+[ // Asymptotic expansion
+   Local(prec,eps);
+   prec:=Builtin'Precision'Get();
+   Builtin'Precision''Set(Ceil(prec+1)); // this is a guess
+   eps:=5*10^(-prec);
+
+   Local(term,result,k,expr);
+   
+   term:=1;
+   k:=0;
+   result:=0;
+   While( Abs(term) >= eps )[
+		  k:=k+1;
+		  result:=result+term;
+		  term:=term*(a-k)/x;
+		  //Echo({"term is ",term});
+   ];
+  result:=N(Gamma(a)-x^(a-1)*Exp(-x)*result);
+  Builtin'Precision'Set(prec);
+  // This should not round, only truncate
+  // some outputs will be off by one in the last digit
+  RoundTo(result,prec);
+];	

@@ -1,0 +1,25 @@
+// From code.ys.def:
+// [2005-12-28 matmota]: I have to implement some better solution for the
+// Yacas -> OM mapping for these symbols. 
+OMDef( "Min", "minmax1","min",
+       { "<OMA>", "<OMS cd=\"set1\" name=\"set\"/>",
+         1,2,3,4,5,6,7,8,9,10,11,12,13,14,
+         "</OMS>", "</OMA>" },
+       ($):_1 );
+OMDef( "Max", "minmax1","max",
+       { "<OMA>", "<OMS cd=\"set1\" name=\"set\"/>",
+         1,2,3,4,5,6,7,8,9,10,11,12,13,14,
+         "</OMS>", "</OMA>" },
+       ($):_1 );
+OMDef( "!", "integer1","factorial" );
+OMDef( "Bin", "combinat1","binomial" );
+OMDef( "!!",  "yacas","double_factorial" );
+OMDef( "***", "yacas","partial_factorial" );
+OMDef( "Add", "yacas","Add" );
+OMDef( "Sum", "arith1","sum", // Same argument reordering as Integrate.
+       { $, _2 .. _3, OMBIND(OMS("fns1", "lambda"), OMBVAR(_1), _4) },
+       { $, _{2,2,1}, _{1,1}, _{1,2}, _{2,3} }
+      );
+OMDef( "Factorize", "yacas","Factorize" );
+OMDef( "Taylor",    "yacas","Taylor" );
+OMDef( "Subfactorial", "yacas","Subfactorial" );

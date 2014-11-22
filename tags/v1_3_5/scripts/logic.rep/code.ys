@@ -1,0 +1,361 @@
+/* Tests on logic */
+
+/* Small theorem prover for propositional logic, based on the
+ * resolution principle.
+ * Written by Ayal Pinkus, based on the simple theorem prover from "Prolog, Ivan Bratko, chapter 20"
+ * Version 0.1 initial implementation.
+ *
+ *
+ * Examples:
+CanProve(( (a=>b) And (b=>c)=>(a=>c) ))  <-- True
+CanProve(a  Or   Not a)                  <-- True
+CanProve(True  Or  a)                    <-- True
+CanProve(False  Or  a)                   <-- a
+CanProve(a  And   Not a)                 <-- False
+CanProve(a  Or b Or (a And b))           <-- a Or b
+ */
+
+RuleBase("=>",{a,b});
+
+
+/*
+   Simplify a boolean expression. CNF is responsible
+   for converting an expression to the following form:
+        (p1  Or  p2  Or  ...)  And  (q1  Or  q2  Or  ...)  And ...
+   That is, a conjunction of disjunctions.
+*/
+
+
+// Trivial simplifications
+10  # CNF( Not  True)                  <-- False;
+11  # CNF( Not  False)                 <-- True;
+12  # CNF(True   And  (_x))            <-- CNF(x);
+13  # CNF(False  And  (_x))            <-- False;
+14  # CNF(_x   And  True)              <-- CNF(x);
+15  # CNF(_x  And  False)              <-- False;
+16  # CNF(True   Or  (_x))             <-- True;
+17  # CNF(False  Or  (_x))             <-- CNF(x);
+18  # CNF((_x)  Or  True )             <-- True;
+19  # CNF((_x)  Or  False)             <-- CNF(x);
+
+// A bit more complext
+21  # CNF(_x  Or  _x)                  <-- CNF(x);
+22  # CNF(_x  And  _x)                 <-- CNF(x);
+23  # CNF(_x  Or Not (_x))             <-- True;
+14  # CNF(Not (_x)  Or _x)             <-- True;
+25  # CNF(_x  And Not (_x))            <-- False;
+26  # CNF(Not (_x)  And _x)            <-- False;
+
+// Simplifications that deal with (in)equalities
+25  # CNF(((_x) == (_y))   Or  ((_x) !== (_y)))   <-- True;
+25  # CNF(((_x) !== (_y))  Or  ((_x) == (_y)))    <-- True;
+26  # CNF(((_x) == (_y))   And ((_x) !== (_y)))   <-- False;
+26  # CNF(((_x) !== (_y))  And ((_x) == (_y)))    <-- False;
+
+27  # CNF(((_x) >= (_y))   And ((_x) < (_y)))     <-- False;
+27  # CNF(((_x) < (_y))    And ((_x) >= (_y)))    <-- False;
+28  # CNF(((_x) >= (_y))   Or  ((_x) < (_y)))     <-- True;
+28  # CNF(((_x) < (_y))    Or  ((_x) >= (_y)))    <-- True;
+
+// some things that are more complex
+120  # CNF((_x)  Or  (_y))            <-- LogOr(x, y, CNF(x), CNF(y));
+10 # LogOr(_x,_y,_x,_y)               <-- x Or y;
+20 # LogOr(_x,_y,_u,_v)               <-- CNF(u Or v);
+
+130  # CNF( Not  (_x))                <-- LogNot(x, CNF(x));
+10 # LogNot(_x, _x)                   <-- Not (x);
+20 # LogNot(_x, _y)                   <-- CNF(Not (y));
+
+40 # CNF( Not ( Not  (_x)))           <-- CNF(x);                           // eliminate double negation
+45 # CNF((_x)=>(_y))                  <-- CNF((Not (x))  Or  (y));              // eliminate implication
+
+50 # CNF( Not ((_x)  And  (_y)))      <-- CNF((Not x) Or (Not y));          // De Morgan's law
+60 # CNF( Not ((_x)  Or  (_y)))       <-- CNF(Not (x)) And CNF(Not (y));        // De Morgan's law
+
+/*
+70 # CNF((_x) And ((_y)  Or  (_z)))   <-- CNF(x And y) Or CNF(x And z);
+70 # CNF(((_x) Or (_y)) And (_z))     <-- CNF(x And z) Or CNF(y And z);
+
+80 # CNF((_x)  Or  ((_y)  And  (_z))) <-- CNF(x Or y) And CNF(x Or z);
+80 # CNF(((_x)  And  (_y)) Or (_z))   <-- CNF(x Or z) And CNF(y Or z);
+*/
+
+70 # CNF(((_x)  And  (_y))  Or  (_z)) <-- CNF(x Or z) And CNF(y Or z);      // Distributing Or over And
+80 # CNF((_x)  Or  ((_y)  And  (_z))) <-- CNF(x Or y) And CNF(x Or z);
+
+90 # CNF((_x)  And  (_y))             <-- CNF(x) And CNF(y);                // Transform subexpression
+
+101 # CNF( (_x) < (_y) )              <-- Not CNFInEq(x >=  y);
+102 # CNF( (_x) > (_y) )              <-- CNFInEq(x >   y);
+103 # CNF( (_x) >= (_y) )             <-- CNFInEq(x >=  y);
+104 # CNF( (_x) <= (_y) )             <-- Not CNFInEq(x >  y);
+105 # CNF( (_x) == (_y) )             <-- CNFInEq(x ==  y);
+106 # CNF( (_x) !== (_y) )            <-- Not CNFInEq(x == y);
+
+111 # CNF( Not((_x) <  (_y)) )        <-- CNFInEq( x >= y );
+113 # CNF( Not((_x) <= (_y)) )        <-- CNFInEq( x > y );
+116 # CNF( Not((_x) !== (_y)) )       <-- CNFInEq( x == y );
+
+/* Accept as fully simplified, fallthrough case */
+200 # CNF(_x)                         <-- x;
+
+20 # CNFInEq((_xex) == (_yex))        <-- (CNFInEqSimplify(xex-yex) ==  0);
+20 # CNFInEq((_xex) > (_yex))         <-- (CNFInEqSimplify(xex-yex) >   0);
+20 # CNFInEq((_xex) >= (_yex))        <-- (CNFInEqSimplify(xex-yex) >=  0);
+30 # CNFInEq(_exp)                    <-- (CNFInEqSimplify(exp));
+
+10 # CNFInEqSimplify((_x) - (_x))     <-- 0;        // strictly speaking, this is not always valid, i.e. 1/0 - 1/0 != 0...
+100# CNFInEqSimplify(_x)              <-- [/*Echo({"Hit the bottom of CNFInEqSimplify with ", x, Nl()});*/ x;];
+                                                    // former "Simplify";
+
+// Some shortcuts to match prev interface
+CanProveAux(_proposition)                           <-- LogicSimplify(proposition, 3);
+10 # LogicSimplify(_proposition, _level)_(level<2)  <-- CNF(proposition);
+
+20 # LogicSimplify(_proposition, _level) <--
+[
+  Local(cnf, list, clauses);
+  Check(level > 1, "Wrong level");
+  // First get the CNF version of the proposition
+  Set(cnf, CNF(proposition));
+
+  If(level <= 1, cnf, [
+    Set(list, Flatten(cnf, "And"));
+    Set(clauses, {});
+    ForEach(clause, list)
+    [
+      Local(newclause);
+      //newclause := BubbleSort(LogicRemoveTautologies(Flatten(clause, "Or")), LessThan);
+      Set(newclause, LogicRemoveTautologies(Flatten(clause, "Or")));
+      If(newclause != {True}, DestructiveAppend(clauses, newclause));
+    ];
+
+    /*
+        Note that we sort each of the clauses so that they look the same,
+        i.e. if we have (A And B) And ( B And A), only the first one will
+        persist.
+    */
+    Set(clauses, RemoveDuplicates(clauses));
+
+    If(Equals(level, 3) And (Length(clauses) != 0), [
+        Set(clauses, DoUnitSubsumptionAndResolution(clauses));
+        Set(clauses, LogicCombine(clauses));
+    ]);
+
+    Set(clauses, RemoveDuplicates(clauses));
+
+    If(Equals(Length(clauses), 0), True, [
+        /* assemble the result back into a boolean expression */
+        Local(result);
+        Set(result, True);
+        ForEach(item,clauses)
+        [
+            Set(result, result And UnFlatten(item, "Or", False));
+        ];
+
+        result;
+    ]);
+  ]);
+];
+
+/* CanProve tries to prove that the negation of the negation of
+   the proposition is true. Negating twice is just a trick to
+   allow all the simplification rules a la De Morgan to operate
+ */
+/*CanProve(_proposition)    <-- CanProveAux( Not CanProveAux( Not proposition));*/
+
+CanProve(_proposition)      <-- CanProveAux( proposition );
+
+1 # SimpleNegate(Not (_x))  <-- x;
+2 # SimpleNegate(_x)        <-- Not(x);
+
+/* LogicRemoveTautologies scans a list representing e1 Or e2 Or ... to find
+   if there are elements p and  Not p in the list. This signifies p Or Not p,
+   which is always True. These pairs are removed. Another function that is used
+   is RemoveDuplicates, which converts p Or p into p.
+*/
+
+/* this can be optimized to walk through the lists a bit more efficiently and also take
+care of duplicates in one pass */
+LocalCmp(_e1, _e2)                  <-- LessThan(ToString() Write(e1), ToString() Write(e2));
+
+// we may want to add other expression simplifers for new expression types
+100 # SimplifyExpression(_x)        <-- x;
+
+// Return values:
+//  {True} means True
+//  {} means False
+LogicRemoveTautologies(_e) <--
+[
+  Local(i, len, negationfound); Set(len, Length(e));
+  Set(negationfound, False);
+
+  //Echo(e);
+  e := BubbleSort(e, "LocalCmp");
+
+  For(Set(i, 1), (i <= len) And (Not negationfound), i++)
+  [
+    Local(x, n, j);
+    // we can register other simplification rules for expressions
+    //e[i] := MathNth(e,i) /:: {gamma(_y) <- SimplifyExpression(gamma(y))};
+    Set(x, MathNth(e,i));
+    Set(n, SimpleNegate(x));                    /* this is all we have to do because of
+                                                the kind of expressions we can have coming in */
+
+    For(Set(j, i+1), (j <= len) And (Not negationfound), j++) [
+        Local(y);
+        Set(y, MathNth(e,j));
+
+        If(Equals(y, n),
+            [
+                //Echo({"Deleting from ", e, " i=", i, ", j=", j, Nl()});
+
+                Set(negationfound, True);
+                //Echo({"Removing clause ", i, Nl()});
+            ],
+        If(Equals(y, x),
+            [
+                //Echo({"Deleting from ", e, " j=", j, Nl()});
+                DestructiveDelete(e, j);
+                Set(len,MathSubtract(len,1));
+            ])
+        );
+    ];
+    Check(len = Length(e), "The length computation is incorrect");
+  ];
+
+  If(negationfound, {True}, e);            /* note that a list is returned */
+];
+
+10 # Contradict((_x) - (_y) == 0, (_x) - (_z) == 0)_(y != z)     <-- True;
+12 # Contradict((_x) == (_y), (_x) == (_z))_(y != z)             <-- True;
+13 # Contradict((_x) - (_y) == 0, (_x) - (_z) >= 0)_(z > y)      <-- True;
+14 # Contradict((_x) - (_y) == 0, (_x) - (_z) >  0)_(z > y)      <-- True;
+14 # Contradict(Not (_x) - (_y) >= 0, (_x) - (_z) >  0)_(z > y)  <-- True;
+15 # Contradict(_a, _b)                                          <-- Equals(SimpleNegate(a), b);
+
+/* find the number of the list that contains n in it, a pointer to a list of lists in passed */
+LogicFindWith(_list, _i, _n) <--
+[
+  Local(result, index, j);
+  Set(result, -1); Set(index, -1);
+
+  For(j := i+1, (result<0) And (j <= Length(list)), j++)
+  [
+    Local(k, len); Set(len, Length(list[j]));
+    For(k := 1, (result<0) And (k<=len), k++)
+    [
+      Local(el); Set(el, list[j][k]);
+
+      If(Contradict(n, el),
+        [Set(result, j); Set(index, k);]);
+    ];
+  ];
+  {result, index};
+];
+
+/* LogicCombine is responsible for scanning a list of lists, which represent
+   a form (p1  Or  p2  Or  ...)  And  (q1  Or  q2  Or  ...)  And ... by scanning the lists
+   for combinations x Or Y  And   Not x Or Z <-- Y Or Z . If Y Or Z is empty then this clause
+   is false, and thus the entire proposition is false.
+*/
+LogicCombine(_list) <--
+[
+  Local(i, j);
+  For(Set(i,1), i<=Length(list), Set(i,MathAdd(i,1)))
+  [
+    //Echo({"list[", i, "/", Length(list), "]: ", list[i], Nl()});
+
+    For(j := 1, (j<=Length(list[i])), j++)
+    [
+      Local(tocombine, n, k);
+      Set(n, list[i][j]);
+
+      {tocombine, k} := LogicFindWith(list, i, n);// search forward for n, tocombine is the list we
+                                                  // will combine the current one with
+      If(tocombine != -1,
+      [
+        Local(combination);
+        Check(k != -1, "k is -1");
+
+        Set(combination, LogicRemoveTautologies(Concat(list[i], list[tocombine])));
+        If(combination = {},                      // the combined clause is false, so the whole thing is false
+          [Set(list, {{}}); Set(i, Length(list)+1);], [/*Set(i, 0);*/]);
+      ]);
+    ];
+  ];
+  list;
+];
+
+10 # Subsumes((_x) - (_y) == 0, Not ((_x) - (_z)==0))_(y!=z)    <-- True;
+// suif_tmp0_127_1-72==0 And 78-suif_tmp0_127_1>=0
+20 # Subsumes((_x) - (_y) == 0, (_z) - (_x) >= 0)_(z>=y)        <-- True;
+20 # Subsumes((_x) - (_y) == 0, (_z) - (_x) >  0)_(z>y)         <-- True;
+// suif_tmp0_127_1-72==0 And suif_tmp0_127_1-63>=0
+30 # Subsumes((_x) - (_y) == 0, (_x) - (_z) >= 0)_(y>=z)        <-- True;
+30 # Subsumes((_x) - (_y) == 0, (_x) - (_z) > 0)_(y>z)          <-- True;
+
+90 # Subsumes((_x), (_x))                                       <-- True;
+
+100# Subsumes((_x), (_y))                                       <-- False;
+
+
+// perform unit subsumption and resolutiuon for a unit clause # i
+// a boolean indicated whether there was a change is returned
+DoUnitSubsumptionAndResolution(_list) <--
+[
+    Local(i, j, k, isFalse, isTrue, changed);
+    Set(isFalse, False);
+    Set(isTrue,  False);
+    Set(changed, True);
+
+    //Echo({"In DoUnitSubsumptionAndResolution", Nl()});
+
+    While(changed) [
+      Set(changed, False);
+
+      For(i:=1, (Not isFalse And Not isTrue) And i <= Length(list), i++)
+      [
+        If(Length(list[i]) = 1, [
+          Local(x); Set(x, list[i][1]); //n := SimpleNegate(x);
+          //Echo({"Unit clause ", x, Nl()});
+
+          // found a unit clause, {x}, not use it to modify other clauses
+          For(j:=1, (Not isFalse And Not isTrue) And j <= Length(list), j++)
+          [
+              If(i !=j, [
+                Local(deletedClause); Set(deletedClause, False);
+                For(k:=1, (Not isFalse And Not isTrue And Not deletedClause) And k <= Length(list[j]),  k++)
+                [
+                    // In both of these, if a clause becomes empty, the whole thing is False
+
+                    //Echo({"   ", x, " subsumes ", list[j][k], i,j, Subsumes(x, list[j][k]), Nl()});
+
+                    // unit subsumption -- this kills clause j
+                    If(Subsumes(x, list[j][k]), [
+                        // delete this clause
+                        DestructiveDelete(list, j);
+                        j--;
+                        If(i>j, i--);   // i also needs to be decremented
+                        Set(deletedClause, True);
+                        Set(changed, True);
+                        If(Length(list) = 0, [Set(isTrue, True);]);
+                    ],
+                      // else, try unit resolution
+                    If(Contradict(x, list[j][k]), [
+                        //Echo({x, " contradicts", list[j][k], Nl()});
+                        DestructiveDelete(list[j], k);
+                        k--;
+                        Set(changed, True);
+                        If(Length(list[j]) = 0, [Set(isFalse, True);]);
+                    ])
+                    );
+                ];
+              ]);
+          ];
+        ]);
+      ];
+    ];
+
+    list;
+];

@@ -1,0 +1,66 @@
+
+/* Simplification of nested radicals.
+*/
+
+RadSimp(_n) <--
+[
+  Local(max, result);
+  Set(max, MathCeil(N(Eval(n^2))));
+  Set(result,0);
+  Set(result,RadSimpTry(n,0,1,max));
+
+//Echo("result is ",result);
+  if (CheckRadicals(n,result))
+    result
+  else
+    n;
+];
+
+/*Echo({"Try ",test}); */
+
+CheckRadicals(_n,_test) <-- Abs(N(Eval(n-test),20)) < 0.000001;
+
+10 # ClampRadicals(_r)_(N(Eval(Abs(r)), 20)<0.000001) <-- 0;
+20 # ClampRadicals(_r) <-- r;
+
+
+
+RadSimpTry(_n,_result,_current,_max)<--
+[
+//Echo(result," ",n," ",current);
+  if (LessThan(N(Eval(result-n)), 0))
+  [
+    Local(i);
+
+    // First, look for perfect match
+    i:=BSearch(max,Hold({{try},ClampRadicals(N(Eval((result+Sqrt(try))-n),20))}));
+    If(i>0,
+    [
+      Set(result,result+Sqrt(i));
+      Set(i,MathAdd(max,1));
+      Set(current,MathAdd(max,1));
+    ]);
+
+    // Otherwise, search for another solution
+    if (LessThan(N(Eval(result-n)), 0))
+    [
+      For (Set(i,current),i<=max,Set(i,MathAdd(i,1)))
+      [
+        Local(new, test);
+        Set(test,result+Sqrt(i));
+
+/* Echo({"Full-try ",test}); */
+
+        Set(new,RadSimpTry(n,test,i,max));
+	if (CheckRadicals(n,new))
+        [
+          Set(result,new);
+          Set(i,MathAdd(max,1));
+        ];
+      ];
+    ];
+  ];
+  result;
+];
+
+

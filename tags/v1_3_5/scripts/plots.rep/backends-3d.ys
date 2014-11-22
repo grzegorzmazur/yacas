@@ -1,0 +1,147 @@
+//////////////////////////////////////////////////
+/// Backends for 3D plotting
+//////////////////////////////////////////////////
+
+/// List of all defined backends and their symbolic labels.
+/// Add any new backends here
+Plot3DS'outputs() := {
+    {"default", "gnuplot"},
+    {"data", "Plot3DS'data"},
+    {"gnuplot", "Plot3DS'gnuplot"},
+    {"png", "Plot3DS'png"}
+};
+
+/*
+    How backends work:
+    Plot3DS'<backend>(values, options'hash)
+    options'hash is a hash that contains all plotting options:
+    ["xrange"] - a list of {x1, x2}, ["xname"] - name of the variable to plot, same for "yrange";
+    ["zname"] - array of string representations of the function(s), and perhaps other options relevant to the particular backend.
+    {values} is a list of lists of triples of the form {{{x1, y1, z1}, {x2, y2, z2}, ...}, {{x1, y1, t1}, {x2, y2, t2}, ...}, ...} corresponding to the functions z(x,y), t(x,y), ... to be plotted. The points x[i], y[i] are not necessarily the same for all functions.
+    The backend should prepare the graph of the function(s). The "datafile" backend Plot3DS'datafile(values, options'hash) may be used to output all data to file(s), in which case the file name should be given by the value options'hash["filename"]. Multiple files are created with names obtained by appending numbers to the filename.
+    Note that the "data" backend does not do anything and simply returns the data.
+    The backend Plot3DS'datafile takes care not to write "Infinity" or "Undefined" data points (it just ignores them). Custom backends should either use Plot3DS'datafile to prepare a file, or take care of this themselves.
+*/
+
+/// trivial backend: return data list (do not confuse with Plot3DS'get'data() defined in the main code which is the middle-level plotting routine)
+Plot3DS'data(values_IsList, _options'hash) <-- values;
+
+Plot3DS'gnuplot'command(_file) <--
+    If (SystemName() = "Windows", "cmd /c start /b gnuplot --persist " : file, "gnuplot --persist " : file);
+
+/// backend: display graph using gnuplot
+Plot3DS'gnuplot(values_IsList, _options'hash) <--
+[
+  Local(item, dirBase, filename'list, control'file);
+  filename'list := Plot3DS'datafile(values, options'hash);
+  control'file := TmpFile();
+  ToFile(control'file)
+  [
+        WriteString("set surface" : Nl() : If(options'hash["hidden"], "set hidden3d" : Nl(), ""));
+        // 'set xrange [-5:5]'
+        WriteString("set xrange [");
+        Write(options'hash["xrange"][1]);
+        WriteString(" : ");
+        Write(options'hash["xrange"][2]);
+        WriteString("]" : Nl());
+        WriteString("set yrange [");
+        Write(options'hash["yrange"][1]);
+        WriteString(" : ");
+        Write(options'hash["yrange"][2]);
+        WriteString("]" : Nl());
+        If(
+                options'hash["zrange"] != Empty,
+                [
+                        WriteString("set zrange [");
+                        Write(options'hash["zrange"][1]);
+                        WriteString(" : ");
+                        Write(options'hash["zrange"][2]);
+                        WriteString("]" : Nl());
+                ]
+        );
+        WriteString("set dgrid3d ");
+        Write(1+options'hash["xpoints"]*2^(options'hash["depth"] - options'hash["used depth"]));
+        WriteString(",");
+        Write(1+options'hash["ypoints"]*2^(options'hash["depth"] - options'hash["used depth"]));
+        WriteString(",");
+        Write(4);       // gnuplot's "norm" for its primitive interpolation
+        WriteString(Nl());
+        // 'plot "data1" title "y(x)" with lines, "data2" title "z(x)" with lines'
+        WriteString("splot ");
+        For(item:=1, item<=Length(values), item++)
+        [
+                WriteString("\"" : StringReplace("\\", "\\\\", filename'list[item]) : "\" title \"" : options'hash["zname"][item] : "\" with lines");
+                If(item<Length(values), WriteString(", "));
+        ];
+        WriteString(Nl());
+  ];
+  SystemCall(Plot3DS'gnuplot'command(control'file));
+];
+
+/// backend: use gnuplot to generate png
+Plot3DS'png(values_IsList, _options'hash) <--
+[
+  Local(item, dirBase, filename'list, control'file, png'file);
+  filename'list := Plot3DS'datafile(values, options'hash);
+  control'file := TmpFile();
+  png'file := If (options'hash["filename"] != Empty, options'hash["filename"], TmpFile());
+  ToFile(control'file)
+  [
+        WriteString("set output \"" : StringReplace("\\", "\\\\", png'file) : "\"" : Nl());
+        WriteString("set terminal png" : Nl());
+        WriteString("set surface" : Nl() : If(options'hash["hidden"], "set hidden3d" : Nl(), ""));
+        WriteString("set xrange [");
+        Write(options'hash["xrange"][1]);
+        WriteString(" : ");
+        Write(options'hash["xrange"][2]);
+        WriteString("]" : Nl());
+        WriteString("set yrange [");
+        Write(options'hash["yrange"][1]);
+        WriteString(" : ");
+        Write(options'hash["yrange"][2]);
+        WriteString("]" : Nl());
+        If(
+                options'hash["zrange"] != Empty,
+                [
+                        WriteString("set zrange [");
+                        Write(options'hash["zrange"][1]);
+                        WriteString(" : ");
+                        Write(options'hash["zrange"][2]);
+                        WriteString("]" : Nl());
+                ]
+        );
+        WriteString("set dgrid3d ");
+        Write(1+options'hash["xpoints"]*2^(options'hash["depth"] - options'hash["used depth"]));
+        WriteString(",");
+        Write(1+options'hash["ypoints"]*2^(options'hash["depth"] - options'hash["used depth"]));
+        WriteString(",");
+        Write(4);       // gnuplot's "norm" for its primitive interpolation
+        WriteString(Nl());
+        WriteString("splot ");
+        For(item:=1, item<=Length(values), item++)
+        [
+                WriteString("\"" : StringReplace("\\", "\\\\", filename'list[item]) : "\" title \"" : options'hash["zname"][item] : "\" with lines");
+                If(item<Length(values), WriteString(", "));
+        ];
+        WriteString(Nl());
+  ];
+  SystemCall(Plot3DS'gnuplot'command(control'file));
+  png'file;
+];
+
+/// backend: write data into file.
+/// Returns the list of created filenames
+/// This backend is used by other backends to write data to files.
+Plot3DS'datafile(values_IsList, _options'hash) <--
+[
+        Local(item, func, filename, filename'list);
+        filename'list := {};
+        For(func:=1, func<=Length(values), func++)
+        [
+                filename := TmpFile();
+                DestructiveAppend(filename'list, filename);
+                ToFile(filename) ForEach(item, values[func]) WriteDataItem(item, options'hash);
+                If(InVerboseMode(), Echo( "Plot3DS'datafile: created file '" : filename :  "'"), True);
+        ];
+        filename'list;
+];
