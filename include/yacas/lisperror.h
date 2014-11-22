@@ -204,6 +204,12 @@ public:
         LispError("Predicate doesn't evaluate to a boolean in pattern") {}
 };
 
+class LispErrProtectedSymbol: public LispError {
+public:
+    LispErrProtectedSymbol():
+        LispError("Attempt to override a protected symbol") {}
+};
+
 class LispErrGeneric: public LispError {
 public:
     LispErrGeneric(const std::string& what):

@@ -26,7 +26,8 @@ DefaultYacasEnvironment::DefaultYacasEnvironment(std::ostream& os, LispInt aStac
     iEnvironment(coreCommands,userFunctions,
                  globals,hash,output,infixprinter,
                  prefixoperators,infixoperators,
-                 postfixoperators,bodiedoperators,&input,aStackSize),
+                 postfixoperators,bodiedoperators,
+                 protected_symbols, &input, aStackSize),
     input(iEnvironment.iInputStatus)
 {
     // Define the built-in functions by tying their string representation

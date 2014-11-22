@@ -59,6 +59,8 @@ Rule("Nth",2,40,Equals(IsString(aindex),True))
   as;
 ];
 
+Protect(Nth);
+
 Function("NrArgs",{aLeft}) Length(Listify(aLeft))-1;
 
 10 # IsNonObject(Object(_x)) <-- False;
@@ -128,7 +130,7 @@ LocalSymbols(Verbose) [
     result;
   ];
   Function("InVerboseMode",{}) Verbose;
-  
+
 ]; // LocalSymbols(Verbose)
 HoldArg("V",aNumberBody);
 UnFence("V",1);
