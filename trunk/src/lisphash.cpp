@@ -7,7 +7,10 @@ const LispString* LispHashTable::LookUp(const std::string& s)
     if (i != _rep.end())
         return i->second;
 
-    return _rep.insert(std::make_pair(s, new LispString(s))).first->second;
+    LispString* ls = new LispString(s);
+    ls->iReferenceCount = 1;
+
+    return _rep.insert(std::make_pair(s, ls)).first->second;
 }
 
 void LispHashTable::GarbageCollect()
