@@ -72,6 +72,15 @@ class MathCommands
          new YacasEvaluator(new LispTmpFile(), 0, YacasEvaluator.Fixed | YacasEvaluator.Function),
          "TmpFile");
     aEnvironment.CoreCommands().SetAssociation(
+         new YacasEvaluator(new LispProtect(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro),
+         "Protect");
+    aEnvironment.CoreCommands().SetAssociation(
+         new YacasEvaluator(new LispUnProtect(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro),
+         "UnProtect");
+    aEnvironment.CoreCommands().SetAssociation(
+         new YacasEvaluator(new LispIsProtected(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro),
+         "IsProtected");
+    aEnvironment.CoreCommands().SetAssociation(
          new YacasEvaluator(new LispSetVar(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
          "Set");
     aEnvironment.CoreCommands().SetAssociation(
@@ -669,6 +678,9 @@ class MathCommands
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,varstring != null,1);
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,!LispStandard.IsNumber(varstring,true),1);
 
+    if (aEnvironment.IsProtected(varstring))
+        throw new YacasException("Symbol " + varstring + " is protected");
+
     LispPtr result = new LispPtr();
     aEnvironment.iEvaluator.Eval(aEnvironment, result, YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 2));
     aEnvironment.SetVariable(varstring, result, aGlobalLazyVariable);
@@ -1240,6 +1252,53 @@ class MathCommands
       RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, aEnvironment.HashTable().LookUpStringify(f.getCanonicalPath())));
     }
   }
+
+  class LispProtect extends YacasEvalCaller
+  {
+    public void Eval(LispEnvironment env, int top) throws Exception
+    {
+      String s = YacasEvalCaller.ARGUMENT(env, top, 1).Get().String();
+
+      LispError.CHK_ARG_CORE(env, top, s != null, 1);
+      LispError.CHK_ARG_CORE(env, top, !LispStandard.IsNumber(s,true), 1);
+
+      env.Protect(s);
+
+      LispStandard.InternalTrue(env, RESULT(env, top));
+    }
+  }
+
+  class LispUnProtect extends YacasEvalCaller
+  {
+    public void Eval(LispEnvironment env, int top) throws Exception
+    {
+      String s = YacasEvalCaller.ARGUMENT(env, top, 1).Get().String();
+
+      LispError.CHK_ARG_CORE(env, top, s != null, 1);
+      LispError.CHK_ARG_CORE(env, top, !LispStandard.IsNumber(s,true), 1);
+
+      env.UnProtect(s);
+
+      LispStandard.InternalTrue(env, RESULT(env, top));
+    }
+  }
+
+  class LispIsProtected extends YacasEvalCaller
+  {
+    public void Eval(LispEnvironment env, int top) throws Exception
+    {
+      String s = YacasEvalCaller.ARGUMENT(env, top, 1).Get().String();
+
+      LispError.CHK_ARG_CORE(env, top, s != null, 1);
+      LispError.CHK_ARG_CORE(env, top, !LispStandard.IsNumber(s,true), 1);
+
+      if (env.IsProtected(s))
+          LispStandard.InternalTrue(env, RESULT(env, top));
+      else
+          LispStandard.InternalFalse(env, RESULT(env, top));
+    }
+  }
+
 
   class LispSetVar extends YacasEvalCaller
   {
@@ -4088,4 +4147,3 @@ class MathCommands
 
 
 }
-
