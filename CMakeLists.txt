@@ -17,7 +17,7 @@ if (ENABLE_JYACAS)
   include (${CMAKE_ROOT}/Modules/UseJava.cmake)
   project (YACAS CXX Java)
 else ()
-  project (YACAS CXX)
+  project (YACAS CXX C)
 endif ()
 
 
