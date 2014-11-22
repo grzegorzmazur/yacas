@@ -35,8 +35,12 @@ set (YACAS_VERSION ${YACAS_VERSION_MAJOR}.${YACAS_VERSION_MINOR}.${YACAS_VERSION
 
 include (CMakeLists-conf.txt)
 
+if (APPLE OR WIN32)
+    add_definitions(-DNO_GLOBALS)
+endif ()
+
 include_directories(
-  "${PROJECT_SOURCE_DIR}/include"
+  "${PROJECT_SOURCE_DIR}/include"	
   "${PROJECT_BINARY_DIR}/include"
   "${PROJECT_BINARY_DIR}"
   )
@@ -79,7 +83,7 @@ if (APPLE)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_BINARY_DIR}/include $<TARGET_FILE_DIR:libyacas_framework>/Headers)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ln -sf  $<TARGET_FILE_DIR:libyacas_framework>/Headers $<TARGET_FILE_DIR:libyacas_framework>/../../Headers)
 
-  install (TARGETS libyacas_framework FRAMEWORK DESTINATION ${CMAKE_FRAMEWORK_INSTALL_DIR} COMPONENT dev)
+  install (TARGETS libyacas_framework FRAMEWORK DESTINATION ${CMAKE_FRAMEWORK_INSTALL_DIR} COMPONENT framework)
 endif()
 
 install (TARGETS libyacas_static ARCHIVE DESTINATION lib COMPONENT dev)
