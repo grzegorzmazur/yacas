@@ -66,6 +66,8 @@ class LispError
           return "User interrupted calculation";
       if (aError ==  KLispErrNonBooleanPredicateInPattern)
           return "Predicate doesn't evaluate to a boolean in pattern";
+      if (aError ==  KLispErrSymbolProtected)
+          return "Trying to modify protected symbol";
      if (aError ==  KLispErrGenericFormat) return "Generic format";
     }
     return "Unspecified Error";
@@ -184,7 +186,7 @@ class LispError
           error = error + ShowFunctionError(arguments, aEnvironment) + "\nbad argument number "+aArgNr+"(counting from 1) : \n"+aErrorDescription + "\n";
           LispPtr arg = YacasEvalCaller.Argument(arguments,aArgNr);
           String strout;
- 
+
           error = error + "The offending argument ";
           strout = LispStandard.PrintExpression(arg, aEnvironment, 60);
           error = error + strout;
@@ -231,8 +233,9 @@ class LispError
   static int KLispErrLibraryNotFound        = 26;
   static int KLispErrUserInterrupt          = 27;
   static int KLispErrNonBooleanPredicateInPattern = 28;
-  static int KLispErrGenericFormat          = 29;
-  static int KLispNrErrors                  = 30;
+  static int KLispErrSymbolProtected        = 29;
+  static int KLispErrGenericFormat          = 30;
+  static int KLispNrErrors                  = 31;
 
 
 }

@@ -1,5 +1,7 @@
 package net.sf.yacas;
 
+import java.util.Set;
+import java.util.HashSet;
 
 class LispEnvironment
 {
@@ -27,6 +29,8 @@ class LispEnvironment
     iComma        = LispAtom.New(this,",");
     iList         = LispAtom.New(this,"List");
     iProg         = LispAtom.New(this,"Prog");
+
+    protected_symbols = new HashSet();
 
     iStack = new YacasArgStack(50000 /*TODO FIXME*/);
     MathCommands mc = new MathCommands();
@@ -71,6 +75,8 @@ class LispEnvironment
   LispOperators iPostfixOperators = new LispOperators();
   LispOperators iBodiedOperators = new LispOperators();
 
+  Set protected_symbols;
+
   int iEvalDepth = 0;
   int iMaxEvalDepth = 10000;
 
@@ -80,7 +86,7 @@ class LispEnvironment
   */
   class YacasArgStack
   {
- 
+
     //TODO appropriate constructor?
     public YacasArgStack(int aStackSize)
     {
@@ -264,7 +270,7 @@ class LispEnvironment
   }
   class LocalVariableFrame
   {
- 
+
       public LocalVariableFrame(LocalVariableFrame aNext, LispLocalVariable aFirst)
       {
         iNext = aNext;
@@ -286,7 +292,7 @@ class LispEnvironment
           t = next;
         }
       }
- 
+
 
       LocalVariableFrame iNext;
       LispLocalVariable iFirst;
@@ -315,9 +321,9 @@ class LispEnvironment
   LispTokenizer iXmlTokenizer = new XmlTokenizer();
 
   LispUserFunctions iUserFunctions = new LispUserFunctions();
- 
+
   String iError = null;
- 
+
   public void HoldArgument(String  aOperator, String aVariable) throws Exception
   {
     LispMultiUserFunction multiUserFunc = (LispMultiUserFunction)iUserFunctions.LookUp(aOperator);
@@ -332,6 +338,8 @@ class LispEnvironment
       multiUserFunc.DeleteBase(aArity);
     }
   }
+
+
 
   public LispUserFunction UserFunction(LispPtr aArguments) throws Exception
   {
@@ -364,7 +372,7 @@ class LispEnvironment
     LispError.Check(userFunc != null, LispError.KLispErrInvalidArg);
     userFunc.UnFence();
   }
- 
+
   public LispMultiUserFunction MultiUserFunction(String aOperator) throws Exception
   {
     // Find existing multiuser func.
@@ -381,11 +389,11 @@ class LispEnvironment
     return multiUserFunc;
   }
 
- 
+
   public void DeclareRuleBase(String aOperator, LispPtr aParameters, boolean aListed) throws Exception
   {
     LispMultiUserFunction multiUserFunc = MultiUserFunction(aOperator);
- 
+
     // add an operator with this arity to the multiuserfunc.
     BranchingUserFunction newFunc;
     if (aListed)
@@ -411,9 +419,9 @@ class LispEnvironment
     // Get the specific user function with the right arity
     LispUserFunction userFunc = (LispUserFunction)multiUserFunc.UserFunc(aArity);
     LispError.Check(userFunc != null, LispError.KLispErrCreatingRule);
- 
+
     // Declare a new evaluation rule
- 
+
 
     if (LispStandard.IsTrue(this, aPredicate))
     {
@@ -448,11 +456,26 @@ class LispEnvironment
     // Get the specific user function with the right arity
     LispUserFunction userFunc = multiUserFunc.UserFunc(aArity);
     LispError.Check(userFunc != null, LispError.KLispErrCreatingRule);
- 
+
     // Declare a new evaluation rule
     userFunc.DeclarePattern(aPrecedence, aPredicate,aBody);
   }
 
+
+  void Protect(String symbol)
+  {
+      protected_symbols.add(symbol);
+  }
+
+  void UnProtect(String symbol)
+  {
+      protected_symbols.remove(symbol);
+  }
+
+  boolean IsProtected(String symbol)
+  {
+      return protected_symbols.contains(symbol);
+  }
 
   LispDefFiles iDefFiles = new LispDefFiles();
   InputDirectories iInputDirectories = new InputDirectories();
@@ -461,4 +484,3 @@ class LispEnvironment
   String iPrettyPrinter = null;
 
 }
-
