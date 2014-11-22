@@ -166,6 +166,9 @@ if test "x$enable_pdf_doc" = xyes; then
 fi
 AC_SUBST(PDF_DOCS)
 
+# Choice of directories
+scriptdir=${datadir}/yacas/scripts/
+AC_SUBST(scriptdir)
 
 AC_ARG_WITH(html-dir, [  --with-html-dir=DIR     HTML documentation in DIR [DATADIR/yacas/documentation]])
 if test -n "$with_html_dir" ; then
