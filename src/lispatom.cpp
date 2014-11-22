@@ -5,6 +5,7 @@
 #include "yacas/numbers.h"
 #include "yacas/standard.h"
 
+#include <algorithm>
 #include <cassert>
 
 /// construct an atom from a string representation.

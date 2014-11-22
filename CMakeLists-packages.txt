@@ -1,4 +1,4 @@
-if (WIN32)
+if (WIN32 AND CMAKE_CROSSCOMPILING)
   install (FILES /usr/lib/gcc/i686-w64-mingw32/4.9-win32/libgcc_s_sjlj-1.dll /usr/i686-w64-mingw32/lib/libwinpthread-1.dll DESTINATION bin COMPONENT app)
 endif ()
 
