@@ -752,8 +752,8 @@ int runserver(int argc,char** argv)
 #ifdef YACAS_DEBUG
                                 std::cout << "Loading new Yacas environment\n";
 #endif
-                                StringOutput *out = NEW StringOutput(outStrings);
-                                LoadYacas(out);
+                                std::stringstream* out = new std::stringstream;
+                                LoadYacas(*out);
                                 used_clients[clsockindex] = yacas;
                                 yacas = 0;
                                 nrSessions++;
@@ -783,7 +783,7 @@ int runserver(int argc,char** argv)
 #ifdef YACAS_DEBUG
                                 std::cout << "In> " << finalbuffer << "\n";
 #endif
-                                outStrings = "";
+                                outStrings.clear();
                                 used_clients[clsockindex]->Evaluate(finalbuffer.c_str());
 
                                 if (server_single_user && !busy)
@@ -800,9 +800,9 @@ int runserver(int argc,char** argv)
                                 }
 
                                 if (used_clients[clsockindex]->IsError())
-                                    response = used_clients[clsockindex]->Error();
+                                    response = used_clients[clsockindex]->Error().c_str();
                                 else
-                                    response = used_clients[clsockindex]->Result();
+                                    response = used_clients[clsockindex]->Result().c_str();
 
 
                                 const std::size_t buflen = std::strlen(response);
