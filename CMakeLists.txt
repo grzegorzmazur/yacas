@@ -101,7 +101,7 @@ if (APPLE)
     set_target_properties(yacas PROPERTIES INSTALL_RPATH "@loader_path/../lib")
 endif()
 
-target_link_libraries (yacas libyacas_shared)
+target_link_libraries (yacas libyacas_static)
 
 if (WIN32)
   target_link_libraries (yacas wsock32 ws2_32 shlwapi)
