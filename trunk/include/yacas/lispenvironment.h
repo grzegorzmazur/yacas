@@ -216,7 +216,12 @@ public:
   DeletingLispCleanup iCleanup;
   LispInt iEvalDepth;
   LispInt iMaxEvalDepth;
-  std::atomic_bool stop_evaluation;
+#ifdef YACAS_NO_ATOMIC_TYPES
+  volatile bool
+#else
+  std::atomic_bool
+#endif // YACAS_NO_ATOMIC_TYPES
+    stop_evaluation;
   LispEvaluatorBase* iEvaluator;
 
 public: // Error information when some error occurs.

@@ -24,7 +24,7 @@ endif ()
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -std=c++11")
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    add_definitions(-DYACAS_NO_CONSTEXPR)
+    add_definitions(-DYACAS_NO_CONSTEXPR -DYACAS_NO_ATOMIC_TYPES)
 endif ()
 
 set (YACAS_VERSION_MAJOR 1)
@@ -66,7 +66,7 @@ set (YACAS_SCRIPTS ${YACAS_STATIC_SCRIPTS} ${YACAS_GENERATED_SCRIPTS})
 add_library (libyacas_static STATIC ${YACAS_LIB_SOURCES})
 add_library (libyacas_shared SHARED ${YACAS_LIB_SOURCES})
 
-if (WIN32)
+if (WIN32 AND CMAKE_CROSSCOMPILING)
   target_link_libraries (libyacas_shared pthread)
 endif()
 
