@@ -19,7 +19,7 @@ bin_SCRIPTS =
 ## EXTRA_DIST contains the files automake does not know about, that need to go
 ## in the distribution. Note that scripts are not distributed by default.
 
-EXTRA_DIST = makemake mkhomepage $(bin_SCRIPTS) 
+EXTRA_DIST = makemake mkhomepage CMakeLists-conf.txt  CMakeLists-docs.txt  CMakeLists-jyacas.txt  CMakeLists-packages.txt  CMakeLists-tests.txt  CMakeLists.txt $(bin_SCRIPTS) 
 
 # The target "test" is an alias for "check"
 test: check
