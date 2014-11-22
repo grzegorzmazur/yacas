@@ -25,6 +25,11 @@
 #include <sstream>
 #include <vector>
 
+#include <unordered_set>
+
+typedef std::unordered_set<LispStringSmartPtr, std::hash<const LispString*> > LispIdentifiers;
+
+
 class LispDefFiles;
 
 class LispInput;
@@ -58,6 +63,7 @@ public:
                   LispOperators &aInFixOperators,
                   LispOperators &aPostFixOperators,
                   LispOperators &aBodiedOperators,
+                  LispIdentifiers& protected_symbols,
                   LispInput*    aCurrentInput,
                   LispInt aStackSize);
   ~LispEnvironment();
@@ -152,6 +158,10 @@ public:
   void UnFenceRule(const LispString* aOperator,LispInt aArity);
   void Retract(const LispString* aOperator,LispInt aArity);
   void HoldArgument(const LispString* aOperator, const LispString* aVariable);
+
+  void Protect(const LispString*);
+  void UnProtect(const LispString*);
+  bool Protected(const LispString*) const;
   //@}
 
   const LispString * FindCachedFile(const LispChar * aFileName);
@@ -293,6 +303,8 @@ private:
   LispOperators& iInFixOperators;
   LispOperators& iPostFixOperators;
   LispOperators& iBodiedOperators;
+
+  LispIdentifiers& protected_symbols;
 
   LispInput* iCurrentInput;
 

@@ -51,6 +51,8 @@ private:
 
   LispUserFunctions userFunctions;
 
+  LispIdentifiers protected_symbols;
+
   LispEnvironment iEnvironment;
 
 public:

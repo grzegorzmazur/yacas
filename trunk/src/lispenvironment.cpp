@@ -27,6 +27,7 @@ LispEnvironment::LispEnvironment(
                     LispOperators &aInFixOperators,
                     LispOperators &aPostFixOperators,
                     LispOperators &aBodiedOperators,
+                    LispIdentifiers& protected_symbols,
                     LispInput*    aCurrentInput,
                     LispInt aStackSize)
     :
@@ -68,6 +69,7 @@ LispEnvironment::LispEnvironment(
     iInFixOperators(aInFixOperators),
     iPostFixOperators(aPostFixOperators),
     iBodiedOperators(aBodiedOperators),
+    protected_symbols(protected_symbols),
     iCurrentInput(aCurrentInput),
     iPrettyReader(nullptr),
     iPrettyPrinter(nullptr),
@@ -431,6 +433,20 @@ void LispEnvironment::HoldArgument(const LispString*  aOperator, const LispStrin
     multiUserFunc->HoldArgument(aVariable);
 }
 
+void LispEnvironment::Protect(const LispString* symbol)
+{
+    protected_symbols.insert(symbol);
+}
+
+void LispEnvironment::UnProtect(const LispString* symbol)
+{
+    protected_symbols.erase(symbol);
+}
+
+bool LispEnvironment::Protected(const LispString* symbol) const
+{
+    return protected_symbols.find(symbol) != protected_symbols.end();
+}
 
 void LispEnvironment::DefineRule(const LispString* aOperator,LispInt aArity,
                                  LispInt aPrecedence, LispPtr& aPredicate,

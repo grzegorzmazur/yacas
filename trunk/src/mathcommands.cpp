@@ -79,6 +79,10 @@ static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, boo
     }
     CheckArg(varstring, 1, aEnvironment, aStackTop);
     CheckArg(!IsNumber(varstring->c_str(), true), 1, aEnvironment, aStackTop);
+    if (aEnvironment.Protected(varstring)) {
+        aEnvironment.iErrorOutput << "Symbol " << *varstring << " is protected\n";
+        throw LispErrProtectedSymbol();
+    }
 
     LispPtr result;
     InternalEval(aEnvironment, result, ARGUMENT(2));
@@ -801,6 +805,43 @@ void LispTmpFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     RESULT = LispAtom::New(aEnvironment, Stringify(tmp_fn));
 #endif
+}
+
+void LispProtect(LispEnvironment& env, LispInt top)
+{
+    LispPtr p(env.iStack.GetElement(top + 1));
+
+    CheckArg(p, 1, env, top);
+    const LispString* s = p->String();
+    CheckArg(s, 1, env, top);
+
+    env.Protect(s);
+
+    InternalTrue(env, env.iStack.GetElement(top));
+}
+
+void LispUnProtect(LispEnvironment& env, LispInt top)
+{
+    LispPtr p(env.iStack.GetElement(top + 1));
+
+    CheckArg(p, 1, env, top);
+    const LispString* s = p->String();
+    CheckArg(s, 1, env, top);
+
+    env.UnProtect(s);
+
+    InternalTrue(env, env.iStack.GetElement(top));
+}
+
+void LispIsProtected(LispEnvironment& env, LispInt top)
+{
+    LispPtr p(env.iStack.GetElement(top + 1));
+
+    CheckArg(p, 1, env, top);
+    const LispString* s = p->String();
+    CheckArg(s, 1, env, top);
+
+    env.iStack.GetElement(top) = env.Protected(s) ? env.iTrue->Copy() : env.iFalse->Copy();
 }
 
 /// Implements the Yacas functions \c RuleBase and \c MacroRuleBase .

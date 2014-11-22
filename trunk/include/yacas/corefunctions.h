@@ -46,6 +46,13 @@ CORE_KERNEL_FUNCTION("Load",LispLoad,1,YacasEvaluator::Function | YacasEvaluator
 CORE_KERNEL_FUNCTION("TmpFile",LispTmpFile,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 
 //
+// Symbol protection
+//
+CORE_KERNEL_FUNCTION("Protect",LispProtect, 1, YacasEvaluator::Macro | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("UnProtect",LispUnProtect, 1, YacasEvaluator::Macro | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("IsProtected",LispIsProtected, 1, YacasEvaluator::Macro | YacasEvaluator::Fixed)
+
+//
 // Variable setting/clearing
 //
 CORE_KERNEL_FUNCTION("Set",LispSetVar,2,YacasEvaluator::Macro | YacasEvaluator::Fixed)
