@@ -1,0 +1,359 @@
+/*
+ Mini-module padic. This module creates a p-adic expansion of
+ an expression:
+
+ expression = a0 + a1*p + a2 * p^2 + ... etc.
+
+ PAdicExpand and PAdicExpandInternal can be called with integer
+ or univariate polynomial arguments.
+*/
+
+10 # PAdicExpand(_x,_y) <--
+[
+  Local(coefs);
+  coefs:=PAdicExpandInternal(x,y);
+  Subst(p,y)Add(coefs*(p^(0 .. Length(coefs)-1)));
+];
+ 
+10 # PAdicExpandInternal(0,_y) <-- {};
+20 # PAdicExpandInternal(_x,_y) <--
+[
+  Mod(x,y) : PAdicExpandInternal(Div(x,y),y);
+];
+
+
+/* Extended Euclidean algorithm. Algorithm taken from
+ * "Modern Computer Algebra". It does a Gcd calculation, but
+ * returns the intermediate results also.
+ *
+ * Returns {r,s,t}
+ * where 
+ * - r the remainder
+ * - s and t are the Bezout coefficients of f and g:
+     s*f + t*g = r
+ *
+ * This is a slightly modified version from the one described in
+ * "Modern Computer Algebra", where the remainder r is not
+ * monic. If needed this can be done afterwards. As a consequence
+ * this version works on integers as well as on polynomials.
+ */
+ExtendedEuclidean(_f,_g) <--
+[
+   Local(r1, r2, s1, s2, t1, t2, newr, news, newt, q);
+
+   r1 := f;
+   r2 := g;
+
+   s1 := 1;
+   s2 := 0;
+
+   t1 := 0;
+   t2 := 1;
+
+   newr := 1;
+
+   While (newr != 0) [
+     newr := Rem(r1, r2);
+     q := Div(r1, r2);
+     news := s1 - q * s2;
+     newt := t1 - q * t2;
+
+     r1 := r2;
+     s1 := s2;
+     t1 := t2;
+
+     r2 := newr;
+     s2 := news;
+     t2 := newt;
+   ];
+
+   {r1, s1, t1};
+];
+
+ExtendedEuclideanMonic(_f,_g) <--
+[
+   Local(rho1, rho2, r1, r2, s1, s2, t1, t2, newrho, newr, news, newt, q);
+
+   rho1 := LeadingCoef(f);
+   rho2 := LeadingCoef(g);
+
+   r1 := Monic(f);
+   r2 := Monic(g);
+
+   s1 := 1 / rho1;
+   s2 := 0;
+
+   t1 := 0;
+   t2 := 1 / rho2;
+
+   newr := r2;
+
+   While (newr != 0) [
+     q := Div(r1, r2);
+     newr := Mod(r1, r2);
+     newrho := LeadingCoef(newr);
+
+     If (newr != 0, newr := Monic(newr));
+
+     news := s1 - q * s2;
+     newt := t1 - q * t2;
+
+     If(newrho != 0, [
+         news := news / newrho;
+         newt := newt / newrho;
+     ]);
+
+     rho := newrho;
+
+     r1 := r2;
+     s1 := s2;
+     t1 := t2;
+
+     r2 := newr;
+     s2 := news;
+     t2 := newt;
+   ];
+
+   {r1, s1, t1};
+];
+
+// Manuel Bronstein, Symbolic Integration I: Transcendental Functions
+// Extended Euclidean algorithm, diophantine version
+ExtendedEuclidean(a_CanBeUni, b_CanBeUni, c_CanBeUni) <--
+[
+    Local(s, t, g, q, r);
+    // Note: ExtendedEuclidean as implemented in yacas returns
+    // results in different order than the version in Bronstein's book
+    {g, s, t} := ExtendedEuclidean(a, b);
+    q := Div(c, g);
+    r := Rem(c, g);
+    Check(r = 0, "not an ideal");
+    s := Expand(q * s);
+    t := Expand(q * t);
+    If (s != 0 And Degree(s) >= Degree(b), [
+        q := Div(s, b);
+        r := Rem(s, b);
+        s := r;
+        t := Expand(t + q * a);
+    ]);
+    {s, t};
+];
+
+
+
+
+
+
+/* Chinese Remaindering algorithm, as described in "Modern Computer Algebra".
+ */
+ChineseRemainderInteger(mlist_IsList,vlist_IsList) <--
+[
+  Local(m,i,nr,result,msub,euclid,clist);
+  clist:={};
+  m:=Factorize(mlist);
+  result:=0;
+  
+  nr:=Length(mlist);
+  For(i:=1,i<=nr,i++)
+  [
+    msub:=Div(m,mlist[i]);
+    euclid := ExtendedEuclidean(msub,mlist[i]);
+    Local(c);
+    c:=vlist[i] * euclid[2];
+    c:=Rem(c, mlist[i]);
+    DestructiveAppend(clist,c);
+    result:=result + msub * c;
+  ];
+  {result,clist};
+];
+ChineseRemainderPoly(mlist_IsList,vlist_IsList) <--
+[
+  Local(m,i,nr,result,msub,euclid,clist);
+  clist:={};
+  m:=Factorize(mlist);
+  result:=0;
+
+/* Echo({mlist,m}); */
+
+  
+  nr:=Length(mlist);
+  For(i:=1,i<=nr,i++)
+  [
+    msub:=Div(m,mlist[i]);
+
+/* Echo({Factor(msub)}); */
+
+    euclid := ExtendedEuclideanMonic(msub,mlist[i]);
+    Local(c);
+
+    c:=vlist[i] * euclid[2];
+
+    c:=Mod(c, mlist[i]);
+
+    DestructiveAppend(clist,c);
+    result:=result + msub * c;
+  ];
+  {Expand(result),clist};
+];
+
+/* Partial fraction expansion of g/f with Degree(g)<Degree(f) */
+PartFracExpand(_g,_f) <--
+[
+  Local(mlist,vlist,res);
+
+/* Echo({"factors = ",Factors(f)}); */
+
+  mlist:=Map("^",Transpose(Factors(f)));
+
+/* Echo({"mlist = ",mlist}); */
+
+  vlist:=Map("Rem",{FillList(g,Length(mlist)),mlist});
+
+  
+/* Echo({"g = ",g}); */
+/* Echo({"vlist = ",vlist}); */
+
+  If(IsInteger(f), [
+    Local(t,r,m);
+
+    res:=ChineseRemainderInteger(mlist,vlist)[2];
+
+    r := {};
+    m := {};
+
+    ForEach(t, Transpose({res,mlist})) [
+      Local(f,p,c,n);
+
+      f := Factors(t[2])[1];
+
+      p := f[1];
+      c := Sign(t[1])*PAdicExpandInternal(Abs(t[1]), p);
+
+      r := Concat(r, Reverse(c));
+      m := Concat(m, MapSingle({{n}, p^n}, (1 .. f[2])));
+    ];
+
+    res := r;
+    mlist := m;
+  ],
+  [
+    Local(t,r,m);
+
+    res := ChineseRemainderPoly(mlist,vlist)[2];
+
+    r := {};
+    m := {};
+
+    ForEach(t, Transpose({res,mlist})) [
+      Local(f,p,c,n);
+
+      f := Factors(t[2])[1];
+
+      p := f[1];
+      c := PAdicExpandInternal(t[1], p);
+
+      r := Concat(r, Reverse(c));
+      m := Concat(m, MapSingle({{n}, p^n}, (1 .. f[2])));
+    ];
+
+    res := r;
+    mlist := m;
+  ]);
+
+/* Echo({res,mlist});  */
+  Local(result,divlist);
+
+
+  divlist:=Map("/",{res,mlist});
+
+  If(Length(divlist)<2,
+    Add(divlist),
+    [
+      result:=divlist[1];
+      ForEach(item,Tail(divlist))
+      [
+        result:=UnList({Atom("+"),result,item});
+      ];
+      result;
+    ]);
+];
+
+
+10 # RationalForm((g_CanBeUni(var))/(f_CanBeUni(var)),_var)
+     <-- { MakeUni(g,var),MakeUni(f,var)};
+20 # RationalForm(f_CanBeUni(var),_var)
+     <-- { MakeUni(f,var),MakeUni(1,var)};
+
+Apart(_f) <-- Apart(f,x);
+
+Apart(_f,_var) <--
+[
+  Local(rat);
+  rat:=RationalForm(f,var);
+  If(Degree(rat[1],var) = 0 And Degree(rat[2],var) = 0,
+     [
+       rat:={Coef(rat[1],var,0),Coef(rat[2],var,0)};
+       Local(summed,add);
+       summed := Eval(PartFracExpand(Rem(rat[1],rat[2]),rat[2]));
+       add:=(rat[1]/rat[2] - summed);
+       add + summed;
+     ]
+     ,
+     [
+       /*TODO check this one! Do we have to do the same as with the
+        * integers?
+        */
+       Expand(Div(rat[1],rat[2])) + PartFracExpand(Rem(rat[1],rat[2]),rat[2]);
+     ]
+     );
+];
+
+
+
+10 # Together((_f/_g) + (_h/_i)) <--
+     Expand(f*i+h*g)/Expand(g*i);
+10 # Together((_f/_g) - (_h/_i)) <--
+     Expand(f*i-h*g)/Expand(g*i);
+
+20 # Together(_f + (_g / _h)) <--
+     Expand(f*h+g)/h;
+20 # Together((_f/_g) + _h) <--
+     Expand(f+h*g)/g;
+
+20 # Together(_f - (_g / _h)) <--
+     Expand(f*h-g)/h;
+20 # Together((_f/_g) - _h) <--
+     Expand(f-h*g)/g;
+
+20 # Together(- (_g / _h)) <-- (-g)/h;
+
+20 # Together((_f/_g) * _h) <--
+     Expand(f*h)/g;
+20 # Together(_h * (_f/_g)) <--
+     Expand(f*h)/g;
+
+20 # Together((_f/_g) / _h) <--
+     (f)/Expand(g*h);
+20 # Together(_h / (_f/_g)) <--
+     Expand(g*h)/f;
+
+20 # Together(- _f) <-- - Together(f);
+30 # Together(_f) <--  f;
+
+/* Reduce rational function by dividing gcd away */
+GcdReduce(_f,_var)<--
+[
+  Local(rat,gcd); 
+  rat:=RationalForm(f,var);
+  gcd:=Gcd(rat[1],rat[2]);
+/*  gcd:=gcd*Gcd(Content(rat[1]),Content(rat[2]));*/
+
+  Local(numer,denom,lc);
+  numer:=Div(rat[1],gcd);
+  denom:=Div(rat[2],gcd);
+  lc:=LeadingCoef(numer,var);
+  numer:=numer/lc;
+  denom:=denom/lc;
+  Expand(numer)/Expand(denom);
+];
+

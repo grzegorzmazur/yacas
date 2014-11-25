@@ -1,0 +1,44 @@
+
+NextTest("Gaussian Integers");
+
+/* TestGaussianFactors: test if Gaussian Factors Really works!
+Computes in r the product of the factors, and checks if each
+one is a Gaussian prime and if r is associated to z (i.e. if r/z
+is a Gaussian Unit */
+TestGaussianFactors(z_IsGaussianInteger) <--
+[
+ Local(r,gfactors,Ok);
+// Echo("TestGaussianFactors: factoring ",z);
+ gfactors := GaussianFactors(z);
+// Echo(gfactors);
+ Ok := True;
+ r :=1;
+ ForEach(p,gfactors)
+ [
+  r  := r*p[1]^p[2];
+  Ok := Ok And IsGaussianPrime(p[1]);
+ ];
+// Echo(r);
+ Ok := Ok And IsGaussianUnit(r/z);
+ If(Ok,True,Echo("FAILED: GaussianFactors(", z, ")=", gfactors, " which is wrong."));
+];
+
+TestGaussianFactors((9!)+1);
+TestGaussianFactors(2+3*I);
+TestGaussianFactors(-1+2*I);
+TestGaussianFactors(17);
+TestGaussianFactors(41);
+
+Verify(GaussianFactors(157+28*I), {{Complex(5,2),1},{Complex(-29,6),1}});
+Verify(GaussianFactors(1), {});	// is this the correct behavior? why not {{}} or {{1,1}}?
+Verify(GaussianFactors(-1), {});	// is this the correct behavior?
+Verify(GaussianFactors(I), {});	// is this the correct behavior?
+Verify(GaussianFactors(0), {});	// is this the correct behavior?
+Verify(GaussianFactors(2), {{Complex(1,1),1},{Complex(1,-1),1}});
+Verify(GaussianFactors(-2), {{Complex(1,1),1},{Complex(1,-1),1}});
+Verify(GaussianFactors(3), {{3,1}});
+Verify(GaussianFactors(3*I), {{3,1}});
+Verify(GaussianFactors(4), {{Complex(1,1),2},{Complex(1,-1),2}});
+Verify(GaussianFactors(-5*I), {{Complex(2,1),1},{Complex(2,-1),1}});
+Verify(GaussianFactors(Complex(1,1)^11*163^4),{{Complex(1,1),11},{163,4}});
+

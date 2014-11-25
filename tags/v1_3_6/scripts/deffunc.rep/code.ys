@@ -1,0 +1,255 @@
+
+/* Defining a macro-like function that declares a function
+ * with only one rule.
+ */
+RuleBase("Function",{oper,args,body});
+HoldArg("Function",oper);
+HoldArg("Function",args);
+HoldArg("Function",body);
+
+RuleBase("Macro",{oper,args,body});
+HoldArg("Macro",oper);
+HoldArg("Macro",args);
+HoldArg("Macro",body);
+
+// function with variable number of arguments: Function("func",{x,y, ...})body;
+Rule("Function",3,2047,
+	And(GreaterThan(Length(args), 1), Equals( MathNth(args, Length(args)), Atom("...") ))
+)
+[
+  DestructiveDelete(args,Length(args));	// remove trailing "..."
+  Retract(oper,Length(args));
+  MacroRuleBaseListed(oper,args);
+  MacroRule(oper,Length(args),1025,True) body;	// at precedence 1025, for flexibility
+];
+
+// function with a fixed number of arguments
+Rule("Function",3,2048,True)
+[
+  Retract(oper,Length(args));
+  MacroRuleBase(oper,args);
+  MacroRule(oper,Length(args),1025,True) body;
+];
+
+
+// macro with variable number of arguments: Macro("func",{x,y, ...})body;
+Rule("Macro",3,2047,
+	And(GreaterThan(Length(args), 1), Equals( MathNth(args, Length(args)), Atom("...") ))
+)
+[
+  DestructiveDelete(args,Length(args));	// remove trailing "..."
+  Retract(oper,Length(args));
+  `DefMacroRuleBaseListed(@oper,@args);
+  MacroRule(oper,Length(args),1025,True) body;	// at precedence 1025, for flexibility
+];
+
+// macro with a fixed number of arguments
+Rule("Macro",3,2048,True)
+[
+  Retract(oper,Length(args));
+  `DefMacroRuleBase(@oper,@args);
+  MacroRule(oper,Length(args),1025,True) body;
+];
+
+
+/// shorthand function declarations
+RuleBase("Function",{oper});
+// function with variable number of arguments: Function() f(x,y, ...)
+Rule("Function",1,2047,
+	And(IsFunction(oper), GreaterThan(Length(oper), 1), Equals( MathNth(oper, Length(oper)), Atom("...") ))
+)
+[
+	Local(args);
+	Set(args,Tail(Listify(oper)));
+	DestructiveDelete(args,Length(args));	// remove trailing "..."
+	If(RuleBaseDefined(Type(oper),Length(args)),
+		False,	// do nothing
+		MacroRuleBaseListed(Type(oper),args)
+	);
+];
+// function with a fixed number of arguments
+Rule("Function",1,2048,
+	And(IsFunction(oper))
+)
+[
+	Local(args);
+	Set(args,Tail(Listify(oper)));
+	If(RuleBaseDefined(Type(oper),Length(args)),
+		False,	// do nothing
+		MacroRuleBase(Type(oper),args)
+	);
+];
+
+
+RuleBase("Macro",{oper});
+// macro with variable number of arguments: Macro() f(x,y, ...)
+Rule("Macro",1,2047,
+	And(IsFunction(oper), GreaterThan(Length(oper), 1), Equals( MathNth(oper, Length(oper)), Atom("...") ))
+)
+[
+	Local(args,name);
+	Set(args,Tail(Listify(oper)));
+	DestructiveDelete(args,Length(args));	// remove trailing "..."
+  Set(name,Type(oper));
+	If(RuleBaseDefined(Type(oper),Length(args)),
+		False,	// do nothing
+		`DefMacroRuleBaseListed(@name,@args)
+	);
+];
+// macro with a fixed number of arguments
+Rule("Macro",1,2048,
+	And(IsFunction(oper))
+)
+[
+	Local(args,name);
+	Set(args,Tail(Listify(oper)));
+  Set(name,Type(oper));
+	If(RuleBaseDefined(Type(oper),Length(args)),
+		False,	// do nothing
+		[
+      `DefMacroRuleBase(@name,@args);
+    ]
+	);
+];
+
+
+RuleBase("TemplateFunction",{oper,args,body});
+Bodied("TemplateFunction",60000);
+HoldArg("TemplateFunction",oper);
+HoldArg("TemplateFunction",args);
+HoldArg("TemplateFunction",body);
+Rule("TemplateFunction",3,2047,True)
+[
+  Retract(oper,Length(args)); 
+  Local(arglist);
+  arglist:=FlatCopy(args);
+  
+  DestructiveAppend(arglist,{args,UnList({Hold,body})});
+  arglist:=ApplyPure("LocalSymbols",arglist);
+
+  MacroRuleBase(oper,arglist[1]);
+  MacroRule(oper,Length(args),1025,True) arglist[2];
+
+];
+
+Function("HoldArgNr",{function,arity,index})
+[
+  Local(args);
+  args:=RuleBaseArgList(function,arity);
+/* Echo({"holdnr ",args}); */
+  ApplyPure("HoldArg",{function,args[index]});
+];
+
+
+
+/* := assignment. */
+RuleBase(":=",{aLeftAssign,aRightAssign});
+UnFence(":=",2);
+HoldArg(":=",aLeftAssign);
+HoldArg(":=",aRightAssign);
+
+/* := assignment. */
+// assign a variable
+Rule(":=",2,0,IsAtom(aLeftAssign))
+[
+  MacroSet(aLeftAssign,Eval(aRightAssign));
+  Eval(aLeftAssign);
+];
+
+// assign lists
+Rule(":=",2,0,IsList(aLeftAssign))
+[
+  Map(":=",{aLeftAssign,Eval(aRightAssign)});
+];
+
+// auxiliary function to help assign arrays using :=
+RuleBase("AssignArray",{setlistterm,setlistindex,setlistresult});
+UnFence("AssignArray",3);
+Rule("AssignArray",3,1,IsString(setlistindex))
+[
+  Local(item);
+  item:=Assoc(setlistindex,setlistterm);
+  If(item = Empty,
+     DestructiveInsert(setlistterm,1,{setlistindex,setlistresult}),
+     DestructiveReplace(item,2,setlistresult)
+     );
+  True;
+];
+// assign generic arrays
+Rule("AssignArray",3,1,
+   And(
+           Equals(IsGeneric(setlistterm),True),
+           Equals(GenericTypeName(setlistterm),"Array")
+          )
+    )
+[
+  Array'Set(setlistterm,setlistindex,setlistresult);
+];
+
+
+Rule("AssignArray",3,2,True)
+[
+  DestructiveReplace(setlistterm ,setlistindex, setlistresult);
+  True;
+];
+
+// a[x] := ... assigns to an array element
+Rule(":=",2,10,IsFunction(aLeftAssign) And (Head(Listify(aLeftAssign)) = Nth))
+[
+ Local(frst,scnd);
+
+ Local(lst);
+ Set(lst,(Listify(aLeftAssign)));
+ Set(lst,Tail(lst));
+ Set(frst, Eval(Head(lst)));
+ Set(lst,Tail(lst));
+ Set(scnd, Eval(Head(lst)));
+
+ AssignArray(frst,scnd,Eval(aRightAssign));
+];
+
+// f(x):=... defines a new function
+Rule(":=",2,30,IsFunction(aLeftAssign) And Not(Equals(aLeftAssign[0], Atom(":="))))
+[
+  Local(oper,args,arity);
+  Set(oper,String(aLeftAssign[0]));
+  Set(args,Tail(Listify(aLeftAssign)));
+  If(
+	And(GreaterThan(Length(args), 1), Equals( MathNth(args, Length(args)), Atom("...") )),
+	// function with variable number of arguments
+	[
+	  DestructiveDelete(args,Length(args));	// remove trailing "..."
+	  Set(arity,Length(args));
+	  Retract(oper,arity); 
+	  MacroRuleBaseListed(oper, args);
+	],
+	// function with a fixed number of arguments
+	[
+	  Set(arity,Length(args));
+	  Retract(oper,arity); 
+	  MacroRuleBase(oper, args);
+	]
+  );
+  UnHoldable(aRightAssign);
+  MacroRule(oper,arity,1025,True) aRightAssign;
+];
+
+// this will "unhold" a variable - used to make sure that := with Eval()
+// immediately on the right hand side evaluates its argument
+RuleBase("UnHoldable",{var});
+HoldArg("UnHoldable",var);
+UnFence("UnHoldable",1);
+Rule("UnHoldable",1,10,Equals(Type(Eval(var)),"Eval"))
+[
+  MacroSet(var,Eval(Eval(var)));
+/* Echo({"unheld",var,Eval(var)}); */
+];
+Rule("UnHoldable",1,20,True)
+[
+/* Echo({"held"}); */
+  True;
+];
+
+
+
+

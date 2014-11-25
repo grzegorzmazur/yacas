@@ -1,0 +1,225 @@
+
+/* This file contains some math functions that can be defined based on the
+  BigNumber API. This file should only use the features supported by the
+  compiler, as it gets compiled to a plugin for speed.  
+ */
+
+
+// first define the binary exponentiation algorithm, MathIntPower.
+// Later, the MathPower function will be defined through IntPower and MathLn/MathExp. Note that MathExp uses IntPower.
+
+// power x^n only for non-negative integer n
+Defun("PositiveIntPower", {x,n})
+[
+  Local(result,unit);
+  If(LessThan(n,0), False,
+  [
+	Set(unit,1);	 // this is a constant, initial value of the power
+	Set(result, unit);
+	If(Equals(n,0),unit,
+	 If(Equals(n,1),x,
+	  [
+		While(GreaterThan(n,0))
+		[
+			If(
+				Equals(BitAnd(n,1), 1),
+//				If(
+//					Equals(result,unit), // if result is already assigned
+//					Set(result, x), // avoid multiplication
+					Set(result, MathMultiply(result,x))
+//				)
+			);
+			Set(x, MathMultiply(x,x));
+			Set(n,ShiftRight(n,1));
+		];
+		result;
+	  ]	 
+	 )
+	);
+  ]);
+];
+
+// power x^y only for integer y (perhaps negative)
+Defun("MathIntPower", {x,y})
+	If(Equals(x,0),0,If(Equals(x,1),1,
+	 If(IsInteger(y),If(LessThan(y,0), // negative power, need to convert x to float to save time, since x^(-n) is never going to be integer anyway
+	  MathDivide(1, PositiveIntPower(MathAdd(x,0.),MathNegate(y))),
+	   // now the positive integer y calculation - note that x might still be integer
+	  PositiveIntPower(x,y)
+	 ),	// floating-point calculation is absent, return False
+	 False)
+	));
+
+
+Defun("Trigonometry",{x,i,sum,term})
+[
+  Local(x2,orig,eps,previousPrec,newPrec);
+  Set(previousPrec,Builtin'Precision'Get());
+  Set(newPrec,MathAdd(Builtin'Precision'Get(),2));
+  Set(x2,MathMultiply(x,x));
+  Builtin'Precision'Set(newPrec);
+  Set(eps,MathIntPower(10,MathNegate(previousPrec)));
+  While(GreaterThan(MathAbs(term),eps))
+  [
+    Set(term,MathMultiply(term,x2));
+    Set(i,MathAdd(i,1.0));
+    Set(term,MathDivide(term,i));
+    Set(i,MathAdd(i,1.0));
+    Set(term,MathDivide(MathNegate(term),i));
+    Builtin'Precision'Set(previousPrec);
+    Set(sum, MathAdd(sum, term));
+    Builtin'Precision'Set(newPrec);
+  ];
+  Builtin'Precision'Set(previousPrec);
+  sum;
+];
+
+Defun("MathSin",{x})Trigonometry(x,1.0,x,x);
+Defun("MathCos",{x})Trigonometry(x,0.0,1.0,1.0);
+Defun("MathTan",{x})MathDivide(MathSin(x),MathCos(x));
+
+Defun("MathArcSin",{int1})
+[
+  Local(result,eps);
+	Set(result,FastArcSin(int1));
+  Local(x,q,s,c);
+  Set(q,MathSubtract(MathSin(result),int1));
+  Set(eps,MathIntPower(10,MathNegate(Builtin'Precision'Get())));
+  While(GreaterThan(MathAbs(q),eps))
+  [
+		Set(s,MathSubtract(int1,MathSin(result)));
+    Set(c,MathCos(result));
+    Set(q,MathDivide(s,c));
+    Set(result,MathAdd(result,q));
+  ];
+  result;
+];
+
+
+// simple Taylor expansion, use only for 0<=x<1
+Defun("MathExpTaylor0",{x})
+[
+  Local(i,aResult,term,eps);
+  // Exp(x)=Sum(i=0 to Inf)  x^(i) /(i)!
+  // Which incrementally becomes the algorithm:
+  //
+  // i <- 0
+  Set(i,0);
+  // sum <- 1
+  Set(aResult,1.0);
+  // term <- 1
+  Set(term,1.0);
+  Set(eps,MathIntPower(10,MathNegate(Builtin'Precision'Get())));
+  // While (term>epsilon)
+  While(GreaterThan(MathAbs(term),eps))
+  [
+    //   i <- i+1
+    Set(i,MathAdd(i,1));
+    //   term <- term*x/(i)
+    Set(term,MathDivide(MathMultiply(term,x),i));
+    //   sum <- sum+term
+    Set(aResult,MathAdd(aResult,term));
+  ];
+  aResult;
+];
+
+/// Identity transformation, compute Exp(x) from value=Exp(x/2^n) by squaring the value n times
+Defun("MathExpDoubling", {value, n})
+[
+	Local(shift, result);
+	Set(shift, n);
+	Set(result, value);
+	While (GreaterThan(shift,0))	// will lose 'shift' bits of precision here
+	[
+		Set(result, MathMultiply(result, result));
+		Set(shift, MathAdd(shift,MathNegate(1)));
+	];
+	result;
+];
+
+// MathMul2Exp: multiply x by 2^n quickly (for integer n)
+// this should really be implemented in the core as a call to BigNumber::ShiftRight or ShiftLeft
+Defun("MathMul2Exp", {x,n})	// avoid roundoff by not calculating 1/2^n separately
+	If(GreaterThan(n,0), MathMultiply(x, MathIntPower(2,n)), MathDivide(x, MathIntPower(2,MathNegate(n))));
+// this doesn't work because ShiftLeft/Right don't yet work on floats
+//	If(GreaterThan(n,0), ShiftLeft(x,n), ShiftRight(x,n)
+//	);
+
+/// MathExp(x). Algorithm: for x<0, divide 1 by MathExp(-x); for x>1, compute MathExp(x/2)^2 recursively; for 0<x<1, use the Taylor series.
+// (This is not optimal; it would be much better to use SumTaylorNum and DoublingMinus1 from elemfuncs.ys. But this should be debugged for now, since MathExp is important for many algorithms.)
+/// FIXME: No precision tracking yet. (i.e. the correct number of digits is not always there in the answer)
+
+Defun("MathExp", {x})
+	If(Equals(x,0),1,
+	 If(LessThan(x,0),MathDivide(1, MathExp(MathNegate(x))),
+	  If(GreaterThan(x,1), MathExpDoubling(MathExpTaylor0(MathMul2Exp(x,MathNegate(MathBitCount(x)))), MathBitCount(x)), MathExpTaylor0(x)
+	)));
+
+// power function for non-integer argument y -- use MathExp and MathLog
+/* Serge, I disabled this one for now, until we get a compiled version of MathLog that does not hang in 
+   an infinite loop. The C++ version of MathLog never terminates, so I mapped MathLog to your Internal'LnNum
+   which of course does a much better job of it. Corollary is that this function can be defined when we also
+   have Internal'LnNum in this file.
+Defun("MathFloatPower", {x,y})
+	If(IsInteger(y), False, MathExp(MathMultiply(y,MathLog(x))));
+*/
+
+// power function that works for all real x, y
+/// FIXME: No precision tracking yet.
+
+/* Serge, as MathFloatPower cannot be defined yet, I made the "avoid MathPower(num,float) explicit :-)
+*/
+Defun("MathPower", {x,y})
+// avoid MathPower(0,float)
+	If(Equals(x,0),0, If(Equals(x,1),1, 
+	  If(IsInteger(y), MathIntPower(x,y), False/*MathFloatPower(x,y)*/)
+	));
+
+
+
+
+Defun("MathPi",{})
+[
+  // Newton's method for finding pi:
+  // x[0] := 3.1415926
+  // x[n+1] := x[n] + Sin(x[n])
+  Local(initialPrec,curPrec,result,aPrecision);
+  Set(aPrecision,Builtin'Precision'Get());
+	Set(initialPrec, aPrecision);	// target precision of first iteration, will be computed below
+  Set(curPrec, 40);  // precision of the initial guess
+  Set(result, 3.141592653589793238462643383279502884197169399);    // initial guess 
+
+	// optimize precision sequence
+	While (GreaterThan(initialPrec, MathMultiply(curPrec,3)))
+  [
+		Set(initialPrec, MathFloor(MathDivide(MathAdd(initialPrec,2),3)));
+  ];
+	Set(curPrec, initialPrec);
+  While (MathNot(GreaterThan(curPrec, aPrecision)))
+  [
+ 		// start of iteration code
+    // Get Sin(result)
+    Builtin'Precision'Set(curPrec);
+    Set(result,MathAdd(result,MathSin(result)));
+    // Calculate new result: result := result + Sin(result);
+		// end of iteration code
+		// decide whether we are at end of loop now
+		If (Equals(curPrec, aPrecision),	// if we are exactly at full precision, it's the last iteration
+    [
+			Set(curPrec, MathAdd(aPrecision,1));	// terminate loop
+    ],
+    [
+			Set(curPrec, MathMultiply(curPrec,3));	// precision triples at each iteration
+			// need to guard against overshooting precision
+ 			If (GreaterThan(curPrec, aPrecision),
+      [
+				Set(curPrec, aPrecision);	// next will be the last iteration
+      ]);
+		]);
+  ];
+  Builtin'Precision'Set(aPrecision);
+  result;
+];
+
+
+

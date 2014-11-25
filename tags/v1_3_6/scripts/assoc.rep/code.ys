@@ -1,0 +1,44 @@
+
+/* Assoc : given an assoc list like for example l:={{a,2},{b,3}},
+   Assoc(b,l) will return {b,3}. if the key is not in the list,
+   it will return the atom Empty.
+*/
+
+Function("Assoc",{key,list})  Builtin'Assoc(key,list);
+
+
+AssocIndices(associndiceslist_IsList) <--
+  DestructiveReverse(MapSingle("Head",associndiceslist));
+
+/// Delete an element of an associative list.
+LocalSymbols(hash, key, element, hash'expr)
+[
+
+/// AssocDelete(hash,{"key", value})
+10 # AssocDelete(hash_IsList, element_IsList) <--
+[
+	Local(index);
+	index := Find(hash, element);
+	If(
+		index > 0,
+		DestructiveDelete(hash, index)
+	);
+	index>0;	// return False if nothing found
+
+];
+
+
+/// AssocDelete(hash, "key")
+20 # AssocDelete(hash_IsList, key_IsString) <--
+[
+	AssocDelete(hash, Builtin'Assoc(key, hash));
+];
+
+30 # AssocDelete(hash_IsList, Empty) <-- False;
+
+//HoldArg("AssocDelete", hash);
+//UnFence("AssocDelete", 1);
+//UnFence("AssocDelete", 2);
+
+];	// LocalSymbols(hash, ...)
+

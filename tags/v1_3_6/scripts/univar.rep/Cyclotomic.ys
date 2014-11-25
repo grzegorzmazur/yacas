@@ -1,0 +1,240 @@
+//  Cyclotomic(n,x):
+//  Returns the cyclotomic polinomial in the variable x
+//  (which is the minimal polynomial of the n-th primitive
+//  roots of the unit). 
+//  Autor: Pablo De Napoli
+
+Use("univar.rep/code.ys");
+
+// Auxiliar function for Cyclotomic: returns the internal representation of
+// x^q+a as an univarate polinomial (like MakeUni(x^q+a) but more efficient)
+
+Function ("UniVariateBinomial",{x,q,a}) 
+[ 
+Local(L,i);
+L := {a};
+For (i:=1,i<q,i++)
+ DestructiveAppend(L,0);
+DestructiveAppend(L,1);
+UniVariate(x,0,L); 
+];
+
+// Auxiliar function for Cyclotomic: substitute in the univariate
+// polinomial p the variable x by -x^k. The implementations assumes that 
+// the polinomial p starts with x^0 
+
+Function("SubstituteInUniVar",{p,k})
+[
+ Local(c,i,d,j,NL);
+ L  := p[3];  // The coefficients list  
+ NL := {};    // The new coefficients list
+ d  := Degree(p);
+ i  :=d;
+ ForEach(c,L) [
+  // c is the coefficient of x^i in p
+  // We append k-1 zeros
+  If (i<d, For (j:=1,j<k,j++) DestructiveAppend(NL,0));
+  // We append (-1)^i*c as the coefficient of x^(k*i) 
+  DestructiveAppend(NL,If(IsEven(i),c,-c));  
+  i--; 
+ ];
+ UniVariate(Head(p),0,NL);
+];
+
+
+// Adapted from ExpandUniVariate
+// Auxiliar function for Cyclotomic: substitute in the univariate
+// polinomial p the variable x by -x^k, but returns the result in
+// expanded form 
+
+Function("SubstituteAndExpandInUniVar",{p,k})
+[
+  Local(result,i,var,first,coefs,c,nc,exponent);
+  result:=0;
+  var := p[1];
+  first:= p[2];
+  coefs:= p[3];
+  For(i:=Length(coefs),i>0,i--)
+  [
+    Local(term);
+    exponent := first+i-1;
+    c:= coefs[i];
+    nc := If(IsEven(exponent),c,-c);
+    term:=NormalForm(nc*var^(exponent*k));
+    result:=result+term;
+  ];
+  result;
+];
+
+// Returns a list of elements of the form {d1,d2,m}
+// where 
+// 1) d1,d2 runs through the square free divisors of n 
+// 2) d1 divides d2 and d2/d1 is a prime factor of n
+// 3) m=Moebius(d1) 
+// Addapted form: MoebiusDivisorsList 
+
+CyclotomicDivisorsList(n_IsPositiveInteger) <--
+[
+ Local(nFactors,f,result,oldresult,x);
+ nFactors:= Factors(n);
+ result := {{1,nFactors[1][1],1}};
+ nFactors := Tail(nFactors);
+ ForEach (f,nFactors)   
+    [ 
+      oldresult := result;
+        ForEach (x,oldresult) 
+	  result:=Append(result,{x[1]*f[1],x[2]*f[1],-x[3]});
+    ]; 
+  result;
+];
+
+// CyclotomicFactor(x,a,b): Auxiliary function that constructs the term list of 
+// the polynomial
+// Div(x^a-1,x^b-1) =
+// x^(b*(p-1)) + x^(b^*(p-2)) + ... + x^(b) + 1 
+// p= a/b, b should divide a 
+
+
+CyclotomicFactor(_a,_b) <--
+[
+ Local(coef,p,i,j,result); p := a/b; result:= {{b*(p-1),1}}; For (i:=
+ p-2,i>=0,i--)
+   DestructiveAppend(result,{b*i,1});
+ result; 	
+];
+
+
+// OldInternalCyclotomic(n,x,WantNormalForm) is the internal implementation
+// WantNormalForm is a boolean parameter. If it is true, returns the normal
+// form, if it is false returns the UniVariate representation.
+
+// This (old) implementation makes use of the internal representations of univariate
+// polynomials as UniVariate(var,begining,coefficients).
+// There is also a version UniVariateCyclotomic(n,x) that returns the 
+// cyclotomic polynomial in the UniVariate representation.
+
+
+10 # OldInternalCyclotomic(n_IsEven,_x,WantNormalForm_IsBoolean) <--
+     [
+      Local(k,m,p); 
+       k := 1;
+       m := n;
+	While(IsEven(m))
+       [
+	k := k*2;
+        m := m/2;
+       ];
+       k := k/2 ;
+       If(m>1, [
+	         p := OldInternalCyclotomic(m,x,False);
+                 If (WantNormalForm, SubstituteAndExpandInUniVar(p,k),SubstituteInUniVar(p,k)); 
+               ],
+	         If (WantNormalForm, x^k+1, UniVariateBinomial(x,k,1))
+        );
+     ]; 
+
+20 # OldInternalCyclotomic(n_IsOdd,_x,WantNormalForm_IsBoolean)_(n>1) <--
+[
+ Local(divisors,poly1,poly2,q,d,f,result);
+ divisors := MoebiusDivisorsList(n); 
+ poly1 :=1 ;
+ poly2 := 1;
+ ForEach (d,divisors)
+ [ 
+   q:=n/d[1];
+   f:=UniVariateBinomial(x,q,-1);
+   If (d[2]=1,poly1:=poly1*f,poly2:=poly2*f);
+ ];
+ result := Div(poly1,poly2);
+ If(WantNormalForm,NormalForm(result),result);
+];
+
+10  # OldCyclotomic(1,_x) <-- _x-1;
+20  # OldCyclotomic(n_IsInteger,_x) <-- OldInternalCyclotomic(n,x,True);
+
+// This new implementation makes use of the internal representations of univariate
+// polynomials as SparseUniVar(var,termlist).
+
+
+//  For n even, we write n= m*k, where k is a Power of 2 
+//  and m is odd, and redce it to the case m even since:
+//
+//   Cyclotomic(n,x) = Cyclotomic(m,-x^{k/2}) 
+//
+// If m=1, n is a power of 2, and Cyclotomic(n,x)= x^k+1 */
+
+
+10 # InternalCyclotomic(n_IsEven,_x) <--
+     [
+      Local(k,m,result,p,t); 
+       k := 1;
+       m := n;
+	While(IsEven(m))
+       [
+	k := k*2;
+        m := m/2;
+       ];
+       k := k/2 ;
+       If(m>1, [
+	         p:= InternalCyclotomic(m,x)[2];
+                 // Substitute x by -x^k
+                 result:={};
+                 ForEach(t,p)
+                    DestructiveAppend(result, {t[1]*k,If(IsEven(t[1]),t[2],-t[2])}); 
+               ],
+	         result := {{k,1},{0,1}} // x^k+1
+        );
+	SparseUniVar(x,result);
+     ]; 
+
+
+//  For n odd, the algoritm is based on the formula
+//
+//     Cyclotomic(n,x) := Prod (x^(n/d)-1)^Moebius(d) 
+// 
+// where d runs through the divisors of n.
+
+// We compute in poly1 the product
+// of (x^(n/d)-1) with Moebius(d)=1 , and in poly2 the product of these polynomials
+// with  Moebius(d)=-1. Finally we compute the quotient poly1/poly2 
+
+// In order to compute this in a efficient way, we use the functions
+// CyclotomicDivisorsList and  CyclotomicFactors (in order to avoid
+// unnecesary polynomial divisions) 
+
+
+20 # InternalCyclotomic(n_IsOdd,_x)_(n>1) <--
+[
+ Local(divisors,poly1,poly2,q,d,f,coef,i,j,result);
+ divisors := CyclotomicDivisorsList(n); 
+ poly1 := {{0,1}};
+ poly2 := {{0,1}};
+ ForEach (d,divisors)
+ [ 
+   If(InVerboseMode(),Echo("d=",d));
+   f:= CyclotomicFactor(n/d[1],n/d[2]);
+   If (d[3]=1,poly1:=MultiplyTerms(poly1,f),poly2:=MultiplyTerms(poly2,f));
+   If(InVerboseMode(), 
+     [ 
+       Echo("poly1=",poly1);
+       Echo("poly2=",poly2);
+     ]);
+ ];
+ If(InVerboseMode(),Echo("End ForEach"));
+ result := If(poly2={{0,1}},poly1,DivTermList(poly1,poly2));
+ SparseUniVar(x,result); 
+];
+
+
+10  # Cyclotomic(1,_x) <-- x-1;
+20  # Cyclotomic(n_IsInteger,_x) <-- ExpandSparseUniVar(InternalCyclotomic(n,x));
+
+
+// This function returns the Cyclotomic polynomial, but in the univariate
+// representation
+
+10  # UniVariateCyclotomic(1,_x) <-- UniVariate(x,0,{-1,1});
+20  # UniVariateCyclotomic(n_IsInteger,_x) <-- OldInternalCyclotomic(n,x,False);
+
+       
+

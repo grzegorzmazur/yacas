@@ -1,0 +1,213 @@
+*REM a title of this section should be given in the envelope document
+
+*A command-line options!summary
+
+The default operation of {Yacas} is to run in the interactive console mode. {Yacas} accepts several options that modify its operation.
+Here is a summary of options:
+
+*	<i>filename</i> ... (read and execute a file or several files)
+*	{-c} (omit line prompts)
+*	{-d} (print default directory)
+*	{-v} (print version information)
+*	{-f} (execute standard input as one statement)
+*	{-p} (do not use terminal capabilities)
+*	{-t} (enable extra history features)
+*	{--archive} <i>filename</i> (use a given library archive file)
+*	{--init} <i>filename</i> (use a given initial file)
+*	{--patchload} (use {PatchLoad} to load files)
+*	{--read-eval-print} <i>expression</i> (call this expression for the read-eval-print loop)
+*	{--rootdir} <i>directory</i> (specify default directory for scripts)
+*	{--server} <i>port</i> (start {Yacas} as a network server on given port)
+*	{--single-user-server} (If in server mode, start it in single-user mode)
+*	{--verbose-debug} (turn on showing some additional debugging information on screen)
+*	{--disable-compiled-plugins} (disable loading of compiled plugins, loading the script versions instead)
+*	{--stacksize} <i>size</i> (change size of stack arguments are stored on)
+*	{--execute} <i>expression</i> (run expression from the command line)
+
+
+Options can be combined, for example
+	yacas -pc filename
+will read and execute the file {filename} non-interactively without using terminal capabilities and without printing prompts.
+
+Here is a more detailed description of the command-line options.
+
+*A command-line options
+
+	yacas -c
+Inhibit printing of prompts {In>} and {Out>}. Useful for non-interactive sessions.
+
+	yacas -f
+Reads standard input as one file, but executes only the first statement in it. (You may want to use a statement block to have several statements executed.)
+
+	yacas -p
+Does not use terminal capabilities, no fancy editing on the command line and no escape sequences printed. Useful for non-interactive sessions.
+
+	yacas -t
+Enable some extra history recall functionality in console mode: after executing a command from the history list, the next unmodified command from the history list will be automatically entered on the command line.
+
+*A executing script files
+	yacas [options] {filename}
+Reads and executes commands in the filename and exits. Equivalent to {Load()}.
+
+	yacas -v
+Prints version information and exits.
+(This is the same information as returned by {Version()}.)
+
+	yacas -d
+Prints the path to the {Yacas} default library directory (this information is compiled into the {Yacas} executable) and exits.
+
+	yacas --patchload
+Will load every file on the command line with the {PatchLoad} command instead of the normal {Load} command,
+This is useful for generating HTML pages for a
+web site using the {Yacas} scripting language, much like you can do with
+the PHP scripting language.
+
+	yacas --init [file]
+Tells the system to load {file} as the initialization file. By default
+it loads the file {yacasinit.ys} from the scripts directory. Thus for
+customization one has two options: write a {~/.yacasrc} file
+with initialization code (as it is loaded after the initialization
+script is loaded), or write a custom initialization script that first
+uses {yacasinit.ys} and adds some extra custom code.
+
+	yacas --read-eval-print [expression]
+Call {expression} for the read-eval-print loop. The default 
+read-eval-print loop is implemented in the initialization 
+script {yacasinit.ys} as the function {REP}.
+The default behavior is therefore equivalent to {--read-eval-print} {REP()}.
+
+There is also a fallback read-eval-print
+loop in the kernel; it can be invoked by passing an empty
+string to this command line option, as {--read-eval-print ""}.
+
+An alternative way to replace the default read-eval-print
+loop is to write a custom initialization script that implements
+the read-eval-print loop function {REP()} instead of {yacasinit.ys}.
+
+Care has to be taken with this option because a Yacas session may
+become unusable if the read-eval-print expression doesn't function correctly.
+
+	yacas --server <port>
+On some platforms server mode can be enabled at build time by passing the
+flag {--enable-server} to the {./configure} script. {Yacas}
+then allows you to pass the flag {--server} with a port number
+behind it, and the {Yacas} executable will listen to the socket
+behind that port instead of waiting for user input on the console.
+
+Commands can be sent to the server by sending a text line as
+one block of data, and the server will respond back with another text block. 
+
+One can test this function by using {telnet}. First, set up
+the server by calling
+
+	yacas --server 9734
+and then invoke {telnet} in another window, for example:
+	telnet 127.0.0.1 9734
+Then type a line of Yacas input and hit Enter.
+The result will be one line that you will get back from the Yacas server.
+
+Some security measures and resource management measures have been 
+taken. No more than 10 connections can be alive at any time, 
+a calculation cannot take more than 30 seconds, and {Yacas}
+operates in the <i>secure</i> mode, much like calling an expression
+by passing it as an argument to the {Secure} function.
+This means that no system calls are allowed, and no writing to
+local files, amongst other things. Something that has not been 
+taken care of yet is memory use. A calculation could take up all
+memory, but not for longer than 30 seconds. 
+
+The server is single-threaded, but has persistent sessions for
+at most 10 users at a time, from which it can service requests
+in a sequential order. To make the service multi-threaded, a
+solution might be to have a proxy in front of the service listening
+to the port, redirecting it to different processes which get
+started up for users (this has not been tried yet).
+
+The flag --single-user-server can be passed on to instruct {yacas}
+to start in single-user mode. In this mode, unsecure operations can
+be performed (like reading from and writing to files), and the calculation
+may take more than 30 seconds. The {yacas} process will automatically be
+shut down when the last session is closed or when "Exit();" is sent.
+
+	yacas --rootdir [directory]
+Tells the system where to find the library scripts. Here, {directory} is a
+path that is passed to {DefaultDirectory}. It is also possible to give a
+list of directories, separated by a colon, e.g. 
+{yacas --rootdir scripts/:morescripts/}.
+Note that it is not necessary to append a trailing slash to the directory names.
+
+	yacas --archive [file]
+Use a compressed archive instead of the script library.
+
+*A using compressed libraries
+{Yacas} has an experimental system where files can be compressed into
+one file, and accessed through this command line option. The advantages
+are:
+
+*	0. Smaller disk/memory use (useful if {Yacas} is used on small hand-held computers).
+*	0. No problems with directory path separators: "{path}/{file}" will always
+resolve to the right file, no matter what platform (read: Windows) it runs on.
+*	0. The start-up time of the program might improve a little, since 
+a smaller file is loaded from disk (disk access being slow), and then decompressed
+in memory, which might be a lot faster than loading from disk.
+
+An additional savings is due to the fact that the script files are 
+stripped from white spaces and comments, making them smaller and faster loading.
+
+To prepare the compressed library archive, run {./configure}
+with the command line option {--enable-archive}.
+
+The result should be the archive file {scripts.dat}.
+Then launch {Yacas} with the command line option {--archive scripts.dat},
+with the file {scripts.dat} in the current directory.
+
+The reason that the {scripts.dat} file is not built automatically is
+that it is not tested, at this time, that the build process works on all
+platforms.
+(Right now it works on Unix, MacOSX, and Win32.)
+
+Alternatively, configure Yacas with
+	./configure --enable-archive
+and the archive file {scripts.dat} will be created in the {ramscripts/}
+subdirectory.
+
+When an archive is present, Yacas will try to load it before it looks for scripts from the library directories.
+Typing 
+	make archivetest -f makefile.compressor
+in the {ramscripts/} directory runs all the test scripts using the archived
+files.
+
+The currently supported compression schemes are uncompressed
+and compressed with {minilzo}. Script file stripping (removing whitespace
+and comments) may be disabled by editing {compressor.cpp} (variable {strip_script}).
+
+
+	yacas --disable-compiled-plugins
+
+Disable loading of compiled scripts, in favor of scripts themselves.
+This is useful when developing the scripts that need to be compiled
+in the end, or when the scripts have not been compiled yet.
+
+
+	yacas --stacksize <size>
+Yacas maintains an internal stack for arguments. For nested function calls, all arguments currently used are on this stack. The size of this stack is
+50000 be  default. 
+
+For a function that would take 4 arguments and has one return value, there would be 5 places reserved on this stack, and the function could call itself recursively 10000 steps deep.
+
+This differs from the MaxEvalDepth mechanism. The MaxEvalDepth mechanism
+allows one to specify the number of separate stack frames (number of calls, 
+nested), instead of the number of arguments pushed on the stack. MaxEvalDepth
+was introduced to protect the normal {C++} stack.
+
+
+	yacas --execute <expression>
+This instructs Yacas to run a certain expression, passed in over the command line, before dropping to the read-eval-print loop. This can be used to load a file before dropping to the command line without exiting (if there are files to run specified on the command line, Yacas will exit after running these scripts). Alternatively, the expression can exit the interpreter immediately by calling {Exit();}. When used in combination with {-pc}, the Yacas interpreter can be used to calculate something and print the result to standard output. Example:
+
+	user% ./yacas -pc --execute '[Echo("answer ",D(x)Sin(x));Exit();]'
+	answer Cos(x) 
+	user% 
+
+
+
+

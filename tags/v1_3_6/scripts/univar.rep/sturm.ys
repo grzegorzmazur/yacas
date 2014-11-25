@@ -1,0 +1,289 @@
+
+SquareFree(_p) <--
+[
+  Local(dp,gcd);
+//Echo("1...");
+  dp:=MakeMultiNomial(`(D(x)(@p)),{x});
+//  dp:=dp/MultiLeadingCoef(dp);
+  
+//Echo("2...",dp);
+  p:=MakeMultiNomial(p,{x});
+//Echo(NormalForm(p));
+//Echo(NormalForm(dp));
+  gcd:=MultiGcd(p,dp);
+//Echo(NormalForm(gcd));
+//Echo(NormalForm(MultiDivide(p,{gcd})[1][1]));
+  NormalForm(MultiDivide(p,{gcd})[1][1]);
+//  Div(p,Gcd(p,Monic(`(D(x)(@p)))));
+];
+
+/** SturmSequence(p) : generate a Sturm sequence for a polynomial in x.
+ */
+SturmSequence(_p) <--
+[
+  Local(result,i,deg,nt);
+  result:={p,`D(@x)(@p)};
+  deg:=Degree(p);
+  For(i:=3,i<=deg+1,i++)
+  [
+    nt := -NormalForm(MultiDivide(MM(result[i-2],{x}),{MM(result[i-1],{x})})[2]);
+    DestructiveAppend(result,nt);
+  ];
+  result;
+];
+
+10 # SturmVariations(_S,Infinity) <--
+[
+  Local(i,s);
+  s:=FillList(0,Length(S));
+  For(i:=1,i<=Length(S),i++)
+  [
+    s[i] := LeadingCoef(S[i]);
+  ];
+  SturmVariations(s);
+];
+10 # SturmVariations(_S,-Infinity) <--
+[
+  Local(i,s);
+  s:=FillList(0,Length(S));
+  For(i:=1,i<=Length(S),i++)
+  [
+    s[i] := ((-1)^Degree(S[i]))*LeadingCoef(S[i]);
+  ];
+  SturmVariations(s);
+];
+
+20 # SturmVariations(_S,_x) <-- SturmVariations(Eval(S));
+SturmVariations(_S) <--
+[
+  Local(result,prev);
+//Echo("S = ",S);
+  result:=0;
+  While(Length(S)>0 And IsZero(S[1])) S:=Tail(S);
+//Echo("S = ",S);
+  if (Length(S)>0)
+  [
+    prev:=S[1];
+    ForEach(item,Tail(S))
+    [
+      if(Not IsZero(item))
+      [
+        if (prev*item < 0) [result++;];
+        prev:=item;
+      ];
+    ];
+  ];
+  result;
+];
+
+
+/** Maximum bound on the absolute value of the roots of a
+  polynomial p in variable x, according to Knuth:
+
+  Max( Abs(a[n-1]/a[n]) , Abs(a[n-2]/a[n])^(1/2), ... , Abs(a[0]/a[n])^(1/n) )
+
+ As described in Davenport.
+ */
+ 5 # MaximumBound(_p)_(IsZero(p Where x==0)) <-- MaximumBound(Simplify(p/x));
+10 # MaximumBound(_p)_(Degree(p)>0) <--
+[
+  Local(an);
+  an:=Coef(p,(Degree(p)-1) .. 0)/Coef(p,Degree(p));
+  an := N(Eval(Abs(an)^(1/(1 .. Degree(p)))));
+  Rationalize(2*Max(an));
+];
+
+20 # MaximumBound(_p) <-- Infinity;
+
+10 # MinimumBound(_p)_(IsZero(p Where x==0)) <-- 0;
+
+20 # MinimumBound(_p)_(Degree(p)>0) <--
+[
+  Local(an,result);
+  an:=Coef(p,1 .. (Degree(p)))/Coef(p,0);
+  an := N(Eval(Abs(an)^(1/(1 .. Degree(p)))));
+
+  result:=0;
+  an:=2*Max(an);
+  if(Not IsZero(an)) [result := 1/an;];
+  Simplify(Rationalize(result));
+];
+30 # MinimumBound(_p) <-- -Infinity;
+
+
+BoundRealRoots(_p) <--
+[
+  BoundRealRoots(p,MinimumBound(p),MaximumBound(p));
+];
+
+BoundRealRoots(_p,_Mmin,_Mmax) <--
+[
+  Local(S,N,work,result,Vmin,Vmax,a,b,Va,Vb,c,Vc,x);
+
+  result:={};
+  if (IsZero(p Where x==0))
+  [
+    p:=Simplify(p/x);
+    result:={{0,0}};
+  ];
+  S:=SturmSequence(p);
+  Vmin := SturmVariations(S,-Infinity);
+  Vmax := SturmVariations(S,Infinity);
+
+//Echo("Vmin,Vmax = ",Vmin,Vmax);
+
+  N:=Vmin - Vmax;
+
+//Echo("N = ",N);
+  
+//Echo("Mmin,Mmax = ",Mmin,Mmax);
+  work:={};
+  if (N=1)
+  [
+    result:={{-Mmax,Mmax}};
+  ];
+  if (N>1)
+  [
+    work :=
+    {
+      {-Mmax,-Mmin,Vmin,SturmVariations(S,-Mmin)},
+      { Mmin, Mmax,SturmVariations(S, Mmin),Vmax}
+    };
+  ];
+
+//Echo("Work start = ",work);
+    While(work != {})
+    [
+      {a,b,Va,Vb} := Head(work);
+      work := Tail(work);
+      c:=(a+b)/2;
+//Echo(a,b,c);
+      Vc := SturmVariations(S,c);
+      if (IsZero(p Where x == c))
+      [
+        Local(M,Vcmin,Vcplus,pnew);
+        pnew := Simplify((p Where x == x+c)/x);
+        M:=MinimumBound(pnew);
+//Echo("Mi = ",M);
+        Vcmin  := SturmVariations(S, c-M);
+        Vcplus := SturmVariations(S, c+M);
+        result:=Concat(result,{{c,c}});
+
+        if (Va = Vcmin+1)
+        [
+          result:=Concat(result,{{a,c-M}});
+        ];
+        if (Va > Vcmin+1)
+        [
+          work:=Concat(work,{{a,c-M,Va,Vcmin}});
+        ];
+        if (Vb = Vcplus-1)
+        [
+          result:=Concat(result,{{c+M,b}});
+        ];
+        if (Vb < Vcplus-1)
+        [
+          work:=Concat(work,{{c+M,b,Vcplus,Vb}});
+        ];
+      ]
+      else
+      [
+        if (Va = Vc+1)
+        [
+          result:=Concat(result,{{a,c}});
+        ];
+        if (Va > Vc+1)
+        [
+          work:=Concat(work,{{a,c,Va,Vc}});
+        ];
+        if (Vb = Vc-1)
+        [
+          result:=Concat(result,{{c,b}});
+        ];
+        if (Vb < Vc-1)
+        [
+          work:=Concat(work,{{c,b,Vc,Vb}});
+        ];
+      ];
+    ];
+    result;
+];
+
+
+FindRealRoots(_p) <--
+[
+//Echo("0...");
+//Echo("0...");
+  p:=SquareFree(Rationalize(p));
+//Echo("1...");
+//Echo("2...",MinimumBound(p));
+//Echo("3...",MaximumBound(p));
+  FindRealRoots(p,MinimumBound(p),MaximumBound(p));
+];
+
+FindRealRoots(_p,_Mmin,_Mmax) <--
+[
+  Local(bounds,result,i,prec,requiredPrec);
+//Echo("bounds1");
+  bounds := BoundRealRoots(p,Mmin,Mmax);
+//Echo("bounds2");
+  result:=FillList(0,Length(bounds));
+  requiredPrec := Builtin'Precision'Get();
+  Builtin'Precision'Set(Builtin'Precision'Get()+2);
+  prec:=10^-(requiredPrec+1);
+
+  For(i:=1,i<=Length(bounds),i++)
+  [
+    Local(a,b,c,r);
+    {a,b} := bounds[i];
+    c:=N(Eval((a+b)/2));
+//Echo(a,b,c);
+    r := Fail;
+//Echo("newton1",`Hold(Newton(@p,x,@c,@prec,@a,@b)));
+    if (a != b) [r := `Newton(@p,x,@c,prec,a,b);];
+//Echo("newton2",r," ",CurrentFile(),CurrentLine());
+    if (r = Fail)
+    [
+      Local(c,cold,pa,pb,pc);
+      pa:=(p Where x==a);
+      pb:=(p Where x==b);
+      c:=((a+b)/2);
+      cold := a;
+      While (Abs(cold-c)>prec)
+      [
+        pc:=(p Where x==c);
+//Echo(a,b,c);
+        if (Abs(pc) < prec)
+        [
+          a:=c;
+          b:=c;
+        ]
+        else if (pa*pc < 0)
+        [
+          b:=c;
+          pb:=pc;
+        ]
+        else 
+        [
+          a:=c;
+          pa:=pc;
+        ];
+        cold:=c;
+        c:=((a+b)/2);
+      ];
+      r:=c;
+    ];
+    result[i] := N(Eval((r/10)*(10)),requiredPrec);
+  ];
+  Builtin'Precision'Set(requiredPrec);
+  result;
+];
+
+NumRealRoots(_p) <--
+[
+  Local(S);
+  p:=SquareFree(Rationalize(p));
+  S:=SturmSequence(p);
+  SturmVariations(S,-Infinity)-SturmVariations(S,Infinity);
+];
+

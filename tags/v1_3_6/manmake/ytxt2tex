@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# Convert plaintext Yacas-format documentation to TeX files
+# Usage: ytxt2tex [-o outputfile] file1.txt [file2.txt] ...
+# source files must have extension ".txt"
+# output file is "file1.tex" if the -o option is not given
+# note: if many txt files are given, the first one must *INCLUDE all others without txt extension
+# Requirements: sh, perl, yacas
+# (the "yacas" executable must be available on the path and the library with manmake scripts installed, e.g. /usr/local/share/yacas/manmake/*)
+
+runyacas="yacas" # executable name and command-line options if any
+yacasdir="`$runyacas -d`" # yacas installation directory
+tmpdir="/tmp" # for temporary files
+
+output=""
+if [ x"$1" = x-o ]; then
+    shift
+    output="$1"
+    shift
+fi
+
+if [ x"$1" = x ]; then
+	echo "`basename $0`: convert Yacas-style plaintext docs to TeX"
+	echo "Usage: `basename $0` [-o outputfile.tex] file1.txt [file2.txt] ..."
+else
+    # Store the name of the main txt file, convert all files to Yacas first, using tmpdir
+    if [ -r "$1" ]; then
+	mainfile="$1"
+	[ x"$output" = x ] && output=`dirname $1`/`basename $1 .txt`.tex
+	echo "Will create TeX file '$output'"
+    else
+	echo "Error: cannot read file '$1', aborting."
+	exit
+    fi
+    while [ "x$1" != x ]; do
+	if [ -r "$1" ]; then
+	    newname=`basename "$1" .txt`
+	    perl "$yacasdir"/manmake/txt2yacasdoc.pl < "$1" > "$tmpdir"/"$newname"
+	else
+	    echo "Error: cannot read file '$1', skipping."
+	fi
+	shift
+    done
+    # run book2TeX.sh on the main file
+    ( cd "$tmpdir"; "$yacasdir/manmake/book2TeX.sh" -run yacas `basename "$mainfile" .txt` `basename "$output"`)
+    mv "$tmpdir/$output" "$output"
+
+fi

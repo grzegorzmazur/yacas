@@ -1,0 +1,36 @@
+
+/*
+ * Example: brute force search to check Goldbach's conjecture.
+ * Goldbachs conjecture: for each even number n larger than 2 there
+ * are at least two primes p and q such that p+q=n. The function 
+ * GoldBach returns a list of pairs of numbers that sum up to the
+ * even number supplied as input.
+ *
+ * Examples:
+ * In> GoldBach(10)
+ * Out> {{7,3},{5,5}};
+ * In> MapSingle("Length",GoldBach(2*(2 .. 10)))
+ * Out> {1,1,1,2,1,2,2,2,2};
+ * 
+ */
+ 
+ 
+ 
+/* Main routine */
+GoldBach(m_IsEven) <--
+[
+  Local(p);
+
+  /* Select all primes up to m/2 */
+  p:=Select("IsPrime", 1 .. (m/2));
+
+  /* Given the primes p, select all the primes in (m-p) */
+  p:=Select("IsPrime",m-p);
+
+  /* Return a list with the solutions */
+  Transpose({p,m-p});
+];
+
+/* Given a list of numbers, apply the goldbach test on each one of them. */
+GoldBach(m_IsList) <-- MapSingle("GoldBach",m);
+

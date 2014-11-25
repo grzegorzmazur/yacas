@@ -1,0 +1,159 @@
+//////////////////////////////////////////////////
+/// Backends for 2D plotting
+//////////////////////////////////////////////////
+
+/// List of all defined backends and their symbolic labels.
+/// Add any new backends here
+Plot2D'outputs() := {
+    {"default", "gnuplot"},
+    {"data", "Plot2D'data"},
+    {"gnuplot", "Plot2D'gnuplot"},
+    {"png", "Plot2D'png"},
+    {"java", "Plot2D'java"},
+};
+
+/*
+    How backends work:
+    Plot2D'<backend>(values, options'hash)
+    options'hash is a hash that contains all plotting options:
+    ["xrange"] - a list of {x1, x2}, ["xname"] - name of the variable to plot, ["yname"] - array of string representations of the function(s), and perhaps other options relevant to the particular backend.
+    {values} is a list of lists of pairs of the form {{{x1, y1}, {x2, y2}, ...}, {{x1, z1}, {x2, z2}, ...}, ...} corresponding to the functions y(x), z(x), ... to be plotted. The abscissa points x[i] are not the same for all functions.
+    The backend should prepare the graph of the function(s). The "datafile" backend Plot2D'datafile(values, options'hash) may be used to output all data to file(s), in which case the file name should be given by the value options'hash["filename"]. Multiple files are created with names obtained by appending numbers to the filename.
+    Note that the "data" backend does not do anything and simply returns the data.
+    The backend Plot2D'datafile takes care not to write "Infinity" or "Undefined" data points (it just ignores them). Custom backends should either use Plot2D'datafile or take care of this themselves.
+*/
+
+/// trivial backend: return data list (do not confuse with Plot2D'get'data() defined in the main code which is the middle-level plotting routine)
+Plot2D'data(values_IsList, _options'hash) <-- values;
+
+Plot2D'gnuplot'command(_file) <--
+    If (SystemName() = "Windows", "cmd /c start /b gnuplot --persist " : file, "gnuplot --persist " : file);
+
+/// backend: display graph using gnuplot
+Plot2D'gnuplot(values_IsList, _options'hash) <--
+[
+  Local(item, dirBase, filename'list, control'file);
+  filename'list := Plot2D'datafile(values, options'hash);
+  control'file := TmpFile();
+  ToFile(control'file)
+  [
+        // 'set xrange [-5:5]'
+        WriteString("set xrange [");
+        Write(options'hash["xrange"][1]);
+        WriteString(" : ");
+        Write(options'hash["xrange"][2]);
+        WriteString("]" : Nl());
+        // 'set yrange [0:1]'
+        If(
+                options'hash["yrange"] != Empty,
+                [
+                        WriteString("set yrange [");
+                        Write(options'hash["yrange"][1]);
+                        WriteString(" : ");
+                        Write(options'hash["yrange"][2]);
+                        WriteString("]" : Nl());
+                ]
+        );
+        // 'plot "data1" title "y(x)" with lines, "data2" title "z(x)" with lines'
+        WriteString("plot ");
+        For(item:=1, item<=Length(values), item++)
+        [
+                WriteString("\"" : StringReplace("\\", "\\\\", filename'list[item]) : "\" smooth csplines title \"" : options'hash["yname"][item] : "\" with lines");
+                If(item<Length(values), WriteString(", "));
+        ];
+        WriteString(Nl());
+  ];
+  SystemCall(Plot2D'gnuplot'command(control'file));
+];
+
+/// backend: use gnuplot to generate png
+Plot2D'png(values_IsList, _options'hash) <--
+[
+  Local(item, dirBase, filename'list, control'file, png'file);
+  filename'list := Plot2D'datafile(values, options'hash);
+  control'file := TmpFile();
+  png'file := If (options'hash["filename"] != Empty, options'hash["filename"], TmpFile());
+  ToFile(control'file)
+  [
+        WriteString("set output \"" : StringReplace("\\", "\\\\", png'file) : "\"" : Nl());
+        WriteString("set terminal png" : Nl());
+        WriteString("set xrange [");
+        Write(options'hash["xrange"][1]);
+        WriteString(" : ");
+        Write(options'hash["xrange"][2]);
+        WriteString("]" : Nl());
+        If(
+                options'hash["yrange"] != Empty,
+                [
+                        WriteString("set yrange [");
+                        Write(options'hash["yrange"][1]);
+                        WriteString(" : ");
+                        Write(options'hash["yrange"][2]);
+                        WriteString("]" : Nl());
+                ]
+        );
+        WriteString("plot ");
+        For(item:=1, item<=Length(values), item++)
+        [
+                WriteString("\"" : StringReplace("\\", "\\\\", filename'list[item]) : "\" smooth csplines title \"" : options'hash["yname"][item] : "\" with lines");
+                If(item<Length(values), WriteString(", "));
+        ];
+        WriteString(Nl());
+  ];
+
+  SystemCall(Plot2D'gnuplot'command(control'file));
+  png'file;
+];
+
+
+/// backend: write data into file.
+/// Returns the list of created filenames
+/// This backend is used by other backends to write data to files.
+Plot2D'datafile(values_IsList, _options'hash) <--
+[
+        Local(item, func, filename, filename'list);
+        filename'list := {};
+        For(func:=1, func<=Length(values), func++)
+        [
+                filename := TmpFile();
+                DestructiveAppend(filename'list, filename);
+                ToFile(filename) ForEach(item, values[func]) WriteDataItem(item, options'hash);
+                If(InVerboseMode(), Echo( "Plot2D'datafile: created file '" : filename :  "'"), True);
+        ];
+        filename'list;
+];
+
+/// The Java back-end generates a call-list that the Java graph plotter can handle
+Plot2D'java(values_IsList, _options'hash) <--
+[
+  Local(result,count);
+  count := 0;
+  result:="$plot2d:";
+
+  result := result:" pensize 2.0 ";
+  ForEach(function,values)
+  [
+    result := result:ColorForGraphNr(count);
+    count++;
+    result:=result:" lines2d ":String(Length(function));
+
+    function:=Select(Lambda({item},item[2] != Undefined),function);
+
+    ForEach(item,function)
+    [
+      result := result:" ":String(item[1]):" ":String(item[2]):" ";
+    ];
+  ];
+  WriteString(result:"$");
+  True;
+];
+
+10 # ColorForGraphNr(0) <-- " pencolor 64 64 128 ";
+10 # ColorForGraphNr(1) <-- " pencolor 128 64 64 ";
+10 # ColorForGraphNr(2) <-- " pencolor 64 128 64 ";
+20 # ColorForGraphNr(_count) <-- ColorForGraphNr(Mod(count,3));
+
+
+
+
+

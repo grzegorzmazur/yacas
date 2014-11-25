@@ -1,0 +1,143 @@
+/*Use("texform");*/
+
+NextTest("TeXForm()...");
+
+/* it worketh no more...
+Testing("Realistic example");
+f:=Exp(I*lambda*eta)*w(T*(k+k1+lambda));
+g:=Simplify(Subst(lambda,0) f+(k+k1)*(D(lambda)f)+k*k1*D(lambda)D(lambda)f );
+Verify(TeXForm(g), ...);
+*/
+
+Verify(
+TeXForm(Hold(Cos(A-B)*Sqrt(C+D)-(a+b)*c^d+2*I+Complex(a+b,a-b)/Complex(0,1)))
+,"$\\cos \\left( A - B\\right)  \\sqrt{C + D} - \\left( a + b\\right)  c ^{d} + 2 \\imath  + \\frac{a + b + \\imath  \\left( a - b\\right) }{\\imath } $"
+);
+
+Verify(
+TeXForm(Hold(Exp(A*B)/C/D/(E+F)*G-(-(a+b)-(c-d))-b^(c^d) -(a^b)^c))
+,"$\\frac{\\frac{\\frac{\\exp \\left( A B\\right) }{C} }{D} }{E + F}  G - \\left(  - \\left( a + b\\right)  - \\left( c - d\\right) \\right)  - b ^{c ^{d}} - \\left( a ^{b}\\right)  ^{c}$"
+);
+
+Verify(
+TeXForm(Hold(Cos(A-B)*Sin(a)*f(b,c,d*(e+1))*Sqrt(C+D)-(g(a+b)^(c+d))^(c+d)))
+,"$\\cos \\left( A - B\\right)  \\sin a f\\left( b, c, d \\left( e + 1\\right) \\right)  \\sqrt{C + D} - \\left( g\\left( a + b\\right)  ^{c + d}\\right)  ^{c + d}$"
+);
+
+// testing latest features: \\cdot, %, (a/b)^n, Bin(), BesselI, OrthoH
+Verify(
+TeXForm(3*2^n+Hold(x*10!) + (x/y)^2 + Bin(x,y) + BesselI(n,x) + Max(a,b) + OrthoH(n,x))
+, "$3\\cdot 2 ^{n} + x\\cdot 10! + \\left( \\frac{x}{y} \\right)  ^{2} + {x \\choose y} + I _{n}\\left( x\\right)  + \\max \\left( a, b\\right)  + H _{n}\\left( x\\right) $"
+);
+
+/* this fails because of a bug that D(x) f(y) does not go to 0 */ /*
+Verify(
+TeXForm(3*D(x)f(x,y,z)*Cos(Omega)*Mod(Sin(a)*4,5/a^b))
+,"$3 \\left( \\frac{\\partial}{\\partial x}f\\left( x, y, z\\right) \\right)  \\left( \\cos \\Omega \\right)  \\left( 4 \\left( \\sin a\\right) \\right) \\bmod \\frac{5}{a ^{b}} $"
+);
+*/
+
+Verify(
+TeXForm(Hold(D(x)f(x)))
+,"$\\frac{d}{d x}f\\left( x\\right) $");
+
+Verify(
+TeXForm(Hold(Not (c<0) And (a+b)*c>= -d^e And (c<=0 Or b+1>0) Or a!=0 And Not (p=q)))
+,"$ \\neg c < 0\\wedge \\left( a + b\\right)  c\\geq  - d ^{e}\\wedge \\left( c\\leq 0\\vee b + 1 > 0\\right) \\vee a\\neq 0\\wedge  \\neg p = q$"
+);
+
+
+Verify(
+TeXForm((D(x)f(x,y,z))*Cos(Omega)*Mod(Sin(a)*4,5/a^b))
+,"$\\left( \\frac{\\partial}{\\partial x}f\\left( x, y, z\\right) \\right)  \\cos \\Omega  \\left( 4 \\sin a\\right) \\bmod \\frac{5}{a ^{b}} $"
+);
+
+
+Verify(
+TeXForm(Pi+Exp(1)-Theta-Integrate(x,x1,3/g(Pi))2*theta(x)*Exp(1/x))
+,"$\\pi  + \\exp \\left( 1\\right)  - \\Theta  - \\int _{x_{1}} ^{\\frac{3}{g\\left( \\pi \\right) }  } 2 \\theta \\left( x\\right)  \\exp \\left( \\frac{1}{x} \\right)  dx$"
+);
+
+Verify(
+TeXForm({a[3]*b[5]-c[1][2],{a,b,c,d}})
+,"$\\left( a _{3} b _{5} - c _{\\left( 1, 2\\right) }, \\left( a, b, c, d\\right) \\right) $" 
+);
+
+Bodied("aa", 200);
+Infix("bar", 100);
+
+Verify(
+TeXForm(aa(x,y) z + 1 bar y!)
+,"$aa\\left( x, y\\right) z + 1\\mathrm{ bar }y!$" 
+);
+
+Verify(
+TeXForm(x^(1/3)+x^(1/2))
+, "$\\sqrt[3]{x} + \\sqrt{x}$"
+);
+
+/*
+Verify(
+TeXForm()
+,"" 
+);
+*/
+
+Verify(
+CForm(Hold(Cos(A-B)*Sin(a)*func(b,c,d*(e+Pi))*Sqrt(Abs(C)+D)-(g(a+b)^(c+d))^(c+d)))
+,"cos(A - B) * sin(a) * func(b, c, d * ( e + Pi) ) * sqrt(fabs(C) + D) - pow(pow(g(a + b), c + d), c + d)" 
+);
+
+Verify(
+CForm(Hold([i:=0;While(i<10)[i++; a:=a+Floor(i);];]))
+, "{
+  i = 0;
+  while(i < 10)
+    {
+      ++(i);
+      a = a + floor(i);
+      }
+    ;
+    ;
+  }
+"
+);
+
+/* Check that we can still force numbers to be floats in stead of integers if we want to */
+Verify(
+CForm(Hold([i:=0.;While(i<10.)[i++; a:=a+Floor(i);];]))
+, "{
+  i = 0.;
+  while(i < 10.)
+    {
+      ++(i);
+      a = a + floor(i);
+      }
+    ;
+    ;
+  }
+"
+);
+
+
+Testing("IsCFormable");
+Verify(
+IsCFormable(e+Pi*Cos(A-B)/3-Floor(3.14)*2)
+, True
+);
+Verify(
+IsCFormable(e+Pi*Cos(A-B)/3-Floor(3.14)*2+bad'func(x+y))
+, False
+);
+Verify(
+IsCFormable(e+Pi*Cos(A-B)/3-Floor(3.14)*2+bad'func(x+y), {bad'func})
+, True
+);
+Verify(
+IsCFormable([i:=0;While(i<10)[i++; a:=a+i;];])
+, True
+);
+Verify(
+IsCFormable([i:=0;While(i<10)[i++; a:=a+i; {};];])
+, False
+);

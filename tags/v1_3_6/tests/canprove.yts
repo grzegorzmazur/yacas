@@ -1,0 +1,34 @@
+
+NextTest("Propositional logic theorem prover");
+
+Verify(CanProve(( (a=>b) And (b=>c) => (a=>c) )),True);
+Verify(CanProve((((a=>b) And (b=>c))=> (a=>c) )),True);
+Verify(CanProve(( (a=>b) And((b=>c) => (a=>c)))),((Not a Or b)And(Not a Or (b Or c))) );
+//KnownFailure(BadOutput + WhenPreviousLine + IsUncommented);
+//And *my* previous line (the KnownFailure) aborts.  (witnessed by no report from next line).
+Verify(CanProve( True ),True);
+
+Verify(CanProve(a Or Not a)                   ,True);
+Verify(CanProve(True Or a)                 ,True);
+Verify(CanProve(False Or a)                ,a   );
+Verify(CanProve(a And Not a)                   ,False);
+Verify(CanProve(a Or b Or (a And b))               ,a Or b  );
+
+/* Two theorems from the Pure Implicational Calculus (PIC), in which the
+ * only operator is [material] implication.  From the first, all other
+ * theorems in PIC can be proved using only the two transformation rules:
+ * 1. Rule of substitution.  Uniform replacement in theorems yields theorems.
+ * 2. Rule of detachment, or modus ponens.  If 'a' and 'a=>b' are theorems, then 'b' is a theorem.
+ *
+ * 1. Lukasiewicz, Jan, "The Shortest Axiom of the Implicational Calculus
+ *    of Propositions," Proceedings of the Royal Irish Academy, vol. 52,
+ *    Sec. A, No. 3 (1948).  [ Can you say "Polish Notation"? ]
+ * 2. Meredith, David, "On a Property of Certain Propositional Formulae,"
+ *    Notre Dame Journal of Formal Logic, vol. XIV, No. 1, January 1973.
+ */
+Verify(CanProve(	/* 1. CCCpqrCCrpCsp */
+     ((p=>q) => r) => ((r=>p) => (s=>p))
+     ), True);
+Verify(CanProve(	/* 2. CCpCqrCqCpr */
+     (p => (q=>r)) => (q => (p=>r))
+     ), True);

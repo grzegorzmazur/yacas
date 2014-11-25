@@ -1,0 +1,15 @@
+// test some numerical methods
+
+// these examples are taken from the refman
+
+Verify(IntPowerNum(3*10^100, 0, MathMultiply,1), 1);
+Verify(IntPowerNum(3, 3, MathMultiply,1), 27);
+Verify(IntPowerNum(HilbertMatrix(2), 4, *,  Identity(2)), {{289/144,29/27},{29/27,745/1296}});
+
+Verify(IntPowerNum(3,100,{{x,y},Mod(x*y,7)},1), 4);
+
+Builtin'Precision'Set(21);
+NumericEqual(RoundTo(SumTaylorNum(1, {{k},1/k!}, {{k},1/k}, 21),21), 2.718281828459045235359,21);
+NumericEqual(RoundTo(SumTaylorNum(1, {{k},1/k!}, 21),21), 2.718281828459045235359,21);
+Builtin'Precision'Set(20);
+NumericEqual(NewtonNum({{x}, x+Sin(x)}, 3, 5, 3), 3.14159265358979323846,20);

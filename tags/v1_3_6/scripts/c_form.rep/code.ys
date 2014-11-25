@@ -1,0 +1,276 @@
+/* CForm: convert Yacas objects to C/C++ code. */
+
+/* version 0.3 */
+
+/* Changelog
+	0.1	CForm() derived from TeXForm() v0.4. Have basic functionality. Do not allow list manipulation, unevaluated derivatives, set operations, limits, integrals, Infinity, explicit matrices. Complex numbers and expressions are handled just like real ones. Indexed symbols are assumed to be arrays and handled literally. No declarations or prototypes are supplied. Function definitions are not handled. Sum() is left as is (can be defined as a C function).
+	0.2 Fix for extra parens in Sin() and other functions; fixes for Exp(), Abs() and inverse trig functions
+	0.3 Fix for indexed expressions: support a[2][3][4]
+	0.3.1 Fix for CForm(integer): add a decimal point
+	0.4 Support While()[]. Added IsCFormable. Use Concat() instead of Union() on lists.
+	0.4.1 Support False, True
+  0.4.2 Changed it so that integers are not coerced to floats any more automatically (one can coerce integers to floats manually nowadays by adding a decimal point to the string representation, eg. 1. instead of 1).
+*/
+
+/* To do:
+	0. Find and fix bugs.
+	1. Chop strings that are longer than 80 chars?
+	2. Optimization of C code?
+*/
+
+RuleBase("CForm",{expression});
+RuleBase("CForm",{expression, precedence});
+
+Function ("CFormBracketIf", {predicate, string})
+[
+	Check(IsBoolean(predicate) And IsString(string), "CForm internal error: non-boolean and/or non-string argument of CFormBracketIf");
+	If(predicate, ConcatStrings("( ", string, ") "), string);
+];
+
+/* Proceed just like TeXForm()
+*/
+
+// CFormMaxPrec should perhaps only be used from within this file, it is thus not in the .def file.
+CFormMaxPrec() := 60000;	 /* This precedence will never be bracketed. It is equal to KMaxPrec */
+
+100 # CForm(_x) <-- CForm(x, CFormMaxPrec());
+
+/* Replace numbers and variables -- never bracketed except explicitly */
+110 # CForm(x_IsInteger, _p) <-- String(x);
+111 # CForm(x_IsZero, _p) <-- "0.";
+112 # CForm(x_IsNumber, _p) <-- String(x);
+/* Variables are left as is, except some special ones */
+190 # CForm(False, _p) <-- "false";
+190 # CForm(True, _p) <-- "true";
+200 # CForm(x_IsAtom, _p) <-- String(x);
+
+/* Strings must be quoted but not bracketed */
+100 # CForm(x_IsString, _p) <-- ConcatStrings("\"", x, "\"");
+
+/* Replace operations */
+
+/* arithmetic */
+
+/* addition, subtraction, multiplication, all comparison and logical operations are "regular" */
+
+
+LocalSymbols(cformRegularOps) [
+  cformRegularOps := { {"+"," + "}, {"-"," - "}, {"*"," * "},
+                       {"/"," / "}, {":="," = "}, {"=="," == "},
+                       {"="," == "}, {"!="," != "}, {"<="," <= "},
+                       {">="," >= "}, {"<"," < "}, {">"," > "},
+                       {"And"," && "}, {"Or"," || "}, {">>", " >> "},
+                       { "<<", " << " }, { "&", " & " }, { "|", " | " },
+                       { "%", " % " }, { "^", " ^ " },
+                     };
+
+  CFormRegularOps() := cformRegularOps;
+]; // LocalSymbols(cformRegularOps)
+
+	/* This is the template for "regular" binary infix operators:
+100 # CForm(_x + _y, _p) <-- CFormBracketIf(p<OpPrecedence("+"), ConcatStrings(CForm(x, OpLeftPrecedence("+")), " + ", CForm(y, OpRightPrecedence("+")) ) );
+	*/ 
+
+	/* unary addition */
+100 # CForm(+ _y, _p) <-- CFormBracketIf(p<OpPrecedence("+"), ConcatStrings(" + ", CForm(y, OpRightPrecedence("+")) ) );
+
+	/* unary subtraction */
+100 # CForm(- _y, _p) <-- CFormBracketIf(p<OpPrecedence("-"), ConcatStrings(" - ", CForm(y, OpRightPrecedence("-")) ) );
+
+	/* power's argument is never bracketed but it must be put in braces. */
+100 # CForm(_x ^ _y, _p) <-- CFormBracketIf(p<=OpPrecedence("^"), ConcatStrings("pow(", CForm(x, CFormMaxPrec()), ", ", CForm(y, CFormMaxPrec()), ")" ) );
+
+100 # CForm(if(_pred)_body, _p) <-- "if (":CForm(pred,60000):") ":CForm(body);
+100 # CForm(_left else _right, _p) <-- CForm(left):" else ":CForm(right);
+
+
+LocalSymbols(cformMathFunctions) [
+  cformMathFunctions :=
+    {
+      {"Sqrt","sqrt"},
+      {"Cos","cos"},
+      {"Sin","sin"},
+      {"Tan","tan"},
+      {"Cosh","cosh"},
+      {"Sinh","sinh"},
+      {"Tanh","tanh"},
+      {"Exp","exp"},
+      {"Ln","log"},
+      {"ArcCos","acos"},
+      {"ArcSin","asin"},
+      {"ArcTan","atan"},
+      {"ArcCosh","acosh"},
+      {"ArcSinh","asinh"},
+      {"ArcTanh","atanh"},
+      {"Max","max"},
+      {"Min","min"},
+      {"Abs","fabs"},
+      {"Floor","floor"},
+      {"Ceil","ceil"},
+    {"!","factorial"}
+    };
+
+  CFormMathFunctions() := cformMathFunctions;
+
+]; // LocalSymbols(cformMathFunctions)
+
+/* Precedence of 120 because we'd like to process some special functions like pow() first */
+
+
+120 # CForm(expr_IsFunction, _p)_(NrArgs(expr)=2 And Contains(AssocIndices(CFormRegularOps()), Type(expr)) ) <--
+      CFormBracketIf(p<OpPrecedence(Type(expr)), ConcatStrings(CForm(Listify(expr)[2], OpLeftPrecedence(Type(expr))), CFormRegularOps()[Type(expr)], CForm(Listify(expr)[3], OpRightPrecedence(Type(expr))) ) );
+
+
+/* Sin, Cos, etc. and their argument is always bracketed */
+
+120 # CForm(expr_IsFunction, _p) _
+      (NrArgs(expr)=1 And Contains(AssocIndices(CFormMathFunctions()), Type(expr)) ) <--
+      ConcatStrings(CFormMathFunctions()[Type(expr)], "(", CForm( Listify(expr)[2], CFormMaxPrec()),")" );
+
+/* functions */
+
+/* Unknown function, precedence 200. Leave as is, never bracket the function itself and bracket the argument(s) automatically since it's a list. Other functions are precedence 100 */
+
+CFormArgs(list_IsList) <--
+[
+  Local(i,nr,result);
+  result:="";
+  nr:=Length(list);
+  For (i:=1,i<=nr,i++)
+  [
+    result:=result:CForm(list[i]);
+    If (i<nr, result:=result:", ");
+  ];
+  result;
+];
+
+
+200 # CForm(_x, _p)_(IsFunction(x)) <--
+[
+  ConcatStrings(Type(x), "(", CFormArgs(Tail(Listify(x))),")" );
+];
+
+/* Complex numbers */
+100 # CForm(Complex(0, 1), _p) <-- "I";
+100 # CForm(Complex(_x, 0), _p) <-- CForm(x, p);
+110 # CForm(Complex(_x, 1), _p) <-- CForm(x+Hold(I), p);
+110 # CForm(Complex(0, _y), _p) <-- CForm(Hold(I)*y, p);
+120 # CForm(Complex(_x, _y), _p) <-- CForm(x+Hold(I)*y, p);
+
+/* Some special functions: Mod */
+
+100 # CForm(Mod(_x, _y), _p) <-- CFormBracketIf(p<OpPrecedence("/"), ConcatStrings(CForm(x, OpPrecedence("/")), " % ", CForm(y, OpPrecedence("/")) ) )
+;
+
+/* Indexed expressions are never bracketed */
+// the rule with [ ] seems to have no effect?
+//100 # CForm(_x [ _i ], _p) <-- ConcatStrings(CForm(x, CFormMaxPrec()), "[", CForm(i, CFormMaxPrec()), "]");
+100 # CForm(Nth(_x, _i), _p) <-- ConcatStrings(CForm(x, CFormMaxPrec()), "[", CForm(i, CFormMaxPrec()), "]");
+
+LocalSymbols(cindent) [
+  cindent:=1;
+
+  NlIndented():=
+  [
+    Local(result);
+// carriage return, so needs to start at the beginning of the line
+    result:=
+"
+";
+    Local(i);
+    For(i:=1,i<cindent,i++)
+    [
+      result:=result:"  ";
+    ];
+    result;
+  ];
+  CIndent() :=
+  [
+  (cindent++);
+  "";
+  ];
+  CUndent() :=
+  [
+  (cindent--);
+  "";
+  ];
+]; // LocalSymbols(cindent)
+
+CFormStatement(_x) <-- CForm(x) : ";" : NlIndented();
+
+120 # CForm(_x,_p)_(Type(x) = "Prog") <--
+[
+  Local(result);
+  result:=CIndent():"{":NlIndented();
+  ForEach(item,Tail(Listify(x)))
+  [
+    result:=result:CFormStatement(item);
+  ];
+  result:=result:"}":CUndent():NlIndented();
+  result;
+];
+
+120 # CForm(For(_from,_to,_step)_body,_p) <--
+  "for(" : CForm(from,CFormMaxPrec()) : ";"
+	: CForm(to,CFormMaxPrec()) : ";"
+	: CForm(step,CFormMaxPrec()) : ")"
+	: CIndent() : NlIndented()
+	: CFormStatement(body) : CUndent();
+
+120 # CForm(While(_pred)_body, _p) <--
+	"while(" : CForm(pred,CFormMaxPrec()) : ")"
+	: CIndent() : NlIndented()
+	: CFormStatement(body) : CUndent();
+
+
+
+//////////////////////////////////////////////////
+/// IsCFormable
+//////////////////////////////////////////////////
+
+LocalSymbols(CFormAllFunctions) [
+
+  /// predicate to test whether an expression can be successfully exported to C code
+
+  /// interface with empty extra function list
+  // need the backquote stuff b/c we have HoldArg now
+  IsCFormable(_expr) <-- `IsCFormable(@expr, {});
+
+  // need to check that expr contains only allowed functions
+  IsCFormable(_expr, funclist_IsList) <--
+  [
+    Local(bad'functions);
+    bad'functions := Difference(`FuncList(@expr), Concat(CFormAllFunctions, funclist));
+    If(Length(bad'functions)=0,
+      True,
+      [
+        If(InVerboseMode(),
+          Echo(Concat({"IsCFormable: Info: unexportable function(s): "}, bad'functions))
+        );
+        False;
+      ]
+    );
+  ];
+  HoldArgNr("IsCFormable", 1, 1);
+  HoldArgNr("IsCFormable", 2, 1);
+
+  /// This is a list of all function atoms which CForm can safely handle
+  CFormAllFunctions := MapSingle(Atom, Concat(AssocIndices(CFormMathFunctions()), AssocIndices(CFormRegularOps()),
+  // list of "other" (non-math) functions supported by CForm: needs to be updated when CForm is extended to handle new functions
+  {
+    "For",
+    "While",
+    "Prog",
+    "Nth",
+    "Mod",
+    "Complex",
+    "if",
+    "else",
+    "++",
+    "--",
+  }
+  ));
+
+
+]; // LocalSymbols(CFormAllFunctions)
+

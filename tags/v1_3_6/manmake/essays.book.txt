@@ -1,0 +1,32 @@
+*BLURB 
+This is a book of essays on Yacas. It covers various topics, from
+using the Yacas system for specific calculations
+to general issues related to the Yacas system development and maintenance.
+				Essays on Yacas
+
+
+*INCLUDE paper.chapt
+
+*INCLUDE wester-1994.chapt
+
+
+			On Yacas programming
+
+*INCLUDE ABIN-grammar.chapt
+
+*INCLUDE wordproblems.chapt
+
+*INCLUDE SimpleTools.chapt
+
+			For Yacas developers
+
+*INCLUDE CVS-Howto.chapt
+
+*INCLUDE YacasDocs.chapt
+
+*INCLUDE BuildSystem.chapt
+
+*INCLUDE new.chapt
+
+*REM GNU Free Documentation License
+*INCLUDE FDL.chapt

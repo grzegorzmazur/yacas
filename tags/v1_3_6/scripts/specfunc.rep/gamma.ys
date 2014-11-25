@@ -1,0 +1,55 @@
+/// special functions coded for Yacas by Serge Winitzki
+
+/////////////////////////////////////////////////
+/// Euler's Gamma function
+/////////////////////////////////////////////////
+
+/// This procedure computes the uniform approximation for the Gamma function
+/// due to Lanczos and Spouge (the so-called "less precise coefficients")
+/// evaluated at arbitrary precision by using a large number of terms
+/// See J. L. Spouge, SIAM J. of Num. Anal. 31, 931 (1994)
+/// See also Paul Godfrey 2001 (unpublished): http://winnie.fit.edu/~gabdo/gamma.txt for a discussion
+
+/// Calculate the uniform approximation to the logarithm of the Gamma function
+/// in the Re z > 0 half-plane; argument z may be symbolic or complex
+/// but current value of precision is used
+/// Note that we return LnGamma(z), not of z+1
+/// This function should not be used directly by applications
+10 # Internal'LnGammaNum(_z, _a)_(N(Re(z))<0) <-- [
+	If (InVerboseMode(), Echo({"Internal'LnGammaNum: using 1-z identity"}));
+	N(Ln(Pi/Sin(Pi*z)) - Internal'LnGammaNum(1-z, a));
+];
+20 # Internal'LnGammaNum(_z, _a) <-- [
+	Local(e, k, tmpcoeff, coeff, result);
+	a := Max(a, 4);	// guard against low values
+	If (InVerboseMode(), Echo({"Internal'LnGammaNum: precision parameter = ", a}));
+	e := N(Exp(1));
+	k:=Ceil(a);	// prepare k=N+1; the k=N term is probably never significant but we don't win much by excluding it
+	result := 0;	// prepare for last term
+	// use Horner scheme to prevent loss of precision
+	While(k>1) [	// 'result' will accumulate just the sum for now
+		k:=k-1;
+		result := N( MathPower(a-k,k)/((z+k)*Sqrt(a-k))-result/(e*k) );
+	];
+	N(Ln(1+Exp(a-1)/Sqrt(2*Pi)*result) + Ln(2*Pi)/2 -a-z+(z+1/2)*Ln(z+a) - Ln(z));
+];
+
+Internal'LnGammaNum(z) := [
+	Local(a, prec, result);
+	prec := Builtin'Precision'Get();
+	a:= Div((prec-IntLog(prec,10))*659, 526) + 0.4;	// see algorithm docs
+	/// same as parameter "g" in Godfrey 2001.
+	/// Chosen to satisfy Spouge's error bound:
+	/// error < Sqrt(a)/Real(a+z)/(2*Pi)^(a+1/2)
+//	Echo({"parameter a = ", a, " setting precision to ", Ceil(prec*1.4)});
+	Builtin'Precision'Set(Ceil(prec*1.4));	// need more precision b/c of roundoff errors but don't know exactly how many digits
+	result := Internal'LnGammaNum(z,a);
+	Builtin'Precision'Set(prec);
+	result;
+];
+
+Internal'GammaNum(z) := N(Exp(Internal'LnGammaNum(z)));
+
+/// this should not be used by applications
+Internal'GammaNum(z,a) := N(Exp(Internal'LnGammaNum(z,a)));
+

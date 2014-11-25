@@ -1,0 +1,71 @@
+/// Common functions used by all plotting packages
+
+/// utility function: convert options lists of the form
+/// "{key=value, key=value}" into a hash of the same form.
+/// The argument list is kept unevaluated using "HoldArgNr()".
+/// Note that symbolic values of type atom are automatically converted to strings, e.g. ListToHash(a=b) returns {{"a", "b"}}
+ListToHash(list) :=
+[
+	Local(item, result);
+	result := {};
+	ForEach(item, list)
+		If(
+			IsFunction(item) And (Type(item) = "=" Or Type(item) = "==") And IsAtom(item[1]),
+			result[String(item[1])] := If(
+				IsAtom(item[2]) And Not IsNumber(item[2]) And Not IsString(item[2]),
+				String(item[2]),
+				item[2]
+			),
+			Echo({"ListToHash: Error: item ", item, " is not of the format a=b or a==b"})
+		);
+	result;
+];
+
+HoldArgNr("ListToHash", 1, 1);
+
+
+/// utility function: check whether the derivative changes sign in given 3 numbers, return 0 or 1. Also return 1 when one of the arguments is not a number.
+sign'change(x,y,z) :=
+If(
+	IsNumber(x) And IsNumber(y) And IsNumber(z)
+	And Not (
+		x>y And y<z
+			Or
+		x<y And y>z
+	)
+, 0, 1); 
+
+
+
+/// service function. WriteDataItem({1,2,3}, {}) will output "1 2 3" on a separate line.
+/// Writes data points to the current output stream, omits non-numeric values.
+WriteDataItem(tuple_IsList, _options'hash) <--
+[
+  Local(item);
+  If(	// do not write anything if one of the items is not a number
+  	IsNumericList(tuple),
+	ForEach(item,tuple)
+	[
+		Write(item);
+		Space();
+	]
+  );
+  NewLine();
+];
+
+
+10 # RemoveRepeated({}) <-- {};
+10 # RemoveRepeated({_x}) <-- {x};
+20 # RemoveRepeated(list_IsList) <-- [
+	Local(i, done);
+	done := False;
+	For(i:=0, Not done, i++)
+	[
+		While(i<Length(list) And list[i]=list[i+1])
+			DestructiveDelete(list, i);
+		If(i=Length(list), done := True);
+	];
+	list;
+];
+
+
