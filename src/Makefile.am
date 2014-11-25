@@ -90,7 +90,7 @@ if WIN32
 yacas_SOURCES += win32commandline.cpp
 endif
 
-yacas_DEPENDENCIES = $(builddir)/../include/yacas/yacas_version.h $(top_srcdir)/include/yacas/GPL_stuff.h
+yacas_DEPENDENCIES = $(builddir)/../include/yacas/yacas_version.h $(top_srcdir)/include/yacas/GPL_stuff.h libyacas.la
 
 mathcommands3.lo: $(builddir)/../include/yacas/yacas_version.h
 mathcommands3.o: $(builddir)/../include/yacas/yacas_version.h
