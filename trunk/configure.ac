@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(yacas, 1.3.5,  yacas-devel@lists.sourceforge.net, , http://yacas.sourceforge.net)
+AC_INIT(yacas, 1.3.6,  yacas-devel@lists.sourceforge.net, , http://yacas.sourceforge.net)
 
 AC_CONFIG_SRCDIR(src/yacasmain.cpp)
 
