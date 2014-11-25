@@ -1124,7 +1124,7 @@ int main(int argc, char** argv)
     char root_dir_buf[MAX_PATH];
 
     const LSTATUS rc =
-        SHRegGetPathA(HKEY_LOCAL_MACHINE, "SOFTWARE\\yacas\\yacas", 0, root_dir_buf, 0);
+        SHRegGetPathA(HKEY_LOCAL_MACHINE, "SOFTWARE\\Yacas Team\\yacas", 0, root_dir_buf, 0);
 
     if (rc != ERROR_SUCCESS) {
         MessageBox(nullptr, "Cannot find scripts directory, bailing out", "Error", MB_OK);
