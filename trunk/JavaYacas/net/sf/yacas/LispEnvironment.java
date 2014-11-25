@@ -14,8 +14,13 @@ class LispEnvironment
     iCurrentOutput = aCurrentOutput;
     iCurrentPrinter = new InfixPrinter(iPrefixOperators, iInfixOperators, iPostfixOperators, iBodiedOperators);
 
+    protected_symbols = new HashSet();
+
     iTrue = LispAtom.New(this,"True");
     iFalse = LispAtom.New(this,"False");
+
+    Protect(iTrue.String());
+    Protect(iTrue.String());
 
     iEndOfFile    = LispAtom.New(this,"EndOfFile");
     iEndStatement = LispAtom.New(this,";");
@@ -29,8 +34,6 @@ class LispEnvironment
     iComma        = LispAtom.New(this,",");
     iList         = LispAtom.New(this,"List");
     iProg         = LispAtom.New(this,"Prog");
-
-    protected_symbols = new HashSet();
 
     iStack = new YacasArgStack(50000 /*TODO FIXME*/);
     MathCommands mc = new MathCommands();

@@ -82,6 +82,9 @@ LispEnvironment::LispEnvironment(
     iTrue = LispAtom::New(*this,"True");
     iFalse = LispAtom::New(*this,"False");
 
+    Protect(iTrue->String());
+    Protect(iFalse->String());
+
     iEndOfFile    = LispAtom::New(*this,"EndOfFile");
     iEndStatement = LispAtom::New(*this,";");
     iProgOpen     = LispAtom::New(*this,"[");
