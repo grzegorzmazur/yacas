@@ -610,3 +610,7 @@ Verify(Factor(0), 0);
 
 // Ticket 26
 Verify(Limit(n,Infinity)(n!)/n, Infinity);
+
+// Ticket 41
+Verify(StringMid'Set(3, "XY", "abcdef"), "abXYef");
+Verify(StringMid'Set(5, "XY", "abcdef"), "abcdXY");
