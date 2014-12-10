@@ -1815,7 +1815,7 @@ void YacasStringMidSet(LispEnvironment& aEnvironment,LispInt aStackTop)
     // FIXME: it's actually the set of args which is wrong, not the specific one
     CheckArg(from + count < orig->size() + 2, 1, aEnvironment, aStackTop);
 
-    for (std::size_t i = 0; i < count - 3; ++i)
+    for (std::size_t i = 0; i < count - 2; ++i)
         str[i+from] = (*replace)[i+1];
     RESULT = LispAtom::New(aEnvironment, str);
 }
