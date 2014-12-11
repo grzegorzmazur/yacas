@@ -262,8 +262,7 @@ static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispInt aStackT
 {
     CheckArgIsString(1, aEnvironment, aStackTop);
     LispPtr promptObject = (ARGUMENT(1));
-    LispString prompt;
-    InternalUnstringify(prompt, *promptObject->String());
+    const std::string prompt = InternalUnstringify(*promptObject->String());
     const char* output = ReadInputString(prompt.c_str());
     RESULT = LispAtom::New(aEnvironment, Stringify(output));
 }
@@ -295,8 +294,7 @@ void LispFileSize(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     CheckArgIsString(1, aEnvironment, aStackTop);
     LispPtr fnameObject = (ARGUMENT(1));
-    LispString fname;
-    InternalUnstringify(fname, *fnameObject->String());
+    const std::string fname = InternalUnstringify(*fnameObject->String());
 
     std::ifstream in(fname.c_str(), std::ifstream::in | std::ifstream::binary);
     in.seekg(0, std::ifstream::end);

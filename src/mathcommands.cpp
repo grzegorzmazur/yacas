@@ -37,6 +37,16 @@
 #define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
 
 
+class Command {
+public:
+    Command(LispEnvironment& env);
+
+    virtual void Evaluate();
+
+protected:
+    LispEnvironment& _env;
+};
+
 void LispLexCompare2(LispEnvironment& aEnvironment, LispInt aStackTop,
                      bool (*lexfunc)(const LispChar* f1, const LispChar* f2, LispHashTable& aHashTable,LispInt aPrecision),
                      bool (*numfunc)(BigNumber& n1, BigNumber& n2)
@@ -1132,8 +1142,7 @@ void LispDefaultDirectory(LispEnvironment& aEnvironment, LispInt aStackTop)
     CheckArg(ARGUMENT(1), 1, aEnvironment, aStackTop);
     const LispString* orig = ARGUMENT(1)->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
-    LispString oper;
-    InternalUnstringify(oper, *orig);
+    const std::string oper = InternalUnstringify(*orig);
     aEnvironment.iInputDirectories.push_back(oper.c_str());
     InternalTrue(aEnvironment,RESULT);
 }
@@ -1194,8 +1203,7 @@ void LispFromString(LispEnvironment& aEnvironment, LispInt aStackTop)
   CheckArg(evaluated, 1, aEnvironment, aStackTop);
   const LispString* orig = evaluated->String();
   CheckArg(orig, 1, aEnvironment, aStackTop);
-  LispString oper;
-  InternalUnstringify(oper, *orig);
+  const std::string oper = InternalUnstringify(*orig);
 
   InputStatus oldstatus = aEnvironment.iInputStatus;
   aEnvironment.iInputStatus.SetTo("String");
@@ -1248,8 +1256,7 @@ void LispToFile(LispEnvironment& aEnvironment, LispInt aStackTop)
   CheckArg(evaluated, 1, aEnvironment, aStackTop);
   const LispString* orig = evaluated->String();
   CheckArg(orig, 1, aEnvironment, aStackTop);
-  LispString oper;
-  InternalUnstringify(oper, *orig);
+  const std::string oper = InternalUnstringify(*orig);
 
   // Open file for writing
   LispLocalFile localFP(aEnvironment, oper, false, aEnvironment.iInputDirectories);
@@ -1308,8 +1315,7 @@ void LispSystemCall(LispEnvironment& aEnvironment,LispInt aStackTop)
   LispPtr result(ARGUMENT(1));
   CheckArgIsString(1, aEnvironment, aStackTop);
 
-  LispString command;
-  InternalUnstringify(command, *result->String());
+  const std::string command = InternalUnstringify(*result->String());
 
 // we would like to pass the exit code back to Yacas. Right now, let's pass True/False according to whether the exit code is 0 or not.
   InternalBoolean(aEnvironment, RESULT, system(command.c_str()) == 0);
@@ -1575,8 +1581,7 @@ void LispFindFile(LispEnvironment& aEnvironment,LispInt aStackTop)
     CheckArg(evaluated, 1, aEnvironment, aStackTop);
     const LispString* orig = evaluated->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
-    LispString oper;
-    InternalUnstringify(oper, *orig);
+    const std::string oper = InternalUnstringify(*orig);
 
     const std::string path =
             InternalFindFile(oper.c_str(), aEnvironment.iInputDirectories);
@@ -1830,8 +1835,7 @@ void LispFindFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
     CheckArg(evaluated, 1, aEnvironment, aStackTop);
     const LispString* orig = evaluated->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
-    LispString oper;
-    InternalUnstringify(oper, *orig);
+    const std::string oper = InternalUnstringify(*orig);
 
     LispMultiUserFunction* multiUserFunc =
         aEnvironment.MultiUserFunction(aEnvironment.HashTable().LookUp(oper));
@@ -1899,8 +1903,7 @@ void LispRuleBaseDefined(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispPtr name(ARGUMENT(1));
     const LispString* orig = name->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
-    LispString oper;
-    InternalUnstringify(oper, *orig);
+    const std::string oper = InternalUnstringify(*orig);
 
     LispPtr sizearg(ARGUMENT(2));
     CheckArg(sizearg, 2, aEnvironment, aStackTop);
@@ -1917,8 +1920,7 @@ void LispDefLoadFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispPtr name(ARGUMENT(1));
     const LispString* orig = name->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
-    LispString oper;
-    InternalUnstringify(oper, *orig);
+    const std::string oper = InternalUnstringify(*orig);
 
     LispMultiUserFunction* multiUserFunc =
         aEnvironment.MultiUserFunction(aEnvironment.HashTable().LookUp(oper));
@@ -1948,8 +1950,7 @@ void LispRuleBaseArgList(LispEnvironment& aEnvironment,LispInt aStackTop)
     LispPtr name(ARGUMENT(1));
     const LispString* orig = name->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
-    LispString oper;
-    InternalUnstringify(oper, *orig);
+    const std::string oper = InternalUnstringify(*orig);
 
     LispPtr sizearg(ARGUMENT(2));
     CheckArg(sizearg, 2, aEnvironment, aStackTop);

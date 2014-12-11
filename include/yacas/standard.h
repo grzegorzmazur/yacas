@@ -13,7 +13,7 @@ class LispHashTable;
 
 bool InternalIsList(const LispEnvironment& env, const LispPtr& aPtr);
 bool InternalIsString(const LispString* aOriginal);
-void InternalUnstringify(LispString& aResult, const LispString& aOriginal);
+std::string InternalUnstringify(const std::string& s);
 LispInt InternalAsciiToInt(const LispString& aString);
 bool IsNumber(const LispChar * ptr, bool aAllowFloat);
 
