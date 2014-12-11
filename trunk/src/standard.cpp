@@ -59,8 +59,8 @@ std::string InternalUnstringify(const std::string& s)
    *
    * Also do not forget to make the change in the Java version then, and find the other places where this is relevant.
    */
-  //    if (s.size() < 2 || s.front() != '\"' || s.back() != '\"')
-  //      throw LispErrInvalidArg();
+    if (s.size() < 2 || s.front() != '\"' || s.back() != '\"')
+        throw LispErrInvalidArg();
 
     return std::string(s.c_str() + 1, s.size() - 2);
 }
