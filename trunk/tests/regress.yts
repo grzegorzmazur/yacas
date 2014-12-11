@@ -611,6 +611,12 @@ Verify(Factor(0), 0);
 // Ticket 26
 Verify(Limit(n,Infinity)(n!)/n, Infinity);
 
+// Ticket 40
+Verify(CDF(PoissonDistribution(5), 2), 6*Exp(-5));
+i := 0;
+Verify(CDF(PoissonDistribution(5), 2), 6*Exp(-5));
+Clear(i);
+
 // Ticket 41
 Verify(StringMid'Set(3, "XY", "abcdef"), "abXYef");
 Verify(StringMid'Set(5, "XY", "abcdef"), "abcdXY");
