@@ -590,8 +590,7 @@ void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispPtr evaluated(ARGUMENT(1));
   const LispString* string = evaluated->String();
   CheckArg(string, 1, aEnvironment, aStackTop);
-  LispString oper;
-  InternalUnstringify(oper, *string);
+  const std::string oper = InternalUnstringify(*string);
   const LispString* hashedname = aEnvironment.HashTable().LookUp(oper);
   InputStatus oldstatus = aEnvironment.iInputStatus;
   aEnvironment.iInputStatus.SetTo(hashedname->c_str());
@@ -614,8 +613,7 @@ void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
   LispPtr evaluated(ARGUMENT(1));
   const LispString* string = evaluated->String();
   CheckArg(string, 1, aEnvironment, aStackTop);
-  LispString oper;
-  InternalUnstringify(oper, *string);
+  const std::string oper = InternalUnstringify(*string);
 
   std::ostringstream os;
   LispLocalOutput localOutput(aEnvironment, os);

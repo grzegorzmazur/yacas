@@ -73,9 +73,7 @@ void LoadDefFile(LispEnvironment& aEnvironment, const LispString* aFileName)
 {
   assert(aFileName!=nullptr);
 
-  LispString flatfile;
-  InternalUnstringify(flatfile, *aFileName);
-  flatfile.append(".def");
+  const std::string flatfile = InternalUnstringify(*aFileName) + ".def";
   LispDefFile* def = aEnvironment.DefFiles().File(aFileName);
   const LispString* contents = aEnvironment.FindCachedFile(flatfile.c_str());
   const LispString* hashedname = aEnvironment.HashTable().LookUp(flatfile);
