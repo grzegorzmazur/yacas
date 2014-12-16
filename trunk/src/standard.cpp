@@ -311,30 +311,28 @@ void DoInternalLoad(LispEnvironment& aEnvironment,LispInput* aInput)
     }
 }
 
-void InternalLoad(LispEnvironment& aEnvironment, const LispString* aFileName)
+void InternalLoad(LispEnvironment& aEnvironment, const std::string& aFileName)
 {
-    const std::string oper = InternalUnstringify(*aFileName);
-
-    const LispString* hashedname = aEnvironment.HashTable().LookUp(oper);
+    const std::string oper = InternalUnstringify(aFileName);
 
     InputStatus oldstatus = aEnvironment.iInputStatus;
-    aEnvironment.iInputStatus.SetTo(hashedname->c_str());
+    aEnvironment.iInputStatus.SetTo(oper);
 
     //TODO make the file api platform independent!!!!
     // Open file
-    LispLocalFile localFP(aEnvironment, *hashedname, true,
+    LispLocalFile localFP(aEnvironment, oper, true,
                           aEnvironment.iInputDirectories);
 
     if (!localFP.stream.is_open())
-      throw LispErrFileNotFound();
+        throw LispErrFileNotFound();
 
-    CachedStdFileInput newInput(localFP,aEnvironment.iInputStatus);
-    DoInternalLoad(aEnvironment,&newInput);
+    CachedStdFileInput newInput(localFP, aEnvironment.iInputStatus);
+    DoInternalLoad(aEnvironment, &newInput);
 
     aEnvironment.iInputStatus.RestoreFrom(oldstatus);
 }
 
-void InternalUse(LispEnvironment& aEnvironment, const LispString* aFileName)
+void InternalUse(LispEnvironment& aEnvironment, const std::string& aFileName)
 {
     LispDefFile* def = aEnvironment.DefFiles().File(aFileName);
     if (!def->IsLoaded())

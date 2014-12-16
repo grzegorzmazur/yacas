@@ -16,15 +16,15 @@
 class LispDefFile
 {
 public:
-    LispDefFile(const LispString* aFile);
+    LispDefFile(const std::string& aFile);
 
     void SetLoaded();
     bool IsLoaded() const;
-    const LispString* FileName() const;
+    const std::string& FileName() const;
 
 private:
-    LispStringSmartPtr iFileName;
-    bool   iIsLoaded;
+    std::string iFileName;
+    bool iIsLoaded;
 };
 
 /** LispDefFiles maintains an array of files that can be defloaded.
@@ -37,15 +37,15 @@ private:
 class LispDefFiles
 {
 public:
-    LispDefFile* File(const LispString* aFileName);
+    LispDefFile* File(const std::string& aFileName);
 
 private:
-    std::unordered_map<LispStringSmartPtr, LispDefFile, std::hash<const LispString*> > _map;
+    std::unordered_map<std::string, LispDefFile> _map;
 };
 
 class LispEnvironment;
 
-void LoadDefFile(LispEnvironment& aEnvironment, const LispString* aFileName);
+void LoadDefFile(LispEnvironment& aEnvironment, const std::string& aFileName);
 
 
 inline
@@ -54,9 +54,10 @@ bool LispDefFile::IsLoaded() const
     return iIsLoaded;
 }
 
-inline const LispString* LispDefFile::FileName() const
+inline
+const std::string& LispDefFile::FileName() const
 {
-  return iFileName;
+    return iFileName;
 }
 
 #endif

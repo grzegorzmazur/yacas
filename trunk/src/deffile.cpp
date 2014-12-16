@@ -9,7 +9,7 @@
 #include "yacas/tokenizer.h"
 #include "yacas/stringio.h"
 
-LispDefFile::LispDefFile(const LispString* aFileName):
+LispDefFile::LispDefFile(const std::string& aFileName):
     iFileName(aFileName),
     iIsLoaded(false)
 {
@@ -20,7 +20,7 @@ void LispDefFile::SetLoaded()
   iIsLoaded = true;
 }
 
-LispDefFile* LispDefFiles::File(const LispString* aFileName)
+LispDefFile* LispDefFiles::File(const std::string& aFileName)
 {
     auto i = _map.find(aFileName);
 
@@ -69,19 +69,17 @@ static void DoLoadDefFile(
   }
 }
 
-void LoadDefFile(LispEnvironment& aEnvironment, const LispString* aFileName)
+void LoadDefFile(LispEnvironment& aEnvironment, const std::string& aFileName)
 {
   assert(aFileName!=nullptr);
 
-  const std::string flatfile = InternalUnstringify(*aFileName) + ".def";
+  const std::string flatfile = InternalUnstringify(aFileName) + ".def";
   LispDefFile* def = aEnvironment.DefFiles().File(aFileName);
 
-  const LispString* hashedname = aEnvironment.HashTable().LookUp(flatfile);
-
   InputStatus oldstatus = aEnvironment.iInputStatus;
-  aEnvironment.iInputStatus.SetTo(hashedname->c_str());
+  aEnvironment.iInputStatus.SetTo(flatfile);
 
-  LispLocalFile localFP(aEnvironment, *hashedname,true,
+  LispLocalFile localFP(aEnvironment, flatfile, true,
                         aEnvironment.iInputDirectories);
   if (!localFP.stream.is_open())
     throw LispErrFileNotFound();

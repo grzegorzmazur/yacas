@@ -42,8 +42,8 @@ inline bool IsFalse(LispEnvironment& aEnvironment, const LispPtr& aExpression);
 inline void InternalNot(LispPtr& aResult, LispEnvironment& aEnvironment, LispPtr& aExpression);
 
 void DoInternalLoad(LispEnvironment& aEnvironment,LispInput* aInput);
-void InternalLoad(LispEnvironment& aEnvironment,const LispString* aFileName);
-void InternalUse(LispEnvironment& aEnvironment, const LispString* aFileName);
+void InternalLoad(LispEnvironment& aEnvironment, const std::string& aFileName);
+void InternalUse(LispEnvironment& aEnvironment, const std::string& aFileName);
 void InternalApplyString(LispEnvironment& aEnvironment, LispPtr& aResult,
                          const LispString* aOperator,LispPtr& aArgs);
 void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnvironment& aEnvironment);

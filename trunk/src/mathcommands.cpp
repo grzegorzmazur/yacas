@@ -781,8 +781,8 @@ void LispLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
     const LispString* orig = evaluated->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
 
-    InternalLoad(aEnvironment,orig);
-    InternalTrue(aEnvironment,RESULT);
+    InternalLoad(aEnvironment, *orig);
+    InternalTrue(aEnvironment, RESULT);
 }
 
 void LispTmpFile(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1142,8 +1142,7 @@ void LispDefaultDirectory(LispEnvironment& aEnvironment, LispInt aStackTop)
     CheckArg(ARGUMENT(1), 1, aEnvironment, aStackTop);
     const LispString* orig = ARGUMENT(1)->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
-    const std::string oper = InternalUnstringify(*orig);
-    aEnvironment.iInputDirectories.push_back(oper.c_str());
+    aEnvironment.iInputDirectories.push_back(InternalUnstringify(*orig));
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -1345,8 +1344,8 @@ void LispDefLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
     const LispString* orig = evaluated->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
 
-    LoadDefFile(aEnvironment, orig);
-    InternalTrue(aEnvironment,RESULT);
+    LoadDefFile(aEnvironment, *orig);
+    InternalTrue(aEnvironment, RESULT);
 }
 
 void LispUse(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1358,8 +1357,8 @@ void LispUse(LispEnvironment& aEnvironment, LispInt aStackTop)
     const LispString* orig = evaluated->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
 
-    InternalUse(aEnvironment,orig);
-    InternalTrue(aEnvironment,RESULT);
+    InternalUse(aEnvironment, *orig);
+    InternalTrue(aEnvironment, RESULT);
 }
 
 void LispRightAssociative(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1831,7 +1830,7 @@ void LispFindFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
         LispDefFile* def = multiUserFunc->iFileToOpen;
         if (def)
         {
-            RESULT = LispAtom::New(aEnvironment, *def->FileName());
+            RESULT = LispAtom::New(aEnvironment, def->FileName());
             return;
         }
     }
