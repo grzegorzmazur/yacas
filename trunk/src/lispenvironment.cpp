@@ -520,14 +520,6 @@ void LispEnvironment::RemoveCoreCommand(LispChar* aString)
   CoreCommands().erase(HashTable().LookUp(aString));
 }
 
-const LispString* LispEnvironment::FindCachedFile(const LispChar * aFileName)
-{
-  return nullptr;
-}
-
-
-
-
 void LispLocalFrame::Delete()
 {
     iEnvironment.PopLocalFrame();
