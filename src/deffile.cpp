@@ -75,27 +75,19 @@ void LoadDefFile(LispEnvironment& aEnvironment, const LispString* aFileName)
 
   const std::string flatfile = InternalUnstringify(*aFileName) + ".def";
   LispDefFile* def = aEnvironment.DefFiles().File(aFileName);
-  const LispString* contents = aEnvironment.FindCachedFile(flatfile.c_str());
+
   const LispString* hashedname = aEnvironment.HashTable().LookUp(flatfile);
 
   InputStatus oldstatus = aEnvironment.iInputStatus;
   aEnvironment.iInputStatus.SetTo(hashedname->c_str());
 
-  if (contents)
-  {
-    StringInput newInput(*contents,aEnvironment.iInputStatus);
-    DoLoadDefFile(aEnvironment, &newInput,def);
-    delete contents;
-  }
-  else
-  {
-    LispLocalFile localFP(aEnvironment, *hashedname,true,
-                          aEnvironment.iInputDirectories);
-    if (!localFP.stream.is_open())
-        throw LispErrFileNotFound();
+  LispLocalFile localFP(aEnvironment, *hashedname,true,
+                        aEnvironment.iInputDirectories);
+  if (!localFP.stream.is_open())
+    throw LispErrFileNotFound();
 
-    CachedStdFileInput newInput(localFP,aEnvironment.iInputStatus);
-    DoLoadDefFile(aEnvironment, &newInput,def);
-  }
+  CachedStdFileInput newInput(localFP,aEnvironment.iInputStatus);
+  DoLoadDefFile(aEnvironment, &newInput,def);
+
   aEnvironment.iInputStatus.RestoreFrom(oldstatus);
 }

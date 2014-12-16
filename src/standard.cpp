@@ -315,31 +315,22 @@ void InternalLoad(LispEnvironment& aEnvironment, const LispString* aFileName)
 {
     const std::string oper = InternalUnstringify(*aFileName);
 
-    const LispString* contents = aEnvironment.FindCachedFile(oper.c_str());
     const LispString* hashedname = aEnvironment.HashTable().LookUp(oper);
 
     InputStatus oldstatus = aEnvironment.iInputStatus;
     aEnvironment.iInputStatus.SetTo(hashedname->c_str());
 
-    if (contents)
-    {
-        StringInput newInput(*contents,aEnvironment.iInputStatus);
-        DoInternalLoad(aEnvironment,&newInput);
-        delete contents;
-    }
-    else
-    {
-        //TODO make the file api platform independent!!!!
-        // Open file
-        LispLocalFile localFP(aEnvironment, *hashedname, true,
-                              aEnvironment.iInputDirectories);
+    //TODO make the file api platform independent!!!!
+    // Open file
+    LispLocalFile localFP(aEnvironment, *hashedname, true,
+                          aEnvironment.iInputDirectories);
 
-        if (!localFP.stream.is_open())
-            throw LispErrFileNotFound();
+    if (!localFP.stream.is_open())
+      throw LispErrFileNotFound();
 
-        CachedStdFileInput newInput(localFP,aEnvironment.iInputStatus);
-        DoInternalLoad(aEnvironment,&newInput);
-    }
+    CachedStdFileInput newInput(localFP,aEnvironment.iInputStatus);
+    DoInternalLoad(aEnvironment,&newInput);
+
     aEnvironment.iInputStatus.RestoreFrom(oldstatus);
 }
 

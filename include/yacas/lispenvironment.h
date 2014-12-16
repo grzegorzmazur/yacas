@@ -164,8 +164,6 @@ public:
   bool Protected(const LispString*) const;
   //@}
 
-  const LispString * FindCachedFile(const LispChar * aFileName);
-
 public:
   /// \name Precision
   //@{

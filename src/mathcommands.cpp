@@ -1159,37 +1159,24 @@ void LispFromFile(LispEnvironment& aEnvironment, LispInt aStackTop)
   const LispString* orig = evaluated->String();
   CheckArg(orig, 1, aEnvironment, aStackTop);
 
-  const LispString* contents = aEnvironment.FindCachedFile(orig->c_str());
-
   const std::string fname = orig->substr(1, orig->length() - 2);
 
   InputStatus oldstatus = aEnvironment.iInputStatus;
   aEnvironment.iInputStatus.SetTo(fname);
 
-  if (contents)
-  {
-    StringInput newInput(*contents,aEnvironment.iInputStatus);
-    LispLocalInput localInput(aEnvironment, &newInput);
-
-    // Evaluate the body
-    InternalEval(aEnvironment, RESULT, ARGUMENT(2));
-    delete contents;
+  // Open file
+  LispLocalFile localFP(aEnvironment, fname, true,
+                        aEnvironment.iInputDirectories);
+  if (!localFP.stream.is_open()) {
+    ShowStack(aEnvironment);
+    throw LispErrFileNotFound();
   }
-  else
-  {
-    // Open file
-    LispLocalFile localFP(aEnvironment, fname, true,
-                          aEnvironment.iInputDirectories);
-    if (!localFP.stream.is_open()) {
-        ShowStack(aEnvironment);
-        throw LispErrFileNotFound();
-    }
-    CachedStdFileInput newInput(localFP,aEnvironment.iInputStatus);
-    LispLocalInput localInput(aEnvironment, &newInput);
+  CachedStdFileInput newInput(localFP,aEnvironment.iInputStatus);
+  LispLocalInput localInput(aEnvironment, &newInput);
 
-    // Evaluate the body
-    InternalEval(aEnvironment, RESULT, ARGUMENT(2));
-  }
+  // Evaluate the body
+  InternalEval(aEnvironment, RESULT, ARGUMENT(2));
+
   aEnvironment.iInputStatus.RestoreFrom(oldstatus);
   //Return the result
 }
