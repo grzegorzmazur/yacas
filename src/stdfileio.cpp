@@ -47,7 +47,7 @@ void StdFileInput::Rewind()
     stream.seekg(0);
 }
 
-bool StdFileInput::EndOfStream()
+bool StdFileInput::EndOfStream() const
 {
     return stream.eof();
 }
@@ -58,7 +58,7 @@ const LispChar* StdFileInput::StartPtr()
     return 0;
 }
 
-std::size_t StdFileInput::Position()
+std::size_t StdFileInput::Position() const
 {
     assert(0);
     return 0;
