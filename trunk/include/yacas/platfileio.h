@@ -31,10 +31,10 @@ class StdFileInput : public LispInput
 public:
   virtual LispChar Next();
   virtual LispChar Peek();
-  virtual bool EndOfStream();
+  virtual bool EndOfStream() const;
   void Rewind();
   virtual const LispChar* StartPtr();
-  virtual std::size_t Position();
+  virtual std::size_t Position() const;
   virtual void SetPosition(std::size_t aPosition);
 
 protected:
