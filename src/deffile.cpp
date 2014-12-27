@@ -71,8 +71,6 @@ static void DoLoadDefFile(
 
 void LoadDefFile(LispEnvironment& aEnvironment, const std::string& aFileName)
 {
-  assert(aFileName!=nullptr);
-
   const std::string flatfile = InternalUnstringify(aFileName) + ".def";
   LispDefFile* def = aEnvironment.DefFiles().File(aFileName);
 
