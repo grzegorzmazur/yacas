@@ -623,3 +623,6 @@ Verify(StringMid'Set(5, "XY", "abcdef"), "abcdXY");
 
 // Ticket 45
 Verify(PrimitivePart(x^2), x^2);
+
+// Ticket 46
+Verify(PrimitivePart(-10*x^2+5*x+5), 2*x^2-x-1);
