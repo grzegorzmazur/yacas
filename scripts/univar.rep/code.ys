@@ -667,7 +667,7 @@ Function("CanBeUni",{expression}) CanBeUni(UniVarList(expression),expression);
 20 # Content(poly_CanBeUni) <-- NormalForm(Content(MakeUni(poly)));
 
 10 # PrimitivePart(UniVariate(_var,_first,_coefs)) <--
-    UniVariate(var,0,coefs/Gcd(coefs));
+    UniVariate(var,first,coefs/Gcd(coefs));
 20 # PrimitivePart(poly_CanBeUni) <-- NormalForm(PrimitivePart(MakeUni(poly)));
 
 10 # Monic(UniVariate(_var,_first,_coefs)) <--
