@@ -72,6 +72,7 @@ VerifyGaussianGcd(120-I*200,-336+50*I);
 //TODO we can expand this with randomized tests
 
 Verify( Lcm({7,11,13,17}), 7*11*13*17 ); f();
+Verify( Lcm(-8, 20), Lcm(8, 20));
 Verify( IsCoprime(11,13), True ); f();
 Verify( IsCoprime(1 .. 10), False ); f();
 Verify( IsCoprime({9,40}), True ); f();
@@ -106,13 +107,13 @@ Verify(IsPrime(6.1),False); f();
 Testing("Random numbers");
 Local(r1, r2, r3, x1, x2, x3);
 
-r1:=RngCreate();	// create a default RNG object, return structure
+r1:=RngCreate();        // create a default RNG object, return structure
  f();
-r2:=RngCreate(12345);	// create RNG object with given seed
+r2:=RngCreate(12345);   // create RNG object with given seed
  f();
-RandomSeed(12345);	// initialize the global RNG with the same seed
+RandomSeed(12345);      // initialize the global RNG with the same seed
  f();
-r3:=RngCreate(seed=12345, engine=advanced, dist=gauss);	// test advanced options
+r3:=RngCreate(seed=12345, engine=advanced, dist=gauss); // test advanced options
  f();
 Rng(r1); f();
 Rng(r1); f();
@@ -124,10 +125,10 @@ x3:=Rng(r3); f();
 Verify(Rng(r3)=x3, False); f();
 Verify(x1=x2, False); f();
 RngSeed(r2, 12345); f();
-Verify(Rng(r2), x1);	// reproducible number
-Verify(Rng(r2), x2);	// reproducible number
+Verify(Rng(r2), x1);    // reproducible number
+Verify(Rng(r2), x2);    // reproducible number
 RngSeed(r3, 12345);
-Verify(Rng(r3), x3);	// reproducible number
+Verify(Rng(r3), x3);    // reproducible number
  f();
 Verify(PartitionsP(1),1); f();
 Verify(PartitionsP(2),2); f();

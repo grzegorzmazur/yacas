@@ -17,7 +17,7 @@
 5 # (n_IsNumber < m_IsNumber) <-- LessThan(n-m,0);
 
 
-// If n and m are symbolic after a single evaluation, see if they can be coerced in to a real-valued number. 
+// If n and m are symbolic after a single evaluation, see if they can be coerced in to a real-valued number.
 LocalSymbols(nNum,mNum)
 [
   10 # (_n < _m)_[nNum:=N(Eval(n)); mNum:=N(Eval(m));IsNumber(nNum) And IsNumber(mNum);] <-- LessThan(nNum-mNum,0);
@@ -226,13 +226,13 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 
 
 /* Least common multiple */
-5  # Lcm(a_IsInteger,b_IsInteger) <-- Div(a*b,Gcd(a,b));
+5  # Lcm(a_IsInteger,b_IsInteger) <-- Div(Abs(a*b),Gcd(a,b));
 
 10 # Lcm(list_IsList)_(Length(list)>2) <--
 [
-	Local(first);
-	first:=Lcm(list[1],list[2]);
-	Lcm(first:Tail(Tail(list)));
+        Local(first);
+        first:=Lcm(list[1],list[2]);
+        Lcm(first:Tail(Tail(list)));
 ];
 
 10 # Lcm(list_IsList)_(Length(list)=2) <-- Lcm(list[1],list[2]);
@@ -298,8 +298,8 @@ Rule("Object",2,0,Apply(pred,{x})=True) x;
 20 # Round(x_IsRational) _ (IsNumber(Numer(x)) And IsNumber(Denom(x))) <-- MathFloor(N(x+0.5));
 */
 
-10 # Floor(x_IsRationalOrNumber) 
-   <-- 
+10 # Floor(x_IsRationalOrNumber)
+   <--
    [
      x:=N(Eval(x));
 //Echo("x = ",x);
@@ -321,8 +321,8 @@ Rule("Object",2,0,Apply(pred,{x})=True) x;
 
 //     MathFloor(N(x));
 
-10 # Ceil (x_IsRationalOrNumber) 
-   <-- 
+10 # Ceil (x_IsRationalOrNumber)
+   <--
    [
      x:=N(Eval(x));
      Local(prec,result,n);
@@ -342,7 +342,7 @@ Rule("Object",2,0,Apply(pred,{x})=True) x;
 10 # Round(x_IsList) <-- MapSingle("Round",x);
 
 20 # Round(x_IsComplex)  _ (IsRationalOrNumber(Re(x)) And IsRationalOrNumber(Im(x)) )
-		<-- MathFloor(N(Re(x)+0.5)) + MathFloor(N(Im(x)+0.5))*I;
+                <-- MathFloor(N(Re(x)+0.5)) + MathFloor(N(Im(x)+0.5))*I;
 
 
 // Canonicalise an expression so its terms are grouped to the right
