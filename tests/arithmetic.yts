@@ -80,7 +80,7 @@ Verify(MathPower(1, -1), 1);
 Verify(MathPower(1, -2), 1);
 Verify(IsZero(MathPower(10, -2)- 0.01));
 Verify(MathPower(2, 3), 8);
-NumericEqual(MathPower(2, -3), 0.125,Builtin'Precision'Get()); 
+NumericEqual(MathPower(2, -3), 0.125,Builtin'Precision'Get());
 
 Testing("Rounding");
 Verify(Floor(1.2),1);
@@ -174,4 +174,11 @@ Verify(Gcd(-Sqrt(2),-Sqrt(2)),Sqrt(2));
 Verify(Gcd(Sqrt(2),-Sqrt(2)),Sqrt(2));
 Verify(Gcd(-Sqrt(2),Sqrt(2)),Sqrt(2));
 
+NextTest("Test absolute value");
 
+Verify(Abs(1), 1);
+Verify(Abs(-1), 1);
+Verify(Abs(Sqrt(x)), Sqrt(x));
+Verify(Abs(Pi), Pi);
+Verify(Abs(-Pi), Pi);
+Verify(Abs(-Exp(-1), Exp(-1));

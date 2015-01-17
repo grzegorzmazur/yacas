@@ -263,6 +263,8 @@ Rule("Object",2,0,Apply(pred,{x})=True) x;
 10 # Abs(Undefined) <-- Undefined;
 20 # Abs(n_IsList) <-- MapSingle("Abs",n);
 
+50 # Abs(c_IsConstant) <-- If (c > 0, c, -c);
+
 100 # Abs(_a^_n) <-- Abs(a)^n;
 100 # Abs(_a)^n_IsEven <-- a^n;
 100 # Abs(_a)^n_IsOdd <-- Sign(a)*a^n;
