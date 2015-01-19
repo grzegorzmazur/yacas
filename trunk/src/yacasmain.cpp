@@ -128,18 +128,18 @@ std::string root_dir;
 #ifdef WIN32
 HANDLE htimer = 0;
 #endif
-const char* init_script = "yacasinit.ys";
+std::string init_script = "yacasinit.ys";
 
 const char* read_eval_print = "REP()";
 
 
-static int readmode = 0;
+static bool readmode = false;
 
 bool server_mode = false;
 bool server_single_user = false;
 int server_port = 9734;
 
-char* execute_commnd = 0;
+const char* execute_commnd = 0;
 
 static bool busy = true;
 static bool restart = false;
@@ -200,62 +200,59 @@ void LispStackSize(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 
-const char* ReadInputString(const char* prompt)
+std::string ReadInputString(const std::string& prompt)
 {
     if (!commandline)
         return "False";
 
-    const char* inpline;
-    readmode = 1;
+    readmode = true;
     commandline->ReadLine(prompt);
-    readmode = 0;
-    inpline =  commandline->iLine.c_str();
+    readmode = false;
+    std::string inpline =  commandline->iLine;
 
-    if (inpline) {
-        while(isspace(*inpline))
-            ++inpline;
+    std::stringstream trimmer;
+    trimmer << inpline;
+    inpline.clear();
+    trimmer >> inpline;
 
-        if(*inpline) {
-            if (!std::strncmp(inpline, "restart", 7)) {
-                restart = true;
-                busy = false;
-            } else if (!strncmp(inpline, "quit", 4)) {
-                busy=false;
-            } else if (*inpline == '?') {
-                const std::string key(inpline + 1);
+    if (inpline.empty())
+        return "True";
 
-                const std::string prefix = "http://yacas.sourceforge.net/";
-                std::string url = prefix + "ref.html?" + key;
-                if (key == "licence" || key == "license")
-                    url = prefix + "refprogchapter9.html";
-                else if (key == "warranty")
-                    url = prefix + "refprogchapter9.html#c9s2";
-                else if (key == "?")
-                    url = prefix + "refmanual.html";
+    if (inpline == "restart") {
+        restart = true;
+        busy = false;
+    } else if (inpline == "quit") {
+        busy=false;
+    } else if (inpline.front() == '?') {
+        const std::string key(inpline.begin() + 1, inpline.end());
+
+        const std::string prefix = "http://yacas.sourceforge.net/";
+        std::string url = prefix + "ref.html?" + key;
+        if (key == "licence" || key == "license")
+            url = prefix + "refprogchapter9.html";
+        else if (key == "warranty")
+            url = prefix + "refprogchapter9.html#c9s2";
+        else if (key == "?")
+            url = prefix + "refmanual.html";
 
 #ifndef WIN32
-                const std::string viewer = "xdg-open";
+        const std::string viewer = "xdg-open";
 
-                const std::string cmd = viewer + " " + url;
+        const std::string cmd = viewer + " " + url;
 
-                if (system(cmd.c_str()) == 0)
-                    inpline = "True";
-                else
-                    inpline = "False";
+        if (system(cmd.c_str()) == 0)
+            inpline = "True";
+        else
+            inpline = "False";
 #else
-                if ((intptr_t)ShellExecuteA(0, "open", url.c_str(), 0, 0, SW_SHOWNORMAL) > 32)
-                    inpline = "True";
-                else
-                    inpline = "False";
+        if ((intptr_t)ShellExecuteA(0, "open", url.c_str(), 0, 0, SW_SHOWNORMAL) > 32)
+            inpline = "True";
+        else
+            inpline = "False";
 #endif
-            }
-        }
     }
 
-    if (inpline && *inpline)
-        return inpline;
-
-    return "True";
+    return inpline;
 }
 
 static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -263,7 +260,7 @@ static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispInt aStackT
     CheckArgIsString(1, aEnvironment, aStackTop);
     LispPtr promptObject = (ARGUMENT(1));
     const std::string prompt = InternalUnstringify(*promptObject->String());
-    const char* output = ReadInputString(prompt.c_str());
+    const std::string output = ReadInputString(prompt);
     RESULT = LispAtom::New(aEnvironment, Stringify(output));
 }
 
@@ -397,7 +394,7 @@ std::string build_full_prompt(const char* prompt, const std::size_t maxlen)
 #define TEXMACS_DATA_END     ((char)5)
 #define TEXMACS_DATA_ESCAPE  ((char)27)
 
-void ShowResult(const char *prompt)
+void ShowResult(const std::string& prompt)
 {
     if (use_texmacs_out)
         std::cout << TEXMACS_DATA_BEGIN << "latex:";
@@ -435,7 +432,6 @@ void LoadYacas(std::ostream& os)
         return;
 
     busy = true;
-    restart = false;
 
     yacas = NEW CYacas(os, stack_size);
 
@@ -876,7 +872,7 @@ int runserver(int argc,char** argv)
 }
 #endif
 
-void runconsole(const char* inprompt, const char* outprompt)
+void runconsole(const std::string& inprompt, const std::string& outprompt)
 {
     if (show_prompt) {
         if (use_texmacs_out) {
@@ -917,16 +913,16 @@ void runconsole(const char* inprompt, const char* outprompt)
             if (show_prompt)
                 full_prompt = build_full_prompt(full_prompt, inprompt, 30);
 
-            ReadInputString(full_prompt.c_str());
+            ReadInputString(full_prompt);
 #else
             ReadInputString(inprompt);
 #endif
-            const char *inpline =  commandline->iLine.c_str();
+            const std::string inpline =  commandline->iLine;
             if (use_texmacs_out)
                 std::cout << TEXMACS_DATA_BEGIN << "verbatim:";
 
             if (busy) {
-                if (*inpline) {
+                if (!inpline.empty()) {
                     if (use_texmacs_out)
                         std::cout << TEXMACS_DATA_BEGIN << "latex:";
 
@@ -1169,8 +1165,8 @@ int main(int argc, char** argv)
         commandline = NEW FANCY_COMMAND_LINE;
 #endif
 
-    const char* inprompt = "";
-    const char* outprompt = "";
+    std::string inprompt;
+    std::string outprompt;
 
     if (show_prompt && !use_texmacs_out) {
         inprompt = "In> ";
@@ -1232,6 +1228,8 @@ int main(int argc, char** argv)
     }
 
     do {
+        restart = false;
+
         runconsole(inprompt, outprompt);
 
         if (restart) {
