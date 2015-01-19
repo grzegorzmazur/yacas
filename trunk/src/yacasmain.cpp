@@ -123,7 +123,7 @@ bool hideconsolewindow = false;
 bool exit_after_files = false;
 
 std::string root_dir;
-#ifdef WIN32
+#ifdef _WIN32
 HANDLE htimer = 0;
 #endif
 std::string init_script = "yacasinit.ys";
@@ -233,7 +233,7 @@ std::string ReadInputString(const std::string& prompt)
         else if (key == "?")
             url = prefix + "refmanual.html";
 
-#ifndef WIN32
+#ifndef _WIN32
         const std::string viewer = "xdg-open";
 
         const std::string cmd = viewer + " " + url;
@@ -331,7 +331,7 @@ void my_exit()
         CheckAllPtrs(1);
 #endif
     }
-#ifdef WIN32
+#ifdef _WIN32
 #ifdef SUPPORT_SERVER
     if (winsockinitialised)
     {
@@ -400,7 +400,7 @@ void LoadYacas(std::ostream& os)
         const char *ptr1, *ptr2;
         ptr1 = ptr2 = root_dir.c_str();
         while (*ptr1 != '\0') {
-#ifndef WIN32
+#ifndef _WIN32
             while (*ptr1 != '\0' && *ptr1 != ':')
                 ptr1++;
             if (*ptr1 == ':') {
@@ -488,7 +488,7 @@ void InterruptHandler(void)
 
 CYacas* clientToStop = 0;
 
-#ifndef WIN32
+#ifndef _WIN32
 #ifdef SIGHANDLER_NO_ARGS
 void stopClient(void)
 #else
@@ -507,7 +507,7 @@ void stopClient(void)
 
 int runserver(int argc,char** argv)
 {
-#ifdef WIN32
+#ifdef _WIN32
     if (hideconsolewindow) {
         // format a "unique" newWindowTitle
         char newWindowTitle[256];
@@ -546,7 +546,7 @@ int runserver(int argc,char** argv)
     maxConnections=MAX_CONNECTIONS;
     nrSessions=0;
 
-#ifndef WIN32
+#ifndef _WIN32
     signal(SIGPIPE,SIG_IGN);
 #else
     WSADATA wsadata;
@@ -563,7 +563,7 @@ int runserver(int argc,char** argv)
 
     {
         int rsp;
-#ifndef WIN32
+#ifndef _WIN32
         if (setsockopt(server_sockfd,SOL_SOCKET,SO_REUSEADDR,(void*)&rsp,sizeof(int)))
 #else
         if (setsockopt(server_sockfd,SOL_SOCKET,SO_REUSEADDR,(const char *)&rsp,sizeof(int)))
@@ -610,13 +610,13 @@ int runserver(int argc,char** argv)
             std::exit(EXIT_FAILURE);
         }
 
-#ifndef WIN32
+#ifndef _WIN32
         int socketcount = FD_SETSIZE;
 #else
         int socketcount = readfds.fd_count;
 #endif
         for(int sockindex = 0; sockindex < socketcount; ++sockindex) {
-#ifndef WIN32
+#ifndef _WIN32
             while(waitpid(-1,0,WNOHANG) > 0); /* clean up child processes */
             fd = sockindex;
 #else
@@ -625,7 +625,7 @@ int runserver(int argc,char** argv)
             if(FD_ISSET(fd,&testfds)) {
                 if(fd == server_sockfd) {
                     client_len = sizeof(client_address);
-#ifndef WIN32
+#ifndef _WIN32
                     client_sockfd = accept(server_sockfd, (struct sockaddr *)&client_address, (ACCEPT_TYPE_ARG3)&client_len);
 #else
                     client_sockfd = accept(server_sockfd, (struct sockaddr *)&client_address, (int *)&client_len);
@@ -643,13 +643,13 @@ int runserver(int argc,char** argv)
 
                 } else {
                     int clsockindex = sockindex - 1;
-#ifndef WIN32
+#ifndef _WIN32
                     ioctl(fd, FIONREAD, &nread);
 #else
                     ioctlsocket(fd, FIONREAD, (unsigned long *)&nread);
 #endif
                     if(nread == 0) {
-#ifndef WIN32
+#ifndef _WIN32
                         close(fd);
 #else
                         closesocket(fd);
@@ -671,7 +671,7 @@ int runserver(int argc,char** argv)
 
                         int bytesread;
 
-#ifndef WIN32
+#ifndef _WIN32
                         while ((bytesread = read(fd, &buffer.front(), nread)) != 0)
 #else
                         while(bytesread = recv(fd, &buffer.front(), nread, 0))
@@ -715,7 +715,7 @@ int runserver(int argc,char** argv)
 
                                 if (seconds > 0) {
                                     clientToStop = used_clients[clsockindex];
-#ifndef WIN32
+#ifndef _WIN32
                                     signal(SIGALRM,stopClient);
                                     alarm(seconds);
 #else
@@ -736,7 +736,7 @@ int runserver(int argc,char** argv)
                                     std::exit(EXIT_SUCCESS);
 
                                 if (seconds>0) {
-#ifndef WIN32
+#ifndef _WIN32
                                     signal(SIGALRM,SIG_IGN);
 #else
 
@@ -757,7 +757,7 @@ int runserver(int argc,char** argv)
                                           << "Out> " << response << "\n";
 #endif
                                 if (response) {
-#ifndef WIN32
+#ifndef _WIN32
                                     ssize_t c =
                                         write(fd, outStrings.c_str(), strlen(outStrings.c_str()));
                                     if (c < 0)
@@ -795,7 +795,7 @@ int runserver(int argc,char** argv)
                             //                            std::exit(EXIT_SUCCESS);
                         } else {
                             const char* limtxt = "Maximum number of connections reached, sorry\r\n";
-#ifndef WIN32
+#ifndef _WIN32
                             ssize_t c;
                             c = write(fd,"]\r\n",3);
                             if (c < 0)
@@ -817,7 +817,7 @@ int runserver(int argc,char** argv)
             }
         }
     }
-#ifdef WIN32
+#ifdef _WIN32
     WSACleanup();
 #endif
     return 0;
