@@ -1020,7 +1020,6 @@ int main(int argc, char** argv)
     char path[PATH_MAX];
     realpath(buf, path);
     root_dir = dirname(dirname(path));
-    root_dir += "/share/yacas/scripts";
 #elif defined(__linux__)
     {
         struct stat sb;
@@ -1046,28 +1045,28 @@ int main(int argc, char** argv)
         buf[r] = '\0';
 
         root_dir = dirname(dirname(buf.data()));
-        root_dir += "/share/yacas/scripts";
     }
 
 #elif defined(_WIN32)
-    char root_dir_buf[MAX_PATH];
-
-    const LSTATUS rc =
-        SHRegGetPathA(HKEY_LOCAL_MACHINE, "SOFTWARE\\Yacas Team\\yacas", 0, root_dir_buf, 0);
-
-    if (rc != ERROR_SUCCESS) {
-        MessageBox(nullptr, "Cannot find scripts directory, bailing out", "Error", MB_OK);
-        std::exit(1);
+    char buf[MAX_PATH];
+    if (!GetModuleFileName(nullptr, buf, MAX_PATH)) {
+            std::cerr << "yacas: failed to locate the executable, bailing out\n";
+            exit(EXIT_FAILURE);
     }
 
-    std::strcat(root_dir_buf, "\\share\\yacas\\scripts");
-    for (char* p = root_dir_buf; *p; ++p)
-        if (*p == '\\')
-            *p = '/';
-    root_dir = root_dir_buf;
+    PathRemoveFileSpec(buf);
+    PathRemoveFileSpec(buf);
+
+    root_dir = buf;
+
+    for (char& c: root_dir)
+        if (c == '\\')
+            c = '/';
 #else
 #error "This platform is not yet supported. Please contact developers at yacas-devel@sourceforge.net"
 #endif
+
+    root_dir += "/share/yacas/scripts";
 
     int fileind = parse_options(argc, argv);
 
