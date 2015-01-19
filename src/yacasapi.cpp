@@ -46,7 +46,7 @@ CYacas::CYacas(std::ostream& os, LispInt aStackSize):
 {
 }
 
-void CYacas::Evaluate(const LispChar * aExpression)
+void CYacas::Evaluate(const std::string& aExpression)
 {
     LispEnvironment& env = environment.getEnv();
     LispInt stackTop = env.iStack.GetStackTop();
@@ -65,7 +65,7 @@ void CYacas::Evaluate(const LispChar * aExpression)
          if (env.PrettyReader())
          {
             const LispString* prettyReader = env.PrettyReader();
-            LispString full(aExpression);
+            std::string full(aExpression);
             full.push_back(';');
             StringInput input(full,env.iInputStatus);
             LispLocalInput localInput(env, &input);
