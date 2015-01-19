@@ -80,7 +80,7 @@ public:
     /// evaluated in the underlying Lisp environment. Finally, the
     /// result is printed to #iResultOutput via the pretty printer or,
     /// if this is not defined, via an InfixPrinter.
-    void Evaluate(const LispChar * aExpression);
+    void Evaluate(const std::string& aExpression);
 
     /// Return the result of the expression.
     /// This is stored in #iResult.
