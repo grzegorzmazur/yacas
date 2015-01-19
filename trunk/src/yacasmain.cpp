@@ -81,8 +81,6 @@
 #include "yacas/yacas_version.h"
 #endif
 
-//#define PROMPT_SHOW_FREE_MEMORY
-
 #ifdef SUPPORT_SERVER
 #include <cstdlib>
 #include <sys/types.h>
@@ -343,52 +341,6 @@ void my_exit()
 #endif
 #endif
 }
-
-#ifdef PROMPT_SHOW_FREE_MEMORY
-
-#ifdef HAVE_SYSINFO_H
-std::string build_full_prompt(const char* prompt, const std::size_t maxlen)
-{
-    if (!prompt)
-        prompt = "";
-
-    std::string full_prompt(prompt);
-
-    if (full_prompt.length() > maxlen)
-        full_prompt.erase(maxlen);
-
-    struct sysinfo si;
-    if (!sysinfo(&si)) {
-
-        const std::size_t total_mem =
-            (si.totalram * si.mem_unit) / 1024;
-
-        std::ostringstream os;
-        os << total_mem << "k " << prompt;
-
-        if (os.str().length() < maxlen)
-            full_prompt = os.str();
-    }
-
-    return full_prompt;
-}
-#else
-std::string build_full_prompt(const char* prompt, const std::size_t maxlen)
-{
-    if (!prompt)
-        prompt = "";
-
-    std::string full_prompt(prompt);
-
-    if (full_prompt.length() > maxlen)
-        full_prompt.erase(maxlen);
-
-    return full_prompt;
-}
-#endif
-
-#endif
-
 
 #define TEXMACS_DATA_BEGIN   ((char)2)
 #define TEXMACS_DATA_END     ((char)5)
@@ -908,15 +860,8 @@ void runconsole(const std::string& inprompt, const std::string& outprompt)
             LispLocalEvaluator local(yacas->getDefEnv().getEnv(), NEW TracedStackEvaluator);
 #endif
 
-#ifdef PROMPT_SHOW_FREE_MEMORY
-            std::string full_prompt = "";
-            if (show_prompt)
-                full_prompt = build_full_prompt(full_prompt, inprompt, 30);
-
-            ReadInputString(full_prompt);
-#else
             ReadInputString(inprompt);
-#endif
+
             const std::string inpline =  commandline->iLine;
             if (use_texmacs_out)
                 std::cout << TEXMACS_DATA_BEGIN << "verbatim:";
@@ -931,17 +876,7 @@ void runconsole(const std::string& inprompt, const std::string& outprompt)
                     if (use_texmacs_out)
                         std::cout << TEXMACS_DATA_END;
 
-#ifdef PROMPT_SHOW_FREE_MEMORY
-                    char full_prompt[30];
-                    if (show_prompt)
-                        build_full_prompt(full_prompt, outprompt, 30);
-                    else
-                        full_prompt[0] = (char) 0;
-
-                    ShowResult(full_prompt);
-#else
                     ShowResult(outprompt);
-#endif
                 }
             }
 
@@ -1133,11 +1068,6 @@ int main(int argc, char** argv)
 #else
 #error "This platform is not yet supported. Please contact developers at yacas-devel@sourceforge.net"
 #endif
-
-// #ifdef YACAS_DEBUG
-// //        PlatAlloc(100); // test the alloc memory leak checker
-//     CHECKPTR(0);
-// #endif
 
     int fileind = parse_options(argc, argv);
 
