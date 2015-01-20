@@ -87,8 +87,8 @@ FALSEALARM:
   // parse literal strings
   else if (c == '\"')
   {
-    LispString aResult;
-    aResult.push_back(c);
+    std::string str;
+    str.push_back(c);
     while (aInput.Peek() != '\"')
     {
       if (aInput.Peek() == '\\')
@@ -98,13 +98,13 @@ FALSEALARM:
         if (aInput.EndOfStream())
             throw LispErrParsingInput();
       }
-      aResult.push_back(aInput.Next());
+      str.push_back(aInput.Next());
 
       if (aInput.EndOfStream())
           throw LispErrParsingInput();
     }
-    aResult.push_back(aInput.Next()); // consume the close quote
-    return aHashTable.LookUp(aResult);
+    str.push_back(aInput.Next()); // consume the close quote
+    return aHashTable.LookUp(str);
   }
   //parse atoms
   else if (IsAlpha(c))
