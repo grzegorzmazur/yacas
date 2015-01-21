@@ -181,6 +181,7 @@ Verify(Gcd(-2/3, 1), 1/3);
 Verify(Gcd(2/3, -1), 1/3);
 Verify(Gcd(2/3, 1/5), 1/15);
 
+Verify(Gcd({-1}), 1);
 
 NextTest("Absolute value");
 

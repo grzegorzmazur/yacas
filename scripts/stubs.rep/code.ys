@@ -195,7 +195,7 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
       Gcd(first:Tail(Tail(list)));
     ];
 14 # Gcd({0}) <-- 1;
-15 # Gcd({_head}) <-- head;
+15 # Gcd({_head}) <-- Abs(head);
 
 20 # Gcd(list_IsList)_(Length(list)=2) <-- Gcd(list[1],list[2]);
 
