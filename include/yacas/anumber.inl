@@ -351,8 +351,8 @@ inline void WordBaseMultiply(T& aTarget, T& x, T& y)
 template<class T>
 inline bool IsZero(T& a)
 {
-  register typename T::value_type *ptr = &a[0];
-  register typename T::value_type *endptr = ptr+a.size();
+  typename T::value_type *ptr = &a[0];
+  typename T::value_type *endptr = ptr+a.size();
   while (ptr != endptr)
   {
     if (*ptr++ != 0)
