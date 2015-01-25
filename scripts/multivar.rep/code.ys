@@ -8,7 +8,7 @@ RuleBase("MultiNomial",{vars,terms});
 
 If(IsBound(MultiNomialDriver),
   `Use(@MultiNomialDriver),
-  Use("multivar.rep/sparsenomial.ys"));  
+  Use("multivar.rep/sparsenomial.ys"));
 
 // Code that can build the internal representation of a multivariate polynomial
 Use("multivar.rep/makemulti.ys");
@@ -32,7 +32,7 @@ MultiSimp(_expr) <--
 
   c1 := MultiContentTerm(a);
   c2 := MultiContentTerm(b);
-  gcd:=Gcd(c1[2],c2[2]);
+  gcd:=If(IsRational(c1[2]) And IsRational(c2[2]), Gcd(c1[2],c2[2]), 1);
   c1[2] := c1[2]/gcd;
   c2[2] := c2[2]/gcd;
 
@@ -42,7 +42,7 @@ MultiSimp(_expr) <--
 
   vars:=MultiVars(a);
   Check(vars = MultiVars(b),"incompatible Multivars to simplify");
-  
+
   (NormalForm(CreateTerm(vars,c1))/NormalForm(CreateTerm(vars,c2)))
     *(NormalForm(MultiPrimitivePart(a))/NormalForm(MultiPrimitivePart(b)));
 ];
@@ -73,7 +73,7 @@ MultiContentTerm(multi_IsMulti)
   {least,gcd};
 ];
 
-MultiContentScan(_coefs,_fact) <-- 
+MultiContentScan(_coefs,_fact) <--
 [
   Set(least,Min({least,coefs}));
   Set(gcd,Gcd(gcd,fact));
@@ -103,22 +103,22 @@ MultiPrimitivePart(MultiNomial(vars_IsList,_terms))
 
 5 # MultiDegree(MultiNomial(_vars,_term))_(Not(IsList(term))) <-- {};
 10 # MultiDegree(MultiNomial(_vars,{})) <-- FillList(-Infinity,Length(vars));
-20 # MultiDegree(MultiNomial(_vars,_terms)) 
+20 # MultiDegree(MultiNomial(_vars,_terms))
    <-- (MultiLeadingTerm(MultiNomial(vars,terms))[1]);
 
 
-10 # MultiLeadingCoef(MultiNomial(_vars,_terms)) 
+10 # MultiLeadingCoef(MultiNomial(_vars,_terms))
    <-- (MultiLeadingTerm(MultiNomial(vars,terms))[2]);
 
 10 # MultiLeadingMono(MultiNomial(_vars,{})) <-- 0;
-20 # MultiLeadingMono(MultiNomial(_vars,_terms)) 
+20 # MultiLeadingMono(MultiNomial(_vars,_terms))
    <-- Factorize(vars^(MultiDegree(MultiNomial(vars,terms))));
 
 20 # MultiLeadingTerm(_m) <-- MultiLeadingCoef(m) * MultiLeadingMono(m);
 
 MultiVars(MultiNomial(_vars,_terms)) <-- vars;
 
-20 # MultiLT(multi_IsMulti) 
+20 # MultiLT(multi_IsMulti)
    <-- CreateTerm(MultiVars(multi),MultiLeadingTerm(multi));
 
 10 # MultiLM(multi_IsMulti) <-- MultiDegree(multi);
@@ -146,7 +146,7 @@ DropZeroLC(multi_IsMulti) <-- MultiDropLeadingZeroes(multi);
     g[1 .. n] - a list of polynomials to divide by
   output
     {q[1 .. n],r} such that f = q[1]*g[1] + ... + q[n]*g[n] + r
-    
+
   Basically quotient and remainder after division by a group of
   polynomials.
 **************************************************************/
@@ -182,7 +182,7 @@ DropZeroLC(multi_IsMulti) <-- MultiDropLeadingZeroes(multi);
     For(i:=1,i<=nr,i++)
     [
       Set(glt, MultiLT(g[i]));
-      
+
       if (MultiLM(glt) = MultiLM(plt) Or MultiTermLess({MultiLM(glt),1}, {MultiLM(plt),1}))
       if (Select({{n},n<0},MultiLM(plt)-MultiLM(glt)) = {})
       [
@@ -267,7 +267,7 @@ If(new[1][1]=0,
     Set(new, new[2]);
     Set(f,g);
     Set(g,new);
-    
+
 //Echo("after f",f,NormalForm(f));
 //Echo("after g",g,NormalForm(g));
   ];
@@ -289,7 +289,7 @@ MultiS(_g,_h,MultiNomial(_vars,_terms)) <--
 
   gamma :=Max(MultiDegree(g),MultiDegree(h));
   Local(result,topterm);
-  topterm := MM(Factorize(vars^gamma)); 
+  topterm := MM(Factorize(vars^gamma));
 
   result :=
     MultiDivTerm(topterm,MultiLT(g))*g -
@@ -312,7 +312,7 @@ In> Factor(y^2-y)
 Out> y*(y-1);
 
 From which you can see that x = y, and x^2 = x so x is 0 or 1.
-  
+
 */
 
 Groebner(f_IsList) <--
