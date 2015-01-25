@@ -183,6 +183,13 @@ Verify(Gcd(2/3, 1/5), 1/15);
 
 Verify(Gcd({-1}), 1);
 
+Verify(Gcd(2/3*Pi, 1/5*Pi), 1/15*Pi);
+Verify(Gcd(3*Pi, 1/5*Pi), Pi/5);
+Verify(Gcd(Pi, 1/5*Pi), Pi/5);
+Verify(Gcd(-Pi, 1/5*Pi), Pi/5);
+Verify(Gcd(-Pi/2, 1/5*Pi), Pi/10);
+Verify(Gcd(Pi/2, Pi/3), Pi/6);
+
 NextTest("Absolute value");
 
 Verify(Abs(1), 1);
