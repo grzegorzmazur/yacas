@@ -187,7 +187,28 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 45 # Gcd(n_IsInteger,Sqrt(m_IsInteger)) <-- Sqrt(Gcd(n^2,m));
 
 47 # Gcd(n_IsRational,m_IsRational) <-- Gcd(Numer(n),Numer(m))/Lcm(Denom(n),Denom(m));
+
+48 # Gcd(c_IsConstant, b_IsRational * c_IsConstant) <-- Gcd(1, b) * c;
+48 # Gcd(a_IsRational * c_IsConstant, c_IsConstant) <-- Gcd(a, 1) * c;
+
 48 # Gcd(a_IsRational * c_IsConstant, b_IsRational * c_IsConstant) <-- Gcd(a, b) * c;
+
+48 # Gcd(c_IsConstant, c_IsConstant / bd_IsInteger) <-- Gcd(1, 1 / bd) * c;
+48 # Gcd(c_IsConstant / ad_IsInteger, c_IsConstant) <-- Gcd(1 / ad, 1) * c;
+48 # Gcd(c_IsConstant / ad_IsInteger, c_IsConstant / bd_IsInteger) <-- Gcd(1/ad, 1/bd) * c;
+
+48 # Gcd(c_IsConstant / ad_IsInteger, (bn_IsInteger * c_IsConstant) / bd_IsInteger) <-- Gcd(1 / ad, bn / bd) * c;
+48 # Gcd((an_IsInteger * c_IsConstant) / ad_IsInteger, c_IsConstant / bd_IsInteger) <-- Gcd(an / ad, 1 / bd) * c;
+
+48 # Gcd(c_IsConstant / ad_IsInteger, b_IsRational * c_IsConstant) <-- Gcd(1 / ad, b) * c;
+48 # Gcd(a_IsRational * c_IsConstant, c_IsConstant / bd_IsInteger) <-- Gcd(a, 1 / bd) * c;
+
+
+48 # Gcd((an_IsInteger * c_IsConstant) / ad_IsInteger, b_IsRational * c_IsConstant) <-- Gcd(an / ad, b) * c;
+48 # Gcd(a_IsRational * c_IsConstant, (bn_IsInteger * c_IsConstant) / bd_IsInteger) <-- Gcd(a, bn / bd) * c;
+
+48 # Gcd((an_IsInteger * c_IsConstant) / ad_IsInteger, (bn_IsInteger * c_IsConstant) / bd_IsInteger) <-- Gcd(an / ad, bn / bd) * c;
+
 50 # Gcd(list_IsList)_(Length(list)>2) <--
     [
       Local(first);
