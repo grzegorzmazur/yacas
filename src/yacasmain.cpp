@@ -75,7 +75,7 @@
 #include "yacas/arggetter.h"
 
 #include "yacas/errors.h"
-
+#include "yacas/string_utils.h"
 
 #ifndef YACAS_VERSION
 #include "yacas/yacas_version.h"
@@ -208,10 +208,7 @@ std::string ReadInputString(const std::string& prompt)
     readmode = false;
     std::string inpline =  commandline->iLine;
 
-    std::stringstream trimmer;
-    trimmer << inpline;
-    inpline.clear();
-    trimmer >> inpline;
+    trim(inpline);
 
     if (inpline.empty())
         return "True";
@@ -259,7 +256,7 @@ static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispInt aStackT
     LispPtr promptObject = (ARGUMENT(1));
     const std::string prompt = InternalUnstringify(*promptObject->String());
     const std::string output = ReadInputString(prompt);
-    RESULT = LispAtom::New(aEnvironment, Stringify(output));
+    RESULT = LispAtom::New(aEnvironment, stringify(output));
 }
 
 static void LispHistorySize(LispEnvironment& aEnvironment, LispInt aStackTop)

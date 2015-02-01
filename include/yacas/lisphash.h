@@ -28,10 +28,5 @@ private:
     std::unordered_map<std::string, LispStringSmartPtr> _rep;
 };
 
-inline
-std::string Stringify(const std::string& s)
-{
-    return "\"" + s + "\"";
-}
 
 #endif

@@ -20,6 +20,7 @@
 #include "yacas/substitute.h"
 #include "yacas/errors.h"
 #include "yacas/arggetter.h"
+#include "yacas/string_utils.h"
 
 #include <cstring>
 #include <limits.h>
@@ -767,7 +768,7 @@ void LispStringify(LispEnvironment& aEnvironment, LispInt aStackTop)
     const LispString* orig = evaluated->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
 
-    RESULT = LispAtom::New(aEnvironment, Stringify(*orig));
+    RESULT = LispAtom::New(aEnvironment, stringify(*orig));
 }
 
 void LispLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -804,7 +805,7 @@ void LispTmpFile(LispEnvironment& aEnvironment, LispInt aStackTop)
         InternalFalse(aEnvironment, RESULT);
     } else {
         close(fd);
-        RESULT = LispAtom::New(aEnvironment, Stringify(fn));
+        RESULT = LispAtom::New(aEnvironment, stringify(fn));
     }
 #else
     LispChar tmp_path[MAX_PATH];
@@ -813,7 +814,7 @@ void LispTmpFile(LispEnvironment& aEnvironment, LispInt aStackTop)
     GetTempPath(MAX_PATH, tmp_path);
     GetTempFileName(tmp_path, "yacas", 0, tmp_fn);
 
-    RESULT = LispAtom::New(aEnvironment, Stringify(tmp_fn));
+    RESULT = LispAtom::New(aEnvironment, stringify(tmp_fn));
 #endif
 }
 
@@ -1291,7 +1292,7 @@ void LispTrapError(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispGetCoreError(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-  RESULT = LispAtom::New(aEnvironment, Stringify(aEnvironment.iErrorOutput.str()));
+  RESULT = LispAtom::New(aEnvironment, stringify(aEnvironment.iErrorOutput.str()));
 }
 
 void LispSystemCall(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -1319,7 +1320,7 @@ void LispSystemName(LispEnvironment& aEnvironment, LispInt aStackTop)
     s = "Linux";
 #endif
 
-    RESULT = LispAtom::New(aEnvironment, Stringify(s));
+    RESULT = LispAtom::New(aEnvironment, stringify(s));
 }
 
 void LispMaxEvalDepth(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1541,7 +1542,7 @@ void LispToString(LispEnvironment& aEnvironment, LispInt aStackTop)
     InternalEval(aEnvironment, RESULT, ARGUMENT(1));
 
     //Return the result
-    RESULT = LispAtom::New(aEnvironment, Stringify(os.str()));
+    RESULT = LispAtom::New(aEnvironment, stringify(os.str()));
 }
 
 void LispToStdout(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1572,7 +1573,7 @@ void LispFindFile(LispEnvironment& aEnvironment,LispInt aStackTop)
     const std::string path =
             InternalFindFile(oper.c_str(), aEnvironment.iInputDirectories);
 
-    RESULT = LispAtom::New(aEnvironment, Stringify(path));
+    RESULT = LispAtom::New(aEnvironment, stringify(path));
 }
 
 void LispIsGeneric(LispEnvironment& aEnvironment,LispInt aStackTop)
@@ -1748,7 +1749,7 @@ void LispType(LispEnvironment& aEnvironment,LispInt aStackTop)
     head = (*subList);
     if (!head->String())
         goto EMPTY;
-    RESULT = LispAtom::New(aEnvironment, *aEnvironment.HashTable().LookUp(Stringify(*head->String())));
+    RESULT = LispAtom::New(aEnvironment, *aEnvironment.HashTable().LookUp(stringify(*head->String())));
     return;
 
 EMPTY:

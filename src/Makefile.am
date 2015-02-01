@@ -60,7 +60,8 @@ pkginclude_HEADERS = $(top_srcdir)/include/yacas/anumber.h	\
 	$(top_srcdir)/include/yacas/lisptype.h					\
 	$(top_srcdir)/include/yacas/platfileio.h				\
 	$(top_srcdir)/include/yacas/debugmem.h                  \
-	$(top_srcdir)/include/yacas/noncopyable.h
+	$(top_srcdir)/include/yacas/noncopyable.h		\
+	$(top_srcdir)/include/yacas/string_utils.h
 
 libyacas_la_SOURCES = $(libyacas_la_HEADERS) stdcommandline.cpp		 \
 	deffile.cpp infixparser.cpp lispatom.cpp lispcleanupstack.cpp	 \
