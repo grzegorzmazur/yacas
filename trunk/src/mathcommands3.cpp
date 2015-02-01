@@ -20,6 +20,7 @@
 #include "yacas/substitute.h"
 #include "yacas/errors.h"
 #include "yacas/patcher.h"
+#include "yacas/string_utils.h"
 
 #include <cmath>
 
@@ -493,7 +494,7 @@ void LispToBase(LispEnvironment& aEnvironment, LispInt aStackTop)
     x->ToString(str,aEnvironment.BinaryPrecision(),base);
     // Get unique string from hash table, and create an atom from it.
 
-    RESULT = LispAtom::New(aEnvironment, Stringify(str));
+    RESULT = LispAtom::New(aEnvironment, stringify(str));
 }
 
 
@@ -618,7 +619,7 @@ void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
   std::ostringstream os;
   LispLocalOutput localOutput(aEnvironment, os);
   PatchLoad(oper.c_str(), os, aEnvironment);
-  RESULT = LispAtom::New(aEnvironment, Stringify(os.str()));
+  RESULT = LispAtom::New(aEnvironment, stringify(os.str()));
 }
 
 void YacasExtraInfoSet(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -783,7 +784,7 @@ void YacasBuiltinAssoc(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispCurrentFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    RESULT = LispAtom::New(aEnvironment, Stringify(aEnvironment.iInputStatus.FileName()));
+    RESULT = LispAtom::New(aEnvironment, stringify(aEnvironment.iInputStatus.FileName()));
 }
 
 void LispCurrentLine(LispEnvironment& aEnvironment, LispInt aStackTop)
