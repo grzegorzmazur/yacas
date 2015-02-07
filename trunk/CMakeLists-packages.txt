@@ -1,5 +1,7 @@
 if (WIN32 AND CMAKE_CROSSCOMPILING)
-    install (FILES /usr/lib/gcc/i686-w64-mingw32/4.9-win32/libgcc_s_sjlj-1.dll /usr/i686-w64-mingw32/lib/libwinpthread-1.dll DESTINATION bin COMPONENT app)
+    exec_program (${CMAKE_CXX_COMPILER} ARGS -print-file-name=libgcc_s_sjlj-1.dll OUTPUT_VARIABLE SJLJ_PATH)
+    exec_program (${CMAKE_CXX_COMPILER} ARGS -print-file-name=libwinpthread-1.dll OUTPUT_VARIABLE WINPTHREAD_PATH)
+    install (FILES ${SJLJ_PATH} ${WINPTHREAD_PATH} DESTINATION bin COMPONENT app)
 endif ()
 
 
