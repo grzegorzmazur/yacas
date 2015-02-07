@@ -1,3 +1,7 @@
+set (CPACK_SOURCE_GENERATOR "TGZ")
+set (CPACK_SOURCE_IGNORE_FILES "/build/;/.svn/;/install/;/nbproject/;~$;${CPACK_SOURCE_IGNORE_FILES}")
+set (CPACK_SOURCE_PACKAGE_FILE_NAME "yacas_${YACAS_VERSION}")
+
 if (WIN32 AND CMAKE_CROSSCOMPILING)
     exec_program (${CMAKE_CXX_COMPILER} ARGS -print-file-name=libgcc_s_sjlj-1.dll OUTPUT_VARIABLE SJLJ_PATH)
     exec_program (${CMAKE_CXX_COMPILER} ARGS -print-file-name=libwinpthread-1.dll OUTPUT_VARIABLE WINPTHREAD_PATH)
