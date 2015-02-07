@@ -592,7 +592,7 @@ SubResultant(A_CanBeUni, B_CanBeUni, x_IsAtom) <-- [
     While (Not IsZero(R[i + 1])) [
         DestructiveAppend(r, LeadingCoef(R[i + 1], x));
         {Q, RR} := PolyPseudoDivide(R[i], R[i + 1], x);
-        DestructiveAppend(R, Expand(RR / beta[i]));
+        DestructiveAppend(R, Simplify(RR / beta[i]));
         DestructiveAppend(gamma, (-r[i])^delta[i]*gamma[i]^(1-delta[i]));
         i := i + 1;
         DestructiveAppend(delta, Degree(R[i], x) - Degree(R[i + 1], x));
@@ -604,7 +604,7 @@ SubResultant(A_CanBeUni, B_CanBeUni, x_IsAtom) <-- [
         { 0, Append(R[1 .. k + 1], 0) };
     ], [
         If (Degree(R[k], x) = 1, [
-            { R[k + 1], { R[1 .. k + 1], 0} };
+            { R[k + 1], Append(R[1 .. k + 1], 0) };
         ], [
             Local(s, c);
             s := 1;
