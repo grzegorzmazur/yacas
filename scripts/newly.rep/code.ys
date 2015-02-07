@@ -621,15 +621,15 @@ SubResultant(A_CanBeUni, B_CanBeUni, x_IsAtom) <-- [
 
 // Manuel Bronstein, Symbolic Integration I: Transcendental Functions
 // Hermite Reduction, Mack's linear version
-HermiteReduce(A_CanBeUni, D_CanBeUni, x_IsAtom) <-- [
+HermiteReduce(A_CanBeUni, D_CanBeUni, x_IsVariable) <-- [
     Local(g, Dm, Ds);
     g := 0;
 
-    Dm := PolynomialGcd(D, Deriv(x)D);
+    Dm := PolynomialGcd(D, Deriv(x)D, x);
     Ds := Div(D, Dm);
     While (Degree(Dm) > 0) [
         Local(Dm2, Dms, B, C);
-        Dm2 := PolynomialGcd(Dm, Deriv(x)Dm);
+        Dm2 := PolynomialGcd(Dm, Deriv(x)Dm, x);
         Dms := Div(Dm, Dm2);
         {B, C} := ExtendedEuclidean(Div(-Ds*Deriv(x)Dm, Dm), Dms, A);
         A := C - Div((Deriv(x)B)*Ds, Dms);
