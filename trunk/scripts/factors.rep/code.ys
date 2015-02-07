@@ -11,23 +11,23 @@
 3# FactorizeInt(n_IsPositiveInteger) <--
 [
   Local(small'powers);
-  n := Abs(n);	// just in case we are given a negative number
+  n := Abs(n);  // just in case we are given a negative number
   // first, find powers of 2, 3, ..., p with p=257 currently -- this speeds up PollardRho and should avoids its worst-case performance
   // do a quick check first - this will save us time especially if we want to move 257 up a lot
   If(
-  	Gcd(ProductPrimesTo257(), n) > 1,	// if this is > 1, we need to separate some factors. Gcd() is very fast
-	small'powers := TrialFactorize(n, 257),	// value is {n1, {p1,q1}, {p2,q2}, ...} and n1=1 if completely factorized into these factors, and the remainder otherwise
-	small'powers := {n}	// pretend we had run TrialFactorize without success
+    Gcd(ProductPrimesTo257(), n) > 1,   // if this is > 1, we need to separate some factors. Gcd() is very fast
+    small'powers := TrialFactorize(n, 257), // value is {n1, {p1,q1}, {p2,q2}, ...} and n1=1 if completely factorized into these factors, and the remainder otherwise
+    small'powers := {n} // pretend we had run TrialFactorize without success
   );
-  n := small'powers[1];	// remainder
+  n := small'powers[1]; // remainder
   If(n=1, Tail(small'powers),
   // if n!=1, need to factorize the remainder with Pollard Rho algorithm
-	  [
-	  	If(InVerboseMode(), Echo({"FactorizeInt: Info: remaining number ", n}));
-		SortFactorList(
-	  	  PollardCombineLists(Tail(small'powers), PollardRhoFactorize(n))
-		);
-	  ]
+      [
+        If(InVerboseMode(), Echo({"FactorizeInt: Info: remaining number ", n}));
+        SortFactorList(
+          PollardCombineLists(Tail(small'powers), PollardRhoFactorize(n))
+        );
+      ]
   );
 ];
 
@@ -46,14 +46,14 @@ SortFactorList(list) := HeapSort(list, {{a,b}, a[1]<b[1]});
 2# TrialFactorize(n_IsPrimePower) <-- {GetPrimePower(n)};
 3# TrialFactorize(n_IsInteger) <--
 [
-	Local(factorization);
-	factorization := TrialFactorize(n, n);	// TrialFactorize will limit to Sqrt(n) automatically
-	If(
-		Head(factorization) = 1,	// all factors were smaller than Sqrt(n)
-		Tail(factorization),
-		// the first element needs to be replaced
-		Concat(Tail(factorization), {{Head(factorization),1}})
-	);
+    Local(factorization);
+    factorization := TrialFactorize(n, n);  // TrialFactorize will limit to Sqrt(n) automatically
+    If(
+        Head(factorization) = 1,    // all factors were smaller than Sqrt(n)
+        Tail(factorization),
+        // the first element needs to be replaced
+        Concat(Tail(factorization), {{Head(factorization),1}})
+    );
 ];
 */
 
@@ -62,49 +62,49 @@ SortFactorList(list) := HeapSort(list, {{a,b}, a[1]<b[1]});
 // use variable step loops, like in IntLog()
 FindPrimeFactor(n, prime) :=
 [
-	Local(power, factor, old'factor, step);
-	power := 1;
-	old'factor := 1;	// in case the power should be 0
-	factor := prime;
-	// first loop: increase step
-	While(Mod(n, factor)=0)	// avoid division, just compute Mod()
-	[
-		old'factor := factor;	// save old value here, avoid sqrt
-		factor := factor^2;
-		power := power*2;
-	];
-	power := Div(power,2);
-	factor := old'factor;
-	n := Div(n, factor);
-	// second loop: decrease step
-	step := Div(power,2);
-	While(step>0 And n > 1)
-	[
-		factor := prime^step;
-		If(
-			Mod(n, factor)=0,
-			[
-				n := Div(n, factor);
-				power := power + step;
-			]
-		);
-		step := Div(step, 2);
-	];
-	{n, power};
+    Local(power, factor, old'factor, step);
+    power := 1;
+    old'factor := 1;    // in case the power should be 0
+    factor := prime;
+    // first loop: increase step
+    While(Mod(n, factor)=0) // avoid division, just compute Mod()
+    [
+        old'factor := factor;   // save old value here, avoid sqrt
+        factor := factor^2;
+        power := power*2;
+    ];
+    power := Div(power,2);
+    factor := old'factor;
+    n := Div(n, factor);
+    // second loop: decrease step
+    step := Div(power,2);
+    While(step>0 And n > 1)
+    [
+        factor := prime^step;
+        If(
+            Mod(n, factor)=0,
+            [
+                n := Div(n, factor);
+                power := power + step;
+            ]
+        );
+        step := Div(step, 2);
+    ];
+    {n, power};
 ];
 
 /* simpler method but slower on worstcase such as p^n or n! */
 FindPrimeFactorSimple(n, prime) :=
 [
-	Local(power, factor);
-	power := 0;
-	factor := prime;
-	While(Mod(n, factor)=0)
-	[
-		factor := factor*prime;
-		power++;
-	];
-	{n/(factor/prime), power};
+    Local(power, factor);
+    power := 0;
+    factor := prime;
+    While(Mod(n, factor)=0)
+    [
+        factor := factor*prime;
+        power++;
+    ];
+    {n/(factor/prime), power};
 ];
 /**/
 
@@ -112,20 +112,20 @@ FindPrimeFactorSimple(n, prime) :=
 /// E.g. TrialFactorize(42, 2) returns {21, {{2, 1}}} and TrialFactorize(37, 4) returns {37}
 TrialFactorize(n, limit) :=
 [
-	Local(power, prime, result);
-	result := {n};	// first element of result will be replaced by the final value of n
-	prime := 2;	// first prime
-	While(prime <= limit And n>1 And prime*prime <= n)
-	[	// find the max power of prime which divides n
-		{n, power} := FindPrimeFactor(n, prime);
-		If(
-			power>0,
-			DestructiveAppend(result, {prime,power})
-		);
-		prime := NextPseudoPrime(prime);	// faster than NextPrime and we don't need real primes here
-	];
-	// replace the first element which was n by the new n
-	DestructiveReplace(result, 1, n);
+    Local(power, prime, result);
+    result := {n};  // first element of result will be replaced by the final value of n
+    prime := 2; // first prime
+    While(prime <= limit And n>1 And prime*prime <= n)
+    [   // find the max power of prime which divides n
+        {n, power} := FindPrimeFactor(n, prime);
+        If(
+            power>0,
+            DestructiveAppend(result, {prime,power})
+        );
+        prime := NextPseudoPrime(prime);    // faster than NextPrime and we don't need real primes here
+    ];
+    // replace the first element which was n by the new n
+    DestructiveReplace(result, 1, n);
 ];
 
 /* This is Pollard's Rho method of factorizing, as described in
@@ -160,35 +160,35 @@ PollardRhoPolynomial(_x) <-- x^2+1;
 [
   Local(x,y,restarts,gcd,repeat);
   gcd:=1;
-  restarts := 100;	// allow at most this many restartings of the algorithm
-  While(gcd = 1 And restarts>=0)	// outer loop: this will be typically executed only once but it is needed to restart the iteration if it "stalls"
+  restarts := 100;  // allow at most this many restartings of the algorithm
+  While(gcd = 1 And restarts>=0)    // outer loop: this will be typically executed only once but it is needed to restart the iteration if it "stalls"
   [
-  	restarts--;
+    restarts--;
     /* Pick a random value between 1 and n-1 */
     x:= RandomInteger(n-1)+1;
 
     /* Initialize loop */
     gcd:=1; y:=x;
-	repeat := 4;	// allow at most this many repetitions
-//		Echo({"debug PollardRho: entering gcd loop, n=", n});
- 
+    repeat := 4;    // allow at most this many repetitions
+//      Echo({"debug PollardRho: entering gcd loop, n=", n});
+
     /* loop until failure or success found */
     While(gcd = 1 And repeat>=0)
     [
       x:= Mod( PollardRhoPolynomial(x), n);
-   	  y:= Mod( PollardRhoPolynomial(
-	  	Mod( PollardRhoPolynomial(y), n)	// this is faster for large numbers
-	  ), n);
-   	  If(x-y = 0,
-       	 [
-		 	gcd := 1;
-		 	repeat--;	// guard against "stalling" in an infinite loop but allow a few repetitions
-		 ],
-       	 gcd:=Gcd(x-y,n)
-       	 );
-//		Echo({"debug PollardRho: gcd=",gcd," x=", x," y=", y});
-   	];
-	If(InVerboseMode() And repeat<=0, Echo({"PollardRhoFactorize: Warning: stalled while factorizing ", n, "; counters ", x, y}));
+      y:= Mod( PollardRhoPolynomial(
+        Mod( PollardRhoPolynomial(y), n)    // this is faster for large numbers
+      ), n);
+      If(x-y = 0,
+         [
+            gcd := 1;
+            repeat--;   // guard against "stalling" in an infinite loop but allow a few repetitions
+         ],
+         gcd:=Gcd(x-y,n)
+         );
+//      Echo({"debug PollardRho: gcd=",gcd," x=", x," y=", y});
+    ];
+    If(InVerboseMode() And repeat<=0, Echo({"PollardRhoFactorize: Warning: stalled while factorizing ", n, "; counters ", x, y}));
   ];
   Check(restarts>0, "PollardRhoFactorize: Error: failed to factorize " : String(n));
   If(InVerboseMode() And gcd > 1, Echo({"PollardRhoFactorize: Info: while factorizing ", n, " found factor ", gcd}));
@@ -227,7 +227,7 @@ PollardCombineLists(_left,_right) <--
 /* New factorization : split between integers and polynomials. */
 10 # Factors(p_IsInteger) <-- FactorizeInt(p);
 20 # Factors(p_CanBeUni)_(Length(VarList(p)) = 1) <--  BinaryFactors(p);
-30 # Factors(p_IsGaussianInteger)	<-- GaussianFactors(p);
+30 # Factors(p_IsGaussianInteger)   <-- GaussianFactors(p);
 
 
 // This is so Factor(Sin(x)) doesn't return FWatom(Sin(x))
@@ -300,17 +300,17 @@ PollardCombineLists(_left,_right) <--
 // The bud of an Quadratic Seive algorithm
 // congruence solving code must be written first
 Function("FactorQS",{n})[
-	Local(x,k,fb,j);	
-	// optimal number of primes in factor base
-	// according to Fundamental Number Theory with Applications - Mollin, p130
-	k:=Round(N(Sqrt(Exp(Sqrt(Ln(n)*Ln(Ln(n)))))));
-	fb:=ZeroVector(k);
-	For(j:=1,j<=k,j++)[
-		fb[j]:=NextPrime(j);
-	];
+    Local(x,k,fb,j);
+    // optimal number of primes in factor base
+    // according to Fundamental Number Theory with Applications - Mollin, p130
+    k:=Round(N(Sqrt(Exp(Sqrt(Ln(n)*Ln(Ln(n)))))));
+    fb:=ZeroVector(k);
+    For(j:=1,j<=k,j++)[
+        fb[j]:=NextPrime(j);
+    ];
 ];
 
-// Preliminary implementation of simple square-free factorization 
+// Preliminary implementation of simple square-free factorization
 // (Musser's algorithm)
 10 # SquareFreeFactorize(f_CanBeUni, x_IsAtom)_(VarList(f) = {x} Or VarList(f) = {}) <--
 [
@@ -318,7 +318,7 @@ Function("FactorQS",{n})[
 
     f' := Deriv(x)f;
 
-    g := PolynomialGcd(f, f');
+    g := PolynomialGcd(f, f', x);
     h := Div(f, g);
 
     m := {};
@@ -328,11 +328,10 @@ Function("FactorQS",{n})[
 
         Local(gg, hh, mi);
 
-        // FIXME: once polynomial GCD works correctly, the If will be redundant
-        hh := PolynomialGcd(g, h);
+        hh := PolynomialGcd(g, h, x);
         gg := Div(g, hh);
 
-        mi := Monic(Div(h, hh));
+        mi := Div(h, hh);
         If (mi != 1, DestructiveAppend(m, {mi, i}));
         i := i + 1;
 
