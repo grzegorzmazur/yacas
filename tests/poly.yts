@@ -20,6 +20,12 @@ Verify(Gcd(2*x+2,4*x+4), 2*x+2);
 Verify(Gcd(x^2+7*x+6,x^2-5*x-6), x+1);
 Verify(Gcd(x^8+x^6-3*x^4-3*x^3+8*x^2+2*x-5,3*x^6+5*x^4-4*x^2-9*x+21), 1);
 
+Verify(PolynomialGcd(2, 1/4, x), 1/4);
+Verify(PolynomialGcd(2*x+2, 4*x+4, x), 2*x+2);
+Verify(PolynomialGcd(x^2+7*x+6, x^2-5*x-6, x), x+1);
+Verify(PolynomialGcd(x^8+x^6-3*x^4-3*x^3+8*x^2+2*x-5, 3*x^6+5*x^4-4*x^2-9*x+21, x), 1);
+
+
 NextTest("Square-free factorization");
 
 Verify(SquareFreeFactorize(x^2 + 2*x + 1, x), {{x+1,2}});
