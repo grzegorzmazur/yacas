@@ -142,11 +142,11 @@ template <class T>
 class WithExtraInfo : public T
 {
 public:
-  WithExtraInfo(T& aT, LispObject* aData = 0) : T(aT), iExtraInfo(aData) {}
+  WithExtraInfo(const T& aT, LispObject* aData = 0) : T(aT), iExtraInfo(aData) {}
   WithExtraInfo(const WithExtraInfo& other) : T(other), iExtraInfo(other.iExtraInfo) {}
     virtual LispObject* ExtraInfo() { return iExtraInfo; }
   virtual LispObject* SetExtraInfo(LispObject* aData) { iExtraInfo = aData; return this; }
-  virtual LispObject* Copy()
+  virtual LispObject* Copy() const
   {
     if (!iExtraInfo.ptr()) return T::Copy();
         return NEW WithExtraInfo(*this, iExtraInfo->Copy());
