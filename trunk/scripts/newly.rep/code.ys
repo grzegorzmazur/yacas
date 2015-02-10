@@ -638,3 +638,74 @@ HermiteReduce(A_CanBeUni, D_CanBeUni, x_IsVariable) <-- [
     ];
     {g, A / Ds};
 ];
+
+// Manuel Bronstein, Symbolic Integration I: Transcendental Functions
+// Lazard-Rioboo-Trager algorithm
+IntRationalLogPart(A_CanBeUni, D_CanBeUni, x_IsVariable) <-- [
+
+    Local(i, j, r, t, R, PRS, Q, S, n, result);
+
+    {R, PRS} := SubResultant(D, A - t * (Deriv(x)D), x);
+
+    Q := SquareFreeFactorize(R, t);
+
+    n := Max(MatrixColumn(Q, 2));
+
+    S := {};
+
+    ForEach (i, 1 .. n) [
+        If (i = Degree(D), [
+            Echo("not implemented");
+        ], [
+            Local(A, Qi, Si);
+            ForEach(pr, PRS) [
+                If (Degree(pr, x) = i, Si := pr);
+            ];
+            A := SquareFreeFactorize(LeadingCoef(Si, x), t);
+            j := Find(MatrixColumn(Q, 2), i);
+            Qi := If (j > 0, Q[j][1], 1);
+            ForEach(Aj, A) [
+                Si := Si / PolynomialGcd(Aj[1], Qi, t)^Aj[2];
+            ];
+            DestructiveAppend(S, Si);
+        ]);
+    ];
+
+    result := 0;
+
+    ForEach (Qi, Q) [
+        Local(c, cc);
+
+        i := Qi[2];
+        Qi := Qi[1];
+
+        Si := MakeUni(S[i], x);
+
+        cc := {};
+        ForEach (c, Si[3]) [
+            DestructiveAppend(cc, Rem(c, Qi));
+        ];
+
+        result := result + SumLog(t, Qi, 0, NormalForm(UniVariate(Si[1], Si[2], cc)));
+    ];
+
+    result;
+];
+
+// Manuel Bronstein, Symbolic Integration I: Transcendental Functions
+// Rational function integration
+IntegrateRationalFunction(N_CanBeUni, D_CanBeUni, x_IsVariable) <-- [
+    Local(g, h, Q, R, p);
+
+    {g, h} := HermiteReduce(N, D, x);
+
+    Echo("g = ", g);
+    Echo("h = ", h);
+
+    Q := Div(Numer(h), Denom(h));
+    R := Rem(Numer(h), Denom(h));
+
+    p := g + Integrate(x)Q;
+
+    If (R = 0, p, p + IntRationalLogPart(R, Denom(h),x));
+];
