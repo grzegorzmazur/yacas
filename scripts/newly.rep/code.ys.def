@@ -26,4 +26,6 @@ StringReplace
 PolyPseudoDivide
 SubResultant
 HermiteReduce
+IntRationalLogPart
+IntegrateRationalFunction
 }
