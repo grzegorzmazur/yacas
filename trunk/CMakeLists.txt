@@ -164,10 +164,10 @@ install (DIRECTORY scripts/ DESTINATION share/yacas/scripts COMPONENT app)
 install (DIRECTORY include/ DESTINATION include COMPONENT dev)
 install (FILES ${PROJECT_BINARY_DIR}/include/yacas/yacas_version.h DESTINATION include/yacas COMPONENT dev)
 
-include (CMakeLists-tests.txt)
-
 if (ENABLE_JYACAS)
     include (CMakeLists-jyacas.txt)
 endif ()
+
+include (CMakeLists-tests.txt)
 
 include (CMakeLists-packages.txt)
