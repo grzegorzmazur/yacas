@@ -1,5 +1,6 @@
 Verify(PolyPseudoDivide(3*x^3+x^2+x+5, 5*x^2-3*x+1, x), {15*x+14,52*x+111});
-Verify(HermiteReduce(x^7-24*x^4-4*x^2+8*x-8, x^8+6*x^6+12*x^4+8*x^2, x), {(8*x^2+4)/(x^5+4*x^3+4*x)+3/(x^2+2),(x^2+2)/(x^3+2*x)});
+Verify(HermiteReduce(x^7-24*x^4-4*x^2+8*x-8, x^8+6*x^6+12*x^4+8*x^2, x), {(8*x^2+4)/(x^5+4*x^3+4*x)+3/(x^2+2),1/x});
+Verify(HermiteReduce(36, x^5-2*x^4-2*x^3+4*x^2+x-2, x), {(12*x+6)/(x^2-1),12/(x^2-x-2)});
 Verify(SubResultant(x^2+1, x^2-1, x), {4,{x^2+1,x^2-1,-2,0}});
 Verify(SubResultant(3*t*x^2-t^3-4, x^2+t^3*x-9, x), {(-3)*t^10-12*t^7+t^6-54*t^4+8*t^3+729*t^2-216*t+16,{3*t*x^2-t^3-4,x^2+t^3*x-9,3*t^4*x+t^3-27*t+4,(-3)*t^10-12*t^7+t^6-54*t^4+8*t^3+729*t^2-216*t+16,0}});
 Verify(IntRationalLogPart(x^4-3*x^2+6,x^6-5*x^4+5*x^2+4, x), SumLog(t,4*t^2+1,0,(-214)*t*x^3+107*x^2+642*t*x-214));
