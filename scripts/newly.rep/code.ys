@@ -699,9 +699,6 @@ IntegrateRationalFunction(N_CanBeUni, D_CanBeUni, x_IsVariable) <-- [
 
     {g, h} := HermiteReduce(N, D, x);
 
-    Echo("g = ", g);
-    Echo("h = ", h);
-
     Q := Div(Numer(h), Denom(h));
     R := Rem(Numer(h), Denom(h));
 
