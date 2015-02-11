@@ -636,7 +636,11 @@ HermiteReduce(A_CanBeUni, D_CanBeUni, x_IsVariable) <-- [
         g := g + B/Dm;
         Dm := Dm2;
     ];
-    {g, A / Ds};
+
+    // FIXME: use Cancel() when available
+    Dm := PolynomialGcd(A, Ds, x);
+
+    {g, Div(A, Dm) / Div(Ds, Dm)};
 ];
 
 // Manuel Bronstein, Symbolic Integration I: Transcendental Functions
