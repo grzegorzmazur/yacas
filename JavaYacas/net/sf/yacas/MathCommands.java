@@ -3710,7 +3710,8 @@ class MathCommands
   {
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.HashTable().GarbageCollect();
+      // all the garbage collection is performed automatically, there's no need
+      // for manual intervention
       LispStandard.InternalTrue(aEnvironment,RESULT(aEnvironment, aStackTop));
     }
   }
