@@ -1,19 +1,17 @@
 package net.sf.yacas;
 
+class LispDefFiles {
 
-class LispDefFiles extends LispAssociatedHash // <LispDefFile>
-{
-  LispDefFile File(String aFileName)
-  {
-    // Create a new entry
-    LispDefFile file = (LispDefFile)LookUp(aFileName);
-    if (file == null)
-    {
-      LispDefFile newfile = new LispDefFile(aFileName);
-      // Add the new entry to the hash table
-      SetAssociation(newfile, aFileName);
-      file = (LispDefFile)LookUp(aFileName);
+    LispDefFile File(String aFileName) {
+        LispDefFile file = map.get(aFileName);
+
+        if (file == null) {
+            file = new LispDefFile(aFileName);
+            map.put(aFileName, file);
+        }
+
+        return file;
     }
-    return file;
-  }
+
+    java.util.HashMap<String, LispDefFile> map = new java.util.HashMap();
 }
