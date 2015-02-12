@@ -84,60 +84,54 @@ class LispEnvironment
   int iMaxEvalDepth = 10000;
 
 
-  /** YacasArgStack implements a stack of pointers to objects that can be used to pass
-  *  arguments to functions, and receive results back.
-  */
-  class YacasArgStack
-  {
+    /**
+     * YacasArgStack implements a stack of pointers to objects that can be used
+     * to pass arguments to functions, and receive results back.
+     */
+    class YacasArgStack {
 
-    //TODO appropriate constructor?
-    public YacasArgStack(int aStackSize)
-    {
-      iStack = new LispPtrArray(aStackSize,null);
-      iStackTop = 0;
-//printf("STACKSIZE %d\n",aStackSize);
-    }
-    public int GetStackTop()  {return iStackTop;}
-    public void RaiseStackOverflowError() throws Exception
-    {
-      LispError.RaiseError("Argument stack reached maximum. Please extend argument stack with --stack argument on the command line.");
-    }
-    public void PushArgOnStack(LispObject aObject) throws Exception
-    {
-      if (iStackTop >= iStack.Size())
-      {
-        RaiseStackOverflowError();
-      }
-      iStack.SetElement(iStackTop,aObject);
-      iStackTop++;
-    }
+        public YacasArgStack(int aStackSize) {
+            maxSize = aStackSize;
+            iStack = new java.util.ArrayList();
+        }
 
-    public void PushNulls(int aNr)  throws Exception
-    {
-      if (iStackTop+aNr > iStack.Size())
-      {
-        RaiseStackOverflowError();
-      }
-      iStackTop+=aNr;
-    }
+        public int GetStackTop() {
+            return iStack.size();
+        }
 
-    public LispPtr GetElement(int aPos) throws Exception
-    {
-      LispError.LISPASSERT(aPos>=0 && aPos < iStackTop);
-      return iStack.GetElement(aPos);
-    }
-    public void PopTo(int aTop) throws Exception
-    {
-      LispError.LISPASSERT(aTop<=iStackTop);
-      while (iStackTop>aTop)
-      {
-        iStackTop--;
-        iStack.SetElement(iStackTop,null);
-      }
-    }
-    LispPtrArray iStack;
-    int iStackTop;
-  };
+        public void RaiseStackOverflowError() throws Exception {
+            LispError.RaiseError("Argument stack reached maximum. Please extend argument stack with --stack argument on the command line.");
+        }
+
+        public void PushArgOnStack(LispObject aObject) throws Exception {
+            if (iStack.size() >= maxSize)
+                RaiseStackOverflowError();
+
+            iStack.add(new LispPtr(aObject));
+        }
+
+        public void PushNulls(int aNr) throws Exception {
+            if (iStack.size() + aNr > maxSize)
+                RaiseStackOverflowError();
+
+            for (int i = 0; i < aNr; ++i)
+                iStack.add(null);
+        }
+
+        public LispPtr GetElement(int aPos) throws Exception {
+            LispError.LISPASSERT(aPos >= 0 && aPos < iStack.size());
+            return iStack.get(aPos);
+        }
+
+        public void PopTo(int aTop) throws Exception {
+            LispError.LISPASSERT(aTop <= iStack.size());
+            while (iStack.size() > aTop)
+                iStack.remove(iStack.size() - 1);
+        }
+
+        java.util.ArrayList<LispPtr> iStack;
+        int maxSize;
+    };
 
   YacasArgStack iStack;
 
