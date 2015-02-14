@@ -4,10 +4,9 @@
 ## Note: this list needs to be synchronized with "configure.in"
 
 ## Interdependency: to get a working "yacas", the source in "src" need to be
-## compiled, and "packages.ys" in "scripts" need to be generated. We need a
-## working "yacas" to make the manual in "manmake", and to run the test
-## suite in "tests". In addition, one of the tests to be run is generated in
-## "manmake".
+## compiled. We need a working "yacas" to make the manual in "manmake", and to
+## run the test suite in "tests". In addition, one of the tests to be run is 
+## generated in "manmake".
 
 ACLOCAL_AMFLAGS= -I m4
 
