@@ -100,16 +100,9 @@ set (JYACAS_SRCS ${CMAKE_CURRENT_BINARY_DIR}/CVersion.java
 
 add_jar (jyacas ${JYACAS_SRCS} ENTRY_POINT net/sf/yacas/YacasConsole VERSION ${YACAS_VERSION})
 
-add_dependencies (jyacas gencorefunctions)
-
 get_target_property(JYACAS_JAR_FILE jyacas JAR_FILE)
 
 add_custom_command(
     TARGET jyacas POST_BUILD
-    COMMAND ${PROJECT_BINARY_DIR}/gencorefunctions ARGS > ${PROJECT_BINARY_DIR}/scripts/corefunctions.ys
-    COMMAND ${Java_JAR_EXECUTABLE} -uf ${JYACAS_JAR_FILE} scripts/corefunctions.ys)
-
-add_custom_command(
-    TARGET jyacas POST_BUILD
-    COMMAND ${Java_JAR_EXECUTABLE} -uf ${JYACAS_JAR_FILE} ${YACAS_STATIC_SCRIPTS}
+    COMMAND ${Java_JAR_EXECUTABLE} -uf ${JYACAS_JAR_FILE} ${YACAS_SCRIPTS}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
