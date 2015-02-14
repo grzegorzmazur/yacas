@@ -107,7 +107,7 @@ get_target_property(JYACAS_JAR_FILE jyacas JAR_FILE)
 add_custom_command(
     TARGET jyacas POST_BUILD
     COMMAND ${PROJECT_BINARY_DIR}/gencorefunctions ARGS > ${PROJECT_BINARY_DIR}/scripts/corefunctions.ys
-    COMMAND ${Java_JAR_EXECUTABLE} -uf ${JYACAS_JAR_FILE} scripts/corefunctions.ys scripts/packages.ys)
+    COMMAND ${Java_JAR_EXECUTABLE} -uf ${JYACAS_JAR_FILE} scripts/corefunctions.ys)
 
 add_custom_command(
     TARGET jyacas POST_BUILD

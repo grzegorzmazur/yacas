@@ -339,11 +339,9 @@ style is not adhered to).
 The Yacas script files with extension {ys} can be found in the
 {scripts/} directory and its "repository" subdirectories. 
 
-All script files and {.def} files are listed in {Makefile.am}. This
-definition is used to generate the {packages.ys} file, which contains
-a list of all {.def} files. The {corefunctions.ys} file is also
-automatically generated. This is done by running the
-{gencorefunctions} program, which resides in the {src/} directory. 
+The {corefunctions.ys} file is automatically generated. This is done
+by running the {gencorefunctions} program, which resides in the {src/}
+directory.
 
 At installation time, all the script files and {.def} files that are
 listed in {Makefile.am} are copied. During this installation, the
