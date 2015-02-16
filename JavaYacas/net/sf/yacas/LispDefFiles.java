@@ -1,5 +1,7 @@
 package net.sf.yacas;
 
+import java.util.HashMap;
+
 class LispDefFiles {
 
     LispDefFile File(String aFileName) {
@@ -13,5 +15,5 @@ class LispDefFiles {
         return file;
     }
 
-    java.util.HashMap<String, LispDefFile> map = new java.util.HashMap();
+    HashMap<String, LispDefFile> map = new HashMap<>();
 }
