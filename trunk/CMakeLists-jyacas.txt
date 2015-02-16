@@ -25,8 +25,6 @@ set (JYACAS_SRCS ${CMAKE_CURRENT_BINARY_DIR}/CVersion.java
          JavaYacas/net/sf/yacas/InputDirectories.java
          JavaYacas/net/sf/yacas/LispOutput.java
          JavaYacas/net/sf/yacas/LispHashTable.java
-         JavaYacas/net/sf/yacas/LispAssociatedHash.java
-         JavaYacas/net/sf/yacas/LispGlobal.java
          JavaYacas/net/sf/yacas/LispGlobalVariable.java
          JavaYacas/net/sf/yacas/LispArgList.java
          JavaYacas/net/sf/yacas/GenericClass.java
@@ -43,7 +41,6 @@ set (JYACAS_SRCS ${CMAKE_CURRENT_BINARY_DIR}/CVersion.java
          JavaYacas/net/sf/yacas/LispNumber.java
          JavaYacas/net/sf/yacas/LispSubList.java
          JavaYacas/net/sf/yacas/LispStandard.java
-         JavaYacas/net/sf/yacas/LispUserFunctions.java
          JavaYacas/net/sf/yacas/LispArityUserFunction.java
          JavaYacas/net/sf/yacas/BranchingUserFunction.java
          JavaYacas/net/sf/yacas/MacroUserFunction.java
@@ -58,7 +55,6 @@ set (JYACAS_SRCS ${CMAKE_CURRENT_BINARY_DIR}/CVersion.java
          JavaYacas/net/sf/yacas/BigNumber.java
          JavaYacas/net/sf/yacas/YacasEvaluator.java
          JavaYacas/net/sf/yacas/YacasEvalCaller.java
-         JavaYacas/net/sf/yacas/YacasCoreCommands.java
          JavaYacas/net/sf/yacas/UserStackInformation.java
          JavaYacas/net/sf/yacas/BasicEvaluator.java
          JavaYacas/net/sf/yacas/EvalFuncBase.java
