@@ -1,5 +1,7 @@
 package net.sf.yacas;
 
+import java.util.HashMap;
+
 /**
  * LispAssociatedHash allows you to associate arbitrary information with a
  * string in the above hash table. You can specify what type of information to
@@ -32,5 +34,5 @@ class LispAssociatedHash {
         iHashtable.remove(aString);
     }
 
-    java.util.HashMap iHashtable = new java.util.HashMap();
+    HashMap<String, Object> iHashtable = new HashMap();
 }
