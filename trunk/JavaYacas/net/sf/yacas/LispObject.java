@@ -8,11 +8,11 @@ package net.sf.yacas;
  *  Only one of these three functions should return a non-NULL value.
  *  It is a reference-counted object. LispPtr handles the reference counting.
  */
-abstract class LispObject
+abstract class LispObject extends LispPtr
 {
   public  LispPtr Next()
   {
-    return iNext;
+    return this;
   }
 
   /** Return string representation, or NULL if the object doesn't have one.
@@ -76,5 +76,4 @@ abstract class LispObject
       return true;
     return false;
   }
-  LispPtr   iNext = new LispPtr();
 }
