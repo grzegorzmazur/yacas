@@ -33,7 +33,7 @@ public class YacasConsole extends Thread
   public static void main(String[] argv)
   {
     String defaultDirectory = null;
-    String archive = "";
+    String archive = null;
     String expression = null;
 
     {
@@ -41,14 +41,12 @@ public class YacasConsole extends Thread
 
       if (detectURL != null)
       {
-        String detect = detectURL.getPath();
-        if (detect.contains("!")) archive = detect.substring(0, detect.lastIndexOf('!'));
-      }
-      else
-      {
-          // FIXME: report the error
+        String path = detectURL.getPath();
+        if (path.contains("!"))
+            archive = path.substring(0, path.lastIndexOf('!'));
       }
     }
+
     int i=0;
     while (i<argv.length)
     {
@@ -82,9 +80,11 @@ public class YacasConsole extends Thread
 
     try
     {
-      String zipFileName = archive;
-      java.util.zip.ZipFile z = new java.util.zip.ZipFile(new File(new java.net.URI(zipFileName)));
-      LispStandard.zipFile = z;
+        if (archive != null) {
+            String zipFileName = archive;
+            java.util.zip.ZipFile z = new java.util.zip.ZipFile(new File(new java.net.URI(zipFileName)));
+            LispStandard.zipFile = z;
+        }
     }
     catch(Exception e)
     {
