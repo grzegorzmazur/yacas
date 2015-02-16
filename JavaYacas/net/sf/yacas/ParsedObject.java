@@ -80,7 +80,7 @@ class ParsedObject
         }
         else
         {
-            LispInFixOperator op = (LispInFixOperator)iParser.iInfixOperators.LookUp(iLookAhead);
+            LispInFixOperator op = iParser.iInfixOperators.get(iLookAhead);
             if (op == null)
             {
 //printf("op [%s]\n",iLookAhead.String());
@@ -97,7 +97,7 @@ class ParsedObject
                     iParser.iEnvironment.HashTable().LookUp(iLookAhead.substring(0,len));
 
 //printf("trunc %s\n",lookUp.String());
-                  op = (LispInFixOperator)iParser.iInfixOperators.LookUp(lookUp);
+                  op = iParser.iInfixOperators.get(lookUp);
 //if (op) printf("FOUND\n");
                   if (op != null)
                   {
@@ -107,7 +107,7 @@ String toLookUp = iLookAhead.substring(len,origlen);
 
 //printf("right: %s (%d)\n",lookUpRight.String(),origlen-len);
 
-                    if (iParser.iPrefixOperators.LookUp(lookUpRight) != null)
+                    if (iParser.iPrefixOperators.get(lookUpRight) != null)
                     {
 //printf("ACCEPT %s\n",lookUp.String());
                       iLookAhead = lookUp;
@@ -145,7 +145,7 @@ String toLookUp = iLookAhead.substring(len,origlen);
   {
     LispInFixOperator op;
     // Parse prefix operators
-    op = (LispInFixOperator)iParser.iPrefixOperators.LookUp(iLookAhead);
+    op = iParser.iPrefixOperators.get(iLookAhead);
     if (op != null)
     {
         String theOperator = iLookAhead;
@@ -244,7 +244,7 @@ String toLookUp = iLookAhead.substring(len,origlen);
             }
             MatchToken(iLookAhead);
 
-            op = (LispInFixOperator)iParser.iBodiedOperators.LookUp(theOperator);
+            op = iParser.iBodiedOperators.get(theOperator);
             if (op != null)
             {
                 ReadExpression(op.iPrecedence); // InfixPrinter.KMaxPrecedence
@@ -259,7 +259,7 @@ String toLookUp = iLookAhead.substring(len,origlen);
 
     // Parse postfix operators
 
-    while ((op = (LispInFixOperator)iParser.iPostfixOperators.LookUp(iLookAhead)) != null)
+    while ((op = iParser.iPostfixOperators.get(iLookAhead)) != null)
     {
         InsertAtom(iLookAhead);
         MatchToken(iLookAhead);

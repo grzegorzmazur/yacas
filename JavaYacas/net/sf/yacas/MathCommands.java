@@ -651,8 +651,7 @@ class MathCommands
     String orig = evaluated.Get().String();
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,orig != null, 1);
     //
-    LispInFixOperator op = (LispInFixOperator)aOperators.LookUp(LispStandard.SymbolName(aEnvironment,orig));
-    return op;
+    return aOperators.get(LispStandard.SymbolName(aEnvironment,orig));
   }
 
   /// Execute the Yacas commands \c Set and \c MacroSet.
