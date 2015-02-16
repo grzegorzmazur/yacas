@@ -26,582 +26,580 @@ class MathCommands
     aEnvironment.iPrefixOperators.SetOperator(0,"_");
     aEnvironment.iInfixOperators.SetOperator(0,"_");
 
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispQuote(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "Hold");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispEval(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Eval");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispWrite(),1, YacasEvaluator.Variable|YacasEvaluator.Function),
-         "Write");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispWriteString(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "WriteString");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFullForm(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FullForm");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDefaultDirectory(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "DefaultDirectory");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFromFile(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "FromFile");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFromString(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "FromString");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispRead(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Read");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispReadToken(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "ReadToken");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispToFile(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "ToFile");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispToString(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "ToString");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispToStdout(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "ToStdout");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispLoad(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Load");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispTmpFile(), 0, YacasEvaluator.Fixed | YacasEvaluator.Function),
-         "TmpFile");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispProtect(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "Protect");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispUnProtect(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "UnProtect");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispIsProtected(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "IsProtected");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispSetVar(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "Set");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispMacroSetVar(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "MacroSet");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispClearVar(),1, YacasEvaluator.Variable|YacasEvaluator.Macro),
-         "Clear");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispClearVar(),1, YacasEvaluator.Variable|YacasEvaluator.Function),
-         "MacroClear");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispNewLocal(),1, YacasEvaluator.Variable|YacasEvaluator.Macro),
-         "Local");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispNewLocal(),1, YacasEvaluator.Variable|YacasEvaluator.Function),
-         "MacroLocal");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispHead(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Head");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispNth(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathNth");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispTail(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Tail");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDestructiveReverse(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "DestructiveReverse");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispLength(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Length");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispList(),1, YacasEvaluator.Variable|YacasEvaluator.Macro),
-         "List");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispUnList(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "UnList");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispListify(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Listify");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispConcatenate(),1, YacasEvaluator.Variable|YacasEvaluator.Function),
-         "Concat");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispConcatenateStrings(),1, YacasEvaluator.Variable|YacasEvaluator.Function),
-         "ConcatStrings");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDelete(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Delete");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDestructiveDelete(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "DestructiveDelete");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispInsert(),3, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Insert");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDestructiveInsert(),3, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "DestructiveInsert");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispReplace(),3, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Replace");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDestructiveReplace(),3, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "DestructiveReplace");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispAtomize(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Atom");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispStringify(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "String");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispCharString(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "CharString");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFlatCopy(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FlatCopy");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispProgBody(),1, YacasEvaluator.Variable|YacasEvaluator.Macro),
-         "Prog");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispWhile(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "While");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispIf(),2, YacasEvaluator.Variable|YacasEvaluator.Macro),
-         "If");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispCheck(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "Check");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispTrapError(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "TrapError");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispGetCoreError(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "GetCoreError");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispPreFix(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Prefix");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispInFix(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Infix");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispPostFix(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Postfix");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispBodied(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Bodied");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispRuleBase(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "RuleBase");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispMacroRuleBase(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MacroRuleBase");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispRuleBaseListed(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "RuleBaseListed");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispMacroRuleBaseListed(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MacroRuleBaseListed");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDefMacroRuleBase(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "DefMacroRuleBase");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDefMacroRuleBaseListed(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "DefMacroRuleBaseListed");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispHoldArg(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "HoldArg");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispNewRule(),5, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "Rule");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispMacroNewRule(),5, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MacroRule");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispUnFence(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "UnFence");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispRetract(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Retract");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispNot(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathNot");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispNot(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Not");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispLazyAnd(),1, YacasEvaluator.Variable|YacasEvaluator.Macro),
-         "MathAnd");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispLazyAnd(),1, YacasEvaluator.Variable|YacasEvaluator.Macro),
-         "And");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispLazyOr(),1, YacasEvaluator.Variable|YacasEvaluator.Macro),
-         "MathOr");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispLazyOr(),1, YacasEvaluator.Variable|YacasEvaluator.Macro),
-         "Or");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispEquals(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Equals");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispEquals(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "=");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispLessThan(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "LessThan");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispGreaterThan(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "GreaterThan");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispIsFunction(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "IsFunction");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispIsAtom(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "IsAtom");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispIsNumber(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "IsNumber");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispIsInteger(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "IsInteger");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispIsList(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "IsList");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispIsString(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "IsString");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispIsBound(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "IsBound");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispMultiply(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathMultiply");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispAdd(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathAdd");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispSubtract(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathSubtract");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDivide(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathDivide");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new YacasBuiltinPrecisionSet(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Builtin'Precision'Set");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispGetExactBits(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathGetExactBits");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispSetExactBits(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathSetExactBits");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispBitCount(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathBitCount");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispMathSign(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathSign");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispMathIsSmall(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathIsSmall");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispMathNegate(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathNegate");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFloor(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathFloor");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispCeil(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathCeil");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispAbs(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathAbs");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispMod(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathMod");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDiv(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathDiv");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispBitsToDigits(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "BitsToDigits");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDigitsToBits(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "DigitsToBits");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispGcd(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathGcd");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispSystemCall(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "SystemCall");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispSystemName(), 0, YacasEvaluator.Fixed | YacasEvaluator.Function),
-         "SystemName");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFastArcSin(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FastArcSin");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFastLog(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FastLog");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFastPower(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FastPower");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispShiftLeft(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "ShiftLeft");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispShiftRight(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "ShiftRight");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFromBase(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FromBase");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispToBase(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "ToBase");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispMaxEvalDepth(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MaxEvalDepth");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDefLoad(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "DefLoad");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispUse(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Use");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispRightAssociative(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "RightAssociative");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispLeftPrecedence(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "LeftPrecedence");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispRightPrecedence(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "RightPrecedence");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispIsBodied(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "IsBodied");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispIsInFix(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "IsInfix");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispIsPreFix(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "IsPrefix");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispIsPostFix(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "IsPostfix");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispGetPrecedence(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "OpPrecedence");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispGetLeftPrecedence(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "OpLeftPrecedence");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispGetRightPrecedence(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "OpRightPrecedence");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new YacasBuiltinPrecisionGet(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Builtin'Precision'Get");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispBitAnd(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "BitAnd");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispBitOr(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "BitOr");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispBitXor(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "BitXor");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispSecure(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "Secure");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFindFile(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FindFile");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFindFunction(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FindFunction");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispIsGeneric(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "IsGeneric");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispGenericTypeName(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "GenericTypeName");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new GenArrayCreate(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Array'Create");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new GenArraySize(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Array'Size");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new GenArrayGet(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Array'Get");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new GenArraySet(),3, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Array'Set");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispCustomEval(),4, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "CustomEval");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispCustomEvalExpression(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "CustomEval'Expression");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispCustomEvalResult(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "CustomEval'Result");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispCustomEvalLocals(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "CustomEval'Locals");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispCustomEvalStop(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "CustomEval'Stop");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispTraceRule(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "TraceRule");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispTraceStack(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "TraceStack");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispReadLisp(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "LispRead");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispReadLispListed(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "LispReadListed");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispType(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Type");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new YacasStringMidGet(),3, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "StringMid'Get");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new YacasStringMidSet(),3, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "StringMid'Set");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new GenPatternCreate(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Pattern'Create");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new GenPatternMatches(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Pattern'Matches");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispRuleBaseDefined(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "RuleBaseDefined");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDefLoadFunction(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "DefLoadFunction");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispRuleBaseArgList(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "RuleBaseArgList");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispNewRulePattern(),5, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "RulePattern");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispMacroNewRulePattern(),5, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MacroRulePattern");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispSubst(),3, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Subst");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispLocalSymbols(),1, YacasEvaluator.Variable|YacasEvaluator.Macro),
-         "LocalSymbols");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFastIsPrime(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FastIsPrime");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFac(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathFac");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispApplyPure(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "ApplyPure");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new YacasPrettyReaderSet(),1, YacasEvaluator.Variable|YacasEvaluator.Function),
-         "PrettyReader'Set");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new YacasPrettyPrinterSet(),1, YacasEvaluator.Variable|YacasEvaluator.Function),
-         "PrettyPrinter'Set");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new YacasPrettyPrinterGet(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "PrettyPrinter'Get");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new YacasPrettyReaderGet(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "PrettyReader'Get");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispGarbageCollect(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "GarbageCollect");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispSetGlobalLazyVariable(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "SetGlobalLazyVariable");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispPatchLoad(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "PatchLoad");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispPatchString(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "PatchString");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new YacasExtraInfoSet(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "ExtraInfo'Set");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new YacasExtraInfoGet(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "ExtraInfo'Get");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDefaultTokenizer(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "DefaultTokenizer");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispCommonLispTokenizer(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "CommonLispTokenizer");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispXmlTokenizer(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "XmlTokenizer");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispExplodeTag(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "XmlExplodeTag");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new YacasBuiltinAssoc(),2, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Builtin'Assoc");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispCurrentFile(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "CurrentFile");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispCurrentLine(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "CurrentLine");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispBackQuote(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "`");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDumpBigNumberDebugInfo(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "MathDebugInfo");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispInDebugMode(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "InDebugMode");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDebugFile(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "DebugFile");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispDebugLine(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "DebugLine");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispVersion(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Version");
+    aEnvironment.CoreCommands().put(
+        "Hold",
+        new YacasEvaluator(new LispQuote(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "Eval",
+         new YacasEvaluator(new LispEval(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Write",
+         new YacasEvaluator(new LispWrite(),1, YacasEvaluator.Variable|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "WriteString",
+         new YacasEvaluator(new LispWriteString(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "FullForm",
+         new YacasEvaluator(new LispFullForm(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "DefaultDirectory",
+         new YacasEvaluator(new LispDefaultDirectory(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "FromFile",
+         new YacasEvaluator(new LispFromFile(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "FromString",
+         new YacasEvaluator(new LispFromString(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "Read",
+         new YacasEvaluator(new LispRead(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "ReadToken",
+         new YacasEvaluator(new LispReadToken(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "ToFile",
+         new YacasEvaluator(new LispToFile(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "ToString",
+         new YacasEvaluator(new LispToString(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "ToStdout",
+         new YacasEvaluator(new LispToStdout(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "Load",
+         new YacasEvaluator(new LispLoad(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "TmpFile",
+         new YacasEvaluator(new LispTmpFile(), 0, YacasEvaluator.Fixed | YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Protect",
+         new YacasEvaluator(new LispProtect(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "UnProtect",
+         new YacasEvaluator(new LispUnProtect(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "IsProtected",
+         new YacasEvaluator(new LispIsProtected(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "Set",
+         new YacasEvaluator(new LispSetVar(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "MacroSet",
+         new YacasEvaluator(new LispMacroSetVar(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "Clear",
+         new YacasEvaluator(new LispClearVar(),1, YacasEvaluator.Variable|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "MacroClear",
+         new YacasEvaluator(new LispClearVar(),1, YacasEvaluator.Variable|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Local",
+         new YacasEvaluator(new LispNewLocal(),1, YacasEvaluator.Variable|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "MacroLocal",
+         new YacasEvaluator(new LispNewLocal(),1, YacasEvaluator.Variable|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Head",
+         new YacasEvaluator(new LispHead(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathNth",
+         new YacasEvaluator(new LispNth(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Tail",
+         new YacasEvaluator(new LispTail(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "DestructiveReverse",
+         new YacasEvaluator(new LispDestructiveReverse(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Length",
+         new YacasEvaluator(new LispLength(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "List",
+         new YacasEvaluator(new LispList(),1, YacasEvaluator.Variable|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "UnList",
+         new YacasEvaluator(new LispUnList(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Listify",
+         new YacasEvaluator(new LispListify(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Concat",
+         new YacasEvaluator(new LispConcatenate(),1, YacasEvaluator.Variable|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "ConcatStrings",
+         new YacasEvaluator(new LispConcatenateStrings(),1, YacasEvaluator.Variable|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Delete",
+         new YacasEvaluator(new LispDelete(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "DestructiveDelete",
+         new YacasEvaluator(new LispDestructiveDelete(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Insert",
+         new YacasEvaluator(new LispInsert(),3, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "DestructiveInsert",
+         new YacasEvaluator(new LispDestructiveInsert(),3, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Replace",
+         new YacasEvaluator(new LispReplace(),3, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "DestructiveReplace",
+         new YacasEvaluator(new LispDestructiveReplace(),3, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Atom",
+         new YacasEvaluator(new LispAtomize(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "String",
+         new YacasEvaluator(new LispStringify(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "CharString",
+         new YacasEvaluator(new LispCharString(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "FlatCopy",
+         new YacasEvaluator(new LispFlatCopy(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Prog",
+         new YacasEvaluator(new LispProgBody(),1, YacasEvaluator.Variable|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "While",
+         new YacasEvaluator(new LispWhile(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "If",
+         new YacasEvaluator(new LispIf(),2, YacasEvaluator.Variable|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "Check",
+         new YacasEvaluator(new LispCheck(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "TrapError",
+         new YacasEvaluator(new LispTrapError(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "GetCoreError",
+         new YacasEvaluator(new LispGetCoreError(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Prefix",
+         new YacasEvaluator(new LispPreFix(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Infix",
+         new YacasEvaluator(new LispInFix(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Postfix",
+         new YacasEvaluator(new LispPostFix(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Bodied",
+         new YacasEvaluator(new LispBodied(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "RuleBase",
+         new YacasEvaluator(new LispRuleBase(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "MacroRuleBase",
+         new YacasEvaluator(new LispMacroRuleBase(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "RuleBaseListed",
+         new YacasEvaluator(new LispRuleBaseListed(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "MacroRuleBaseListed",
+         new YacasEvaluator(new LispMacroRuleBaseListed(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "DefMacroRuleBase",
+         new YacasEvaluator(new LispDefMacroRuleBase(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "DefMacroRuleBaseListed",
+         new YacasEvaluator(new LispDefMacroRuleBaseListed(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "HoldArg",
+         new YacasEvaluator(new LispHoldArg(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "Rule",
+         new YacasEvaluator(new LispNewRule(),5, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "MacroRule",
+         new YacasEvaluator(new LispMacroNewRule(),5, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "UnFence",
+         new YacasEvaluator(new LispUnFence(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Retract",
+         new YacasEvaluator(new LispRetract(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathNot",
+         new YacasEvaluator(new LispNot(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Not",
+         new YacasEvaluator(new LispNot(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathAnd",
+         new YacasEvaluator(new LispLazyAnd(),1, YacasEvaluator.Variable|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "And",
+         new YacasEvaluator(new LispLazyAnd(),1, YacasEvaluator.Variable|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "MathOr",
+         new YacasEvaluator(new LispLazyOr(),1, YacasEvaluator.Variable|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "Or",
+         new YacasEvaluator(new LispLazyOr(),1, YacasEvaluator.Variable|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "Equals",
+         new YacasEvaluator(new LispEquals(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "=",
+         new YacasEvaluator(new LispEquals(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "LessThan",
+         new YacasEvaluator(new LispLessThan(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "GreaterThan",
+         new YacasEvaluator(new LispGreaterThan(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "IsFunction",
+         new YacasEvaluator(new LispIsFunction(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "IsAtom",
+         new YacasEvaluator(new LispIsAtom(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "IsNumber",
+         new YacasEvaluator(new LispIsNumber(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "IsInteger",
+         new YacasEvaluator(new LispIsInteger(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "IsList",
+         new YacasEvaluator(new LispIsList(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "IsString",
+         new YacasEvaluator(new LispIsString(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "IsBound",
+         new YacasEvaluator(new LispIsBound(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "MathMultiply",
+         new YacasEvaluator(new LispMultiply(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathAdd",
+         new YacasEvaluator(new LispAdd(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathSubtract",
+         new YacasEvaluator(new LispSubtract(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathDivide",
+         new YacasEvaluator(new LispDivide(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Builtin'Precision'Set",
+         new YacasEvaluator(new YacasBuiltinPrecisionSet(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathGetExactBits",
+         new YacasEvaluator(new LispGetExactBits(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathSetExactBits",
+         new YacasEvaluator(new LispSetExactBits(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathBitCount",
+         new YacasEvaluator(new LispBitCount(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathSign",
+         new YacasEvaluator(new LispMathSign(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathIsSmall",
+         new YacasEvaluator(new LispMathIsSmall(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathNegate",
+         new YacasEvaluator(new LispMathNegate(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathFloor",
+         new YacasEvaluator(new LispFloor(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathCeil",
+         new YacasEvaluator(new LispCeil(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathAbs",
+         new YacasEvaluator(new LispAbs(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathMod",
+         new YacasEvaluator(new LispMod(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathDiv",
+         new YacasEvaluator(new LispDiv(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "BitsToDigits",
+         new YacasEvaluator(new LispBitsToDigits(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "DigitsToBits",
+         new YacasEvaluator(new LispDigitsToBits(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathGcd",
+         new YacasEvaluator(new LispGcd(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "SystemCall",
+         new YacasEvaluator(new LispSystemCall(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "SystemName",
+         new YacasEvaluator(new LispSystemName(), 0, YacasEvaluator.Fixed | YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "FastArcSin",
+         new YacasEvaluator(new LispFastArcSin(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "FastLog",
+         new YacasEvaluator(new LispFastLog(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "FastPower",
+         new YacasEvaluator(new LispFastPower(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "ShiftLeft",
+         new YacasEvaluator(new LispShiftLeft(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "ShiftRight",
+         new YacasEvaluator(new LispShiftRight(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "FromBase",
+         new YacasEvaluator(new LispFromBase(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "ToBase",
+         new YacasEvaluator(new LispToBase(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MaxEvalDepth",
+         new YacasEvaluator(new LispMaxEvalDepth(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "DefLoad",
+         new YacasEvaluator(new LispDefLoad(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Use",
+         new YacasEvaluator(new LispUse(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "RightAssociative",
+         new YacasEvaluator(new LispRightAssociative(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "LeftPrecedence",
+         new YacasEvaluator(new LispLeftPrecedence(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "RightPrecedence",
+         new YacasEvaluator(new LispRightPrecedence(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "IsBodied",
+         new YacasEvaluator(new LispIsBodied(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "IsInfix",
+         new YacasEvaluator(new LispIsInFix(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "IsPrefix",
+         new YacasEvaluator(new LispIsPreFix(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "IsPostfix",
+         new YacasEvaluator(new LispIsPostFix(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "OpPrecedence",
+         new YacasEvaluator(new LispGetPrecedence(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "OpLeftPrecedence",
+         new YacasEvaluator(new LispGetLeftPrecedence(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "OpRightPrecedence",
+         new YacasEvaluator(new LispGetRightPrecedence(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Builtin'Precision'Get",
+         new YacasEvaluator(new YacasBuiltinPrecisionGet(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "BitAnd",
+         new YacasEvaluator(new LispBitAnd(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "BitOr",
+         new YacasEvaluator(new LispBitOr(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "BitXor",
+         new YacasEvaluator(new LispBitXor(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Secure",
+         new YacasEvaluator(new LispSecure(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "FindFile",
+         new YacasEvaluator(new LispFindFile(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "FindFunction",
+         new YacasEvaluator(new LispFindFunction(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "IsGeneric",
+         new YacasEvaluator(new LispIsGeneric(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "GenericTypeName",
+         new YacasEvaluator(new LispGenericTypeName(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Array'Create",
+         new YacasEvaluator(new GenArrayCreate(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Array'Size",
+         new YacasEvaluator(new GenArraySize(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Array'Get",
+         new YacasEvaluator(new GenArrayGet(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Array'Set",
+         new YacasEvaluator(new GenArraySet(),3, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "CustomEval",
+         new YacasEvaluator(new LispCustomEval(),4, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "CustomEval'Expression",
+         new YacasEvaluator(new LispCustomEvalExpression(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "CustomEval'Result",
+         new YacasEvaluator(new LispCustomEvalResult(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "CustomEval'Locals",
+         new YacasEvaluator(new LispCustomEvalLocals(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "CustomEval'Stop",
+         new YacasEvaluator(new LispCustomEvalStop(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "TraceRule",
+         new YacasEvaluator(new LispTraceRule(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "TraceStack",
+         new YacasEvaluator(new LispTraceStack(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "LispRead",
+         new YacasEvaluator(new LispReadLisp(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "LispReadListed",
+         new YacasEvaluator(new LispReadLispListed(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Type",
+         new YacasEvaluator(new LispType(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "StringMid'Get",
+         new YacasEvaluator(new YacasStringMidGet(),3, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "StringMid'Set",
+         new YacasEvaluator(new YacasStringMidSet(),3, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Pattern'Create",
+         new YacasEvaluator(new GenPatternCreate(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Pattern'Matches",
+         new YacasEvaluator(new GenPatternMatches(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "RuleBaseDefined",
+         new YacasEvaluator(new LispRuleBaseDefined(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "DefLoadFunction",
+         new YacasEvaluator(new LispDefLoadFunction(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "RuleBaseArgList",
+         new YacasEvaluator(new LispRuleBaseArgList(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "RulePattern",
+         new YacasEvaluator(new LispNewRulePattern(),5, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "MacroRulePattern",
+         new YacasEvaluator(new LispMacroNewRulePattern(),5, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Subst",
+         new YacasEvaluator(new LispSubst(),3, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "LocalSymbols",
+         new YacasEvaluator(new LispLocalSymbols(),1, YacasEvaluator.Variable|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "FastIsPrime",
+         new YacasEvaluator(new LispFastIsPrime(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "MathFac",
+         new YacasEvaluator(new LispFac(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "ApplyPure",
+         new YacasEvaluator(new LispApplyPure(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "PrettyReader'Set",
+         new YacasEvaluator(new YacasPrettyReaderSet(),1, YacasEvaluator.Variable|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "PrettyPrinter'Set",
+         new YacasEvaluator(new YacasPrettyPrinterSet(),1, YacasEvaluator.Variable|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "PrettyPrinter'Get",
+         new YacasEvaluator(new YacasPrettyPrinterGet(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "PrettyReader'Get",
+         new YacasEvaluator(new YacasPrettyReaderGet(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "GarbageCollect",
+         new YacasEvaluator(new LispGarbageCollect(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "SetGlobalLazyVariable",
+         new YacasEvaluator(new LispSetGlobalLazyVariable(),2, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "PatchLoad",
+         new YacasEvaluator(new LispPatchLoad(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "PatchString",
+         new YacasEvaluator(new LispPatchString(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "ExtraInfo'Set",
+         new YacasEvaluator(new YacasExtraInfoSet(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "ExtraInfo'Get",
+         new YacasEvaluator(new YacasExtraInfoGet(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "DefaultTokenizer",
+         new YacasEvaluator(new LispDefaultTokenizer(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "CommonLispTokenizer",
+         new YacasEvaluator(new LispCommonLispTokenizer(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "XmlTokenizer",
+         new YacasEvaluator(new LispXmlTokenizer(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "XmlExplodeTag",
+         new YacasEvaluator(new LispExplodeTag(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Builtin'Assoc",
+         new YacasEvaluator(new YacasBuiltinAssoc(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "CurrentFile",
+         new YacasEvaluator(new LispCurrentFile(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "CurrentLine",
+         new YacasEvaluator(new LispCurrentLine(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "`",
+         new YacasEvaluator(new LispBackQuote(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "MathDebugInfo",
+         new YacasEvaluator(new LispDumpBigNumberDebugInfo(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "InDebugMode",
+         new YacasEvaluator(new LispInDebugMode(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "DebugFile",
+         new YacasEvaluator(new LispDebugFile(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "DebugLine",
+         new YacasEvaluator(new LispDebugLine(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Version",
+         new YacasEvaluator(new LispVersion(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
 
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispExit(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "Exit");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispExitRequested(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "IsExitRequested");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispHistorySize(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "HistorySize");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispStackSize(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "StaSiz");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispIsPromptShown(),0, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "IsPromptShown");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispReadCmdLineString(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "ReadCmdLineString");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispTime(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro),
-         "GetTime");
-    aEnvironment.CoreCommands().SetAssociation(
-         new YacasEvaluator(new LispFileSize(),1, YacasEvaluator.Fixed|YacasEvaluator.Function),
-         "FileSize");
-
-
+    aEnvironment.CoreCommands().put(
+         "Exit",
+         new YacasEvaluator(new LispExit(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "IsExitRequested",
+         new YacasEvaluator(new LispExitRequested(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "HistorySize",
+         new YacasEvaluator(new LispHistorySize(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "StaSiz",
+         new YacasEvaluator(new LispStackSize(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "IsPromptShown",
+         new YacasEvaluator(new LispIsPromptShown(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "ReadCmdLineString",
+         new YacasEvaluator(new LispReadCmdLineString(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "GetTime",
+         new YacasEvaluator(new LispTime(),1, YacasEvaluator.Fixed|YacasEvaluator.Macro));
+    aEnvironment.CoreCommands().put(
+         "FileSize",
+         new YacasEvaluator(new LispFileSize(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
   }
 
 
