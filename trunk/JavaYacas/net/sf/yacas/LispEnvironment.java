@@ -2,6 +2,7 @@ package net.sf.yacas;
 
 import java.util.Set;
 import java.util.HashSet;
+import java.util.HashMap;
 
 class LispEnvironment
 {
@@ -176,7 +177,7 @@ class LispEnvironment
       return;
     }
     LispGlobalVariable global = new LispGlobalVariable(aValue);
-    iGlobals.SetAssociation(global, aVariable);
+    iGlobals.put(aVariable, global);
     if (aGlobalLazyVariable)
     {
       global.SetEvalBeforeReturn(true);
@@ -192,7 +193,7 @@ class LispEnvironment
       aResult.Set(local.Get());
       return;
     }
-    LispGlobalVariable l = (LispGlobalVariable)iGlobals.LookUp(aVariable);
+    LispGlobalVariable l = iGlobals.get(aVariable);
     if (l != null)
     {
       if (l.iEvalBeforeReturn)
@@ -218,7 +219,7 @@ class LispEnvironment
         local.Set(null);
         return;
     }
-    iGlobals.Release(aString);
+    iGlobals.remove(aString);
   }
 
   void PushLocalFrame(boolean aFenced)
@@ -297,7 +298,7 @@ class LispEnvironment
   }
   LocalVariableFrame iLocalsList;
 
-  LispGlobal iGlobals = new LispGlobal();
+  HashMap<String, LispGlobalVariable> iGlobals = new HashMap<>();
 
   boolean iSecure = false;
 
