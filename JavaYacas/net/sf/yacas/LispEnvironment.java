@@ -137,11 +137,12 @@ class LispEnvironment
   YacasArgStack iStack;
 
 
-  public YacasCoreCommands CoreCommands()
+  public HashMap<String, YacasEvaluator> CoreCommands()
   {
     return iCoreCommands;
   }
-  YacasCoreCommands iCoreCommands = new YacasCoreCommands();
+
+  HashMap<String, YacasEvaluator> iCoreCommands = new HashMap<>();
 
   LispEvaluatorBase iEvaluator = new BasicEvaluator();
 
