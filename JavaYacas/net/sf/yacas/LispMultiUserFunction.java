@@ -28,7 +28,7 @@ class LispMultiUserFunction
         LispError.LISPASSERT(iFunctions.get(i) != null);
         if (((LispArityUserFunction)iFunctions.get(i)).IsArity(aArity))
         {
-          return (LispUserFunction)iFunctions.get(i);
+          return iFunctions.get(i);
         }
       }
 
@@ -44,7 +44,7 @@ class LispMultiUserFunction
       for (i=0;i<iFunctions.size();i++)
       {
         LispError.LISPASSERT(iFunctions.get(i) != null);
-        ((LispUserFunction)iFunctions.get(i)).HoldArgument(aVariable);
+        iFunctions.get(i).HoldArgument(aVariable);
       }
     }
 
@@ -83,7 +83,7 @@ class LispMultiUserFunction
 
 
     /// Set of LispArityUserFunction's provided by this LispMultiUserFunction.
-    ArrayList iFunctions = new ArrayList();//<LispArityUserFunction*>
+    ArrayList<LispUserFunction> iFunctions = new ArrayList<>();
 
     /// File to read for the definition of this function.
     LispDefFile iFileToOpen;

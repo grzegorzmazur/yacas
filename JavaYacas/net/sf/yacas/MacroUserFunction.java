@@ -11,7 +11,7 @@ class MacroUserFunction extends BranchingUserFunction
     while (iter.GetObject() != null)
     {
         LispError.Check(iter.GetObject().String() != null,LispError.KLispErrCreatingUserFunction);
-        ((BranchParameter)iParameters.get(i)).iHold = true;
+        iParameters.get(i).iHold = true;
         iter.GoNext();
         i++;
     }
@@ -51,7 +51,7 @@ class MacroUserFunction extends BranchingUserFunction
     {
         arguments[i] = new LispPtr();
         LispError.Check(iter.GetObject() != null, LispError.KLispErrWrongNumberOfArgs);
-        if (((BranchParameter)iParameters.get(i)).iHold)
+        if (iParameters.get(i).iHold)
         {
           arguments[i].Set(iter.GetObject().Copy(false));
         }
@@ -85,21 +85,21 @@ class MacroUserFunction extends BranchingUserFunction
         // define the local variables.
         for (i=0;i<arity;i++)
         {
-            String variable = ((BranchParameter)iParameters.get(i)).iParameter;
+            String variable = iParameters.get(i).iParameter;
             // set the variable to the new value
             aEnvironment.NewLocal(variable,arguments[i].Get());
         }
- 
+
         // walk the rules database, returning the evaluated result if the
         // predicate is true.
         int nrRules = iRules.size();
         UserStackInformation st = aEnvironment.iEvaluator.StackInformation();
         for (i=0;i<nrRules;i++)
         {
-            BranchRuleBase thisRule = ((BranchRuleBase)iRules.get(i));
+            BranchRuleBase thisRule = iRules.get(i);
 //TODO remove            CHECKPTR(thisRule);
             LispError.LISPASSERT(thisRule != null);
- 
+
             st.iRulePrecedence = thisRule.Precedence();
             boolean matches = thisRule.Matches(aEnvironment, arguments);
             if (matches)
@@ -111,9 +111,9 @@ class MacroUserFunction extends BranchingUserFunction
   //              aEnvironment.iEvaluator.Eval(aEnvironment, aResult, thisRule.Body());
                 break;
             }
- 
+
             // If rules got inserted, walk back
-            while (thisRule != ((BranchRuleBase)iRules.get(i)) && i>0) i--;
+            while (thisRule != iRules.get(i) && i>0) i--;
         }
       }
       catch (Exception e)
@@ -125,7 +125,7 @@ class MacroUserFunction extends BranchingUserFunction
         aEnvironment.PopLocalFrame();
       }
     }
- 
+
 
     if (substedBody.Get() != null)
     {

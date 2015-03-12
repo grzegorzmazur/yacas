@@ -38,7 +38,7 @@ class YacasPatternPredicateBase
                             LispPtr  aPostPredicate) throws Exception
   {
     LispIterator iter = new LispIterator(aPattern);
- 
+
     while (iter.GetObject() != null)
     {
         YacasParamMatcherBase matcher = MakeParamMatcher(aEnvironment,iter.GetObject());
@@ -74,7 +74,7 @@ class YacasPatternPredicateBase
         {
           arguments[i] = new LispPtr();
         }
- 
+
     }
     LispIterator iter = new LispIterator(aArguments);
 
@@ -85,7 +85,7 @@ class YacasPatternPredicateBase
         LispPtr  ptr = iter.Ptr();
         if (ptr==null)
             return false;
-        if (!((YacasParamMatcherBase)iParamMatchers.get(i)).ArgumentMatches(aEnvironment,ptr,arguments))
+        if (!iParamMatchers.get(i).ArgumentMatches(aEnvironment,ptr,arguments))
         {
             return false;
         }
@@ -117,7 +117,7 @@ class YacasPatternPredicateBase
 
     // set the local variables for sure now
     SetPatternVariables(aEnvironment,arguments);
- 
+
     return true;
   }
 
@@ -138,7 +138,7 @@ class YacasPatternPredicateBase
 
     for (i=0;i<iParamMatchers.size();i++)
     {
-        if (!((YacasParamMatcherBase)iParamMatchers.get(i)).ArgumentMatches(aEnvironment,aArguments[i],arguments))
+        if (!iParamMatchers.get(i).ArgumentMatches(aEnvironment,aArguments[i],arguments))
         {
             return false;
         }
@@ -241,7 +241,7 @@ class YacasPatternPredicateBase
                         LispObject last = third.Get();
                         while (last.Next().Get() != null)
                             last = last.Next().Get();
- 
+
                         last.Next().Set(LispAtom.New(aEnvironment,str));
 
                         LispPtr pred = new LispPtr();
@@ -253,7 +253,7 @@ class YacasPatternPredicateBase
                 }
             }
         }
- 
+
         YacasParamMatcherBase[] matchers = new YacasParamMatcherBase[num];
 
         int i;
@@ -266,7 +266,7 @@ class YacasPatternPredicateBase
         }
         return new MatchSubList(matchers, num);
     }
- 
+
     return null;
   }
 
@@ -299,7 +299,7 @@ class YacasPatternPredicateBase
     for (i=0;i<iVariables.size();i++)
     {
         // set the variable to the new value
-        aEnvironment.NewLocal((String)iVariables.get(i),arguments[i].Get());
+        aEnvironment.NewLocal(iVariables.get(i),arguments[i].Get());
     }
   }
 
@@ -314,7 +314,7 @@ class YacasPatternPredicateBase
     for (i=0;i<iPredicates.size();i++)
     {
       LispPtr pred = new LispPtr();
-      aEnvironment.iEvaluator.Eval(aEnvironment, pred, ((LispPtr)iPredicates.get(i)));
+      aEnvironment.iEvaluator.Eval(aEnvironment, pred, iPredicates.get(i));
       if (LispStandard.IsFalse(aEnvironment, pred))
       {
         return false;
@@ -328,7 +328,7 @@ class YacasPatternPredicateBase
         //TODO this is probably not the right way to generate an error, should we perhaps do a full throw new YacasException here?
         String strout;
         aEnvironment.iCurrentOutput.Write("The predicate\n\t");
-        strout = LispStandard.PrintExpression(((LispPtr)iPredicates.get(i)), aEnvironment, 60);
+        strout = LispStandard.PrintExpression(iPredicates.get(i), aEnvironment, 60);
         aEnvironment.iCurrentOutput.Write(strout);
         aEnvironment.iCurrentOutput.Write("\nevaluated to\n\t");
         strout = LispStandard.PrintExpression(pred, aEnvironment, 60);
@@ -342,12 +342,12 @@ class YacasPatternPredicateBase
   }
 
   /// List of parameter matches, one for every parameter.
-  protected ArrayList iParamMatchers = new ArrayList(); //CDeletingArrayGrower<YacasParamMatcherBase*> iParamMatchers;
+  protected ArrayList<YacasParamMatcherBase> iParamMatchers = new ArrayList<>();
 
   /// List of variables appearing in the pattern.
-  protected ArrayList iVariables = new ArrayList(); //CArrayGrower<String>
+  protected ArrayList<String> iVariables = new ArrayList<>();
 
   /// List of predicates which need to be true for a match.
-  protected ArrayList iPredicates = new ArrayList(); //CDeletingArrayGrower<LispPtr[] >
+  protected ArrayList<LispPtr> iPredicates = new ArrayList<>();
 }
 
