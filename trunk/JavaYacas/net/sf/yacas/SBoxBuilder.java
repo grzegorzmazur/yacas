@@ -507,8 +507,8 @@ if (iExpressions[2] != null)
       int x1 = x0+iDimension.width;
       int y1 = y0+iDimension.height;
       g.DrawLine(x1,y0,x0,y0);
-      g.DrawLine(x0,y0,x0+(2*height)/4,(int)(y0+y1)/2);
-      g.DrawLine(x0+(2*height)/4,(int)(y0+y1)/2,x0,y1);
+      g.DrawLine(x0,y0,x0+(2*height)/4,(y0+y1)/2);
+      g.DrawLine(x0+(2*height)/4,(y0+y1)/2,x0,y1);
       g.DrawLine(x0,y1,x1,y1);
     }
   }
@@ -564,13 +564,13 @@ if (iExpressions[2] != null)
       {
         iExpressions[0].calculatePositions(g,aSize,null);
         Dimension dim = iExpressions[0].getDimension();
-        iDimension = new Dimension((int)(dim.width+6),dim.height+3);
+        iDimension = new Dimension((dim.width+6),dim.height+3);
         iAscent = iExpressions[0].getCalculatedAscent()+3;
       }
       if (aPosition != null)
       {
         Dimension dim = iExpressions[0].getDimension();
-        iExpressions[0].calculatePositions(g,aSize,new java.awt.Point((int)(aPosition.x + 6),aPosition.y));
+        iExpressions[0].calculatePositions(g,aSize,new java.awt.Point((aPosition.x + 6),aPosition.y));
       }
     }
     public void render(GraphicsPrimitives g)

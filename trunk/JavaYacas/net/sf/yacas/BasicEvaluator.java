@@ -137,7 +137,7 @@ class BasicEvaluator extends LispEvaluatorBase
     LispObject head = subList.Get();
     LispUserFunction userFunc = null;
 
-    userFunc = (LispUserFunction)aEnvironment.UserFunction(subList);
+    userFunc = aEnvironment.UserFunction(subList);
     if (userFunc != null)
     {
       return userFunc;

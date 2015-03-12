@@ -595,7 +595,7 @@ class LispStandard
     LispInput f = OpenInputFile(othername, aInputStatus);
     while (f == null && i<aInputDirectories.size())
     {
-      othername = ((String)aInputDirectories.get(i)) + aFileName;
+      othername = aInputDirectories.get(i) + aFileName;
       f = OpenInputFile(othername, aInputStatus);
       i++;
     }
@@ -612,7 +612,7 @@ class LispStandard
     if (f != null) return othername;
     while (i<aInputDirectories.size())
     {
-      othername = ((String)aInputDirectories.get(i)) + aFileName;
+      othername = aInputDirectories.get(i) + aFileName;
       f = OpenInputFile(othername, inputStatus);
       if (f != null) return othername;
       i++;
@@ -778,12 +778,12 @@ class LispStandard
   // to make sure that there is no hysteresis, we round upwards on digits_to_bits but round down on bits_to_digits
   static long digits_to_bits(long digits, int base) throws Exception
   {
-    return (long)Math.ceil(((double)digits)*log2_table_lookup(base));
+    return (long)Math.ceil(digits*log2_table_lookup(base));
   }
 
   static long bits_to_digits(long bits, int base) throws Exception
   {
-    return (long)Math.floor(((double)bits)/log2_table_lookup(base));
+    return (long)Math.floor(bits/log2_table_lookup(base));
   }
 
 

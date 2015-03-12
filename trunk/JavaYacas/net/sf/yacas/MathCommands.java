@@ -2377,7 +2377,7 @@ class MathCommands
       z.SetTo(
         (x.IsInt())
       ? x.BitCount()  // for integers, return the bit count
-        : LispStandard.digits_to_bits((long)(x.GetPrecision()), 10)   // for floats, return the precision
+        : LispStandard.digits_to_bits((x.GetPrecision()), 10)   // for floats, return the precision
         );
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
@@ -2529,7 +2529,7 @@ class MathCommands
         throw new YacasException("BitsToDigits: error: arguments ("+x.Double()+", "+y.Double()+") must be small integers");
       }
       BigNumber z = new BigNumber(aEnvironment.Precision());
-      z.SetTo((long)result);
+      z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
@@ -2552,7 +2552,7 @@ class MathCommands
         throw new YacasException("BitsToDigits: error: arguments ("+x.Double()+", "+y.Double()+") must be small integers");
       }
       BigNumber z = new BigNumber(aEnvironment.Precision());
-      z.SetTo((long)result);
+      z.SetTo(result);
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
     }
   }
