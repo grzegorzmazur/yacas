@@ -1634,7 +1634,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       // If there is some plain text left at the end, print
       if (outp.length() > 0)
       {
-        AddLinesStatic(48,"",outp.toString());
+        AddLinesStatic(48,"",outp);
       }
     }
     outputDirty = true;
