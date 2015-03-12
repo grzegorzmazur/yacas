@@ -81,12 +81,12 @@ class Article
       }
       processText(aString.substring(0, pos));
       aString = aString.substring(pos + 2);
-      pos = aString.indexOf(":");
+      pos = aString.indexOf(':');
       String name = aString.substring(0, pos);
       aString = aString.substring(pos + 1);
 
       String toProcess = null;
-      pos = name.indexOf(",");
+      pos = name.indexOf(',');
       if (pos > -1)
       {
         toProcess = name.substring(pos+1);
@@ -101,12 +101,12 @@ class Article
       nrEntries = 0;
       if (toProcess != null)
       {
-        int pos3 = toProcess.indexOf(",");
+        int pos3 = toProcess.indexOf(',');
         if (pos3 == -1)
           pos3 = toProcess.length();
         while (pos3>=0)
         {
-          int pos2 = toProcess.indexOf(".");
+          int pos2 = toProcess.indexOf('.');
           if (pos2 != -1)
           {
             keys[nrEntries] = toProcess.substring(0,pos2);
@@ -118,7 +118,7 @@ class Article
           if (pos3 < toProcess.length())
           {
             toProcess = toProcess.substring(pos3+1);
-            pos3 = toProcess.indexOf(",");
+            pos3 = toProcess.indexOf(',');
             if (pos3 == -1)
               pos3 = toProcess.length();
           }
