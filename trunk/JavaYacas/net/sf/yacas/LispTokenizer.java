@@ -158,7 +158,7 @@ class LispTokenizer
   {
     return (IsAlpha(c) || IsDigit(c));
   }
-  static String symbolics = new String("~`!@#$^&*-=+:<>?/\\|");
+  static String symbolics = "~`!@#$^&*-=+:<>?/\\|";
   static boolean IsSymbolic(char c)
   {
     return (symbolics.indexOf(c) >= 0);
