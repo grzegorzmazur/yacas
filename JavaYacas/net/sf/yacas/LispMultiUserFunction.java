@@ -16,7 +16,7 @@ class LispMultiUserFunction
     {
       iFileToOpen = null;
     }
- 
+
     /// Return user function with given arity.
     public LispUserFunction UserFunc(int aArity) throws Exception
     {
@@ -28,7 +28,7 @@ class LispMultiUserFunction
         LispError.LISPASSERT(iFunctions.get(i) != null);
         if (((LispArityUserFunction)iFunctions.get(i)).IsArity(aArity))
         {
-          return (LispArityUserFunction)iFunctions.get(i);
+          return (LispUserFunction)iFunctions.get(i);
         }
       }
 
@@ -44,7 +44,7 @@ class LispMultiUserFunction
       for (i=0;i<iFunctions.size();i++)
       {
         LispError.LISPASSERT(iFunctions.get(i) != null);
-        ((LispArityUserFunction)iFunctions.get(i)).HoldArgument(aVariable);
+        ((LispUserFunction)iFunctions.get(i)).HoldArgument(aVariable);
       }
     }
 

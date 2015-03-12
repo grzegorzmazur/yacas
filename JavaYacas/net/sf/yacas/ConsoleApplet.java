@@ -450,12 +450,12 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     {
       if (KeyEvent.KEY_PRESSED != e.getID())
         return;
-      if (e.getKeyCode() == (int)'C')
+      if (e.getKeyCode() == 'C')
       {
         //out.println("Copy");
         setClipboardContents( gatheredMultiLine+inputLine );
       }
-      else if (e.getKeyCode() == (int)'V')
+      else if (e.getKeyCode() == 'V')
       {
         try
         {
@@ -716,7 +716,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
     else if (KeyEvent.KEY_TYPED == e.getID())
     {
-      int c = (int)e.getKeyChar();
+      int c = e.getKeyChar();
       if (c>=32 && c < 127)
       {
         inputLine = new StringBuffer(inputLine).insert(cursorPos,e.getKeyChar()).toString();
@@ -1147,7 +1147,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         g2d = (Graphics2D)g;
         g2d.addRenderingHints( new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON ));
 
-        g2d.setStroke(new BasicStroke((float)(2),BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
+        g2d.setStroke(new BasicStroke((2),BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
       }
 
       FontMetrics metrics = getFontMetrics(font);

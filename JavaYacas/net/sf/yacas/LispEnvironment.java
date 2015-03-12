@@ -413,7 +413,7 @@ class LispEnvironment
     LispError.Check(multiUserFunc != null, LispError.KLispErrCreatingRule);
 
     // Get the specific user function with the right arity
-    LispUserFunction userFunc = (LispUserFunction)multiUserFunc.UserFunc(aArity);
+    LispUserFunction userFunc = multiUserFunc.UserFunc(aArity);
     LispError.Check(userFunc != null, LispError.KLispErrCreatingRule);
 
     // Declare a new evaluation rule
