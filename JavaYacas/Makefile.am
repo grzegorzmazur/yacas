@@ -10,7 +10,7 @@ net/sf/yacas/LispDefFile.java net/sf/yacas/LispDefFiles.java \
 net/sf/yacas/LispEnvironment.java net/sf/yacas/LispError.java \
 net/sf/yacas/LispEvaluatorBase.java net/sf/yacas/LispGenericClass.java \
 net/sf/yacas/LispGlobal.java net/sf/yacas/LispGlobalVariable.java \
-net/sf/yacas/LispHashTable.java net/sf/yacas/LispInfixOperator.java net/sf/yacas/LispInput.java \
+net/sf/yacas/LispHashTable.java net/sf/yacas/LispInFixOperator.java net/sf/yacas/LispInput.java \
 net/sf/yacas/LispIterator.java net/sf/yacas/LispLocalFrame.java \
 net/sf/yacas/LispMultiUserFunction.java net/sf/yacas/LispNumber.java net/sf/yacas/LispObject.java \
 net/sf/yacas/LispOperators.java net/sf/yacas/LispOutput.java net/sf/yacas/LispParser.java \
