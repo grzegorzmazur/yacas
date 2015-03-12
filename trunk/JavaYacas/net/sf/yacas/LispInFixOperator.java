@@ -1,9 +1,9 @@
 package net.sf.yacas;
 
 
-class LispInfixOperator
+class LispInFixOperator
 {
-  public LispInfixOperator(int aPrecedence)
+  public LispInFixOperator(int aPrecedence)
   {
     iPrecedence = aPrecedence;
     iLeftPrecedence = aPrecedence;
