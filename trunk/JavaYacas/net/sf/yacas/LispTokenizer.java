@@ -73,10 +73,7 @@ class LispTokenizer
       // parse literal strings
       else if (c == '\"')
       {
-        String aResult;
-        aResult = "";
-        //TODO FIXME is following append char correct?
-        aResult = aResult + ((char)c);
+        String aResult = String.valueOf(c);
         while (aInput.Peek() != '\"')
         {
           if (aInput.Peek() == '\\')
@@ -84,12 +81,10 @@ class LispTokenizer
             aInput.Next();
             LispError.Check(!aInput.EndOfStream(),LispError.KLispErrParsingInput);
           }
-          //TODO FIXME is following append char correct?
-          aResult = aResult + ((char)aInput.Next());
+          aResult += aInput.Next();
           LispError.Check(!aInput.EndOfStream(),LispError.KLispErrParsingInput);
         }
-        //TODO FIXME is following append char correct?
-        aResult = aResult + ((char)aInput.Next()); // consume the close quote
+        aResult += aInput.Next(); // consume the close quote
         return aHashTable.LookUp(aResult);
       }
       //parse atoms

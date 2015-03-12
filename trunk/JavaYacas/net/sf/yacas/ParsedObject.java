@@ -80,7 +80,7 @@ class ParsedObject
         }
         else
         {
-            LispInFixOperator op = iParser.iInfixOperators.get(iLookAhead);
+            LispInfixOperator op = iParser.iInfixOperators.get(iLookAhead);
             if (op == null)
             {
 //printf("op [%s]\n",iLookAhead.String());
@@ -143,7 +143,7 @@ String toLookUp = iLookAhead.substring(len,origlen);
   }
   void ReadAtom() throws Exception
   {
-    LispInFixOperator op;
+    LispInfixOperator op;
     // Parse prefix operators
     op = iParser.iPrefixOperators.get(iLookAhead);
     if (op != null)

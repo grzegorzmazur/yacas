@@ -495,10 +495,10 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
     if (KeyEvent.KEY_PRESSED == e.getID())
     {
-      if (e.VK_SHIFT == e.getKeyCode()) {return;}
-      if (e.VK_CONTROL == e.getKeyCode()) {return;}
-      if (e.VK_ALT == e.getKeyCode()) {return;}
-      else if (e.VK_HOME == e.getKeyCode())
+      if (KeyEvent.VK_SHIFT == e.getKeyCode()) {return;}
+      if (KeyEvent.VK_CONTROL == e.getKeyCode()) {return;}
+      if (KeyEvent.VK_ALT == e.getKeyCode()) {return;}
+      else if (KeyEvent.VK_HOME == e.getKeyCode())
       {
         cursorPos = 0;
       }
@@ -512,11 +512,11 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         System.out.println("PASTE");
       }
 */
-      else if (e.VK_END == e.getKeyCode())
+      else if (KeyEvent.VK_END == e.getKeyCode())
       {
         cursorPos = inputLine.length();
       }
-      else if (e.VK_LEFT == e.getKeyCode())
+      else if (KeyEvent.VK_LEFT == e.getKeyCode())
       {
         if (cursorPos>0)
         {
@@ -526,7 +526,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
           return;
         }
       }
-      else if (e.VK_BACK_SPACE == e.getKeyCode())
+      else if (KeyEvent.VK_BACK_SPACE == e.getKeyCode())
       {
         if (cursorPos>0)
         {
@@ -537,7 +537,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
           return;
         }
       }
-      else if (e.VK_DELETE == e.getKeyCode())
+      else if (KeyEvent.VK_DELETE == e.getKeyCode())
       {
         if (inputLine.length() > 0)
         {
@@ -551,7 +551,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
           return;
         }
       }
-      else if (e.VK_ESCAPE == e.getKeyCode())
+      else if (KeyEvent.VK_ESCAPE == e.getKeyCode())
       {
         if (hintWindow != null)
         {
@@ -564,7 +564,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         repaint();
         return;
       }
-      else if (e.VK_UP == e.getKeyCode())
+      else if (KeyEvent.VK_UP == e.getKeyCode())
       {
         boolean handled = false;
         if (hintWindow != null)
@@ -598,7 +598,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
           }
         }
       }
-      else if (e.VK_DOWN == e.getKeyCode())
+      else if (KeyEvent.VK_DOWN == e.getKeyCode())
       {
         boolean handled = false;
         if (hintWindow != null)
@@ -654,7 +654,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
           }
         }
       }
-      else if (e.VK_ENTER == e.getKeyCode())
+      else if (KeyEvent.VK_ENTER == e.getKeyCode())
       {
         boolean handled = false;
 

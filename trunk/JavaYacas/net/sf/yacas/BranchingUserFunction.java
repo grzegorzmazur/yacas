@@ -202,7 +202,7 @@ class BranchingUserFunction extends LispArityUserFunction
     for (i=0;i<arity;i++)
     {
         LispError.Check(iter.GetObject() != null, LispError.KLispErrWrongNumberOfArgs);
-        if (((BranchParameter)iParameters.get(i)).iHold)
+        if (iParameters.get(i).iHold)
         {
             arguments[i].Set(iter.GetObject().Copy(false));
         }
@@ -234,7 +234,7 @@ class BranchingUserFunction extends LispArityUserFunction
       // define the local variables.
       for (i=0;i<arity;i++)
       {
-          String variable = ((BranchParameter)iParameters.get(i)).iParameter;
+          String variable = iParameters.get(i).iParameter;
           // set the variable to the new value
           aEnvironment.NewLocal(variable,arguments[i].Get());
       }
@@ -245,7 +245,7 @@ class BranchingUserFunction extends LispArityUserFunction
       UserStackInformation st = aEnvironment.iEvaluator.StackInformation();
       for (i=0;i<nrRules;i++)
       {
-          BranchRuleBase thisRule = ((BranchRuleBase)iRules.get(i));
+          BranchRuleBase thisRule = iRules.get(i);
           LispError.LISPASSERT(thisRule != null);
 
           st.iRulePrecedence = thisRule.Precedence();
@@ -267,9 +267,9 @@ class BranchingUserFunction extends LispArityUserFunction
           }
 
           // If rules got inserted, walk back
-          while (thisRule != ((BranchRuleBase)iRules.get(i)) && i>0) i--;
+          while (thisRule != iRules.get(i) && i>0) i--;
       }
- 
+
       // No predicate was true: return a new expression with the evaluated
       // arguments.
 
@@ -322,8 +322,8 @@ class BranchingUserFunction extends LispArityUserFunction
     int nrc=iParameters.size();
     for (i=0;i<nrc;i++)
     {
-        if (((BranchParameter)iParameters.get(i)).iParameter == aVariable)
-            ((BranchParameter)iParameters.get(i)).iHold = true;
+        if (iParameters.get(i).iParameter == aVariable)
+            iParameters.get(i).iHold = true;
     }
   }
 
@@ -388,13 +388,13 @@ class BranchingUserFunction extends LispArityUserFunction
     // currently defined rules or past them.
     if (high>0)
     {
-        if (((BranchRuleBase)iRules.get(0)).Precedence() > aPrecedence)
+        if (iRules.get(0).Precedence() > aPrecedence)
         {
             mid=0;
             // Insert it
             iRules.add(mid,newRule);return;
         }
-        if (((BranchRuleBase)iRules.get(high-1)).Precedence() < aPrecedence)
+        if (iRules.get(high-1).Precedence() < aPrecedence)
         {
             mid=high;
             // Insert it
@@ -413,11 +413,11 @@ class BranchingUserFunction extends LispArityUserFunction
       }
       mid = (low+high)>>1;
 
-      if (((BranchRuleBase)iRules.get(mid)).Precedence() > aPrecedence)
+      if (iRules.get(mid).Precedence() > aPrecedence)
       {
         high = mid;
       }
-      else if (((BranchRuleBase)iRules.get(mid)).Precedence() < aPrecedence)
+      else if (iRules.get(mid).Precedence() < aPrecedence)
       {
         low = (++mid);
       }
@@ -436,10 +436,10 @@ class BranchingUserFunction extends LispArityUserFunction
   }
 
   /// List of arguments, with corresponding \c iHold property.
-  protected Vector iParameters = new Vector(); //CArrayGrower<BranchParameter>
+  protected ArrayList<BranchParameter> iParameters = new ArrayList<>();
 
   /// List of rules, sorted on precedence.
-  protected Vector iRules = new Vector();//CDeletingArrayGrower<BranchRuleBase*>
+  protected ArrayList<BranchRuleBase> iRules = new ArrayList<>();
 
   /// List of arguments
   LispPtr iParamList = new LispPtr();

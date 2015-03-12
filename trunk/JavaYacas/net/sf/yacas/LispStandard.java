@@ -549,9 +549,7 @@ class LispStandard
     if (aMaxChars > 0 && result.length()>aMaxChars)
     {
       result.delete(aMaxChars,result.length());
-      result.append((char)'.');
-      result.append((char)'.');
-      result.append((char)'.');
+      result.append("...");
     }
     return result.toString();
   }

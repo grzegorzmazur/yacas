@@ -15,7 +15,7 @@ class LispEnvironment
     iCurrentOutput = aCurrentOutput;
     iCurrentPrinter = new InfixPrinter(iPrefixOperators, iInfixOperators, iPostfixOperators, iBodiedOperators);
 
-    protected_symbols = new HashSet();
+    protected_symbols = new HashSet<>();
 
     iTrue = LispAtom.New(this,"True");
     iFalse = LispAtom.New(this,"False");
@@ -79,7 +79,7 @@ class LispEnvironment
   LispOperators iPostfixOperators = new LispOperators();
   LispOperators iBodiedOperators = new LispOperators();
 
-  Set protected_symbols;
+  Set<String> protected_symbols;
 
   int iEvalDepth = 0;
   int iMaxEvalDepth = 10000;
@@ -93,7 +93,7 @@ class LispEnvironment
 
         public YacasArgStack(int aStackSize) {
             maxSize = aStackSize;
-            iStack = new java.util.ArrayList();
+            iStack = new java.util.ArrayList<>();
         }
 
         public int GetStackTop() {
