@@ -13,8 +13,8 @@ import java.io.*;
  * The Yacas console thus does not need to be loaded always, but this applet should
  * always be there.
  */
- 
- 
+
+
 public class DatahubApplet extends Applet
 {
   public void init()
@@ -147,7 +147,7 @@ public class DatahubApplet extends Applet
     {
       URL url = new URL(docbase);
       BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
- 
+
       if (in != null)
       {
         while (true)
@@ -191,7 +191,7 @@ public class DatahubApplet extends Applet
   }
   private String unescape(String s)
   {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     int i,nr=s.length();
     for(i=0;i<nr;i++)
     {
@@ -233,4 +233,4 @@ public class DatahubApplet extends Applet
   static Article tutorialProgram = new Article("{{code: Echo(\"Welcome to the Yacas tutorial!\"); :code}}");
   static int currentProgram = 0;
 }
- 
+

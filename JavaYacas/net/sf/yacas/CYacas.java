@@ -34,7 +34,7 @@ public class CYacas
       if (env.iPrettyReader != null)
       {
         InputStatus someStatus = new InputStatus();
-        StringBuffer inp = new StringBuffer();
+        StringBuilder inp = new StringBuilder();
         inp.append(input);
         InputStatus oldstatus = env.iInputStatus;
         env.iInputStatus.SetTo("String");
