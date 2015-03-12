@@ -59,9 +59,9 @@ class BigNumber
     if (isFloat)
     {
       int decimalPos;
-      decimalPos = aString.indexOf("e");
+      decimalPos = aString.indexOf('e');
       if (decimalPos < 0)
-        decimalPos = aString.indexOf("E");
+        decimalPos = aString.indexOf('E');
       if (decimalPos > 0) // will never be zero
       {
         iTensExp = Integer.parseInt(aString.substring(decimalPos+1,aString.length()));
@@ -103,8 +103,8 @@ class BigNumber
       int extraExp = 0;
       // Parse out the exponent
       {
-        int pos = result.indexOf("E");
-        if (pos<0) pos = result.indexOf("e");
+        int pos = result.indexOf('E');
+        if (pos<0) pos = result.indexOf('e');
         if (pos > 0)
         {
           extraExp = Integer.parseInt(result.substring(pos+1));
@@ -409,7 +409,7 @@ class BigNumber
     decimal = null;
     integer = aX.integer.shiftRight(aNrToShift);
   }
- 
+
   void Gcd( BigNumber aX,  BigNumber aY) throws Exception
   {
     LispError.LISPASSERT(aX.integer != null);
@@ -467,7 +467,7 @@ class BigNumber
       if (d.compareTo(zero) == 0)
         return 0;
       int bitCount = 0;
- 
+
       //TODO OPTIMIZE
       d = d.multiply(two);
       while (d.compareTo(one)<0)
@@ -478,7 +478,7 @@ class BigNumber
       return bitCount;
     }
   }
- 
+
   /// Give sign (-1, 0, 1)
   public int Sign()
   {

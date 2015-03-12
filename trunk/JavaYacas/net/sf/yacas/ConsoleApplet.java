@@ -186,7 +186,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       try
       {
         String fname = getDocumentBase().toString();
-        int ind = fname.lastIndexOf("/");
+        int ind = fname.lastIndexOf('/');
         if (ind >0)
         {
           fname = fname.substring(0,ind+1)+"yacas.gif";
@@ -239,7 +239,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
       if (docbase.substring(0,4).equals("file"))
       {
-        int pos = docbase.lastIndexOf("/");
+        int pos = docbase.lastIndexOf('/');
         String zipFileName = docbase.substring(0,pos+1)+"yacas.jar";
         if (getParameter("debug") != null)
         {
@@ -259,7 +259,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
       if (docbase.startsWith("http"))
       {
-        int pos = docbase.lastIndexOf("/");
+        int pos = docbase.lastIndexOf('/');
         String scriptBase = "jar:"+ docbase.substring(0,pos+1)+"yacas.jar!/scripts/";
         if (getParameter("debug") != null)
         {
@@ -1601,7 +1601,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   {
     if (outp.length() > 0)
     {
-      int dollarPos = outp.indexOf("$");
+      int dollarPos = outp.indexOf('$');
       while (dollarPos >= 0)
       {
         // Print plain text before the dollared content
@@ -1613,7 +1613,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         outp = outp.substring(dollarPos+1,outp.length());
 
         // Find the right dollar sign, and split there too
-        dollarPos = outp.indexOf("$");
+        dollarPos = outp.indexOf('$');
         String dollared = outp.substring(0,dollarPos);
         outp = outp.substring(dollarPos+1,outp.length());
 
@@ -1629,7 +1629,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         {
           addLine(new PromptedFormulaLine(48, "Out>", iPromptFont, iPromptColor, dollared));
         }
-        dollarPos = outp.indexOf("$");
+        dollarPos = outp.indexOf('$');
       }
       // If there is some plain text left at the end, print
       if (outp.length() > 0)

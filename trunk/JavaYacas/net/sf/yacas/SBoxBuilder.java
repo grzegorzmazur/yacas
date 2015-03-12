@@ -10,7 +10,7 @@ class SBoxBuilder
     SBoxSymbolName(String aSymbol)
     {
       iSymbol = aSymbol;
-      if (iSymbol.indexOf("\\") == 0)
+      if (iSymbol.indexOf('\\') == 0)
       {
         if (iSymbol.equals("\\pi")) {}
         else if (iSymbol.equals("\\infty")) {}
