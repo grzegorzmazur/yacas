@@ -363,7 +363,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
   private String unescape(String s)
   {
-    StringBuffer buf = new StringBuffer();
+    StringBuilder buf = new StringBuilder();
     int i,nr=s.length();
     for(i=0;i<nr;i++)
     {

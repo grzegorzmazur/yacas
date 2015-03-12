@@ -12,7 +12,7 @@ public class YacasConsole extends Thread
 {
     static String readLine(InputStream aStream)
   {
-    StringBuffer line = new StringBuffer();
+    StringBuilder line = new StringBuilder();
     try
     {
       int c = aStream.read();
