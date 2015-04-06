@@ -588,25 +588,24 @@ void LispGarbageCollect(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-  LispPtr evaluated(ARGUMENT(1));
-  const LispString* string = evaluated->String();
-  CheckArg(string, 1, aEnvironment, aStackTop);
-  const std::string oper = InternalUnstringify(*string);
-  const LispString* hashedname = aEnvironment.HashTable().LookUp(oper);
-  InputStatus oldstatus = aEnvironment.iInputStatus;
-  aEnvironment.iInputStatus.SetTo(hashedname->c_str());
-  LispLocalFile localFP(aEnvironment, oper, true,
-                        aEnvironment.iInputDirectories);
+    LispPtr evaluated(ARGUMENT(1));
+    const LispString* string = evaluated->String();
+    CheckArg(string, 1, aEnvironment, aStackTop);
+    const std::string fname = InternalUnstringify(*string);
+    InputStatus oldstatus = aEnvironment.iInputStatus;
+    aEnvironment.iInputStatus.SetTo(fname);
+    LispLocalFile localFP(aEnvironment, fname, true,
+                          aEnvironment.iInputDirectories);
 
-  if (!localFP.stream.is_open())
-      throw LispErrFileNotFound();
+    if (!localFP.stream.is_open())
+        throw LispErrFileNotFound();
 
-  CachedStdFileInput newInput(localFP,aEnvironment.iInputStatus);
-  PatchLoad(newInput.StartPtr(),
-            aEnvironment.CurrentOutput(),
-            aEnvironment);
-  aEnvironment.iInputStatus.RestoreFrom(oldstatus);
-  InternalTrue(aEnvironment,RESULT);
+    std::string content(std::istreambuf_iterator<char>(localFP.stream), std::istreambuf_iterator<char>());
+
+    PatchLoad(content.c_str(), aEnvironment.CurrentOutput(), aEnvironment);
+
+    aEnvironment.iInputStatus.RestoreFrom(oldstatus);
+    InternalTrue(aEnvironment, RESULT);
 }
 
 void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
