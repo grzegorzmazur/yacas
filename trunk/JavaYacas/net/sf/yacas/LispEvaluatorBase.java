@@ -1,5 +1,7 @@
 package net.sf.yacas;
 
+import java.io.OutputStream;
+
 
 /// Abstract evaluator for Lisp expressions.
 /// Eval() is a pure virtual function, to be provided by the derived class.
@@ -15,7 +17,7 @@ abstract class LispEvaluatorBase
     {
       return iBasicInfo;
     }
-    public void ShowStack(LispEnvironment aEnvironment, LispOutput aOutput)
+    public void ShowStack(LispEnvironment aEnvironment, OutputStream aOutput)
     {
     }
     UserStackInformation iBasicInfo = new UserStackInformation();

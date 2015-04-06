@@ -1,7 +1,7 @@
 package net.sf.yacas;
 
+import java.io.ByteArrayOutputStream;
 import org.junit.*;
-import static org.junit.Assert.*;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -21,16 +21,16 @@ public class YacasTest {
 
     @Test
     public void test() {
-        StringBuffer buf = new StringBuffer();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
 
         try {
-            YacasInterpreter yacas = new YacasInterpreter(new StringOutput(buf));
+            YacasInterpreter yacas = new YacasInterpreter(output);
 
             yacas.Evaluate("Load(\"tests/"+fname+"\");");
 
-            if (buf.toString().contains("******************")) {
-                System.err.print(buf.toString());
-                Assert.fail(buf.toString());
+            if (output.toString().contains("******************")) {
+                System.err.print(output.toString());
+                Assert.fail(output.toString());
             }
         } catch (Exception e) {
             System.err.print("Error: " + e.getMessage());

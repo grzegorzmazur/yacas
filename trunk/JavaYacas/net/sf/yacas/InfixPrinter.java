@@ -1,5 +1,7 @@
 package net.sf.yacas;
 
+import java.io.OutputStream;
+
 
 class InfixPrinter extends LispPrinter
 {
@@ -16,7 +18,7 @@ class InfixPrinter extends LispPrinter
     iBodiedOperators = aBodiedOperators;
     iPrevLastChar = 0;
   }
-  public void Print(LispPtr aExpression, LispOutput aOutput, LispEnvironment aEnvironment) throws Exception
+  public void Print(LispPtr aExpression, OutputStream aOutput, LispEnvironment aEnvironment) throws Exception
   {
     iCurrentEnvironment = aEnvironment;
     Print(aExpression, aOutput, KMaxPrecedence);
@@ -25,7 +27,7 @@ class InfixPrinter extends LispPrinter
   {
     iPrevLastChar = aChar;
   }
-  void Print(LispPtr aExpression, LispOutput aOutput, int iPrecedence) throws Exception
+  void Print(LispPtr aExpression, OutputStream aOutput, int iPrecedence) throws Exception
   {
     LispError.LISPASSERT(aExpression.Get() != null);
 
@@ -199,17 +201,17 @@ class InfixPrinter extends LispPrinter
         }
     }
   }
-  void WriteToken(LispOutput aOutput,String aString) throws Exception
+  void WriteToken(OutputStream aOutput,String aString) throws Exception
   {
     if (LispTokenizer.IsAlNum(iPrevLastChar) && (LispTokenizer.IsAlNum(aString.charAt(0)) || aString.charAt(0)=='_'))
     {
-        aOutput.Write(" ");
+        aOutput.write(" ".getBytes());
     }
     else if (LispTokenizer.IsSymbolic(iPrevLastChar) && LispTokenizer.IsSymbolic(aString.charAt(0)))
     {
-        aOutput.Write(" ");
+        aOutput.write(" ".getBytes());
     }
-    aOutput.Write(aString);
+    aOutput.write(aString.getBytes());
     RememberLastChar(aString.charAt(aString.length()-1));
   }
   LispOperators iPrefixOperators;

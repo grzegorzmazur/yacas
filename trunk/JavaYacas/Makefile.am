@@ -13,7 +13,7 @@ net/sf/yacas/LispGlobal.java net/sf/yacas/LispGlobalVariable.java \
 net/sf/yacas/LispHashTable.java net/sf/yacas/LispInFixOperator.java net/sf/yacas/LispInput.java \
 net/sf/yacas/LispIterator.java net/sf/yacas/LispLocalFrame.java \
 net/sf/yacas/LispMultiUserFunction.java net/sf/yacas/LispNumber.java net/sf/yacas/LispObject.java \
-net/sf/yacas/LispOperators.java net/sf/yacas/LispOutput.java net/sf/yacas/LispParser.java \
+net/sf/yacas/LispOperators.java net/sf/yacas/LispParser.java \
 net/sf/yacas/LispPrinter.java net/sf/yacas/LispPtr.java net/sf/yacas/LispPtrArray.java \
 net/sf/yacas/LispStandard.java net/sf/yacas/LispSubList.java net/sf/yacas/LispTokenizer.java \
 net/sf/yacas/LispUserFunction.java net/sf/yacas/LispUserFunctions.java \
@@ -23,7 +23,7 @@ net/sf/yacas/MacroUserFunction.java Makefile.am net/sf/yacas/MatchAtom.java \
 net/sf/yacas/MatchNumber.java net/sf/yacas/MatchSubList.java \
 net/sf/yacas/MatchVariable.java net/sf/yacas/MathCommands.java net/sf/yacas/ParsedObject.java \
 net/sf/yacas/PatternClass.java net/sf/yacas/StdFileInput.java \
-net/sf/yacas/StdFileOutput.java net/sf/yacas/StringInput.java net/sf/yacas/StringOutput.java \
+net/sf/yacas/StringInput.java \
 net/sf/yacas/SubstBehaviour.java net/sf/yacas/SubstBehaviourBase.java net/sf/yacas/UserStackInformation.java \
 net/sf/yacas/YacasConsole.java net/sf/yacas/YacasCoreCommands.java \
 net/sf/yacas/YacasEvalCaller.java net/sf/yacas/YacasEvaluator.java net/sf/yacas/YacasParamMatcherBase.java \
