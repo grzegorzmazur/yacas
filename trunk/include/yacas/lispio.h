@@ -62,7 +62,7 @@ void InputStatus::NextLine()
  *  that needs to be implemented by a file (something that expressions
  *  can be read from).
  */
-class LispInput : public YacasBase
+class LispInput
 {
 public:
   /** Constructor with InputStatus. InputStatus retains the information
