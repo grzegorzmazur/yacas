@@ -1,43 +1,41 @@
-
-#include "yacas/yacasprivate.h"
-#include "yacas/lisperror.h"
 #include "yacas/xmltokenizer.h"
+#include "yacas/lisperror.h"
 
 #include <cctype>
 
 const LispString* XmlTokenizer::NextToken(LispInput& aInput, LispHashTable& aHashTable)
 {
-    LispChar c;
-    LispInt firstpos=0;
+    char c;
 
     if (aInput.EndOfStream())
-        goto FINISH;
+        return aHashTable.LookUp("");
 
-    //skipping spaces
     while (std::isspace(aInput.Peek()))
         aInput.Next();
 
-    firstpos = aInput.Position();
+    if (aInput.EndOfStream())
+        return aHashTable.LookUp("");
+
+    std::string s;
 
     c = aInput.Next();
-    if (c == '<')
-    {
-        while (c != '>')
-        {
+    s.push_back(c);
+
+    if (c == '<') {
+        while (c != '>') {
             c = aInput.Next();
 
             if (aInput.EndOfStream())
                 throw LispErrCommentToEndOfFile();
-        }
-    }
-    else
-    {
-        while (aInput.Peek() != '<' && !aInput.EndOfStream())
-        {
-            c = aInput.Next();
-        }
-    }
-FINISH:
-    return aHashTable.LookUp(std::string(&aInput.StartPtr()[firstpos],aInput.Position()-firstpos));
-}
 
+            s.push_back(c);
+        }
+    } else {
+        while (aInput.Peek() != '<' && !aInput.EndOfStream()) {
+            c = aInput.Next();
+            s.push_back(c);
+        }
+    }
+
+    return aHashTable.LookUp(s);
+}
