@@ -1489,12 +1489,12 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       if (ifrom == 0)
         break;
       char c = inputLine.charAt(ifrom-1);
-      if (!LispTokenizer.IsAlpha(c) && !LispTokenizer.IsDigit(c))
+      if (!LispTokenizer.IsAlpha(c) && !Character.isDigit(c))
         break;
       ifrom--;
     }
     // Name of function *has* to start with alphabetic letter
-    while (ifrom < ito && LispTokenizer.IsDigit(inputLine.charAt(ifrom)))
+    while (ifrom < ito && Character.isDigit(inputLine.charAt(ifrom)))
       ifrom++;
 
     matchToInsert = "";
