@@ -74,8 +74,7 @@ public class YacasConsole extends Thread
     int scriptsToRun = i;
 
 
-    StdFileOutput stdoutput = new StdFileOutput(System.out);
-    CYacas yacas = new CYacas(stdoutput);
+    CYacas yacas = new CYacas(System.out);
     yacas.env.iCurrentInput = new CachedStdFileInput(yacas.env.iInputStatus);
 
     try

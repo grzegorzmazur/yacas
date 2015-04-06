@@ -1,9 +1,12 @@
 package net.sf.yacas;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+
 
 public class CYacas
 {
-  public CYacas(LispOutput stdoutput)
+  public CYacas(OutputStream stdoutput)
   {
     try
     {
@@ -76,8 +79,7 @@ public class CYacas
       String percent = env.HashTable().LookUp("%");
       env.SetVariable(percent,result,true);
 
-      StringBuffer string_out = new StringBuffer();
-      LispOutput output = new StringOutput(string_out);
+      ByteArrayOutputStream output = new ByteArrayOutputStream();
 
       if (env.iPrettyPrinter != null)
       {
@@ -85,13 +87,13 @@ public class CYacas
          LispStandard.InternalApplyString(env, nonresult,
                              env.iPrettyPrinter,
                              result);
-        rs = string_out.toString();
+        rs = output.toString();
       }
       else
       {
         printer.RememberLastChar(' ');
         printer.Print(result, output, env);
-        rs = string_out.toString();
+        rs = output.toString();
       }
     }
     catch (Exception e)

@@ -1,5 +1,7 @@
 package net.sf.yacas;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -479,7 +481,7 @@ class LispStandard
   }
 
     public static void DoPatchString(String unpatchedString,
-                                     LispOutput aOutput,
+                                     OutputStream aOutput,
                                      LispEnvironment aEnvironment) throws Exception
     {
         String[] tags = unpatchedString.split("\\?\\>");
@@ -487,13 +489,13 @@ class LispStandard
             for (int x = 0; x < tags.length; x++) {
                 String[] tag = tags[x].split("\\<\\?");
                 if (tag.length > 1) {
-                    aOutput.Write(tag[0]);
+                    aOutput.write(tag[0].getBytes());
                     String scriptCode = tag[1].trim();
                     StringBuffer scriptCodeBuffer =
                         new StringBuffer(scriptCode);
                     StringInput scriptStream =
                         new StringInput(scriptCodeBuffer, aEnvironment.iInputStatus);
-                    LispOutput previous = aEnvironment.iCurrentOutput;
+                    OutputStream previous = aEnvironment.iCurrentOutput;
                     try {
                         aEnvironment.iCurrentOutput = aOutput;
                         LispStandard.DoInternalLoad(aEnvironment, scriptStream);
@@ -504,9 +506,9 @@ class LispStandard
                     }
                 }
             }
-            aOutput.Write(tags[tags.length - 1]);
+            aOutput.write(tags[tags.length - 1].getBytes());
         } else {
-            aOutput.Write(unpatchedString);
+            aOutput.write(unpatchedString.getBytes());
         }
     }
 
@@ -538,13 +540,13 @@ class LispStandard
                       LispEnvironment aEnvironment,
                       int aMaxChars) throws Exception
   {
-    StringBuffer result = new StringBuffer();
-    StringOutput newOutput = new StringOutput(result);
+    ByteArrayOutputStream newOutput = new ByteArrayOutputStream();
     InfixPrinter infixprinter = new InfixPrinter(aEnvironment.iPrefixOperators,
                               aEnvironment.iInfixOperators,
                               aEnvironment.iPostfixOperators,
                               aEnvironment.iBodiedOperators);
     infixprinter.Print(aExpression, newOutput, aEnvironment);
+    StringBuilder result = new StringBuilder(newOutput.toString());
     if (aMaxChars > 0 && result.length()>aMaxChars)
     {
       result.delete(aMaxChars,result.length());

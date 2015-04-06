@@ -1,9 +1,11 @@
 package net.sf.yacas;
 
+import java.io.OutputStream;
+
 
 class LispPrinter
 {
-  public void Print(LispPtr aExpression, LispOutput aOutput, LispEnvironment aEnvironment) throws Exception
+  public void Print(LispPtr aExpression, OutputStream aOutput, LispEnvironment aEnvironment) throws Exception
   {
     PrintExpression(aExpression, aOutput, aEnvironment,0);
   }
@@ -11,8 +13,8 @@ class LispPrinter
   {
   }
 
-   void PrintExpression(LispPtr aExpression, LispOutput aOutput,
-                      LispEnvironment aEnvironment,int aDepth /* =0 */) throws Exception
+   void PrintExpression(LispPtr aExpression, OutputStream aOutput,
+                        LispEnvironment aEnvironment,int aDepth /* =0 */) throws Exception
    {
     LispPtr iter = new LispPtr();
     iter.Set(aExpression.Get());
@@ -24,8 +26,8 @@ class LispPrinter
 
         if (string != null)
         {
-            aOutput.Write(string);
-            aOutput.PutChar(' ');
+            aOutput.write(string.getBytes());
+            aOutput.write(" ".getBytes());
         }
         // else print "(", print sublist, and print ")"
         else if (iter.Get().SubList() != null)
@@ -34,29 +36,27 @@ class LispPrinter
       {
         Indent(aOutput,aDepth+1);
       }
-            aOutput.Write("(");
+            aOutput.write("(".getBytes());
             PrintExpression((iter.Get().SubList()),aOutput, aEnvironment,aDepth+1);
-            aOutput.Write(")");
+            aOutput.write(")".getBytes());
       item=0;
         }
         else
         {
-            aOutput.Write("[GenericObject]");
+            aOutput.write("[GenericObject]".getBytes());
         }
         iter = (iter.Get().Next());
   item++;
     } // print next element
    }
 
-   void Indent(LispOutput aOutput, int aDepth) throws Exception
-   {
-    aOutput.Write("\n");
-    int i;
-    for (i=aDepth;i>0;i--)
-    {
-    aOutput.Write("  ");
+    void Indent(OutputStream aOutput, int aDepth) throws Exception {
+        aOutput.write("\n".getBytes());
+        int i;
+        for (i = aDepth; i > 0; i--) {
+            aOutput.write("  ".getBytes());
+        }
     }
-   }
 };
 
 

@@ -13,7 +13,6 @@ set (JYACAS_SRCS ${CMAKE_CURRENT_BINARY_DIR}/CVersion.java
          JavaYacas/net/sf/yacas/FormulaViewApplet.java
          JavaYacas/net/sf/yacas/Grapher.java
          JavaYacas/net/sf/yacas/GrapherApplet.java
-         JavaYacas/net/sf/yacas/StdFileOutput.java
          JavaYacas/net/sf/yacas/StdFileInput.java
          JavaYacas/net/sf/yacas/StreamGobbler.java
          JavaYacas/net/sf/yacas/JarInputFile.java
@@ -23,7 +22,6 @@ set (JYACAS_SRCS ${CMAKE_CURRENT_BINARY_DIR}/CVersion.java
          JavaYacas/net/sf/yacas/LispDefFile.java
          JavaYacas/net/sf/yacas/LispDefFiles.java
          JavaYacas/net/sf/yacas/InputDirectories.java
-         JavaYacas/net/sf/yacas/LispOutput.java
          JavaYacas/net/sf/yacas/LispHashTable.java
          JavaYacas/net/sf/yacas/LispGlobalVariable.java
          JavaYacas/net/sf/yacas/LispArgList.java
@@ -48,7 +46,6 @@ set (JYACAS_SRCS ${CMAKE_CURRENT_BINARY_DIR}/CVersion.java
          JavaYacas/net/sf/yacas/ListedBranchingUserFunction.java
          JavaYacas/net/sf/yacas/LispMultiUserFunction.java
          JavaYacas/net/sf/yacas/StringInput.java
-         JavaYacas/net/sf/yacas/StringOutput.java
          JavaYacas/net/sf/yacas/InfixParser.java
          JavaYacas/net/sf/yacas/ParsedObject.java
          JavaYacas/net/sf/yacas/LispEvaluatorBase.java

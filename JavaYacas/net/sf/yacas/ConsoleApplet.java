@@ -5,7 +5,6 @@ import java.awt.datatransfer.ClipboardOwner;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.Toolkit;
 import java.awt.*;
 import java.awt.event.*;
@@ -175,9 +174,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
   boolean calculating = false;
 
-  LispOutput stdoutput = null;
+  ByteArrayOutputStream stdoutput = null;
   CYacas yacas = null;
-  StringBuffer outp = new StringBuffer();
+
   public void start()
   {
     clearOutputLines();
@@ -199,7 +198,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
 
 
-    stdoutput = new StringOutput(outp);
+    stdoutput = new ByteArrayOutputStream();
     yacas = new CYacas(stdoutput);
     yacas.env.iCurrentInput = new CachedStdFileInput(yacas.env.iInputStatus);
 
@@ -805,11 +804,11 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       {
         paint(getGraphics());
       }
-      outp.delete(0,outp.length());
+      stdoutput.reset();
       String response = yacas.Evaluate(inputLine);
       calculating = false;
 
-      AddOutputLine(outp.toString());
+      AddOutputLine(stdoutput.toString());
       if (yacas.iError != null)
       {
         AddLinesStatic(48,"Error> ",yacas.iError);
@@ -1666,10 +1665,10 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
       else
       {
-        outp.delete(0,outp.length());
+        stdoutput.reset();
         String response = yacas.Evaluate(expression);
         calculating = false;
-        AddOutputLine(outp.toString());
+        AddOutputLine(stdoutput.toString());
         if (yacas.iError != null)
         {
           AddLinesStatic(48,"Error> ",yacas.iError);
