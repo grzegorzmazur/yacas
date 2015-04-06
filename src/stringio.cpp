@@ -33,11 +33,6 @@ bool StringInput::EndOfStream() const
     return (iString[ iCurrent ] == '\0');
 }
 
-const LispChar* StringInput::StartPtr()
-{
-    return iString.c_str();
-}
-
 std::size_t StringInput::Position() const
 {
     return iCurrent;

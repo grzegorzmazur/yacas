@@ -33,7 +33,6 @@ public:
   virtual LispChar Peek();
   virtual bool EndOfStream() const;
   void Rewind();
-  virtual const LispChar* StartPtr();
   virtual std::size_t Position() const;
   virtual void SetPosition(std::size_t aPosition);
 
@@ -55,7 +54,6 @@ public:
     LispChar Peek();
     bool EndOfStream() const;
     void Rewind();
-    const LispChar* StartPtr();
     std::size_t Position() const;
     void SetPosition(std::size_t aPosition);
 
@@ -102,7 +100,6 @@ public:
     virtual LispChar Peek();
     virtual bool EndOfStream() const;
     void Rewind();
-    virtual const LispChar* StartPtr();
     virtual std::size_t Position() const;
 
 private:

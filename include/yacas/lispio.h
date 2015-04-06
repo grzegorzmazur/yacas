@@ -84,16 +84,7 @@ public:
 
   /// Check if the file position is past the end of the file.
   virtual bool EndOfStream() const = 0;
-  /** StartPtr returns the start of a buffer, if there is one.
-   * Implementations of this class can keep the file in memory
-   * as a whole, and return the start pointer and current position.
-   * Especially the parsing code requires this, because it can then
-   * efficiently look up a symbol in the hash table without having to
-   * first create a buffer to hold the symbol in. If StartPtr is supported,
-   * the whole file should be in memory for the whole period the file
-   * is being read.
-   */
-  virtual const LispChar* StartPtr() = 0;
+
   virtual std::size_t Position() const = 0;
   virtual void SetPosition(std::size_t aPosition) = 0;
 protected:

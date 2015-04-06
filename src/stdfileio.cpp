@@ -52,12 +52,6 @@ bool StdFileInput::EndOfStream() const
     return stream.eof();
 }
 
-const LispChar* StdFileInput::StartPtr()
-{
-    assert(0);
-    return 0;
-}
-
 std::size_t StdFileInput::Position() const
 {
     assert(0);
@@ -112,11 +106,6 @@ void CachedStdFileInput::Rewind()
 bool CachedStdFileInput::EndOfStream() const
 {
     return iCurrentPos + 1 >= _buf.size();
-}
-
-const LispChar* CachedStdFileInput::StartPtr()
-{
-    return _buf.data();
 }
 
 std::size_t CachedStdFileInput::Position() const
@@ -230,13 +219,6 @@ void CachedStdUserInput::Rewind()
   iBuffer.resize(10);
   iBuffer.resize(0);
   iCurrentPos=0;
-}
-
-const LispChar* CachedStdUserInput::StartPtr()
-{
-  if (iBuffer.size() == 0)
-    Peek();
-  return &iBuffer[0];
 }
 
 std::size_t CachedStdUserInput::Position() const
