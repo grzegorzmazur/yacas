@@ -43,10 +43,6 @@ class CachedStdFileInput extends LispInput
       iBuffer = new StringBuffer();
       iCurrentPos = 0;
     }
-    public StringBuffer StartPtr()
-    {
-      return iBuffer;
-    }
     public int Position()
     {
       return iCurrentPos;
@@ -55,7 +51,7 @@ class CachedStdFileInput extends LispInput
     {
       iCurrentPos = aPosition;
     }
- 
+
     StringBuffer iBuffer;
     int iCurrentPos;
 }

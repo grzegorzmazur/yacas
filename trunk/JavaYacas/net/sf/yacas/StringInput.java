@@ -29,10 +29,6 @@ class StringInput extends LispInput
   {
     return (iCurrent == iString.length());
   }
-  public StringBuffer StartPtr()
-  {
-    return iString;
-  }
   public int Position()
   {
     return iCurrent;
