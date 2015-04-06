@@ -74,7 +74,6 @@ LispEnvironment::LispEnvironment(
     iPrettyReader(nullptr),
     iPrettyPrinter(nullptr),
     iDefaultTokenizer(),
-    iCommonLispTokenizer(),
     iXmlTokenizer(),
     iCurrentTokenizer(&iDefaultTokenizer),
     iStack(aStackSize)

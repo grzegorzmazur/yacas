@@ -26,14 +26,6 @@ protected:
   LispString iToken; //Can be used as a token container.
 };
 
-class CommonLispTokenizer : public LispTokenizer
-{
-public:
-    virtual const LispString* NextToken(LispInput& aInput,
-                                        LispHashTable& aHashTable);
-};
-
-
 // utility functions
 inline
 bool IsAlpha(LispChar c)
