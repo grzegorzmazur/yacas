@@ -4,12 +4,6 @@ import java.math.*;
 
 class BigNumber
 {
-  public static boolean NumericSupportForMantissa()
-  {
-    return true;
-  }
-
-
   //constructors
   public BigNumber( String aString,int aBasePrecision,int aBase/*=10*/)
   {

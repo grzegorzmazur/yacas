@@ -41,8 +41,6 @@ class LispStandard
     {
         if (!aAllowFloat)
             return false;
-        if (!BigNumber.NumericSupportForMantissa())
-            return false;
         index++;
         if (pos+index == ptr.length())
           return true;

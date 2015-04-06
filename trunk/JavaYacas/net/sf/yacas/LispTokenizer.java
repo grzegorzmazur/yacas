@@ -1,163 +1,156 @@
 package net.sf.yacas;
 
+class LispTokenizer {
 
-class LispTokenizer
-{
+    /// Return a string representing the next token
+    String NextToken(LispInput aInput, LispHashTable aHashTable) throws Exception {
 
-    /// NextToken returns a string representing the next token,
-    /// or an empty list.
-    String NextToken(LispInput aInput, LispHashTable aHashTable) throws Exception
-  {
-    char c;
-    int firstpos = aInput.Position();
+        char c;
 
-    boolean redo = true;
-    while (redo)
-    {
-      redo = false;
-//REDO: //TODO FIXME
-      firstpos = aInput.Position();
+        for (;;) {
+            if (aInput.EndOfStream())
+                return aHashTable.LookUp("");
 
-      // End of stream: return empty string
-      if (aInput.EndOfStream())
-        break;
+            c = aInput.Next();
 
-      c = aInput.Next();
-      //printf("%c",c);
+            if (Character.isWhitespace(c))
+                continue;
 
-      //Parse brackets
-      if (c == '(')      {}
-      else if (c == ')') {}
-      else if (c == '{') {}
-      else if (c == '}') {}
-      else if (c == '[') {}
-      else if (c == ']') {}
-      else if (c == ',') {}
-      else if (c == ';') {}
-      else if (c == '%') {}
-    //    else if (c == '\'') {}
-      else if (c == '.' && !IsDigit(aInput.Peek()) )
-      {
-        while (aInput.Peek() == '.')
-        {
-          aInput.Next();
-        }
-      }
-      // parse comments
-      else if (c == '/' && aInput.Peek() == '*')
-      {
-        aInput.Next(); //consume *
-        while (true)
-        {
-          while (aInput.Next() != '*' && !aInput.EndOfStream());
-          LispError.Check(!aInput.EndOfStream(),LispError.KLispErrCommentToEndOfFile);
-          if (aInput.Peek() == '/')
-          {
-            aInput.Next();  // consume /
-            redo = true;
+            // parse comments
+            if (c == '/' && aInput.Peek() == '*') {
+                aInput.Next();
+                for (;;) {
+                    while (aInput.Next() != '*' && !aInput.EndOfStream())
+                        ;
+
+                    LispError.Check(!aInput.EndOfStream(), LispError.KLispErrCommentToEndOfFile);
+
+                    if (aInput.Peek() == '/') {
+                        aInput.Next();
+                        break;
+                    }
+                }
+
+                continue;
+            }
+
+            if (c == '/' && aInput.Peek() == '/') {
+                aInput.Next();
+                while (aInput.Next() != '\n' && !aInput.EndOfStream())
+                    ;
+                continue;
+            }
+
             break;
-          }
         }
-        if (redo)
-        {
-          continue;
-        }
-      }
-      else if (c == '/' && aInput.Peek() == '/')
-      {
-        aInput.Next(); //consume /
-        while (aInput.Next() != '\n' && !aInput.EndOfStream());
-        redo = true;
-        continue;
-      }
-      // parse literal strings
-      else if (c == '\"')
-      {
-        String aResult = String.valueOf(c);
-        while (aInput.Peek() != '\"')
-        {
-          if (aInput.Peek() == '\\')
-          {
-            aInput.Next();
-            LispError.Check(!aInput.EndOfStream(),LispError.KLispErrParsingInput);
-          }
-          aResult += aInput.Next();
-          LispError.Check(!aInput.EndOfStream(),LispError.KLispErrParsingInput);
-        }
-        aResult += aInput.Next(); // consume the close quote
-        return aHashTable.LookUp(aResult);
-      }
-      //parse atoms
-      else if (IsAlpha(c))
-      {
-        while (IsAlNum( aInput.Peek()))
-        {
-          aInput.Next();
-        }
-      }
 
-      else if (IsSymbolic(c))
-      {
-        while (IsSymbolic( aInput.Peek()))
-        {
-          aInput.Next();
+        // parse brackets
+        if (c == '(' || c == ')' || c == '{' || c == '}' || c == '[' || c == ']')
+            return aHashTable.LookUp(Character.toString(c));
+
+        // percent
+        if (c == '%')
+            return aHashTable.LookUp(Character.toString(c));
+
+        // comma and semicolon
+        if (c == ',' || c == ';')
+            return aHashTable.LookUp(Character.toString(c));
+
+        // parse . or ..
+        if (c == '.' && !Character.isDigit(aInput.Peek())) {
+            StringBuilder token = new StringBuilder();
+            token.append(c);
+            while (aInput.Peek() == '.')
+                token.append(aInput.Next());
+            return aHashTable.LookUp(token.toString());
         }
-      }
-      else if (c == '_')
-      {
-        while (aInput.Peek() == '_')
-        {
-          aInput.Next();
+
+        if (c == '\"') {
+            StringBuilder str = new StringBuilder();
+            str.append(c);
+            while (aInput.Peek() != '\"') {
+                if (aInput.Peek() == '\\') {
+                    aInput.Next();
+                    LispError.Check(!aInput.EndOfStream(), LispError.KLispErrParsingInput);
+                }
+
+                str.append(aInput.Next());
+
+                LispError.Check(!aInput.EndOfStream(), LispError.KLispErrParsingInput);
+            }
+            str.append(aInput.Next());
+            return aHashTable.LookUp(str.toString());
         }
-      }
-      else if (IsDigit(c) || c == '.')
-      {
-        while (IsDigit( aInput.Peek())) aInput.Next();
-        if (aInput.Peek() == '.')
-        {
-          aInput.Next();
-          while (IsDigit( aInput.Peek())) aInput.Next();
+
+        // parse atoms
+        if (Character.isAlphabetic(c) || c == '\'') {
+            StringBuilder atom = new StringBuilder();
+            atom.append(c);
+            while (Character.isAlphabetic(aInput.Peek()) || aInput.Peek() == '\'' || Character.isDigit(aInput.Peek()))
+                atom.append(aInput.Next());
+            return aHashTable.LookUp(atom.toString());
         }
-        if (BigNumber.NumericSupportForMantissa())
-        {
-          if (aInput.Peek() == 'e' || aInput.Peek() == 'E')
-          {
-            aInput.Next();
-            if (aInput.Peek() == '-' || aInput.Peek() == '+')
-              aInput.Next();
-            while (IsDigit( aInput.Peek())) aInput.Next();
-          }
+
+        // parse operators
+        if (IsSymbolic(c)) {
+            StringBuilder op = new StringBuilder();
+            op.append(c);
+            while (IsSymbolic(aInput.Peek()))
+                op.append(aInput.Next());
+            return aHashTable.LookUp(op.toString());
         }
-      }
-      // Treat the char as a space.
-      else
-      {
-        redo = true;
-        continue;
-      }
+
+        // parse subscripts
+        if (c == '_') {
+            StringBuilder token = new StringBuilder();
+            token.append(c);
+            while (aInput.Peek() == '_')
+                token.append(aInput.Next());
+            return aHashTable.LookUp(token.toString());
+        }
+
+        // parse numbers
+        if (Character.isDigit(c) || c == '.') {
+            StringBuilder number = new StringBuilder();
+            number.append(c);
+
+            while (Character.isDigit(aInput.Peek()))
+                number.append(aInput.Next());
+
+            if (aInput.Peek() == '.') {
+                number.append(aInput.Next());
+                while (Character.isDigit(aInput.Peek()))
+                    number.append(aInput.Next());
+            }
+
+            if (aInput.Peek() == 'e' || aInput.Peek() == 'E') {
+                number.append(aInput.Next());
+                if (aInput.Peek() == '-' || aInput.Peek() == '+')
+                    number.append(aInput.Next());
+
+                while (Character.isDigit(aInput.Peek()))
+                    number.append(aInput.Next());
+            }
+
+            return aHashTable.LookUp(number.toString());
+        }
+
+        LispError.Check(false, LispError.KInvalidToken);
+
+        return aHashTable.LookUp("");
     }
-    return aHashTable.LookUp(aInput.StartPtr().substring(firstpos,aInput.Position()));
-  }
 
-  static boolean IsDigit(char c)
-  {
-    return ((c>='0' && c<='9'));
-  }
+    static boolean IsAlpha(char c) {
+        return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c == '\''));
+    }
 
-  static boolean IsAlpha(char c)
-  {
-    return ( (c>='a' && c<='z') || (c>='A' && c<='Z') || (c == '\'') );
-  }
+    static boolean IsAlNum(char c) {
+        return (IsAlpha(c) || Character.isDigit(c));
+    }
 
-  static boolean IsAlNum(char c)
-  {
-    return (IsAlpha(c) || IsDigit(c));
-  }
-  static String symbolics = "~`!@#$^&*-=+:<>?/\\|";
-  static boolean IsSymbolic(char c)
-  {
-    return (symbolics.indexOf(c) >= 0);
-  }
-    String iToken; //Can be used as a token container.
+    static String symbolics = "~`!@#$^&*-=+:<>?/\\|";
+
+    static boolean IsSymbolic(char c) {
+        return (symbolics.indexOf(c) >= 0);
+    }
 };
-

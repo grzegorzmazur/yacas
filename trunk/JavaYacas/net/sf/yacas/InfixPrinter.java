@@ -35,7 +35,7 @@ class InfixPrinter extends LispPrinter
         boolean bracket=false;
         if (iPrecedence<KMaxPrecedence &&
             string.charAt(0) == '-' &&
-            (LispTokenizer.IsDigit(string.charAt(1)) || string.charAt(1) == '.')
+            (Character.isDigit(string.charAt(1)) || string.charAt(1) == '.')
            )
         {
             bracket=true;
