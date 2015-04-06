@@ -114,7 +114,6 @@ String toLookUp = iLookAhead.substring(len,origlen);
                       LispInput input = iParser.iInput;
                       int newPos = input.Position()-(origlen-len);
                       input.SetPosition(newPos);
-//printf("Pushhback %s\n",&input.StartPtr()[input.Position()]);
                       break;
                     }
                     else op=null;
