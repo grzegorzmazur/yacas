@@ -16,7 +16,6 @@ public:
     virtual LispChar Next();
     virtual LispChar Peek();
     virtual bool EndOfStream() const;
-    virtual const LispChar* StartPtr();
     virtual std::size_t Position() const;
     virtual void SetPosition(std::size_t aPosition);
 protected:

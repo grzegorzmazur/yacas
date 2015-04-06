@@ -224,7 +224,6 @@ void ParsedObject::ReadExpression(LispInt depth)
                       LispInput& input = iParser.iInput;
                       LispInt newPos = input.Position()-(origlen-len);
                       input.SetPosition(newPos);
-//printf("Pushhback %s\n",&input.StartPtr()[input.Position()]);
                       break;
                     }
                     else op=nullptr;
