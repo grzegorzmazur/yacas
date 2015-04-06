@@ -4117,28 +4117,22 @@ class MathCommands
       fnameObject.Set(ARGUMENT(aEnvironment,aStackTop,1).Get());
       LispError.CHK_ISSTRING_CORE(aEnvironment,aStackTop,fnameObject,1);
       String fname = LispStandard.InternalUnstringify(fnameObject.Get().String());
-      String hashedname = aEnvironment.HashTable().LookUp(fname);
+
+
 
       long fileSize = 0;
       InputStatus oldstatus = new InputStatus(aEnvironment.iInputStatus);
-      aEnvironment.iInputStatus.SetTo(hashedname);
-      try
-      {
-        // Open file
-        LispInput newInput = // new StdFileInput(hashedname, aEnvironment.iInputStatus);
-            LispStandard.OpenInputFile(aEnvironment, aEnvironment.iInputDirectories, hashedname, aEnvironment.iInputStatus);
-
-        LispError.Check(newInput != null, LispError.KLispErrFileNotFound);
-        fileSize = newInput.StartPtr().length();
-      }
-      catch (Exception e)
-      {
+      aEnvironment.iInputStatus.SetTo(fname);
+      try {
+          File f = new File(fname);
+          LispError.Check(f.exists(), LispError.KLispErrFileNotFound);
+          fileSize = f.length();
+      } catch (Exception e) {
         throw e;
-      }
-      finally
-      {
+      } finally {
         aEnvironment.iInputStatus.RestoreFrom(oldstatus);
       }
+
       RESULT(aEnvironment,aStackTop).Set(LispAtom.New(aEnvironment,""+fileSize));
     }
   }
