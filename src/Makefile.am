@@ -11,7 +11,6 @@ pkginclude_HEADERS = $(top_srcdir)/include/yacas/anumber.h	\
 	$(top_srcdir)/include/yacas/deffile.h					\
 	$(top_srcdir)/include/yacas/infixparser.h				\
 	$(top_srcdir)/include/yacas/lispatom.h					\
-	$(top_srcdir)/include/yacas/lispcleanupstack.h			\
 	$(top_srcdir)/include/yacas/lispenvironment.h			\
 	$(top_srcdir)/include/yacas/lisperror.h					\
 	$(top_srcdir)/include/yacas/lispeval.h					\
@@ -64,7 +63,7 @@ pkginclude_HEADERS = $(top_srcdir)/include/yacas/anumber.h	\
 	$(top_srcdir)/include/yacas/string_utils.h
 
 libyacas_la_SOURCES = $(libyacas_la_HEADERS) stdcommandline.cpp		 \
-	deffile.cpp infixparser.cpp lispatom.cpp lispcleanupstack.cpp	 \
+	deffile.cpp infixparser.cpp lispatom.cpp                         \
 	lispenvironment.cpp lispeval.cpp lisperror.cpp lispio.cpp		 \
 	lispobject.cpp lispparser.cpp lispuserfunc.cpp mathcommands.cpp	 \
 	mathuserfunc.cpp standard.cpp stdfileio.cpp	 \

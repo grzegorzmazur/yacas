@@ -34,7 +34,7 @@ LispEnvironment::LispEnvironment(
     iPrecision(10),  // default user precision of 10 decimal digits
     iBinaryPrecision(34),  // same as 34 bits
     iInputDirectories(),
-    iCleanup(),
+    //iCleanup(),
     iEvalDepth(0),
     iMaxEvalDepth(1000),
     stop_evaluation(false),
@@ -518,27 +518,6 @@ void LispEnvironment::RemoveCoreCommand(LispChar* aString)
 {
   CoreCommands().erase(HashTable().LookUp(aString));
 }
-
-void LispLocalFrame::Delete()
-{
-    iEnvironment.PopLocalFrame();
-}
-
-void LispSecureFrame::Delete()
-{
-    iEnvironment.secure = previous_secure;
-}
-
-void LispLocalInput::Delete()
-{
-    iEnvironment.SetCurrentInput(iPreviousInput);
-}
-
-void LispLocalOutput::Delete()
-{
-    iEnvironment.SetCurrentOutput(*iPreviousOutput);
-}
-
 
 LispLocalEvaluator::LispLocalEvaluator(LispEnvironment& aEnvironment,LispEvaluatorBase* aNewEvaluator)
   : iPreviousEvaluator(aEnvironment.iEvaluator),iEnvironment(aEnvironment)

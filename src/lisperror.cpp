@@ -10,6 +10,6 @@ void HandleError(const LispError& error, LispEnvironment& aEnvironment, std::ost
         aOutput << aEnvironment.iInputStatus.LineNumber();
         aOutput << ") : ";
     }
-    aEnvironment.iCleanup.Delete();
+    //aEnvironment.iCleanup.Delete();
     aOutput << error.what() << '\n';
 }

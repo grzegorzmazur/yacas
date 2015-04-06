@@ -10,7 +10,6 @@
 #include "lispobject.h"
 #include "lisphash.h"
 #include "lispevalhash.h"
-#include "lispcleanupstack.h"
 #include "lispuserfunc.h"
 #include "deffile.h"
 #include "lispio.h"
@@ -211,7 +210,7 @@ protected:
   LispInt iBinaryPrecision;
 public:
   std::vector<std::string> iInputDirectories;
-  DeletingLispCleanup iCleanup;
+  //DeletingLispCleanup iCleanup;
   LispInt iEvalDepth;
   LispInt iMaxEvalDepth;
 #ifdef YACAS_NO_ATOMIC_TYPES
@@ -396,42 +395,38 @@ inline LispHashTable& LispEnvironment::HashTable()
 
 
 // Local lisp stack, unwindable by the exception handler
-class LispLocalFrame : public LispBase
+class LispLocalFrame
 {
 public:
     LispLocalFrame(LispEnvironment& aEnvironment, bool aFenced)
         : iEnvironment(aEnvironment)
     {
         iEnvironment.PushLocalFrame(aFenced);
-        SAFEPUSH(iEnvironment,*this);
     };
+
     virtual ~LispLocalFrame()
     {
-        SAFEPOP(iEnvironment);
-        Delete();
+        iEnvironment.PopLocalFrame();
     };
-    virtual void Delete();
+
 private:
     LispEnvironment& iEnvironment;
 };
 
 
 
-class LispSecureFrame : public LispBase
+class LispSecureFrame
 {
 public:
   LispSecureFrame(LispEnvironment& aEnvironment):
       iEnvironment(aEnvironment), previous_secure(aEnvironment.secure)
   {
     iEnvironment.secure = true;
-    SAFEPUSH(iEnvironment,*this);
   };
   virtual ~LispSecureFrame()
   {
-    SAFEPOP(iEnvironment);
-    Delete();
+    iEnvironment.secure = previous_secure;
   };
-  virtual void Delete();
 private:
   LispEnvironment& iEnvironment;
   bool previous_secure;
@@ -439,21 +434,18 @@ private:
 
 
 // LispLocalInput takes ownership over the LispInput class
-class LispLocalInput : public LispBase, NonCopyable
+class LispLocalInput: NonCopyable
 {
 public:
   LispLocalInput(LispEnvironment& aEnvironment, LispInput* aInput)
       : iEnvironment(aEnvironment),iPreviousInput(iEnvironment.CurrentInput())
   {
     iEnvironment.SetCurrentInput(aInput);
-    SAFEPUSH(iEnvironment,*this);
   };
   virtual ~LispLocalInput()
   {
-    SAFEPOP(iEnvironment);
-    Delete();
+    iEnvironment.SetCurrentInput(iPreviousInput);
   };
-  virtual void Delete();
 
 private:
   LispEnvironment& iEnvironment;
@@ -462,29 +454,25 @@ private:
 
 
 // LispLocalInput takes ownership over the LispInput class
-class LispLocalOutput : public LispBase, NonCopyable
+class LispLocalOutput: NonCopyable
 {
 public:
   LispLocalOutput(LispEnvironment& aEnvironment, std::ostream& aOutput)
       : iEnvironment(aEnvironment), iPreviousOutput(&iEnvironment.CurrentOutput())
   {
-    iPreviousOutput = &iEnvironment.CurrentOutput();
     iEnvironment.SetCurrentOutput(aOutput);
-    SAFEPUSH(iEnvironment,*this);
   };
   virtual ~LispLocalOutput()
   {
-    SAFEPOP(iEnvironment);
-    Delete();
+    iEnvironment.SetCurrentOutput(*iPreviousOutput);
   };
-  virtual void Delete();
 
 private:
   LispEnvironment& iEnvironment;
   std::ostream* iPreviousOutput;
 };
 
-class LispLocalEvaluator : public YacasBase, NonCopyable
+class LispLocalEvaluator: NonCopyable
 {
 public:
   LispLocalEvaluator(LispEnvironment& aEnvironment,LispEvaluatorBase* aNewEvaluator);
@@ -495,7 +483,7 @@ private:
   LispEnvironment& iEnvironment;
 };
 
-class LispLocalTrace : public YacasBase, NonCopyable
+class LispLocalTrace: NonCopyable
 {
 public:
   LispLocalTrace(LispUserFunction* aUserFunc);
@@ -504,7 +492,7 @@ private:
   LispUserFunction* iUserFunc;
 };
 
-class LocalArgs : public YacasBase, NonCopyable
+class LocalArgs: NonCopyable
 {
 public:
   LocalArgs(LispPtr* aPtrs) : iPtrs(aPtrs) {};

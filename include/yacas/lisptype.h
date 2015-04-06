@@ -24,10 +24,6 @@ typedef unsigned long LispUnsLong;
 
 typedef unsigned ReferenceType;
 
-#define SAFEPUSH(_env,_obj) // _env.iCleanup.Push(_obj)
-#define SAFEPOP(_env) // _env.iCleanup.Pop()
-
-
 // These define the internal types for the arbitrary precision
 // number module. The larger they are the better. PlatDoubleWord
 // should be at least twice as big as PlatWord, to prevent overflowing

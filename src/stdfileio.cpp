@@ -167,25 +167,13 @@ LispLocalFile::LispLocalFile(
         MapPathSeparators(othername);
         stream.open(othername, std::ios_base::out);
     }
-
-    SAFEPUSH(iEnvironment, *this);
 }
 
-//aRead is for opening in read mode (otherwise opened in write mode)
 LispLocalFile::~LispLocalFile()
-{
-  SAFEPOP(iEnvironment);
-  Delete();
-}
-
-void LispLocalFile::Delete()
 {
     if (stream.is_open())
         stream.close();
 }
-
-
-
 
 CachedStdUserInput::CachedStdUserInput(InputStatus& aStatus) :
 StdUserInput(aStatus),iBuffer(),iCurrentPos(0)

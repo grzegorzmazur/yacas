@@ -1,10 +1,13 @@
 #ifndef YACAS_PLATFILEIO_H
 #define YACAS_PLATFILEIO_H
 
+#include "noncopyable.h"
+#include "yacasbase.h"
+
 #include <fstream>
 #include <iostream>
 
-class LispLocalFile: public LispBase {
+class LispLocalFile: NonCopyable {
 public:
     LispLocalFile(
         LispEnvironment& environment,
@@ -12,13 +15,6 @@ public:
         bool read,
         const std::vector<std::string>& dirs);
     virtual ~LispLocalFile();
-
-    virtual void Delete();
-
-private:
-    // not implemented
-    LispLocalFile(const LispLocalFile& aOther);
-    LispLocalFile& operator=(const LispLocalFile&);
 
 public:
     std::fstream stream;
@@ -46,7 +42,7 @@ protected:
 
 /** CachedStdFileInput : same as StdFileInput, but with caching
  * for speed */
-class CachedStdFileInput: public StdFileInput {
+class CachedStdFileInput: public StdFileInput, NonCopyable {
 public:
     CachedStdFileInput(LispLocalFile& aFile,InputStatus& aStatus);
 
@@ -58,31 +54,9 @@ public:
     void SetPosition(std::size_t aPosition);
 
 private:
-    // not implemented
-    CachedStdFileInput(const CachedStdFileInput&);
-    CachedStdFileInput& operator=(const CachedStdFileInput&);
-
     std::vector<LispChar> _buf;
     std::size_t iCurrentPos;
 };
-
-//class StdFileOutput: public LispOutput {
-//public:
-//    StdFileOutput(LispLocalFile& aFile);
-//    StdFileOutput(std::ostream&);
-//
-//    virtual void PutChar(LispChar aChar);
-//
-//    std::ostream& stream;
-//};
-//
-//class StdUserOutput: public StdFileOutput {
-//public:
-//    StdUserOutput():
-//        StdFileOutput(std::cout)
-//    {
-//    }
-//};
 
 class StdUserInput: public StdFileInput {
 public:
