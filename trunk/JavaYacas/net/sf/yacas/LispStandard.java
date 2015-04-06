@@ -1,5 +1,8 @@
 package net.sf.yacas;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 
 class LispStandard
 {
@@ -509,20 +512,18 @@ class LispStandard
 
     public static void InternalPatchLoad(LispEnvironment aEnvironment, String aFileName) throws Exception
     {
-        String oper = InternalUnstringify(aFileName);
-
-        String hashedname = aEnvironment.HashTable().LookUp(oper);
+        String fname = InternalUnstringify(aFileName);
 
         InputStatus oldstatus = new InputStatus(aEnvironment.iInputStatus);
-        aEnvironment.iInputStatus.SetTo(hashedname);
+        aEnvironment.iInputStatus.SetTo(fname);
         try {
-            LispInput newInput =
-                OpenInputFile(aEnvironment, aEnvironment.iInputDirectories, hashedname, aEnvironment.iInputStatus);
+            String path = InternalFindFile(fname, aEnvironment.iInputDirectories);
+            LispError.Check(Files.exists(Paths.get(path)), LispError.KLispErrFileNotFound);
 
-            LispError.Check(newInput != null, LispError.KLispErrFileNotFound);
+            byte[] encoded = Files.readAllBytes(Paths.get(path));
+            String content = new String(encoded);
 
-            String inputString = new String(newInput.StartPtr());
-            LispStandard.DoPatchString(inputString, aEnvironment.iCurrentOutput, aEnvironment);
+            LispStandard.DoPatchString(content, aEnvironment.iCurrentOutput, aEnvironment);
         }
         catch (Exception e) {
             throw e;
