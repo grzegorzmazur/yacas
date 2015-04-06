@@ -315,7 +315,6 @@ private:
   const LispString* iPrettyPrinter;
 public:
   LispTokenizer iDefaultTokenizer;
-  CommonLispTokenizer iCommonLispTokenizer;
   XmlTokenizer  iXmlTokenizer;
   LispTokenizer* iCurrentTokenizer;
 
