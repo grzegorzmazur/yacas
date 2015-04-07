@@ -36,12 +36,9 @@ class MatchVariable extends YacasParamMatcherBase
     }
     else
     {
-        if (LispStandard.InternalEquals(aEnvironment, aExpression, arguments[iVarIndex]))
-        {
 //            LogPrintf("Matched var %d\n",iVarIndex);
-            return true;
-        }
-        return false;
+
+        return LispStandard.InternalEquals(aEnvironment, aExpression, arguments[iVarIndex]);
     }
 //    return false;
   }

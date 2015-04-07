@@ -57,8 +57,7 @@ class LispStandard
             return true;
         }
     }
-    if (ptr.length() != (pos+index)) return false;
-    return true;
+    return ptr.length() == (pos+index);
   }
 
   static int InternalListLength(LispPtr aOriginal) throws Exception
@@ -245,10 +244,8 @@ class LispStandard
         return false;
     if (aPtr.Get().SubList().Get() == null)
         return false;
-    //TODO this StrEqual is far from perfect. We could pass in a LispEnvironment object...
-    if (!aPtr.Get().SubList().Get().String().equals("List"))
-        return false;
-    return true;
+      //TODO this StrEqual is far from perfect. We could pass in a LispEnvironment object...
+          return aPtr.Get().SubList().Get().String().equals("List");
   }
 
   public static boolean InternalIsString(String aOriginal)
@@ -305,8 +302,7 @@ class LispStandard
         }
         if (n1 == null) return false;
         if (n2 == null) return false;
-        if (n1.Equals(n2)) return true;
-        return false;
+        return n1.Equals(n2);
     }
 
     //Pointers to strings should be the same
@@ -344,11 +340,8 @@ class LispStandard
             iter2.GoNext();
         }
         // Lists don't have the same length
-        if (iter1.GetObject() != iter2.GetObject())
-            return false;
-
         // Same!
-        return true;
+                return iter1.GetObject() == iter2.GetObject();
     }
 
     // expressions sublists are not the same!

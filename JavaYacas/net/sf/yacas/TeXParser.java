@@ -340,9 +340,7 @@ public class TeXParser
 
   boolean IsSpace(int c)
   {
-    if (c == ' ' || c == '\t' || c == '\r' || c == '\n')
-      return true;
-    return false;
+    return c == ' ' || c == '\t' || c == '\r' || c == '\n';
   }
 
   boolean IsAlNum(int c)
@@ -355,9 +353,7 @@ public class TeXParser
       return false;
     if (c == '\\')
       return false;
-    if (singleOps.indexOf(c) >= 0)
-      return false;
-    return true;
+    return singleOps.indexOf(c) < 0;
   }
 }
 

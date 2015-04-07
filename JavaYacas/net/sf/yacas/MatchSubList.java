@@ -20,7 +20,7 @@ class MatchSubList extends YacasParamMatcherBase
 
     LispIterator iter = new LispIterator(aExpression);
     iter.GoSub();
- 
+
     for (i=0;i<iNrMatchers;i++)
     {
         LispPtr  ptr = iter.Ptr();
@@ -32,9 +32,7 @@ class MatchSubList extends YacasParamMatcherBase
             return false;
         iter.GoNext();
     }
-    if (iter.GetObject() != null)
-        return false;
-    return true;
+    return iter.GetObject() == null;
   }
 
   protected YacasParamMatcherBase[] iMatchers;
