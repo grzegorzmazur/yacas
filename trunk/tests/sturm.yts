@@ -12,8 +12,6 @@ Builtin'Precision'Set(5);
 
 VerifyZero(x) := (Abs(x)<10^ -Builtin'Precision'Get());
 
-
-sl() := []; //Echo(CurrentFile(),CurrentLine());
 TryRandomPoly(deg,coefmin,coefmax):=
 [
   //GarbageCollect();
@@ -39,41 +37,38 @@ TryRandomRoots(deg,coefmin,coefmax):=
   mult:=1+Abs(Table(MathFloor(coefmin+Random()*(coefmax-coefmin)),i,1,deg+1,1));
   p:=Factorize((x-coefs)^mult);
   p:=Rationalize(p);
-Echo("Test polynom ",p);
-Echo("minimum ",MinimumBound(p));
-Echo("maximum ",MaximumBound(p));
-Echo("bounds ",BoundRealRoots(p));
+  Echo("Test polynom ",p);
+  Echo("minimum ",MinimumBound(p));
+  Echo("maximum ",MaximumBound(p));
+  Echo("bounds ",BoundRealRoots(p));
   roots:=FindRealRoots(p);
-Echo("roots ",roots);
+  Echo("roots ",roots);
   Verify(Length(roots) = Length(coefs));
   Verify(Length(RemoveDuplicates(roots)) = Length(coefs));
   px := (p Where x==x);
   Verify(px . px < 0.01);
 ];
 
-sl();
-
 [
   Local(p);
   p := FindRealRoots((x+2)^9*(x-4)^5*(x-1)^4)-{-2.,1.,4.};
   Verify(VerifyZero(p . p),True);
 ];
-sl();
 
-/*TODO 
-TryRandomRoots(3,-10,10);  sl();
-TryRandomRoots(3,-10,10);  sl();
-TryRandomRoots(5,5,1000);  sl();
-TryRandomRoots(5,5,1000);  sl();
+/*TODO
+TryRandomRoots(3,-10,10);
+TryRandomRoots(3,-10,10);
+TryRandomRoots(5,5,1000);
+TryRandomRoots(5,5,1000);
 */
 
 // Bounds on coefficients
-Verify(MinimumBound(4),-Infinity); sl();
-Verify(MaximumBound(4),Infinity);  sl();
+Verify(MinimumBound(4),-Infinity);
+Verify(MaximumBound(4),Infinity);
 
 // NumRealRoots
-Verify(NumRealRoots(x^2-1),2);     sl();
-Verify(NumRealRoots(x^2+1),0);     sl();
+Verify(NumRealRoots(x^2-1),2);
+Verify(NumRealRoots(x^2+1),0);
 
 [
   Local(p);
@@ -83,12 +78,8 @@ Verify(NumRealRoots(x^2+1),0);     sl();
 Verify(FindRealRoots((x^2+20)*(x^2+10)),{});
 Verify(NumRealRoots((x^2+20)*(x^2+10)),0);
 
-sl();
-
 // Simple test on Squarefree
 TestYacas(Monic(SquareFree((x-1)^2*(x-3)^3)),Monic((x-1)*(x-3)));
-
-sl();
 
 // Check the rare case where the bounds finder lands on
 // exactly a root
@@ -98,9 +89,6 @@ sl();
   Verify(VerifyZero(p . p),True);
 ];
 
-
-
-sl();
 [
   Local(p);
 
@@ -109,29 +97,16 @@ sl();
   Verify(VerifyZero(p . p),True);
 ];
 
-sl();
 Verify(Builtin'Precision'Get(),5);
-[ 
+[
   Local(res);
   res:=FindRealRoots(Expand((x-3.1)*(x+6.23)))-{-6.23,3.1};
   Verify(VerifyZero(res . res) , True);
 ];
-sl();
 
-TryRandomPoly(5,5,1000);  sl();
-sl();
-TryRandomPoly(5,5,1000);  sl();
-sl();
-TryRandomPoly(5,5,1000);  sl();
-sl();
-TryRandomPoly(5,5,1000);  sl();
-sl();
-TryRandomPoly(5,5,1000);  sl();
-sl();
-TryRandomPoly(5,5,1000);  sl();
-sl();
-
-
-//RandomPoly(_var,_degree,_coefmin,_coefmax)
-//RandomIntegerVector(_count,_coefmin,_coefmax)
-
+TryRandomPoly(5,5,1000);
+TryRandomPoly(5,5,1000);
+TryRandomPoly(5,5,1000);
+TryRandomPoly(5,5,1000);
+TryRandomPoly(5,5,1000);
+TryRandomPoly(5,5,1000);
