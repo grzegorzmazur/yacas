@@ -71,9 +71,7 @@ abstract class LispObject extends LispPtr
       iter1 = iter1.Get().Next();
       iter2 = iter2.Get().Next();
     }
-    //One list longer than the other?
-    if (iter1.Get()== null && iter2.Get()==null)
-      return true;
-    return false;
+      //One list longer than the other?
+          return iter1.Get()== null && iter2.Get()==null;
   }
 }

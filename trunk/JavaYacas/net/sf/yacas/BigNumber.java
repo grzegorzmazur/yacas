@@ -38,9 +38,7 @@ class BigNumber
       return false;
     if (aString.indexOf('e')>=0)
       return true;
-    if (aString.indexOf('E')>=0)
-      return true;
-    return false;
+    return aString.indexOf('E')>=0;
   }
   // assign from string, precision in base digits
   public void SetTo( String aString,int aPrecision,int aBase/*=10*/)
@@ -154,9 +152,7 @@ class BigNumber
       {
         //hier
         BigDecimal x = GetDecimal(this);
-        if (x.compareTo(aOther.decimal) == 0)
-          return true;
-        return false;
+        return x.compareTo(aOther.decimal) == 0;
       }
       return (integer.compareTo(aOther.integer) == 0);
     }
