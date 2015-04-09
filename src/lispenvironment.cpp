@@ -177,6 +177,10 @@ void LispEnvironment::SetVariable(const LispString* aVariable, LispPtr& aValue, 
         return;
     }
 
+    // FIXME: or should local variables be protected as well?
+    if (Protected(aVariable))
+        throw LispErrProtectedSymbol(*aVariable);
+
     LispGlobal::iterator i = iGlobals.find(aVariable);
     if (i != iGlobals.end())
         i->second = LispGlobalVariable(aValue);
@@ -217,8 +221,12 @@ void LispEnvironment::UnsetVariable(const LispString* var)
 {
     if (LispPtr* local = FindLocal(var))
         *local = nullptr;
-    else
+    else {
+        // FIXME: or should local variables be protected as well?
+        if (Protected(var))
+            throw LispErrProtectedSymbol(*var);
         iGlobals.erase(var);
+    }
 }
 
 void LispEnvironment::PushLocalFrame(bool fenced)
@@ -339,6 +347,9 @@ LispUserFunction* LispEnvironment::UserFunction(const LispString* aName, LispInt
 
 void LispEnvironment::UnFenceRule(const LispString* aOperator, LispInt aArity)
 {
+    if (Protected(aOperator))
+        throw LispErrProtectedSymbol(*aOperator);
+
     LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
 
     if (i == iUserFunctions.end())
@@ -356,6 +367,9 @@ void LispEnvironment::UnFenceRule(const LispString* aOperator, LispInt aArity)
 
 void LispEnvironment::Retract(const LispString* aOperator, LispInt aArity)
 {
+    if (Protected(aOperator))
+        throw LispErrProtectedSymbol(*aOperator);
+
     LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
 
     if (i != iUserFunctions.end())
@@ -366,6 +380,9 @@ void LispEnvironment::DeclareRuleBase(const LispString* aOperator,
                                       LispPtr& aParameters,
                                       LispInt aListed)
 {
+    if (Protected(aOperator))
+        throw LispErrProtectedSymbol(*aOperator);
+
     LispMultiUserFunction* multiUserFunc = MultiUserFunction(aOperator);
 
     /*
@@ -392,6 +409,9 @@ void LispEnvironment::DeclareRuleBase(const LispString* aOperator,
 
 void LispEnvironment::DeclareMacroRuleBase(const LispString* aOperator, LispPtr& aParameters, LispInt aListed)
 {
+    if (Protected(aOperator))
+        throw LispErrProtectedSymbol(*aOperator);
+
     LispMultiUserFunction* multiUserFunc = MultiUserFunction(aOperator);
     MacroUserFunction *newFunc;
     if (aListed)
@@ -454,6 +474,9 @@ void LispEnvironment::DefineRule(const LispString* aOperator,LispInt aArity,
                                  LispInt aPrecedence, LispPtr& aPredicate,
                                  LispPtr& aBody)
 {
+    if (Protected(aOperator))
+        throw LispErrProtectedSymbol(*aOperator);
+
     // Find existing multiuser func.
     LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
 
@@ -484,6 +507,9 @@ void LispEnvironment::DefineRulePattern(const LispString* aOperator,LispInt aAri
                                         LispInt aPrecedence, LispPtr& aPredicate,
                                         LispPtr& aBody)
 {
+//    if (Protected(aOperator))
+//        throw LispErrProtectedSymbol(*aOperator);
+
     // Find existing multiuser func.
     LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
 
