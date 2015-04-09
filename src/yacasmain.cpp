@@ -369,7 +369,7 @@ void DeclarePath(const char *ptr2)
     else
         os << "DefaultDirectory(\"" << ptr2 << "\");";
 
-    yacas->Evaluate(os.str().c_str());
+    yacas->Evaluate(os.str());
 
     if (yacas->IsError())
         std::cout << "Failed to set default directory: " << yacas->Error() << "\n";
