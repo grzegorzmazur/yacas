@@ -351,7 +351,8 @@ LocalSymbols(a,b,var,expression)
 ];
 
 
-
+UnProtect(Div);
+UnProtect(Mod);
 
 0 # Div(n_IsUniVar,m_IsUniVar)_(Degree(n) < Degree(m)) <-- 0;
 0 # Mod(n_IsUniVar,m_IsUniVar)_(Degree(n) < Degree(m)) <-- n;
@@ -370,7 +371,8 @@ LocalSymbols(a,b,var,expression)
                          Concat(ZeroVector(m[2]),m[3]))[2]);
 ];
 
-
+Protect(Div);
+Protect(Mod);
 
 /* division algo: (for zero-base univariates:) */
 Function("UniDivide",{u,v})
@@ -455,7 +457,7 @@ Function("UniGcd",{u,v})
      UniGcd(v,mod));
 ];
 
-
+UnProtect(Gcd);
 
 0 # Gcd(n_IsUniVar,m_IsUniVar)_
     (n[1] = m[1] And Degree(n) < Degree(m)) <-- Gcd(m,n);
@@ -470,6 +472,8 @@ Function("UniGcd",{u,v})
             UniGcd(Concat(ZeroVector(nn[2]),nn[3]),
                    Concat(ZeroVector(mm[2]),mm[3]))));
 ];
+
+Protect(Gcd);
 
 RuleBase("PSolve",{uni});
 

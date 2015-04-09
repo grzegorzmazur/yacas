@@ -113,7 +113,9 @@ void CYacas::Evaluate(const std::string& aExpression)
              iResultOutput.put(';');
          }
          const LispString* percent = env.HashTable().LookUp("%");
+         env.UnProtect(percent);
          env.SetVariable(percent,result,true);
+         env.Protect(percent);
      } catch (const LispError& error) {
         HandleError(error, env, env.iErrorOutput);
      }

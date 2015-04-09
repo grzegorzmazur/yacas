@@ -7,7 +7,7 @@
 6 # (Sin(x_IsConstant))_(IsNegativeNumber(N(Eval(x))))   <-- -Sin(-x);
 
 // must prevent it from looping
-6 # Sin(x_IsInfinity) 		<-- Undefined;
+6 # Sin(x_IsInfinity)       <-- Undefined;
 6 # Sin(Undefined) <-- Undefined;
 
 110 # Sin(Complex(_r,_i)) <--
@@ -31,7 +31,7 @@
 200 # Sin(v_CanBeUni(Pi))_(Not(InNumericMode()) And Degree(v,Pi) < 2 And Coef(v,Pi,0) = 0) <--
 [
   SinMap(Coef(v,Pi,1));
-];  
+];
 
 2 # Cos(x_IsNumber)_InNumericMode() <-- CosNum(x);
 4 # Cos(ArcCos(_x))           <-- x;
@@ -64,7 +64,7 @@
 200 # Cos(v_CanBeUni(Pi))_(Not(InNumericMode()) And Degree(v,Pi) < 2 And Coef(v,Pi,0) = 0) <--
       CosMap(Coef(v,Pi,1));
 
-400 # Cos(x_IsRationalOrNumber) <-- 
+400 # Cos(x_IsRationalOrNumber) <--
     [
      Local(ll);
      ll:= MathFloor(N(Eval(x/Pi)));
@@ -72,7 +72,7 @@
      UnList({Cos,x});
      ];
 
-400 # Cos(x_IsRationalOrNumber) <-- 
+400 # Cos(x_IsRationalOrNumber) <--
     [
      Local(ll);
      ll:= MathFloor(N(Eval(Abs(x)/Pi)));
@@ -117,12 +117,12 @@
 100 # Cos(_x)/Sin(_x) <-- (1/Tan(x));
 100 # Tan(_x)/Sin(_x) <-- (1/Cos(x));
 100 # Tan(_x)*Cos(_x) <-- Sin(x);
-100 # 1/Cot(_x)		<-- Tan(x);
-100 # 1/Sec(_x)		<-- Cos(x);
-100 # 1/Csc(_x)		<-- Sin(x);
-100 # Sec(_x)		<-- 1/Cos(x);
-100 # Csc(_x)		<-- 1/Sin(x);
-100 # Cot(_x)		<-- 1/Tan(x);
+100 # 1/Cot(_x)     <-- Tan(x);
+100 # 1/Sec(_x)     <-- Cos(x);
+100 # 1/Csc(_x)     <-- Sin(x);
+100 # Sec(_x)       <-- 1/Cos(x);
+100 # Csc(_x)       <-- 1/Sin(x);
+100 # Cot(_x)       <-- 1/Tan(x);
 
 
 2 # Exp(x_IsNumber)_InNumericMode() <-- ExpNum(x);
@@ -223,23 +223,23 @@
 200 # ArcCosh(-Infinity) <-- Infinity+I*Pi/2;
 200 # ArcCosh(Undefined) <-- Undefined;
 200 # ArcTanh(Infinity) <-- Infinity+I*Pi/2;
-200 # ArcTanh(-Infinity) <-- -Infinity-I*Pi/2;	// this is a little silly b/c we don't support correct branch cuts yet
+200 # ArcTanh(-Infinity) <-- -Infinity-I*Pi/2;  // this is a little silly b/c we don't support correct branch cuts yet
 200 # ArcTanh(Undefined) <-- Undefined;
 
 /* hyperbolic stuff */
-100 # 1/Coth(_x)	<-- Tanh(x);
-100 # 1/Sech(_x)	<-- Cosh(x);
-100 # 1/Csch(_x)	<-- Sinh(x);
-100 # Sech(_x)		<-- 1/Cosh(x);
-100 # Csch(_x)		<-- 1/Sinh(x);
-100 # Coth(_x)		<-- 1/Tanh(x);
+100 # 1/Coth(_x)    <-- Tanh(x);
+100 # 1/Sech(_x)    <-- Cosh(x);
+100 # 1/Csch(_x)    <-- Sinh(x);
+100 # Sech(_x)      <-- 1/Cosh(x);
+100 # Csch(_x)      <-- 1/Sinh(x);
+100 # Coth(_x)      <-- 1/Tanh(x);
 
-5   # Cosh(- _x)	<-- Cosh(x);
-5   # Sinh(- _x)	<-- -Sinh(x);
+5   # Cosh(- _x)    <-- Cosh(x);
+5   # Sinh(- _x)    <-- -Sinh(x);
 
-100 # Sinh(_x)^2-Cosh(_x)^2 	<-- 1;
-100 # Sinh(_x)+Cosh(_x)		<-- Exp(x);
-100 # Sinh(_x)-Cosh(_x)		<-- Exp(-x);
+100 # Sinh(_x)^2-Cosh(_x)^2     <-- 1;
+100 # Sinh(_x)+Cosh(_x)     <-- Exp(x);
+100 # Sinh(_x)-Cosh(_x)     <-- Exp(-x);
 
 // this is never activated
 //100 # Sinh(I*_x)        <-- I*Sin(x);
@@ -251,16 +251,16 @@
 100 # Tanh(_x)*Cosh(_x) <-- Sinh(x);
 100 # Coth(_x)*Sinh(_x) <-- Cosh(x);
 
-200 # Sinh(0)		<-- 0;
-200 # Sinh(Infinity)	<-- Infinity;
-200 # Sinh(-Infinity)	<-- -Infinity;
+200 # Sinh(0)       <-- 0;
+200 # Sinh(Infinity)    <-- Infinity;
+200 # Sinh(-Infinity)   <-- -Infinity;
 200 # Sinh(ArcSinh(_x)) <-- x;
 200 # Sinh(ArcCosh(_x)) <-- Sqrt((x-1)/(x+1))*(x+1);
 200 # Sinh(ArcTanh(_x)) <-- x/Sqrt(1-x^2);
 
-200 # Cosh(0)		<-- 1;
-200 # Cosh(Infinity)	<-- Infinity;
-200 # Cosh(-Infinity)	<-- Infinity;
+200 # Cosh(0)       <-- 1;
+200 # Cosh(Infinity)    <-- Infinity;
+200 # Cosh(-Infinity)   <-- Infinity;
 200 # Cosh(ArcCosh(_x)) <-- x;
 200 # Cosh(ArcSinh(_x)) <-- Sqrt(1+x^2);
 200 # Cosh(ArcTanh(_x)) <-- 1/Sqrt(1-x^2);
@@ -276,7 +276,9 @@
 200 # Cosh(Undefined) <-- Undefined;
 200 # Tanh(Undefined) <-- Undefined;
 
-10 # Abs(Infinity) 	<-- Infinity;
+UnProtect(Abs);
+10 # Abs(Infinity)  <-- Infinity;
+Protect(Abs);
 
 /* Threading of standard analytic functions */
 Sin(xlist_IsList) <-- MapSingle("Sin",xlist);

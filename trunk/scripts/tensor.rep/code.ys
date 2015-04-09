@@ -2,6 +2,8 @@
 /* Tensor package. This code intends to simplify tensorial expressions.
  */
 
+UnProtect(X);
+
 /* functions internal to tensors */
 RuleBase("Delta",{ind1,ind2});
 RuleBase("TList",{head,tail});
@@ -19,6 +21,8 @@ RuleBase("X",{ind});
 10 # (TD(_i) ( (_f) ^ (n_IsPositiveInteger) ) ) <-- n*(TD(i)f)*f^(n-1);
 10 # (TD(_i)Delta(_j,_k)) <-- 0;
 10 # (TD(_i)f_IsNumber) <-- 0;
+
+Protect(X);
 
 /* The only TSum summation simplification: summing over no indices
    means no summation. */
@@ -75,7 +79,7 @@ MoveDeltas(_list) <--
     ];
 100 # ApplyDelta(_result,_term) <--
     DestructiveAppend(result,term);
-    
+
 
 /* TSimplify : expand brackets, and send the expression of addition
    of terms to TSimplifyAux */
@@ -121,7 +125,7 @@ TSimplify(TSum(_indices)(_f)) <--
 
 /* Terminating condition for the tensorial simplification */
 
-10 # TSumSimplify(TList(Delta(_ind,_ind),_list))_Contains(indices,ind) <--  
+10 # TSumSimplify(TList(Delta(_ind,_ind),_list))_Contains(indices,ind) <--
 
 [
   /* Remove the index from the list of indices to sum over, since
@@ -169,8 +173,8 @@ TSimplify(TSum(_indices)(_f)) <--
 
 
 
-UnFence("TSumSimplify",1); 
-UnFence("TSumRest",1); 
+UnFence("TSumSimplify",1);
+UnFence("TSumRest",1);
 UnFence("TSum",2);
 
 

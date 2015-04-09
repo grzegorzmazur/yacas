@@ -47,6 +47,8 @@
 Dir(Right) <-- 1;
 Dir(Left) <-- -1;
 
+UnProtect(Sign);
+
 /*  To get the sign of the denominator on one side:  */
 Sign(_var, _tar, _dir, _exp, _n)
 <-- [
@@ -57,6 +59,8 @@ Sign(_var, _tar, _dir, _exp, _n)
        (Sign(coef)*Dir(dir)) ^ n
      );
 ];
+
+Protect(Sign);
 
 /*  To avoid infinite recursion (with 1/Exp(-x) for instance)  */
 310 # Lim(_var, _tar, _dir, _x / _y)_

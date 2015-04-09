@@ -338,7 +338,14 @@ void InternalUse(LispEnvironment& aEnvironment, const std::string& aFileName)
     if (!def->IsLoaded())
     {
         def->SetLoaded();
+
+        for (const LispString* s: def->symbols)
+            aEnvironment.UnProtect(s);
+
         InternalLoad(aEnvironment,aFileName);
+
+        for (const LispString* s: def->symbols)
+            aEnvironment.Protect(s);
     }
 }
 

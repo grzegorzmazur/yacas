@@ -10,6 +10,7 @@
 #include "yacas/lispstring.h"
 
 #include <unordered_map>
+#include <unordered_set>
 
 /** LispDefFile represents one file that can be loaded just-in-time.
  */
@@ -25,6 +26,8 @@ public:
 private:
     std::string iFileName;
     bool iIsLoaded;
+public:
+    std::unordered_set<const LispString*> symbols;
 };
 
 /** LispDefFiles maintains an array of files that can be defloaded.

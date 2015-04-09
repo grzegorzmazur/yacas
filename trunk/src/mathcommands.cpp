@@ -90,10 +90,6 @@ static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, boo
     }
     CheckArg(varstring, 1, aEnvironment, aStackTop);
     CheckArg(!IsNumber(varstring->c_str(), true), 1, aEnvironment, aStackTop);
-    if (aEnvironment.Protected(varstring)) {
-        aEnvironment.iErrorOutput << "Symbol " << *varstring << " is protected\n";
-        throw LispErrProtectedSymbol();
-    }
 
     LispPtr result;
     InternalEval(aEnvironment, result, ARGUMENT(2));

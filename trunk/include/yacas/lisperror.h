@@ -206,8 +206,8 @@ public:
 
 class LispErrProtectedSymbol: public LispError {
 public:
-    LispErrProtectedSymbol():
-        LispError("Attempt to override a protected symbol") {}
+    explicit LispErrProtectedSymbol(const std::string& s):
+        LispError(std::string("Attempt to override protected symbol: ") + s) {}
 };
 
 class LispErrGeneric: public LispError {

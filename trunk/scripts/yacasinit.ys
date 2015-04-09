@@ -15,8 +15,8 @@
 Use("stdopers.ys");
 
 /* Set of functions to define very simple functions. There are scripts that can
-   be compiled to plugins. So Yacas either loads the plugin, or loads the 
-   scripts at this point. The functions in these plugins need to be defined with 
+   be compiled to plugins. So Yacas either loads the plugin, or loads the
+   scripts at this point. The functions in these plugins need to be defined with
    these "Defun" functions.
  */
 DefMacroRuleBase("Defun",{func,args,body});
@@ -55,11 +55,11 @@ Use("stdarith.ys");
 RuleBase(LoadPackages,{packages});
 Rule(LoadPackages, 1, 1, True)
 [
-	If(Equals(packages,{}), True,
-	[
-		DefLoad(Head(packages));
-		LoadPackages(Tail(packages));
-	]);
+    If(Equals(packages,{}), True,
+    [
+        DefLoad(Head(packages));
+        LoadPackages(Tail(packages));
+    ]);
 ];
 
 Use("packages.ys");
@@ -86,7 +86,9 @@ Rule("REP",0,1,True)
       Set(stringOut,ToString()[TrapError(Set(result,Eval(input)),Set(errorString,GetCoreError()));]);
       If(Not(stringOut = ""), WriteString(stringOut));
       If(Not(errorString = ""), WriteString(errorString));
+      UnProtect(%);
       SetGlobalLazyVariable(%,result);
+      Protect(%);
       If(PrettyPrinter'Get()="",
       [
         Write(Atom("Out> "),result);
@@ -96,4 +98,4 @@ Rule("REP",0,1,True)
     ]);
   ];
 ];
-              
+
