@@ -469,7 +469,14 @@ class LispStandard
     if (!def.IsLoaded())
     {
       def.SetLoaded();
+
+      for (String s: def.symbols)
+          aEnvironment.UnProtect(s);
+
       InternalLoad(aEnvironment,aFileName);
+
+      for (String s: def.symbols)
+          aEnvironment.Protect(s);
     }
   }
 
@@ -648,6 +655,9 @@ class LispStandard
               throw new YacasException("["+str+"]"+"] : def file already chosen: "+multiUser.iFileToOpen.iFileName);
             }
             multiUser.iFileToOpen = def;
+
+            def.symbols.add(token);
+            aEnvironment.Protect(token);
         }
       }
     }

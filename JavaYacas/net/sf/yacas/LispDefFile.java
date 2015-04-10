@@ -1,5 +1,7 @@
 package net.sf.yacas;
 
+import java.util.HashSet;
+
 /** LispDefFile represents one file that can be loaded just-in-time.
  */
 class LispDefFile
@@ -29,4 +31,5 @@ class LispDefFile
 
     String iFileName;
     boolean   iIsLoaded;
+    HashSet<String> symbols = new HashSet<>();
 };
