@@ -5,6 +5,8 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.HashMap;
 
+import static net.sf.yacas.LispError.Check;
+
 class LispEnvironment
 {
   //TODO FIXME
@@ -178,6 +180,9 @@ class LispEnvironment
       local.Set(aValue.Get());
       return;
     }
+    // FIXME: or should local variables be protected as well?
+    Check(!IsProtected(aVariable), LispError.KLispErrSymbolProtected);
+
     LispGlobalVariable global = new LispGlobalVariable(aValue);
     iGlobals.put(aVariable, global);
     if (aGlobalLazyVariable)
@@ -221,6 +226,8 @@ class LispEnvironment
         local.Set(null);
         return;
     }
+    // FIXME: or should local variables be protected as well?
+    Check(!IsProtected(aString), LispError.KLispErrSymbolProtected);
     iGlobals.remove(aString);
   }
 
@@ -332,6 +339,7 @@ class LispEnvironment
   }
   public void Retract(String aOperator,int aArity) throws Exception
   {
+    Check(!IsProtected(aOperator), LispError.KLispErrSymbolProtected);
     LispMultiUserFunction multiUserFunc = iUserFunctions.get(aOperator);
     if (multiUserFunc != null)
     {
@@ -365,6 +373,7 @@ class LispEnvironment
 
   public void UnFenceRule(String aOperator,int aArity) throws Exception
   {
+    Check(!IsProtected(aOperator), LispError.KLispErrSymbolProtected);
     LispMultiUserFunction multiUserFunc = iUserFunctions.get(aOperator);
 
     LispError.Check(multiUserFunc != null, LispError.KLispErrInvalidArg);
@@ -390,6 +399,8 @@ class LispEnvironment
 
   public void DeclareRuleBase(String aOperator, LispPtr aParameters, boolean aListed) throws Exception
   {
+    Check(!IsProtected(aOperator), LispError.KLispErrSymbolProtected);
+
     LispMultiUserFunction multiUserFunc = MultiUserFunction(aOperator);
 
     // add an operator with this arity to the multiuserfunc.
@@ -409,6 +420,8 @@ class LispEnvironment
                                   int aPrecedence, LispPtr aPredicate,
                                   LispPtr aBody) throws Exception
   {
+    Check(!IsProtected(aOperator), LispError.KLispErrSymbolProtected);
+
     // Find existing multiuser func.
     LispMultiUserFunction multiUserFunc = iUserFunctions.get(aOperator);
     LispError.Check(multiUserFunc != null, LispError.KLispErrCreatingRule);
@@ -431,6 +444,8 @@ class LispEnvironment
 
   void DeclareMacroRuleBase(String aOperator, LispPtr aParameters, boolean aListed) throws Exception
   {
+    Check(!IsProtected(aOperator), LispError.KLispErrSymbolProtected);
+
     LispMultiUserFunction multiUserFunc = MultiUserFunction(aOperator);
     MacroUserFunction newFunc;
     if (aListed)
@@ -446,6 +461,8 @@ class LispEnvironment
 
   void DefineRulePattern(String aOperator,int aArity, int aPrecedence, LispPtr aPredicate, LispPtr aBody) throws Exception
   {
+    // Check(!IsProtected(aOperator), LispError.KLispErrSymbolProtected);
+
     // Find existing multiuser func.
     LispMultiUserFunction multiUserFunc = iUserFunctions.get(aOperator);
     LispError.Check(multiUserFunc != null, LispError.KLispErrCreatingRule);

@@ -675,9 +675,6 @@ class MathCommands
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,varstring != null,1);
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,!LispStandard.IsNumber(varstring,true),1);
 
-    if (aEnvironment.IsProtected(varstring))
-        throw new YacasException("Symbol " + varstring + " is protected");
-
     LispPtr result = new LispPtr();
     aEnvironment.iEvaluator.Eval(aEnvironment, result, YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 2));
     aEnvironment.SetVariable(varstring, result, aGlobalLazyVariable);

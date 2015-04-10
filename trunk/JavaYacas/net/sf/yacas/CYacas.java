@@ -77,7 +77,9 @@ public class CYacas
       env.iEvaluator.Eval(env, result, in_expr);
 
       String percent = env.HashTable().LookUp("%");
+      env.UnProtect(percent);
       env.SetVariable(percent,result,true);
+      env.Protect(percent);
 
       ByteArrayOutputStream output = new ByteArrayOutputStream();
 
