@@ -59,3 +59,7 @@ Verify(ConcatStrings("a","b","c"),"abc");
 Testing("Symbol protection");
 
 Verify(TrapError(Cos := True, False), False);
+
+Protect(item);
+Verify(Simplify(x+x), 2*x);
+UnProtect(item);
