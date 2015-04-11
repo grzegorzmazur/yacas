@@ -100,22 +100,13 @@ inline void BaseAdd(T& aTarget, const T& aSource, PlatDoubleWord aBase)
     GrowDigits(aTarget,aSource.size());
     aTarget.push_back(0);
 
-    LispInt nr1 = aTarget.size();
-    LispInt nr2 = aSource.size();
-    LispInt nr;
-
-    // nr represents min(nr1,nr2), the number of digits to add
-    if (nr1>nr2)
-        nr=nr2;
-    else
-        nr=nr1;
+    LispInt nr = std::min(aTarget.size(), aSource.size());
 
     PlatDoubleWord carry=0;
-    LispInt digit;
 
    const typename T::value_type * sourcePtr = &aSource[0];
    typename T::value_type * targetPtr = &aTarget[0];
-   for (digit=0;digit<nr;digit++)
+   for (LispInt digit=0;digit<nr;digit++)
     {
         PlatDoubleWord word;
         word = (PlatDoubleWord)targetPtr[digit] +
@@ -144,22 +135,13 @@ inline void WordBaseAdd(T& aTarget, const T& aSource)
     GrowDigits(aTarget,aSource.size());
     aTarget.push_back(0);
 
-    LispInt nr1 = aTarget.size();
-    LispInt nr2 = aSource.size();
-    LispInt nr;
-
-    // nr represents min(nr1,nr2), the number of digits to add
-    if (nr1>nr2)
-        nr=nr2;
-    else
-        nr=nr1;
+    LispInt nr = std::min(aTarget.size(), aSource.size());
 
     PlatDoubleWord carry=0;
-    LispInt digit;
 
    const typename T::value_type * sourcePtr = &aSource[0];
    typename T::value_type * targetPtr = &aTarget[0];
-   for (digit=0;digit<nr;digit++)
+   for (LispInt digit=0;digit<nr;digit++)
     {
         PlatDoubleWord word;
         word = (PlatDoubleWord)targetPtr[digit] +
