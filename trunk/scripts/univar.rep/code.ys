@@ -33,7 +33,11 @@ Rule("UniVariate",3,10,Length(coefs)>0 And coefs[1]=0)
 Rule("UniVariate",3,1000,IsComplex(var) Or IsList(var))
     ExpandUniVariate(var,first,coefs);
 
+UnProtect(IsZero);
+
 20 # IsZero(UniVariate(_var,_first,_coefs)) <-- IsZeroVector(coefs);
+
+Protect(IsZero);
 
 RuleBase("Degree",{expr});
 Rule("Degree",1,0, IsUniVar(expr))
