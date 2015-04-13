@@ -272,18 +272,8 @@ Function("Coef",{expression,var,order})
 
 10 # LeadingCoef(uv_IsUniVar) <-- Coef(uv,Degree(uv));
 
-20 # LeadingCoef(uv_CanBeUni) <--
-[
-  Local(uvi);
-  uvi:=MakeUni(uv);
-  Coef(uvi,Degree(uvi));
-];
-10 # LeadingCoef(uv_CanBeUni(var),_var) <--
-[
-  Local(uvi);
-  uvi:=MakeUni(uv,var);
-  Coef(uvi,var,Degree(uvi));
-];
+20 # LeadingCoef(uv_CanBeUni) <-- LeadingCoef(MakeUni(uv));
+20 # LeadingCoef(uv_CanBeUni(var),_var) <-- LeadingCoef(MakeUni(uv, var));
 
 10 # ConstantTerm(uv_IsUniVar) <-- Coef(uv, 0);
 10 # ConstantTerm(uv_CanBeUni(var), _var) <-- Coef(MakeUni(uv, var), var, 0);
