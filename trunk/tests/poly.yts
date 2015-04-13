@@ -4,6 +4,8 @@ TestYacas(Expand((1+x)^2),1+2*x+x^2);
 
 NextTest("Degree");
 
+Verify(Degree(0, x), -Infinity);
+Verify(Degree(6, x), 0);
 Verify(Degree(3 - 5*x + 2*x^5 - 7*x^9, x), 9);
 Verify(Degree((y - 3)*(2*y + 6)*(-4*y - 21), y), 3);
 Verify(Degree((3*z^8 + z^5 - 4*z^2 + 6) + (-3*z^8 + 8*z^4 + 2*z^3 + 14*z), z), 5);

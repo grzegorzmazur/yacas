@@ -47,13 +47,17 @@ Protect(IsZero);
 RuleBase("Degree",{expr});
 Rule("Degree",1,0, IsUniVar(expr))
 [
-
-  Local(i,min,max);
-  min:=expr[2];
-  max:=min+Length(expr[3]);
-  i:=max;
-  While(i >= min And IsZero(Coef(expr,i))) i--;
-  i;
+  If (IsZero(expr),
+    -Infinity,
+    [
+        Local(i,min,max);
+        min:=expr[2];
+        max:=min+Length(expr[3]);
+        i:=max;
+        While(i >= min And IsZero(Coef(expr,i))) i--;
+        i;
+    ]
+  );
 ];
 
 10 # Degree(_poly)      <-- Degree(MakeUni(poly));
@@ -270,12 +274,13 @@ ShiftUniVar(UniVariate(_var,_first,_coefs),_fact,_shift)
 Function("Coef",{expression,var,order})
     NormalForm(Coef(MakeUni(expression,var),order));
 
-10 # LeadingCoef(uv_IsUniVar) <-- Coef(uv,Degree(uv));
+10 # LeadingCoef(uv_IsUniVar) <-- If (IsZero(uv), 0, Coef(uv,Degree(uv)));
 
 20 # LeadingCoef(uv_CanBeUni) <-- LeadingCoef(MakeUni(uv));
 20 # LeadingCoef(uv_CanBeUni(var),_var) <-- LeadingCoef(MakeUni(uv, var));
 
-10 # ConstantTerm(uv_IsUniVar) <-- Coef(uv, 0);
+10 # ConstantTerm(uv_IsUniVar) <-- If (IsZero(uv), 0, Coef(uv, 0));
+
 10 # ConstantTerm(uv_CanBeUni(var), _var) <-- Coef(MakeUni(uv, var), var, 0);
 20 # ConstantTerm(uv_CanBeUni) <-- Coef(MakeUni(uv), 0);
 
