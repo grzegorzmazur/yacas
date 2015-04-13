@@ -8,11 +8,11 @@
  * 50.  If 'expr' is a polynomial in 'x', try to use PSolve.
  * 60.  If 'expr' is a product, solve for either factor.
  * 70.  If 'expr' is a quotient, solve for the denominator.
- * 80.  If 'expr' is a sum and one of the terms is free of 'x', 
+ * 80.  If 'expr' is a sum and one of the terms is free of 'x',
  *      try to use Solve'Simple.
- * 90.  If every occurance of 'x' is in the same context, use this to reduce 
+ * 90.  If every occurance of 'x' is in the same context, use this to reduce
  *      the equation. For example, in 'Cos(x) + Cos(x)^2 == 1', the variable
- *      'x' always occurs in the context 'Cos(x)', and hence we can attack  
+ *      'x' always occurs in the context 'Cos(x)', and hence we can attack
  *      the equation by first solving 'y + y^2 == 1', and then 'Cos(x) == y'.
  *      This does not work for 'Exp(x) + Cos(x) == 2'.
  * 100. Apply Simplify to 'expr', and try again.
@@ -22,7 +22,7 @@
 LocalSymbols(res)
 [
   10  # Solve(expr_IsList, var_IsList) <-- Solve'System(expr, var);
-  20  # Solve(_expr, _var)_(Not IsAtom(var) Or IsNumber(var) Or IsString(var)) <-- 
+  20  # Solve(_expr, _var)_(Not IsAtom(var) Or IsNumber(var) Or IsString(var)) <--
         [ Assert("Solve'TypeError", "Second argument, ":(ToString() Write(var)):", is not the name of a variable") False; {}; ];
   30  # Solve(_lhs == _rhs, _var) <-- Solve(lhs - rhs, var);
   40  # Solve(0, _var) <-- {var == var};
@@ -49,7 +49,7 @@ LocalSymbols(res)
       tn := Solve(e1, var);
       t := {};
       ForEach(s, tn)
-          If(Not(IsZero(WithValue(var, s[2], e2))), 
+          If(Not(IsZero(WithValue(var, s[2], e2))),
               DestructiveAppend(t, s)
           );
       t;
@@ -144,13 +144,13 @@ LocalSymbols(x)
   ], [
       // there are some not yet found roots, pass to PSolve
 
-      // The call to PSolve can have three kind of results 
-      //   1) PSolve returns a single root 
+      // The call to PSolve can have three kind of results
+      //   1) PSolve returns a single root
       //   2) PSolve returns a list of roots
       //   3) PSolve remains unevaluated
       //
       Local(roots);
-      roots := PSolve(expr, var); 
+      roots := PSolve(expr, var);
       If(Type(roots) = "PSolve",
         Failed,                              // Case 3
         If(Type(roots) = "List",
@@ -168,35 +168,35 @@ LocalSymbols(x)
 [
   Local(context, expr2, var2, res, sol, sol2, i);
   context := Solve'Context(expr, var);
-  If(context = False,  
+  If(context = False,
      res := Failed,
      [
        expr2 := Eval(Subst(context, var2) expr);
-       If(CanBeUni(var2, expr2) And (Degree(expr2, var2) = 0 Or (Degree(expr2, var2) = 1 And Coef(expr2, var2, 1) = 1)),
+       If(CanBeUni(var2, expr2) And (Degree(expr2, var2) < 1 Or (Degree(expr2, var2) = 1 And Coef(expr2, var2, 1) = 1)),
           res := Failed, /* to prevent infinite recursion */
           [
             ClearError("Solve'Fails");
-    	    sol2 := Solve(expr2, var2);
-	    If(IsError("Solve'Fails"),
-	       [
-	         ClearError("Solve'Fails");
-		 res := Failed;
+            sol2 := Solve(expr2, var2);
+        If(IsError("Solve'Fails"),
+           [
+             ClearError("Solve'Fails");
+         res := Failed;
                ],
-    	       [
-    		 res := {};
-    		 i := 1;
-    		 While(i <= Length(sol2) And res != Failed) [
-    		   sol := Solve(context == (var2 Where sol2[i]), var);
-	           If(IsError("Solve'Fails"),
-		      [
-		        ClearError("Solve'Fails");
-		        res := Failed;
+               [
+             res := {};
+             i := 1;
+             While(i <= Length(sol2) And res != Failed) [
+               sol := Solve(context == (var2 Where sol2[i]), var);
+               If(IsError("Solve'Fails"),
+              [
+                ClearError("Solve'Fails");
+                res := Failed;
                       ],
-    		      res := Union(res, sol));
-    		   i++;
-    		 ];
-    	       ]);
-      	   ]);
+                  res := Union(res, sol));
+               i++;
+             ];
+               ]);
+           ]);
      ]);
   res;
 ];
@@ -206,7 +206,7 @@ LocalSymbols(x)
 /* Returns the unique context of 'var' in 'expr', */
 /* or {} if 'var' does not occur in 'expr',       */
 /* or False if the context is not unique.         */
- 
+
 10 # Solve'Context(expr_IsAtom, _var) <-- If(expr=var, var, {});
 
 20 # Solve'Context(_expr, _var) <--
@@ -226,9 +226,9 @@ LocalSymbols(x)
        i := 2;
        While(i <= Length(lst) And context != False) [
          res := Solve'Context(lst[i], var);
-	 If(res != {} And context != {} And res != context, context := False);
-	 If(res != {} And context = {}, context := res);
-	 i++;
+     If(res != {} And context != {} And res != context, context := False);
+     If(res != {} And context = {}, context := res);
+     i++;
        ];
      ]);
   context;
@@ -236,13 +236,13 @@ LocalSymbols(x)
 
 /********** Solve'Simple **********/
 
-/* Simple solver of equations 
+/* Simple solver of equations
  *
- * Returns (possibly empty) list of solutions, 
+ * Returns (possibly empty) list of solutions,
  * or Failed if it cannot handle the equation
  *
  * Calling format: Solve'Simple(lhs, rhs, var)
- *                 to solve 'lhs == rhs'. 
+ *                 to solve 'lhs == rhs'.
  *
  * Note: 'rhs' should not contain 'var'.
  */
@@ -263,14 +263,14 @@ LocalSymbols(x)
 
 LocalSymbols(x)
 [
-  20 # Solve'Simple(_e1 ^ _n, _rhs, _var)_(e1 = var And IsPositiveInteger(n)) 
+  20 # Solve'Simple(_e1 ^ _n, _rhs, _var)_(e1 = var And IsPositiveInteger(n))
        <-- MapSingle({{x}, var == rhs^(1/n)*x}, Exp(2*Pi*I*(1 .. n)/n));
-  20 # Solve'Simple(_e1 ^ _n, _rhs, _var)_(e1 = var And IsNegativeInteger(n)) 
+  20 # Solve'Simple(_e1 ^ _n, _rhs, _var)_(e1 = var And IsNegativeInteger(n))
        <-- MapSingle({{x}, var == rhs^(1/n)*x}, Exp(2*Pi*I*(1 .. (-n))/(-n)));
 ];
 
 20 # Solve'Simple(_e1 ^ _e2, _rhs, _var)
-     _ (IsPositiveReal(e1) And e1 != 0 And e2 = var And IsPositiveReal(rhs) And rhs != 0)  
+     _ (IsPositiveReal(e1) And e1 != 0 And e2 = var And IsPositiveReal(rhs) And rhs != 0)
      <-- { var == Ln(rhs)/Ln(e1) };
 
 /* Note: These rules do not take the periodicity of the trig. functions into account */
@@ -306,7 +306,7 @@ LocalSymbols(x)
 /********** Solve'Divide **********/
 /* For some classes of equations, it may be easier to solve them if we
  * divide through by their first term.  A simple example of this is the
- * equation  Sin(x)+Cos(x)==0  
+ * equation  Sin(x)+Cos(x)==0
  * One problem with this is that we may lose roots if the thing we
  * are dividing by shares roots with the whole equation.
  * The final HasExprs are an attempt to prevent infinite recursion caused by
@@ -316,12 +316,12 @@ LocalSymbols(x)
  */
 
 10 # Solve'Divide(_e1 + _e2, _var)_(HasExpr(e1, var) And HasExpr(e2, var)
-		And Not (HasExpr(Simplify(1 + (e2/e1)), e1)
-		      Or HasExpr(Simplify(1 + (e2/e1)), e2)))
+        And Not (HasExpr(Simplify(1 + (e2/e1)), e1)
+              Or HasExpr(Simplify(1 + (e2/e1)), e2)))
                                            <-- Solve(1 + (e2/e1), var);
 10 # Solve'Divide(_e1 - _e2, _var)_(HasExpr(e1, var) And HasExpr(e2, var)
-		And Not (HasExpr(Simplify(1 - (e2/e1)), e1)
-		      Or HasExpr(Simplify(1 - (e2/e1)), e2)))
+        And Not (HasExpr(Simplify(1 - (e2/e1)), e1)
+              Or HasExpr(Simplify(1 - (e2/e1)), e2)))
                                            <-- Solve(1 - (e2/e1), var);
 
 20 # Solve'Divide(_e, _v) <-- Failed;
@@ -398,14 +398,14 @@ UnFence("Solve'SimpleBackSubstitution'FindAlternativeForms",1);
            sub := sub[2]-sub[3];
 //Echo("using ",sub);
            sub:=SuchThat(sub,var[i]);
-           If(InVerboseMode(), Echo({"From ",eq[j]," it follows that ",var[i]," = ",sub})); 
+           If(InVerboseMode(), Echo({"From ",eq[j]," it follows that ",var[i]," = ",sub}));
            If(SolveFullSimplify=True,
              result:=Simplify(Subst(var[i],sub)result),
              result[1][i]:=sub
              );
 //Echo("result = ",result," i = ",i);
            nrSet++;
-           
+
 //Echo("current result is ",result);
            Local(k,reset);
            reset:=False;
@@ -428,7 +428,7 @@ UnFence("Solve'SimpleBackSubstitution'FindAlternativeForms",1);
            vlist:=VarListAll(eq[j],`Lambda({pt},Contains(@var,pt)));
            i:=nrvar+1;
            // restart at the beginning of the variables.
-           If(reset,j:=1); 
+           If(reset,j:=1);
          ]);
     ];
   ];
@@ -446,14 +446,14 @@ UnFence("Solve'SimpleBackSubstitution'FindAlternativeForms",1);
 /*
     Local(eqSimplified);
     eqSimplified := eq;
-    ForEach(map,Transpose({var,item})) 
+    ForEach(map,Transpose({var,item}))
     [
       eqSimplified := Subst(map[1],map[2])eqSimplified;
     ];
     eqSimplified := Simplify(Simplify(eqSimplified));
-    
+
     Echo(eqSimplified);
-    
+
     If(eqSimplified = zeroeq,
     [
       DestructiveAppend(tested,Map("==",{var,item}));
@@ -599,7 +599,7 @@ Function("SolveMatrix",{matrix,vector})
 
 
 Function("Newton",{function,variable,initial,accuracy})
-[	// since we call a function with HoldArg(), we need to evaluate some variables by hand
+[   // since we call a function with HoldArg(), we need to evaluate some variables by hand
   `Newton(@function,@variable,initial,accuracy,-Infinity,Infinity);
 ];
 
