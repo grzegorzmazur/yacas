@@ -2,6 +2,11 @@
    - Factorize
 */
 
+// explicitly load predicates before extending IsZero() to polynomials;
+// otherwise IsZero() will be defined for poynomials only until predicates
+// will be loaded for some other reason
+Use("predicates.rep/code.ys");
+
 UniVarList(expr) := VarList(expr);
 
 
