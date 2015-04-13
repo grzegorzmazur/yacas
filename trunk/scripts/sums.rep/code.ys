@@ -1,18 +1,3 @@
-/*  this is disabled because some functions seem to implicitly define Min / Max with a different number of args, and then Yacas is confused if it hasn't loaded all the Function() declarations beforehand.
-FIXME
-/// Min, Max with many arguments
-*/
-Retract("Min", 1);
-Retract("Min", 2);
-Retract("Min", 3);
-Retract("Max", 1);
-Retract("Max", 2);
-Retract("Max", 3);
-//Function() Min(list);
-//Function() Max(list);
-
-//Function() Min(l1, l2);
-//Function() Max(l1, l2);
 Function() Min(l1, l2, l3, ...);
 Function() Max(l1, l2, l3, ...);
 
@@ -58,8 +43,8 @@ Function() Max(l1, l2, l3, ...);
 10 # 0! <-- 1;
 10 # (Infinity)! <-- Infinity;
 20 # ((n_IsPositiveInteger)!) <-- [
-	Check(n <= 65535, "Factorial: Error: the argument " : ( ToString() Write(n) ) : " is too large, you may want to avoid exact calculation");
-	MathFac(n);
+    Check(n <= 65535, "Factorial: Error: the argument " : ( ToString() Write(n) ) : " is too large, you may want to avoid exact calculation");
+    MathFac(n);
 ];
 
 25 # ((x_IsConstant)!)_(FloatIsInt(x) And x>0) <-- (Round(x)!);
@@ -74,21 +59,21 @@ Function() Max(l1, l2, l3, ...);
 (-(2*z+1)/2)! = Sqrt(Pi)*(-1)^z*z!*2^(2*z) / (2*z)! for z >= 0
 
 Double factorials are more efficient:
-	(2*n-1)!! := 1*3*...*(2*n-1) = (2*n)! / (2^n*n!)
-	(2*n)!! := 2*4*...*(2*n) = 2^n*n!
+    (2*n-1)!! := 1*3*...*(2*n-1) = (2*n)! / (2^n*n!)
+    (2*n)!! := 2*4*...*(2*n) = 2^n*n!
 
 */
 /* // old version - not using double factorials
 HalfIntegerFactorial(n_IsOdd) _ (n>0) <--
-	Sqrt(Pi) * ( n! / ( 2^n*((n-1)/2)! ) );
+    Sqrt(Pi) * ( n! / ( 2^n*((n-1)/2)! ) );
 HalfIntegerFactorial(n_IsOdd) _ (n<0)  <--
-	Sqrt(Pi) * ( (-1)^((-n-1)/2)*2^(-n-1)*((-n-1)/2)! / (-n-1)! );
+    Sqrt(Pi) * ( (-1)^((-n-1)/2)*2^(-n-1)*((-n-1)/2)! / (-n-1)! );
 */
 // new version using double factorials
 HalfIntegerFactorial(n_IsOdd) _ (n>0) <--
-	Sqrt(Pi) * ( n!! / 2^((n+1)/2) );
+    Sqrt(Pi) * ( n!! / 2^((n+1)/2) );
 HalfIntegerFactorial(n_IsOdd) _ (n<0)  <--
-	Sqrt(Pi) * ( (-1)^((-n-1)/2)*2^((-n-1)/2) / (-n-2)!! );
+    Sqrt(Pi) * ( (-1)^((-n-1)/2)*2^((-n-1)/2) / (-n-2)!! );
 //HalfIntegerFactorial(n_IsOdd) _ (n= -1)  <-- Sqrt(Pi);
 
 /* Want to also compute (2.5)! */
@@ -97,11 +82,11 @@ HalfIntegerFactorial(n_IsOdd) _ (n<0)  <--
 /// partial factorial
 n1_IsRationalOrNumber *** n2_IsRationalOrNumber <--
 [
-	Check(n2-n1 <= 65535, "Partial factorial: Error: the range " : ( ToString() Write(n2-n1) ) : " is too large, you may want to avoid exact calculation");
-	If(n2-n1<0,
-		1,
-		Factorial'partial(n1, n2)
-	);
+    Check(n2-n1 <= 65535, "Partial factorial: Error: the range " : ( ToString() Write(n2-n1) ) : " is too large, you may want to avoid exact calculation");
+    If(n2-n1<0,
+        1,
+        Factorial'partial(n1, n2)
+    );
 ];
 
 /// recursive routine to evaluate "partial factorial" a*(a+1)*...*b
@@ -115,7 +100,7 @@ n1_IsRationalOrNumber *** n2_IsRationalOrNumber <--
 
 /* Binomials -- now using partial factorial for speed */
 // Bin(n,m) = Bin(n, n-m)
-10 # Bin(0,0) 		<-- 1;
+10 # Bin(0,0)       <-- 1;
 10 # Bin(n_IsPositiveInteger,m_IsNonNegativeInteger)_(2*m <= n) <-- ((n-m+1) *** n) / m!;
 15 # Bin(n_IsPositiveInteger,m_IsNonNegativeInteger)_(2*m > n And m <= n) <-- Bin(n, n-m);
 20 # Bin(n_IsInteger,m_IsInteger) <-- 0;
@@ -124,8 +109,8 @@ n1_IsRationalOrNumber *** n2_IsRationalOrNumber <--
 1# (n_IsPositiveInteger)!! _ (n<=3) <-- n;
 2# (n_IsPositiveInteger)!! <--
 [
-	Check(n<=65535, "Double factorial: Error: the argument " : ( ToString() Write(n) ) : " is too large, you may want to avoid exact calculation");
-	Factorial'double(2+Mod(n, 2), n);
+    Check(n<=65535, "Double factorial: Error: the argument " : ( ToString() Write(n) ) : " is too large, you may want to avoid exact calculation");
+    Factorial'double(2+Mod(n, 2), n);
 ];
 // special cases
 3# (_n)!! _ (n= -1 Or n=0)<-- 1;
@@ -143,7 +128,7 @@ n1_IsRationalOrNumber *** n2_IsRationalOrNumber <--
 
 /* Sums */
 
-RuleBase("Sum",{sumvar'arg,sumfrom'arg,sumto'arg,sumbody'arg}); 
+RuleBase("Sum",{sumvar'arg,sumfrom'arg,sumto'arg,sumbody'arg});
 
 5  # Sum(_sumvar,sumfrom_IsNumber,sumto_IsNumber,_sumbody)_(sumfrom>sumto) <-- 0;
 
@@ -255,26 +240,26 @@ Function("Taylor1",{taylorvariable,taylorat,taylororder,taylorfunction})
     [
       term:=Apply("Limit",{taylorvariable,taylorat,dif});
     ]);
-      
+
     result:=result+(term/(n!))*(polf^n);
 /*    result:=result+Apply("Limit",{taylorvariable,taylorat,(dif/(n!))})*(polf^n); */
 /*
     MacroSet(taylorvariable,taylorat);
     result:=result+(Eval(dif)/(n!))*(polf^n);
-*/    
+*/
   ];
   result;
 ];
 
 
-Function("Subfactorial",{n}) 
+Function("Subfactorial",{n})
 [
-	n! * Sum(k,0,n,(-1)^(k)/k!);
+    n! * Sum(k,0,n,(-1)^(k)/k!);
 ];
 
 30 # Subfactorial(n_IsList) <-- MapSingle("Subfactorial",n);
 
-// Attempt to Sum series 
+// Attempt to Sum series
 
 LocalSymbols(c,d,expr,from,to,summand,sum,predicate,k,n,r,var,x) [
 
@@ -287,39 +272,39 @@ HoldArg(SumFunc,summand);
 // Difference code does not work
 SumFunc(_sumvar,sumfrom_IsInteger,_sumto,_sumbody,_sum) <--
 [
-	// Take the given answer and create 2 rules, one for an exact match
-	// for sumfrom, and one which will catch sums starting at a different
-	// index and subtract off the difference
+    // Take the given answer and create 2 rules, one for an exact match
+    // for sumfrom, and one which will catch sums starting at a different
+    // index and subtract off the difference
 
-	`(40 # Sum(@sumvar,@sumfrom,@sumto,@sumbody )	<-- Eval(@sum) );
-	`(41 # Sum(@sumvar,p_IsInteger,@sumto,@sumbody)_(p > @sumfrom) 
-	     <-- 
-	     [
-	          Local(sub);
-		  (sub := Eval(UnList({Sum,sumvar'arg,@sumfrom,p-1,sumbody'arg})));
-		  Simplify(Eval(@sum) - sub );
+    `(40 # Sum(@sumvar,@sumfrom,@sumto,@sumbody )   <-- Eval(@sum) );
+    `(41 # Sum(@sumvar,p_IsInteger,@sumto,@sumbody)_(p > @sumfrom)
+         <--
+         [
+              Local(sub);
+          (sub := Eval(UnList({Sum,sumvar'arg,@sumfrom,p-1,sumbody'arg})));
+          Simplify(Eval(@sum) - sub );
              ]);
 ];
 
 SumFunc(_sumvar,sumfrom_IsInteger,_sumto,_sumbody,_sum,_condition) <--
 [
 
-	`(40 # Sum(@sumvar,@sumfrom,@sumto,@sumbody)_(@condition)    <-- Eval(@sum) );
-	`(41 # Sum(@sumvar,p_IsInteger,@sumto,@sumbody )_(@condition And p > @sumfrom) 
-	     <-- 
-	     [
-	          Local(sub);
-		  `(sub := Eval(UnList({Sum,sumvar'arg,@sumfrom,p-1,sumbody'arg})));
-		  Simplify(Eval(@sum) - sub );
+    `(40 # Sum(@sumvar,@sumfrom,@sumto,@sumbody)_(@condition)    <-- Eval(@sum) );
+    `(41 # Sum(@sumvar,p_IsInteger,@sumto,@sumbody )_(@condition And p > @sumfrom)
+         <--
+         [
+              Local(sub);
+          `(sub := Eval(UnList({Sum,sumvar'arg,@sumfrom,p-1,sumbody'arg})));
+          Simplify(Eval(@sum) - sub );
              ]);
 ];
 
 // Some type of canonical form is needed so that these match when
-// given in a different order, like x^k/k! vs. (1/k!)*x^k 
+// given in a different order, like x^k/k! vs. (1/k!)*x^k
 // works !
 SumFunc(_k,1,_n,_c + _d,
-  Eval(UnList({Sum,sumvar'arg,1,n,c})) + 
-  Eval(UnList({Sum,sumvar'arg,1,n,d})) 
+  Eval(UnList({Sum,sumvar'arg,1,n,c})) +
+  Eval(UnList({Sum,sumvar'arg,1,n,d}))
 );
 SumFunc(_k,1,_n,_c*_expr,Eval(c*UnList({Sum,sumvar'arg,1,n,expr})), IsFreeOf(k,c) );
 SumFunc(_k,1,_n,_expr/_c,Eval(UnList({Sum,sumvar'arg,1,n,expr})/c), IsFreeOf(k,c) );
