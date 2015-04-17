@@ -39,6 +39,12 @@ class LispEnvironment
     iList         = LispAtom.New(this,"List");
     iProg         = LispAtom.New(this,"Prog");
 
+    Protect(iList.String());
+    Protect(iProg.String());
+
+    Protect(iHashTable.LookUp("Infinity"));
+    Protect(iHashTable.LookUp("Undefined"));
+
     iStack = new YacasArgStack(50000 /*TODO FIXME*/);
     MathCommands mc = new MathCommands();
     mc.AddCommands(this);

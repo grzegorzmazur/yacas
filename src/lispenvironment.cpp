@@ -96,6 +96,13 @@ LispEnvironment::LispEnvironment(
     iComma        = LispAtom::New(*this,",");
     iList         = LispAtom::New(*this,"List");
     iProg         = LispAtom::New(*this,"Prog");
+
+    Protect(iList->String());
+    Protect(iProg->String());
+
+    Protect(iHashTable.LookUp("Infinity"));
+    Protect(iHashTable.LookUp("Undefined"));
+
     PushLocalFrame(true);
 }
 
