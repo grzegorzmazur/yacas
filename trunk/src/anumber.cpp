@@ -57,11 +57,11 @@ void ANumber::Print(const std::string& prefix) const
 
 static LispInt DigitIndex(LispInt c)
 {
-    if (c>='0' && c<='9')
+    if (std::isdigit(c))
         return c-'0';
-    if (c>='a' && c<='z')
+    if (std::islower(c))
         return c-'a'+10;
-    if (c>='A' && c<='Z')
+    if (std::isupper(c))
         return c-'A'+10;
 
     // TODO error!!!
@@ -165,9 +165,7 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
         endFloatIndex = endIntIndex;
 
     if (endFloatIndex-endIntIndex-1 > iPrecision)
-    {
       iPrecision = endFloatIndex-endIntIndex-1;
-    }
 
     // Go to least significant digit first
     const LispChar * ptr = aString + endIntIndex-1;
@@ -181,11 +179,6 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
         term.CopyFrom(factor2);
         WordBaseTimesInt(term, DigitIndex(*ptr));
         WordBaseAdd(*this,term);
-        /*
-        ANumber current(iPrecision);
-        current.CopyFrom(*this);
-        BaseAddFull(*this,current,term);
-        */
         WordBaseTimesInt(factor2, aBase);
         ptr--;
     }
@@ -193,49 +186,38 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
     //Parse the fraction
     if (endFloatIndex > endIntIndex)
     {
-        std::string fraction((LispChar *)&aString[endIntIndex+1]);
-        LispInt i;
+        std::string fraction(aString + endIntIndex + 1);
 
         // Map to a char base number
-        LispInt nr;// = fraction.size()-1; //Excluding the zero terminator
-        nr = endFloatIndex - endIntIndex-1;
+        const LispInt nr = endFloatIndex - endIntIndex-1;
         LispString::value_type * fractionPtr = &fraction[0];
 
-        for (i=0;i<(nr>>1);i++)
+        for (int i = 0; i < (nr>>1); ++i)
         {
-            LispChar c = fractionPtr[i];
+            const LispChar c = fractionPtr[i];
             fractionPtr[i] = DigitIndex(fractionPtr[nr-i-1]);
             fractionPtr[nr-i-1] = DigitIndex(c);
         }
-        if (nr&1)
+        if (nr & 1)
             fractionPtr[nr>>1] = DigitIndex(fractionPtr[nr>>1]);
 
         std::string base;
         IntToBaseString(base,WordBase,aBase);
 
-        LispInt nrDigits;
-        nrDigits = WordDigits(iPrecision,aBase)/*+1*/;
+        const LispInt nrDigits = WordDigits(iPrecision,aBase);
 
-        for (i=0;i<nrDigits;i++)
+        for (int i = 0; i < nrDigits; ++i)
         {
             PlatWord word=0;
-            std::string copied;
-            LispInt j;
+            std::string copied = fraction;
 
-            //TODO!!! This is probably not the good way to copy!
-            {
-                LispInt nrc=fraction.size();
-                copied.resize(nrc);
-              //copied.resize(nrc);  // not needed -- resize does this
-                std::memcpy(&copied[0],  &fraction[0], nrc*sizeof(LispString::value_type));
-            }
             BaseMultiply(fraction, copied, base, aBase);
 
             {
-                LispInt nrc=fraction.size();
+                const LispInt nrc=fraction.size();
                 LispString::value_type * fractionPtr = &fraction[0];
                 PlatDoubleWord factor=1;
-                for (j=nr;j<nrc;j++)
+                for (int j = nr; j < nrc; ++j)
                 {
                     word = word + (PlatWord)(fractionPtr[j]*factor);
                     factor = factor*aBase;
@@ -245,22 +227,21 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
             insert(begin(),word);
             iExp++;
         }
-//        Delete(0);
-//        iExp--;
     }
 
     // Parse the E<num> part at the end
     if (endNumberIndex > endFloatIndex+1)
     {
-      if (aString[endFloatIndex] == '.') endFloatIndex++;
+      if (aString[endFloatIndex] == '.')
+          endFloatIndex++;
 
-      if (aString[endFloatIndex+1] == '+') endFloatIndex++;
+      if (aString[endFloatIndex+1] == '+')
+          endFloatIndex++;
 
       iTensExp = std::atoi(aString + endFloatIndex + 1);
     }
 
     DropTrailZeroes();
-//PrintNumber("      ",*this);
 }
 
 void ANumber::CopyFrom(const ANumber& aOther)
