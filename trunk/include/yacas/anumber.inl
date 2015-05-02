@@ -305,7 +305,7 @@ inline void WordBaseAddMultiply(T& aTarget, const T& x, const T& y)
 
 
 template<class T>
-inline void BaseMultiply(T& aTarget, T& x, T& y, PlatDoubleWord aBase)
+inline void BaseMultiply(T& aTarget, const T& x, const T& y, PlatDoubleWord aBase)
 {
     aTarget.resize(1);
     aTarget[0] = 0;
@@ -313,26 +313,25 @@ inline void BaseMultiply(T& aTarget, T& x, T& y, PlatDoubleWord aBase)
 }
 
 template<class T>
-inline void WordBaseMultiply(T& aTarget, T& x, T& y)
+inline void WordBaseMultiply(T& aTarget, const T& x, const T& y)
 {
     aTarget.resize(1);
     aTarget[0] = 0;
     WordBaseAddMultiply(aTarget, x, y);
 }
 
-
-
 template<class T>
-inline bool IsZero(T& a)
+inline
+bool IsZero(const T& a)
 {
-  typename T::value_type *ptr = &a[0];
-  typename T::value_type *endptr = ptr+a.size();
-  while (ptr != endptr)
-  {
-    if (*ptr++ != 0)
-      return false;
-}
-  return true;
+    const typename T::value_type *ptr = &a[0];
+    const typename T::value_type *endptr = ptr + a.size();
+
+    while (ptr != endptr)
+        if (*ptr++ != 0)
+            return false;
+
+    return true;
 }
 
 
@@ -341,13 +340,12 @@ template<class T>
 inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
 {
     // Find the values n and m as described in Knuth II:
-    LispInt n,m;
-    n=a2.size();
+    LispInt n=a2.size();
     assert(n>0);
     assert(a2[n-1] != 0);
 
     //a1.size() = m+n => m = a1.size()-n
-    m = a1.size()-n;
+    LispInt m = a1.size()-n;
     assert(m>=0);
 
     aQuotient.resize(m+1);
@@ -452,6 +450,6 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
 inline
 void ANumber::Expand()
 {
-    while (iExp+1>LispInt(size()))
-        push_back(0);
+    if (iExp+1>LispInt(size()))
+        insert(end(), iExp+1-LispInt(size()), 0);
 }
