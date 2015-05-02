@@ -116,8 +116,8 @@ LispInt WordDigits(LispInt aPrecision, LispInt aBase)
     // typing -6.23, which for sufficiently low precision got read as 6.229999
     // The original thought was that one word should be enough. This  will have
     // to be examined more closely.
-//    return (aPrecision*bitsPerBase+2*WordBits)/WordBits;
-    return (aPrecision*bitsPerBase+WordBits)/WordBits;
+    return (aPrecision*bitsPerBase+2*WordBits)/WordBits;
+    //return (aPrecision*bitsPerBase+WordBits)/WordBits;
 }
 
 
