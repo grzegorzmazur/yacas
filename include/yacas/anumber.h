@@ -35,7 +35,7 @@ public:
     LispInt Precision() const;
     void SetPrecision(LispInt aPrecision) {iPrecision = aPrecision;}
     void ChangePrecision(LispInt aPrecision);
-    void RoundBits(void);
+    void RoundBits();
     void DropTrailZeroes();
     void Expand();
 
@@ -60,7 +60,9 @@ LispInt ANumber::Precision() const
     return iPrecision;
 }
 
-bool BaseLessThan(ANumber& a1, ANumber& a2);
+bool BaseLessThan(const ANumber& a1, const ANumber& a2);
+bool BaseGreaterThan(const ANumber& a1, const ANumber& a2);
+
 void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2);
 
 void IntegerDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2);

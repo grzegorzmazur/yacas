@@ -18,12 +18,8 @@
  */
 void BaseAddFull(ANumber& aResult, ANumber& a1, ANumber& a2);
 void BaseSubtract(ANumber& aResult, ANumber& a1, ANumber& a2);
-//void BaseSubtract(ANumber& aResult, ANumber& a2, LispInt offset);
 void BaseMultiplyFull(ANumber& aResult, ANumber& a1, ANumber& a2);
-void BaseDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2);
-bool BaseGreaterThan(ANumber& a1, ANumber& a2);
-bool BaseLessThan(ANumber& a1, ANumber& a2);
-void BaseSqrt(ANumber& aResult, ANumber& N);
+void BaseSqrt(ANumber& aResult, const ANumber& N);
 
 void ANumber::Print(const std::string& prefix) const
 {
@@ -93,17 +89,16 @@ ANumber::ANumber(const LispChar * aString,LispInt aPrecision,LispInt aBase): iEx
     SetTo(aString,aBase);
 }
 
-void IntToBaseString(std::string& aString,PlatDoubleWord aInt, LispInt aBase)
+std::string IntToBaseString(PlatDoubleWord aInt, LispInt aBase)
 {
-    // Build the string
-    aString.clear();
-    LispInt i=0;
-    while (aInt!=0)
-    {
-    aString.push_back((LispChar)(aInt%aBase));
-    aInt/=aBase;
-        i++;
+    std::string s;
+
+    while (aInt!=0) {
+        s.push_back(aInt%aBase);
+        aInt/=aBase;
     }
+
+    return s;
 }
 
 LispInt WordDigits(LispInt aPrecision, LispInt aBase)
@@ -128,7 +123,7 @@ LispInt WordDigits(LispInt aPrecision, LispInt aBase)
 
 void ANumber::SetTo(const LispChar * aString,LispInt aBase)
 {
-    resize(0);
+    clear();
 
     assert(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
     assert(aBase<=36);
@@ -192,17 +187,11 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
         const LispInt nr = endFloatIndex - endIntIndex-1;
         LispString::value_type * fractionPtr = &fraction[0];
 
-        for (int i = 0; i < (nr>>1); ++i)
-        {
-            const LispChar c = fractionPtr[i];
-            fractionPtr[i] = DigitIndex(fractionPtr[nr-i-1]);
-            fractionPtr[nr-i-1] = DigitIndex(c);
-        }
-        if (nr & 1)
-            fractionPtr[nr>>1] = DigitIndex(fractionPtr[nr>>1]);
 
-        std::string base;
-        IntToBaseString(base,WordBase,aBase);
+        std::reverse(fractionPtr, fractionPtr + nr);
+        std::transform(fractionPtr, fractionPtr + nr, fractionPtr, &DigitIndex);
+
+        const std::string base = IntToBaseString(WordBase,aBase);
 
         const LispInt nrDigits = WordDigits(iPrecision,aBase);
 
@@ -213,16 +202,14 @@ void ANumber::SetTo(const LispChar * aString,LispInt aBase)
 
             BaseMultiply(fraction, copied, base, aBase);
 
+            const LispInt nrc=fraction.size();
+            PlatDoubleWord factor=1;
+            for (int j = nr; j < nrc; ++j)
             {
-                const LispInt nrc=fraction.size();
-                LispString::value_type * fractionPtr = &fraction[0];
-                PlatDoubleWord factor=1;
-                for (int j = nr; j < nrc; ++j)
-                {
-                    word = word + (PlatWord)(fractionPtr[j]*factor);
-                    factor = factor*aBase;
-                }
+                word += fraction[j]*factor;
+                factor = factor*aBase;
             }
+
             fraction.resize(nr);
             insert(begin(),word);
             iExp++;
@@ -554,43 +541,23 @@ bool LessThan(ANumber& a1, ANumber& a2)
 
 void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool aForceFloat)
 {
-    std::size_t nr = aNumber.size();
-    while (nr>1 && aNumber[nr-1] == 0) nr--;
-    aNumber.resize(nr);
+    while (aNumber.size() > 1 && aNumber.back() == 0)
+        aNumber.pop_back();
 
-    LispInt tensExp = aNumber.iTensExp;
+    std::size_t nr = aNumber.size();
 
     //Formatting small numbers can be done faster.
     if (aNumber.iExp == 0 && nr == 1)
     {
         BaseIntNumber(aResult, aNumber[0], aBase);
-        nr=aResult.size();
-        // swap order of the digits, and map to ascii
-        {
-            LispString::value_type * rptr = &aResult[0];
-            for (std::size_t i = 0; i < (nr>>1); ++i)
-            {
-                LispString::value_type c=rptr[i];
-                rptr[i] = Digit(rptr[nr-i-1]);
-                rptr[nr-i-1] = Digit(c);
-            }
-            if (nr&1)
-                rptr[nr>>1] = Digit(rptr[nr>>1]);
-        }
+        std::reverse(aResult.begin(), aResult.end());
+        std::transform(aResult.begin(), aResult.end(), aResult.begin(), &Digit);
 
-        if (aForceFloat)
-        {
-          if (!(aResult.size()==1 && aResult[0] == '0'))
+        if (aForceFloat && !(aResult.size()==1 && aResult[0] == '0'))
             aResult.push_back('.');
-        }
-        if (aNumber.iNegative)
-        {
-            if (aResult.size()>1 || aResult[0] != '0')
-            {
-                LispChar c='-';
-                aResult.insert(aResult.begin(),c);
-            }
-        }
+
+        if (aNumber.iNegative && (aResult.size()>1 || aResult[0] != '0'))
+            aResult.insert(aResult.begin(),'-');
 
         goto TENSEXP;
     }
@@ -600,7 +567,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
 
         assert(aBase<=36);
         // Reset number
-        aResult.resize(0);
+        aResult.clear();
         aResult.push_back(0);
 
         // Create the number
@@ -620,38 +587,18 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
             BaseIntNumber(term, number[i], aBase);
             BaseAddMultiply(aResult, term, factor2, aBase);
 
-            //TODO this one doesn't have to be done the last iteration
             //factor2 = factor2*factor3
+            term.swap(factor2);
 
-            {
-                LispInt nr = factor2.size();
-                term.resize(nr);
-                LispInt j;
-                std::string::value_type * fptr = &factor2[0];
-                std::string::value_type * tptr = &term[0];
-                for (j=0;j<nr;j++)
-                {
-                    *tptr++ = *fptr++;
-                }
-            }
             BaseMultiply(factor2, term, factor3, aBase);
         }
 
         //Remove trailing zeroes (most significant side)
+        while (aResult.size() > 1 && aResult.back() == 0)
+            aResult.pop_back();
         nr = aResult.size();
-        while (nr>1 && aResult[nr-1] == 0) nr--;
-        aResult.resize(nr);
 
-        // swap order of the digits, and map to ascii
-        {
-            LispString::value_type * rptr = &aResult[0];
-            for (std::size_t i = 0; i < (nr>>1); ++i)
-            {
-                LispString::value_type c=rptr[i];
-                rptr[i] = rptr[nr-i-1];
-                rptr[nr-i-1] = c;
-            }
-        }
+        std::reverse(aResult.begin(), aResult.end());
 
         // Get the fraction
         number.resize(number.iExp, 0);
@@ -666,7 +613,7 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
                 WordBaseTimesInt(number, aBase);
                 if (LispInt(number.size()) > number.iExp)
                 {
-                    aResult.push_back((LispChar)(number[number.iExp]));
+                    aResult.push_back(number[number.iExp]);
                     number.resize(number.iExp);
                 }
                 else
@@ -682,28 +629,25 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
                 LispInt carry=1;
                 for (i=aResult.size()-1;i>=0;i--)
                 {
-                    LispInt word = aResult[i]+carry;
+                    const LispInt word = aResult[i]+carry;
                     aResult[i] = word%aBase;
                     carry = word / aBase;
                 }
                 if (carry)
                 {
-                    LispChar c = carry;
-                    aResult.insert(aResult.begin(),c);
+                    aResult.insert(aResult.begin(),carry);
                     digitPos++;
                 }
             }
             aResult.resize(aResult.size()-1);
             // Insert dot
-            LispChar c='.';
-            aResult.insert(aResult.begin() + digitPos,c);
+            aResult.insert(aResult.begin() + digitPos, '.');
 
             //Remove trailing zeros
             LispInt nr = aResult.size();
             while (nr>1 && aResult[nr-1] == 0)
-            {
                 nr--;
-            }
+
             if (aResult[nr-1] == '.' && nr == 2 && aResult[0] == 0)
                 nr--;
             aResult.resize(nr);
@@ -731,11 +675,11 @@ void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool
 
     //Handle tens exp
 TENSEXP:
-    if (tensExp != 0 &&
+    if (aNumber.iTensExp != 0 &&
         !(aResult[0] == '0' && aResult.size() == 1))
     {
         aResult.push_back('e');
-        aResult.append(std::to_string(tensExp));
+        aResult.append(std::to_string(aNumber.iTensExp));
     }
 }
 
@@ -753,53 +697,6 @@ void BaseSubtract(ANumber& aResult, ANumber& a1, ANumber& a2)
     aResult.CopyFrom(a1);
     BaseSubtract(aResult, a2,0);
 }
-/*
-// Added the offset param for the division algo.
-void BaseSubtract(ANumber& aResult, ANumber& a2, LispInt offset)
-{
-    if (IsZero(a2))
-        return;
-    LISPASSERT(!IsZero(a2));
-    // Initialize result
-    LispInt nr = a2.size();
-    while (a2[nr-1] == 0)
-        nr--;
-
-    // Subtract on a per-digit basis
-    PlatSignedDoubleWord carry=0;
-    LispInt digit;
-    for (digit=0;digit<nr;digit++)
-    {
-        PlatSignedDoubleWord word;
-        word = ((PlatSignedDoubleWord)aResult[digit+offset]) -
-            ((PlatSignedDoubleWord)a2[digit]) +
-            (PlatSignedDoubleWord)carry;
-        carry=0;
-        while (word<0)
-        {
-            word+=WordBase;
-            carry--;
-        }
-        aResult[digit+offset] = ((PlatWord)(word%WordBase));
-    }
-
-    while (carry != 0)
-    {
-        LISPASSERT(nr+offset<aResult.size());
-
-        LispInt newCarry = 0;
-        PlatSignedDoubleWord ww = aResult[nr+offset]+carry;
-        while (ww<0)
-        {
-            ww = ww + WordBase;
-            newCarry = newCarry - 1;
-        }
-        aResult[nr+offset]=ww;
-        carry = newCarry;
-        offset++;
-    }
-}*/
-
 
 void BaseMultiplyFull(ANumber& aResult, ANumber& a1, ANumber& a2)
 {
@@ -808,15 +705,13 @@ void BaseMultiplyFull(ANumber& aResult, ANumber& a1, ANumber& a2)
 }
 
 
-bool BaseGreaterThan(ANumber& a1, ANumber& a2)
+bool BaseGreaterThan(const ANumber& a1, const ANumber& a2)
 {
-    LispInt nr1 = a1.size();
-    LispInt nr2 = a2.size();
+    const LispInt nr1 = a1.size();
+    const LispInt nr2 = a2.size();
 
     // Nr is the number of words the two numbers share.
-    LispInt nr  = nr1;
-    if (nr2<nr1)
-        nr=nr2;
+    const LispInt nr  = std::min(nr1, nr2);
 
     // Comparison of shared words.
     bool highSame;
@@ -828,9 +723,7 @@ bool BaseGreaterThan(ANumber& a1, ANumber& a2)
 
     // Two numbers with same numbers of words: compare these words.
     if (nr1 == nr2)
-    {
         return highSame;
-    }
 
     // a1 has more words.
     if (nr1 > nr2)
@@ -843,20 +736,17 @@ bool BaseGreaterThan(ANumber& a1, ANumber& a2)
         // Otherwise compare the shared highest word.
         return highSame;
     }
-    else
-    {
-        // If any of a2's higher words is non-zero, it will be bigger.
-        LispInt i;
-        for (i=nr1;i<nr2;i++)
-            if (a2[i] != 0)
-                return false;
-        // Otherwise compare the shared highest word.
-        return highSame;
-    }
-    assert(0); //This should never happen.
-    return false;
+
+    // If any of a2's higher words is non-zero, it will be bigger.
+    LispInt i;
+    for (i=nr1;i<nr2;i++)
+        if (a2[i] != 0)
+            return false;
+    // Otherwise compare the shared highest word.
+    return highSame;
 }
-bool BaseLessThan(ANumber& a1, ANumber& a2)
+
+bool BaseLessThan(const ANumber& a1, const ANumber& a2)
 {
     return BaseGreaterThan(a2,a1);
 }
@@ -1241,7 +1131,7 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
 }
 
 
-void BaseSqrt(ANumber& aResult, ANumber& N)
+void BaseSqrt(ANumber& aResult, const ANumber& N)
 {
 
     LispInt l2;
@@ -1323,18 +1213,12 @@ void Sqrt(ANumber& aResult, ANumber& N)
         N.insert(N.begin(),zero);
         N.iExp++;
     }
-/*hier
-    while (N.iTensExp<0)
-    {
-      PlatDoubleWord carry = 0;
-      BaseDivideInt(N,10,WordBase,carry);
-      N.iTensExp++;
-    }
-*/
-    LispInt resultDigits = N.iExp/2;
-    LispInt resultTensExp = N.iTensExp/2;
+
+    const LispInt resultDigits = N.iExp/2;
+    const LispInt resultTensExp = N.iTensExp/2;
 
     BaseSqrt(aResult, N);
+
     aResult.iExp=resultDigits;
     aResult.iTensExp = resultTensExp;
 }
@@ -1357,28 +1241,22 @@ bool Significant(ANumber& a)
 }
 
 
-void ANumber::RoundBits(void)
+void ANumber::RoundBits()
 {
-  PlatWord* ptr = data();
-  if (*ptr < (WordBase/2))
-  {
-    *ptr = 0;
-  }
-  else
-  {
-    *ptr = 0;
-    PlatDoubleWord carry = 1;
-    for (LispInt i = 1, nr = size(); i < nr; i++)
-    {
-        PlatDoubleWord dword = ptr[i]+carry;
-        ptr[i] = (PlatWord)dword;
-        carry = dword >> WordBits;
+    PlatWord* ptr = data();
+    if (front() >= (WordBase / 2)) {
+        PlatDoubleWord carry = 1;
+        for (LispInt i = 1, nr = size(); i < nr; i++) {
+            const PlatDoubleWord dword = ptr[i] + carry;
+            ptr[i] = dword;
+            carry = dword >> WordBits;
+        }
+
+        if (carry)
+            push_back(carry);
     }
-    if (carry)
-    {
-    push_back((ANumber::value_type)(carry));  // PDG - cast to avoid compile-time warning
-    }
-  }
+
+    front() = 0;
 }
 
 void ANumber::ChangePrecision(LispInt aPrecision)
