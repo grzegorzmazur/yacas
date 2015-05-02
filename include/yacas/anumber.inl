@@ -266,40 +266,34 @@ void BaseAddMultiply(std::string& aTarget, const std::string& x, const std::stri
 }
 
 template<class T>
-inline void WordBaseAddMultiply(T& aTarget, T& x, T& y)
+inline void WordBaseAddMultiply(T& aTarget, const T& x, const T& y)
 {
-    LispInt nrx=x.size();
-    LispInt nry=y.size();
+    const unsigned nrx=x.size();
+    const unsigned nry=y.size();
     GrowDigits(aTarget,nrx+nry+1);
-    LispInt ix,iy;
 
     typename T::value_type *targetPtr = &aTarget[0];
-    typename T::value_type *xPtr = &x[0];
-    typename T::value_type *yPtr = &y[0];
-    for (ix=0;ix<nrx;ix++)
+    const typename T::value_type *xPtr = &x[0];
+    const typename T::value_type *yPtr = &y[0];
+    for (unsigned ix=0;ix<nrx;ix++)
     {
         PlatDoubleWord carry = 0;
-        for (iy=0;iy<nry;iy++)
+        for (unsigned iy=0;iy<nry;iy++)
         {
             PlatDoubleWord word =
                 static_cast<PlatDoubleWord>(targetPtr[ix+iy])+
                 static_cast<PlatDoubleWord>(xPtr[ix])*
                 static_cast<PlatDoubleWord>(yPtr[iy])+carry;
-            // This calculates aTarget[ix+iy]+x[ix]*y[iy]+carry;
 
-
-            targetPtr[ix+iy] = (typename T::value_type)(word);
-            carry          = word >> WordBits;
+            targetPtr[ix+iy] = word;
+            carry            = word >> WordBits;
         }
-        {
 
-            PlatDoubleWord word = static_cast<PlatDoubleWord>(targetPtr[ix+nry])+carry;
-            targetPtr[ix+nry] = (typename T::value_type)(word);
-            carry          = word >> WordBits;
-            assert(carry == 0);
+        const PlatDoubleWord word =
+            static_cast<PlatDoubleWord>(targetPtr[ix+nry])+carry;
+        targetPtr[ix+nry] = word;
 
-//          targetPtr[ix+nry] += (typename T::value_type)(carry);
-        }
+        assert((word >> WordBits) == 0);
     }
 }
 
