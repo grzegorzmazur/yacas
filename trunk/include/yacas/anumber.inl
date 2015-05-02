@@ -238,32 +238,30 @@ inline void BaseIntNumber(std::string& aTarget, PlatSignedDoubleWord aNumber, Pl
 
 // BaseAddMultiply : multiply x and y, and add result to aTarget
 //
-inline void BaseAddMultiply(std::string& aTarget, std::string& x, std::string& y, PlatDoubleWord aBase)
-{
-    LispInt nrx=x.size();
-    LispInt nry=y.size();
-    GrowDigits(aTarget,nrx+nry+1);
-    LispInt ix,iy;
+
+inline
+void BaseAddMultiply(std::string& aTarget, const std::string& x, const std::string& y, PlatDoubleWord aBase) {
+    const unsigned nrx = x.size();
+    const unsigned nry = y.size();
+    GrowDigits(aTarget, nrx + nry + 1);
 
     std::string::value_type *targetPtr = &aTarget[0];
-    std::string::value_type *xPtr = &x[0];
-    std::string::value_type *yPtr = &y[0];
-    for (ix=0;ix<nrx;ix++)
-    {
+    const std::string::value_type *xPtr = &x[0];
+    const std::string::value_type *yPtr = &y[0];
+
+    for (unsigned ix = 0; ix < nrx; ix++) {
         PlatDoubleWord carry = 0;
-        for (iy=0;iy<nry;iy++)
-        {
-            PlatDoubleWord word =
-                static_cast<PlatDoubleWord>(targetPtr[ix+iy])+
-                static_cast<PlatDoubleWord>(xPtr[ix])*
-                static_cast<PlatDoubleWord>(yPtr[iy])+carry;
-            // This calculates aTarget[ix+iy]+x[ix]*y[iy]+carry;
+        for (unsigned iy = 0; iy < nry; iy++) {
+            const PlatDoubleWord word =
+                    static_cast<PlatDoubleWord> (targetPtr[ix + iy]) +
+                    static_cast<PlatDoubleWord> (xPtr[ix]) *
+                    static_cast<PlatDoubleWord> (yPtr[iy]) + carry;
 
 
-            targetPtr[ix+iy] = (LispString::value_type)(word % aBase);
-            carry          = word / aBase;
+            targetPtr[ix + iy] = word % aBase;
+            carry = word / aBase;
         }
-        targetPtr[ix+nry] += (LispString::value_type)(carry);
+        targetPtr[ix + nry] += carry;
     }
 }
 
