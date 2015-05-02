@@ -9,6 +9,17 @@ Verify(5 ^ 2 , 25);
 
 Verify(IsZero(0.000),True);
 
+Verify(0.1 + 0, 0.1);
+Verify(0.1 + 0.0, 0.1);
+Verify(0 + 0.1, 0.1);
+Verify(0.0 + 0.1, 0.1);
+
+Verify(-6.23 + 0, -6.23);
+Verify(-6.23 + 0.0, -6.23);
+Verify(0 - 6.23, -6.23);
+Verify(0.0 - 6.23, -6.23);
+
+
 Verify(2/5,Hold(2/5));
 Verify(IsZero(N(2/5)-0.4));
 Verify(IsRational(2),True);
