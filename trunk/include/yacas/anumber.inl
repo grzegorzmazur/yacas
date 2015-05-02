@@ -8,50 +8,34 @@ template<class T>
 inline void BaseTimesInt(T& a,PlatDoubleWord aNumber, PlatDoubleWord aBase)
 {
   PlatDoubleWord carry=0;
-  LispInt i;
-  LispInt nr=a.size();
+  const LispInt nr=a.size();
 
   typename T::value_type * aptr = &a[0];
-  for (i=0;i<nr;i++)
+  for (int i=0;i<nr;i++)
   {
-    PlatDoubleWord word = ((PlatDoubleWord)(*aptr))*aNumber+carry;
-    PlatWord digit = (PlatWord)(word % aBase);
-    PlatWord newCarry= (PlatWord)(word / aBase);
-    *aptr = digit;
-    aptr++;
-    carry= newCarry;
+    const PlatDoubleWord word = ((PlatDoubleWord)(*aptr))*aNumber+carry;
+    *aptr++ = word % aBase;
+    carry= word / aBase;
   }
   if (carry)
-  {
-    a.push_back((typename T::value_type)carry);
-    carry = 0;
-  }
-  assert(carry == 0);
+    a.push_back(carry);
 }
 
 template<class T>
 inline void WordBaseTimesInt(T& a,PlatDoubleWord aNumber)
 {
   PlatDoubleWord carry=0;
-  LispInt i;
-  LispInt nr=a.size();
+  const LispInt nr=a.size();
 
   typename T::value_type * aptr = &a[0];
-  for (i=0;i<nr;i++)
+  for (int i=0;i<nr;i++)
   {
-    PlatDoubleWord word = ((PlatDoubleWord)(*aptr))*aNumber+carry;
-    PlatWord digit = (PlatWord)(word);
-    PlatWord newCarry= (PlatWord)(word >> WordBits);
-    *aptr = digit;
-    aptr++;
-    carry= newCarry;
+    const PlatDoubleWord word = ((PlatDoubleWord)(*aptr))*aNumber+carry;
+    *aptr++ = word;
+    carry= word >> WordBits;
   }
   if (carry)
-  {
-    a.push_back((typename T::value_type)carry);
-    carry = 0;
-  }
-  assert(carry == 0);
+    a.push_back(carry);
 }
 
 
@@ -59,21 +43,17 @@ inline void WordBaseTimesInt(T& a,PlatDoubleWord aNumber)
 template<class T>
 inline void BaseDivideInt(T& a,PlatDoubleWord aNumber, PlatDoubleWord aBase, PlatDoubleWord& aCarry)
 {
-//    if (a[a.size()-1] != 0)
+    const LispInt nr=a.size();
 
     PlatDoubleWord carry=0;
-    LispInt i;
-    LispInt nr=a.size();
 
     typename T::value_type * aptr = &a[0];
-    for (i=nr-1;i>=0;i--)
-    {
-        PlatDoubleWord word = ((carry*aBase)+((PlatDoubleWord)(aptr[i])));
-        PlatWord digit = (PlatWord)(word / aNumber);
-        PlatWord newCarry= (PlatWord)(word % aNumber);
-        aptr[i] = digit;
-        carry= newCarry;
+    for (int i=nr-1;i>=0;i--) {
+        const PlatDoubleWord word = (carry*aBase)+((PlatDoubleWord)(aptr[i]));
+        aptr[i] = word / aNumber;
+        carry= word % aNumber;
     }
+
     //carry now is the remainder
     aCarry = carry;
 }
