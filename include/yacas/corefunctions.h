@@ -164,8 +164,6 @@ CORE_KERNEL_FUNCTION("MathDiv",LispDiv,2,YacasEvaluator::Function | YacasEvaluat
 CORE_KERNEL_FUNCTION("BitsToDigits",LispBitsToDigits,2,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("DigitsToBits",LispDigitsToBits,2,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("MathGcd",LispGcd,2,YacasEvaluator::Function | YacasEvaluator::Fixed)
-CORE_KERNEL_FUNCTION("SystemCall",LispSystemCall,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
-CORE_KERNEL_FUNCTION("SystemName", LispSystemName, 0, YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("FastArcSin",LispFastArcSin,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("FastLog",LispFastLog,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("FastPower",LispFastPower,2,YacasEvaluator::Function | YacasEvaluator::Fixed)
@@ -243,6 +241,12 @@ CORE_KERNEL_FUNCTION("Builtin'Assoc",YacasBuiltinAssoc,2,YacasEvaluator::Functio
 CORE_KERNEL_FUNCTION("CurrentFile",LispCurrentFile,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("CurrentLine",LispCurrentLine,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("`",LispBackQuote,1,YacasEvaluator::Macro | YacasEvaluator::Fixed)
+
+//
+// Operating System services
+//
+CORE_KERNEL_FUNCTION("SystemCall", LispSystemCall, 1, YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("SystemName", LispSystemName, 0, YacasEvaluator::Function | YacasEvaluator::Fixed)
 
 //
 // Debugging functions
