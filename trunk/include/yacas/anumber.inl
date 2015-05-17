@@ -205,14 +205,13 @@ inline void BaseIntNumber(std::string& aTarget, PlatSignedDoubleWord aNumber, Pl
   // Assume PlatDoubleWord is an integer type.
   // Will maximum digit (i.e., aBase-1) convert to T::value_type right?
     //LISPASSERT( (typename T::value_type)(aBase) == (aBase) );  // use aBase instead, to help CTCE
-    aTarget.resize(0);
+    aTarget.clear();
     while (aNumber != 0)
     {
-        PlatDoubleWord digit = aNumber%aBase;
-        aTarget.push_back((LispString::value_type)(digit));
+        aTarget.push_back(aNumber%aBase);
         aNumber/=aBase;
     }
-    if (aTarget.size() == 0)
+    if (aTarget.empty())
         aTarget.push_back(0);
 }
 
