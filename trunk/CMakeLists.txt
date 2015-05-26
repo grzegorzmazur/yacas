@@ -27,8 +27,9 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
     add_definitions(-DYACAS_NO_CONSTEXPR -DYACAS_NO_ATOMIC_TYPES)
 endif ()
 
-if ("$CMAKE_SYSTEM_NAME" STREQUAL "Emscripten")
+if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s DISABLE_EXCEPTION_CATCHING=0")
+    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --embed-file ${PROJECT_SOURCE_DIR}/scripts@/share/yacas/scripts")
 endif ()
 
 set (YACAS_VERSION_MAJOR 1)
