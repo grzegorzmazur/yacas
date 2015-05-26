@@ -15,7 +15,7 @@ BEGIN
         BLOCK "040904E4"
         BEGIN
             VALUE "FileVersion",      YACAS_VERSION
-            VALUE "LegalCopyright",   "GPL2"
+            VALUE "LegalCopyright",   "LGPL version 2.1 or any later version"
             VALUE "ProductName",      "yacas"
             VALUE "ProductVersion",   YACAS_VERSION
         END
