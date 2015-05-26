@@ -122,8 +122,10 @@ public class YacasConsole extends Thread
 
     System.out.println("Yacas is Free Software--Free as in Freedom--so you can redistribute Yacas or");
     System.out.println("modify it under certain conditions. Yacas comes with ABSOLUTELY NO WARRANTY.");
-    System.out.println("See the GNU General Public License (GPL) for the full conditions.");
-    System.out.println("Type ?license or ?licence to see the GPL; type ?warranty for warranty info.");
+    System.out.println("See the GNU Lesser General Public License (LGPL) version 2.1 or (at your");
+    System.out.println("discretion) any later version for the full conditions.");
+    System.out.println("Type ?license or ?licence to see the LGPL version 2.1;");
+    System.out.println("type ?warranty for warranty info.");
     System.out.println("See http://yacas.sf.net for more information and documentation on Yacas.");
     System.out.println("Type ?? for help. Or type ?function for help on a function.\n");
 
