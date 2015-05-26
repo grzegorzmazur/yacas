@@ -1059,6 +1059,9 @@ int main(int argc, char** argv)
     for (char& c: root_dir)
         if (c == '\\')
             c = '/';
+#elif defined(EMSCRIPTEN)
+    root_dir = "";
+    use_plain = true;
 #else
 #error "This platform is not yet supported. Please contact developers at yacas-devel@sourceforge.net"
 #endif
