@@ -1,9 +1,9 @@
 /* book2TeX - convert Yacas docs back to TeX format (Serge Winitzki)
-	version 0.3 */
+    version 0.3 */
 
 
-Book(x) := [	/* this is the first declaration in a file */
-	AddBody("
+Book(x) := [    /* this is the first declaration in a file */
+    AddBody("
 \\documentclass[twocolumn,10pt]{report}
 
 \\setlength{\\topmargin}{-1.2in}
@@ -67,14 +67,20 @@ Enumerate(body) :=
 
 Item(body) := "\\item{" : body : "}";
 
+UnProtect(HtmlNewParagraph);
 HtmlNewParagraph() := "%end of paragraph
 
 ";
+Protect(HtmlNewParagraph);
 
+UnProtect(HtmlCommand);
 HtmlCommand(x) := "\\begin{quote}\\small\\begin{verbatim}" : x : "\\end{verbatim}\\end{quote}
 "; /* use "quote" and not "quotation" */
+Protect(HtmlCommand);
 
+UnProtect(HtmlEmphasis);
 HtmlEmphasis(x) := "\\emph{" : x : "}";
+Protect(HtmlEmphasis);
 
 /* decide whether to use "verb" or "texttt" based on whether the string contains any of the special characters #, _, \, &, {, }, ~ */
 
@@ -101,26 +107,30 @@ LocalSymbols(TexCharsToEscape) [
 
 ]; // LocalSymbols(TexCharsToEscape)
 
-
+UnProtect(HtmlTerm);
 HtmlTerm(x) :=
 If(x = "Yacas",
-	"\\textsc{Yacas}",
-	If(
-		HasTexChars(x)
-//		,"\\verb|" : x : "|",
-		,"\\small{\\texttt{" : TexEscapeTT(x) : "}}"
-		,"\\small{\\texttt{" : x : "}}"
-	)
+    "\\textsc{Yacas}",
+    If(
+        HasTexChars(x)
+//      ,"\\verb|" : x : "|",
+        ,"\\small{\\texttt{" : TexEscapeTT(x) : "}}"
+        ,"\\small{\\texttt{" : x : "}}"
+    )
 );
-
+Protect(HtmlTerm);
 
 /* this will escape TeX symbols so that the result can be put into a section heading, i.e. cannot use \verb|| */
+UnProtect(HtmlTermHeading);
 HtmlTermHeading(x) := "\\texttt{" : TexEscapeTT(x) : "}";
+Protect(HtmlTermHeading);
 
+UnProtect(HtmlBreak);
 HtmlBreak() := "
 ";
+Protect(HtmlBreak);
 
-Bodied("Item",2);	/* competes with prec. 7 of ":" */
+Bodied("Item",2);   /* competes with prec. 7 of ":" */
 Bodied("Book",60000);
 Bodied("Title",60000);
 Bodied("Author",60000);
@@ -139,13 +149,15 @@ TeXFinishUp() := AddBody("
 
 IncludeFile(x) := Load(x);
 
+UnProtect(HtmlLink);
 HtmlLink(text, url, param1, param2) :=
   If (text = url,
-	"{\\small \\verb|" : text : "|}",
-	text : " (Web URL: {\\small \\verb|" : url :
-	  If(param1 != "", "#" : param1, "" )
-	: "|})"
+    "{\\small \\verb|" : text : "|}",
+    text : " (Web URL: {\\small \\verb|" : url :
+      If(param1 != "", "#" : param1, "" )
+    : "|})"
 );
+Protect(HtmlLink);
 
 RuleBase("TeXMath", {x});
 RuleBase("TeXMathD", {x});
@@ -171,9 +183,9 @@ CmdDescriptionSingle(cmd, desc) := AddBody(CmdDescriptionHead(cmd, desc)
 
 CmdDescriptionHead(cmd, desc) :=
 [
-	Local(heading);
-	heading := HtmlTermHeading(cmd) : " --- " : desc;
-	"
+    Local(heading);
+    heading := HtmlTermHeading(cmd) : " --- " : desc;
+    "
 \\section*{%
 " : heading : "}
 \\addcontentsline{toc}{section}{%
@@ -218,12 +230,19 @@ SeeAlso(list) := AddBody("
 \\end{flushleft}
 ");
 
+UnProtect(AddAnchor);
 AddAnchor(string) := "\\index{" : string : "}";
+Protect(AddAnchor);
+
+UnProtect(HtmlAnchor);
 HtmlAnchor(string) := "\\index{" : string : "@" : HtmlTerm(string) : "}";
 
 Bodied("HtmlAnchor", 60000);
+
+Protect(HtmlAnchor);
+
 Topical(string) := If(string = "See also:", "",
-	AddBody(
+    AddBody(
 "\\begin{flushleft}\\textbf{\\small " : string : "}\\end{flushleft}
 ")
 );
@@ -250,20 +269,20 @@ Lt() := "<";
 // inline Yacas code
 DocEval(x) :=
 [
-	Local(result);
-	result:=Eval(x);	// this already prints anything that x printed
-	
-	If(
-		result = True,	// if the expression resulted in True, do not print "True"
-		True,
-		// otherwise print result
-		If(
-			IsString(result),
-			WriteString(result),
-			Write(result)
-		)
-	);
-	NewLine();
+    Local(result);
+    result:=Eval(x);    // this already prints anything that x printed
+
+    If(
+        result = True,  // if the expression resulted in True, do not print "True"
+        True,
+        // otherwise print result
+        If(
+            IsString(result),
+            WriteString(result),
+            Write(result)
+        )
+    );
+    NewLine();
 ];
 
 HoldArgNr("DocEval", 1, 1);
@@ -274,9 +293,9 @@ DocFootnote(x) := "\\footnote{":x:"}
 // TeX representation of a Yacasdoc reference
 YacasDocLink(bookname, text, url) :=
   If(bookname = "", "",
-  	If (text = bookname,
-		"\\emph{" : text : "}",
-		"\\emph{" : text : "}, in \\emph{" : bookname : "}"
-	)
+    If (text = bookname,
+        "\\emph{" : text : "}",
+        "\\emph{" : text : "}, in \\emph{" : bookname : "}"
+    )
 );
 
