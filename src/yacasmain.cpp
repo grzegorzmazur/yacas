@@ -189,15 +189,6 @@ void LispExitRequested(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 
-unsigned char *the_first_stack_var;
-
-void LispStackSize(LispEnvironment& aEnvironment, LispInt aStackTop)
-{
-    unsigned char x;
-    RESULT = LispAtom::New(aEnvironment, std::to_string(the_first_stack_var-&x));
-}
-
-
 std::string ReadInputString(const std::string& prompt)
 {
     if (!commandline)
@@ -1006,9 +997,6 @@ int parse_options(int argc, char** argv)
 
 int main(int argc, char** argv)
 {
-    unsigned char first_stack_var = 0;
-    the_first_stack_var = &first_stack_var;
-
 #if defined (__APPLE__)
     char buf[PATH_MAX];
     uint32_t size = sizeof (buf);
