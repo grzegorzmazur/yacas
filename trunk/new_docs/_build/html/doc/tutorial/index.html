@@ -1,0 +1,1062 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Tutorial &mdash; Yacas</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Yacas" href="../../index.html"/>
+        <link rel="next" title="Reference Manual" href="../reference_manual/index.html"/>
+        <link rel="prev" title="Getting started" href="../getting_started/index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="../../index.html" class="icon icon-home"> Yacas
+        
+
+        
+          
+          <img src="../../_static/yacaslogo.png" class="logo" />
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation-from-sources">Installation from sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#yacas-syntax">Yacas syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-yacas-from-the-calculation-center">Using Yacas from the calculation center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#yacas-as-a-symbolic-calculator">Yacas as a symbolic calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#arbitrary-precision-numbers">Arbitrary precision numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#analytic-functions">Analytic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#boolean-expressions-and-predicates">Boolean expressions and predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#strings-and-lists">Strings and lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#writing-simplification-rules">Writing simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#local-simplification-rules">Local simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#programming-essentials">Programming essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#macros">Macros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-practice-of-programming-in-yacas">The practice of programming in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#defining-your-own-operators">Defining your own operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#some-assorted-programming-topics">Some assorted programming topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linear-algebra">Linear Algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_manual/index.html">Reference Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/arithmetic.html">Arithmetic and other operations on numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/calc.html">Calculus and elementary functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/simplify.html">Simplification of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/ode.html">Differential Equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/logic.html">Propositional logic theorem prover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/linear-algebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/univariate-polynomials.html">Operations on polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/lists.html">List operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/functional.html">Functional operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/controlflow.html">Control flow functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/predicates.html">Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/consts.html">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/vars.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/io.html">Input/output and plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/strings.html">String manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/probability-and-statistics.html">Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/number-theory.html">Number theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/programming.html">Functions related to programming in Yacas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_in_yacas/index.html">Programming in Yacas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-yacas-architecture">The Yacas architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-evaluation-scheme">Yacas evaluation scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#rules">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#structured-programming-and-control-flow">Structured programming and control flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#additional-syntactic-sugar">Additional syntactic sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#using-macro-rules-e-g-nfunction">Using &#8220;Macro rules&#8221; (e.g. {NFunction})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#macro-expansion">Macro expansion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#scope-of-variable-bindings">Scope of variable bindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation-of-expressions">Evaluation of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-lisp-heritage">The LISP heritage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-specific-extensions-for-cas-implementations">{Yacas}-specific extensions for CAS implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-evaluation-is-simplification-hack">The &#8220;Evaluation is Simplification&#8221; hack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#destructive-operations">Destructive operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#coding-style">Coding style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#writing-new-library-functions">Writing new library functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-1-parsing-expressions-cform">Advanced example 1: parsing expressions ({CForm})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-programming-pitfalls">Yacas programming pitfalls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#debugging-in-yacas">Debugging in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-2-implementing-a-non-commutative-algebra">Advanced example 2: implementing a non-commutative algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../book_of_algorithms/index.html">The Yacas Book of Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/multivar.html">Sparse representations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/integration.html">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/transforms.html">Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/sturm-sequences.html">Finding real roots of polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/numtheory.html">Number theory algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../yagy/index.html">YAGY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Yacas</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+    <li>Tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/doc/tutorial/index.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="tutorial">
+<span id="id1"></span><h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="yacas-syntax">
+<span id="syntax"></span><h2>Yacas syntax<a class="headerlink" href="#yacas-syntax" title="Permalink to this headline">¶</a></h2>
+<p>Expressions in Yacas are generally built up of words. We will not bore
+you with the exact definitions of such words, but roughly speaking
+they are either sequences of alphabetic letters, or a number, or a
+bracket, or space to separate words, or a word built up from symbols
+like <tt class="docutils literal"><span class="pre">+</span></tt>, <tt class="docutils literal"><span class="pre">-</span></tt>, <tt class="docutils literal"><span class="pre">*</span></tt>, <tt class="docutils literal"><span class="pre">&lt;</span></tt>, <em>etc.</em>. If you want, you can mix
+these different types of characters, by surrounding them with
+quotes. Thus, <tt class="docutils literal"><span class="pre">&quot;This</span> <span class="pre">text&quot;</span></tt> is what is called one token, surrounded
+by quotes.</p>
+<p>The usual notation people use when writing down a calculation is
+called the infix notation, and you can readily recognize it, as for
+example <tt class="docutils literal"><span class="pre">2+3</span></tt> and <tt class="docutils literal"><span class="pre">3*4</span></tt>. Prefix operators also exist. These
+operators come before an expression, like for example the unary minus
+sign (called unary because it accepts one argument), <tt class="docutils literal"><span class="pre">-(3*4)</span></tt>. In
+addition to prefix operators there are also postfix operators, like
+the exclamation mark to calculate the factorial of a number, <tt class="docutils literal"><span class="pre">10!</span></tt>.</p>
+<p>Yacas understands standard simple arithmetic expressions. Some
+examples:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">2+3</span></tt> (addition)</li>
+<li><tt class="docutils literal"><span class="pre">2*3</span></tt> (multiplication)</li>
+<li><tt class="docutils literal"><span class="pre">2-3</span></tt> (subtraction)</li>
+<li><tt class="docutils literal"><span class="pre">2^3</span></tt> (raising powers)</li>
+<li><tt class="docutils literal"><span class="pre">2+3*4</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">(2+3)*4</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">6/3</span></tt> (division)</li>
+<li><tt class="docutils literal"><span class="pre">1/3</span></tt></li>
+</ul>
+<p>Divisions are not reduced to real numbers, but kept as a rational for
+as long as possible, since the rational is an exact correct expression
+(and any real number would just be an approximation). Yacas is able to
+change a rational in to a number with the function <tt class="docutils literal"><span class="pre">N</span></tt>, for example
+<tt class="docutils literal"><span class="pre">N(1/3)</span></tt>.</p>
+<p>Operators have <em>precedence</em>, meaning that certain operations are done
+first before others are done. For example, in <tt class="docutils literal"><span class="pre">2+3*4</span></tt> the
+multiplication is performed before the addition. The usual way to
+change the order of a calculation is with round brackets.  The round
+brackets in the expression <tt class="docutils literal"><span class="pre">(2+3)*4</span></tt> will force Yacas to first add 2
+and 3, and then multiply the result.</p>
+<p>Simple function calls have their arguments between round brackets,
+separated by commas. Examples are <tt class="docutils literal"><span class="pre">Sin(Pi)</span></tt> (which indicates that
+you are interested in the value of the trigonometric function
+<span class="math">\(\sin\)</span> applied to the constant <span class="math">\(\pi\)</span>), and
+<tt class="docutils literal"><span class="pre">Min(5,1,3,-5,10)</span></tt> (which should return the lowest of its arguments,
+<tt class="docutils literal"><span class="pre">-5</span></tt> in this case).  Functions usually have the form <tt class="docutils literal"><span class="pre">f()</span></tt>,
+<tt class="docutils literal"><span class="pre">f(x)</span></tt> or <tt class="docutils literal"><span class="pre">f(x,y,z,...)</span></tt> depending on how many arguments the
+function accepts. Functions always return a result.  For example,
+<tt class="docutils literal"><span class="pre">Cos(0)</span></tt> should return <tt class="docutils literal"><span class="pre">1</span></tt>. Evaluating functions can be thought of
+as simplifying an expression as much as possible. Sometimes further
+simplification is not possible and a function returns itself
+unsimplified, like taking the square root of an integer <tt class="docutils literal"><span class="pre">Sqrt(2)</span></tt>. A
+reduction to a number would be an approximation. We explain elsewhere
+how to get Yacas to simplify an expression to a number.</p>
+<p>Yacas allows for use of the infix notation, but with some
+additions. Functions can be <em>bodied</em>, meaning that the last argument
+is written past the close bracket. An example is <tt class="docutils literal"><span class="pre">ForEach</span></tt>, where we
+write <tt class="docutils literal"><span class="pre">ForEach(item,</span> <span class="pre">1</span> <span class="pre">..</span> <span class="pre">10)</span> <span class="pre">Echo(item);</span></tt>.  <tt class="docutils literal"><span class="pre">Echo(item)</span></tt> is the
+last argument to the function <tt class="docutils literal"><span class="pre">ForEach</span></tt>.  &lt;br /&gt; A list is enclosed
+with curly braces, and is written out with commas between the
+elements, like for example <tt class="docutils literal"><span class="pre">{1,2,3}</span></tt>.  items in lists (and things
+that can be made to look like lists, like arrays and strings), can
+then be accessed by indicating the index between square brackets after
+the object. <tt class="docutils literal"><span class="pre">{a,b,c}[2]</span></tt> should return <tt class="docutils literal"><span class="pre">b</span></tt>, as <tt class="docutils literal"><span class="pre">b</span></tt> is the second
+element in the list (Yacas starts counting from 1 when accessing
+elements). The same can be done with strings: <tt class="docutils literal"><span class="pre">&quot;abc&quot;[2]</span></tt>.  &lt;br /&gt;
+And finally, function calls can be grouped together, where they get
+executed one at a time, and the result of executing the last
+expression is returned. This is done through square brackets, as <tt class="docutils literal"><span class="pre">[</span>
+<span class="pre">Echo(&quot;Hello&quot;);</span> <span class="pre">Echo(&quot;World&quot;);</span> <span class="pre">True;</span> <span class="pre">];</span></tt>, which first writes <tt class="docutils literal"><span class="pre">Hello</span></tt>
+to screen, then <tt class="docutils literal"><span class="pre">World</span></tt> on the next line, and then returns <tt class="docutils literal"><span class="pre">True</span></tt>.</p>
+<p>When you type in an expression, you have to take in to account the
+fact that Yacas is case-sensitive. This means that a function <tt class="docutils literal"><span class="pre">sin</span></tt>
+(with all lowercase) is a different function from <tt class="docutils literal"><span class="pre">Sin</span></tt> (which
+starts with a capital S), and the variable <tt class="docutils literal"><span class="pre">v</span></tt> is a different one
+from <tt class="docutils literal"><span class="pre">V</span></tt>.</p>
+</div>
+<div class="section" id="using-yacas-from-the-calculation-center">
+<h2>Using Yacas from the calculation center<a class="headerlink" href="#using-yacas-from-the-calculation-center" title="Permalink to this headline">¶</a></h2>
+<p>As mentioned earlier, you can type in commands on the command line in
+the calculation center. Typically, you would enter one statement per
+line, for example, click on <tt class="docutils literal"><span class="pre">Sin(Pi/2);</span></tt>. The has a memory, and
+remembers results from calculations performed before.  For example, if
+you define a function on a line (or set a variable to a value), the
+defined function (or variable) are available to be used in following
+lines. A session can be restarted (forgetting all previous definitions
+and results) by typing <tt class="docutils literal"><span class="pre">restart</span></tt>.  All memory is erased in that
+case.</p>
+<p>Statements should end with a semicolon <tt class="docutils literal"><span class="pre">;</span></tt> although this is not
+required in interactive sessions (Yacas will append a semicolon at end
+of line to finish the statement).</p>
+<p>The command line has a history list, so it should be easy to browse
+through the expressions you entered previously using the up and down
+arrow keys.</p>
+<p>When a few characters have been typed, the command line will use the
+characters before the cursor as a filter into the history, and allow
+you to browse through all the commands in the history that start with
+these characters quickly, instead of browsing through the entire
+history. If the system recognized the first few characters, it will
+also show the commands that start with the sequence entered. You can
+use the arrow keys to browse through this list, and then select the
+intended function to be inserted by pressing enter.</p>
+<p>Commands spanning multiple lines can (and actually have to) be entered
+by using a trailing backslash at end of each continued line. For
+example, clicking on <tt class="docutils literal"><span class="pre">2+3+</span></tt> will result in an
+error, but entering the same with a backslash at the end and then
+entering another expression will concatenate the two lines and
+evaluate the concatenated input.</p>
+<p>Incidentally, any text Yacas prints without a prompt is either
+a message printed by a function as a side-effect, or an error
+message. Resulting values of expressions are always printed after an
+<tt class="docutils literal"><span class="pre">Out&gt;</span></tt> prompt.</p>
+</div>
+<div class="section" id="yacas-as-a-symbolic-calculator">
+<h2>Yacas as a symbolic calculator<a class="headerlink" href="#yacas-as-a-symbolic-calculator" title="Permalink to this headline">¶</a></h2>
+<p>We are ready to try some calculations. Yacas uses a C-like
+infix syntax and is case-sensitive. Here are some exact manipulations
+with fractions for a start: <tt class="docutils literal"><span class="pre">1/14+5/21*(30-(1+1/2)*5^2);</span></tt></p>
+<p>The standard scripts already contain a simple math library for
+symbolic simplification of basic algebraic functions. Any names such
+as <tt class="docutils literal"><span class="pre">x</span></tt> are treated as independent, symbolic variables and are not
+evaluated by default. Some examples to try:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">0+x</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">x+1*y</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">Sin(ArcSin(alpha))+Tan(ArcTan(beta))</span></tt></li>
+</ul>
+<p>Note that the answers are not just simple numbers here, but actual
+expressions. This is where Yacas shines. It was built specifically to
+do calculations that have expressions as answers.</p>
+<p>In Yacas after a calculation is done, you can refer to the previous
+result with <tt class="docutils literal"><span class="pre">%</span></tt>. For example, we could first type <tt class="docutils literal"><span class="pre">(x+1)*(x-1)</span></tt>,
+and then decide we would like to see a simpler version of that
+expression, and thus type <tt class="docutils literal"><span class="pre">Simplify(%)</span></tt>,
+which should result in <tt class="docutils literal"><span class="pre">x^2-1</span></tt>.</p>
+<p>The special operator <tt class="docutils literal"><span class="pre">%</span></tt> automatically recalls the result from the
+previous line.  The function <tt class="docutils literal"><span class="pre">Simplify</span></tt> attempts to reduce an
+expression to a simpler form. Note that standard function names in
+Yacas are typically capitalized. Multiple capitalization such as
+<tt class="docutils literal"><span class="pre">ArcSin</span></tt> is sometimes used. The underscore character <tt class="docutils literal"><span class="pre">_</span></tt> is a
+reserved operator symbol and cannot be part of variable or function
+names.</p>
+<p>Yacas offers some more powerful symbolic manipulation
+operations. A few will be shown here to wetten the appetite.</p>
+<p>Some simple equation solving algorithms are in place:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">Solve(x/(1+x)</span> <span class="pre">==</span> <span class="pre">a,</span> <span class="pre">x);</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">Solve(x^2+x</span> <span class="pre">==</span> <span class="pre">0,</span> <span class="pre">x);</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">Solve(a+x*y==z,x);</span></tt></li>
+</ul>
+<p>(Note the use of the <tt class="docutils literal"><span class="pre">==</span></tt> operator, which does not evaluate to
+anything, to denote an &#8220;equation&#8221; object.)</p>
+<p>Taylor series are supported, for example: <tt class="docutils literal"><span class="pre">Taylor(x,0,3)</span> <span class="pre">Exp(x)</span></tt> is
+a bodied operator that expands <tt class="docutils literal"><span class="pre">Exp(x)</span></tt> for <tt class="docutils literal"><span class="pre">x</span></tt> around <tt class="docutils literal"><span class="pre">x=0</span></tt>, up
+to order 3.</p>
+<p>Symbolic manipulation is the main application of Yacas. This is
+a small tour of the capabilities Yacas currently offers. Note
+that this list of examples is far from complete. Yacas contains
+a few hundred commands, of which only a few are shown here.</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">Expand((1+x)^5);</span></tt> (expand the expression into a polynomial)</li>
+<li><tt class="docutils literal"><span class="pre">Limit(x,0)</span> <span class="pre">Sin(x)/x;</span></tt> (calculate the limit of <tt class="docutils literal"><span class="pre">Sin(x)/x</span></tt> as
+<tt class="docutils literal"><span class="pre">x</span></tt> approaches zero)</li>
+<li><tt class="docutils literal"><span class="pre">Newton(Sin(x),x,3,0.0001);</span></tt> (use Newton&#8217;s method to find the
+value of <tt class="docutils literal"><span class="pre">x</span></tt> near <tt class="docutils literal"><span class="pre">3</span></tt> where <tt class="docutils literal"><span class="pre">Sin(x)</span></tt> equals zero numerically
+and stop if the result is closer than <tt class="docutils literal"><span class="pre">0.0001</span></tt> to the real result)</li>
+<li><tt class="docutils literal"><span class="pre">DiagonalMatrix({a,b,c});</span></tt> (create a matrix with the elements
+specified in the vector on the diagonal)</li>
+<li><tt class="docutils literal"><span class="pre">Integrate(x,a,b)</span> <span class="pre">x*Sin(x);</span></tt> (integrate a function over variable
+<tt class="docutils literal"><span class="pre">x</span></tt>, from <tt class="docutils literal"><span class="pre">a</span></tt> to <tt class="docutils literal"><span class="pre">b</span></tt>)</li>
+<li><tt class="docutils literal"><span class="pre">Factor(x^2-1);</span></tt> (factorize a polynomial)</li>
+<li><tt class="docutils literal"><span class="pre">Apart(1/(x^2-1),x);</span></tt> (create a partial fraction expansion of a
+polynomial)</li>
+<li><tt class="docutils literal"><span class="pre">Simplify((x^2-1)/(x-1));</span></tt> (simplification of expressions)</li>
+<li><tt class="docutils literal"><span class="pre">CanProve(</span> <span class="pre">(a</span> <span class="pre">And</span> <span class="pre">b)</span> <span class="pre">Or</span> <span class="pre">(a</span> <span class="pre">And</span> <span class="pre">Not</span> <span class="pre">b)</span> <span class="pre">);</span></tt> (special-purpose
+simplifier that tries to simplify boolean expressions as much as
+possible)</li>
+<li><tt class="docutils literal"><span class="pre">TrigSimpCombine(Cos(a)*Sin(b));</span></tt> (special-purpose simplifier that
+tries to transform trigonometric expressions into a form where there
+are only additions of trigonometric functions involved and no
+multiplications)</li>
+</ul>
+</div>
+<div class="section" id="arbitrary-precision-numbers">
+<h2>Arbitrary precision numbers<a class="headerlink" href="#arbitrary-precision-numbers" title="Permalink to this headline">¶</a></h2>
+<p>Yacas can deal with arbitrary precision numbers. It can work with
+large integers, like <tt class="docutils literal"><span class="pre">20!</span></tt> (The ! means factorial, thus
+<tt class="docutils literal"><span class="pre">1*2*3*...*20</span></tt>).</p>
+<p>As we saw before, rational numbers will stay rational as long as the
+numerator and denominator are integers, so <tt class="docutils literal"><span class="pre">55/10</span></tt> will evaluate to
+<tt class="docutils literal"><span class="pre">11/2</span></tt>. You can override this behavior by using the numerical
+evaluation function <tt class="docutils literal"><span class="pre">N()</span></tt>. For example, <tt class="docutils literal"><span class="pre">N(55/10)</span></tt> will evaluate
+to <tt class="docutils literal"><span class="pre">5.5</span></tt> . This behavior holds for most math functions. Yacas will
+try to maintain an exact answer (in terms of integers or fractions)
+instead of using floating point numbers, unless <tt class="docutils literal"><span class="pre">N()</span></tt> is used. Where
+the value for the constant pi is needed, use the built-in variable
+<tt class="docutils literal"><span class="pre">Pi</span></tt>. It will be replaced by the (approximate) numerical value when
+<tt class="docutils literal"><span class="pre">N(Pi)</span></tt> is called.  Yacas knows some simplification rules using
+<tt class="docutils literal"><span class="pre">Pi</span></tt> (especially with trigonometric functions).</p>
+<p>The function <tt class="docutils literal"><span class="pre">N</span></tt> takes either one or two arguments. It evaluates its
+first argument and tries to reduce it as much as possible to a
+real-valued approximation of the expression. If the second argument is
+present, it states the number of digits precision required. Thus
+<tt class="docutils literal"><span class="pre">N(1/234)</span></tt> returns a number with the current default precision
+(which starts at 20 digits), but you can request as many digits as you
+like by passing a second argument, as in <tt class="docutils literal"><span class="pre">N(1/234,</span> <span class="pre">10)</span></tt>, <tt class="docutils literal"><span class="pre">N(1/234,</span>
+<span class="pre">20)</span></tt>, <tt class="docutils literal"><span class="pre">N(1/234,</span> <span class="pre">30)</span></tt>, etcetera.</p>
+<p>Note that we need to enter <tt class="docutils literal"><span class="pre">N()</span></tt> to force the approximate
+calculation, otherwise the fraction would have been left unevaluated.</p>
+<p>Revisiting <tt class="docutils literal"><span class="pre">Pi</span></tt>, we can get as many digits of <tt class="docutils literal"><span class="pre">Pi</span></tt> as we like, by
+providing the precision required as argument to <tt class="docutils literal"><span class="pre">N</span></tt>.  So to get 50
+digits precision, we can evaluate <tt class="docutils literal"><span class="pre">N(Pi,50)</span></tt>.</p>
+<p>Taking a derivative of a function was amongst the very first of
+symbolic calculations to be performed by a computer, as the operation
+lends itself surprisingly well to being performed
+automatically. Naturally, it is also implemented in Yacas, through the
+function <tt class="docutils literal"><span class="pre">D</span></tt>.  <tt class="docutils literal"><span class="pre">D</span></tt> is a &lt;i&gt;bodied&lt;/i&gt; function, meaning that its
+last argument is past the closing brackets. Where normal functions are
+called with syntax similar to <tt class="docutils literal"><span class="pre">f(x,y,z)</span></tt>, a bodied function would be
+called with a syntax <tt class="docutils literal"><span class="pre">f(x,y)z</span></tt>. Here are two examples of taking a
+derivative: &lt;ul&gt; &lt;li&gt; <tt class="docutils literal"><span class="pre">D(x)</span> <span class="pre">Sin(x);</span></tt> (taking a derivative)&lt;/li&gt;
+&lt;li&gt;``D(x) D(x) Sin(x);`` (taking a derivative twice)&lt;/li&gt; &lt;/ul&gt; The
+{D} function also accepts an argument specifying how often the
+derivative has to be taken. In that case, the above expressions can
+also be written as: &lt;ul&gt; &lt;li&gt; <tt class="docutils literal"><span class="pre">D(x,1)</span> <span class="pre">Sin(x);</span></tt> (taking a
+derivative)&lt;/li&gt; &lt;li&gt;``D(x,2) Sin(x);`` (taking a derivative
+twice)&lt;/li&gt; &lt;/ul&gt;</p>
+</div>
+<div class="section" id="analytic-functions">
+<h2>Analytic functions<a class="headerlink" href="#analytic-functions" title="Permalink to this headline">¶</a></h2>
+<p>Many of the usual analytic functions have been defined in the Yacas
+library. Examples are <tt class="docutils literal"><span class="pre">Exp(1)</span></tt>, <tt class="docutils literal"><span class="pre">Sin(2)</span></tt>, <tt class="docutils literal"><span class="pre">ArcSin(1/2)</span></tt>,
+<tt class="docutils literal"><span class="pre">Sqrt(2)</span></tt>.  These will not evaluate to a numeric result in general,
+unless the result is an integer, like <tt class="docutils literal"><span class="pre">Sqrt(4)</span></tt>. If asked to reduce
+the result to a numeric approximation with the function <tt class="docutils literal"><span class="pre">N</span></tt>, then
+&lt;i&gt;Yacas will do so&lt;/i&gt;, as for example in <tt class="docutils literal"><span class="pre">N(Sqrt(2),50)</span></tt>.</p>
+</div>
+<div class="section" id="variables">
+<h2>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h2>
+<p>Yacas supports variables. You can set the value of a variable with the
+<tt class="docutils literal"><span class="pre">:=</span></tt> infix operator, as in <tt class="docutils literal"><span class="pre">a:=1;</span></tt>. The variable can then be used
+in expressions, and everywhere where it is referred to, it will be
+replaced by its value.</p>
+<p>To clear a variable binding, execute <tt class="docutils literal"><span class="pre">Clear(a);</span></tt>.  A variable will
+evaluate to itself after a call to clear it (so after the call to
+clear <tt class="docutils literal"><span class="pre">a</span></tt> above, calling &lt;span class=&#8221;commandlink&#8221;&gt;a`` should now
+return <tt class="docutils literal"><span class="pre">a</span></tt>).  This is one of the properties of the evaluation scheme
+of Yacas; when some object can not be evaluated or transformed any
+further, it is returned as the final result.</p>
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<p>The <tt class="docutils literal"><span class="pre">:=</span></tt> operator can also be used to define simple functions:
+<tt class="docutils literal"><span class="pre">f(x):=2*x*x</span></tt>.  will define a new function, <tt class="docutils literal"><span class="pre">f</span></tt>, that accepts one
+argument and returns twice the square of that argument.  This function
+can now be called, <tt class="docutils literal"><span class="pre">f(a)</span></tt>. You can change the definition of a
+function by defining it again.</p>
+<p>One and the same function name such as <tt class="docutils literal"><span class="pre">f</span></tt> may define different
+functions if they take different numbers of arguments. One can define
+a function <tt class="docutils literal"><span class="pre">f</span></tt> which takes one argument, as for example
+<tt class="docutils literal"><span class="pre">f(x):=x^2;</span></tt>, or two arguments, <tt class="docutils literal"><span class="pre">f(x,y):=x*y;</span></tt>.  If you clicked on
+both links, both functions should now be defined, and <tt class="docutils literal"><span class="pre">f(a)</span></tt> calls
+the one function whereas <tt class="docutils literal"><span class="pre">f(a,b)</span></tt> calls the other.</p>
+<p>Yacas is very flexible when it comes to types of mathematical
+objects. Functions can in general accept or return any type of
+argument.</p>
+</div>
+<div class="section" id="boolean-expressions-and-predicates">
+<h2>Boolean expressions and predicates<a class="headerlink" href="#boolean-expressions-and-predicates" title="Permalink to this headline">¶</a></h2>
+<p>Yacas predefines <tt class="docutils literal"><span class="pre">True</span></tt> and <tt class="docutils literal"><span class="pre">False</span></tt> as boolean values. Functions
+returning boolean values are called &lt;i&gt;predicates&lt;/i&gt;. For example,
+<tt class="docutils literal"><span class="pre">IsNumber()</span></tt> and`` IsInteger()`` are predicates defined in the Yacas
+environment. For example, try <tt class="docutils literal"><span class="pre">IsNumber(2+x);</span></tt>, or
+<tt class="docutils literal"><span class="pre">IsInteger(15/5);</span></tt>.</p>
+<p>There are also comparison operators. Typing <tt class="docutils literal"><span class="pre">2</span> <span class="pre">&gt;</span> <span class="pre">1</span></tt> would return
+<tt class="docutils literal"><span class="pre">True</span></tt>. You can also use the infix operators <tt class="docutils literal"><span class="pre">And</span></tt> and <tt class="docutils literal"><span class="pre">Or</span></tt>, and
+the prefix operator <tt class="docutils literal"><span class="pre">Not</span></tt>, to make more complex boolean
+expressions. For example, try <tt class="docutils literal"><span class="pre">True</span> <span class="pre">And</span> <span class="pre">False</span></tt>, <tt class="docutils literal"><span class="pre">True</span> <span class="pre">Or</span> <span class="pre">False</span></tt>,
+<tt class="docutils literal"><span class="pre">True</span> <span class="pre">And</span> <span class="pre">Not(False)</span></tt>.</p>
+</div>
+<div class="section" id="strings-and-lists">
+<h2>Strings and lists<a class="headerlink" href="#strings-and-lists" title="Permalink to this headline">¶</a></h2>
+<p>In addition to numbers and variables, Yacas supports strings and
+lists. Strings are simply sequences of characters enclosed by double
+quotes, for example: <tt class="docutils literal"><span class="pre">&quot;this</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">string</span> <span class="pre">with</span> <span class="pre">\&quot;quotes\&quot;</span> <span class="pre">in</span> <span class="pre">it&quot;</span></tt>.</p>
+<p>Lists are ordered groups of items, as usual. Yacas represents lists by
+putting the objects between braces and separating them with
+commas. The list consisting of objects a, b, and c could be entered by
+typing <tt class="docutils literal"><span class="pre">{a,b,c}</span></tt>.  In Yacas, vectors are represented as lists and
+matrices as lists of lists.</p>
+<p>Items in a list can be accessed through the <tt class="docutils literal"><span class="pre">[</span> <span class="pre">]</span></tt> operator. The
+first element has index one. Examples: when you enter
+<tt class="docutils literal"><span class="pre">uu:={a,b,c,d,e,f};</span></tt> then <tt class="docutils literal"><span class="pre">uu[2];</span></tt> evaluates to <tt class="docutils literal"><span class="pre">b</span></tt>, and
+<tt class="docutils literal"><span class="pre">uu[2</span> <span class="pre">..</span> <span class="pre">4];</span></tt> evaluates to <tt class="docutils literal"><span class="pre">{b,c,d}</span></tt>. The &#8220;range&#8221; expression
+<tt class="docutils literal"><span class="pre">2</span> <span class="pre">..</span> <span class="pre">4</span></tt> evaluates to <tt class="docutils literal"><span class="pre">{2,3,4}</span></tt>. Note that spaces around the
+<tt class="docutils literal"><span class="pre">..</span></tt> operator are necessary, or else the parser will not be able to
+distinguish it from a part of a number.</p>
+<p>Lists evaluate their arguments, and return a list with results of
+evaluating each element. So, typing <tt class="docutils literal"><span class="pre">{1+2,3};</span></tt> would evaluate to <tt class="docutils literal"><span class="pre">{3,3}</span></tt>.</p>
+<p>The idea of using lists to represent expressions dates back to the
+language LISP developed in the 1970&#8217;s. From a small set of operations
+on lists, very powerful symbolic manipulation algorithms can be
+built. Lists can also be used as function arguments when a variable
+number of arguments are necessary.</p>
+<p>Let&#8217;s try some list operations now. First click on <tt class="docutils literal"><span class="pre">m:={a,b,c};</span></tt> to
+set up an initial list to work on. Then click on links below: &lt;ul&gt;
+&lt;li&gt;``Length(m);`` (return the length of a list)&lt;/li&gt;
+&lt;li&gt;``Reverse(m);`` (return the string reversed)&lt;/li&gt;
+&lt;li&gt;``Concat(m,m);`` (concatenate two strings)&lt;/li&gt; &lt;li&gt;``m[1]:=d;``
+(setting the first element of the list to a new value, d, as can be
+verified by evaluating <tt class="docutils literal"><span class="pre">m</span></tt>)&lt;/li&gt; &lt;/ul&gt; Many more list operations are
+described in the reference manual.</p>
+</div>
+<div class="section" id="writing-simplification-rules">
+<h2>Writing simplification rules<a class="headerlink" href="#writing-simplification-rules" title="Permalink to this headline">¶</a></h2>
+<p>Mathematical calculations require versatile transformations on
+symbolic quantities. Instead of trying to define all possible
+transformations, Yacas provides a simple and easy to use pattern
+matching scheme for manipulating expressions according to user-defined
+&lt;i&gt;rules&lt;/i&gt;. Yacas itself is designed as a small core engine
+executing a large library of rules to match and replace patterns.</p>
+<p>One simple application of pattern-matching rules is to define new
+functions. (This is actually the only way Yacas can learn about new
+functions.) As an example, let&#8217;s define a function <tt class="docutils literal"><span class="pre">f</span></tt> that will
+evaluate factorials of non-negative integers. We will define a
+predicate to check whether our argument is indeed a non-negative
+integer, and we will use this predicate and the obvious recursion
+<tt class="docutils literal"><span class="pre">f(n)=n*f(n-1)</span> <span class="pre">if</span> <span class="pre">n&gt;0</span> <span class="pre">and</span> <span class="pre">1</span> <span class="pre">if</span> <span class="pre">n=0</span></tt> to evaluate the factorial.</p>
+<p>We start with the simple termination condition, which is that <tt class="docutils literal"><span class="pre">f(n)</span></tt>
+should return one if <tt class="docutils literal"><span class="pre">n</span></tt> is zero: &lt;ul&gt; &lt;li&gt;``10 # f(0) &amp;lt;&#8211;
+1;``&lt;/li&gt; &lt;/ul&gt; You can verify that this already works for input value
+zero, with <tt class="docutils literal"><span class="pre">f(0)</span></tt>.</p>
+<p>Now we come to the more complex line, &lt;ul&gt; &lt;li&gt;``20 #
+f(n_IsIntegerGreaterThanZero) &amp;lt;&#8211; n*f(n-1);``&lt;/li&gt; &lt;/ul&gt; Now we
+realize we need a function <tt class="docutils literal"><span class="pre">IsGreaterThanZero</span></tt>, so we define this
+function, with &lt;ul&gt; &lt;li&gt;``IsIntegerGreaterThanZero(_n) &amp;lt;&#8211;
+(IsInteger(n) And n&amp;gt;0);``&lt;/li&gt; &lt;/ul&gt; You can verify that it works
+by trying <tt class="docutils literal"><span class="pre">f(5)</span></tt>, which should return the same value as <tt class="docutils literal"><span class="pre">5!</span></tt>.</p>
+<p>In the above example we have first defined two &#8220;simplification rules&#8221;
+for a new function <tt class="docutils literal"><span class="pre">f()</span></tt>. Then we realized that we need to define a
+predicate <tt class="docutils literal"><span class="pre">IsIntegerGreaterThanZero()</span></tt>. A predicate equivalent to
+<tt class="docutils literal"><span class="pre">IsIntegerGreaterThanZero()</span></tt> is actually already defined in the
+standard library and it&#8217;s called <tt class="docutils literal"><span class="pre">IsPositiveInteger</span></tt>, so it was not
+necessary, strictly speaking, to define our own predicate to do the
+same thing. We did it here just for illustration purposes.</p>
+<p>The first two lines recursively define a factorial function
+<tt class="docutils literal"><span class="pre">f(n)=n*(n-1)*...*1</span></tt>. The rules are given precedence values 10 and
+20, so the first rule will be applied first.  Incidentally, the
+factorial is also defined in the standard library as a postfix
+operator ! and it is bound to an internal routine much faster than the
+recursion in our example. The example does show how to create your own
+routine with a few lines of code. One of the design goals of Yacas was
+to allow precisely that, definition of a new function with very little
+effort.</p>
+<p>The operator <tt class="docutils literal"><span class="pre">&amp;lt;--</span></tt> defines a rule to be applied to a specific
+function. (The <tt class="docutils literal"><span class="pre">&amp;lt;--</span></tt> operation cannot be applied to an atom.)
+The <tt class="docutils literal"><span class="pre">_n</span></tt> in the rule for <tt class="docutils literal"><span class="pre">IsIntegerGreaterThanZero()</span></tt> specifies
+that any object which happens to be the argument of that predicate is
+matched and assigned to the local variable <tt class="docutils literal"><span class="pre">n</span></tt>. The expression to
+the right of <tt class="docutils literal"><span class="pre">&amp;lt;--</span></tt> can use n (without the underscore) as a
+variable.</p>
+<p>Now we consider the rules for the function <tt class="docutils literal"><span class="pre">f</span></tt>. The first rule just
+specifies that <tt class="docutils literal"><span class="pre">f(0)</span></tt> should be replaced by 1 in any expression. The
+second rule is a little more involved.  <tt class="docutils literal"><span class="pre">n_IsIntegerGreaterThanZero</span></tt>
+is a match for the argument of <tt class="docutils literal"><span class="pre">f</span></tt>, with the proviso that the
+predicate <tt class="docutils literal"><span class="pre">IsIntegerGreaterThanZero(n)</span></tt> should return <tt class="docutils literal"><span class="pre">True</span></tt>,
+otherwise the pattern is not matched. The underscore operator is to be
+used only on the left hand side of the rule definition operator
+<tt class="docutils literal"><span class="pre">&amp;lt;--</span></tt>.</p>
+<p>There is another, slightly longer but equivalent way of writing the
+second rule: &lt;ul&gt; &lt;li&gt;``20 # f(_n)_(IsIntegerGreaterThanZero(n))
+&amp;lt;&#8211; n*f(n-1);``&lt;/li&gt; &lt;/ul&gt; The underscore after the function object
+denotes a &#8220;postpredicate&#8221; that should return <tt class="docutils literal"><span class="pre">True</span></tt> or else there is
+no match. This predicate may be a complicated expression involving
+several logical operations, unlike the simple checking of just one
+predicate in the <tt class="docutils literal"><span class="pre">n_IsIntegerGreaterThanZero</span></tt> construct. The
+postpredicate can also use the variable <tt class="docutils literal"><span class="pre">n</span></tt> (without the
+underscore).</p>
+<p>Precedence values for rules are given by a number followed by the
+<tt class="docutils literal"><span class="pre">#</span></tt> infix operator (and the transformation rule after it). This
+number determines the ordering of precedence for the pattern matching
+rules, with 0 the lowest allowed precedence value, i.e. rules with
+precedence 0 will be tried first. Multiple rules can have the same
+number: this just means that it doesn&#8217;t matter what order these
+patterns are tried in. If no number is supplied, 0 is assumed. In our
+example, the rule <tt class="docutils literal"><span class="pre">f(0)</span> <span class="pre">&amp;lt;--</span> <span class="pre">1</span></tt> must be applied earlier than the
+recursive rule, or else the recursion will never terminate. But as
+long as there are no other rules concerning the function <tt class="docutils literal"><span class="pre">f</span></tt>, the
+assignment of numbers 10 and 20 is arbitrary, and they could have been
+500 and 501 just as well.  It is usually a good idea however to keep
+some space between these numbers, so you have room to insert new
+transformation rules later on.</p>
+<p>Predicates can be combined: for example, {IsIntegerGreaterThanZero()}
+could also have been defined as: &lt;ul&gt; &lt;li&gt;``10 #
+IsIntegerGreaterThanZero(n_IsInteger)_(n&amp;gt;0) &amp;lt;&#8211; True;``&lt;/li&gt;
+&lt;li&gt;``20 # IsIntegerGreaterThanZero(_n) &amp;lt;&#8211; False;``&lt;/li&gt; &lt;/ul&gt; The
+first rule specifies that if n is an integer, and is greater than
+zero, the result is <tt class="docutils literal"><span class="pre">True</span></tt>, and the second rule states that
+otherwise (when the rule with precedence 10 did not apply) the
+predicate returns <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
+<p>In the above example, the expression <tt class="docutils literal"><span class="pre">n</span> <span class="pre">&amp;gt;</span> <span class="pre">0</span></tt> is added after the
+pattern and allows the pattern to match only if this predicate return
+<tt class="docutils literal"><span class="pre">True</span></tt>. This is a useful syntax for defining rules with complicated
+predicates. There is no difference between the rules``
+F(n_IsPositiveInteger) &amp;lt;&#8211;...`` and <tt class="docutils literal"><span class="pre">F(_n)_(IsPositiveInteger(n))</span>
+<span class="pre">&amp;lt;--</span> <span class="pre">...</span></tt> except that the first syntax is a little more concise.</p>
+<p>The left hand side of a rule expression has the following form:</p>
+<div class="highlight-python"><div class="highlight"><pre>&lt;i&gt;precedence&lt;/i&gt; # &lt;i&gt;pattern&lt;/i&gt; _ &lt;i&gt;postpredicate&lt;/i&gt; &lt;-- &lt;i&gt;replacement&lt;/i&gt; ;
+</pre></div>
+</div>
+<p>The optional <em>precedence</em> must be
+a positive integer.</p>
+<p>Some more examples of rules (not made clickable because their
+equivalents are already in the basic Yacas library): &lt;ul&gt; &lt;li&gt;``10 #
+_x + 0 &amp;lt;&#8211; x;``&lt;/li&gt; &lt;li&gt;``20 # _x - _x &amp;lt;&#8211; 0;``&lt;/li&gt;
+&lt;li&gt;``ArcSin(Sin(_x)) &amp;lt;&#8211; x;``&lt;/li&gt; &lt;/ul&gt; The last rule has no
+explicit precedence specified in it (the precedence zero will be
+assigned automatically by the system).</p>
+<p>Yacas will first try to match the pattern as a template. Names
+preceded or followed by an underscore can match any one object: a
+number, a function, a list, etc. Yacas will assign the relevant
+variables as local variables within the rule, and try the predicates
+as stated in the pattern. The post-predicate (defined after the
+pattern) is tried after all these matched. As an example, the
+simplification rule <tt class="docutils literal"><span class="pre">_x</span> <span class="pre">-</span> <span class="pre">_x</span> <span class="pre">&amp;lt;--0</span></tt> specifies that the two objects
+at left and at right of the minus sign should be the same for this
+transformation rule to apply.</p>
+</div>
+<div class="section" id="local-simplification-rules">
+<h2>Local simplification rules<a class="headerlink" href="#local-simplification-rules" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes you have an expression, and you want to use specific
+simplification rules on it that should not be universally applied.
+This can be done with the <tt class="docutils literal"><span class="pre">/:</span></tt> and the <tt class="docutils literal"><span class="pre">/::</span></tt> operators.  Suppose
+we have the expression containing things such as <tt class="docutils literal"><span class="pre">Ln(a*b)</span></tt>, and we
+want to change these into <tt class="docutils literal"><span class="pre">Ln(a)+Ln(b)</span></tt>. The easiest way to do this
+is using the <tt class="docutils literal"><span class="pre">/:</span></tt> operator as follows:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">Sin(x)*Ln(a*b)</span></tt> (example expression without simplification)</li>
+<li><tt class="docutils literal"><span class="pre">Sin(x)*Ln(a*b)</span> <span class="pre">/:</span> <span class="pre">{Ln(_x*_y)</span> <span class="pre">&lt;-</span> <span class="pre">Ln(x)+Ln(y)</span> <span class="pre">}</span></tt> (with instruction
+to simplify the expression)</li>
+</ul>
+<p>A whole list of simplification rules can be built up in the list, and
+they will be applied to the expression on the left hand side of
+<tt class="docutils literal"><span class="pre">/:</span></tt>.</p>
+<p>Note that for these local rules, <tt class="docutils literal"><span class="pre">&amp;lt;-</span></tt> should be used instead of
+<tt class="docutils literal"><span class="pre">&amp;lt;--</span></tt>.  Using latter would result in a global definition of a new
+transformation rule on evaluation, which is not the intention.</p>
+<p>The <tt class="docutils literal"><span class="pre">/:</span></tt> operator traverses an expression from the top down, trying
+to apply the rules from the beginning of the list of rules to the end
+of the list of rules. If no rules can be applied to the whole
+expression, it will try the sub-expressions of the expression being
+analyzed.</p>
+<p>It might be sometimes necessary to use the <tt class="docutils literal"><span class="pre">/::</span></tt> operator, which
+repeatedly applies the <tt class="docutils literal"><span class="pre">/:</span></tt> operator until the result does not
+change any more. Caution is required, since rules can contradict each
+other, and that could result in an infinite loop. To detect this
+situation, just use <tt class="docutils literal"><span class="pre">/:</span></tt> repeatedly on the expression. The
+repetitive nature should become apparent.</p>
+</div>
+<div class="section" id="programming-essentials">
+<h2>Programming essentials<a class="headerlink" href="#programming-essentials" title="Permalink to this headline">¶</a></h2>
+<p>An important feature of Yacas is its programming language which
+allows you to create your own programs for doing calculations.  This
+section describes some constructs and functions for control flow.</p>
+<p>Looping can be done with the function <tt class="docutils literal"><span class="pre">ForEach</span></tt>. There are more
+options, but ForEach is the simplest to use for now and will suffice
+for this turorial.  The statement form <tt class="docutils literal"><span class="pre">ForEach(x,</span> <span class="pre">list)</span> <span class="pre">body</span></tt>
+executes its body for each element of the list and assigns the
+variable x to that element each time. The statement form
+<tt class="docutils literal"><span class="pre">While(predicate)</span> <span class="pre">body</span></tt> repeats execution of the expression
+represented by <tt class="docutils literal"><span class="pre">body</span></tt> until evaluation of the expression represented
+by <tt class="docutils literal"><span class="pre">predicate</span></tt> returns <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
+<p>This example loops over the integers from one to three, and writes out
+a line for each, multiplying the integer by 3 and displaying the
+result with the function <tt class="docutils literal"><span class="pre">Echo</span></tt>: <tt class="docutils literal"><span class="pre">ForEach(x,1</span> <span class="pre">..</span> <span class="pre">5)</span> <span class="pre">Echo(x,&quot;</span> <span class="pre">times</span>
+<span class="pre">3</span> <span class="pre">equals</span> <span class="pre">&quot;,3*x);</span></tt></p>
+<div class="section" id="compound-statements">
+<h3>Compound statements<a class="headerlink" href="#compound-statements" title="Permalink to this headline">¶</a></h3>
+<p>Multiple statements can be grouped together using the <tt class="docutils literal"><span class="pre">[</span></tt> and <tt class="docutils literal"><span class="pre">]</span></tt>
+brackets. The compound <tt class="docutils literal"><span class="pre">[a;</span> <span class="pre">Echo(&quot;In</span> <span class="pre">the</span> <span class="pre">middle&quot;);</span> <span class="pre">1+2;];</span></tt> evaluates
+<tt class="docutils literal"><span class="pre">a</span></tt>, then the <tt class="docutils literal"><span class="pre">Echo</span></tt> command, and finally evaluates <tt class="docutils literal"><span class="pre">1+2</span></tt>, and
+returns the result of evaluating the last statement <tt class="docutils literal"><span class="pre">1+2</span></tt>.</p>
+<p>A variable can be declared local to a compound statement block by the
+function <tt class="docutils literal"><span class="pre">Local(var1,</span> <span class="pre">var2,</span> <span class="pre">...)</span></tt>. For example, if you execute
+<tt class="docutils literal"><span class="pre">[Local(v);v:=1+2;v;];</span></tt> the result will be <tt class="docutils literal"><span class="pre">3</span></tt>. The program body
+created a variable called <tt class="docutils literal"><span class="pre">v</span></tt>, assigned the value of evaluating
+<tt class="docutils literal"><span class="pre">1+2</span></tt> to it, and made sure the contents of the variable <tt class="docutils literal"><span class="pre">v</span></tt> were
+returned.  If you now evaluate <tt class="docutils literal"><span class="pre">v</span></tt> afterwards you will notice that
+the variable <tt class="docutils literal"><span class="pre">v</span></tt> is not bound to a value any more. The variable
+<tt class="docutils literal"><span class="pre">v</span></tt> was defined locally in the program body between the two square
+brackets <tt class="docutils literal"><span class="pre">[</span></tt> and <tt class="docutils literal"><span class="pre">]</span></tt>.</p>
+<p>Conditional execution is implemented by the <tt class="docutils literal"><span class="pre">If(predicate,</span> <span class="pre">body1,</span>
+<span class="pre">body2)</span></tt> function call. If the expression <tt class="docutils literal"><span class="pre">predicate</span></tt> evaluates to
+<tt class="docutils literal"><span class="pre">True</span></tt>, the expression represented by <tt class="docutils literal"><span class="pre">body1</span></tt> is evaluated,
+otherwise <tt class="docutils literal"><span class="pre">body2</span></tt> is evaluated, and the corresponding value is
+returned. For example, the absolute value of a number can be computed
+with: <tt class="docutils literal"><span class="pre">f(x)</span> <span class="pre">:=</span> <span class="pre">If(x</span> <span class="pre">&lt;</span> <span class="pre">0,-x,x);</span></tt> (note that there already is a
+standard library function that calculates the absolute value of a
+number).</p>
+<p>Variables can also be made to be local to a small set of functions,
+with <tt class="docutils literal"><span class="pre">LocalSymbols(variables)</span> <span class="pre">body</span></tt>. For example, the following code
+snippet: <tt class="docutils literal"><span class="pre">LocalSymbols(a,b)</span> <span class="pre">[a:=0;b:=0;</span>
+<span class="pre">inc():=[a:=a+1;b:=b-1;show();];</span> <span class="pre">show():=Echo(&quot;a</span> <span class="pre">=</span> <span class="pre">&quot;,a,&quot;</span> <span class="pre">b</span> <span class="pre">=</span> <span class="pre">&quot;,b);</span> <span class="pre">];</span></tt>
+defines two functions, <tt class="docutils literal"><span class="pre">inc</span></tt> and <tt class="docutils literal"><span class="pre">show</span></tt>. Calling <tt class="docutils literal"><span class="pre">inc()</span></tt>
+repeatedly increments <tt class="docutils literal"><span class="pre">a</span></tt> and decrements <tt class="docutils literal"><span class="pre">b</span></tt>, and calling
+<tt class="docutils literal"><span class="pre">show()</span></tt> then shows the result (the function &#8220;inc&#8221; also calls the
+function &#8220;show&#8221;, but the purpose of this example is to show how two
+functions can share the same variable while the outside world cannot
+get at that variable). The variables are local to these two functions,
+as you can see by evaluating <tt class="docutils literal"><span class="pre">a</span></tt> and <tt class="docutils literal"><span class="pre">b</span></tt> outside the scope of
+these two functions. This feature is very important when writing a
+larger body of code, where you want to be able to guarantee that there
+are no unintended side-effects due to two bits of code defined in
+different files accidentally using the same global variable.</p>
+<p>To illustrate these features, let us create a list of all even
+integers from 2 to 20 and compute the product of all those integers
+except those divisible by 3</p>
+<div class="highlight-python"><div class="highlight"><pre>[
+    Local(L,i,answer);
+    L:={}; i:=2;
+    /*Make a list of all even integers from 2 to 20 */
+    While (i &lt;= 20) [ L := Append(L, i); i := i + 2; ];
+    /* Now calculate the product of all of these numbers that are not divisible by 3 */
+    answer := 1;
+    ForEach(i,L) If (Mod(i, 3) != 0, answer := answer * i);
+    /* And return the answer */
+    answer;
+];
+</pre></div>
+</div>
+<p>(Note that it is not necessarily the most economical way to do it in
+Yacas.)</p>
+<p>We used a shorter form of <tt class="docutils literal"><span class="pre">If(predicate,</span> <span class="pre">body)</span></tt> with only one body
+which is executed when the condition holds. If the condition does not
+hold, this function call returns <tt class="docutils literal"><span class="pre">False</span></tt>. We also introduced
+comments, which can be placed between <tt class="docutils literal"><span class="pre">/*</span></tt> and <tt class="docutils literal"><span class="pre">*/</span></tt>. Yacas will
+ignore anything between those two. When putting a program in a file
+you can also use <tt class="docutils literal"><span class="pre">//</span></tt>. Everything after <tt class="docutils literal"><span class="pre">//</span></tt> up until the end of
+the line will be a comment.  Also shown is the use of the <tt class="docutils literal"><span class="pre">While</span></tt>
+function. Its form is <tt class="docutils literal"><span class="pre">While</span> <span class="pre">(predicate)</span> <span class="pre">body</span></tt>.  While the
+expression represented by <tt class="docutils literal"><span class="pre">predicate</span></tt> evaluates to <tt class="docutils literal"><span class="pre">True</span></tt>, the
+expression represented by <tt class="docutils literal"><span class="pre">body</span></tt> will keep on being evaluated.</p>
+<p>The above example is not the shortest possible way to write out the
+algorithm. It is written out in a procedural way, where the program
+explains step by step what the computer should do. There is nothing
+fundamentally wrong with the approach of writing down a program in a
+procedural way, but the symbolic nature of Yacas also allows you to
+write it in a more concise, elegant, compact way, by combining
+function calls.</p>
+<p>There is nothing wrong with procedural style, but there is amore
+&#8216;functional&#8217; approach to the same problem would go as follows
+below. The advantage of the functional approach is that it is shorter
+and more concise (the difference is cosmetic mostly).</p>
+<p>Before we show how to do the same calculation in a functional style,
+we need to explain what a <em>pure function</em> is, as you will need it a
+lot when programming in a functional style. We will jump in with an
+example that should be self-explanatory. Consider the expression
+<tt class="docutils literal"><span class="pre">Lambda({x,y},x+y)</span></tt>.  This has two arguments, the first listing x
+and y, and the second an expression. We can use this construct with
+the function Apply as follows: <tt class="docutils literal"><span class="pre">Apply(Lambda({x,y},x+y),{2,3})</span></tt>. The
+result should be <tt class="docutils literal"><span class="pre">5</span></tt>, the result of adding <tt class="docutils literal"><span class="pre">2</span></tt> and <tt class="docutils literal"><span class="pre">3</span></tt>. The
+expression starting with <tt class="docutils literal"><span class="pre">Lambda</span></tt> is essentially a prescription for
+a specific operation, where it is stated that it accepts 2 arguments,
+and returns the arguments added together.  In this case, since the
+operation was so simple, we could also have used the name of a
+function to apply the arguments to, the addition operator in this case
+<tt class="docutils literal"><span class="pre">Apply(&quot;+&quot;,{2,3})</span></tt>. When the operations become more complex however,
+the Lambda construct becomes more useful.</p>
+<p>Now we are ready to do the same example using a functional
+approach. First, let us construct a list with all even numbers from 2
+to 20. For this we use the <tt class="docutils literal"><span class="pre">..</span></tt> operator to set up all numbers from
+one to ten, and then multiply that with two: <tt class="docutils literal"><span class="pre">2</span> <span class="pre">*</span> <span class="pre">(1</span> <span class="pre">..</span> <span class="pre">10)</span></tt>.</p>
+<p>Now we want an expression that returns all the even numbers up to 20
+which are not divisible by 3. For this we can use <tt class="docutils literal"><span class="pre">Select</span></tt>, which
+takes as first argument a predicate that should return <tt class="docutils literal"><span class="pre">True</span></tt> if the
+list item is to be accepted, and <tt class="docutils literal"><span class="pre">False</span></tt> otherwise, and as second
+argument the list in question:
+<tt class="docutils literal"><span class="pre">Select(Lambda({n},Mod(n,3)!=0),2*(1</span> <span class="pre">..</span> <span class="pre">10))</span></tt>.  The numbers 6, 12
+and 18 have been correctly filtered out. Here you see one example of a
+pure function where the operation is a little bit more complex.</p>
+<p>All that remains is to factor the items in this list. For this we can
+use <tt class="docutils literal"><span class="pre">UnFlatten</span></tt>.  Two examples of the use of <tt class="docutils literal"><span class="pre">UnFlatten</span></tt> are</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">UnFlatten({a,b,c},&quot;*&quot;,1)</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">UnFlatten({a,b,c},&quot;+&quot;,0)</span></tt></li>
+</ul>
+<p>The 0 and 1 are a base element to start with when grouping the
+arguments in to an expression (they should be the respective <a class="reference external" href="http://en.wikipedia.org/wiki/Identity_element">identity
+elements</a>, hence it
+is zero for addition and 1 for multiplication).</p>
+<p>Now we have all the ingredients to finally do the same calculation we
+did above in a procedural way, but this time we can do it in a
+functional style, and thus captured in one concise single line:</p>
+<div class="highlight-python"><div class="highlight"><pre>UnFlatten(Select(Lambda({n},Mod(n,3)!=0),2*(1 .. 10)),&quot;*&quot;,1)
+</pre></div>
+</div>
+<p>As was mentioned before, the choice between the two is mostly a matter
+of style.</p>
+</div>
+</div>
+<div class="section" id="macros">
+<h2>Macros<a class="headerlink" href="#macros" title="Permalink to this headline">¶</a></h2>
+<p>One of the powerful constructs in Yacas is the construct of a
+macro. In its essence, a macro is a prescription to create another
+program before executing the program. An example perhaps explains it
+best. Evaluate the following expression <tt class="docutils literal"><span class="pre">Macro(for,{st,pr,in,bd})</span>
+<span class="pre">[(&#64;st);While(&#64;pr)[(&#64;bd);(&#64;in);];];</span></tt>. This expression defines a macro
+that allows for looping.  Yacas has a <tt class="docutils literal"><span class="pre">For</span></tt> function already, but
+this is how it could be defined in one line (In Yacas the <tt class="docutils literal"><span class="pre">For</span></tt>
+function is bodied, we left that out here for clarity, as the example
+is about macros).</p>
+<p>To see it work just type <tt class="docutils literal"><span class="pre">for(i:=0,i&amp;lt;3,i:=i+1,Echo(i))</span></tt>. You will see
+the count from one to three.</p>
+<p>The construct works as follows; The expression defining the macro sets
+up a macro named <tt class="docutils literal"><span class="pre">for</span></tt> with four
+arguments. On the right is the body of the macro. This body contains
+expressions of the form <tt class="docutils literal"><span class="pre">&#64;var</span></tt>. These are replaced by the values
+passed in on calling the macro.  After all the variables have been
+replaced, the resulting expression is evaluated. In effect a new
+program has been created. Such macro constructs come from LISP, and
+are famous for allowing you to almost design your own programming
+language constructs just for your own problem at hand. When used
+right, macros can greatly simplify the task of writing a program.</p>
+<p>You can also use the back-quote <tt class="docutils literal"><span class="pre">`</span></tt> to expand a macro in-place. It
+takes on the form <tt class="docutils literal"><span class="pre">`(expression)</span></tt>, where the expression can again
+contain sub-expressions of the form <tt class="docutils literal"><span class="pre">&#64;variable</span></tt>. These instances
+will be replaced with the values of these variables.</p>
+</div>
+<div class="section" id="the-practice-of-programming-in-yacas">
+<h2>The practice of programming in Yacas<a class="headerlink" href="#the-practice-of-programming-in-yacas" title="Permalink to this headline">¶</a></h2>
+<p>When you become more proficient in working with Yacas you will be
+doing more and more sophisticated calculations. For such calculations
+it is generally necessary to write little programs. In real life you
+will usually write these programs in a text editor, and then start
+Yacas, load the text file you just wrote, and try out the
+calculation. Generally this is an iterative process, where you go back
+to the text editor to modify something, and then go back to Yacas,
+type <tt class="docutils literal"><span class="pre">restart</span></tt> and then reload the file.</p>
+<p>On this site you can run Yacas in a little window called a Yacas
+calculation center (the same as the one below this tutorial). On page
+there is tab that contains a Yacas calculation center. If you click on
+that tab you will be directed to a larger calculation center than the
+one below this tutorial. In this page you can easily switch between
+doing a calculation and editing a program to load at startup. We tried
+to make the experience match the general use of Yacas on a desktop as
+much as possible. The Yacas journal (which you see when you go to the
+Yacas web site) contains examples of calculations done before by
+others.</p>
+</div>
+<div class="section" id="defining-your-own-operators">
+<h2>Defining your own operators<a class="headerlink" href="#defining-your-own-operators" title="Permalink to this headline">¶</a></h2>
+<p>Large part of the Yacas system is defined in the scripting language
+itself. This includes the definitions of the operators it accepts, and
+their precedences. This means that you too can define your own
+operators. This section shows you how to do that.</p>
+<p>Suppose we wanted to define a function <tt class="docutils literal"><span class="pre">F(x,y)=x/y+y/x</span></tt>. We could
+use the standard syntax <tt class="docutils literal"><span class="pre">F(a,b)</span> <span class="pre">:=</span> <span class="pre">a/b</span> <span class="pre">+</span> <span class="pre">b/a;</span></tt>.  <tt class="docutils literal"><span class="pre">F(1,2);</span></tt>. For
+the purpose of this demonstration, lets assume that we want to define
+an infix operator <tt class="docutils literal"><span class="pre">xx</span></tt> for this operation. We can teach Yacas about
+this infix operator with <tt class="docutils literal"><span class="pre">Infix(&quot;xx&quot;,</span> <span class="pre">OpPrecedence(&quot;/&quot;));</span></tt>. Here we
+told Yacas that the operator <tt class="docutils literal"><span class="pre">xx</span></tt> is to have the same precedence as
+the division operator.  We can now proceed to tell Yacas how to
+evaluate expressions involving the operator <tt class="docutils literal"><span class="pre">xx</span></tt> by defining it as
+we would with a function, <tt class="docutils literal"><span class="pre">a</span> <span class="pre">xx</span> <span class="pre">b</span> <span class="pre">:=</span> <span class="pre">a/b</span> <span class="pre">+</span> <span class="pre">b/a;</span></tt>.</p>
+<p>You can verify for yourself <tt class="docutils literal"><span class="pre">3</span> <span class="pre">xx</span> <span class="pre">2</span> <span class="pre">+</span> <span class="pre">1;</span></tt> and <tt class="docutils literal"><span class="pre">1</span> <span class="pre">+</span> <span class="pre">3</span> <span class="pre">xx</span> <span class="pre">2;</span></tt> return
+the same value, and that they follow the precedence rules (eg. <tt class="docutils literal"><span class="pre">xx</span></tt>
+binds stronger than <tt class="docutils literal"><span class="pre">+</span></tt>).</p>
+<p>We have chosen the name <tt class="docutils literal"><span class="pre">xx</span></tt> just to show that we don&#8217;t need to use
+the special characters in the infix operator&#8217;s name. However we must
+define this operator as infix before using it in expressions,
+otherwise Yacas will raise a syntax error.</p>
+<p>Finally, we might decide to be completely flexible with this important
+function and also define it as a mathematical operator <tt class="docutils literal"><span class="pre">##</span></tt> . First
+we define <tt class="docutils literal"><span class="pre">##</span></tt> as a &lt;i&gt;bodied&lt;/i&gt; function and then proceed as
+before. First we can tell Yacas that <tt class="docutils literal"><span class="pre">##</span></tt> is a bodied operator with
+<tt class="docutils literal"><span class="pre">Bodied(&quot;##&quot;,</span> <span class="pre">OpPrecedence(&quot;/&quot;));</span></tt>. Then we define the function
+itself: <tt class="docutils literal"><span class="pre">##(a)</span> <span class="pre">b</span> <span class="pre">:=</span> <span class="pre">a</span> <span class="pre">xx</span> <span class="pre">b;</span></tt>. And now we can use the function,
+<tt class="docutils literal"><span class="pre">##(1)</span> <span class="pre">3</span> <span class="pre">+</span> <span class="pre">2;</span></tt>.</p>
+<p>We have used the name <tt class="docutils literal"><span class="pre">##</span></tt> but we could have used any other name
+such as <tt class="docutils literal"><span class="pre">xx</span></tt> or <tt class="docutils literal"><span class="pre">F</span></tt> or even <tt class="docutils literal"><span class="pre">_-+&#64;+-_</span></tt>.  Apart from possibly
+confusing yourself, it doesn&#8217;t matter what you call the functions you
+define.</p>
+<p>There is currently one limitation in Yacas: once a function name is
+declared as infix (prefix, postfix) or bodied, it will always be
+interpreted that way. If we declare a function <tt class="docutils literal"><span class="pre">f</span></tt> to be bodied, we
+may later define different functions named <tt class="docutils literal"><span class="pre">f</span></tt> with different
+numbers of arguments, however all of these functions must be bodied.</p>
+<p>When you use infix operators and either a prefix of postfix operator
+next to it you can run in to a situation where Yacas can not quite
+figure out what you typed. This happens when the operators are right
+next to each other and all consist of symbols (and could thus in
+principle form a single operator). Yacas will raise an error in that
+case. This can be avoided by inserting spaces.</p>
+</div>
+<div class="section" id="some-assorted-programming-topics">
+<h2>Some assorted programming topics<a class="headerlink" href="#some-assorted-programming-topics" title="Permalink to this headline">¶</a></h2>
+<p>One use of lists is the associative list, sometimes called a
+dictionary in other programming languages, which is implemented in
+Yacas simply as a list of key-value pairs. Keys must be strings and
+values may be any objects. Associative lists can also work as
+mini-databases, where a name is associated to an object.  As an
+example, first enter <tt class="docutils literal"><span class="pre">record:={};</span></tt> to set up
+an empty record. After that, we can fill arbitrary fields in this
+record:</p>
+<div class="highlight-python"><div class="highlight"><pre>record[&quot;name&quot;]:=&quot;Isaia&quot;;
+record[&quot;occupation&quot;]:=&quot;prophet&quot;;
+record[&quot;is alive&quot;]:=False;
+</pre></div>
+</div>
+<p>Now, evaluating <tt class="docutils literal"><span class="pre">record[&quot;name&quot;]</span></tt> should result in the answer
+<tt class="docutils literal"><span class="pre">&quot;Isaia&quot;</span></tt>. The record is now a list that contains three sublists, as
+you can see by evaluating <tt class="docutils literal"><span class="pre">record</span></tt>.</p>
+<p>Assignment of multiple variables is also possible using lists. For
+instance, evaluating <tt class="docutils literal"><span class="pre">{x,y}:={2!,3!}</span></tt> will result in 2 being
+assigned to <tt class="docutils literal"><span class="pre">x</span></tt> and 6 to <tt class="docutils literal"><span class="pre">y</span></tt>.</p>
+<p>When assigning variables, the right hand side is evaluated before it
+is assigned. Thus <tt class="docutils literal"><span class="pre">a:=2*2</span></tt> will set a to 4. This is however
+&lt;i&gt;not&lt;/i&gt; the case for functions. When entering <tt class="docutils literal"><span class="pre">f(x):=x+x</span></tt> the
+right hand side, <tt class="docutils literal"><span class="pre">x+x</span></tt>, is not evaluated before being assigned. This
+can be forced by using <tt class="docutils literal"><span class="pre">Eval()</span></tt>.  Defining <tt class="docutils literal"><span class="pre">f(x)</span></tt> with
+<tt class="docutils literal"><span class="pre">f(x):=Eval(x+x)</span></tt> will tell the system to first evaluate <tt class="docutils literal"><span class="pre">x+x</span></tt>
+(which results in <tt class="docutils literal"><span class="pre">2*x</span></tt>) before assigning it to the user function
+<tt class="docutils literal"><span class="pre">f</span></tt>. This specific example is not a very useful one but it will come
+in handy when the operation being performed on the right hand side is
+expensive. For example, if we evaluate a Taylor series expansion
+before assigning it to the user-defined function, the engine doesn&#8217;t
+need to create the Taylor series expansion each time that user-defined
+function is called.</p>
+<p>The imaginary unit i is denoted <tt class="docutils literal"><span class="pre">I</span></tt> and complex numbers can be
+entered as either expressions involving <tt class="docutils literal"><span class="pre">I</span></tt>, as for example
+<tt class="docutils literal"><span class="pre">1+I*2</span></tt>, or explicitly as <tt class="docutils literal"><span class="pre">Complex(a,b)</span></tt> for a+ib. The form
+<tt class="docutils literal"><span class="pre">Complex(re,im)</span></tt> is the way Yacas deals with complex numbers
+internally.</p>
+</div>
+<div class="section" id="linear-algebra">
+<h2>Linear Algebra<a class="headerlink" href="#linear-algebra" title="Permalink to this headline">¶</a></h2>
+<p>Vectors of fixed dimension are represented as lists of their
+components. The list <tt class="docutils literal"><span class="pre">{1,</span> <span class="pre">2+x,</span> <span class="pre">3*Sin(p)}</span></tt> would be a
+three-dimensional vector with components <tt class="docutils literal"><span class="pre">1</span></tt>, <tt class="docutils literal"><span class="pre">2+x</span></tt> and
+<tt class="docutils literal"><span class="pre">3*Sin(p)</span></tt>. Matrices are represented as a lists of lists.</p>
+<p>Vector components can be assigned values just like list items, since
+they are in fact list items. If we first set up a variable called
+&#8220;vector&#8221; to contain a three-dimensional vector with the command
+<tt class="docutils literal"><span class="pre">vector:=ZeroVector(3);</span></tt> (you can verify that it is indeed a vector
+with all components set to zero by evaluating <tt class="docutils literal"><span class="pre">vector</span></tt>), you can
+change elements of the vector just like you would the elements of a
+list (seeing as it is represented as a list). For example, to set the
+second element to two, just evaluate <tt class="docutils literal"><span class="pre">vector[2]</span> <span class="pre">:=</span> <span class="pre">2;</span></tt>. This results
+in a new value for <tt class="docutils literal"><span class="pre">vector</span></tt>.</p>
+<p>Yacas can perform multiplication of matrices, vectors and numbers as
+usual in linear algebra.  The standard Yacas script library also
+includes taking the determinant and inverse of a matrix, finding
+eigenvectors and eigenvalues (in simple cases) and solving linear sets
+of equations, such as A * x = b where A is a matrix, and x and b are
+vectors.  As a little example to wetten your appetite, we define a
+Hilbert matrix: <tt class="docutils literal"><span class="pre">hilbert:=HilbertMatrix(3)</span></tt>. We can then calculate
+the determinant with <tt class="docutils literal"><span class="pre">Determinant(hilbert)</span></tt>, or the inverse with
+<tt class="docutils literal"><span class="pre">Inverse(hilbert)</span></tt>.  There are several more matrix operations
+supported. See the reference manual for more details.</p>
+<div class="section" id="threading-of-functions">
+<h3>&#8220;Threading&#8221; of functions<a class="headerlink" href="#threading-of-functions" title="Permalink to this headline">¶</a></h3>
+<p>Some functions in Yacas can be &#8220;threaded&#8221;. This means that calling the
+function with a list as argument will result in a list with that
+function being called on each item in the list. E.g. <tt class="docutils literal"><span class="pre">Sin({a,b,c});</span></tt>
+will result in <tt class="docutils literal"><span class="pre">{Sin(a),Sin(b),Sin(c)}</span></tt>. This functionality is
+implemented for most normal analytic functions and arithmetic
+operators.</p>
+</div>
+<div class="section" id="functions-as-lists">
+<h3>Functions as lists<a class="headerlink" href="#functions-as-lists" title="Permalink to this headline">¶</a></h3>
+<p>For some work it pays to understand how things work under the
+hood. Internally, Yacas represents all atomic expressions (numbers and
+variables) as strings and all compound expressions as lists, like
+Lisp. Try <tt class="docutils literal"><span class="pre">FullForm(a+b*c);</span></tt> and you will see the text <tt class="docutils literal"><span class="pre">(+</span> <span class="pre">a</span> <span class="pre">(*</span> <span class="pre">b</span> <span class="pre">c</span>
+<span class="pre">))</span></tt> appear on the screen. This function is occasionally useful, for
+example when trying to figure out why a specific transformation rule
+does not work on a specific expression.</p>
+<p>If you try <tt class="docutils literal"><span class="pre">FullForm(1+2)</span></tt> you will see that the result is not quite
+what we intended. The system first adds up one and two, and then shows
+the tree structure of the end result, which is a simple number
+<tt class="docutils literal"><span class="pre">3</span></tt>. To stop Yacas from evaluating something, you can use the
+function <tt class="docutils literal"><span class="pre">Hold</span></tt>, as <tt class="docutils literal"><span class="pre">FullForm(Hold(1+2))</span></tt>. The function <tt class="docutils literal"><span class="pre">Eval</span></tt>
+is the opposite, it instructs Yacas to re-evaluate its argument
+(effectively evaluating it twice). This undoes the effect of <tt class="docutils literal"><span class="pre">Hold</span></tt>,
+as for example <tt class="docutils literal"><span class="pre">Eval(Hold(1+2))</span></tt>.</p>
+<p>Also, any expression can be converted to a list by the function
+<tt class="docutils literal"><span class="pre">Listify</span></tt> or back to an expression by the function <tt class="docutils literal"><span class="pre">UnList</span></tt>:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">Listify(a+b*(c+d));</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">UnList({Atom(&quot;+&quot;),x,1});</span></tt></li>
+</ul>
+<p>Note that the first element of the list is the name of the function
+<tt class="docutils literal"><span class="pre">+</span></tt> which is equivalently represented as <tt class="docutils literal"><span class="pre">Atom(&quot;+&quot;)</span></tt> and that the
+subexpression <tt class="docutils literal"><span class="pre">b*(c+d)</span></tt> was not converted to list form. Listify just
+took the top node of the expression.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../reference_manual/index.html" class="btn btn-neutral float-right" title="Reference Manual">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../getting_started/index.html" class="btn btn-neutral" title="Getting started"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Ayal Pinkus, Serge Winnitzky, Grzegorz Mazur.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.3.5',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,387 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Integration &mdash; Yacas</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Yacas" href="../../index.html"/>
+        <link rel="up" title="The Yacas Book of Algorithms" href="index.html"/>
+        <link rel="next" title="Transforms" href="transforms.html"/>
+        <link rel="prev" title="Sparse representations" href="multivar.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="../../index.html" class="icon icon-home"> Yacas
+        
+
+        
+          
+          <img src="../../_static/yacaslogo.png" class="logo" />
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation-from-sources">Installation from sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-syntax">Yacas syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#using-yacas-from-the-calculation-center">Using Yacas from the calculation center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-as-a-symbolic-calculator">Yacas as a symbolic calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#arbitrary-precision-numbers">Arbitrary precision numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#analytic-functions">Analytic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#boolean-expressions-and-predicates">Boolean expressions and predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#strings-and-lists">Strings and lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#writing-simplification-rules">Writing simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#local-simplification-rules">Local simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#programming-essentials">Programming essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#macros">Macros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#the-practice-of-programming-in-yacas">The practice of programming in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#defining-your-own-operators">Defining your own operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#some-assorted-programming-topics">Some assorted programming topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#linear-algebra">Linear Algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_manual/index.html">Reference Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/arithmetic.html">Arithmetic and other operations on numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/calc.html">Calculus and elementary functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/simplify.html">Simplification of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/ode.html">Differential Equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/logic.html">Propositional logic theorem prover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/linear-algebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/univariate-polynomials.html">Operations on polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/lists.html">List operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/functional.html">Functional operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/controlflow.html">Control flow functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/predicates.html">Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/consts.html">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/vars.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/io.html">Input/output and plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/strings.html">String manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/probability-and-statistics.html">Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/number-theory.html">Number theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/programming.html">Functions related to programming in Yacas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_in_yacas/index.html">Programming in Yacas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-yacas-architecture">The Yacas architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-evaluation-scheme">Yacas evaluation scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#rules">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#structured-programming-and-control-flow">Structured programming and control flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#additional-syntactic-sugar">Additional syntactic sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#using-macro-rules-e-g-nfunction">Using &#8220;Macro rules&#8221; (e.g. {NFunction})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#macro-expansion">Macro expansion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#scope-of-variable-bindings">Scope of variable bindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation-of-expressions">Evaluation of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-lisp-heritage">The LISP heritage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-specific-extensions-for-cas-implementations">{Yacas}-specific extensions for CAS implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-evaluation-is-simplification-hack">The &#8220;Evaluation is Simplification&#8221; hack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#destructive-operations">Destructive operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#coding-style">Coding style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#writing-new-library-functions">Writing new library functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-1-parsing-expressions-cform">Advanced example 1: parsing expressions ({CForm})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-programming-pitfalls">Yacas programming pitfalls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#debugging-in-yacas">Debugging in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-2-implementing-a-non-commutative-algebra">Advanced example 2: implementing a non-commutative algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">The Yacas Book of Algorithms</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="multivar.html">Sparse representations</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transforms.html">Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sturm-sequences.html">Finding real roots of polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numtheory.html">Number theory algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../yagy/index.html">YAGY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Yacas</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">The Yacas Book of Algorithms</a> &raquo;</li>
+      
+    <li>Integration</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/doc/book_of_algorithms/integration.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="integration">
+<h1>Integration<a class="headerlink" href="#integration" title="Permalink to this headline">¶</a></h1>
+<p>Integration can be performed by the function {Integrate}, which has
+two calling conventions:</p>
+<ul class="simple">
+<li>Integrate(variable) expression</li>
+<li>Integrate(variable, from, to) expression</li>
+</ul>
+<p>Integrate can have its own set of rules for specific integrals, which
+might return a correct answer immediately. Alternatively, it calls the
+function AntiDeriv, to see if the anti-derivative can be determined
+for the integral requested. If this is the case, the anti-derivative
+is used to compose the output.</p>
+<p>If the integration algorithm cannot perform the integral, the
+expression is returned unsimplified.</p>
+<div class="section" id="the-integration-algorithm">
+<h2>The integration algorithm<a class="headerlink" href="#the-integration-algorithm" title="Permalink to this headline">¶</a></h2>
+<p>This section describes the steps taken in doing integration.</p>
+<div class="section" id="general-structure">
+<h3>General structure<a class="headerlink" href="#general-structure" title="Permalink to this headline">¶</a></h3>
+<p>The integration starts at the function {Integrate}, but the task is
+delegated to other functions, one after the other.  Each function can
+deem the integral unsolvable, and thus return the integral
+unevaluated. These different functions offer hooks for adding new
+types of integrals to be handled.</p>
+</div>
+<div class="section" id="expression-clean-up">
+<h3>Expression clean-up<a class="headerlink" href="#expression-clean-up" title="Permalink to this headline">¶</a></h3>
+<p>Integration starts by first cleaning up the expression, by calling
+{TrigSimpCombine} to simplify expressions containing multiplications
+of trigonometric functions into additions of trigonometric functions
+(for which the integration rules are trivial), and then passing the
+result to {Simplify}.</p>
+</div>
+<div class="section" id="generalized-integration-rules">
+<h3>Generalized integration rules<a class="headerlink" href="#generalized-integration-rules" title="Permalink to this headline">¶</a></h3>
+<p>For the function {AntiDeriv}, which is responsible for finding the
+anti-derivative of a function, the code splits up expressions
+according to the additive properties of integration, eg. integration
+of $ a+b $ is the same as integrating $ a $ + integrating $ b $.</p>
+<ul class="simple">
+<li>Polynomials which can be expressed as univariate polynomials in the
+variable to be integrated over are handled by one integration rule.</li>
+<li>Expressions of the form $ p*f(x) $, where $ p $ represents a
+univariate polynomial, and $ f(x) $ an integrable function, are
+handled by a special integration rule. This transformation rule has
+to be designed carefully not to invoke infinite recursion.</li>
+<li>Rational functions, $ f(x)/g(x) $ with both $ f(x) $ and $ g(x) $
+univariate polynomials, is handled separately also, using partial
+fraction expansion to reduce rational function to a sum of simpler
+expressions.</li>
+</ul>
+</div>
+<div class="section" id="integration-tables">
+<h3>Integration tables<a class="headerlink" href="#integration-tables" title="Permalink to this headline">¶</a></h3>
+<p>For elementary functions, Yacas uses integration tables. For instance,
+the fact that the anti-derivative of $ Cos(x) $ is $ Sin(x) $ is
+declared in an integration table.</p>
+<p>For the purpose of setting up the integration table, a few declaration
+functions have been defined, which use some generalized pattern
+matchers to be more flexible in recognizing expressions that are
+integrable.</p>
+</div>
+<div class="section" id="integrating-simple-functions-of-a-variable">
+<h3>Integrating simple functions of a variable<a class="headerlink" href="#integrating-simple-functions-of-a-variable" title="Permalink to this headline">¶</a></h3>
+<p>For functions like $ Sin(x) $ the anti-derivative can be declared with
+the function {IntFunc}.</p>
+<p>The calling sequence for {IntFunc} is:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">IntFunc</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span><span class="n">pattern</span><span class="p">,</span><span class="n">antiderivative</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For instance, for the function $ Cos(x) $ there is a declaration:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">IntFunc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">Cos</span><span class="p">(</span><span class="n">_x</span><span class="p">),</span><span class="n">Sin</span><span class="p">(</span><span class="n">x</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>The fact that the second argument is a pattern means that each
+occurrence of the variable to be matched should be referred to as
+{_x}, as in the example above.</p>
+<p>IntFunc generalizes the integration implicitly, in that it will set up
+the system to actually recognize expressions of the form $ Cos(a*x+b)
+$, and return $ Sin(a*x+b)/a $ automatically.  This means that the
+variables $ a $ and $ b $ are reserved, and can not be used in the
+pattern. Also, the variable used (in this case, {_x} is actually
+matched to the expression passed in to the function, and the variable
+{var} is the real variable being integrated over. To clarify: suppose
+the user wants to integrate $ Cos(c*y+d) $ over $ y $, then the
+following variables are set:</p>
+<ul class="simple">
+<li>{a} = $c$</li>
+<li>{b} = $d$</li>
+<li>{x} = $a*y+b$</li>
+<li>{var} = $x$</li>
+</ul>
+<p>When functions are multiplied by constants, that situation is handled
+by the integration rule that can deal with univariate polynomials
+multiplied by functions, as a constant is a polynomial of degree zero.</p>
+</div>
+<div class="section" id="integrating-functions-containing-expressions-of-the-form-a-x-2-b">
+<h3>Integrating functions containing expressions of the form $ a*x^2+b $<a class="headerlink" href="#integrating-functions-containing-expressions-of-the-form-a-x-2-b" title="Permalink to this headline">¶</a></h3>
+<p>There are numerous expressions containing sub-expressions of the form
+$ a*x^2+b $ which can easily be integrated.</p>
+<p>The general form for declaring anti-derivatives for such expressions
+is:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">IntPureSquare</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">sign2</span><span class="p">,</span> <span class="n">sign0</span><span class="p">,</span> <span class="n">antiderivative</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here {IntPureSquare} uses {MatchPureSquared} to match the expression.</p>
+<p>The expression is searched for the pattern, where the variable can
+match to a sub-expression of the form $ a*x^2+b $, and for which both
+$ a $ and $ b $ are numbers and $ a*sign2&gt;0 $ and $ b*sign0&gt;0 $.</p>
+<p>As an example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">IntPureSquare</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">num_IsFreeOf</span><span class="p">(</span><span class="n">var</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">_x</span><span class="p">),</span>
+  <span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,(</span><span class="n">num</span><span class="o">/</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">Sqrt</span><span class="p">(</span><span class="n">b</span><span class="o">/</span><span class="n">a</span><span class="p">)))</span><span class="o">*</span>
+  <span class="n">ArcTan</span><span class="p">(</span><span class="n">var</span><span class="o">/</span><span class="n">Sqrt</span><span class="p">(</span><span class="n">b</span><span class="o">/</span><span class="n">a</span><span class="p">)));</span>
+</pre></div>
+</div>
+<p>declares that the anti-derivative of $ c/(a*x^2+b) $ is $$
+(c/(a*Sqrt(b/a)))*ArcTan(x/Sqrt(b/a)) $$, if both $ a $ and $ b $ are
+positive numbers.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="transforms.html" class="btn btn-neutral float-right" title="Transforms">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="multivar.html" class="btn btn-neutral" title="Sparse representations"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Ayal Pinkus, Serge Winnitzky, Grzegorz Mazur.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.3.5',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

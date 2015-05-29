@@ -1,0 +1,843 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Variables &mdash; Yacas</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Yacas" href="../../index.html"/>
+        <link rel="up" title="Reference Manual" href="index.html"/>
+        <link rel="next" title="Input/output and plotting" href="io.html"/>
+        <link rel="prev" title="Constants" href="consts.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="../../index.html" class="icon icon-home"> Yacas
+        
+
+        
+          
+          <img src="../../_static/yacaslogo.png" class="logo" />
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation-from-sources">Installation from sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-syntax">Yacas syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#using-yacas-from-the-calculation-center">Using Yacas from the calculation center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-as-a-symbolic-calculator">Yacas as a symbolic calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#arbitrary-precision-numbers">Arbitrary precision numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#analytic-functions">Analytic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#boolean-expressions-and-predicates">Boolean expressions and predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#strings-and-lists">Strings and lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#writing-simplification-rules">Writing simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#local-simplification-rules">Local simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#programming-essentials">Programming essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#macros">Macros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#the-practice-of-programming-in-yacas">The practice of programming in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#defining-your-own-operators">Defining your own operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#some-assorted-programming-topics">Some assorted programming topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#linear-algebra">Linear Algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="arithmetic.html">Arithmetic and other operations on numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calc.html">Calculus and elementary functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simplify.html">Simplification of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode.html">Differential Equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logic.html">Propositional logic theorem prover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear-algebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="univariate-polynomials.html">Operations on polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lists.html">List operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional.html">Functional operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controlflow.html">Control flow functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="predicates.html">Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="consts.html">Constants</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io.html">Input/output and plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="strings.html">String manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="probability-and-statistics.html">Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="number-theory.html">Number theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming.html">Functions related to programming in Yacas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_in_yacas/index.html">Programming in Yacas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-yacas-architecture">The Yacas architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-evaluation-scheme">Yacas evaluation scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#rules">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#structured-programming-and-control-flow">Structured programming and control flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#additional-syntactic-sugar">Additional syntactic sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#using-macro-rules-e-g-nfunction">Using &#8220;Macro rules&#8221; (e.g. {NFunction})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#macro-expansion">Macro expansion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#scope-of-variable-bindings">Scope of variable bindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation-of-expressions">Evaluation of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-lisp-heritage">The LISP heritage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-specific-extensions-for-cas-implementations">{Yacas}-specific extensions for CAS implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-evaluation-is-simplification-hack">The &#8220;Evaluation is Simplification&#8221; hack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#destructive-operations">Destructive operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#coding-style">Coding style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#writing-new-library-functions">Writing new library functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-1-parsing-expressions-cform">Advanced example 1: parsing expressions ({CForm})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-programming-pitfalls">Yacas programming pitfalls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#debugging-in-yacas">Debugging in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-2-implementing-a-non-commutative-algebra">Advanced example 2: implementing a non-commutative algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../book_of_algorithms/index.html">The Yacas Book of Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/multivar.html">Sparse representations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/integration.html">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/transforms.html">Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/sturm-sequences.html">Finding real roots of polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/numtheory.html">Number theory algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../yagy/index.html">YAGY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Yacas</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Reference Manual</a> &raquo;</li>
+      
+    <li>Variables</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/doc/reference_manual/vars.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="variables">
+<h1>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id=":=">
+var <tt class="descname">:=</tt> expr<a class="headerlink" href="#:=" title="Permalink to this definition">¶</a></dt>
+<dt>
+var[i] <tt class="descname">:=</tt> expr</dt>
+<dt>
+varlist <tt class="descname">:=</tt> exprlist</dt>
+<dt>
+fn <tt class="descname">:=</tt> expr</dt>
+<dd><p>assign a variable or a list; define a function</p>
+<p>var := expr
+{var1, var2, ...} := {expr1, expr2, ...}
+var[i] := expr
+fn(arg1, arg2, ...) := expr</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>var</strong> &#8211; atom, variable which should be assigned</li>
+<li><strong>expr</strong> &#8211; expression to assign to the variable or body of function</li>
+<li><strong>i</strong> &#8211; index (can be integer or string)</li>
+<li><strong>fn</strong> &#8211; atom, name of a new function to define</li>
+<li><strong>arg2</strong> (<em>arg1,</em>) &#8211; atoms, names of arguments of the new function {fn}</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The <a class="reference internal" href="#:=" title=":="><tt class="xref ys ys-func docutils literal"><span class="pre">:=()</span></tt></a> operator can be used in a number of ways. In all
+cases, some sort of assignment or definition takes place.  The
+first form is the most basic one. It evaluates the expression on
+the right-hand side and assigns it to the variable named on the
+left-hand side. The left-hand side is not evaluated. The evaluated
+expression is also returned.  The second form is a small extension,
+which allows one to do multiple assignments. The first entry in the
+list on the right-hand side is assigned to the first variable
+mentioned in the left-hand side, the second entry on the right-hand
+side to the second variable on the left-hand side, etc.  The list
+on the right-hand side must have at least as many entries as the
+list on the left-hand side. Any excess entries are silently
+ignored. The result of the expression is the list of values that
+have been assigned.  The third form allows one to change an entry
+in the list. If the index &#8220;i&#8221; is an integer, the &#8220;i&#8221;-th entry in
+the list is changed to the expression on the right-hand side. It is
+assumed that the length of the list is at least &#8220;i&#8221;. If the index
+&#8220;i&#8221; is a string, then &#8220;var&#8221; is considered to be an associative list
+(sometimes called hash table), and the key &#8220;i&#8221; is paired with the
+value &#8220;exp&#8221;. In both cases, the right-hand side is evaluated before
+the assignment and the result of the assignment is <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>.  The
+last form defines a function. For example, the assignment {fn(x) :=
+x^2} removes any rules previously associated with {fn(x)} and
+defines the rule {fn(_x) &lt;&#8211; x^2}. Note that the left-hand side may
+take a different form if {fn} is defined to be a prefix, infix or
+bodied function. This case is special since the right-hand side is
+not evaluated immediately, but only when the function {fn} is
+used. If this takes time, it may be better to force an immediate
+evaluation with {Eval} (see the last example).  If the expression
+on the right hand side begins with {Eval()}, then it &lt;i&gt;will&lt;/i&gt; be
+evaluated before defining the new function. A variant of the
+function definition can be used to make a function accepting a
+variable number of arguments. The last argument</p>
+<p>Simple assignment:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; a := Sin(x) + 3;
+Out&gt; Sin(x)+3;
+In&gt; a;
+Out&gt; Sin(x)+3;
+</pre></div>
+</div>
+<p>Multiple assignments:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; {a,b,c} := {1,2,3};
+Out&gt; {1,2,3};
+In&gt; a;
+Out&gt; 1;
+In&gt; b+c;
+Out&gt; 5;
+</pre></div>
+</div>
+<p>Assignment to a list:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; xs := { 1,2,3,4,5 };
+Out&gt; {1,2,3,4,5};
+In&gt; xs[3] := 15;
+Out&gt; True;
+In&gt; xs;
+Out&gt; {1,2,15,4,5};
+</pre></div>
+</div>
+<p>Building an associative list:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; alist := {};
+Out&gt; {};
+In&gt; alist[&quot;cherry&quot;] := &quot;red&quot;;
+Out&gt; True;
+In&gt; alist[&quot;banana&quot;] := &quot;yellow&quot;;
+Out&gt; True;
+In&gt; alist[&quot;cherry&quot;];
+Out&gt; &quot;red&quot;;
+In&gt; alist;
+Out&gt; {{&quot;banana&quot;,&quot;yellow&quot;},{&quot;cherry&quot;,&quot;red&quot;}};
+</pre></div>
+</div>
+<p>Defining a function:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; f(x) := x^2;
+Out&gt; True;
+In&gt; f(3);
+Out&gt; 9;
+In&gt; f(Sin(a));
+Out&gt; Sin(a)^2;
+</pre></div>
+</div>
+<p>Defining a function with variable number of arguments:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; f(x, ...) := If(IsList(x),Sum(x),x);
+Out&gt; True;
+In&gt; f(2);
+Out&gt; 2;
+In&gt; f(1,2,3);
+Out&gt; 6;
+</pre></div>
+</div>
+<p>Defining a new infix operator:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Infix(&quot;*&amp;*&quot;,10);
+Out&gt; True;
+In&gt; x1 *&amp;* x2 := x1/x2 + x2/x1;
+Out&gt; True;
+In&gt; Sin(a) *&amp;* Cos(a);
+Out&gt; Tan(1)+Cos(1)/Sin(1);
+In&gt; Clear(a);
+Out&gt; True;
+In&gt; Sin(a) *&amp;* Exp(a);
+Out&gt; Sin(a)/Exp(a)+Exp(a)/Sin(a);
+</pre></div>
+</div>
+<p>In the following example, it may take some time to compute the Taylor
+expansion. This has to be done every time the function {f} is called:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; f(a) := Taylor(x,0,25) Sin(x);
+Out&gt; True;
+In&gt; f(1);
+Out&gt; x-x^3/6+x^5/120-x^7/5040+x^9/362880-
+x^11/39916800+x^13/6227020800-x^15/
+1307674368000+x^17/355687428096000-x^19/
+121645100408832000+x^21/51090942171709440000
+-x^23/25852016738884976640000+x^25
+/15511210043330985984000000;
+In&gt; f(2);
+Out&gt; x-x^3/6+x^5/120-x^7/5040+x^9/362880-
+x^11/39916800+x^13/6227020800-x^15
+/1307674368000+x^17/355687428096000-x^19/
+121645100408832000+x^21/51090942171709440000
+-x^23/25852016738884976640000+x^25/
+15511210043330985984000000;
+</pre></div>
+</div>
+<p>The remedy is to evaluate the Taylor expansion immediately. Now the
+expansion is computed only once:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; f(a) := Eval(Taylor(x,0,25) Sin(x));
+Out&gt; True;
+In&gt; f(1);
+Out&gt; x-x^3/6+x^5/120-x^7/5040+x^9/362880-
+x^11/39916800+x^13/6227020800-x^15/
+1307674368000+x^17/355687428096000-x^19/
+121645100408832000+x^21/51090942171709440000
+-x^23/25852016738884976640000+x^25
+/15511210043330985984000000;
+In&gt; f(2);
+Out&gt; x-x^3/6+x^5/120-x^7/5040+x^9/362880-
+x^11/39916800+x^13/6227020800-x^15
+/1307674368000+x^17/355687428096000-x^19/
+121645100408832000+x^21/51090942171709440000
+-x^23/25852016738884976640000+x^25/
+15511210043330985984000000;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Set" title="Set"><tt class="xref ys ys-func docutils literal"><span class="pre">Set()</span></tt></a>, <a class="reference internal" href="#Clear" title="Clear"><tt class="xref ys ys-func docutils literal"><span class="pre">Clear()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">[]()</span></tt>, <a class="reference internal" href="programming.html#Rule" title="Rule"><tt class="xref ys ys-func docutils literal"><span class="pre">Rule()</span></tt></a>, <a class="reference internal" href="programming.html#Infix" title="Infix"><tt class="xref ys ys-func docutils literal"><span class="pre">Infix()</span></tt></a>, <a class="reference internal" href="controlflow.html#Eval" title="Eval"><tt class="xref ys ys-func docutils literal"><span class="pre">Eval()</span></tt></a>, <a class="reference internal" href="controlflow.html#Function" title="Function"><tt class="xref ys ys-func docutils literal"><span class="pre">Function()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Set">
+<tt class="descname">Set</tt><big>(</big><em>var</em>, <em>exp</em><big>)</big><a class="headerlink" href="#Set" title="Permalink to this definition">¶</a></dt>
+<dd><p>assignment</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>var</strong> &#8211; variable which should be assigned</li>
+<li><strong>exp</strong> &#8211; expression to assign to the variable</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The expression &#8220;exp&#8221; is evaluated and assigned it to the variable
+named &#8220;var&#8221;. The first argument is not evaluated. The value True
+is returned.    The statement {Set(var, exp)} is equivalent to {var
+:= exp}, but the {:=} operator  has more uses, e.g. changing
+individual entries in a list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Set</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">Sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mi">3</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">a</span><span class="p">;</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Clear" title="Clear"><tt class="xref ys ys-func docutils literal"><span class="pre">Clear()</span></tt></a>, <a class="reference internal" href="#:=" title=":="><tt class="xref ys ys-func docutils literal"><span class="pre">:=()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Clear">
+<tt class="descname">Clear</tt><big>(</big><em>var</em>, <em>...</em><big>)</big><a class="headerlink" href="#Clear" title="Permalink to this definition">¶</a></dt>
+<dd><p>undo an assignment</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var</strong> &#8211; name of the variable to be cleared</td>
+</tr>
+</tbody>
+</table>
+<p>All assignments made to the variables listed as arguments are
+undone. From now on, all these variables remain unevaluated (until
+a  subsequent assignment is made). The result of the expression is
+True.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; a := 5;
+Out&gt; 5;
+In&gt; a^2;
+Out&gt; 25;
+In&gt; Clear(a);
+Out&gt; True;
+In&gt; a^2;
+Out&gt; a^2;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Set" title="Set"><tt class="xref ys ys-func docutils literal"><span class="pre">Set()</span></tt></a>, <a class="reference internal" href="#:=" title=":="><tt class="xref ys ys-func docutils literal"><span class="pre">:=()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Local">
+<tt class="descname">Local</tt><big>(</big><em>var</em>, <em>...</em><big>)</big><a class="headerlink" href="#Local" title="Permalink to this definition">¶</a></dt>
+<dd><p>declare new local variables</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var</strong> &#8211; name of the variable to be declared as local</td>
+</tr>
+</tbody>
+</table>
+<p>All variables in the argument list are declared as local
+variables. The arguments are not evaluated. The value <tt class="docutils literal"><span class="pre">True</span></tt> is
+returned.  By default, all variables in Yacas are global. This
+means that the variable has the same value everywhere. But
+sometimes it is useful to have a private copy of some variable,
+either to prevent the outside world from changing it or to prevent
+accidental changes to the outside world. This can be achieved by
+declaring the variable local. Now only expressions within the
+<a class="reference internal" href="programming.html#Prog" title="Prog"><tt class="xref ys ys-func docutils literal"><span class="pre">Prog()</span></tt></a> block (or its syntactic equivalent, the <tt class="docutils literal"><span class="pre">[]</span></tt>
+block) can access and change it. Functions called within this block
+cannot access the local copy unless this is specifically allowed
+with <a class="reference internal" href="programming.html#UnFence" title="UnFence"><tt class="xref ys ys-func docutils literal"><span class="pre">UnFence()</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; a := 3;
+Out&gt; 3;
+In&gt; [ a := 4; a; ];
+Out&gt; 4;
+In&gt; a;
+Out&gt; 4;
+In&gt; [ Local(a); a := 5; a; ];
+Out&gt; 5;
+In&gt; a;
+Out&gt; 4;
+</pre></div>
+</div>
+<p>In the first block, <tt class="docutils literal"><span class="pre">a</span></tt> is not declared local and hence defaults
+to be a global variable. Indeed, changing the variable inside the
+block also changes the value of <tt class="docutils literal"><span class="pre">a</span></tt> outside the block. However,
+in the second block <tt class="docutils literal"><span class="pre">a</span></tt> is defined to be local and now the value
+outside the block stays the same, even though <tt class="docutils literal"><span class="pre">a</span></tt> is assigned the
+value 5 inside the block.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#LocalSymbols" title="LocalSymbols"><tt class="xref ys ys-func docutils literal"><span class="pre">LocalSymbols()</span></tt></a>, <a class="reference internal" href="programming.html#Prog" title="Prog"><tt class="xref ys ys-func docutils literal"><span class="pre">Prog()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">[]()</span></tt>, <a class="reference internal" href="programming.html#UnFence" title="UnFence"><tt class="xref ys ys-func docutils literal"><span class="pre">UnFence()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="++">
+var<tt class="descname">++</tt><a class="headerlink" href="#++" title="Permalink to this definition">¶</a></dt>
+<dd><p>increment variable</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var</strong> &#8211; variable to increment</td>
+</tr>
+</tbody>
+</table>
+<p>The variable with name <tt class="docutils literal"><span class="pre">var</span></tt> is incremented, i.e. the number 1 is
+added to it. The expression <tt class="docutils literal"><span class="pre">x++</span></tt> is equivalent to the assignment
+<tt class="docutils literal"><span class="pre">x</span> <span class="pre">:=</span> <span class="pre">x</span> <span class="pre">+</span> <span class="pre">1</span></tt>, except that the assignment returns the new value of
+<tt class="docutils literal"><span class="pre">x</span></tt> while <tt class="docutils literal"><span class="pre">x++</span></tt> always returns <tt class="docutils literal"><span class="pre">True</span></tt>. In this respect,
+Yacas&#8217; <tt class="docutils literal"><span class="pre">++</span></tt> differs from the corresponding operator in the
+programming language C.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; x := 5;
+Out&gt; 5;
+In&gt; x++;
+Out&gt; True;
+In&gt; x;
+Out&gt; 6;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#--" title="--"><tt class="xref ys ys-func docutils literal"><span class="pre">--()</span></tt></a>, <a class="reference internal" href="#:=" title=":="><tt class="xref ys ys-func docutils literal"><span class="pre">:=()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="--">
+var<tt class="descname">--</tt><a class="headerlink" href="#--" title="Permalink to this definition">¶</a></dt>
+<dd><p>decrement variable</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var</strong> &#8211; variable to decrement</td>
+</tr>
+</tbody>
+</table>
+<p>The variable with name <tt class="docutils literal"><span class="pre">var</span></tt> is decremented, i.e. the number 1 is
+subtracted from it. The expression <tt class="docutils literal"><span class="pre">x--</span></tt> is equivalent to the
+assignment <tt class="docutils literal"><span class="pre">x</span> <span class="pre">:=</span> <span class="pre">x</span> <span class="pre">-</span> <span class="pre">1</span></tt>, except that the assignment returns the
+new value of <tt class="docutils literal"><span class="pre">x</span></tt> while <tt class="docutils literal"><span class="pre">x--</span></tt> always returns <tt class="docutils literal"><span class="pre">True</span></tt>. In this
+respect, Yacas&#8217; <tt class="docutils literal"><span class="pre">--</span></tt> differs from the corresponding operator in
+the programming language C.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; x := 5;
+Out&gt; 5;
+In&gt; x--;
+Out&gt; True;
+In&gt; x;
+Out&gt; 4;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#++" title="++"><tt class="xref ys ys-func docutils literal"><span class="pre">++()</span></tt></a>, <a class="reference internal" href="#:=" title=":="><tt class="xref ys ys-func docutils literal"><span class="pre">:=()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Object">
+<tt class="descname">Object</tt><big>(</big><em>&quot;pred&quot;</em>, <em>expr</em><big>)</big><a class="headerlink" href="#Object" title="Permalink to this definition">¶</a></dt>
+<dd><p>create an incomplete type</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pred</strong> &#8211; name of the predicate to apply</li>
+<li><strong>expr</strong> &#8211; expression on which <tt class="docutils literal"><span class="pre">pred</span></tt> should be applied</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function returns &#8220;obj&#8221; as soon as &#8220;pred&#8221; returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> when
+applied on &#8220;obj&#8221;. This is used to declare  so-called incomplete
+types.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; a := Object(&quot;IsNumber&quot;, x);
+Out&gt; Object(&quot;IsNumber&quot;,x);
+In&gt; Eval(a);
+Out&gt; Object(&quot;IsNumber&quot;,x);
+In&gt; x := 5;
+Out&gt; 5;
+In&gt; Eval(a);
+Out&gt; 5;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="predicates.html#IsNonObject" title="IsNonObject"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNonObject()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="SetGlobalLazyVariable">
+<tt class="descname">SetGlobalLazyVariable</tt><big>(</big><em>var</em>, <em>value</em><big>)</big><a class="headerlink" href="#SetGlobalLazyVariable" title="Permalink to this definition">¶</a></dt>
+<dd><p>global variable is to be evaluated lazily</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>var</strong> &#8211; variable (held argument)</li>
+<li><strong>value</strong> &#8211; value to be set to (evaluated before it is assigned)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference internal" href="#SetGlobalLazyVariable" title="SetGlobalLazyVariable"><tt class="xref ys ys-func docutils literal"><span class="pre">SetGlobalLazyVariable()</span></tt></a> enforces that a global variable will
+re-evaluate when used. This functionality doesn&#8217;t survive if
+<tt class="docutils literal"><span class="pre">Clear(var)</span></tt> is called afterwards.  Places where this is used
+include the global variables <tt class="docutils literal"><span class="pre">%</span></tt> and <tt class="docutils literal"><span class="pre">I</span></tt>.  The use of lazy in
+the name stems from the concept of lazy evaluation.  The object the
+global variable is bound to will only be evaluated when called.
+The {SetGlobalLazyVariable} property only holds once: after that,
+the result of evaluation is stored in the global variable, and it
+won&#8217;t be reevaluated again:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; SetGlobalLazyVariable(a,Hold(Taylor(x,0,30)Sin(x)))
+Out&gt; True
+</pre></div>
+</div>
+<p>Then the first time you call <tt class="docutils literal"><span class="pre">a</span></tt> it evaluates <tt class="docutils literal"><span class="pre">Taylor(...)</span></tt> and
+assigns the result to <tt class="docutils literal"><span class="pre">a</span></tt>. The next time you call <tt class="docutils literal"><span class="pre">a</span></tt> it
+immediately returns the result.  <a class="reference internal" href="#SetGlobalLazyVariable" title="SetGlobalLazyVariable"><tt class="xref ys ys-func docutils literal"><span class="pre">SetGlobalLazyVariable()</span></tt></a> is
+called for <tt class="docutils literal"><span class="pre">%</span></tt> each time <tt class="docutils literal"><span class="pre">%</span></tt> changes.  The following example
+demonstrates the sequence of execution:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">SetGlobalLazyVariable</span><span class="p">(</span><span class="n">test</span><span class="p">,</span><span class="n">Hold</span><span class="p">(</span><span class="n">Write</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">)))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<p>The text &#8220;hello&#8221; is not written out to screen yet. However,
+evaluating the variable <tt class="docutils literal"><span class="pre">test</span></tt> forces the expression to be
+evaluated:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">test</span> <span class="o">=</span> <span class="s">&quot;hello&quot;</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Set</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">Hold</span><span class="p">(</span><span class="mi">2</span><span class="o">+</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">a</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">2</span><span class="o">+</span><span class="mi">3</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">SetGlobalLazyVariable</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">Hold</span><span class="p">(</span><span class="mi">2</span><span class="o">+</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">a</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">5</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Set" title="Set"><tt class="xref ys ys-func docutils literal"><span class="pre">Set()</span></tt></a>, <a class="reference internal" href="#Clear" title="Clear"><tt class="xref ys ys-func docutils literal"><span class="pre">Clear()</span></tt></a>, <a class="reference internal" href="#Local" title="Local"><tt class="xref ys ys-func docutils literal"><span class="pre">Local()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">%()</span></tt>, <tt class="xref ys ys-func docutils literal"><span class="pre">I()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="UniqueConstant">
+<tt class="descname">UniqueConstant</tt><big>(</big><big>)</big><a class="headerlink" href="#UniqueConstant" title="Permalink to this definition">¶</a></dt>
+<dd><p>create a unique identifier</p>
+<p>This function returns a unique constant atom each time you call
+it. The atom starts with a C character, and a unique number is
+appended to it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">UniqueConstant</span><span class="p">()</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">C9</span>
+<span class="n">In</span><span class="o">&gt;</span>  <span class="n">UniqueConstant</span><span class="p">()</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">C10</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#LocalSymbols" title="LocalSymbols"><tt class="xref ys ys-func docutils literal"><span class="pre">LocalSymbols()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="LocalSymbols">
+<tt class="descname">LocalSymbols</tt><big>(</big><em>var1</em>, <em>var2</em>, <em>...</em><big>)</big> expr<a class="headerlink" href="#LocalSymbols" title="Permalink to this definition">¶</a></dt>
+<dd><p>create unique local symbols with given prefix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>var2, ..</strong> (<em>var1,</em>) &#8211; atoms, symbols to be made local</li>
+<li><strong>expr</strong> &#8211; expression to execute</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Given the symbols passed as the first arguments to
+<a class="reference internal" href="#LocalSymbols" title="LocalSymbols"><tt class="xref ys ys-func docutils literal"><span class="pre">LocalSymbols()</span></tt></a>, a set of unique local symbols will be
+created, typically of the form <tt class="docutils literal"><span class="pre">$&lt;symbol&gt;&lt;number&gt;</span></tt>, where
+<tt class="docutils literal"><span class="pre">symbol</span></tt> was the symbol entered by the user, and <tt class="docutils literal"><span class="pre">number</span></tt> is a
+unique number. This scheme is used to ensure that a generated
+symbol can not accidentally be entered by a user.  This is useful
+in cases where a guaranteed free variable is needed, for example,
+in the macro-like functions (<a class="reference internal" href="controlflow.html#For" title="For"><tt class="xref ys ys-func docutils literal"><span class="pre">For()</span></tt></a>, <a class="reference internal" href="controlflow.html#While" title="While"><tt class="xref ys ys-func docutils literal"><span class="pre">While()</span></tt></a> etc.).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; LocalSymbols(a,b)a+b
+Out&gt; $a6+ $b6;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#UniqueConstant" title="UniqueConstant"><tt class="xref ys ys-func docutils literal"><span class="pre">UniqueConstant()</span></tt></a></p>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="io.html" class="btn btn-neutral float-right" title="Input/output and plotting">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="consts.html" class="btn btn-neutral" title="Constants"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Ayal Pinkus, Serge Winnitzky, Grzegorz Mazur.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.3.5',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

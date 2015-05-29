@@ -1,0 +1,543 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Glossary &mdash; Yacas</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Yacas" href="../index.html"/>
+        <link rel="prev" title="YAGY" href="yagy/index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="../index.html" class="icon icon-home"> Yacas
+        
+
+        
+          
+          <img src="../_static/yacaslogo.png" class="logo" />
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started/index.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/index.html#installation-from-sources">Installation from sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/index.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/index.html#yacas-syntax">Yacas syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/index.html#using-yacas-from-the-calculation-center">Using Yacas from the calculation center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/index.html#yacas-as-a-symbolic-calculator">Yacas as a symbolic calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/index.html#arbitrary-precision-numbers">Arbitrary precision numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/index.html#analytic-functions">Analytic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/index.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/index.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/index.html#boolean-expressions-and-predicates">Boolean expressions and predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/index.html#strings-and-lists">Strings and lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/index.html#writing-simplification-rules">Writing simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/index.html#local-simplification-rules">Local simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/index.html#programming-essentials">Programming essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/index.html#macros">Macros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/index.html#the-practice-of-programming-in-yacas">The practice of programming in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/index.html#defining-your-own-operators">Defining your own operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/index.html#some-assorted-programming-topics">Some assorted programming topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/index.html#linear-algebra">Linear Algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reference_manual/index.html">Reference Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/arithmetic.html">Arithmetic and other operations on numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/calc.html">Calculus and elementary functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/simplify.html">Simplification of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/ode.html">Differential Equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/logic.html">Propositional logic theorem prover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/linear-algebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/univariate-polynomials.html">Operations on polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/lists.html">List operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/functional.html">Functional operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/controlflow.html">Control flow functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/predicates.html">Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/consts.html">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/vars.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/io.html">Input/output and plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/strings.html">String manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/probability-and-statistics.html">Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/number-theory.html">Number theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_manual/programming.html">Functions related to programming in Yacas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="programming_in_yacas/index.html">Programming in Yacas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#the-yacas-architecture">The Yacas architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#yacas-evaluation-scheme">Yacas evaluation scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#rules">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#structured-programming-and-control-flow">Structured programming and control flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#additional-syntactic-sugar">Additional syntactic sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#using-macro-rules-e-g-nfunction">Using &#8220;Macro rules&#8221; (e.g. {NFunction})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#macro-expansion">Macro expansion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#scope-of-variable-bindings">Scope of variable bindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#evaluation-of-expressions">Evaluation of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#the-lisp-heritage">The LISP heritage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#evaluation">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#yacas-specific-extensions-for-cas-implementations">{Yacas}-specific extensions for CAS implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#the-evaluation-is-simplification-hack">The &#8220;Evaluation is Simplification&#8221; hack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#destructive-operations">Destructive operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#coding-style">Coding style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#writing-new-library-functions">Writing new library functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#advanced-example-1-parsing-expressions-cform">Advanced example 1: parsing expressions ({CForm})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#yacas-programming-pitfalls">Yacas programming pitfalls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#debugging-in-yacas">Debugging in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming_in_yacas/index.html#advanced-example-2-implementing-a-non-commutative-algebra">Advanced example 2: implementing a non-commutative algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="book_of_algorithms/index.html">The Yacas Book of Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="book_of_algorithms/multivar.html">Sparse representations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="book_of_algorithms/integration.html">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="book_of_algorithms/transforms.html">Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="book_of_algorithms/sturm-sequences.html">Finding real roots of polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="book_of_algorithms/numtheory.html">Number theory algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="yagy/index.html">YAGY</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Glossary</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Yacas</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>Glossary</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../_sources/doc/glossary.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="glossary">
+<h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h1>
+<dl class="glossary docutils">
+<dt id="term-arity">arity</dt>
+<dd><p class="first">Arity is the number of arguments of a function.  For example,
+the function {Cos(x)} has one argument and so we say that
+&#8220;{Cos} has arity 1&#8221;.  Arity of a function can be 0, 1, 2, ...</p>
+<p>{Yacas} allows to define functions with the same name but
+different arities, and different rules corresponding to these
+arities will be used.  Also, it is possible to define a
+function with optional arguments, for example, {Plot2D} is one
+such function.  Such functions can have any arity larger or
+equal to a certain minimum arity (the number of non-optional
+arguments).</p>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="reference_manual/controlflow.html#Function" title="Function"><tt class="xref ys ys-func docutils literal"><span class="pre">Function()</span></tt></a>, <a class="reference internal" href="reference_manual/programming.html#OpPrecedence" title="OpPrecedence"><tt class="xref ys ys-func docutils literal"><span class="pre">OpPrecedence()</span></tt></a>,
+<a class="reference internal" href="reference_manual/programming.html#Rule" title="Rule"><tt class="xref ys ys-func docutils literal"><span class="pre">Rule()</span></tt></a></p>
+</div>
+</dd>
+<dt id="term-array">array</dt>
+<dd><p class="first">An array is a container object that can hold a fixed number of
+other Yacas objects in it.  Individual elements of an array can
+be accessed using the {[]} operation.  Most list operations also
+work on arrays.</p>
+<p>Arrays are faster than lists but the array size cannot be
+changed.</p>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="reference_manual/programming.html#Array'Create" title="Array'Create"><tt class="xref ys ys-func docutils literal"><span class="pre">Array'Create()</span></tt></a></p>
+</div>
+</dd>
+<dt id="term-atom">atom</dt>
+<dd><p class="first">Atoms are basic Yacas objects that are used to represent symbols,
+numbers, and function names.  An atom has a string representation
+which is shown when it is displayed.  For example, {3.14159},
+{x}, {A123}, {+}, {&#8220;good morning&#8221;} are atoms.</p>
+<p>Atoms can be of type string, number, or symbol. For example, {y1}
+is a symbolic atom, {954} is a number atom, and {&#8220;&#8221;} is an
+(empty) string atom.  Symbolic atoms are normally used in {Yacas}
+to denote mathematical unknowns and function names. Number and
+string atoms are used to denote values.</p>
+<p>A symbolic atom can be bound to a value (in which case it becomes
+a variable), or to a rule or several rules (in which case it
+becomes a function).  An atom can also have a property object.</p>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="reference_manual/strings.html#Atom" title="Atom"><tt class="xref ys ys-func docutils literal"><span class="pre">Atom()</span></tt></a>, <a class="reference internal" href="reference_manual/strings.html#String" title="String"><tt class="xref ys ys-func docutils literal"><span class="pre">String()</span></tt></a></p>
+</div>
+</dd>
+<dt id="term-bodied-function">bodied function</dt>
+<dd><p class="first"><em>Bodied functions</em> have all arguments except the first one inside
+parentheses and the first argument outside the argument list, for
+example:</p>
+<div class="last highlight-python"><div class="highlight"><pre>Integrate(x) Sin(x);
+</pre></div>
+</div>
+</dd>
+<dt id="term-cas">CAS</dt>
+<dd>Abbreviation for &#8220;computer algebra system&#8221;. {Yacas} is a CAS.</dd>
+<dt id="term-constant">constant</dt>
+<dd><p class="first">Constants such as {I}, {Pi} or {GoldenRatio} are symbolic atoms
+that are specially interpreted by {Yacas}.  For example, there
+are simplification rules that transform expressions such as
+{Sin(Pi)} into {0}.  When requesting a numerical evaluation of a
+constant, the numerical value is given to the current value as
+set with {N}.</p>
+<p>Some constants take a long time to compute and therefore they are
+cached at the highest precision computed so far.  These are the
+&#8220;cached constants&#8221;.</p>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="reference_manual/arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a>, <a class="reference internal" href="reference_manual/programming.html#CachedConstant" title="CachedConstant"><tt class="xref ys ys-func docutils literal"><span class="pre">CachedConstant()</span></tt></a>, <a class="reference internal" href="reference_manual/consts.html#Pi" title="Pi"><tt class="xref ys ys-func docutils literal"><span class="pre">Pi()</span></tt></a>,
+<a class="reference internal" href="reference_manual/consts.html#GoldenRatio" title="GoldenRatio"><tt class="xref ys ys-func docutils literal"><span class="pre">GoldenRatio()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">CatalanConstant()</span></tt>,
+<a class="reference internal" href="reference_manual/consts.html#gamma" title="gamma"><tt class="xref ys ys-func docutils literal"><span class="pre">gamma()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">I()</span></tt></p>
+</div>
+</dd>
+<dt id="term-equation">equation</dt>
+<dd><p class="first">To denote symbolic equations, the operator {==} is used.  This
+operator does not assign or compare its sides.  For example, the
+expression {Sin(x)==1} is kept unevaluated and can be passed as
+argument to functions.  For example, In&gt; Solve(Sin(x)==1, x) Out&gt;
+{x==Pi/2};</p>
+<p>The symbolic equation operator {==} is also useful to represent
+solutions of equations or to specify substitutions, give options,
+and so on.</p>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="reference_manual/solvers.html#Solve" title="Solve"><tt class="xref ys ys-func docutils literal"><span class="pre">Solve()</span></tt></a>, <a class="reference internal" href="reference_manual/functional.html#Where" title="Where"><tt class="xref ys ys-func docutils literal"><span class="pre">Where()</span></tt></a>, <a class="reference internal" href="reference_manual/io.html#Plot2D" title="Plot2D"><tt class="xref ys ys-func docutils literal"><span class="pre">Plot2D()</span></tt></a></p>
+</div>
+</dd>
+<dt id="term-function">function</dt>
+<dd><p class="first">A function is a symbolic atom that is bound to a rule or several
+rules.  A function can have none, one, or more arguments.
+Functions can also have a variable number of arguments.
+Arguments of functions are arbitrary Yacas objects.</p>
+<p>Functions can be evaluated, that is, the rules bound to them may
+be executed.  For example, <tt class="docutils literal"><span class="pre">Cos(Pi+0)</span></tt> is an expression that
+contains two functions and four atoms.  The atom <tt class="docutils literal"><span class="pre">Pi</span></tt> is a
+symbolic atom which is normally not bound to anything.  The atom
+<tt class="docutils literal"><span class="pre">0</span></tt> is a numeric atom.</p>
+<p>The atoms <tt class="docutils literal"><span class="pre">Cos</span></tt> and <tt class="docutils literal"><span class="pre">+</span></tt> are symbolic atoms which are bound to
+appropriate simplification rules.  So these two atoms are
+functions.  Note that these functions have different syntax.
+<tt class="docutils literal"><span class="pre">Cos</span></tt> is a normal function which takes its arguments in
+parentheses.  The atom <tt class="docutils literal"><span class="pre">+</span></tt> is a function with special syntax
+because <tt class="docutils literal"><span class="pre">+</span></tt> is placed between its arguments and no parentheses
+are used.</p>
+<p>The rules to which <tt class="docutils literal"><span class="pre">+</span></tt> is bound are such that the expression
+<tt class="docutils literal"><span class="pre">Pi+0</span></tt> is evaluated to the symbolic atom <tt class="docutils literal"><span class="pre">Pi</span></tt>.  The rules for
+<tt class="docutils literal"><span class="pre">Cos</span></tt> are such that the expression <tt class="docutils literal"><span class="pre">Cos(Pi)</span></tt> is evaluated to
+the numeric atom <tt class="docutils literal"><span class="pre">-1</span></tt>.  The example {Yacas} session is:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Cos</span><span class="p">(</span><span class="n">Pi</span><span class="o">+</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span>
+</pre></div>
+</div>
+<p>Some functions are built-in and implemented in C++, while others
+are library functions.</p>
+<p>The built-in functions are usually less flexible than the library
+functions because they cannot be left unevaluated.  Given
+incorrect arguments, a built-in function will generate an error.
+However, a user-defined function may simply return unevaluated in
+such cases.</p>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="reference_manual/controlflow.html#Function" title="Function"><tt class="xref ys ys-func docutils literal"><span class="pre">Function()</span></tt></a>, <a class="reference internal" href="reference_manual/programming.html#Rule" title="Rule"><tt class="xref ys ys-func docutils literal"><span class="pre">Rule()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">&lt;--()</span></tt></p>
+</div>
+</dd>
+<dt id="term-list">list</dt>
+<dd><p class="first">A list is a basic {Yacas} container object. A list is written as
+e.g. {{a, b, c}} or {{}} (empty list).  Individual elements of a
+list can be accessed using the {[]} operation.  Lists can be
+concatenated, and individual elements can be removed or inserted.</p>
+<p>Lists are ubiquitous in {Yacas}.  Most data structures in the
+standard library is based on lists.</p>
+<p>Lists are also used internally to represent {Yacas} expressions.
+For example, the expression {Cos(x+1)} is represented internally
+as a nested list: In&gt; FullForm( Cos(x+1) ) (Cos (+ x 1 )) Out&gt;
+Cos(x+1);</p>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="reference_manual/lists.html#List" title="List"><tt class="xref ys ys-func docutils literal"><span class="pre">List()</span></tt></a>, <a class="reference internal" href="reference_manual/lists.html#Listify" title="Listify"><tt class="xref ys ys-func docutils literal"><span class="pre">Listify()</span></tt></a>, <a class="reference internal" href="reference_manual/lists.html#UnList" title="UnList"><tt class="xref ys ys-func docutils literal"><span class="pre">UnList()</span></tt></a>,
+<a class="reference internal" href="reference_manual/lists.html#Length" title="Length"><tt class="xref ys ys-func docutils literal"><span class="pre">Length()</span></tt></a>, <a class="reference internal" href="reference_manual/io.html#FullForm" title="FullForm"><tt class="xref ys ys-func docutils literal"><span class="pre">FullForm()</span></tt></a></p>
+</div>
+</dd>
+<dt id="term-matrix">matrix</dt>
+<dd><p class="first">A matrix is represented as a list of lists.  Matrices are
+represented in the &#8220;row-major&#8221; order: a matrix is a list of rows,
+and each row is a list of its elements.</p>
+<p>Some basic linear algebra operations on matrices are supported.</p>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="reference_manual/linear-algebra.html#Determinant" title="Determinant"><tt class="xref ys ys-func docutils literal"><span class="pre">Determinant()</span></tt></a>, <a class="reference internal" href="reference_manual/linear-algebra.html#Identity" title="Identity"><tt class="xref ys ys-func docutils literal"><span class="pre">Identity()</span></tt></a>,
+<a class="reference internal" href="reference_manual/linear-algebra.html#IsDiagonal" title="IsDiagonal"><tt class="xref ys ys-func docutils literal"><span class="pre">IsDiagonal()</span></tt></a>, <a class="reference internal" href="reference_manual/linear-algebra.html#EigenValues" title="EigenValues"><tt class="xref ys ys-func docutils literal"><span class="pre">EigenValues()</span></tt></a></p>
+</div>
+</dd>
+<dt id="term-operator">operator</dt>
+<dd><p class="first">Operators are functions that have special syntax declared for
+them.  An operator can be &#8220;bodied&#8221;, infix, prefix or postfix.
+Because of this, operators must have precedence.</p>
+<p>Apart from the syntax, operators are exactly the same as any
+other functions, they can have rules bound to them in the same
+way.</p>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="reference_manual/programming.html#Bodied" title="Bodied"><tt class="xref ys ys-func docutils literal"><span class="pre">Bodied()</span></tt></a>, <a class="reference internal" href="reference_manual/programming.html#Infix" title="Infix"><tt class="xref ys ys-func docutils literal"><span class="pre">Infix()</span></tt></a>, <a class="reference internal" href="reference_manual/programming.html#Prefix" title="Prefix"><tt class="xref ys ys-func docutils literal"><span class="pre">Prefix()</span></tt></a>,
+<a class="reference internal" href="reference_manual/programming.html#Postfix" title="Postfix"><tt class="xref ys ys-func docutils literal"><span class="pre">Postfix()</span></tt></a></p>
+</div>
+</dd>
+<dt id="term-precedence">precedence</dt>
+<dd><p class="first">Precedence is a property of the syntax of an operator that
+specifies how it is parsed.  Only operators, i.e. functions with
+special syntax, can have precedence.  Precedence values are
+nonnegative integers: 0, 1, ...  Lower numbers bind more tightly.</p>
+<p>For example, the operator &#8220;{+}&#8221; binds less tightly (i.e. has a
+&lt;i&gt;higher&lt;/i&gt; precedence value) than the operator &#8220;{*}&#8221; and so
+the expression {a+b*c} is parsed as {a+(b*c)}, as one would
+expect.</p>
+<p>Infix operators can have different left-side and right-side
+precedence.  For example, the infix operator &#8220;{-}&#8221; has left
+precedence <tt class="docutils literal"><span class="pre">*EVAL</span> <span class="pre">OpLeftPrecedence(&quot;-&quot;)</span> <span class="pre">and</span> <span class="pre">right</span> <span class="pre">precedence</span>
+<span class="pre">*EVAL</span> <span class="pre">OpRightPrecedence(&quot;-&quot;)</span></tt> &#8211; this allows us to parse
+expressions such as {a-b+c} correctly, as $(a-b)+c$, and not as
+$a-(b+c)$.</p>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="reference_manual/programming.html#Bodied" title="Bodied"><tt class="xref ys ys-func docutils literal"><span class="pre">Bodied()</span></tt></a>, <a class="reference internal" href="reference_manual/programming.html#OpPrecedence" title="OpPrecedence"><tt class="xref ys ys-func docutils literal"><span class="pre">OpPrecedence()</span></tt></a>,
+<a class="reference internal" href="reference_manual/programming.html#OpLeftPrecedence" title="OpLeftPrecedence"><tt class="xref ys ys-func docutils literal"><span class="pre">OpLeftPrecedence()</span></tt></a>, <a class="reference internal" href="reference_manual/programming.html#OpRightPrecedence" title="OpRightPrecedence"><tt class="xref ys ys-func docutils literal"><span class="pre">OpRightPrecedence()</span></tt></a></p>
+</div>
+</dd>
+<dt id="term-property">property</dt>
+<dd><p class="first">Properties are special additional objects (tags) that can be tied
+to expressions.  For example, the expression {1+x} may be tagged
+by an expression {y} by the command</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; a:= ExtraInfo&#39;Set(1+x,y);
+Out&gt; 1+x;
+</pre></div>
+</div>
+<p>Now {a} refers to an expression {1+x} which is different from all
+other copies of {1+x} because it is tagged by {y}.</p>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="reference_manual/programming.html#ExtraInfo'Get" title="ExtraInfo'Get"><tt class="xref ys ys-func docutils literal"><span class="pre">ExtraInfo'Get()</span></tt></a>, <a class="reference internal" href="reference_manual/programming.html#ExtraInfo'Set" title="ExtraInfo'Set"><tt class="xref ys ys-func docutils literal"><span class="pre">ExtraInfo'Set()</span></tt></a></p>
+</div>
+</dd>
+<dt id="term-rule">rule</dt>
+<dd><p class="first">Rules are the principal mechanism of expression evaluation in
+{Yacas}.  A rule specifies that a certain symbolic expression is
+to be replaced by another expression.  If no rule that matches a
+given symbolic expression can be found, the expression is left
+unevaluated.  This is usually the desired behavior for a CAS.  For
+example, a user can type</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">func1</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">func1</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>and use an undefined function {func1}.  Since no rules are defined
+for the function {func1}, it is not evaluated, but its argument
+has been simplified.</p>
+<p>Only expressions containing functions can be evaluated by rules.
+(Atoms are evaluated only if they are bound to a value.)</p>
+<p>Several rules can be defined for a given function.  Rules can be
+erased or added at run time.</p>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="reference_manual/programming.html#Rule" title="Rule"><tt class="xref ys ys-func docutils literal"><span class="pre">Rule()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">&lt;--()</span></tt>, <a class="reference internal" href="reference_manual/programming.html#Retract" title="Retract"><tt class="xref ys ys-func docutils literal"><span class="pre">Retract()</span></tt></a></p>
+</div>
+</dd>
+<dt id="term-string">string</dt>
+<dd><p class="first">A string is an atom with character string value, for example,
+{&#8220;abcd&#8221;}.  Individual characters of the string can be accessed
+using the {[]} operation.  Some string manipulation functions are
+supported.</p>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="reference_manual/strings.html#String" title="String"><tt class="xref ys ys-func docutils literal"><span class="pre">String()</span></tt></a>, <a class="reference internal" href="reference_manual/strings.html#StringMid'Get" title="StringMid'Get"><tt class="xref ys ys-func docutils literal"><span class="pre">StringMid'Get()</span></tt></a>,
+<a class="reference internal" href="reference_manual/strings.html#StringMid'Set" title="StringMid'Set"><tt class="xref ys ys-func docutils literal"><span class="pre">StringMid'Set()</span></tt></a></p>
+</div>
+</dd>
+<dt id="term-syntax">syntax</dt>
+<dd><p class="first">{Yacas} uses an infix syntax similar to C or Fortran.  However,
+the syntax is entirely user-defined and very flexible.  Infix,
+prefix, postfix operators can be defined, as well as &#8220;bodied&#8221;
+functions.  This allows to write mathematical expressions more
+comfortably, for example</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; D(x) Sin(x)+1
+Out&gt; Cos(x);
+</pre></div>
+</div>
+<p>Functions with special syntax can have different precedence.</p>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="reference_manual/programming.html#Bodied" title="Bodied"><tt class="xref ys ys-func docutils literal"><span class="pre">Bodied()</span></tt></a>, <a class="reference internal" href="reference_manual/programming.html#Infix" title="Infix"><tt class="xref ys ys-func docutils literal"><span class="pre">Infix()</span></tt></a>, <a class="reference internal" href="reference_manual/programming.html#Prefix" title="Prefix"><tt class="xref ys ys-func docutils literal"><span class="pre">Prefix()</span></tt></a>,
+<a class="reference internal" href="reference_manual/programming.html#Postfix" title="Postfix"><tt class="xref ys ys-func docutils literal"><span class="pre">Postfix()</span></tt></a>, <a class="reference internal" href="reference_manual/programming.html#OpPrecedence" title="OpPrecedence"><tt class="xref ys ys-func docutils literal"><span class="pre">OpPrecedence()</span></tt></a></p>
+</div>
+</dd>
+<dt id="term-threaded-function">threaded function</dt>
+<dd><p class="first">Threaded function applied to a list</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Cos</span><span class="p">({</span><span class="n">Pi</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">Pi</span><span class="o">/</span><span class="mi">4</span><span class="p">})</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="n">Sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">)}</span>
+</pre></div>
+</div>
+</dd>
+<dt id="term-variable">variable</dt>
+<dd><p class="first">Variables are symbolic atoms bound to a &#8220;value&#8221;.  Value is any
+Yacas object, such as an atom or a list.  For example, after
+executing</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; a := 1
+Out&gt; 1;
+</pre></div>
+</div>
+<p>the symbolic atom {a} becomes a variable bound to a value, the
+numeric atom {1}.</p>
+<div class="last admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="reference_manual/controlflow.html#Eval" title="Eval"><tt class="xref ys ys-func docutils literal"><span class="pre">Eval()</span></tt></a>, <a class="reference internal" href="reference_manual/vars.html#:=" title=":="><tt class="xref ys ys-func docutils literal"><span class="pre">:=()</span></tt></a>, <a class="reference internal" href="reference_manual/vars.html#Clear" title="Clear"><tt class="xref ys ys-func docutils literal"><span class="pre">Clear()</span></tt></a></p>
+</div>
+</dd>
+<dt id="term-warranty">warranty</dt>
+<dd>{Yacas} is Free Software (&#8220;logiciel libre&#8221;) and comes with {NO
+WARRANTY}.  See &lt;<em>the appropriate section of the
+GPL|yacasdoc://refprog/1/2/</em>&gt; for full information.</dd>
+</dl>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="yagy/index.html" class="btn btn-neutral" title="YAGY"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Ayal Pinkus, Serge Winnitzky, Grzegorz Mazur.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.3.5',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
