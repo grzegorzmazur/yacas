@@ -1,0 +1,542 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Constants &mdash; Yacas</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Yacas" href="../../index.html"/>
+        <link rel="up" title="Reference Manual" href="index.html"/>
+        <link rel="next" title="Variables" href="vars.html"/>
+        <link rel="prev" title="Predicates" href="predicates.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="../../index.html" class="icon icon-home"> Yacas
+        
+
+        
+          
+          <img src="../../_static/yacaslogo.png" class="logo" />
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation-from-sources">Installation from sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-syntax">Yacas syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#using-yacas-from-the-calculation-center">Using Yacas from the calculation center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-as-a-symbolic-calculator">Yacas as a symbolic calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#arbitrary-precision-numbers">Arbitrary precision numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#analytic-functions">Analytic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#boolean-expressions-and-predicates">Boolean expressions and predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#strings-and-lists">Strings and lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#writing-simplification-rules">Writing simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#local-simplification-rules">Local simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#programming-essentials">Programming essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#macros">Macros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#the-practice-of-programming-in-yacas">The practice of programming in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#defining-your-own-operators">Defining your own operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#some-assorted-programming-topics">Some assorted programming topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#linear-algebra">Linear Algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="arithmetic.html">Arithmetic and other operations on numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calc.html">Calculus and elementary functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simplify.html">Simplification of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode.html">Differential Equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logic.html">Propositional logic theorem prover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear-algebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="univariate-polynomials.html">Operations on polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lists.html">List operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional.html">Functional operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controlflow.html">Control flow functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="predicates.html">Predicates</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vars.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io.html">Input/output and plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="strings.html">String manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="probability-and-statistics.html">Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="number-theory.html">Number theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming.html">Functions related to programming in Yacas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_in_yacas/index.html">Programming in Yacas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-yacas-architecture">The Yacas architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-evaluation-scheme">Yacas evaluation scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#rules">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#structured-programming-and-control-flow">Structured programming and control flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#additional-syntactic-sugar">Additional syntactic sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#using-macro-rules-e-g-nfunction">Using &#8220;Macro rules&#8221; (e.g. {NFunction})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#macro-expansion">Macro expansion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#scope-of-variable-bindings">Scope of variable bindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation-of-expressions">Evaluation of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-lisp-heritage">The LISP heritage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-specific-extensions-for-cas-implementations">{Yacas}-specific extensions for CAS implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-evaluation-is-simplification-hack">The &#8220;Evaluation is Simplification&#8221; hack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#destructive-operations">Destructive operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#coding-style">Coding style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#writing-new-library-functions">Writing new library functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-1-parsing-expressions-cform">Advanced example 1: parsing expressions ({CForm})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-programming-pitfalls">Yacas programming pitfalls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#debugging-in-yacas">Debugging in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-2-implementing-a-non-commutative-algebra">Advanced example 2: implementing a non-commutative algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../book_of_algorithms/index.html">The Yacas Book of Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/multivar.html">Sparse representations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/integration.html">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/transforms.html">Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/sturm-sequences.html">Finding real roots of polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/numtheory.html">Number theory algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../yagy/index.html">YAGY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Yacas</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Reference Manual</a> &raquo;</li>
+      
+    <li>Constants</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/doc/reference_manual/consts.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="constants">
+<h1>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="yacas-specific-constants">
+<h2>Yacas-specific constants<a class="headerlink" href="#yacas-specific-constants" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt>
+<tt class="descname">%</tt></dt>
+<dd><p>previous result</p>
+<p><tt class="xref ys ys-data docutils literal"><span class="pre">%</span></tt> evaluates to the previous result on the command
+line. <tt class="xref ys ys-data docutils literal"><span class="pre">%</span></tt> is a global variable that is bound to the previous
+result from the command line.  Using <tt class="xref ys ys-data docutils literal"><span class="pre">%</span></tt> will evaluate the
+previous result. (This uses the functionality offered by the
+{SetGlobalLazyVariable} command).</p>
+<p>Typical examples are <tt class="docutils literal"><span class="pre">Simplify(%)</span></tt> and <tt class="docutils literal"><span class="pre">PrettyForm(%)</span></tt> to
+simplify and show the result in a nice form respectively.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Taylor(x,0,5)Sin(x)
+Out&gt; x-x^3/6+x^5/120;
+In&gt; PrettyForm(%)
+
+     3    5
+    x    x
+x - -- + ---
+    6    120
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="vars.html#SetGlobalLazyVariable" title="SetGlobalLazyVariable"><tt class="xref ys ys-func docutils literal"><span class="pre">SetGlobalLazyVariable()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="data">
+<dt id="EndOfFile">
+<tt class="descname">EndOfFile</tt><a class="headerlink" href="#EndOfFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>end-of-file marker</p>
+<p>End of file marker when reading from file. If a file contains the
+expression {EndOfFile;} the operation will stop reading the file at
+that point.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="mathematical-constants">
+<h2>Mathematical constants<a class="headerlink" href="#mathematical-constants" title="Permalink to this headline">¶</a></h2>
+<dl class="data">
+<dt id="True">
+<tt class="descname">True</tt><a class="headerlink" href="#True" title="Permalink to this definition">¶</a></dt>
+<dt id="False">
+<tt class="descname">False</tt><a class="headerlink" href="#False" title="Permalink to this definition">¶</a></dt>
+<dd><p>boolean constants representing true and false</p>
+<p><a class="reference internal" href="#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> and <a class="reference internal" href="#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> are typically a result of boolean
+expressions such as <tt class="docutils literal"><span class="pre">2</span> <span class="pre">&lt;</span> <span class="pre">3</span></tt> or <tt class="docutils literal"><span class="pre">True</span> <span class="pre">And</span> <span class="pre">False</span></tt>.</p>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">And()</span></tt>, <tt class="xref ys ys-func docutils literal"><span class="pre">Or()</span></tt>, <tt class="xref ys ys-func docutils literal"><span class="pre">Not()</span></tt></p>
+</div>
+<dl class="data">
+<dt id="Infinity">
+<tt class="descname">Infinity</tt><a class="headerlink" href="#Infinity" title="Permalink to this definition">¶</a></dt>
+<dd><p>constant representing mathematical infinity</p>
+<p><a class="reference internal" href="#Infinity" title="Infinity"><tt class="xref ys ys-data docutils literal"><span class="pre">Infinity</span></tt></a> represents infinitely large values. It can be the
+result of certain calculations.</p>
+<p>Note that for most analytic functions Yacas understands
+<a class="reference internal" href="#Infinity" title="Infinity"><tt class="xref ys ys-data docutils literal"><span class="pre">Infinity</span></tt></a> as a positive number.  Thus <tt class="docutils literal"><span class="pre">Infinity*2</span></tt> will
+return <tt class="docutils literal"><span class="pre">Infinity</span></tt>, and <tt class="docutils literal"><span class="pre">a</span> <span class="pre">&lt;</span> <span class="pre">Infinity</span></tt> will evaluate to
+<a class="reference internal" href="#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="mi">2</span><span class="o">*</span><span class="n">Infinity</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Infinity</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="mi">2</span><span class="o">&lt;</span><span class="n">Infinity</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="data">
+<dt id="Pi">
+<tt class="descname">Pi</tt><a class="headerlink" href="#Pi" title="Permalink to this definition">¶</a></dt>
+<dd><p>mathematical constant, <span class="math">\(\pi\)</span></p>
+<p><a class="reference internal" href="#Pi" title="Pi"><tt class="xref ys ys-data docutils literal"><span class="pre">Pi</span></tt></a> symbolically represents the exact value of
+<span class="math">\(\pi\)</span>. When the <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a> function is used, <a class="reference internal" href="#Pi" title="Pi"><tt class="xref ys ys-data docutils literal"><span class="pre">Pi</span></tt></a>
+evaluates to a numerical value according to the current precision.
+It is better to use <a class="reference internal" href="#Pi" title="Pi"><tt class="xref ys ys-data docutils literal"><span class="pre">Pi</span></tt></a> than <tt class="docutils literal"><span class="pre">N(Pi)</span></tt> except in numerical
+calculations, because exact simplification will be possible.</p>
+<p>This is a &#8220;cached constant&#8221; which is recalculated only when
+precision is increased.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Sin</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">Pi</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Pi</span><span class="o">+</span><span class="mi">1</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Pi</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">N</span><span class="p">(</span><span class="n">Pi</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mf">3.14159265358979323846</span><span class="p">;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="calc.html#Sin" title="Sin"><tt class="xref ys ys-func docutils literal"><span class="pre">Sin()</span></tt></a>, <a class="reference internal" href="calc.html#Cos" title="Cos"><tt class="xref ys ys-func docutils literal"><span class="pre">Cos()</span></tt></a>, <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a>, <a class="reference internal" href="programming.html#CachedConstant" title="CachedConstant"><tt class="xref ys ys-func docutils literal"><span class="pre">CachedConstant()</span></tt></a></p>
+</div>
+<dl class="data">
+<dt id="Undefined">
+<tt class="descname">Undefined</tt><a class="headerlink" href="#Undefined" title="Permalink to this definition">¶</a></dt>
+<dd><p>constant signifying an undefined result</p>
+<p><a class="reference internal" href="#Undefined" title="Undefined"><tt class="xref ys ys-data docutils literal"><span class="pre">Undefined</span></tt></a> is a token that can be returned by a function
+when it considers its input to be invalid or when no meaningful
+answer can be given. The result is then &#8220;undefined&#8221;.</p>
+<p>Most functions also return <a class="reference internal" href="#Undefined" title="Undefined"><tt class="xref ys ys-data docutils literal"><span class="pre">Undefined</span></tt></a> when evaluated on it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="mi">2</span><span class="o">*</span><span class="n">Infinity</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Infinity</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="mi">0</span><span class="o">*</span><span class="n">Infinity</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Undefined</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Sin</span><span class="p">(</span><span class="n">Infinity</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Undefined</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Undefined</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">Exp</span><span class="p">(</span><span class="n">Undefined</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Undefined</span><span class="p">;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Infinity" title="Infinity"><tt class="xref ys ys-data docutils literal"><span class="pre">Infinity</span></tt></a></p>
+</div>
+<dl class="data">
+<dt id="GoldenRatio">
+<tt class="descname">GoldenRatio</tt><a class="headerlink" href="#GoldenRatio" title="Permalink to this definition">¶</a></dt>
+<dd><p>the Golden Ratio</p>
+<p>These functions compute the &#8220;golden ratio&#8221;
+$$phi &lt;=&gt; 1.6180339887 &lt;=&gt; (1+Sqrt(5))/2 $$.</p>
+<p>The ancient Greeks defined the &#8220;golden ratio&#8221; as follows: If one
+divides a length 1 into two pieces $x$ and $1-x$, such that the
+ratio of 1 to $x$ is the same as the ratio of $x$ to $1-x$, then
+$1/x &lt;=&gt; 1.618$... is the &#8220;golden ratio&#8221;.</p>
+<p>The constant is available symbolically as <a class="reference internal" href="#GoldenRatio" title="GoldenRatio"><tt class="xref ys ys-data docutils literal"><span class="pre">GoldenRatio</span></tt></a> or
+numerically through <tt class="docutils literal"><span class="pre">N(GoldenRatio)</span></tt>.  This is a &#8220;cached
+constant&#8221; which is recalculated only when precision is increased.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; x:=GoldenRatio - 1
+Out&gt; GoldenRatio-1;
+In&gt; N(x)
+Out&gt; 0.6180339887;
+In&gt; N(1/GoldenRatio)
+Out&gt; 0.6180339887;
+In&gt; V(N(GoldenRatio,20));
+
+CachedConstant: Info: constant GoldenRatio is
+being recalculated at precision 20
+Out&gt; 1.6180339887498948482;
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a>, <a class="reference internal" href="programming.html#CachedConstant" title="CachedConstant"><tt class="xref ys ys-func docutils literal"><span class="pre">CachedConstant()</span></tt></a></p>
+</div>
+<dl class="data">
+<dt id="Catalan">
+<tt class="descname">Catalan</tt><a class="headerlink" href="#Catalan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Catalan&#8217;s Constant</p>
+<p>These functions compute Catalan&#8217;s Constant
+$Catalan&lt;=&gt;0.9159655941$.</p>
+<p>The constant is available symbolically as {Catalan} or numerically
+through {N(Catalan)} with {N(...)} the usual operator used to try
+to coerce an expression in to a numeric approximation of that
+expression.  This is a &#8220;cached constant&#8221; which is recalculated only
+when precision is increased.  The numerical value of the constant
+can also be obtained as {N(Catalan)}.  The low-level numerical
+computations are performed by the routine {CatalanConstNum}.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; N(Catalan)
+Out&gt; 0.9159655941;
+In&gt; DirichletBeta(2)
+Out&gt; Catalan;
+In&gt; V(N(Catalan,20))
+
+CachedConstant: Info: constant Catalan is
+being recalculated at precision 20
+Out&gt; 0.91596559417721901505;
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a>, <a class="reference internal" href="programming.html#CachedConstant" title="CachedConstant"><tt class="xref ys ys-func docutils literal"><span class="pre">CachedConstant()</span></tt></a></p>
+</div>
+<dl class="data">
+<dt id="gamma">
+<tt class="descname">gamma</tt><a class="headerlink" href="#gamma" title="Permalink to this definition">¶</a></dt>
+<dd><p>Euler&#8217;s constant <span class="math">\(\gamma\)</span></p>
+<p>The constant represents the Euler&#8217;s constant <span class="math">\(\gamma\approx
+0.57722...\)</span></p>
+<p>The constant is available symbolically as <a class="reference internal" href="#gamma" title="gamma"><tt class="xref ys ys-data docutils literal"><span class="pre">gamma</span></tt></a> or
+numerically through using the usual function <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a> to get the
+numeric result, <tt class="docutils literal"><span class="pre">N(gamma)</span></tt>.  This is a &#8220;cached constant&#8221; which is
+recalculated only when precision is increased. The low-level
+numerical computations are performed by the routine
+<tt class="xref ys ys-func docutils literal"><span class="pre">GammaConstNum()</span></tt>.</p>
+<p>Note that Euler&#8217;s <span class="math">\(\Gamma(x)\)</span> function is the capitalized
+<a class="reference internal" href="calc.html#Gamma" title="Gamma"><tt class="xref ys ys-func docutils literal"><span class="pre">Gamma()</span></tt></a> in Yacas.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; gamma+Pi
+Out&gt; gamma+Pi;
+In&gt; N(gamma+Pi)
+Out&gt; 3.7188083184;
+In&gt; V(N(gamma,20))
+
+CachedConstant: Info: constant gamma is being
+  recalculated at precision 20
+GammaConstNum: Info: used 56 iterations at
+  working precision 24
+Out&gt; 0.57721566490153286061;
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="calc.html#Gamma" title="Gamma"><tt class="xref ys ys-func docutils literal"><span class="pre">Gamma()</span></tt></a>, <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a>, <a class="reference internal" href="programming.html#CachedConstant" title="CachedConstant"><tt class="xref ys ys-func docutils literal"><span class="pre">CachedConstant()</span></tt></a></p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="vars.html" class="btn btn-neutral float-right" title="Variables">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="predicates.html" class="btn btn-neutral" title="Predicates"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Ayal Pinkus, Serge Winnitzky, Grzegorz Mazur.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.3.5',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

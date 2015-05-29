@@ -1,3 +1,45 @@
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+
+find_package(Sphinx REQUIRED)
+
+if(NOT DEFINED SPHINX_THEME)
+    set(SPHINX_THEME default)
+endif()
+
+if(NOT DEFINED SPHINX_THEME_DIR)
+    set(SPHINX_THEME_DIR)
+endif()
+
+# configured documentation tools and intermediate build results
+set(BINARY_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc/_build")
+
+# Sphinx cache with pickled ReST documents
+set(SPHINX_CACHE_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc/_doctrees")
+
+# HTML output directory
+set(SPHINX_HTML_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc/html")
+
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/new_docs/conf.py.in"
+    "${BINARY_BUILD_DIR}/doc/conf.py"
+    @ONLY)
+
+file (COPY new_docs/util DESTINATION "${BINARY_BUILD_DIR}/doc")
+file (COPY new_docs/_themes DESTINATION "${BINARY_BUILD_DIR}/doc")
+file (COPY new_docs/_static DESTINATION "${BINARY_BUILD_DIR}/doc")
+file (COPY new_docs/favicon.ico DESTINATION "${BINARY_BUILD_DIR}/doc")
+file (COPY new_docs/yacaslogo.png DESTINATION "${BINARY_BUILD_DIR}/doc")
+
+add_custom_target(yacas_docs ALL
+    ${SPHINX_EXECUTABLE}
+        -q -b html
+        -c "${BINARY_BUILD_DIR}/doc"
+        -d "${SPHINX_CACHE_DIR}"
+        "${CMAKE_CURRENT_SOURCE_DIR}/new_docs"
+        "${SPHINX_HTML_DIR}"
+    COMMENT "Building HTML documentation with Sphinx")
+
+
 find_program (PERL perl)
 find_package (LATEX)
 

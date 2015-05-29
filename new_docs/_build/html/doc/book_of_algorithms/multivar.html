@@ -1,0 +1,602 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Sparse representations &mdash; Yacas</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Yacas" href="../../index.html"/>
+        <link rel="up" title="The Yacas Book of Algorithms" href="index.html"/>
+        <link rel="next" title="Integration" href="integration.html"/>
+        <link rel="prev" title="The Yacas Book of Algorithms" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="../../index.html" class="icon icon-home"> Yacas
+        
+
+        
+          
+          <img src="../../_static/yacaslogo.png" class="logo" />
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation-from-sources">Installation from sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-syntax">Yacas syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#using-yacas-from-the-calculation-center">Using Yacas from the calculation center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-as-a-symbolic-calculator">Yacas as a symbolic calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#arbitrary-precision-numbers">Arbitrary precision numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#analytic-functions">Analytic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#boolean-expressions-and-predicates">Boolean expressions and predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#strings-and-lists">Strings and lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#writing-simplification-rules">Writing simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#local-simplification-rules">Local simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#programming-essentials">Programming essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#macros">Macros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#the-practice-of-programming-in-yacas">The practice of programming in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#defining-your-own-operators">Defining your own operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#some-assorted-programming-topics">Some assorted programming topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#linear-algebra">Linear Algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_manual/index.html">Reference Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/arithmetic.html">Arithmetic and other operations on numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/calc.html">Calculus and elementary functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/simplify.html">Simplification of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/ode.html">Differential Equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/logic.html">Propositional logic theorem prover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/linear-algebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/univariate-polynomials.html">Operations on polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/lists.html">List operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/functional.html">Functional operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/controlflow.html">Control flow functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/predicates.html">Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/consts.html">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/vars.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/io.html">Input/output and plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/strings.html">String manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/probability-and-statistics.html">Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/number-theory.html">Number theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/programming.html">Functions related to programming in Yacas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_in_yacas/index.html">Programming in Yacas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-yacas-architecture">The Yacas architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-evaluation-scheme">Yacas evaluation scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#rules">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#structured-programming-and-control-flow">Structured programming and control flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#additional-syntactic-sugar">Additional syntactic sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#using-macro-rules-e-g-nfunction">Using &#8220;Macro rules&#8221; (e.g. {NFunction})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#macro-expansion">Macro expansion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#scope-of-variable-bindings">Scope of variable bindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation-of-expressions">Evaluation of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-lisp-heritage">The LISP heritage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-specific-extensions-for-cas-implementations">{Yacas}-specific extensions for CAS implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-evaluation-is-simplification-hack">The &#8220;Evaluation is Simplification&#8221; hack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#destructive-operations">Destructive operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#coding-style">Coding style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#writing-new-library-functions">Writing new library functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-1-parsing-expressions-cform">Advanced example 1: parsing expressions ({CForm})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-programming-pitfalls">Yacas programming pitfalls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#debugging-in-yacas">Debugging in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-2-implementing-a-non-commutative-algebra">Advanced example 2: implementing a non-commutative algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">The Yacas Book of Algorithms</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="">Sparse representations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="integration.html">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transforms.html">Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sturm-sequences.html">Finding real roots of polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numtheory.html">Number theory algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../yagy/index.html">YAGY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Yacas</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">The Yacas Book of Algorithms</a> &raquo;</li>
+      
+    <li>Sparse representations</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/doc/book_of_algorithms/multivar.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="sparse-representations">
+<h1>Sparse representations<a class="headerlink" href="#sparse-representations" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="the-sparse-tree-data-structure">
+<h2>The sparse tree data structure<a class="headerlink" href="#the-sparse-tree-data-structure" title="Permalink to this headline">¶</a></h2>
+<p>Yacas has a sparse tree object for use as a storage for storing
+(key,value) pairs for which the following properties hold:</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">(key,</span> <span class="pre">value1)</span> <span class="pre">+</span> <span class="pre">(key,</span> <span class="pre">value2)</span> <span class="pre">=</span> <span class="pre">(key,</span> <span class="pre">value1+value2)</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">(key1,</span> <span class="pre">value1)</span> <span class="pre">*</span> <span class="pre">(key2,</span> <span class="pre">value2)</span> <span class="pre">=</span> <span class="pre">(key1+key2,</span> <span class="pre">value1*value2)</span></tt></li>
+</ul>
+<p>The last is optional. For multivariate polynomials (described
+elsewhere) both hold, but for matrices, only the addition property
+holds.  The function {MultiplyAddSparseTrees} (described below) should
+not be used in these cases.</p>
+</div>
+<div class="section" id="internal-structure">
+<h2>Internal structure<a class="headerlink" href="#internal-structure" title="Permalink to this headline">¶</a></h2>
+<p>A key is defined to be a list of integer numbers ($ n[1] $, ..., $
+n[m] $).  Thus for a two-dimensional key, one item in the sparse tree
+database could be reflected as the (key,value) pair { {{1,2},3} },
+which states that element {(1,2)} has value {3}. (Note: this is not
+the way it is stored in the database!).</p>
+<p>The storage is recursive. The sparse tree begins with a list of
+objects { {n1,tree1} } for values of {n1} for the first item in the
+key. The {tree1} part then contains a sub-tree for all the items in
+the database for which the value of the first item in the key is {n1}.</p>
+<p>The above single element could be created with:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; r:=CreateSparseTree({1,2},3)
+Out&gt; {{1,{{2,3}}}};
+</pre></div>
+</div>
+<p>{CreateSparseTree} makes a database with exactly one item.  Items can
+now be obtained from the sparse tree with {SparseTreeGet}.:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">SparseTreeGet</span><span class="p">({</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">},</span><span class="n">r</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">3</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">SparseTreeGet</span><span class="p">({</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">},</span><span class="n">r</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>And values can also be set or changed:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">SparseTreeSet</span><span class="p">({</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">},</span><span class="n">r</span><span class="p">,</span><span class="n">Current</span><span class="o">+</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">8</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">r</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="p">{{</span><span class="mi">1</span><span class="p">,{{</span><span class="mi">2</span><span class="p">,</span><span class="mi">8</span><span class="p">}}}};</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">SparseTreeSet</span><span class="p">({</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">},</span><span class="n">r</span><span class="p">,</span><span class="n">Current</span><span class="o">+</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">5</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">r</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="p">{{</span><span class="mi">1</span><span class="p">,{{</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">},{</span><span class="mi">2</span><span class="p">,</span><span class="mi">8</span><span class="p">}}}};</span>
+</pre></div>
+</div>
+<p>The variable {Current} represents the current value, and can be used
+to determine the new value. {SparseTreeSet} destructively modifies the
+original, and returns the new value. If the key pair was not found, it
+is added to the tree.</p>
+<p>The sparse tree can be traversed, one element at a time, with
+{SparseTreeScan}:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; SparseTreeScan(Hold({{k,v},Echo({k,v})}),2,r)
+{1,3} 5
+{1,2} 8
+</pre></div>
+</div>
+<p>An example of the use of this function could be multiplying a sparse
+matrix with a sparse vector, where the entire matrix can be scanned
+with {SparseTreeScan}, and each non-zero matrix element $ A[i][j] $
+can then be multiplied with a vector element $ v[j] $, and the result
+added to a sparse vector $ w[i] $, using the {SparseTreeGet} and
+{SparseTreeSet} functions.  Multiplying two sparse matrices would
+require two nested calls to {SparseTreeScan} to multiply every item
+from one matrix with an element from the other, and add it to the
+appropriate element in the resulting sparse matrix.</p>
+<p>When the matrix elements $ A[i][j] $ are defined by a function $
+f(i,j) $ (which can be considered a dense representation), and it
+needs to be multiplied with a sparse vector $ v[j] $, it is better to
+iterate over the sparse vector $ v[j] $.  Representation defines the
+most efficient algorithm to use in this case.</p>
+<p>The API to sparse trees is:</p>
+<ul class="simple">
+<li>{CreateSparseTree(coefs,fact)} - Create a sparse tree with one
+monomial, where &#8216;coefs&#8217; is the key, and &#8216;fact&#8217; the value. &#8216;coefs&#8217;
+should be a list of integers.</li>
+<li>{SparseTreeMap(op,depth,tree)} - Walk over the sparse tree, one
+element at a time, and apply the function &#8220;op&#8221; on the arguments
+(key,value). The &#8216;value&#8217; in the tree is replaced by the value
+returned by the {op} function. &#8216;depth&#8217; signifies the dimension of
+the tree (number of indices in the key).</li>
+<li>{SparseTreeScan(op,depth,tree)} - Same as SparseTreeMap, but without
+changing elements.</li>
+<li>{AddSparseTrees(depth,x,y)},
+{MultiplyAddSparseTrees(depth,x,y,coefs,fact)} - Add sparse tree &#8216;y&#8217;
+to sparse tree &#8216;x&#8217;, destructively.  in the {MultiplyAdd} case, the
+monomials are treated as if they were multiplied by a monomial with
+coefficients with the (key,value) pair (coefs,fact). &#8216;depth&#8217;
+signifies the dimension of the tree (number of indices in the key).</li>
+<li>{SparseTreeGet(key,tree)} - return value stored for key in the tree.</li>
+<li>{SparseTreeSet(key,tree,newvalue)} - change the value stored for the
+key to newvalue. If the key was not found then {newvalue} is stored
+as a new item. The variable {Current} is set to the old value (or
+zero if the key didn&#8217;t exist in the tree) before evaluating
+{newvalue}.</li>
+</ul>
+</div>
+<div class="section" id="implementation-of-multivariate-polynomials">
+<h2>Implementation of multivariate polynomials<a class="headerlink" href="#implementation-of-multivariate-polynomials" title="Permalink to this headline">¶</a></h2>
+<p>This section describes the implementation of multivariate
+polynomials in Yacas.</p>
+<p>Concepts and ideas are taken from the books [Davenport &lt;i&gt;et al.&lt;/i&gt;
+1989] and [von zur Gathen &lt;i&gt;et al.&lt;/i&gt; 1999].</p>
+<div class="section" id="definitions">
+<h3>Definitions<a class="headerlink" href="#definitions" title="Permalink to this headline">¶</a></h3>
+<p>The following definitions define multivariate polynomials, and the
+functions defined on them that are of interest for using such
+multivariates.</p>
+<p>A &lt;i&gt;term&lt;/i&gt; is an object which can be written as</p>
+<div class="math">
+\[c*x[1]^n[1]*x[2]^n[2]* ... *x[m]^n[m]\]</div>
+<p>for $ m $ variables ($ x[1] $, ..., $ x[m] $). The numbers $ n[m] $
+are integers. $ c $ is called a &lt;i&gt;coefficient&lt;/i&gt;, and
+<span class="math">\(x[1]^n[1]*x[2]^n[2]* ... *x[m]^n[m]\)</span> a &lt;i&gt;monomial&lt;/i&gt;.</p>
+<p>A &lt;i&gt;multivariate polynomial&lt;/i&gt; is taken to be a sum over terms.</p>
+<p>We write $ c[a]*x^a $ for a term, where $ a $ is a list of
+powers for the monomial, and $ c[a] $ the &lt;i&gt;coefficient&lt;/i&gt; of the
+term.</p>
+<p>It is useful to define an ordering of monomials, to be able to
+determine a canonical form of a multivariate.</p>
+<p>For the currently implemented code the &lt;i&gt;lexicographic order&lt;/i&gt; has
+been chosen:</p>
+<ul class="simple">
+<li>first an ordering of variables is chosen, ( $ x[1] $, ..., $ x[m] $)</li>
+<li>for the exponents of a monomial, $ a $ = ($ a[1] $, ..., $ a[m] $)
+the lexicographic order first looks at the first exponent, $ a[1] $,
+to determine which of the two monomials comes first in the
+multivariate.  If the two exponents are the same, the next exponent
+is considered.</li>
+</ul>
+<p>This method is called &lt;i&gt;lexicographic&lt;/i&gt; because it is similar to
+the way words are ordered in a usual dictionary.</p>
+<p>For all algorithms (including division) there is some freedom in the
+ordering of monomials. One interesting advantage of the lexicographic
+order is that it can be implemented with a recursive data structure,
+where the first variable, $ x[1] $ can be treated as the main
+variable, thus presenting it as a univariate polynomial in $ x[1] $
+with all its terms grouped together.</p>
+<p>Other orderings can be used, by re-implementing a part of the code
+dealing with multivariate polynomials, and then selecting the new code
+to be used as a driver, as will be described later on.</p>
+<p>Given the above ordering, the following definitions can be stated:</p>
+<p>For a non-zero &lt;i&gt;multivariate polynomial&lt;/i&gt;</p>
+<p>$$ f = Sum(a,a[max],a[min],c[a]*x^a) $$</p>
+<p>with a monomial order:</p>
+<ul class="simple">
+<li><ol class="first arabic">
+<li>$ c[a]*x^a $ is a &lt;i&gt;term&lt;/i&gt; of the multivariate.</li>
+</ol>
+</li>
+<li><ol class="first arabic">
+<li>the &lt;i&gt;multidegree&lt;/i&gt; of $ f $ is $ mdeg(f) := a[max] $.</li>
+</ol>
+</li>
+<li>1. the &lt;i&gt;leading coefficient&lt;/i&gt; of $ f $ is $ lc(f):=c[mdeg(f)] $,
+for the first term with non-zero coefficient.</li>
+<li><ol class="first arabic">
+<li>the &lt;i&gt;leading monomial&lt;/i&gt; of $ f $ is $ lm(f):=x^mdeg(f) $.</li>
+</ol>
+</li>
+<li><ol class="first arabic">
+<li>the &lt;i&gt;leading term&lt;/i&gt; of $ f $ is $ lt(f):=lc(f)*lm(f) $.</li>
+</ol>
+</li>
+</ul>
+<p>The above define access to the leading monomial, which is used for
+divisions, gcd calculations and the like. Thus an implementation needs
+be able to determine { {mdeg(f),lc(f)} } . Note the similarity with
+the (key,value) pairs described in the sparse tree section.  $ mdeg(f)
+$ can be thought of as a &#8216;key&#8217;, and $ lc(f) $ as a &#8216;value&#8217;.</p>
+<p>The &lt;i&gt;multicontent&lt;/i&gt;, $ multicont(f) $, is defined to be a term
+that divides all the terms in $ f $, and is the term described by ($
+Min(a) $, $ Gcd(c) $), with $ Gcd(c) $ the GCD of all the
+coefficients, and $ Min(a) $ the lowest exponents for each variable,
+occurring in $ f $ for which $ c $ is non-zero.</p>
+<p>The &lt;i&gt;multiprimitive part&lt;/i&gt; is then defined as $
+pp(f):=f$/$multicont(f) $.</p>
+<p>For a multivariate polynomial, the obvious addition and (distributive)
+multiplication rules hold</p>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">(a+b)</span> <span class="pre">+</span> <span class="pre">(c+d)</span> <span class="pre">:=</span> <span class="pre">a+b+c+d</span></tt></li>
+<li><tt class="docutils literal"><span class="pre">a*(b+c)</span> <span class="pre">:=</span> <span class="pre">(a*b)+(a*c)</span></tt></li>
+</ul>
+<p>These are supported in the Yacas system through a multiply-add
+operation: $$ muadd(f,t,g) := f+t*g $$.  This allows for both adding
+two polynomials ($ t:=1 $), or multiplication of two polynomials by
+scanning one polynomial, and multiplying each term of the scanned
+polynomial with the other polynomial, and adding the result to the
+polynomial that will be returned. Thus there should be an efficient
+{muadd} operation in the system.</p>
+</div>
+<div class="section" id="representation">
+<h3>Representation<a class="headerlink" href="#representation" title="Permalink to this headline">¶</a></h3>
+<p>For the representation of polynomials, on computers it is natural to
+do this in an array: ($a[1]$, $a[2]$, ..., $a[n]$) for a univariate
+polynomial, and the equivalent for multivariates. This is called a
+&lt;i&gt;dense&lt;/i&gt; representation, because all the coefficients are stored,
+even if they are zero.  Computers are efficient at dealing with
+arrays. However, in the case of multivariate polynomials, arrays can
+become rather large, requiring a lot of storage and processing power
+even to add two such polynomials. For instance, $ x^200*y^100*z^300+1
+$ could take 6000000 places in an array for the coefficients. Of
+course variables could be substituted for the single factors, $
+p:=x^200 $ etc., but it requires an additional ad hoc step.</p>
+<p>An alternative is to store only the terms for which the coefficients
+are non-zero. This adds a little overhead to polynomials that could
+efficiently be stored in a dense representation, but it is still
+little memory, whereas large sparse polynomials are stored in
+acceptable memory too. It is of importance to still be able to add,
+multiply divide and get the leading term of a multivariate polynomial,
+when the polynomial is stored in a sparse representation.</p>
+<p>For the representation, the data structure containing the
+{(exponents,coefficient)} pair can be viewed as a database holding
+{(key,value)} pairs, where the list of exponents is the key, and the
+coefficient of the term is the value stored for that key. Thus, for a
+variable set {{x,y}} the list {{{1,2},3}} represents $ 3*x*y^2 $.</p>
+<p>Yacas stores multivariates internally as {MultiNomial (vars, terms)},
+where {vars} is the ordered list of variables, and terms some object
+storing all the {(key, value)} pairs representing the terms.  Note we
+keep the storage vague: the {terms} placeholder is implemented by
+other code, as a database of terms. The specific representation can be
+configured at startup (this is described in more detail below).</p>
+<p>For the current version, Yacas uses the &#8216;sparse tree&#8217; representation,
+which is a recursive sparse representation.  For example, for a
+variable set {{x,y,z}}, the &#8216;terms&#8217; object contains a list of objects
+of form {{deg,terms}}, one for each degree {deg} for the variable &#8216;x&#8217;
+occurring in the polynomial. The &#8216;terms&#8217; part of this object is then a
+sub-sparse tree for the variables {{y,z}}.</p>
+<p>An explicit example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">MM</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="n">y</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">MultiNomial</span><span class="p">({</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">},{{</span><span class="mi">2</span><span class="p">,{{</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">}}},{</span><span class="mi">0</span><span class="p">,{{</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">},</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}}}});</span>
+</pre></div>
+</div>
+<p>The first item in the main list is {{2,{{0,3}}}}, which states that
+there is a term of the form $ x^2*y^0*3 $. The second item states that
+there are two terms, $ x^0*y^1*1 $ and $ x^0*y^0*0 = 0 $.</p>
+<p>This representation is sparse:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; r:=MM(x^1000+x)
+Out&gt; MultiNomial({x},{{1000,1},{1,1}});
+</pre></div>
+</div>
+<p>and allows for easy multiplication:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; r*r
+Out&gt; MultiNomial({x},{{2000,1},{1001,2},{2,1},{0,0}});
+In&gt; NormalForm(%)
+Out&gt; x^2000+2*x^1001+x^2;
+</pre></div>
+</div>
+</div>
+<div class="section" id="internal-code-organization">
+<h3>Internal code organization<a class="headerlink" href="#internal-code-organization" title="Permalink to this headline">¶</a></h3>
+<p>The implementation of multivariates can be divided in three levels.</p>
+<p>At the top level are the routines callable by the user or the rest of
+the system: MultiDegree, MultiDivide, MultiGcd, Groebner, etc.  In
+general, this is the level implementing the operations actually
+desired.</p>
+<p>The middle level does the book-keeping of the
+{MultiNomial(vars,terms)} expressions, using the functionality offered
+by the lowest level.</p>
+<p>For the current system, the middle level is in {multivar.rep/
+sparsenomial.ys}, and it uses the sparse tree representation
+implemented in {sparsetree.ys}.</p>
+<p>The middle level is called the &#8216;driver&#8217;, and can be changed, or
+re-implemented if necessary. For instance, in case calculations need
+to be done for which dense representations are actually acceptable,
+one could write C++ implementing above-mentioned database structure,
+and then write a middle-level driver using the code.  The driver can
+then be selected at startup. In the file &#8216;yacasinit.ys&#8217; the default
+driver is chosen, but this can be overridden in the {.yacasrc} file or
+some file that is loaded, or at the command line, as long as it is
+done before the multivariates module is loaded (which loads the
+selected driver). Driver selection is as simple as setting a global
+variable to contain a file name of the file implementing the driver:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Set</span><span class="p">(</span><span class="n">MultiNomialDriver</span><span class="p">,</span>
+  <span class="s">&quot;multivar.rep/sparsenomial.ys&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>where &#8220;multivar.rep/sparsenomial.ys&#8221; is the file implementing the
+driver (this is also the default driver, so the above command would
+not change any thing).</p>
+<p>The choice was made for static configuration of the driver before the
+system starts up because it is expected that there will in general be
+one best way of doing it, given a certain system with a certain set of
+libraries installed on the operating system, and for a specific
+version of Yacas. The best version can then be selected at start up,
+as a configuration step. The advantage of static selection is that no
+overhead is imposed: there is no performance penalty for the
+abstraction layers between the three levels.</p>
+</div>
+<div class="section" id="driver-interface">
+<h3>Driver interface<a class="headerlink" href="#driver-interface" title="Permalink to this headline">¶</a></h3>
+<p>The driver should implement the following interface:</p>
+<ul class="simple">
+<li>{CreateTerm(vars,{exp,coef})} - create a multivariate polynomial
+with one term, in the variables defined in &#8216;var&#8217;, with the
+(key,value) pair (coefs,fact)</li>
+<li>{MultiNomialAdd(multi1, multi2) } - add two multivars, and
+(possibly) destructively modify multi1 to containthe result: [
+multi1 := multi1 + multi2; multi1; ];</li>
+<li>{MultiNomialMultiplyAdd(multi1, multi2,exp,coef)} - add two
+multivars, and (possibly) destructively modify multi1 to contain the
+result. multi2 is considered multiplied by a term represented by the
+(key,value) pair (exp,coef).  [ multi1 := multi1 + term * multi2;
+multi1; ];</li>
+<li>{MultiNomialNegate(multi)} - negate a multivar, returning -multi,
+and destructively changing the original. [ multi := - multi; multi1;
+];</li>
+<li>{MultiNomialMultiply(multi1,multi2)} - Multiply two multivars, and
+(possibly) destructively modify multi1 to contain the result,
+returning the result: [ multi1 := multi1 * multi2; multi1; ];</li>
+<li>{NormalForm(multi)} - convert MultiNomial to normal form (as would
+be typed in be the user).  This is part of the driver because the
+driver might be able to do this more efficiently than code above it
+which can use ScanMultiNomial.</li>
+<li>{MultiLeadingTerm(multi)} - return the (key,value) pair
+(mdeg(f),lc(f)) representing the leading term. This is all the
+information needed about the leading term, and thus the leading
+coefficient and multidegree can be extracted from it.</li>
+<li>{MultiDropLeadingZeroes(multi)} - remove leading terms with zero
+factors.</li>
+<li>{MultiTermLess(x,y)} - for two (key,value) pairs, return <a class="reference internal" href="../reference_manual/consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if
+$x&lt;y$, where the operation {&lt;} is the one used for the
+representation, and <a class="reference internal" href="../reference_manual/consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> otherwise.</li>
+<li>{ScanMultiNomial(op,multi)} - traverse all the terms of the
+multivariate, applying the function &#8216;op&#8217; to each (key,value) pair
+(exp,coef). The monomials are traversed in the ordering defined by
+MultiTermLess. &#8216;op&#8217; should be a function accepting two arguments.</li>
+<li>{MultiZero(multi)} - return <a class="reference internal" href="../reference_manual/consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if the multivariate is zero (all
+coefficients are zero), <a class="reference internal" href="../reference_manual/consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> otherwise.</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="integration.html" class="btn btn-neutral float-right" title="Integration">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="The Yacas Book of Algorithms"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Ayal Pinkus, Serge Winnitzky, Grzegorz Mazur.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.3.5',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
