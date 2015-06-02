@@ -17,20 +17,12 @@ void ShowStack(LispEnvironment& aEnvironment)
 void ShowFunctionError(LispPtr& aArguments,
                        LispEnvironment& aEnvironment)
 {
-    if (!aArguments)
-        aEnvironment.iErrorOutput << "Error in compiled code\n";
-    else
-        if (const LispString * string = aArguments->String())
-            aEnvironment.iErrorOutput << "In function \"" << *string << "\" : \n";
+    if (const LispString * string = aArguments->String())
+        aEnvironment.iErrorOutput << "In function \"" << *string << "\" : \n";
 }
 
 void ShowArgTypeErrorInfo(LispInt aArgNr, LispPtr& aArguments, LispEnvironment& aEnvironment)
 {
-    if (!aArguments) {
-        aEnvironment.iErrorOutput << "Error in compiled code\n";
-        return;
-    }
-
     ShowStack(aEnvironment);
     ShowFunctionError(aArguments, aEnvironment);
 
@@ -102,14 +94,10 @@ void CheckNrArgs(LispInt n, LispPtr& aArguments,
     const LispInt needed = n-1;
     const LispInt passed = nrArguments-1;
 
-    if (!aArguments) {
-        aEnvironment.iErrorOutput << "Error in compiled code\n";
-    } else {
-        ShowStack(aEnvironment);
-        ShowFunctionError(aArguments, aEnvironment);
+    ShowStack(aEnvironment);
+    ShowFunctionError(aArguments, aEnvironment);
 
-        aEnvironment.iErrorOutput << "expected " << needed << " arguments, got " << passed << "\n";
-    }
+    aEnvironment.iErrorOutput << "expected " << needed << " arguments, got " << passed << "\n";
 
     throw LispErrWrongNumberOfArgs();
 }
