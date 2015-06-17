@@ -18,6 +18,7 @@ class YacasEvaluator extends EvalFuncBase
     iNrArgs = aNrArgs;
     iFlags = aFlags;
   }
+  @Override
   public void Evaluate(LispPtr aResult,LispEnvironment aEnvironment, LispPtr aArguments) throws Exception
   {
   if ((iFlags & Variable) == 0)

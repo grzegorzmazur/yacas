@@ -25,6 +25,7 @@ class SBoxBuilder
       }
     }
 
+    @Override
     public void calculatePositions(GraphicsPrimitives g, int aSize, java.awt.Point aPosition)
     {
       int height = SBoxBuilder.FontForSize(aSize);
@@ -59,6 +60,7 @@ class SBoxBuilder
       }
     }
 
+    @Override
     public void render(GraphicsPrimitives g)
     {
       if (iSymbol.equals("\\pi"))
@@ -122,6 +124,7 @@ class SBoxBuilder
     }
     SBox iExpressions[];
 
+    @Override
     public void render(GraphicsPrimitives g)
     {
 //drawBoundingBox(g);
@@ -135,6 +138,7 @@ class SBoxBuilder
       }
     }
 
+    @Override
     public void drawBoundingBox(GraphicsPrimitives g)
     {
       g.SetLineThickness(0);
@@ -182,6 +186,7 @@ class SBoxBuilder
     int iSuperOffset = 0;
     int iSubOffset = 0;
 
+    @Override
     public void calculatePositions(GraphicsPrimitives g, int aSize, java.awt.Point aPosition)
     {
       iSize = aSize;
@@ -274,6 +279,7 @@ if (iExpressions[2] != null)
     {
       iExpressions[x+iWidth*y] = aExpression;
     }
+    @Override
     public void calculatePositions(GraphicsPrimitives g, int aSize, java.awt.Point aPosition)
     {
       int spacing = 12;
@@ -358,6 +364,7 @@ if (iExpressions[2] != null)
       iExpressions[0] = aLeft;
       iExpressions[1] = aRight;
     }
+    @Override
     public void calculatePositions(GraphicsPrimitives g, int aSize, java.awt.Point aPosition)
     {
       iSize = aSize;
@@ -396,6 +403,7 @@ if (iExpressions[2] != null)
       iExpressions[1] = aInfix;
       iExpressions[2] = aRight;
     }
+    @Override
     public void calculatePositions(GraphicsPrimitives g, int aSize, java.awt.Point aPosition)
     {
       iSize = aSize;
@@ -441,6 +449,7 @@ if (iExpressions[2] != null)
       iExpressions[1] = aDenominator;
     }
     int iDashheight = 0;
+    @Override
     public void calculatePositions(GraphicsPrimitives g, int aSize, java.awt.Point aPosition)
     {
       iSize = aSize;
@@ -471,6 +480,7 @@ if (iExpressions[2] != null)
       }
     }
 
+    @Override
     public void render(GraphicsPrimitives g)
     {
       super.render(g);
@@ -488,6 +498,7 @@ if (iExpressions[2] != null)
 
   class SBoxSum extends SBox
   {
+    @Override
     public void calculatePositions(GraphicsPrimitives g, int aSize, java.awt.Point aPosition)
     {
       int height = SBoxBuilder.FontForSize(aSize);
@@ -498,6 +509,7 @@ if (iExpressions[2] != null)
       iDimension = new Dimension((4*height)/3,2*height);
     }
 
+    @Override
     public void render(GraphicsPrimitives g)
     {
       int height = SBoxBuilder.FontForSize(iSize);
@@ -515,6 +527,7 @@ if (iExpressions[2] != null)
 
   class SBoxInt extends SBox
   {
+    @Override
     public void calculatePositions(GraphicsPrimitives g, int aSize, java.awt.Point aPosition)
     {
       int height = SBoxBuilder.FontForSize(aSize);
@@ -525,6 +538,7 @@ if (iExpressions[2] != null)
       iDimension = new Dimension((1*height)/2,2*height);
     }
 
+    @Override
     public void render(GraphicsPrimitives g)
     {
       int height = SBoxBuilder.FontForSize(iSize);
@@ -555,6 +569,7 @@ if (iExpressions[2] != null)
       super(1);
       iExpressions[0] = aExpression;
     }
+    @Override
     public void calculatePositions(GraphicsPrimitives g, int aSize, java.awt.Point aPosition)
     {
       iSize = aSize;
@@ -573,6 +588,7 @@ if (iExpressions[2] != null)
         iExpressions[0].calculatePositions(g,aSize,new java.awt.Point((aPosition.x + 6),aPosition.y));
       }
     }
+    @Override
     public void render(GraphicsPrimitives g)
     {
       super.render(g);
@@ -597,6 +613,7 @@ if (iExpressions[2] != null)
       iClose = aClose;
       iExpressions[0] = aExpression;
     }
+    @Override
     public void calculatePositions(GraphicsPrimitives g, int aSize, java.awt.Point aPosition)
     {
       iSize = aSize;
@@ -618,6 +635,7 @@ if (iExpressions[2] != null)
         iExpressions[0].calculatePositions(g,aSize,new java.awt.Point(aPosition.x+iBracketWidth,aPosition.y));
       }
     }
+    @Override
     public void render(GraphicsPrimitives g)
     {
       super.render(g);

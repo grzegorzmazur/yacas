@@ -18,14 +18,17 @@ class LispAtom extends LispObject
     LispError.Check(self!=null,LispError.KLispErrNotEnoughMemory);
     return self;
   }
+    @Override
     public String String()
   {
     return iString;
   }
+    @Override
     public LispObject Copy(boolean aRecursed)
   {
      return new LispAtom(iString);
   }
+    @Override
     public LispObject SetExtraInfo(LispPtr aData)
   {
     //TODO FIXME

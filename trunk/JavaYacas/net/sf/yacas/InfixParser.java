@@ -16,6 +16,7 @@ class InfixParser extends LispParser
     iPostfixOperators = aPostfixOperators;
     iBodiedOperators = aBodiedOperators;
   }
+  @Override
   public void Parse(LispPtr aResult) throws Exception
   {
     ParseCont(aResult);

@@ -8,6 +8,7 @@ class MatchAtom extends YacasParamMatcherBase
   {
     iString = aString;
   }
+  @Override
   public boolean ArgumentMatches(LispEnvironment  aEnvironment,
                                       LispPtr  aExpression,
                                       LispPtr[]  arguments) throws Exception
@@ -17,7 +18,7 @@ class MatchAtom extends YacasParamMatcherBase
       if (aExpression.Get().Number(0) != null)
         if (!aExpression.Get().Number(0).IsInt())
           return false;
- 
+
     return (iString == aExpression.Get().String());
   }
   protected String iString;

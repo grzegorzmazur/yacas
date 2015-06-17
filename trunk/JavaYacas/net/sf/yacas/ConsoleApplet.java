@@ -17,6 +17,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   AppletOutput out;
 
   /// Applet initialization
+  @Override
   public void init()
   {
     setBackground(bkColor);
@@ -39,6 +40,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     LoadHints(hintsfilename);
   }
   boolean focusGained = false;
+  @Override
   public void focusGained(FocusEvent evt)
   {
     focusGained = true;
@@ -49,6 +51,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   }
 
 
+  @Override
   public void focusLost(FocusEvent evt)
   {
     focusGained = false;
@@ -57,12 +60,15 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     repaint();
   }
 
+  @Override
   public void mouseClicked(MouseEvent event)
   {
   }
+  @Override
   public void mouseEntered(MouseEvent event)
   {
   }
+  @Override
   public void mouseExited(MouseEvent event)
   {
   }
@@ -70,6 +76,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   boolean scrolling = false;
   int yDown = 0;
   int yStart = 0;
+  @Override
   public void mousePressed(MouseEvent event)
   {
     scrolling = false;
@@ -100,6 +107,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
     }
   }
+  @Override
   public void mouseReleased(MouseEvent event)
   {
     if (scrolling)
@@ -120,6 +128,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
   }
 
+  @Override
   public void mouseMoved(MouseEvent event)
   {
     boolean newthumbMoused = false;
@@ -152,6 +161,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       thumbPos = canvasHeight-th-4;
   }
 
+  @Override
   public void mouseDragged(MouseEvent event)
   {
     int th = calcThumbHeight();
@@ -168,6 +178,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
   }
 
+  @Override
   public void lostOwnership(Clipboard clipboard, Transferable contents)
   {
   }
@@ -177,6 +188,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   ByteArrayOutputStream stdoutput = null;
   CYacas yacas = null;
 
+  @Override
   public void start()
   {
     clearOutputLines();
@@ -341,6 +353,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   }
 
 
+  @Override
   public void stop()
   {
   }
@@ -391,18 +404,22 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   }
 
   /// Applet destruction
+  @Override
   public void destroy()
   {
   }
 
+  @Override
   public void keyPressed(KeyEvent e)
   {
     processKeyEvent(e);
   }
+  @Override
   public void keyTyped(KeyEvent e)
   {
 //    processKeyEvent(e);
   }
+  @Override
   public void keyReleased(KeyEvent e)
   {
 //    processKeyEvent(e);
@@ -442,6 +459,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     return result;
   }
 
+  @Override
   protected void processKeyEvent(KeyEvent e)
   {
     inputDirty = true;
@@ -847,6 +865,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       iFont = aFont;
       iColor = aColor;
     }
+    @Override
     public void draw(Graphics g, int x,int y)
     {
       g.setColor(iColor);
@@ -854,6 +873,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       FontMetrics fontMetrics = g.getFontMetrics();
       g.drawString(iText, x, y+fontMetrics.getHeight());
     }
+    @Override
     public int height(Graphics g)
     {
       g.setFont(iFont);
@@ -878,6 +898,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       expression = parser.parse(aLine);
     }
     SBox expression;
+    @Override
     public void draw(Graphics g, int x,int y)
     {
       int hgt = height(g);
@@ -895,6 +916,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       expression.calculatePositions(gp, 3, new java.awt.Point(x+iIndent, y+expression.getCalculatedAscent()+10));
       expression.render(gp);
     }
+    @Override
     public int height(Graphics g)
     {
       if (height == -1)
@@ -925,10 +947,12 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
     Grapher iGrapher;
 
+    @Override
     public void draw(Graphics g, int x,int y)
     {
       iGrapher.paint(g,x,y,size);
     }
+    @Override
     public int height(Graphics g)
     {
       return size.height;
@@ -957,6 +981,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       iPromptColor = aPromptColor;
       iColor = aColor;
     }
+    @Override
     public void draw(Graphics g, int x,int y)
     {
       {
@@ -976,6 +1001,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         g.drawString(iText, x, y+fontMetrics.getAscent());
       }
     }
+    @Override
     public int height(Graphics g)
     {
       g.setFont(iFont);
@@ -1001,6 +1027,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       iImage = aImage;
       iApplet = aApplet;
     }
+    @Override
     public void draw(Graphics g, int x,int y)
     {
       if (iImage != null)
@@ -1009,6 +1036,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         g.drawImage(iImage,(d.width-iImage.getWidth(iApplet))/2,y,bkColor,iApplet);
       }
     }
+    @Override
     public int height(Graphics g)
     {
       return iImage.getHeight(iApplet);
@@ -1081,6 +1109,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   Image yacasLogo = null;
   Image offImg = null;
   Graphics offGra = null;
+  @Override
   public void update(Graphics g)
   {
     paint(g);
@@ -1097,6 +1126,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
   }
 
+  @Override
   public void paint(Graphics g)
   {
     CreateOffscreenImage();

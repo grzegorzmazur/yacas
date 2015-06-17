@@ -19,6 +19,7 @@ class MatchVariable extends YacasParamMatcherBase
   /// pattern matches and \a aExpression is stored in this
   /// entry. Otherwise, the pattern only matches if the entry equals
   /// \a aExpression.
+  @Override
   public boolean ArgumentMatches(LispEnvironment  aEnvironment,
                                       LispPtr  aExpression,
                                       LispPtr[]  arguments) throws Exception

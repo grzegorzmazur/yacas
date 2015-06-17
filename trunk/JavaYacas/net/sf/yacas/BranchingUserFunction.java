@@ -45,6 +45,7 @@ class BranchingUserFunction extends LispArityUserFunction
     /// Return true if the rule matches.
     /// #iPredicate is evaluated in \a Environment. If the result
     /// IsTrue(), this function returns true.
+    @Override
     public boolean Matches(LispEnvironment  aEnvironment, LispPtr[] aArguments) throws Exception
     {
       LispPtr pred = new LispPtr();
@@ -53,12 +54,14 @@ class BranchingUserFunction extends LispArityUserFunction
     }
 
     /// Access #iPrecedence.
+    @Override
     public int Precedence()
     {
       return iPrecedence;
     }
 
     /// Access #iBody.
+    @Override
     public LispPtr Body()
     {
       return iBody;
@@ -80,6 +83,7 @@ class BranchingUserFunction extends LispArityUserFunction
       iBody.Set(aBody.Get());
     }
     /// Return #true, always.
+    @Override
     public boolean Matches(LispEnvironment  aEnvironment, LispPtr[] aArguments) throws Exception
     {
       return true;
@@ -108,18 +112,21 @@ class BranchingUserFunction extends LispArityUserFunction
     }
 
     /// Return true if the corresponding pattern matches.
+    @Override
     public boolean Matches(LispEnvironment  aEnvironment, LispPtr[] aArguments) throws Exception
     {
       return iPatternClass.Matches(aEnvironment,aArguments);
     }
 
     /// Access #iPrecedence
+    @Override
     public int Precedence()
     {
       return iPrecedence;
     }
 
     /// Access #iBody
+    @Override
     public LispPtr Body()
     {
       return iBody;
@@ -169,6 +176,7 @@ class BranchingUserFunction extends LispArityUserFunction
   /// first rule that matches is evaluated, and the result is put in
   /// \a aResult. If no rule matches, \a aResult will recieve a new
   /// expression with evaluated arguments.
+  @Override
   public void Evaluate(LispPtr aResult,LispEnvironment aEnvironment, LispPtr aArguments) throws Exception
   {
     int arity = Arity();
@@ -316,6 +324,7 @@ class BranchingUserFunction extends LispArityUserFunction
   ///
   /// The \c iHold flag of the corresponding argument is set. This
   /// implies that this argument is not evaluated by Evaluate().
+  @Override
   public void HoldArgument(String aVariable)
   {
     int i;
@@ -328,12 +337,14 @@ class BranchingUserFunction extends LispArityUserFunction
   }
 
   /// Return true if the arity of the function equals \a aArity.
+  @Override
   public boolean IsArity(int aArity)
   {
     return (Arity() == aArity);
   }
 
   /// Return the arity (number of arguments) of the function.
+  @Override
   public int Arity()
   {
     return iParameters.size();
@@ -341,6 +352,7 @@ class BranchingUserFunction extends LispArityUserFunction
 
   /// Add a BranchRule to the list of rules.
   /// \sa InsertRule()
+  @Override
   public void DeclareRule(int aPrecedence, LispPtr aPredicate, LispPtr aBody) throws Exception
   {
     // New branching rule.
@@ -352,6 +364,7 @@ class BranchingUserFunction extends LispArityUserFunction
 
   /// Add a BranchRuleTruePredicate to the list of rules.
   /// \sa InsertRule()
+  @Override
   public void DeclareRule(int aPrecedence, LispPtr aBody) throws Exception
   {
     // New branching rule.
@@ -363,6 +376,7 @@ class BranchingUserFunction extends LispArityUserFunction
 
   /// Add a BranchPattern to the list of rules.
   /// \sa InsertRule()
+  @Override
   public void DeclarePattern(int aPrecedence, LispPtr aPredicate, LispPtr aBody) throws Exception
   {
     // New branching rule.
@@ -430,6 +444,7 @@ class BranchingUserFunction extends LispArityUserFunction
   }
 
   /// Return the argument list, stored in #iParamList
+  @Override
   public LispPtr ArgList()
   {
     return iParamList;

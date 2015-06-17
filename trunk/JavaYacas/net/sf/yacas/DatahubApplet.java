@@ -17,6 +17,7 @@ import java.io.*;
 
 public class DatahubApplet extends Applet
 {
+  @Override
   public void init()
   {
     String programMode = getParameter("programMode");

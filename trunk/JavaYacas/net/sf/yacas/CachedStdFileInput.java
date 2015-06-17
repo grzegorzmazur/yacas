@@ -11,6 +11,7 @@ class CachedStdFileInput extends LispInput
       super(aStatus);
       Rewind();
     }
+    @Override
     public char Next() throws Exception
     {
       int c = Peek();
@@ -19,6 +20,7 @@ class CachedStdFileInput extends LispInput
         iStatus.NextLine();
       return (char)c;
     }
+    @Override
     public char Peek() throws Exception
     {
       if (iCurrentPos == iBuffer.length())
@@ -34,6 +36,7 @@ class CachedStdFileInput extends LispInput
       }
       return iBuffer.charAt(iCurrentPos);
     }
+    @Override
     public boolean EndOfStream()
     {
       return false;
@@ -43,10 +46,12 @@ class CachedStdFileInput extends LispInput
       iBuffer = new StringBuffer();
       iCurrentPos = 0;
     }
+    @Override
     public int Position()
     {
       return iCurrentPos;
     }
+    @Override
     public void SetPosition(int aPosition)
     {
       iCurrentPos = aPosition;

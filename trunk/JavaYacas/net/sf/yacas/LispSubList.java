@@ -7,14 +7,17 @@ class LispSubList extends LispObject
   {
     return new LispSubList(aSubList);
   }
+  @Override
     public LispPtr SubList()
   {
     return iSubList;
   }
+  @Override
   public String String()
   {
     return null;
   }
+  @Override
   public LispObject Copy(boolean aRecursed) throws Exception
   {
     //TODO recursed copy needs to be implemented still
@@ -22,6 +25,7 @@ class LispSubList extends LispObject
     LispObject copied = new LispSubList(iSubList.Get());
     return copied;
   }
+  @Override
     public LispObject SetExtraInfo(LispPtr aData)
   {
 //TODO FIXME

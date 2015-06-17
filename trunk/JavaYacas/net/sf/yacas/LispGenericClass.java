@@ -11,19 +11,23 @@ class LispGenericClass extends LispObject
       LispError.Check(self!=null,LispError.KLispErrNotEnoughMemory);
       return self;
     }
+    @Override
     public GenericClass Generic()
     {
       return iClass;
     }
+    @Override
     public String String()
     {
       return null;
     }
+    @Override
     public LispObject Copy(boolean aRecursed)
     {
       LispObject copied = new LispGenericClass(iClass);
       return copied;
     }
+    @Override
     public LispObject SetExtraInfo(LispPtr aData)
     {
       //TODO FIXME
