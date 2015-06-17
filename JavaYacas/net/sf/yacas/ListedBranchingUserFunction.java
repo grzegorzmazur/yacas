@@ -7,10 +7,12 @@ class ListedBranchingUserFunction extends BranchingUserFunction
   {
     super(aParameters);
   }
+  @Override
   public boolean IsArity(int aArity)
   {
     return (Arity() <= aArity);
   }
+  @Override
   public void Evaluate(LispPtr aResult, LispEnvironment aEnvironment, LispPtr aArguments) throws Exception
   {
     LispPtr newArgs = new LispPtr();

@@ -24,11 +24,13 @@ class LispNumber extends LispObject
     // create a new BigNumber object out of iString, set its precision in digits
 //TODO FIXME enable this in the end    Number(aBasePrecision);
   }
+    @Override
   public LispObject Copy(boolean aRecursed)
   {
     return new LispNumber(iNumber, iString);
   }
     /// return a string representation in decimal with maximum decimal precision allowed by the inherent accuracy of the number
+    @Override
     public String String() throws Exception
      {
     if (iString == null)
@@ -40,6 +42,7 @@ class LispNumber extends LispObject
     return iString;
   }
     /// give access to the BigNumber object; if necessary, will create a BigNumber object out of the stored string, at given precision (in decimal?)
+    @Override
     public BigNumber Number(int aPrecision) throws Exception
   {
     if (iNumber == null)
@@ -69,6 +72,7 @@ class LispNumber extends LispObject
     return iNumber;
   }
     /// annotate
+    @Override
     public LispObject SetExtraInfo(LispPtr aData)
   {
     /*TODO FIXME

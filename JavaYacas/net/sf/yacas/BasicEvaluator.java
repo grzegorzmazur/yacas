@@ -36,6 +36,7 @@ class BasicEvaluator extends LispEvaluatorBase
   /// \note The result of this operation must be a unique (copied)
   /// element! Eg. its Next might be set...
   ///
+  @Override
   public void Eval(LispEnvironment aEnvironment, LispPtr aResult, LispPtr aExpression) throws Exception
   {
     LispError.LISPASSERT(aExpression.Get() != null);

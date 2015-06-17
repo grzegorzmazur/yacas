@@ -1,6 +1,7 @@
 package net.sf.yacas;
 
 class XmlTokenizer extends LispTokenizer {
+    @Override
     public String NextToken(LispInput aInput, LispHashTable aHashTable) throws Exception {
 
         char c;

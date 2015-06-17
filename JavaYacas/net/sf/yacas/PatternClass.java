@@ -26,10 +26,12 @@ class PatternClass extends GenericClass
     return result;
   }
   //From GenericClass
+  @Override
   public String Send(LispArgList aArgList)
   {
     return null;
   }
+  @Override
   public String TypeName()
   {
       return "\"Pattern\"";

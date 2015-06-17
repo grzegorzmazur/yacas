@@ -13,6 +13,7 @@ abstract class LispUserFunction extends EvalFuncBase
       iFenced = true;
       iTraced = false;
     }
+    @Override
     public abstract void Evaluate(LispPtr aResult,LispEnvironment aEnvironment, LispPtr aArguments) throws Exception;
     public abstract void HoldArgument(String aVariable);
     public abstract void DeclareRule(int aPrecedence, LispPtr aPredicate, LispPtr aBody) throws Exception;

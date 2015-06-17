@@ -9,17 +9,20 @@ import java.net.*;
 
 public class FormulaViewApplet extends Applet
 {
+  @Override
   public void init()
   {
     setBackground(Color.white);
     setLayout(null);
   }
 
+  @Override
   public void start()
   {
     repaint();
   }
 
+  @Override
   public void stop()
   {
     offImage = null;
@@ -30,6 +33,7 @@ public class FormulaViewApplet extends Applet
   Image offImage = null;
   Graphics offGraphics = null;
   Dimension offDimension = null;
+  @Override
   public void update(Graphics g)
   {
     Dimension d = getSize();
@@ -52,6 +56,7 @@ public class FormulaViewApplet extends Applet
   /**
     * Paint the previous frame (if any).
     */
+  @Override
   public void paint(Graphics g)
   {
     //System.out.println("paint");

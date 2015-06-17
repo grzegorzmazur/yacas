@@ -12,6 +12,7 @@ class SubstBehaviour implements SubstBehaviourBase
       iToMatch = aToMatch;
       iToReplaceWith = aToReplaceWith;
     }
+    @Override
     public boolean Matches(LispPtr aResult, LispPtr aElement) throws Exception
     {
       if (LispStandard.InternalEquals(iEnvironment, aElement, iToMatch))

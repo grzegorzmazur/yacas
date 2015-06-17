@@ -944,6 +944,7 @@ class MathCommands
 
   class LispQuote extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       RESULT(aEnvironment, aStackTop).Set(ARGUMENT(aEnvironment, aStackTop, 1).Get().Copy(false));
@@ -952,6 +953,7 @@ class MathCommands
 
   class LispEval extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iEvaluator.Eval(aEnvironment, RESULT(aEnvironment, aStackTop), ARGUMENT(aEnvironment, aStackTop, 1));
@@ -960,6 +962,7 @@ class MathCommands
 
   class LispWrite extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr subList = ARGUMENT(aEnvironment, aStackTop, 1).Get().SubList();
@@ -979,6 +982,7 @@ class MathCommands
 
   class LispWriteString extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,ARGUMENT(aEnvironment, aStackTop, 1).Get()!= null,1);
@@ -1000,6 +1004,7 @@ class MathCommands
 
   class LispFullForm extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       RESULT(aEnvironment, aStackTop).Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
@@ -1011,6 +1016,7 @@ class MathCommands
 
   class LispDefaultDirectory extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       // Get file name
@@ -1025,6 +1031,7 @@ class MathCommands
 
   class LispFromFile extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispError.CHK_CORE(aEnvironment, aStackTop,aEnvironment.iSecure == false, LispError.KLispErrSecurityBreach);
@@ -1067,6 +1074,7 @@ class MathCommands
 
   class LispFromString extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr evaluated = new LispPtr();
@@ -1105,6 +1113,7 @@ class MathCommands
 
   class LispRead extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       InfixParser parser = new InfixParser(aEnvironment.iCurrentTokenizer,
@@ -1121,6 +1130,7 @@ class MathCommands
 
   class LispReadToken extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispTokenizer tok = aEnvironment.iCurrentTokenizer;
@@ -1138,6 +1148,7 @@ class MathCommands
 
   class LispToFile extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispError.CHK_CORE(aEnvironment, aStackTop,aEnvironment.iSecure == false, LispError.KLispErrSecurityBreach);
@@ -1173,6 +1184,7 @@ class MathCommands
 
   class LispToString extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       ByteArrayOutputStream newOutput = new ByteArrayOutputStream();
@@ -1196,6 +1208,7 @@ class MathCommands
 
   class LispToStdout extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       OutputStream previous = aEnvironment.iCurrentOutput;
@@ -1214,6 +1227,7 @@ class MathCommands
 
   class LispLoad extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispError.CHK_CORE(aEnvironment, aStackTop,aEnvironment.iSecure == false, LispError.KLispErrSecurityBreach);
@@ -1233,6 +1247,7 @@ class MathCommands
 
   class LispTmpFile extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment, int aStackTop) throws Exception
     {
       LispError.CHK_CORE(aEnvironment, aStackTop, aEnvironment.iSecure == false, LispError.KLispErrSecurityBreach);
@@ -1246,6 +1261,7 @@ class MathCommands
 
   class LispProtect extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment env, int top) throws Exception
     {
       String s = YacasEvalCaller.ARGUMENT(env, top, 1).Get().String();
@@ -1261,6 +1277,7 @@ class MathCommands
 
   class LispUnProtect extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment env, int top) throws Exception
     {
       String s = YacasEvalCaller.ARGUMENT(env, top, 1).Get().String();
@@ -1276,6 +1293,7 @@ class MathCommands
 
   class LispIsProtected extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment env, int top) throws Exception
     {
       String s = YacasEvalCaller.ARGUMENT(env, top, 1).Get().String();
@@ -1293,6 +1311,7 @@ class MathCommands
 
   class LispSetVar extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       MathCommands.InternalSetVar(aEnvironment, aStackTop, false, false);
@@ -1301,6 +1320,7 @@ class MathCommands
 
   class LispMacroSetVar extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       MathCommands.InternalSetVar(aEnvironment, aStackTop, true, false);
@@ -1309,6 +1329,7 @@ class MathCommands
 
   class LispSetGlobalLazyVariable extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       MathCommands.InternalSetVar(aEnvironment, aStackTop, false, true);
@@ -1317,6 +1338,7 @@ class MathCommands
 
   class LispClearVar extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr subList = ARGUMENT(aEnvironment, aStackTop, 1).Get().SubList();
@@ -1341,6 +1363,7 @@ class MathCommands
 
   class LispNewLocal extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr subList = ARGUMENT(aEnvironment, aStackTop, 1).Get().SubList();
@@ -1366,6 +1389,7 @@ class MathCommands
 
   class LispHead extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispStandard.InternalNth(RESULT(aEnvironment, aStackTop), ARGUMENT(aEnvironment, aStackTop, 1),1);
@@ -1374,6 +1398,7 @@ class MathCommands
 
   class LispNth extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       String str;
@@ -1387,6 +1412,7 @@ class MathCommands
 
   class LispTail extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr first = new LispPtr();
@@ -1401,6 +1427,7 @@ class MathCommands
 
   class LispDestructiveReverse extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr reversed = new LispPtr();
@@ -1412,6 +1439,7 @@ class MathCommands
 
   class LispLength extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr subList = ARGUMENT(aEnvironment, aStackTop, 1).Get().SubList();
@@ -1442,6 +1470,7 @@ class MathCommands
 
   class LispList extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr all = new LispPtr();
@@ -1464,6 +1493,7 @@ class MathCommands
 
   class LispUnList extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,ARGUMENT(aEnvironment, aStackTop, 1).Get() != null, 1);
@@ -1477,6 +1507,7 @@ class MathCommands
 
   class LispListify extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,ARGUMENT(aEnvironment, aStackTop, 1).Get().SubList() != null, 1);
@@ -1489,6 +1520,7 @@ class MathCommands
 
   class LispConcatenate extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr all = new LispPtr();
@@ -1532,6 +1564,7 @@ class MathCommands
       }
       aStringBuffer.append('\"');
     }
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       StringBuffer strBuffer = new StringBuffer("");
@@ -1542,6 +1575,7 @@ class MathCommands
 
   class LispDelete extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       MathCommands.InternalDelete(aEnvironment, aStackTop,false);
@@ -1550,6 +1584,7 @@ class MathCommands
 
   class LispDestructiveDelete extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       MathCommands.InternalDelete(aEnvironment, aStackTop,true);
@@ -1558,6 +1593,7 @@ class MathCommands
 
   class LispInsert extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       MathCommands.InternalInsert(aEnvironment, aStackTop,false);
@@ -1566,6 +1602,7 @@ class MathCommands
 
   class LispDestructiveInsert extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       MathCommands.InternalInsert(aEnvironment, aStackTop,true);
@@ -1574,6 +1611,7 @@ class MathCommands
 
   class LispReplace extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       MathCommands.InternalReplace(aEnvironment, aStackTop,false);
@@ -1582,6 +1620,7 @@ class MathCommands
 
   class LispDestructiveReplace extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       MathCommands.InternalReplace(aEnvironment, aStackTop,true);
@@ -1590,6 +1629,7 @@ class MathCommands
 
   class LispAtomize extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr evaluated = new LispPtr();
@@ -1605,6 +1645,7 @@ class MathCommands
 
   class LispStringify extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr evaluated = new LispPtr();
@@ -1621,6 +1662,7 @@ class MathCommands
 
   class LispCharString extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       String str;
@@ -1634,6 +1676,7 @@ class MathCommands
 
   class LispFlatCopy extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr copied = new LispPtr();
@@ -1644,6 +1687,7 @@ class MathCommands
 
   class LispProgBody extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       // Allow accessing previous locals.
@@ -1672,6 +1716,7 @@ class MathCommands
 
   class LispWhile extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr arg1 = ARGUMENT(aEnvironment, aStackTop, 1);
@@ -1694,6 +1739,7 @@ class MathCommands
 
   class LispIf extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       int nrArguments = LispStandard.InternalListLength(ARGUMENT(aEnvironment, aStackTop, 0));
@@ -1723,6 +1769,7 @@ class MathCommands
 
   class LispCheck extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr pred = new LispPtr();
@@ -1740,6 +1787,7 @@ class MathCommands
 
   class LispTrapError extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       try
@@ -1757,6 +1805,7 @@ class MathCommands
 
   class LispGetCoreError extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,aEnvironment.HashTable().LookUpStringify(aEnvironment.iError)));
@@ -1765,6 +1814,7 @@ class MathCommands
 
   class LispPreFix extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       MathCommands.MultiFix(aEnvironment, aStackTop, aEnvironment.iPrefixOperators);
@@ -1773,6 +1823,7 @@ class MathCommands
 
   class LispInFix extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       MathCommands.MultiFix(aEnvironment, aStackTop, aEnvironment.iInfixOperators);
@@ -1781,6 +1832,7 @@ class MathCommands
 
   class LispPostFix extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       int nrArguments = LispStandard.InternalListLength(ARGUMENT(aEnvironment, aStackTop, 0));
@@ -1797,6 +1849,7 @@ class MathCommands
 
   class LispBodied extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       MathCommands.MultiFix(aEnvironment, aStackTop, aEnvironment.iBodiedOperators);
@@ -1805,6 +1858,7 @@ class MathCommands
 
   class LispRuleBase extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       InternalRuleBase(aEnvironment, aStackTop, false);
@@ -1813,6 +1867,7 @@ class MathCommands
 
   class LispMacroRuleBase extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       InternalRuleBase(aEnvironment, aStackTop, false);
@@ -1821,6 +1876,7 @@ class MathCommands
 
   class LispRuleBaseListed extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       InternalRuleBase(aEnvironment, aStackTop, true);
@@ -1829,6 +1885,7 @@ class MathCommands
 
   class LispMacroRuleBaseListed extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       InternalRuleBase(aEnvironment, aStackTop, true);
@@ -1837,6 +1894,7 @@ class MathCommands
 
   class LispDefMacroRuleBase extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       InternalDefMacroRuleBase(aEnvironment, aStackTop, false);
@@ -1845,6 +1903,7 @@ class MathCommands
 
   class LispDefMacroRuleBaseListed extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       InternalDefMacroRuleBase(aEnvironment, aStackTop, true);
@@ -1853,6 +1912,7 @@ class MathCommands
 
   class LispHoldArg extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       // Get operator
@@ -1871,6 +1931,7 @@ class MathCommands
 
   class LispNewRule extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       InternalNewRule(aEnvironment, aStackTop);
@@ -1879,6 +1940,7 @@ class MathCommands
 
   class LispMacroNewRule extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       InternalNewRule(aEnvironment, aStackTop);
@@ -1887,6 +1949,7 @@ class MathCommands
 
   class LispUnFence extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       // Get operator
@@ -1908,6 +1971,7 @@ class MathCommands
 
   class LispRetract extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       // Get operator
@@ -1930,6 +1994,7 @@ class MathCommands
 
   class LispNot extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr evaluated = new LispPtr();
@@ -1950,6 +2015,7 @@ class MathCommands
 
   class LispLazyAnd extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr nogos = new LispPtr();
@@ -2008,6 +2074,7 @@ class MathCommands
 
   class LispLazyOr extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr nogos = new LispPtr();
@@ -2066,6 +2133,7 @@ class MathCommands
 
   class LispEquals extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr evaluated1 = new LispPtr();
@@ -2117,10 +2185,12 @@ class MathCommands
 
   class LexLessThan extends LispLexCompare2
   {
+    @Override
     boolean lexfunc(String f1, String f2, LispHashTable aHashTable,int aPrecision)
     {
       return f1.compareTo(f2)<0;
     }
+    @Override
     boolean numfunc(BigNumber n1, BigNumber n2)
     {
       return n1.LessThan(n2) && !n1.Equals(n2);
@@ -2128,10 +2198,12 @@ class MathCommands
   }
   class LexGreaterThan extends LispLexCompare2
   {
+    @Override
     boolean lexfunc(String f1, String f2, LispHashTable aHashTable,int aPrecision)
     {
       return f1.compareTo(f2)>0;
     }
+    @Override
     boolean numfunc(BigNumber n1, BigNumber n2)
     {
       return !(n1.LessThan(n2) || n1.Equals(n2));
@@ -2142,6 +2214,7 @@ class MathCommands
   class LispLessThan extends YacasEvalCaller
   {
     LexLessThan compare = new LexLessThan();
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       compare.Compare(aEnvironment,aStackTop);
@@ -2151,6 +2224,7 @@ class MathCommands
   class LispGreaterThan extends YacasEvalCaller
   {
     LexGreaterThan compare = new LexGreaterThan();
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       compare.Compare(aEnvironment,aStackTop);
@@ -2159,6 +2233,7 @@ class MathCommands
 
   class LispIsFunction extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr result = new LispPtr();
@@ -2170,6 +2245,7 @@ class MathCommands
 
   class LispIsAtom extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr result = new LispPtr();
@@ -2181,6 +2257,7 @@ class MathCommands
 
   class LispIsNumber extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr result = new LispPtr();
@@ -2191,6 +2268,7 @@ class MathCommands
 
   class LispIsInteger extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr result = new LispPtr();
@@ -2210,6 +2288,7 @@ class MathCommands
 
   class LispIsList extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr result = new LispPtr();
@@ -2220,6 +2299,7 @@ class MathCommands
 
   class LispIsString extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr result = new LispPtr();
@@ -2231,6 +2311,7 @@ class MathCommands
 
   class LispIsBound extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       String str = ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
@@ -2250,6 +2331,7 @@ class MathCommands
 
   class LispMultiply extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2268,6 +2350,7 @@ class MathCommands
 /// \sa GetNumber(), BigNumber::Add()
   class LispAdd extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       int length = LispStandard.InternalListLength(ARGUMENT(aEnvironment, aStackTop, 0));
@@ -2293,6 +2376,7 @@ class MathCommands
 
   class LispSubtract extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       int length = LispStandard.InternalListLength(ARGUMENT(aEnvironment, aStackTop, 0));
@@ -2320,6 +2404,7 @@ class MathCommands
 
   class LispDivide extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2348,6 +2433,7 @@ class MathCommands
 
   class YacasBuiltinPrecisionSet extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr index = new LispPtr();
@@ -2364,6 +2450,7 @@ class MathCommands
 
   class LispGetExactBits extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2380,6 +2467,7 @@ class MathCommands
 
   class LispSetExactBits extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2396,6 +2484,7 @@ class MathCommands
 
   class LispBitCount extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2407,6 +2496,7 @@ class MathCommands
 
   class LispMathSign extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2418,6 +2508,7 @@ class MathCommands
 
   class LispMathIsSmall extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2427,6 +2518,7 @@ class MathCommands
 
   class LispMathNegate extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2438,6 +2530,7 @@ class MathCommands
 
   class LispFloor extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2449,6 +2542,7 @@ class MathCommands
 
   class LispCeil extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2462,6 +2556,7 @@ class MathCommands
 
   class LispAbs extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2475,6 +2570,7 @@ class MathCommands
 
   class LispMod extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2487,6 +2583,7 @@ class MathCommands
 
   class LispDiv extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2507,6 +2604,7 @@ class MathCommands
 
   class LispBitsToDigits extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2530,6 +2628,7 @@ class MathCommands
 
   class LispDigitsToBits extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2553,6 +2652,7 @@ class MathCommands
 
   class LispGcd extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2565,6 +2665,7 @@ class MathCommands
 
   class LispSystemCall extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,ARGUMENT(aEnvironment, aStackTop, 1).Get() != null, 1);
@@ -2622,6 +2723,7 @@ class MathCommands
 
   class LispSystemName extends YacasEvalCaller
   {
+      @Override
       public void Eval(LispEnvironment aEnvironment, int aStackTop) throws Exception
       {
           String os = System.getProperty("os.name");
@@ -2646,6 +2748,7 @@ class MathCommands
 
   class LispFastArcSin extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x;
@@ -2659,6 +2762,7 @@ class MathCommands
 
   class LispFastLog extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x;
@@ -2672,6 +2776,7 @@ class MathCommands
 
   class LispFastPower extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x, y;
@@ -2686,6 +2791,7 @@ class MathCommands
 
   class LispShiftLeft extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2699,6 +2805,7 @@ class MathCommands
 
   class LispShiftRight extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2712,6 +2819,7 @@ class MathCommands
 
   class LispFromBase extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       // Get the base to convert to:
@@ -2746,6 +2854,7 @@ class MathCommands
 
   class LispToBase extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       // Get the base to convert to:
@@ -2775,6 +2884,7 @@ class MathCommands
 
   class LispMaxEvalDepth extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr index = new LispPtr();
@@ -2790,6 +2900,7 @@ class MathCommands
 
   class LispDefLoad extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispError.CHK_CORE(aEnvironment, aStackTop,aEnvironment.iSecure == false, LispError.KLispErrSecurityBreach);
@@ -2809,6 +2920,7 @@ class MathCommands
 
   class LispUse extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr evaluated = new LispPtr();
@@ -2826,6 +2938,7 @@ class MathCommands
 
   class LispRightAssociative extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       // Get operator
@@ -2839,6 +2952,7 @@ class MathCommands
 
   class LispLeftPrecedence extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       // Get operator
@@ -2859,6 +2973,7 @@ class MathCommands
 
   class LispRightPrecedence extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       // Get operator
@@ -2879,6 +2994,7 @@ class MathCommands
 
   class LispIsBodied extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispInFixOperator op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iBodiedOperators);
@@ -2888,6 +3004,7 @@ class MathCommands
 
   class LispIsInFix extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispInFixOperator op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iInfixOperators);
@@ -2897,6 +3014,7 @@ class MathCommands
 
   class LispIsPreFix extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispInFixOperator op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iPrefixOperators);
@@ -2906,6 +3024,7 @@ class MathCommands
 
   class LispIsPostFix extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispInFixOperator op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iPostfixOperators);
@@ -2915,6 +3034,7 @@ class MathCommands
 
   class LispGetPrecedence extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispInFixOperator op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iInfixOperators);
@@ -2937,6 +3057,7 @@ class MathCommands
 
   class LispGetLeftPrecedence extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispInFixOperator op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iInfixOperators);
@@ -2951,6 +3072,7 @@ class MathCommands
 
   class LispGetRightPrecedence extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispInFixOperator op = MathCommands.OperatorInfo(aEnvironment, aStackTop, aEnvironment.iInfixOperators);
@@ -2969,6 +3091,7 @@ class MathCommands
 
   class YacasBuiltinPrecisionGet extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       // decimal precision
@@ -2978,6 +3101,7 @@ class MathCommands
 
   class LispBitAnd extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -2990,6 +3114,7 @@ class MathCommands
 
   class LispBitOr extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -3002,6 +3127,7 @@ class MathCommands
 
   class LispBitXor extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -3014,6 +3140,7 @@ class MathCommands
 
   class LispSecure extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       boolean prevSecure = aEnvironment.iSecure;
@@ -3029,6 +3156,7 @@ class MathCommands
 
   class LispFindFile extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispError.CHK_CORE(aEnvironment, aStackTop,aEnvironment.iSecure == false, LispError.KLispErrSecurityBreach);
@@ -3049,6 +3177,7 @@ class MathCommands
 
   class LispFindFunction extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispError.CHK_CORE(aEnvironment, aStackTop,aEnvironment.iSecure == false, LispError.KLispErrSecurityBreach);
@@ -3079,6 +3208,7 @@ class MathCommands
 
   class LispIsGeneric extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr evaluated = new LispPtr();
@@ -3089,6 +3219,7 @@ class MathCommands
 
   class LispGenericTypeName extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr evaluated = new LispPtr();
@@ -3100,6 +3231,7 @@ class MathCommands
 
   class GenArrayCreate extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr sizearg = new LispPtr();
@@ -3120,6 +3252,7 @@ class MathCommands
 
   class GenArraySize extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr evaluated = new LispPtr();
@@ -3135,6 +3268,7 @@ class MathCommands
 
   class GenArrayGet extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr evaluated = new LispPtr();
@@ -3161,6 +3295,7 @@ class MathCommands
 
   class GenArraySet extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr evaluated = new LispPtr();
@@ -3188,6 +3323,7 @@ class MathCommands
 
   class LispCustomEval extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.write("Function not yet implemented : CustomEval".getBytes());////TODO fixme
@@ -3197,6 +3333,7 @@ class MathCommands
 
   class LispCustomEvalExpression extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.write("Function not yet implemented : CustomEvalExpression".getBytes());////TODO fixme
@@ -3206,6 +3343,7 @@ class MathCommands
 
   class LispCustomEvalResult extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.write("Function not yet implemented : CustomEvalResult".getBytes());////TODO fixme
@@ -3215,6 +3353,7 @@ class MathCommands
 
   class LispCustomEvalLocals extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.write("Function not yet implemented : LispCustomEvalLocals".getBytes());////TODO fixme
@@ -3224,6 +3363,7 @@ class MathCommands
 
   class LispCustomEvalStop extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.write("Function not yet implemented : LispCustomEvalStop".getBytes());////TODO fixme
@@ -3233,6 +3373,7 @@ class MathCommands
 
   class LispTraceRule extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.write("Function not yet implemented : LispTraceRule".getBytes());////TODO fixme
@@ -3242,6 +3383,7 @@ class MathCommands
 
   class LispTraceStack extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.write("Function not yet implemented : TraceStack".getBytes());////TODO fixme
@@ -3251,6 +3393,7 @@ class MathCommands
 
   class LispReadLisp extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispParser parser = new LispParser(aEnvironment.iCurrentTokenizer,
@@ -3263,6 +3406,7 @@ class MathCommands
 
   class LispReadLispListed extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispParser parser = new LispParser(aEnvironment.iCurrentTokenizer,
@@ -3276,6 +3420,7 @@ class MathCommands
 
   class LispType extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr evaluated = new LispPtr();
@@ -3300,6 +3445,7 @@ class MathCommands
 
   class YacasStringMidGet extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr evaluated = new LispPtr();
@@ -3327,6 +3473,7 @@ class MathCommands
 
   class YacasStringMidSet extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr evaluated = new LispPtr();
@@ -3358,6 +3505,7 @@ class MathCommands
 
   class GenPatternCreate extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr pattern = new LispPtr();
@@ -3384,6 +3532,7 @@ class MathCommands
 
   class GenPatternMatches extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr pattern = new LispPtr();
@@ -3413,6 +3562,7 @@ class MathCommands
 
   class LispRuleBaseDefined extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr name = new LispPtr();
@@ -3435,6 +3585,7 @@ class MathCommands
 
   class LispDefLoadFunction extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr name = new LispPtr();
@@ -3463,6 +3614,7 @@ class MathCommands
 
   class LispRuleBaseArgList extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr name = new LispPtr();
@@ -3491,6 +3643,7 @@ class MathCommands
 
   class LispNewRulePattern extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       InternalNewRulePattern(aEnvironment, aStackTop, false);
@@ -3499,6 +3652,7 @@ class MathCommands
 
   class LispMacroNewRulePattern extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       InternalNewRulePattern(aEnvironment, aStackTop, true
@@ -3508,6 +3662,7 @@ class MathCommands
 
   class LispSubst extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr from = new LispPtr(),to = new LispPtr(),body = new LispPtr();
@@ -3521,6 +3676,7 @@ class MathCommands
 
   class LispLocalSymbols extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       int nrArguments = LispStandard.InternalListLength(ARGUMENT(aEnvironment, aStackTop, 0));
@@ -3550,6 +3706,7 @@ class MathCommands
 
   class LispFastIsPrime extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       //TODO fixme this routine should actually be called SlowIsPrime ;-)
@@ -3580,6 +3737,7 @@ class MathCommands
 
   class LispFac extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,ARGUMENT(aEnvironment, aStackTop, 1).Get().Number(0) != null,1);
@@ -3602,6 +3760,7 @@ class MathCommands
 
   class LispApplyPure extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr oper = new LispPtr();
@@ -3633,6 +3792,7 @@ class MathCommands
 
   class YacasPrettyReaderSet extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       int nrArguments = LispStandard.InternalListLength(ARGUMENT(aEnvironment, aStackTop, 0));
@@ -3655,6 +3815,7 @@ class MathCommands
 
   class YacasPrettyReaderGet extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       if (aEnvironment.iPrettyReader == null)
@@ -3666,6 +3827,7 @@ class MathCommands
 
   class YacasPrettyPrinterSet extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       int nrArguments = LispStandard.InternalListLength(ARGUMENT(aEnvironment, aStackTop, 0));
@@ -3688,6 +3850,7 @@ class MathCommands
 
   class YacasPrettyPrinterGet extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       if (aEnvironment.iPrettyPrinter == null)
@@ -3699,6 +3862,7 @@ class MathCommands
 
   class LispGarbageCollect extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       // all the garbage collection is performed automatically, there's no need
@@ -3709,6 +3873,7 @@ class MathCommands
 
   class LispPatchLoad extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
         LispError.CHK_CORE(aEnvironment, aStackTop,aEnvironment.iSecure == false, LispError.KLispErrSecurityBreach);
@@ -3729,6 +3894,7 @@ class MathCommands
 
   class LispPatchString extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
         String unpatchedString =
@@ -3751,6 +3917,7 @@ class MathCommands
 
   class YacasExtraInfoSet extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr object = new LispPtr();
@@ -3765,6 +3932,7 @@ class MathCommands
 
   class YacasExtraInfoGet extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr object = new LispPtr();
@@ -3788,6 +3956,7 @@ class MathCommands
 
   class LispDefaultTokenizer extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentTokenizer = aEnvironment.iDefaultTokenizer;
@@ -3797,6 +3966,7 @@ class MathCommands
 
   class LispCommonLispTokenizer extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.write("Function not yet implemented : LispCommonLispTokenizer".getBytes());//TODO FIXME
@@ -3806,6 +3976,7 @@ class MathCommands
 
   class LispXmlTokenizer extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentTokenizer = aEnvironment.iXmlTokenizer;
@@ -3815,6 +3986,7 @@ class MathCommands
 
   class LispExplodeTag extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr out = new LispPtr();
@@ -3924,6 +4096,7 @@ class MathCommands
 
   class YacasBuiltinAssoc extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       // key to find
@@ -3967,6 +4140,7 @@ class MathCommands
 
   class LispCurrentFile extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,aEnvironment.HashTable().LookUpStringify(aEnvironment.iInputStatus.FileName())));
@@ -3975,6 +4149,7 @@ class MathCommands
 
   class LispCurrentLine extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,""+aEnvironment.iInputStatus.LineNumber()));
@@ -3983,6 +4158,7 @@ class MathCommands
 
   class LispBackQuote extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BackQuoteBehaviour behaviour = new BackQuoteBehaviour(aEnvironment);
@@ -3994,6 +4170,7 @@ class MathCommands
 
   class LispDumpBigNumberDebugInfo extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
@@ -4004,6 +4181,7 @@ class MathCommands
 
   class LispInDebugMode extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
@@ -4012,6 +4190,7 @@ class MathCommands
 
   class LispDebugFile extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       throw new Exception("Cannot call DebugFile in non-debug version of Yacas");
@@ -4020,6 +4199,7 @@ class MathCommands
 
   class LispDebugLine extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       throw new Exception("Cannot call DebugLine in non-debug version of Yacas");
@@ -4028,6 +4208,7 @@ class MathCommands
 
   class LispVersion extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       RESULT(aEnvironment,aStackTop).Set(LispAtom.New(aEnvironment,"\""+CVersion.VERSION+"\""));
@@ -4037,6 +4218,7 @@ class MathCommands
 
   class LispExit extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       Runtime.getRuntime().exit(0);
@@ -4045,6 +4227,7 @@ class MathCommands
 
   class LispExitRequested extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
@@ -4053,6 +4236,7 @@ class MathCommands
 
   class LispHistorySize extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.write("Function not yet implemented : LispHistorySize".getBytes());//TODO FIXME
@@ -4062,6 +4246,7 @@ class MathCommands
 
   class LispStackSize extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.write("Function not yet implemented : LispStackSize".getBytes());//TODO FIXME
@@ -4071,6 +4256,7 @@ class MathCommands
 
   class LispIsPromptShown extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.write("Function not yet implemented : LispIsPromptShown".getBytes());//TODO FIXME
@@ -4080,6 +4266,7 @@ class MathCommands
 
   class LispReadCmdLineString extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       aEnvironment.iCurrentOutput.write("Function not yet implemented : LispReadCmdLineString".getBytes());//TODO FIXME
@@ -4089,6 +4276,7 @@ class MathCommands
 
   class LispTime extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       long starttime = System.currentTimeMillis();
@@ -4104,6 +4292,7 @@ class MathCommands
 
   class LispFileSize extends YacasEvalCaller
   {
+    @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
       LispPtr fnameObject = new LispPtr();

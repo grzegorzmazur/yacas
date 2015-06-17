@@ -14,6 +14,7 @@ class LocalSymbolBehaviour implements SubstBehaviourBase
       iNewNames = aNewNames;
       iNrNames = aNrNames;
     }
+    @Override
     public boolean Matches(LispPtr aResult, LispPtr aElement) throws Exception
     {
       String name = aElement.Get().String();

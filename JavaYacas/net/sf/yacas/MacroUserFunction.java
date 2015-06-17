@@ -17,6 +17,7 @@ class MacroUserFunction extends BranchingUserFunction
     }
     UnFence();
   }
+  @Override
   public void Evaluate(LispPtr  aResult,LispEnvironment  aEnvironment,
                 LispPtr  aArguments) throws Exception
   {

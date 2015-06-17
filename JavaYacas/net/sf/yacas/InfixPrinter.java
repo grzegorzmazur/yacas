@@ -18,11 +18,13 @@ class InfixPrinter extends LispPrinter
     iBodiedOperators = aBodiedOperators;
     iPrevLastChar = 0;
   }
+  @Override
   public void Print(LispPtr aExpression, OutputStream aOutput, LispEnvironment aEnvironment) throws Exception
   {
     iCurrentEnvironment = aEnvironment;
     Print(aExpression, aOutput, KMaxPrecedence);
   }
+  @Override
   public void RememberLastChar(char aChar)
   {
     iPrevLastChar = aChar;

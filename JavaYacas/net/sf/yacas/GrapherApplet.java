@@ -16,6 +16,7 @@ public class GrapherApplet extends java.applet.Applet implements KeyListener
 
   String iRenderOperations;
 
+  @Override
   public void init()
   {
     iRenderOperations = getParameter("CallList");
@@ -36,8 +37,11 @@ public class GrapherApplet extends java.applet.Applet implements KeyListener
     }
   }
 
+  @Override
   public void   keyReleased(KeyEvent e) {}
+  @Override
   public void   keyTyped(KeyEvent e) {}
+  @Override
   public void keyPressed(KeyEvent e)
   {
     double scf = 1.05;
@@ -72,11 +76,13 @@ public class GrapherApplet extends java.applet.Applet implements KeyListener
   }
 
 
+  @Override
   public void start()
   {
     repaint();
   }
 
+  @Override
   public void stop()
   {
     offImage = null;
@@ -97,6 +103,7 @@ public class GrapherApplet extends java.applet.Applet implements KeyListener
       paintFrame(offGraphics);
     }
   }
+  @Override
   public void update(Graphics g)
   {
     drawToOffscreen();
@@ -109,6 +116,7 @@ public class GrapherApplet extends java.applet.Applet implements KeyListener
     }
   }
 
+  @Override
   public void paint(Graphics g)
   {
     drawToOffscreen();

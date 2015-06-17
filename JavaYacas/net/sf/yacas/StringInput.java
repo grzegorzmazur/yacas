@@ -9,6 +9,7 @@ class StringInput extends LispInput
     iString = aString;
     iCurrent = 0;
   }
+  @Override
   public char Next() throws Exception
   {
     if (iCurrent == iString.length())
@@ -19,20 +20,24 @@ class StringInput extends LispInput
       iStatus.NextLine();
     return c;
   }
+  @Override
   public char Peek() throws Exception
   {
     if (iCurrent == iString.length())
       return '\0';
     return iString.charAt(iCurrent);
   }
+  @Override
   public boolean EndOfStream()
   {
     return (iCurrent == iString.length());
   }
+  @Override
   public int Position()
   {
     return iCurrent;
   }
+  @Override
   public void SetPosition(int aPosition)
   {
     iCurrent = aPosition;
