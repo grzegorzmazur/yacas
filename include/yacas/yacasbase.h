@@ -33,7 +33,7 @@ public:
   // Placement form of new and delete.
   static inline void* operator new(size_t, void* where) { return where; }
   static inline void operator delete(void*, void*) {}
- 
+
   /** If we don't want to force vtables, we can make the destructor inline and protected.
    *  The following might cause a little bit of overhead but has the advantage that even
    *  the compiler can see that this is safe (thus no unnecessary warnings). Preferrably
@@ -49,10 +49,8 @@ public:
 protected:
 #ifdef HIDE_UNIMPORTANT_COMPILER_WARNINGS
   virtual
-#else // HIDE_UNIMPORTANT_COMPILER_WARNINGS
-  inline
 #endif // HIDE_UNIMPORTANT_COMPILER_WARNINGS
-     ~YacasBase() {};
+     ~YacasBase() = default;
 };
 
 #endif
