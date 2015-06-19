@@ -26,10 +26,6 @@ bool InternalIsList(const LispEnvironment& env, const LispPtr& aPtr)
         return false;
     if (!(*aPtr->SubList()))
         return false;
-    // The following happens with IsList(UnList({foo(x), a, b}))
-    if ((*aPtr->SubList())->String()->c_str() == nullptr)
-        return false;
-    //TODO this StrEqual is far from perfect. We could pass in a LispEnvironment object...
     if ((*aPtr->SubList())->String() != env.iList->String())
         return false;
     return true;
@@ -38,11 +34,7 @@ bool InternalIsList(const LispEnvironment& env, const LispPtr& aPtr)
 
 bool InternalIsString(const LispString* aOriginal)
 {
-    if (aOriginal)
-        if ((*aOriginal)[0] == '\"')
-            if ((*aOriginal)[aOriginal->size()-1] == '\"')
-                return true;
-    return false;
+    return aOriginal && aOriginal->length() > 1 && aOriginal->front() == '\"' && aOriginal->back() == '\"';
 }
 
 
