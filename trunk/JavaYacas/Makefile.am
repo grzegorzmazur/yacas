@@ -23,6 +23,7 @@ net/sf/yacas/MacroUserFunction.java Makefile.am net/sf/yacas/MatchAtom.java \
 net/sf/yacas/MatchNumber.java net/sf/yacas/MatchSubList.java \
 net/sf/yacas/MatchVariable.java net/sf/yacas/MathCommands.java net/sf/yacas/ParsedObject.java \
 net/sf/yacas/PatternClass.java net/sf/yacas/StdFileInput.java \
+net/sf/yacas/StreamGobbler.java \
 net/sf/yacas/StringInput.java \
 net/sf/yacas/SubstBehaviour.java net/sf/yacas/SubstBehaviourBase.java net/sf/yacas/UserStackInformation.java \
 net/sf/yacas/YacasConsole.java net/sf/yacas/YacasCoreCommands.java \
