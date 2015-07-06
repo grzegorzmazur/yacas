@@ -6,6 +6,7 @@
 
 #include <cassert>
 #include <vector>
+#include <cctype>
 
 /* Quantities derived from the platform-dependent types for doing
  * arithmetic.
