@@ -103,14 +103,24 @@ for %%s in (%SCRIPTS%) do (
 
     %CMD% !f! > %TESTFILE% 2>&1
 	
-	for /f "delims=:" %%i in ('FINDSTR  /N "Quitting..." %TESTFILE%') do set quittingLine=%%i
 	
-	if !quittingLine! equ 1 (
+	for %%A in (%TESTFILE%) do set size=%%~zA
+
+	if !size! equ 0 (
 		set /a succ+=1
-		echo OK
+		echo OK!
 	) else (
-		set /a fail+=1
-		echo FAILED
+	
+		for /f "delims=:" %%i in ('FINDSTR  /N "Quitting..." %TESTFILE%') do set quittingLine=%%i
+		
+		if !quittingLine! equ 1 (
+			set /a succ+=1
+			echo OK
+		) else (
+			set /a fail+=1
+			echo FAILED
+			type %TESTFILE% 
+		)
 	)
 )
 
