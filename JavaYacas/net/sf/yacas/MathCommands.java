@@ -1162,10 +1162,7 @@ class MathCommands
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,orig != null, 1);
       String oper = LispStandard.InternalUnstringify(orig);
 
-      // Open file for writing
-      File localFP = new File(oper);
-      LispError.CHK_CORE(aEnvironment, aStackTop, localFP.exists(), LispError.KLispErrFileNotFound);
-      FileOutputStream newOutput = new FileOutputStream(localFP);
+      FileOutputStream newOutput = new FileOutputStream(new File(oper));
 
       OutputStream previous = aEnvironment.iCurrentOutput;
       aEnvironment.iCurrentOutput = newOutput;
