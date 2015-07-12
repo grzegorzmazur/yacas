@@ -661,7 +661,7 @@ class MathCommands
   /// \sa LispSetVar(), LispMacroSetVar()
   static void InternalSetVar(LispEnvironment aEnvironment, int aStackTop, boolean aMacroMode, boolean aGlobalLazyVariable) throws Exception
   {
-    String varstring=null;
+    String varstring;
     if (aMacroMode)
     {
       LispPtr result = new LispPtr();
@@ -809,10 +809,9 @@ class MathCommands
 
     // Get operator
     LispPtr args = new LispPtr();
-    String orig=null;
 
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get() != null, 1);
-    orig = YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
+    String orig = YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,orig != null, 1);
     args.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 2).Get());
 
@@ -838,11 +837,10 @@ class MathCommands
     LispPtr pr = new LispPtr();
     LispPtr predicate = new LispPtr();
     LispPtr body = new LispPtr();
-    String orig=null;
 
     // Get operator
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get() != null, 1);
-    orig = YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
+    String orig = YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,orig != null, 1);
     ar.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 2).Get());
     pr.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 3).Get());
@@ -878,10 +876,9 @@ class MathCommands
     // Get operator
     LispPtr args = new LispPtr();
     LispPtr body = new LispPtr();
-    String orig=null;
 
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get() != null, 1);
-    orig = YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
+    String orig = YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,orig != null, 1);
 
     // The arguments
@@ -2462,22 +2459,22 @@ class MathCommands
   }
 
 
-  class LispSetExactBits extends YacasEvalCaller
-  {
-    @Override
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
-      BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
-      BigNumber z = new BigNumber(aEnvironment.Precision());
-      z.SetTo(x);
+    class LispSetExactBits extends YacasEvalCaller {
 
-    // do nothing for integers
-    if (!(z.IsInt()))
-      z.Precision((int)(LispStandard.bits_to_digits((long)(y.Double()), 10)));
-      RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
+        @Override
+        public void Eval(LispEnvironment aEnvironment, int aStackTop) throws Exception {
+            BigNumber x = GetNumber(aEnvironment, aStackTop, 1);
+            BigNumber y = GetNumber(aEnvironment, aStackTop, 2);
+            BigNumber z = new BigNumber(aEnvironment.Precision());
+            z.SetTo(x);
+
+            // do nothing for integers
+            if (!(z.IsInt())) {
+                z.Precision((int) (LispStandard.bits_to_digits((long) (y.Double()), 10)));
+            }
+            RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
+        }
     }
-  }
 
   class LispBitCount extends YacasEvalCaller
   {
@@ -2734,9 +2731,9 @@ class MathCommands
 
           if (os.equals("mac os x"))
               RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, aEnvironment.HashTable().LookUpStringify("MacOSX")));
-          else if (os.indexOf("windows") != -1)
+          else if (os.contains("windows"))
               RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, aEnvironment.HashTable().LookUpStringify("Windows")));
-          else if (os.indexOf("linux") != -1)
+          else if (os.contains("linux"))
               RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, aEnvironment.HashTable().LookUpStringify("Linux")));
           else
               RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, aEnvironment.HashTable().LookUpStringify("Unknown")));
@@ -3423,13 +3420,12 @@ class MathCommands
       LispPtr evaluated = new LispPtr();
       evaluated.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
       LispPtr subList = evaluated.Get().SubList();
-      LispObject head = null;
       if (subList == null)
       {
         RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,"\"\""));
         return;
       }
-      head = subList.Get();
+      LispObject head = subList.Get();
       if (head.String() == null)
       {
         RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,"\"\""));
