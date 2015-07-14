@@ -13,7 +13,7 @@ import java.io.File;
 @RunWith(Parameterized.class)
 public class YacasTest {
 
-    private String fname;
+    private final String fname;
 
     public YacasTest(String fname) {
         this.fname = fname;

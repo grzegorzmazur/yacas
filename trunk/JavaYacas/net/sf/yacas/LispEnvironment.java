@@ -214,12 +214,10 @@ class LispEnvironment
         iEvaluator.Eval(this, aResult, l.iValue);
         l.iValue.Set(aResult.Get());
         l.iEvalBeforeReturn = false;
-        return;
       }
       else
       {
         aResult.Set(l.iValue.Get());
-        return;
       }
     }
   }

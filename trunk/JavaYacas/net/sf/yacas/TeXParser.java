@@ -294,13 +294,11 @@ public class TeXParser
       NextToken(); if (!matchToken("}")) return;
       if (name.equals("array"))
       {
-        int nrColumns = 0;
-        int nrRows    = 0;
         NextToken(); if (!matchToken("{")) return;
         NextToken(); String coldef = nextToken;
         NextToken(); if (!matchToken("}")) return;
-        nrColumns = coldef.length();
-        nrRows = 1;
+        int nrColumns = coldef.length();
+        int nrRows = 1;
         NextToken();
         while (!nextToken.equals("\\end"))
         {

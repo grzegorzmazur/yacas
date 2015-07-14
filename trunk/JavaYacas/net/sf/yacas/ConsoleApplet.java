@@ -113,7 +113,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     if (scrolling)
     {
       scrolling = false;
-      return;
     }
     else if (hintWindow != null)
     {
@@ -123,7 +122,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
         cursorPos += matchToInsert.length();
         RefreshHintWindow();
         repaint();
-        return;
       }
     }
   }
@@ -192,23 +190,6 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   public void start()
   {
     clearOutputLines();
-    if (false /*TODO remove loading the logo yacasLogo == null*/)
-    {
-      try
-      {
-        String fname = getDocumentBase().toString();
-        int ind = fname.lastIndexOf('/');
-        if (ind >0)
-        {
-          fname = fname.substring(0,ind+1)+"yacas.gif";
-          yacasLogo = getImage(new URL(fname));
-        }
-      }
-      catch (Exception e)
-      {
-      }
-    }
-
 
     stdoutput = new ByteArrayOutputStream();
     yacas = new CYacas(stdoutput);
@@ -929,9 +910,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
     int height = -1;
     int iIndent;
-    private String iPrompt;
-    private Font   iPromptFont;
-    private Color  iPromptColor;
+    private final String iPrompt;
+    private final Font   iPromptFont;
+    private final Color  iPromptColor;
   }
 
 
@@ -959,9 +940,9 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     }
     Dimension size = new Dimension(320,240);
     int iIndent;
-    private String iPrompt;
-    private Font   iPromptFont;
-    private Color  iPromptColor;
+    private final String iPrompt;
+    private final Font   iPromptFont;
+    private final Color  iPromptColor;
   }
 
 
@@ -1009,12 +990,12 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       return fontMetrics.getHeight();
     }
     int iIndent;
-    private String iPrompt;
-    private String iText;
-    private Font   iPromptFont;
-    private Font   iFont;
-    private Color  iPromptColor;
-    private Color  iColor;
+    private final String iPrompt;
+    private final String iText;
+    private final Font   iPromptFont;
+    private final Font   iFont;
+    private final Color  iPromptColor;
+    private final Color  iColor;
   }
 
 
@@ -1139,8 +1120,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     {
       if ( g instanceof Graphics2D )
       {
-        Graphics2D g2d = null;
-        g2d = (Graphics2D)g;
+        Graphics2D g2d = (Graphics2D)g;
         g2d.addRenderingHints( new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON ));
       }
       YacasGraphicsContext context = new YacasGraphicsContext(g,0,0);
@@ -1172,8 +1152,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     {
       if ( g instanceof Graphics2D )
       {
-        Graphics2D g2d = null;
-        g2d = (Graphics2D)g;
+        Graphics2D g2d = (Graphics2D)g;
         g2d.addRenderingHints( new RenderingHints( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON ));
 
         g2d.setStroke(new BasicStroke((2),BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND));
@@ -1297,7 +1276,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   final static String outputPrompt = "Out> ";
 
   static final int fontHeight = 14;
-  private Font font = new Font("Verdana", Font.PLAIN, fontHeight);
+  private final Font font = new Font("Verdana", Font.PLAIN, fontHeight);
 
   private static final int nrHistoryLines = 100;
   public  static String history[] = new String[nrHistoryLines];
@@ -1374,7 +1353,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     {
       String line = file.ReadLine();
       String[] tokens = new String[16];
-      int nrTokens = 0;
+      int nrTokens;
       while (line != null)
       {
         if (line.substring(0,2).equals("::"))

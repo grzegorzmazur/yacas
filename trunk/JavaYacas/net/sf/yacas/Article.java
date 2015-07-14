@@ -57,7 +57,6 @@ class Article
     if (pos == -1)
     {
       articleBody = articleBody + aString;
-      return;
     }
     else
     {
@@ -70,7 +69,6 @@ class Article
     int maxNrEntries = 10;
     String keys[] = new String[maxNrEntries];
     String values[] = new String[maxNrEntries];
-    int nrEntries = 0;
     while (aString.length() > 0)
     {
       int pos = aString.indexOf("{{");
@@ -98,7 +96,7 @@ class Article
       String data = aString.substring(0, pos);
       aString = aString.substring(pos + close.length());
 
-      nrEntries = 0;
+      int nrEntries = 0;
       if (toProcess != null)
       {
         int pos3 = toProcess.indexOf(',');

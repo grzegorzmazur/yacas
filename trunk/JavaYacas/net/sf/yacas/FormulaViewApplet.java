@@ -3,9 +3,6 @@ package net.sf.yacas;
 
 import java.awt.*;
 import java.applet.*;
-import java.awt.event.*;
-import java.io.*;
-import java.net.*;
 
 public class FormulaViewApplet extends Applet
 {
@@ -83,8 +80,7 @@ public class FormulaViewApplet extends Applet
     // Tell the rendering system we'd like to have anti-aliasing please
     if (g instanceof Graphics2D)
     {
-      Graphics2D g2d = null;
-      g2d = (Graphics2D)g;
+      Graphics2D g2d = (Graphics2D)g;
       g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING,
                                                  RenderingHints.VALUE_ANTIALIAS_ON));
     }

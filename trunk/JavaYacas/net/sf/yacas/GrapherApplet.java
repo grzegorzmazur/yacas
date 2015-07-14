@@ -1,9 +1,7 @@
 
 package net.sf.yacas;
 
-import java.net.*;
 import java.awt.*;
-import java.io.*;
 import java.awt.event.*;
 
 public class GrapherApplet extends java.applet.Applet implements KeyListener

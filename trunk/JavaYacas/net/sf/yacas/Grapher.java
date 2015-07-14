@@ -80,10 +80,9 @@ public class Grapher
           NextToken();
           int nr = Integer.parseInt(token);
           NextToken();
-          double x2,y2=0;
-          x2 = Float.parseFloat(token);
+          double x2 = Float.parseFloat(token);
           NextToken();
-          y2 = Float.parseFloat(token);
+          double y2 = Float.parseFloat(token);
           if (g == null)
           {
             DetermineBounds(x2, y2);

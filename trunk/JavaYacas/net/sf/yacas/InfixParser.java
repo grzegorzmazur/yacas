@@ -26,7 +26,6 @@ class InfixParser extends LispParser
     ParsedObject object = new ParsedObject(this);
     object.Parse();
     aResult.Set(object.iResult.Get());
-    return ;
   }
   public LispOperators iPrefixOperators;
   public LispOperators iInfixOperators;

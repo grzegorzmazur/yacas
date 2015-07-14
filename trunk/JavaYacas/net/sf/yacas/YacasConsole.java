@@ -2,7 +2,6 @@ package net.sf.yacas;
 
 
 import java.io.*;
-import java.util.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;

@@ -4,19 +4,18 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
-import java.lang.InterruptedException;
-import java.lang.Thread;
 import java.util.ArrayList;
 
 
 class StreamGobbler extends Thread {
 
-    private InputStream is;
-    private ArrayList<String> strings = new ArrayList<String>();
+    private final InputStream is;
+    private final ArrayList<String> strings;
 
     public StreamGobbler(InputStream is)
     {
         this.is = is;
+        this.strings = new ArrayList<>();
     }
 
     @Override

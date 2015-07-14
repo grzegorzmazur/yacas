@@ -7,9 +7,7 @@ class LispGenericClass extends LispObject
     public static LispGenericClass New(GenericClass aClass) throws Exception
     {
       LispError.LISPASSERT(aClass!=null);
-      LispGenericClass self = new LispGenericClass(aClass);
-      LispError.Check(self!=null,LispError.KLispErrNotEnoughMemory);
-      return self;
+      return new LispGenericClass(aClass);
     }
     @Override
     public GenericClass Generic()

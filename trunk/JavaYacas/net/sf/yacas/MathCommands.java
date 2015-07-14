@@ -905,11 +905,10 @@ class MathCommands
     LispPtr pr = new LispPtr();
     LispPtr predicate = new LispPtr();
     LispPtr body = new LispPtr();
-    String orig=null;
 
     // Get operator
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get() != null, 1);
-    orig = YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
+    String orig = YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 1).Get().String();
     LispError.CHK_ARG_CORE(aEnvironment,aStackTop,orig != null, 1);
     ar.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 2).Get());
     pr.Set(YacasEvalCaller.ARGUMENT(aEnvironment, aStackTop, 3).Get());
@@ -1456,7 +1455,6 @@ class MathCommands
         {
           int size=((ArrayClass)gen).Size();
           RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,""+size));
-          return;
         }
     //  CHK_ISLIST_CORE(aEnvironment,aStackTop,ARGUMENT(aEnvironment, aStackTop, 1),1);
     }
@@ -2353,7 +2351,6 @@ class MathCommands
         BigNumber x;
         x = MathCommands.GetNumber(aEnvironment, aStackTop, 1);
         RESULT(aEnvironment, aStackTop).Set(new LispNumber(x));
-        return;
       }
       else
       {
@@ -2363,7 +2360,6 @@ class MathCommands
         BigNumber z = new BigNumber(bin);
         z.Add(x,y,aEnvironment.Precision());
         RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
-        return;
       }
     }
   }
@@ -2421,7 +2417,6 @@ class MathCommands
         z.Divide(x, y,aEnvironment.Precision());
       }
       RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
-      return;
     }
   }
 
@@ -2587,7 +2582,6 @@ class MathCommands
           BigNumber z = new BigNumber(aEnvironment.Precision());
           z.Divide(x,y,aEnvironment.Precision());
           RESULT(aEnvironment, aStackTop).Set(new LispNumber(z));
-          return;
       }
       else
       {
@@ -3432,7 +3426,6 @@ class MathCommands
         return;
       }
       RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,aEnvironment.HashTable().LookUpStringify(head.String())));
-      return;
     }
   }
 
