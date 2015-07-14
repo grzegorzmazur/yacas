@@ -23,15 +23,13 @@ class ListedBranchingUserFunction extends BranchingUserFunction
     while (i < arity && iter.GetObject() != null)
     {
         ptr.Set(iter.GetObject().Copy(false));
-        ptr = (ptr.Get().Next());
+        ptr = ptr.Get().Next();
         i++;
         iter.GoNext();
     }
     if (iter.GetObject().Next().Get() == null)
     {
         ptr.Set(iter.GetObject().Copy(false));
-        ptr = (ptr.Get().Next());
-        i++;
         iter.GoNext();
         LispError.LISPASSERT(iter.GetObject() == null);
     }

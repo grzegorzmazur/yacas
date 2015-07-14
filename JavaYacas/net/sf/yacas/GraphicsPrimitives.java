@@ -52,11 +52,8 @@ class GraphicsPrimitives
     {
       prevSetFontSize = newFontSize;
       Font f = new Font ("Verdana", Font.PLAIN, newFontSize);
-      if (f != null)
-      {
-        iG.setFont(f);
-        metrics = iG.getFontMetrics();
-      }
+      iG.setFont(f);
+      metrics = iG.getFontMetrics();
     }
   }
   int GetFontSize()

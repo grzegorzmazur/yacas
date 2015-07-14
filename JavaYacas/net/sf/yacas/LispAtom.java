@@ -5,7 +5,7 @@ class LispAtom extends LispObject
 {
     static LispObject New(LispEnvironment aEnvironment, String aString) throws Exception
   {
-    LispObject self = null;
+    LispObject self;
     if (LispStandard.IsNumber(aString,true))  // check if aString is a number (int or float)
     {
       /// construct a number from a decimal string representation (also create a number object)
@@ -15,7 +15,6 @@ class LispAtom extends LispObject
     {
       self = new LispAtom(aEnvironment.HashTable().LookUp(aString));
     }
-    LispError.Check(self!=null,LispError.KLispErrNotEnoughMemory);
     return self;
   }
     @Override

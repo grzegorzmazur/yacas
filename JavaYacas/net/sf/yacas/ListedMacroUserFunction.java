@@ -31,8 +31,6 @@ class ListedMacroUserFunction extends MacroUserFunction
     if (iter.GetObject().Next().Get() == null)
     {
         ptr.Set(iter.GetObject().Copy(false));
-        ptr = (ptr.Get().Next());
-        i++;
         iter.GoNext();
         LispError.LISPASSERT(iter.GetObject() == null);
     }

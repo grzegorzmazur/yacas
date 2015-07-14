@@ -146,11 +146,9 @@ public class DatahubApplet extends Applet
     String prog = "";
     try
     {
-      URL url = new URL(docbase);
-      BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+        URL url = new URL(docbase);
+        BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
 
-      if (in != null)
-      {
         while (true)
         {
           try
@@ -165,7 +163,6 @@ public class DatahubApplet extends Applet
           }
         }
         in.close();
-      }
     }
     catch(Exception e)
     {

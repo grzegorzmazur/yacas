@@ -357,7 +357,6 @@ class BranchingUserFunction extends LispArityUserFunction
   {
     // New branching rule.
     BranchRule newRule = new BranchRule(aPrecedence,aPredicate,aBody);
-    LispError.Check(newRule != null,LispError.KLispErrCreatingRule);
 
     InsertRule(aPrecedence,newRule);
   }
@@ -369,7 +368,6 @@ class BranchingUserFunction extends LispArityUserFunction
   {
     // New branching rule.
     BranchRule newRule = new BranchRuleTruePredicate(aPrecedence,aBody);
-    LispError.Check(newRule != null,LispError.KLispErrCreatingRule);
 
     InsertRule(aPrecedence,newRule);
   }
@@ -381,7 +379,6 @@ class BranchingUserFunction extends LispArityUserFunction
   {
     // New branching rule.
     BranchPattern newRule = new BranchPattern(aPrecedence,aPredicate,aBody);
-    LispError.Check(newRule != null,LispError.KLispErrCreatingRule);
 
     InsertRule(aPrecedence,newRule);
   }
