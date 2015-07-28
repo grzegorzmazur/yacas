@@ -457,7 +457,7 @@ Function("FillList", {aItem, aLength})
 
 
 
-/* ···· Drop ···· */
+/* ***** Drop ***** */
 
 /* Needs to check the parameters */
 
@@ -479,7 +479,7 @@ Rule("Drop", 2, 2, range < 0)
     Take( lst, Length(lst) + range );
 
 
-/* ···· Take ···· */
+/* ***** Take ***** */
 
 /* Needs to check the parameters */
 
@@ -502,7 +502,7 @@ Rule("Take", 2, 2, range < 0)
     Drop( lst, Length(lst) + range );
 
 
-/* ···· Partition ···· */
+/* ***** Partition ***** */
 
 /* Partition( list, n ) partitions 'list' into non-overlapping sublists of length n */
 
