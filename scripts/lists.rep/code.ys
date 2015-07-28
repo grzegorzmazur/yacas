@@ -444,17 +444,24 @@ UnFence("MapArgs",2);
 HoldArg("MapArgs",oper);
 
 
+10 # FillList(_item, 0) <-- {};
 
-Function("FillList", {aItem, aLength})
-[
-  Local(i, aResult);
-  aResult:={};
-  For(i:=0, i<aLength, i++)
-    DestructiveInsert(aResult,1,aItem);
-  aResult;
+20 # FillList(item_IsList, length_IsPositiveInteger) <-- [
+    Local(i, n, result);
+    result := {};
+    n := Length(item);
+    For(i:=0, i < length, i++)
+        DestructiveInsert(result, 1, Take(item, n));
+    result;
 ];
 
-
+30 # FillList(_item, length_IsPositiveInteger) <-- [
+    Local(i, result);
+    result := {};
+    For(i:=0, i < length, i++)
+        DestructiveInsert(result, 1, item);
+    result;
+];
 
 
 /* ***** Drop ***** */
