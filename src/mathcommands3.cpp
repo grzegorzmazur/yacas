@@ -794,6 +794,11 @@ void LispBackQuote(LispEnvironment& aEnvironment, LispInt aStackTop)
     InternalEval(aEnvironment, RESULT, result);
 }
 
+void LispInterpreter(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+    RESULT = (LispAtom::New(aEnvironment,"\"yacas\""));
+}
+
 void LispVersion(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
     RESULT = (LispAtom::New(aEnvironment,"\"" YACAS_VERSION "\""));
