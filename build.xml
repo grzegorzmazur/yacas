@@ -1,4 +1,4 @@
-<project name="jyacas" default="dist" basedir=".">
+<project name="jyacas" default="jar" basedir=".">
   <description>
     JavaYacas build file
   </description>
