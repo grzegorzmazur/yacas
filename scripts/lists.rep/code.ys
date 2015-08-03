@@ -443,26 +443,25 @@ Macro("MacroMapArgs",{expr,oper})
 UnFence("MapArgs",2);
 HoldArg("MapArgs",oper);
 
+10 # DeepCopy(l_IsList) <-- [
+    Local(r);
+    r := {};
+    ForEach(e, l)
+        DestructiveAppend(r, DeepCopy(e));
+    r;
+];
+
+20 # DeepCopy(_e) <-- e;
 
 10 # FillList(_item, 0) <-- {};
 
-20 # FillList(item_IsList, length_IsPositiveInteger) <-- [
-    Local(i, n, result);
-    result := {};
-    n := Length(item);
-    For(i:=0, i < length, i++)
-        DestructiveInsert(result, 1, Take(item, n));
-    result;
-];
-
-30 # FillList(_item, length_IsPositiveInteger) <-- [
+20 # FillList(_item, length_IsPositiveInteger) <-- [
     Local(i, result);
     result := {};
     For(i:=0, i < length, i++)
-        DestructiveInsert(result, 1, item);
+        DestructiveInsert(result, 1, DeepCopy(item));
     result;
 ];
-
 
 /* ***** Drop ***** */
 

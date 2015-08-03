@@ -66,6 +66,9 @@ Verify(Insert({a,c},2,b),{a,b,c});
     l := FillList(FillList(0, 3), 2);
     l[1][1] := 11;
     Verify(l, {{11,0,0},{0,0,0}});
+    l := FillList(FillList(FillList(0, 3), 3), 3);
+    l[1][1][1] := 111;
+    Verify(l, {{{111,0,0},{0,0,0},{0,0,0}},{{0,0,0},{0,0,0},{0,0,0}},{{0,0,0},{0,0,0},{0,0,0}}});
 ];
 
 Testing("Length");
