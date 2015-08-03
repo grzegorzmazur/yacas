@@ -16,11 +16,16 @@ before_install:
   - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-4.8 20
   
 before_script:
-  - mkdir build
-  - cd build
-  - cmake -DENABLE_JYACAS:BOOL=ON ..
+  - mkdir cmake_build
+  - cd cmake_build
+  - cmake
 
-script: make && make test
+script:
+  - make
+  - make test
+  - cd ..
+  - ant
+  - ant test
 
 branches:
   only:
