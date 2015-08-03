@@ -18,7 +18,7 @@ before_install:
 before_script:
   - mkdir build
   - cd build
-  - cmake -DENABLE_JYACAS ..
+  - cmake -DENABLE_JYACAS:BOOL=ON ..
 
 script: make && make test
 
