@@ -14,15 +14,28 @@ NumericEqual(N(Pi,70),3.14159265358979323846264338327950288419716939937510582097
 NumericEqual( N(Sec(2),9), -2.402997962, 9);
 NumericEqual( N(Csc(2),9),  1.09975017,9);
 NumericEqual( N(Cot(2),9), -0.457657554, 9);
-NumericEqual( N(Sinh(2),10), 3.6268604078,10); // matter of discussion whether rounding should be to nearest
+
+If(Interpreter() = "yacas",
+    NumericEqual( N(Sinh(2),10), 3.6268604078,10) // matter of discussion whether rounding should be to nearest
+);
 
 NumericEqual( N(ArcSin(2), 9), Complex(1.570796327,1.316957897),9);
 NumericEqual( N(ArcCos(2),9), Complex(0,-1.316957897),9);
-NumericEqual( N(ArcTan(2*I), 12), N(Complex(1.57079632679,0.54930614433),12),11); // calculating to precision+1 because RoundTo rounds... cluttering the last digit with round-off
+
+If(Interpreter() = "yacas",
+    NumericEqual( N(ArcTan(2*I), 12), N(Complex(1.57079632679,0.54930614433),12),11) // calculating to precision+1 because RoundTo rounds... cluttering the last digit with round-off
+);
+
 NumericEqual( N(ArcSinh(2), 9), 1.443635475,9);
 NumericEqual( N(ArcCosh(2), 9), 1.316957897,9);
-NumericEqual( N(ArcCosh(-2), 8), Complex(-1.3169579,3.14159265),8);
-NumericEqual( N(ArcTanh(2), 9), Complex(0.549306144,1.570796327),9);
+
+If(Interpreter() = "yacas",
+    NumericEqual( N(ArcCosh(-2), 8), Complex(-1.3169579,3.14159265),8)
+);
+
+If(Interpreter() = "yacas",
+    NumericEqual( N(ArcTanh(2), 9), Complex(0.549306144,1.570796327),9)
+);
 
 /* Numerical tests - all confirmed with Maple */
 Builtin'Precision'Set(50);
@@ -89,10 +102,13 @@ RoundTo(MathPower(13, -23), 50)
 , 0.23949855470974885180294666343025235387321690490245e-25
 , 50);
 
-NumericEqual(
-RoundTo([Local(x);x:=Newton(x*Exp(x)-4,x,1,10^(-49)); N(x*Exp(x));], 49)
-, 4.
-,49);
+If(Interpreter() = "yacas",
+    NumericEqual(
+    RoundTo([Local(x);x:=Newton(x*Exp(x)-4,x,1,10^(-49)); N(x*Exp(x));], 49)
+    , 4.
+    ,49)
+);
+
 Verify(Newton(x^2+1,x,1,0.1,-3,3), Fail);
 NumericEqual(Newton(x^2-1,x,1,0.1,-3,3), 1.,Builtin'Precision'Get());
 
@@ -209,10 +225,12 @@ Zeta(-12)
 , 0
 );
 
-NumericEqual(
-RoundTo(N(Zeta(40)), 19)
-, 1.0000000000009094948
-,19);
+If(Interpreter() = "yacas",
+    NumericEqual(
+    RoundTo(N(Zeta(40)), 19)
+    , 1.0000000000009094948
+    ,19)
+);
 
 NumericEqual(
 RoundTo(N(Zeta(1.5)), 19)
@@ -294,8 +312,14 @@ Builtin'Precision'Set(20);
 Verify( RoundTo(N(Erf(Sqrt(0.8)),20),19), // verified with Maple
 RoundTo(.79409678926793169113034892342, 19)
 );
-Verify( RoundTo(N(Erf(50*I+20)/10^910,22),19), // verified with Maple
-RoundTo(1.09317119002909585408+I*0.00475463306931818955275, 19)
+
+If(Interpreter() = "yacas",
+    Verify( RoundTo(N(Erf(50*I+20)/10^910,22),19), // verified with Maple
+    RoundTo(1.09317119002909585408+I*0.00475463306931818955275, 19)
+    ),
+    KnownFailure( RoundTo(N(Erf(50*I+20)/10^910,22),19), // verified with Maple
+    RoundTo(1.09317119002909585408+I*0.00475463306931818955275, 19)
+    )
 );
 
 // testing GammaConstNum against Maple

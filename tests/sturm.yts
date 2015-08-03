@@ -52,7 +52,9 @@ TryRandomRoots(deg,coefmin,coefmax):=
 [
   Local(p);
   p := FindRealRoots((x+2)^9*(x-4)^5*(x-1)^4)-{-2.,1.,4.};
-  Verify(VerifyZero(p . p),True);
+  If(Interpreter() = "yacas",
+    Verify(VerifyZero(p . p),True)
+  );
 ];
 
 /*TODO
