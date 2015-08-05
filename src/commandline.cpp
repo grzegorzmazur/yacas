@@ -90,26 +90,16 @@ void CCommandLine::ReadLineSub(const std::string& prompt)
             break;
 
 
-      case eUp:
-        if (iHistoryList.ArrowUp(iSubLine,cursor))
-        {
-          full_line_dirty = true;
-          history_unchanged = true;
-        }
-        break;
-      case eDown:
-
-        if (iHistoryList.ArrowDown(iSubLine,cursor))
-          {
-            full_line_dirty = true;
+        case eUp:
             history_unchanged = true;
-          }
-          else
-          {
             full_line_dirty = true;
+            iHistoryList.ArrowUp(iSubLine,cursor);
+            break;
+        case eDown:
             history_unchanged = true;
-          }
-        break;
+            full_line_dirty = true;
+            iHistoryList.ArrowDown(iSubLine,cursor);
+            break;
 
 
         case eTab:
