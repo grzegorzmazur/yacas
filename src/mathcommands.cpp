@@ -796,13 +796,10 @@ void LispTmpFile(LispEnvironment& aEnvironment, LispInt aStackTop)
         ShowStack(aEnvironment);
         throw LispErrFileNotFound();
     }
+    
+    close(fd);
+    RESULT = LispAtom::New(aEnvironment, stringify(fn));
 
-    if (fd < 0) {
-        InternalFalse(aEnvironment, RESULT);
-    } else {
-        close(fd);
-        RESULT = LispAtom::New(aEnvironment, stringify(fn));
-    }
 #else
     LispChar tmp_path[MAX_PATH];
     LispChar tmp_fn[MAX_PATH];
