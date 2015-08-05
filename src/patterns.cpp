@@ -11,6 +11,8 @@
 #include <stdio.h>
 #endif // YACAS_DEBUG
 
+#include <memory>
+
 bool MatchAtom::ArgumentMatches(LispEnvironment& aEnvironment,
                                        LispPtr& aExpression,
                                        LispPtr* arguments) const
@@ -189,21 +191,20 @@ YacasPatternPredicateBase::YacasPatternPredicateBase(
 bool YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
                                               LispPtr& aArguments)
 {
-    LispPtr* arguments = nullptr;
-    if (!iVariables.empty())
-        arguments = NEW LispPtr[iVariables.size()];
-    LocalArgs args(arguments); //Deal with destruction
+    std::unique_ptr<LispPtr[]> arguments(iVariables.empty() ? nullptr : new LispPtr[iVariables.size()]);
+
     LispIterator iter(aArguments);
     const std::size_t n = iParamMatchers.size();
-    for (std::size_t i = 0; i < n; ++i, ++iter)
-  {
+
+    for (std::size_t i = 0; i < n; ++i, ++iter) {
+        
         if (!iter.getObj())
             return false;
-        if (!iParamMatchers[i]->ArgumentMatches(aEnvironment,*iter,arguments))
-        {
+        
+        if (!iParamMatchers[i]->ArgumentMatches(aEnvironment, *iter, arguments.get()))
             return false;
-        }
-  }
+    }
+    
     if (iter.getObj())
         return false;
 
@@ -211,7 +212,7 @@ bool YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
         // set the local variables.
         LispLocalFrame frame(aEnvironment,false);
 
-        SetPatternVariables(aEnvironment,arguments);
+        SetPatternVariables(aEnvironment, arguments.get());
 
         // do the predicates
         if (!CheckPredicates(aEnvironment))
@@ -219,7 +220,7 @@ bool YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
     }
 
     // set the local variables for sure now
-    SetPatternVariables(aEnvironment,arguments);
+    SetPatternVariables(aEnvironment, arguments.get());
 
     return true;
 }
@@ -230,24 +231,17 @@ bool YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
 bool YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
                                               LispPtr* aArguments)
 {
-    LispPtr* arguments = nullptr;
-    if (!iVariables.empty())
-        arguments = NEW LispPtr[iVariables.size()];
-    LocalArgs args(arguments); //Deal with destruction
+    std::unique_ptr<LispPtr[]> arguments(iVariables.empty() ? nullptr : new LispPtr[iVariables.size()]);
 
     const std::size_t n = iParamMatchers.size();
     for (std::size_t i = 0; i < n; ++i)
-    {
-        if (!iParamMatchers[i]->ArgumentMatches(aEnvironment,aArguments[i],arguments))
-        {
+        if (!iParamMatchers[i]->ArgumentMatches(aEnvironment,aArguments[i],arguments.get()))
             return false;
-        }
-    }
 
     {
         // set the local variables.
-        LispLocalFrame frame(aEnvironment,false);
-        SetPatternVariables(aEnvironment,arguments);
+        LispLocalFrame frame(aEnvironment, false);
+        SetPatternVariables(aEnvironment, arguments.get());
 
         // do the predicates
         if (!CheckPredicates(aEnvironment))
@@ -255,7 +249,8 @@ bool YacasPatternPredicateBase::Matches(LispEnvironment& aEnvironment,
     }
 
     // set the local variables for sure now
-    SetPatternVariables(aEnvironment,arguments);
+    SetPatternVariables(aEnvironment, arguments.get());
+
     return true;
 }
 

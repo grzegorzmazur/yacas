@@ -492,22 +492,6 @@ private:
   LispUserFunction* iUserFunc;
 };
 
-class LocalArgs: NonCopyable
-{
-public:
-  LocalArgs(LispPtr* aPtrs) : iPtrs(aPtrs) {};
-  ~LocalArgs()
-  {
-    if (iPtrs)
-      delete[] iPtrs;
-  }
-
-private:
-  LispPtr* iPtrs;
-};
-
-
-
 inline void LispEnvironment::SetPrettyReader(const LispString* aPrettyReader)
 {
   iPrettyReader = aPrettyReader;
