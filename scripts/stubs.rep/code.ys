@@ -207,6 +207,8 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
 45 # Gcd(Sqrt(n_IsInteger),m_IsInteger) <-- Sqrt(Gcd(n,m^2));
 45 # Gcd(n_IsInteger,Sqrt(m_IsInteger)) <-- Sqrt(Gcd(n^2,m));
 
+45 # Gcd(Exp(n_IsInteger), Exp(m_IsInteger)) <-- Exp(Min(m, n));
+
 47 # Gcd(n_IsRational,m_IsRational) <-- Gcd(Numer(n),Numer(m))/Lcm(Denom(n),Denom(m));
 
 48 # Gcd(c_IsConstant, b_IsRational * c_IsConstant) <-- Gcd(1, b) * c;

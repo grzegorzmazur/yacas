@@ -206,6 +206,9 @@ Verify(Gcd(-Pi, 1/5*Pi), Pi/5);
 Verify(Gcd(-Pi/2, 1/5*Pi), Pi/10);
 Verify(Gcd(Pi/2, Pi/3), Pi/6);
 
+Verify(Gcd(Exp(1),Exp(2)), Exp(1));
+Verify(Gcd(Exp(-2), Exp(-4)), Exp(-4));
+
 NextTest("Absolute value");
 
 Verify(Abs(1), 1);
