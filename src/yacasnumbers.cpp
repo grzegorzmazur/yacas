@@ -172,14 +172,12 @@ LispObject* TanFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPr
     ANumber x(*int1->Number(aPrecision)->iNumber);
     x.ChangePrecision(aPrecision);
     SinFloat(s, x);
-//      SinFloat(s,int1->String()->c_str());
   }
   ANumber c(aPrecision);
   {
     ANumber x(*int1->Number(aPrecision)->iNumber);
     x.ChangePrecision(aPrecision);
     CosFloat(c, x);
-//      CosFloat(c,int1->String()->c_str());
   }
   ANumber result(aPrecision);
   ANumber dummy(aPrecision);

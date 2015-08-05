@@ -458,7 +458,6 @@ void LispFromBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     // Added, unquote a string
     CheckArg(InternalIsString(str2), 2, aEnvironment, aStackTop);
-    //str2 = aEnvironment.HashTable().LookUpCounted(str2->c_str() + 1, std::strlen(str2->c_str()) - 2);
     str2 = aEnvironment.HashTable().LookUp(str2->substr(1, str2->length() - 2));
 
     // convert using correct base

@@ -407,7 +407,7 @@ void LoadYacas(std::ostream& os)
 
         std::ostringstream os;
         os << "Load(\"" << init_script << "\");";
-        yacas->Evaluate(os.str().c_str());
+        yacas->Evaluate(os.str());
         if (yacas->IsError())
         {
             ShowResult("");
@@ -436,7 +436,7 @@ void LoadYacas(std::ostream& os)
 
         std::ostringstream os;
         os << "Load(\"" << yacasrc_path << "\");";
-        yacas->Evaluate(os.str().c_str());
+        yacas->Evaluate(os.str());
     }
 #else
     if (const char* home = getenv("HOME")) {
@@ -447,7 +447,7 @@ void LoadYacas(std::ostream& os)
         if (test) {
             std::ostringstream os;
             os << "Load(\"" << home << "/.yacasrc" << "\");";
-            yacas->Evaluate(os.str().c_str());
+            yacas->Evaluate(os.str());
         }
     }
 #endif
@@ -1097,7 +1097,7 @@ int main(int argc, char** argv)
         else
             os << "Load(\"" << argv[fileind] << "\");";
 
-        yacas->Evaluate(os.str().c_str());
+        yacas->Evaluate(os.str());
 
         if (yacas->IsError())
             std::cout << "Error in file " << argv[fileind] << "\n"
@@ -1133,7 +1133,7 @@ int main(int argc, char** argv)
             buffer.append(line);
         } while(std::cin.good());
 
-        yacas->Evaluate(buffer.c_str());
+        yacas->Evaluate(buffer);
         ShowResult(outprompt);
 
         std::exit(EXIT_SUCCESS);

@@ -20,7 +20,7 @@ namespace {
 
 void CCommandLine::GetHistory(std::size_t aLine)
 {
-    iSubLine = iHistoryList.GetLine(aLine).c_str();
+    iSubLine = iHistoryList.GetLine(aLine);
 }
 
 void CCommandLine::MaxHistoryLinesSaved(std::size_t aNrLines)
@@ -223,7 +223,7 @@ bool CConsoleHistory::ArrowUp(std::string& s, unsigned c)
     if (history == 0)
         return false;
 
-    const std::string prefix(s.c_str(), c);
+    const std::string prefix(s, c);
 
     std::vector<std::string>::reverse_iterator p = iHistory.rbegin();
     std::advance(p, iHistory.size() - history);
@@ -244,7 +244,7 @@ bool CConsoleHistory::ArrowDown(std::string& s, unsigned c)
     if (history > iHistory.size())
         return false;
     
-    const std::string prefix(s.c_str(), c);
+    const std::string prefix(s, c);
 
     std::vector<std::string>::iterator p = iHistory.begin();
     std::advance(p, history + 1);
@@ -286,7 +286,7 @@ bool CConsoleHistory::Complete(std::string& s, unsigned& c)
     
     history = iHistory.size() - 1;
     
-    const std::string prefix(s.c_str(), c);
+    const std::string prefix(s, c);
 
     std::vector<std::string>::reverse_iterator p = iHistory.rbegin();
     std::advance(p, iHistory.size() - history);

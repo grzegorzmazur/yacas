@@ -175,12 +175,7 @@ LispInt InternalListLength(const LispPtr& aOriginal)
 {
     LispConstIterator iter(aOriginal);
     LispInt length = 0;
-    while (iter.getObj())
-    {
-        /*
-         if (iter()->String())
-            printf("%s ",iter()->String()->c_str());
-         */
+    while (iter.getObj()) {
         ++iter;
         length++;
     }
@@ -348,7 +343,7 @@ void InternalApplyString(LispEnvironment& aEnvironment, LispPtr& aResult,
         throw LispErrNotString();
 
     LispObject *head =
-        LispAtom::New(aEnvironment, *SymbolName(aEnvironment, aOperator->c_str()));
+        LispAtom::New(aEnvironment, *SymbolName(aEnvironment, *aOperator));
     head->Nixed() = (aArgs);
     LispPtr body(LispSubList::New(head));
     aEnvironment.iEvaluator->Eval(aEnvironment, aResult, body);

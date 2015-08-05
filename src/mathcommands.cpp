@@ -706,7 +706,7 @@ static void SingleFix(LispInt aPrecedence, LispEnvironment& aEnvironment, LispIn
     CheckArg(ARGUMENT(1), 1, aEnvironment, aStackTop);
     const LispString* orig = ARGUMENT(1)->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
-    aOps.SetOperator(aPrecedence,SymbolName(aEnvironment,orig->c_str()));
+    aOps.SetOperator(aPrecedence,SymbolName(aEnvironment,*orig));
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -864,7 +864,7 @@ static void InternalRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop,
     CheckArgIsList(2, aEnvironment, aStackTop);
 
     // Finally define the rule base
-    aEnvironment.DeclareRuleBase(SymbolName(aEnvironment,orig->c_str()),
+    aEnvironment.DeclareRuleBase(SymbolName(aEnvironment,*orig),
                                  (*args->SubList())->Nixed(),aListed);
 
     // Return true
@@ -897,7 +897,7 @@ void InternalDefMacroRuleBase(LispEnvironment& aEnvironment, LispInt aStackTop, 
     CheckArgIsList(2, aEnvironment, aStackTop);
 
     // Finally define the rule base
-    aEnvironment.DeclareMacroRuleBase(SymbolName(aEnvironment,orig->c_str()),
+    aEnvironment.DeclareMacroRuleBase(SymbolName(aEnvironment,*orig),
                                  (*args->SubList())->Nixed(),aListed);
 
     // Return true
@@ -934,7 +934,7 @@ void LispHoldArg(LispEnvironment& aEnvironment, LispInt aStackTop)
     // The arguments
     const LispString* tohold = ARGUMENT(2)->String();
     CheckArg(tohold, 2, aEnvironment, aStackTop);
-    aEnvironment.HoldArgument(SymbolName(aEnvironment,orig->c_str()), tohold);
+    aEnvironment.HoldArgument(SymbolName(aEnvironment,*orig), tohold);
     // Return true
     InternalTrue(aEnvironment,RESULT);
 }
@@ -969,7 +969,7 @@ static void InternalNewRule(LispEnvironment& aEnvironment, LispInt aStackTop)
     precedence = InternalAsciiToInt(*pr->String());
 
     // Finally define the rule base
-    aEnvironment.DefineRule(SymbolName(aEnvironment,orig->c_str()),
+    aEnvironment.DefineRule(SymbolName(aEnvironment,*orig),
                             arity,
                             precedence,
                             predicate,
@@ -1001,7 +1001,7 @@ void LispUnFence(LispEnvironment& aEnvironment, LispInt aStackTop)
     CheckArg(ARGUMENT(2)->String(), 2, aEnvironment, aStackTop);
     LispInt arity = InternalAsciiToInt(*ARGUMENT(2)->String());
 
-    aEnvironment.UnFenceRule(SymbolName(aEnvironment,orig->c_str()),
+    aEnvironment.UnFenceRule(SymbolName(aEnvironment,*orig),
                             arity);
 
     // Return true
@@ -1109,7 +1109,7 @@ void LispRetract(LispEnvironment& aEnvironment, LispInt aStackTop)
     CheckArg(evaluated, 1, aEnvironment, aStackTop);
     const LispString* orig = evaluated->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
-    const LispString* oper = SymbolName(aEnvironment,orig->c_str());
+    const LispString* oper = SymbolName(aEnvironment,*orig);
 
     LispPtr arity(ARGUMENT(2));
     CheckArg(arity->String(), 2, aEnvironment, aStackTop);
@@ -1217,7 +1217,7 @@ void LispReadToken(LispEnvironment& aEnvironment, LispInt aStackTop)
   const LispString* result =
     tok.NextToken(*aEnvironment.CurrentInput(), aEnvironment.HashTable());
 
-  if (result->c_str()[0] == '\0')
+  if (result->empty())
   {
     RESULT = aEnvironment.iEndOfFile->Copy();
     return;
@@ -1362,7 +1362,7 @@ void LispRightAssociative(LispEnvironment& aEnvironment, LispInt aStackTop)
     const LispString* orig = ARGUMENT(1)->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
 
-    aEnvironment.InFix().SetRightAssociative(SymbolName(aEnvironment,orig->c_str()));
+    aEnvironment.InFix().SetRightAssociative(SymbolName(aEnvironment,*orig));
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -1379,7 +1379,7 @@ void LispLeftPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
     CheckArg(index->String(), 2, aEnvironment, aStackTop);
     LispInt ind = InternalAsciiToInt(*index->String());
 
-    aEnvironment.InFix().SetLeftPrecedence(SymbolName(aEnvironment,orig->c_str()),ind);
+    aEnvironment.InFix().SetLeftPrecedence(SymbolName(aEnvironment,*orig),ind);
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -1396,7 +1396,7 @@ void LispRightPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
     CheckArg(index->String(), 2, aEnvironment, aStackTop);
     LispInt ind = InternalAsciiToInt(*index->String());
 
-    aEnvironment.InFix().SetRightPrecedence(SymbolName(aEnvironment,orig->c_str()),ind);
+    aEnvironment.InFix().SetRightPrecedence(SymbolName(aEnvironment,*orig),ind);
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -1410,10 +1410,7 @@ static LispInFixOperator* OperatorInfo(LispEnvironment& aEnvironment,LispInt aSt
     const LispString* orig = evaluated->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
 
-    //
-    LispInFixOperator* op = aOperators.LookUp(
-                                              SymbolName(aEnvironment,orig->c_str()));
-    return op;
+    return aOperators.LookUp(SymbolName(aEnvironment,*orig));
 }
 
 void LispIsInFix(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1795,8 +1792,8 @@ void YacasStringMidSet(LispEnvironment& aEnvironment,LispInt aStackTop)
     CheckArgIsString(2, aEnvironment, aStackTop);
     const LispString* replace = ev2->String();
 
-    std::string str(orig->c_str());
-    std::size_t count = replace->size();
+    std::string str(*orig);
+    const std::size_t count = replace->size();
     // FIXME: it's actually the set of args which is wrong, not the specific one
     CheckArg(from + count < orig->size() + 2, 1, aEnvironment, aStackTop);
 
@@ -1977,11 +1974,11 @@ static void InternalNewRulePattern(LispEnvironment& aEnvironment, LispInt aStack
     precedence = InternalAsciiToInt(*pr->String());
 
     // Finally define the rule base
-    aEnvironment.DefineRulePattern(SymbolName(aEnvironment,orig->c_str()),
-                            arity,
-                            precedence,
-                            predicate,
-                            body );
+    aEnvironment.DefineRulePattern(SymbolName(aEnvironment,*orig),
+                                   arity,
+                                   precedence,
+                                   predicate,
+                                   body);
 
     // Return true
     InternalTrue(aEnvironment,RESULT);

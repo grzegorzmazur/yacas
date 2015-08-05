@@ -11,8 +11,8 @@
 
 void ParsedObject::Fail()
 {
-    if (iLookAhead && iLookAhead->c_str())
-        throw LispErrGeneric(std::string("Error parsing expression, near token ") + std::string(iLookAhead->c_str()));
+    if (iLookAhead && !iLookAhead->empty())
+        throw LispErrGeneric(std::string("Error parsing expression, near token ") + *iLookAhead);
 
     throw LispErrGeneric("Error parsing expression");
 }
@@ -182,29 +182,23 @@ void ParsedObject::ReadExpression(LispInt depth)
         } else {
             LispInFixOperator* op = iParser.iInfixOperators.LookUp(iLookAhead);
             if (!op) {
-                //printf("op [%s]\n",iLookAhead->c_str());
                 if (IsSymbolic((*iLookAhead)[0])) {
                     LispInt origlen = iLookAhead->size();
                     LispInt len = origlen;
-                    //printf("IsSymbolic, len=%d\n",len);
 
                     while (len > 1) {
                         len--;
                         const LispString* lookUp =
                                 iParser.iEnvironment.HashTable().LookUp(iLookAhead->substr(0, len));
 
-                        //printf("trunc %s\n",lookUp->c_str());
                         op = iParser.iInfixOperators.LookUp(lookUp);
-                        //if (op) printf("FOUND\n");
                         if (op) {
 
                             const LispString* lookUpRight =
                                     iParser.iEnvironment.HashTable().LookUp(iLookAhead->substr(len, origlen - len));
 
-                            //printf("right: %s (%d)\n",lookUpRight->c_str(),origlen-len);
 
                             if (iParser.iPrefixOperators.LookUp(lookUpRight)) {
-                                //printf("ACCEPT %s\n",lookUp->c_str());
                                 iLookAhead = lookUp;
                                 LispInput& input = iParser.iInput;
                                 LispInt newPos = input.Position()-(origlen - len);
@@ -262,7 +256,7 @@ void ParsedObject::ReadAtom()
             if (iLookAhead == iParser.iEnvironment.iComma->String()) {
                 MatchToken(iLookAhead);
             } else if (iLookAhead != iParser.iEnvironment.iListClose->String()) {
-                throw LispErrGeneric(std::string("Expecting a } close bracket for program block, but got ") + std::string(iLookAhead->c_str()) + std::string(" instead"));
+                throw LispErrGeneric(std::string("Expecting a } close bracket for program block, but got ") + *iLookAhead + std::string(" instead"));
             }
         }
         MatchToken(iLookAhead);
@@ -287,7 +281,7 @@ void ParsedObject::ReadAtom()
             if (iLookAhead == iParser.iEnvironment.iEndStatement->String()) {
                 MatchToken(iLookAhead);
             } else {
-                throw LispErrGeneric(std::string("Expecting ; end of statement in program block, but got ") + std::string(iLookAhead->c_str()) + std::string(" instead"));
+                throw LispErrGeneric(std::string("Expecting ; end of statement in program block, but got ") + *iLookAhead + std::string(" instead"));
             }
         }
         MatchToken(iLookAhead);
@@ -315,7 +309,7 @@ void ParsedObject::ReadAtom()
                 if (iLookAhead == iParser.iEnvironment.iComma->String()) {
                     MatchToken(iLookAhead);
                 } else if (iLookAhead != iParser.iEnvironment.iBracketClose->String()) {
-                    throw LispErrGeneric(std::string("Expecting a ) closing bracket for sub-expression, but got ") + std::string(iLookAhead->c_str()) + std::string(" instead"));
+                    throw LispErrGeneric(std::string("Expecting a ) closing bracket for sub-expression, but got ") + *iLookAhead + std::string(" instead"));
                 }
             }
             MatchToken(iLookAhead);

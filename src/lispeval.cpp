@@ -101,7 +101,7 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
   // Evaluate an atom: find the bound value (treat it as a variable)
   if (str)
   {
-    if (str->c_str()[0] == '\"')
+    if (str->front() == '\"')
     {
       aResult = aExpression->Copy();
       goto FINISH;
@@ -148,13 +148,11 @@ void BasicEvaluator::Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispP
         }
         else
         {
-          //printf("ApplyPure!\n");
           LispPtr oper((*subList));
           LispPtr args2((*subList)->Nixed());
           InternalApplyPure(oper,args2,aResult,aEnvironment);
           goto FINISH;
         }
-        //printf("**** Undef: %s\n",head->String()->c_str());
         ReturnUnEvaluated(aResult,*subList,aEnvironment);
         goto FINISH;
       }
