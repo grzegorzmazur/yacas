@@ -146,8 +146,31 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
   Mod(n1*m2,m1*n2)/(n2*m2);
 ];
 
-6 # Mod(n_IsList,m_IsList) <-- Map("Mod",{n,m});
-7 # Mod(n_IsList,_m) <-- Map("Mod",{n,FillList(m,Length(n))});
+10 # Mod(c_IsConstant, b_IsRational * c_IsConstant) <-- Mod(1, b) * c;
+10 # Mod(a_IsRational * c_IsConstant, c_IsConstant) <-- Mod(a, 1) * c;
+
+10 # Mod(a_IsRational * c_IsConstant, b_IsRational * c_IsConstant) <-- Mod(a, b) * c;
+
+10 # Mod(c_IsConstant, c_IsConstant / bd_IsInteger) <-- Mod(1, 1 / bd) * c;
+10 # Mod(c_IsConstant / ad_IsInteger, c_IsConstant) <-- Mod(1 / ad, 1) * c;
+10 # Mod(c_IsConstant / ad_IsInteger, c_IsConstant / bd_IsInteger) <-- Mod(1/ad, 1/bd) * c;
+
+10 # Mod(c_IsConstant / ad_IsInteger, (bn_IsInteger * c_IsConstant) / bd_IsInteger) <-- Mod(1 / ad, bn / bd) * c;
+10 # Mod((an_IsInteger * c_IsConstant) / ad_IsInteger, c_IsConstant / bd_IsInteger) <-- Mod(an / ad, 1 / bd) * c;
+
+10 # Mod(c_IsConstant / ad_IsInteger, b_IsRational * c_IsConstant) <-- Mod(1 / ad, b) * c;
+10 # Mod(a_IsRational * c_IsConstant, c_IsConstant / bd_IsInteger) <-- Mod(a, 1 / bd) * c;
+
+
+10 # Mod((an_IsInteger * c_IsConstant) / ad_IsInteger, b_IsRational * c_IsConstant) <-- Mod(an / ad, b) * c;
+10 # Mod(a_IsRational * c_IsConstant, (bn_IsInteger * c_IsConstant) / bd_IsInteger) <-- Mod(a, bn / bd) * c;
+
+10 # Mod((an_IsInteger * c_IsConstant) / ad_IsInteger, (bn_IsInteger * c_IsConstant) / bd_IsInteger) <-- Mod(an / ad, bn / bd) * c;
+
+
+
+16 # Mod(n_IsList,m_IsList) <-- Map("Mod",{n,m});
+17 # Mod(n_IsList,_m) <-- Map("Mod",{n,FillList(m,Length(n))});
 
 
 30 # Mod(n_CanBeUni,m_CanBeUni) <--

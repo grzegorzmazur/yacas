@@ -76,9 +76,14 @@ Verify(aa-aa,0);
 Testing("IntegerOperations");
 Verify(1<<10,1024);
 Verify(1024>>10,1);
-Verify(Mod(10,3),1);
-Verify(Div(10,3),3);
 Verify(MathGcd(55,10),5);
+
+Testing("Mod/Div");
+
+Verify(Mod(10,3),1);
+Verify(Mod(1/2*Pi, Pi), Pi/2);
+
+Verify(Div(10,3),3);
 
 Verify(Mod(2,Infinity),2);
 Verify(Mod({0,1,2,3,4,5,6},2),{0,1,0,1,0,1,0});
