@@ -1,0 +1,1938 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Calculus and elementary functions &mdash; Yacas</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="Yacas" href="../../index.html"/>
+        <link rel="up" title="Reference Manual" href="index.html"/>
+        <link rel="next" title="Simplification of expressions" href="simplify.html"/>
+        <link rel="prev" title="Arithmetic and other operations on numbers" href="arithmetic.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="fa fa-home"> Yacas</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation-from-sources">Installation from sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-syntax">Yacas syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#using-yacas-from-the-calculation-center">Using Yacas from the calculation center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-as-a-symbolic-calculator">Yacas as a symbolic calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#arbitrary-precision-numbers">Arbitrary precision numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#analytic-functions">Analytic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#boolean-expressions-and-predicates">Boolean expressions and predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#strings-and-lists">Strings and lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#writing-simplification-rules">Writing simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#local-simplification-rules">Local simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#programming-essentials">Programming essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#macros">Macros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#the-practice-of-programming-in-yacas">The practice of programming in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#defining-your-own-operators">Defining your own operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#some-assorted-programming-topics">Some assorted programming topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#linear-algebra">Linear Algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="arithmetic.html">Arithmetic and other operations on numbers</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Calculus and elementary functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simplify.html">Simplification of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode.html">Differential Equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logic.html">Propositional logic theorem prover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear-algebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="univariate-polynomials.html">Operations on polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lists.html">List operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional.html">Functional operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controlflow.html">Control flow functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="predicates.html">Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="consts.html">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vars.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io.html">Input/output and plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="strings.html">String manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="probability-and-statistics.html">Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="number-theory.html">Number theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming.html">Functions related to programming in Yacas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_in_yacas/index.html">Programming in Yacas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-yacas-architecture">The Yacas architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-evaluation-scheme">Yacas evaluation scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#rules">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#structured-programming-and-control-flow">Structured programming and control flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#additional-syntactic-sugar">Additional syntactic sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#using-macro-rules-e-g-nfunction">Using &#8220;Macro rules&#8221; (e.g. {NFunction})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#macro-expansion">Macro expansion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#scope-of-variable-bindings">Scope of variable bindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation-of-expressions">Evaluation of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-lisp-heritage">The LISP heritage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-specific-extensions-for-cas-implementations">{Yacas}-specific extensions for CAS implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-evaluation-is-simplification-hack">The &#8220;Evaluation is Simplification&#8221; hack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#destructive-operations">Destructive operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#coding-style">Coding style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#writing-new-library-functions">Writing new library functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-1-parsing-expressions-cform">Advanced example 1: parsing expressions ({CForm})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-programming-pitfalls">Yacas programming pitfalls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#debugging-in-yacas">Debugging in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-2-implementing-a-non-commutative-algebra">Advanced example 2: implementing a non-commutative algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../book_of_algorithms/index.html">The Yacas Book of Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/multivar.html">Sparse representations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/integration.html">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/transforms.html">Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/sturm-sequences.html">Finding real roots of polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/numtheory.html">Number theory algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../yagy/index.html">YAGY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Yacas</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Reference Manual</a> &raquo;</li>
+      
+    <li>Calculus and elementary functions</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/doc/reference_manual/calc.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="calculus-and-elementary-functions">
+<h1>Calculus and elementary functions<a class="headerlink" href="#calculus-and-elementary-functions" title="Permalink to this headline">¶</a></h1>
+<p>In this chapter, some facilities for doing calculus are
+described. These include functions implementing differentiation,
+integration, standard mathematical functions, and solving of
+equations.</p>
+<dl class="function">
+<dt id="Sin">
+<tt class="descname">Sin</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#Sin" title="Permalink to this definition">¶</a></dt>
+<dd><p>trigonometric sine function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; argument to the function, in radians</td>
+</tr>
+</tbody>
+</table>
+<p>This function represents the trigonometric function sine. Yacas
+leaves   expressions alone even if x is a number, trying to keep
+the result as   exact as possible. The floating point
+approximations of these functions   can be forced by using the {N}
+function.    Yacas knows some trigonometric identities, so it can
+simplify to exact  results even if {N} is not used. This is the
+case, for instance,  when the argument is a multiple of $Pi$/6 or
+$Pi$/4.</p>
+<p><a class="reference internal" href="#Sin" title="Sin"><tt class="xref ys ys-func docutils literal"><span class="pre">Sin()</span></tt></a> is <a class="reference internal" href="../glossary.html#term-threaded-function"><em class="xref std std-term">threaded</em></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Sin</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Sin</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">N</span><span class="p">(</span><span class="n">Sin</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mf">0.84147098480789650665</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Sin</span><span class="p">(</span><span class="n">Pi</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Cos" title="Cos"><tt class="xref ys ys-func docutils literal"><span class="pre">Cos()</span></tt></a>, <a class="reference internal" href="#Tan" title="Tan"><tt class="xref ys ys-func docutils literal"><span class="pre">Tan()</span></tt></a>, <a class="reference internal" href="#ArcSin" title="ArcSin"><tt class="xref ys ys-func docutils literal"><span class="pre">ArcSin()</span></tt></a>, <a class="reference internal" href="#ArcCos" title="ArcCos"><tt class="xref ys ys-func docutils literal"><span class="pre">ArcCos()</span></tt></a>, <a class="reference internal" href="#ArcTan" title="ArcTan"><tt class="xref ys ys-func docutils literal"><span class="pre">ArcTan()</span></tt></a>, <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a>, <a class="reference internal" href="consts.html#Pi" title="Pi"><tt class="xref ys ys-func docutils literal"><span class="pre">Pi()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Cos">
+<tt class="descname">Cos</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#Cos" title="Permalink to this definition">¶</a></dt>
+<dd><p>trigonometric cosine function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; argument to the function, in radians</td>
+</tr>
+</tbody>
+</table>
+<p>This function represents the trigonometric function cosine. Yacas
+leaves   expressions alone even if x is a number, trying to keep
+the result as   exact as possible. The floating point
+approximations of these functions   can be forced by using the {N}
+function.    Yacas knows some trigonometric identities, so it can
+simplify to exact  results even if {N} is not used. This is the
+case, for instance,  when the argument is a multiple of $Pi$/6 or
+$Pi$/4.    These functions are threaded, meaning that if the
+argument {x} is a  list, the function is applied to all entries in
+the list.</p>
+<blockquote>
+<div><a class="reference internal" href="#Cos" title="Cos"><tt class="xref ys ys-func docutils literal"><span class="pre">Cos()</span></tt></a> is <a class="reference internal" href="../glossary.html#term-threaded-function"><em class="xref std std-term">threaded</em></a>.</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Cos</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Cos</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">N</span><span class="p">(</span><span class="n">Cos</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mf">0.5403023058681397174</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Cos</span><span class="p">(</span><span class="n">Pi</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Sqrt</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Sin" title="Sin"><tt class="xref ys ys-func docutils literal"><span class="pre">Sin()</span></tt></a>, <a class="reference internal" href="#Tan" title="Tan"><tt class="xref ys ys-func docutils literal"><span class="pre">Tan()</span></tt></a>, <a class="reference internal" href="#ArcSin" title="ArcSin"><tt class="xref ys ys-func docutils literal"><span class="pre">ArcSin()</span></tt></a>, <a class="reference internal" href="#ArcCos" title="ArcCos"><tt class="xref ys ys-func docutils literal"><span class="pre">ArcCos()</span></tt></a>, <a class="reference internal" href="#ArcTan" title="ArcTan"><tt class="xref ys ys-func docutils literal"><span class="pre">ArcTan()</span></tt></a>, <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a>, <a class="reference internal" href="consts.html#Pi" title="Pi"><tt class="xref ys ys-func docutils literal"><span class="pre">Pi()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Tan">
+<tt class="descname">Tan</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#Tan" title="Permalink to this definition">¶</a></dt>
+<dd><p>trigonometric tangent function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; argument to the function, in radians</td>
+</tr>
+</tbody>
+</table>
+<p>This function represents the trigonometric function tangent. Yacas
+leaves   expressions alone even if x is a number, trying to keep
+the result as   exact as possible. The floating point
+approximations of these functions   can be forced by using the {N}
+function.    Yacas knows some trigonometric identities, so it can
+simplify to exact  results even if {N} is not used. This is the
+case, for instance,  when the argument is a multiple of $Pi$/6 or
+$Pi$/4.    These functions are threaded, meaning that if the
+argument {x} is a  list, the function is applied to all entries in
+the list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Tan</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Tan</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">N</span><span class="p">(</span><span class="n">Tan</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mf">1.5574077246549022305</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Tan</span><span class="p">(</span><span class="n">Pi</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Sin" title="Sin"><tt class="xref ys ys-func docutils literal"><span class="pre">Sin()</span></tt></a>, <a class="reference internal" href="#Cos" title="Cos"><tt class="xref ys ys-func docutils literal"><span class="pre">Cos()</span></tt></a>, <a class="reference internal" href="#ArcSin" title="ArcSin"><tt class="xref ys ys-func docutils literal"><span class="pre">ArcSin()</span></tt></a>, <a class="reference internal" href="#ArcCos" title="ArcCos"><tt class="xref ys ys-func docutils literal"><span class="pre">ArcCos()</span></tt></a>, <a class="reference internal" href="#ArcTan" title="ArcTan"><tt class="xref ys ys-func docutils literal"><span class="pre">ArcTan()</span></tt></a>, <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a>, <a class="reference internal" href="consts.html#Pi" title="Pi"><tt class="xref ys ys-func docutils literal"><span class="pre">Pi()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="ArcSin">
+<tt class="descname">ArcSin</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#ArcSin" title="Permalink to this definition">¶</a></dt>
+<dd><p>inverse trigonometric function arc-sine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; argument to the function</td>
+</tr>
+</tbody>
+</table>
+<p>This function represents the inverse trigonometric function
+arcsine. For  instance, the value of $ArcSin(x)$ is a number $y$
+such that  $Sin(y)$ equals $x$.    Note that the number $y$ is not
+unique. For instance, $Sin(0)$ and  $Sin(Pi)$ both equal 0, so what
+should $ArcSin(0)$ be? In Yacas,  it is agreed that the value of
+$ArcSin(x)$ should be in the interval  [-$Pi$/2,$Pi$/2].
+Usually, Yacas leaves this function alone unless it is forced to do
+a numerical evaluation by the {N} function. If the  argument is -1,
+0, or 1 however, Yacas will simplify the  expression. If the
+argument is complex,  the expression will be  rewritten using the
+{Ln} function.    This function is threaded, meaning that if the
+argument {x} is a  list, the function is applied to all entries in
+the list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; ArcSin(1)
+Out&gt; Pi/2;
+In&gt; ArcSin(1/3)
+Out&gt; ArcSin(1/3);
+In&gt; Sin(ArcSin(1/3))
+Out&gt; 1/3;
+In&gt; x:=N(ArcSin(0.75))
+Out&gt; 0.848062;
+In&gt; N(Sin(x))
+Out&gt; 0.7499999477;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Sin" title="Sin"><tt class="xref ys ys-func docutils literal"><span class="pre">Sin()</span></tt></a>, <a class="reference internal" href="#Cos" title="Cos"><tt class="xref ys ys-func docutils literal"><span class="pre">Cos()</span></tt></a>, <a class="reference internal" href="#Tan" title="Tan"><tt class="xref ys ys-func docutils literal"><span class="pre">Tan()</span></tt></a>, <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a>, <a class="reference internal" href="consts.html#Pi" title="Pi"><tt class="xref ys ys-func docutils literal"><span class="pre">Pi()</span></tt></a>, <a class="reference internal" href="#Ln" title="Ln"><tt class="xref ys ys-func docutils literal"><span class="pre">Ln()</span></tt></a>, <a class="reference internal" href="#ArcCos" title="ArcCos"><tt class="xref ys ys-func docutils literal"><span class="pre">ArcCos()</span></tt></a>, <a class="reference internal" href="#ArcTan" title="ArcTan"><tt class="xref ys ys-func docutils literal"><span class="pre">ArcTan()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="ArcCos">
+<tt class="descname">ArcCos</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#ArcCos" title="Permalink to this definition">¶</a></dt>
+<dd><p>inverse trigonometric function arc-cosine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; argument to the function</td>
+</tr>
+</tbody>
+</table>
+<p>This function represents the inverse trigonometric function
+arc-cosine. For  instance, the value of $ArcCos(x)$ is a number $y$
+such that  $Cos(y)$ equals $x$.    Note that the number $y$ is not
+unique. For instance, $Cos(Pi/2)$ and  $Cos(3*Pi/2)$ both equal 0,
+so what should $ArcCos(0)$ be? In Yacas,  it is agreed that the
+value of $ArcCos(x)$ should be in the interval [0,$Pi$] .
+Usually, Yacas leaves this function alone unless it is forced to do
+a numerical evaluation by the {N} function. If the  argument is -1,
+0, or 1 however, Yacas will simplify the  expression. If the
+argument is complex,  the expression will be  rewritten using the
+{Ln} function.    This function is threaded, meaning that if the
+argument {x} is a  list, the function is applied to all entries in
+the list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; ArcCos(0)
+Out&gt; Pi/2
+In&gt; ArcCos(1/3)
+Out&gt; ArcCos(1/3)
+In&gt; Cos(ArcCos(1/3))
+Out&gt; 1/3
+In&gt; x:=N(ArcCos(0.75))
+Out&gt; 0.7227342478
+In&gt; N(Cos(x))
+Out&gt; 0.75
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Sin" title="Sin"><tt class="xref ys ys-func docutils literal"><span class="pre">Sin()</span></tt></a>, <a class="reference internal" href="#Cos" title="Cos"><tt class="xref ys ys-func docutils literal"><span class="pre">Cos()</span></tt></a>, <a class="reference internal" href="#Tan" title="Tan"><tt class="xref ys ys-func docutils literal"><span class="pre">Tan()</span></tt></a>, <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a>, <a class="reference internal" href="consts.html#Pi" title="Pi"><tt class="xref ys ys-func docutils literal"><span class="pre">Pi()</span></tt></a>, <a class="reference internal" href="#Ln" title="Ln"><tt class="xref ys ys-func docutils literal"><span class="pre">Ln()</span></tt></a>, <a class="reference internal" href="#ArcSin" title="ArcSin"><tt class="xref ys ys-func docutils literal"><span class="pre">ArcSin()</span></tt></a>, <a class="reference internal" href="#ArcTan" title="ArcTan"><tt class="xref ys ys-func docutils literal"><span class="pre">ArcTan()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="ArcTan">
+<tt class="descname">ArcTan</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#ArcTan" title="Permalink to this definition">¶</a></dt>
+<dd><p>inverse trigonometric function arc-tangent</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; argument to the function</td>
+</tr>
+</tbody>
+</table>
+<p>This function represents the inverse trigonometric function
+arctangent. For  instance, the value of $ArcTan(x)$ is a number $y$
+such that  $Tan(y)$ equals $x$.    Note that the number $y$ is not
+unique. For instance, $Tan(0)$ and  $Tan(2*Pi)$ both equal 0, so
+what should $ArcTan(0)$ be? In Yacas,  it is agreed that the value
+of $ArcTan(x)$ should be in the interval  [-$Pi$/2,$Pi$/2].
+Usually, Yacas leaves this function alone unless it is forced to do
+a numerical evaluation by the {N} function. Yacas will try to
+simplify  as much as possible while keeping the result exact. If
+the argument is   complex,  the expression will be rewritten using
+the {Ln} function.    This function is threaded, meaning that if
+the argument {x} is a  list, the function is applied to all entries
+in the list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; ArcTan(1)
+Out&gt; Pi/4
+In&gt; ArcTan(1/3)
+Out&gt; ArcTan(1/3)
+In&gt; Tan(ArcTan(1/3))
+Out&gt; 1/3
+In&gt; x:=N(ArcTan(0.75))
+Out&gt; 0.643501108793285592213351264945231378078460693359375
+In&gt; N(Tan(x))
+Out&gt; 0.75
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Sin" title="Sin"><tt class="xref ys ys-func docutils literal"><span class="pre">Sin()</span></tt></a>, <a class="reference internal" href="#Cos" title="Cos"><tt class="xref ys ys-func docutils literal"><span class="pre">Cos()</span></tt></a>, <a class="reference internal" href="#Tan" title="Tan"><tt class="xref ys ys-func docutils literal"><span class="pre">Tan()</span></tt></a>, <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a>, <a class="reference internal" href="consts.html#Pi" title="Pi"><tt class="xref ys ys-func docutils literal"><span class="pre">Pi()</span></tt></a>, <a class="reference internal" href="#Ln" title="Ln"><tt class="xref ys ys-func docutils literal"><span class="pre">Ln()</span></tt></a>, <a class="reference internal" href="#ArcSin" title="ArcSin"><tt class="xref ys ys-func docutils literal"><span class="pre">ArcSin()</span></tt></a>, <a class="reference internal" href="#ArcCos" title="ArcCos"><tt class="xref ys ys-func docutils literal"><span class="pre">ArcCos()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Exp">
+<tt class="descname">Exp</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#Exp" title="Permalink to this definition">¶</a></dt>
+<dd><p>exponential function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; argument to the function</td>
+</tr>
+</tbody>
+</table>
+<p>This function calculates <span class="math">\(e^x\)</span> where <span class="math">\(e\)</span> is the
+mathematic constant 2.71828... One can use <tt class="docutils literal"><span class="pre">Exp(1)</span></tt> to represent
+<span class="math">\(e\)</span>.  This function is <a class="reference internal" href="../glossary.html#term-threaded-function"><em class="xref std std-term">threaded function</em></a>, meaning
+that if the argument <tt class="docutils literal"><span class="pre">x</span></tt> is a list, the function is applied to
+all entries in the list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Exp</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">1</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Exp</span><span class="p">(</span><span class="n">I</span><span class="o">*</span><span class="n">Pi</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">N</span><span class="p">(</span><span class="n">Exp</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mf">2.7182818284</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Ln" title="Ln"><tt class="xref ys ys-func docutils literal"><span class="pre">Ln()</span></tt></a>, <a class="reference internal" href="#Sin" title="Sin"><tt class="xref ys ys-func docutils literal"><span class="pre">Sin()</span></tt></a>, <a class="reference internal" href="#Cos" title="Cos"><tt class="xref ys ys-func docutils literal"><span class="pre">Cos()</span></tt></a>, <a class="reference internal" href="#Tan" title="Tan"><tt class="xref ys ys-func docutils literal"><span class="pre">Tan()</span></tt></a>, <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Ln">
+<tt class="descname">Ln</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#Ln" title="Permalink to this definition">¶</a></dt>
+<dd><p>natural logarithm</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; argument to the function</td>
+</tr>
+</tbody>
+</table>
+<p>This function calculates the natural logarithm of &#8220;x&#8221;. This is the
+inverse function of the exponential function, {Exp}, i.e. $Ln(x) =
+y$ implies that $Exp(y) = x$. For complex  arguments, the imaginary
+part of the logarithm is in the interval  (-$Pi$,$Pi$]. This is
+compatible with the branch cut of {Arg}.    This function is
+threaded, meaning that if the argument {x} is a  list, the function
+is applied to all entries in the list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Ln(1)
+Out&gt; 0;
+In&gt; Ln(Exp(x))
+Out&gt; x;
+In&gt; D(x) Ln(x)
+Out&gt; 1/x;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Exp" title="Exp"><tt class="xref ys ys-func docutils literal"><span class="pre">Exp()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">Arg()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Sqrt">
+<tt class="descname">Sqrt</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#Sqrt" title="Permalink to this definition">¶</a></dt>
+<dd><p>square root</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; argument to the function</td>
+</tr>
+</tbody>
+</table>
+<p>This function calculates the square root of &#8220;x&#8221;. If the result is
+not rational, the call is returned unevaluated unless a numerical
+approximation is forced with the {N} function. This  function can
+also handle negative and complex arguments.    This function is
+threaded, meaning that if the argument {x} is a  list, the function
+is applied to all entries in the list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Sqrt</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">4</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Sqrt</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Sqrt</span><span class="p">(</span><span class="mi">15</span><span class="p">);</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">N</span><span class="p">(</span><span class="n">Sqrt</span><span class="p">(</span><span class="mi">15</span><span class="p">))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mf">3.8729833462</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Sqrt</span><span class="p">(</span><span class="mi">4</span><span class="o">/</span><span class="mi">9</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Sqrt</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Complex</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Exp" title="Exp"><tt class="xref ys ys-func docutils literal"><span class="pre">Exp()</span></tt></a>, <a class="reference internal" href="arithmetic.html#^" title="^"><tt class="xref ys ys-func docutils literal"><span class="pre">^()</span></tt></a>, <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Abs">
+<tt class="descname">Abs</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#Abs" title="Permalink to this definition">¶</a></dt>
+<dd><p>absolute value or modulus of complex number</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; argument to the function</td>
+</tr>
+</tbody>
+</table>
+<p>This function returns the absolute value (also called the modulus)
+of &#8220;x&#8221;. If &#8220;x&#8221; is positive, the absolute value is &#8220;x&#8221; itself; if
+&#8220;x&#8221; is negative, the absolute value is &#8220;-x&#8221;. For complex &#8220;x&#8221;, the
+modulus is the &#8220;r&#8221; in the polar decomposition <span class="math">\(x =
+re^{\imath\phi}\)</span>.  This function is connected to the {Sign}
+function by the identity <tt class="docutils literal"><span class="pre">Abs(x)</span> <span class="pre">*</span> <span class="pre">Sign(x)</span> <span class="pre">=</span> <span class="pre">x</span></tt> for real &#8220;x&#8221;.
+This function is threaded, meaning that if the argument {x} is a
+list, the function is applied to all entries in the list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Abs</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">2</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Abs</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Abs</span><span class="p">(</span><span class="mi">3</span><span class="o">+</span><span class="mi">4</span><span class="o">*</span><span class="n">I</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">5</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Sign" title="Sign"><tt class="xref ys ys-func docutils literal"><span class="pre">Sign()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">Arg()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Sign">
+<tt class="descname">Sign</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#Sign" title="Permalink to this definition">¶</a></dt>
+<dd><p>sign of a number</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; argument to the function</td>
+</tr>
+</tbody>
+</table>
+<p>This function returns the sign of the real number $x$. It is &#8220;1&#8221;
+for positive numbers and &#8220;-1&#8221; for negative numbers. Somewhat
+arbitrarily, {Sign(0)} is defined to be 1.    This function is
+connected to the {Abs} function by  the identity $Abs(x) * Sign(x)
+= x$ for real $x$.    This function is threaded, meaning that if
+the argument {x} is a  list, the function is applied to all entries
+in the list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Sign</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">1</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Sign</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Sign</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">1</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Sign</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span> <span class="o">*</span> <span class="n">Abs</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="o">-</span><span class="mi">3</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">Arg()</span></tt>, <a class="reference internal" href="#Abs" title="Abs"><tt class="xref ys ys-func docutils literal"><span class="pre">Abs()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="D">
+<tt class="descname">D</tt><big>(</big><em>variable</em><span class="optional">[</span>, <em>n=1</em><span class="optional">]</span><big>)</big> expression<a class="headerlink" href="#D" title="Permalink to this definition">¶</a></dt>
+<dd><p>derivative</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>variable</strong> &#8211; variable</li>
+<li><strong>expression</strong> &#8211; expression to take derivatives of</li>
+<li><strong>n</strong> &#8211; order</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">n</span></tt>-th derivative of <tt class="docutils literal"><span class="pre">expression</span></tt> with respect to <tt class="docutils literal"><span class="pre">variable</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">D</tt><big>(</big><em>variable</em><big>)</big> expression</dt>
+<dd><p>derivative</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>variable</strong> &#8211; variable</li>
+<li><strong>list</strong> &#8211; a list of variables</li>
+<li><strong>expression</strong> &#8211; expression to take derivatives of</li>
+<li><strong>n</strong> &#8211; order of derivative</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">derivative of <tt class="docutils literal"><span class="pre">expression</span></tt> with respect to <tt class="docutils literal"><span class="pre">variable</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function calculates the derivative of the expression {expr}
+with  respect to the variable {var} and returns it. If the third
+calling  format is used, the {n}-th derivative is determined. Yacas
+knows  how to differentiate standard functions such as {Ln}  and
+{Sin}.    The {D} operator is threaded in both {var} and  {expr}.
+This means that if either of them is a list, the function is
+applied to each entry in the list. The results are collected in
+another list which is returned. If both {var} and {expr} are a
+list, their lengths should be equal. In this case, the first entry
+in  the list {expr} is differentiated with respect to the first
+entry in  the list {var}, the second entry in {expr} is
+differentiated with  respect to the second entry in {var}, and so
+on.    The {D} operator returns the original function if $n=0$, a
+common  mathematical idiom that simplifies many formulae.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; D(x)Sin(x*y)
+Out&gt; y*Cos(x*y);
+In&gt; D({x,y,z})Sin(x*y)
+Out&gt; {y*Cos(x*y),x*Cos(x*y),0};
+In&gt; D(x,2)Sin(x*y)
+Out&gt; -Sin(x*y)*y^2;
+In&gt; D(x){Sin(x),Cos(x)}
+Out&gt; {Cos(x),-Sin(x)};
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Integrate" title="Integrate"><tt class="xref ys ys-func docutils literal"><span class="pre">Integrate()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">Taylor()</span></tt>, <a class="reference internal" href="#Diverge" title="Diverge"><tt class="xref ys ys-func docutils literal"><span class="pre">Diverge()</span></tt></a>, <a class="reference internal" href="#Curl" title="Curl"><tt class="xref ys ys-func docutils literal"><span class="pre">Curl()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Curl">
+<tt class="descname">Curl</tt><big>(</big><em>vector</em>, <em>basis</em><big>)</big><a class="headerlink" href="#Curl" title="Permalink to this definition">¶</a></dt>
+<dd><p>curl of a vector field</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>vector</strong> &#8211; vector field to take the curl of</li>
+<li><strong>basis</strong> &#8211; list of variables forming the basis</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function takes the curl of the vector field &#8220;vector&#8221; with
+respect to the variables &#8220;basis&#8221;. The curl is defined in the usual
+way,           Curl(f,x) = {             D(x[2]) f[3] - D(x[3])
+f[2],             D(x[3]) f[1] - D(x[1]) f[3],             D(x[1])
+f[2] - D(x[2]) f[1]         }  Both &#8220;vector&#8221; and &#8220;basis&#8221; should be
+lists of length 3.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Diverge">
+<tt class="descname">Diverge</tt><big>(</big><em>vector</em>, <em>basis</em><big>)</big><a class="headerlink" href="#Diverge" title="Permalink to this definition">¶</a></dt>
+<dd><p>divergence of a vector field</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>vector</strong> &#8211; vector field to calculate the divergence of</li>
+<li><strong>basis</strong> &#8211; list of variables forming the basis</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function calculates the divergence of the vector field
+&#8220;vector&#8221;  with respect to the variables &#8220;basis&#8221;. The divergence is
+defined as           Diverge(f,x) = D(x[1]) f[1] + ...
++ D(x[n]) f[n],  where {n} is the length of the lists &#8220;vector&#8221; and
+&#8220;basis&#8221;. These lists should have equal length.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Integrate">
+<tt class="descname">Integrate</tt><big>(</big><em>var</em><big>)</big> expr<a class="headerlink" href="#Integrate" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descname">Integrate</tt><big>(</big><em>var</em>, <em>x1</em>, <em>x2</em><big>)</big> expr</dt>
+<dd><p>integral</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>expr</strong> &#8211; expression to integrate</li>
+<li><strong>var</strong> &#8211; atom, variable to integrate over</li>
+<li><strong>x1</strong> &#8211; first point of definite integration</li>
+<li><strong>x2</strong> &#8211; second point of definite integration</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function integrates the expression {expr} with respect to the
+variable {var}. In the case of definite integral, the integration
+is carried out from $var=x1$ to $var=x2$&#8221;. Some simple integration
+rules have currently been implemented.  Polynomials, some quotients
+of polynomials, trigonometric functions and their inverses,
+hyperbolic functions and their inverses, {Exp}, and {Ln}, and
+products of these functions with polynomials can be integrated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Integrate(x,a,b) Cos(x)
+Out&gt; Sin(b)-Sin(a);
+In&gt; Integrate(x) Cos(x)
+Out&gt; Sin(x);
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#D" title="D"><tt class="xref ys ys-func docutils literal"><span class="pre">D()</span></tt></a>, <a class="reference internal" href="vars.html#UniqueConstant" title="UniqueConstant"><tt class="xref ys ys-func docutils literal"><span class="pre">UniqueConstant()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">bodied Limit(var, val) expr</tt></dt>
+<dd><p>limit of an expression</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>var</strong> &#8211; a variable</li>
+<li><strong>val</strong> &#8211; a number</li>
+<li><strong>dir</strong> &#8211; a direction ({Left} or {Right})</li>
+<li><strong>expr</strong> &#8211; an expression</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This command tries to determine the value that the expression
+&#8220;expr&#8221;  converges to when the variable &#8220;var&#8221; approaches &#8220;val&#8221;. One
+may use  {Infinity} or {-Infinity} for  &#8220;val&#8221;. The result of
+{Limit} may be one of the  symbols {Undefined} (meaning that the
+limit does not  exist), {Infinity}, or {-Infinity}.    The second
+calling sequence is used for unidirectional limits. If one  gives
+&#8220;dir&#8221; the value {Left}, the limit is taken as  &#8220;var&#8221; approaches
+&#8220;val&#8221; from the positive infinity; and {Right} will take the limit
+from the negative infinity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Limit(x,0) Sin(x)/x
+Out&gt; 1;
+In&gt; Limit(x,0) (Sin(x)-Tan(x))/(x^3)
+Out&gt; -1/2;
+In&gt; Limit(x,0) 1/x
+Out&gt; Undefined;
+In&gt; Limit(x,0,Left) 1/x
+Out&gt; -Infinity;
+In&gt; Limit(x,0,Right) 1/x
+Out&gt; Infinity;
+Random numbers
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Random">
+<tt class="descname">Random</tt><big>(</big><big>)</big><a class="headerlink" href="#Random" title="Permalink to this definition">¶</a></dt>
+<dd><p>(pseudo-) random number generator</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>init</strong> &#8211; integer, initial seed value</li>
+<li><strong>option</strong> &#8211; atom, option name</li>
+<li><strong>value</strong> &#8211; atom, option value</li>
+<li><strong>r</strong> &#8211; a list, RNG object</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>These commands are an object-oriented interface to (pseudo-)random
+number generators (RNGs).    {RngCreate} returns a list which is a
+well-formed RNG object.  Its value should be saved in a variable
+and used to call {Rng} and {RngSeed}.    {Rng(r)} returns a
+floating-point random number between 0 and 1 and updates the RNG
+object {r}.  (Currently, the Gaussian option makes a RNG return a
+&lt;i&gt;complex&lt;/i&gt; random number instead of a real random number.)
+{RngSeed(r,init)} re-initializes the RNG object {r} with the seed
+value {init}.  The seed value should be a positive integer.    The
+{RngCreate} function accepts several options as arguments.
+Currently the following options are available:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RandomIntegerMatrix">
+<tt class="descname">RandomIntegerMatrix</tt><big>(</big><em>rows</em>, <em>cols</em>, <em>from</em>, <em>to</em><big>)</big><a class="headerlink" href="#RandomIntegerMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>generate a matrix of random integers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>rows</strong> &#8211; number of rows in matrix</li>
+<li><strong>cols</strong> &#8211; number of cols in matrix</li>
+<li><strong>from</strong> &#8211; lower bound</li>
+<li><strong>to</strong> &#8211; upper bound</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function generates a {rows x cols} matrix of random integers.
+All  entries lie between &#8220;from&#8221; and &#8220;to&#8221;, including the boundaries,
+and  are uniformly distributed in this interval.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; PrettyForm( RandomIntegerMatrix(5,5,-2^10,2^10) )
+/                                               \
+| ( -506 ) ( 749 )  ( -574 ) ( -674 ) ( -106 )  |
+|                                               |
+| ( 301 )  ( 151 )  ( -326 ) ( -56 )  ( -277 )  |
+|                                               |
+| ( 777 )  ( -761 ) ( -161 ) ( -918 ) ( -417 )  |
+|                                               |
+| ( -518 ) ( 127 )  ( 136 )  ( 797 )  ( -406 )  |
+|                                               |
+| ( 679 )  ( 854 )  ( -78 )  ( 503 )  ( 772 )   |
+\                                               /
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#RandomIntegerVector" title="RandomIntegerVector"><tt class="xref ys ys-func docutils literal"><span class="pre">RandomIntegerVector()</span></tt></a>, <a class="reference internal" href="#RandomPoly" title="RandomPoly"><tt class="xref ys ys-func docutils literal"><span class="pre">RandomPoly()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="RandomIntegerVector">
+<tt class="descname">RandomIntegerVector</tt><big>(</big><em>nr</em>, <em>from</em>, <em>to</em><big>)</big><a class="headerlink" href="#RandomIntegerVector" title="Permalink to this definition">¶</a></dt>
+<dd><p>generate a vector of random integers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>nr</strong> &#8211; number of integers to generate</li>
+<li><strong>from</strong> &#8211; lower bound</li>
+<li><strong>to</strong> &#8211; upper bound</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function generates a list with &#8220;nr&#8221; random integers. All
+entries lie between &#8220;from&#8221; and &#8220;to&#8221;, including the boundaries, and
+are uniformly distributed in this interval.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">RandomIntegerVector</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="o">-</span><span class="mi">2</span><span class="p">};</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Random" title="Random"><tt class="xref ys ys-func docutils literal"><span class="pre">Random()</span></tt></a>, <a class="reference internal" href="#RandomPoly" title="RandomPoly"><tt class="xref ys ys-func docutils literal"><span class="pre">RandomPoly()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="RandomPoly">
+<tt class="descname">RandomPoly</tt><big>(</big><em>var</em>, <em>deg</em>, <em>coefmin</em>, <em>coefmax</em><big>)</big><a class="headerlink" href="#RandomPoly" title="Permalink to this definition">¶</a></dt>
+<dd><p>construct a random polynomial</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>var</strong> &#8211; free variable for resulting univariate polynomial</li>
+<li><strong>deg</strong> &#8211; degree of resulting univariate polynomial</li>
+<li><strong>coefmin</strong> &#8211; minimum value for coefficients</li>
+<li><strong>coefmax</strong> &#8211; maximum value for coefficients</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>RandomPoly generates a random polynomial in variable &#8220;var&#8221;, of
+degree &#8220;deg&#8221;, with integer coefficients ranging from &#8220;coefmin&#8221; to
+&#8220;coefmax&#8221; (inclusive). The coefficients are uniformly distributed
+in  this interval, and are independent of each other.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">RandomPoly</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">3</span><span class="o">*</span><span class="n">x</span><span class="o">^</span><span class="mi">3</span><span class="o">+</span><span class="mi">10</span><span class="o">*</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="mi">4</span><span class="o">*</span><span class="n">x</span><span class="o">-</span><span class="mi">6</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">RandomPoly</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="o">-</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="o">^</span><span class="mi">3</span><span class="o">-</span><span class="mi">8</span><span class="o">*</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="mi">8</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Random" title="Random"><tt class="xref ys ys-func docutils literal"><span class="pre">Random()</span></tt></a>, <a class="reference internal" href="#RandomIntegerVector" title="RandomIntegerVector"><tt class="xref ys ys-func docutils literal"><span class="pre">RandomIntegerVector()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Add">
+<tt class="descname">Add</tt><big>(</big><em>val1</em>, <em>val2</em>, <em>...</em><big>)</big><a class="headerlink" href="#Add" title="Permalink to this definition">¶</a></dt>
+<dd><p>find sum of a list of values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>{val2</strong> (<em>val1},</em>) &#8211; expressions</li>
+<li><strong>{list}</strong> &#8211; list of expressions to add</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function adds all its arguments and returns their sum. It
+accepts any  number of arguments. The arguments can be also passed
+as a list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Add(1,4,9);
+Out&gt; 14;
+In&gt; Add(1 .. 10);
+Out&gt; 55;
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Sum">
+<tt class="descname">Sum</tt><big>(</big><em>var</em>, <em>from</em>, <em>to</em>, <em>body</em><big>)</big><a class="headerlink" href="#Sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>find sum of a sequence</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>var</strong> &#8211; variable to iterate over</li>
+<li><strong>from</strong> &#8211; integer value to iterate from</li>
+<li><strong>to</strong> &#8211; integer value to iterate up to</li>
+<li><strong>body</strong> &#8211; expression to evaluate for each iteration</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The command finds the sum of the sequence generated by an iterative
+formula.   The expression &#8220;body&#8221; is  evaluated while the variable
+&#8220;var&#8221; ranges over all integers from  &#8220;from&#8221; up to &#8220;to&#8221;, and the sum
+of all the results is  returned. Obviously, &#8220;to&#8221; should be greater
+than or equal to  &#8220;from&#8221;.    Warning: {Sum} does not evaluate its
+arguments {var} and {body} until the actual loop is run.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Sum</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">i</span><span class="o">^</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">14</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Factorize" title="Factorize"><tt class="xref ys ys-func docutils literal"><span class="pre">Factorize()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Factorize">
+<tt class="descname">Factorize</tt><big>(</big><em>list</em><big>)</big><a class="headerlink" href="#Factorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>product of a list of values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>list</strong> &#8211; list of values to multiply</li>
+<li><strong>var</strong> &#8211; variable to iterate over</li>
+<li><strong>from</strong> &#8211; integer value to iterate from</li>
+<li><strong>to</strong> &#8211; integer value to iterate up to</li>
+<li><strong>body</strong> &#8211; expression to evaluate for each iteration</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The first form of the {Factorize} command simply  multiplies all
+the entries in &#8220;list&#8221; and returns their product.    If the second
+calling sequence is used, the expression &#8220;body&#8221; is  evaluated while
+the variable &#8220;var&#8221; ranges over all integers from  &#8220;from&#8221; up to
+&#8220;to&#8221;, and the product of all the results is  returned. Obviously,
+&#8220;to&#8221; should be greater than or equal to  &#8220;from&#8221;.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Factorize</span><span class="p">({</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">});</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">24</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Factorize</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">24</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Sum" title="Sum"><tt class="xref ys ys-func docutils literal"><span class="pre">Sum()</span></tt></a>, <a class="reference internal" href="controlflow.html#Apply" title="Apply"><tt class="xref ys ys-func docutils literal"><span class="pre">Apply()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Taylor(var, at, order) expr</tt></dt>
+<dd><p>univariate Taylor series expansion</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>var</strong> &#8211; variable</li>
+<li><strong>at</strong> &#8211; point to get Taylor series around</li>
+<li><strong>order</strong> &#8211; order of approximation</li>
+<li><strong>expr</strong> &#8211; expression to get Taylor series for</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function returns the Taylor series expansion of the expression
+&#8220;expr&#8221; with respect to the variable &#8220;var&#8221; around &#8220;at&#8221; up to order
+&#8220;order&#8221;. This is a polynomial which agrees with &#8220;expr&#8221; at the
+point &#8220;var = at&#8221;, and furthermore the first &#8220;order&#8221; derivatives of
+the polynomial at this point agree with &#8220;expr&#8221;. Taylor expansions
+around removable singularities are correctly handled by taking the
+limit as &#8220;var&#8221; approaches &#8220;at&#8221;.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; PrettyForm(Taylor(x,0,9) Sin(x))
+3    5      7       9
+x    x      x       x
+x - -- + --- - ---- + ------
+6    120   5040   362880
+Out&gt; True;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#D" title="D"><tt class="xref ys ys-func docutils literal"><span class="pre">D()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">InverseTaylor()</span></tt>, <a class="reference internal" href="#ReversePoly" title="ReversePoly"><tt class="xref ys ys-func docutils literal"><span class="pre">ReversePoly()</span></tt></a>, <a class="reference internal" href="#BigOh" title="BigOh"><tt class="xref ys ys-func docutils literal"><span class="pre">BigOh()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">InverseTaylor(var, at, order) expr</tt></dt>
+<dd><p>Taylor expansion of inverse</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>var</strong> &#8211; variable</li>
+<li><strong>at</strong> &#8211; point to get inverse Taylor series around</li>
+<li><strong>order</strong> &#8211; order of approximation</li>
+<li><strong>expr</strong> &#8211; expression to get inverse Taylor series for</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function builds the Taylor series expansion of the inverse of
+the  expression &#8220;expr&#8221; with respect to the variable &#8220;var&#8221; around
+&#8220;at&#8221;  up to order &#8220;order&#8221;. It uses the function {ReversePoly} to
+perform the task.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; PrettyPrinter&#39;Set(&quot;PrettyForm&quot;)
+True
+In&gt; exp1 := Taylor(x,0,7) Sin(x)
+3    5      7
+x    x      x
+x - -- + --- - ----
+6    120   5040
+In&gt; exp2 := InverseTaylor(x,0,7) ArcSin(x)
+5      7     3
+x      x     x
+--- - ---- - -- + x
+120   5040   6
+In&gt; Simplify(exp1-exp2)
+0
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#ReversePoly" title="ReversePoly"><tt class="xref ys ys-func docutils literal"><span class="pre">ReversePoly()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">Taylor()</span></tt>, <a class="reference internal" href="#BigOh" title="BigOh"><tt class="xref ys ys-func docutils literal"><span class="pre">BigOh()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="ReversePoly">
+<tt class="descname">ReversePoly</tt><big>(</big><em>f</em>, <em>g</em>, <em>var</em>, <em>newvar</em>, <em>degree</em><big>)</big><a class="headerlink" href="#ReversePoly" title="Permalink to this definition">¶</a></dt>
+<dd><p>solve $h(f(x)) = g(x) + O(x^n)$ for $h$</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>f</strong> &#8211; function of <tt class="docutils literal"><span class="pre">var</span></tt></li>
+<li><strong>g</strong> &#8211; function of <tt class="docutils literal"><span class="pre">var</span></tt></li>
+<li><strong>var</strong> &#8211; a variable</li>
+<li><strong>newvar</strong> &#8211; a new variable to express the result in</li>
+<li><strong>degree</strong> &#8211; the degree of the required solution</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function returns a polynomial in &#8220;newvar&#8221;, say &#8220;h(newvar)&#8221;,
+with the property that &#8220;h(f(var))&#8221; equals &#8220;g(var)&#8221; up to order
+&#8220;degree&#8221;. The degree of the result will be at most &#8220;degree-1&#8221;. The
+only requirement is that the first derivative of &#8220;f&#8221; should not be
+zero.    This function is used to determine the Taylor series
+expansion of the  inverse of a function &#8220;f&#8221;: if we take
+&#8220;g(var)=var&#8221;, then  &#8220;h(f(var))=var&#8221; (up to order &#8220;degree&#8221;), so &#8220;h&#8221;
+will be the  inverse of &#8220;f&#8221;.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; f(x):=Eval(Expand((1+x)^4))
+Out&gt; True;
+In&gt; g(x) := x^2
+Out&gt; True;
+In&gt; h(y):=Eval(ReversePoly(f(x),g(x),x,y,8))
+Out&gt; True;
+In&gt; BigOh(h(f(x)),x,8)
+Out&gt; x^2;
+In&gt; h(x)
+Out&gt; (-2695*(x-1)^7)/131072+(791*(x-1)^6)/32768 +(-119*(x-1)^5)/4096+(37*(x-1)^4)/1024+(-3*(x-1)^3)/64+(x-1)^2/16;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">InverseTaylor()</span></tt>, <tt class="xref ys ys-func docutils literal"><span class="pre">Taylor()</span></tt>, <a class="reference internal" href="#BigOh" title="BigOh"><tt class="xref ys ys-func docutils literal"><span class="pre">BigOh()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="BigOh">
+<tt class="descname">BigOh</tt><big>(</big><em>poly</em>, <em>var</em>, <em>degree</em><big>)</big><a class="headerlink" href="#BigOh" title="Permalink to this definition">¶</a></dt>
+<dd><p>drop all terms of a certain order in a polynomial</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>poly</strong> &#8211; a univariate polynomial</li>
+<li><strong>var</strong> &#8211; a free variable</li>
+<li><strong>degree</strong> &#8211; positive integer</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function drops all terms of order &#8220;degree&#8221; or higher in
+&#8220;poly&#8221;, which is a polynomial in the variable &#8220;var&#8221;.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">BigOh</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="n">x</span><span class="o">+</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="n">x</span><span class="o">^</span><span class="mi">3</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">Taylor()</span></tt>, <tt class="xref ys ys-func docutils literal"><span class="pre">InverseTaylor()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="LagrangeInterpolant">
+<tt class="descname">LagrangeInterpolant</tt><big>(</big><em>xlist</em>, <em>ylist</em>, <em>var</em><big>)</big><a class="headerlink" href="#LagrangeInterpolant" title="Permalink to this definition">¶</a></dt>
+<dd><p>polynomial interpolation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xlist</strong> &#8211; list of argument values</li>
+<li><strong>ylist</strong> &#8211; list of function values</li>
+<li><strong>var</strong> &#8211; free variable for resulting polynomial</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function returns a polynomial in the variable &#8220;var&#8221; which
+interpolates the points &#8220;(xlist, ylist)&#8221;. Specifically, the value
+of  the resulting polynomial at &#8220;xlist[1]&#8221; is &#8220;ylist[1]&#8221;, the value
+at  &#8220;xlist[2]&#8221; is &#8220;ylist[2]&#8221;, etc. The degree of the polynomial is
+not  greater than the length of &#8220;xlist&#8221;.    The lists &#8220;xlist&#8221; and
+&#8220;ylist&#8221; should be of equal  length. Furthermore, the entries of
+&#8220;xlist&#8221; should be all distinct  to ensure that there is one and
+only one solution.    This routine uses the Lagrange interpolant
+formula to build up the  polynomial.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; f := LagrangeInterpolant({0,1,2}, \
+{0,1,1}, x);
+Out&gt; (x*(x-1))/2-x*(x-2);
+In&gt; Eval(Subst(x,0) f);
+Out&gt; 0;
+In&gt; Eval(Subst(x,1) f);
+Out&gt; 1;
+In&gt; Eval(Subst(x,2) f);
+Out&gt; 1;
+In&gt; PrettyPrinter&#39;Set(&quot;PrettyForm&quot;);
+True
+In&gt; LagrangeInterpolant({x1,x2,x3}, {y1,y2,y3}, x)
+y1 * ( x - x2 ) * ( x - x3 )
+----------------------------
+( x1 - x2 ) * ( x1 - x3 )
+y2 * ( x - x1 ) * ( x - x3 )
++ ----------------------------
+( x2 - x1 ) * ( x2 - x3 )
+y3 * ( x - x1 ) * ( x - x2 )
++ ----------------------------
+( x3 - x1 ) * ( x3 - x2 )
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="controlflow.html#Subst" title="Subst"><tt class="xref ys ys-func docutils literal"><span class="pre">Subst()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="!">
+n<tt class="descname">!</tt><a class="headerlink" href="#!" title="Permalink to this definition">¶</a></dt>
+<dd><p>factorial</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>m</strong> &#8211; integer</li>
+<li><strong>n</strong> &#8211; integer, half-integer, or list</li>
+<li><strong>{b</strong> (<em>a},</em>) &#8211; numbers</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The factorial function {n!} calculates the factorial of integer or
+half-integer numbers. For  nonnegative integers, $n! :=
+n*(n-1)*(n-2)*...*1$. The factorial of  half-integers is defined
+via Euler&#8217;s Gamma function, $z! := Gamma(z+1)$. If $n=0$ the
+function returns $1$.    The &#8220;double factorial&#8221; function {n!!}
+calculates $n*(n-2)*(n-4)*...$. This product terminates either with
+$1$ or with $2$ depending on whether $n$ is odd or even. If $n=0$
+the function returns $1$.    The &#8220;partial factorial&#8221; function {a
+<strong>* b} calculates the product $a*(a+1)*...$ which is terminated at
+the least integer not greater than $b$. The arguments $a$ and $b$
+do not have to be integers; for integer arguments, {a *</strong> b} = $b!
+/ (a-1)!$. This function is sometimes a lot faster than evaluating
+the two factorials, especially if $a$ and $b$ are close together.
+If $a&gt;b$ the function returns $1$.    The {Subfactorial} function
+can be interpreted as the  number of permutations of {m} objects in
+which no object   appears in its natural place, also called
+&#8220;derangements.&#8221;     The factorial functions are threaded, meaning
+that if the argument {n} is a  list, the function will be applied
+to each element of the list.    Note: For reasons of Yacas syntax,
+the factorial sign {!} cannot precede other  non-letter symbols
+such as {+} or {*}. Therefore, you should enter a space  after {!}
+in expressions such as {x! +1}.    The factorial functions
+terminate and print an error message if the arguments are too large
+(currently the limit is $n &lt; 65535$) because exact factorials of
+such large numbers are computationally expensive and most probably
+not useful. One can call {Internal&#8217;LnGammaNum()} to evaluate
+logarithms of such factorials to desired precision.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; 5!
+Out&gt; 120;
+In&gt; 1 * 2 * 3 * 4 * 5
+Out&gt; 120;
+In&gt; (1/2)!
+Out&gt; Sqrt(Pi)/2;
+In&gt; 7!!;
+Out&gt; 105;
+In&gt; 1/3 *** 10;
+Out&gt; 17041024000/59049;
+In&gt; Subfactorial(10)
+Out&gt; 1334961;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Bin" title="Bin"><tt class="xref ys ys-func docutils literal"><span class="pre">Bin()</span></tt></a>, <a class="reference internal" href="#Factorize" title="Factorize"><tt class="xref ys ys-func docutils literal"><span class="pre">Factorize()</span></tt></a>, <a class="reference internal" href="#Gamma" title="Gamma"><tt class="xref ys ys-func docutils literal"><span class="pre">Gamma()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">!()</span></tt>, <a class="reference internal" href="#***" title="***"><tt class="xref ys ys-func docutils literal"><span class="pre">***()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">Subfactorial()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="!!">
+n<tt class="descname">!!</tt><a class="headerlink" href="#!!" title="Permalink to this definition">¶</a></dt>
+<dd><p>double factorial</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="***">
+x <tt class="descname">***</tt> y<a class="headerlink" href="#***" title="Permalink to this definition">¶</a></dt>
+<dd><p>whatever</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Bin">
+<tt class="descname">Bin</tt><big>(</big><em>n</em>, <em>m</em><big>)</big><a class="headerlink" href="#Bin" title="Permalink to this definition">¶</a></dt>
+<dd><p>binomial coefficients</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>{m</strong> (<em>n},</em>) &#8211; integers</td>
+</tr>
+</tbody>
+</table>
+<p>This function calculates the binomial coefficient &#8220;n&#8221; above  &#8220;m&#8221;,
+which equals $$n! / (m! * (n-m)!)$$    This is equal to the number
+of ways  to choose &#8220;m&#8221; objects out of a total of &#8220;n&#8221; objects if
+order is  not taken into account. The binomial coefficient is
+defined to be zero  if &#8220;m&#8221; is negative or greater than &#8220;n&#8221;;
+{Bin(0,0)}=1.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Bin(10, 4)
+Out&gt; 210;
+In&gt; 10! / (4! * 6!)
+Out&gt; 210;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">()</span></tt>, <a class="reference internal" href="#Eulerian" title="Eulerian"><tt class="xref ys ys-func docutils literal"><span class="pre">Eulerian()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Eulerian">
+<tt class="descname">Eulerian</tt><big>(</big><em>n</em>, <em>m</em><big>)</big><a class="headerlink" href="#Eulerian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Eulerian numbers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>{m</strong> (<em>n},</em>) &#8211; integers</td>
+</tr>
+</tbody>
+</table>
+<p>The Eulerian numbers can be viewed as a generalization of the
+binomial coefficients,  and are given explicitly by $$
+Sum(j,0,k+1,(-1)^j*Bin(n+1,j)*(k-j+1)^n) $$ .</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Eulerian</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">302</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Eulerian</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">9</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Bin" title="Bin"><tt class="xref ys ys-func docutils literal"><span class="pre">Bin()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="LeviCivita">
+<tt class="descname">LeviCivita</tt><big>(</big><em>list</em><big>)</big><a class="headerlink" href="#LeviCivita" title="Permalink to this definition">¶</a></dt>
+<dd><p>totally anti-symmetric Levi-Civita symbol</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>list</strong> &#8211; a list of integers 1 .. n in some order</td>
+</tr>
+</tbody>
+</table>
+<p>{LeviCivita} implements the Levi-Civita symbol. This is generally
+useful for tensor calculus.  {list}  should be a list of integers,
+and this function returns 1 if the integers are in successive
+order,  eg. {LeviCivita( {1,2,3,...} )}  would return 1. Swapping
+two elements of this  list would return -1. So, {LeviCivita(
+{2,1,3} )} would evaluate  to -1.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">LeviCivita</span><span class="p">({</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">})</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">1</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">LeviCivita</span><span class="p">({</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">})</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">LeviCivita</span><span class="p">({</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">})</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Permutations" title="Permutations"><tt class="xref ys ys-func docutils literal"><span class="pre">Permutations()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Permutations">
+<tt class="descname">Permutations</tt><big>(</big><em>list</em><big>)</big><a class="headerlink" href="#Permutations" title="Permalink to this definition">¶</a></dt>
+<dd><p>get all permutations of a list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>list</strong> &#8211; a list of elements</td>
+</tr>
+</tbody>
+</table>
+<p>Permutations returns a list with all the permutations of  the
+original list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Permutations</span><span class="p">({</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">})</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="p">{{</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">},{</span><span class="n">a</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">b</span><span class="p">},{</span><span class="n">c</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">},{</span><span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">c</span><span class="p">},</span>
+<span class="p">{</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">a</span><span class="p">},{</span><span class="n">c</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="p">}};</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#LeviCivita" title="LeviCivita"><tt class="xref ys ys-func docutils literal"><span class="pre">LeviCivita()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Gamma">
+<tt class="descname">Gamma</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#Gamma" title="Permalink to this definition">¶</a></dt>
+<dd><p>Euler&#8217;s Gamma function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> &#8211; expression</li>
+<li><strong>number</strong> &#8211; expression that can be evaluated to a number</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>{Gamma(x)} is an interface to Euler&#8217;s Gamma function $Gamma(x)$. It
+returns exact values on integer and half-integer arguments.
+{N(Gamma(x)} takes a numeric parameter and always returns a
+floating-point number in the current precision.    Note that
+Euler&#8217;s constant $gamma&lt;=&gt;0.57722$ is the lowercase {gamma} in
+Yacas.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Gamma</span><span class="p">(</span><span class="mf">1.3</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Gamma</span><span class="p">(</span><span class="mf">1.3</span><span class="p">);</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">N</span><span class="p">(</span><span class="n">Gamma</span><span class="p">(</span><span class="mf">1.3</span><span class="p">),</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mf">0.897470696306277188493754954771</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Gamma</span><span class="p">(</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Sqrt</span><span class="p">(</span><span class="n">Pi</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">N</span><span class="p">(</span><span class="n">Gamma</span><span class="p">(</span><span class="mf">1.5</span><span class="p">),</span><span class="mi">30</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mf">0.88622692545275801364908374167</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">()</span></tt>, <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a>, <a class="reference internal" href="consts.html#gamma" title="gamma"><tt class="xref ys ys-func docutils literal"><span class="pre">gamma()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Zeta">
+<tt class="descname">Zeta</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#Zeta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Riemann&#8217;s Zeta function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> &#8211; expression</li>
+<li><strong>number</strong> &#8211; expression that can be evaluated to a number</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>{Zeta(x)} is an interface to Riemann&#8217;s Zeta function $zeta(s)$. It
+returns exact values on integer and half-integer arguments.
+{N(Zeta(x)} takes a numeric parameter and always returns a
+floating-point number in the current precision.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Precision</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Zeta</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Infinity</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Zeta</span><span class="p">(</span><span class="mf">1.3</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Zeta</span><span class="p">(</span><span class="mf">1.3</span><span class="p">);</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">N</span><span class="p">(</span><span class="n">Zeta</span><span class="p">(</span><span class="mf">1.3</span><span class="p">))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mf">3.93194921180954422697490751058798</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Zeta</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Pi</span><span class="o">^</span><span class="mi">2</span><span class="o">/</span><span class="mi">6</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">N</span><span class="p">(</span><span class="n">Zeta</span><span class="p">(</span><span class="mi">2</span><span class="p">));</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mf">1.64493406684822643647241516664602</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">()</span></tt>, <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Bernoulli">
+<tt class="descname">Bernoulli</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#Bernoulli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bernoulli numbers and polynomials</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> &#8211; expression that will be the variable in the polynomial</li>
+<li><strong>index</strong> &#8211; expression that can be evaluated to an integer</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>{Bernoulli(n)} evaluates the $n$-th Bernoulli number. {Bernoulli(n,
+x)} returns the $n$-th Bernoulli polynomial in the variable $x$.
+The polynomial is returned in the Horner form.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Euler">
+<tt class="descname">Euler</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#Euler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Euler numbers and polynomials</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> &#8211; expression that will be the variable in the polynomial</li>
+<li><strong>index</strong> &#8211; expression that can be evaluated to an integer</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>{Euler(n)} evaluates the $n$-th Euler number. {Euler(n,x)} returns
+the $n$-th Euler polynomial in the variable $x$.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Euler(6)
+Out&gt; -61;
+In&gt; A:=Euler(5,x)
+Out&gt; (x-1/2)^5+(-10*(x-1/2)^3)/4+(25*(x-1/2))/16;
+In&gt; Simplify(A)
+Out&gt; (2*x^5-5*x^4+5*x^2-1)/2;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Bin" title="Bin"><tt class="xref ys ys-func docutils literal"><span class="pre">Bin()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="LambertW">
+<tt class="descname">LambertW</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#LambertW" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lambert&#8217;s <span class="math">\(W\)</span> function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; expression, argument of the function</td>
+</tr>
+</tbody>
+</table>
+<p>Lambert&#8217;s <span class="math">\(W\)</span> function is (a multiple-valued, complex
+function) defined for any (complex) <span class="math">\(z\)</span> by</p>
+<div class="math">
+\[W(z)e^{W(z)}=z\]</div>
+<p>The <span class="math">\(W\)</span> function is sometimes useful to represent solutions
+of transcendental equations. For example, the equation $Ln(x)=3*x$
+can be &#8220;solved&#8221; by writing $x= -3*W(-1/3)$. It is also possible to
+take a derivative or integrate this function &#8220;explicitly&#8221;.  For
+real arguments $x$, $W(x)$ is real if $x&gt;= -Exp(-1)$.  To compute
+the numeric value of the principal branch of Lambert&#8217;s $W$ function
+for real arguments $x&gt;= -Exp(-1)$ to current precision, one can
+call {N(LambertW(x))} (where the function {N} tries to approximate
+its argument with a real value).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">LambertW</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">N</span><span class="p">(</span><span class="n">LambertW</span><span class="p">(</span><span class="o">-</span><span class="mf">0.24</span><span class="o">/</span><span class="n">Sqrt</span><span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="n">Pi</span><span class="p">)))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="o">-</span><span class="mf">0.0851224014</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Exp" title="Exp"><tt class="xref ys ys-func docutils literal"><span class="pre">Exp()</span></tt></a></p>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="simplify.html" class="btn btn-neutral float-right" title="Simplification of expressions"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="arithmetic.html" class="btn btn-neutral" title="Arithmetic and other operations on numbers"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Ayal Pinkus, Serge Winnitzky, Grzegorz Mazur.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.3.5',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

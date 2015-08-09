@@ -1,0 +1,325 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Transforms &mdash; Yacas</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="Yacas" href="../../index.html"/>
+        <link rel="up" title="The Yacas Book of Algorithms" href="index.html"/>
+        <link rel="next" title="Finding real roots of polynomials" href="sturm-sequences.html"/>
+        <link rel="prev" title="Integration" href="integration.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="fa fa-home"> Yacas</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation-from-sources">Installation from sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-syntax">Yacas syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#using-yacas-from-the-calculation-center">Using Yacas from the calculation center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-as-a-symbolic-calculator">Yacas as a symbolic calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#arbitrary-precision-numbers">Arbitrary precision numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#analytic-functions">Analytic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#boolean-expressions-and-predicates">Boolean expressions and predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#strings-and-lists">Strings and lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#writing-simplification-rules">Writing simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#local-simplification-rules">Local simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#programming-essentials">Programming essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#macros">Macros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#the-practice-of-programming-in-yacas">The practice of programming in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#defining-your-own-operators">Defining your own operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#some-assorted-programming-topics">Some assorted programming topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#linear-algebra">Linear Algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_manual/index.html">Reference Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/arithmetic.html">Arithmetic and other operations on numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/calc.html">Calculus and elementary functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/simplify.html">Simplification of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/ode.html">Differential Equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/logic.html">Propositional logic theorem prover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/linear-algebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/univariate-polynomials.html">Operations on polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/lists.html">List operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/functional.html">Functional operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/controlflow.html">Control flow functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/predicates.html">Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/consts.html">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/vars.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/io.html">Input/output and plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/strings.html">String manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/probability-and-statistics.html">Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/number-theory.html">Number theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/programming.html">Functions related to programming in Yacas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_in_yacas/index.html">Programming in Yacas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-yacas-architecture">The Yacas architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-evaluation-scheme">Yacas evaluation scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#rules">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#structured-programming-and-control-flow">Structured programming and control flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#additional-syntactic-sugar">Additional syntactic sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#using-macro-rules-e-g-nfunction">Using &#8220;Macro rules&#8221; (e.g. {NFunction})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#macro-expansion">Macro expansion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#scope-of-variable-bindings">Scope of variable bindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation-of-expressions">Evaluation of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-lisp-heritage">The LISP heritage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-specific-extensions-for-cas-implementations">{Yacas}-specific extensions for CAS implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-evaluation-is-simplification-hack">The &#8220;Evaluation is Simplification&#8221; hack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#destructive-operations">Destructive operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#coding-style">Coding style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#writing-new-library-functions">Writing new library functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-1-parsing-expressions-cform">Advanced example 1: parsing expressions ({CForm})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-programming-pitfalls">Yacas programming pitfalls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#debugging-in-yacas">Debugging in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-2-implementing-a-non-commutative-algebra">Advanced example 2: implementing a non-commutative algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">The Yacas Book of Algorithms</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="multivar.html">Sparse representations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="integration.html">Integration</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="sturm-sequences.html">Finding real roots of polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numtheory.html">Number theory algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../yagy/index.html">YAGY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Yacas</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">The Yacas Book of Algorithms</a> &raquo;</li>
+      
+    <li>Transforms</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/doc/book_of_algorithms/transforms.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="transforms">
+<h1>Transforms<a class="headerlink" href="#transforms" title="Permalink to this headline">¶</a></h1>
+<p>Currently the only tranform defined is {LaplaceTransform}, which has
+the calling convention:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">LaplaceTransform</span><span class="p">(</span><span class="n">var1</span><span class="p">,</span><span class="n">var2</span><span class="p">,</span><span class="n">func</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It has been setup much like the integration algorithm. If the
+transformation algorithm cannot perform the transform, the expression
+(in theory) is returned unsimplified. Some cases may still erroneously
+return {Undefined} or {Infinity}.</p>
+<div class="section" id="the-laplacetransform-algorithm">
+<h2>The {LaplaceTransform} algorithm<a class="headerlink" href="#the-laplacetransform-algorithm" title="Permalink to this headline">¶</a></h2>
+<p>This section describes the steps taken in doing a Laplace
+transform.</p>
+<div class="section" id="general-structure">
+<h3>General structure<a class="headerlink" href="#general-structure" title="Permalink to this headline">¶</a></h3>
+<p>{LaplaceTransform} is immediately handed off to {LapTran}.  This is
+done because if the last {LapTran} rule is met, the Laplace transform
+couldn&#8217;t be found and it can then return {LaplaceTransform}
+unevaluated.</p>
+</div>
+<div class="section" id="operational-properties">
+<h3>Operational Properties<a class="headerlink" href="#operational-properties" title="Permalink to this headline">¶</a></h3>
+<p>The first rules that are matched against utilize the various
+operational properties of {LaplaceTransform}, such as:</p>
+<ul class="simple">
+<li>Linearity Properties</li>
+<li>Shift properties, i.e. multiplying the function by an exponential</li>
+<li>$ y * x^n = (-1)^n * Deriv(x,n) LaplaceTransform(x,x[2],y) $</li>
+<li>$ y/x = Integrate(x[2],x[2],Infinity) LapTran(x,x[2],y) $</li>
+</ul>
+<p>The last operational property dealing with integration is not yet
+fully bug-tested, it sometimes returns {Undefined} or {Infinity} if
+the integral returns such.</p>
+</div>
+<div class="section" id="transform-tables">
+<h3>Transform tables<a class="headerlink" href="#transform-tables" title="Permalink to this headline">¶</a></h3>
+<p>For elementary functions, Yacas uses transform tables. For instance,
+the fact that the Laplace transform of $ Cos(t) $ is $ s/(s^2+1) $ is
+declared in a transform table.</p>
+<p>For the purpose of setting up the transform table, a few declaration
+functions have been defined, which use some generalized pattern
+matchers to be more flexible in recognizing expressions that are
+transformable.</p>
+</div>
+<div class="section" id="transforming-simple-functions">
+<h3>Transforming simple functions<a class="headerlink" href="#transforming-simple-functions" title="Permalink to this headline">¶</a></h3>
+<p>For functions like $ Sin(t) $ the transform can be declared with the
+function {LapTranDef}.</p>
+<p>The calling sequence for {LapTranDef} is:</p>
+<div class="highlight-python"><div class="highlight"><pre>LapTranDef(in, out)
+</pre></div>
+</div>
+<p>Currently {in} must be a variable of {_t} and {out} must be a function
+of {s}.  For instance, for the function $ Cos(t) $ there is a
+declaration:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">LapTranDef</span><span class="p">(</span><span class="n">Cos</span><span class="p">(</span><span class="n">_t</span><span class="p">),</span> <span class="n">s</span><span class="o">/</span><span class="p">(</span><span class="n">s</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>The fact that the first argument is a pattern means that each
+occurrence of the variable to be matched should be referred to as
+{_t}, as in the example above.</p>
+<p>{LapTranDef} generalizes the transform implicitly, in that it will set
+up the system to actually recognize expressions of the form $ Cos(a*t)
+$ and $Cos(t/a)$ , and return the appropriate answer.  The way this is
+done is by three separate rules for case of {t} itself, {a*t} and
+{t/a}. This is similar to the {MatchLinear} function that {Integrate}
+uses, except {LaplaceTransforms} must have {b=0}.</p>
+</div>
+<div class="section" id="further-directions">
+<h3>Further Directions<a class="headerlink" href="#further-directions" title="Permalink to this headline">¶</a></h3>
+<p>Currenlty $Sin(t)*Cos(t)$ cannot be transformed, because it requires
+a convolution integral. This will be implemented soon. The inverse
+laplace transform will be implement soon also.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="sturm-sequences.html" class="btn btn-neutral float-right" title="Finding real roots of polynomials"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="integration.html" class="btn btn-neutral" title="Integration"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Ayal Pinkus, Serge Winnitzky, Grzegorz Mazur.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.3.5',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

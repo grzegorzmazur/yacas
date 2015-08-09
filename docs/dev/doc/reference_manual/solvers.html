@@ -1,0 +1,691 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Solvers &mdash; Yacas</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="Yacas" href="../../index.html"/>
+        <link rel="up" title="Reference Manual" href="index.html"/>
+        <link rel="next" title="Differential Equations" href="ode.html"/>
+        <link rel="prev" title="Simplification of expressions" href="simplify.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="fa fa-home"> Yacas</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation-from-sources">Installation from sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-syntax">Yacas syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#using-yacas-from-the-calculation-center">Using Yacas from the calculation center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-as-a-symbolic-calculator">Yacas as a symbolic calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#arbitrary-precision-numbers">Arbitrary precision numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#analytic-functions">Analytic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#boolean-expressions-and-predicates">Boolean expressions and predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#strings-and-lists">Strings and lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#writing-simplification-rules">Writing simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#local-simplification-rules">Local simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#programming-essentials">Programming essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#macros">Macros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#the-practice-of-programming-in-yacas">The practice of programming in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#defining-your-own-operators">Defining your own operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#some-assorted-programming-topics">Some assorted programming topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#linear-algebra">Linear Algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="arithmetic.html">Arithmetic and other operations on numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calc.html">Calculus and elementary functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simplify.html">Simplification of expressions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode.html">Differential Equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logic.html">Propositional logic theorem prover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear-algebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="univariate-polynomials.html">Operations on polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lists.html">List operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional.html">Functional operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controlflow.html">Control flow functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="predicates.html">Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="consts.html">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vars.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io.html">Input/output and plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="strings.html">String manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="probability-and-statistics.html">Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="number-theory.html">Number theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming.html">Functions related to programming in Yacas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_in_yacas/index.html">Programming in Yacas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-yacas-architecture">The Yacas architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-evaluation-scheme">Yacas evaluation scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#rules">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#structured-programming-and-control-flow">Structured programming and control flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#additional-syntactic-sugar">Additional syntactic sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#using-macro-rules-e-g-nfunction">Using &#8220;Macro rules&#8221; (e.g. {NFunction})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#macro-expansion">Macro expansion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#scope-of-variable-bindings">Scope of variable bindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation-of-expressions">Evaluation of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-lisp-heritage">The LISP heritage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-specific-extensions-for-cas-implementations">{Yacas}-specific extensions for CAS implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-evaluation-is-simplification-hack">The &#8220;Evaluation is Simplification&#8221; hack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#destructive-operations">Destructive operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#coding-style">Coding style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#writing-new-library-functions">Writing new library functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-1-parsing-expressions-cform">Advanced example 1: parsing expressions ({CForm})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-programming-pitfalls">Yacas programming pitfalls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#debugging-in-yacas">Debugging in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-2-implementing-a-non-commutative-algebra">Advanced example 2: implementing a non-commutative algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../book_of_algorithms/index.html">The Yacas Book of Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/multivar.html">Sparse representations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/integration.html">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/transforms.html">Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/sturm-sequences.html">Finding real roots of polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/numtheory.html">Number theory algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../yagy/index.html">YAGY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Yacas</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Reference Manual</a> &raquo;</li>
+      
+    <li>Solvers</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/doc/reference_manual/solvers.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="solvers">
+<h1>Solvers<a class="headerlink" href="#solvers" title="Permalink to this headline">¶</a></h1>
+<p>By solving one tries to find a mathematical object that meets certain
+criteria. This chapter documents the functions that are available to
+help find solutions to specific types of problems.</p>
+<div class="section" id="symbolic-solvers">
+<h2>Symbolic Solvers<a class="headerlink" href="#symbolic-solvers" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="Solve">
+<tt class="descname">Solve</tt><big>(</big><em>eq</em>, <em>var</em><big>)</big><a class="headerlink" href="#Solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>solve an equation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>eq</strong> &#8211; equation to solve</li>
+<li><strong>var</strong> &#8211; variable to solve for</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This command tries to solve an equation. If {eq} does not contain
+the  {==} operator, it is assumed that the user wants to solve $eq
+==  0$. The result is a list of equations of the form {var ==
+value}, each  representing a solution of the given equation. The
+{Where} operator  can be used to substitute this solution in
+another expression. If the  given equation {eq} does not have any
+solutions, or if {Solve} is  unable to find any, then an empty list
+is returned.    The current implementation is far from perfect. In
+particular, the  user should keep the following points in mind:</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="OldSolve">
+<tt class="descname">OldSolve</tt><big>(</big><em>eq</em>, <em>var</em><big>)</big><a class="headerlink" href="#OldSolve" title="Permalink to this definition">¶</a></dt>
+<dd><p>old version of {Solve}</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>eq</strong> &#8211; single identity equation</li>
+<li><strong>var</strong> &#8211; single variable</li>
+<li><strong>eqlist</strong> &#8211; list of identity equations</li>
+<li><strong>varlist</strong> &#8211; list of variables</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This is an older version of {Solve}. It is retained for two
+reasons. The first one is philosophical: it is good to have
+multiple  algorithms available. The second reason is more
+practical: the newer  version cannot handle systems of equations,
+but {OldSolve} can.    This command tries to solve one or more
+equations. Use the first form  to solve a single equation and the
+second one for systems of  equations.    The first calling sequence
+solves the equation &#8220;eq&#8221; for the variable  &#8220;var&#8221;. Use the {==}
+operator to form the equation.  The value of &#8220;var&#8221; which satisfies
+the equation, is returned. Note  that only one solution is found
+and returned.    To solve a system of equations, the second form
+should be used. It  solves the system of equations contained in the
+list &#8220;eqlist&#8221; for  the variables appearing in the list &#8220;varlist&#8221;. A
+list of results is  returned, and each result is a list containing
+the values of the  variables in &#8220;varlist&#8221;. Again, at most a single
+solution is  returned.    The task of solving a single equation is
+simply delegated to {SuchThat}. Multiple equations are solved
+recursively:  firstly, an equation is sought in which one of the
+variables occurs  exactly once; then this equation is solved with
+{SuchThat}; and finally the solution is substituted in the  other
+equations by {Eliminate} decreasing the number  of equations by
+one. This suffices for all linear equations and a  large group of
+simple nonlinear equations.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; OldSolve(a+x*y==z,x)
+Out&gt; (z-a)/y;
+In&gt; OldSolve({a*x+y==0,x+z==0},{x,y})
+Out&gt; {{-z,z*a}};
+This means that &quot;x = (z-a)/y&quot; is a solution of the first equation
+and that &quot;x = -z&quot;, &quot;y = z*a&quot; is a solution of the systems of
+equations in the second command.
+An example which {OldSolve} cannot solve:
+In&gt; OldSolve({x^2-x == y^2-y,x^2-x == y^3+y},{x,y});
+Out&gt; {};
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Solve" title="Solve"><tt class="xref ys ys-func docutils literal"><span class="pre">Solve()</span></tt></a>, <a class="reference internal" href="#SuchThat" title="SuchThat"><tt class="xref ys ys-func docutils literal"><span class="pre">SuchThat()</span></tt></a>, <a class="reference internal" href="#Eliminate" title="Eliminate"><tt class="xref ys ys-func docutils literal"><span class="pre">Eliminate()</span></tt></a>, <a class="reference internal" href="#PSolve" title="PSolve"><tt class="xref ys ys-func docutils literal"><span class="pre">PSolve()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">==()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="SuchThat">
+<tt class="descname">SuchThat</tt><big>(</big><em>expr</em>, <em>var</em><big>)</big><a class="headerlink" href="#SuchThat" title="Permalink to this definition">¶</a></dt>
+<dd><p>special purpose solver</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>expr</strong> &#8211; expression to make zero</li>
+<li><strong>var</strong> &#8211; variable (or subexpression) to solve for</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This functions tries to find a value of the variable &#8220;var&#8221; which
+makes the expression &#8220;expr&#8221; zero. It is also possible to pass a
+subexpression as &#8220;var&#8221;, in which case {SuchThat}  will try to solve
+for that subexpression.    Basically, only expressions in which
+&#8220;var&#8221; occurs only once are  handled; in fact, {SuchThat} may even
+give wrong  results if the variables occurs more than once. This is
+a consequence  of the implementation, which repeatedly applies the
+inverse of the top  function until the variable &#8220;var&#8221; is reached.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; SuchThat(a+b*x, x)
+Out&gt; (-a)/b;
+In&gt; SuchThat(Cos(a)+Cos(b)^2, Cos(b))
+Out&gt; Cos(a)^(1/2);
+In&gt; A:=Expand(a*x+b*x+c, x)
+Out&gt; (a+b)*x+c;
+In&gt; SuchThat(A, x)
+Out&gt; (-c)/(a+b);
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Solve" title="Solve"><tt class="xref ys ys-func docutils literal"><span class="pre">Solve()</span></tt></a>, <a class="reference internal" href="#OldSolve" title="OldSolve"><tt class="xref ys ys-func docutils literal"><span class="pre">OldSolve()</span></tt></a>, <a class="reference internal" href="controlflow.html#Subst" title="Subst"><tt class="xref ys ys-func docutils literal"><span class="pre">Subst()</span></tt></a>, <a class="reference internal" href="simplify.html#Simplify" title="Simplify"><tt class="xref ys ys-func docutils literal"><span class="pre">Simplify()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Eliminate">
+<tt class="descname">Eliminate</tt><big>(</big><em>var</em>, <em>value</em>, <em>expr</em><big>)</big><a class="headerlink" href="#Eliminate" title="Permalink to this definition">¶</a></dt>
+<dd><p>substitute and simplify</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>var</strong> &#8211; variable (or subexpression) to substitute</li>
+<li><strong>value</strong> &#8211; new value of &#8220;var&#8221;</li>
+<li><strong>expr</strong> &#8211; expression in which the substitution should take place</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function uses {Subst} to replace all instances  of the
+variable (or subexpression) &#8220;var&#8221; in the expression &#8220;expr&#8221;  with
+&#8220;value&#8221;, calls {Simplify} to simplify the  resulting expression,
+and returns the result.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Subst</span><span class="p">(</span><span class="n">Cos</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="n">c</span><span class="p">)</span> <span class="p">(</span><span class="n">Sin</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">+</span><span class="n">Cos</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="o">/</span><span class="n">c</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Sin</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">+</span><span class="n">c</span><span class="o">^</span><span class="mi">2</span><span class="o">/</span><span class="n">c</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Eliminate</span><span class="p">(</span><span class="n">Cos</span><span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="n">c</span><span class="p">,</span> <span class="n">Sin</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">+</span><span class="n">Cos</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">^</span><span class="mi">2</span><span class="o">/</span><span class="n">c</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Sin</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">+</span><span class="n">c</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#SuchThat" title="SuchThat"><tt class="xref ys ys-func docutils literal"><span class="pre">SuchThat()</span></tt></a>, <a class="reference internal" href="controlflow.html#Subst" title="Subst"><tt class="xref ys ys-func docutils literal"><span class="pre">Subst()</span></tt></a>, <a class="reference internal" href="simplify.html#Simplify" title="Simplify"><tt class="xref ys ys-func docutils literal"><span class="pre">Simplify()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="PSolve">
+<tt class="descname">PSolve</tt><big>(</big><em>poly</em>, <em>var</em><big>)</big><a class="headerlink" href="#PSolve" title="Permalink to this definition">¶</a></dt>
+<dd><p>solve a polynomial equation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>poly</strong> &#8211; a polynomial in &#8220;var&#8221;</li>
+<li><strong>var</strong> &#8211; a variable</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This commands returns a list containing the roots of &#8220;poly&#8221;,
+considered as a polynomial in the variable &#8220;var&#8221;. If there is only
+one root, it is not returned as a one-entry list but just by
+itself. A double root occurs twice in the result, and similarly for
+roots of higher multiplicity. All polynomials of degree up to 4 are
+handled.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">PSolve</span><span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">a</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">a</span><span class="o">/</span><span class="n">b</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">PSolve</span><span class="p">(</span><span class="n">c</span><span class="o">*</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="n">a</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="p">{(</span><span class="n">Sqrt</span><span class="p">(</span><span class="n">b</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="mi">4</span><span class="o">*</span><span class="n">c</span><span class="o">*</span><span class="n">a</span><span class="p">)</span><span class="o">-</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">c</span><span class="p">),(</span><span class="o">-</span><span class="p">(</span><span class="n">b</span><span class="o">+</span>
+<span class="n">Sqrt</span><span class="p">(</span><span class="n">b</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="mi">4</span><span class="o">*</span><span class="n">c</span><span class="o">*</span><span class="n">a</span><span class="p">)))</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">c</span><span class="p">)};</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Solve" title="Solve"><tt class="xref ys ys-func docutils literal"><span class="pre">Solve()</span></tt></a>, <a class="reference internal" href="number-theory.html#Factor" title="Factor"><tt class="xref ys ys-func docutils literal"><span class="pre">Factor()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MatrixSolve">
+<tt class="descname">MatrixSolve</tt><big>(</big><em>A</em>, <em>b</em><big>)</big><a class="headerlink" href="#MatrixSolve" title="Permalink to this definition">¶</a></dt>
+<dd><p>solve a system of equations</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>A</strong> &#8211; coefficient matrix</li>
+<li><strong>b</strong> &#8211; row vector</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>{MatrixSolve} solves the matrix equations {A*x = b} using Gaussian
+Elimination  with Backward substitution. If your matrix is
+triangular or diagonal, it will  be recognized as such and a faster
+algorithm will be used.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; A:={{2,4,-2,-2},{1,2,4,-3},{-3,-3,8,-2},{-1,1,6,-3}};
+Out&gt; {{2,4,-2,-2},{1,2,4,-3},{-3,-3,8,-2},{-1,1,6,-3}};
+In&gt; b:={-4,5,7,7};
+Out&gt; {-4,5,7,7};
+In&gt; MatrixSolve(A,b);
+Out&gt; {1,2,3,4};
+Numeric solvers
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="numeric-solvers">
+<h2>Numeric Solvers<a class="headerlink" href="#numeric-solvers" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="Newton">
+<tt class="descname">Newton</tt><big>(</big><em>expr</em>, <em>var</em>, <em>initial</em>, <em>accuracy</em><big>)</big><a class="headerlink" href="#Newton" title="Permalink to this definition">¶</a></dt>
+<dd><p>solve an equation numerically with Newton&#8217;s method</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>expr</strong> &#8211; an expression to find a zero for</li>
+<li><strong>var</strong> &#8211; free variable to adjust to find a zero</li>
+<li><strong>initial</strong> &#8211; initial value for &#8220;var&#8221; to use in the search</li>
+<li><strong>accuracy</strong> &#8211; minimum required accuracy of the result</li>
+<li><strong>min</strong> &#8211; minimum value for &#8220;var&#8221; to use in the search</li>
+<li><strong>max</strong> &#8211; maximum value for &#8220;var&#8221; to use in the search</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function tries to numerically find a zero of the expression
+{expr}, which should depend only on the variable {var}. It uses
+the value {initial} as an initial guess.    The function will
+iterate using Newton&#8217;s method until it estimates  that it has come
+within a distance {accuracy} of the correct  solution, and then it
+will return its best guess. In particular, it  may loop forever if
+the algorithm does not converge.    When {min} and {max} are
+supplied, the Newton iteration takes them  into account by
+returning {Fail} if it failed to find a root in  the given range.
+Note this doesn&#8217;t mean there isn&#8217;t a root, just  that this
+algorithm failed to find it due to the trial values  going outside
+of the bounds.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Newton</span><span class="p">(</span><span class="n">Sin</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">x</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mf">0.0001</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mf">3.1415926535</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Newton</span><span class="p">(</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mf">0.0001</span><span class="p">,</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">1</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Newton</span><span class="p">(</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mf">0.0001</span><span class="p">,</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Fail</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Solve" title="Solve"><tt class="xref ys ys-func docutils literal"><span class="pre">Solve()</span></tt></a>, <a class="reference internal" href="programming.html#NewtonNum" title="NewtonNum"><tt class="xref ys ys-func docutils literal"><span class="pre">NewtonNum()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="FindRealRoots">
+<tt class="descname">FindRealRoots</tt><big>(</big><em>p</em><big>)</big><a class="headerlink" href="#FindRealRoots" title="Permalink to this definition">¶</a></dt>
+<dd><p>find the real roots of a polynomial</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p</strong> &#8211; a polynomial in {x}</td>
+</tr>
+</tbody>
+</table>
+<p>Return a list with the real roots of $ p $. It tries to find the
+real-valued  roots, and thus requires numeric floating point
+calculations. The precision  of the result can be improved by
+increasing the calculation precision.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; p:=Expand((x+3.1)^5*(x-6.23))
+Out&gt; x^6+9.27*x^5-0.465*x^4-300.793*x^3-
+1394.2188*x^2-2590.476405*x-1783.5961073;
+In&gt; FindRealRoots(p)
+Out&gt; {-3.1,6.23};
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="univariate-polynomials.html#SquareFree" title="SquareFree"><tt class="xref ys ys-func docutils literal"><span class="pre">SquareFree()</span></tt></a>, <a class="reference internal" href="#NumRealRoots" title="NumRealRoots"><tt class="xref ys ys-func docutils literal"><span class="pre">NumRealRoots()</span></tt></a>, <a class="reference internal" href="#MinimumBound" title="MinimumBound"><tt class="xref ys ys-func docutils literal"><span class="pre">MinimumBound()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">MaximumBound()</span></tt>, <a class="reference internal" href="number-theory.html#Factor" title="Factor"><tt class="xref ys ys-func docutils literal"><span class="pre">Factor()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="NumRealRoots">
+<tt class="descname">NumRealRoots</tt><big>(</big><em>p</em><big>)</big><a class="headerlink" href="#NumRealRoots" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the number of real roots of a polynomial</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p</strong> &#8211; a polynomial in {x}</td>
+</tr>
+</tbody>
+</table>
+<p>Returns the number of real roots of a polynomial $ p $.  The
+polynomial must use the variable {x} and no other variables.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">NumRealRoots</span><span class="p">(</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">2</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">NumRealRoots</span><span class="p">(</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#FindRealRoots" title="FindRealRoots"><tt class="xref ys ys-func docutils literal"><span class="pre">FindRealRoots()</span></tt></a>, <a class="reference internal" href="univariate-polynomials.html#SquareFree" title="SquareFree"><tt class="xref ys ys-func docutils literal"><span class="pre">SquareFree()</span></tt></a>, <a class="reference internal" href="#MinimumBound" title="MinimumBound"><tt class="xref ys ys-func docutils literal"><span class="pre">MinimumBound()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">MaximumBound()</span></tt>, <a class="reference internal" href="number-theory.html#Factor" title="Factor"><tt class="xref ys ys-func docutils literal"><span class="pre">Factor()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MinimumBound">
+<tt class="descname">MinimumBound</tt><big>(</big><em>p</em><big>)</big><a class="headerlink" href="#MinimumBound" title="Permalink to this definition">¶</a></dt>
+<dd><p>return lower bounds on the absolute values of real roots of a polynomial</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p</strong> &#8211; a polynomial in $x$</td>
+</tr>
+</tbody>
+</table>
+<p>Return minimum and maximum bounds for the absolute values of the
+real  roots of a polynomial {p}. The polynomial has to be converted
+to one with  rational coefficients first, and be made square-free.
+The polynomial must use the variable {x}.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; p:=SquareFree(Rationalize((x-3.1)*(x+6.23)))
+Out&gt; (-40000*x^2-125200*x+772520)/870489;
+In&gt; MinimumBound(p)
+Out&gt; 5000000000/2275491039;
+In&gt; N(%)
+Out&gt; 2.1973279236;
+In&gt; MaximumBound(p)
+Out&gt; 10986639613/1250000000;
+In&gt; N(%)
+Out&gt; 8.7893116904;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="univariate-polynomials.html#SquareFree" title="SquareFree"><tt class="xref ys ys-func docutils literal"><span class="pre">SquareFree()</span></tt></a>, <a class="reference internal" href="#NumRealRoots" title="NumRealRoots"><tt class="xref ys ys-func docutils literal"><span class="pre">NumRealRoots()</span></tt></a>, <a class="reference internal" href="#FindRealRoots" title="FindRealRoots"><tt class="xref ys ys-func docutils literal"><span class="pre">FindRealRoots()</span></tt></a>, <a class="reference internal" href="number-theory.html#Factor" title="Factor"><tt class="xref ys ys-func docutils literal"><span class="pre">Factor()</span></tt></a></p>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ode.html" class="btn btn-neutral float-right" title="Differential Equations"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="simplify.html" class="btn btn-neutral" title="Simplification of expressions"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Ayal Pinkus, Serge Winnitzky, Grzegorz Mazur.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.3.5',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

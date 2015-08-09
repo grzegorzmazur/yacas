@@ -1,0 +1,2766 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Programming in Yacas &mdash; Yacas</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="Yacas" href="../../index.html"/>
+        <link rel="next" title="The Yacas Book of Algorithms" href="../book_of_algorithms/index.html"/>
+        <link rel="prev" title="Functions related to programming in Yacas" href="../reference_manual/programming.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="fa fa-home"> Yacas</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation-from-sources">Installation from sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-syntax">Yacas syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#using-yacas-from-the-calculation-center">Using Yacas from the calculation center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-as-a-symbolic-calculator">Yacas as a symbolic calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#arbitrary-precision-numbers">Arbitrary precision numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#analytic-functions">Analytic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#boolean-expressions-and-predicates">Boolean expressions and predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#strings-and-lists">Strings and lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#writing-simplification-rules">Writing simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#local-simplification-rules">Local simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#programming-essentials">Programming essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#macros">Macros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#the-practice-of-programming-in-yacas">The practice of programming in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#defining-your-own-operators">Defining your own operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#some-assorted-programming-topics">Some assorted programming topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#linear-algebra">Linear Algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_manual/index.html">Reference Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/arithmetic.html">Arithmetic and other operations on numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/calc.html">Calculus and elementary functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/simplify.html">Simplification of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/ode.html">Differential Equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/logic.html">Propositional logic theorem prover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/linear-algebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/univariate-polynomials.html">Operations on polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/lists.html">List operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/functional.html">Functional operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/controlflow.html">Control flow functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/predicates.html">Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/consts.html">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/vars.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/io.html">Input/output and plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/strings.html">String manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/probability-and-statistics.html">Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/number-theory.html">Number theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/programming.html">Functions related to programming in Yacas</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Programming in Yacas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#the-yacas-architecture">The Yacas architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#yacas-evaluation-scheme">Yacas evaluation scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rules">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#structured-programming-and-control-flow">Structured programming and control flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#additional-syntactic-sugar">Additional syntactic sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-macro-rules-e-g-nfunction">Using &#8220;Macro rules&#8221; (e.g. {NFunction})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#macro-expansion">Macro expansion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#scope-of-variable-bindings">Scope of variable bindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#evaluation-of-expressions">Evaluation of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-lisp-heritage">The LISP heritage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#evaluation">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#yacas-specific-extensions-for-cas-implementations">{Yacas}-specific extensions for CAS implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-evaluation-is-simplification-hack">The &#8220;Evaluation is Simplification&#8221; hack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#destructive-operations">Destructive operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#coding-style">Coding style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#writing-new-library-functions">Writing new library functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-example-1-parsing-expressions-cform">Advanced example 1: parsing expressions ({CForm})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#yacas-programming-pitfalls">Yacas programming pitfalls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#debugging-in-yacas">Debugging in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-example-2-implementing-a-non-commutative-algebra">Advanced example 2: implementing a non-commutative algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../book_of_algorithms/index.html">The Yacas Book of Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/multivar.html">Sparse representations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/integration.html">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/transforms.html">Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/sturm-sequences.html">Finding real roots of polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/numtheory.html">Number theory algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../yagy/index.html">YAGY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Yacas</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+    <li>Programming in Yacas</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/doc/programming_in_yacas/index.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="programming-in-yacas">
+<h1>Programming in Yacas<a class="headerlink" href="#programming-in-yacas" title="Permalink to this headline">¶</a></h1>
+<p>This part of the manual is a somewhat in-depth explanation of the
+Yacas programming language and environment. It assumes that you have
+worked through the introductory tutorial. You should consult the
+function reference about how to use the various Yacas functions
+mentioned here.</p>
+<p>This document should get you started programming in Yacas. There are
+some basic explanations and hands-on tutorials.</p>
+<div class="section" id="the-yacas-architecture">
+<h2>The Yacas architecture<a class="headerlink" href="#the-yacas-architecture" title="Permalink to this headline">¶</a></h2>
+<p>Yacas is designed as a small core engine that interprets a library of
+scripts. The core engine provides the syntax parser and a number of
+hard-wired functions, such as {Set()} or {MathExp()} which cannot be
+redefined by the user. The script library resides in the scripts
+directory &#8220;{scripts/}&#8221; and contains higher-level definitions of
+functions and constants. The library scripts are on equal footing with
+any code the user executes interactively or any files the user loads.</p>
+<p>Generally, all core functions have plain names and almost all are not
+&#8220;bodied&#8221; or infix operators. The file {corefunctions.h} in the source
+tree lists declarations of all kernel functions callable from Yacas;
+consult it for reference.  For many of the core functions, the script
+library already provides convenient aliases. For instance, the
+addition operator &#8220;{+}&#8221; is defined in the script {scripts/standard}
+while the actual addition of numbers is performed through the built-in
+function {MathAdd}.</p>
+<div class="section" id="startup-scripts-and-def-files">
+<h3>Startup, scripts and {.def} files<a class="headerlink" href="#startup-scripts-and-def-files" title="Permalink to this headline">¶</a></h3>
+<p>When Yacas is first started or restarted, it executes the script
+{yacasinit.ys} in the scripts directory. This script may load some
+other scripts. In order to start up quickly, Yacas does not execute
+all other library scripts at first run or at restart. It only executes
+the file {yacasinit.ys} and all {.def} files in the scripts. The
+{.def} files tell the system where it can find definitions for various
+library functions. Library is divided into &#8220;packages&#8221; stored in
+&#8220;repository&#8221; directories. For example, the function {ArcTan} is
+defined in the {stdfuncs} package; the library file is
+{stdfuncs.rep/}{code.ys} and the {.def} file is
+{stdfuncs.rep}{/code.ys.def}. The function {ArcTan} mentioned in the
+{.def} file, therefore Yacas will know to load the package {stdfuncs}
+when the user invokes {ArcTan}. This way Yacas knows where to look for
+any given function without actually loading the file where the
+function is defined.</p>
+<p>There is one exception to the strategy of delayed loading of the
+library scripts. Namely, the syntax definitions of infix, prefix,
+postfix and bodied functions, such as {Infix(&#8220;*&#8221;,4)} cannot be delayed
+(it is currently in the file {stdopers.ys}). If it were delayed, the
+Yacas parser would encounter {1+2} (typed by the user) and generate a
+syntax error before it has a chance to load the definition of the
+operator &#8220;{+}&#8221;.</p>
+</div>
+<div class="section" id="object-types">
+<h3>Object types<a class="headerlink" href="#object-types" title="Permalink to this headline">¶</a></h3>
+<p>Yacas supports two basic kinds of objects: atoms and compounds. Atoms
+are (integer or real, arbitrary-precision) numbers such as {2.71828},
+symbolic variables such as {A3} and character strings. Compounds
+include functions and expressions, e.g. {Cos(a-b)} and lists,
+e.g. {{1+a,2+b,3+c}}.</p>
+<p>The type of an object is returned by the built-in function {Type}, for
+example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Type</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="s">&quot;&quot;</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Type</span><span class="p">(</span><span class="n">F</span><span class="p">(</span><span class="n">x</span><span class="p">));</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="s">&quot;F&quot;</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Type</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="s">&quot;+&quot;</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Type</span><span class="p">({</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">});</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="s">&quot;List&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Internally, atoms are stored as strings and compounds as lists. (The
+Yacas lexical analyzer is case-sensitive, so {List} and {list} are
+different atoms.) The functions {String()} and {Atom()} convert
+between atoms and strings. A Yacas list {{1,2,3}} is internally a list
+{(List 1 2 3)} which is the same as a function call {List(1,2,3)} and
+for this reason the &#8220;type&#8221; of a list is the string {&#8220;List&#8221;}. During
+evaluation, atoms can be interpreted as numbers, or as variables that
+may be bound to some value, while compounds are interpreted as
+function calls.</p>
+<p>Note that atoms that result from an {Atom()} call may be
+invalid and never evaluate to anything. For example,
+{Atom(3X)} is an atom with string representation &#8220;3X&#8221; but
+with no other properties.</p>
+<p>Currently, no other lowest-level objects are provided by the core
+engine besides numbers, atoms, strings, and lists. There is, however,
+a possibility to link some externally compiled code that will provide
+additional types of objects.  Those will be available in Yacas as
+&#8220;generic objects.&#8221;  For example, fixed-size arrays are implemented in
+this way.</p>
+</div>
+</div>
+<div class="section" id="yacas-evaluation-scheme">
+<h2>Yacas evaluation scheme<a class="headerlink" href="#yacas-evaluation-scheme" title="Permalink to this headline">¶</a></h2>
+<p>Evaluation of an object is performed either explicitly by the built-in
+command {Eval()} or implicitly when assigning variables or calling
+functions with the object as argument (except when a function does not
+evaluate that argument). Evaluation of an object can be explicitly
+inhibited using {Hold()}.  To make a function not evaluate one of its
+arguments, a {HoldArg(funcname, argname)} must be declared for that
+function.</p>
+<p>Internally, all expressions are either atoms or lists (perhaps
+nested). Use {FullForm()} to see the internal form of an expression. A
+Yacas list expression written as {{a, b}} is represented internally as
+{(List a b)}, equivalently to a function call {List(a,b)}.</p>
+<p>Evaluation of an atom goes as follows: if the atom is bound locally as
+a variable, the object it is bound to is returned, otherwise, if it is
+bound as a global variable then that is returned. Otherwise, the atom
+is returned unevaluated.  Note that if an atom is bound to an
+expression, that expression is considered as final and is not
+evaluated again.</p>
+<p>Internal lists of atoms are generally interpreted in the following
+way: the first atom of the list is some command, and the atoms
+following in the list are considered the arguments. The engine first
+tries to find out if it is a built-in command (core function). In that
+case, the function is executed.  Otherwise, it could be a user-defined
+function (with a &#8220;rule database&#8221;), and in that case the rules from the
+database are applied to it. If none of the rules are applicable, or if
+no rules are defined for it, the object is returned unevaluated.</p>
+<p>Application of a rule to an expression transforms it into a different
+expression to which other rules may be applicable. Transformation by
+matching rules continues until no more rules are applicable, or until
+a &#8220;terminating&#8221; rule is encountered. A &#8220;terminating&#8221; rule is one that
+returns {Hold()} or {UnList()} of some expression. Calling these
+functions gives an unevaluated expression because it terminates the
+process of evaluation itself.</p>
+<p>The main properties of this scheme are the following. When objects are
+assigned to variables, they generally are evaluated (except if you are
+using the {Hold()} function) because assignment {var := value} is
+really a function call to {Set(var, value)} and this function
+evaluates its second argument (but not its first argument). When
+referencing that variable again, the object which is its value will
+not be re-evaluated. Also, the default behavior of the engine is to
+return the original expression if it could not be evaluated. This is a
+desired behavior if evaluation is used for simplifying expressions.</p>
+<p>One major design flaw in Yacas (one that other functional languages
+like LISP also have) is that when some expression is re-evaluated in
+another environment, the local variables contained in the expression
+to be evaluated might have a different meaning. In this case it might
+be useful to use the functions {LocalSymbols} and
+{TemplateFunction}. Calling</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">LocalSymbols</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+<span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>results in &#8220;{a}&#8221; and &#8220;{b}&#8221; in the multiplication being substituted
+with unique symbols that can not clash with other variables that may
+be used elsewhere. Use {TemplateFunction} instead of {Function} to
+define a function whose parameters should be treated as unique
+symbols.</p>
+<p>Consider the following example:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; f1(x):=Apply(&quot;+&quot;,{x,x});
+Out&gt; True
+</pre></div>
+</div>
+<p>The function {f1} simply adds its argument to itself. Now calling this
+function with some argument:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">f1</span><span class="p">(</span><span class="n">Sin</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">2</span><span class="o">*</span><span class="n">Sin</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>yields the expected result. However, if we pass as an argument an
+expression containing the variable {x}, things go wrong:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">f1</span><span class="p">(</span><span class="n">Sin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">2</span><span class="o">*</span><span class="n">Sin</span><span class="p">(</span><span class="n">Sin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>This happens because within the function, {x} is bound to {Sin(x)},
+and since it is passed as an argument to {Apply} it will be
+re-evaluated, resulting in {Sin(Sin(x))}. {TemplateFunction} solves
+this by making sure the arguments can not collide like this (by using
+{LocalSymbols}:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; TemplateFunction(&quot;f2&quot;,{x}) Apply(&quot;+&quot;,{x,x});
+Out&gt; True
+In&gt; f2(Sin(a))
+Out&gt; 2*Sin(a)
+In&gt; f2(Sin(x))
+Out&gt; 2*Sin(x)
+</pre></div>
+</div>
+<p>In general one has to be careful when functions like {Apply}, {Map} or
+{Eval} (or derivatives) are used.</p>
+</div>
+<div class="section" id="rules">
+<h2>Rules<a class="headerlink" href="#rules" title="Permalink to this headline">¶</a></h2>
+<p>&lt;i&gt;Rules&lt;/i&gt; are special properties of functions that are applied when
+the function object is being evaluated. A function object could have
+just one rule bound to it; this is similar to a &#8220;subroutine&#8221; having a
+&#8220;function body&#8221; in usual procedural languages. However, Yacas function
+objects can also have several rules bound to them. This is analogous
+of having several alternative &#8220;function bodies&#8221; that are executed
+under different circumstances. This design is more suitable for
+symbolic manipulations.</p>
+<p>A function is identified by its name as returned by {Type} and the
+number of arguments, or &#8220;arity&#8221;. The same name can be used with
+different arities to define different functions: {f(x)} is said to
+&#8220;have arity 1&#8221; and {f(x,y)} has arity 2. Each of these functions may
+possess its own set of specific rules, which we shall call a &#8220;rule
+database&#8221; of a function.</p>
+<p>Each function should be first declared with the built-in command
+{RuleBase} as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre>RuleBase(&quot;FunctionName&quot;,{argument list});
+</pre></div>
+</div>
+<p>So, a new (and empty) rule database for {f(x,y)} could be created by
+typing {RuleBase(&#8220;f&#8221;,{x,y})}. The names for the arguments &#8220;x&#8221; and &#8220;y&#8221;
+here are arbitrary, but they will be globally stored and must be later
+used in descriptions of particular rules for the function {f}. After
+the new rulebase declaration, the evaluation engine of Yacas will
+begin to really recognize {f} as a function, even though no function
+body or equivalently no rules have been defined for it yet.</p>
+<p>The shorthand operator {:=} for creating user functions that we
+illustrated in the tutorial is actually defined in the scripts and it
+makes the requisite call to the {RuleBase()} function.  After a
+{RuleBase()} call you can specify parsing properties for the function;
+for example, you could make it an infix or bodied operator.</p>
+<p>Now we can add some rules to the rule database for a function. A rule
+simply states that if a specific function object with a specific arity
+is encountered in an expression and if a certain predicate is true,
+then Yacas should replace this function with some other expression. To
+tell Yacas about a new rule you can use the built-in {Rule}
+command. This command is what does the real work for the somewhat more
+aesthetically pleasing {... # ... &lt;&#8211; ...} construct we have seen in
+the tutorial. You do not have to call {RuleBase()} explicitly if you
+use that construct.</p>
+<p>Here is the general syntax for a {Rule()} call:</p>
+<div class="highlight-python"><div class="highlight"><pre>Rule(&quot;foo&quot;, arity, precedence, pred) body;
+</pre></div>
+</div>
+<p>This specifies that for function {foo} with given {arity} ({foo(a,b)}
+has arity 2), there is a rule that if {pred} is true, then {body}
+should be evaluated, and the original expression replaced by the
+result.  Predicate and body can use the symbolic names of arguments
+that were declared in the {RuleBase} call.</p>
+<p>All rules for a given function can be erased with a call to
+{Retract(funcname, arity)}. This is useful, for instance, when too
+many rules have been entered in the interactive mode. This call
+undefines the function and also invalidates the {RuleBase}
+declaration.</p>
+<p>You can specify that function arguments are not evaluated before they
+are bound to the parameter: {HoldArg(&#8220;foo&#8221;,a)} would then declare that
+the a arguments in both {foo(a)} and {foo(a,b)} should not be
+evaluated before bound to {a}. Here the argument name {a} should be
+the same as that used in the {RuleBase()} call when declaring these
+functions.  Inhibiting evaluation of certain arguments is useful for
+procedures performing actions based partly on a variable in the
+expression, such as integration, differentiation, looping, etc., and
+will be typically used for functions that are algorithmic and
+procedural by nature.</p>
+<p>Rule-based programming normally makes heavy use of recursion and it is
+important to control the order in which replacement rules are to be
+applied. For this purpose, each rule is given a &lt;i&gt;precedence&lt;/i&gt;.
+Precedences go from low to high, so all rules with precedence 0 will
+be tried before any rule with precedence 1.</p>
+<p>You can assign several rules to one and the same function, as long as
+some of the predicates differ. If none of the predicates are true, the
+function is returned with its arguments evaluated.</p>
+<p>This scheme is slightly slower for ordinary functions that just have
+one rule (with the predicate <a class="reference internal" href="../reference_manual/consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>), but it is a desired behavior for
+symbolic manipulation. You can gradually build up your own functions,
+incrementally testing their properties.</p>
+<div class="section" id="examples-of-using-rules">
+<h3>Examples of using rules<a class="headerlink" href="#examples-of-using-rules" title="Permalink to this headline">¶</a></h3>
+<p>As a simple illustration, here are the actual {RuleBase()}
+and {Rule()} calls needed to define the factorial function:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; RuleBase(&quot;f&quot;,{n});
+Out&gt; True;
+In&gt; Rule(&quot;f&quot;, 1, 10, n=0) 1;
+Out&gt; True;
+In&gt; Rule(&quot;f&quot;, 1, 20, IsInteger(n) And n&gt;0) n*f(n-1);
+Out&gt; True;
+</pre></div>
+</div>
+<p>This definition is entirely equivalent to the one in the
+tutorial. {f(4)} should now return 24, while {f(a)} should return just
+{f(a)} if {a} is not bound to any value.</p>
+<p>The {Rule} commands in this example specified two rules for function
+{f} with arity 1: one rule with precedence 10 and predicate {n=0}, and
+another with precedence 20 and the predicate that returns <a class="reference internal" href="../reference_manual/consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> only
+if {n} is a positive integer. Rules with lowest precedence get
+evaluated first, so the rule with precedence 10 will be tried before
+the rule with precedence 20. Note that the predicates and the body use
+the name &#8220;n&#8221; declared by the {RuleBase()} call.</p>
+<p>After declaring {RuleBase()} for a function, you could tell the parser
+to treat this function as a postfix operator:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Postfix(&quot;f&quot;);
+Out&gt; True;
+In&gt; 4 f;
+Out&gt; 24;
+</pre></div>
+</div>
+<p>There is already a function {Function} defined in the standard scripts
+that allows you to construct simple functions. An example would be</p>
+<div class="highlight-python"><div class="highlight"><pre>Function (&quot;FirstOf&quot;, {list})  list[1] ;
+</pre></div>
+</div>
+<p>which simply returns the first element of a list. This could also have
+been written as</p>
+<div class="highlight-python"><div class="highlight"><pre>Function(&quot;FirstOf&quot;, {list})
+[
+    list[1] ;
+];
+</pre></div>
+</div>
+<p>As mentioned before, the brackets {[ ]} are also used to combine
+multiple operations to be performed one after the other. The result of
+the last performed action is returned.</p>
+<p>Finally, the function {FirstOf} could also have been defined by typing</p>
+<div class="highlight-python"><div class="highlight"><pre>FirstOf(list):=list[1] ;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="structured-programming-and-control-flow">
+<h2>Structured programming and control flow<a class="headerlink" href="#structured-programming-and-control-flow" title="Permalink to this headline">¶</a></h2>
+<p>Some functions useful for control flow are already defined in Yacas&#8217;s
+standard library. Let&#8217;s look at a possible definition of a looping
+function {ForEach}. We shall here consider a somewhat simple-minded
+definition, while the actual {ForEach} as defined in the standard
+script &#8220;controlflow&#8221; is a little more sophisticated.</p>
+<div class="highlight-python"><div class="highlight"><pre>Function(&quot;ForEach&quot;,{foreachitem,
+  foreachlist,foreachbody})
+[
+   Local(foreachi,foreachlen);
+   foreachlen:=Length(foreachlist);
+   foreachi:=0;
+   While (foreachi &lt; foreachlen)
+   [
+     foreachi++;
+     MacroLocal(foreachitem);
+     MacroSet(foreachitem,
+       foreachlist[foreachi]);
+     Eval(foreachbody);
+   ];
+];
+
+Bodied(&quot;ForEach&quot;);
+UnFence(&quot;ForEach&quot;,3);
+HoldArg(&quot;ForEach&quot;,foreachitem);
+HoldArg(&quot;ForEach&quot;,foreachbody);
+</pre></div>
+</div>
+<p>Functions like this should probably be defined in a separate file. You
+can load such a file with the command {Load(&#8220;file&#8221;)}. This is an
+example of a macro-like function.  Let&#8217;s first look at the last few
+lines. There is a {Bodied(...)} call, which states that the syntax for
+the function {ForEach()} is {ForEach(item,{list}) body;} &#8211; that is,
+the last argument to the command {ForEach} should be outside its
+brackets. {UnFence(...)} states that this function can use the local
+variables of the calling function. This is necessary, since the body
+to be evaluated for each item will probably use some local variables
+from that surrounding.</p>
+<p>Finally, {HoldArg(&#8220;function&#8221;,argument)} specifies that the argument
+&#8220;{argument}&#8221; should not be evaluated before being bound to that
+variable. This holds for {foreachitem} and {foreachbody}, since
+{foreachitem} specifies a variable to be set to that value, and
+{foreachbody} is the expression that should be evaluated &lt;i&gt;after&lt;/i&gt;
+that variable is set.</p>
+<p>Inside the body of the function definition there are calls to
+{Local(...)}.  {Local()} declares some local variable that will only
+be visible within a block {[ ... ]}. The command {MacroLocal()} works
+almost the same. The difference is that it evaluates its arguments
+before performing the action on it. This is needed in this case,
+because the variable {foreachitem} is bound to a variable to be used
+as the loop iterator, and it is &lt;i&gt;the variable it is bound to&lt;/i&gt;
+that we want to make local, not {foreachitem} itself. {MacroSet()}
+works similarly: it does the same as {Set()} except that it also first
+evaluates the first argument, thus setting the variable requested by
+the user of this function. The {Macro}... functions in the built-in
+functions generally perform the same action as their non-macro
+versions, apart from evaluating an argument it would otherwise not
+evaluate.</p>
+<p>To see the function in action, you could type:</p>
+<div class="highlight-python"><div class="highlight"><pre>ForEach(i,{1,2,3}) [Write(i); NewLine();];
+</pre></div>
+</div>
+<p>This should print 1, 2 and 3, each on a new line.</p>
+<p>Note: the variable names &#8220;foreach...&#8221; have been chosen so they won&#8217;t
+get confused with normal variables you use. This is a major design
+flaw in this language. Suppose there was a local variable
+{foreachitem}, defined in the calling function, and used in
+{foreachbody}. These two would collide, and the interpreter would use
+only the last defined version. In general, when writing a function
+that calls {Eval()}, it is a good idea to use variable names that can
+not collide with user&#8217;s variables. This is generally the single
+largest cause of bugs when writing programs in Yacas. This issue
+should be addressed in the future.</p>
+</div>
+<div class="section" id="additional-syntactic-sugar">
+<h2>Additional syntactic sugar<a class="headerlink" href="#additional-syntactic-sugar" title="Permalink to this headline">¶</a></h2>
+<p>The parser is extended slightly to allow for fancier constructs.</p>
+<ul>
+<li><p class="first">Lists, e.g. {{a,b}}. This then is parsed into the internal notation
+{(List a b)} , but will be printed again as {{a,b};}</p>
+</li>
+<li><p class="first">Statement blocks such as {[} statement1 {;} statement2{;];}. This is
+parsed into a Lisp object {(Prog} {(}statement1 {)} {(}statement2
+{))}, and printed out again in the proper form.</p>
+</li>
+<li><p class="first">Object argument accessors in the form of {expr[ index ]}. These are
+mapped internally to {Nth(expr,index)}. The value of {index}=0
+returns the operator of the object, {index}=1 the first argument,
+etc. So, if {expr} is {foo(bar)}, then {expr[0]} returns {foo}, and
+{expr[1]} returns {bar}. Since lists of the form {{...}} are
+essentially the same as {List(...)}, the same accessors can be used
+on lists.</p>
+</li>
+<li><p class="first">Function blocks such as</p>
+<div class="highlight-python"><div class="highlight"><pre>While (i &lt; 10)
+  [
+    Write(i);
+    i:=i+1;
+  ];
+</pre></div>
+</div>
+</li>
+</ul>
+<p>The expression directly following the {While(...)} block is added as a
+last argument to the {While(...)} call. So {While(a)b;} is parsed to
+the internal form {(While a b).}</p>
+<p>This scheme allows coding the algorithms in an almost C-like syntax.</p>
+<p>Strings are generally represented with quotes around them, e.g.  &#8220;this
+is a string&#8221;. Backslash {} in a string will unconditionally add the
+next character to the string, so a quote can be added with {&#8220;} (a
+backslash-quote sequence).</p>
+</div>
+<div class="section" id="using-macro-rules-e-g-nfunction">
+<h2>Using &#8220;Macro rules&#8221; (e.g. {NFunction})<a class="headerlink" href="#using-macro-rules-e-g-nfunction" title="Permalink to this headline">¶</a></h2>
+<p>The Yacas language allows to have rules whose definitions are
+generated at runtime. In other words, it is possible to write rules
+(or &#8220;functions&#8221;) that, as a side-effect, will define other rules, and
+those other rules will depend on some parts of the expression the
+original function was applied to.</p>
+<p>This is accomplished using functions {MacroRuleBase}, {MacroRule},
+{MacroRulePattern}. These functions evaluate their arguments
+(including the rule name, predicate and body) and define the rule that
+results from this evaluation.</p>
+<p>Normal, &#8220;non-Macro&#8221; calls such as {Rule()} will not evaluate their
+arguments and this is a desired feature. For example, suppose we
+defined a new predicate like this,</p>
+<div class="highlight-python"><div class="highlight"><pre>RuleBase(&quot;IsIntegerOrString, {x});
+Rule(&quot;IsIntegerOrString&quot;, 1, 1, True)
+    IsInteger(x) And IsString(x);
+</pre></div>
+</div>
+<p>If the {Rule()} call were to evaluate its arguments, then the &#8220;body&#8221;
+argument, {IsInteger(x) And IsString(x)}, would be evaluated to
+<a class="reference internal" href="../reference_manual/consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> since {x} is an atom, so we would have defined the predicate
+to be always <a class="reference internal" href="../reference_manual/consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>, which is not at all what we meant to do. For
+this reason, the {Rule} calls do not evaluate their arguments.</p>
+<p>Consider however the following situation. Suppose we have a function
+{f(arglist)} where {arglist} is its list of arguments, and suppose we
+want to define a function {Nf(arglist)} with the same arguments which
+will evaluate {f(arglist)} and return only when all arguments from
+{arglist} are numbers, and return unevaluated {Nf(arglist)}
+otherwise. This can of course be done by a usual rule such as</p>
+<div class="highlight-python"><div class="highlight"><pre>Rule(&quot;Nf&quot;, 3, 0, IsNumericList({x,y,z}))
+  &lt;-- &quot;f&quot; @ {x,y,z};
+</pre></div>
+</div>
+<p>Here {IsNumericList} is a predicate that checks whether all elements
+of a given list are numbers. (We deliberately used a {Rule} call
+instead of an easier-to-read {&lt;&#8211;} operator to make it easier to
+compare with what follows.)</p>
+<p>However, this will have to be done for every function {f}
+separately. We would like to define a procedure that will define {Nf},
+given &lt;i&gt;any&lt;/i&gt; function {f}. We would like to use it like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">NFunction</span><span class="p">(</span><span class="s">&quot;Nf&quot;</span><span class="p">,</span> <span class="s">&quot;f&quot;</span><span class="p">,</span> <span class="p">{</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">});</span>
+</pre></div>
+</div>
+<p>After this function call we expect to be able to use the function
+{Nf}.</p>
+<p>Here is how we could naively try to implement {NFunction} (and fail):</p>
+<div class="highlight-python"><div class="highlight"><pre>NFunction(new&#39;name, old&#39;name, arg&#39;list) := [
+  MacroRuleBase(new&#39;name, arg&#39;list);
+  MacroRule(new&#39;name, Length(arg&#39;list), 0,
+    IsNumericList(arg&#39;list)
+    )
+  new&#39;name @ arg&#39;list;
+];
+</pre></div>
+</div>
+<p>Now, this just does not do anything remotely right. {MacroRule}
+evaluates its arguments. Since {arg&#8217;list} is an atom and not a list of
+numbers at the time we are defining this, {IsNumericList(arg&#8217;list)}
+will evaluate to <a class="reference internal" href="../reference_manual/consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> and the new rule will be defined with a
+predicate that is always <a class="reference internal" href="../reference_manual/consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>, i.e. it will be never applied.</p>
+<p>The right way to figure this out is to realize that the {MacroRule}
+call evaluates all its arguments and passes the results to a {Rule}
+call. So we need to see exactly what {Rule()} call we need to produce
+and then we need to prepare the arguments of {MacroRule} so that they
+evaluate to the right values.  The {Rule()} call we need is something
+like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>Rule(&quot;actual new name&quot;, &lt;actual # of args&gt;, 0,
+  IsNumericList({actual arg list})
+)  &quot;actual new name&quot; @ {actual arg list};
+</pre></div>
+</div>
+<p>Note that we need to produce expressions such as {&#8220;new name&#8221; &#64;
+arg&#8217;list} and not &lt;i&gt;results&lt;/i&gt; of evaluation of these
+expressions. We can produce these expressions by using {UnList()},
+e.g.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">UnList</span><span class="p">({</span><span class="n">Atom</span><span class="p">(</span><span class="s">&quot;@&quot;</span><span class="p">),</span> <span class="s">&quot;Sin&quot;</span><span class="p">,</span> <span class="p">{</span><span class="n">x</span><span class="p">}})</span>
+</pre></div>
+</div>
+<p>produces</p>
+<div class="highlight-python"><div class="highlight"><pre>&quot;Sin&quot; @ {x};
+</pre></div>
+</div>
+<p>but not {Sin(x)}, and</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">UnList</span><span class="p">({</span><span class="n">IsNumericList</span><span class="p">,</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">x</span><span class="p">}})</span>
+</pre></div>
+</div>
+<p>produces the expression</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">IsNumericList</span><span class="p">({</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">x</span><span class="p">});</span>
+</pre></div>
+</div>
+<p>which is not further evaluated.</p>
+<p>Here is a second version of {NFunction()} that works:</p>
+<div class="highlight-python"><div class="highlight"><pre>NFunction(new&#39;name, old&#39;name, arg&#39;list) := [
+  MacroRuleBase(new&#39;name, arg&#39;list);
+  MacroRule(new&#39;name, Length(arg&#39;list), 0,
+    UnList({IsNumericList, arg&#39;list})
+  )
+    UnList({Atom(&quot;@&quot;), old&#39;name, arg&#39;list});
+];
+</pre></div>
+</div>
+<p>Note that we used {Atom(&#8220;&#64;&#8221;)} rather than just the bare atom {&#64;}
+because {&#64;} is a prefix operator and prefix operator names as bare
+atoms do not parse (they would be confused with applications of a
+prefix operator to what follows).</p>
+<p>Finally, there is a more concise (but less general) way of defining
+{NFunction()} for functions with known number of arguments, using the
+backquoting mechanism. The backquote operation will first substitute
+variables in an expression, without evaluating anything else, and then
+will evaluate the resulting expression a second time. The code for
+functions of just one variable may look like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>N1Function(new&#39;name, old&#39;name) :=
+    `( @new&#39;name(x_IsNumber) &lt;-- @old&#39;name(x) );
+</pre></div>
+</div>
+<p>This executes a little slower than the above version, because the
+backquote needs to traverse the expression twice, but makes for much
+more readable code.</p>
+</div>
+<div class="section" id="macro-expansion">
+<h2>Macro expansion<a class="headerlink" href="#macro-expansion" title="Permalink to this headline">¶</a></h2>
+<p>Yacas supports macro expansion (back-quoting). An expression can be
+back-quoted by putting a <tt class="docutils literal"><span class="pre">\`</span></tt> in front of it. Within the back-quoted
+expression, all atoms that have a <tt class="docutils literal"><span class="pre">&#64;</span></tt> in front of them get replaced
+with the value of that atom (treated as a variable), and then the
+resulting expression is evaluated:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; x:=y
+Out&gt; y
+In&gt; `(@x:=2)
+Out&gt; 2
+In&gt; x
+Out&gt; y
+In&gt; y
+Out&gt; 2
+</pre></div>
+</div>
+<p>This is useful in cases where within an expression one sub-expression
+is not evaluated. For instance, transformation rules can be built
+dynamically, before being declared. This is a particularly powerful
+feature that allows a programmer to write programs that write
+programs.  The idea is borrowed from Lisp.</p>
+<p>As the above example shows, there are similarities with the
+<tt class="docutils literal"><span class="pre">Macro...</span></tt> functions, that serve the same purpose for specific
+expressions.  For example, for the above code, one could also have
+called <tt class="docutils literal"><span class="pre">MacroSet</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">MacroSet</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">x</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">y</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">y</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">3</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The difference is that <tt class="docutils literal"><span class="pre">MacroSet</span></tt>, and in general the <tt class="docutils literal"><span class="pre">Macro...</span></tt>
+functions, are faster than their back-quoted counterparts.  This is
+because with back-quoting, first a new expression is built before it
+is evaluated. The advantages of back-quoting are readability and
+flexibility (the number of <tt class="docutils literal"><span class="pre">Macro...</span></tt> functions is limited, whereas
+back-quoting can be used anywhere).</p>
+<p>When an <tt class="docutils literal"><span class="pre">&#64;</span></tt> operator is placed in front of a function call, the
+function call is replaced:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; plus:=Add
+Out&gt; Add;
+In&gt; `(@plus(1,2,3))
+Out&gt; 6;
+</pre></div>
+</div>
+<p>Application of pure functions is also possible by using macro
+expansion:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; pure:={{a,b},a+b};
+Out&gt; {{a,b},a+b};
+In&gt; ` @pure(2,3);
+Out&gt; 5;
+</pre></div>
+</div>
+<p>Pure (nameless) functions are useful for declaring a temporary
+function, that has functionality depending on the current environment
+it is in, or as a way to call driver functions. In the case of drivers
+(interfaces to specific functionality), a variable can be bound to a
+function to be evaluated to perform a specific task. That way several
+drivers can be around, with one bound to the variables holding the
+functions that will be called.</p>
+</div>
+<div class="section" id="scope-of-variable-bindings">
+<h2>Scope of variable bindings<a class="headerlink" href="#scope-of-variable-bindings" title="Permalink to this headline">¶</a></h2>
+<p>When setting variables or retrieving variable values, variables are
+automatically bound global by default. You can explicitly specify
+variables to be local to a block such as a function body; this will
+make them invisible outside the block. Blocks have the form {[}
+statement1{;} statement2{;} {]} and local variables are declared by
+the {Local()} function.</p>
+<p>When entering a block, a new stack frame is pushed for the local
+variables; it means that the code inside a block doesn&#8217;t see the local
+variables of the &lt;i&gt;caller&lt;/i&gt; either!  You can tell the interpreter
+that a function should see local variables of the calling environment;
+to do this, declare UnFence(funcname, arity) on that function.</p>
+</div>
+<div class="section" id="evaluation-of-expressions">
+<h2>Evaluation of expressions<a class="headerlink" href="#evaluation-of-expressions" title="Permalink to this headline">¶</a></h2>
+<p>When programming in some language, it helps to have a mental model of
+what goes on behind the scenes when evaluating expressions, or in this
+case simplifying expressions.</p>
+<p>This section aims to explain how evaluation (and simplification) of
+expressions works internally, in {Yacas}.</p>
+</div>
+<div class="section" id="the-lisp-heritage">
+<h2>The LISP heritage<a class="headerlink" href="#the-lisp-heritage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="representation-of-expressions">
+<h3>Representation of expressions<a class="headerlink" href="#representation-of-expressions" title="Permalink to this headline">¶</a></h3>
+<p>Much of the inner workings is based on how LISP-like languages are
+built up. When an expression is entered, or composed in some fashion,
+it is converted into a prefix form much like you get in LISP:</p>
+<div class="highlight-python"><div class="highlight"><pre>a+b    -&gt;    (+ a b)
+Sin(a) -&gt;    (Sin a)
+</pre></div>
+</div>
+<p>Here the sub-expression is changed into a list of so-called &#8220;atoms&#8221;,
+where the first atom is a function name of the function to be invoked,
+and the atoms following are the arguments to be passed in as
+parameters to that function.</p>
+<p>{Yacas} has the function {FullForm} to show the internal representation:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; FullForm(a+b)
+(+ a b )
+Out&gt; a+b;
+In&gt; FullForm(Sin(a))
+(Sin a )
+Out&gt; Sin(a);
+In&gt; FullForm(a+b+c)
+(+ (+ a b )c )
+Out&gt; a+b+c;
+</pre></div>
+</div>
+<p>The internal representation is very close to what {FullForm} shows
+on screen. {a+b+c} would be {(+ (+ a b )c )} internally, or:</p>
+<div class="highlight-python"><div class="highlight"><pre>()
+|
+|
++  -&gt; () -&gt; c
+       |
+       |
+       + -&gt; a -&gt; b
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="evaluation">
+<h2>Evaluation<a class="headerlink" href="#evaluation" title="Permalink to this headline">¶</a></h2>
+<p>An expression like described above is done in the following manner:
+first the arguments are evaluated (if they need to be evaluated,
+{Yacas} can be told to not evaluate certain parameters to functions),
+and only then are these arguments passed in to the function for
+evaluation. They are passed in by binding local variables to the
+values, so these arguments are available as local values.</p>
+<p>For instance, suppose we are evaluating <tt class="docutils literal"><span class="pre">2*3+4</span></tt>. This first gets
+changed to the internal representation <tt class="docutils literal"><span class="pre">(+</span> <span class="pre">(*</span> <span class="pre">2</span> <span class="pre">3</span> <span class="pre">)4</span> <span class="pre">)</span></tt>. Then,
+during evaluation, the top expression refers to function &#8220;{+}&#8221;.  Its
+arguments are <tt class="docutils literal"><span class="pre">(*</span> <span class="pre">2</span> <span class="pre">3)</span></tt> and {4}. First <tt class="docutils literal"><span class="pre">(*</span> <span class="pre">2</span> <span class="pre">3)</span></tt> gets evaluated.
+This is a function call to the function <tt class="docutils literal"><span class="pre">*</span></tt> with arguments {2} and
+{3}, which evaluate to themselves. Then the function &#8220;{*}&#8221; is invoked
+with these arguments. The {Yacas} standard script library has code
+that accepts numeric input and performs the multiplication
+numerically, resulting in {6}.</p>
+<p>The second argument to the top-level &#8220;{+}&#8221; is {4}, which evaluates
+to itself.</p>
+<p>Now, both arguments to the &#8220;{+}&#8221; function have been evaluated, and
+the results are {6} and {4}. Now the &#8220;{+}&#8221; function is invoked.
+This function also has code in the script library to actually
+perform the addition when the arguments are numeric, so the result
+is 10:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; FullForm(Hold(2*3+4))
+(+ (* 2 3 )4 )
+Out&gt; 2*3+4;
+In&gt; 2*3+4
+Out&gt; 10;
+</pre></div>
+</div>
+<p>Note that in {Yacas}, the script language does not define a &#8220;{+}&#8221;
+function in the core. This and other functions are all implemented in
+the script library.  The feature &#8220;when the arguments to &#8220;{+}&#8221; are
+numeric, perform the numeric addition&#8221; is considered to be a &#8220;policy&#8221;
+which should be configurable.  It should not be a part of the core
+language.</p>
+<p>It is surprisingly difficult to keep in mind that evaluation is bottom
+up, and that arguments are evaluated before the function call is
+evaluated. In some sense, you might feel that the evaluation of the
+arguments is part of evaluation of the function. It is not. Arguments
+are evaluated before the function gets called.</p>
+<p>Suppose we define the function {f}, which adds two numbers, and
+traces itself, as:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; f(a,b):= \
+In&gt; [\
+In&gt; Local(result);\
+In&gt; Echo(&quot;Enter f with arguments &quot;,a,b);\
+In&gt; result:=a+b;\
+In&gt; Echo(&quot;Leave f with result &quot;,result);\
+In&gt; result;\
+In&gt; ];
+Out&gt; True;
+</pre></div>
+</div>
+<p>Then the following interaction shows this principle:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; f(f(2,3),4)
+Enter f with arguments 2 3
+Leave f with result 5
+Enter f with arguments 5 4
+Leave f with result 9
+Out&gt; 9;
+</pre></div>
+</div>
+<p>The first Enter/Leave combination is for {f(2,3)}, and only then is
+the outer call to {f} entered.</p>
+<p>This has important consequences for the way {Yacas} simplifies
+expressions: the expression trees are traversed bottom up, as the
+lowest parts of the expression trees are simplified first, before
+being passed along up to the calling function.</p>
+</div>
+<div class="section" id="yacas-specific-extensions-for-cas-implementations">
+<h2>{Yacas}-specific extensions for CAS implementations<a class="headerlink" href="#yacas-specific-extensions-for-cas-implementations" title="Permalink to this headline">¶</a></h2>
+<p>{Yacas} has a few language features specifically designed for use when
+implementing a CAS.</p>
+<div class="section" id="the-transformation-rules">
+<h3>The transformation rules<a class="headerlink" href="#the-transformation-rules" title="Permalink to this headline">¶</a></h3>
+<p>Working with transformation rules is explained in the introduction and
+tutorial book. This section mainly deals with how {Yacas} works with
+transformation rules under the hood.</p>
+<p>A transformation rule consists of two parts: a condition that an
+expression should match, and a result to be substituted for the
+expression if the condition holds. The most common way to specify a
+condition is a pattern to be matched to an expression.</p>
+<p>A pattern is again simply an expression, stored in internal format:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; FullForm(a_IsInteger+b_IsInteger*(_x))
+(+ (_ a IsInteger )(* (_ b IsInteger )(_ x )))
+Out&gt; a _IsInteger+b _IsInteger*_x;
+</pre></div>
+</div>
+<p>{Yacas} maintains structures of transformation rules, and tries to
+match them to the expression being evaluated. It first tries to match
+the structure of the pattern to the expression. In the above case, it
+tries to match to {a+b*x}. If this matches, local variables {a}, {b}
+and {x} are declared and assigned the sub-trees of the expression
+being matched. Then the predicates are tried on each of them: in this
+case, {IsInteger(a)} and {IsInteger(b)} should both return <a class="reference internal" href="../reference_manual/consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>.</p>
+<p>Not shown in the above case, are post-predicates. They get evaluated
+afterwards. This post-predicate must also evaluate to <a class="reference internal" href="../reference_manual/consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>.  If the
+structure of the expression matches the structure of the pattern, and
+all predicates evaluate to <a class="reference internal" href="../reference_manual/consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>, the pattern matches and the
+transformation rule is applied, meaning the right hand side is
+evaluated, with the local variables mentioned in the pattern
+assigned. This evaluation means all transformation rules are
+re-applied to the right-hand side of the expression.</p>
+<p>Note that the arguments to a function are evaluated first, and only
+then is the function itself called. So the arguments are evaluated,
+and then the transformation rules applied on it. The main function
+defines its parameters also, so these get assigned to local variables
+also, before trying the patterns with their associated local
+variables.</p>
+<p>Here is an example making the fact that the names in a pattern are
+local variables more explicit:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; f1(_x,_a) &lt;-- x+a
+Out&gt; True;
+In&gt; f2(_x,_a) &lt;-- [Local(a); x+a;];
+Out&gt; True;
+In&gt; f1(1,2)
+Out&gt; 3;
+In&gt; f2(1,2)
+Out&gt; a+1;
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-different-rules-in-different-cases">
+<h3>Using different rules in different cases<a class="headerlink" href="#using-different-rules-in-different-cases" title="Permalink to this headline">¶</a></h3>
+<p>In a lot of cases, the algorithm to be invoked depends on the type of
+the arguments. Or the result depends on the form of the input
+expression. This results in the typical &#8220;case&#8221; or &#8220;switch&#8221; statement,
+where the code to evaluate to determine the result depends on the form
+of the input expression, or the type of the arguments, or some other
+conditions.</p>
+<p>{Yacas} allows to define several transformation rules for one and the
+same function, if the rules are to be applied under different
+conditions.</p>
+<p>Suppose the function {f} is defined, a factorial function:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="mi">10</span> <span class="c"># f(0) &lt;-- 1;</span>
+<span class="mi">20</span> <span class="c"># f(n_IsPositiveInteger) &lt;-- n*f(n-1);</span>
+</pre></div>
+</div>
+<p>Then interaction can look like:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">f</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">6</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">f</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">f</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>If the left hand side is matched by the expression being considered,
+then the right hand side is evaluated. A subtle but important thing to
+note is that this means that the whole body of transformation rules is
+thus re-applied to the right-hand side of the {&lt;&#8211;} operator.</p>
+<p>Evaluation goes bottom-up, evaluating (simplifying) the lowest parts
+of a tree first, but for a tree that matches a transformation rule,
+the substitution essentially means return the result of evaluating the
+right-hand side. Transformation rules are re-applied, on the right
+hand side of the transformation rule, and the original expression can
+be thought of as been substituted by the result of evaluating this
+right-hand side, which is supposed to be a &#8220;simpler&#8221; expression, or a
+result closer to what the user wants.</p>
+<p>Internally, the function {f} is built up to resemble the following
+pseudo-code:</p>
+<div class="highlight-python"><div class="highlight"><pre>f(n)
+{
+   if (n = 1)
+     return 1;
+   else if (IsPositiveInteger(n))
+     return n*f(n-1);
+   else return f(n) unevaluated;
+}
+</pre></div>
+</div>
+<p>The transformation rules are thus combined into one big statement that
+gets executed, with each transformation rule being a if-clause in the
+statement to be evaluated.  Transformation rules can be spread over
+different files, and combined in functional groups. This adds to the
+readability.  The alternative is to write the full body of each
+function as one big routine, which becomes harder to maintain as the
+function becomes larger and larger, and hard or impossible to extend.</p>
+<p>One nice feature is that functionality is easy to extend without
+modifying the original source code:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Ln</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Ln</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="p">);</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Ln</span><span class="p">(</span><span class="n">_x</span><span class="o">*</span><span class="n">_y</span><span class="p">)</span> <span class="o">&lt;--</span> <span class="n">Ln</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">Ln</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Ln</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Ln</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="n">Ln</span><span class="p">(</span><span class="n">y</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This is generally not advisable, due to the fact that it alters the
+behavior of the entire system. But it can be useful in some
+instances. For instance, when introducing a new function {f(x)}, one
+can decide to define a derivative explicitly, and a way to simplify it
+numerically:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; f(_x)_InNumericMode() &lt;-- Exp(x)
+Out&gt; True;
+In&gt; (Deriv(_x)f(_y)) &lt;-- f(y)*(Deriv(x)y);
+Out&gt; True;
+In&gt; f(2)
+Out&gt; f(2);
+In&gt; N(f(2))
+Out&gt; 7.3890560989;
+In&gt; Exp(2)
+Out&gt; Exp(2);
+In&gt; N(Exp(2))
+Out&gt; 7.3890560989;
+In&gt; D(x)f(a*x)
+Out&gt; f(a*x)*a;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="the-evaluation-is-simplification-hack">
+<h2>The &#8220;Evaluation is Simplification&#8221; hack<a class="headerlink" href="#the-evaluation-is-simplification-hack" title="Permalink to this headline">¶</a></h2>
+<p>One of the ideas behind the {Yacas} scripting language is that
+evaluation is used for simplifying expressions.  One consequence of
+this is that objects can be returned unevaluated when they can not be
+simplified further. This happens to variables that are not assigned,
+functions that are not defined, or function invocations where the
+arguments passed in as parameters are not actually handled by any code
+in the scripts.  An integral that can not be performed by {Yacas}
+should be returned unevaluated:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; 2+3
+Out&gt; 5;
+In&gt; a+b
+Out&gt; a+b;
+In&gt; Sin(a)
+Out&gt; Sin(a);
+In&gt; Sin(0)
+Out&gt; 0;
+In&gt; Integrate(x)Ln(x)
+Out&gt; x*Ln(x)-x;
+In&gt; Integrate(x)Ln(Sin(x))
+Out&gt; Integrate(x)Ln(Sin(x));
+In&gt; a!
+Out&gt; a!;
+In&gt; 3!
+Out&gt; 6;
+</pre></div>
+</div>
+<p>Other languages usually do not allow evaluation of unbound variables,
+or undefined functions. In {Yacas}, these are interpreted as some yet
+undefined global variables or functions, and returned unevaluated.</p>
+</div>
+<div class="section" id="destructive-operations">
+<h2>Destructive operations<a class="headerlink" href="#destructive-operations" title="Permalink to this headline">¶</a></h2>
+<p>{Yacas} tries to keep as few copies of objects in memory as
+possible. Thus when assigning the value of one variable to another, a
+reference is copied, and both variables refer to the same memory,
+physically. This is relevant for programming; for example, one should
+use {FlatCopy} to actually make a new copy of an object.  Another
+feature relevant to reference semantics is &#8220;destructive operations&#8221;;
+these are functions that modify their arguments rather than work on a
+copy. Destructive operations on lists are generally recognized because
+their name starts with &#8220;Destructive&#8221;, e.g. {DestructiveDelete}. One
+other destructive operation is assignment of a list element through
+{list[index] := ...}.</p>
+<p>Some examples to illustrate destructive operations on lists:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; x1:={a,b,c}
+Out&gt; {a,b,c};
+</pre></div>
+</div>
+<p>A list {x1} is created.</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; FullForm(x1)
+(List a b c )
+Out&gt; {a,b,c};
+In&gt; x2:=z:x1
+Out&gt; {z,a,b,c};
+</pre></div>
+</div>
+<p>A new list {x2} is {z} appended to {x1}. The {:} operation creates a
+copy of {x1} before appending, so {x1} is unchanged by this.</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; FullForm(x2)
+(List z a b c )
+Out&gt; {z,a,b,c};
+In&gt; x2[1]:=y
+Out&gt; True;
+</pre></div>
+</div>
+<p>We have modified the first element of {x2}, but {x1} is still the
+same.</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; x2
+Out&gt; {y,a,b,c};
+In&gt; x1
+Out&gt; {a,b,c};
+In&gt; x2[2]:=A
+Out&gt; True;
+</pre></div>
+</div>
+<p>We have modified the second element of {x2}, but {x1} is still the
+same.</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; x2
+Out&gt; {y,A,b,c};
+In&gt; x1
+Out&gt; {a,b,c};
+In&gt; x2:=x1
+Out&gt; {A,b,c};
+</pre></div>
+</div>
+<p>Now {x2} and {x1} refer to the same list.</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; x2[1]:=A
+Out&gt; True;
+</pre></div>
+</div>
+<p>We have modified the first element of {x2}, and {x1} is also modified.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">x2</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="p">{</span><span class="n">A</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">};</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">x1</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="p">{</span><span class="n">A</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">};</span>
+</pre></div>
+</div>
+<p>A programmer should always be cautious when dealing with destructive
+operations. Sometimes it is not desirable to change the original
+expression.  The language deals with it this way because of
+performance considerations.  Operations can be made non-destructive by
+using {FlatCopy}:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; x1:={a,b,c}
+Out&gt; {a,b,c};
+In&gt; DestructiveReverse(x1)
+Out&gt; {c,b,a};
+In&gt; x1
+Out&gt; {a};
+In&gt; x1:={a,b,c}
+Out&gt; {a,b,c};
+In&gt; DestructiveReverse(FlatCopy(x1))
+Out&gt; {c,b,a};
+In&gt; x1
+Out&gt; {a,b,c};
+</pre></div>
+</div>
+<p>{FlatCopy} copies the elements of an expression only at the top level
+of nesting.  This means that if a list contains sub-lists, they are
+not copied, but references to them are copied instead:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; dict1:={}
+Out&gt; {};
+In&gt; dict1[&quot;name&quot;]:=&quot;John&quot;;
+Out&gt; True;
+In&gt; dict2:=FlatCopy(dict1)
+Out&gt; {{&quot;name&quot;,&quot;John&quot;}};
+In&gt; dict2[&quot;name&quot;]:=&quot;Mark&quot;;
+Out&gt; True;
+In&gt; dict1
+Out&gt; {{&quot;name&quot;,&quot;Mark&quot;}};
+</pre></div>
+</div>
+<p>A workaround for this is to use {Subst} to copy the entire tree:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; dict1:={}
+Out&gt; {};
+In&gt; dict1[&quot;name&quot;]:=&quot;John&quot;;
+Out&gt; True;
+In&gt; dict2:=Subst(a,a)(dict1)
+Out&gt; {{&quot;name&quot;,&quot;John&quot;}};
+In&gt; dict2[&quot;name&quot;]:=&quot;Mark&quot;;
+Out&gt; True;
+In&gt; dict1
+Out&gt; {{&quot;name&quot;,&quot;John&quot;}};
+In&gt; dict2
+Out&gt; {{&quot;name&quot;,&quot;Mark&quot;}};
+</pre></div>
+</div>
+</div>
+<div class="section" id="coding-style">
+<h2>Coding style<a class="headerlink" href="#coding-style" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="introduction">
+<h3>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h3>
+<p>This chapter intends to describe the coding style and conventions
+applied in Yacas in order to make sure the engine always returns the
+correct result. This is an attempt at fending off such errors by
+combining rule-based programming with a clear coding style which
+should make help avoid these mistakes.</p>
+</div>
+<div class="section" id="interactions-of-rules-and-types">
+<h3>Interactions of rules and types<a class="headerlink" href="#interactions-of-rules-and-types" title="Permalink to this headline">¶</a></h3>
+<p>One unfortunate disadvantage of rule-based programming is that rules
+can sometimes cooperate in unwanted ways.</p>
+<p>One example of how rules can produce unwanted results is the rule
+<tt class="docutils literal"><span class="pre">a*0</span> <span class="pre">&lt;--</span> <span class="pre">0</span></tt>.  This would always seem to be true. However, when a is
+a vector, e.g.  {a:={b,c,d}}, then <tt class="docutils literal"><span class="pre">a*0</span></tt> should actually return
+{{0,0,0}}, that is, a zero vector. The rule <tt class="docutils literal"><span class="pre">a*0</span> <span class="pre">&lt;--</span> <span class="pre">0</span></tt> actually
+changes the type of the expression from a vector to an integer! This
+can have severe consequences when other functions using this
+expressions as an argument expect a vector, or even worse, have a
+definition of how to work on vectors, and a different one for working
+on numbers.</p>
+<p>When writing rules for an operator, it is assumed that the operator
+working on arguments, e.g. {Cos} or <tt class="docutils literal"><span class="pre">*</span></tt>, will always have the same
+properties regardless of the arguments. The Taylor series expansion of
+$Cos(a)$ is the same regardless of whether $a$ is a real number,
+complex number or even a matrix.  Certain trigonometric identities
+should hold for the {Cos} function, regardless of the type of its
+argument.</p>
+<p>If a function is defined which does not adhere to these rules when
+applied to another type, a different function name should be used, to
+avoid confusion.</p>
+<p>By default, if a variable has not been bound yet, it is assumed to be
+a number. If it is in fact a more complex object, e.g. a vector, then
+you can declare it to be an &#8220;incomplete type&#8221; vector, using
+{Object(&#8220;IsVector&#8221;,x)} instead of {x}. This expression will evaluate
+to {x} if and only if {x} is a vector at that moment of
+evaluation. Otherwise it returns unevaluated, and thus stays an
+incomplete type.</p>
+<p>So this means the type of a variable is numeric unless otherwise
+stated by the user, using the &#8220;{Object}&#8221; command. No rules should ever
+work on incomplete types. It is just meant for delayed simplification.</p>
+<p>The topic of implicit type of an object is important, since many rules
+need to assume something about their argument types.</p>
+</div>
+<div class="section" id="ordering-of-rules">
+<h3>Ordering of rules<a class="headerlink" href="#ordering-of-rules" title="Permalink to this headline">¶</a></h3>
+<p>The implementor of a rule set can specify the order in which rules
+should be tried. This can be used to let the engine try more specific
+rules (those involving more elements in the pattern) before trying
+less specific rules.  Ordering of rules can be also explicitly given
+by precedence numbers. The Yacas engine will split the expression into
+subexpressions, and will try to apply all matching rules to a given
+subexpression in order of precedence.</p>
+<p>A rule with precedence 100 is defined by the syntax such as</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="mi">100</span> <span class="c"># f(_x + _y) &lt;-- f(x) + f(y);</span>
+</pre></div>
+</div>
+<p>The problem mentioned above with a rule for vectors and scalars could
+be solved by making two rules:</p>
+<ul class="simple">
+<li>1. $a*b$ (if $b$ is a vector and $a$ is a number) {&lt;&#8211;} return
+vector of each component multiplied by $a$.</li>
+<li><ol class="first arabic">
+<li>$a*0$ {&lt;&#8211;} $0$</li>
+</ol>
+</li>
+</ul>
+<p>So vector multiplication would be tried first.</p>
+<p>The ordering of the precedence of the rules in the standard math
+scripts is currently:</p>
+<ul class="simple">
+<li>50-60: Args are numbers: directly calculate. These are put in the
+beginning, so they are tried first. This is useful for quickly
+obtaining numeric results if all the arguments are numeric already,
+and symbolic transformations are not necessary.</li>
+<li>100-199: tautologies. Transformations that do not change the type of
+the argument, and are always true.</li>
+<li>200-399: type-specific transformations. Transformations for specific
+types of objects.</li>
+<li>400-599: transformations on scalars (variables are assumed to be
+scalars). Meaning transformations that can potentially change the
+type of an argument.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="writing-new-library-functions">
+<h2>Writing new library functions<a class="headerlink" href="#writing-new-library-functions" title="Permalink to this headline">¶</a></h2>
+<p>When you implement new library functions, you need to make your new
+code compatible and consistent with the rest of the library. Here are
+some relevant considerations.</p>
+<div class="section" id="to-evaluate-or-not-to-evaluate">
+<h3>To evaluate or not to evaluate<a class="headerlink" href="#to-evaluate-or-not-to-evaluate" title="Permalink to this headline">¶</a></h3>
+<p>Currently, a general policy in the library is that functions do
+nothing unless their arguments actually allow something to be
+evaluated. For instance, if the function expects a variable name but
+instead gets a list, or expects a list but instead gets a string, in
+most cases it seems to be a good idea to do nothing and return
+unevaluated. The unevaluated expression will propagate and will be
+easy to spot. Most functions can accomplish this by using
+type-checking predicates such as {IsInteger} in rules.</p>
+<p>When dealing with numbers, Yacas tries to maintain exact answers as
+much as possible and evaluate to floating-point only when explicitly
+told so (using {N()}). The general evaluation strategy for numerical
+functions such as {Sin} or {Gamma} is the following:</p>
+<ul class="simple">
+<li>If {InNumericMode()} returns <a class="reference internal" href="../reference_manual/consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> and the arguments are numbers
+(perhaps complex numbers), the function should evaluate its result
+in floating-point to current precision.</li>
+<li>Otherwise, if the arguments are such that the result can be
+calculated exactly, it should be evaluated and
+returned. E.g. {Sin(Pi/2)} returns {1}.</li>
+<li>Otherwise the function should return unevaluated (but usually with
+its arguments evaluated).</li>
+</ul>
+<p>Here are some examples of this behavior:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Sin</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Sin</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Gamma</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">5040</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Gamma</span><span class="p">(</span><span class="o">-</span><span class="mi">11</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="p">(</span><span class="mi">64</span><span class="o">*</span><span class="n">Sqrt</span><span class="p">(</span><span class="n">Pi</span><span class="p">))</span><span class="o">/</span><span class="mi">10395</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Gamma</span><span class="p">(</span><span class="mi">8</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Gamma</span><span class="p">(</span><span class="mi">8</span><span class="o">/</span><span class="mi">7</span><span class="p">);</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">N</span><span class="p">(</span><span class="n">Gamma</span><span class="p">(</span><span class="mi">8</span><span class="o">/</span><span class="mi">7</span><span class="p">))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mf">0.9354375629</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">N</span><span class="p">(</span><span class="n">Gamma</span><span class="p">(</span><span class="mi">8</span><span class="o">/</span><span class="mi">7</span><span class="o">+</span><span class="n">x</span><span class="p">))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Gamma</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mf">1.1428571428</span><span class="p">);</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Gamma</span><span class="p">(</span><span class="mi">12</span><span class="o">/</span><span class="mi">6</span><span class="o">+</span><span class="n">x</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Gamma</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">2</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>To implement this behavior, {Gamma} and other mathematical functions
+usually have two variants: the &#8220;symbolic&#8221; one and the &#8220;numerical&#8221;
+one. For instance, there are {Sin} and {MathSin}, {Ln} and
+{Internal&#8217;LnNum}, {Gamma} and {Internal&#8217;GammaNum}. (Here {MathSin}
+happens to be a core function but it is not essential.) The
+&#8220;numerical&#8221; functions always evaluate to floating-point results. The
+&#8220;symbolic&#8221; function serves as a front-end; it evaluates when the
+result can be expressed exactly, or calls the &#8220;numerical&#8221; function if
+{InNumericMode()} returns <a class="reference internal" href="../reference_manual/consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>, and otherwise returns unevaluated.</p>
+<p>The &#8220;symbolic&#8221; function usually has multiple rules while the
+&#8220;numerical&#8221; function is usually just one large block of
+number-crunching code.</p>
+</div>
+<div class="section" id="using-n-and-innumericmode-in-scripts">
+<h3>Using {N()} and {InNumericMode()} in scripts<a class="headerlink" href="#using-n-and-innumericmode-in-scripts" title="Permalink to this headline">¶</a></h3>
+<p>As a rule, {N()} should be avoided in code that implements basic
+numerical algorithms. This is because {N()} itself is implemented in
+the library and it may need to use some of these algorithms.
+Arbitrary-precision math can be handled by core functions such as
+{MathDivide}, {MathSin} and so on, without using {N()}. For example,
+if your code needs to evaluate $Sqrt(Pi)$ to many digits as an
+intermediate result, it is better to write {MathSqrt(Internal&#8217;Pi())}
+than {N(Sqrt(Pi))} because it makes for faster, more reliable code.</p>
+</div>
+<div class="section" id="using-builtin-precision-set">
+<h3>Using {Builtin&#8217;Precision&#8217;Set()}<a class="headerlink" href="#using-builtin-precision-set" title="Permalink to this headline">¶</a></h3>
+<p>The usual assumption is that numerical functions will evaluate
+floating-point results to the currently set precision. For
+intermediate calculations, a higher working precision is sometimes
+needed. In this case, your function should set the precision back to
+the original value at the end of the calculation and round off the
+result.</p>
+</div>
+<div class="section" id="using-verbose-mode">
+<h3>Using verbose mode<a class="headerlink" href="#using-verbose-mode" title="Permalink to this headline">¶</a></h3>
+<p>For routines using complicated algorithms, or when evaluation takes a
+long time, it is usually helpful to print some diagnostic information,
+so that the user can at least watch some progress. The current
+convention is that if {InVerboseMode()} returns <a class="reference internal" href="../reference_manual/consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>, functions may
+print diagnostic information. (But do not print too much!). Verbose
+mode is turned on by using the function {V(expression)}. The
+expression is evaluated in verbose mode.</p>
+</div>
+<div class="section" id="procedural-programming-or-rule-based-programming">
+<h3>Procedural programming or rule-based programming?<a class="headerlink" href="#procedural-programming-or-rule-based-programming" title="Permalink to this headline">¶</a></h3>
+<p>Two considerations are relevant to this decision. First, whether to
+use multiple rules with predicates or one rule with multiple {If()}s.
+Consider the following sample code for the &#8220;double factorial&#8221; function
+:math:n!! := n(n-2)...` written using predicates and rules:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="mi">1</span><span class="c"># 0 !! &lt;-- 1;</span>
+<span class="mi">1</span><span class="c"># 1 !! &lt;-- 1;</span>
+<span class="mi">2</span><span class="c"># (n_IsEven) !! &lt;-- 2^(n/2)*n!;</span>
+<span class="mi">3</span><span class="c"># (n_IsOdd) !! &lt;-- n*(n-2)!!;</span>
+</pre></div>
+</div>
+<p>and an equivalent code with one rule:</p>
+<div class="highlight-python"><div class="highlight"><pre>n!! := If(n=0 Or n=1, 1,
+  If(IsEven(n), 2^(n/2)*n!,
+  If(IsOdd(n), n*(n-2)!!, Hold(n!!)))
+);
+</pre></div>
+</div>
+<p>(Note: This is not the way $n!!$ is implemented in the library.) The
+first version is a lot more clear. Yacas is very quick in rule
+matching and evaluation of predicates, so the first version is
+(marginally) faster. So it seems better to write a few rules with
+predicates than one rule with multiple {If()} statements.</p>
+<p>The second question is whether to use recursion or loops. Recursion
+makes code more elegant but it is slower and limited in depth.
+Currently the default recursion depth of $1000$ is enough for most
+casual calculations and yet catches infinite recursion errors
+relatively quickly. Because of clearer code, it seems better to use
+recursion in situations where the number of list elements will never
+become large. In numerical applications, such as evaluation of Taylor
+series, recursion usually does not pay off.</p>
+</div>
+<div class="section" id="reporting-errors">
+<h3>Reporting errors<a class="headerlink" href="#reporting-errors" title="Permalink to this headline">¶</a></h3>
+<p>Errors occurring because of invalid argument types should be reported
+only if absolutely necessary. (In the future there may be a static
+type checker implemented that will make explicit checking
+unnecessary.)</p>
+<p>Errors of invalid values, e.g. a negative argument of real logarithm
+function, or a malformed list, mean that a human has probably made a
+mistake, so the errors need to be reported. &#8220;Internal errors&#8221;, i.e.
+program bugs, certainly need to be reported.</p>
+<p>There are currently two facilities for reporting errors: a &#8220;hard&#8221; one
+and a &#8220;soft&#8221; one.</p>
+<p>The &#8220;hard&#8221; error reporting facility is the function {Check}. For
+example, if {x}={-1}, then</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Check</span><span class="p">(</span><span class="n">x</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">,</span><span class="s">&quot;bad x&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>will immediately halt the execution of a Yacas script and print the
+error messsage. This is implemented as a C++ exception. A drawback of
+this mechanism is that the Yacas stack unwinding is not performed by
+the Yacas interpreter, so global variables such as {InNumericMode()},
+{Verbose}, {Builtin&#8217;Precision&#8217;Set()} may keep the intermediate values
+they had been assigned just before the error occurred. Also, sometimes
+it is better for the program to be able to catch the error and
+continue.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">the above will hopefully be solved soon, as we can now trap
+exceptions in the scripts.</p>
+</div>
+<p>The &#8220;soft&#8221; error reporting is provided by the functions {Assert} and
+{IsError}, e.g.</p>
+<div class="highlight-python"><div class="highlight"><pre>Assert(&quot;domain&quot;, x) x&gt;0;
+If(IsError(&quot;domain&quot;), ...);
+</pre></div>
+</div>
+<p>The error will be reported but execution will continue normally until
+some other function &#8220;handles&#8221; the error (prints the error message or
+does something else appropriate for that error). Here the string
+{&#8220;domain&#8221;} is the &#8220;error type&#8221; and {x} will be the information object
+for this error. The error object can be any expression, but it is
+probably a good idea to choose a short and descriptive string for the
+error type.</p>
+<p>The function {GetErrorTableau()} returns an associative list that
+accumulates all reported error objects. When errors are &#8220;handled&#8221;,
+their objects should be removed from the list. The utility function
+{DumpErrors()} is a simple error handler that prints all errors and
+clears the list.  Other handlers are {GetError} and
+{ClearError}. These functions may be used to handle errors when it is
+safe to do so.</p>
+<p>The &#8220;soft&#8221; error reporting facility is safer and more flexible than
+the &#8220;hard&#8221; facility. However, the disadvantage is that errors are not
+reported right away and pointless calculations may continue for a
+while until an error is handled.</p>
+</div>
+</div>
+<div class="section" id="advanced-example-1-parsing-expressions-cform">
+<h2>Advanced example 1: parsing expressions ({CForm})<a class="headerlink" href="#advanced-example-1-parsing-expressions-cform" title="Permalink to this headline">¶</a></h2>
+<p>In this chapter we show how Yacas represents expressions and how one
+can build functions that work on various types of expressions. Our
+specific example will be {CForm()}, a standard library function that
+converts Yacas expressions into C or C++ code. Although the input
+format of Yacas expressions is already very close to C and perhaps
+could be converted to C by means of an external text filter, it is
+instructive to understand how to use Yacas to parse its own
+expressions and produce the corresponding C code. Here we shall only
+design the core mechanism of {CForm()} and build a limited version
+that handles only expressions using the four arithmetic actions.</p>
+<div class="section" id="recursive-parsing-of-expression-trees">
+<h3>Recursive parsing of expression trees<a class="headerlink" href="#recursive-parsing-of-expression-trees" title="Permalink to this headline">¶</a></h3>
+<p>As we have seen in the tutorial, Yacas represents all expressions as
+trees, or equivalently, as lists of lists. For example, the expression
+&#8220;{a+b+c+d+e}&#8221; is for Yacas a tree of depth 4 that could be visualized
+as</p>
+<div class="highlight-python"><div class="highlight"><pre> &quot;+&quot;
+a  &quot;+&quot;
+  b  &quot;+&quot;
+    c  &quot;+&quot;
+      d   e
+</pre></div>
+</div>
+<p>or as a nested list: <tt class="docutils literal"><span class="pre">(&quot;+&quot;</span> <span class="pre">a</span> <span class="pre">(&quot;+&quot;</span> <span class="pre">b</span> <span class="pre">(&quot;+&quot;</span> <span class="pre">c</span> <span class="pre">(&quot;+&quot;</span> <span class="pre">d</span> <span class="pre">e))))</span></tt>.</p>
+<p>Complicated expressions are thus built from simple ones in a general
+and flexible way. If we want a function that acts on sums of any
+number of terms, we only need to define this function on a single atom
+and on a sum of two terms, and the Yacas engine will recursively
+perform the action on the entire tree.</p>
+<p>So our first try is to define rules for transforming an atom and for
+transforming sums and products. The result of {CForm()} will always be
+a string. We can use recursion like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; 100 # CForm(a_IsAtom) &lt;-- String(a);
+Out&gt; True;
+In&gt; 100 # CForm(_a + _b) &lt;-- CForm(a) : \
+  &quot; + &quot; : CForm(b);
+Out&gt; True;
+In&gt; 100 # CForm(_a * _b) &lt;-- CForm(a) : \
+  &quot; * &quot; : CForm(b);
+Out&gt; True;
+</pre></div>
+</div>
+<p>We used the string concatenation operator &#8220;{:}&#8221; and we added spaces
+around the binary operators for clarity. All rules have the same
+precedence 100 because there are no conflicts in rule ordering so far:
+these rules apply in mutually exclusive cases. Let&#8217;s try converting
+some simple expressions now:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">CForm</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="n">c</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="s">&quot;a + b * c&quot;</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">CForm</span><span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="n">c</span><span class="o">*</span><span class="n">d</span><span class="o">+</span><span class="n">e</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="n">f</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="s">&quot;a + b * c * d + e + 1 + f&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>With only three rules, we were able to process even some complicated
+expressions. How did it work? We could illustrate the steps Yacas went
+through when simplifying {CForm(a+b*c)} roughly like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>CForm(a+b*c)
+    ... apply 2nd rule
+CForm(a) : &quot; + &quot; : CForm(b*c)
+    ... apply 1st rule and 3rd rule
+&quot;a&quot; : &quot; + &quot; : CForm(b) : &quot; * &quot; : CForm(c)
+    ... apply 1st rule
+&quot;a&quot; : &quot; + &quot; : &quot;b&quot; : &quot; * &quot; : &quot;c&quot;
+    ... concatenate strings
+&quot;a + b * c&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="handling-precedence-of-infix-operations">
+<h3>Handling precedence of infix operations<a class="headerlink" href="#handling-precedence-of-infix-operations" title="Permalink to this headline">¶</a></h3>
+<p>It seems that recursion will do all the work for us. The power of
+recursion is indeed great and extensive use of recursion is built into
+the design of Yacas. We might now add rules for more operators, for
+example, the unary addition, subtraction and division:</p>
+<div class="highlight-python"><div class="highlight"><pre>100 # CForm(+ _a) &lt;-- &quot;+ &quot; : CForm(a);
+100 # CForm(- _a) &lt;-- &quot;- &quot; : CForm(a);
+100 # CForm(_a - _b) &lt;-- CForm(a) : &quot; - &quot;
+  : CForm(b);
+100 # CForm(_a / _b) &lt;-- CForm(a) : &quot; / &quot;
+  : CForm(b);
+</pre></div>
+</div>
+<p>However, soon we find that we forgot about operator precedence. Our
+simple-minded {CForm()} gives wrong C code for expressions like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">CForm</span><span class="p">(</span> <span class="p">(</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="p">)</span> <span class="o">*</span> <span class="n">c</span> <span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="s">&quot;a + b * c&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>We need to get something like <tt class="docutils literal"><span class="pre">(a+b)*c</span></tt> in this case. How would we add
+a rule to insert parentheses around subexpressions? A simple way out
+would be to put parentheses around every subexpression, replacing our
+rules by something like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>100 # CForm(_a + _b) &lt;-- &quot;(&quot; : CForm(a)
+  : &quot; + &quot; : CForm(b) : &quot;)&quot;;
+100 # CForm(- _a) &lt;-- &quot;(- &quot; : CForm(a)
+  : &quot;)&quot;;
+</pre></div>
+</div>
+<p>and so on. This will always produce correct C code, e.g. in our case
+&#8220;((a+b)*c)&#8221;, but generally the output will be full of unnecessary
+parentheses. It is instructive to find a better solution.</p>
+<p>We could improve the situation by inserting parentheses only if the
+higher-order expression requires them; for this to work, we need to
+make a call such as {CForm(a+b)} aware that the enveloping expression
+has a multiplication by {c} around the addition {a+b}. This can be
+implemented by passing an extra argument to {CForm()} that will
+indicate the precedence of the enveloping operation. A compound
+expression that uses an infix operator must be bracketed if the
+precedence of that infix operator is higher than the precedence of the
+enveloping infix operation.</p>
+<p>We shall define an auxiliary function also named &#8220;CForm&#8221; but with a
+second argument, the precedence of the enveloping infix operation. If
+there is no enveloping operation, we shall set the precedence to a
+large number, e.g. 60000, to indicate that no parentheses should be
+inserted around the whole expression. The new &#8220;CForm(expr,
+precedence)&#8221; will handle two cases: either parentheses are necessary,
+or unnecessary. For clarity we shall implement these cases in two
+separate rules. The initial call to &#8220;CForm(expr)&#8221; will be delegated to
+&#8220;CForm(expr, precedence)&#8221;.</p>
+<p>The precedence values of infix operators such as &#8220;{+}&#8221; and &#8220;{*}&#8221; are
+defined in the Yacas library but may change in a future
+version. Therefore, we shall not hard-code these precedence values but
+instead use the function {OpPrecedence()} to determine them. The new
+rules for the &#8220;{+}&#8221; operation could look like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>PlusPrec := OpPrecedence(&quot;+&quot;);
+100 # CForm(_expr) &lt;-- CForm(expr, 60000);
+100 # CForm(_a + _b, _prec)_(PlusPrec&gt;prec)
+  &lt;-- &quot;(&quot; : CForm(a, PlusPrec) : &quot; + &quot;
+  : CForm(b, PlusPrec) : &quot;)&quot;;
+120 # CForm(_a + _b, _prec) &lt;--
+    CForm(a, PlusPrec) : &quot; + &quot;
+    : CForm(b, PlusPrec);
+</pre></div>
+</div>
+<p>and so on. We omitted the predicate for the last rule because it has a
+later precedence than the preceding rule.</p>
+<p>The way we wrote these rules is unnecessarily repetitive but
+straightforward and it illustrates the central ideas of expression
+processing in Yacas. The standard library implements {CForm()}
+essentially in this way. In addition the library implementation
+supports standard mathematical functions, arrays and so on, and is
+somewhat better organized to allow easier extensions and avoid
+repetition of code.</p>
+</div>
+</div>
+<div class="section" id="yacas-programming-pitfalls">
+<h2>Yacas programming pitfalls<a class="headerlink" href="#yacas-programming-pitfalls" title="Permalink to this headline">¶</a></h2>
+<p>No programming language is without programming pitfalls, and {Yacas}
+has its fair share of pitfalls.</p>
+<div class="section" id="all-rules-are-global">
+<h3>All rules are global<a class="headerlink" href="#all-rules-are-global" title="Permalink to this headline">¶</a></h3>
+<p>All rules are global, and a consequence is that rules can clash or
+silently shadow each other, if the user defines two rules with the
+same patterns and predicates but different bodies.</p>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">f</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&lt;--</span> <span class="mi">1</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">f</span><span class="p">(</span><span class="n">x_IsConstant</span><span class="p">)</span> <span class="o">&lt;--</span> <span class="n">Sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="n">x</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>This can happen in practice, if care is not taken. Here two
+transformation rules are defined which both have the same precedence
+(since their precedence was not explicitly set). In that case {Yacas}
+gets to decide which one to try first.  Such problems can also occur
+where one transformation rule (possibly defined in some other file)
+has a wrong precedence, and thus masks another transformation rule. It
+is necessary to think of a scheme for assigning precedences first. In
+many cases, the order in which transformation rules are applied is
+important.</p>
+<p>In the above example, because {Yacas} gets to decide which rule to try
+first, it is possible that f(0) invokes the second rule, which would
+then mask the first so the first rule is never called.  Indeed, in
+{Yacas} version 1.0.51,</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">f</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Undefined</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The order the rules are applied in is undefined if the precedences are
+the same. The precedences should only be the same if order does not
+matter. This is the case if, for instance, the two rules apply to
+different argument patters that could not possibly mask each other.</p>
+<p>The solution could have been either:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="mi">10</span> <span class="c"># f(0) &lt;-- 1</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="mi">20</span> <span class="c"># f(x_IsConstant) &lt;-- Sin(x)/x</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">f</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; f(0) &lt;-- 1
+Out&gt; True;
+In&gt; f(x_IsConstant)_(x != 0) &lt;-- Sin(x)/x
+Out&gt; True;
+In&gt; f(0)
+Out&gt; 1;
+</pre></div>
+</div>
+<p>So either the rules should have distinct precedences, or they should
+have mutually exclusive predicates, so that they do not collide.</p>
+</div>
+<div class="section" id="objects-that-look-like-functions">
+<h3>Objects that look like functions<a class="headerlink" href="#objects-that-look-like-functions" title="Permalink to this headline">¶</a></h3>
+<p>An expression that looks like a &#8220;function&#8221;, for example {AbcDef(x,y)},
+is in fact either a call to a &#8220;core function&#8221; or to a &#8220;user function&#8221;,
+and there is a huge difference between the behaviors. Core functions
+immediately evaluate to something, while user functions are really
+just symbols to which evaluation rules may or may not be applied.</p>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; a+b
+Out&gt; a+b;
+In&gt; 2+3
+Out&gt; 5;
+In&gt; MathAdd(a,b)
+In function &quot;MathAdd&quot; :
+bad argument number 1 (counting from 1)
+The offending argument a evaluated to a
+CommandLine(1) : Invalid argument
+
+In&gt; MathAdd(2,3)
+Out&gt; 5;
+</pre></div>
+</div>
+<p>The {+} operator will return the object unsimplified if the arguments
+are not numeric. The {+} operator is defined in the standard scripts.
+{MathAdd}, however, is a function defined in the &#8220;core&#8221; to performs
+the numeric addition. It can only do this if the arguments are numeric
+and it fails on symbolic arguments.  (The {+} operator calls {MathAdd}
+after it has verified that the arguments passed to it are numeric.)</p>
+<p>A core function such as {MathAdd} can never return unevaluated, but an
+operator such as &#8220;{+}&#8221; is a &#8220;user function&#8221; which might or might not
+be evaluated to something.</p>
+<p>A user function does not have to be defined before it is used. A
+consequence of this is that a typo in a function name or a variable
+name will always go unnoticed.  For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">f</span><span class="p">(</span><span class="n">x_IsInteger</span><span class="p">,</span><span class="n">y_IsInteger</span><span class="p">)</span> <span class="o">&lt;--</span> <span class="n">Mathadd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">f</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Mathadd</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Here we made a typo: we should have written {MathAdd}, but wrote
+{Mathadd} instead. {Yacas} happily assumed that we mean a new and (so
+far) undefined &#8220;user function&#8221; {Mathadd} and returned the expression
+unevaluated.</p>
+<p>In the above example it was easy to spot the error. But this feature
+becomes more dangerous when it this mistake is made in a part of some
+procedure. A call that should have been made to an internal function,
+if a typo was made, passes silently without error and returns
+unevaluated.  The real problem occurs if we meant to call a function
+that has side-effects and we not use its return value. In this case we
+shall not immediately find that the function was not evaluated, but
+instead we shall encounter a mysterious bug later.</p>
+</div>
+<div class="section" id="guessing-when-arguments-are-evaluated-and-when-not">
+<h3>Guessing when arguments are evaluated and when not<a class="headerlink" href="#guessing-when-arguments-are-evaluated-and-when-not" title="Permalink to this headline">¶</a></h3>
+<p>If your new function does not work as expected, there is a good chance
+that it happened because you did not expect some expression which is
+an argument to be passed to a function to be evaluated when it is in
+fact evaluated, or vice versa.</p>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; p:=Sin(x)
+Out&gt; Sin(x);
+In&gt; D(x)p
+Out&gt; Cos(x);
+In&gt; y:=x
+Out&gt; x;
+In&gt; D(y)p
+Out&gt; 0;
+</pre></div>
+</div>
+<p>Here the first argument to the differentiation function is not
+evaluated, so {y} is not evaluated to {x}, and {D(y)p} is indeed 0.</p>
+</div>
+<div class="section" id="the-confusing-effect-of-holdarg">
+<h3>The confusing effect of {HoldArg}<a class="headerlink" href="#the-confusing-effect-of-holdarg" title="Permalink to this headline">¶</a></h3>
+<p>The problem of distinguishing evaluated and unevaluated objects
+becomes worse when we need to create a function that does not evaluate
+its arguments.</p>
+<p>Since in {Yacas} evaluation starts from the bottom of the expression
+tree, all &#8220;user functions&#8221; will appear to evaluate their arguments by
+default. But sometimes it is convenient to prohibit evaluation of a
+particular argument (using {HoldArg} or {HoldArgNr}).</p>
+<p>For example, suppose we need a function {A(x,y)} that, as a
+side-effect, assigns the variable {x} to the sum of {x} and {y}. This
+function will be called when {x} already has some value, so clearly
+the argument {x} in {A(x,y)} should be unevaluated. It is possible to
+make this argument unevaluated by putting {Hold()} on it and always
+calling {A(Hold(x), y)}, but this is not very convenient and easy to
+forget. It would be better to define {A} so that it always keeps its
+first argument unevaluated.</p>
+<p>If we define a rule base for {A} and declare {HoldArg},</p>
+<div class="highlight-python"><div class="highlight"><pre>Function() A(x,y);
+HoldArg(&quot;A&quot;, x);
+</pre></div>
+</div>
+<p>then we shall encounter a difficulty when working with the argument
+{x} inside of a rule body for {A}. For instance, the simple-minded
+implementation</p>
+<div class="highlight-python"><div class="highlight"><pre>A(_x, _y) &lt;-- (x := x+y);
+</pre></div>
+</div>
+<p>does not work:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; [ a:=1; b:=2; A(a,b);]
+Out&gt; a+2;
+</pre></div>
+</div>
+<p>In other words, the {x} inside the body of {A(x,y)} did not evaluate
+to {1} when we called the function {:=}. Instead, it was left
+unevaluated as the atom {x} on the left hand side of {:=}, since {:=}
+does not evaluate its left argument. It however evaluates its right
+argument, so the {y} argument was evaluated to {2} and the {x+y}
+became {a+2}.</p>
+<p>The evaluation of {x} in the body of {A(x,y)} was prevented by the
+{HoldArg} declaration. So in the body, {x} will just be the atom {x},
+unless it is evaluated again. If you pass {x} to other functions, they
+will just get the atom {x}. Thus in our example, we passed {x} to the
+function {:=}, thinking that it will get {a}, but it got an
+unevaluated atom {x} on the left side and proceeded with that.</p>
+<p>We need an explicit evaluation of {x} in this case. It can be
+performed using {Eval}, or with backquoting, or by using a core
+function that evaluates its argument. Here is some code that
+illustrates these three possibilities:</p>
+<div class="highlight-python"><div class="highlight"><pre>A(_x, _y) &lt;-- [ Local(z); z:=Eval(x); z:=z+y; ]
+</pre></div>
+</div>
+<p>(using explicit evaluation) or</p>
+<div class="highlight-python"><div class="highlight"><pre>A(_x, _y) &lt;-- `(@x := @x + y);
+</pre></div>
+</div>
+<p>(using backquoting) or</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">A</span><span class="p">(</span><span class="n">_x</span><span class="p">,</span> <span class="n">_y</span><span class="p">)</span> <span class="o">&lt;--</span> <span class="n">MacroSet</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>(using a core function {MacroSet} that evaluates its first argument).</p>
+<p>However, beware of a clash of names when using explicit evaluations
+(as explained above). In other words, the function {A} as defined
+above will not work correctly if we give it a variable also named
+{x}. The {LocalSymbols} call should be used to get around this
+problem.</p>
+<p>Another caveat is that when we call another function that does not
+evaluate its argument, we need to substitute an explicitly evaluated
+{x} into it. A frequent case is the following: suppose we have a
+function {B(x,y)} that does not evaluate {x}, and we need to write an
+interface function {B(x)} which will just call {B(x,0)}. We should use
+an explicit evaluation of {x} to accomplish this, for example</p>
+<div class="highlight-python"><div class="highlight"><pre>B(_x) &lt;-- `B(@x,0);
+</pre></div>
+</div>
+<p>or</p>
+<div class="highlight-python"><div class="highlight"><pre>B(_x) &lt;-- B @ {x, 0};
+</pre></div>
+</div>
+<p>Otherwise {B(x,y)} will not get the correct value of its first
+parameter {x}.</p>
+</div>
+<div class="section" id="special-behavior-of-hold-unlist-and-eval">
+<h3>Special behavior of {Hold}, {UnList} and {Eval}<a class="headerlink" href="#special-behavior-of-hold-unlist-and-eval" title="Permalink to this headline">¶</a></h3>
+<p>When an expression is evaluated, all matching rules are applied to it
+repeatedly until no more rules match. Thus an expression is
+&#8220;completely&#8221; evaluated. There are, however, two cases when recursive
+application of rules is stopped at a certain point, leaving an
+expression not &#8220;completely&#8221; evaluated:</p>
+<ul class="simple">
+<li>The expression which is the result of a call to a Yacas core
+function is not evaluated further, even if some rules apply to it.</li>
+<li>The expression is a variable that has a value assigned to it; for
+example, the variable {x} might have the expression {y+1} as the
+value. That value is not evaluated again, so even if {y} has been
+assigned another value, say, {y=2} a Yacas expression such as
+{2*x+1} will evaluate to {2*(y+1)+1} and not to {7}. Thus, a
+variable can have some unevaluated expression as its value and the
+expression will not be re-evaluated when the variable is used.</li>
+</ul>
+<p>The first possibility is mostly without consequence because almost all
+core functions return a simple atom that does not require further
+evaluation.  However, there are two core functions that can return a
+complicated expression: {Hold} and {UnList}. Thus, these functions can
+produce arbitrarily complicated Yacas expressions that will be left
+unevaluated.  For example, the result of</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">UnList</span><span class="p">({</span><span class="n">Sin</span><span class="p">,</span> <span class="mi">0</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>is the same as the result of</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Hold</span><span class="p">(</span><span class="n">Sin</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>and is the unevaluated expression {Sin(0)} rather than {0}.</p>
+<p>Typically you want to use {UnList} because you need to construct a
+function call out of some objects that you have. But you need to call
+{Eval(UnList(...))} to actually evaluate this function call. For
+example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">UnList</span><span class="p">({</span><span class="n">Sin</span><span class="p">,</span> <span class="mi">0</span><span class="p">})</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">Sin</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">Eval</span><span class="p">(</span><span class="n">UnList</span><span class="p">({</span><span class="n">Sin</span><span class="p">,</span> <span class="mi">0</span><span class="p">}))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>In effect, evaluation can be stopped with {Hold} or {UnList} and can
+be explicitly restarted by using {Eval}. If several levels of
+un-evaluation are used, such as {Hold(Hold(...))}, then the same
+number of {Eval} calls will be needed to fully evaluate an
+expression.</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; a:=Hold(Sin(0))
+Out&gt; Sin(0);
+In&gt; b:=Hold(a)
+Out&gt; a;
+In&gt; c:=Hold(b)
+Out&gt; b;
+In&gt; Eval(c)
+Out&gt; a;
+In&gt; Eval(Eval(c))
+Out&gt; Sin(0);
+In&gt; Eval(Eval(Eval(c)))
+Out&gt; 0;
+</pre></div>
+</div>
+<p>A function {FullEval} can be defined for &#8220;complete&#8221; evaluation of
+expressions, as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre>LocalSymbols(x,y)
+[
+  FullEval(_x) &lt;-- FullEval(x,Eval(x));
+  10 # FullEval(_x,_x) &lt;-- x;
+  20 # FullEval(_x,_y) &lt;-- FullEval(y,Eval(y));
+];
+</pre></div>
+</div>
+<p>Then the example above will be concluded with:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">FullEval</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="correctness-of-parameters-to-functions-is-not-checked">
+<h3>Correctness of parameters to functions is not checked<a class="headerlink" href="#correctness-of-parameters-to-functions-is-not-checked" title="Permalink to this headline">¶</a></h3>
+<p>Because {Yacas} does not enforce type checking of arguments, it is
+possible to call functions with invalid arguments. The default way
+functions in {Yacas} should deal with situations where an action can
+not be performed, is to return the expression unevaluated. A function
+should know when it is failing to perform a task. The typical symptoms
+are errors that seem obscure, but just mean the function called should
+have checked that it can perform the action on the object.</p>
+<p>For example:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; 10 # f(0) &lt;-- 1;
+Out&gt; True;
+In&gt; 20 # f(_n) &lt;-- n*f(n-1);
+Out&gt; True;
+In&gt; f(3)
+Out&gt; 6;
+In&gt; f(1.3)
+CommandLine(1): Max evaluation stack depth reached.
+</pre></div>
+</div>
+<p>Here, the function {f} is defined to be a factorial function, but the
+function fails to check that its argument is a positive integer, and
+thus exhausts the stack when called with a non-integer argument.  A
+better way would be to write</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="mi">20</span> <span class="c"># f(n_IsPositiveInteger) &lt;-- n*f(n-1);</span>
+</pre></div>
+</div>
+<p>Then the function would have returned unevaluated when passed a
+non-integer or a symbolic expression.</p>
+</div>
+<div class="section" id="evaluating-variables-in-the-wrong-scope">
+<h3>Evaluating variables in the wrong scope<a class="headerlink" href="#evaluating-variables-in-the-wrong-scope" title="Permalink to this headline">¶</a></h3>
+<p>There is a subtle problem that occurs when {Eval} is used in a
+function, combined with local variables. The following example perhaps
+illustrates it:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; f1(x):=[Local(a);a:=2;Eval(x);];
+Out&gt; True;
+In&gt; f1(3)
+Out&gt; 3;
+In&gt; f1(a)
+Out&gt; 2;
+</pre></div>
+</div>
+<p>Here the last call should have returned {a}, but it returned {2},
+because {x} was assigned the value {a}, and {a} was assigned locally
+the value of {2}, and {x} gets re-evaluated. This problem occurs when
+the expression being evaluated contains variables which are also local
+variables in the function body. The solution is to use the
+{LocalSymbols} function for all local variables defined in the body.</p>
+<p>The following illustrates this:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; f2(x):=LocalSymbols(a)[Local(a);a:=2;Eval(x);];
+Out&gt; True;
+In&gt; f1(3)
+Out&gt; 3;
+In&gt; f2(a)
+Out&gt; a;
+</pre></div>
+</div>
+<p>Here {f2} returns the correct result. {x} was assigned the value {a},
+but the {a} within the function body is made distinctly different from
+the one referred to by {x} (which, in a sense, refers to a global
+{a}), by using {LocalSymbols}.</p>
+<p>This problem generally occurs when defining functions that re-evaluate
+one of its arguments, typically functions that perform a loop of some
+sort, evaluating a body at each iteration.</p>
+</div>
+</div>
+<div class="section" id="debugging-in-yacas">
+<h2>Debugging in Yacas<a class="headerlink" href="#debugging-in-yacas" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Introduction<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>When writing a code segment, it is generally a good idea to separate
+the problem into many small functions. Not only can you then reuse
+these functions on other problems, but it makes debugging easier too.</p>
+<p>For debugging a faulty function, in addition to the usual
+trial-and-error method and the &#8220;print everything&#8221; method, Yacas offers
+some trace facilities. You can try to trace applications of rules
+during evaluation of the function ({TraceRule()}, {TraceExp()}) or see
+the stack after an error has occurred ({TraceStack()}).</p>
+<p>There is also an interactive debugger, which shall be introduced
+in this chapter.</p>
+<p>Finally, you may want to run a debugging version of Yacas. This
+version of the executable maintains more information about
+the operations it performs, and can report on this.</p>
+<p>This chapter will start with the interactive debugger, as it
+is the easiest and most useful feature to use, and then proceed
+to explain the trace and profiling facilities. Finally, the
+internal workings of the debugger will be explained. It is highly
+customizable (in fact, most of the debugging code is written in
+Yacas itself), so for bugs that are really difficult to track
+one can write custom code to track it.</p>
+</div>
+<div class="section" id="the-trace-facilities">
+<h3>The trace facilities<a class="headerlink" href="#the-trace-facilities" title="Permalink to this headline">¶</a></h3>
+<p>The trace facilities are:</p>
+<ul class="simple">
+<li>{TraceExp} : traces the full expression, showing all calls to user-
+or system-defined functions, their arguments, and the return
+values. For complex functions this can become a long list of
+function calls.</li>
+<li>{TraceRule} : traces one single user-defined function (rule). It
+shows each invocation, the arguments passed in, and the returned
+values. This is useful for tracking the behavior of that function in
+the environment it is intended to be used in.</li>
+<li>{TraceStack} : shows a few last function calls before an error has
+occurred.</li>
+<li>{Profile} : report on statistics (number of times functions were
+called, etc.). Useful for performance analysis.</li>
+</ul>
+<p>The online manual pages (e.g. {?TraceStack}) have more information
+about the use of these functions.</p>
+<p>An example invocation of {TraceRule} is</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; TraceRule(x+y)2+3*5+4;
+</pre></div>
+</div>
+<p>Which should then show something to the effect of</p>
+<div class="highlight-python"><div class="highlight"><pre>  TrEnter(2+3*5+4);
+    TrEnter(2+3*5);
+       TrArg(2,2);
+          TrArg(3*5,15);
+       TrLeave(2+3*5,17);
+        TrArg(2+3*5,17);
+        TrArg(4,4);
+    TrLeave(2+3*5+4,21);
+Out&gt; 21;
+</pre></div>
+</div>
+</div>
+<div class="section" id="custom-evaluation-facilities">
+<h3>Custom evaluation facilities<a class="headerlink" href="#custom-evaluation-facilities" title="Permalink to this headline">¶</a></h3>
+<p>Yacas supports a special form of evaluation where hooks are placed
+when evaluation enters or leaves an expression.</p>
+<p>This section will explain the way custom evaluation is supported in
+{Yacas}, and will proceed to demonstrate how it can be used by showing
+code to trace, interactively step through, profile, and write custom
+debugging code.</p>
+<p>Debugging, tracing and profiling has been implemented in the
+debug.rep/ module, but a simplification of that code will be presented
+here to show the basic concepts.</p>
+</div>
+<div class="section" id="the-basic-infrastructure-for-custom-evaluation">
+<h3>The basic infrastructure for custom evaluation<a class="headerlink" href="#the-basic-infrastructure-for-custom-evaluation" title="Permalink to this headline">¶</a></h3>
+<p>The name of the function is {CustomEval}, and the calling sequence is:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">CustomEval</span><span class="p">(</span><span class="n">enter</span><span class="p">,</span><span class="n">leave</span><span class="p">,</span><span class="n">error</span><span class="p">,</span><span class="n">expression</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Here, {expression} is the expression to be evaluated, {enter} some
+expression that should be evaluated when entering an expression, and
+{leave} an expression to be evaluated when leaving evaluation of that
+expression.</p>
+<p>The {error} expression is evaluated when an error occurred. If an
+error occurs, this is caught high up, the {error} expression is
+called, and the debugger goes back to evaluating {enter} again so the
+situation can be examined. When the debugger needs to stop, the
+{error} expression is the place to call {CustomEval&#8217;Stop()} (see
+explanation below).</p>
+<p>The {CustomEval} function can be used to write custom debugging
+tools. Examples are:</p>
+<ul class="simple">
+<li>a trace facility following entering and leaving functions</li>
+<li>interactive debugger for stepping through evaluation of an
+expression.</li>
+<li>profiler functionality, by having the callback functions do the
+bookkeeping on counts of function calls for instance.</li>
+</ul>
+<p>In addition, custom code can be written to for instance halt
+evaluation and enter interactive mode as soon as some very specific
+situation occurs, like &#8220;stop when function foo is called while the
+function bar is also on the call stack and the value of the local
+variable x is less than zero&#8221;.</p>
+<p>As a first example, suppose we define the functions TraceEnter(),
+TraceLeave() and {TraceExp()} as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre>TraceStart() := [indent := 0;];
+TraceEnter() :=
+[
+   indent++;
+   Space(2*indent);
+   Echo(&quot;Enter &quot;,CustomEval&#39;Expression());
+];
+TraceLeave() :=
+[
+   Space(2*indent);
+   Echo(&quot;Leave &quot;,CustomEval&#39;Result());
+   indent--;
+];
+Macro(TraceExp,{expression})
+[
+   TraceStart();
+   CustomEval(TraceEnter(),
+              TraceLeave(),
+              CustomEval&#39;Stop(),@expression);
+];
+</pre></div>
+</div>
+<p>allows us to have tracing in a very basic way. We can now call:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; TraceExp(2+3)
+  Enter 2+3
+    Enter 2
+    Leave 2
+    Enter 3
+    Leave 3
+    Enter IsNumber(x)
+      Enter x
+      Leave 2
+    Leave True
+    Enter IsNumber(y)
+      Enter y
+      Leave 3
+    Leave True
+    Enter True
+    Leave True
+    Enter MathAdd(x,y)
+      Enter x
+      Leave 2
+      Enter y
+      Leave 3
+    Leave 5
+  Leave 5
+Out&gt; 5;
+</pre></div>
+</div>
+<p>This example shows the use of {CustomEval&#8217;Expression} and
+{CustomEval&#8217;Result}. These functions give some extra access to
+interesting information while evaluating the expression.  The
+functions defined to allow access to information while evaluating are:</p>
+<ul class="simple">
+<li>{CustomEval&#8217;Expression()} - return expression currently on the top
+call stack for evaluation.</li>
+<li>{CustomEval&#8217;Result()} - when the {leave} argument is called this
+function returns what the evaluation of the top expression will
+return.</li>
+<li>{CustomEval&#8217;Locals()} - returns a list with the current local
+variables.</li>
+<li>{CustomEval&#8217;Stop()} - stop debugging execution</li>
+</ul>
+<p>A simple interactive debugger</p>
+<p>The following code allows for simple interactive debugging:</p>
+<div class="highlight-python"><div class="highlight"><pre>DebugStart():=
+[
+   debugging:=True;
+   breakpoints:={};
+];
+DebugRun():= [debugging:=False;];
+DebugStep():=[debugging:=False;nextdebugging:=True;];
+DebugAddBreakpoint(fname_IsString) &lt;--
+   [ breakpoints := fname:breakpoints;];
+BreakpointsClear() &lt;-- [ breakpoints := {};];
+Macro(DebugEnter,{})
+[
+   Echo(&quot;&gt;&gt;&gt; &quot;,CustomEval&#39;Expression());
+   If(debugging = False And
+      IsFunction(CustomEval&#39;Expression()) And
+      Contains(breakpoints,
+      Type(CustomEval&#39;Expression())),
+        debugging:=True);
+   nextdebugging:=False;
+   While(debugging)
+   [
+      debugRes:=
+        Eval(FromString(
+          ReadCmdLineString(&quot;Debug&gt; &quot;):&quot;;&quot;)
+          Read());
+      If(debugging,Echo(&quot;DebugOut&gt; &quot;,debugRes));
+   ];
+   debugging:=nextdebugging;
+];
+Macro(DebugLeave,{})
+[
+   Echo(CustomEval&#39;Result(),
+        &quot; &lt;-- &quot;,CustomEval&#39;Expression());
+];
+Macro(Debug,{expression})
+[
+   DebugStart();
+   CustomEval(DebugEnter(),
+              DebugLeave(),
+              debugging:=True,@expression);
+];
+</pre></div>
+</div>
+<p>This code allows for the following interaction:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Debug(2+3)
+&gt;&gt;&gt; 2+3
+Debug&gt;
+</pre></div>
+</div>
+<p>The console now shows the current expression being evaluated, and a
+debug prompt for interactive debugging. We can enter {DebugStep()},
+which steps to the next expression to be evaluated:</p>
+<div class="highlight-python"><div class="highlight"><pre>Debug&gt; DebugStep();
+&gt;&gt;&gt; 2
+Debug&gt;
+</pre></div>
+</div>
+<p>This shows that in order to evaluate {2+3} the interpreter first needs
+to evaluate {2}. If we step further a few more times, we arrive at:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">IsNumber</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">Debug&gt;</span>
+</pre></div>
+</div>
+<p>Now we might be curious as to what the value for {x} is. We can
+dynamically obtain the value for {x} by just typing it on the command
+line.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">IsNumber</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="go">Debug&gt; x</span>
+<span class="go">DebugOut&gt; 2</span>
+</pre></div>
+</div>
+<p>{x} is set to {2}, so we expect {IsNumber} to return <a class="reference internal" href="../reference_manual/consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>. Stepping
+again:</p>
+<div class="highlight-python"><div class="highlight"><pre>Debug&gt; DebugStep();
+&gt;&gt;&gt; x
+Debug&gt; DebugStep();
+2  &lt;-- x
+True  &lt;-- IsNumber(x)
+&gt;&gt;&gt; IsNumber(y)
+</pre></div>
+</div>
+<p>So we see this is true. We can have a look at which local variables
+are currently available by calling {CustomEval&#8217;Locals()}:</p>
+<div class="highlight-python"><div class="highlight"><pre>Debug&gt; CustomEval&#39;Locals()
+DebugOut&gt; {arg1,arg2,x,y,aLeftAssign,aRightAssign}
+</pre></div>
+</div>
+<p>And when bored, we can proceed with {DebugRun()} which will continue
+the debugger until finished in this case (a more sophisticated
+debugger can add breakpoints, so running would halt again at for
+instance a breakpoint).</p>
+<div class="highlight-python"><div class="highlight"><pre>Debug&gt; DebugRun()
+&gt;&gt;&gt; y
+3  &lt;-- y
+True  &lt;-- IsNumber(y)
+&gt;&gt;&gt; True
+True  &lt;-- True
+&gt;&gt;&gt; MathAdd(x,y)
+&gt;&gt;&gt; x
+2  &lt;-- x
+&gt;&gt;&gt; y
+3  &lt;-- y
+5  &lt;-- MathAdd(x,y)
+5  &lt;-- 2+3
+Out&gt; 5;
+</pre></div>
+</div>
+<p>The above bit of code also supports primitive breakpointing, in that
+one can instruct the evaluator to stop when a function will be
+entered.  The debugger then stops just before the arguments to the
+function are evaluated. In the following example, we make the debugger
+stop when a call is made to the {MathAdd} function:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Debug(2+3)
+&gt;&gt;&gt; 2+3
+Debug&gt; DebugAddBreakpoint(&quot;MathAdd&quot;)
+DebugOut&gt; {&quot;MathAdd&quot;}
+Debug&gt; DebugRun()
+&gt;&gt;&gt; 2
+2  &lt;-- 2
+&gt;&gt;&gt; 3
+3  &lt;-- 3
+&gt;&gt;&gt; IsNumber(x)
+&gt;&gt;&gt; x
+2  &lt;-- x
+True  &lt;-- IsNumber(x)
+&gt;&gt;&gt; IsNumber(y)
+&gt;&gt;&gt; y
+3  &lt;-- y
+True  &lt;-- IsNumber(y)
+&gt;&gt;&gt; True
+True  &lt;-- True
+&gt;&gt;&gt; MathAdd(x,y)
+Debug&gt;
+</pre></div>
+</div>
+<p>The arguments to {MathAdd} can now be examined, or execution continued.</p>
+<p>One great advantage of defining much of the debugger in script code
+can be seen in the {DebugEnter} function, where the breakpoints are
+checked, and execution halts when a breakpoint is reached. In this
+case the condition for stopping evaluation is rather simple: when
+entering a specific function, stop. However, nothing stops a
+programmer from writing a custom debugger that could stop on any
+condition, halting at e very special case.</p>
+</div>
+<div class="section" id="profiling">
+<h3>Profiling<a class="headerlink" href="#profiling" title="Permalink to this headline">¶</a></h3>
+<p>A simple profiler that counts the number of times each function is
+called can be written such:</p>
+<div class="highlight-python"><div class="highlight"><pre>ProfileStart():=
+[
+   profilefn:={};
+];
+10 # ProfileEnter()
+     _(IsFunction(CustomEval&#39;Expression())) &lt;--
+[
+   Local(fname);
+   fname:=Type(CustomEval&#39;Expression());
+   If(profilefn[fname]=Empty,profilefn[fname]:=0);
+   profilefn[fname] := profilefn[fname]+1;
+];
+Macro(Profile,{expression})
+[
+   ProfileStart();
+   CustomEval(ProfileEnter(),True,
+              CustomEval&#39;Stop(),@expression);
+   ForEach(item,profilefn)
+     Echo(&quot;Function &quot;,item[1],&quot; called &quot;,
+          item[2],&quot; times&quot;);
+];
+</pre></div>
+</div>
+<p>which allows for the interaction:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Profile(2+3)
+Function MathAdd called 1  times
+Function IsNumber called 2  times
+Function + called 1  times
+Out&gt; True;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="advanced-example-2-implementing-a-non-commutative-algebra">
+<h2>Advanced example 2: implementing a non-commutative algebra<a class="headerlink" href="#advanced-example-2-implementing-a-non-commutative-algebra" title="Permalink to this headline">¶</a></h2>
+<p>We need to understand how to simplify expressions in Yacas, and the
+best way is to try writing our own algebraic expression handler. In
+this chapter we shall consider a simple implementation of a particular
+non-commutative algebra called the Heisenberg algebra. This algebra
+was introduced by Dirac to develop quantum field theory. We won&#8217;t
+explain any physics here, but instead we shall to delve somewhat
+deeper into the workings of Yacas.</p>
+<div class="section" id="the-problem">
+<h3>The problem<a class="headerlink" href="#the-problem" title="Permalink to this headline">¶</a></h3>
+<p>Suppose we want to define special symbols $A(k)$ and $B(k)$ that we
+can multiply with each other or by a number, or add to each other, but
+not commute with each other, i.e. $A(k)*B(k) != B(k)*A(k)$. Here $k$
+is merely a label to denote that $A(1)$ and $A(2)$ are two different
+objects. (In physics, these are called &#8220;creation&#8221; and &#8220;annihilation&#8221;
+operators for &#8220;bosonic quantum fields&#8221;.) Yacas already assumes that
+the usual multiplication operator &#8220;{*}&#8221; is commutative. Rather than
+trying to redefine {*}, we shall introduce a special multiplication
+sign &#8220;{**}&#8221; that we shall use with the objects $A(k)$ and $B(k)$;
+between usual numbers this would be the same as normal
+multiplication. The symbols $A(k)$, $B(k)$ will never be evaluated to
+numbers, so an expression such as {2 ** A(k1) ** B(k2) ** A(k3)} is
+just going to remain like that. (In physics, commuting numbers are
+called &#8220;classical quantities&#8221; or &#8220;c-numbers&#8221; while non-commuting
+objects made up of A(k) and B(k) are called &#8220;quantum quantities&#8221; or
+&#8220;q-numbers&#8221;.) There are certain commutation relations for these
+symbols: the $A$&#8217;s commute between themselves, $A(k)*A(l) =
+A(l)*A(k)$, and also the $B$&#8217;s, $B(k)*B(l) = B(l)*B(k)$. However, the
+$A$&#8217;s don&#8217;t commute with the $B$&#8217;s: $A(k)*B(l) - B(l)*A(k) =
+delta(k-l)$. Here the &#8220;{delta}&#8221; is a &#8220;classical&#8221; function (called the
+&#8220;Dirac $delta$-function&#8221;) but we aren&#8217;t going to do anything about it,
+just leave it symbolic.</p>
+<p>We would like to be able to manipulate such expressions, expanding
+brackets, collecting similar terms and so on, while taking care to
+always keep the non-commuting terms in the correct order. For example,
+we want Yacas to automatically simplify {2**B(k1)**3**A(k2)} to
+{6**B(k1)**A(k2)}. Our goal is not to implement a general package to
+tackle complicated non-commutative operations; we merely want to teach
+Yacas about these two kinds of &#8220;quantum objects&#8221; called {A(k)} and
+{B(k)}, and we shall define one function that a physicist would need
+to apply to these objects. This function applied to any given
+expression containing $A$&#8217;s and $B$&#8217;s will compute something called a
+&#8220;vacuum expectation value&#8221;, or &#8220;VEV&#8221; for short, of that
+expression. This function has &#8220;classical&#8221;, i.e. commuting, values and
+is defined as follows: VEV of a commuting number is just that number,
+e.g. $VEV(4) = 4$, $VEV(delta(k-l)) = delta(k-l)$; and $VEV(X*A(k)) =
+0$, $VEV(B(k)*X) = 0$ where $X$ is any expression, commutative or
+not. It is straightforward to compute VEV of something that contains
+$A$&#8217;s and $B$&#8217;s: one just uses the commutation relations to move all
+$B$&#8217;s to the left of all $A$&#8217;s, and then applies the definition of
+VEV, simply throwing out any remaining q-numbers.</p>
+</div>
+<div class="section" id="first-steps">
+<h3>First steps<a class="headerlink" href="#first-steps" title="Permalink to this headline">¶</a></h3>
+<p>The first thing that comes to mind when we start implementing this in
+Yacas is to write a rule such as</p>
+<div class="highlight-python"><div class="highlight"><pre>10 # A(_k)**B(_l) &lt;-- B(l)**A(k)
+  + delta(k-l);
+</pre></div>
+</div>
+<p>However, this is not going to work right away. In fact this will
+immediately give a syntax error because Yacas doesn&#8217;t know yet about
+the new multiplication <tt class="docutils literal"><span class="pre">**</span></tt>. Let&#8217;s fix that: we shall define a new
+infix operator with the same precedence as multiplication.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">RuleBase</span><span class="p">(</span><span class="s">&quot;**&quot;</span><span class="p">,</span> <span class="p">{</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">});</span>
+<span class="n">Infix</span><span class="p">(</span><span class="s">&quot;**&quot;</span><span class="p">,</span> <span class="n">OpPrecedence</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>Now we can use this new multiplication operator in expressions, and it
+doesn&#8217;t evaluate to anything &#8211; exactly what we need. But we find that
+things don&#8217;t quite work:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">A</span><span class="p">(</span><span class="n">_k</span><span class="p">)</span><span class="o">**</span><span class="n">B</span><span class="p">(</span><span class="n">_l</span><span class="p">)</span> <span class="o">&lt;--</span> <span class="n">B</span><span class="p">(</span><span class="n">l</span><span class="p">)</span><span class="o">**</span><span class="n">A</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">+</span><span class="n">delta</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="n">l</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">A</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="n">B</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">B</span><span class="p">(</span><span class="n">l</span><span class="p">)</span><span class="o">**</span><span class="n">A</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">+</span><span class="n">delta</span><span class="p">(</span><span class="n">k</span><span class="o">-</span><span class="n">l</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Yacas doesn&#8217;t grok that {delta(k)}, {A(k)} and {B(k)} are
+functions. This can be fixed by declaring</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">RuleBase</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">,</span> <span class="p">{</span><span class="n">k</span><span class="p">});</span>
+<span class="n">RuleBase</span><span class="p">(</span><span class="s">&quot;B&quot;</span><span class="p">,</span> <span class="p">{</span><span class="n">k</span><span class="p">});</span>
+<span class="n">RuleBase</span><span class="p">(</span><span class="s">&quot;delta&quot;</span><span class="p">,</span> <span class="p">{</span><span class="n">k</span><span class="p">});</span>
+</pre></div>
+</div>
+<p>Now things work as intended:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">A</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="n">B</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">2</span><span class="o">*</span><span class="p">(</span><span class="n">B</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">**</span><span class="n">A</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">+</span><span class="n">delta</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="n">z</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="structure-of-expressions">
+<h3>Structure of expressions<a class="headerlink" href="#structure-of-expressions" title="Permalink to this headline">¶</a></h3>
+<p>Are we done yet? Let&#8217;s try to calculate more things with our $A$&#8217;s and
+$B$&#8217;s:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">A</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="o">**</span><span class="n">B</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">2</span><span class="o">*</span><span class="n">A</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">**</span><span class="n">B</span><span class="p">(</span><span class="n">l</span><span class="p">);</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">A</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="n">A</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="n">B</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">A</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">**</span><span class="n">A</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="n">B</span><span class="p">(</span><span class="n">z</span><span class="p">);</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="n">B</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="o">**</span><span class="n">B</span><span class="p">(</span><span class="n">y</span><span class="p">)</span><span class="o">*</span><span class="mi">3</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">3</span><span class="o">*</span><span class="p">(</span><span class="n">A</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="n">B</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">**</span><span class="mi">2</span><span class="o">**</span><span class="n">B</span><span class="p">(</span><span class="n">y</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>After we gave it slightly more complicated input, Yacas didn&#8217;t fully
+evaluate expressions containing the new {**} operation: it didn&#8217;t move
+constants {2} and {3} together, didn&#8217;t expand brackets, and, somewhat
+mysteriously, it didn&#8217;t apply the rule in the first line above &#8211;
+although it seems like it should have. Before we hurry to fix these
+things, let&#8217;s think some more about how Yacas represents our new
+expressions. Let&#8217;s start with the first line above:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; FullForm( A(k)*2**B(l) )
+(** (* 2 (A k ))(B l ))
+Out&gt; 2*A(k)**B(l);
+</pre></div>
+</div>
+<p>What looks like {2*A(k)**B(l)} on the screen is really {(2*A(k)) **
+B(l)} inside Yacas. In other words, the commutation rule didn&#8217;t apply
+because there is no subexpression of the form {A(...)**B(...)} in this
+expression. It seems that we would need many rules to exhaust all ways
+in which the adjacent factors {A(k)} and {B(l)} might be divided
+between subexpressions. We run into this difficulty because Yacas
+represents all expressions as trees of functions and leaves the
+semantics to us. To Yacas, the &#8220;{*}&#8221; operator is fundamentally no
+different from any other function, so {(a*b)*c} and {a*(b*c)} are two
+basically different expressions. It would take a considerable amount
+of work to teach Yacas to recognize all such cases as identical. This
+is a design choice and it was made by the author of Yacas to achieve
+greater flexibility and extensibility.</p>
+<p>A solution for this problem is not to write rules for all possible
+cases (there are infinitely many cases) but to systematically reduce
+expressions to a &lt;i&gt;canonical form&lt;/i&gt;. &#8220;Experience has shown that&#8221; (a
+phrase used when we can&#8217;t come up with specific arguments) symbolic
+manipulation of unevaluated trees is not efficient unless these trees
+are forced to a pattern that reflects their semantics.</p>
+<p>We should choose a canonical form for all such expressions in a way
+that makes our calculations &#8211; namely, the function {VEV()} &#8211;
+easier. In our case, our expressions contain two kinds of ingredients:
+normal, commutative numbers and maybe a number of noncommuting symbols
+{A(k)} and {B(k)} multiplied together with the &#8220;{**}&#8221; operator. It
+will not be possible to divide anything by $A(k)$ or $B(k)$ &#8211; such
+division is undefined.</p>
+<p>A possible canonical form for expressions with A&#8217;s and B&#8217;s is the
+following. All commutative numbers are moved to the left of the
+expression and grouped together as one factor; all non-commutative
+products are simplified to a single chain, all brackets expanded. A
+canonical expression should not contain any extra brackets in its
+non-commutative part. For example, (A(x)+B(x)*x)**B(y)*y**A(z) should
+be regrouped as a sum of two terms, (y)**(A(x)**(B(y))**A(z)) and
+(x*y)**(B(x)**(B(y))**A(z)). Here we wrote out all parentheses to show
+explicitly which operations are grouped.  (We have chosen the grouping
+of non-commutative factors to go from left to right, however this does
+not seem to be an important choice.) On the screen this will look
+simply {y ** A(x) ** B(y)} and {x*y** B(x) ** B(y) ** A(z)} because we
+have defined the precedence of the &#8220;**&#8221; operator to be the same as
+that of the normal multiplication, so Yacas won&#8217;t insert any more
+parentheses.</p>
+<p>This canonical form will allow Yacas to apply all the usual rules on
+the commutative factor while cleanly separating all non-commutative
+parts for special treatment. Note that a commutative factor such as
+{2*x} will be multiplied by a single non-commutative piece with
+&#8220;{**}&#8221;.</p>
+<p>The basic idea behind the &#8220;canonical form&#8221; is this: we should define
+our evaluation rules in such a way that any expression containing
+{A(k)} and {B(k)} will be always automatically reduced to the
+canonical form after one full evaluation. All functions on our new
+objects will assume that the object is already in the canonical form
+and should return objects in the same canonical form.</p>
+</div>
+<div class="section" id="implementing-the-canonical-form">
+<h3>Implementing the canonical form<a class="headerlink" href="#implementing-the-canonical-form" title="Permalink to this headline">¶</a></h3>
+<p>Now that we have a design, let&#8217;s look at some implementation
+issues. We would like to write evaluation rules involving the new
+operator &#8220;{**}&#8221; as well as the ordinary multiplications and additions
+involving usual numbers, so that all &#8220;classical&#8221; numbers and all
+&#8220;quantum&#8221; objects are grouped together separately. This should be
+accomplished with rules that expand brackets, exchange the bracketing
+order of expressions and move commuting factors to the left. For now,
+we shall not concern ourselves with divisions and subtractions.</p>
+<p>First, we need to distinguish &#8220;classical&#8221; terms from &#8220;quantum&#8221;
+ones. For this, we shall define a predicate {IsQuantum()} recursively,
+as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre>/* Predicate IsQuantum(): will return
+   True if the expression contains A(k)
+   or B(k) and False otherwise */
+10 # IsQuantum(A(_x)) &lt;-- True;
+10 # IsQuantum(B(_x)) &lt;-- True;
+    /* Result of a binary operation may
+      be Quantum */
+20 # IsQuantum(_x + _y) &lt;-- IsQuantum(x)
+  Or IsQuantum(y);
+20 # IsQuantum(+ _y) &lt;-- IsQuantum(y);
+20 # IsQuantum(_x * _y) &lt;-- IsQuantum(x)
+  Or IsQuantum(y);
+20 # IsQuantum(_x ** _y) &lt;-- IsQuantum(x)
+  Or IsQuantum(y);
+    /* If none of the rules apply, the
+      object is not Quantum */
+30 # IsQuantum(_x) &lt;-- False;
+</pre></div>
+</div>
+<p>Now we shall construct rules that implement reduction to the canonical
+form. The rules will be given precedences, so that the reduction
+proceeds by clearly defined steps. All rules at a given precedence
+benefit from all simplifications at earlier precedences.</p>
+<div class="highlight-python"><div class="highlight"><pre>/* First, replace * by ** if one of the
+   factors is Quantum to guard against
+   user error */
+10 # (_x * _y)_(IsQuantum(x) Or
+  IsQuantum(y)) &lt;-- x ** y;
+    /* Replace ** by * if neither of the
+      factors is Quantum */
+10 # (_x ** _y)_(Not(IsQuantum(x) Or
+ IsQuantum(y))) &lt;-- x * y;
+    /* Now we are guaranteed that ** is
+      used between Quantum values */
+    /* Expand all brackets involving
+      Quantum values */
+15 # (_x + _y) ** _z &lt;-- x ** z + y ** z;
+15 # _z ** (_x + _y) &lt;-- z ** x + z ** y;
+    /* Now we are guaranteed that there are
+      no brackets next to &quot;**&quot; */
+    /* Regroup the ** multiplications
+      toward the right */
+20 # (_x ** _y) ** _z &lt;-- x ** (y ** z);
+    /* Move classical factors to the left:
+      first, inside brackets */
+30 # (x_IsQuantum ** _y)_(Not(IsQuantum(y)))
+  &lt;-- y ** x;
+    /* Then, move across brackets:
+      y and z are already ordered
+      by the previous rule */
+    /* First, if we have Q ** (C ** Q) */
+35 # (x_IsQuantum ** (_y ** _z))
+  _(Not(IsQuantum(y))) &lt;-- y ** (x ** z);
+    /* Second, if we have C ** (C ** Q) */
+35 # (_x ** (_y ** _z))_(Not(IsQuantum(x)
+  Or IsQuantum(y))) &lt;-- (x*y) ** z;
+</pre></div>
+</div>
+<p>After we execute this in Yacas, all expressions involving additions
+and multiplications are automatically reduced to the canonical
+form. Extending these rules to subtractions and divisions is
+straightforward.</p>
+</div>
+<div class="section" id="implementing-commutation-relations">
+<h3>Implementing commutation relations<a class="headerlink" href="#implementing-commutation-relations" title="Permalink to this headline">¶</a></h3>
+<p>But we still haven&#8217;t implemented the commutation relations. It is
+perhaps not necessary to have commutation rules automatically applied
+at each evaluation. We shall define the function {OrderBA()} that will
+bring all $B$&#8217;s to the left of all $A$&#8217;s by using the commutation
+relation. (In physics, this is called &#8220;normal-ordering&#8221;.) Again, our
+definition will be recursive. We shall assign it a later precedence
+than our quantum evaluation rules, so that our objects will always be
+in canonical form. We need a few more rules to implement the
+commutation relation and to propagate the ordering operation down the
+expression tree:</p>
+<div class="highlight-python"><div class="highlight"><pre>/* Commutation relation */
+40 # OrderBA(A(_k) ** B(_l))
+  &lt;-- B(l)**A(k) + delta(k-l);
+40 # OrderBA(A(_k) ** (B(_l) ** _x))
+  &lt;-- OrderBA(OrderBA(A(k)**B(l)) ** x);
+    /* Ordering simple terms */
+40 # OrderBA(_x)_(Not(IsQuantum(x))) &lt;-- x;
+40 # OrderBA(A(_k)) &lt;-- A(k);
+40 # OrderBA(B(_k)) &lt;-- B(k);
+    /* Sums of terms */
+40 # OrderBA(_x + _y) &lt;-- OrderBA(x)
+  + OrderBA(y);
+    /* Product of a classical and
+      a quantum value */
+40 # OrderBA(_x ** _y)_(Not(IsQuantum(x)))
+  &lt;-- x ** OrderBA(y);
+    /* B() ** X : B is already at left,
+      no need to order it */
+50 # OrderBA(B(_k) ** _x)&lt;-- B(k)
+  ** OrderBA(x);
+    /* A() ** X : need to order X first */
+50 # OrderBA(A(_k) ** _x) &lt;-- OrderBA(A(k)
+  ** OrderBA(x));
+</pre></div>
+</div>
+<p>These rules seem to be enough for our purposes. Note that the
+commutation relation is implemented by the first two rules; the first
+one is used by the second one which applies when interchanging factors
+A and B separated by brackets. This inconvenience of having to define
+several rules for what seems to be &#8220;one thing to do&#8221; is a consequence
+of tree-like structure of expressions in Yacas. It is perhaps the
+price we have to pay for conceptual simplicity of the design.</p>
+</div>
+<div class="section" id="avoiding-infinite-recursion">
+<h3>Avoiding infinite recursion<a class="headerlink" href="#avoiding-infinite-recursion" title="Permalink to this headline">¶</a></h3>
+<p>However, we quickly discover that our definitions don&#8217;t
+work. Actually, we have run into a difficulty typical of rule-based
+programming:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; OrderBA(A(k)**A(l))
+Error on line 1 in file [CommandLine]
+Line error occurred on:
+&gt;&gt;&gt;
+Max evaluation stack depth reached.
+Please use MaxEvalDepth to increase the
+  stack size as needed.
+</pre></div>
+</div>
+<p>This error message means that we have created an infinite
+recursion. It is easy to see that the last rule is at fault: it never
+stops applying itself when it operates on a term containing only $A$&#8217;s
+and no $B$&#8217;s. When encountering a term such as {A()**X}, the routine
+cannot determine whether {X} has already been normal-ordered or not,
+and it unnecessarily keeps trying to normal-order it again and
+again. We can circumvent this difficulty by using an auxiliary
+ordering function that we shall call {OrderBAlate()}. This function
+will operate only on terms of the form {A()**X} and only after {X} has
+been ordered.  It will not perform any extra simplifications but
+instead delegate all work to {OrderBA()}.</p>
+<div class="highlight-python"><div class="highlight"><pre>50 # OrderBA(A(_k) ** _x) &lt;-- OrderBAlate(
+  A(k) ** OrderBA(x));
+55 # OrderBAlate(_x + _y) &lt;-- OrderBAlate(
+  x) + OrderBAlate(y);
+55 # OrderBAlate(A(_k) ** B(_l)) &lt;--
+  OrderBA(A(k)**B(l));
+55 # OrderBAlate(A(_k) ** (B(_l) ** _x))
+  &lt;-- OrderBA(A(k)**(B(l)**x));
+60 # OrderBAlate(A(_k) ** _x) &lt;-- A(k)**x;
+65 # OrderBAlate(_x) &lt;-- OrderBA(x);
+</pre></div>
+</div>
+<p>Now {OrderBA()} works as desired.</p>
+</div>
+<div class="section" id="implementing-vev">
+<h3>Implementing VEV()<a class="headerlink" href="#implementing-vev" title="Permalink to this headline">¶</a></h3>
+<p>Now it is easy to define the function {VEV()}. This function should
+first execute the normal-ordering operation, so that all $B$&#8217;s move to
+the left of $A$&#8217;s. After an expression is normal-ordered, all of its
+&#8220;quantum&#8221; terms will either end with an $A(k)$ or begin with a $B(k)$,
+or both, and {VEV()} of those terms will return $0$. The value of
+{VEV()} of a non-quantum term is just that term. The implementation
+could look like this:</p>
+<div class="highlight-python"><div class="highlight"><pre>100 # VEV(_x) &lt;-- VEVOrd(OrderBA(x));
+    /* Everything is expanded now,
+      deal term by term */
+100 # VEVOrd(_x + _y) &lt;-- VEVOrd(x)
+  + VEVOrd(y);
+    /* Now cancel all quantum terms */
+110 # VEVOrd(x_IsQuantum) &lt;-- 0;
+    /* Classical terms are left */
+120 # VEVOrd(_x) &lt;-- x;
+</pre></div>
+</div>
+<p>To avoid infinite recursion in calling {OrderBA()}, we had to
+introduce an auxiliary function {VEVOrd()} that assumes its argument
+to be ordered.</p>
+<p>Finally, we try some example calculations to test our rules:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; OrderBA(A(x)*B(y))
+Out&gt; B(y)**A(x)+delta(x-y);
+In&gt; OrderBA(A(x)*B(y)*B(z))
+Out&gt; B(y)**B(z)**A(x)+delta(x-z)**B(y)
+  +delta(x-y)**B(z);
+In&gt; VEV(A(k)*B(l))
+Out&gt; delta(k-l);
+In&gt; VEV(A(k)*B(l)*A(x)*B(y))
+Out&gt; delta(k-l)*delta(x-y);
+In&gt; VEV(A(k)*A(l)*B(x)*B(y))
+Out&gt; delta(l-y)*delta(k-x)+delta(l-x)
+  *delta(k-y);
+</pre></div>
+</div>
+<p>Things now work as expected. Yacas&#8217;s {Simplify()} facilities can be
+used on the result of {VEV()} if it needs simplification.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../book_of_algorithms/index.html" class="btn btn-neutral float-right" title="The Yacas Book of Algorithms"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../reference_manual/programming.html" class="btn btn-neutral" title="Functions related to programming in Yacas"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Ayal Pinkus, Serge Winnitzky, Grzegorz Mazur.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.3.5',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,1485 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Predicates &mdash; Yacas</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="Yacas" href="../../index.html"/>
+        <link rel="up" title="Reference Manual" href="index.html"/>
+        <link rel="next" title="Constants" href="consts.html"/>
+        <link rel="prev" title="Control flow functions" href="controlflow.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="fa fa-home"> Yacas</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation-from-sources">Installation from sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-syntax">Yacas syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#using-yacas-from-the-calculation-center">Using Yacas from the calculation center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-as-a-symbolic-calculator">Yacas as a symbolic calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#arbitrary-precision-numbers">Arbitrary precision numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#analytic-functions">Analytic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#boolean-expressions-and-predicates">Boolean expressions and predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#strings-and-lists">Strings and lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#writing-simplification-rules">Writing simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#local-simplification-rules">Local simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#programming-essentials">Programming essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#macros">Macros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#the-practice-of-programming-in-yacas">The practice of programming in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#defining-your-own-operators">Defining your own operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#some-assorted-programming-topics">Some assorted programming topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#linear-algebra">Linear Algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="arithmetic.html">Arithmetic and other operations on numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calc.html">Calculus and elementary functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simplify.html">Simplification of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode.html">Differential Equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logic.html">Propositional logic theorem prover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear-algebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="univariate-polynomials.html">Operations on polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lists.html">List operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional.html">Functional operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controlflow.html">Control flow functions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="consts.html">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vars.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io.html">Input/output and plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="strings.html">String manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="probability-and-statistics.html">Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="number-theory.html">Number theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming.html">Functions related to programming in Yacas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_in_yacas/index.html">Programming in Yacas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-yacas-architecture">The Yacas architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-evaluation-scheme">Yacas evaluation scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#rules">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#structured-programming-and-control-flow">Structured programming and control flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#additional-syntactic-sugar">Additional syntactic sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#using-macro-rules-e-g-nfunction">Using &#8220;Macro rules&#8221; (e.g. {NFunction})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#macro-expansion">Macro expansion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#scope-of-variable-bindings">Scope of variable bindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation-of-expressions">Evaluation of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-lisp-heritage">The LISP heritage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-specific-extensions-for-cas-implementations">{Yacas}-specific extensions for CAS implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-evaluation-is-simplification-hack">The &#8220;Evaluation is Simplification&#8221; hack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#destructive-operations">Destructive operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#coding-style">Coding style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#writing-new-library-functions">Writing new library functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-1-parsing-expressions-cform">Advanced example 1: parsing expressions ({CForm})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-programming-pitfalls">Yacas programming pitfalls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#debugging-in-yacas">Debugging in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-2-implementing-a-non-commutative-algebra">Advanced example 2: implementing a non-commutative algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../book_of_algorithms/index.html">The Yacas Book of Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/multivar.html">Sparse representations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/integration.html">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/transforms.html">Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/sturm-sequences.html">Finding real roots of polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/numtheory.html">Number theory algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../yagy/index.html">YAGY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Yacas</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Reference Manual</a> &raquo;</li>
+      
+    <li>Predicates</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/doc/reference_manual/predicates.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="predicates">
+<h1>Predicates<a class="headerlink" href="#predicates" title="Permalink to this headline">¶</a></h1>
+<p>A predicate is a function that returns a boolean value, i.e. <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> or
+<a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>. Predicates are often used in patterns, For instance, a rule
+that only holds for a positive integer would use a pattern such as
+{n_IsPositiveInteger}.</p>
+<dl class="function">
+<dt>
+<tt class="descname">e1 != e2</tt></dt>
+<dd><p>test for &#8220;not equal&#8221;</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>{e2</strong> (<em>e1},</em>) &#8211; expressions to be compared</td>
+</tr>
+</tbody>
+</table>
+<p>Both expressions are evaluated and compared. If they turn out to be
+equal, the result is <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>. Otherwise, the result  is <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>.
+The expression {e1 != e2} is equivalent to {Not(e1 = e2)}.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="mi">1</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="mi">1</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">=()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">e1 = e2</tt></dt>
+<dd><p>test for equality of expressions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>{e2</strong> (<em>e1},</em>) &#8211; expressions to be compared</td>
+</tr>
+</tbody>
+</table>
+<p>Both expressions are evaluated and compared. If they turn out to be
+equal, the  result is <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>. Otherwise, the result is <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>. The
+function {Equals} does  the same.    Note that the test is on
+syntactic equality, not mathematical equality. Hence  even if the
+result is <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>, the expressions can still be
+&lt;i&gt;mathematically&lt;/i&gt; equal; see the examples below. Put otherwise,
+this  function tests whether the two expressions would be displayed
+in the same way  if they were printed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; e1 := (x+1) * (x-1);
+Out&gt; (x+1)*(x-1);
+In&gt; e2 := x^2 - 1;
+Out&gt; x^2-1;
+In&gt; e1 = e2;
+Out&gt; False;
+In&gt; Expand(e1) = e2;
+Out&gt; True;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">=()</span></tt>, <a class="reference internal" href="programming.html#Equals" title="Equals"><tt class="xref ys ys-func docutils literal"><span class="pre">Equals()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">Not expr</tt></dt>
+<dd><p>logical negation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; a boolean expression</td>
+</tr>
+</tbody>
+</table>
+<p>Not returns the logical negation of the argument expr. If {expr} is
+<a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> it returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>, and if {expr} is <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>, {Not expr}
+returns <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>.  If the argument is neither <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> nor <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>, it
+returns the entire  expression with evaluated arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Not True
+Out&gt; False;
+In&gt; Not False
+Out&gt; True;
+In&gt; Not(a)
+Out&gt; Not a;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">And()</span></tt>, <tt class="xref ys ys-func docutils literal"><span class="pre">Or()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">a1 And a2</tt></dt>
+<dd><p>logical conjunction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>..., {a}</strong> (<em>a}1,</em>) &#8211; boolean values (may evaluate to <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> or <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>)</td>
+</tr>
+</tbody>
+</table>
+<p>This function returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if all arguments are true. The  {And}
+operation is &#8220;lazy&#8221;, i.e. it returns <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> as soon as a <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>
+argument  is found (from left to right). If an argument other than
+<a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> or  <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> is encountered a new {And} expression is
+returned with all  arguments that didn&#8217;t evaluate to <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> or
+<a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> yet.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; True And False
+Out&gt; False;
+In&gt; And(True,True)
+Out&gt; True;
+In&gt; False And a
+Out&gt; False;
+In&gt; True And a
+Out&gt; And(a);
+In&gt; And(True,a,True,b)
+Out&gt; b And a;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">Or()</span></tt>, <tt class="xref ys ys-func docutils literal"><span class="pre">Not()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">a1 Or a2</tt></dt>
+<dd><p>logical disjunction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>..., {a}</strong> (<em>a}1,</em>) &#8211; boolean expressions (may evaluate to <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> or <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>)</td>
+</tr>
+</tbody>
+</table>
+<p>This function returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if an argument is encountered  that is
+true (scanning from left to right). The  {Or} operation is &#8220;lazy&#8221;,
+i.e. it returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> as soon as a <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> argument  is found (from
+left to right). If an argument other than <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> or  <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> is
+encountered, an unevaluated {Or} expression is returned with all
+arguments that didn&#8217;t evaluate to <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> or <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> yet.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; True Or False
+Out&gt; True;
+In&gt; False Or a
+Out&gt; Or(a);
+In&gt; Or(False,a,b,True)
+Out&gt; True;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">And()</span></tt>, <tt class="xref ys ys-func docutils literal"><span class="pre">Not()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsFreeOf">
+<tt class="descname">IsFreeOf</tt><big>(</big><em>var</em>, <em>expr</em><big>)</big><a class="headerlink" href="#IsFreeOf" title="Permalink to this definition">¶</a></dt>
+<dd><p>test whether expression depends on variable</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>expr</strong> &#8211; expression to test</li>
+<li><strong>var</strong> &#8211; variable to look for in &#8220;expr&#8221;</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function checks whether the expression &#8220;expr&#8221; (after being
+evaluated) depends on the variable &#8220;var&#8221;. It returns <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> if
+this is the case and <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>  otherwise.    The second form test
+whether the expression depends on &lt;i&gt;any&lt;/i&gt; of  the variables
+named in the list. The result is <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if none of the variables
+appear in the expression and <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> otherwise.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; IsFreeOf(x, Sin(x));
+Out&gt; False;
+In&gt; IsFreeOf(y, Sin(x));
+Out&gt; True;
+In&gt; IsFreeOf(x, D(x) a*x+b);
+Out&gt; True;
+In&gt; IsFreeOf({x,y}, Sin(x));
+Out&gt; False;
+The third command returns :data:`True` because the
+expression {D(x) a*x+b} evaluates to {a}, which does not depend on {x}.
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="lists.html#Contains" title="Contains"><tt class="xref ys ys-func docutils literal"><span class="pre">Contains()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsZeroVector">
+<tt class="descname">IsZeroVector</tt><big>(</big><em>list</em><big>)</big><a class="headerlink" href="#IsZeroVector" title="Permalink to this definition">¶</a></dt>
+<dd><p>test whether list contains only zeroes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>list</strong> &#8211; list to compare against the zero vector</td>
+</tr>
+</tbody>
+</table>
+<p>The only argument given to {IsZeroVector} should be  a list. The
+result is <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if the list contains  only zeroes and <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>
+otherwise.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; IsZeroVector({0, x, 0});
+Out&gt; False;
+In&gt; IsZeroVector({x-x, 1 - D(x) x});
+Out&gt; True;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsList" title="IsList"><tt class="xref ys ys-func docutils literal"><span class="pre">IsList()</span></tt></a>, <a class="reference internal" href="linear-algebra.html#ZeroVector" title="ZeroVector"><tt class="xref ys ys-func docutils literal"><span class="pre">ZeroVector()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsNonObject">
+<tt class="descname">IsNonObject</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#IsNonObject" title="Permalink to this definition">¶</a></dt>
+<dd><p>test whether argument is not an {Object()}</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; the expression to examine</td>
+</tr>
+</tbody>
+</table>
+<p>This function returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if &#8220;expr&#8221; is not of  the form
+{Object(...)} and <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>  otherwise.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsEven">
+<tt class="descname">IsEven</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#IsEven" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for an even integer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> &#8211; integer to test</td>
+</tr>
+</tbody>
+</table>
+<p>This function tests whether the integer &#8220;n&#8221; is even. An integer is
+even if it is divisible by two. Hence the even numbers are 0, 2, 4,
+6,  8, 10, etc., and -2, -4, -6, -8, -10, etc.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IsEven</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsEven</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsOdd" title="IsOdd"><tt class="xref ys ys-func docutils literal"><span class="pre">IsOdd()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">IsInteger()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsOdd">
+<tt class="descname">IsOdd</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#IsOdd" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for an odd integer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> &#8211; integer to test</td>
+</tr>
+</tbody>
+</table>
+<p>This function tests whether the integer &#8220;n&#8221; is odd. An integer is
+odd if it is not divisible by two. Hence the odd numbers are 1, 3,
+5,  7, 9, etc., and -1, -3, -5, -7, -9, etc.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IsOdd</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsOdd</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsEven" title="IsEven"><tt class="xref ys ys-func docutils literal"><span class="pre">IsEven()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">IsInteger()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsEvenFunction">
+<tt class="descname">IsEvenFunction</tt><big>(</big><em>expression</em>, <em>variable</em><big>)</big><a class="headerlink" href="#IsEvenFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return true if function is an even function, False otherwise</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>expression</strong> &#8211; mathematical expression</li>
+<li><strong>variable</strong> &#8211; variable</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>These functions return True if Yacas can determine that the
+function is even or odd respectively. Even functions are  defined
+to be functions that have the property:    $$ f(x) = f(-x) $$
+And odd functions have the property:    $$ f(x) = -f(-x) $$
+{Sin(x)} is an example of an odd function, and {Cos(x)}  is an
+example of an even function.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">One can decompose a
+function into an  even and an odd part $$ f(x) = f_{even}(x) +
+f_{odd}(x) $$    where     $$ f_{even}(x) = (f(x)+f(-x))/2 $$    and
+$$ f_{odd}(x) = (f(x)-f(-x))/2 $$</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsFunction">
+<tt class="descname">IsFunction</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#IsFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for a composite object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; expression to test</td>
+</tr>
+</tbody>
+</table>
+<p>This function tests whether &#8220;expr&#8221; is a composite object, i.e. not
+an  atom. This includes not only obvious functions such as {f(x)},
+but also expressions such as <tt class="docutils literal"><span class="pre">x+5</span></tt> and lists.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IsFunction</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">5</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsFunction</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsAtom" title="IsAtom"><tt class="xref ys ys-func docutils literal"><span class="pre">IsAtom()</span></tt></a>, <a class="reference internal" href="#IsList" title="IsList"><tt class="xref ys ys-func docutils literal"><span class="pre">IsList()</span></tt></a>, <a class="reference internal" href="lists.html#Type" title="Type"><tt class="xref ys ys-func docutils literal"><span class="pre">Type()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsAtom">
+<tt class="descname">IsAtom</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#IsAtom" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for an atom</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; expression to test</td>
+</tr>
+</tbody>
+</table>
+<p>This function tests whether &#8220;expr&#8221; is an atom. Numbers, strings,
+and  variables are all atoms.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IsAtom</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">5</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsAtom</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsFunction" title="IsFunction"><tt class="xref ys ys-func docutils literal"><span class="pre">IsFunction()</span></tt></a>, <a class="reference internal" href="#IsNumber" title="IsNumber"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNumber()</span></tt></a>, <a class="reference internal" href="#IsString" title="IsString"><tt class="xref ys ys-func docutils literal"><span class="pre">IsString()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsString">
+<tt class="descname">IsString</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#IsString" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for an string</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; expression to test</td>
+</tr>
+</tbody>
+</table>
+<p>This function tests whether &#8220;expr&#8221; is a string. A string is a text
+within quotes, e.g. {&#8220;duh&#8221;}.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IsString</span><span class="p">(</span><span class="s">&quot;duh&quot;</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsString</span><span class="p">(</span><span class="n">duh</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsAtom" title="IsAtom"><tt class="xref ys ys-func docutils literal"><span class="pre">IsAtom()</span></tt></a>, <a class="reference internal" href="#IsNumber" title="IsNumber"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNumber()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsNumber">
+<tt class="descname">IsNumber</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#IsNumber" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for a number</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; expression to test</td>
+</tr>
+</tbody>
+</table>
+<p>This function tests whether &#8220;expr&#8221; is a number. There are two kinds
+of numbers, integers (e.g. 6) and reals (e.g. -2.75 or 6.0). Note
+that a  complex number is represented by the {Complex}  function,
+so {IsNumber} will return <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IsNumber</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsNumber</span><span class="p">(</span><span class="mf">3.25</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsNumber</span><span class="p">(</span><span class="n">I</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsNumber</span><span class="p">(</span><span class="s">&quot;duh&quot;</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsAtom" title="IsAtom"><tt class="xref ys ys-func docutils literal"><span class="pre">IsAtom()</span></tt></a>, <a class="reference internal" href="#IsString" title="IsString"><tt class="xref ys ys-func docutils literal"><span class="pre">IsString()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">IsInteger()</span></tt>, <a class="reference internal" href="#IsPositiveNumber" title="IsPositiveNumber"><tt class="xref ys ys-func docutils literal"><span class="pre">IsPositiveNumber()</span></tt></a>, <a class="reference internal" href="#IsNegativeNumber" title="IsNegativeNumber"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNegativeNumber()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">Complex()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsList">
+<tt class="descname">IsList</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#IsList" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for a list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; expression to test</td>
+</tr>
+</tbody>
+</table>
+<p>This function tests whether &#8220;expr&#8221; is a list. A list is a sequence
+between curly braces, e.g. {{2, 3, 5}}.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IsList</span><span class="p">({</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">});</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsList</span><span class="p">(</span><span class="mi">2</span><span class="o">+</span><span class="mi">3</span><span class="o">+</span><span class="mi">5</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsFunction" title="IsFunction"><tt class="xref ys ys-func docutils literal"><span class="pre">IsFunction()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsNumericList">
+<tt class="descname">IsNumericList</tt><big>(</big><em>{list}</em><big>)</big><a class="headerlink" href="#IsNumericList" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for a list of numbers</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>{list}</strong> &#8211; a list</td>
+</tr>
+</tbody>
+</table>
+<p>Returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> when called on a list of numbers or expressions that
+evaluate to numbers using {N()}. Returns <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> otherwise.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a>, <a class="reference internal" href="#IsNumber" title="IsNumber"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNumber()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsBound">
+<tt class="descname">IsBound</tt><big>(</big><em>var</em><big>)</big><a class="headerlink" href="#IsBound" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for a bound variable</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>var</strong> &#8211; variable to test</td>
+</tr>
+</tbody>
+</table>
+<p>This function tests whether the variable &#8220;var&#8221; is bound, i.e.
+whether  it has been assigned a value. The argument &#8220;var&#8221; is not
+evaluated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; IsBound(x);
+Out&gt; False;
+In&gt; x := 5;
+Out&gt; 5;
+In&gt; IsBound(x);
+Out&gt; True;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsAtom" title="IsAtom"><tt class="xref ys ys-func docutils literal"><span class="pre">IsAtom()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsBoolean">
+<tt class="descname">IsBoolean</tt><big>(</big><em>expression</em><big>)</big><a class="headerlink" href="#IsBoolean" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for a Boolean value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expression</strong> &#8211; an expression</td>
+</tr>
+</tbody>
+</table>
+<p>IsBoolean returns True if the argument is of a boolean type.  This
+means it has to be either True, False, or an expression involving
+functions that return a boolean result, e.g.  {=}, {&gt;}, {&lt;}, {&gt;=},
+{&lt;=}, {!=}, {And}, {Not}, {Or}.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; IsBoolean(a)
+Out&gt; False;
+In&gt; IsBoolean(True)
+Out&gt; True;
+In&gt; IsBoolean(a And b)
+Out&gt; True;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-func docutils literal"><span class="pre">True()</span></tt></a>, <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-func docutils literal"><span class="pre">False()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsNegativeNumber">
+<tt class="descname">IsNegativeNumber</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#IsNegativeNumber" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for a negative number</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> &#8211; number to test</td>
+</tr>
+</tbody>
+</table>
+<p>{IsNegativeNumber(n)} evaluates to <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if $n$ is (strictly)
+negative, i.e.  if $n&lt;0$. If {n} is not a number, the functions
+return <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IsNegativeNumber</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsNegativeNumber</span><span class="p">(</span><span class="o">-</span><span class="mf">2.5</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsNumber" title="IsNumber"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNumber()</span></tt></a>, <a class="reference internal" href="#IsPositiveNumber" title="IsPositiveNumber"><tt class="xref ys ys-func docutils literal"><span class="pre">IsPositiveNumber()</span></tt></a>, <a class="reference internal" href="#IsNotZero" title="IsNotZero"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNotZero()</span></tt></a>, <a class="reference internal" href="#IsNegativeInteger" title="IsNegativeInteger"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNegativeInteger()</span></tt></a>, <a class="reference internal" href="#IsNegativeReal" title="IsNegativeReal"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNegativeReal()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsNegativeInteger">
+<tt class="descname">IsNegativeInteger</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#IsNegativeInteger" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for a negative integer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> &#8211; integer to test</td>
+</tr>
+</tbody>
+</table>
+<p>This function tests whether the integer {n} is (strictly)
+negative. The negative integers are -1, -2, -3, -4, -5, etc. If
+{n} is not a integer, the function returns <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IsNegativeInteger</span><span class="p">(</span><span class="mi">31</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsNegativeInteger</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsPositiveInteger" title="IsPositiveInteger"><tt class="xref ys ys-func docutils literal"><span class="pre">IsPositiveInteger()</span></tt></a>, <a class="reference internal" href="#IsNonZeroInteger" title="IsNonZeroInteger"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNonZeroInteger()</span></tt></a>, <a class="reference internal" href="#IsNegativeNumber" title="IsNegativeNumber"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNegativeNumber()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsPositiveNumber">
+<tt class="descname">IsPositiveNumber</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#IsPositiveNumber" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for a positive number</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> &#8211; number to test</td>
+</tr>
+</tbody>
+</table>
+<p>{IsPositiveNumber(n)} evaluates to <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if $n$ is (strictly)
+positive, i.e.  if $n&gt;0$. If {n} is not a number the function
+returns <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IsPositiveNumber</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsPositiveNumber</span><span class="p">(</span><span class="o">-</span><span class="mf">2.5</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsNumber" title="IsNumber"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNumber()</span></tt></a>, <a class="reference internal" href="#IsNegativeNumber" title="IsNegativeNumber"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNegativeNumber()</span></tt></a>, <a class="reference internal" href="#IsNotZero" title="IsNotZero"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNotZero()</span></tt></a>, <a class="reference internal" href="#IsPositiveInteger" title="IsPositiveInteger"><tt class="xref ys ys-func docutils literal"><span class="pre">IsPositiveInteger()</span></tt></a>, <a class="reference internal" href="#IsPositiveReal" title="IsPositiveReal"><tt class="xref ys ys-func docutils literal"><span class="pre">IsPositiveReal()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsPositiveInteger">
+<tt class="descname">IsPositiveInteger</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#IsPositiveInteger" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for a positive integer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> &#8211; integer to test</td>
+</tr>
+</tbody>
+</table>
+<p>This function tests whether the integer {n} is (strictly) positive.
+The  positive integers are 1, 2, 3, 4, 5, etc. If {n} is not a
+integer, the  function returns <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IsPositiveInteger</span><span class="p">(</span><span class="mi">31</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsPositiveInteger</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsNegativeInteger" title="IsNegativeInteger"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNegativeInteger()</span></tt></a>, <a class="reference internal" href="#IsNonZeroInteger" title="IsNonZeroInteger"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNonZeroInteger()</span></tt></a>, <a class="reference internal" href="#IsPositiveNumber" title="IsPositiveNumber"><tt class="xref ys ys-func docutils literal"><span class="pre">IsPositiveNumber()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsNotZero">
+<tt class="descname">IsNotZero</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#IsNotZero" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for a nonzero number</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> &#8211; number to test</td>
+</tr>
+</tbody>
+</table>
+<p>{IsNotZero(n)} evaluates to <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if {n} is not zero. In case {n}
+is not a  number, the function returns <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IsNotZero</span><span class="p">(</span><span class="mf">3.25</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsNotZero</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsNumber" title="IsNumber"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNumber()</span></tt></a>, <a class="reference internal" href="#IsPositiveNumber" title="IsPositiveNumber"><tt class="xref ys ys-func docutils literal"><span class="pre">IsPositiveNumber()</span></tt></a>, <a class="reference internal" href="#IsNegativeNumber" title="IsNegativeNumber"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNegativeNumber()</span></tt></a>, <a class="reference internal" href="#IsNonZeroInteger" title="IsNonZeroInteger"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNonZeroInteger()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsNonZeroInteger">
+<tt class="descname">IsNonZeroInteger</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#IsNonZeroInteger" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for a nonzero integer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> &#8211; integer to test</td>
+</tr>
+</tbody>
+</table>
+<p>This function tests whether the integer {n} is not zero. If {n} is
+not an integer, the result is <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IsNonZeroInteger</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsNonZeroInteger</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsPositiveInteger" title="IsPositiveInteger"><tt class="xref ys ys-func docutils literal"><span class="pre">IsPositiveInteger()</span></tt></a>, <a class="reference internal" href="#IsNegativeInteger" title="IsNegativeInteger"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNegativeInteger()</span></tt></a>, <a class="reference internal" href="#IsNotZero" title="IsNotZero"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNotZero()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsInfinity">
+<tt class="descname">IsInfinity</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#IsInfinity" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for an infinity</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; expression to test</td>
+</tr>
+</tbody>
+</table>
+<p>This function tests whether {expr} is an infinity. This is only the
+case if {expr} is either {Infinity} or {-Infinity}.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IsInfinity</span><span class="p">(</span><span class="mi">10</span><span class="o">^</span><span class="mi">1000</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsInfinity</span><span class="p">(</span><span class="o">-</span><span class="n">Infinity</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">Integer()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsPositiveReal">
+<tt class="descname">IsPositiveReal</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#IsPositiveReal" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for a numerically positive value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; expression to test</td>
+</tr>
+</tbody>
+</table>
+<p>This function tries to approximate &#8220;expr&#8221; numerically. It returns
+<a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if this approximation is positive. In case no  approximation
+can be found, the function returns <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>. Note that round-off
+errors may cause incorrect  results.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; IsPositiveReal(Sin(1)-3/4);
+Out&gt; True;
+In&gt; IsPositiveReal(Sin(1)-6/7);
+Out&gt; False;
+In&gt; IsPositiveReal(Exp(x));
+Out&gt; False;
+The last result is because {Exp(x)} cannot be
+numerically approximated if {x} is not known. Hence
+Yacas can not determine the sign of this expression.
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsNegativeReal" title="IsNegativeReal"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNegativeReal()</span></tt></a>, <a class="reference internal" href="#IsPositiveNumber" title="IsPositiveNumber"><tt class="xref ys ys-func docutils literal"><span class="pre">IsPositiveNumber()</span></tt></a>, <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsNegativeReal">
+<tt class="descname">IsNegativeReal</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#IsNegativeReal" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for a numerically negative value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; expression to test</td>
+</tr>
+</tbody>
+</table>
+<p>This function tries to approximate {expr} numerically. It returns
+<a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if this approximation is negative. In case no  approximation
+can be found, the function returns <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>. Note that round-off
+errors may cause incorrect  results.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; IsNegativeReal(Sin(1)-3/4);
+Out&gt; False;
+In&gt; IsNegativeReal(Sin(1)-6/7);
+Out&gt; True;
+In&gt; IsNegativeReal(Exp(x));
+Out&gt; False;
+The last result is because {Exp(x)} cannot be
+numerically approximated if {x} is not known. Hence
+Yacas can not determine the sign of this expression.
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsPositiveReal" title="IsPositiveReal"><tt class="xref ys ys-func docutils literal"><span class="pre">IsPositiveReal()</span></tt></a>, <a class="reference internal" href="#IsNegativeNumber" title="IsNegativeNumber"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNegativeNumber()</span></tt></a>, <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsConstant">
+<tt class="descname">IsConstant</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#IsConstant" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for a constant</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; some expression</td>
+</tr>
+</tbody>
+</table>
+<p>{IsConstant} returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if the  expression is some constant or
+a function with constant arguments. It  does this by checking that
+no variables are referenced in the  expression. {Pi} is considered
+a constant.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IsConstant</span><span class="p">(</span><span class="n">Cos</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsConstant</span><span class="p">(</span><span class="n">Cos</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsConstant</span><span class="p">(</span><span class="n">Cos</span><span class="p">(</span><span class="mi">2</span><span class="o">+</span><span class="n">x</span><span class="p">))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsNumber" title="IsNumber"><tt class="xref ys ys-func docutils literal"><span class="pre">IsNumber()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">IsInteger()</span></tt>, <a class="reference internal" href="lists.html#VarList" title="VarList"><tt class="xref ys ys-func docutils literal"><span class="pre">VarList()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsGaussianInteger">
+<tt class="descname">IsGaussianInteger</tt><big>(</big><em>z</em><big>)</big><a class="headerlink" href="#IsGaussianInteger" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>test for a Gaussian integer</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>z</strong> &#8211; a complex or real number</td>
+</tr>
+</tbody>
+</table>
+<p>This function returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if the argument is a Gaussian integer
+and <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> otherwise.  A Gaussian integer is a generalization  of
+integers into the complex plane. A complex number $a+b*I$ is a
+Gaussian  integer if and only if $a$ and $b$ are integers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IsGaussianInteger</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsGaussianInteger</span><span class="p">(</span><span class="mi">5</span><span class="o">+</span><span class="mi">6</span><span class="o">*</span><span class="n">I</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsGaussianInteger</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mf">2.5</span><span class="o">*</span><span class="n">I</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="number-theory.html#IsGaussianUnit" title="IsGaussianUnit"><tt class="xref ys ys-func docutils literal"><span class="pre">IsGaussianUnit()</span></tt></a>, <a class="reference internal" href="number-theory.html#IsGaussianPrime" title="IsGaussianPrime"><tt class="xref ys ys-func docutils literal"><span class="pre">IsGaussianPrime()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MatchLinear">
+<tt class="descname">MatchLinear</tt><big>(</big><em>x</em>, <em>expr</em><big>)</big><a class="headerlink" href="#MatchLinear" title="Permalink to this definition">¶</a></dt>
+<dd><p>match an expression to a polynomial of degree one in a variable</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> &#8211; variable to express the univariate polynomial in</li>
+<li><strong>expr</strong> &#8211; expression to match</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>{MatchLinear} tries to match an expression to a linear (degree less
+than  two) polynomial. The function returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if it could
+match, and  it stores the resulting coefficients in the variables
+&#8220;{a}&#8221; and &#8220;{b}&#8221;  as a side effect. The function calling this
+predicate should declare  local variables &#8220;{a}&#8221; and &#8220;{b}&#8221; for this
+purpose.  {MatchLinear} tries to match to constant coefficients
+which don&#8217;t  depend on the variable passed in, trying to find a
+form &#8220;{a*x+b}&#8221;  with &#8220;{a}&#8221; and &#8220;{b}&#8221; not depending on {x} if {x} is
+given as the variable.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">MatchLinear</span><span class="p">(</span><span class="n">x</span><span class="p">,(</span><span class="n">R</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="p">(</span><span class="n">T</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="p">{</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">};</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="p">{</span><span class="n">R</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">T</span><span class="o">-</span><span class="mi">1</span><span class="p">};</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">MatchLinear</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">Sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="p">(</span><span class="n">T</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="calc.html#Integrate" title="Integrate"><tt class="xref ys ys-func docutils literal"><span class="pre">Integrate()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="HasExpr">
+<tt class="descname">HasExpr</tt><big>(</big><em>expr</em>, <em>x</em><big>)</big><a class="headerlink" href="#HasExpr" title="Permalink to this definition">¶</a></dt>
+<dd><p>check for expression containing a subexpression</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>expr</strong> &#8211; an expression</li>
+<li><strong>x</strong> &#8211; a subexpression to be found</li>
+<li><strong>list</strong> &#8211; list of function atoms to be considered &#8220;transparent&#8221;</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The command {HasExpr} returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if the expression {expr}
+contains a literal subexpression {x}. The expression is recursively
+traversed.    The command {HasExprSome} does the same, except it
+only looks at arguments of a given {list} of functions. All other
+functions become &#8220;opaque&#8221; (as if they do not contain anything).
+{HasExprArith} is defined through {HasExprSome} to look only at
+arithmetic operations {+}, {-}, {*}, {/}.    Note that since the
+operators &#8220;{+}&#8221; and &#8220;{-}&#8221; are prefix as well as infix operators, it
+is currently required to use {Atom(&#8220;+&#8221;)} to obtain the unevaluated
+atom &#8220;{+}&#8221;.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">HasExpr</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="o">*</span><span class="n">Cos</span><span class="p">(</span><span class="n">Ln</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="n">z</span><span class="p">),</span> <span class="n">z</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">HasExpr</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="o">*</span><span class="n">Cos</span><span class="p">(</span><span class="n">Ln</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="n">z</span><span class="p">),</span> <span class="n">Ln</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">HasExpr</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="o">*</span><span class="n">Cos</span><span class="p">(</span><span class="n">Ln</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="n">z</span><span class="p">),</span> <span class="n">z</span><span class="o">/</span><span class="n">Ln</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">HasExprArith</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="o">*</span><span class="n">Cos</span><span class="p">(</span><span class="n">Ln</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">/</span><span class="n">x</span><span class="p">),</span> <span class="n">z</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">HasExprSome</span><span class="p">({</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span><span class="n">c</span><span class="o">/</span><span class="n">d</span><span class="p">},</span><span class="n">c</span><span class="o">/</span><span class="n">d</span><span class="p">,{</span><span class="n">List</span><span class="p">})</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">HasExprSome</span><span class="p">({</span><span class="n">a</span><span class="o">+</span><span class="n">b</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span><span class="n">c</span><span class="o">/</span><span class="n">d</span><span class="p">},</span><span class="n">c</span><span class="p">,{</span><span class="n">List</span><span class="p">})</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="lists.html#FuncList" title="FuncList"><tt class="xref ys ys-func docutils literal"><span class="pre">FuncList()</span></tt></a>, <a class="reference internal" href="lists.html#VarList" title="VarList"><tt class="xref ys ys-func docutils literal"><span class="pre">VarList()</span></tt></a>, <a class="reference internal" href="#HasFunc" title="HasFunc"><tt class="xref ys ys-func docutils literal"><span class="pre">HasFunc()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="HasFunc">
+<tt class="descname">HasFunc</tt><big>(</big><em>expr</em>, <em>func</em><big>)</big><a class="headerlink" href="#HasFunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>check for expression containing a function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>expr</strong> &#8211; an expression</li>
+<li><strong>func</strong> &#8211; a function atom to be found</li>
+<li><strong>list</strong> &#8211; list of function atoms to be considered &#8220;transparent&#8221;</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The command {HasFunc} returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if the expression {expr}
+contains a function {func}. The expression is recursively
+traversed.    The command {HasFuncSome} does the same, except it
+only looks at arguments of a given {list} of functions. Arguments
+of all other functions become &#8220;opaque&#8221; (as if they do not contain
+anything).    {HasFuncArith} is defined through {HasFuncSome} to
+look only at arithmetic operations {+}, {-}, {*}, {/}.    Note that
+since the operators &#8220;{+}&#8221; and &#8220;{-}&#8221; are prefix as well as infix
+operators, it is currently required to use {Atom(&#8220;+&#8221;)} to obtain
+the unevaluated atom &#8220;{+}&#8221;.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; HasFunc(x+y*Cos(Ln(z)/z), Ln)
+Out&gt; True;
+In&gt; HasFunc(x+y*Cos(Ln(z)/z), Sin)
+Out&gt; False;
+In&gt; HasFuncArith(x+y*Cos(Ln(x)/x), Cos)
+Out&gt; True;
+In&gt; HasFuncArith(x+y*Cos(Ln(x)/x), Ln)
+Out&gt; False;
+In&gt; HasFuncSome({a+b*2,c/d},/,{List})
+Out&gt; True;
+In&gt; HasFuncSome({a+b*2,c/d},*,{List})
+Out&gt; False;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="lists.html#FuncList" title="FuncList"><tt class="xref ys ys-func docutils literal"><span class="pre">FuncList()</span></tt></a>, <a class="reference internal" href="lists.html#VarList" title="VarList"><tt class="xref ys ys-func docutils literal"><span class="pre">VarList()</span></tt></a>, <a class="reference internal" href="#HasExpr" title="HasExpr"><tt class="xref ys ys-func docutils literal"><span class="pre">HasExpr()</span></tt></a></p>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="consts.html" class="btn btn-neutral float-right" title="Constants"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="controlflow.html" class="btn btn-neutral" title="Control flow functions"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Ayal Pinkus, Serge Winnitzky, Grzegorz Mazur.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.3.5',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

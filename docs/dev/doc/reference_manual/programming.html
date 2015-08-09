@@ -1,0 +1,3275 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Functions related to programming in Yacas &mdash; Yacas</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="Yacas" href="../../index.html"/>
+        <link rel="up" title="Reference Manual" href="index.html"/>
+        <link rel="next" title="Programming in Yacas" href="../programming_in_yacas/index.html"/>
+        <link rel="prev" title="Number theory" href="number-theory.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="fa fa-home"> Yacas</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation-from-sources">Installation from sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-syntax">Yacas syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#using-yacas-from-the-calculation-center">Using Yacas from the calculation center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-as-a-symbolic-calculator">Yacas as a symbolic calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#arbitrary-precision-numbers">Arbitrary precision numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#analytic-functions">Analytic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#boolean-expressions-and-predicates">Boolean expressions and predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#strings-and-lists">Strings and lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#writing-simplification-rules">Writing simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#local-simplification-rules">Local simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#programming-essentials">Programming essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#macros">Macros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#the-practice-of-programming-in-yacas">The practice of programming in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#defining-your-own-operators">Defining your own operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#some-assorted-programming-topics">Some assorted programming topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#linear-algebra">Linear Algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="arithmetic.html">Arithmetic and other operations on numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calc.html">Calculus and elementary functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simplify.html">Simplification of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode.html">Differential Equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logic.html">Propositional logic theorem prover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear-algebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="univariate-polynomials.html">Operations on polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lists.html">List operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional.html">Functional operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controlflow.html">Control flow functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="predicates.html">Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="consts.html">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vars.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io.html">Input/output and plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="strings.html">String manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="probability-and-statistics.html">Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="number-theory.html">Number theory</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Functions related to programming in Yacas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_in_yacas/index.html">Programming in Yacas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-yacas-architecture">The Yacas architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-evaluation-scheme">Yacas evaluation scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#rules">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#structured-programming-and-control-flow">Structured programming and control flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#additional-syntactic-sugar">Additional syntactic sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#using-macro-rules-e-g-nfunction">Using &#8220;Macro rules&#8221; (e.g. {NFunction})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#macro-expansion">Macro expansion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#scope-of-variable-bindings">Scope of variable bindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation-of-expressions">Evaluation of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-lisp-heritage">The LISP heritage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-specific-extensions-for-cas-implementations">{Yacas}-specific extensions for CAS implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-evaluation-is-simplification-hack">The &#8220;Evaluation is Simplification&#8221; hack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#destructive-operations">Destructive operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#coding-style">Coding style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#writing-new-library-functions">Writing new library functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-1-parsing-expressions-cform">Advanced example 1: parsing expressions ({CForm})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-programming-pitfalls">Yacas programming pitfalls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#debugging-in-yacas">Debugging in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-2-implementing-a-non-commutative-algebra">Advanced example 2: implementing a non-commutative algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../book_of_algorithms/index.html">The Yacas Book of Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/multivar.html">Sparse representations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/integration.html">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/transforms.html">Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/sturm-sequences.html">Finding real roots of polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/numtheory.html">Number theory algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../yagy/index.html">YAGY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Yacas</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Reference Manual</a> &raquo;</li>
+      
+    <li>Functions related to programming in Yacas</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/doc/reference_manual/programming.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="functions-related-to-programming-in-yacas">
+<h1>Functions related to programming in Yacas<a class="headerlink" href="#functions-related-to-programming-in-yacas" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This document aims to be a reference for functions that are useful
+when programming in {Yacas}, but which are not necessarily useful when
+using {Yacas}. There is another document that describes the functions
+that are useful from a users point of view.</p>
+</div>
+<div class="section" id="programming">
+<h2>Programming<a class="headerlink" href="#programming" title="Permalink to this headline">¶</a></h2>
+<p>This chapter describes functions useful for writing Yacas scripts.</p>
+<div class="highlight-python"><div class="highlight"><pre>/* --- Start of comment
+*/ --- end of comment
+// --- Beginning of one-line comment
+
+ /* comment */
+ // comment
+</pre></div>
+</div>
+<p>Introduce a comment block in a source file, similar to C++ comments.
+<tt class="docutils literal"><span class="pre">//</span></tt> makes everything until the end of the line a comment, while <tt class="docutils literal"><span class="pre">/*</span></tt>
+and <tt class="docutils literal"><span class="pre">*/</span></tt> may delimit a multi-line comment.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>a+b; // get result
+a + /* add them */ b;
+</pre></div>
+</div>
+<dl class="function">
+<dt id="Prog">
+<tt class="descname">Prog</tt><big>(</big><em>expr1</em>, <em>expr2</em>, <em>...</em><big>)</big><a class="headerlink" href="#Prog" title="Permalink to this definition">¶</a></dt>
+<dd><p>block of statements</p>
+<blockquote>
+<div><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param expr1:</th><td class="field-body">expression</td>
+</tr>
+</tbody>
+</table>
+<p>The {Prog} and the {[ ... ]} construct have the same effect: they evaluate all
+arguments in order and return the result of the last evaluated expression.</p>
+<p>{Prog(a,b);} is the same as typing {[a;b;];} and is very useful
+for writing out function bodies. The {[ ... ]} construct is a
+syntactically nicer version of the {Prog} call; it is converted
+into {Prog(...)} during the parsing stage.</p>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="Bodied">
+<tt class="descname">Bodied</tt><big>(</big><em>op</em>, <em>precedence</em><big>)</big><a class="headerlink" href="#Bodied" title="Permalink to this definition">¶</a></dt>
+<dd><p>declare op as <a class="reference internal" href="../glossary.html#term-bodied-function"><em class="xref std std-term">bodied function</em></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>op</strong> &#8211; string, the name of a function</li>
+<li><strong>precedence</strong> &#8211; nonnegative integer (evaluated)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Declares a special syntax for the function to be parsed as a
+<a class="reference internal" href="../glossary.html#term-bodied-function"><em class="xref std std-term">bodied function</em></a>.</p>
+<blockquote>
+<div>For(pre, condition, post) statement;</div></blockquote>
+<p>Here the function <tt class="docutils literal"><span class="pre">For</span></tt> has 4 arguments and the last argument is
+placed outside the parentheses.</p>
+<p>The <tt class="docutils literal"><span class="pre">precedence</span></tt> of a &#8220;bodied&#8221; function refers to how tightly the
+last argument is bound to the parentheses.  This makes a difference
+when the last argument contains other operators.  For example, when
+taking the derivative D(x) Sin(x)+Cos(x) both {Sin} and {Cos} are
+under the derivative because the bodied function {D} binds less
+tightly than the infix operator &#8220;{+}&#8221;.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsBodied" title="IsBodied"><tt class="xref ys ys-func docutils literal"><span class="pre">IsBodied()</span></tt></a>, <a class="reference internal" href="#OpPrecedence" title="OpPrecedence"><tt class="xref ys ys-func docutils literal"><span class="pre">OpPrecedence()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Infix">
+<tt class="descname">Infix</tt><big>(</big><em>op</em><span class="optional">[</span>, <em>precedence</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#Infix" title="Permalink to this definition">¶</a></dt>
+<dd><p>define function syntax (infix operator)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>op</strong> &#8211; string, the name of a function</li>
+<li><strong>precedence</strong> &#8211; nonnegative integer (evaluated)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Declares a special syntax for the function to be parsed as a bodied, infix, postfix,
+or prefix operator.</p>
+<p>&#8220;Infix&#8221; functions must have two arguments and are syntactically
+placed between their arguments.  Names of infix functions can be
+arbitrary, although for reasons of readability they are usually
+made of non-alphabetic characters.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsBodied" title="IsBodied"><tt class="xref ys ys-func docutils literal"><span class="pre">IsBodied()</span></tt></a>, <a class="reference internal" href="#OpPrecedence" title="OpPrecedence"><tt class="xref ys ys-func docutils literal"><span class="pre">OpPrecedence()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Postfix">
+<tt class="descname">Postfix</tt><big>(</big><em>op</em><span class="optional">[</span>, <em>precedence</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#Postfix" title="Permalink to this definition">¶</a></dt>
+<dd><p>define function syntax (postfix operator)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>op</strong> &#8211; string, the name of a function</li>
+<li><strong>precedence</strong> &#8211; nonnegative integer (evaluated)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Declares a special syntax for the function to be parsed as a bodied, infix, postfix,
+or prefix operator.</p>
+<p>&#8220;Postfix&#8221; functions must have one argument and are syntactically
+placed after their argument.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsBodied" title="IsBodied"><tt class="xref ys ys-func docutils literal"><span class="pre">IsBodied()</span></tt></a>, <a class="reference internal" href="#OpPrecedence" title="OpPrecedence"><tt class="xref ys ys-func docutils literal"><span class="pre">OpPrecedence()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Prefix">
+<tt class="descname">Prefix</tt><big>(</big><em>op</em><span class="optional">[</span>, <em>precedence</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#Prefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>define function syntax (prefix operator)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>op</strong> &#8211; string, the name of a function</li>
+<li><strong>precedence</strong> &#8211; nonnegative integer (evaluated)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Declares a special syntax for the function to be parsed as a bodied, infix, postfix,
+or prefix operator.</p>
+<p>&#8220;Prefix&#8221; functions must have one argument and are syntactically
+placed before their argument.</p>
+<p>Function name can be any string but meaningful usage and
+readability would require it to be either made up entirely of
+letters or entirely of non-letter characters (such as &#8220;+&#8221;, &#8221;:&#8221;
+etc.).  Precedence is optional (will be set to 0 by default).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; YY x := x+1;
+CommandLine(1) : Error parsing expression
+
+In&gt; Prefix(&quot;YY&quot;, 2)
+Out&gt; True;
+In&gt; YY x := x+1;
+Out&gt; True;
+In&gt; YY YY 2*3
+Out&gt; 12;
+In&gt; Infix(&quot;##&quot;, 5)
+Out&gt; True;
+In&gt; a ## b ## c
+Out&gt; a##b##c;
+</pre></div>
+</div>
+<p>Note that, due to a current parser limitation, a function atom that
+is declared prefix cannot be used by itself as an argument.</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; YY
+CommandLine(1) : Error parsing expression
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsBodied" title="IsBodied"><tt class="xref ys ys-func docutils literal"><span class="pre">IsBodied()</span></tt></a>, <a class="reference internal" href="#OpPrecedence" title="OpPrecedence"><tt class="xref ys ys-func docutils literal"><span class="pre">OpPrecedence()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsBodied">
+<tt class="descname">IsBodied</tt><big>(</big><em>op</em><big>)</big><a class="headerlink" href="#IsBodied" title="Permalink to this definition">¶</a></dt>
+<dd><p>check for function syntax</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>op</strong> &#8211; string, the name of a function</td>
+</tr>
+</tbody>
+</table>
+<p>Check whether the function with given name {&#8220;op&#8221;} has been declared as a
+&#8220;bodied&#8221;, infix, postfix, or prefix operator, and  return <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> or <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsInfix">
+<tt class="descname">IsInfix</tt><big>(</big><em>op</em><big>)</big><a class="headerlink" href="#IsInfix" title="Permalink to this definition">¶</a></dt>
+<dd><p>check for function syntax</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>op</strong> &#8211; string, the name of a function</td>
+</tr>
+</tbody>
+</table>
+<p>Check whether the function with given name {&#8220;op&#8221;} has been declared as a
+&#8220;bodied&#8221;, infix, postfix, or prefix operator, and  return <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> or <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsPostfix">
+<tt class="descname">IsPostfix</tt><big>(</big><em>op</em><big>)</big><a class="headerlink" href="#IsPostfix" title="Permalink to this definition">¶</a></dt>
+<dd><p>check for function syntax</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>op</strong> &#8211; string, the name of a function</td>
+</tr>
+</tbody>
+</table>
+<p>Check whether the function with given name {&#8220;op&#8221;} has been declared as a
+&#8220;bodied&#8221;, infix, postfix, or prefix operator, and  return <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> or <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsPrefix">
+<tt class="descname">IsPrefix</tt><big>(</big><em>op</em><big>)</big><a class="headerlink" href="#IsPrefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>check for function syntax</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>op</strong> &#8211; string, the name of a function</td>
+</tr>
+</tbody>
+</table>
+<p>Check whether the function with given name {&#8220;op&#8221;} has been declared as a
+&#8220;bodied&#8221;, infix, postfix, or prefix operator, and  return <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> or <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IsInfix</span><span class="p">(</span><span class="s">&quot;+&quot;</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsBodied</span><span class="p">(</span><span class="s">&quot;While&quot;</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsBodied</span><span class="p">(</span><span class="s">&quot;Sin&quot;</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">IsPostfix</span><span class="p">(</span><span class="s">&quot;!&quot;</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Bodied" title="Bodied"><tt class="xref ys ys-func docutils literal"><span class="pre">Bodied()</span></tt></a>, <a class="reference internal" href="#OpPrecedence" title="OpPrecedence"><tt class="xref ys ys-func docutils literal"><span class="pre">OpPrecedence()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="OpPrecedence">
+<tt class="descname">OpPrecedence</tt><big>(</big><em>op</em><big>)</big><a class="headerlink" href="#OpPrecedence" title="Permalink to this definition">¶</a></dt>
+<dd><p>get operator precedence</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>op</strong> &#8211; string, the name of a function</td>
+</tr>
+</tbody>
+</table>
+<p>Returns the precedence of the function named &#8220;op&#8221; which should have
+been declared as a bodied function or an infix, postfix, or prefix
+operator. Generates an error message if the string str does not
+represent a type of function that can have precedence.</p>
+<p>For infix operators, right precedence can differ from left
+precedence. Bodied functions and prefix operators cannot have left
+precedence, while postfix operators cannot have right precedence;
+for these operators, there is only one value of precedence.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="OpLeftPrecedence">
+<tt class="descname">OpLeftPrecedence</tt><big>(</big><em>op</em><big>)</big><a class="headerlink" href="#OpLeftPrecedence" title="Permalink to this definition">¶</a></dt>
+<dd><p>get operator precedence</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>op</strong> &#8211; string, the name of a function</td>
+</tr>
+</tbody>
+</table>
+<p>Returns the precedence of the function named &#8220;op&#8221; which should have
+been declared as a bodied function or an infix, postfix, or prefix
+operator. Generates an error message if the string str does not
+represent a type of function that can have precedence.</p>
+<p>For infix operators, right precedence can differ from left
+precedence. Bodied functions and prefix operators cannot have left
+precedence, while postfix operators cannot have right precedence;
+for these operators, there is only one value of precedence.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="OpRightPrecedence">
+<tt class="descname">OpRightPrecedence</tt><big>(</big><em>op</em><big>)</big><a class="headerlink" href="#OpRightPrecedence" title="Permalink to this definition">¶</a></dt>
+<dd><p>get operator precedence</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>op</strong> (<em>string</em>) &#8211; name of a function</td>
+</tr>
+</tbody>
+</table>
+<p>Returns the precedence of the function named &#8220;op&#8221; which should have
+been declared as a bodied function or an infix, postfix, or prefix
+operator. Generates an error message if the string str does not
+represent a type of function that can have precedence.</p>
+<p>For infix operators, right precedence can differ from left
+precedence. Bodied functions and prefix operators cannot have left
+precedence, while postfix operators cannot have right precedence;
+for these operators, there is only one value of precedence.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">OpPrecedence</span><span class="p">(</span><span class="s">&quot;+&quot;</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">6</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">OpLeftPrecedence</span><span class="p">(</span><span class="s">&quot;!&quot;</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="RightAssociative">
+<tt class="descname">RightAssociative</tt><big>(</big><em>op</em><big>)</big><a class="headerlink" href="#RightAssociative" title="Permalink to this definition">¶</a></dt>
+<dd><p>declare associativity</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>op</strong> &#8211; string, the name of a function</td>
+</tr>
+</tbody>
+</table>
+<p>This makes the operator right-associative. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">RightAssociative</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>would make multiplication right-associative. Take care not to abuse
+this function, because the reverse, making an infix operator
+left-associative, is not implemented. (All infix operators are by
+default left-associative until they are declared to be
+right-associative.)</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#OpPrecedence" title="OpPrecedence"><tt class="xref ys ys-func docutils literal"><span class="pre">OpPrecedence()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="LeftPrecedence">
+<tt class="descname">LeftPrecedence</tt><big>(</big><em>op</em>, <em>precedence</em><big>)</big><a class="headerlink" href="#LeftPrecedence" title="Permalink to this definition">¶</a></dt>
+<dd><p>set operator precedence</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>op</strong> &#8211; string, the name of a function</li>
+<li><strong>precedence</strong> &#8211; nonnegative integer</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>{&#8220;op&#8221;} should be an infix operator. This function call tells the
+infix expression printer to bracket the left or right hand side of
+the expression if its precedence is larger than precedence.</p>
+<p>This functionality was required in order to display expressions
+like {a-(b-c)} correctly. Thus, {a+b+c} is the same as {a+(b+c)},
+but {a-(b-c)} is not the same as {a-b-c}.</p>
+<p>Note that the left and right precedence of an infix operator does
+not affect the way Yacas interprets expressions typed by the
+user. You cannot make Yacas parse {a-b-c} as {a-(b-c)} unless you
+declare the operator &#8220;{-}&#8221; to be right-associative.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#OpPrecedence" title="OpPrecedence"><tt class="xref ys ys-func docutils literal"><span class="pre">OpPrecedence()</span></tt></a>, <a class="reference internal" href="#OpLeftPrecedence" title="OpLeftPrecedence"><tt class="xref ys ys-func docutils literal"><span class="pre">OpLeftPrecedence()</span></tt></a>,
+<a class="reference internal" href="#OpRightPrecedence" title="OpRightPrecedence"><tt class="xref ys ys-func docutils literal"><span class="pre">OpRightPrecedence()</span></tt></a>, <a class="reference internal" href="#RightAssociative" title="RightAssociative"><tt class="xref ys ys-func docutils literal"><span class="pre">RightAssociative()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="RightPrecedence">
+<tt class="descname">RightPrecedence</tt><big>(</big><big>)</big><a class="headerlink" href="#RightPrecedence" title="Permalink to this definition">¶</a></dt>
+<dd><p>set operator precedence(op, precedence)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>op</strong> &#8211; string, the name of a function</li>
+<li><strong>precedence</strong> &#8211; nonnegative integer</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>{&#8220;op&#8221;} should be an infix operator. This function call tells the
+infix expression printer to bracket the left or right hand side of
+the expression if its precedence is larger than precedence.</p>
+<p>This functionality was required in order to display expressions
+like {a-(b-c)} correctly. Thus, {a+b+c} is the same as {a+(b+c)},
+but {a-(b-c)} is not the same as {a-b-c}.</p>
+<p>Note that the left and right precedence of an infix operator does
+not affect the way Yacas interprets expressions typed by the
+user. You cannot make Yacas parse {a-b-c} as {a-(b-c)} unless you
+declare the operator &#8220;{-}&#8221; to be right-associative.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#OpPrecedence" title="OpPrecedence"><tt class="xref ys ys-func docutils literal"><span class="pre">OpPrecedence()</span></tt></a>, <a class="reference internal" href="#OpLeftPrecedence" title="OpLeftPrecedence"><tt class="xref ys ys-func docutils literal"><span class="pre">OpLeftPrecedence()</span></tt></a>,
+<a class="reference internal" href="#OpRightPrecedence" title="OpRightPrecedence"><tt class="xref ys ys-func docutils literal"><span class="pre">OpRightPrecedence()</span></tt></a>, <a class="reference internal" href="#RightAssociative" title="RightAssociative"><tt class="xref ys ys-func docutils literal"><span class="pre">RightAssociative()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="RuleBase">
+<tt class="descname">RuleBase</tt><big>(</big><em>name</em>, <em>params</em><big>)</big><a class="headerlink" href="#RuleBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>define function with a fixed number of arguments</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> &#8211; string, name of function</li>
+<li><strong>params</strong> &#8211; list of arguments to function</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Define a new rules table entry for a function &#8220;name&#8221;, with {params}
+as the parameter list. Name can be either a string or simple atom.</p>
+<p>In the context of the transformation rule declaration facilities
+this is a useful function in that it allows the stating of argument
+names that can he used with HoldArg.</p>
+<p>Functions can be overloaded: the same function can be defined with
+different number of arguments.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MacroRuleBase" title="MacroRuleBase"><tt class="xref ys ys-func docutils literal"><span class="pre">MacroRuleBase()</span></tt></a>, <a class="reference internal" href="#RuleBaseListed" title="RuleBaseListed"><tt class="xref ys ys-func docutils literal"><span class="pre">RuleBaseListed()</span></tt></a>,
+<a class="reference internal" href="#MacroRuleBaseListed" title="MacroRuleBaseListed"><tt class="xref ys ys-func docutils literal"><span class="pre">MacroRuleBaseListed()</span></tt></a>, <a class="reference internal" href="#HoldArg" title="HoldArg"><tt class="xref ys ys-func docutils literal"><span class="pre">HoldArg()</span></tt></a>,
+<a class="reference internal" href="#Retract" title="Retract"><tt class="xref ys ys-func docutils literal"><span class="pre">Retract()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="RuleBaseListed">
+<tt class="descname">RuleBaseListed</tt><big>(</big><em>name</em>, <em>params</em><big>)</big><a class="headerlink" href="#RuleBaseListed" title="Permalink to this definition">¶</a></dt>
+<dd><p>define function with variable number of arguments</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> &#8211; string, name of function</li>
+<li><strong>params</strong> &#8211; list of arguments to function</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The command {RuleBaseListed} defines a new function. It essentially
+works the same way as {RuleBase}, except that it declares a new
+function with a variable number of arguments. The list of
+parameters {params} determines the smallest number of arguments
+that the new function will accept. If the number of arguments
+passed to the new function is larger than the number of parameters
+in {params}, then the last argument actually passed to the new
+function will be a list containing all the remaining arguments.</p>
+<p>A function defined using {RuleBaseListed} will appear to have the
+arity equal to the number of parameters in the {param} list, and it
+can accept any number of arguments greater or equal than that. As a
+consequence, it will be impossible to define a new function with
+the same name and with a greater arity.</p>
+<p>The function body will know that the function is passed more
+arguments than the length of the {param} list, because the last
+argument will then be a list. The rest then works like a
+{RuleBase}-defined function with a fixed number of
+arguments. Transformation rules can be defined for the new function
+as usual.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>The definitions</p>
+<div class="highlight-python"><div class="highlight"><pre>RuleBaseListed(&quot;f&quot;,{a,b,c})
+10 # f(_a,_b,{_c,_d}) &lt;--
+  Echo({&quot;four args&quot;,a,b,c,d});
+20 # f(_a,_b,c_IsList) &lt;--
+  Echo({&quot;more than four args&quot;,a,b,c});
+30 # f(_a,_b,_c) &lt;-- Echo({&quot;three args&quot;,a,b,c});
+</pre></div>
+</div>
+<p>give the following interaction:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; f(A)
+Out&gt; f(A);
+In&gt; f(A,B)
+Out&gt; f(A,B);
+In&gt; f(A,B,C)
+three args A B C
+Out&gt; True;
+In&gt; f(A,B,C,D)
+four args A B C D
+Out&gt; True;
+In&gt; f(A,B,C,D,E)
+more than four args A B {C,D,E}
+Out&gt; True;
+In&gt; f(A,B,C,D,E,E)
+more than four args A B {C,D,E,E}
+Out&gt; True;
+</pre></div>
+</div>
+<p>The function {f} now appears to occupy all arities greater than 3:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; RuleBase(&quot;f&quot;, {x,y,z,t});
+CommandLine(1) : Rule base with this arity already defined
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#RuleBase" title="RuleBase"><tt class="xref ys ys-func docutils literal"><span class="pre">RuleBase()</span></tt></a>, <a class="reference internal" href="#Retract" title="Retract"><tt class="xref ys ys-func docutils literal"><span class="pre">Retract()</span></tt></a>, <a class="reference internal" href="io.html#Echo" title="Echo"><tt class="xref ys ys-func docutils literal"><span class="pre">Echo()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Rule">
+<tt class="descname">Rule</tt><big>(</big><em>operator</em>, <em>arity</em>, <em>precedence</em>, <em>predicate</em><big>)</big> body<a class="headerlink" href="#Rule" title="Permalink to this definition">¶</a></dt>
+<dd><p>define a rewrite rule</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>&#8220;operator&#8221;</strong> &#8211; string, name of function</li>
+<li><strong>arity</strong> &#8211; </li>
+<li><strong>precedence</strong> &#8211; integers</li>
+<li><strong>predicate</strong> &#8211; function returning boolean</li>
+<li><strong>body</strong> &#8211; expression, body of rule</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Define a rule for the function &#8220;operator&#8221; with &#8220;arity&#8221;,
+&#8220;precedence&#8221;, &#8220;predicate&#8221; and &#8220;body&#8221;. The &#8220;precedence&#8221; goes from
+low to high: rules with low precedence will be applied first.</p>
+<p>The arity for a rules database equals the number of
+arguments. Different rules data bases can be built for functions
+with the same name but with a different number of arguments.</p>
+<p>Rules with a low precedence value will be tried before rules with a
+high value, so a rule with precedence 0 will be tried before a rule
+with precedence 1.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="HoldArg">
+<tt class="descname">HoldArg</tt><big>(</big><em>operator</em>, <em>parameters</em><big>)</big><a class="headerlink" href="#HoldArg" title="Permalink to this definition">¶</a></dt>
+<dd><p>mark argument as not evaluated</p>
+<p>{&#8220;operator&#8221;} &#8211; string, name of a function
+{parameter} &#8211; atom, symbolic name of parameter</p>
+<p>Specify that parameter should not be evaluated before used. This
+will be declared for all arities of &#8220;operator&#8221;, at the moment this
+function is called, so it is best called after all {RuleBase} calls
+for this operator.  &#8220;operator&#8221; can be a string or atom specifying
+the function name.</p>
+<p>The {parameter} must be an atom from the list of symbolic arguments
+used when calling {RuleBase}.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#RuleBase" title="RuleBase"><tt class="xref ys ys-func docutils literal"><span class="pre">RuleBase()</span></tt></a>, <a class="reference internal" href="#HoldArgNr" title="HoldArgNr"><tt class="xref ys ys-func docutils literal"><span class="pre">HoldArgNr()</span></tt></a>,
+<a class="reference internal" href="#RuleBaseArgList" title="RuleBaseArgList"><tt class="xref ys ys-func docutils literal"><span class="pre">RuleBaseArgList()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Retract">
+<tt class="descname">Retract</tt><big>(</big><em>function</em>, <em>arity</em><big>)</big><a class="headerlink" href="#Retract" title="Permalink to this definition">¶</a></dt>
+<dd><p>erase rules for a function</p>
+<p>{&#8220;function&#8221;} &#8211; string, name of function
+{arity} &#8211; positive integer</p>
+<p>Remove a rulebase for the function named {&#8220;function&#8221;} with the
+specific {arity}, if it exists at all. This will make Yacas forget
+all rules defined for a given function. Rules for functions with
+the same name but different arities are not affected.</p>
+<p>Assignment {:=} of a function does this to the function being
+(re)defined.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#RuleBaseArgList" title="RuleBaseArgList"><tt class="xref ys ys-func docutils literal"><span class="pre">RuleBaseArgList()</span></tt></a>, <a class="reference internal" href="#RuleBase" title="RuleBase"><tt class="xref ys ys-func docutils literal"><span class="pre">RuleBase()</span></tt></a>, <a class="reference internal" href="vars.html#:=" title=":="><tt class="xref ys ys-func docutils literal"><span class="pre">:=()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="UnFence">
+<tt class="descname">UnFence</tt><big>(</big><em>operator</em>, <em>arity</em><big>)</big><a class="headerlink" href="#UnFence" title="Permalink to this definition">¶</a></dt>
+<dd><p>change local variable scope for a function</p>
+<p>{&#8220;operator&#8221;} &#8211; string, name of function
+{arity} &#8211; positive integers</p>
+<p>When applied to a user function, the bodies defined for the rules
+for &#8220;operator&#8221; with given arity can see the local variables from
+the calling function. This is useful for defining macro-like
+procedures (looping and such).</p>
+<p>The standard library functions {For} and {ForEach} use {UnFence}.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="HoldArgNr">
+<tt class="descname">HoldArgNr</tt><big>(</big><em>function</em>, <em>arity</em>, <em>argNum</em><big>)</big><a class="headerlink" href="#HoldArgNr" title="Permalink to this definition">¶</a></dt>
+<dd><p>specify argument as not evaluated</p>
+<p>{&#8220;function&#8221;} &#8211; string, function name
+{arity}, {argNum} &#8211; positive integers</p>
+<p>Declares the argument numbered {argNum} of the function named
+{&#8220;function&#8221;} with specified {arity} to be unevaluated
+(&#8220;held&#8221;). Useful if you don&#8217;t know symbolic names of parameters,
+for instance, when the function was not declared using an explicit
+{RuleBase} call. Otherwise you could use {HoldArg}.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#HoldArg" title="HoldArg"><tt class="xref ys ys-func docutils literal"><span class="pre">HoldArg()</span></tt></a>, <a class="reference internal" href="#RuleBase" title="RuleBase"><tt class="xref ys ys-func docutils literal"><span class="pre">RuleBase()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="RuleBaseArgList">
+<tt class="descname">RuleBaseArgList</tt><big>(</big><em>operator</em>, <em>arity</em><big>)</big><a class="headerlink" href="#RuleBaseArgList" title="Permalink to this definition">¶</a></dt>
+<dd><p>obtain list of arguments</p>
+<p>{&#8220;operator&#8221;} &#8211; string, name of function
+{arity} &#8211; integer</p>
+<p>Returns a list of atoms, symbolic parameters specified in the
+{RuleBase} call for the function named {&#8220;operator&#8221;} with the
+specific {arity}.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#RuleBase" title="RuleBase"><tt class="xref ys ys-func docutils literal"><span class="pre">RuleBase()</span></tt></a>, <a class="reference internal" href="#HoldArgNr" title="HoldArgNr"><tt class="xref ys ys-func docutils literal"><span class="pre">HoldArgNr()</span></tt></a>, <a class="reference internal" href="#HoldArg" title="HoldArg"><tt class="xref ys ys-func docutils literal"><span class="pre">HoldArg()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MacroSet">
+<tt class="descname">MacroSet</tt><big>(</big><big>)</big><a class="headerlink" href="#MacroSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>define rules in functions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MacroClear">
+<tt class="descname">MacroClear</tt><big>(</big><big>)</big><a class="headerlink" href="#MacroClear" title="Permalink to this definition">¶</a></dt>
+<dd><p>define rules in functions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MacroLocal">
+<tt class="descname">MacroLocal</tt><big>(</big><big>)</big><a class="headerlink" href="#MacroLocal" title="Permalink to this definition">¶</a></dt>
+<dd><p>define rules in functions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MacroRuleBase">
+<tt class="descname">MacroRuleBase</tt><big>(</big><big>)</big><a class="headerlink" href="#MacroRuleBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>define rules in functions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MacroRuleBaseListed">
+<tt class="descname">MacroRuleBaseListed</tt><big>(</big><big>)</big><a class="headerlink" href="#MacroRuleBaseListed" title="Permalink to this definition">¶</a></dt>
+<dd><p>define rules in functions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MacroRule">
+<tt class="descname">MacroRule</tt><big>(</big><big>)</big><a class="headerlink" href="#MacroRule" title="Permalink to this definition">¶</a></dt>
+<dd><p>define rules in functions</p>
+<p>These functions have the same effect as their non-macro
+counterparts, except that their arguments are evaluated before the
+required action is performed.  This is useful in macro-like
+procedures or in functions that need to define new rules based on
+parameters.</p>
+<p>Make sure that the arguments of {Macro}... commands evaluate to
+expressions that would normally be used in the non-macro versions!</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="vars.html#Set" title="Set"><tt class="xref ys ys-func docutils literal"><span class="pre">Set()</span></tt></a>, <a class="reference internal" href="vars.html#Clear" title="Clear"><tt class="xref ys ys-func docutils literal"><span class="pre">Clear()</span></tt></a>, <a class="reference internal" href="vars.html#Local" title="Local"><tt class="xref ys ys-func docutils literal"><span class="pre">Local()</span></tt></a>,
+<a class="reference internal" href="#RuleBase" title="RuleBase"><tt class="xref ys ys-func docutils literal"><span class="pre">RuleBase()</span></tt></a>, <a class="reference internal" href="#Rule" title="Rule"><tt class="xref ys ys-func docutils literal"><span class="pre">Rule()</span></tt></a>, <a class="reference internal" href="#Backquoting" title="Backquoting"><tt class="xref ys ys-func docutils literal"><span class="pre">Backquoting()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Backquoting">
+<tt class="descname">Backquoting</tt><big>(</big><big>)</big><a class="headerlink" href="#Backquoting" title="Permalink to this definition">¶</a></dt>
+<dd><p>macro expansion (LISP-style backquoting)</p>
+<p>{expression} &#8211; expression containing &#8220;<a class="reference external" href="mailto:{&#37;&#52;&#48;var">{<span>&#64;</span>var</a>}&#8221; combinations to substitute the value of variable &#8220;{var}&#8221;</p>
+<p>Backquoting is a macro substitution mechanism. A backquoted
+{expression} is evaluated in two stages: first, variables prefixed
+by {&#64;} are evaluated inside an expression, and second, the new
+expression is evaluated.</p>
+<p>To invoke this functionality, a backquote {`} needs to be placed in
+front of an expression. Parentheses around the expression are
+needed because the backquote binds tighter than other operators.</p>
+<p>The expression should contain some variables (assigned atoms) with
+the special prefix operator {&#64;}. Variables prefixed by {&#64;} will be
+evaluated even if they are inside function arguments that are
+normally not evaluated (e.g. functions declared with {HoldArg}). If
+the <a class="reference external" href="mailto:{&#37;&#52;&#48;var">{<span>&#64;</span>var</a>} pair is in place of a function name, e.g. &#8220;{&#64;f(x)}&#8221;,
+then at the first stage of evaluation the function name itself is
+replaced, not the return value of the function (see example); so at
+the second stage of evaluation, a new function may be called.</p>
+<p>One way to view backquoting is to view it as a parametric
+expression generator. <a class="reference external" href="mailto:{&#37;&#52;&#48;var">{<span>&#64;</span>var</a>} pairs get substituted with the value
+of the variable {var} even in contexts where nothing would be
+evaluated. This effect can be also achieved using {UnList} and
+{Hold} but the resulting code is much more difficult to read and
+maintain.</p>
+<p>This operation is relatively slow since a new expression is built
+before it is evaluated, but nonetheless backquoting is a powerful
+mechanism that sometimes allows to greatly simplify code.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>This example defines a function that automatically evaluates to
+a number as soon as the argument is a number (a lot of functions
+do this only when inside a {N(...)} section).</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Decl(f1,f2) := \
+In&gt;   `(@f1(x_IsNumber) &lt;-- N(@f2(x)));
+Out&gt; True;
+In&gt; Decl(nSin,Sin)
+Out&gt; True;
+In&gt; Sin(1)
+Out&gt; Sin(1);
+In&gt; nSin(1)
+Out&gt; 0.8414709848;
+</pre></div>
+</div>
+<p>This example assigns the expression {func(value)} to variable
+{var}. Normally the first argument of {Set} would be unevaluated.</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; SetF(var,func,value) := \
+In&gt;     `(Set(@var,@func(@value)));
+Out&gt; True;
+In&gt; SetF(a,Sin,x)
+Out&gt; True;
+In&gt; a
+Out&gt; Sin(x);
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MacroSet" title="MacroSet"><tt class="xref ys ys-func docutils literal"><span class="pre">MacroSet()</span></tt></a>, <a class="reference internal" href="#MacroLocal" title="MacroLocal"><tt class="xref ys ys-func docutils literal"><span class="pre">MacroLocal()</span></tt></a>,
+<a class="reference internal" href="#MacroRuleBase" title="MacroRuleBase"><tt class="xref ys ys-func docutils literal"><span class="pre">MacroRuleBase()</span></tt></a>, <a class="reference internal" href="controlflow.html#Hold" title="Hold"><tt class="xref ys ys-func docutils literal"><span class="pre">Hold()</span></tt></a>, <a class="reference internal" href="#HoldArg" title="HoldArg"><tt class="xref ys ys-func docutils literal"><span class="pre">HoldArg()</span></tt></a>,
+<a class="reference internal" href="#DefMacroRuleBase" title="DefMacroRuleBase"><tt class="xref ys ys-func docutils literal"><span class="pre">DefMacroRuleBase()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="DefMacroRuleBase">
+<tt class="descname">DefMacroRuleBase</tt><big>(</big><em>name</em>, <em>params</em><big>)</big><a class="headerlink" href="#DefMacroRuleBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>define a function as a macro</p>
+<p>{name} &#8211; string, name of a function
+{params} &#8211; list of arguments</p>
+<p>{DefMacroRuleBase} is similar to {RuleBase}, with the difference
+that it declares a macro, instead of a function.  After this call,
+rules can be defined for the function &#8220;{name}&#8221;, but their
+interpretation will be different.</p>
+<p>With the usual functions, the evaluation model is that of the
+&lt;i&gt;applicative-order model of substitution&lt;/i&gt;, meaning that first
+the arguments are evaluated, and then the function is applied to
+the result of evaluating these arguments. The function is entered,
+and the code inside the function can not access local variables
+outside of its own local variables.</p>
+<p>With macros, the evaluation model is that of the &lt;i&gt;normal-order
+model of substitution&lt;/i&gt;, meaning that all occurrences of
+variables in an expression are first substituted into the body of
+the macro, and only then is the resulting expression evaluated
+&lt;i&gt;in its calling environment&lt;/i&gt;. This is important, because then
+in principle a macro body can access the local variables from the
+calling environment, whereas functions can not do that.</p>
+<p>As an example, suppose there is a function {square}, which squares
+its argument, and a function {add}, which adds its
+arguments. Suppose the definitions of these functions are:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span> <span class="o">&lt;--</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>and</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">square</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;--</span> <span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>In applicative-order mode (the usual way functions are evaluated),
+in the following expression</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">add</span><span class="p">(</span><span class="n">square</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">square</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>first the arguments to {add} get evaluated. So, first {square(2)}
+is evaluated.  To evaluate this, first {2} is evaluated, but this
+evaluates to itself. Then the {square} function is applied to it,
+{2*2}, which returns 4. The same is done for {square(3)}, resulting
+in {9}. Only then, after evaluating these two arguments, {add} is
+applied to them, which is equivalent to <tt class="docutils literal"><span class="pre">add(4,9)</span></tt> resulting in
+calling {4+9}, which in turn results in {13}.</p>
+<p>In contrast, when {add} is a macro, the arguments to {add} are first
+expanded. So</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">add</span><span class="p">(</span><span class="n">square</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span><span class="n">square</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>first expands to</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">square</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">square</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>and then this expression is evaluated, as if the user had written
+it directly.  In other words, {square(2)} is not evaluated before
+the macro has been fully expanded.</p>
+<p>Macros are useful for customizing syntax, and compilers can
+potentially greatly optimize macros, as they can be inlined in the
+calling environment, and optimized accordingly.</p>
+<p>There are disadvantages, however. In interpreted mode, macros are
+slower, as the requirement for substitution means that a new
+expression to be evaluated has to be created on the fly. Also, when
+one of the parameters to the macro occur more than once in the body
+of the macro, it is evaluated multiple times.</p>
+<p>When defining transformation rules for macros, the variables to be
+substituted need to be preceded by the {&#64;} operator, similar to the
+back-quoting mechanism.  Apart from that, the two are similar, and
+all transformation rules can also be applied to macros.</p>
+<p>Macros can co-exist with functions with the same name but different
+arity.  For instance, one can have a function {foo(a,b)} with two
+arguments, and a macro {foo(a,b,c)} with three arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"><p class="first">The following example defines a function {myfor}, and shows one
+use, referencing a variable {a} from the calling environment.</p>
+<div class="last highlight-python"><div class="highlight"><pre>In&gt; DefMacroRuleBase(&quot;myfor&quot;,{init,pred,inc,body})
+Out&gt; True;
+In&gt; myfor(_init,_pred,_inc,_body)&lt;--[@init;While(@pred)[@body;@inc;];True;];
+Out&gt; True;
+In&gt; a:=10
+Out&gt; 10;
+In&gt; myfor(i:=1,i&lt;10,i++,Echo(a*i))
+10
+20
+30
+40
+50
+60
+70
+80
+90
+Out&gt; True;
+In&gt; i
+Out&gt; 10;
+</pre></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#RuleBase" title="RuleBase"><tt class="xref ys ys-func docutils literal"><span class="pre">RuleBase()</span></tt></a>, <a class="reference internal" href="#Backquoting" title="Backquoting"><tt class="xref ys ys-func docutils literal"><span class="pre">Backquoting()</span></tt></a>,
+<a class="reference internal" href="#DefMacroRuleBaseListed" title="DefMacroRuleBaseListed"><tt class="xref ys ys-func docutils literal"><span class="pre">DefMacroRuleBaseListed()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="DefMacroRuleBaseListed">
+<tt class="descname">DefMacroRuleBaseListed</tt><big>(</big><em>name</em>, <em>params</em><big>)</big><a class="headerlink" href="#DefMacroRuleBaseListed" title="Permalink to this definition">¶</a></dt>
+<dd><p>define macro with variable number of arguments</p>
+<p>{&#8220;name&#8221;} &#8211; string, name of function
+{params} &#8211; list of arguments to function</p>
+<p>This does the same as {DefMacroRuleBase} (define a macro), but with a variable
+number of arguments, similar to {RuleBaseListed}.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#RuleBase" title="RuleBase"><tt class="xref ys ys-func docutils literal"><span class="pre">RuleBase()</span></tt></a>, <a class="reference internal" href="#RuleBaseListed" title="RuleBaseListed"><tt class="xref ys ys-func docutils literal"><span class="pre">RuleBaseListed()</span></tt></a>,
+<a class="reference internal" href="#Backquoting" title="Backquoting"><tt class="xref ys ys-func docutils literal"><span class="pre">Backquoting()</span></tt></a>, <a class="reference internal" href="#DefMacroRuleBase" title="DefMacroRuleBase"><tt class="xref ys ys-func docutils literal"><span class="pre">DefMacroRuleBase()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="ExtraInfo'Set">
+<tt class="descname">ExtraInfo'Set</tt><big>(</big><em>expr</em>, <em>tag</em><big>)</big><a class="headerlink" href="#ExtraInfo'Set" title="Permalink to this definition">¶</a></dt>
+<dt id="ExtraInfo'Get">
+<tt class="descname">ExtraInfo'Get</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#ExtraInfo'Get" title="Permalink to this definition">¶</a></dt>
+<dd><p>annotate objects with additional information</p>
+<p>{expr} &#8211; any expression
+{tag} &#8211; tag information (any other expression)</p>
+<p>Sometimes it is useful to be able to add extra tag information to
+&#8220;annotate&#8221; objects or to label them as having certain
+&#8220;properties&#8221;. The functions {ExtraInfo&#8217;Set} and {ExtraInfo&#8217;Get}
+enable this.</p>
+<p>The function {ExtraInfo&#8217;Set} returns the tagged expression, leaving
+the original expression alone. This means there is a common
+pitfall: be sure to assign the returned value to a variable, or the
+tagged expression is lost when the temporary object is destroyed.</p>
+<p>The original expression is left unmodified, and the tagged
+expression returned, in order to keep the atomic objects small. To
+tag an object, a new type of object is created from the old object,
+with one added property (the tag). The tag can be any expression
+whatsoever.</p>
+<p>The function {ExtraInfo&#8217;Get(x)} retrieves this tag expression from
+an object {x}. If an object has no tag, it looks the same as if it
+had a tag with value <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>.</p>
+<p>No part of the Yacas core uses tags in a way that is visible to the
+outside world, so for specific purposes a programmer can devise a
+format to use for tag information. Association lists (hashes) are a
+natural fit for this, although it is not required and a tag can be
+any object (except the atom <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> because it is indistinguishable
+from having no tag information). Using association lists is highly
+advised since it is most likely to be the format used by other
+parts of the library, and one needs to avoid clashes with other
+library code.  Typically, an object will either have no tag or a
+tag which is an associative list (perhaps empty). A script that
+uses tagged objects will check whether an object has a tag and if
+so, will add or modify certain entries of the association list,
+preserving any other tag information.</p>
+<p>Note that {FlatCopy} currently does &lt;i&gt;not&lt;/i&gt; copy the tag
+information (see examples).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; a:=2*b
+Out&gt; 2*b;
+In&gt; a:=ExtraInfo&#39;Set(a,{{&quot;type&quot;,&quot;integer&quot;}})
+Out&gt; 2*b;
+In&gt; a
+Out&gt; 2*b;
+In&gt; ExtraInfo&#39;Get(a)
+Out&gt; {{&quot;type&quot;,&quot;integer&quot;}};
+In&gt; ExtraInfo&#39;Get(a)[&quot;type&quot;]
+Out&gt; &quot;integer&quot;;
+In&gt; c:=a
+Out&gt; 2*b;
+In&gt; ExtraInfo&#39;Get(c)
+Out&gt; {{&quot;type&quot;,&quot;integer&quot;}};
+In&gt; c
+Out&gt; 2*b;
+In&gt; d:=FlatCopy(a);
+Out&gt; 2*b;
+In&gt; ExtraInfo&#39;Get(d)
+Out&gt; False;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="lists.html#Assoc" title="Assoc"><tt class="xref ys ys-func docutils literal"><span class="pre">Assoc()</span></tt></a>, <a class="reference internal" href="vars.html#:=" title=":="><tt class="xref ys ys-func docutils literal"><span class="pre">:=()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="GarbageCollect">
+<tt class="descname">GarbageCollect</tt><big>(</big><big>)</big><a class="headerlink" href="#GarbageCollect" title="Permalink to this definition">¶</a></dt>
+<dd><p>do garbage collection on unused memory</p>
+<p>{GarbageCollect} garbage-collects unused memory. The Yacas system
+uses a reference counting system for most objects, so this call is
+usually not necessary.</p>
+<p>Reference counting refers to bookkeeping where in each object a
+counter is held, keeping track of the number of parts in the system
+using that object. When this count drops to zero, the object is
+automatically removed. Reference counting is not the fastest way of
+doing garbage collection, but it can be implemented in a very clean
+way with very little code.</p>
+<p>Among the most important objects that are not reference counted are
+the strings. {GarbageCollect} collects these and disposes of them
+when they are not used any more.</p>
+<p>{GarbageCollect} is useful when doing a lot of text processing, to
+clean up the text buffers. It is not highly needed, but it keeps
+memory use low.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="FindFunction">
+<tt class="descname">FindFunction</tt><big>(</big><em>function</em><big>)</big><a class="headerlink" href="#FindFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>find the library file where a function is defined</p>
+<p>{function} &#8211; string, the name of a function</p>
+<p>This function is useful for quickly finding the file where a
+standard library function is defined. It is likely to only be
+useful for developers. The function {FindFunction} scans the {.def}
+files that were loaded at start-up.  This means that functions that
+are not listed in {.def} files will not be found with
+{FindFunction}.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">FindFunction</span><span class="p">(</span><span class="s">&quot;Sum&quot;</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="s">&quot;sums.rep/code.ys&quot;</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">FindFunction</span><span class="p">(</span><span class="s">&quot;Integrate&quot;</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="s">&quot;integrate.rep/code.ys&quot;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">Vi()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Secure">
+<tt class="descname">Secure</tt><big>(</big><em>body</em><big>)</big><a class="headerlink" href="#Secure" title="Permalink to this definition">¶</a></dt>
+<dd><p>guard the host OS</p>
+<p>{body} &#8211; expression</p>
+<p>{Secure} evaluates {body} in a &#8220;safe&#8221; environment, where files
+cannot be opened and system calls are not allowed. This can help
+protect the system when e.g. a script is sent over the Internet to
+be evaluated on a remote computer, which is potentially unsafe.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="controlflow.html#SystemCall" title="SystemCall"><tt class="xref ys ys-func docutils literal"><span class="pre">SystemCall()</span></tt></a></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="arbitrary-precision-numerical-programming">
+<h2>Arbitrary-precision numerical programming<a class="headerlink" href="#arbitrary-precision-numerical-programming" title="Permalink to this headline">¶</a></h2>
+<p>This chapter contains functions that help programming numerical
+calculations with arbitrary precision.</p>
+<dl class="function">
+<dt id="MultiplyNum">
+<tt class="descname">MultiplyNum</tt><big>(</big><em>x</em>, <em>y</em><span class="optional">[</span>, <em>...</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#MultiplyNum" title="Permalink to this definition">¶</a></dt>
+<dd><p>optimized numerical multiplication</p>
+<p>{x}, {y}, {z} &#8211; integer, rational or floating-point numbers to multiply</p>
+<p>The function {MultiplyNum} is used to speed up multiplication of
+floating-point numbers with rational numbers. Suppose we need to
+compute $(p/q)*x$ where $p$, $q$ are integers and $x$ is a
+floating-point number. At high precision, it is faster to multiply
+$x$ by an integer $p$ and divide by an integer $q$ than to compute
+$p/q$ to high precision and then multiply by $x$. The function
+{MultiplyNum} performs this optimization.</p>
+<p>The function accepts any number of arguments (not less than two) or
+a list of numbers. The result is always a floating-point number
+(even if {InNumericMode()} returns False).</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MathMultiply" title="MathMultiply"><tt class="xref ys ys-func docutils literal"><span class="pre">MathMultiply()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="CachedConstant">
+<tt class="descname">CachedConstant</tt><big>(</big><em>cache</em>, <em>Cname</em>, <em>Cfunc</em><big>)</big><a class="headerlink" href="#CachedConstant" title="Permalink to this definition">¶</a></dt>
+<dd><p>precompute multiple-precision constants</p>
+<p>{cache} &#8211; atom, name of the cache
+{Cname} &#8211; atom, name of the constant
+{Cfunc} &#8211; expression that evaluates the constant</p>
+<p>This function is used to create precomputed multiple-precision
+values of constants. Caching these values will save time if they
+are frequently used.</p>
+<p>The call to {CachedConstant} defines a new function named {Cname()}
+that returns the value of the constant at given precision. If the
+precision is increased, the value will be recalculated as
+necessary, otherwise calling {Cname()} will take very little time.</p>
+<p>The parameter {Cfunc} must be an expression that can be evaluated
+and returns the value of the desired constant at the current
+precision. (Most arbitrary-precision mathematical functions do this
+by default.)</p>
+<p>The associative list {cache} contains elements of the form {{Cname,
+prec, value}}, as illustrated in the example. If this list does not
+exist, it will be created.</p>
+<p>This mechanism is currently used by {N()} to precompute the values
+of $Pi$ and $gamma$ (and the golden ratio through {GoldenRatio},
+and {Catalan}).  The name of the cache for {N()} is
+{CacheOfConstantsN}.  The code in the function {N()} assigns
+unevaluated calls to {Internal&#8217;Pi()} and {Internal&#8217;gamma()} to the
+atoms {Pi} and {gamma} and declares them to be lazy global
+variables through {SetGlobalLazyVariable} (with equivalent
+functions assigned to other constants that are added to the list of
+cached constants).</p>
+<p>The result is that the constants will be recalculated only when
+they are used in the expression under {N()}.  In other words, the
+code in {N()} does the equivalent of</p>
+<div class="highlight-python"><div class="highlight"><pre>SetGlobalLazyVariable(mypi,Hold(Internal&#39;Pi()));
+SetGlobalLazyVariable(mygamma,Hold(Internal&#39;gamma()));
+</pre></div>
+</div>
+<p>After this, evaluating an expression such as {1/2+gamma} will call
+the function {Internal&#8217;gamma()} but not the function
+{Internal&#8217;Pi()}.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; CachedConstant( my&#39;cache, Ln2, Internal&#39;LnNum(2) )
+Out&gt; True;
+In&gt; Internal&#39;Ln2()
+Out&gt; 0.6931471806;
+In&gt; V(N(Internal&#39;Ln2(),20))
+CachedConstant: Info: constant Ln2 is being recalculated at precision 20
+Out&gt; 0.69314718055994530942;
+In&gt; my&#39;cache
+Out&gt; {{&quot;Ln2&quot;,20,0.69314718055994530942}};
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a>, <a class="reference internal" href="#Builtin'Precision'Set" title="Builtin'Precision'Set"><tt class="xref ys ys-func docutils literal"><span class="pre">Builtin'Precision'Set()</span></tt></a>, <a class="reference internal" href="consts.html#Pi" title="Pi"><tt class="xref ys ys-func docutils literal"><span class="pre">Pi()</span></tt></a>,
+<a class="reference internal" href="consts.html#GoldenRatio" title="GoldenRatio"><tt class="xref ys ys-func docutils literal"><span class="pre">GoldenRatio()</span></tt></a>, <a class="reference internal" href="consts.html#Catalan" title="Catalan"><tt class="xref ys ys-func docutils literal"><span class="pre">Catalan()</span></tt></a>, <a class="reference internal" href="consts.html#gamma" title="gamma"><tt class="xref ys ys-func docutils literal"><span class="pre">gamma()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="NewtonNum">
+<tt class="descname">NewtonNum</tt><big>(</big><em>func</em>, <em>x0</em><span class="optional">[</span>, <em>prec0</em><span class="optional">[</span>, <em>order</em><span class="optional">]</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#NewtonNum" title="Permalink to this definition">¶</a></dt>
+<dd><p>low-level optimized Newton&#8217;s iterations</p>
+<p>{func} &#8211; a function specifying the iteration sequence
+{x0} &#8211; initial value (must be close enough to the root)
+{prec0} &#8211; initial precision (at least 4, default 5)
+{order} &#8211; convergence order (typically 2 or 3, default 2)</p>
+<p>This function is an optimized interface for computing Newton&#8217;s
+iteration sequences for numerical solution of equations in
+arbitrary precision.</p>
+<p>{NewtonNum} will iterate the given function starting from the
+initial value, until the sequence converges within current
+precision.  Initially, up to 5 iterations at the initial precision
+{prec0} is performed (the low precision is set for speed). The
+initial value {x0} must be close enough to the root so that the
+initial iterations converge. If the sequence does not produce even
+a single correct digit of the root after these initial iterations,
+an error message is printed. The default value of the initial
+precision is 5.</p>
+<p>The {order} parameter should give the convergence order of the
+scheme.  Normally, Newton iteration converges quadratically (so the
+default value is {order}=2) but some schemes converge faster and
+you can speed up this function by specifying the correct
+order. (Caution: if you give {order}=3 but the sequence is actually
+quadratic, the result will be silently incorrect. It is safe to use
+{order}=2.)</p>
+<p>The verbose option {V} can be used to monitor the convergence. The
+achieved exact digits should roughly form a geometric progression.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Builtin&#39;Precision&#39;Set(20)
+Out&gt; True;
+In&gt; NewtonNum({{x}, x+Sin(x)}, 3, 5, 3)
+Out&gt; 3.14159265358979323846;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="solvers.html#Newton" title="Newton"><tt class="xref ys ys-func docutils literal"><span class="pre">Newton()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="SumTaylorNum">
+<tt class="descname">SumTaylorNum</tt><big>(</big><big>)</big><a class="headerlink" href="#SumTaylorNum" title="Permalink to this definition">¶</a></dt>
+<dd><p>optimized numerical evaluation of Taylor series</p>
+<p>SumTaylorNum(x, NthTerm, order)
+SumTaylorNum(x, NthTerm, TermFactor, order)
+SumTaylorNum(x, ZerothTerm, TermFactor, order)</p>
+<p>{NthTerm} &#8211; a function specifying $n$-th coefficient of the series
+{ZerothTerm} &#8211; value of the $0$-th coefficient of the series
+{x} &#8211; number, value of the expansion variable
+{TermFactor} &#8211; a function specifying the ratio of $n$-th term to the previous one
+{order} &#8211; power of $x$ in the last term</p>
+<p>{SumTaylorNum} computes a Taylor series $Sum(k,0,n,a[k]*x^k)$
+numerically. This function allows very efficient computations of
+functions given by Taylor series, although some tweaking of the
+parameters is required for good results.</p>
+<p>The coefficients $a[k]$ of the Taylor series are given as functions
+of one integer variable ($k$). It is convenient to pass them to
+{SumTaylorNum} as closures.  For example, if a function {a(k)} is
+defined, then</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">SumTaylorNum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">{{</span><span class="n">k</span><span class="p">},</span> <span class="n">a</span><span class="p">(</span><span class="n">k</span><span class="p">)},</span> <span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>computes the series $Sum(k, 0, n, a(k)*x^k)$.</p>
+<p>Often a simple relation between successive coefficients $a[k-1]$,
+$a[k]$ of the series is available; usually they are related by a
+rational factor. In this case, the second form of {SumTaylorNum}
+should be used because it will compute the series faster. The
+function {TermFactor} applied to an integer $k&gt;=1$ must return the
+ratio $a[k]$/$a[k-1]$. (If possible, the function {TermFactor}
+should return a rational number and not a floating-point number.)
+The function {NthTerm} may also be given, but the current
+implementation only calls {NthTerm(0)} and obtains all other
+coefficients by using {TermFactor}.  Instead of the function
+{NthTerm}, a number giving the $0$-th term can be given.</p>
+<p>The algorithm is described elsewhere in the documentation.  The
+number of terms {order}+1 must be specified and a sufficiently high
+precision must be preset in advance to achieve the desired
+accuracy.  (The function {SumTaylorNum} does not change the current
+precision.)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>To compute 20 digits of $Exp(1)$ using the Taylor series, one needs
+21 digits of working precision and 21 terms of the series.</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Builtin&#39;Precision&#39;Set(21)
+Out&gt; True;
+In&gt; SumTaylorNum(1, {{k},1/k!}, 21)
+Out&gt; 2.718281828459045235351;
+In&gt; SumTaylorNum(1, 1, {{k},1/k}, 21)
+Out&gt; 2.71828182845904523535;
+In&gt; SumTaylorNum(1, {{k},1/k!}, {{k},1/k}, 21)
+Out&gt; 2.71828182845904523535;
+In&gt; RoundTo(N(Ln(%)),20)
+Out&gt; 1;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">Taylor()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IntPowerNum">
+<tt class="descname">IntPowerNum</tt><big>(</big><em>x</em>, <em>n</em>, <em>mult</em>, <em>unity</em><big>)</big><a class="headerlink" href="#IntPowerNum" title="Permalink to this definition">¶</a></dt>
+<dd><p>optimized computation of integer powers</p>
+<p>{x} &#8211; a number or an expression
+{n} &#8211; a non-negative integer (power to raise {x} to)
+{mult} &#8211; a function that performs one multiplication
+{unity} &#8211; value of the unity with respect to that multiplication</p>
+<p>{IntPowerNum} computes the power $x^n$ using the fast binary
+algorithm.  It can compute integer powers with $n&gt;=0$ in any ring
+where multiplication with unity is defined.  The multiplication
+function and the unity element must be specified.  The number of
+multiplications is no more than $2*Ln(n)/Ln(2)$.</p>
+<p>Mathematically, this function is a generalization of {MathPower} to
+rings other than that of real numbers.</p>
+<p>In the current implementation, the {unity} argument is only used
+when the given power {n} is zero.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>For efficient numerical calculations, the {MathMultiply} function can be passed:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IntPowerNum</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">MathMultiply</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">27</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Otherwise, the usual {*} operator suffices:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; IntPowerNum(3+4*I, 3, *,1)
+Out&gt; Complex(-117,44);
+In&gt; IntPowerNum(HilbertMatrix(2), 4, *, Identity(2))
+Out&gt; {{289/144,29/27},{29/27,745/1296}};
+</pre></div>
+</div>
+<p>Compute $Mod(3^100,7)$:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IntPowerNum</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">100</span><span class="p">,{{</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">},</span><span class="n">Mod</span><span class="p">(</span><span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="p">,</span><span class="mi">7</span><span class="p">)},</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">4</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MultiplyNum" title="MultiplyNum"><tt class="xref ys ys-func docutils literal"><span class="pre">MultiplyNum()</span></tt></a>, <a class="reference internal" href="#MathPower" title="MathPower"><tt class="xref ys ys-func docutils literal"><span class="pre">MathPower()</span></tt></a>,
+<a class="reference internal" href="linear-algebra.html#MatrixPower" title="MatrixPower"><tt class="xref ys ys-func docutils literal"><span class="pre">MatrixPower()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="BinSplitNum">
+<tt class="descname">BinSplitNum</tt><big>(</big><em>n1</em>, <em>n2</em>, <em>a</em>, <em>b</em>, <em>c</em>, <em>d</em><big>)</big><a class="headerlink" href="#BinSplitNum" title="Permalink to this definition">¶</a></dt>
+<dd><p>computations of series by the binary splitting method</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BinSplitData">
+<tt class="descname">BinSplitData</tt><big>(</big><em>n1</em>, <em>n2</em>, <em>a</em>, <em>b</em>, <em>c</em>, <em>d</em><big>)</big><a class="headerlink" href="#BinSplitData" title="Permalink to this definition">¶</a></dt>
+<dd><p>computations of series by the binary splitting method</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BinSplitFinal">
+<tt class="descname">BinSplitFinal</tt><big>(</big><em>{P</em>, <em>Q</em>, <em>B</em>, <em>T}</em><big>)</big><a class="headerlink" href="#BinSplitFinal" title="Permalink to this definition">¶</a></dt>
+<dd><p>computations of series by the binary splitting method</p>
+<p>{n1}, {n2} &#8211; integers, initial and final indices for summation
+{a}, {b}, {c}, {d} &#8211; functions of one argument, coefficients of the series
+{P}, {Q}, {B}, {T} &#8211; numbers, intermediate data as returned by {BinSplitData}</p>
+<p>The binary splitting method is an efficient way to evaluate many
+series when fast multiplication is available and when the series
+contains only rational numbers.  The function {BinSplitNum}
+evaluates a series of the form $$ S(n[1],n[2])=Sum(k,n[1],n[2],
+a(k)/b(k)*(p(0)/q(0)) * ... * p(k)/q(k)) $$.  Most series for
+elementary and special functions at rational points are of this
+form when the functions $a(k)$, $b(k)$, $p(k)$, $q(k)$ are chosen
+appropriately.</p>
+<p>The last four arguments of {BinSplitNum} are functions of one
+argument that give the coefficients $a(k)$, $b(k)$, $p(k)$, $q(k)$.
+In most cases these will be short integers that are simple to
+determine.  The binary splitting method will work also for
+non-integer coefficients, but the calculation will take much longer
+in that case.</p>
+<p>Note: the binary splitting method outperforms the straightforward
+summation only if the multiplication of integers is faster than
+quadratic in the number of digits.  See &lt;<em>the algorithm
+documentation|yacasdoc://Algo/3/14/</em>&gt; for more information.</p>
+<p>The two other functions are low-level functions that allow a finer
+control over the calculation.  The use of the low-level routines
+allows checkpointing or parallelization of a binary splitting
+calculation.</p>
+<p>The binary splitting method recursively reduces the calculation of
+$S(n[1],n[2])$ to the same calculation for the two halves of the
+interval [$n[1]$, $n[2]$].  The intermediate results of a binary
+splitting calculation are returned by {BinSplitData} and consist of
+four integers $P$, $Q$, $B$, $T$.  These four integers are
+converted into the final answer $S$ by the routine {BinSplitFinal}
+using the relation $$ S = T / (B*Q) $$.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>Compute the series for $e=Exp(1)$ using binary splitting.
+(We start from $n=1$ to simplify the coefficient functions.):</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Builtin&#39;Precision&#39;Set(21)
+Out&gt; True;
+In&gt;  BinSplitNum(1,21, {{k},1}, {{k},1},{{k},1},{{k},k})
+Out&gt; 1.718281828459045235359;
+In&gt; N(Exp(1)-1)
+Out&gt; 1.71828182845904523536;
+In&gt;  BinSplitData(1,21, {{k},1}, {{k},1},{{k},1},{{k},k})
+Out&gt; {1,51090942171709440000,1, 87788637532500240022};
+In&gt; BinSplitFinal(%)
+Out&gt; 1.718281828459045235359;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#SumTaylorNum" title="SumTaylorNum"><tt class="xref ys ys-func docutils literal"><span class="pre">SumTaylorNum()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MathSetExactBits">
+<tt class="descname">MathSetExactBits</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#MathSetExactBits" title="Permalink to this definition">¶</a></dt>
+<dd><p>manipulate precision of floating-point numbers</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MathGetExactBits">
+<tt class="descname">MathGetExactBits</tt><big>(</big><em>x</em>, <em>bits</em><big>)</big><a class="headerlink" href="#MathGetExactBits" title="Permalink to this definition">¶</a></dt>
+<dd><p>manipulate precision of floating-point numbers</p>
+<p>{x} &#8211; an expression evaluating to a floating-point number
+{bits} &#8211; integer, number of bits</p>
+<p>Each floating-point number in Yacas has an internal precision
+counter that stores the number of exact bits in the mantissa.  The
+number of exact bits is automatically updated after each arithmetic
+operation to reflect the gain or loss of precision due to
+round-off.  The functions {MathGetExactBits}, {MathSetExactBits}
+allow to query or set the precision flags of individual number
+objects.</p>
+<p>{MathGetExactBits(x)} returns an integer number $n$ such that {x}
+represents a real number in the interval [$x*(1-2^(-n))$,
+$x*(1+2^(-n))$] if $x!=0$ and in the interval [$-2^(-n)$, $2^(-n)$]
+if $x=0$.  The integer $n$ is always nonnegative unless {x} is zero
+(a &#8220;floating zero&#8221;).  A floating zero can have a negative value of
+the number $n$ of exact bits.</p>
+<p>These functions are only meaningful for floating-point numbers.
+(All integers are always exact.)  For integer {x}, the function
+{MathGetExactBits} returns the bit count of {x} and the function
+{MathSetExactBits} returns the unmodified integer {x}.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">FIXME - these examples currently do not work because of bugs</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>The default precision of 10 decimals corresponds to 33 bits:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; MathGetExactBits(1000.123)
+Out&gt; 33;
+In&gt; x:=MathSetExactBits(10., 20)
+Out&gt; 10.;
+In&gt; MathGetExactBits(x)
+Out&gt; 20;
+</pre></div>
+</div>
+<p>Prepare a &#8220;floating zero&#8221; representing an interval [-4, 4]:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; x:=MathSetExactBits(0., -2)
+Out&gt; 0.;
+In&gt; x=0
+Out&gt; True;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Builtin'Precision'Set" title="Builtin'Precision'Set"><tt class="xref ys ys-func docutils literal"><span class="pre">Builtin'Precision'Set()</span></tt></a>, <a class="reference internal" href="#Builtin'Precision'Get" title="Builtin'Precision'Get"><tt class="xref ys ys-func docutils literal"><span class="pre">Builtin'Precision'Get()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="InNumericMode">
+<tt class="descname">InNumericMode</tt><big>(</big><big>)</big><a class="headerlink" href="#InNumericMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>determine if currently in numeric mode</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="NonN">
+<tt class="descname">NonN</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#NonN" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate part in non-numeric mode</p>
+<p>{expr} &#8211; expression to evaluate
+{prec} &#8211; integer, precision to use</p>
+<p>When in numeric mode, {InNumericMode()} will return <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>, else it
+will return <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>. {Yacas} is in numeric mode when evaluating an
+expression with the function {N}. Thus when calling {N(expr)},
+{InNumericMode()} will return <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> while {expr} is being
+evaluated.</p>
+<p>{InNumericMode()} would typically be used to define a
+transformation rule that defines how to get a numeric approximation
+of some expression. One could define a transformation rule:</p>
+<div class="highlight-python"><div class="highlight"><pre>f(_x)_InNumericMode() &lt;- [... some code to get a numeric approximation of f(x) ... ];
+</pre></div>
+</div>
+<p>{InNumericMode()} usually returns <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>, so transformation rules
+that check for this predicate are usually left alone.</p>
+<p>When in numeric mode, {NonN} can be called to switch back to non-numeric
+mode temporarily.</p>
+<p>{NonN} is a macro. Its argument {expr} will only be evaluated after
+the numeric mode has been set appropriately.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">InNumericMode</span><span class="p">()</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">N</span><span class="p">(</span><span class="n">InNumericMode</span><span class="p">())</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">N</span><span class="p">(</span><span class="n">NonN</span><span class="p">(</span><span class="n">InNumericMode</span><span class="p">()))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a>, <a class="reference internal" href="#Builtin'Precision'Set" title="Builtin'Precision'Set"><tt class="xref ys ys-func docutils literal"><span class="pre">Builtin'Precision'Set()</span></tt></a>,
+<a class="reference internal" href="#Builtin'Precision'Get" title="Builtin'Precision'Get"><tt class="xref ys ys-func docutils literal"><span class="pre">Builtin'Precision'Get()</span></tt></a>, <a class="reference internal" href="consts.html#Pi" title="Pi"><tt class="xref ys ys-func docutils literal"><span class="pre">Pi()</span></tt></a>,
+<a class="reference internal" href="#CachedConstant" title="CachedConstant"><tt class="xref ys ys-func docutils literal"><span class="pre">CachedConstant()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IntLog">
+<tt class="descname">IntLog</tt><big>(</big><em>n</em>, <em>base</em><big>)</big><a class="headerlink" href="#IntLog" title="Permalink to this definition">¶</a></dt>
+<dd><p>integer part of logarithm</p>
+<p>{n}, {base} &#8211; positive integers</p>
+<p>{IntLog} calculates the integer part of the logarithm of {n} in
+base {base}. The algorithm uses only integer math and may be faster
+than computing $$Ln(n)/Ln(base)$$ with multiple precision
+floating-point math and rounding off to get the integer part.</p>
+<p>This function can also be used to quickly count the digits in a
+given number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>Count the number of bits:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IntLog</span><span class="p">(</span><span class="mi">257</span><span class="o">^</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">64</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Count the number of decimal digits:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IntLog</span><span class="p">(</span><span class="mi">321</span><span class="o">^</span><span class="mi">321</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">804</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IntNthRoot" title="IntNthRoot"><tt class="xref ys ys-func docutils literal"><span class="pre">IntNthRoot()</span></tt></a>, <a class="reference internal" href="arithmetic.html#Div" title="Div"><tt class="xref ys ys-func docutils literal"><span class="pre">Div()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">Mod()</span></tt>,
+<a class="reference internal" href="calc.html#Ln" title="Ln"><tt class="xref ys ys-func docutils literal"><span class="pre">Ln()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IntNthRoot">
+<tt class="descname">IntNthRoot</tt><big>(</big><em>x</em>, <em>n</em><big>)</big><a class="headerlink" href="#IntNthRoot" title="Permalink to this definition">¶</a></dt>
+<dd><p>integer part of $n$-th root</p>
+<p>{x}, {n} &#8211; positive integers</p>
+<p>{IntNthRoot} calculates the integer part of the $n$-th root of
+$x$. The algorithm uses only integer math and may be faster than
+computing $x^(1/n)$ with floating-point and rounding.</p>
+<p>This function is used to test numbers for prime powers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IntNthRoot</span><span class="p">(</span><span class="mi">65537</span><span class="o">^</span><span class="mi">111</span><span class="p">,</span> <span class="mi">37</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">281487861809153</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IntLog" title="IntLog"><tt class="xref ys ys-func docutils literal"><span class="pre">IntLog()</span></tt></a>, <a class="reference internal" href="#MathPower" title="MathPower"><tt class="xref ys ys-func docutils literal"><span class="pre">MathPower()</span></tt></a>, <a class="reference internal" href="number-theory.html#IsPrimePower" title="IsPrimePower"><tt class="xref ys ys-func docutils literal"><span class="pre">IsPrimePower()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="NthRoot">
+<tt class="descname">NthRoot</tt><big>(</big><em>m</em>, <em>n</em><big>)</big><a class="headerlink" href="#NthRoot" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate/simplify nth root of an integer</p>
+<p>{m} &#8211; a non-negative integer ($m&gt;0$)
+{n} &#8211; a positive integer greater than 1 ($n&gt;1$)</p>
+<p>{NthRoot(m,n)} calculates the integer part of the $n$-th root
+$m^(1/n)$ and returns a list {{f,r}}. {f} and {r} are both positive
+integers that satisfy <span class="math">\(f^nr=m\)</span>.  In other words, $f$ is the
+largest integer such that $m$ divides $f^n$ and $r$ is the
+remaining factor.</p>
+<p>For large {m} and small {n} {NthRoot} may work quite slowly. Every
+result {{f,r}} for given {m}, {n} is saved in a lookup table, thus
+subsequent calls to {NthRoot} with the same values {m}, {n} will be
+executed quite fast.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">NthRoot</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">};</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">NthRoot</span><span class="p">(</span><span class="mi">81</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">};</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">NthRoot</span><span class="p">(</span><span class="mi">3255552</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="p">{</span><span class="mi">144</span><span class="p">,</span><span class="mi">157</span><span class="p">};</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">NthRoot</span><span class="p">(</span><span class="mi">3255552</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="p">{</span><span class="mi">12</span><span class="p">,</span><span class="mi">1884</span><span class="p">};</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IntNthRoot" title="IntNthRoot"><tt class="xref ys ys-func docutils literal"><span class="pre">IntNthRoot()</span></tt></a>, <a class="reference internal" href="number-theory.html#Factors" title="Factors"><tt class="xref ys ys-func docutils literal"><span class="pre">Factors()</span></tt></a>, <a class="reference internal" href="#MathPower" title="MathPower"><tt class="xref ys ys-func docutils literal"><span class="pre">MathPower()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="ContFracList">
+<tt class="descname">ContFracList</tt><big>(</big><em>frac</em><span class="optional">[</span>, <em>depth</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#ContFracList" title="Permalink to this definition">¶</a></dt>
+<dd><p>manipulate continued fractions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ContFracEval">
+<tt class="descname">ContFracEval</tt><big>(</big><em>list</em><span class="optional">[</span>, <em>rest</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#ContFracEval" title="Permalink to this definition">¶</a></dt>
+<dd><p>manipulate continued fractions</p>
+<p>{frac} &#8211; a number to be expanded
+{depth} &#8211; desired number of terms
+{list} &#8211; a list of coefficients
+{rest} &#8211; expression to put at the end of the continued fraction</p>
+<p>The function {ContFracList} computes terms of the continued
+fraction representation of a rational number {frac}.  It returns a
+list of terms of length {depth}. If {depth} is not specified, it
+returns all terms.</p>
+<p>The function {ContFracEval} converts a list of coefficients into a
+continued fraction expression. The optional parameter {rest}
+specifies the symbol to put at the end of the expansion. If it is
+not given, the result is the same as if {rest=0}.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; A:=ContFracList(33/7 + 0.000001)
+Out&gt; {4,1,2,1,1,20409,2,1,13,2,1,4,1,1,3,3,2};
+In&gt; ContFracEval(Take(A, 5))
+Out&gt; 33/7;
+In&gt; ContFracEval(Take(A,3), remainder)
+Out&gt; 1/(1/(remainder+2)+1)+4;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="arithmetic.html#ContFrac" title="ContFrac"><tt class="xref ys ys-func docutils literal"><span class="pre">ContFrac()</span></tt></a>, <a class="reference internal" href="#GuessRational" title="GuessRational"><tt class="xref ys ys-func docutils literal"><span class="pre">GuessRational()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="GuessRational">
+<tt class="descname">GuessRational</tt><big>(</big><em>x</em><span class="optional">[</span>, <em>digits</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#GuessRational" title="Permalink to this definition">¶</a></dt>
+<dd><p>find optimal rational approximations</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="NearRational">
+<tt class="descname">NearRational</tt><big>(</big><em>x</em><span class="optional">[</span>, <em>digits</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#NearRational" title="Permalink to this definition">¶</a></dt>
+<dd><p>find optimal rational approximations</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BracketRational">
+<tt class="descname">BracketRational</tt><big>(</big><em>x</em>, <em>eps</em><big>)</big><a class="headerlink" href="#BracketRational" title="Permalink to this definition">¶</a></dt>
+<dd><p>find optimal rational approximations</p>
+<p>{x} &#8211; a number to be approximated (must be already evaluated to floating-point)
+{digits} &#8211; desired number of decimal digits (integer)
+{eps} &#8211; desired precision</p>
+<p>The functions {GuessRational(x)} and {NearRational(x)} attempt to
+find &#8220;optimal&#8221; rational approximations to a given value {x}. The
+approximations are &#8220;optimal&#8221; in the sense of having smallest
+numerators and denominators among all rational numbers close to
+{x}. This is done by computing a continued fraction representation
+of {x} and truncating it at a suitably chosen term.  Both functions
+return a rational number which is an approximation of {x}.</p>
+<p>Unlike the function {Rationalize()} which converts floating-point
+numbers to rationals without loss of precision, the functions
+{GuessRational()} and {NearRational()} are intended to find the
+best rational that is &lt;i&gt;approximately&lt;/i&gt; equal to a given value.</p>
+<p>The function {GuessRational()} is useful if you have obtained a
+floating-point representation of a rational number and you know
+approximately how many digits its exact representation should
+contain.  This function takes an optional second parameter {digits}
+which limits the number of decimal digits in the denominator of the
+resulting rational number. If this parameter is not given, it
+defaults to half the current precision. This function truncates the
+continuous fraction expansion when it encounters an unusually large
+value (see example).  This procedure does not always give the
+&#8220;correct&#8221; rational number; a rule of thumb is that the
+floating-point number should have at least as many digits as the
+combined number of digits in the numerator and the denominator of
+the correct rational number.</p>
+<p>The function {NearRational(x)} is useful if one needs to
+approximate a given value, i.e. to find an &#8220;optimal&#8221; rational
+number that lies in a certain small interval around a certain value
+{x}. This function takes an optional second parameter {digits}
+which has slightly different meaning: it specifies the number of
+digits of precision of the approximation; in other words, the
+difference between {x} and the resulting rational number should be
+at most one digit of that precision. The parameter {digits} also
+defaults to half of the current precision.</p>
+<p>The function {BracketRational(x,eps)} can be used to find
+approximations with a given relative precision from above and from
+below.  This function returns a list of two rational numbers
+{{r1,r2}} such that $r1&lt;x&lt;r2$ and $Abs(r2-r1)&lt;Abs(x*eps)$.  The
+argument {x} must be already evaluated to enough precision so that
+this approximation can be meaningfully found.  If the approximation
+with the desired precision cannot be found, the function returns an
+empty list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>Start with a rational number and obtain a floating-point approximation:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; x:=N(956/1013)
+Out&gt; 0.9437314906
+In&gt; Rationalize(x)
+Out&gt; 4718657453/5000000000;
+In&gt; V(GuessRational(x))
+GuessRational: using 10 terms of the continued fraction
+Out&gt; 956/1013;
+In&gt; ContFracList(x)
+Out&gt; {0,1,16,1,3,2,1,1,1,1,508848,3,1,2,1,2,2};
+</pre></div>
+</div>
+<p>The first 10 terms of this continued fraction correspond to the
+correct continued fraction for the original rational number:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">NearRational</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">218</span><span class="o">/</span><span class="mi">231</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>This function found a different rational number closeby because the
+precision was not high enough:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">NearRational</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">956</span><span class="o">/</span><span class="mi">1013</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Find an approximation to $Ln(10)$ good to 8 digits:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">BracketRational</span><span class="p">(</span><span class="n">N</span><span class="p">(</span><span class="n">Ln</span><span class="p">(</span><span class="mi">10</span><span class="p">)),</span> <span class="mi">10</span><span class="o">^</span><span class="p">(</span><span class="o">-</span><span class="mi">8</span><span class="p">))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="p">{</span><span class="mi">12381</span><span class="o">/</span><span class="mi">5377</span><span class="p">,</span><span class="mi">41062</span><span class="o">/</span><span class="mi">17833</span><span class="p">};</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="arithmetic.html#ContFrac" title="ContFrac"><tt class="xref ys ys-func docutils literal"><span class="pre">ContFrac()</span></tt></a>, <a class="reference internal" href="#ContFracList" title="ContFracList"><tt class="xref ys ys-func docutils literal"><span class="pre">ContFracList()</span></tt></a>,
+<a class="reference internal" href="arithmetic.html#Rationalize" title="Rationalize"><tt class="xref ys ys-func docutils literal"><span class="pre">Rationalize()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="TruncRadian">
+<tt class="descname">TruncRadian</tt><big>(</big><em>r</em><big>)</big><a class="headerlink" href="#TruncRadian" title="Permalink to this definition">¶</a></dt>
+<dd><p>remainder modulo <span class="math">\(2*Pi\)</span></p>
+<p>{r} &#8211; a number</p>
+<p>{TruncRadian} calculates $Mod(r,2*Pi)$, returning a value between
+$0$ and $2*Pi$. This function is used in the trigonometry
+functions, just before doing a numerical calculation using a Taylor
+series. It greatly speeds up the calculation if the value passed is
+a large number.</p>
+<p>The library uses the formula $$TruncRadian(r) = r - Floor( r/(2*Pi)
+)*2*Pi$$, where $r$ and $2*Pi$ are calculated with twice the
+precision used in the environment to make sure there is no rounding
+error in the significant digits.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; 2*Internal&#39;Pi()
+Out&gt; 6.283185307;
+In&gt; TruncRadian(6.28)
+Out&gt; 6.28;
+In&gt; TruncRadian(6.29)
+Out&gt; 0.0068146929;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="calc.html#Sin" title="Sin"><tt class="xref ys ys-func docutils literal"><span class="pre">Sin()</span></tt></a>, <a class="reference internal" href="calc.html#Cos" title="Cos"><tt class="xref ys ys-func docutils literal"><span class="pre">Cos()</span></tt></a>, <a class="reference internal" href="calc.html#Tan" title="Tan"><tt class="xref ys ys-func docutils literal"><span class="pre">Tan()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Builtin'Precision'Set">
+<tt class="descname">Builtin'Precision'Set</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#Builtin'Precision'Set" title="Permalink to this definition">¶</a></dt>
+<dd><p>set the precision</p>
+<p>{n} &#8211; integer, new value of precision</p>
+<p>This command sets the number of decimal digits to be used in
+calculations.  All subsequent floating point operations will allow
+for at least {n} digits of mantissa.</p>
+<p>This is not the number of digits after the decimal point.  For
+example, {123.456} has 3 digits after the decimal point and 6
+digits of mantissa.  The number {123.456} is adequately computed by
+specifying {Builtin&#8217;Precision&#8217;Set(6)}.</p>
+<p>The call {Builtin&#8217;Precision&#8217;Set(n)} will not guarantee that all
+results are precise to {n} digits.</p>
+<p>When the precision is changed, all variables containing previously
+calculated values remain unchanged.  The {Builtin&#8217;Precision&#8217;Set}
+function only makes all further calculations proceed with a
+different precision.</p>
+<p>Also, when typing floating-point numbers, the current value of
+{Builtin&#8217;Precision&#8217;Set} is used to implicitly determine the number
+of precise digits in the number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Builtin&#39;Precision&#39;Set(10)
+Out&gt; True;
+In&gt; N(Sin(1))
+Out&gt; 0.8414709848;
+In&gt; Builtin&#39;Precision&#39;Set(20)
+Out&gt; True;
+In&gt; x:=N(Sin(1))
+Out&gt; 0.84147098480789650665;
+</pre></div>
+</div>
+<p>The value {x} is not changed by a {Builtin&#8217;Precision&#8217;Set()} call:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; [ Builtin&#39;Precision&#39;Set(10); x; ]
+Out&gt; 0.84147098480789650665;
+</pre></div>
+</div>
+<p>The value {x} is rounded off to 10 digits after an arithmetic
+operation:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">x</span><span class="o">+</span><span class="mf">0.</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mf">0.8414709848</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>In the above operation, {0.} was interpreted as a number which is
+precise to 10 digits (the user does not need to type {0.0000000000}
+for this to happen).  So the result of {x+0.} is precise only to 10
+digits.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Builtin'Precision'Get" title="Builtin'Precision'Get"><tt class="xref ys ys-func docutils literal"><span class="pre">Builtin'Precision'Get()</span></tt></a>, <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Builtin'Precision'Get">
+<tt class="descname">Builtin'Precision'Get</tt><big>(</big><big>)</big><a class="headerlink" href="#Builtin'Precision'Get" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the current precision</p>
+<p>This command returns the current precision, as set by
+{Builtin&#8217;Precision&#8217;Set}.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Builtin&#39;Precision&#39;Get();
+Out&gt; 10;
+In&gt; Builtin&#39;Precision&#39;Set(20);
+Out&gt; True;
+In&gt; Builtin&#39;Precision&#39;Get();
+Out&gt; 20;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Builtin'Precision'Set" title="Builtin'Precision'Set"><tt class="xref ys ys-func docutils literal"><span class="pre">Builtin'Precision'Set()</span></tt></a>, <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="error-reporting">
+<h2>Error reporting<a class="headerlink" href="#error-reporting" title="Permalink to this headline">¶</a></h2>
+<p>This chapter contains commands useful for reporting errors to the user.</p>
+<dl class="function">
+<dt id="Check">
+<tt class="descname">Check</tt><big>(</big><em>predicate</em>, <em>&quot;error text&quot;</em><big>)</big><a class="headerlink" href="#Check" title="Permalink to this definition">¶</a></dt>
+<dd><p>report &#8220;hard&#8221; errors</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="TrapError">
+<tt class="descname">TrapError</tt><big>(</big><em>expression</em>, <em>errorHandler</em><big>)</big><a class="headerlink" href="#TrapError" title="Permalink to this definition">¶</a></dt>
+<dd><p>trap &#8220;hard&#8221; errors</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="GetCoreError">
+<tt class="descname">GetCoreError</tt><big>(</big><big>)</big><a class="headerlink" href="#GetCoreError" title="Permalink to this definition">¶</a></dt>
+<dd><p>get &#8220;hard&#8221; error string</p>
+<p>{predicate} &#8211; expression returning <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> or <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>
+{&#8220;error text&#8221;} &#8211; string to print on error
+{expression} &#8211; expression to evaluate (causing potential error)
+{errorHandler} &#8211; expression to be called to handle error</p>
+<p>If {predicate} does not evaluate to <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>, the current operation
+will be stopped, the string {&#8220;error text&#8221;} will be printed, and
+control will be returned immediately to the command line. This
+facility can be used to assure that some condition is satisfied
+during evaluation of expressions (guarding against critical
+internal errors).</p>
+<p>A &#8220;soft&#8221; error reporting facility that does not stop the execution
+is provided by the function {Assert}.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body">In&gt; [Check(1=0,&#8221;bad value&#8221;); Echo(OK);]
+In function &#8220;Check&#8221; :
+CommandLine(1) : &#8220;bad value&#8221;</td>
+</tr>
+</tbody>
+</table>
+<p>Note that {OK} is not printed.</p>
+<p>TrapError evaluates its argument {expression}, returning the result
+of evaluating {expression}. If an error occurs, {errorHandler} is
+evaluated, returning its return value in stead.</p>
+<p>GetCoreError returns a string describing the core error.  TrapError
+and GetCoreError can be used in combination to write a custom error
+handler.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Assert" title="Assert"><tt class="xref ys ys-func docutils literal"><span class="pre">Assert()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Assert">
+<tt class="descname">Assert</tt><big>(</big><em>pred</em>, <em>str</em>, <em>expr</em><big>)</big><a class="headerlink" href="#Assert" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descname">Assert(pred, str) pred</tt></dt>
+<dt>
+<tt class="descname">Assert</tt><big>(</big><em>pred</em><big>)</big></dt>
+<dd><p>signal &#8220;soft&#8221; custom error</p>
+<p>Precedence:
+EVAL OpPrecedence(&#8220;Assert&#8221;)</p>
+<p>{pred} &#8211; predicate to check
+{&#8220;str&#8221;} &#8211; string to classify the error
+{expr} &#8211; expression, error object</p>
+<p>{Assert} is a global error reporting mechanism. It can be used to
+check for errors and report them. An error is considered to occur
+when the predicate {pred} evaluates to anything except <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>. In
+this case, the function returns <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> and an error object is
+created and posted to the global error tableau.  Otherwise the
+function returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>.</p>
+<p>Unlike the &#8220;hard&#8221; error function {Check}, the function {Assert}
+does not stop the execution of the program.</p>
+<p>The error object consists of the string {&#8220;str&#8221;} and an arbitrary
+expression {expr}. The string should be used to classify the kind
+of error that has occurred, for example &#8220;domain&#8221; or &#8220;format&#8221;. The
+error object can be any expression that might be useful for
+handling the error later; for example, a list of erroneous values
+and explanations.  The association list of error objects is
+currently obtainable through the function {GetErrorTableau()}.</p>
+<p>If the parameter {expr} is missing, {Assert} substitutes <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>. If
+both optional parameters {&#8220;str&#8221;} and {expr} are missing, {Assert}
+creates an error of class {&#8220;generic&#8221;}.</p>
+<p>Errors can be handled by a custom error handler in the portion of
+the code that is able to handle a certain class of errors. The
+functions {IsError}, {GetError} and {ClearError} can be used.</p>
+<p>Normally, all errors posted to the error tableau during evaluation
+of an expression should be eventually printed to the screen. This
+is the behavior of prettyprinters {DefaultPrint}, {Print},
+{PrettyForm} and {TeXForm} (but not of the inline prettyprinter,
+which is enabled by default); they call {DumpErrors} after
+evaluating the expression.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Assert(&quot;bad value&quot;, &quot;must be zero&quot;) 1=0
+Out&gt; False;
+In&gt; Assert(&quot;bad value&quot;, &quot;must be one&quot;) 1=1
+Out&gt; True;
+In&gt; IsError()
+Out&gt; True;
+In&gt; IsError(&quot;bad value&quot;)
+Out&gt; True;
+In&gt; IsError(&quot;bad file&quot;)
+Out&gt; False;
+In&gt; GetError(&quot;bad value&quot;);
+Out&gt; &quot;must be zero&quot;;
+In&gt; DumpErrors()
+Error: bad value: must be zero
+Out&gt; True;
+</pre></div>
+</div>
+<p>No more errors left:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">IsError</span><span class="p">()</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">DumpErrors</span><span class="p">()</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsError" title="IsError"><tt class="xref ys ys-func docutils literal"><span class="pre">IsError()</span></tt></a>, <a class="reference internal" href="#DumpErrors" title="DumpErrors"><tt class="xref ys ys-func docutils literal"><span class="pre">DumpErrors()</span></tt></a>, <a class="reference internal" href="#Check" title="Check"><tt class="xref ys ys-func docutils literal"><span class="pre">Check()</span></tt></a>,
+<a class="reference internal" href="#GetError" title="GetError"><tt class="xref ys ys-func docutils literal"><span class="pre">GetError()</span></tt></a>, <a class="reference internal" href="#ClearError" title="ClearError"><tt class="xref ys ys-func docutils literal"><span class="pre">ClearError()</span></tt></a>,
+<a class="reference internal" href="#ClearErrors" title="ClearErrors"><tt class="xref ys ys-func docutils literal"><span class="pre">ClearErrors()</span></tt></a>, <a class="reference internal" href="#GetErrorTableau" title="GetErrorTableau"><tt class="xref ys ys-func docutils literal"><span class="pre">GetErrorTableau()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="DumpErrors">
+<tt class="descname">DumpErrors</tt><big>(</big><big>)</big><a class="headerlink" href="#DumpErrors" title="Permalink to this definition">¶</a></dt>
+<dd><p>simple error handlers</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ClearErrors">
+<tt class="descname">ClearErrors</tt><big>(</big><big>)</big><a class="headerlink" href="#ClearErrors" title="Permalink to this definition">¶</a></dt>
+<dd><p>simple error handlers</p>
+<p>{DumpErrors} is a simple error handler for the global error
+reporting mechanism. It prints all errors posted using {Assert} and
+clears the error tableau.</p>
+<p>{ClearErrors} is a trivial error handler that does nothing except
+it clears the tableau.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Assert" title="Assert"><tt class="xref ys ys-func docutils literal"><span class="pre">Assert()</span></tt></a>, <a class="reference internal" href="#IsError" title="IsError"><tt class="xref ys ys-func docutils literal"><span class="pre">IsError()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsError">
+<tt class="descname">IsError</tt><big>(</big><big>)</big><a class="headerlink" href="#IsError" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descname">IsError</tt><big>(</big><em>str</em><big>)</big></dt>
+<dd><p>check for custom error</p>
+<p>{&#8220;str&#8221;} &#8211; string to classify the error</p>
+<p>{IsError()} returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if any custom errors have been reported
+using {Assert}.  The second form takes a parameter {&#8220;str&#8221;} that
+designates the class of the error we are interested in. It returns
+<a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if any errors of the given class {&#8220;str&#8221;} have been reported.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#GetError" title="GetError"><tt class="xref ys ys-func docutils literal"><span class="pre">GetError()</span></tt></a>, <a class="reference internal" href="#ClearError" title="ClearError"><tt class="xref ys ys-func docutils literal"><span class="pre">ClearError()</span></tt></a>, <a class="reference internal" href="#Assert" title="Assert"><tt class="xref ys ys-func docutils literal"><span class="pre">Assert()</span></tt></a>,
+<a class="reference internal" href="#Check" title="Check"><tt class="xref ys ys-func docutils literal"><span class="pre">Check()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="GetError">
+<tt class="descname">GetError</tt><big>(</big><em>str</em><big>)</big><a class="headerlink" href="#GetError" title="Permalink to this definition">¶</a></dt>
+<dd><p>custom errors handlers</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ClearError">
+<tt class="descname">ClearError</tt><big>(</big><em>str</em><big>)</big><a class="headerlink" href="#ClearError" title="Permalink to this definition">¶</a></dt>
+<dd><p>custom errors handlers</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="GetErrorTableau">
+<tt class="descname">GetErrorTableau</tt><big>(</big><big>)</big><a class="headerlink" href="#GetErrorTableau" title="Permalink to this definition">¶</a></dt>
+<dd><p>custom errors handlers</p>
+<p>{&#8220;str&#8221;} &#8211; string to classify the error</p>
+<p>These functions can be used to create a custom error handler.</p>
+<p>{GetError} returns the error object if a custom error of class
+{&#8220;str&#8221;} has been reported using {Assert}, or <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> if no errors
+of this class have been reported.</p>
+<p>{ClearError(&#8220;str&#8221;)} deletes the same error object that is returned
+by {GetError(&#8220;str&#8221;)}. It deletes at most one error object. It
+returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if an object was found and deleted, and <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>
+otherwise.</p>
+<p>{GetErrorTableau()} returns the entire association list of
+currently reported errors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; x:=1
+Out&gt; 1;
+In&gt; Assert(&quot;bad value&quot;, {x,&quot;must be zero&quot;}) x=0
+Out&gt; False;
+In&gt; GetError(&quot;bad value&quot;)
+Out&gt; {1, &quot;must be zero&quot;};
+In&gt; ClearError(&quot;bad value&quot;);
+Out&gt; True;
+In&gt; IsError()
+Out&gt; False;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#IsError" title="IsError"><tt class="xref ys ys-func docutils literal"><span class="pre">IsError()</span></tt></a>, <a class="reference internal" href="#Assert" title="Assert"><tt class="xref ys ys-func docutils literal"><span class="pre">Assert()</span></tt></a>, <a class="reference internal" href="#Check" title="Check"><tt class="xref ys ys-func docutils literal"><span class="pre">Check()</span></tt></a>,
+<a class="reference internal" href="#ClearErrors" title="ClearErrors"><tt class="xref ys ys-func docutils literal"><span class="pre">ClearErrors()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="CurrentFile">
+<tt class="descname">CurrentFile</tt><big>(</big><big>)</big><a class="headerlink" href="#CurrentFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>return current input file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="CurrentLine">
+<tt class="descname">CurrentLine</tt><big>(</big><big>)</big><a class="headerlink" href="#CurrentLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>return current line number on input</p>
+<p>The functions {CurrentFile} and {CurrentLine} return a string
+with the file name of the current file and the current line
+of input respectively.</p>
+<p>These functions are most useful in batch file calculations, where
+there is a need to determine at which line an error occurred.
+One can define a function:</p>
+<div class="highlight-python"><div class="highlight"><pre>tst() := Echo({CurrentFile(),CurrentLine()});
+</pre></div>
+</div>
+<p>which can then be inserted into the input file at various places,
+to see how far the interpreter reaches before an error occurs.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="io.html#Echo" title="Echo"><tt class="xref ys ys-func docutils literal"><span class="pre">Echo()</span></tt></a></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="built-in-core-functions">
+<h2>Built-in (core) functions<a class="headerlink" href="#built-in-core-functions" title="Permalink to this headline">¶</a></h2>
+<p>Yacas comes with a small core of built-in functions and a large
+library of user-defined functions. Some of these core functions are
+documented in this chapter.</p>
+<p>It is important for a developer to know which functions are built-in
+and cannot be redefined or {Retract}-ed. Also, core functions may be
+somewhat faster to execute than functions defined in the script
+library. All core functions are listed in the file {corefunctions.h}
+in the {src/} subdirectory of the Yacas source tree. The declarations
+typically look like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">SetCommand</span><span class="p">(</span><span class="n">LispSubtract</span><span class="p">,</span> <span class="s">&quot;MathSubtract&quot;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Here {LispSubtract} is the Yacas internal name for the function and
+{MathSubtract} is the name visible to the Yacas language.  Built-in
+bodied functions and infix operators are declared in the same file.</p>
+<dl class="function">
+<dt id="MathNot">
+<tt class="descname">MathNot</tt><big>(</big><em>expression</em><big>)</big><a class="headerlink" href="#MathNot" title="Permalink to this definition">¶</a></dt>
+<dd><p>built-in logical &#8220;not&#8221;</p>
+<p>Returns &#8220;False&#8221; if &#8220;expression&#8221; evaluates to &#8220;True&#8221;, and vice
+versa.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MathAnd">
+<tt class="descname">MathAnd</tt><big>(</big><big>)</big><a class="headerlink" href="#MathAnd" title="Permalink to this definition">¶</a></dt>
+<dd><p>built-in logical &#8220;and&#8221;</p>
+<p>Lazy logical {And}: returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if all args evaluate to <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>,
+and does this by looking at first, and then at the second argument,
+until one is <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>.  If one of the arguments is <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>, {And}
+immediately returns <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> without evaluating the rest. This is
+faster, but also means that none of the arguments should cause side
+effects when they are evaluated.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MathOr">
+<tt class="descname">MathOr</tt><big>(</big><big>)</big><a class="headerlink" href="#MathOr" title="Permalink to this definition">¶</a></dt>
+<dd><p>built-in logical &#8220;or&#8221;</p>
+<p>{MathOr} is the basic logical &#8220;or&#8221; function. Similarly to {And}, it
+is lazy-evaluated. {And(...)} and {Or(...)} do also exist, defined
+in the script library. You can redefine them as infix operators
+yourself, so you have the choice of precedence. In the standard
+scripts they are in fact declared as infix operators, so you can
+write {expr1 And expr}.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BitAnd">
+<tt class="descname">BitAnd</tt><big>(</big><em>n</em>, <em>m</em><big>)</big><a class="headerlink" href="#BitAnd" title="Permalink to this definition">¶</a></dt>
+<dd><p>bitwise and operation</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BitOr">
+<tt class="descname">BitOr</tt><big>(</big><em>n</em>, <em>m</em><big>)</big><a class="headerlink" href="#BitOr" title="Permalink to this definition">¶</a></dt>
+<dd><p>bitwise or operation</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="BitXor">
+<tt class="descname">BitXor</tt><big>(</big><em>n</em>, <em>m</em><big>)</big><a class="headerlink" href="#BitXor" title="Permalink to this definition">¶</a></dt>
+<dd><p>bitwise xor operation</p>
+<p>These functions return bitwise &#8220;and&#8221;, &#8220;or&#8221; and &#8220;xor&#8221; of two
+numbers.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Equals">
+<tt class="descname">Equals</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#Equals" title="Permalink to this definition">¶</a></dt>
+<dd><p>check equality</p>
+<p>Compares evaluated {a} and {b} recursively (stepping into
+expressions). So &#8220;Equals(a,b)&#8221; returns &#8220;True&#8221; if the expressions
+would be printed exactly the same, and &#8220;False&#8221; otherwise.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="GreaterThan">
+<tt class="descname">GreaterThan</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#GreaterThan" title="Permalink to this definition">¶</a></dt>
+<dd><p>comparison predicate</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="LessThan">
+<tt class="descname">LessThan</tt><big>(</big><em>a</em>, <em>b</em><big>)</big><a class="headerlink" href="#LessThan" title="Permalink to this definition">¶</a></dt>
+<dd><p>comparison predicate</p>
+<p>{a}, {b} &#8211; numbers or strings</p>
+<p>Comparing numbers or strings (lexicographically).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">LessThan</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">LessThan</span><span class="p">(</span><span class="s">&quot;a&quot;</span><span class="p">,</span><span class="s">&quot;b&quot;</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MathExp">
+<tt class="descname">MathExp</tt><big>(</big><big>)</big><a class="headerlink" href="#MathExp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathLog">
+<tt class="descname">MathLog</tt><big>(</big><big>)</big><a class="headerlink" href="#MathLog" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathPower">
+<tt class="descname">MathPower</tt><big>(</big><big>)</big><a class="headerlink" href="#MathPower" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathSin">
+<tt class="descname">MathSin</tt><big>(</big><big>)</big><a class="headerlink" href="#MathSin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathCos">
+<tt class="descname">MathCos</tt><big>(</big><big>)</big><a class="headerlink" href="#MathCos" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathTan">
+<tt class="descname">MathTan</tt><big>(</big><big>)</big><a class="headerlink" href="#MathTan" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathArcSin">
+<tt class="descname">MathArcSin</tt><big>(</big><big>)</big><a class="headerlink" href="#MathArcSin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathArcCos">
+<tt class="descname">MathArcCos</tt><big>(</big><big>)</big><a class="headerlink" href="#MathArcCos" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathArcTan">
+<tt class="descname">MathArcTan</tt><big>(</big><big>)</big><a class="headerlink" href="#MathArcTan" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathSinh">
+<tt class="descname">MathSinh</tt><big>(</big><big>)</big><a class="headerlink" href="#MathSinh" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathCosh">
+<tt class="descname">MathCosh</tt><big>(</big><big>)</big><a class="headerlink" href="#MathCosh" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathTanh">
+<tt class="descname">MathTanh</tt><big>(</big><big>)</big><a class="headerlink" href="#MathTanh" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathArcSinh">
+<tt class="descname">MathArcSinh</tt><big>(</big><big>)</big><a class="headerlink" href="#MathArcSinh" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathArcCosh">
+<tt class="descname">MathArcCosh</tt><big>(</big><big>)</big><a class="headerlink" href="#MathArcCosh" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathArcTanh">
+<tt class="descname">MathArcTanh</tt><big>(</big><big>)</big><a class="headerlink" href="#MathArcTanh" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathGcd">
+<tt class="descname">MathGcd</tt><big>(</big><big>)</big><a class="headerlink" href="#MathGcd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathAdd">
+<tt class="descname">MathAdd</tt><big>(</big><big>)</big><a class="headerlink" href="#MathAdd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathSubtract">
+<tt class="descname">MathSubtract</tt><big>(</big><big>)</big><a class="headerlink" href="#MathSubtract" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathMultiply">
+<tt class="descname">MathMultiply</tt><big>(</big><big>)</big><a class="headerlink" href="#MathMultiply" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathDivide">
+<tt class="descname">MathDivide</tt><big>(</big><big>)</big><a class="headerlink" href="#MathDivide" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathSqrt">
+<tt class="descname">MathSqrt</tt><big>(</big><big>)</big><a class="headerlink" href="#MathSqrt" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathFloor">
+<tt class="descname">MathFloor</tt><big>(</big><big>)</big><a class="headerlink" href="#MathFloor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathCeil">
+<tt class="descname">MathCeil</tt><big>(</big><big>)</big><a class="headerlink" href="#MathCeil" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathAbs">
+<tt class="descname">MathAbs</tt><big>(</big><big>)</big><a class="headerlink" href="#MathAbs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathMod">
+<tt class="descname">MathMod</tt><big>(</big><big>)</big><a class="headerlink" href="#MathMod" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="MathDiv">
+<tt class="descname">MathDiv</tt><big>(</big><big>)</big><a class="headerlink" href="#MathDiv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathGcd</tt><big>(</big><em>n</em>, <em>m</em><big>)</big></dt>
+<dd><p>Greatest Common Divisor</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathAdd</tt><big>(</big><em>x</em>, <em>y</em><big>)</big></dt>
+<dt>
+<tt class="descname">(add two numbers)</tt></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathSubtract</tt><big>(</big><em>x</em>, <em>y</em><big>)</big></dt>
+<dt>
+<tt class="descname">(subtract two numbers)</tt></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathMultiply</tt><big>(</big><em>x</em>, <em>y</em><big>)</big></dt>
+<dd><p>(multiply two numbers)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathDivide</tt><big>(</big><em>x</em>, <em>y</em><big>)</big></dt>
+<dd><p>(divide two numbers)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathSqrt</tt><big>(</big><em>x</em><big>)</big></dt>
+<dd><p>(square root, must be x&gt;=0)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathFloor</tt><big>(</big><em>x</em><big>)</big></dt>
+<dd><p>(largest integer not larger than x)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathCeil</tt><big>(</big><em>x</em><big>)</big></dt>
+<dd><p>(smallest integer not smaller than x)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathAbs</tt><big>(</big><em>x</em><big>)</big></dt>
+<dd><p>(absolute value of x, or <tt class="docutils literal"><span class="pre">|x|</span></tt> )</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathExp</tt><big>(</big><em>x</em><big>)</big></dt>
+<dd><p>(exponential, base 2.718...)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathLog</tt><big>(</big><em>x</em><big>)</big></dt>
+<dd><p>(natural logarithm, for x&gt;0)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathPower</tt><big>(</big><em>x</em>, <em>y</em><big>)</big></dt>
+<dd><p>(power, x ^ y)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathSin</tt><big>(</big><em>x</em><big>)</big></dt>
+<dd><p>(sine)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathCos</tt><big>(</big><em>x</em><big>)</big></dt>
+<dd><p>(cosine)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathTan</tt><big>(</big><em>x</em><big>)</big></dt>
+<dd><p>(tangent)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathSinh</tt><big>(</big><em>x</em><big>)</big></dt>
+<dd><p>(hyperbolic sine)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathCosh</tt><big>(</big><em>x</em><big>)</big></dt>
+<dd><p>(hyperbolic cosine)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathTanh</tt><big>(</big><em>x</em><big>)</big></dt>
+<dd><p>(hyperbolic tangent)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathArcSin</tt><big>(</big><em>x</em><big>)</big></dt>
+<dd><p>(inverse sine)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathArcCos</tt><big>(</big><em>x</em><big>)</big></dt>
+<dd><p>(inverse cosine)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathArcTan</tt><big>(</big><em>x</em><big>)</big></dt>
+<dd><p>(inverse tangent)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathArcSinh</tt><big>(</big><em>x</em><big>)</big></dt>
+<dd><p>(inverse hyperbolic sine)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathArcCosh</tt><big>(</big><em>x</em><big>)</big></dt>
+<dd><p>(inverse hyperbolic cosine)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathArcTanh</tt><big>(</big><em>x</em><big>)</big></dt>
+<dd><p>(inverse hyperbolic tangent)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathDiv</tt><big>(</big><em>x</em>, <em>y</em><big>)</big></dt>
+<dd><p>(integer division, result is an integer)</p>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">MathMod</tt><big>(</big><em>x</em>, <em>y</em><big>)</big></dt>
+<dd><p>(remainder of division, or x mod y)</p>
+<p>These commands perform the calculation of elementary mathematical
+functions.  The arguments &lt;i&gt;must&lt;/i&gt; be numbers.  The reason for
+the prefix {Math} is that the library needs to define equivalent
+non-numerical functions for symbolic computations, such as {Exp},
+{Sin} and so on.</p>
+<p>Note that all functions, such as the {MathPower}, {MathSqrt},
+{MathAdd} etc., accept integers as well as floating-point numbers.
+The resulting values may be integers or floats.  If the
+mathematical result is an exact integer, then the integer is
+returned.  For example, {MathSqrt(25)} returns the integer {5}, and
+{MathPower(2,3)} returns the integer {8}.  In such cases, the
+integer result is returned even if the calculation requires more
+digits than set by {Builtin&#8217;Precision&#8217;Set}.  However, when the
+result is mathematically not an integer, the functions return a
+floating-point result which is correct only to the current
+precision.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Builtin&#39;Precision&#39;Set(10)
+Out&gt; True
+In&gt; Sqrt(10)
+Out&gt; Sqrt(10)
+In&gt; MathSqrt(10)
+Out&gt; 3.16227766
+In&gt; MathSqrt(490000*2^150)
+Out&gt; 26445252304070013196697600
+In&gt; MathSqrt(490000*2^150+1)
+Out&gt; 0.264452523e26
+In&gt; MathPower(2,3)
+Out&gt; 8
+In&gt; MathPower(2,-3)
+Out&gt; 0.125
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="FastLog">
+<tt class="descname">FastLog</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#FastLog" title="Permalink to this definition">¶</a></dt>
+<dd><p>(natural logarithm),</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="FastPower">
+<tt class="descname">FastPower</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#FastPower" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="FastArcSin">
+<tt class="descname">FastArcSin</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#FastArcSin" title="Permalink to this definition">¶</a></dt>
+<dd><p>double-precision math functions</p>
+<p>Versions of these functions using the C++ library. These should
+then at least be faster than the arbitrary precision versions.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ShiftLeft">
+<tt class="descname">ShiftLeft</tt><big>(</big><em>expr</em>, <em>bits</em><big>)</big><a class="headerlink" href="#ShiftLeft" title="Permalink to this definition">¶</a></dt>
+<dd><p>built-in bitwise shift left operation</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ShiftRight">
+<tt class="descname">ShiftRight</tt><big>(</big><em>expr</em>, <em>bits</em><big>)</big><a class="headerlink" href="#ShiftRight" title="Permalink to this definition">¶</a></dt>
+<dd><p>built-in bitwise shift right operation</p>
+<p>ShiftLeft(expr,bits)
+ShiftRight(expr,bits)</p>
+<p>Shift bits to the left or to the right.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsPromptShown">
+<tt class="descname">IsPromptShown</tt><big>(</big><big>)</big><a class="headerlink" href="#IsPromptShown" title="Permalink to this definition">¶</a></dt>
+<dd><p>test for the Yacas prompt option</p>
+<p>Returns <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> if Yacas has been started with the option to
+suppress the prompt, and <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> otherwise.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="GetTime">
+<tt class="descname">GetTime</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#GetTime" title="Permalink to this definition">¶</a></dt>
+<dd><p>measure the time taken by an evaluation</p>
+<p>{expr} &#8211; any expression</p>
+<p>The function {GetTime(expr)} evaluates the expression {expr} and
+returns the time needed for the evaluation.  The result is returned
+as a floating-point number of seconds.  The value of the expression
+{expr} is lost.</p>
+<p>The result is the &#8220;user time&#8221; as reported by the OS, not the real
+(&#8220;wall clock&#8221;) time.  Therefore, any CPU-intensive processes
+running alongside Yacas will not significantly affect the result of
+{GetTime}.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">GetTime</span><span class="p">(</span><span class="n">Simplify</span><span class="p">((</span><span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">b</span><span class="o">*</span><span class="n">a</span><span class="p">)))</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mf">0.09</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="controlflow.html#Time" title="Time"><tt class="xref ys ys-func docutils literal"><span class="pre">Time()</span></tt></a></p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="generic-objects">
+<h2>Generic objects<a class="headerlink" href="#generic-objects" title="Permalink to this headline">¶</a></h2>
+<p>Generic objects are objects that are implemented in C++, but
+can be accessed through the Yacas interpreter.</p>
+<dl class="function">
+<dt id="IsGeneric">
+<tt class="descname">IsGeneric</tt><big>(</big><em>object</em><big>)</big><a class="headerlink" href="#IsGeneric" title="Permalink to this definition">¶</a></dt>
+<dd><p>check for generic object</p>
+<p>Returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if an object is of a generic object type.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="GenericTypeName">
+<tt class="descname">GenericTypeName</tt><big>(</big><em>object</em><big>)</big><a class="headerlink" href="#GenericTypeName" title="Permalink to this definition">¶</a></dt>
+<dd><p>get type name</p>
+<p>Returns a string representation of the name of a generic object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; GenericTypeName(Array&#39;Create(10,1))
+Out&gt; &quot;Array&quot;;
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Array'Create">
+<tt class="descname">Array'Create</tt><big>(</big><em>size</em>, <em>init</em><big>)</big><a class="headerlink" href="#Array'Create" title="Permalink to this definition">¶</a></dt>
+<dd><p>create array</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>size</strong> &#8211; size of the array</li>
+<li><strong>init</strong> &#8211; initial value</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Creates an array with <tt class="docutils literal"><span class="pre">size</span></tt> elements, all initialized to the
+value <tt class="docutils literal"><span class="pre">init</span></tt>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Array'Size">
+<tt class="descname">Array'Size</tt><big>(</big><em>array</em><big>)</big><a class="headerlink" href="#Array'Size" title="Permalink to this definition">¶</a></dt>
+<dd><p>array size</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>array</strong> &#8211; an array</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">array size (number of elements in the array)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="Array'Get">
+<tt class="descname">Array'Get</tt><big>(</big><em>array</em>, <em>index</em><big>)</big><a class="headerlink" href="#Array'Get" title="Permalink to this definition">¶</a></dt>
+<dd><p>fetch array element</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>array</strong> &#8211; an array</li>
+<li><strong>index</strong> &#8211; an index</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the element of <tt class="docutils literal"><span class="pre">array</span></tt> at position <tt class="docutils literal"><span class="pre">index</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Array indices are one-based, which means that the first element
+is indexed by 1.</p>
+</div>
+<p>Arrays can also be accessed through the <tt class="docutils literal"><span class="pre">[]</span></tt> operators. So
+<tt class="docutils literal"><span class="pre">array[index]</span></tt> would return the same as <tt class="docutils literal"><span class="pre">Array'Get(array,</span>
+<span class="pre">index)</span></tt>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Array'Set">
+<tt class="descname">Array'Set</tt><big>(</big><em>array</em>, <em>index</em>, <em>element</em><big>)</big><a class="headerlink" href="#Array'Set" title="Permalink to this definition">¶</a></dt>
+<dd><p>set array element</p>
+<p>Sets the element at position index in the array passed to the value
+passed in as argument to element. Arrays are treated as base-one,
+so {index} set to 1 would set first element.</p>
+<p>Arrays can also be accessed through the {[]} operators. So
+{array[index] := element} would do the same as {Array&#8217;Set(array,
+index,element)}.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Array'CreateFromList">
+<tt class="descname">Array'CreateFromList</tt><big>(</big><em>list</em><big>)</big><a class="headerlink" href="#Array'CreateFromList" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert list to array</p>
+<p>Creates an array from the contents of the list passed in.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Array'ToList">
+<tt class="descname">Array'ToList</tt><big>(</big><em>array</em><big>)</big><a class="headerlink" href="#Array'ToList" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert array to list</p>
+<p>Creates a list from the contents of the array passed in.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="the-yacas-test-suite">
+<h2>The Yacas test suite<a class="headerlink" href="#the-yacas-test-suite" title="Permalink to this headline">¶</a></h2>
+<p>This chapter describes commands used for verifying correct performance
+of Yacas.</p>
+<p>Yacas comes with a test suite which can be found in
+the directory {tests/}. Typing</p>
+<blockquote>
+<div>make test</div></blockquote>
+<p>on the command line after Yacas was built will run the test.
+This test can be run even before {make install}, as it only
+uses files in the local directory of the Yacas source tree.
+The default extension for test scripts is {.yts} (Yacas test script).</p>
+<p>The verification commands described in this chapter only  display the
+expressions that do not evaluate correctly. Errors do not terminate the
+execution of the Yacas script that uses these testing commands, since they are
+meant to be used in test scripts.</p>
+<dl class="function">
+<dt id="Verify">
+<tt class="descname">Verify</tt><big>(</big><em>question</em>, <em>answer</em><big>)</big><a class="headerlink" href="#Verify" title="Permalink to this definition">¶</a></dt>
+<dd><p>verifying equivalence of two expressions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="TestYacas">
+<tt class="descname">TestYacas</tt><big>(</big><em>question</em>, <em>answer</em><big>)</big><a class="headerlink" href="#TestYacas" title="Permalink to this definition">¶</a></dt>
+<dd><p>verifying equivalence of two expressions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="LogicVerify">
+<tt class="descname">LogicVerify</tt><big>(</big><em>question</em>, <em>answer</em><big>)</big><a class="headerlink" href="#LogicVerify" title="Permalink to this definition">¶</a></dt>
+<dd><p>verifying equivalence of two expressions</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="LogicTest">
+<tt class="descname">LogicTest</tt><big>(</big><em>variables</em>, <em>expr1</em>, <em>expr2</em><big>)</big><a class="headerlink" href="#LogicTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>verifying equivalence of two expressions</p>
+<p>{question} &#8211; expression to check for
+{answer} &#8211; expected result after evaluation
+{variables} &#8211; list of variables
+{exprN} &#8211; Some boolean expression</p>
+<p>The commands {Verify}, {TestYacas}, {LogicVerify} and {LogicTest}
+can be used to verify that an expression is &lt;I&gt;equivalent&lt;/I&gt; to a
+correct answer after evaluation. All three commands return <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>
+or <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>.</p>
+<p>For some calculations, the demand that two expressions are
+&lt;I&gt;identical&lt;/I&gt; syntactically is too stringent. The Yacas system
+might change at various places in the future, but $ 1+x $ would
+still be equivalent, from a mathematical point of view, to $ x+1 $.</p>
+<p>The general problem of deciding that two expressions $ a $ and $ b
+$ are equivalent, which is the same as saying that $ a-b=0 $ , is
+generally hard to decide on. The following commands solve this
+problem by having domain-specific comparisons.</p>
+<p>The comparison commands do the following comparison types:</p>
+<ul class="simple">
+<li>{Verify} &#8211; verify for literal equality.
+This is the fastest and simplest comparison, and can be
+used, for example, to test that an expression evaluates to $ 2 $.</li>
+<li>{TestYacas} &#8211; compare two expressions after simplification as
+multivariate polynomials. If the two arguments are equivalent
+multivariate polynomials, this test succeeds. {TestYacas} uses
+{Simplify}. Note: {TestYacas} currently should not be used to
+test equality of lists.</li>
+<li>{LogicVerify} &#8211; Perform a test by using {CanProve} to verify
+that from {question} the expression {answer} follows. This test
+command is used for testing the logic theorem prover in Yacas.</li>
+<li>{LogicTest} &#8211; Generate a truth table for the two expressions and
+compare these two tables. They should be the same if the two
+expressions are logically the same.</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Verify(1+2,3)
+Out&gt; True;
+In&gt; Verify(x*(1+x),x^2+x)
+******************
+x*(x+1) evaluates to x*(x+1) which differs
+  from x^2+x
+******************
+Out&gt; False;
+In&gt; TestYacas(x*(1+x),x^2+x)
+Out&gt; True;
+In&gt; Verify(a And c Or b And Not c,a Or b)
+******************
+ a And c Or b And Not c evaluates to  a And c
+  Or b And Not c which differs from  a Or b
+******************
+Out&gt; False;
+In&gt; LogicVerify(a And c Or b And Not c,a Or b)
+Out&gt; True;
+In&gt; LogicVerify(a And c Or b And Not c,b Or a)
+Out&gt; True;
+In&gt; LogicTest({A,B,C},Not((Not A) And (Not B)),A Or B)
+Out&gt; True
+In&gt; LogicTest({A,B,C},Not((Not A) And (Not B)),A Or C)
+******************
+CommandLine: 1
+
+$TrueFalse4({A,B,C},Not(Not A And Not B))
+ evaluates to
+{{{False,False},{True,True}},{{True,True},{True,True}}}
+ which differs from
+{{{False,True},{False,True}},{{True,True},{True,True}}}
+******************
+Out&gt; False
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="simplify.html#Simplify" title="Simplify"><tt class="xref ys ys-func docutils literal"><span class="pre">Simplify()</span></tt></a>, <a class="reference internal" href="logic.html#CanProve" title="CanProve"><tt class="xref ys ys-func docutils literal"><span class="pre">CanProve()</span></tt></a>,
+<a class="reference internal" href="#KnownFailure" title="KnownFailure"><tt class="xref ys ys-func docutils literal"><span class="pre">KnownFailure()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="KnownFailure">
+<tt class="descname">KnownFailure</tt><big>(</big><em>test</em><big>)</big><a class="headerlink" href="#KnownFailure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mark a test as a known failure</p>
+<p>{test} &#8211; expression that should return <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a> on failure</p>
+<p>The command {KnownFailure} marks a test as known to fail by
+displaying a message to that effect on screen.</p>
+<p>This might be used by developers when they have no time to fix the
+defect, but do not wish to alarm users who download Yacas and type
+{make test}.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; KnownFailure(Verify(1,2))
+Known failure:
+******************
+1 evaluates to  1 which differs from  2
+******************
+Out&gt; False;
+In&gt; KnownFailure(Verify(1,1))
+Known failure:
+Failure resolved!
+Out&gt; True;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Verify" title="Verify"><tt class="xref ys ys-func docutils literal"><span class="pre">Verify()</span></tt></a>, <a class="reference internal" href="#TestYacas" title="TestYacas"><tt class="xref ys ys-func docutils literal"><span class="pre">TestYacas()</span></tt></a>, <a class="reference internal" href="#LogicVerify" title="LogicVerify"><tt class="xref ys ys-func docutils literal"><span class="pre">LogicVerify()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="RoundTo">
+<tt class="descname">RoundTo</tt><big>(</big><em>number</em>, <em>precision</em><big>)</big><a class="headerlink" href="#RoundTo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Round a real-valued result to a set number of digits</p>
+<p>{number} &#8211; number to round off
+{precision} &#8211; precision to use for round-off</p>
+<p>The function {RoundTo} rounds a floating point number to a
+specified precision, allowing for testing for correctness using the
+{Verify} command.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">N</span><span class="p">(</span><span class="n">RoundTo</span><span class="p">(</span><span class="n">Exp</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="mi">30</span><span class="p">),</span><span class="mi">30</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mf">2.71828182110230114951959786552</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">N</span><span class="p">(</span><span class="n">RoundTo</span><span class="p">(</span><span class="n">Exp</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="mi">20</span><span class="p">),</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mf">2.71828182796964237096</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Verify" title="Verify"><tt class="xref ys ys-func docutils literal"><span class="pre">Verify()</span></tt></a>, <a class="reference internal" href="#VerifyArithmetic" title="VerifyArithmetic"><tt class="xref ys ys-func docutils literal"><span class="pre">VerifyArithmetic()</span></tt></a>, <a class="reference internal" href="#VerifyDiv" title="VerifyDiv"><tt class="xref ys ys-func docutils literal"><span class="pre">VerifyDiv()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="VerifyArithmetic">
+<tt class="descname">VerifyArithmetic</tt><big>(</big><em>x</em>, <em>n</em>, <em>m</em><big>)</big><a class="headerlink" href="#VerifyArithmetic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Special purpose arithmetic verifiers</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="RandVerifyArithmetic">
+<tt class="descname">RandVerifyArithmetic</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#RandVerifyArithmetic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Special purpose arithmetic verifiers</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="VerifyDiv">
+<tt class="descname">VerifyDiv</tt><big>(</big><em>u</em>, <em>v</em><big>)</big><a class="headerlink" href="#VerifyDiv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Special purpose arithmetic verifiers</p>
+<p>{x}, {n}, {m}, {u}, {v} &#8211; integer arguments</p>
+<p>The commands {VerifyArithmetic} and {VerifyDiv} test a mathematic
+equality which should hold, testing that the result returned by the
+system is mathematically correct according to a mathematically
+provable theorem.</p>
+<p>{VerifyArithmetic} verifies for an arbitrary set of numbers
+$ x $, $ n $ and $ m $ that
+$$ (x^n-1)*(x^m-1) = x^(n+m)-(x^n)-(x^m)+1 $$.</p>
+<p>The left and right side represent two ways to arrive at the
+same result, and so an arithmetic module actually doing the
+calculation does the calculation in two different ways.
+The results should be exactly equal.</p>
+<p>{RandVerifyArithmetic(n)} calls {VerifyArithmetic} with
+random values, {n} times.</p>
+<p>{VerifyDiv(u,v)} checks that
+$$ u = v*Div(u,v) + Mod(u,v) $$.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">VerifyArithmetic</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="mi">50</span><span class="p">,</span><span class="mi">60</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">RandVerifyArithmetic</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">VerifyDiv</span><span class="p">(</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">x</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">VerifyDiv</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Verify" title="Verify"><tt class="xref ys ys-func docutils literal"><span class="pre">Verify()</span></tt></a></p>
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../programming_in_yacas/index.html" class="btn btn-neutral float-right" title="Programming in Yacas"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="number-theory.html" class="btn btn-neutral" title="Number theory"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Ayal Pinkus, Serge Winnitzky, Grzegorz Mazur.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.3.5',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

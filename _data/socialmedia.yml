@@ -1,0 +1,12 @@
+- name: Facebook
+  url: http://www.facebook.com/YetAnotherCAS
+  class: icon-facebook
+
+- name: GitHub
+  url: http://github.com/yacas
+  class: icon-github
+
+- name: Google Group
+  url: https://groups.google.com/forum/#!forum/yacas
+  class: icon-mail
+

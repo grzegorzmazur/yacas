@@ -1,0 +1,101 @@
+title: Yacas
+slogan: Computer calculations made easy
+description: Yacas is an easy to use, general purpose Computer Algebra System, a program for symbolic manipulation of mathematical expressions.
+author: grzegorzmazur
+
+url: http://grzegorzmazur.github.io/yacas
+#url: http://127.0.0.1:4000
+baseurl: ''
+
+# This is for the editing function in _/includes/improve_content
+# Leave it empty if your site is not on GitHub/GitHub Pages
+#improve_content: https://github.com/Phlow/feeling-responsive/edit/gh-pages
+
+# This URL points directly to the images directory making
+# things easier to link to images in posts and templates. It needs a slash at the end.
+#
+# Example: <img src="{{ site.urlimg }}{{ post.image.title }}" />
+# Markdown-Example for posts ![Image Text]({{ site.urlimg }}image.jpg)
+#
+urlimg: http://grzegorzmazur.github.io/yacas/images/
+#urlimg: http://127.0.0.1:4000/images/
+
+logo: logo-small.png
+
+
+# Paginates all X entries
+paginate: 5
+
+
+# Pagination path › Important for blog page in /blog/ to work
+paginate_path: "blog/page:num"
+
+
+# Theme works best with Kramdown (using the table of contents function)
+markdown: kramdown
+permalink: /:categories/:title/
+highlight: pygments
+excerpt_separator: "<!--more-->"
+include: [ "_static", "_sources" ]
+# Exclude these files from your production _site
+exclude:
+    - .sass-cache
+    - Gemfile
+    - Gemfile.lock
+
+
+# The language setting is used in /includes/header.html for html-settings
+language: "en"
+
+
+# Used › default.html front-matter and comress.html
+# Options › http://jch.penibelst.de
+compress_html:
+  clippings: all
+  comments: ["<!-- ", " -->"]
+  endings: all
+  profile: false
+  ignore:
+    envs: [development]
+
+defaults:
+  -
+    scope:
+      path: ""
+      type: "pages"
+    values:
+      show_meta: false
+      comments: false
+      author: grzegorzmazur
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      show_meta: true
+      comments: false
+      author: grzegorzmazur
+
+
+#google_author:
+#google_site_verification:
+#bing_webmastertools_id:
+#alexa_verify_id:
+
+favicon-32x32: yacas-favicon.ico
+
+#og_image:
+og_locale: en_EN
+og_type: website
+og_title: Yacas – Yet Another Computer Algebra System"
+og_description: Yacas is an easy to use, general purpose Computer Algebra System, a program for symbolic manipulation of mathematical expressions.
+# og_url:
+# og_site_name:
+
+#disqus_shortname:
+
+sass:
+    sass_dir: _sass
+    style: :compressed
+
+#google_analytics_tracking_id:

@@ -1,0 +1,1349 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Control flow functions &mdash; Yacas</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="Yacas" href="../../index.html"/>
+        <link rel="up" title="Reference Manual" href="index.html"/>
+        <link rel="next" title="Predicates" href="predicates.html"/>
+        <link rel="prev" title="Functional operators" href="functional.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="fa fa-home"> Yacas</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation-from-sources">Installation from sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-syntax">Yacas syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#using-yacas-from-the-calculation-center">Using Yacas from the calculation center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-as-a-symbolic-calculator">Yacas as a symbolic calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#arbitrary-precision-numbers">Arbitrary precision numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#analytic-functions">Analytic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#boolean-expressions-and-predicates">Boolean expressions and predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#strings-and-lists">Strings and lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#writing-simplification-rules">Writing simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#local-simplification-rules">Local simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#programming-essentials">Programming essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#macros">Macros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#the-practice-of-programming-in-yacas">The practice of programming in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#defining-your-own-operators">Defining your own operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#some-assorted-programming-topics">Some assorted programming topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#linear-algebra">Linear Algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="arithmetic.html">Arithmetic and other operations on numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calc.html">Calculus and elementary functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simplify.html">Simplification of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode.html">Differential Equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logic.html">Propositional logic theorem prover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear-algebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="univariate-polynomials.html">Operations on polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lists.html">List operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional.html">Functional operators</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Control flow functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="predicates.html">Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="consts.html">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vars.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io.html">Input/output and plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="strings.html">String manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="probability-and-statistics.html">Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="number-theory.html">Number theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming.html">Functions related to programming in Yacas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_in_yacas/index.html">Programming in Yacas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-yacas-architecture">The Yacas architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-evaluation-scheme">Yacas evaluation scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#rules">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#structured-programming-and-control-flow">Structured programming and control flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#additional-syntactic-sugar">Additional syntactic sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#using-macro-rules-e-g-nfunction">Using &#8220;Macro rules&#8221; (e.g. {NFunction})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#macro-expansion">Macro expansion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#scope-of-variable-bindings">Scope of variable bindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation-of-expressions">Evaluation of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-lisp-heritage">The LISP heritage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-specific-extensions-for-cas-implementations">{Yacas}-specific extensions for CAS implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-evaluation-is-simplification-hack">The &#8220;Evaluation is Simplification&#8221; hack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#destructive-operations">Destructive operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#coding-style">Coding style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#writing-new-library-functions">Writing new library functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-1-parsing-expressions-cform">Advanced example 1: parsing expressions ({CForm})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-programming-pitfalls">Yacas programming pitfalls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#debugging-in-yacas">Debugging in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-2-implementing-a-non-commutative-algebra">Advanced example 2: implementing a non-commutative algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../book_of_algorithms/index.html">The Yacas Book of Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/multivar.html">Sparse representations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/integration.html">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/transforms.html">Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/sturm-sequences.html">Finding real roots of polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/numtheory.html">Number theory algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../yagy/index.html">YAGY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Yacas</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Reference Manual</a> &raquo;</li>
+      
+    <li>Control flow functions</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/doc/reference_manual/controlflow.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="control-flow-functions">
+<h1>Control flow functions<a class="headerlink" href="#control-flow-functions" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="MaxEvalDepth">
+<tt class="descname">MaxEvalDepth</tt><big>(</big><em>n</em><big>)</big><a class="headerlink" href="#MaxEvalDepth" title="Permalink to this definition">¶</a></dt>
+<dd><p>set the maximum evaluation depth</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> &#8211; new maximum evaluation depth</td>
+</tr>
+</tbody>
+</table>
+<p>Use this command to set the maximum evaluation depth to the integer
+&#8220;n&#8221;. The default value is 1000. The function {MaxEvalDepth} returns
+<a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>.</p>
+<p>The point of having a maximum evaluation depth is to catch any
+infinite recursion. For example, after the definition {f(x) :=
+f(x)}, evaluating the expression {f(x)} would call {f(x)}, which
+would call {f(x)}, etc. The interpreter will halt if the maximum
+evaluation depth is reached. Also indirect recursion, e.g. the pair
+of definitions {f(x) := g(x)} and {g(x) := f(x)}, will be caught.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>An example of an infinite recursion, caught because the maximum
+evaluation depth is reached.
+In&gt; f(x) := f(x)
+Out&gt; True;
+In&gt; f(x)
+Error on line 1 in file [CommandLine]
+Max evaluation stack depth reached.
+Please use MaxEvalDepth to increase the stack
+size as needed.
+However, a long calculation may cause the maximum evaluation depth to
+be reached without the presence of infinite recursion. The function {MaxEvalDepth} is meant for these cases.
+In&gt; 10 # g(0) &lt;-- 1;
+Out&gt; True;
+In&gt; 20 # g(n_IsPositiveInteger) &lt;-- \
+2 * g(n-1);
+Out&gt; True;
+In&gt; g(1001);
+Error on line 1 in file [CommandLine]
+Max evaluation stack depth reached.
+Please use MaxEvalDepth to increase the stack
+size as needed.
+In&gt; MaxEvalDepth(10000);
+Out&gt; True;
+In&gt; g(1001);
+Out&gt; 21430172143725346418968500981200036211228096234
+1106721488750077674070210224987224498639675763139171
+6255189345835106293650374290571384628087196915514939
+7149607869135549648461970842149210124742283755908364
+3060929499671638825347975351183310878921541258291423
+92955373084335320859663305248773674411336138752;
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Hold">
+<tt class="descname">Hold</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#Hold" title="Permalink to this definition">¶</a></dt>
+<dd><p>keep expression unevaluated</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; expression to keep unevaluated</td>
+</tr>
+</tbody>
+</table>
+<p>The expression <tt class="docutils literal"><span class="pre">expr</span></tt> is returned unevaluated. This is useful to
+prevent the evaluation of a certain expression in a context in
+which evaluation normally takes place.  The function <a class="reference internal" href="lists.html#UnList" title="UnList"><tt class="xref ys ys-func docutils literal"><span class="pre">UnList()</span></tt></a>
+also leaves its result unevaluated. Both functions stop the process
+of evaluation (no more rules will be applied).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Echo</span><span class="p">({</span> <span class="n">Hold</span><span class="p">(</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="s">&quot;=&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="o">+</span><span class="mi">1</span> <span class="p">});</span>
+<span class="mi">1</span><span class="o">+</span><span class="mi">1</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Eval" title="Eval"><tt class="xref ys ys-func docutils literal"><span class="pre">Eval()</span></tt></a>, <a class="reference internal" href="programming.html#HoldArg" title="HoldArg"><tt class="xref ys ys-func docutils literal"><span class="pre">HoldArg()</span></tt></a>, <a class="reference internal" href="lists.html#UnList" title="UnList"><tt class="xref ys ys-func docutils literal"><span class="pre">UnList()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Eval">
+<tt class="descname">Eval</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#Eval" title="Permalink to this definition">¶</a></dt>
+<dd><p>force evaluation of expression</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; expression to evaluate</td>
+</tr>
+</tbody>
+</table>
+<p>This function explicitly requests an evaluation of the expression
+<tt class="docutils literal"><span class="pre">expr</span></tt>, and returns the result of this evaluation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; a := x;
+Out&gt; x;
+In&gt; x := 5;
+Out&gt; 5;
+In&gt; a;
+Out&gt; x;
+In&gt; Eval(a);
+Out&gt; 5;
+</pre></div>
+</div>
+<p>The variable <tt class="docutils literal"><span class="pre">a</span></tt> is bound to <tt class="docutils literal"><span class="pre">x</span></tt>, and <tt class="docutils literal"><span class="pre">x</span></tt> is bound
+to 5. Hence evaluating <tt class="docutils literal"><span class="pre">a</span></tt> will give <tt class="docutils literal"><span class="pre">x</span></tt>. Only when an extra
+evaluation of <tt class="docutils literal"><span class="pre">a</span></tt> is requested, the value 5 is returned.  Note
+that the behavior would be different if we had exchanged the
+assignments. If the assignment <tt class="docutils literal"><span class="pre">a</span> <span class="pre">:=</span> <span class="pre">x</span></tt> were given while <tt class="docutils literal"><span class="pre">x</span></tt>
+had the value 5, the variable <tt class="docutils literal"><span class="pre">a</span></tt> would also get the value 5
+because the assignment operator <a class="reference internal" href="vars.html#:=" title=":="><tt class="xref ys ys-func docutils literal"><span class="pre">:=()</span></tt></a> evaluates the right-hand
+side.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Hold" title="Hold"><tt class="xref ys ys-func docutils literal"><span class="pre">Hold()</span></tt></a>, <a class="reference internal" href="programming.html#HoldArg" title="HoldArg"><tt class="xref ys ys-func docutils literal"><span class="pre">HoldArg()</span></tt></a>, <a class="reference internal" href="vars.html#:=" title=":="><tt class="xref ys ys-func docutils literal"><span class="pre">:=()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="While">
+<tt class="descname">While</tt><big>(</big><em>pred</em><big>)</big> expr<a class="headerlink" href="#While" title="Permalink to this definition">¶</a></dt>
+<dd><p>loop while a condition is met</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pred</strong> &#8211; predicate deciding whether to keep on looping</li>
+<li><strong>expr</strong> &#8211; expression to loop over</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Keep on evaluating <tt class="docutils literal"><span class="pre">expr</span></tt> while <tt class="docutils literal"><span class="pre">pred</span></tt> evaluates to
+<tt class="docutils literal"><span class="pre">True</span></tt>. More precisely, <a class="reference internal" href="#While" title="While"><tt class="xref ys ys-func docutils literal"><span class="pre">While()</span></tt></a> evaluates the predicate
+<tt class="docutils literal"><span class="pre">pred</span></tt>, which should evaluate to either <tt class="docutils literal"><span class="pre">True</span></tt> or <tt class="docutils literal"><span class="pre">False</span></tt>. If
+the result is <tt class="docutils literal"><span class="pre">True</span></tt>, the expression <tt class="docutils literal"><span class="pre">expr</span></tt> is evaluated and
+then the predicate <tt class="docutils literal"><span class="pre">pred</span></tt> is evaluated again. If it is still
+<tt class="docutils literal"><span class="pre">True</span></tt>, the expressions <tt class="docutils literal"><span class="pre">expr</span></tt> and <tt class="docutils literal"><span class="pre">pred</span></tt> are again evaluated
+and so on until <tt class="docutils literal"><span class="pre">pred</span></tt> evaluates to <tt class="docutils literal"><span class="pre">False</span></tt>. At that point, the
+loop terminates and <a class="reference internal" href="#While" title="While"><tt class="xref ys ys-func docutils literal"><span class="pre">While()</span></tt></a> returns <tt class="docutils literal"><span class="pre">True</span></tt>.</p>
+<p>In particular, if <tt class="docutils literal"><span class="pre">pred</span></tt> immediately evaluates to <tt class="docutils literal"><span class="pre">False</span></tt>, the
+body is never executed. <a class="reference internal" href="#While" title="While"><tt class="xref ys ys-func docutils literal"><span class="pre">While()</span></tt></a> is the fundamental looping
+construct on which all other loop commands are based. It is
+equivalent to the <tt class="docutils literal"><span class="pre">while</span></tt> command in the programming language C.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; x := 0;
+Out&gt; 0;
+In&gt; While (x! &lt; 10^6) \
+[ Echo({x, x!}); x++; ];
+0  1
+1  1
+2  2
+3  6
+4  24
+5  120
+6  720
+7  5040
+8  40320
+9  362880
+Out&gt; True;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Until" title="Until"><tt class="xref ys ys-func docutils literal"><span class="pre">Until()</span></tt></a>, <a class="reference internal" href="#For" title="For"><tt class="xref ys ys-func docutils literal"><span class="pre">For()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Until">
+<tt class="descname">Until</tt><big>(</big><em>pred</em><big>)</big> expr<a class="headerlink" href="#Until" title="Permalink to this definition">¶</a></dt>
+<dd><p>loop until a condition is met</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pred</strong> &#8211; predicate deciding whether to stop</li>
+<li><strong>expr</strong> &#8211; expression to loop over</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Keep on evaluating <tt class="docutils literal"><span class="pre">expr</span></tt> until <tt class="docutils literal"><span class="pre">pred</span></tt> becomes <tt class="docutils literal"><span class="pre">True</span></tt>. More
+precisely, <a class="reference internal" href="#Until" title="Until"><tt class="xref ys ys-func docutils literal"><span class="pre">Until()</span></tt></a> first evaluates the expression
+&#8220;body&#8221;. Then the predicate &#8220;pred&#8221; is evaluated, which should yield
+either <tt class="docutils literal"><span class="pre">True</span></tt> or <tt class="docutils literal"><span class="pre">False</span></tt>. In the latter case, the expressions
+<tt class="docutils literal"><span class="pre">expr</span></tt> and <tt class="docutils literal"><span class="pre">pred</span></tt> are again evaluated and this continues as
+long as &#8220;pred&#8221; is <tt class="docutils literal"><span class="pre">False</span></tt>. As soon as <tt class="docutils literal"><span class="pre">pred</span></tt> yields <tt class="docutils literal"><span class="pre">True</span></tt>,
+the loop terminates and <a class="reference internal" href="#Until" title="Until"><tt class="xref ys ys-func docutils literal"><span class="pre">Until()</span></tt></a> returns <tt class="docutils literal"><span class="pre">True</span></tt>.</p>
+<p>The main difference with <a class="reference internal" href="#While" title="While"><tt class="xref ys ys-func docutils literal"><span class="pre">While()</span></tt></a> is that <a class="reference internal" href="#Until" title="Until"><tt class="xref ys ys-func docutils literal"><span class="pre">Until()</span></tt></a> always
+evaluates <tt class="docutils literal"><span class="pre">expr</span></tt> at least once, but <a class="reference internal" href="#While" title="While"><tt class="xref ys ys-func docutils literal"><span class="pre">While()</span></tt></a> may not
+evaluate it at all. Besides, the meaning of the predicate is
+reversed: <a class="reference internal" href="#While" title="While"><tt class="xref ys ys-func docutils literal"><span class="pre">While()</span></tt></a> stops if <tt class="docutils literal"><span class="pre">pred</span></tt> is <tt class="docutils literal"><span class="pre">False</span></tt> while
+<a class="reference internal" href="#Until" title="Until"><tt class="xref ys ys-func docutils literal"><span class="pre">Until()</span></tt></a> stops if <tt class="docutils literal"><span class="pre">pred</span></tt> is <tt class="docutils literal"><span class="pre">True</span></tt>. The command
+<tt class="docutils literal"><span class="pre">Until(pred)</span> <span class="pre">expr;</span></tt> is equivalent to <tt class="docutils literal"><span class="pre">pred;</span> <span class="pre">While(Not</span> <span class="pre">pred)</span>
+<span class="pre">body;</span></tt>. In fact, the implementation of <a class="reference internal" href="#Until" title="Until"><tt class="xref ys ys-func docutils literal"><span class="pre">Until()</span></tt></a> is based on
+the internal command <a class="reference internal" href="#While" title="While"><tt class="xref ys ys-func docutils literal"><span class="pre">While()</span></tt></a>. The <a class="reference internal" href="#Until" title="Until"><tt class="xref ys ys-func docutils literal"><span class="pre">Until()</span></tt></a> command can
+be compared to the <tt class="docutils literal"><span class="pre">do</span> <span class="pre">...</span> <span class="pre">while</span></tt> construct in the programming
+language C.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; x := 0;
+Out&gt; 0;
+In&gt; Until (x! &gt; 10^6) \
+[ Echo({x, x!}); x++; ];
+0  1
+1  1
+2  2
+3  6
+4  24
+5  120
+6  720
+7  5040
+8  40320
+9  362880
+Out&gt; True;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#While" title="While"><tt class="xref ys ys-func docutils literal"><span class="pre">While()</span></tt></a>, <a class="reference internal" href="#For" title="For"><tt class="xref ys ys-func docutils literal"><span class="pre">For()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="If">
+<tt class="descname">If</tt><big>(</big><em>pred</em>, <em>then</em><span class="optional">[</span>, <em>else</em><span class="optional">]</span><big>)</big><a class="headerlink" href="#If" title="Permalink to this definition">¶</a></dt>
+<dd><p>branch point</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>pred</strong> &#8211; predicate to test</li>
+<li><strong>then</strong> &#8211; expression to evaluate if <tt class="docutils literal"><span class="pre">pred</span></tt> is <tt class="docutils literal"><span class="pre">True</span></tt></li>
+<li><strong>else</strong> &#8211; expression to evaluate if <tt class="docutils literal"><span class="pre">pred</span></tt> is <tt class="docutils literal"><span class="pre">False</span></tt></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This command implements a branch point. The predicate <tt class="docutils literal"><span class="pre">pred</span></tt> is
+evaluated, which should result in either <tt class="docutils literal"><span class="pre">True</span></tt> or <tt class="docutils literal"><span class="pre">False</span></tt>. In
+the first case, the expression <tt class="docutils literal"><span class="pre">then</span></tt> is evaluated and
+returned. If the predicate yields <tt class="docutils literal"><span class="pre">False</span></tt>, the expression &#8220;else&#8221;
+(if present) is evaluated and returned. If there is no <tt class="docutils literal"><span class="pre">else</span></tt>
+branch, the <a class="reference internal" href="#If" title="If"><tt class="xref ys ys-func docutils literal"><span class="pre">If()</span></tt></a> expression returns <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>The sign function is defined to be 1 if its argument is positive and
+-1 if its argument is negative. A possible implementation is:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; mysign(x) := If (IsPositiveReal(x), 1, -1);
+Out&gt; True;
+In&gt; mysign(Pi);
+Out&gt; 1;
+In&gt; mysign(-2.5);
+Out&gt; -1;
+</pre></div>
+</div>
+<p>Note that this will give incorrect results, if &#8220;x&#8221; cannot be
+numerically approximated:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">mysign</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Hence a better implementation would be:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; mysign(_x)_IsNumber(N(x)) &lt;-- If(IsPositiveReal(x), 1, -1);
+Out&gt; True;
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="SystemCall">
+<tt class="descname">SystemCall</tt><big>(</big><em>str</em><big>)</big><a class="headerlink" href="#SystemCall" title="Permalink to this definition">¶</a></dt>
+<dd><p>pass a command to the shell</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>str</strong> &#8211; the command to call</td>
+</tr>
+</tbody>
+</table>
+<p>The command contained in the string <tt class="docutils literal"><span class="pre">str</span></tt> is executed by the
+underlying operating system. The return value of <a class="reference internal" href="#SystemCall" title="SystemCall"><tt class="xref ys ys-func docutils literal"><span class="pre">SystemCall()</span></tt></a>
+is <tt class="docutils literal"><span class="pre">True</span></tt> or <tt class="docutils literal"><span class="pre">False</span></tt> according to the exit code of the command.</p>
+<p>The <a class="reference internal" href="#SystemCall" title="SystemCall"><tt class="xref ys ys-func docutils literal"><span class="pre">SystemCall()</span></tt></a> function is not allowed in the body of the
+<a class="reference internal" href="programming.html#Secure" title="Secure"><tt class="xref ys ys-func docutils literal"><span class="pre">Secure()</span></tt></a> command and will lead to an error.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>In a UNIX environment, the command <tt class="docutils literal"><span class="pre">SystemCall(&quot;ls&quot;)</span></tt> would print
+the contents of the current directory:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">SystemCall</span><span class="p">(</span><span class="s">&quot;ls&quot;</span><span class="p">)</span>
+<span class="n">AUTHORS</span>
+<span class="n">COPYING</span>
+<span class="n">ChangeLog</span>
+<span class="o">...</span> <span class="p">(</span><span class="n">truncated</span> <span class="n">to</span> <span class="n">save</span> <span class="n">space</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The standard UNIX command <tt class="docutils literal"><span class="pre">test</span></tt> returns success or failure
+depending on conditions.  For example, the following command will
+check if a directory exists:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">SystemCall</span><span class="p">(</span><span class="s">&quot;test -d scripts/&quot;</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Check that a file exists:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">SystemCall</span><span class="p">(</span><span class="s">&quot;test -f COPYING&quot;</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">SystemCall</span><span class="p">(</span><span class="s">&quot;test -f nosuchfile.txt&quot;</span><span class="p">)</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="programming.html#Secure" title="Secure"><tt class="xref ys ys-func docutils literal"><span class="pre">Secure()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Function">
+<tt class="descname">Function</tt><big>(</big><big>)</big> func<a class="headerlink" href="#Function" title="Permalink to this definition">¶</a></dt>
+<dt>
+<tt class="descname">Function</tt><big>(</big><em>funcname</em>, <em>argslist</em><big>)</big> expr</dt>
+<dd><p>declare or define a function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>func</strong> &#8211; function declaration, e.g. {f(x,y)}</li>
+<li><strong>&#8220;op&#8221;</strong> &#8211; string, name of the function</li>
+<li><strong>{arglist}</strong> &#8211; list of atoms, formal arguments to the function</li>
+<li><strong>...</strong> &#8211; literal ellipsis symbol &#8220;{...}&#8221; used to denote a variable number of arguments</li>
+<li><strong>body</strong> &#8211; expression comprising the body of the function</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This command can be used to define a new function with named
+arguments.</p>
+<p>The number of arguments of the new function and their names are
+determined by the list {arglist}. If the ellipsis &#8220;{...}&#8221; follows
+the last atom in {arglist}, a function with a variable number of
+arguments is declared (using {RuleBaseListed}). Note that the
+ellipsis cannot be the only element of {arglist} and &lt;i&gt;must&lt;/i&gt; be
+preceded by an atom.</p>
+<p>A function with variable number of arguments can take more
+arguments than elements in {arglist}; in this case, it obtains its
+last argument as a list containing all extra arguments.</p>
+<p>The short form of the {Function} call merely declares a {RuleBase}
+for the new function but does not define any function body. This is
+a convenient shorthand for {RuleBase} and {RuleBaseListed}, when
+definitions of the function are to be supplied by rules. If the new
+function has been already declared with the same number of
+arguments (with or without variable arguments), {Function} returns
+false and does nothing.</p>
+<p>The second, longer form of the {Function} call declares a function
+and also defines a function body. It is equivalent to a single rule
+such as {op(_arg1, _arg2) &lt;&#8211; body}. The rule will be declared at
+precedence 1025. Any previous rules associated with {&#8220;op&#8221;} (with
+the same arity) will be discarded. More complicated functions (with
+more than one body) can be defined by adding more rules.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<p>This will declare a new function with two or more arguments, but
+define no rules for it. This is equivalent to <tt class="docutils literal"><span class="pre">RuleBase</span> <span class="pre">(&quot;f1&quot;,</span> <span class="pre">{x,</span>
+<span class="pre">y,</span> <span class="pre">...})</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Function() f1(x,y,...);
+Out&gt; True;
+In&gt; Function() f1(x,y);
+Out&gt; False;
+</pre></div>
+</div>
+<p>This defines a function {FirstOf} which returns the first element
+of a list. Equivalent definitions would be <tt class="docutils literal"><span class="pre">FirstOf(_list)</span> <span class="pre">&lt;--</span>
+<span class="pre">list[1]</span></tt> or <tt class="docutils literal"><span class="pre">FirstOf(list)</span> <span class="pre">:=</span> <span class="pre">list[1]</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Function(&quot;FirstOf&quot;, {list})  list[1];
+Out&gt; True;
+In&gt; FirstOf({a,b,c});
+Out&gt; a;
+</pre></div>
+</div>
+<p>The following function will print all arguments to a string:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Function(&quot;PrintAll&quot;,{x, ...}) If(IsList(x), PrintList(x), ToString()Write(x));
+Out&gt; True;
+In&gt; PrintAll(1):
+Out&gt; &quot; 1&quot;;
+In&gt; PrintAll(1,2,3);
+Out&gt; &quot; 1 2 3&quot;;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">TemplateFunction()</span></tt>, <a class="reference internal" href="programming.html#Rule" title="Rule"><tt class="xref ys ys-func docutils literal"><span class="pre">Rule()</span></tt></a>,
+<a class="reference internal" href="programming.html#RuleBase" title="RuleBase"><tt class="xref ys ys-func docutils literal"><span class="pre">RuleBase()</span></tt></a>, <a class="reference internal" href="programming.html#RuleBaseListed" title="RuleBaseListed"><tt class="xref ys ys-func docutils literal"><span class="pre">RuleBaseListed()</span></tt></a>, <a class="reference internal" href="vars.html#:=" title=":="><tt class="xref ys ys-func docutils literal"><span class="pre">:=()</span></tt></a>,
+<a class="reference internal" href="programming.html#Retract" title="Retract"><tt class="xref ys ys-func docutils literal"><span class="pre">Retract()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Macro">
+<tt class="descname">Macro</tt><big>(</big><big>)</big> func<a class="headerlink" href="#Macro" title="Permalink to this definition">¶</a></dt>
+<dd><p>declare or define a macro</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>func</strong> &#8211; function declaration, e.g. {f(x,y)}</li>
+<li><strong>&#8220;op&#8221;</strong> &#8211; string, name of the function</li>
+<li><strong>{arglist}</strong> &#8211; list of atoms, formal arguments to the function</li>
+<li><strong>...</strong> &#8211; literal ellipsis symbol &#8220;{...}&#8221; used to denote a
+variable number of arguments</li>
+<li><strong>body</strong> &#8211; expression comprising the body of the function</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This does the same as <a class="reference internal" href="#Function" title="Function"><tt class="xref ys ys-func docutils literal"><span class="pre">Function()</span></tt></a>, but for macros. One can
+define a macro easily with this function, instead of having to use
+<a class="reference internal" href="programming.html#DefMacroRuleBase" title="DefMacroRuleBase"><tt class="xref ys ys-func docutils literal"><span class="pre">DefMacroRuleBase()</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>the following example defines a looping function.
+In&gt; Macro(&quot;myfor&quot;,{init,pred,inc,body}) [@init;While(@pred)[@body;@inc;];True;];
+Out&gt; True;
+In&gt; a:=10
+Out&gt; 10;
+Here this new macro {myfor} is used to loop, using a variable {a} from the
+calling environment.
+In&gt; myfor(i:=1,i&lt;10,i++,Echo(a*i))
+10
+20
+30
+40
+50
+60
+70
+80
+90
+Out&gt; True;
+In&gt; i
+Out&gt; 10;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Function" title="Function"><tt class="xref ys ys-func docutils literal"><span class="pre">Function()</span></tt></a>, <a class="reference internal" href="programming.html#DefMacroRuleBase" title="DefMacroRuleBase"><tt class="xref ys ys-func docutils literal"><span class="pre">DefMacroRuleBase()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="For">
+<tt class="descname">For</tt><big>(</big><em>init</em>, <em>pred</em>, <em>incr</em><big>)</big> expr<a class="headerlink" href="#For" title="Permalink to this definition">¶</a></dt>
+<dd><p>C-style <tt class="docutils literal"><span class="pre">for</span></tt> loop</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>init</strong> &#8211; expression for performing the initialization</li>
+<li><strong>pred</strong> &#8211; predicate deciding whether to continue the loop</li>
+<li><strong>incr</strong> &#8211; expression to increment the counter</li>
+<li><strong>expr</strong> &#8211; expression to loop over</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This commands implements a C style <tt class="docutils literal"><span class="pre">for</span></tt> loop. First of all, the
+expression <tt class="docutils literal"><span class="pre">init</span></tt> is evaluated. Then the predicate <tt class="docutils literal"><span class="pre">pred</span></tt> is
+evaluated, which should return <tt class="docutils literal"><span class="pre">True</span></tt> or <tt class="docutils literal"><span class="pre">False</span></tt>. Next, the
+loop is executed as long as the predicate yields <tt class="docutils literal"><span class="pre">True</span></tt>. One
+traversal of the loop consists of the subsequent evaluations of
+<tt class="docutils literal"><span class="pre">expr</span></tt>, <tt class="docutils literal"><span class="pre">incr</span></tt>, and <tt class="docutils literal"><span class="pre">pred</span></tt>. Finally, <tt class="docutils literal"><span class="pre">True</span></tt> is returned.</p>
+<p>This command is most often used in a form such as <tt class="docutils literal"><span class="pre">For(i=1,</span> <span class="pre">i&lt;=10,</span>
+<span class="pre">i++)</span> <span class="pre">expr</span></tt>, which evaluates <tt class="docutils literal"><span class="pre">expr</span></tt> with <tt class="docutils literal"><span class="pre">i</span></tt> subsequently set
+to 1, 2, 3, 4, 5, 6, 7, 8, 9, and 10.</p>
+<p>The expression <tt class="docutils literal"><span class="pre">For(init,</span> <span class="pre">pred,</span> <span class="pre">incr)</span> <span class="pre">expr</span></tt> is equivalent to
+<tt class="docutils literal"><span class="pre">init;</span> <span class="pre">While(pred)</span> <span class="pre">[expr;</span> <span class="pre">incr;]</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; For (i:=1, i&lt;=10, i++) Echo({i, i!});
+1  1
+2  2
+3  6
+4  24
+5  120
+6  720
+7  5040
+8  40320
+9  362880
+10  3628800
+Out&gt; True;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#While" title="While"><tt class="xref ys ys-func docutils literal"><span class="pre">While()</span></tt></a>, <a class="reference internal" href="#Until" title="Until"><tt class="xref ys ys-func docutils literal"><span class="pre">Until()</span></tt></a>, <a class="reference internal" href="#ForEach" title="ForEach"><tt class="xref ys ys-func docutils literal"><span class="pre">ForEach()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="ForEach">
+<tt class="descname">ForEach</tt><big>(</big><em>var</em>, <em>list</em><big>)</big> expr<a class="headerlink" href="#ForEach" title="Permalink to this definition">¶</a></dt>
+<dd><p>loop over all entries in list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>var</strong> &#8211; looping variable</li>
+<li><strong>list</strong> &#8211; list of values to assign to <tt class="docutils literal"><span class="pre">var</span></tt></li>
+<li><strong>expr</strong> &#8211; expression to evaluate with different values of <tt class="docutils literal"><span class="pre">var</span></tt></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The expression <tt class="docutils literal"><span class="pre">expr</span></tt> is evaluated multiple times. The first
+time, <tt class="docutils literal"><span class="pre">var</span></tt> has the value of the first element of &#8220;list&#8221;, then it
+gets the value of the second element and so on. <a class="reference internal" href="#ForEach" title="ForEach"><tt class="xref ys ys-func docutils literal"><span class="pre">ForEach()</span></tt></a>
+returns <tt class="docutils literal"><span class="pre">True</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; ForEach(i,{2,3,5,7,11}) Echo({i, i!});
+2  2
+3  6
+5  120
+7  5040
+11  39916800
+Out&gt; True;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#For" title="For"><tt class="xref ys ys-func docutils literal"><span class="pre">For()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Apply">
+<tt class="descname">Apply</tt><big>(</big><em>fn</em>, <em>arglist</em><big>)</big><a class="headerlink" href="#Apply" title="Permalink to this definition">¶</a></dt>
+<dd><p>apply a function to arguments</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fn</strong> &#8211; function to apply</li>
+<li><strong>arglist</strong> &#8211; list of arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function applies the function &#8220;fn&#8221; to the arguments in
+&#8220;arglist&#8221; and returns the result. The first parameter &#8220;fn&#8221; can
+either be a string containing the name of a function  or a pure
+function. Pure functions, modeled after lambda-expressions, have
+the form &#8220;{varlist,body}&#8221;, where &#8220;varlist&#8221; is the list of formal
+parameters. Upon application, the formal parameters are assigned
+the values in &#8220;arglist&#8221; (the second parameter of {Apply}) and the
+&#8220;body&#8221; is evaluated.</p>
+<p>Another way to define a pure function is with the Lambda construct.
+Here, in stead of passing in &#8220;{varlist,body}&#8221;, one can pass in
+&#8220;Lambda(varlist,body)&#8221;. Lambda has the advantage that its arguments
+are not evaluated (using lists can have undesirable effects because
+lists are evaluated). Lambda can be used everywhere a pure function
+is expected, in principle, because the function Apply is the only
+function dealing with pure functions. So all places where a pure
+function can be passed in will also accept Lambda.</p>
+<p>An shorthand for {Apply} is provided by the {&#64;} operator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Apply(&quot;+&quot;, {5,9});
+Out&gt; 14;
+In&gt; Apply({{x,y}, x-y^2}, {Cos(a), Sin(a)});
+Out&gt; Cos(a)-Sin(a)^2;
+In&gt;  Apply(Lambda({x,y}, x-y^2), {Cos(a), Sin(a)});
+Out&gt; Cos(a)-Sin(a)^2
+In&gt;  Lambda({x,y}, x-y^2) @ {Cos(a), Sin(a)}
+Out&gt; Cos(a)-Sin(a)^2
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="lists.html#Map" title="Map"><tt class="xref ys ys-func docutils literal"><span class="pre">Map()</span></tt></a>, <a class="reference internal" href="lists.html#MapSingle" title="MapSingle"><tt class="xref ys ys-func docutils literal"><span class="pre">MapSingle()</span></tt></a>, <a class="reference internal" href="functional.html#&#64;" title="&#64;"><tt class="xref ys ys-func docutils literal"><span class="pre">&#64;()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MapArgs">
+<tt class="descname">MapArgs</tt><big>(</big><em>expr</em>, <em>fn</em><big>)</big><a class="headerlink" href="#MapArgs" title="Permalink to this definition">¶</a></dt>
+<dd><p>apply a function to all top-level arguments</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>expr</strong> &#8211; an expression to work on</li>
+<li><strong>fn</strong> &#8211; an operation to perform on each argument</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Every top-level argument in <tt class="docutils literal"><span class="pre">expr</span></tt> is substituted by the result
+of applying <tt class="docutils literal"><span class="pre">fn</span></tt> to this argument. Here <tt class="docutils literal"><span class="pre">fn</span></tt> can be either the
+name of a function or a pure function (see <a class="reference internal" href="#Apply" title="Apply"><tt class="xref ys ys-func docutils literal"><span class="pre">Apply()</span></tt></a> for more
+information on pure functions).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">MapArgs</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">),</span><span class="s">&quot;Sin&quot;</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">f</span><span class="p">(</span><span class="n">Sin</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">Sin</span><span class="p">(</span><span class="n">y</span><span class="p">),</span><span class="n">Sin</span><span class="p">(</span><span class="n">z</span><span class="p">));</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">MapArgs</span><span class="p">({</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">},</span> <span class="p">{{</span><span class="n">x</span><span class="p">},</span><span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="p">});</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="p">{</span><span class="mi">9</span><span class="p">,</span><span class="mi">16</span><span class="p">,</span><span class="mi">25</span><span class="p">,</span><span class="mi">36</span><span class="p">};</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="lists.html#MapSingle" title="MapSingle"><tt class="xref ys ys-func docutils literal"><span class="pre">MapSingle()</span></tt></a>, <a class="reference internal" href="lists.html#Map" title="Map"><tt class="xref ys ys-func docutils literal"><span class="pre">Map()</span></tt></a>, <a class="reference internal" href="#Apply" title="Apply"><tt class="xref ys ys-func docutils literal"><span class="pre">Apply()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Subst">
+<tt class="descname">Subst</tt><big>(</big><em>from</em>, <em>to</em><big>)</big> expr<a class="headerlink" href="#Subst" title="Permalink to this definition">¶</a></dt>
+<dd><p>perform a substitution</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>from</strong> &#8211; expression to be substituted</li>
+<li><strong>to</strong> &#8211; expression to substitute for &#8220;from&#8221;</li>
+<li><strong>expr</strong> &#8211; expression in which the substitution takes place</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function substitutes every occurrence of <tt class="docutils literal"><span class="pre">from</span></tt> in <tt class="docutils literal"><span class="pre">expr</span></tt>
+by <tt class="docutils literal"><span class="pre">to</span></tt>. This is a syntactical substitution: only places where
+<tt class="docutils literal"><span class="pre">from</span></tt> occurs as a subexpression are affected.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Subst(x, Sin(y)) x^2+x+1;
+Out&gt; Sin(y)^2+Sin(y)+1;
+In&gt; Subst(a+b, x) a+b+c;
+Out&gt; x+c;
+In&gt; Subst(b+c, x) a+b+c;
+Out&gt; a+b+c;
+</pre></div>
+</div>
+<p>The explanation for the last result is that the expression
+<tt class="docutils literal"><span class="pre">a+b+c</span></tt> is internally stored as <tt class="docutils literal"><span class="pre">(a+b)+c</span></tt>. Hence <tt class="docutils literal"><span class="pre">a+b</span></tt> is a
+subexpression, but <tt class="docutils literal"><span class="pre">b+c</span></tt> is not.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#WithValue" title="WithValue"><tt class="xref ys ys-func docutils literal"><span class="pre">WithValue()</span></tt></a>, <a class="reference internal" href="#/:" title="/:"><tt class="xref ys ys-func docutils literal"><span class="pre">/:()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="WithValue">
+<tt class="descname">WithValue</tt><big>(</big><em>var</em>, <em>val</em>, <em>expr</em><big>)</big><a class="headerlink" href="#WithValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>temporary assignment during an evaluation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>var</strong> &#8211; variable to assign to</li>
+<li><strong>val</strong> &#8211; value to be assigned to &#8220;var&#8221;</li>
+<li><strong>expr</strong> &#8211; expression to evaluate with &#8220;var&#8221; equal to &#8220;val&#8221;</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>First, the expression &#8220;val&#8221; is assigned to the variable &#8220;var&#8221;.
+Then, the expression &#8220;expr&#8221; is evaluated and returned. Finally, the
+assignment is reversed so that the variable &#8220;var&#8221; has the same
+value as it had before {WithValue} was evaluated.</p>
+<p>The second calling sequence assigns the first element in the list
+of values to the first element in the list of variables, the second
+value to the second variable, etc.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">WithValue</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="n">y</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="n">y</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="mi">10</span><span class="p">;</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">WithValue</span><span class="p">({</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">},</span> <span class="p">{</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">},</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="n">y</span><span class="o">^</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">14</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Subst" title="Subst"><tt class="xref ys ys-func docutils literal"><span class="pre">Subst()</span></tt></a>, <a class="reference internal" href="#/:" title="/:"><tt class="xref ys ys-func docutils literal"><span class="pre">/:()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="/:">
+expression <tt class="descname">/:</tt> patterns<a class="headerlink" href="#/:" title="Permalink to this definition">¶</a></dt>
+<dd><p>local simplification rules</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>expression</strong> &#8211; an expression</li>
+<li><strong>patterns</strong> &#8211; a list of patterns</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Sometimes you have an expression, and you want to use specific
+simplification rules on it that are not done by default. This can
+be done with the {/:} and the {/::} operators. Suppose we have the
+expression containing things such as {Ln(a*b)}, and we want to
+change these into {Ln(a)+Ln(b)}, the easiest way to do this is
+using the {/:} operator, as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Sin(x)*Ln(a*b)
+Out&gt; Sin(x)*Ln(a*b);
+In&gt; % /: { Ln(_x*_y) &lt;- Ln(x)+Ln(y) }
+Out&gt; Sin(x)*(Ln(a)+Ln(b));
+</pre></div>
+</div>
+<p>A whole list of simplification rules can be built up in the list,
+and they will be applied to the expression on the left hand side of
+{/:} .</p>
+<dl class="docutils">
+<dt>The forms the patterns can have are one of: ::</dt>
+<dd>pattern &lt;- replacement         {pattern,replacement}
+{pattern,postpredicate,replacement}</dd>
+</dl>
+<p>Note that for these local rules, {&lt;-} should be used instead of
+{&lt;&#8211;} which would be used in a global rule.</p>
+<p>The {/:} operator traverses an expression much as {Subst} does,
+that is, top down, trying to apply the rules from the beginning of
+the list of rules to the end of the list of rules. If the rules
+cannot be applied to an expression, it will try subexpressions of
+that expression and so on.</p>
+<p>It might be necessary sometimes to use the {/::} operator, which
+repeatedly applies the {/:} operator until the result doesn&#8217;t
+change any more. Caution is required, since rules can contradict
+each other, which could result in an infinite loop. To detect this
+situation, just use /: repeatedly on the expression. The repetitive
+nature should become apparent.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Sin(u)*Ln(a*b) /: {Ln(_x*_y) &lt;- Ln(x)+Ln(y)}
+Out&gt; Sin(u)*(Ln(a)+Ln(b));
+In&gt; Sin(u)*Ln(a*b) /:: { a &lt;- 2, b &lt;- 3 }
+Out&gt; Sin(u)*Ln(6);
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Subst" title="Subst"><tt class="xref ys ys-func docutils literal"><span class="pre">Subst()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="TraceStack">
+<tt class="descname">TraceStack</tt><big>(</big><em>expression</em><big>)</big><a class="headerlink" href="#TraceStack" title="Permalink to this definition">¶</a></dt>
+<dd><p>show calling stack after an error occurs</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expression</strong> &#8211; an expression to evaluate</td>
+</tr>
+</tbody>
+</table>
+<p>TraceStack shows the calling stack after an error occurred. It
+shows the last few items on the stack, not to flood the screen.
+These are usually the only items of interest on the stack. This is
+probably by far the most useful debugging function in Yacas. It
+shows the last few things it did just after an error was generated
+somewhere.</p>
+<p>For each stack frame, it shows if the function evaluated was a
+built-in function or a user-defined function, and for the
+user-defined function, the number of the rule it is trying whether
+it was evaluating the pattern matcher of the rule, or the body code
+of the rule.</p>
+<p>This functionality is not offered by default because it slows down
+the evaluation code.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>Here is an example of a function calling itself recursively,
+causing Yacas to flood its stack:
+In&gt; f(x):=f(Sin(x))
+Out&gt; True;
+In&gt; TraceStack(f(2))
+Debug&gt; 982 :  f (Rule # 0 in body)
+Debug&gt; 983 :  f (Rule # 0 in body)
+Debug&gt; 984 :  f (Rule # 0 in body)
+Debug&gt; 985 :  f (Rule # 0 in body)
+Debug&gt; 986 :  f (Rule # 0 in body)
+Debug&gt; 987 :  f (Rule # 0 in body)
+Debug&gt; 988 :  f (Rule # 0 in body)
+Debug&gt; 989 :  f (Rule # 0 in body)
+Debug&gt; 990 :  f (Rule # 0 in body)
+Debug&gt; 991 :  f (Rule # 0 in body)
+Debug&gt; 992 :  f (Rule # 0 in body)
+Debug&gt; 993 :  f (Rule # 0 in body)
+Debug&gt; 994 :  f (Rule # 0 in body)
+Debug&gt; 995 :  f (User function)
+Debug&gt; 996 :  Sin (Rule # 0 in pattern)
+Debug&gt; 997 :  IsList (Internal function)
+Error on line 1 in file [CommandLine]
+Max evaluation stack depth reached.
+Please use MaxEvalDepth to increase the stack
+size as needed.
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#TraceExp" title="TraceExp"><tt class="xref ys ys-func docutils literal"><span class="pre">TraceExp()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">TraceRule()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="TraceExp">
+<tt class="descname">TraceExp</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#TraceExp" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluate with tracing enabled</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; expression to trace</td>
+</tr>
+</tbody>
+</table>
+<p>The expression &#8220;expr&#8221; is evaluated with the tracing facility turned
+on. This means that every subexpression, which is evaluated, is
+shown before and after evaluation. Before evaluation, it is shown
+in the form {TrEnter(x)}, where {x} denotes the subexpression being
+evaluated. After the evaluation the line {TrLeave(x,y)} is printed,
+where {y} is the result of the evaluation. The indentation shows
+the nesting level.</p>
+<p>Note that this command usually generates huge amounts of output. A
+more specific form of tracing (eg. {TraceRule}) is probably more
+useful  for all but very simple expressions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">TraceExp</span><span class="p">(</span><span class="mi">2</span><span class="o">+</span><span class="mi">3</span><span class="p">);</span>
+<span class="n">TrEnter</span><span class="p">(</span><span class="mi">2</span><span class="o">+</span><span class="mi">3</span><span class="p">);</span>
+<span class="n">TrEnter</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+<span class="n">TrLeave</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+<span class="n">TrEnter</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+<span class="n">TrLeave</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+<span class="n">TrEnter</span><span class="p">(</span><span class="n">IsNumber</span><span class="p">(</span><span class="n">x</span><span class="p">));</span>
+<span class="n">TrEnter</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="n">TrLeave</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+<span class="n">TrLeave</span><span class="p">(</span><span class="n">IsNumber</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="bp">True</span><span class="p">);</span>
+<span class="n">TrEnter</span><span class="p">(</span><span class="n">IsNumber</span><span class="p">(</span><span class="n">y</span><span class="p">));</span>
+<span class="n">TrEnter</span><span class="p">(</span><span class="n">y</span><span class="p">);</span>
+<span class="n">TrLeave</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+<span class="n">TrLeave</span><span class="p">(</span><span class="n">IsNumber</span><span class="p">(</span><span class="n">y</span><span class="p">),</span><span class="bp">True</span><span class="p">);</span>
+<span class="n">TrEnter</span><span class="p">(</span><span class="bp">True</span><span class="p">);</span>
+<span class="n">TrLeave</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span> <span class="bp">True</span><span class="p">);</span>
+<span class="n">TrEnter</span><span class="p">(</span><span class="n">MathAdd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">));</span>
+<span class="n">TrEnter</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+<span class="n">TrLeave</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+<span class="n">TrEnter</span><span class="p">(</span><span class="n">y</span><span class="p">);</span>
+<span class="n">TrLeave</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+<span class="n">TrLeave</span><span class="p">(</span><span class="n">MathAdd</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">),</span><span class="mi">5</span><span class="p">);</span>
+<span class="n">TrLeave</span><span class="p">(</span><span class="mi">2</span><span class="o">+</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="mi">5</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#TraceStack" title="TraceStack"><tt class="xref ys ys-func docutils literal"><span class="pre">TraceStack()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">TraceRule()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">TraceRule(template) expr</tt></dt>
+<dd><p>turn on tracing for a particular function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>template</strong> &#8211; template showing the operator to trace</li>
+<li><strong>expr</strong> &#8211; expression to evaluate with tracing on</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The tracing facility is turned on for subexpressions of the form
+&#8220;template&#8221;, and the expression &#8220;expr&#8221; is evaluated. The template
+&#8220;template&#8221; is an example of the function to trace on. Specifically,
+all subexpressions with the same top-level operator and arity as
+&#8220;template&#8221; are shown. The subexpressions are displayed before
+(indicated with {TrEnter}) and after ({TrLeave}) evaluation. In
+between, the arguments are shown before and after evaluation
+({TrArg}). Only functions defined in scripts can be traced.</p>
+<p>This is useful for tracing a function that is called from within
+another function. This way you can see how your function behaves in
+the environment it is used in.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; TraceRule(x+y) 2+3*5+4;
+TrEnter(2+3*5+4);
+TrEnter(2+3*5);
+TrArg(2, 2);
+TrArg(3*5, 15);
+TrLeave(2+3*5, 17);
+TrArg(2+3*5, 17);
+TrArg(4, 4);
+TrLeave(2+3*5+4, 21);
+Out&gt; 21;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#TraceStack" title="TraceStack"><tt class="xref ys ys-func docutils literal"><span class="pre">TraceStack()</span></tt></a>, <a class="reference internal" href="#TraceExp" title="TraceExp"><tt class="xref ys ys-func docutils literal"><span class="pre">TraceExp()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Time">
+<tt class="descname">Time</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#Time" title="Permalink to this definition">¶</a></dt>
+<dd><p>measure the time taken by a function</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; any expression</td>
+</tr>
+</tbody>
+</table>
+<p>The function {Time(expr)} evaluates the expression {expr} and
+prints the time in seconds needed for the evaluation. The time is
+printed to the current output stream. The built-in function
+{GetTime} is used for timing.</p>
+<p>The result is the &#8220;user time&#8221; as reported by the OS, not the real
+(&#8220;wall clock&#8221;) time. Therefore, any CPU-intensive processes running
+alongside Yacas will not significantly affect the result of {Time}.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Time(N(MathLog(1000),40))
+0.34 seconds taken
+Out&gt; 6.9077552789821370520539743640530926228033;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="programming.html#GetTime" title="GetTime"><tt class="xref ys ys-func docutils literal"><span class="pre">GetTime()</span></tt></a></p>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="predicates.html" class="btn btn-neutral float-right" title="Predicates"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="functional.html" class="btn btn-neutral" title="Functional operators"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Ayal Pinkus, Serge Winnitzky, Grzegorz Mazur.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.3.5',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

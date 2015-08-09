@@ -1,0 +1,1922 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Input/output and plotting &mdash; Yacas</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="Yacas" href="../../index.html"/>
+        <link rel="up" title="Reference Manual" href="index.html"/>
+        <link rel="next" title="String manipulation" href="strings.html"/>
+        <link rel="prev" title="Variables" href="vars.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="fa fa-home"> Yacas</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation-from-sources">Installation from sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-syntax">Yacas syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#using-yacas-from-the-calculation-center">Using Yacas from the calculation center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-as-a-symbolic-calculator">Yacas as a symbolic calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#arbitrary-precision-numbers">Arbitrary precision numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#analytic-functions">Analytic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#boolean-expressions-and-predicates">Boolean expressions and predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#strings-and-lists">Strings and lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#writing-simplification-rules">Writing simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#local-simplification-rules">Local simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#programming-essentials">Programming essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#macros">Macros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#the-practice-of-programming-in-yacas">The practice of programming in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#defining-your-own-operators">Defining your own operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#some-assorted-programming-topics">Some assorted programming topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#linear-algebra">Linear Algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Reference Manual</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="arithmetic.html">Arithmetic and other operations on numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="calc.html">Calculus and elementary functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simplify.html">Simplification of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ode.html">Differential Equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logic.html">Propositional logic theorem prover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear-algebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="univariate-polynomials.html">Operations on polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lists.html">List operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="functional.html">Functional operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="controlflow.html">Control flow functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="predicates.html">Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="consts.html">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vars.html">Variables</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Input/output and plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="strings.html">String manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="probability-and-statistics.html">Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="number-theory.html">Number theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="programming.html">Functions related to programming in Yacas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_in_yacas/index.html">Programming in Yacas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-yacas-architecture">The Yacas architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-evaluation-scheme">Yacas evaluation scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#rules">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#structured-programming-and-control-flow">Structured programming and control flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#additional-syntactic-sugar">Additional syntactic sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#using-macro-rules-e-g-nfunction">Using &#8220;Macro rules&#8221; (e.g. {NFunction})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#macro-expansion">Macro expansion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#scope-of-variable-bindings">Scope of variable bindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation-of-expressions">Evaluation of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-lisp-heritage">The LISP heritage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-specific-extensions-for-cas-implementations">{Yacas}-specific extensions for CAS implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-evaluation-is-simplification-hack">The &#8220;Evaluation is Simplification&#8221; hack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#destructive-operations">Destructive operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#coding-style">Coding style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#writing-new-library-functions">Writing new library functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-1-parsing-expressions-cform">Advanced example 1: parsing expressions ({CForm})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-programming-pitfalls">Yacas programming pitfalls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#debugging-in-yacas">Debugging in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-2-implementing-a-non-commutative-algebra">Advanced example 2: implementing a non-commutative algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../book_of_algorithms/index.html">The Yacas Book of Algorithms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/multivar.html">Sparse representations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/integration.html">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/transforms.html">Transforms</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/sturm-sequences.html">Finding real roots of polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../book_of_algorithms/numtheory.html">Number theory algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../yagy/index.html">YAGY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Yacas</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Reference Manual</a> &raquo;</li>
+      
+    <li>Input/output and plotting</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/doc/reference_manual/io.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="input-output-and-plotting">
+<h1>Input/output and plotting<a class="headerlink" href="#input-output-and-plotting" title="Permalink to this headline">¶</a></h1>
+<p>This chapter contains commands to use for input and output and
+plotting. All output commands write to the same destination stream,
+called the &#8220;current output&#8221;. This is initially the screen, but may be
+redirected by some commands. Similarly, most input commands read from
+the &#8220;current input&#8221; stream, which can also be redirected. The
+exception to this rule are the commands for reading script files,
+which simply read a specified file.</p>
+<dl class="function">
+<dt id="FullForm">
+<tt class="descname">FullForm</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#FullForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>print an expression in LISP-format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; expression to be printed in LISP-format</td>
+</tr>
+</tbody>
+</table>
+<p>Evaluates &#8220;expr&#8221;, and prints it in LISP-format on the current
+output. It is followed by a newline. The evaluated expression is
+also  returned.    This can be useful if you want to study the
+internal representation of  a certain expression.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; FullForm(a+b+c);
+(+ (+ a b )c )
+Out&gt; a+b+c;
+In&gt; FullForm(2*I*b^2);
+(* (Complex 0 2 )(^ b 2 ))
+Out&gt; Complex(0,2)*b^2;
+The first example shows how the expression {a+b+c} is
+internally represented. In the second example, {2*I} is
+first evaluated to {Complex(0,2)} before the expression
+is printed.
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#LispRead" title="LispRead"><tt class="xref ys ys-func docutils literal"><span class="pre">LispRead()</span></tt></a>, <a class="reference internal" href="lists.html#Listify" title="Listify"><tt class="xref ys ys-func docutils literal"><span class="pre">Listify()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">Unlist()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Echo">
+<tt class="descname">Echo</tt><big>(</big><em>item</em><big>)</big><a class="headerlink" href="#Echo" title="Permalink to this definition">¶</a></dt>
+<dd><p>high-level printing routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>item</strong> &#8211; the item to be printed</li>
+<li><strong>list</strong> &#8211; a list of items to be printed</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>If passed a single item, {Echo} will evaluate it and print it to
+the  current output, followed by a newline. If {item} is a string,
+it is  printed without quotation marks.    If there is one
+argument, and it is a list, {Echo} will print all the  entries in
+the list subsequently to the current output, followed by a
+newline. Any strings in the list are printed without quotation
+marks. All other entries are followed by a space.    {Echo} can be
+called with a variable number of arguments, they will all  be
+printed, followed by a newline.    {Echo} always returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Echo(5+3);
+8
+Out&gt; True;
+In&gt; Echo({&quot;The square of two is &quot;, 2*2});
+The square of two is 4
+Out&gt; True;
+In&gt; Echo(&quot;The square of two is &quot;, 2*2);
+The square of two is 4
+Out&gt; True;
+Note that one must use the second calling format if one wishes to
+print a list:
+In&gt; Echo({a,b,c});
+a b c
+Out&gt; True;
+In&gt; Echo({{a,b,c}});
+{a,b,c}
+Out&gt; True;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#PrettyForm" title="PrettyForm"><tt class="xref ys ys-func docutils literal"><span class="pre">PrettyForm()</span></tt></a>, <a class="reference internal" href="#Write" title="Write"><tt class="xref ys ys-func docutils literal"><span class="pre">Write()</span></tt></a>, <a class="reference internal" href="#WriteString" title="WriteString"><tt class="xref ys ys-func docutils literal"><span class="pre">WriteString()</span></tt></a>, <a class="reference internal" href="programming.html#RuleBaseListed" title="RuleBaseListed"><tt class="xref ys ys-func docutils literal"><span class="pre">RuleBaseListed()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="PrettyForm">
+<tt class="descname">PrettyForm</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#PrettyForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>print an expression nicely with ASCII art</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; an expression</td>
+</tr>
+</tbody>
+</table>
+<p>{PrettyForm} renders an expression in a nicer way, using ascii art.
+This is generally useful when the result of a calculation is more
+complex than a simple number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Taylor(x,0,9)Sin(x)
+Out&gt; x-x^3/6+x^5/120-x^7/5040+x^9/362880;
+In&gt; PrettyForm(%)
+3    5      7       9
+x    x      x       x
+x - -- + --- - ---- + ------
+6    120   5040   362880
+Out&gt; True;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#EvalFormula" title="EvalFormula"><tt class="xref ys ys-func docutils literal"><span class="pre">EvalFormula()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">PrettyPrinter'Set()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="EvalFormula">
+<tt class="descname">EvalFormula</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#EvalFormula" title="Permalink to this definition">¶</a></dt>
+<dd><p>print an evaluation nicely with ASCII art</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; an expression</td>
+</tr>
+</tbody>
+</table>
+<p>Show an evaluation in a nice way, using {PrettyPrinter&#8217;Set}  to
+show &#8216;input = output&#8217;.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; EvalFormula(Taylor(x,0,7)Sin(x))
+3    5
+x    x
+Taylor( x , 0 , 5 , Sin( x ) ) = x - -- + ---
+6    120
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#PrettyForm" title="PrettyForm"><tt class="xref ys ys-func docutils literal"><span class="pre">PrettyForm()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="TeXForm">
+<tt class="descname">TeXForm</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#TeXForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>export expressions to $LaTeX$</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; an expression to be exported</td>
+</tr>
+</tbody>
+</table>
+<p>{TeXForm} returns a string containing a $LaTeX$ representation of
+the Yacas expression {expr}. Currently the exporter handles most
+expression types but not all.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="CForm">
+<tt class="descname">CForm</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#CForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>export expression to C++ code</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; expression to be exported</td>
+</tr>
+</tbody>
+</table>
+<p>{CForm} returns a string containing C++ code that attempts to
+implement the Yacas expression {expr}. Currently the exporter
+handles most expression types but not all.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="IsCFormable">
+<tt class="descname">IsCFormable</tt><big>(</big><em>expr</em><big>)</big><a class="headerlink" href="#IsCFormable" title="Permalink to this definition">¶</a></dt>
+<dd><p>check possibility to export expression to C++ code</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>expr</strong> &#8211; expression to be exported (this argument is not evaluated)</li>
+<li><strong>funclist</strong> &#8211; list of &#8220;allowed&#8221; function atoms</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>{IsCFormable} returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> if the Yacas expression {expr} can be
+exported  into C++ code. This is a check whether the C++ exporter
+{CForm} can be safely  used on the expression.    A Yacas
+expression is considered exportable if it contains only functions
+that can be translated into C++ (e.g. {UnList} cannot be exported).
+All variables and constants are considered exportable.    The
+verbose option prints names of functions that are not exportable.
+The second calling format of {IsCFormable} can be used to &#8220;allow&#8221;
+certain function names that will be available in the C++ code.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; IsCFormable(Sin(a1)+2*Cos(b1))
+Out&gt; True;
+In&gt; V(IsCFormable(1+func123(b1)))
+IsCFormable: Info: unexportable function(s):
+func123
+Out&gt; False;
+This returned :data:`False` because the function {func123} is not available in C++. We can
+explicitly allow this function and then the expression will be considered
+exportable:
+In&gt; IsCFormable(1+func123(b1), {func123})
+Out&gt; True;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#CForm" title="CForm"><tt class="xref ys ys-func docutils literal"><span class="pre">CForm()</span></tt></a>, <a class="reference internal" href="#V" title="V"><tt class="xref ys ys-func docutils literal"><span class="pre">V()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Write">
+<tt class="descname">Write</tt><big>(</big><em>expr</em>, <em>...</em><big>)</big><a class="headerlink" href="#Write" title="Permalink to this definition">¶</a></dt>
+<dd><p>low-level printing routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expr</strong> &#8211; expression to be printed</td>
+</tr>
+</tbody>
+</table>
+<p>The expression &#8220;expr&#8221; is evaluated and written to the current
+output. Note that Write accept an arbitrary number of arguments,
+all  of which are written to the current output (see second
+example). {Write} always returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Write(1);
+1Out&gt; True;
+In&gt; Write(1,2);
+1 2Out&gt; True;
+Write does not write a newline, so the {Out&gt;} prompt
+immediately follows the output of {Write}.
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Echo" title="Echo"><tt class="xref ys ys-func docutils literal"><span class="pre">Echo()</span></tt></a>, <a class="reference internal" href="#WriteString" title="WriteString"><tt class="xref ys ys-func docutils literal"><span class="pre">WriteString()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="WriteString">
+<tt class="descname">WriteString</tt><big>(</big><em>string</em><big>)</big><a class="headerlink" href="#WriteString" title="Permalink to this definition">¶</a></dt>
+<dd><p>low-level printing routine for strings</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>string</strong> &#8211; the string to be printed</td>
+</tr>
+</tbody>
+</table>
+<p>The expression &#8220;string&#8221; is evaluated and written to the current
+output without quotation marks. The argument should be a  string.
+WriteString always returns True.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Write(&quot;Hello, world!&quot;);
+&quot;Hello, world!&quot;Out&gt; True;
+In&gt; WriteString(&quot;Hello, world!&quot;);
+Hello, world!Out&gt; True;
+This example clearly shows the difference between Write and
+WriteString. Note that Write and WriteString do not write a newline,
+so the {Out&gt;} prompt immediately follows the output.
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Echo" title="Echo"><tt class="xref ys ys-func docutils literal"><span class="pre">Echo()</span></tt></a>, <a class="reference internal" href="#Write" title="Write"><tt class="xref ys ys-func docutils literal"><span class="pre">Write()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Space">
+<tt class="descname">Space</tt><big>(</big><big>)</big><a class="headerlink" href="#Space" title="Permalink to this definition">¶</a></dt>
+<dd><p>print one or more spaces</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nr</strong> &#8211; the number of spaces to print</td>
+</tr>
+</tbody>
+</table>
+<p>The command {Space()} prints one space on the  current output. The
+second form prints {nr} spaces on the current  output. The result
+is always True.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">Space</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Echo" title="Echo"><tt class="xref ys ys-func docutils literal"><span class="pre">Echo()</span></tt></a>, <a class="reference internal" href="#Write" title="Write"><tt class="xref ys ys-func docutils literal"><span class="pre">Write()</span></tt></a>, <a class="reference internal" href="#NewLine" title="NewLine"><tt class="xref ys ys-func docutils literal"><span class="pre">NewLine()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="NewLine">
+<tt class="descname">NewLine</tt><big>(</big><big>)</big><a class="headerlink" href="#NewLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>print one or more newline characters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nr</strong> &#8211; the number of newline characters to print</td>
+</tr>
+</tbody>
+</table>
+<p>The command {NewLine()} prints one newline character  on the
+current output. The second form prints &#8220;nr&#8221; newlines on the
+current output. The result is always True.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">NewLine</span><span class="p">();</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Echo" title="Echo"><tt class="xref ys ys-func docutils literal"><span class="pre">Echo()</span></tt></a>, <a class="reference internal" href="#Write" title="Write"><tt class="xref ys ys-func docutils literal"><span class="pre">Write()</span></tt></a>, <a class="reference internal" href="#Space" title="Space"><tt class="xref ys ys-func docutils literal"><span class="pre">Space()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">FromFile(name) body</tt></dt>
+<dd><p>connect current input to a file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> &#8211; string, the name of the file to read</li>
+<li><strong>body</strong> &#8211; expression to be evaluated</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The current input is connected to the file &#8220;name&#8221;. Then the
+expression  &#8220;body&#8221; is evaluated. If some functions in &#8220;body&#8221; try to
+read  from current input, they will now read from the file &#8220;name&#8221;.
+Finally, the  file is closed and the result of evaluating &#8220;body&#8221; is
+returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>Suppose that the file {foo} contains
+2 + 5;
+Then we can have the following dialogue:
+In&gt; FromFile(&quot;foo&quot;) res := Read();
+Out&gt; 2+5;
+In&gt; FromFile(&quot;foo&quot;) res := ReadToken();
+Out&gt; 2;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">ToFile()</span></tt>, <tt class="xref ys ys-func docutils literal"><span class="pre">FromString()</span></tt>, <a class="reference internal" href="#Read" title="Read"><tt class="xref ys ys-func docutils literal"><span class="pre">Read()</span></tt></a>, <a class="reference internal" href="#ReadToken" title="ReadToken"><tt class="xref ys ys-func docutils literal"><span class="pre">ReadToken()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">FromString(str) body;</tt></dt>
+<dd><p>connect current input to a string</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>str</strong> &#8211; a string containing the text to parse</li>
+<li><strong>body</strong> &#8211; expression to be evaluated</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The commands in &#8220;body&#8221; are executed, but everything that is read
+from the current input is now read from the string &#8220;str&#8221;. The
+result of &#8220;body&#8221; is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; FromString(&quot;2+5; this is never read&quot;) \
+res := Read();
+Out&gt; 2+5;
+In&gt; FromString(&quot;2+5; this is never read&quot;) \
+res := Eval(Read());
+Out&gt; 7;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">ToString()</span></tt>, <tt class="xref ys ys-func docutils literal"><span class="pre">FromFile()</span></tt>, <a class="reference internal" href="#Read" title="Read"><tt class="xref ys ys-func docutils literal"><span class="pre">Read()</span></tt></a>, <a class="reference internal" href="#ReadToken" title="ReadToken"><tt class="xref ys ys-func docutils literal"><span class="pre">ReadToken()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">ToFile(name) body</tt></dt>
+<dd><p>connect current output to a file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> &#8211; string, the name of the file to write the result to</li>
+<li><strong>body</strong> &#8211; expression to be evaluated</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The current output is connected to the file &#8220;name&#8221;. Then the
+expression  &#8220;body&#8221; is evaluated. Everything that the commands in
+&#8220;body&#8221; print  to the current output, ends up in the file &#8220;name&#8221;.
+Finally, the  file is closed and the result of evaluating &#8220;body&#8221; is
+returned.    If the file is opened again, the old contents will be
+overwritten.  This is a limitation of {ToFile}: one cannot append
+to a file that has already been created.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>Here is how one can create a file with C code to evaluate an expression:
+In&gt; ToFile(&quot;expr1.c&quot;) WriteString(
+CForm(Sqrt(x-y)*Sin(x)) );
+Out&gt; True;
+The file {expr1.c} was created in the current working directory and it
+contains the line
+sqrt(x-y)*sin(x)
+As another example, take a look at the following command:
+In&gt; [ Echo(&quot;Result:&quot;);  \
+PrettyForm(Taylor(x,0,9) Sin(x)); ];
+Result:
+3    5      7       9
+x    x      x       x
+x - -- + --- - ---- + ------
+6    120   5040   362880
+Out&gt; True;
+Now suppose one wants to send the output of this command to a
+file. This can be achieved as follows:
+In&gt; ToFile(&quot;out&quot;) [ Echo(&quot;Result:&quot;);  \
+PrettyForm(Taylor(x,0,9) Sin(x)); ];
+Out&gt; True;
+After this command the file {out} contains:
+Result:
+3    5      7       9
+x    x      x       x
+x - -- + --- - ---- + ------
+6    120   5040   362880
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">FromFile()</span></tt>, <tt class="xref ys ys-func docutils literal"><span class="pre">ToString()</span></tt>, <a class="reference internal" href="#Echo" title="Echo"><tt class="xref ys ys-func docutils literal"><span class="pre">Echo()</span></tt></a>, <a class="reference internal" href="#Write" title="Write"><tt class="xref ys ys-func docutils literal"><span class="pre">Write()</span></tt></a>, <a class="reference internal" href="#WriteString" title="WriteString"><tt class="xref ys ys-func docutils literal"><span class="pre">WriteString()</span></tt></a>, <a class="reference internal" href="#PrettyForm" title="PrettyForm"><tt class="xref ys ys-func docutils literal"><span class="pre">PrettyForm()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">Taylor()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">ToString() body</tt></dt>
+<dd><p>connect current output to a string</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>body</strong> &#8211; expression to be evaluated</td>
+</tr>
+</tbody>
+</table>
+<p>The commands in &#8220;body&#8221; are executed. Everything that is printed on
+the current output, by {Echo} for instance, is  collected in a
+string and this string is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; str := ToString() [ WriteString(  \
+&quot;The square of 8 is &quot;); Write(8^2); ];
+Out&gt; &quot;The square of 8 is  64&quot;;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">FromFile()</span></tt>, <tt class="xref ys ys-func docutils literal"><span class="pre">ToString()</span></tt>, <a class="reference internal" href="#Echo" title="Echo"><tt class="xref ys ys-func docutils literal"><span class="pre">Echo()</span></tt></a>, <a class="reference internal" href="#Write" title="Write"><tt class="xref ys ys-func docutils literal"><span class="pre">Write()</span></tt></a>, <a class="reference internal" href="#WriteString" title="WriteString"><tt class="xref ys ys-func docutils literal"><span class="pre">WriteString()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Read">
+<tt class="descname">Read</tt><big>(</big><big>)</big><a class="headerlink" href="#Read" title="Permalink to this definition">¶</a></dt>
+<dd><p>read an expression from current input</p>
+<p>Read an expression from the current input, and return it
+unevaluated. When  the end of an input file is encountered, the
+token atom {EndOfFile} is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; FromString(&quot;2+5;&quot;) Read();
+Out&gt; 2+5;
+In&gt; FromString(&quot;&quot;) Read();
+Out&gt; EndOfFile;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">FromFile()</span></tt>, <tt class="xref ys ys-func docutils literal"><span class="pre">FromString()</span></tt>, <a class="reference internal" href="#LispRead" title="LispRead"><tt class="xref ys ys-func docutils literal"><span class="pre">LispRead()</span></tt></a>, <a class="reference internal" href="#ReadToken" title="ReadToken"><tt class="xref ys ys-func docutils literal"><span class="pre">ReadToken()</span></tt></a>, <a class="reference internal" href="#Write" title="Write"><tt class="xref ys ys-func docutils literal"><span class="pre">Write()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt>
+<tt class="descname">ToStdout() body</tt></dt>
+<dd><p>select initial output stream for output</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>body</strong> &#8211; expression to be evaluated</td>
+</tr>
+</tbody>
+</table>
+<p>When using {ToString} or {ToFile}, it might happen that something
+needs to be  written to the standard default initial output
+(typically the screen). {ToStdout} can be used to select this
+stream.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="ReadCmdLineString">
+<tt class="descname">ReadCmdLineString</tt><big>(</big><em>prompt</em><big>)</big><a class="headerlink" href="#ReadCmdLineString" title="Permalink to this definition">¶</a></dt>
+<dd><p>read an expression from command line and return in string</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>prompt</strong> &#8211; string representing the prompt shown on screen</td>
+</tr>
+</tbody>
+</table>
+<p>This function allows for interactive input similar to the command
+line.  When using this function, the history from the command line
+is also available.    The result is returned in a string, so it
+still needs to be parsed.    This function will typically be used
+in situations where one wants a custom   read-eval-print loop.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>The following defines a function that when invoked keeps asking
+for an expression (the &lt;i&gt;read&lt;/i&gt; step), and then takes
+the derivative of it (the &lt;i&gt;eval&lt;/i&gt; step) and then
+uses PrettyForm to display the result (the &lt;i&gt;print&lt;/i&gt; step).
+In&gt; ReEvPr() := \
+In&gt;   While(True) [ \
+In&gt;     PrettyForm(Deriv(x) \
+In&gt;      FromString(ReadCmdLineString(&quot;Deriv&gt; &quot;):&quot;;&quot;)Read()); \
+In&gt; ];
+Out&gt; True;
+Then one can invoke the command, from which the following interaction
+might follow:
+In&gt; ReEvPr()
+Deriv&gt; Sin(a^2*x/b)
+/  2     \
+| a  * x |    2
+Cos| ------ | * a  * b
+\   b    /
+----------------------
+2
+b
+Deriv&gt; Sin(x)
+Cos( x )
+Deriv&gt;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Read" title="Read"><tt class="xref ys ys-func docutils literal"><span class="pre">Read()</span></tt></a>, <a class="reference internal" href="#LispRead" title="LispRead"><tt class="xref ys ys-func docutils literal"><span class="pre">LispRead()</span></tt></a>, <a class="reference internal" href="#LispReadListed" title="LispReadListed"><tt class="xref ys ys-func docutils literal"><span class="pre">LispReadListed()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="LispRead">
+<tt class="descname">LispRead</tt><big>(</big><big>)</big><a class="headerlink" href="#LispRead" title="Permalink to this definition">¶</a></dt>
+<dd><p>read expressions in LISP syntax</p>
+<p>The function {LispRead} reads an expression in the LISP syntax from
+the current input, and returns  it unevaluated. When the end of an
+input file is encountered, the  special token atom {EndOfFile} is
+returned.    The Yacas expression {a+b} is written in the LISP
+syntax as {(+ a b)}. The advantage of this syntax is that it is
+less ambiguous than the infix operator grammar that Yacas uses by
+default.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; FromString(&quot;(+ a b)&quot;) LispRead();
+Out&gt; a+b;
+In&gt; FromString(&quot;(List (Sin x) (- (Cos x)))&quot;) \
+LispRead();
+Out&gt; {Sin(x),-Cos(x)};
+In&gt; FromString(&quot;(+ a b)&quot;)LispRead()
+Out&gt; a+b;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">FromFile()</span></tt>, <tt class="xref ys ys-func docutils literal"><span class="pre">FromString()</span></tt>, <a class="reference internal" href="#Read" title="Read"><tt class="xref ys ys-func docutils literal"><span class="pre">Read()</span></tt></a>, <a class="reference internal" href="#ReadToken" title="ReadToken"><tt class="xref ys ys-func docutils literal"><span class="pre">ReadToken()</span></tt></a>, <a class="reference internal" href="#FullForm" title="FullForm"><tt class="xref ys ys-func docutils literal"><span class="pre">FullForm()</span></tt></a>, <a class="reference internal" href="#LispReadListed" title="LispReadListed"><tt class="xref ys ys-func docutils literal"><span class="pre">LispReadListed()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="LispReadListed">
+<tt class="descname">LispReadListed</tt><big>(</big><big>)</big><a class="headerlink" href="#LispReadListed" title="Permalink to this definition">¶</a></dt>
+<dd><p>read expressions in LISP syntax</p>
+<p>The function {LispReadListed} reads a LISP expression
+and returns  it in a list, instead of the form usual to Yacas
+(expressions).  The result can be thought of as applying {Listify}
+to {LispRead}.  The function {LispReadListed} is more useful for
+reading arbitrary LISP expressions, because the   first object in a
+list can be itself a list (this is never the case for Yacas
+expressions where the first object in a list is always a function
+atom).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; FromString(&quot;(+ a b)&quot;)LispReadListed()
+Out&gt; {+,a,b};
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">FromFile()</span></tt>, <tt class="xref ys ys-func docutils literal"><span class="pre">FromString()</span></tt>, <a class="reference internal" href="#Read" title="Read"><tt class="xref ys ys-func docutils literal"><span class="pre">Read()</span></tt></a>, <a class="reference internal" href="#ReadToken" title="ReadToken"><tt class="xref ys ys-func docutils literal"><span class="pre">ReadToken()</span></tt></a>, <a class="reference internal" href="#FullForm" title="FullForm"><tt class="xref ys ys-func docutils literal"><span class="pre">FullForm()</span></tt></a>, <a class="reference internal" href="#LispRead" title="LispRead"><tt class="xref ys ys-func docutils literal"><span class="pre">LispRead()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="ReadToken">
+<tt class="descname">ReadToken</tt><big>(</big><big>)</big><a class="headerlink" href="#ReadToken" title="Permalink to this definition">¶</a></dt>
+<dd><p>read a token from current input</p>
+<p>Read a token from the current input, and return it unevaluated.
+The returned object is a Yacas atom (not a string).  When  the end
+of an input file is encountered, the token atom {EndOfFile} is
+returned.    A token is for computer languages what a word is for
+human languages:  it is the smallest unit in which a command can be
+divided, so that the  semantics (that is the meaning) of the
+command is in some sense a  combination of the semantics of the
+tokens. Hence {a := foo} consists of three tokens, namely {a},
+{:=}, and {foo}.    The parsing of the string depends on the syntax
+of the language.  The part of the kernel that does the parsing is
+the &#8220;tokenizer&#8221;.  Yacas can parse its own syntax (the default
+tokenizer) or it can be instructed to parse XML or C++ syntax using
+the directives {DefaultTokenizer} or {XmlTokenizer}.  Setting a
+tokenizer is a global action that affects all {ReadToken} calls.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; FromString(&quot;a := Sin(x)&quot;) While \
+((tok := ReadToken()) != EndOfFile) \
+Echo(tok);
+a
+:=
+Sin
+(
+x
+)
+Out&gt; True;
+We can read some junk too:
+In&gt; FromString(&quot;-$3&quot;)ReadToken();
+Out&gt; -$;
+The result is an atom with the string representation {-$}.
+Yacas assumes that {-$} is an operator symbol yet to be defined.
+The &quot;{3}&quot; will be in the next token.
+(The results will be different if a non-default tokenizer is selected.)
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><tt class="xref ys ys-func docutils literal"><span class="pre">FromFile()</span></tt>, <tt class="xref ys ys-func docutils literal"><span class="pre">FromString()</span></tt>, <a class="reference internal" href="#Read" title="Read"><tt class="xref ys ys-func docutils literal"><span class="pre">Read()</span></tt></a>, <a class="reference internal" href="#LispRead" title="LispRead"><tt class="xref ys ys-func docutils literal"><span class="pre">LispRead()</span></tt></a>, <a class="reference internal" href="#DefaultTokenizer" title="DefaultTokenizer"><tt class="xref ys ys-func docutils literal"><span class="pre">DefaultTokenizer()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Load">
+<tt class="descname">Load</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#Load" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluate all expressions in a file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; string, name of the file to load</td>
+</tr>
+</tbody>
+</table>
+<p>The file &#8220;name&#8221; is opened. All expressions in the file are read and
+evaluated. {Load} always returns {true}.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Use" title="Use"><tt class="xref ys ys-func docutils literal"><span class="pre">Use()</span></tt></a>, <a class="reference internal" href="#DefLoad" title="DefLoad"><tt class="xref ys ys-func docutils literal"><span class="pre">DefLoad()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">DefaultDirectory()</span></tt>, <a class="reference internal" href="#FindFile" title="FindFile"><tt class="xref ys ys-func docutils literal"><span class="pre">FindFile()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Use">
+<tt class="descname">Use</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#Use" title="Permalink to this definition">¶</a></dt>
+<dd><p>load a file, but not twice</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; string, name of the file to load</td>
+</tr>
+</tbody>
+</table>
+<p>If the file &#8220;name&#8221; has been loaded before, either by an earlier
+call  to {Use} or via the {DefLoad}  mechanism, nothing happens.
+Otherwise all expressions in the file are  read and evaluated.
+{Use} always returns {true}.    The purpose of this function is to
+make sure that the file will at  least have been loaded, but is not
+loaded twice.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Load" title="Load"><tt class="xref ys ys-func docutils literal"><span class="pre">Load()</span></tt></a>, <a class="reference internal" href="#DefLoad" title="DefLoad"><tt class="xref ys ys-func docutils literal"><span class="pre">DefLoad()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">DefaultDirectory()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="DefLoad">
+<tt class="descname">DefLoad</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#DefLoad" title="Permalink to this definition">¶</a></dt>
+<dd><p>load a {.def} file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; string, name of the file (without {.def} suffix)</td>
+</tr>
+</tbody>
+</table>
+<p>The suffix {.def} is appended to &#8220;name&#8221; and the  file with this
+name is loaded. It should contain a list of functions,  terminated
+by a closing brace } (the end-of-list delimiter). This  tells the
+system to load the file &#8220;name&#8221; as soon as the user calls  one of
+the functions named in the file (if not done so already). This
+allows for faster startup times, since not all of the rules
+databases  need to be loaded, just the descriptions on which files
+to load for  which functions.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Load" title="Load"><tt class="xref ys ys-func docutils literal"><span class="pre">Load()</span></tt></a>, <a class="reference internal" href="#Use" title="Use"><tt class="xref ys ys-func docutils literal"><span class="pre">Use()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">DefaultDirectory()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="FindFile">
+<tt class="descname">FindFile</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#FindFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>find a file in the current path</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; string, name of the file or directory to find</td>
+</tr>
+</tbody>
+</table>
+<p>The result of this command is the full path to the file that would
+be  opened when the command {Load(name)} would be  invoked. This
+means that the input directories are subsequently  searched for a
+file called &#8220;name&#8221;. If such a file is not found, {FindFile} returns
+an empty string.    {FindFile(&#8220;&#8221;)} returns the name of the default
+directory (the first one on the search path).</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Load" title="Load"><tt class="xref ys ys-func docutils literal"><span class="pre">Load()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">DefaultDirectory()</span></tt></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="PatchLoad">
+<tt class="descname">PatchLoad</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#PatchLoad" title="Permalink to this definition">¶</a></dt>
+<dd><p>execute commands between {&lt;?} and {?&gt;} in file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> &#8211; string, name of the file to &#8220;patch&#8221;</td>
+</tr>
+</tbody>
+</table>
+<p>{PatchLoad} loads in a file and outputs the contents to the current
+output. The file can contain blocks delimited by {&lt;?} and {?&gt;}
+(meaning &#8220;Yacas Begin&#8221; and &#8220;Yacas End&#8221;). The piece of text between
+such delimiters is treated as a separate file with Yacas
+instructions,  which is then loaded and executed. All output of
+write statements  in that block will be written to the same current
+output.    This is similar to the way PHP works. You can have a
+static text file  with dynamic content generated by Yacas.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="strings.html#PatchString" title="PatchString"><tt class="xref ys ys-func docutils literal"><span class="pre">PatchString()</span></tt></a>, <a class="reference internal" href="#Load" title="Load"><tt class="xref ys ys-func docutils literal"><span class="pre">Load()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Nl">
+<tt class="descname">Nl</tt><big>(</big><big>)</big><a class="headerlink" href="#Nl" title="Permalink to this definition">¶</a></dt>
+<dd><p>the newline character</p>
+<p>This function returns a string with one element in it, namely a
+newline  character. This may be useful for building strings to send
+to some  output in the end.    Note that the second letter in the
+name of this command is a lower  case {L} (from &#8220;line&#8221;).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; WriteString(&quot;First line&quot; : Nl() : &quot;Second line&quot; : Nl());
+First line
+Second line
+Out&gt; True;
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#NewLine" title="NewLine"><tt class="xref ys ys-func docutils literal"><span class="pre">NewLine()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="V">
+<tt class="descname">V</tt><big>(</big><em>expression</em><big>)</big><a class="headerlink" href="#V" title="Permalink to this definition">¶</a></dt>
+<dd><p>set verbose output mode</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expression</strong> &#8211; expression to be evaluated in verbose mode</td>
+</tr>
+</tbody>
+</table>
+<p>The function {V(expression)} will evaluate the expression in
+verbose mode. Various parts of Yacas can show extra information
+about the work done while doing a calculation when using {V}.    In
+verbose mode, {InVerboseMode()} will return <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>, otherwise  it
+will return <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; OldSolve({x+2==0},{x})
+Out&gt; {{-2}};
+In&gt; V(OldSolve({x+2==0},{x}))
+Entering OldSolve
+From  x+2==0  it follows that  x  = -2
+x+2==0  simplifies to  True
+Leaving OldSolve
+Out&gt; {{-2}};
+In&gt; InVerboseMode()
+Out&gt; False
+In&gt; V(InVerboseMode())
+Out&gt; True
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Echo" title="Echo"><tt class="xref ys ys-func docutils literal"><span class="pre">Echo()</span></tt></a>, <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a>, <a class="reference internal" href="solvers.html#OldSolve" title="OldSolve"><tt class="xref ys ys-func docutils literal"><span class="pre">OldSolve()</span></tt></a>, <a class="reference internal" href="#InVerboseMode" title="InVerboseMode"><tt class="xref ys ys-func docutils literal"><span class="pre">InVerboseMode()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="InVerboseMode">
+<tt class="descname">InVerboseMode</tt><big>(</big><big>)</big><a class="headerlink" href="#InVerboseMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>check for verbose output mode</p>
+<p>In verbose mode, {InVerboseMode()} will return <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a>, otherwise it
+will return <a class="reference internal" href="consts.html#False" title="False"><tt class="xref ys ys-data docutils literal"><span class="pre">False</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">In</span><span class="o">&gt;</span> <span class="n">InVerboseMode</span><span class="p">()</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">False</span>
+<span class="n">In</span><span class="o">&gt;</span> <span class="n">V</span><span class="p">(</span><span class="n">InVerboseMode</span><span class="p">())</span>
+<span class="n">Out</span><span class="o">&gt;</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#Echo" title="Echo"><tt class="xref ys ys-func docutils literal"><span class="pre">Echo()</span></tt></a>, <a class="reference internal" href="arithmetic.html#N" title="N"><tt class="xref ys ys-func docutils literal"><span class="pre">N()</span></tt></a>, <a class="reference internal" href="solvers.html#OldSolve" title="OldSolve"><tt class="xref ys ys-func docutils literal"><span class="pre">OldSolve()</span></tt></a>, <a class="reference internal" href="#V" title="V"><tt class="xref ys ys-func docutils literal"><span class="pre">V()</span></tt></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="Plot2D">
+<tt class="descname">Plot2D</tt><big>(</big><em>f(x)</em><big>)</big><a class="headerlink" href="#Plot2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>adaptive two-dimensional plotting</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>f(x)</strong> &#8211; unevaluated expression containing one variables (function to be plotted)</li>
+<li><strong>list</strong> &#8211; list of functions to plot</li>
+<li><strong>{b</strong> (<em>a},</em>) &#8211; numbers, plotting range in the $x$ coordinate</li>
+<li><strong>option</strong> &#8211; atom, option name</li>
+<li><strong>value</strong> &#8211; atom, number or string (value of option)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The routine {Plot2D} performs adaptive plotting of one or several
+functions  of one variable in the specified range.  The result is
+presented as a line given by the equation $y=f(x)$.  Several
+functions can be plotted at once.  Various plotting options can be
+specified.  Output can be directed to a plotting program (the
+default is to use  {data}) to a list of values.    The function
+parameter {f(x)} must evaluate to a Yacas expression containing  at
+most one variable. (The variable does not have to be called {x}.)
+Also, {N(f(x))} must evaluate to a real (not complex) numerical
+value when given a numerical value of the argument {x}.  If the
+function {f(x)} does not satisfy these requirements, an error is
+raised.    Several functions may be specified as a list and they do
+not have to depend on the same variable, for example, {{f(x),
+g(y)}}.  The functions will be plotted on the same graph using the
+same coordinate ranges.    If you have defined a function which
+accepts a number but does not  accept an undefined variable,
+{Plot2D} will fail to plot it.  Use {NFunction} to overcome this
+difficulty.    Data files are created in a temporary directory
+{/tmp/plot.tmp/} unless otherwise requested.  File names  and other
+information is printed if {InVerboseMode()} returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> on using
+{V()}.    The current algorithm uses Newton-Cotes quadratures and
+some heuristics for error estimation (see
+&lt;<em>yacasdoc://Algo/3/1/</em>&gt;).  The initial grid of {points+1} points
+is refined between any grid points $a$, $b$ if the integral
+$Integrate(x,a,b)f(x)$ is not approximated to the given precision
+by  the existing grid.    Default plotting range is {-5:5}. Range
+can also be specified as {x= -5:5} (note the mandatory space
+separating &#8220;{=}&#8221; and &#8220;{-}&#8221;);  currently the variable name {x} is
+ignored in this case.    Options are of the form {option=value}.
+Currently supported option names  are: &#8220;points&#8221;, &#8220;precision&#8221;,
+&#8220;depth&#8221;, &#8220;output&#8221;, &#8220;filename&#8221;, &#8220;yrange&#8221;. Option values  are either
+numbers or special unevaluated atoms such as {data}.  If you need
+to use the names of these atoms  in your script, strings can be
+used. Several option/value pairs may be specified (the function
+{Plot2D} has a variable number of arguments).</p>
+<ul class="simple">
+<li>{yrange}: the range of ordinates to use for plotting, e.g.
+{yrange=0:20}. If no range is specified, the default is usually
+to leave the choice to the plotting backend.</li>
+<li>{points}: initial number of points (default 23) &#8211; at least that
+many points will be plotted. The initial grid of this many points
+will be adaptively refined.</li>
+<li>{precision}: graphing precision (default $10^(-6)$). This is
+interpreted as the relative precision of computing the integral
+of $f(x)-Min(f(x))$ using the grid points. For a smooth,
+non-oscillating function this value should be roughly 1/(number
+of screen pixels in the plot).</li>
+<li>{depth}: max. refinement depth, logarithmic (default 5) &#8211; means
+there will be at most $2^depth$ extra points per initial grid
+point.</li>
+<li>{output}: name of the plotting backend. Supported names: {data}
+(default).  The {data} backend will return the data as a list of
+pairs such as {{{x1,y1}, {x2,y2}, ...}}.</li>
+<li>{filename}: specify name of the created data file. For example:
+{filename=&#8221;data1.txt&#8221;}.  The default is the name {&#8220;output.data&#8221;}.
+Note that if several functions are plotted, the data files will
+have a number appended to the given name, for example
+{data.txt1}, {data.txt2}.</li>
+</ul>
+<p>Other options may be supported in the future.</p>
+<p>The current implementation can deal with a singularity within the
+plotting range only if the function {f(x)} returns {Infinity},
+{-Infinity} or {Undefined} at the singularity.  If the function
+{f(x)} generates a numerical error and fails at a singularity,
+{Plot2D} will fail if one of the grid points falls on the
+singularity.  (All grid points are generated by bisection so in
+principle the endpoints and the {points} parameter could be chosen
+to avoid numerical singularities.)</p>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#V" title="V"><tt class="xref ys ys-func docutils literal"><span class="pre">V()</span></tt></a>, <a class="reference internal" href="functional.html#NFunction" title="NFunction"><tt class="xref ys ys-func docutils literal"><span class="pre">NFunction()</span></tt></a>, <a class="reference internal" href="#Plot3DS" title="Plot3DS"><tt class="xref ys ys-func docutils literal"><span class="pre">Plot3DS()</span></tt></a></p>
+</div>
+<dl class="function">
+<dt id="Plot3DS">
+<tt class="descname">Plot3DS</tt><big>(</big><em>f(x</em>, <em>y)</em><big>)</big><a class="headerlink" href="#Plot3DS" title="Permalink to this definition">¶</a></dt>
+<dd><p>three-dimensional (surface) plotting</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>f(x,y)</strong> &#8211; unevaluated expression containing two variables (function to be plotted)</li>
+<li><strong>list</strong> &#8211; list of functions to plot</li>
+<li><strong>{b}, {c}, {d</strong> (<em>a},</em>) &#8211; numbers, plotting ranges in the $x$ and $y$ coordinates</li>
+<li><strong>option</strong> &#8211; atom, option name</li>
+<li><strong>value</strong> &#8211; atom, number or string (value of option)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The routine {Plot3DS} performs adaptive plotting of a function  of
+two variables in the specified ranges.  The result is presented as
+a surface given by the equation $z=f(x,y)$.  Several functions can
+be plotted at once, by giving a list of functions.  Various
+plotting options can be specified.  Output can be directed to a
+plotting program (the default is to use  {data}), to a list of
+values.    The function parameter {f(x,y)} must evaluate to a Yacas
+expression containing  at most two variables. (The variables do not
+have to be called {x} and {y}.)  Also, {N(f(x,y))} must evaluate to
+a real (not complex) numerical value when given numerical values of
+the arguments {x}, {y}.  If the function {f(x,y)} does not satisfy
+these requirements, an error is raised.    Several functions may be
+specified as a list but they have to depend on the same symbolic
+variables, for example, {{f(x,y), g(y,x)}}, but not {{f(x,y),
+g(a,b)}}.  The functions will be plotted on the same graph using
+the same coordinate ranges.    If you have defined a function which
+accepts a number but does not  accept an undefined variable,
+{Plot3DS} will fail to plot it.  Use {NFunction} to overcome this
+difficulty.    Data files are created in a temporary directory
+{/tmp/plot.tmp/} unless otherwise requested.  File names  and other
+information is printed if {InVerboseMode()} returns <a class="reference internal" href="consts.html#True" title="True"><tt class="xref ys ys-data docutils literal"><span class="pre">True</span></tt></a> on using
+{V()}.    The current algorithm uses Newton-Cotes cubatures and
+some heuristics for error estimation (see
+&lt;<em>yacasdoc://Algo/3/1/</em>&gt;).  The initial rectangular grid of
+{xpoints+1}*{ypoints+1} points is refined within any rectangle
+where the integral  of $f(x,y)$ is not approximated to the given
+precision by  the existing grid.    Default plotting range is
+{-5:5} in both coordinates.  A range can also be specified with a
+variable name, e.g. {x= -5:5} (note the mandatory space separating
+&#8220;{=}&#8221; and &#8220;{-}&#8221;).  The variable name {x} should be the same as that
+used in the function {f(x,y)}.  If ranges are not given with
+variable names, the first variable encountered in the function
+{f(x,y)} is associated with the first of the two ranges.    Options
+are of the form {option=value}. Currently supported option names
+are &#8220;points&#8221;, &#8220;xpoints&#8221;, &#8220;ypoints&#8221;, &#8220;precision&#8221;, &#8220;depth&#8221;, &#8220;output&#8221;,
+&#8220;filename&#8221;, &#8220;xrange&#8221;, &#8220;yrange&#8221;, &#8220;zrange&#8221;. Option values  are either
+numbers or special unevaluated atoms such as {data}.  If you need
+to use the names of these atoms  in your script, strings can be
+used (e.g. {output=&#8221;data&#8221;}). Several option/value pairs may be
+specified (the function {Plot3DS} has a variable number of
+arguments).</p>
+<ul class="simple">
+<li>{xrange}, {yrange}: optionally override coordinate ranges. Note
+that {xrange} is always the first variable and {yrange} the
+second variable, regardless of the actual variable names.</li>
+<li>{zrange}: the range of the $z$ axis to use for plotting, e.g.
+{zrange=0:20}. If no range is specified, the default is usually
+to leave the choice to the plotting backend. Automatic choice
+based on actual values may give visually inadequate plots if the
+function has a singularity.</li>
+<li>{points}, {xpoints}, {ypoints}: initial number of points (default
+10 each) &#8211; at least that many points will be plotted in each
+coordinate.  The initial grid of this many points will be
+adaptively refined.  If {points} is specified, it serves as a
+default for both {xpoints} and {ypoints}; this value may be
+overridden by {xpoints} and {ypoints} values.</li>
+<li>{precision}: graphing precision (default $0.01$). This is
+interpreted as the relative precision of computing the integral
+of $f(x,y)-Min(f(x,y))$ using the grid points. For a smooth,
+non-oscillating function this value should be roughly 1/(number
+of screen pixels in the plot).</li>
+<li>{depth}: max. refinement depth, logarithmic (default 3) &#8211; means
+there will be at most $2^depth$ extra points per initial grid
+point (in each coordinate).</li>
+<li>{output}: name of the plotting backend. Supported names: {data}
+(default). The {data} backend will return the data as a list of
+triples such as {{{x1, y1, z1}, {x2, y2, z2}, ...}}.</li>
+</ul>
+<p>Other options may be supported in the future.</p>
+<p>The current implementation can deal with a singularity within the
+plotting range only if the function {f(x,y)} returns {Infinity},
+{-Infinity} or {Undefined} at the singularity.  If the function
+{f(x,y)} generates a numerical error and fails at a singularity,
+{Plot3DS} will fail only if one of the grid points falls on the
+singularity.  (All grid points are generated by bisection so in
+principle the endpoints and the {xpoints}, {ypoints} parameters
+could be chosen to avoid numerical singularities.)</p>
+<p>The {filename} option is optional if using graphical backends, but
+can be used to specify the location of the created data file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Plot3DS(a*b^2)
+Out&gt; True;
+In&gt; V(Plot3DS(Sin(x)*Cos(y),x=0:20, y=0:20,depth=3))
+CachedConstant: Info: constant Pi is being
+recalculated at precision 10
+CachedConstant: Info: constant Pi is being
+recalculated at precision 11
+Plot3DS: using 1699  points for function Sin(x)*Cos(y)
+Plot3DS: max. used 8 subdivisions for Sin(x)*Cos(y)
+Plot3DS&#39;datafile: created file &#39;/tmp/plot.tmp/data1&#39;
+Out&gt; True;
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#V" title="V"><tt class="xref ys ys-func docutils literal"><span class="pre">V()</span></tt></a>, <a class="reference internal" href="functional.html#NFunction" title="NFunction"><tt class="xref ys ys-func docutils literal"><span class="pre">NFunction()</span></tt></a>, <a class="reference internal" href="#Plot2D" title="Plot2D"><tt class="xref ys ys-func docutils literal"><span class="pre">Plot2D()</span></tt></a></p>
+</div>
+<dl class="function">
+<dt id="XmlExplodeTag">
+<tt class="descname">XmlExplodeTag</tt><big>(</big><em>xmltext</em><big>)</big><a class="headerlink" href="#XmlExplodeTag" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert XML strings to tag objects</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xmltext</strong> &#8211; string containing some XML tokens</td>
+</tr>
+</tbody>
+</table>
+<p>{XmlExplodeTag} parses the first XML token in {xmltext}  and
+returns a Yacas expression.    The following subset of XML syntax
+is supported currently:</p>
+<ul class="simple">
+<li>{&lt;TAG [options]&gt;} &#8211; an opening tag</li>
+<li>{&lt;/TAG [options]&gt;} &#8211; a closing tag</li>
+<li>{&lt;TAG [options] /&gt;} &#8211; an open/close tag</li>
+<li>plain (non-tag) text</li>
+</ul>
+<p>The tag options take the form {paramname=&#8221;value&#8221;}.</p>
+<p>If given an XML tag, {XmlExplodeTag} returns a structure of the
+form {XmlTag(name,params,type)}.  In the returned object, {name} is
+the (capitalized) tag name, {params} is an assoc list with the
+options (key fields capitalized), and type can be either &#8220;Open&#8221;,
+&#8220;Close&#8221; or &#8220;OpenClose&#8221;.</p>
+<p>If given a plain text string, the same string is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; XmlExplodeTag(&quot;some plain text&quot;)
+Out&gt; &quot;some plain text&quot;;
+In&gt; XmlExplodeTag(&quot;&lt;a name=\&quot;blah blah\&quot;
+align=\&quot;left\&quot;&gt;&quot;)
+Out&gt; XmlTag(&quot;A&quot;,{{&quot;ALIGN&quot;,&quot;left&quot;},
+{&quot;NAME&quot;,&quot;blah blah&quot;}},&quot;Open&quot;);
+In&gt; XmlExplodeTag(&quot;&lt;/p&gt;&quot;)
+Out&gt; XmlTag(&quot;P&quot;,{},&quot;Close&quot;);
+In&gt; XmlExplodeTag(&quot;&lt;br/&gt;&quot;)
+Out&gt; XmlTag(&quot;BR&quot;,{},&quot;OpenClose&quot;);
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#XmlTokenizer" title="XmlTokenizer"><tt class="xref ys ys-func docutils literal"><span class="pre">XmlTokenizer()</span></tt></a></p>
+</div>
+<dl class="function">
+<dt id="XmlTokenizer">
+<tt class="descname">XmlTokenizer</tt><big>(</big><big>)</big><a class="headerlink" href="#XmlTokenizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>select the default syntax tokenizer for parsing the input</p>
+<p>A &#8220;tokenizer&#8221; is an internal routine in the kernel that parses the
+input into Yacas expressions.  This affects all input typed in by a
+user at the prompt and also the input redirected from files or
+strings using {FromFile} and {FromString} and read using {Read} or
+{ReadToken}.    The Yacas environment currently supports some
+experimental tokenizers for   various syntaxes. {DefaultTokenizer}
+switches to the tokenizer used for  default Yacas syntax.
+{XmlTokenizer} switches to an XML syntax.  Note that setting the
+tokenizer is a global side effect.  One typically needs  to switch
+back to the default tokenizer when finished reading the special
+syntax.    Care needs to be taken when kernel errors are raised
+during a non-default tokenizer operation (as with any global change
+in the environment).  Errors need to be  caught with the
+{TrapError} function. The error handler code should re-instate  the
+default tokenizer,  or else the user will be unable to continue the
+session  (everything a user types will be parsed using a
+non-default tokenizer).    When reading XML syntax, the supported
+formats are the same as those of {XmlExplodeTag}.  The parser does
+not validate anything in the XML input.  After an XML token has
+been read in, it can be converted into an  Yacas expression with
+{XmlExplodeTag}.  Note that when reading XML, any plain text
+between tags is returned as one token.  Any malformed XML will be
+treated as plain text.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; [XmlTokenizer(); q:=ReadToken(); \
+DefaultTokenizer();q;]
+&lt;a&gt;
+Out&gt; &lt;a&gt;;
+</pre></div>
+</div>
+<p>Note that:</p>
+<ul class="simple">
+<li>after switching to {XmlTokenizer} the {In&gt;} prompt disappeared;
+the user typed {&lt;a&gt;} and the {Out&gt;} prompt with the resulting
+expression appeared.</li>
+<li>The resulting expression is an atom with the string
+representation {&lt;a&gt;}; it is &lt;i&gt;not&lt;/i&gt; a string.</li>
+</ul>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#OMRead" title="OMRead"><tt class="xref ys ys-func docutils literal"><span class="pre">OMRead()</span></tt></a>, <a class="reference internal" href="programming.html#TrapError" title="TrapError"><tt class="xref ys ys-func docutils literal"><span class="pre">TrapError()</span></tt></a>, <a class="reference internal" href="#XmlExplodeTag" title="XmlExplodeTag"><tt class="xref ys ys-func docutils literal"><span class="pre">XmlExplodeTag()</span></tt></a>,
+<a class="reference internal" href="#ReadToken" title="ReadToken"><tt class="xref ys ys-func docutils literal"><span class="pre">ReadToken()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">FromFile()</span></tt>, <tt class="xref ys ys-func docutils literal"><span class="pre">FromString()</span></tt></p>
+</div>
+<dl class="function">
+<dt id="DefaultTokenizer">
+<tt class="descname">DefaultTokenizer</tt><big>(</big><big>)</big><a class="headerlink" href="#DefaultTokenizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>select the default syntax tokenizer for parsing the input</p>
+<p>A &#8220;tokenizer&#8221; is an internal routine in the kernel that parses the
+input into Yacas expressions.  This affects all input typed in by a
+user at the prompt and also the input redirected from files or
+strings using {FromFile} and {FromString} and read using {Read} or
+{ReadToken}.    The Yacas environment currently supports some
+experimental tokenizers for   various syntaxes. {DefaultTokenizer}
+switches to the tokenizer used for  default Yacas syntax.
+{XmlTokenizer} switches to an XML syntax.  Note that setting the
+tokenizer is a global side effect.  One typically needs  to switch
+back to the default tokenizer when finished reading the special
+syntax.    Care needs to be taken when kernel errors are raised
+during a non-default tokenizer operation (as with any global change
+in the environment).  Errors need to be  caught with the
+{TrapError} function. The error handler code should re-instate  the
+default tokenizer,  or else the user will be unable to continue the
+session  (everything a user types will be parsed using a
+non-default tokenizer).    When reading XML syntax, the supported
+formats are the same as those of {XmlExplodeTag}.  The parser does
+not validate anything in the XML input.  After an XML token has
+been read in, it can be converted into an  Yacas expression with
+{XmlExplodeTag}.  Note that when reading XML, any plain text
+between tags is returned as one token.  Any malformed XML will be
+treated as plain text.</p>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#OMRead" title="OMRead"><tt class="xref ys ys-func docutils literal"><span class="pre">OMRead()</span></tt></a>, <a class="reference internal" href="programming.html#TrapError" title="TrapError"><tt class="xref ys ys-func docutils literal"><span class="pre">TrapError()</span></tt></a>, <a class="reference internal" href="#XmlExplodeTag" title="XmlExplodeTag"><tt class="xref ys ys-func docutils literal"><span class="pre">XmlExplodeTag()</span></tt></a>,
+<a class="reference internal" href="#ReadToken" title="ReadToken"><tt class="xref ys ys-func docutils literal"><span class="pre">ReadToken()</span></tt></a>, <tt class="xref ys ys-func docutils literal"><span class="pre">FromFile()</span></tt>, <tt class="xref ys ys-func docutils literal"><span class="pre">FromString()</span></tt></p>
+</div>
+<dl class="function">
+<dt id="OMForm">
+<tt class="descname">OMForm</tt><big>(</big><em>expression</em><big>)</big><a class="headerlink" href="#OMForm" title="Permalink to this definition">¶</a></dt>
+<dd><p>convert Yacas expression to OpenMath</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expression</strong> &#8211; expression to convert</td>
+</tr>
+</tbody>
+</table>
+<p>{OMForm} prints an OpenMath representation of the input parameter
+{expression} to standard output. If a Yacas symbol does not have a
+mapping defined by {OMDef}, it is translated to and from OpenMath
+as the OpenMath symbol in the CD &#8220;yacas&#8221; with the same name as it
+has in Yacas.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; str:=ToString()OMForm(2+Sin(a*3))
+Out&gt; &quot;&lt;OMOBJ&gt;
+  &lt;OMA&gt;
+    &lt;OMS cd=&quot;arith1&quot; name=&quot;plus&quot;/&gt;
+    &lt;OMI&gt;2&lt;/OMI&gt;
+    &lt;OMA&gt;
+      &lt;OMS cd=&quot;transc1&quot; name=&quot;sin&quot;/&gt;
+      &lt;OMA&gt;
+        &lt;OMS cd=&quot;arith1&quot; name=&quot;times&quot;/&gt;
+        &lt;OMV name=&quot;a&quot;/&gt;
+        &lt;OMI&gt;3&lt;/OMI&gt;
+      &lt;/OMA&gt;
+    &lt;/OMA&gt;
+  &lt;/OMA&gt;
+&lt;/OMOBJ&gt;
+&quot;;
+In&gt; FromString(str)OMRead()
+Out&gt; 2+Sin(a*3);
+
+In&gt; OMForm(NotDefinedInOpenMath(2+3))
+&lt;OMOBJ&gt;
+  &lt;OMA&gt;
+    &lt;OMS cd=&quot;yacas&quot; name=&quot;NotDefinedInOpenMath&quot;/&gt;
+    &lt;OMA&gt;
+      &lt;OMS cd=&quot;arith1&quot; name=&quot;plus&quot;/&gt;
+      &lt;OMI&gt;2&lt;/OMI&gt;
+      &lt;OMI&gt;3&lt;/OMI&gt;
+    &lt;/OMA&gt;
+  &lt;/OMA&gt;
+&lt;/OMOBJ&gt;
+Out&gt; True
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#XmlTokenizer" title="XmlTokenizer"><tt class="xref ys ys-func docutils literal"><span class="pre">XmlTokenizer()</span></tt></a>, <a class="reference internal" href="#XmlExplodeTag" title="XmlExplodeTag"><tt class="xref ys ys-func docutils literal"><span class="pre">XmlExplodeTag()</span></tt></a>, <a class="reference internal" href="#OMDef" title="OMDef"><tt class="xref ys ys-func docutils literal"><span class="pre">OMDef()</span></tt></a></p>
+</div>
+<dl class="function">
+<dt id="OMRead">
+<tt class="descname">OMRead</tt><big>(</big><big>)</big><a class="headerlink" href="#OMRead" title="Permalink to this definition">¶</a></dt>
+<dd><p>read OpenMath expression and convert to Yacas</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>expression</strong> &#8211; expression to convert</td>
+</tr>
+</tbody>
+</table>
+<p>{OMRead} reads an OpenMath expression from standard input and
+returns a normal Yacas expression that matches the input OpenMath
+expression. If a Yacas symbol does not have a mapping defined by
+{OMDef}, it is translated to and from OpenMath as the OpenMath
+symbol in the CD &#8220;yacas&#8221; with the same name as it has in Yacas.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; str:=ToString()OMForm(2+Sin(a*3))
+Out&gt; &quot;&lt;OMOBJ&gt;
+  &lt;OMA&gt;
+    &lt;OMS cd=&quot;arith1&quot; name=&quot;plus&quot;/&gt;
+    &lt;OMI&gt;2&lt;/OMI&gt;
+    &lt;OMA&gt;
+      &lt;OMS cd=&quot;transc1&quot; name=&quot;sin&quot;/&gt;
+      &lt;OMA&gt;
+        &lt;OMS cd=&quot;arith1&quot; name=&quot;times&quot;/&gt;
+        &lt;OMV name=&quot;a&quot;/&gt;
+        &lt;OMI&gt;3&lt;/OMI&gt;
+      &lt;/OMA&gt;
+    &lt;/OMA&gt;
+  &lt;/OMA&gt;
+&lt;/OMOBJ&gt;
+&quot;;
+In&gt; FromString(str)OMRead()
+Out&gt; 2+Sin(a*3);
+</pre></div>
+</div>
+</dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#XmlTokenizer" title="XmlTokenizer"><tt class="xref ys ys-func docutils literal"><span class="pre">XmlTokenizer()</span></tt></a>, <a class="reference internal" href="#XmlExplodeTag" title="XmlExplodeTag"><tt class="xref ys ys-func docutils literal"><span class="pre">XmlExplodeTag()</span></tt></a>, <a class="reference internal" href="#OMDef" title="OMDef"><tt class="xref ys ys-func docutils literal"><span class="pre">OMDef()</span></tt></a></p>
+</div>
+<dl class="function">
+<dt id="OMDef">
+<tt class="descname">OMDef</tt><big>(</big><em>yacasForm</em>, <em>cd</em>, <em>name</em><big>)</big><a class="headerlink" href="#OMDef" title="Permalink to this definition">¶</a></dt>
+<dd><p>define translations from Yacas to OpenMath and vice-versa.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>yacasForm</strong> &#8211; string with the name of a Yacas symbol, or a Yacas expression</li>
+<li><strong>cd</strong> &#8211; OpenMath Content Dictionary for the symbol</li>
+<li><strong>name</strong> &#8211; OpenMath name for the symbol</li>
+<li><strong>yacasToOM</strong> &#8211; rule for translating an application of that symbol in Yacas into an OpenMath expression</li>
+<li><strong>omToYacas</strong> &#8211; rule for translating an OpenMath expression into an application of this symbol in Yacas</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>{OMDef} defines the translation rules for symbols between the Yacas
+representation and {OpenMath}.  The first parameter, {yacasForm},
+can be a string or an expression. The  difference is that when
+giving an expression only the {omToYacas} translation  is defined,
+and it uses the exact expression given. This is used for {OpenMath}
+symbols that must be translated into a whole subexpression in
+Yacas, such  as {set1:emptyset} which gets translated to an empty
+list as follows:      In&gt; OMDef( {}, &#8220;set1&#8221;,&#8221;emptyset&#8221; )      Out&gt;
+True      In&gt; FromString(&#8220;&lt;OMOBJ&gt;&lt;OMS cd=&#8221;set1&#8221;
+name=&#8221;emptyset&#8221;/&gt;&lt;/OMOBJ&gt; &#8221;)OMRead()      Out&gt; {}      In&gt;
+IsList(%)      Out&gt; True  Otherwise, a symbol that is not inside an
+application (OMA) gets translated to  the Yacas atom with the given
+name:      In&gt; OMDef( &#8220;EmptySet&#8221;, &#8220;set1&#8221;,&#8221;emptyset&#8221; )      Warning:
+the mapping for set1:emptyset was already defined as {} , but is
+redefined now as EmptySet      Out&gt; True      In&gt;
+FromString(&#8220;&lt;OMOBJ&gt;&lt;OMS cd=&#8221;set1&#8221; name=&#8221;emptyset&#8221;/&gt;&lt;/OMOBJ&gt;
+&#8221;)OMRead()      Out&gt; EmptySet    The definitions for the symbols in
+the Yacas  library are in the <tt class="docutils literal"><span class="pre">*.rep</span></tt> script subdirectories. In
+those modules for which  the mappings are defined, there is a file
+called {om.ys} that contains the  {OMDef} calls. Those files are
+loaded in {openmath.rep/om.ys}, so any new  file must be added to
+the list there, at the end of the file.    A rule is represented as
+a list of expressions. Since both OM and  Yacas expressions are
+actually lists, the syntax is the same in both  directions. There
+are two template forms that are expanded before the  translation:</p>
+<ul class="simple">
+<li>{$}: this symbol stands for the translation of the symbol applied
+in the original expression.</li>
+<li>{_path}: a path into the original expression (list) to extract an
+element, written as an underscore applied to an integer or a list
+of integers.  Those integers are indexes into expressions, and
+integers in a list are applied recursively starting at the
+original expression.  For example, {_2} means the second
+parameter of the expression, while {_{3,2,1}} means the first
+parameter of the second parameter of the third parameter of the
+original expression.</li>
+</ul>
+<p>They can appear anywhere in the rule as expressions or subexpressions.</p>
+<p>Finally, several alternative rules can be specified by joining them
+with the {|} symbol, and each of them can be annotated with a
+post-predicate applied with the underscore {_} symbol, in the style
+of Yacas&#8217; simplification rules. Only the first alternative rule
+that matches is applied, so the more specific rules must be written
+first.</p>
+<p>There are special symbols recognized by {OMForm} to output
+{OpenMath} constructs that have no specific parallel in Yacas, such
+as an OpenMath symbol having a {CD} and {name}: Yacas symbols have
+only a name.  Those special symbols are:</p>
+<ul class="simple">
+<li>{OMS(cd, name)}: {&lt;OMS cd=&#8221;cd&#8221; name=&#8221;name&#8221;&gt;}</li>
+<li>{OMA(f x y ...)}: {&lt;OMA&gt;f x y ...&lt;/OMA&gt;}</li>
+<li>{OMBIND(binderSymbol, bvars, expression)}: {&lt;OMBIND&gt;binderSymbol bvars expression&lt;/OMBIND&gt;}, where {bvars} must be produced by using {OMBVAR(...)}.</li>
+<li>{OMBVAR(x y ...)}: {&lt;OMBVAR&gt;x y ...&lt;/OMBVAR&gt;}</li>
+<li>{OME(...)}: {&lt;OME&gt;...&lt;/OME&gt;}</li>
+</ul>
+<p>When translating from OpenMath to Yacas, we just store unknown
+symbols as {OMS(&#8220;cd&#8221;, &#8220;name&#8221;)}. This way we don&#8217;t have to bother
+defining bogus symbols for concepts that Yacas does not handle, and
+we can evaluate expressions that contain them.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; OMDef( &quot;Sqrt&quot; ,  &quot;arith1&quot;, &quot;root&quot;, { $, _1, 2 }, $(_1)_(_2=2) | (_1^(1/_2)) );
+Out&gt; True
+In&gt; OMForm(Sqrt(3))
+&lt;OMOBJ&gt;
+  &lt;OMA&gt;
+    &lt;OMS cd=&quot;arith1&quot; name=&quot;root&quot;/&gt;
+    &lt;OMI&gt;3&lt;/OMI&gt;
+    &lt;OMI&gt;2&lt;/OMI&gt;
+  &lt;/OMA&gt;
+&lt;/OMOBJ&gt;
+Out&gt; True
+In&gt; FromString(&quot;&lt;OMOBJ&gt;&lt;OMA&gt;&lt;OMS cd=\&quot;arith1\&quot; name=\&quot;root\&quot;/&gt;&lt;OMI&gt;16&lt;/OMI&gt;&lt;OMI&gt;2&lt;/OMI&gt;&lt;/OMA&gt;&lt;/OMOBJ&gt; &quot;)OMRead()
+Out&gt; Sqrt(16)
+In&gt; FromString(&quot;&lt;OMOBJ&gt;&lt;OMA&gt;&lt;OMS cd=\&quot;arith1\&quot; name=\&quot;root\&quot;/&gt;&lt;OMI&gt;16&lt;/OMI&gt;&lt;OMI&gt;3&lt;/OMI&gt;&lt;/OMA&gt;&lt;/OMOBJ&gt; &quot;)OMRead()
+Out&gt; 16^(1/3)
+
+In&gt; OMDef(&quot;Limit&quot;, &quot;limit1&quot;, &quot;limit&quot;, \
+      {  $, _2, OMS(&quot;limit1&quot;, &quot;under&quot;), OMBIND(OMS(&quot;fns1&quot;, &quot;lambda&quot;), OMBVAR(_1), _4) }_(_3=Left)  \
+      |{ $, _2, OMS(&quot;limit1&quot;, &quot;above&quot;), OMBIND(OMS(&quot;fns1&quot;, &quot;lambda&quot;), OMBVAR(_1), _4) }_(_3=Right) \
+      |{ $, _2, OMS(&quot;limit1&quot;, &quot;both_sides&quot;), OMBIND(OMS(&quot;fns1&quot;, &quot;lambda&quot;), OMBVAR(_1), _3) },      \
+      { $, _{3,2,1}, _1, Left,  _{3,3}}_(_2=OMS(&quot;limit1&quot;, &quot;below&quot;)) \
+      |{$, _{3,2,1}, _1, Right, _{3,3}}_(_2=OMS(&quot;limit1&quot;, &quot;above&quot;)) \
+      |{$, _{3,2,1}, _1, _{3,3}}                                    \
+     );
+In&gt; OMForm(Limit(x,0) Sin(x)/x)
+&lt;OMOBJ&gt;
+  &lt;OMA&gt;
+    &lt;OMS cd=&quot;limit1&quot; name=&quot;limit&quot;/&gt;
+    &lt;OMI&gt;0&lt;/OMI&gt;
+    &lt;OMS cd=&quot;limit1&quot; name=&quot;both_sides&quot;/&gt;
+    &lt;OMBIND&gt;
+      &lt;OMS cd=&quot;fns1&quot; name=&quot;lambda&quot;/&gt;
+      &lt;OMBVAR&gt;
+        &lt;OMV name=&quot;x&quot;/&gt;
+      &lt;/OMBVAR&gt;
+      &lt;OMA&gt;
+        &lt;OMS cd=&quot;arith1&quot; name=&quot;divide&quot;/&gt;
+        &lt;OMA&gt;
+          &lt;OMS cd=&quot;transc1&quot; name=&quot;sin&quot;/&gt;
+          &lt;OMV name=&quot;x&quot;/&gt;
+        &lt;/OMA&gt;
+        &lt;OMV name=&quot;x&quot;/&gt;
+      &lt;/OMA&gt;
+    &lt;/OMBIND&gt;
+  &lt;/OMA&gt;
+&lt;/OMOBJ&gt;
+Out&gt; True
+In&gt; OMForm(Limit(x,0,Right) 1/x)
+&lt;OMOBJ&gt;
+  &lt;OMA&gt;
+    &lt;OMS cd=&quot;limit1&quot; name=&quot;limit&quot;/&gt;
+    &lt;OMI&gt;0&lt;/OMI&gt;
+    &lt;OMS cd=&quot;limit1&quot; name=&quot;above&quot;/&gt;
+    &lt;OMBIND&gt;
+      &lt;OMS cd=&quot;fns1&quot; name=&quot;lambda&quot;/&gt;
+      &lt;OMBVAR&gt;
+        &lt;OMV name=&quot;x&quot;/&gt;
+      &lt;/OMBVAR&gt;
+      &lt;OMA&gt;
+        &lt;OMS cd=&quot;arith1&quot; name=&quot;divide&quot;/&gt;
+        &lt;OMI&gt;1&lt;/OMI&gt;
+        &lt;OMV name=&quot;x&quot;/&gt;
+      &lt;/OMA&gt;
+    &lt;/OMBIND&gt;
+  &lt;/OMA&gt;
+&lt;/OMOBJ&gt;
+Out&gt; True
+In&gt; FromString(ToString()OMForm(Limit(x,0,Right) 1/x))OMRead()
+Out&gt; Limit(x,0,Right)1/x
+In&gt; %
+Out&gt; Infinity
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#OMRead" title="OMRead"><tt class="xref ys ys-func docutils literal"><span class="pre">OMRead()</span></tt></a>, <a class="reference internal" href="#OMForm" title="OMForm"><tt class="xref ys ys-func docutils literal"><span class="pre">OMForm()</span></tt></a></p>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="strings.html" class="btn btn-neutral float-right" title="String manipulation"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="vars.html" class="btn btn-neutral" title="Variables"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Ayal Pinkus, Serge Winnitzky, Grzegorz Mazur.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.3.5',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

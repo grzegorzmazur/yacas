@@ -1,0 +1,461 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Finding real roots of polynomials &mdash; Yacas</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="Yacas" href="../../index.html"/>
+        <link rel="up" title="The Yacas Book of Algorithms" href="index.html"/>
+        <link rel="next" title="Number theory algorithms" href="numtheory.html"/>
+        <link rel="prev" title="Transforms" href="transforms.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="fa fa-home"> Yacas</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/index.html">Getting started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/index.html#installation-from-sources">Installation from sources</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-syntax">Yacas syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#using-yacas-from-the-calculation-center">Using Yacas from the calculation center</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#yacas-as-a-symbolic-calculator">Yacas as a symbolic calculator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#arbitrary-precision-numbers">Arbitrary precision numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#analytic-functions">Analytic functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#variables">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#boolean-expressions-and-predicates">Boolean expressions and predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#strings-and-lists">Strings and lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#writing-simplification-rules">Writing simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#local-simplification-rules">Local simplification rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#programming-essentials">Programming essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#macros">Macros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#the-practice-of-programming-in-yacas">The practice of programming in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#defining-your-own-operators">Defining your own operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#some-assorted-programming-topics">Some assorted programming topics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/index.html#linear-algebra">Linear Algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference_manual/index.html">Reference Manual</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/arithmetic.html">Arithmetic and other operations on numbers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/calc.html">Calculus and elementary functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/simplify.html">Simplification of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/solvers.html">Solvers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/ode.html">Differential Equations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/logic.html">Propositional logic theorem prover</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/linear-algebra.html">Linear Algebra</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/univariate-polynomials.html">Operations on polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/lists.html">List operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/functional.html">Functional operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/controlflow.html">Control flow functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/predicates.html">Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/consts.html">Constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/vars.html">Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/io.html">Input/output and plotting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/strings.html">String manipulation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/probability-and-statistics.html">Probability and Statistics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/number-theory.html">Number theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference_manual/programming.html">Functions related to programming in Yacas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../programming_in_yacas/index.html">Programming in Yacas</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-yacas-architecture">The Yacas architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-evaluation-scheme">Yacas evaluation scheme</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#rules">Rules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#structured-programming-and-control-flow">Structured programming and control flow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#additional-syntactic-sugar">Additional syntactic sugar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#using-macro-rules-e-g-nfunction">Using &#8220;Macro rules&#8221; (e.g. {NFunction})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#macro-expansion">Macro expansion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#scope-of-variable-bindings">Scope of variable bindings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation-of-expressions">Evaluation of expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-lisp-heritage">The LISP heritage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#evaluation">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-specific-extensions-for-cas-implementations">{Yacas}-specific extensions for CAS implementations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#the-evaluation-is-simplification-hack">The &#8220;Evaluation is Simplification&#8221; hack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#destructive-operations">Destructive operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#coding-style">Coding style</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#writing-new-library-functions">Writing new library functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-1-parsing-expressions-cform">Advanced example 1: parsing expressions ({CForm})</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#yacas-programming-pitfalls">Yacas programming pitfalls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#debugging-in-yacas">Debugging in Yacas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../programming_in_yacas/index.html#advanced-example-2-implementing-a-non-commutative-algebra">Advanced example 2: implementing a non-commutative algebra</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">The Yacas Book of Algorithms</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="multivar.html">Sparse representations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="integration.html">Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transforms.html">Transforms</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Finding real roots of polynomials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="numtheory.html">Number theory algorithms</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../yagy/index.html">YAGY</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../glossary.html">Glossary</a></li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">Yacas</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">The Yacas Book of Algorithms</a> &raquo;</li>
+      
+    <li>Finding real roots of polynomials</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/doc/book_of_algorithms/sturm-sequences.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="finding-real-roots-of-polynomials">
+<h1>Finding real roots of polynomials<a class="headerlink" href="#finding-real-roots-of-polynomials" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="real-roots">
+<h2>real roots<a class="headerlink" href="#real-roots" title="Permalink to this headline">¶</a></h2>
+<p>This section deals with finding roots of polynomials in the field of
+real numbers.</p>
+<p>Without loss of generality, the coefficients $a[i]$ of a polynomial $$
+p = a[n]*x^n + ... + a[0] $$ can be considered to be rational numbers,
+as real-valued numbers are truncated in practice, when doing
+calculations on a computer.</p>
+<p>Assuming that the leading coefficient $a[n]=1$, the polynomial $p$ can
+also be written as</p>
+<div class="math">
+\[p = p[1]^n[1]* ... * p[m]^n[m] $$\]</div>
+<p>where $p[i]$ are the $ m $ distinct irreducible monic factors of the
+form $p[i]=x-x[i]$, and $ n[i] $ are multiplicities of the
+factors. Here the roots are $x[i]$ and some of them may be
+complex. However, complex roots of a polynomial with real coefficients
+always come in conjugate pairs, so the corresponding irreducible
+factors should be taken as $p[i]=x^2+c[i]*x+d[i]$. In this case, there
+will be less than $m$ irreducible factors, and all coefficients will
+be real.</p>
+</div>
+<div class="section" id="square-free-decomposition">
+<h2>square free decomposition<a class="headerlink" href="#square-free-decomposition" title="Permalink to this headline">¶</a></h2>
+<p>To find roots, it is useful to first remove the multiplicities,
+i.e. to convert the polynomial to one with multiplicity 1 for all
+irreducible factors, i.e. find the polynomial $p[1]*...*p[m]$. This is
+called the &#8220;square-free part&#8221; of the original polynomial $p$.</p>
+<p>The square-free part of the polynomial $p$ can be easily found using
+the polynomial GCD algorithm.  The derivative of a polynomial $ p $
+can be written as:</p>
+<div class="math">
+\[p' = Sum(i,1,m,p[1]^n[1]* ... * n[i]*p[i]^(n[i]-1)*(D(x)p[i]) * ... * p[m]^n[m])\]</div>
+<p>The g.c.d. of $ p $ and $ p&#8217; $ equals $$ Gcd(p,p&#8217;) =
+Factorize(i,1,m,p[i]^(n[i]-1)) $$.  So if we divide $ p $ by
+$Gcd(p,p&#8217;)$, we get the square-free part of the polynomial: $$
+SquareFree(p) := Div(p,Gcd(p,p&#8217;)) = p[1]* ... * p[m] $$.</p>
+<p>In what follows we shall assume that all polynomials are square-free
+with rational coefficients.  Given any polynomial, we can apply the
+functions {SquareFree} and {Rationalize} and reduce it to this form.
+The function {Rationalize} converts all numbers in an expression to
+rational numbers. The function {SquareFree} returns the square-free
+part of a polynomial. For example:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; Expand((x+1.5)^5)
+Out&gt; x^5+7.5*x^4+22.5*x^3+33.75*x^2+25.3125*x +7.59375;
+In&gt; SquareFree(Rationalize(%))
+Out&gt; x/5+3/10;
+In&gt; Simplify(%*5)
+Out&gt; (2*x+3)/2;
+In&gt; Expand(%)
+Out&gt; x+3/2;
+</pre></div>
+</div>
+</div>
+<div class="section" id="sturm-sequences">
+<h2>Sturm sequences<a class="headerlink" href="#sturm-sequences" title="Permalink to this headline">¶</a></h2>
+<p>For a polynomial $ p(x) $ of degree $ n $, the Sturm sequence $ p[0]
+$, $ p[1] $, ... $ p[n] $ is defined by the following equations
+(following the book [Davenport &lt;i&gt;et al.&lt;/i&gt; 1989]):</p>
+<p>$$ p[0] = p(x) $$,
+$$ p[1] = p&#8217;(x) $$,
+$$ p[i] = -remainder(p[i-2],p[i-1]) $$,
+where $ remainder(p,q) $ is the remainder of division of polynomials
+$ p $,  $ q $.</p>
+<p>The polynomial $ p $ can be assumed to have no multiple factors, and
+thus $ p $ and $ p&#8217; $ are relatively prime. The sequence of
+polynomials in the Sturm sequence are (up to a minus sign) the
+consecutive polynomials generated by Euclid&#8217;s algorithm for the
+calculation of a greatest common divisor for $ p $ and $ p&#8217; $, so the
+last polynomial $p[n] $ will be a constant.</p>
+<p>In Yacas, the function {SturmSequence(p)} returns the Sturm sequence
+of $ p $, assuming $ p $ is a univariate polynomial in $ x $, $ p =
+p(x) $.</p>
+<div class="section" id="variations-in-sturm-sequences">
+<h3>variations in Sturm sequences<a class="headerlink" href="#variations-in-sturm-sequences" title="Permalink to this headline">¶</a></h3>
+<p>Given a Sturm sequence $ S = SturmSequence(p) $ of a polynomial $ p $,
+the &lt;I&gt;variation&lt;/I&gt; in the Sturm sequence $ V(S,y) $ is the number of
+sign changes in the sequence $ p[0] $, $ p[1] $ , ... , $ p[n] $,
+evaluated at point $y$, and disregarding zeroes in the sequence.</p>
+<p>Sturm&#8217;s theorem states that if $ a $ and $ b $ are two real numbers
+which are not roots of $ p $, and $ a &lt; b $, then the number of roots
+between $ a $ and $ b $ is $ V(S,a) - V(S,b) $. A proof can be found
+in Knuth, &lt;I&gt;The Art of Computer Programming, Volume 2, Seminumerical
+Algorithms&lt;/I&gt;.</p>
+<p>For $ a $ and $ b $, the values $ -Infinity $ and $ Infinity $ can
+also be used. In these cases, $ V(S,Infinity) $ is the number of sign
+changes between the leading coefficients of the elements of the Sturm
+sequence, and $ V(S,-Infinity) $ the same, but with a minus sign for
+the leading coefficients for which the degree is odd.</p>
+</div>
+<div class="section" id="number-of-real-roots">
+<h3>Number of real roots<a class="headerlink" href="#number-of-real-roots" title="Permalink to this headline">¶</a></h3>
+<p>Thus, the number of real roots of a polynomial is $ V(S,-Infinity) -
+V(S,Infinity) $. The function {NumRealRoots(p)} returns the number of
+real roots of $ p $.</p>
+<p>The function {SturmVariations(S,y)} returns the number of sign changes
+between the elements in the Sturm sequence $ S $, at point $ x = y $:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; p:=x^2-1
+Out&gt; x^2-1;
+In&gt; S:=SturmSequence(p)
+Out&gt; {x^2-1,2*x,1};
+In&gt; SturmVariations(S,-Infinity)- \
+SturmVariations(S,Infinity)
+Out&gt; 2;
+In&gt; NumRealRoots(p)
+Out&gt; 2;
+In&gt; p:=x^2+1
+Out&gt; x^2+1;
+In&gt; S:=SturmSequence(p)
+Out&gt; {x^2+1,2*x,-1};
+In&gt; SturmVariations(S,-Infinity)- \
+SturmVariations(S,Infinity)
+Out&gt; 0;
+In&gt; NumRealRoots(p)
+Out&gt; 0;
+</pre></div>
+</div>
+</div>
+<div class="section" id="finding-bounds-on-real-roots">
+<h3>Finding bounds on real roots<a class="headerlink" href="#finding-bounds-on-real-roots" title="Permalink to this headline">¶</a></h3>
+<p>Armed with the variations in the Sturm sequence given in the previous
+section, we can now find the number of real roots in a range
+($a$,$b$), for $ a &lt; b $. We can thus bound all the roots by
+subdividing ranges until there is only one root in each range.  To be
+able to start this process, we first need some upper bounds of the
+roots, or an interval that contains all roots. Davenport gives limits
+on the roots of a polynomial given the coefficients of the polynomial,
+as</p>
+<p>$$ Abs(a) &lt;= Max(Abs(a[n-1]/a[n]), Abs(a[n-2]/a[n])^(1/2), ... , Abs(a[0]/a[n])^(1/n) ) $$,</p>
+<p>for all real roots $ a $ of $ p $. This gives the upper bound on the
+absolute value of the roots of the polynomial in question.  if $ p(0)
+!= 0 $, the minimum bound can be obtained also by considering the
+upper bound of $ p(1/x)*x^n $, and taking $ 1/bound $.</p>
+<p>We thus know that given
+$$ a[max] = MaximumBound(p) $$
+and
+$$ a[min] = MinimumBound(p) $$
+for all roots $ a $ of polynomial, either
+$$ -a[max] &lt;= a &lt;= -a[min] $$
+or
+$$ a[min] &lt;= a &lt;= a[max] $$.</p>
+<p>Now we can start the search for the bounds on all roots. The search
+starts with initial upper and lower bounds on ranges, subdividing
+ranges until a range contains only one root, and adding that range to
+the resulting list of bounds. If, when dividing a range, the middle of
+the range lands on a root, care must be taken, because the bounds
+should not be on a root themselves. This can be solved by observing
+that if $ c $ is a root, $ p $ contains a factor $ x-c $, and thus
+taking $ p(x+c) $ results in a polynomial with all the roots shifted
+by a constant $ -c $, and the root $ c $ moved to zero, e.g. $ p(x+c)
+$ contains a factor $ x $. Thus a new ranges to the left and right of
+$ c $ can be determined by first calculating the minimum bound $ M $
+of $ p(x+c)/x $. When the original range was ($a$,$b$), and $ c =
+(a+b)/2 $ is a root, the new ranges should become ($a$,$c-M$) and
+($c+M$,$b$).</p>
+<p>In Yacas, {MimimumBound(p)} returns the lower bound described above,
+and {MaximumBound(p)} returns the upper bound on the roots in $ p $.
+These bounds are returned as rational numbers.  {BoundRealRoots(p)}
+returns a list with sublists with the bounds on the roots of a
+polynomial:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; p:=(x+20)*(x+10)
+Out&gt; (x+20)*(x+10);
+In&gt; MinimumBound(p)
+Out&gt; 10/3;
+In&gt; MaximumBound(p)
+Out&gt; 60;
+In&gt; BoundRealRoots(p)
+Out&gt; {{-95/3,-35/2},{-35/2,-10/3}};
+In&gt; N(%)
+Out&gt; {{-31.6666666666,-17.5}, {-17.5,-3.3333333333}};
+</pre></div>
+</div>
+<p>It should be noted that since all calculations are done with rational
+numbers, the algorithm for bounding the roots is very robust. This is
+important, as the roots can be very unstable for small variations in
+the coefficients of the polynomial in question (see Davenport).</p>
+</div>
+<div class="section" id="finding-real-roots-given-the-bounds-on-the-roots">
+<h3>Finding real roots given the bounds on the roots<a class="headerlink" href="#finding-real-roots-given-the-bounds-on-the-roots" title="Permalink to this headline">¶</a></h3>
+<p>Given the bounds on the real roots as determined in the previous
+section, two methods for finding roots are available: the secant
+method or the Newton method, where the function is locally
+approximated by a line, and extrapolated to find a new estimate for a
+root. This method converges quickly when &#8220;sufficiently&#8221; near a root,
+but can easily fail otherwise.  The secant method can easily send the
+search to infinity.</p>
+<p>The bisection method is more robust, but slower. It works by taking
+the middle of the range, and checking signs of the polynomial to
+select the half-range where the root is.  As there is only one root in
+the range ($a$,$b$), in general it will be true that $ p(a)*p(b) &lt; 0
+$, which is assumed by this method.</p>
+<p>Yacas finds the roots by first trying the secant method, starting in
+the middle of the range, $ c = (a+b)/2 $. If this fails the bisection
+method is tried.</p>
+<p>The function call to find the real roots of a polynomial $ p $ in
+variable $ x $ is {FindRealRoots(p)}, for example:</p>
+<div class="highlight-python"><div class="highlight"><pre>In&gt; p:=Expand((x+3.1)*(x-6.23))
+Out&gt; x^2-3.13*x-19.313;
+In&gt; FindRealRoots(p)
+Out&gt; {-3.1,6.23};
+In&gt; p:=Expand((x+3.1)^3*(x-6.23))
+Out&gt; x^4+3.07*x^3-29.109*x^2-149.8199\
+In&gt; *x-185.59793;
+In&gt; p:=SquareFree(Rationalize( \
+In&gt; Expand((x+3.1)^3*(x-6.23))))
+Out&gt; (-160000*x^2+500800*x+3090080)/2611467;
+In&gt; FindRealRoots(p)
+Out&gt; {-3.1,6.23};
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="numtheory.html" class="btn btn-neutral float-right" title="Number theory algorithms"/>Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="transforms.html" class="btn btn-neutral" title="Transforms"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Ayal Pinkus, Serge Winnitzky, Grzegorz Mazur.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.3.5',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
