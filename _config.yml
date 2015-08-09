@@ -5,7 +5,7 @@ author: grzegorzmazur
 
 #url: http://grzegorzmazur.github.io/yacas
 #url: http://127.0.0.1:4000
-baseurl: /yacas
+baseurl: ''
 
 # This is for the editing function in _/includes/improve_content
 # Leave it empty if your site is not on GitHub/GitHub Pages
