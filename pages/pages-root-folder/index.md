@@ -6,7 +6,7 @@
 #
 layout: frontpage
 header:
-  image_fullwidth: header.png
+  image_fullwidth: header_dark.png
 widget1:
   title: Getting started
   url: /getting_started
