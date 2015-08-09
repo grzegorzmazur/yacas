@@ -7,4 +7,4 @@ permalink: "/documentation/"
 
 ## Documentation
 
-[development version]({{ site.url }}/docs/dev/)
+[development version]({{ site.url }}{{ site.baseurl }}/docs/dev/)
