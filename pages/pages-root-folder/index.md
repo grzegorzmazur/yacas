@@ -9,8 +9,7 @@ header:
   image_fullwidth: header_dark.png
 widget1:
   title: Getting started
-  url: /getting_started
-  #image: unsplash_9-302x182.jpg
+  url: /getting_started/
   text: Yacas is an easy to use, general purpose Computer Algebra System, a program for symbolic manipulation of mathematical expressions.
 widget2:
   title: Downloads
