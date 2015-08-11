@@ -13,3 +13,4 @@ permalink: /downloads/
     * [Mac OS X](http://sourceforge.net/projects/yacas/files/yacas-binary/yacas-1.3.6-Darwin.dmg/download)
     * Microsoft Windows 7 and newer, [64 bit](http://sourceforge.net/projects/yacas/files/yacas-binary/yacas-1.3.6-win64.exe/download) and [32 bit](http://sourceforge.net/projects/yacas/files/yacas-binary/yacas-1.3.6-win32.exe/download) variants
     * [Microsoft Windows XP](http://sourceforge.net/projects/yacas/files/yacas-binary/yacas-1.3.6-winxp.exe/download)
+    * [Java](http://sourceforge.net/projects/yacas/files/yacas-binary/yacas-1.3.6.jar/download)
