@@ -11,6 +11,7 @@ relevant issues of design and implementation of these algorithms.
 .. toctree::
    :maxdepth: 1
 
+   basic.rst
    multivar.rst
    integration.rst
    transforms.rst
