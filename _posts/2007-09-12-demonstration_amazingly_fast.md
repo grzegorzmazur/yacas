@@ -56,11 +56,7 @@ inquiries. With a Newton iteration you are bound to have around a
 thousand (two to the power of ten). And the speed of growth of
 information keeps speeding up exponentially.
 
-<div class="alert-box">
-    Please note that the remaining part of the original note refers to
-    functionality which is no longer present. Sorry for the
-    inconvenience.
-</div>
+{% include alert alert='Please note that the remaining part of the original note refers to functionality which is no longer present. Sorry for the inconvenience.' %}
 
 At the top of this article is a little utility written in Javascript
 that demonstrates the fast convergence of the Newton iteration for a
