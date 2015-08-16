@@ -1,6 +1,12 @@
 - title: Start
-  url: "/"
+  url: /
   side: left
-- title: "Search"
-  url: "/search/"
+- title: Download
+  url: /getting_started/downloads/
+  side: left
+- title: Search
+  url: /search/
+  side: right
+- title: Contact
+  url: /contact/
   side: right
