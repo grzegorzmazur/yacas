@@ -2,7 +2,8 @@
 layout: page
 title: Downloads
 subheadline: All of yacas at your fingertips
-permalink: /downloads/
+permalink: /getting_started/downloads/
+breadcrumb: true
 ---
 
 * development version

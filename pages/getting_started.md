@@ -4,6 +4,7 @@ title: Getting Started
 subheadline: A Step-by-Step Guide
 teaser: This step-by-step guide helps you to learn what yacas is all about and start using it.
 permalink: /getting_started/
+breadcrumb: true
 ---
 Yacas is an easy to use, general purpose Computer Algebra System, a
 program for symbolic manipulation of mathematical expressions. It uses
