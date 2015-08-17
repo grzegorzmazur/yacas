@@ -18,4 +18,4 @@ covering the scripting language, implemented functionality and the algorithms
 used.
 
 You have read the documentation, but still got questions? Don't
-hesitate and [ask them!](contact/)
+hesitate to [ask them](contact/).
