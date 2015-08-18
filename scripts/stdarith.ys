@@ -147,6 +147,7 @@ LocalSymbols(x,y,xarg,yarg)
 
 95 # x_IsMatrix * y_IsMatrix <-- 
 [
+   Check(Length(x[1]) = Length(y), "matrix product: incompatible matrix sizes");
    Local(i,j,k,row,result);
    result:=ZeroMatrix(Length(x),Length(y[1]));
    For(i:=1,i<=Length(x),i++)
