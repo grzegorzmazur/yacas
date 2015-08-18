@@ -8,43 +8,54 @@ real roots
 This section deals with finding roots of polynomials in the field of
 real numbers.
 
-Without loss of generality, the coefficients $a[i]$ of a polynomial $$
-p = a[n]*x^n + ... + a[0] $$ can be considered to be rational numbers,
-as real-valued numbers are truncated in practice, when doing
-calculations on a computer.
+Without loss of generality, the coefficients :math:`a_i` of a polynomial
 
-Assuming that the leading coefficient $a[n]=1$, the polynomial $p$ can
-also be written as
+.. math::
+   p = a_nx^n+\ldots+a_0
 
-.. math:: p = p[1]^n[1]* ... * p[m]^n[m] $$
+can be considered to be rational numbers, as real-valued numbers are
+truncated in practice, when doing calculations on a computer.
 
-where $p[i]$ are the $ m $ distinct irreducible monic factors of the
-form $p[i]=x-x[i]$, and $ n[i] $ are multiplicities of the
-factors. Here the roots are $x[i]$ and some of them may be
+Assuming that the leading coefficient :math:`a_n=1`, the polynomial
+:math:`p` can also be written as
+
+.. math::
+   p = p_1^{n_1}\ldots p_m^{n_m}
+
+where :math:`p_i` are the :math:`m` distinct irreducible monic factors
+of the form :math:`p_i=x-x_i`, and :math:`n_i` are multiplicities of
+the factors. Here the roots are :math:`x_i` and some of them may be
 complex. However, complex roots of a polynomial with real coefficients
 always come in conjugate pairs, so the corresponding irreducible
-factors should be taken as $p[i]=x^2+c[i]*x+d[i]$. In this case, there
-will be less than $m$ irreducible factors, and all coefficients will
-be real.
+factors should be taken as :math:`p_i=x^2+c_ix+d_i`. In this case,
+there will be less than :math:`m` irreducible factors, and all
+coefficients will be real.
 
 square free decomposition
 -------------------------
 
 To find roots, it is useful to first remove the multiplicities,
 i.e. to convert the polynomial to one with multiplicity 1 for all
-irreducible factors, i.e. find the polynomial $p[1]*...*p[m]$. This is
-called the "square-free part" of the original polynomial $p$.
+irreducible factors, i.e. find the polynomial :math:`p_1\ldots
+p_m`. This is called the "square-free part" of the original polynomial
+:math:`p`.
 
-The square-free part of the polynomial $p$ can be easily found using
-the polynomial GCD algorithm.  The derivative of a polynomial $ p $
-can be written as:
+The square-free part of the polynomial :math:`p` can be easily found
+using the polynomial GCD algorithm. The derivative of a polynomial
+:math:`p` can be written as:
 
 .. math:: p' = Sum(i,1,m,p[1]^n[1]* ... * n[i]*p[i]^(n[i]-1)*(D(x)p[i]) * ... * p[m]^n[m])
 
-The g.c.d. of $ p $ and $ p' $ equals $$ Gcd(p,p') =
-Factorize(i,1,m,p[i]^(n[i]-1)) $$.  So if we divide $ p $ by
-$Gcd(p,p')$, we get the square-free part of the polynomial: $$
-SquareFree(p) := Div(p,Gcd(p,p')) = p[1]* ... * p[m] $$.
+The g.c.d. of :math:`p` and :math:`p'` equals
+
+.. math::
+   Gcd(p,p') = Factorize(i,1,m,p[i]^(n[i]-1)).
+
+So if we divide :math:`p` by :math:`Gcd(p,p')`, we get the square-free
+part of the polynomial:
+
+.. math::
+   SquareFree(p) := Div(p,Gcd(p,p')) = p[1]*... * p[m].
 
 In what follows we shall assume that all polynomials are square-free
 with rational coefficients.  Given any polynomial, we can apply the

@@ -215,7 +215,7 @@ following 5-point Newton-Cotes cubature:
 +------+----+------+
 | 1/12 |  0 | 1/12 |
 +------+----+------+
-|   0  | 2/3|  0   +
+|   0  | 2/3|  0   |
 +------+----+------+
 | 1/12 |  0 | 1/12 |
 +------+----+------+
@@ -613,8 +613,8 @@ We need to find the magnitude of the largest term of the series.  The
 ratio of the next term to the previous term is :math:`x/(2k(2k+1))`
 and therefore the maximum will be when this ratio becomes equal to
 :math:`1`, i.e. for :math:`2k\approx\sqrt{x}`. Therefore the largest term
-is of order :math:`x^\sqrt{x}/\sqrt{x}!` and so we need about
-:math:`M/2*\sqrt{x}` decimal digits before the decimal point to
+is of order :math:`x^{\sqrt{x}}/\sqrt{x}!` and so we need about
+:math:`M/2\sqrt{x}` decimal digits before the decimal point to
 represent this term.  But we also need to keep at least :math:`P`
 digits after the decimal point, or else the round-off error will erase
 the significant digits of the result.  In addition, we will have
