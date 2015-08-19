@@ -159,27 +159,27 @@ void CCommandLine::ReadLineSub(const std::string& prompt)
 }
 
 void CCommandLine::ShowOpen(const std::string& prompt,
-                             LispChar aOpen, LispChar aClose,
-                             unsigned aCurPos)
+                            LispChar aOpen, LispChar aClose,
+                            unsigned cursor)
 {
-    LispInt count=1;
-    aCurPos--;
-    aCurPos--;
-    while (aCurPos>0 && count>0)
-    {
-        if (iSubLine[aCurPos] == aOpen)
-        {
+    if (cursor < 2)
+        return;
+    
+    cursor -= 2;
+    
+    LispInt count = 1;
+
+    while (cursor + 1 > 0 && count > 0) {
+        if (iSubLine[cursor] == aOpen)
             count--;
-        }
-        else if (iSubLine[aCurPos] == aClose)
-        {
+        else if (iSubLine[cursor] == aClose)
             count++;
-        }
-        aCurPos--;
+
+        cursor--;
     }
-    if (count == 0)
-    {
-        ShowLine(prompt, aCurPos+1);
+    
+    if (count == 0) {
+        ShowLine(prompt, cursor+1);
         Pause();
     }
 }
