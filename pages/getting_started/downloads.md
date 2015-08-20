@@ -1,10 +1,22 @@
 ---
-layout: page
+layout: page-fullwidth
 title: Downloads
 subheadline: All of yacas at your fingertips
 permalink: /getting_started/downloads/
 breadcrumb: true
 ---
+
+<div class="row">
+<div class="medium-4 medium-push-8 columns" markdown="1">
+<div class="panel radius" markdown="1">
+**Table of Contents**
+{: #toc }
+*  TOC
+{:toc}
+</div>
+</div>
+
+<div class="medium-8 medium-pull-4 columns" markdown="1">
 
 ## Current stable version
 * yacas version 1.3.6
@@ -27,3 +39,6 @@ breadcrumb: true
     * [source code](https://github.com/grzegorzmazur/yacas/archive/master.zip)
   * yagy
     * [source code](https://github.com/grzegorzmazur/yagy/archive/master.zip)
+
+</div>
+</div>
