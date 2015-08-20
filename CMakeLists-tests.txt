@@ -16,6 +16,7 @@ set (YACAS_TESTS
     dimensions.yts
     dot.yts
     GaussianIntegers.yts
+    graphs.yts
     integrate.yts
     io.yts
     journal.yts

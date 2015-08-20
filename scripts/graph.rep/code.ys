@@ -1,3 +1,25 @@
+Graph(edges_IsList) <-- [
+    Local(v, e, f, t);
+
+    vertices := {};
+
+    ForEach (e, edges) [
+        If (IsList(e), e := Head(e));
+        {f, t} := Tail(Listify(e));
+
+        DestructiveAppend(vertices, f);
+        DestructiveAppend(vertices, t);
+    ];
+
+    Graph(RemoveDuplicates(vertices), edges);
+];
+
+10 # IsGraph(Graph(vertices_IsList, edges_IsList)) <-- True;
+20 # IsGraph(_x) <-- False;
+
+Edges(Graph(vertices_IsList, edges_IsList)) <-- edges;
+Vertices(Graph(vertices_IsList, edges_IsList)) <-- vertices;
+
 TopologicalSort(A_IsSquareMatrix) <--
 [
     Local(mark, n, L, visit);
