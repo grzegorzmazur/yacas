@@ -223,7 +223,7 @@ bool CConsoleHistory::ArrowUp(std::string& s, unsigned c)
     if (history == 0)
         return false;
 
-    const std::string prefix(s, c);
+    const std::string prefix(s, 0, c);
 
     std::vector<std::string>::reverse_iterator p = iHistory.rbegin();
     std::advance(p, iHistory.size() - history);
@@ -244,7 +244,7 @@ bool CConsoleHistory::ArrowDown(std::string& s, unsigned c)
     if (history > iHistory.size())
         return false;
     
-    const std::string prefix(s, c);
+    const std::string prefix(s, 0, c);
 
     std::vector<std::string>::iterator p = iHistory.begin();
     std::advance(p, history + 1);
