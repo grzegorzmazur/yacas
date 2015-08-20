@@ -1,0 +1,6 @@
+Testing("Graphs");
+
+Verify(Graph({1->2,2->3,3->1}), Graph({1,2,3}, {1->2,2->3,3->1}));
+
+Verify(Vertices(Graph({1->2,2->3,3->1})), {1,2,3});
+Verify(Edges(Graph({1->2,2->3,3->1})), {1->2,2->3,3->1});
