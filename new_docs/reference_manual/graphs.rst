@@ -26,3 +26,14 @@ Graphs
   return list of graph edges
 
   .. seealso:: :func:`Vertices`, :func:`Graph`
+
+.. function:: AdjacencyMatrix(g)
+
+  adjacency matrix
+
+  :param g: graph
+
+  Return `adjacency matrix <https://en.wikipedia.org/wiki/Adjacency_matrix>`_ 
+  of graph ``g``.
+
+  .. seealso:: :func:`Graph`

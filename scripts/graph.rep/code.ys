@@ -20,6 +20,33 @@ Graph(edges_IsList) <-- [
 Edges(Graph(vertices_IsList, edges_IsList)) <-- edges;
 Vertices(Graph(vertices_IsList, edges_IsList)) <-- vertices;
 
+AdjacencyMatrix(g_IsGraph) <-- [
+    Local(vertices, edges, n, A, f, t, op);
+
+    vertices := Vertices(g);
+    edges := Edges(g);
+
+    n := Length(vertices);
+
+    A := ZeroMatrix(n, n);
+
+    ForEach (e, edges) [
+        If (IsList(e), e := Head(e));
+        {op, f, t} := Listify(e);
+
+        f := Find(vertices, f);
+        t := Find(vertices, t);
+
+        Check(f > 0 And t > 0, "AdjacencyMatrix: inconsistent graph");
+
+        A[f][t] := 1;
+
+        If (String(op) = "<->", A[t][f] := 1);
+    ];
+    
+    A;
+];
+
 TopologicalSort(A_IsSquareMatrix) <--
 [
     Local(mark, n, L, visit);
