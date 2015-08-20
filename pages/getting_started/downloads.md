@@ -20,7 +20,7 @@ breadcrumb: true
     * [Mac OS X](http://sourceforge.net/projects/yagy/files/yagy-1.0.1.dmg/download)
     * [Microsoft Windows 7 and newer, 64 bit](http://sourceforge.net/projects/yagy/files/yagy-1.0.1-win64.exe/download)
     * [Microsoft Windows XP](http://sourceforge.net/projects/yagy/files/yagy-1.0.1-win64.exe/download)
-    * [Ubuntu 64 bit](http://sourceforge.net/projects/yagy/files/yagy-1.0.1_amd64.deb/download)
+    * [Ubuntu 64 bit](https://sourceforge.net/projects/yagy/files/yagy_1.0.0-1_amd64.deb/download)
 
 ## Development version
   * yacas
