@@ -715,7 +715,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
     else if (KeyEvent.KEY_TYPED == e.getID())
     {
       int c = e.getKeyChar();
-      if (c>=32 && c < 127)
+      if (c>=32)
       {
         inputLine = new StringBuffer(inputLine).insert(cursorPos,e.getKeyChar()).toString();
         cursorPos++;
