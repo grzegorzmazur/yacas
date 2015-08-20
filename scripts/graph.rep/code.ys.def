@@ -2,5 +2,6 @@ Graph
 IsGraph
 Vertices
 Edges
+AdjacencyMatrix
 TopologicalSort
 }
