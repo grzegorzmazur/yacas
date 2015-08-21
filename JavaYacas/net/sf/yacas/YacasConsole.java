@@ -9,24 +9,21 @@ import java.awt.Desktop;
 
 public class YacasConsole extends Thread
 {
-    static String readLine(InputStream aStream)
-  {
-    StringBuilder line = new StringBuilder();
-    try
-    {
-      int c = aStream.read();
-      while (c != '\n')
-      {
-      line.append((char)c);
-      c = aStream.read();
-      }
+    static String readLine(InputStream stream) {
+        InputStreamReader reader = new InputStreamReader(stream);
+        StringBuilder line = new StringBuilder();
+        try {
+            int c = reader.read();
+            while (c != '\n') {
+                line.append((char) c);
+                c = reader.read();
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+        return line.toString();
     }
-    catch (Exception e)
-    {
-      System.out.println(e.toString());
-    }
-    return line.toString();
-  }
+
   static boolean quitting = false;
 
   public static void main(String[] argv)

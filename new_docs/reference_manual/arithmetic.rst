@@ -2,192 +2,115 @@
 Arithmetic and other operations on numbers
 ==========================================
 
-Besides the usual arithmetical operations, Yacas defines some more
-advanced operations on numbers. Many of them also work on polynomials.
-
 .. function:: infix +(x,y)
+              prefix -(x)
+              infix -(x,y)
+              infix *(x,y)
+              infix /(x,y)
+              infix ^(x,y)
 
-   arithmetic addition
+  arithmetic addition, negation, subtraction, multiplication, division and exponentiation
 
-   :param x} and {y: objects for which arithmetic addition is defined
+  The arithmetic operators can work on integers, rational numbers,
+  complex numbers, vectors, matrices and lists.
 
-   The addition operators can work on integers,  rational numbers,
-   complex numbers, vectors, matrices and lists.    These operators
-   are implemented in the standard math library (as opposed  to being
-   built-in). This means that they can be extended by the user.
+  .. note::
+    All the operations are element-wise, except for multiplication and 
+    exponentiation, which in the case of matrices are defined in terms of
+    standard matrix product.
 
-   :Example:
+  .. hint::
+    Arithmetic operations are implemented in the standard math library (as
+    opposed to being built-in). This means that it can be extended by the user.
 
-   ::
 
-      In> 2+3
-      Out> 5;
-      
+  :Example:
 
-.. function:: infix -(x,y)
+  ::
 
-   arithmetic subtraction or negation
-
-   :param x} and {y: objects for which subtraction is defined
-
-   The subtraction operators can work on integers,  rational numbers,
-   complex numbers, vectors, matrices and lists.    These operators
-   are implemented in the standard math library (as opposed  to being
-   built-in). This means that they can be extended by the user.
-
-   :Example:
-
-   ::
-
-      In> 2-3
-      Out> -1;
-      In> - 3
-      Out> -3;
-      
-
-.. function:: infix *(x,y)
-
-   arithmetic multiplication
-
-   :param x} and {y: objects for which arithmetic multiplication is defined
-
-   The multiplication operator can work on integers,  rational
-   numbers, complex numbers, vectors, matrices and lists.    This
-   operator is implemented in the standard math library (as opposed
-   to being built-in). This means that they can be extended by the
-   user.
-
-   :Example:
-
-   ::
-
-      In> 2*3
-      Out> 6;
-      
-
-.. function:: infix /(x,y)
-
-   arithmetic division
-
-   :param x} and {y: objects for which arithmetic division is defined
-
-   The division operator can work on integers,  rational numbers,
-   complex numbers, vectors, matrices and lists.    This operator is
-   implemented in the standard math library (as opposed  to being
-   built-in). This means that they can be extended by the user.
-
-   :Example:
-
-   ::
-
-      In> 6/2
-      Out> 3;
-      
-
-.. function:: infix ^(x,y)
-
-   arithmetic power
-
-   :param x} and {y: objects for which arithmetic operations are defined
-
-   These are the basic arithmetic operations. They can work on
-   integers,  rational numbers, complex numbers, vectors, matrices and
-   lists.    These operators are implemented in the standard math
-   library (as opposed  to being built-in). This means that they can
-   be extended by the user.
-
-   :Example:
-
-   ::
-
-      In> 2^3
-      Out> 8;
-      
+    In> 2+3
+    Out> 5
+    In> 2-3
+    Out> -1
+    In> - 3
+    Out> -3
+    In> 2*3
+    Out> 6
+    In> 6/2
+    Out> 3
+    In> 2^3
+    Out> 8
 
 .. function:: Div(x,y)
+              Mod(x,y)
 
-   Determine divisor of two mathematical objects
+   determine divisor and remainder
 
-   :param x}, {y: integers or univariate polynomials
+  :func:`Div` performs integer division and :func:`Mod` returns the remainder.
+  If ``Div(x,y)`` returns ``a`` and ``Mod(x,y)`` equals ``b``, then these
+  numbers satisfy :math:`x =ay + b` and :math:`0 \leq b < y`.
 
-   {Div} performs integer division and {Mod} returns the remainder
-   after division. {Div} and  {Mod} are also defined for polynomials.
-   If {Div(x,y)} returns "a" and {Mod(x,y)} equals "b", then these
-   numbers satisfy $x =a*y + b$ and $0 <= b < y$.
+  :Example:
 
-   :Example:
+  ::
 
-   ::
-
-      In> Div(5,3)
-      Out> 1;
-      In> Mod(5,3)
-      Out> 2;
+    In> Div(5,3)
+    Out> 1
+    In> Mod(5,3)
+    Out> 2
       
 
-   .. seealso:: :func:`Gcd`, :func:`Lcm`
+  .. seealso:: :func:`Gcd`, :func:`Lcm`
 
 .. function:: Gcd(n,m)
+              Gcd(list)
 
-   greatest common divisor
+  greatest common divisor
 
-   :param n}, {m: integers or Gaussian integers or univariate polynomials
-   :param list: a list of all integers or all univariate polynomials
+  This function returns the `greatest common divisor 
+  <https://en.wikipedia.org/wiki/Greatest_common_divisor>`_ of ``n`` and ``m``
+  or of all elements of ``list``.
 
-   This function returns the greatest common divisor of "n" and "m".
-   The gcd is the largest number that divides "n" and "m".  It is
-   also known as the highest common factor (hcf).  The library code
-   calls  {MathGcd}, which is an internal function.  This  function
-   implements the "binary Euclidean algorithm" for determining the
-   greatest common divisor:
+  .. seealso:: :func:`Lcm`
 
 .. function:: Lcm(n,m)
+              Lcm(list)
 
-   least common multiple
+  least common multiple
 
-   :param n}, {m: integers or univariate polynomials
-   :param list}: list of integers
+  This command returns the `least common multiple 
+  <https://en.wikipedia.org/wiki/Least_common_multiple>`_ of ``n`` and ``m`` or
+  of all elements of ``list``.
 
-   This command returns the least common multiple of "n" and "m" or
-   all of  the integers in the list {list}.  The least common multiple
-   of two numbers "n" and "m" is the lowest  number which is an
-   integer multiple of both "n" and "m".  It is calculated with the
-   formula  $$Lcm(n,m) = Div(n*m,Gcd(n,m))$$.    This means it also
-   works on polynomials, since {Div}, {Gcd} and multiplication are
-   also defined for  them.
+  :Example:
 
-   :Example:
+  ::
 
-   ::
-
-      In> Lcm(60,24)
-      Out> 120;
-      In> Lcm({3,5,7,9})
-      Out> 315;
+    In> Lcm(60,24)
+    Out> 120
+    In> Lcm({3,5,7,9})
+    Out> 315
       
 
-   .. seealso:: :func:`Gcd`
+  .. seealso:: :func:`Gcd`
 
 .. function:: infix <<(n, m)
-.. function:: infix >>(n, m)
+              infix >>(n, m)
 
-   binary shift left operator
+  binary shift operators
 
-   :param n}, {m: integers
+  These operators shift integers to the left or to the right.  They
+  are similar to the C shift operators. These are sign-extended
+  shifts, so they act as multiplication or division by powers of 2.
 
-   These operators shift integers to the left or to the right.  They
-   are similar to the C shift operators. These are sign-extended
-   shifts, so they act as multiplication or division by powers of 2.
+  :Example:
 
-   :Example:
+  ::
 
-   ::
-
-      In> 1 << 10
-      Out> 1024;
-      In> -1024 >> 10
-      Out> -1;
-      
+    In> 1 << 10
+    Out> 1024
+    In> -1024 >> 10
+    Out> -1      
 
 .. function:: FromBase(base,"string")
 

@@ -6,19 +6,21 @@ import java.io.*;
 
 class StdFileInput extends StringInput
 {
-  public StdFileInput(String aFileName, InputStatus aStatus) throws Exception
-  {
-    super(new StringBuffer(),aStatus);
-    FileInputStream stream = new FileInputStream(aFileName);
-    int c;
-    while (true)
-    {
-      c = stream.read();
-      if (c == -1)
-        break;
-      iString.append((char)c);
+    public StdFileInput(String fname, InputStatus status) throws Exception {
+        super(new StringBuffer(), status);
+        
+        FileInputStream stream = new FileInputStream(fname);
+        InputStreamReader reader = new InputStreamReader(stream, "UTF-8");
+        int c;
+        while (true) {
+            c = reader.read();
+            if (c == -1) {
+                break;
+            }
+            iString.append((char) c);
+        }
     }
-  }
+    
   public StdFileInput(InputStream aStream, InputStatus aStatus) throws Exception
   {
     super(new StringBuffer(),aStatus);
