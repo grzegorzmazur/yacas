@@ -3,5 +3,6 @@ IsGraph
 Vertices
 Edges
 AdjacencyMatrix
+DFS
 TopologicalSort
 }

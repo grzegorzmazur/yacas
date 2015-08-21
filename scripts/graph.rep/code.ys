@@ -47,6 +47,62 @@ AdjacencyMatrix(g_IsGraph) <-- [
     A;
 ];
 
+LocalSymbols(graph, start, func) [
+    RuleBase("DFS", {graph, start, func});
+    RuleBase("DFS", {graph, func});
+
+    DFS(g_IsGraph, _start, _func) <-- [
+        Local(vertices, edges, n, A, S, m, f, t, v, a, r);
+
+        vertices := Vertices(g);
+        edges := Edges(g);
+
+        n := Length(vertices);
+
+        A := FillList({}, n);
+        ForEach (e, edges) [
+            If (IsList(e), e := Head(e));
+            {f, t} := Tail(Listify(e));
+
+            f := Find(vertices, f);
+            t := Find(vertices, t);
+
+            DestructiveAppend(A[f], t);
+        ];
+
+        m := FillList(False, n);
+
+        r := {};
+
+        S := {};
+
+        v := Find(vertices, start);
+
+        Check(v > 0, "DFS: start vertex does not exist");
+
+        S := Push(S, v);
+
+        While (S != {}) [
+            v := PopFront(S);
+
+            If (Not m[v], [
+                DestructiveAppend(r, Apply(func, {vertices[v]}));
+                m[v] := True;
+                ForEach (a, A[v])
+                    S := Push(S, a);
+            ]);
+        ];
+
+        r;
+    ];
+
+    DFS(g_IsGraph, _func)_(Vertices(g) != {}) <-- DFS(g, Vertices(g)[1], func);
+
+    DFS(g_IsGraph, _func)_(Vertices(g) = {}) <-- {};
+
+    HoldArgNr("DFS", func);
+];
+
 TopologicalSort(A_IsSquareMatrix) <--
 [
     Local(mark, n, L, visit);
