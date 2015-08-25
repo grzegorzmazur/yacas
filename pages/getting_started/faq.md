@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Frequently Asked Questions
-permalink: /documentation/faq/
+permalink: /getting_started/faq/
 breadcrumb: true
 ---
 

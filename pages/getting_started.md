@@ -13,9 +13,10 @@ arbitrary-precision numerical computations. The system has a library
 of scripts that implement many of the symbolic algebra operations; new
 algorithms can be easily added to the library.
 
-Yacas comes with extensive [documentation]({{ site.baseurl }}/documentation/)
-covering the scripting language, implemented functionality and the algorithms
-used.
+Yacas comes with extensive [documentation]({{ site.baseurl
+}}/documentation/) covering the scripting language, implemented
+functionality and the algorithms used.
 
-You have read the documentation, but still got questions? Don't
+You have read the [documentation]({{ site.baseurl }}/documentation/),
+but still got questions? If they are not yet [answered](faq/), don't
 hesitate to [ask them](contact/).
