@@ -1,3 +1,11 @@
 /nbproject/
 /build/
 /install/
+*.cmake
+/CMakeFiles/
+/CMakeScripts/
+CMakeCache.txt
+/Release/
+/Debug/
+/Yacas.build/
+/Yacas.xcodeproj/
