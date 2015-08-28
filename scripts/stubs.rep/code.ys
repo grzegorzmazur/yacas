@@ -250,6 +250,9 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
   NormalForm(Gcd(MakeUni(n,vars),MakeUni(m,vars)));
 ];
 
+90 # Gcd(x_IsNumber, _y) <-- Check(False, "Gcd: argument is not an exact number");
+90 # Gcd(_x, y_IsNumber) <-- Check(False, "Gcd: argument is not an exact number");
+
 100 # Gcd(n_IsConstant,m_IsConstant) <-- 1;
 
 30 # PolynomialGcd(n_CanBeUni, m_CanBeUni)_(Length(VarList(n*m))=1) <--

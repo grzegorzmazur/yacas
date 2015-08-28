@@ -391,9 +391,6 @@ Verify((Limit(x,0) (x+1)^(Ln(a)/x)), a);
    otherwise it's parsed as Limit (... = ...) */
 
 /* Bug #3 */
-KnownFailure(Gcd(10,3.3) != 3.3 And Gcd(10,3.3) != 1);
-/* I don't know what the answer should be, but buth 1 and 3.3 seem */
-/* certainly wrong. */
 Verify(Gcd(-10, 0), 10);
 Verify(Gcd(0, -10), 10);
 

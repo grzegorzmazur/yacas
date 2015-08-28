@@ -76,7 +76,7 @@ MultiContentTerm(multi_IsMulti)
 MultiContentScan(_coefs,_fact) <--
 [
   Set(least,Min({least,coefs}));
-  Set(gcd,Gcd(gcd,fact));
+  Set(gcd,If(IsRational(gcd) And IsRational(fact), Gcd(gcd,fact), 1));
 ];
 UnFence("MultiContentScan",2);
 
