@@ -22,10 +22,10 @@ public class YacasInterpreter {
 
     /** Creates a new instance of YacasInterpreter */
     public YacasInterpreter()  throws IOException, ZipException, URISyntaxException {
-        this(new ByteArrayOutputStream());
+        this(new StringWriter());
     }
 
-    public YacasInterpreter(OutputStream out) throws IOException, ZipException, URISyntaxException {
+    public YacasInterpreter(Writer out) throws IOException, ZipException, URISyntaxException {
 
         String scriptsDir = "scripts/";
 

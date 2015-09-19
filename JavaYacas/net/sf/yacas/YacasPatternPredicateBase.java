@@ -327,13 +327,13 @@ class YacasPatternPredicateBase
       {
         //TODO this is probably not the right way to generate an error, should we perhaps do a full throw new YacasException here?
         String strout;
-        aEnvironment.iCurrentOutput.write("The predicate\n\t".getBytes());
+        aEnvironment.iCurrentOutput.write("The predicate\n\t");
         strout = LispStandard.PrintExpression(iPredicates.get(i), aEnvironment, 60);
-        aEnvironment.iCurrentOutput.write(strout.getBytes());
-        aEnvironment.iCurrentOutput.write("\nevaluated to\n\t".getBytes());
+        aEnvironment.iCurrentOutput.write(strout);
+        aEnvironment.iCurrentOutput.write("\nevaluated to\n\t");
         strout = LispStandard.PrintExpression(pred, aEnvironment, 60);
-        aEnvironment.iCurrentOutput.write(strout.getBytes());
-        aEnvironment.iCurrentOutput.write("\n".getBytes());
+        aEnvironment.iCurrentOutput.write(strout);
+        aEnvironment.iCurrentOutput.write("\n");
 
         LispError.Check(isTrue,LispError.KLispErrNonBooleanPredicateInPattern);
       }
