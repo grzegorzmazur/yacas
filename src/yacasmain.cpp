@@ -1072,10 +1072,16 @@ int main(int argc, char** argv)
 
     signal(SIGINT, InterruptHandler);
 
+    if (!use_plain) {
+        try {
+            commandline = new FANCY_COMMAND_LINE;
+        } catch (const std::runtime_error&) {
+            use_plain = true;
+        }
+    }
+
     if (use_plain)
-        commandline = NEW CStdCommandLine;
-    else
-        commandline = NEW FANCY_COMMAND_LINE;
+        commandline = new CStdCommandLine;
 
     std::string inprompt;
     std::string outprompt;

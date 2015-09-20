@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <stdexcept>
 
 
 
@@ -26,7 +27,7 @@ void CUnixCommandLine::ShowLine(const std::string& prompt, unsigned cursor)
 {
     struct winsize w;
     ioctl(0, TIOCGWINSZ, &w);
-
+    
     const std::size_t prompt_len = prompt.length();
 
     const LispInt l = (cursor + prompt_len) / w.ws_col;
@@ -70,6 +71,12 @@ CUnixCommandLine::CUnixCommandLine():
     _last_line(0),
     _max_lines(1024)
 {
+    struct winsize w;
+    int rc = ioctl(0, TIOCGWINSZ, &w);
+
+    if (rc < 0 || w.ws_col == 0)
+        throw std::runtime_error("dumb terminal");
+
     /* set termio so we can do our own input processing */
     tcgetattr(0, &orig_termio);
     rl_termio = orig_termio;
