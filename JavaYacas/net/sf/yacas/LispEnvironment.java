@@ -1,6 +1,6 @@
 package net.sf.yacas;
 
-import java.io.OutputStream;
+import java.io.Writer;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ class LispEnvironment
 {
   //TODO FIXME
 
-  LispEnvironment(OutputStream aCurrentOutput) throws Exception
+  LispEnvironment(Writer aCurrentOutput) throws Exception
   {
     iCurrentTokenizer = iDefaultTokenizer;
     iInitialOutput = aCurrentOutput;
@@ -321,8 +321,8 @@ class LispEnvironment
     return iLastUniqueId++;
   }
 
-  OutputStream iCurrentOutput = null;
-  OutputStream iInitialOutput = null;
+  Writer iCurrentOutput = null;
+  Writer iInitialOutput = null;
 
   LispPrinter iCurrentPrinter = null;
   LispInput   iCurrentInput   = null;

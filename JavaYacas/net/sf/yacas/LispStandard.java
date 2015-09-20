@@ -1,7 +1,7 @@
 package net.sf.yacas;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -481,7 +481,7 @@ class LispStandard
   }
 
     public static void DoPatchString(String unpatchedString,
-                                     OutputStream aOutput,
+                                     Writer aOutput,
                                      LispEnvironment aEnvironment) throws Exception
     {
         String[] tags = unpatchedString.split("\\?\\>");
@@ -489,13 +489,13 @@ class LispStandard
             for (int x = 0; x < tags.length; x++) {
                 String[] tag = tags[x].split("\\<\\?");
                 if (tag.length > 1) {
-                    aOutput.write(tag[0].getBytes());
+                    aOutput.write(tag[0]);
                     String scriptCode = tag[1].trim();
                     StringBuffer scriptCodeBuffer =
                         new StringBuffer(scriptCode);
                     StringInput scriptStream =
                         new StringInput(scriptCodeBuffer, aEnvironment.iInputStatus);
-                    OutputStream previous = aEnvironment.iCurrentOutput;
+                    Writer previous = aEnvironment.iCurrentOutput;
                     try {
                         aEnvironment.iCurrentOutput = aOutput;
                         LispStandard.DoInternalLoad(aEnvironment, scriptStream);
@@ -506,9 +506,9 @@ class LispStandard
                     }
                 }
             }
-            aOutput.write(tags[tags.length - 1].getBytes());
+            aOutput.write(tags[tags.length - 1]);
         } else {
-            aOutput.write(unpatchedString.getBytes());
+            aOutput.write(unpatchedString);
         }
     }
 
@@ -540,7 +540,7 @@ class LispStandard
                       LispEnvironment aEnvironment,
                       int aMaxChars) throws Exception
   {
-    ByteArrayOutputStream newOutput = new ByteArrayOutputStream();
+    StringWriter newOutput = new StringWriter();
     InfixPrinter infixprinter = new InfixPrinter(aEnvironment.iPrefixOperators,
                               aEnvironment.iInfixOperators,
                               aEnvironment.iPostfixOperators,

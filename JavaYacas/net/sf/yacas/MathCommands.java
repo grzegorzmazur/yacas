@@ -991,7 +991,7 @@ class MathCommands
 
       str = LispStandard.InternalUnstringify(str);
 
-      aEnvironment.iCurrentOutput.write(str.getBytes());
+      aEnvironment.iCurrentOutput.write(str);
 
       // pass last printed character to the current printer
       aEnvironment.iCurrentPrinter.RememberLastChar(str.charAt(str.length()-1));  // hacky hacky
@@ -1008,7 +1008,7 @@ class MathCommands
       RESULT(aEnvironment, aStackTop).Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
       LispPrinter printer = new LispPrinter();
       printer.Print(RESULT(aEnvironment, aStackTop), aEnvironment.iCurrentOutput, aEnvironment);
-      aEnvironment.iCurrentOutput.write("\n".getBytes());
+      aEnvironment.iCurrentOutput.write("\n");
     }
   }
 
@@ -1160,9 +1160,9 @@ class MathCommands
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,orig != null, 1);
       String oper = LispStandard.InternalUnstringify(orig);
 
-      FileOutputStream newOutput = new FileOutputStream(new File(oper));
+      Writer newOutput = new OutputStreamWriter(new FileOutputStream(new File(oper)), "UTF-8");
 
-      OutputStream previous = aEnvironment.iCurrentOutput;
+      Writer previous = aEnvironment.iCurrentOutput;
       aEnvironment.iCurrentOutput = newOutput;
 
       try
@@ -1172,7 +1172,8 @@ class MathCommands
       catch (Exception e) { throw e; }
       finally
       {
-        aEnvironment.iCurrentOutput = previous;
+          newOutput.close();
+          aEnvironment.iCurrentOutput = previous;
       }
     }
   }
@@ -1182,14 +1183,16 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      ByteArrayOutputStream newOutput = new ByteArrayOutputStream();
-      OutputStream previous = aEnvironment.iCurrentOutput;
+      StringWriter newOutput = new StringWriter(); 
+      Writer previous = aEnvironment.iCurrentOutput;
       aEnvironment.iCurrentOutput = newOutput;
       try
       {
         // Evaluate the body
         aEnvironment.iEvaluator.Eval(aEnvironment, RESULT(aEnvironment, aStackTop), ARGUMENT(aEnvironment, aStackTop, 1));
 
+        newOutput.close();
+        
         //Return the result
         RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,aEnvironment.HashTable().LookUpStringify(newOutput.toString())));
       }
@@ -1206,7 +1209,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      OutputStream previous = aEnvironment.iCurrentOutput;
+      Writer previous = aEnvironment.iCurrentOutput;
       aEnvironment.iCurrentOutput = aEnvironment.iInitialOutput;
       try
       {
@@ -2698,15 +2701,15 @@ class MathCommands
       og.join(250);
       ArrayList<String> output = og.shutdown();
       for (String s: output) {
-          aEnvironment.iCurrentOutput.write(s.getBytes());
-          aEnvironment.iCurrentOutput.write("\n".getBytes());
+          aEnvironment.iCurrentOutput.write(s);
+          aEnvironment.iCurrentOutput.write("\n");
       }
       // Wait (at most 250 ms) for the process error stream thread to die.
       eg.join(250);
       ArrayList<String> errors = eg.shutdown();
       for (String s: errors) {
-          aEnvironment.iCurrentOutput.write(s.getBytes());
-          aEnvironment.iCurrentOutput.write("\n".getBytes());
+          aEnvironment.iCurrentOutput.write(s);
+          aEnvironment.iCurrentOutput.write("\n");
       }
     }
   }
@@ -3316,7 +3319,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : CustomEval".getBytes());////TODO fixme
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : CustomEval");////TODO fixme
       throw new YacasException("Function not yet supported");
     }
   }
@@ -3326,7 +3329,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : CustomEvalExpression".getBytes());////TODO fixme
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : CustomEvalExpression");////TODO fixme
       throw new YacasException("Function not yet supported");
     }
   }
@@ -3336,7 +3339,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : CustomEvalResult".getBytes());////TODO fixme
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : CustomEvalResult");////TODO fixme
       throw new YacasException("Function not yet supported");
     }
   }
@@ -3346,7 +3349,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispCustomEvalLocals".getBytes());////TODO fixme
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispCustomEvalLocals");////TODO fixme
       throw new YacasException("Function not yet supported");
     }
   }
@@ -3356,7 +3359,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispCustomEvalStop".getBytes());////TODO fixme
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispCustomEvalStop");////TODO fixme
       throw new YacasException("Function not yet supported");
     }
   }
@@ -3366,7 +3369,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispTraceRule".getBytes());////TODO fixme
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispTraceRule");////TODO fixme
       throw new YacasException("Function not yet supported");
     }
   }
@@ -3376,7 +3379,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : TraceStack".getBytes());////TODO fixme
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : TraceStack");////TODO fixme
       throw new YacasException("Function not yet supported");
     }
   }
@@ -3893,12 +3896,14 @@ class MathCommands
         InputStatus oldStatus = new InputStatus(aEnvironment.iInputStatus);
         aEnvironment.iInputStatus.SetTo("STRING");
 
-        ByteArrayOutputStream resultStream = new ByteArrayOutputStream();
+        StringWriter resultStream = new StringWriter();
 
         LispStandard.DoPatchString(unpatchedString, resultStream, aEnvironment);
 
         aEnvironment.iInputStatus.RestoreFrom(oldStatus);
 
+        resultStream.close();
+        
         RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, resultStream.toString()));
     }
   }
@@ -3957,7 +3962,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispCommonLispTokenizer".getBytes());//TODO FIXME
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispCommonLispTokenizer");//TODO FIXME
       throw new YacasException("Function not yet supported");
     }
   }
@@ -4236,7 +4241,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispHistorySize".getBytes());//TODO FIXME
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispHistorySize");//TODO FIXME
       throw new YacasException("Function not yet supported");
     }
   }
@@ -4246,7 +4251,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispStackSize".getBytes());//TODO FIXME
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispStackSize");//TODO FIXME
       throw new YacasException("Function not yet supported");
     }
   }
@@ -4256,7 +4261,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispIsPromptShown".getBytes());//TODO FIXME
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispIsPromptShown");//TODO FIXME
       throw new YacasException("Function not yet supported");
     }
   }
@@ -4266,7 +4271,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispReadCmdLineString".getBytes());//TODO FIXME
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispReadCmdLineString");//TODO FIXME
       throw new YacasException("Function not yet supported");
     }
   }

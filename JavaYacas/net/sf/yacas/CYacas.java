@@ -1,12 +1,12 @@
 package net.sf.yacas;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
+import java.io.StringWriter;
+import java.io.Writer;
 
 
 public class CYacas
 {
-  public CYacas(OutputStream stdoutput)
+  public CYacas(Writer stdoutput)
   {
     try
     {
@@ -81,7 +81,7 @@ public class CYacas
       env.SetVariable(percent,result,true);
       env.Protect(percent);
 
-      ByteArrayOutputStream output = new ByteArrayOutputStream();
+      StringWriter output = new StringWriter();
 
       if (env.iPrettyPrinter != null)
       {

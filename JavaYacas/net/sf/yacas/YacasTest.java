@@ -1,6 +1,5 @@
 package net.sf.yacas;
 
-import java.io.ByteArrayOutputStream;
 import org.junit.*;
 
 import org.junit.runner.RunWith;
@@ -9,6 +8,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import java.util.ArrayList;
 import java.io.File;
+import java.io.StringWriter;
 
 @RunWith(Parameterized.class)
 public class YacasTest {
@@ -21,7 +21,7 @@ public class YacasTest {
 
     @Test
     public void test() {
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        StringWriter output = new StringWriter();
 
         try {
             YacasInterpreter yacas = new YacasInterpreter(output);

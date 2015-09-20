@@ -26,7 +26,7 @@ public class YacasConsole extends Thread
 
   static boolean quitting = false;
 
-  public static void main(String[] argv)
+  public static void main(String[] argv) throws IOException
   {
     String defaultDirectory = null;
     String archive = null;
@@ -69,8 +69,8 @@ public class YacasConsole extends Thread
     }
     int scriptsToRun = i;
 
-
-    CYacas yacas = new CYacas(System.out);
+    Writer out = new OutputStreamWriter(System.out, "UTF-8");
+    CYacas yacas = new CYacas(out);
     yacas.env.iCurrentInput = new CachedStdFileInput(yacas.env.iInputStatus);
 
     try
@@ -114,27 +114,28 @@ public class YacasConsole extends Thread
     }
 
 
-    System.out.println("This is Yacas version '" + CVersion.VERSION + "'.");
+    out.write("This is Yacas version '" + CVersion.VERSION + "'.\n");
 
-    System.out.println("Yacas is Free Software--Free as in Freedom--so you can redistribute Yacas or");
-    System.out.println("modify it under certain conditions. Yacas comes with ABSOLUTELY NO WARRANTY.");
-    System.out.println("See the GNU Lesser General Public License (LGPL) version 2.1 or (at your");
-    System.out.println("discretion) any later version for the full conditions.");
-    System.out.println("Type ?license or ?licence to see the LGPL version 2.1;");
-    System.out.println("type ?warranty for warranty info.");
-    System.out.println("See http://yacas.sf.net for more information and documentation on Yacas.");
-    System.out.println("Type ?? for help. Or type ?function for help on a function.\n");
+    out.write("Yacas is Free Software--Free as in Freedom--so you can redistribute Yacas or\n");
+    out.write("modify it under certain conditions. Yacas comes with ABSOLUTELY NO WARRANTY.\n");
+    out.write("See the GNU Lesser General Public License (LGPL) version 2.1 or (at your\n");
+    out.write("discretion) any later version for the full conditions.\n");
+    out.write("Type ?license or ?licence to see the LGPL version 2.1;\n");
+    out.write("type ?warranty for warranty info.\n");
+    out.write("See http://yacas.sf.net for more information and documentation on Yacas.\n");
+    out.write("Type ?? for help. Or type ?function for help on a function.\n\n");
 
-    System.out.println("To exit Yacas, enter  Exit(); or quit or Ctrl-c.\n");
+    out.write("To exit Yacas, enter  Exit(); or quit or Ctrl-c.\n");
     //    System.out.println("Type 'restart' to restart Yacas.\n");
 
-    System.out.println("To see example commands, keep typing Example();\n");
+    out.write("To see example commands, keep typing Example();\n");
 
-    System.out.println("Yacas in Java");
+    out.write("Yacas in Java\n");
 
     while (!quitting) {
 
-        System.out.print("In> ");
+        out.write("In> ");
+        out.flush();
         String input = readLine(System.in);
 
         String rs = "True";
@@ -171,7 +172,8 @@ public class YacasConsole extends Thread
             rs = yacas.Evaluate(input);
         }
 
-        System.out.println("Out> " + rs);
+        out.write("Out> " + rs + "\n");
+        out.flush();
     }
   }
 }

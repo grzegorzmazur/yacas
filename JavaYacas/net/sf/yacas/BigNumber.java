@@ -1,6 +1,6 @@
 package net.sf.yacas;
 
-import java.io.OutputStream;
+import java.io.Writer;
 import java.math.*;
 
 class BigNumber
@@ -334,15 +334,15 @@ class BigNumber
   }
 
   /// For debugging purposes, dump internal state of this object into a string
-  public void DumpDebugInfo(OutputStream aOutput) throws Exception
+  public void DumpDebugInfo(Writer aOutput) throws Exception
   {
     if (integer != null)
     {
-      aOutput.write(("integer: "+integer.toString()+"\n").getBytes());
+      aOutput.write(("integer: "+integer.toString()+"\n"));
     }
     else
     {
-      aOutput.write(("decimal: "+decimal.unscaledValue()+" scale "+decimal.scale()+" x 10^("+iTensExp+")\n").getBytes());
+      aOutput.write(("decimal: "+decimal.unscaledValue()+" scale "+decimal.scale()+" x 10^("+iTensExp+")\n"));
     }
   }
 
