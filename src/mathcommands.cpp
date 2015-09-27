@@ -1164,7 +1164,7 @@ void LispFromFile(LispEnvironment& aEnvironment, LispInt aStackTop)
     ShowStack(aEnvironment);
     throw LispErrFileNotFound();
   }
-  CachedStdFileInput newInput(localFP,aEnvironment.iInputStatus);
+  StdFileInput newInput(localFP,aEnvironment.iInputStatus);
   LispLocalInput localInput(aEnvironment, &newInput);
 
   // Evaluate the body

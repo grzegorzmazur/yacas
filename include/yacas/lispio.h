@@ -6,13 +6,9 @@
 #ifndef YACAS_LISPIO_H
 #define YACAS_LISPIO_H
 
-#include "yacasbase.h"
-
 #include <cstddef>
 #include <string>
 
-// Hope this forward declaration doesn't screw us over...
-class InputDirectories;
 class InputStatus
 {
 public:
@@ -73,12 +69,12 @@ public:
   virtual ~LispInput() = default;
 
   /// Return the next character in the file
-  virtual LispChar Next() = 0;
+  virtual char32_t Next() = 0;
 
   /** Peek at the next character in the file, without advancing the file
    *  pointer.
    */
-  virtual LispChar Peek() = 0;
+  virtual char32_t Peek() = 0;
 
   virtual const InputStatus& Status() const {return iStatus;};
 

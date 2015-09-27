@@ -17,106 +17,91 @@ static void MapPathSeparators(std::string& filename)
 
 StdFileInput::StdFileInput(std::istream& stream, InputStatus& aStatus):
     LispInput(aStatus),
-    stream(stream)
+    _stream(stream)
 {
 }
 
 StdFileInput::StdFileInput(LispLocalFile& file, InputStatus& aStatus):
     LispInput(aStatus),
-    stream(file.stream)
+    _stream(file.stream),
+    _position(0),
+    _cp_ready(false)
 {
 }
 
-
-
-LispChar StdFileInput::Next()
+char32_t StdFileInput::Next()
 {
-    const LispChar c = stream.get();
-    if (c == '\n')
-        iStatus.NextLine();
-    return c;
+    if (!_cp_ready)
+        _get();
+
+    if (EndOfStream())
+        return std::char_traits<char32_t>::eof();
+    
+    _cp_ready = false;
+    _position += 1;
+    
+    return _cp;
 }
 
-LispChar StdFileInput::Peek()
+char32_t StdFileInput::Peek()
 {
-    return stream.peek();
+    if (EndOfStream())
+        return std::char_traits<char32_t>::eof();
+
+    if (!_cp_ready)
+        _get();
+    
+    return _cp;
 }
 
 void StdFileInput::Rewind()
 {
-    stream.seekg(0);
+    _stream.seekg(0);
+    _position = 0;
+    _cp_ready = false;
 }
 
 bool StdFileInput::EndOfStream() const
 {
-    return stream.eof();
+    if (_stream.eof())
+        return true;
+    
+    if (!_cp_ready)
+        _get();
+            
+    return _stream.eof();
 }
 
 std::size_t StdFileInput::Position() const
 {
-    assert(0);
-    return 0;
+    return _position;
 }
 
-void StdFileInput::SetPosition(std::size_t aPosition)
+void StdFileInput::SetPosition(std::size_t n)
 {
-  assert(0);
+    Rewind();
+    
+    for (std::size_t i = 0; i < n; ++i)
+        Next();
 }
 
-CachedStdFileInput::CachedStdFileInput(LispLocalFile& file, InputStatus& status):
-    StdFileInput(file, status),
-    iCurrentPos(0)
+void StdFileInput::_get() const
 {
-    // Get size of file
-    stream.seekg(0, std::ios_base::end);
-    const std::size_t n = stream.tellg();
-    stream.seekg(0);
-
-    // Read in the full buffer
-    _buf.resize(n + 1);
-
-    stream.read(_buf.data(), n);
-
-    _buf.back() = '\0';
+    char p[4];
+    char* q = p;
+    
+    *q++ = _stream.get();
+    
+    while (!_stream.eof() && !utf8::is_valid(p, q))
+        *q++ = _stream.get();
+    
+    if (_stream.eof())
+        return;
+    
+    utf8::utf8to32(p, q, &_cp);
+    _cp_ready = true;
 }
 
-LispChar CachedStdFileInput::Next()
-{
-    assert(iCurrentPos + 1 < _buf.size());
-    const LispChar c = _buf[iCurrentPos++];
-
-    if (c == '\n')
-        iStatus.NextLine();
-
-    return c;
-}
-
-LispChar CachedStdFileInput::Peek()
-{
-    assert(iCurrentPos + 1 < _buf.size());
-    return _buf[iCurrentPos];
-}
-
-
-void CachedStdFileInput::Rewind()
-{
-  iCurrentPos = 0;
-}
-
-bool CachedStdFileInput::EndOfStream() const
-{
-    return iCurrentPos + 1 >= _buf.size();
-}
-
-std::size_t CachedStdFileInput::Position() const
-{
-    return iCurrentPos;
-}
-void CachedStdFileInput::SetPosition(std::size_t aPosition)
-{
-  assert(aPosition + 1 < _buf.size());
-  iCurrentPos = aPosition;
-}
 
 std::string InternalFindFile(const LispChar* fname, const std::vector<std::string>& dirs)
 {
@@ -173,43 +158,4 @@ LispLocalFile::~LispLocalFile()
 {
     if (stream.is_open())
         stream.close();
-}
-
-CachedStdUserInput::CachedStdUserInput(InputStatus& aStatus) :
-StdUserInput(aStatus),iBuffer(),iCurrentPos(0)
-{
-  Rewind();
-}
-LispChar CachedStdUserInput::Next()
-{
-  LispChar c = Peek();
-  iCurrentPos++;
-  printf("%c",c);
-  return c;
-}
-
-LispChar CachedStdUserInput::Peek()
-{
-    if (iCurrentPos == iBuffer.size())
-        iBuffer.push_back(stream.get());
-
-    return iBuffer[iCurrentPos];
-}
-
-bool CachedStdUserInput::EndOfStream() const
-{
-  return false;
-}
-
-void CachedStdUserInput::Rewind()
-{
-  // Make sure there is a buffer to point to.
-  iBuffer.resize(10);
-  iBuffer.resize(0);
-  iCurrentPos=0;
-}
-
-std::size_t CachedStdUserInput::Position() const
-{
-  return iCurrentPos;
 }

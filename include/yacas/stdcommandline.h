@@ -8,12 +8,12 @@
 class CStdCommandLine : public CCommandLine
 {
 public:
-    void ReadLine(const std::string& prompt);
+    void ReadLine(const std::string& prompt) override;
 public:
-    LispInt GetKey();
-    void NewLine();
-    void ShowLine(const std::string& prompt, unsigned cursor);
-    void Pause();
+    char32_t GetKey() override;
+    void NewLine() override;
+    void ShowLine(const std::string& prompt, unsigned cursor) override;
+    void Pause() override;
 };
 
 

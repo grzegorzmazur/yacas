@@ -313,7 +313,7 @@ void InternalLoad(LispEnvironment& aEnvironment, const std::string& aFileName)
     if (!localFP.stream.is_open())
         throw LispErrFileNotFound();
 
-    CachedStdFileInput newInput(localFP, aEnvironment.iInputStatus);
+    StdFileInput newInput(localFP, aEnvironment.iInputStatus);
     DoInternalLoad(aEnvironment, &newInput);
 
     aEnvironment.iInputStatus.RestoreFrom(oldstatus);

@@ -1,6 +1,5 @@
-
-#include "yacas/yacasprivate.h"
 #include "yacas/deffile.h"
+
 #include "yacas/lispuserfunc.h"
 #include "yacas/standard.h"
 #include "yacas/lispio.h"
@@ -88,7 +87,7 @@ void LoadDefFile(LispEnvironment& aEnvironment, const std::string& aFileName)
   if (!localFP.stream.is_open())
     throw LispErrFileNotFound();
 
-  CachedStdFileInput newInput(localFP,aEnvironment.iInputStatus);
+  StdFileInput newInput(localFP,aEnvironment.iInputStatus);
   DoLoadDefFile(aEnvironment, &newInput,def);
 
   aEnvironment.iInputStatus.RestoreFrom(oldstatus);

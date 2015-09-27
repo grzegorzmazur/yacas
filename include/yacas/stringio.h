@@ -5,22 +5,23 @@
 #ifndef YACAS_STRINGIO_H
 #define YACAS_STRINGIO_H
 
-#include "yacasbase.h"
 #include "lispio.h"
-#include "lispstring.h"
+#include "utf8.h"
+
+#include <string>
 
 class StringInput : public LispInput
 {
 public:
-    StringInput(const std::string& aString, InputStatus& aStatus);
-    virtual LispChar Next();
-    virtual LispChar Peek();
-    virtual bool EndOfStream() const;
-    virtual std::size_t Position() const;
-    virtual void SetPosition(std::size_t aPosition);
+    StringInput(const std::string&, InputStatus&);
+    char32_t Next() override;
+    char32_t Peek() override;
+    bool EndOfStream() const override;
+    std::size_t Position() const override;
+    void SetPosition(std::size_t aPosition) override;
 protected:
-    std::string iString;
-    std::size_t iCurrent;
+    std::string _string;
+    std::string::const_iterator _current;
 };
 
 #endif
