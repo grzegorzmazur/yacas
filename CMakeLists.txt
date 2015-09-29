@@ -193,6 +193,8 @@ set (YACAS_SCRIPTS
     scripts/multivar.rep/sparsetree.ys.def
     scripts/newly.rep/code.ys
     scripts/newly.rep/code.ys.def
+    scripts/nintegrate.rep/code.ys
+    scripts/nintegrate.rep/code.ys.def
     scripts/numbers.rep/GaussianIntegers.ys
     scripts/numbers.rep/GaussianIntegers.ys.def
     scripts/numbers.rep/NumberTheory.ys

@@ -19,7 +19,8 @@ SCRIPTFILES1 = 	        										    \
 	functional.rep/code.ys functional.rep/code.ys.def functional.rep/om.ys				    \
 	graph.rep/code.ys graph.rep/code.ys.def								    \
 	html.rep/code.ys html.rep/code.ys.def 								    \
-	integrate.rep/code.ys integrate.rep/code.ys.def integrate.rep/om.ys   \
+	integrate.rep/code.ys integrate.rep/code.ys.def integrate.rep/om.ys				    \
+	nintegrate.rep/code.ys nintegrate.rep/code.ys.def						    \
 	io.rep/code.ys io.rep/code.ys.def io.rep/print.ys io.rep/formula.ys io.rep/errors.ys 		    \
 	io.rep/defaultprint.ys io.rep/defaultprint.ys.def 						    \
 	limit.rep/code.ys limit.rep/code.ys.def limit.rep/om.ys						    \

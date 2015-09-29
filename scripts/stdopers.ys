@@ -45,6 +45,7 @@ Postfix("!", 30);
 Postfix("!!", 30);
 Infix("***", 50);
 Bodied("Integrate",60000);
+Bodied("NIntegrate",60000);
 
 Bodied("Limit",60000);
 
