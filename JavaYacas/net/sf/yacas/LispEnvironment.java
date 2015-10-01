@@ -91,7 +91,7 @@ class LispEnvironment
   Set<String> protected_symbols;
 
   int iEvalDepth = 0;
-  int iMaxEvalDepth = 10000;
+  int iMaxEvalDepth = 1000;
 
 
     /**
