@@ -246,6 +246,9 @@ class MathCommands
          "=",
          new YacasEvaluator(new LispEquals(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
     aEnvironment.CoreCommands().put(
+         "StrictTotalOrder",
+         new YacasEvaluator(new LispStrictTotalOrder(), 2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
          "LessThan",
          new YacasEvaluator(new LispLessThan(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
     aEnvironment.CoreCommands().put(
@@ -434,6 +437,18 @@ class MathCommands
     aEnvironment.CoreCommands().put(
          "Array'Set",
          new YacasEvaluator(new GenArraySet(),3, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Association'Create",
+         new YacasEvaluator(new GenAssociationCreate(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Association'Size",
+         new YacasEvaluator(new GenAssociationSize(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Association'Get",
+         new YacasEvaluator(new GenAssociationGet(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Association'Set",
+         new YacasEvaluator(new GenAssociationSet(),3, YacasEvaluator.Fixed|YacasEvaluator.Function));
     aEnvironment.CoreCommands().put(
          "CustomEval",
          new YacasEvaluator(new LispCustomEval(),4, YacasEvaluator.Fixed|YacasEvaluator.Macro));
@@ -1183,7 +1198,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      StringWriter newOutput = new StringWriter(); 
+      StringWriter newOutput = new StringWriter();
       Writer previous = aEnvironment.iCurrentOutput;
       aEnvironment.iCurrentOutput = newOutput;
       try
@@ -1192,7 +1207,7 @@ class MathCommands
         aEnvironment.iEvaluator.Eval(aEnvironment, RESULT(aEnvironment, aStackTop), ARGUMENT(aEnvironment, aStackTop, 1));
 
         newOutput.close();
-        
+
         //Return the result
         RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,aEnvironment.HashTable().LookUpStringify(newOutput.toString())));
       }
@@ -2142,6 +2157,20 @@ class MathCommands
                       LispStandard.InternalEquals(aEnvironment, evaluated1, evaluated2));
     }
   }
+
+    class LispStrictTotalOrder extends YacasEvalCaller {
+
+        @Override
+        public void Eval(LispEnvironment aEnvironment, int aStackTop) throws Exception {
+            LispPtr evaluated1 = new LispPtr();
+            evaluated1.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
+            LispPtr evaluated2 = new LispPtr();
+            evaluated2.Set(ARGUMENT(aEnvironment, aStackTop, 2).Get());
+
+            LispStandard.InternalBoolean(aEnvironment, RESULT(aEnvironment, aStackTop),
+                    LispStandard.InternalStrictTotalOrder(aEnvironment, evaluated1, evaluated2));
+        }
+    }
 
   abstract class LispLexCompare2
   {
@@ -3314,6 +3343,78 @@ class MathCommands
     }
   }
 
+    class GenAssociationCreate extends YacasEvalCaller {
+
+        @Override
+        public void Eval(LispEnvironment env, int stack_top) throws Exception {
+            AssociationClass a = new AssociationClass(env);
+            RESULT(env, stack_top).Set(LispGenericClass.New(a));
+        }
+    }
+
+    class GenAssociationSize extends YacasEvalCaller {
+
+        @Override
+        public void Eval(LispEnvironment aEnvironment, int aStackTop) throws Exception {
+            LispPtr evaluated = new LispPtr();
+            evaluated.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
+
+            GenericClass gen = evaluated.Get().Generic();
+            LispError.CHK_ARG_CORE(aEnvironment, aStackTop, gen != null, 1);
+            LispError.CHK_ARG_CORE(aEnvironment, aStackTop, gen.TypeName().equals("\"Association\""), 1);
+            int size = ((AssociationClass)gen).Size();
+            RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, "" + size));
+        }
+    }
+
+    class GenAssociationGet extends YacasEvalCaller {
+
+        @Override
+        public void Eval(LispEnvironment env, int stack_top) throws Exception {
+            LispPtr evaluated = new LispPtr();
+            evaluated.Set(ARGUMENT(env, stack_top, 1).Get());
+
+            GenericClass gen = evaluated.Get().Generic();
+            LispError.CHK_ARG_CORE(env, stack_top, gen != null, 1);
+            LispError.CHK_ARG_CORE(env, stack_top, gen.TypeName().equals("\"Association\""), 1);
+
+            LispPtr k = new LispPtr();
+            k.Set(ARGUMENT(env, stack_top, 2).Get());
+
+            LispError.CHK_ARG_CORE(env, stack_top, k.Get() != null, 2);
+
+            LispObject v = ((AssociationClass)gen).GetElement(k.Get());
+
+            if (v != null)
+                RESULT(env, stack_top).Set(v.Copy(false));
+            else
+                RESULT(env, stack_top).Set(LispAtom.New(env, "Undefined"));
+        }
+    }
+
+    class GenAssociationSet extends YacasEvalCaller {
+
+        @Override
+        public void Eval(LispEnvironment aEnvironment, int aStackTop) throws Exception {
+            LispPtr evaluated = new LispPtr();
+            evaluated.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
+
+            GenericClass gen = evaluated.Get().Generic();
+            LispError.CHK_ARG_CORE(aEnvironment, aStackTop, gen != null, 1);
+            LispError.CHK_ARG_CORE(aEnvironment, aStackTop, gen.TypeName().equals("\"Association\""), 1);
+
+            LispPtr k = new LispPtr();
+            k.Set(ARGUMENT(aEnvironment, aStackTop, 2).Get());
+
+            LispError.CHK_ARG_CORE(aEnvironment, aStackTop, k.Get() != null, 2);
+
+            LispPtr v = new LispPtr();
+            v.Set(ARGUMENT(aEnvironment, aStackTop, 3).Get());
+            ((AssociationClass)gen).SetElement(k.Get(), v.Get());
+            LispStandard.InternalTrue(aEnvironment, RESULT(aEnvironment, aStackTop));
+        }
+    }
+
   class LispCustomEval extends YacasEvalCaller
   {
     @Override
@@ -3903,7 +4004,7 @@ class MathCommands
         aEnvironment.iInputStatus.RestoreFrom(oldStatus);
 
         resultStream.close();
-        
+
         RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, resultStream.toString()));
     }
   }
