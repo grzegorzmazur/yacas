@@ -16,6 +16,7 @@
 #include "yacas/platmath.h"
 #include "yacas/numbers.h"
 #include "yacas/arrayclass.h"
+#include "yacas/associationclass.h"
 #include "yacas/patternclass.h"
 #include "yacas/substitute.h"
 #include "yacas/errors.h"
@@ -156,6 +157,15 @@ static bool BigLessThan(BigNumber& n1, BigNumber& n2)
 static bool BigGreaterThan(BigNumber& n1, BigNumber& n2)
 {
   return !(n1.LessThan(n2) || n1.Equals(n2));
+}
+
+
+void LispStrictTotalOrder(LispEnvironment& aEnvironment, LispInt aStackTop)
+{
+    LispPtr e1(ARGUMENT(1));
+    LispPtr e2(ARGUMENT(2));
+    
+    InternalBoolean(aEnvironment,RESULT, InternalStrictTotalOrder(aEnvironment, e1, e2));
 }
 
 void LispLessThan(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1646,6 +1656,54 @@ void GenArraySet(LispEnvironment& aEnvironment,LispInt aStackTop)
 
   InternalTrue( aEnvironment, RESULT);
 }
+
+void GenAssociationCreate(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+    AssociationClass* a = new AssociationClass(aEnvironment);
+    RESULT = LispGenericClass::New(a);
+}
+
+void GenAssociationSize(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+    LispPtr evaluated(ARGUMENT(1));
+
+    GenericClass *gen = evaluated->Generic();
+    AssociationClass* a = dynamic_cast<AssociationClass*>(gen);
+    CheckArg(a, 1, aEnvironment, aStackTop);
+    RESULT = LispAtom::New(aEnvironment, std::to_string(a->Size()));
+}
+
+void GenAssociationGet(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+    LispPtr p(ARGUMENT(1));
+    GenericClass* gen = p->Generic();
+    AssociationClass* a = dynamic_cast<AssociationClass*>(gen);
+    CheckArg(a, 1, aEnvironment, aStackTop);
+
+    LispPtr k(ARGUMENT(2));
+    LispObject* v = a->GetElement(k);
+
+    if (v)
+        RESULT = v->Copy();
+    else
+        RESULT = LispAtom::New(aEnvironment, "Undefined");
+}
+
+void GenAssociationSet(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+  LispPtr p(ARGUMENT(1));
+  GenericClass* gen = p->Generic();
+  AssociationClass* a = dynamic_cast<AssociationClass*>(gen);
+  CheckArg(a, 1, aEnvironment, aStackTop);
+
+  LispPtr k(ARGUMENT(2));
+  LispPtr v(ARGUMENT(3));
+
+  a->SetElement(k, v);
+
+  InternalTrue( aEnvironment, RESULT);
+}
+
 
 void LispCustomEval(LispEnvironment& aEnvironment,LispInt aStackTop)
 {

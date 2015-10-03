@@ -142,6 +142,7 @@ CORE_KERNEL_FUNCTION("IsInteger",LispIsInteger,1,YacasEvaluator::Function | Yaca
 CORE_KERNEL_FUNCTION("IsList",LispIsList,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("IsString",LispIsString,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("IsBound",LispIsBound,1,YacasEvaluator::Macro | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("StrictTotalOrder",LispStrictTotalOrder,2,YacasEvaluator::Function | YacasEvaluator::Fixed)
 //
 // Math functions (REQUIRING number inputs);.
 //
@@ -198,6 +199,10 @@ CORE_KERNEL_FUNCTION("Array'Create",GenArrayCreate,2,YacasEvaluator::Function | 
 CORE_KERNEL_FUNCTION("Array'Size",GenArraySize,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("Array'Get",GenArrayGet,2,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("Array'Set",GenArraySet,3,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("Association'Create",GenAssociationCreate,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("Association'Size",GenAssociationSize,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("Association'Get",GenAssociationGet,2,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("Association'Set",GenAssociationSet,3,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("CustomEval",LispCustomEval,4,YacasEvaluator::Macro | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("CustomEval'Expression",LispCustomEvalExpression,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("CustomEval'Result",LispCustomEvalResult,0,YacasEvaluator::Function | YacasEvaluator::Fixed)

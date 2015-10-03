@@ -20,8 +20,8 @@ public:
                       LispPtr& aArguments);
   bool Matches(LispEnvironment& aEnvironment,
                       LispPtr* aArguments);
-public: //From GenericClass
-  virtual const LispChar * TypeName();
+
+  const LispChar * TypeName() const override;
 
 protected:
   YacasPatternPredicateBase* iPatternMatcher;

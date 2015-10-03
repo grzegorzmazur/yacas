@@ -1,7 +1,6 @@
 #ifndef YACAS_ARRAYCLASS_H
 #define YACAS_ARRAYCLASS_H
 
-#include "yacasbase.h"
 #include "lispobject.h"
 #include "genericobject.h"
 
@@ -12,7 +11,7 @@ class ArrayClass : public GenericClass
 public:
     //required
     ArrayClass(std::size_t aSize,LispObject* aInitialItem);
-    const LispChar* TypeName();
+    const LispChar* TypeName() const override;
 
     //array-specific
     std::size_t Size();
@@ -30,7 +29,7 @@ ArrayClass::ArrayClass(std::size_t aSize, LispObject* aInitialItem):
 }
 
 inline
-const LispChar* ArrayClass::TypeName()
+const LispChar* ArrayClass::TypeName() const
 {
     return "\"Array\"";
 }
