@@ -26,7 +26,11 @@ void InternalReverseList(LispPtr& aResult, const LispPtr& aOriginal);
 void InternalFlatCopy(LispPtr& aResult, const LispPtr& aOriginal);
 LispInt InternalListLength(const LispPtr& aOriginal);
 
-bool InternalEquals(LispEnvironment& aEnvironment,
+bool InternalStrictTotalOrder(const LispEnvironment& env,
+                  const LispPtr& e1,
+                  const LispPtr& e2);
+
+bool InternalEquals(const LispEnvironment& aEnvironment,
                     const LispPtr& aExpression1,
                     const LispPtr& aExpression2);
 

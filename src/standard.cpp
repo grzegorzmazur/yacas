@@ -182,16 +182,110 @@ LispInt InternalListLength(const LispPtr& aOriginal)
     return length;
 }
 
-bool InternalEquals(LispEnvironment& aEnvironment,
+bool InternalStrictTotalOrder(
+    const LispEnvironment& env,
+    const LispPtr& e1,
+    const LispPtr& e2)
+{
+    if (e1.ptr() == e2.ptr())
+        return false;
+
+    if (!e1.ptr() && e2.ptr())
+        return true;
+    
+    if (e1.ptr() && !e2.ptr())
+        return false;
+    
+    BigNumber* n1 = e1->Number(env.Precision());
+    BigNumber* n2 = e2->Number(env.Precision());
+    
+    if (n1 && !n2)
+        return true;
+    
+    if (!n1 && n2)
+        return false;
+    
+    if (n1 && n2) {
+        if (n1->LessThan(*n2))
+            return true;
+        
+        if (!n1->Equals(*n2))
+            return false;
+        
+        return InternalStrictTotalOrder(env, e1->Nixed(), e2->Nixed());
+    }
+    
+    const LispString* s1 = e1->String();
+    const LispString* s2 = e2->String();
+    
+    if (s1 && !s2)
+        return true;
+    
+    if (!s1 && s2)
+        return false;
+    
+    if (s1 && s2) {
+        const int c = s1->compare(*s2);
+
+        if (c)
+            return c < 0;
+        
+        return InternalStrictTotalOrder(env, e1->Nixed(), e2->Nixed());
+    }
+    
+    LispPtr* l1 = e1->SubList();
+    LispPtr* l2 = e2->SubList();
+    
+    if (!l1 && l2)
+        return true;
+    
+    if (l1 && !l2)
+        return false;
+
+    if (l1 && l2) {
+        LispIterator i1(*l1);
+        LispIterator i2(*l2);
+        
+        while (i1.getObj() && i2.getObj()) {
+            const LispPtr& p1 = *i1;
+            const LispPtr& p2 = *i2;
+            
+            if (InternalEquals(env, p1, p2)) {
+                ++i1;
+                ++i2;
+                
+                continue;
+            }
+            
+            return InternalStrictTotalOrder(env, p1, p2);
+        }
+        
+        if (i1.getObj())
+            return false;
+        
+        if (i2.getObj())
+            return true;
+
+        return false;
+    }
+
+    // FIXME: deal with generics
+//    GenericClass* g1 = e1->Generic();
+//    GenericClass* g2 = e2->Generic();
+//
+    return false;
+}
+
+bool InternalEquals(const LispEnvironment& aEnvironment,
                     const LispPtr& aExpression1,
                     const LispPtr& aExpression2)
 {
     // Handle pointers to same, or nullptr
     if (aExpression1.ptr() == aExpression2.ptr())  // compare pointers to LispObject
-    {
         return true;
-    }
 
+    if (!aExpression1.ptr() || !aExpression2.ptr())
+        return false;
 
 /*TODO This code would be better, if BigNumber::Equals works*/
 
