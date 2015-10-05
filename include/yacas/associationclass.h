@@ -41,15 +41,13 @@ public:
     bool Contains(LispObject* k) const;
     LispObject* GetElement(LispObject* k);
     void SetElement(LispObject* k,LispObject* v);
-    void DropElement(LispObject* k);
+    bool DropElement(LispObject* k);
 
 private:
-    struct Key {
+    class Key {
+    public:
         Key(const LispEnvironment& env, LispObject* p):
             env(env), p(p) {}
-        
-        const LispEnvironment& env;
-        LispPtr p;
         
         bool operator == (const Key& rhs) const
         {
@@ -60,6 +58,9 @@ private:
         {
             return InternalStrictTotalOrder(env, p, rhs.p);
         }
+    private:
+        const LispEnvironment& env;
+        LispPtr p;
     };
 
     const LispEnvironment& _env;
@@ -106,10 +107,9 @@ void AssociationClass::SetElement(LispObject* k, LispObject* v)
 }
 
 inline
-void AssociationClass::DropElement(LispObject* k)
+bool AssociationClass::DropElement(LispObject* k)
 {
-    _map.erase(Key(_env, LispPtr(k)));
+    return _map.erase(Key(_env, LispPtr(k)));
 }
 
 #endif /* ASSOCIATIONCLASS_H */
-

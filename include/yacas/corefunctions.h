@@ -203,6 +203,7 @@ CORE_KERNEL_FUNCTION("Association'Create",GenAssociationCreate,0,YacasEvaluator:
 CORE_KERNEL_FUNCTION("Association'Size",GenAssociationSize,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("Association'Get",GenAssociationGet,2,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("Association'Set",GenAssociationSet,3,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("Association'Drop",GenAssociationDrop,2,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("CustomEval",LispCustomEval,4,YacasEvaluator::Macro | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("CustomEval'Expression",LispCustomEvalExpression,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("CustomEval'Result",LispCustomEvalResult,0,YacasEvaluator::Function | YacasEvaluator::Fixed)

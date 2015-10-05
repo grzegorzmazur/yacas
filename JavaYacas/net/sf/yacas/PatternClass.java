@@ -27,11 +27,6 @@ class PatternClass extends GenericClass
   }
   //From GenericClass
   @Override
-  public String Send(LispArgList aArgList)
-  {
-    return null;
-  }
-  @Override
   public String TypeName()
   {
       return "\"Pattern\"";

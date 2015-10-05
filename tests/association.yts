@@ -17,4 +17,7 @@ NextTest("Association");
     Verify(Association'Set(a, x, y), True);
     Verify(Association'Size(a), 1);
     Verify(Association'Get(a, x), y);
+    Verify(Association'Drop(a, x), True);
+    Verify(Association'Drop(a, x), False);
+    Verify(Association'Get(a, x), Undefined);
 ];

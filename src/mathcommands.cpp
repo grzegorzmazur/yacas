@@ -1704,6 +1704,19 @@ void GenAssociationSet(LispEnvironment& aEnvironment,LispInt aStackTop)
   InternalTrue( aEnvironment, RESULT);
 }
 
+void GenAssociationDrop(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+    LispPtr p(ARGUMENT(1));
+    GenericClass* gen = p->Generic();
+    AssociationClass* a = dynamic_cast<AssociationClass*>(gen);
+    CheckArg(a, 1, aEnvironment, aStackTop);
+
+    LispPtr k(ARGUMENT(2));
+    if (a->DropElement(k))
+        InternalTrue(aEnvironment,RESULT);
+    else
+        InternalFalse(aEnvironment,RESULT);
+}
 
 void LispCustomEval(LispEnvironment& aEnvironment,LispInt aStackTop)
 {

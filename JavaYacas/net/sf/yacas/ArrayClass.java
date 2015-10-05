@@ -8,11 +8,6 @@ class ArrayClass extends GenericClass
     iArray = new LispPtrArray(aSize,aInitialItem);
   }
   @Override
-  public String Send(LispArgList aArgList)
-  {
-    return null;
-  }
-  @Override
   public String TypeName()
   {
     return "\"Array\"";

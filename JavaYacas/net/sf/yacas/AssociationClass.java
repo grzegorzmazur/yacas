@@ -37,11 +37,6 @@ class AssociationClass extends GenericClass {
     }
 
     @Override
-    public String Send(LispArgList aArgList) {
-        return null;
-    }
-
-    @Override
     public String TypeName() {
         return "\"Association\"";
     }
@@ -63,5 +58,9 @@ class AssociationClass extends GenericClass {
         _map.put(new LispPtr(k), new LispPtr(v));
     }
 
+    public boolean DropElement(LispObject k) throws Exception {
+        return _map.remove(new LispPtr(k)) != null;
+    }
+    
     Map<LispPtr, LispPtr> _map;
 }
