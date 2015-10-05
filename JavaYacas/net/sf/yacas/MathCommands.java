@@ -1474,9 +1474,11 @@ class MathCommands
       }
       GenericClass gen = ARGUMENT(aEnvironment, aStackTop, 1).Get().Generic();
       if (gen != null)
-        if (gen.TypeName().equals("\"Array\""))
-        {
+        if (gen.TypeName().equals("\"Array\"")) {
           int size=((ArrayClass)gen).Size();
+          RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,""+size));
+        } else if (gen.TypeName().equals("\"Association\"")) {
+          int size=((AssociationClass)gen).Size();
           RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,""+size));
         }
     //  CHK_ISLIST_CORE(aEnvironment,aStackTop,ARGUMENT(aEnvironment, aStackTop, 1),1);

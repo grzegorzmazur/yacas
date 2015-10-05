@@ -286,6 +286,8 @@ void LispLength(LispEnvironment& aEnvironment, LispInt aStackTop)
         size = ARGUMENT(1)->String()->size()-2;
     } else if (ArrayClass* arr = dynamic_cast<ArrayClass*>(ARGUMENT(1)->Generic())) {
         size = arr->Size();
+    } else if (AssociationClass* assoc = dynamic_cast<AssociationClass*>(ARGUMENT(1)->Generic())) {
+        size = assoc->Size();
     } else
         CheckArg(false, 1, aEnvironment, aStackTop);
 
