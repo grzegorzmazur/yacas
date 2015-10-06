@@ -89,20 +89,46 @@ LocalSymbols(graph, start, func) [
             If (Association'Get(A, v) != Undefined, [
                 DestructiveAppend(r, Apply(func, {v}));
                 vertices := Association'Get(A, v);
+                Association'Drop(A, v); 
                 ForEach (v, vertices)
                     DestructiveInsert(S, 1, v);
-                Association'Drop(A, v); 
             ]);
         ];
 
         r;
     ];
 
-    DFS(g_IsGraph, _func)_(Vertices(g) != {}) <-- DFS(g, Vertices(g)[1], func);
+    DFS(g_IsGraph, _func)_(Vertices(g) != {}) <-- [
+        Local(all, vertices, A, S, v, r);
 
-    DFS(g_IsGraph, _func)_(Vertices(g) = {}) <-- {};
+        A := AdjacencyList(g);
 
-    HoldArgNr("DFS", func);
+        r := {};
+
+        all := Vertices(g);
+
+        While (Length(all) != 0) [
+            S := {Head(all)};
+
+            While (S != {}) [
+                v := Head(S);
+                DestructiveDelete(S, 1);
+
+                If (Association'Get(A, v) != Undefined, [
+                    DestructiveDelete(all, Find(all, v));
+                    DestructiveAppend(r, Apply(func, {v}));
+                    vertices := Association'Get(A, v);
+                    Association'Drop(A, v);
+                    ForEach (v, vertices)
+                        DestructiveInsert(S, 1, v);
+                ]);
+            ];
+        ];
+
+        r;
+    ];
+
+    HoldArg("DFS", func);
 ];
 
 TopologicalSort(A_IsSquareMatrix) <--
