@@ -20,30 +20,59 @@ Graph(edges_IsList) <-- [
 Edges(Graph(vertices_IsList, edges_IsList)) <-- edges;
 Vertices(Graph(vertices_IsList, edges_IsList)) <-- vertices;
 
+AdjacencyList(g_IsGraph) <-- [
+    Local(l, edges, e, op, f, t, tl);
+
+    l := Association'Create();
+
+    edges := Edges(g);
+
+    ForEach(e, edges) [
+        If (IsList(e), e := Head(e));
+        {op, f, t} := Listify(e);
+        tl := Association'Get(l, f);
+        If (tl = Undefined, [
+            tl := {};
+            Association'Set(l, f, tl);
+        ]);
+        DestructiveAppend(tl, t);
+
+        If (String(op) = "<->", [
+            tl := Association'Get(l, t);
+            If (tl = Undefined, [
+                tl := {};
+                Association'Set(l, t, tl);
+            ]);
+            DestructiveAppend(tl, f);
+        ]);
+    ];
+
+    l;
+];
+
 AdjacencyMatrix(g_IsGraph) <-- [
-    Local(vertices, edges, n, A, f, t, op);
+    Local(vertices, adjacent, n, I, A, v, a, i, j);
 
     vertices := Vertices(g);
-    edges := Edges(g);
 
     n := Length(vertices);
 
+    I := Association'Create();
+    For (i := 1, i <= n, i++)
+        Association'Set(I, vertices[i], i);
+
+    L := AdjacencyList(g);
     A := ZeroMatrix(n, n);
 
-    ForEach (e, edges) [
-        If (IsList(e), e := Head(e));
-        {op, f, t} := Listify(e);
-
-        f := Find(vertices, f);
-        t := Find(vertices, t);
-
-        Check(f > 0 And t > 0, "AdjacencyMatrix: inconsistent graph");
-
-        A[f][t] := 1;
-
-        If (String(op) = "<->", A[t][f] := 1);
+    ForEach (v, vertices) [
+        i := Association'Get(I, v);
+        adjacent := Association'Get(L, v);
+        ForEach (a, adjacent) [
+            j := Association'Get(I, a);
+            A[i][j] := 1;
+        ];
     ];
-    
+
     A;
 ];
 
