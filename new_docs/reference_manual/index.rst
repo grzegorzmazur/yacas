@@ -40,4 +40,5 @@ the usage of the functions that are useful when doing calculations.
    strings
    probability-and-statistics
    number-theory
+   numerical-methods
    programming
