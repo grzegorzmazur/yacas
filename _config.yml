@@ -79,7 +79,7 @@ defaults:
 #bing_webmastertools_id:
 #alexa_verify_id:
 
-favicon-32x32: yacas-favicon.ico
+favicon-32x32: favicon.ico
 
 #og_image:
 og_locale: en_EN
