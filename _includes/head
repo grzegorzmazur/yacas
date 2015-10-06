@@ -1,7 +1,7 @@
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>{% if page.meta_title %}{{ page.meta_title }}{% elsif page.title %}{{ page.title }}{% else %}{{ site.title }}{% endif %}</title>
-    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="{{ site.url }}{{ site.baseurl }}/assets/img/favicon.ico">
 	<link rel="stylesheet" type="text/css" href="{{ site.url }}{{ site.baseurl }}/assets/css/styles_feeling_responsive.css" />
 	<script src="{{ site.url }}{{ site.baseurl }}/assets/js/modernizr.min.js"></script>
 	
