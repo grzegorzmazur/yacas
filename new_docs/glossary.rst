@@ -58,21 +58,23 @@ Glossary
   CAS
     Abbreviation for "computer algebra system". {Yacas} is a CAS.
 
+
   constant
-    Constants such as {I}, {Pi} or {GoldenRatio} are symbolic atoms
-    that are specially interpreted by {Yacas}.  For example, there
+  cached constant
+    Constants such as :data:`Pi` or :data:`GoldenRatio` are symbolic atoms
+    that are specially interpreted by yacas.  For example, there
     are simplification rules that transform expressions such as
-    {Sin(Pi)} into {0}.  When requesting a numerical evaluation of a
+    ``Sin(Pi)`` into ``0``.  When requesting a numerical evaluation of a
     constant, the numerical value is given to the current value as
-    set with {N}.
+    set with :func:`N`.
 
     Some constants take a long time to compute and therefore they are
     cached at the highest precision computed so far.  These are the
-    "cached constants".
+    `cached constants`.
 
-    .. seealso:: :func:`N`, :func:`CachedConstant`, :func:`Pi`,
-                 :func:`GoldenRatio`, :func:`CatalanConstant`,
-                 :func:`gamma`, :func:`I`
+    .. seealso:: :func:`N`, :func:`CachedConstant`, :data:`Pi`,
+                 :data:`GoldenRatio`, :data:`CatalanConstant`,
+                 :data:`gamma`
 
   equation 
     To denote symbolic equations, the operator {==} is used.  This

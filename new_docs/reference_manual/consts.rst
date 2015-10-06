@@ -61,7 +61,7 @@ Mathematical constants
    :data:`Infinity` represents infinitely large values. It can be the
    result of certain calculations.
 
-   Note that for most analytic functions Yacas understands
+   Note that for most analytic functions yacas understands
    :data:`Infinity` as a positive number.  Thus ``Infinity*2`` will
    return ``Infinity``, and ``a < Infinity`` will evaluate to
    :data:`True`.
@@ -79,13 +79,10 @@ Mathematical constants
 
    mathematical constant, :math:`\pi`
 
-   :data:`Pi` symbolically represents the exact value of
-   :math:`\pi`. When the :func:`N()` function is used, :data:`Pi`
-   evaluates to a numerical value according to the current precision.
-   It is better to use :data:`Pi` than ``N(Pi)`` except in numerical
-   calculations, because exact simplification will be possible.
+   The :term:`constant` represents the `number π <https://en.wikipedia.org/wiki/Pi>`_.
+   It is available symbolically as ``Pi`` or numerically through ``N(Pi)``.
 
-   This is a "cached constant" which is recalculated only when
+   This is a :term:`cached constant` which is recalculated only when
    precision is increased.
 
    :Example:
@@ -107,7 +104,7 @@ Mathematical constants
 
    :data:`Undefined` is a token that can be returned by a function
    when it considers its input to be invalid or when no meaningful
-   answer can be given. The result is then "undefined".
+   answer can be given. The result is then undefined.
 
    Most functions also return :data:`Undefined` when evaluated on it.
 
@@ -128,19 +125,18 @@ Mathematical constants
 
 .. data:: GoldenRatio
 
-   the Golden Ratio
+   the golden ratio
 
-   These functions compute the "golden ratio"
-   $$phi <=> 1.6180339887 <=> (1+Sqrt(5))/2 $$.
+   The :term:`constant` represents the `golden ratio <https://en.wikipedia.org/wiki/Golden_ratio>`_
 
-   The ancient Greeks defined the "golden ratio" as follows: If one
-   divides a length 1 into two pieces $x$ and $1-x$, such that the
-   ratio of 1 to $x$ is the same as the ratio of $x$ to $1-x$, then
-   $1/x <=> 1.618$... is the "golden ratio".
+   .. math::
+      \phi := \frac{1+\sqrt{5}}{2} = 1.6180339887\ldots
 
-   The constant is available symbolically as :data:`GoldenRatio` or
-   numerically through ``N(GoldenRatio)``.  This is a "cached
-   constant" which is recalculated only when precision is increased.
+   It is available symbolically as ``GoldenRatio`` or
+   numerically through ``N(GoldenRatio)``.
+
+   This is a :term:`cached constant` which is recalculated only when precision
+   is increased.
 
    :Example:
 
@@ -164,18 +160,18 @@ Mathematical constants
 
 .. data:: Catalan
 
-   Catalan's Constant
+   Catalan's constant
 
-   These functions compute Catalan's Constant
-   $Catalan<=>0.9159655941$.
+   The :term:`constant` represents the `Catalan's constant <https://en.wikipedia.org/wiki/Catalan%27s_constant>`_
 
-   The constant is available symbolically as {Catalan} or numerically
-   through {N(Catalan)} with {N(...)} the usual operator used to try
-   to coerce an expression in to a numeric approximation of that
-   expression.  This is a "cached constant" which is recalculated only
-   when precision is increased.  The numerical value of the constant
-   can also be obtained as {N(Catalan)}.  The low-level numerical
-   computations are performed by the routine {CatalanConstNum}.
+   .. math::
+      G := \beta(2) = \sum_{n=0}^\infty\frac{-1^n}{(2n+1)^2}=0.9159655941\ldots
+
+   It is available symbolically as ``Catalan`` or numerically
+   through ``N(Catalan)``.
+
+   This is a :term:`cached constant` which is recalculated only
+   when precision is increased.
 
    :Example:
 
@@ -195,20 +191,21 @@ Mathematical constants
 
 .. data:: gamma
 
-   Euler's constant :math:`\gamma`
+   Euler–Mascheroni constant :math:`\gamma`
 
-   The constant represents the Euler's constant :math:`\gamma\approx
-   0.57722...`
+   The :term:`constant` represents the `Euler–Mascheroni constant <https://en.wikipedia.org/wiki/Euler–Mascheroni_constant>`_
 
-   The constant is available symbolically as :data:`gamma` or
-   numerically through using the usual function :func:`N` to get the
-   numeric result, ``N(gamma)``.  This is a "cached constant" which is
-   recalculated only when precision is increased. The low-level
-   numerical computations are performed by the routine
-   :func:`GammaConstNum`.
+   .. math::
+      \gamma := \lim_{n\to\infty}\left(-\ln(n)+\sum_{k=1}^n\frac{1}{k}\right)=0.5772156649\ldots
 
-   Note that Euler's :math:`\Gamma(x)` function is the capitalized
-   :func:`Gamma` in Yacas.
+   It is available symbolically as ``gamma`` or numerically
+   through ``N(gamma)``.
+
+   This is a :term:`cached constant` which is recalculated only
+   when precision is increased.
+
+   .. note::
+      Euler's :math:`\Gamma(x)` function is the capitalized :func:`Gamma` in yacas.
 
    :Example:
 
