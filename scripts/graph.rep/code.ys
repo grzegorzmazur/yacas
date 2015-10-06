@@ -21,30 +21,21 @@ Edges(Graph(vertices_IsList, edges_IsList)) <-- edges;
 Vertices(Graph(vertices_IsList, edges_IsList)) <-- vertices;
 
 AdjacencyList(g_IsGraph) <-- [
-    Local(l, edges, e, op, f, t, tl);
+    Local(l, vertices, edges, e, op, f, t);
 
     l := Association'Create();
+
+    vertices := Vertices(g);
+    ForEach (v, vertices)
+        Association'Set(l, v, {});
 
     edges := Edges(g);
 
     ForEach(e, edges) [
         If (IsList(e), e := Head(e));
         {op, f, t} := Listify(e);
-        tl := Association'Get(l, f);
-        If (tl = Undefined, [
-            tl := {};
-            Association'Set(l, f, tl);
-        ]);
-        DestructiveAppend(tl, t);
-
-        If (String(op) = "<->", [
-            tl := Association'Get(l, t);
-            If (tl = Undefined, [
-                tl := {};
-                Association'Set(l, t, tl);
-            ]);
-            DestructiveAppend(tl, f);
-        ]);
+        DestructiveAppend(Association'Get(l, f), t);
+        If (String(op) = "<->", DestructiveAppend(Association'Get(l, t), f));
     ];
 
     l;
