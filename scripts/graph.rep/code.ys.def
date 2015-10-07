@@ -6,5 +6,6 @@ AdjacencyMatrix
 AdjacencyList
 DFS
 BFS
+IsDAG
 TopologicalSort
 }

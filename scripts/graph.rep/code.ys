@@ -131,6 +131,37 @@ LocalSymbols(graph, start, func) [
     HoldArg("DFS", func);
 ];
 
+100 # IsDAG(g_IsGraph)_(Edges(g) = {}) <-- True;
+
+200 # IsDAG(g_IsGraph)_(Find(String /@ (Head /@ (Listify /@ Edges(g))), "<->") != -1) <-- False;
+
+300 # IsDAG(g_IsGraph) <-- [
+    Local(V, E, I, R, e, v, op, t, f);
+
+    V := Vertices(g);
+    E := Edges(g);
+
+    I := Association'Create();
+    ForEach (v, V)
+        Association'Set(I, v, 0);
+
+    ForEach (e, E) [
+        If (IsList(e), e := Head(e));
+        {op, f, t} := Listify(e);
+        Association'Set(I, t, Association'Get(I, t) + 1);
+    ];
+    
+    R := {};
+    ForEach (e, E) [
+        If (IsList(e), e := Head(e));
+        {op, f, t} := Listify(e);
+
+        If (Association'Get(I, f) != 0, DestructiveAppend(R, e));
+    ];
+
+    IsDAG(Graph(R));
+];
+
 LocalSymbols(graph, start, func) [
     RuleBase("BFS", {graph, start, func});
     RuleBase("BFS", {graph, func});
