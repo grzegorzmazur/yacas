@@ -8,7 +8,7 @@ NORMAL_TESTFILES = openmath.yts macro.yts arithmetic.yts			  \
 	simplify.yts solve.yts sums.yts transforms.yts radsimp.yts		  \
 	linalg.yts orthopoly.yts poly.yts numerics.yts scopestack.yts	  \
 	plots.yts GaussianIntegers.yts nummethods.yts sturm.yts			  \
-	cyclotomic.yts binaryfactors.yts padic.yts calendar.yts newly.yts
+	cyclotomic.yts binaryfactors.yts padic.yts calendar.yts newly.yts graphs.yts
 
 SPECIAL_TESTFILES = ../manmake/wester-1994.yts
 
