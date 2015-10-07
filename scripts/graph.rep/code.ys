@@ -195,6 +195,44 @@ LocalSymbols(graph, start, func) [
     HoldArg("BFS", func);
 ];
 
+TopologicalSort(g_IsGraph) <-- [
+    Local(V, E, A, I, S, L, e, v, av, op, t, f);
+
+    V := Vertices(g);
+    E := Edges(g);
+
+    I := Association'Create();
+    ForEach (v, V)
+        Association'Set(I, v, 0);
+
+    ForEach (e, E) [
+        If (IsList(e), e := Head(e));
+        {op, f, t} := Listify(e);
+        Association'Set(I, t, Association'Get(I, t) + 1);
+        If (String(op) = "<->", Association'Set(I, f, Association'Get(I, f) + 1));
+    ];
+
+    S := {};
+    ForEach (v, V)
+        If (Association'Get(I, v) = 0, DestructiveAppend(S, v));
+
+    A := AdjacencyList(g);
+
+    L := {};
+    While (Length(S) != 0) [
+        v := Head(S);
+        S := Tail(S);
+        DestructiveAppend(L, v);
+        ForEach (av, Association'Get(A, v)) [
+            Association'Set(I, av, Association'Get(I, av) - 1);
+            If (Association'Get(I, av) = 0, DestructiveAppend(S, av));
+        ];
+    ];
+
+    Check(Length(L) = Length(V), "TopologicalSort: cycle detected");
+
+    L;
+];
 
 TopologicalSort(A_IsSquareMatrix) <--
 [
