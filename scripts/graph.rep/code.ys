@@ -1,3 +1,270 @@
+Graph(edges_IsList) <-- [
+    Local(v, e, f, t);
+
+    vertices := {};
+
+    ForEach (e, edges) [
+        If (IsList(e), e := Head(e));
+        {f, t} := Tail(Listify(e));
+
+        DestructiveAppend(vertices, f);
+        DestructiveAppend(vertices, t);
+    ];
+
+    Graph(RemoveDuplicates(vertices), edges);
+];
+
+10 # IsGraph(Graph(vertices_IsList, edges_IsList)) <-- True;
+20 # IsGraph(_x) <-- False;
+
+Edges(Graph(vertices_IsList, edges_IsList)) <-- edges;
+Vertices(Graph(vertices_IsList, edges_IsList)) <-- vertices;
+
+AdjacencyList(g_IsGraph) <-- [
+    Local(l, vertices, edges, e, op, f, t);
+
+    l := Association'Create();
+
+    vertices := Vertices(g);
+    ForEach (v, vertices)
+        Association'Set(l, v, {});
+
+    edges := Edges(g);
+
+    ForEach(e, edges) [
+        If (IsList(e), e := Head(e));
+        {op, f, t} := Listify(e);
+        DestructiveAppend(Association'Get(l, f), t);
+        If (String(op) = "<->", DestructiveAppend(Association'Get(l, t), f));
+    ];
+
+    l;
+];
+
+AdjacencyMatrix(g_IsGraph) <-- [
+    Local(vertices, adjacent, n, I, A, v, a, i, j);
+
+    vertices := Vertices(g);
+
+    n := Length(vertices);
+
+    I := Association'Create();
+    For (i := 1, i <= n, i++)
+        Association'Set(I, vertices[i], i);
+
+    L := AdjacencyList(g);
+    A := ZeroMatrix(n, n);
+
+    ForEach (v, vertices) [
+        i := Association'Get(I, v);
+        adjacent := Association'Get(L, v);
+        ForEach (a, adjacent) [
+            j := Association'Get(I, a);
+            A[i][j] := 1;
+        ];
+    ];
+
+    A;
+];
+
+LocalSymbols(graph, start, func) [
+    RuleBase("DFS", {graph, start, func});
+    RuleBase("DFS", {graph, func});
+
+    DFS(g_IsGraph, _start, _func) <-- [
+        Local(vertices, A, S, v, r);
+
+        A := AdjacencyList(g);
+
+        Check(Association'Get(A, start) != Undefined, "DFS: start vertex does not exist");
+
+        r := {};
+
+        S := {start};
+
+        While (S != {}) [
+            v := Head(S);
+            DestructiveDelete(S, 1);
+
+            If (Association'Get(A, v) != Undefined, [
+                DestructiveAppend(r, Apply(func, {v}));
+                vertices := Association'Get(A, v);
+                Association'Drop(A, v); 
+                ForEach (v, vertices)
+                    DestructiveInsert(S, 1, v);
+            ]);
+        ];
+
+        r;
+    ];
+
+    DFS(g_IsGraph, _func)_(Vertices(g) != {}) <-- [
+        Local(all, vertices, A, S, v, r);
+
+        A := AdjacencyList(g);
+
+        r := {};
+
+        all := Vertices(g);
+
+        While (Length(all) != 0) [
+            S := {Head(all)};
+
+            While (S != {}) [
+                v := Head(S);
+                DestructiveDelete(S, 1);
+
+                If (Association'Get(A, v) != Undefined, [
+                    DestructiveDelete(all, Find(all, v));
+                    DestructiveAppend(r, Apply(func, {v}));
+                    vertices := Association'Get(A, v);
+                    Association'Drop(A, v);
+                    ForEach (v, vertices)
+                        DestructiveInsert(S, 1, v);
+                ]);
+            ];
+        ];
+
+        r;
+    ];
+
+    HoldArg("DFS", func);
+];
+
+100 # IsDAG(g_IsGraph)_(Edges(g) = {}) <-- True;
+
+200 # IsDAG(g_IsGraph)_(Find(String /@ (Head /@ (Listify /@ Edges(g))), "<->") != -1) <-- False;
+
+300 # IsDAG(g_IsGraph) <-- [
+    Local(V, E, I, R, e, v, op, t, f);
+
+    V := Vertices(g);
+    E := Edges(g);
+
+    I := Association'Create();
+    ForEach (v, V)
+        Association'Set(I, v, 0);
+
+    ForEach (e, E) [
+        If (IsList(e), e := Head(e));
+        {op, f, t} := Listify(e);
+        Association'Set(I, t, Association'Get(I, t) + 1);
+    ];
+    
+    R := {};
+    ForEach (e, E) [
+        If (IsList(e), e := Head(e));
+        {op, f, t} := Listify(e);
+
+        If (Association'Get(I, f) != 0, DestructiveAppend(R, e));
+    ];
+
+    IsDAG(Graph(R));
+];
+
+LocalSymbols(graph, start, func) [
+    RuleBase("BFS", {graph, start, func});
+    RuleBase("BFS", {graph, func});
+
+    BFS(g_IsGraph, _start, _func) <-- [
+        Local(vertices, A, Q, v, r);
+
+        A := AdjacencyList(g);
+
+        Check(Association'Get(A, start) != Undefined, "BFS: start vertex does not exist");
+
+        r := {};
+
+        Q := {start};
+
+        While (Length(Q) != 0) [
+            v := Head(Q);
+            DestructiveDelete(Q, 1);
+
+            If (Association'Get(A, v) != Undefined, [
+                DestructiveAppend(r, Apply(func, {v}));
+                vertices := Association'Get(A, v);
+                Association'Drop(A, v); 
+                ForEach (v, vertices)
+                    DestructiveAppend(Q, v);
+            ]);
+        ];
+
+        r;
+    ];
+
+    BFS(g_IsGraph, _func)_(Vertices(g) != {}) <-- [
+        Local(all, vertices, A, Q, v, r);
+
+        A := AdjacencyList(g);
+
+        r := {};
+
+        all := Vertices(g);
+
+        While (Length(all) != 0) [
+            Q := {Head(all)};
+
+            While (Length(Q) != 0) [
+                v := Head(Q);
+                DestructiveDelete(Q, 1);
+
+                If (Association'Get(A, v) != Undefined, [
+                    DestructiveDelete(all, Find(all, v));
+                    DestructiveAppend(r, Apply(func, {v}));
+                    vertices := Association'Get(A, v);
+                    Association'Drop(A, v);
+                    ForEach (v, vertices)
+                        DestructiveAppend(Q, v);
+                ]);
+            ];
+        ];
+
+        r;
+    ];
+
+    HoldArg("BFS", func);
+];
+
+TopologicalSort(g_IsGraph) <-- [
+    Local(V, E, A, I, S, L, e, v, av, op, t, f);
+
+    V := Vertices(g);
+    E := Edges(g);
+
+    I := Association'Create();
+    ForEach (v, V)
+        Association'Set(I, v, 0);
+
+    ForEach (e, E) [
+        If (IsList(e), e := Head(e));
+        {op, f, t} := Listify(e);
+        Association'Set(I, t, Association'Get(I, t) + 1);
+        If (String(op) = "<->", Association'Set(I, f, Association'Get(I, f) + 1));
+    ];
+
+    S := {};
+    ForEach (v, V)
+        If (Association'Get(I, v) = 0, DestructiveAppend(S, v));
+
+    A := AdjacencyList(g);
+
+    L := {};
+    While (Length(S) != 0) [
+        v := Head(S);
+        S := Tail(S);
+        DestructiveAppend(L, v);
+        ForEach (av, Association'Get(A, v)) [
+            Association'Set(I, av, Association'Get(I, av) - 1);
+            If (Association'Get(I, av) = 0, DestructiveAppend(S, av));
+        ];
+    ];
+
+    Check(Length(L) = Length(V), "TopologicalSort: cycle detected");
+
+    L;
+];
+
 TopologicalSort(A_IsSquareMatrix) <--
 [
     Local(mark, n, L, visit);

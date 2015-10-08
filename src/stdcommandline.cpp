@@ -15,7 +15,7 @@ void CStdCommandLine::ShowLine(const std::string& prompt, unsigned cursor)
 {
 }
 
-LispInt CStdCommandLine::GetKey()
+char32_t CStdCommandLine::GetKey()
 {
     return '\n';
 }
@@ -32,6 +32,7 @@ void CStdCommandLine::ReadLine(const std::string& prompt)
         if (!std::cin.good())
             iLine = "quit";
 
+    // FIXME: utf-8 compliant checking for continuation
     } while (iLine.empty() || iLine.back() == '\\');
 }
 

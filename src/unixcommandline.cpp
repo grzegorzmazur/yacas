@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <stdexcept>
 
 
 
@@ -26,7 +27,7 @@ void CUnixCommandLine::ShowLine(const std::string& prompt, unsigned cursor)
 {
     struct winsize w;
     ioctl(0, TIOCGWINSZ, &w);
-
+    
     const std::size_t prompt_len = prompt.length();
 
     const LispInt l = (cursor + prompt_len) / w.ws_col;
@@ -70,6 +71,12 @@ CUnixCommandLine::CUnixCommandLine():
     _last_line(0),
     _max_lines(1024)
 {
+    struct winsize w;
+    int rc = ioctl(0, TIOCGWINSZ, &w);
+
+    if (rc < 0 || w.ws_col == 0)
+        throw std::runtime_error("dumb terminal");
+
     /* set termio so we can do our own input processing */
     tcgetattr(0, &orig_termio);
     rl_termio = orig_termio;
@@ -134,87 +141,92 @@ void CUnixCommandLine::MaxHistoryLinesSaved(std::size_t n)
 }
 
 
-LispInt CUnixCommandLine::GetKey()
+char32_t CUnixCommandLine::GetKey()
 {
-    LispInt c = getc(stdin);
+    int c = getc(stdin);
 
     if (feof(stdin))
         exit(0);
 
+    char32_t ch = 0;
+
     if (c == term_chars[VERASE]) /* Backspace */
-    {
-        c = eBackSpace;
-    }
+        ch = eBackSpace;
     else if (c == term_chars[VEOF]) /* delete */
-    {
-        c = eDelete;
-    }
-    else
-    {
-        switch (c)
-        {
-        case 9: //  9   tab
-            c = eTab;
-            break;
-        case 10:        /* Enter */
-            c = eEnter;
-            break;
-        case 001:    /* ^A  (unix home) */
-            c = eHome;
-            break;
-        case 005:    /* ^E  (unix end) */
-            c = eEnd;
-            break;
-        case 004:    /* ^D  (unix delete) */
-        case 127:
-            c = eDelete;
-            break;
-        case  8:              /* ^H  (unix backspace) */
-            c = eBackSpace;
-            break;
-        case 11:              /* ^K (unix kill to the end of line */
-            c = eKill;
-            break;
-        case 033:
+        ch = eDelete;
+    else {
+        switch (c) {
+            case 9: //  9   tab
+                ch = eTab;
+                break;
+            case 10: /* Enter */
+                ch = eEnter;
+                break;
+            case 001: /* ^A  (unix home) */
+                ch = eHome;
+                break;
+            case 005: /* ^E  (unix end) */
+                ch = eEnd;
+                break;
+            case 004: /* ^D  (unix delete) */
+            case 127:
+                ch = eDelete;
+                break;
+            case 8: /* ^H  (unix backspace) */
+                ch = eBackSpace;
+                break;
+            case 11: /* ^K (unix kill to the end of line */
+                ch = eKill;
+                break;
+            case 033:
             {
                 c = getc(stdin); /* check for CSI */
 
-                switch (c)
-                {
-                case 27:
-                    c=eEscape;
-                    break;
-                case '[':
-                case 79:
+                switch (c) {
+                    case 27:
+                        ch = eEscape;
+                        break;
+                    case '[':
+                    case 79:
                     {
                         c = getc(stdin); /* get command character */
-                        switch (c)
-                        {
-                        case 'D': /* left arrow key */
-                            c = eLeft;
-                            break;
-                        case 'C': /* right arrow key */
-                            c = eRight;
-                            break;
-                        case 'A': /* up arrow key */
-                            c = eUp;
-                            break;
-                        case 'B': /* down arrow key */
-                            c = eDown;
-                            break;
-                        case 'H': /* home */
-                            c = eHome;
-                            break;
-                        case 'F': /* end */
-                            c = eEnd;
-                            break;
+                        switch (c) {
+                            case 'D': /* left arrow key */
+                                ch = eLeft;
+                                break;
+                            case 'C': /* right arrow key */
+                                ch = eRight;
+                                break;
+                            case 'A': /* up arrow key */
+                                ch = eUp;
+                                break;
+                            case 'B': /* down arrow key */
+                                ch = eDown;
+                                break;
+                            case 'H': /* home */
+                                ch = eHome;
+                                break;
+                            case 'F': /* end */
+                                ch = eEnd;
+                                break;
                         }
+                        break;
                     }
-                    break;
                 }
+                break;
             }
-            break;
+            default:
+            {
+                char p[4] = {static_cast<char>(c), 0, 0, 0};
+                char* q = p + 1;
+                while (!utf8::is_valid(p, q))
+                    *q++ = getc(stdin);
+
+                utf8::utf8to32(p, q, &ch);
+                
+                break;
+            }
         }
     }
-    return c;
+    return ch;
 }

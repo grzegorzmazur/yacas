@@ -183,7 +183,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
 
   boolean calculating = false;
 
-  ByteArrayOutputStream stdoutput = null;
+  StringWriter stdoutput = null;
   CYacas yacas = null;
 
   @Override
@@ -191,7 +191,8 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
   {
     clearOutputLines();
 
-    stdoutput = new ByteArrayOutputStream();
+    
+    stdoutput = new StringWriter();
     yacas = new CYacas(stdoutput);
     yacas.env.iCurrentInput = new CachedStdFileInput(yacas.env.iInputStatus);
 
@@ -803,7 +804,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       {
         paint(getGraphics());
       }
-      stdoutput.reset();
+      stdoutput.getBuffer().setLength(0);
       String response = yacas.Evaluate(inputLine);
       calculating = false;
 
@@ -1674,7 +1675,7 @@ public class ConsoleApplet extends Applet implements KeyListener, FocusListener,
       }
       else
       {
-        stdoutput.reset();
+        stdoutput.getBuffer().setLength(0);
         String response = yacas.Evaluate(expression);
         calculating = false;
         AddOutputLine(stdoutput.toString());

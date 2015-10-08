@@ -28,6 +28,7 @@ set (JYACAS_SRCS ${CMAKE_CURRENT_BINARY_DIR}/CVersion.java
          JavaYacas/net/sf/yacas/GenericClass.java
          JavaYacas/net/sf/yacas/LispGenericClass.java
          JavaYacas/net/sf/yacas/ArrayClass.java
+         JavaYacas/net/sf/yacas/AssociationClass.java
          JavaYacas/net/sf/yacas/LispInFixOperator.java
          JavaYacas/net/sf/yacas/LispPtr.java
          JavaYacas/net/sf/yacas/LispObject.java

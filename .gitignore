@@ -9,3 +9,5 @@ CMakeCache.txt
 /Debug/
 /Yacas.build/
 /Yacas.xcodeproj/
+/JavaYacas/CVersion.java
+/TEST-net.sf.yacas.YacasTest.xml

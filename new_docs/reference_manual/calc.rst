@@ -470,13 +470,13 @@ equations.
 
    .. seealso:: :func:`D`, :func:`UniqueConstant`
 
-.. function:: bodied Limit(var, val) expr
+.. function:: bodied Limit(expr, var, val)
 
    limit of an expression
 
-   :param var: a variable
-   :param val: a number
-   :param dir: a direction ({Left} or {Right})
+   :param var: variable
+   :param val: number or ``Infinity``
+   :param dir: direction (``Left`` or ``Right``)
    :param expr: an expression
 
    This command tries to determine the value that the expression

@@ -56,7 +56,7 @@ private:
   LispEnvironment iEnvironment;
 
 public:
-  CachedStdUserInput input;
+  StdUserInput input;
 };
 
 

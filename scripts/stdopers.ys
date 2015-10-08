@@ -45,6 +45,7 @@ Postfix("!", 30);
 Postfix("!!", 30);
 Infix("***", 50);
 Bodied("Integrate",60000);
+Bodied("NIntegrate",60000);
 
 Bodied("Limit",60000);
 
@@ -107,4 +108,6 @@ Bodied(Assert, 60000);
 // Defining very simple functions, in scripts that can be converted to plugin.
 Bodied("Defun",0);
 
-
+// Operators for defining graph edges
+Infix("<->",90);
+Infix("->",90);

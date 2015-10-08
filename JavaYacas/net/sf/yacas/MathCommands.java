@@ -246,6 +246,9 @@ class MathCommands
          "=",
          new YacasEvaluator(new LispEquals(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
     aEnvironment.CoreCommands().put(
+         "StrictTotalOrder",
+         new YacasEvaluator(new LispStrictTotalOrder(), 2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
          "LessThan",
          new YacasEvaluator(new LispLessThan(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
     aEnvironment.CoreCommands().put(
@@ -434,6 +437,21 @@ class MathCommands
     aEnvironment.CoreCommands().put(
          "Array'Set",
          new YacasEvaluator(new GenArraySet(),3, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Association'Create",
+         new YacasEvaluator(new GenAssociationCreate(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Association'Size",
+         new YacasEvaluator(new GenAssociationSize(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Association'Get",
+         new YacasEvaluator(new GenAssociationGet(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Association'Set",
+         new YacasEvaluator(new GenAssociationSet(),3, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Association'Drop",
+         new YacasEvaluator(new GenAssociationDrop(), 2, YacasEvaluator.Fixed|YacasEvaluator.Function));
     aEnvironment.CoreCommands().put(
          "CustomEval",
          new YacasEvaluator(new LispCustomEval(),4, YacasEvaluator.Fixed|YacasEvaluator.Macro));
@@ -991,7 +1009,7 @@ class MathCommands
 
       str = LispStandard.InternalUnstringify(str);
 
-      aEnvironment.iCurrentOutput.write(str.getBytes());
+      aEnvironment.iCurrentOutput.write(str);
 
       // pass last printed character to the current printer
       aEnvironment.iCurrentPrinter.RememberLastChar(str.charAt(str.length()-1));  // hacky hacky
@@ -1008,7 +1026,7 @@ class MathCommands
       RESULT(aEnvironment, aStackTop).Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
       LispPrinter printer = new LispPrinter();
       printer.Print(RESULT(aEnvironment, aStackTop), aEnvironment.iCurrentOutput, aEnvironment);
-      aEnvironment.iCurrentOutput.write("\n".getBytes());
+      aEnvironment.iCurrentOutput.write("\n");
     }
   }
 
@@ -1160,9 +1178,9 @@ class MathCommands
       LispError.CHK_ARG_CORE(aEnvironment,aStackTop,orig != null, 1);
       String oper = LispStandard.InternalUnstringify(orig);
 
-      FileOutputStream newOutput = new FileOutputStream(new File(oper));
+      Writer newOutput = new OutputStreamWriter(new FileOutputStream(new File(oper)), "UTF-8");
 
-      OutputStream previous = aEnvironment.iCurrentOutput;
+      Writer previous = aEnvironment.iCurrentOutput;
       aEnvironment.iCurrentOutput = newOutput;
 
       try
@@ -1172,7 +1190,8 @@ class MathCommands
       catch (Exception e) { throw e; }
       finally
       {
-        aEnvironment.iCurrentOutput = previous;
+          newOutput.close();
+          aEnvironment.iCurrentOutput = previous;
       }
     }
   }
@@ -1182,13 +1201,15 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      ByteArrayOutputStream newOutput = new ByteArrayOutputStream();
-      OutputStream previous = aEnvironment.iCurrentOutput;
+      StringWriter newOutput = new StringWriter();
+      Writer previous = aEnvironment.iCurrentOutput;
       aEnvironment.iCurrentOutput = newOutput;
       try
       {
         // Evaluate the body
         aEnvironment.iEvaluator.Eval(aEnvironment, RESULT(aEnvironment, aStackTop), ARGUMENT(aEnvironment, aStackTop, 1));
+
+        newOutput.close();
 
         //Return the result
         RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,aEnvironment.HashTable().LookUpStringify(newOutput.toString())));
@@ -1206,7 +1227,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      OutputStream previous = aEnvironment.iCurrentOutput;
+      Writer previous = aEnvironment.iCurrentOutput;
       aEnvironment.iCurrentOutput = aEnvironment.iInitialOutput;
       try
       {
@@ -1453,9 +1474,11 @@ class MathCommands
       }
       GenericClass gen = ARGUMENT(aEnvironment, aStackTop, 1).Get().Generic();
       if (gen != null)
-        if (gen.TypeName().equals("\"Array\""))
-        {
+        if (gen.TypeName().equals("\"Array\"")) {
           int size=((ArrayClass)gen).Size();
+          RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,""+size));
+        } else if (gen.TypeName().equals("\"Association\"")) {
+          int size=((AssociationClass)gen).Size();
           RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment,""+size));
         }
     //  CHK_ISLIST_CORE(aEnvironment,aStackTop,ARGUMENT(aEnvironment, aStackTop, 1),1);
@@ -2140,6 +2163,20 @@ class MathCommands
     }
   }
 
+    class LispStrictTotalOrder extends YacasEvalCaller {
+
+        @Override
+        public void Eval(LispEnvironment aEnvironment, int aStackTop) throws Exception {
+            LispPtr evaluated1 = new LispPtr();
+            evaluated1.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
+            LispPtr evaluated2 = new LispPtr();
+            evaluated2.Set(ARGUMENT(aEnvironment, aStackTop, 2).Get());
+
+            LispStandard.InternalBoolean(aEnvironment, RESULT(aEnvironment, aStackTop),
+                    LispStandard.InternalStrictTotalOrder(aEnvironment, evaluated1, evaluated2));
+        }
+    }
+
   abstract class LispLexCompare2
   {
     abstract boolean lexfunc(String f1, String f2, LispHashTable aHashTable,int aPrecision);
@@ -2698,15 +2735,15 @@ class MathCommands
       og.join(250);
       ArrayList<String> output = og.shutdown();
       for (String s: output) {
-          aEnvironment.iCurrentOutput.write(s.getBytes());
-          aEnvironment.iCurrentOutput.write("\n".getBytes());
+          aEnvironment.iCurrentOutput.write(s);
+          aEnvironment.iCurrentOutput.write("\n");
       }
       // Wait (at most 250 ms) for the process error stream thread to die.
       eg.join(250);
       ArrayList<String> errors = eg.shutdown();
       for (String s: errors) {
-          aEnvironment.iCurrentOutput.write(s.getBytes());
-          aEnvironment.iCurrentOutput.write("\n".getBytes());
+          aEnvironment.iCurrentOutput.write(s);
+          aEnvironment.iCurrentOutput.write("\n");
       }
     }
   }
@@ -3311,12 +3348,107 @@ class MathCommands
     }
   }
 
+    class GenAssociationCreate extends YacasEvalCaller {
+
+        @Override
+        public void Eval(LispEnvironment env, int stack_top) throws Exception {
+            AssociationClass a = new AssociationClass(env);
+            RESULT(env, stack_top).Set(LispGenericClass.New(a));
+        }
+    }
+
+    class GenAssociationSize extends YacasEvalCaller {
+
+        @Override
+        public void Eval(LispEnvironment aEnvironment, int aStackTop) throws Exception {
+            LispPtr evaluated = new LispPtr();
+            evaluated.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
+
+            GenericClass gen = evaluated.Get().Generic();
+            LispError.CHK_ARG_CORE(aEnvironment, aStackTop, gen != null, 1);
+            LispError.CHK_ARG_CORE(aEnvironment, aStackTop, gen.TypeName().equals("\"Association\""), 1);
+            int size = ((AssociationClass)gen).Size();
+            RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, "" + size));
+        }
+    }
+
+    class GenAssociationGet extends YacasEvalCaller {
+
+        @Override
+        public void Eval(LispEnvironment env, int stack_top) throws Exception {
+            LispPtr evaluated = new LispPtr();
+            evaluated.Set(ARGUMENT(env, stack_top, 1).Get());
+
+            GenericClass gen = evaluated.Get().Generic();
+            LispError.CHK_ARG_CORE(env, stack_top, gen != null, 1);
+            LispError.CHK_ARG_CORE(env, stack_top, gen.TypeName().equals("\"Association\""), 1);
+
+            LispPtr k = new LispPtr();
+            k.Set(ARGUMENT(env, stack_top, 2).Get());
+
+            LispError.CHK_ARG_CORE(env, stack_top, k.Get() != null, 2);
+
+            LispObject v = ((AssociationClass)gen).GetElement(k.Get());
+
+            if (v != null)
+                RESULT(env, stack_top).Set(v.Copy(false));
+            else
+                RESULT(env, stack_top).Set(LispAtom.New(env, "Undefined"));
+        }
+    }
+
+    class GenAssociationSet extends YacasEvalCaller {
+
+        @Override
+        public void Eval(LispEnvironment aEnvironment, int aStackTop) throws Exception {
+            LispPtr evaluated = new LispPtr();
+            evaluated.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
+
+            GenericClass gen = evaluated.Get().Generic();
+            LispError.CHK_ARG_CORE(aEnvironment, aStackTop, gen != null, 1);
+            LispError.CHK_ARG_CORE(aEnvironment, aStackTop, gen.TypeName().equals("\"Association\""), 1);
+
+            LispPtr k = new LispPtr();
+            k.Set(ARGUMENT(aEnvironment, aStackTop, 2).Get());
+
+            LispError.CHK_ARG_CORE(aEnvironment, aStackTop, k.Get() != null, 2);
+
+            LispPtr v = new LispPtr();
+            v.Set(ARGUMENT(aEnvironment, aStackTop, 3).Get());
+            ((AssociationClass)gen).SetElement(k.Get(), v.Get());
+            LispStandard.InternalTrue(aEnvironment, RESULT(aEnvironment, aStackTop));
+        }
+    }
+
+    class GenAssociationDrop extends YacasEvalCaller {
+
+        @Override
+        public void Eval(LispEnvironment env, int stack_top) throws Exception {
+            LispPtr evaluated = new LispPtr();
+            evaluated.Set(ARGUMENT(env, stack_top, 1).Get());
+
+            GenericClass gen = evaluated.Get().Generic();
+            LispError.CHK_ARG_CORE(env, stack_top, gen != null, 1);
+            LispError.CHK_ARG_CORE(env, stack_top, gen.TypeName().equals("\"Association\""), 1);
+
+            LispPtr k = new LispPtr();
+            k.Set(ARGUMENT(env, stack_top, 2).Get());
+
+            LispError.CHK_ARG_CORE(env, stack_top, k.Get() != null, 2);
+
+            if (((AssociationClass)gen).DropElement(k.Get()))
+                LispStandard.InternalTrue(env, RESULT(env, stack_top));
+            else
+                LispStandard.InternalFalse(env, RESULT(env, stack_top));
+        }
+    }
+
   class LispCustomEval extends YacasEvalCaller
   {
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : CustomEval".getBytes());////TODO fixme
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : CustomEval");////TODO fixme
       throw new YacasException("Function not yet supported");
     }
   }
@@ -3326,7 +3458,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : CustomEvalExpression".getBytes());////TODO fixme
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : CustomEvalExpression");////TODO fixme
       throw new YacasException("Function not yet supported");
     }
   }
@@ -3336,7 +3468,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : CustomEvalResult".getBytes());////TODO fixme
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : CustomEvalResult");////TODO fixme
       throw new YacasException("Function not yet supported");
     }
   }
@@ -3346,7 +3478,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispCustomEvalLocals".getBytes());////TODO fixme
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispCustomEvalLocals");////TODO fixme
       throw new YacasException("Function not yet supported");
     }
   }
@@ -3356,7 +3488,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispCustomEvalStop".getBytes());////TODO fixme
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispCustomEvalStop");////TODO fixme
       throw new YacasException("Function not yet supported");
     }
   }
@@ -3366,7 +3498,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispTraceRule".getBytes());////TODO fixme
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispTraceRule");////TODO fixme
       throw new YacasException("Function not yet supported");
     }
   }
@@ -3376,7 +3508,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : TraceStack".getBytes());////TODO fixme
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : TraceStack");////TODO fixme
       throw new YacasException("Function not yet supported");
     }
   }
@@ -3893,11 +4025,13 @@ class MathCommands
         InputStatus oldStatus = new InputStatus(aEnvironment.iInputStatus);
         aEnvironment.iInputStatus.SetTo("STRING");
 
-        ByteArrayOutputStream resultStream = new ByteArrayOutputStream();
+        StringWriter resultStream = new StringWriter();
 
         LispStandard.DoPatchString(unpatchedString, resultStream, aEnvironment);
 
         aEnvironment.iInputStatus.RestoreFrom(oldStatus);
+
+        resultStream.close();
 
         RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, resultStream.toString()));
     }
@@ -3957,7 +4091,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispCommonLispTokenizer".getBytes());//TODO FIXME
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispCommonLispTokenizer");//TODO FIXME
       throw new YacasException("Function not yet supported");
     }
   }
@@ -4236,7 +4370,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispHistorySize".getBytes());//TODO FIXME
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispHistorySize");//TODO FIXME
       throw new YacasException("Function not yet supported");
     }
   }
@@ -4246,7 +4380,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispStackSize".getBytes());//TODO FIXME
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispStackSize");//TODO FIXME
       throw new YacasException("Function not yet supported");
     }
   }
@@ -4256,7 +4390,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispIsPromptShown".getBytes());//TODO FIXME
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispIsPromptShown");//TODO FIXME
       throw new YacasException("Function not yet supported");
     }
   }
@@ -4266,7 +4400,7 @@ class MathCommands
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
     {
-      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispReadCmdLineString".getBytes());//TODO FIXME
+      aEnvironment.iCurrentOutput.write("Function not yet implemented : LispReadCmdLineString");//TODO FIXME
       throw new YacasException("Function not yet supported");
     }
   }

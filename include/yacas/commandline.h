@@ -20,10 +20,11 @@
 
 #include "lispstring.h"
 #include "yacasbase.h"
+#include "utf8.h"
 
 enum ESpecialChars
 {
-    eDelete     = 0x1000,
+    eDelete     = utf8::internal::CODE_POINT_MAX + 1,
     eBackSpace,
     eLeft,
     eRight,
@@ -90,7 +91,7 @@ public: //platform stuff
   /** return a key press, which is either an ascii value, or one
    * of the values specified in ESpecialChars
    */
-  virtual LispInt GetKey() = 0;
+  virtual char32_t GetKey() = 0;
   /// Go to the next line on the console (carriage return/line feed).
   virtual void NewLine()   = 0;
   /** Show the current line (in iSubLine), with the required prompt,

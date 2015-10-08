@@ -1,11 +1,11 @@
 package net.sf.yacas;
 
-import java.io.OutputStream;
+import java.io.Writer;
 
 
 class LispPrinter
 {
-  public void Print(LispPtr aExpression, OutputStream aOutput, LispEnvironment aEnvironment) throws Exception
+  public void Print(LispPtr aExpression, Writer aOutput, LispEnvironment aEnvironment) throws Exception
   {
     PrintExpression(aExpression, aOutput, aEnvironment,0);
   }
@@ -13,7 +13,7 @@ class LispPrinter
   {
   }
 
-   void PrintExpression(LispPtr aExpression, OutputStream aOutput,
+   void PrintExpression(LispPtr aExpression, Writer aOutput,
                         LispEnvironment aEnvironment,int aDepth /* =0 */) throws Exception
    {
     LispPtr iter = new LispPtr();
@@ -26,8 +26,8 @@ class LispPrinter
 
         if (string != null)
         {
-            aOutput.write(string.getBytes());
-            aOutput.write(" ".getBytes());
+            aOutput.write(string);
+            aOutput.write(" ");
         }
         // else print "(", print sublist, and print ")"
         else if (iter.Get().SubList() != null)
@@ -36,25 +36,25 @@ class LispPrinter
       {
         Indent(aOutput,aDepth+1);
       }
-            aOutput.write("(".getBytes());
+            aOutput.write("(");
             PrintExpression((iter.Get().SubList()),aOutput, aEnvironment,aDepth+1);
-            aOutput.write(")".getBytes());
+            aOutput.write(")");
       item=0;
         }
         else
         {
-            aOutput.write("[GenericObject]".getBytes());
+            aOutput.write("[GenericObject]");
         }
         iter = (iter.Get().Next());
   item++;
     } // print next element
    }
 
-    void Indent(OutputStream aOutput, int aDepth) throws Exception {
-        aOutput.write("\n".getBytes());
+    void Indent(Writer aOutput, int aDepth) throws Exception {
+        aOutput.write("\n");
         int i;
         for (i = aDepth; i > 0; i--) {
-            aOutput.write("  ".getBytes());
+            aOutput.write("  ");
         }
     }
 };

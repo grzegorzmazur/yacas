@@ -69,6 +69,13 @@
 #include <shlwapi.h>
 #endif
 
+#if defined (__FreeBSD__) || defined (__DragonFly__)
+#include <stddef.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/sysctl.h>
+#endif
+
 #include "yacas/stdcommandline.h"
 #include "yacas/standard.h"
 #include "yacas/numbers.h"
@@ -1005,6 +1012,15 @@ int main(int argc, char** argv)
     char path[PATH_MAX];
     realpath(buf, path);
     root_dir = dirname(dirname(path));
+#elif defined (__FreeBSD__) || defined (__DragonFly__)
+    int mib[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 };
+    char buf[PATH_MAX] = {};
+    size_t cb = sizeof(buf);
+    if (sysctl(mib, 4, buf, &cb, NULL, 0) != 0) {
+        std::cerr << "yacas: failed to locate the executable, bailing out\n";
+        exit(EXIT_FAILURE);
+    }
+    root_dir = dirname(dirname(buf));
 #elif defined(__linux__)
     {
         struct stat sb;
@@ -1031,7 +1047,6 @@ int main(int argc, char** argv)
 
         root_dir = dirname(dirname(buf.data()));
     }
-
 #elif defined(_WIN32)
     char buf[MAX_PATH];
     if (!GetModuleFileName(nullptr, buf, MAX_PATH)) {
@@ -1072,10 +1087,16 @@ int main(int argc, char** argv)
 
     signal(SIGINT, InterruptHandler);
 
+    if (!use_plain) {
+        try {
+            commandline = new FANCY_COMMAND_LINE;
+        } catch (const std::runtime_error&) {
+            use_plain = true;
+        }
+    }
+
     if (use_plain)
-        commandline = NEW CStdCommandLine;
-    else
-        commandline = NEW FANCY_COMMAND_LINE;
+        commandline = new CStdCommandLine;
 
     std::string inprompt;
     std::string outprompt;

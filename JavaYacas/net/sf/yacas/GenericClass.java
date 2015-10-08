@@ -1,13 +1,6 @@
 package net.sf.yacas;
 
-
 /// Abstract class which can be put inside a LispGenericClass.
-abstract class GenericClass
-{
-    public  GenericClass()
-  {
-  }
-    public abstract String Send(LispArgList aArgList);
+abstract class GenericClass {
     public abstract String TypeName();
 }
-

@@ -12,7 +12,7 @@ PatternClass::~PatternClass()
     delete iPatternMatcher;
 }
 
-const LispChar * PatternClass::TypeName()
+const LispChar * PatternClass::TypeName() const
 {
     return "\"Pattern\"";
 }

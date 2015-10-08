@@ -1,7 +1,7 @@
 package net.sf.yacas;
 
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -283,6 +283,104 @@ class LispStandard
     }
   }
 
+    public static boolean InternalStrictTotalOrder(LispEnvironment env, LispPtr e1, LispPtr e2) throws Exception
+    {
+        if (e1.Get() == e2.Get()) {
+            return false;
+        }
+
+        if (e1.Get() == null && e2.Get() != null) {
+            return true;
+        }
+
+        if (e1.Get() != null && e2.Get() == null) {
+            return false;
+        }
+
+        BigNumber n1 = e1.Get().Number(env.Precision());
+        BigNumber n2 = e2.Get().Number(env.Precision());
+
+        if (n1 != null && n2 == null) {
+            return true;
+        }
+
+        if (n1 == null && n2 != null) {
+            return false;
+        }
+
+        if (n1 != null && n2 != null) {
+            if (n1.LessThan(n2)) {
+                return true;
+            }
+            if (!n1.Equals(n2)) {
+                return InternalStrictTotalOrder(env, e1.Get().Next(), e2.Get().Next());
+            }
+        }
+
+        String s1 = e1.Get().String();
+        String s2 = e2.Get().String();
+
+        if (s1 != null && s2 == null) {
+            return true;
+        }
+
+        if (s1 == null && s2 != null) {
+            return false;
+        }
+
+        if (s1 != null && s2 != null) {
+            int c = s1.compareTo(s2);
+
+            if (c != 0) {
+                return c < 0;
+            }
+
+            return InternalStrictTotalOrder(env, e1.Get().Next(), e2.Get().Next());
+        }
+
+        LispPtr l1 = e1.Get().SubList();
+        LispPtr l2 = e2.Get().SubList();
+
+        if (l1 != null && l2 == null) {
+            return true;
+        }
+
+        if (l1 == null && l2 != null) {
+            return false;
+        }
+
+        if (l1 != null && l2 != null) {
+            LispIterator i1 = new LispIterator(l1);
+            LispIterator i2 = new LispIterator(l2);
+
+            while (i1.GetObject() != null && i2.GetObject() != null) {
+                LispPtr p1 = i1.Ptr();
+                LispPtr p2 = i2.Ptr();
+
+                if (InternalEquals(env, p1, p2)) {
+                    i1.GoNext();
+                    i2.GoNext();
+
+                    continue;
+                }
+
+                return InternalStrictTotalOrder(env, p1, p2);
+            }
+
+            if (i1.GetObject() != null) {
+                return false;
+            }
+
+            if (i2.GetObject() != null) {
+                return true;
+            }
+
+            return false;
+        }
+
+        // FIXME: deal with generics
+        return false;
+    }
 
   public static boolean InternalEquals(LispEnvironment aEnvironment, LispPtr aExpression1, LispPtr aExpression2) throws Exception
   {
@@ -481,7 +579,7 @@ class LispStandard
   }
 
     public static void DoPatchString(String unpatchedString,
-                                     OutputStream aOutput,
+                                     Writer aOutput,
                                      LispEnvironment aEnvironment) throws Exception
     {
         String[] tags = unpatchedString.split("\\?\\>");
@@ -489,13 +587,13 @@ class LispStandard
             for (int x = 0; x < tags.length; x++) {
                 String[] tag = tags[x].split("\\<\\?");
                 if (tag.length > 1) {
-                    aOutput.write(tag[0].getBytes());
+                    aOutput.write(tag[0]);
                     String scriptCode = tag[1].trim();
                     StringBuffer scriptCodeBuffer =
                         new StringBuffer(scriptCode);
                     StringInput scriptStream =
                         new StringInput(scriptCodeBuffer, aEnvironment.iInputStatus);
-                    OutputStream previous = aEnvironment.iCurrentOutput;
+                    Writer previous = aEnvironment.iCurrentOutput;
                     try {
                         aEnvironment.iCurrentOutput = aOutput;
                         LispStandard.DoInternalLoad(aEnvironment, scriptStream);
@@ -506,9 +604,9 @@ class LispStandard
                     }
                 }
             }
-            aOutput.write(tags[tags.length - 1].getBytes());
+            aOutput.write(tags[tags.length - 1]);
         } else {
-            aOutput.write(unpatchedString.getBytes());
+            aOutput.write(unpatchedString);
         }
     }
 
@@ -540,7 +638,7 @@ class LispStandard
                       LispEnvironment aEnvironment,
                       int aMaxChars) throws Exception
   {
-    ByteArrayOutputStream newOutput = new ByteArrayOutputStream();
+    StringWriter newOutput = new StringWriter();
     InfixPrinter infixprinter = new InfixPrinter(aEnvironment.iPrefixOperators,
                               aEnvironment.iInfixOperators,
                               aEnvironment.iPostfixOperators,

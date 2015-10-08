@@ -168,9 +168,10 @@ void CWin32CommandLine::MaxHistoryLinesSaved(std::size_t n)
     _max_lines = n;
 }
 
-LispInt CWin32CommandLine::GetKey(){
-    LispInt c;
-    c = _getch();
+char32_t CWin32CommandLine::GetKey()
+{
+    // FIXME: support surrogates?
+    char32_t c = _getwch();
 
     switch (c) {
     case 8:
@@ -183,7 +184,7 @@ LispInt CWin32CommandLine::GetKey(){
         c = eEnter;
         break;
     case 0xE0:
-        c = _getch();           // Get extended scan code
+        c = _getwch();           // Get extended scan code
         switch (c) {
         case 75:                // left arrow key
             c = eLeft;

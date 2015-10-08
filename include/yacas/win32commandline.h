@@ -11,11 +11,11 @@ public:
     CWin32CommandLine();
     ~CWin32CommandLine();
 
-    LispInt GetKey();
-    void NewLine();
-    void ShowLine(const std::string& prompt, unsigned cursor);
-    void Pause();
-    void MaxHistoryLinesSaved(std::size_t);
+    char32_t GetKey() override;
+    void NewLine() override;
+    void ShowLine(const std::string& prompt, unsigned cursor) override;
+    void Pause() override;
+    void MaxHistoryLinesSaved(std::size_t) override;
 
 private:
     void color_print(const std::string& str, WORD text_attrib);

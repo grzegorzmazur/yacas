@@ -2,6 +2,8 @@
 
 #include "yacas/lisperror.h"
 
+#include "yacas/utf8.h"
+
 namespace {
     static const char symbolics[] = "~`!@#$^&*-=+:<>?/\\|";
 }
@@ -18,7 +20,7 @@ bool IsSymbolic(LispChar c)
 const LispString* LispTokenizer::NextToken(LispInput& aInput,
                                            LispHashTable& aHashTable)
 {
-    char c;
+    std::uint32_t c;
 
     // skip whitespaces and comments
     for (;;) {
@@ -27,7 +29,7 @@ const LispString* LispTokenizer::NextToken(LispInput& aInput,
             return aHashTable.LookUp("");
 
         c = aInput.Next();
-
+    
         if (std::isspace(c))
             continue;
 
@@ -84,7 +86,7 @@ const LispString* LispTokenizer::NextToken(LispInput& aInput,
     // parse literal strings
     if (c == '\"') {
         std::string str;
-        str.push_back(c);
+        utf8::append(c, std::back_inserter(str));
         while (aInput.Peek() != '\"') {
             if (aInput.Peek() == '\\') {
                 aInput.Next();
@@ -92,21 +94,21 @@ const LispString* LispTokenizer::NextToken(LispInput& aInput,
                 if (aInput.EndOfStream())
                     throw LispErrParsingInput();
             }
-            str.push_back(aInput.Next());
+            utf8::append(aInput.Next(), std::back_inserter(str));
 
             if (aInput.EndOfStream())
                 throw LispErrParsingInput();
         }
-        str.push_back(aInput.Next());
+        utf8::append(aInput.Next(), std::back_inserter(str));
         return aHashTable.LookUp(str);
     }
 
     // parse atoms
     if (IsAlpha(c)) {
         std::string atom;
-        atom.push_back(c);
+        utf8::append(c, std::back_inserter(atom));
         while (IsAlNum(aInput.Peek()))
-            atom.push_back(aInput.Next());
+            utf8::append(aInput.Next(), std::back_inserter(atom));
         return aHashTable.LookUp(atom);
     }
 
@@ -122,9 +124,9 @@ const LispString* LispTokenizer::NextToken(LispInput& aInput,
     // parse subscripts
     if (c == '_') {
         std::string token;
-        token.push_back(c);
+        utf8::append(c, std::back_inserter(token));
         while (aInput.Peek() == '_')
-            token.push_back(aInput.Next());
+            utf8::append(aInput.Next(), std::back_inserter(token));
         return aHashTable.LookUp(token);
     }
 

@@ -1,45 +1,45 @@
-
-
-#include "yacas/yacasprivate.h"
 #include "yacas/stringio.h"
-
 
 StringInput::StringInput(const std::string& aString, InputStatus& aStatus):
     LispInput(aStatus),
-    iString(aString),
-    iCurrent(0)
+    _string(aString),
+    _current(_string.begin())
 {
 }
 
-LispChar StringInput::Next()
+char32_t StringInput::Next()
 {
-    LispChar result = iString[ iCurrent ];
+    if (EndOfStream())
+        return std::char_traits<char32_t>::eof();
+    
+    const char32_t cp = utf8::next(_current, std::string::const_iterator(_string.end()));
 
-    if (!EndOfStream())
-        iCurrent++;
-    else if (result == '\n')
+    if (cp == '\n')
         iStatus.NextLine();
 
-    return result;
+    return cp;
 }
 
-LispChar StringInput::Peek()
+char32_t StringInput::Peek()
 {
-    return iString[ iCurrent ];
+    if (EndOfStream())
+        return std::char_traits<char32_t>::eof();
+
+    return utf8::peek_next(_current, std::string::const_iterator(_string.end()));
 }
 
 bool StringInput::EndOfStream() const
 {
-    return (iString[ iCurrent ] == '\0');
+    return _current == _string.end();
 }
 
 std::size_t StringInput::Position() const
 {
-    return iCurrent;
+    return utf8::distance(_string.begin(), _current);
 }
 
-void StringInput::SetPosition(std::size_t aPosition)
+void StringInput::SetPosition(std::size_t n)
 {
-  assert(aPosition<iString.size());
-  iCurrent = aPosition;
+    _current = _string.begin();
+    utf8::advance(_current, n, std::string::const_iterator(_string.end()));
 }

@@ -30,6 +30,7 @@ the usage of the functions that are useful when doing calculations.
    linear-algebra
    univariate-polynomials
    lists
+   graphs
    functional
    controlflow
    predicates
@@ -39,4 +40,5 @@ the usage of the functions that are useful when doing calculations.
    strings
    probability-and-statistics
    number-theory
+   numerical-methods
    programming
