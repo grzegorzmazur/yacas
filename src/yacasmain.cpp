@@ -1066,7 +1066,7 @@ int main(int argc, char** argv)
     root_dir = "";
     use_plain = true;
 #else
-#error "This platform is not yet supported. Please contact developers at yacas-devel@sourceforge.net"
+#error "This platform is not yet supported. Please contact developers at yacas@googlegroups.com"
 #endif
 
     root_dir += "/share/yacas/scripts";
