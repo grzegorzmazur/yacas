@@ -12,7 +12,7 @@ GenericStruct::~GenericStruct()
     iDestructor(iData);
 }
 
-const LispChar * GenericStruct::TypeName()
+const LispChar * GenericStruct::TypeName() const
 {
     return iTypeName;
 }
