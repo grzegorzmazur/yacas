@@ -40,11 +40,11 @@ before_script:
 script:
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "linux" ]; then make; fi
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "linux" ]; then make test ; fi
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "linux" ]; then cd .. ; fi
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "linux" ]; then ant ; fi
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "linux" ]; then ant test ; fi
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "osx" ]; then xcodebuild -project yacas.xcodeproj -target ALL_BUILD; fi
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "osx" ]; then xcodebuild -project yacas.xcodeproj -target RUN_TESTS; fi
+  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then cd .. ; fi
+  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then ant ; fi
+  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then ant test ; fi
 
 branches:
   except:
