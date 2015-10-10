@@ -46,7 +46,7 @@ script:
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "linux" ]; then cd .. ; fi
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "linux" ]; then ant ; fi
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "linux" ]; then ant test ; fi
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "osx" ]; then xcodebuild -list -project yacas.xcodeproj ; fi
+  - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "osx" ]; then xcodebuild -project yacas.xcodeproj -target ALL_BUILD; fi
 
 branches:
   except:
