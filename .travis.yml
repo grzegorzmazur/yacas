@@ -27,15 +27,8 @@ addons:
     build_command: "make"
     branch_pattern: coverity_scan
 
-#before_install:
-#  - sudo apt-get update
-#  - sudo apt-get install --yes build-essential
-#  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-#  - sudo apt-get -qq update
-#  - sudo apt-get -qq install gcc-4.8 g++-4.8
-#  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 20
-#  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 20
-#  - sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-4.8 20
+before_install:
+  - export CC=gcc-4.8 CXX=g++-4.8
   
 before_script:
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then mkdir cmake_build ; fi
