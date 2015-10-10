@@ -37,7 +37,8 @@ before_install:
 before_script:
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then mkdir cmake_build ; fi
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then cd cmake_build ; fi
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then cmake .. ; fi
+  - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "linux" ]; then cmake .. ; fi
+  - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "osx" ]; then unset CC; unset CXX; cmake -G Xcode .. ; fi
 
 script:
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "linux" ]; then make; fi
