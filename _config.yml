@@ -74,10 +74,10 @@ defaults:
       author: grzegorzmazur
 
 
-#google_author:
-#google_site_verification:
-#bing_webmastertools_id:
-#alexa_verify_id:
+sass:
+    sass_dir: _sass
+    style: :compressed
+
 
 #og_image:
 og_locale: en_EN
@@ -89,8 +89,10 @@ og_description: Yacas is an easy to use, general purpose Computer Algebra System
 
 #disqus_shortname:
 
-sass:
-    sass_dir: _sass
-    style: :compressed
+#google_author:
+#google_site_verification:
+#bing_webmastertools_id:
+#alexa_verify_id:
 
-#google_analytics_tracking_id:
+google_analytics_tracking_id: UA-68673768-2
+
