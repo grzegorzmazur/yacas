@@ -12,10 +12,10 @@ platform:
   - x64
 
 configuration:
+  - Debug
   - Release
 
 before_build:
-  - echo Running cmake...
   - cd c:\projects\yacas
   - cmake -DCMAKE_INSTALL_PREFIX=%P% -G "Visual Studio 14 2015" 
 
