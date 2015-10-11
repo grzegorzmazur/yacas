@@ -1,4 +1,8 @@
-rem @echo off
+@echo off
+
+echo "test driver is running"
+
+exit /b 0
 
 setlocal enabledelayedexpansion
 
