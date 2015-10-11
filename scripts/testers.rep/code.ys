@@ -57,9 +57,9 @@ Function("Testing",{aLeft})
 Function("KnownFailure",{expr})
 [
   Local(rfail);
-  Echo({"Known failure: ", expr});
+  //Echo({"Known failure: ", expr});
   Set(rfail,Eval(expr));
-  If(rfail,Echo({"Failure resolved!"}));
+  If(rfail, Echo({"Known failure: ", expr, "resolved!"}));
 ];
 HoldArg("KnownFailure",expr);
 
