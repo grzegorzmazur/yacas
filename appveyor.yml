@@ -12,7 +12,6 @@ platform:
   - x64
 
 configuration:
-  - Debug
   - Release
 
 before_build:
