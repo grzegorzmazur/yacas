@@ -18,6 +18,7 @@ before_build:
   - echo Running cmake...
   - cd c:\projects\yacas
   - cmake -DCMAKE_INSTALL_PREFIX=%P% -G "Visual Studio 14 2015" 
+  - dir
 
 notifications:
   - provider: Email
