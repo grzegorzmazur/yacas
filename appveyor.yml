@@ -23,4 +23,5 @@ build:
   project: ALL_BUILD.vcxproj
 
 test_script:
-  - cmd: msbuild "RUN_TESTS.vcxproj" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmd: '"C:\Program Files (x86)\CMake\bin\ctest.exe" -C Release -VV --output-on-failure --debug'
+  #- cmd: msbuild "RUN_TESTS.vcxproj" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
