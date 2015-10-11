@@ -21,9 +21,3 @@ before_build:
 
 build:
   project: ALL_BUILD.vcxproj
-
-notifications:
-  - provider: Email
-    to:
-      - teoretyk@gmail.com
-    on_build_status_changed: true
