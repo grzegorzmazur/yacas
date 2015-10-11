@@ -21,3 +21,6 @@ before_build:
 
 build:
   project: ALL_BUILD.vcxproj
+
+test_script:
+  - cmd: ctest -VV
