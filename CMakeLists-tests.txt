@@ -54,7 +54,7 @@ set (YACAS_TESTS
 
 foreach (_test ${YACAS_TESTS})
     if (WIN32)
-        add_test(NAME cyacas-${_test} WORKING_DIRECTORY C:\\\\projects\\\\yacas COMMAND "C:\\\\projects\\\\yacas\\\\tests\\\\test-yacas" "C:\\\\projects\\\\yacas\\\\Release\\\\yacas.exe -pc --rootdir C:\\\\projects\\\\yacas\\\\scripts" "C:\\\\projects\\\\yacas\\\\tests" ${_test})
+        add_test(NAME cyacas-${_test} WORKING_DIRECTORY C:\\\\projects\\\\yacas COMMAND "C:\\\\projects\\\\yacas\\\\tests\\\\test-yacas.bat" "C:\\\\projects\\\\yacas\\\\Release\\\\yacas.exe -pc --rootdir C:\\\\projects\\\\yacas\\\\scripts" "C:\\\\projects\\\\yacas\\\\tests" ${_test})
     else ()
         add_test(NAME cyacas-${_test} WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND ${PROJECT_SOURCE_DIR}/tests/test-yacas "$<TARGET_FILE:yacas> -pc --rootdir ${PROJECT_SOURCE_DIR}/scripts" ${PROJECT_SOURCE_DIR}/tests ${_test})
     endif ()
