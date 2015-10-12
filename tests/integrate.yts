@@ -22,6 +22,8 @@ Verify(Integrate(x) (x + 4)/(x + 3)^2, Ln(x+3)-(x+3)^(-1));
 Verify(Integrate(x) 1/(4 * x^2 + 1), ArcTan(2*x)/2);
 Verify(Integrate(x) (x-1)/(x^2-1), Ln(x+1));
 
+Verify(Integrate(x) x/(x^3+1), Ln(3*(1-x+x^2))/6+Sqrt(1/3)*ArcTan((4*x-2)/Sqrt(12))-Ln(3*(x+1))/3);
+
 Verify(Integrate(x) 3/Sin(x),3*Ln(1/Sin(x)-Cos(x)/Sin(x)) );
 
 Verify(Integrate(x) Ln(x), x*Ln(x)-x );
