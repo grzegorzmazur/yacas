@@ -494,7 +494,7 @@ Rule("PSolve", 1, 1, IsUniVar(uni) And Degree(uni) > 1 And Coef(uni, 0 .. Degree
 Rule("PSolve", 1, 1, IsUniVar(uni) And Degree(uni) > 1 And ConstantTerm(uni) != 0 And Coef(uni, 1 .. Degree(uni) - 1) = ZeroVector(Degree(uni) - 1)) [
     Local(n, k, phi0);
     n := Degree(uni);
-    phi0 := If (Sign(LeadingCoef(uni)) * Sign(ConstantTerm(uni)) < 0, 0, Pi);
+    phi0 := Arg(-ConstantTerm(uni) / LeadingCoef(uni));
     (Abs(ConstantTerm(uni) / LeadingCoef(uni)))^(1/n) * MapSingle({{k}, Complex(Cos((phi0 + 2 * k * Pi) / n), Sin((phi0 + 2 * k * Pi) / n))}, 0 .. n - 1);
 ];
 
