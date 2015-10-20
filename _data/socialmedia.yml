@@ -3,7 +3,7 @@
   class: icon-facebook
 
 - name: GitHub
-  url: http://github.com/yacas
+  url: http://github.com/grzegorzmazur/yacas
   class: icon-github
 
 - name: Google Group
