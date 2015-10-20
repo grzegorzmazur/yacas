@@ -36,8 +36,10 @@ breadcrumb: true
 
 ## Development version
   * yacas
+    * [repository](https://github.com/grzegorzmazur/yacas/)
     * [source code](https://github.com/grzegorzmazur/yacas/archive/master.zip)
   * yagy
+    * [repository](https://github.com/grzegorzmazur/yagy/)
     * [source code](https://github.com/grzegorzmazur/yagy/archive/master.zip)
 
 </div>
