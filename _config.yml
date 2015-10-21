@@ -15,7 +15,7 @@ baseurl:
 # Example: <img src="{{ site.urlimg }}{{ post.image.title }}" />
 # Markdown-Example for posts ![Image Text]({{ site.urlimg }}image.jpg)
 #
-urlimg: /yacas/images/
+urlimg: /images/
 
 logo: logo-small-white.png
 
