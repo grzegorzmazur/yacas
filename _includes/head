@@ -5,7 +5,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ site.url }}{{ site.baseurl }}/assets/css/styles_feeling_responsive.css" />
 
     <script>
-        if (window.location.host === 'yacas.org')
+        if (window.location.host === 'grzegorzmazur.github.io')
            window.location.replace('http://www.yacas.org/');
     </script>
     
