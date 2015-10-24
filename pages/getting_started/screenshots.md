@@ -12,6 +12,8 @@ gallery:
       caption: MathBar in action
     - image_url: screenshot-yagy-graph.png
       caption: basic graph support
+    - image_url: screenshot-yagy-on_mac.png
+      caption: sample session on MacOS X
 ---
 
 {% include gallery %}
