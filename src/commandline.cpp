@@ -254,7 +254,7 @@ bool CConsoleHistory::ArrowUp(std::string& s, unsigned c)
     
     const std::string prefix(s.begin(), i);
 
-    std::vector<std::string>::reverse_iterator p = iHistory.rbegin();
+    auto p = iHistory.rbegin();
     std::advance(p, iHistory.size() - history);
     
     const std::vector<std::string>::reverse_iterator q =
@@ -278,7 +278,7 @@ bool CConsoleHistory::ArrowDown(std::string& s, unsigned c)
     
     const std::string prefix(s.begin(), i);
 
-    std::vector<std::string>::iterator p = iHistory.begin();
+    auto p = iHistory.begin();
     std::advance(p, history + 1);
 
     const std::vector<std::string>::iterator q =
@@ -322,7 +322,7 @@ bool CConsoleHistory::Complete(std::string& s, unsigned& c)
     utf8::advance(i, c, s.end());
     const std::string prefix(s.begin(), i);
 
-    std::vector<std::string>::reverse_iterator p = iHistory.rbegin();
+    auto p = iHistory.rbegin();
     std::advance(p, iHistory.size() - history);
     
     const std::vector<std::string>::reverse_iterator q =

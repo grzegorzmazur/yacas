@@ -111,8 +111,8 @@
 
 #include "yacas/GPL_stuff.h"
 
-CYacas* yacas = 0;
-CCommandLine *commandline = 0;
+CYacas* yacas = nullptr;
+CCommandLine *commandline = nullptr;
 
 bool use_stdin = false;
 bool use_plain = false;
@@ -144,7 +144,7 @@ bool server_mode = false;
 bool server_single_user = false;
 int server_port = 9734;
 
-const char* execute_commnd = 0;
+const char* execute_commnd = nullptr;
 
 static bool busy = true;
 static bool restart = false;
@@ -313,12 +313,12 @@ void my_exit()
         // at least we have a saved history
         if (commandline) {
             delete commandline;
-            commandline = 0;
+            commandline = nullptr;
         }
 
         if (yacas) {
             delete yacas;
-            yacas = 0;
+            yacas = nullptr;
         }
 
         ReportNrCurrent();
@@ -349,7 +349,7 @@ void ShowResult(const std::string& prompt)
     if (yacas->IsError())
         std::cout << yacas->Error() << "\n";
     else
-        if (yacas->getDefEnv().getEnv().PrettyPrinter() == 0)
+        if (yacas->getDefEnv().getEnv().PrettyPrinter() == nullptr)
             std::cout << prompt << yacas->Result() << "\n";
 
     if (use_texmacs_out)
@@ -418,7 +418,7 @@ void LoadYacas(std::ostream& os)
         if (yacas->IsError())
         {
             ShowResult("");
-            read_eval_print = 0;
+            read_eval_print = nullptr;
         }
     }
 
@@ -892,7 +892,7 @@ int parse_options(int argc, char** argv)
             if (!std::strcmp(argv[fileind],"--texmacs")) {
                 use_texmacs_out = true;
                 use_plain = true;
-                read_eval_print = 0;
+                read_eval_print = nullptr;
             } else if (!std::strcmp(argv[fileind],"--patchload")) {
                 patchload = true;
             } else if (!std::strcmp(argv[fileind],"--verbose-debug")) {
@@ -912,7 +912,7 @@ int parse_options(int argc, char** argv)
                     if (argv[fileind][0])
                         read_eval_print = argv[fileind];
                     else
-                        read_eval_print = 0;
+                        read_eval_print = nullptr;
                 }
             } else if (!std::strcmp(argv[fileind],"--rootdir")) {
                 fileind++;
@@ -1167,7 +1167,7 @@ int main(int argc, char** argv)
 
         if (restart) {
             delete yacas;
-            yacas = 0;
+            yacas = nullptr;
             LoadYacas(std::cout);
         }
 
