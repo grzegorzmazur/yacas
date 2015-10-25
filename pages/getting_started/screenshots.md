@@ -14,6 +14,8 @@ gallery:
       caption: basic graph support
     - image_url: screenshot-yagy-on_mac.png
       caption: sample session on MacOS X
+    - image_url: screenshot-yagy-autocompletion.png
+      caption: basic autocompletion
 ---
 
 {% include gallery %}
