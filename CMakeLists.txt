@@ -57,6 +57,7 @@ set (YACAS_LIB_HEADERS
     include/yacas/anumber.inl
     include/yacas/arggetter.h
     include/yacas/arrayclass.h
+    include/yacas/associationclass.h
     include/yacas/choices.h
     include/yacas/commandline.h
     include/yacas/corefunctions.h
@@ -102,6 +103,10 @@ set (YACAS_LIB_HEADERS
     include/yacas/stubs.h
     include/yacas/substitute.h
     include/yacas/tokenizer.h
+    include/yacas/utf8/core.h
+    include/yacas/utf8/checked.h
+    include/yacas/utf8/unchecked.h
+    include/yacas/utf8.h
     include/yacas/xmltokenizer.h
     include/yacas/yacasbase.h
     include/yacas/yacas.h
