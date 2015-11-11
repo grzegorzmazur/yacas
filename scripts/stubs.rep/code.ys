@@ -260,7 +260,10 @@ Sqrt(xlist_IsList) <-- MapSingle("Sqrt",xlist);
   PolynomialGcd(n, m, VarList(n*m)[1]);
 ];
 
-30 # PolynomialGcd(n_CanBeUni, m_CanBeUni, x_IsVariable) <--
+40 # PolynomialGcd(0, m_CanBeUni, x_IsVariable) <-- m;
+40 # PolynomialGcd(n_CanBeUni, 0, x_IsVariable) <-- n;
+
+50 # PolynomialGcd(n_CanBeUni, m_CanBeUni, x_IsVariable) <--
 [
   Local(vars);
   vars:=VarList(n*m);
