@@ -9,32 +9,32 @@ Control flow functions
 
    :param n: new maximum evaluation depth
 
-   Use this command to set the maximum evaluation depth to the integer
-   "n". The default value is 1000. The function {MaxEvalDepth} returns
-   :data:`True`.
+   Use this command to set the maximum evaluation depth to ``n``. The default
+   value is 1000.
 
    The point of having a maximum evaluation depth is to catch any
-   infinite recursion. For example, after the definition {f(x) :=
-   f(x)}, evaluating the expression {f(x)} would call {f(x)}, which
-   would call {f(x)}, etc. The interpreter will halt if the maximum
+   infinite recursion. For example, after the definition ``f(x) := f(x)``,
+   evaluating the expression ``f(x)`` would call ``f(x)``, which
+   would call ``f(x)``, etc. The interpreter will halt if the maximum
    evaluation depth is reached. Also indirect recursion, e.g. the pair
-   of definitions {f(x) := g(x)} and {g(x) := f(x)}, will be caught.
+   of definitions ``f(x) := g(x)`` and ``g(x) := f(x)``, will be caught.
 
-   :Example:
+   An example of an infinite recursion, caught because the maximum
+   evaluation depth is reached ::
 
-   ::
-
-      An example of an infinite recursion, caught because the maximum
-      evaluation depth is reached.
       In> f(x) := f(x)
       Out> True;
       In> f(x)
+
       Error on line 1 in file [CommandLine]
       Max evaluation stack depth reached.
       Please use MaxEvalDepth to increase the stack
       size as needed.
-      However, a long calculation may cause the maximum evaluation depth to
-      be reached without the presence of infinite recursion. The function {MaxEvalDepth} is meant for these cases.
+
+   However, a long calculation may cause the maximum evaluation depth to
+   be reached without the presence of infinite recursion. The function 
+   :func:`MaxEvalDepth` is meant for these cases ::
+
       In> 10 # g(0) <-- 1;
       Out> True;
       In> 20 # g(n_IsPositiveInteger) <-- \
@@ -63,9 +63,7 @@ Control flow functions
 
    The expression ``expr`` is returned unevaluated. This is useful to
    prevent the evaluation of a certain expression in a context in
-   which evaluation normally takes place.  The function :func:`UnList`
-   also leaves its result unevaluated. Both functions stop the process
-   of evaluation (no more rules will be applied).
+   which evaluation normally takes place. 
 
    :Example:
 
@@ -166,7 +164,7 @@ Control flow functions
 
    Keep on evaluating ``expr`` until ``pred`` becomes ``True``. More
    precisely, :func:`Until` first evaluates the expression
-   "body". Then the predicate "pred" is evaluated, which should yield
+   ``body``. Then the predicate ``pred`` is evaluated, which should yield
    either ``True`` or ``False``. In the latter case, the expressions
    ``expr`` and ``pred`` are again evaluated and this continues as
    long as "pred" is ``False``. As soon as ``pred`` yields ``True``,
@@ -218,11 +216,9 @@ Control flow functions
    This command implements a branch point. The predicate ``pred`` is
    evaluated, which should result in either ``True`` or ``False``. In
    the first case, the expression ``then`` is evaluated and
-   returned. If the predicate yields ``False``, the expression "else"
+   returned. If the predicate yields ``False``, the expression ``else``
    (if present) is evaluated and returned. If there is no ``else``
    branch, the :func:`If` expression returns ``False``.
-
-   :Example:
 
    The sign function is defined to be 1 if its argument is positive and
    -1 if its argument is negative. A possible implementation is::
@@ -234,7 +230,7 @@ Control flow functions
       In> mysign(-2.5);
       Out> -1;
 
-   Note that this will give incorrect results, if "x" cannot be
+   Note that this will give incorrect results, if ``x`` cannot be
    numerically approximated::
 
       In> mysign(a);
@@ -257,9 +253,7 @@ Control flow functions
    is ``True`` or ``False`` according to the exit code of the command.
 
    The :func:`SystemCall` function is not allowed in the body of the
-   :func:`Secure` command and will lead to an error.
-
-   :Example:
+   :func:`Secure` command.
 
    In a UNIX environment, the command ``SystemCall("ls")`` would print
    the contents of the current directory::
@@ -288,43 +282,41 @@ Control flow functions
    .. seealso:: :func:`Secure`
 
 
-.. function:: bodied Function(func)
-              bodied Function(expr, funcname, argslist)
+.. function:: bodied Function(func(args))
+              bodied Function(body, funcname, {args})
 
    declare or define a function
 
-   :param func: function declaration, e.g. {f(x,y)}
-   :param "op": string, name of the function
-   :param {arglist}: list of atoms, formal arguments to the function
-   :param ...: literal ellipsis symbol "{...}" used to denote a variable number of arguments
+   :param func(args): function declaration, e.g. ``f(x,y)``
+   :param args: list of atoms, formal arguments to the function
    :param body: expression comprising the body of the function
 
    This command can be used to define a new function with named
    arguments.
 
    The number of arguments of the new function and their names are
-   determined by the list {arglist}. If the ellipsis "{...}" follows
-   the last atom in {arglist}, a function with a variable number of
-   arguments is declared (using {RuleBaseListed}). Note that the
-   ellipsis cannot be the only element of {arglist} and <i>must</i> be
+   determined by the list ``args``. If the ellipsis ``...`` follows
+   the last atom in ``args``, a function with a variable number of
+   arguments is declared (using :func:`RuleBaseListed`). Note that the
+   ellipsis cannot be the only element of ``args`` and *must* be
    preceded by an atom.
 
    A function with variable number of arguments can take more
-   arguments than elements in {arglist}; in this case, it obtains its
+   arguments than elements in ``args``; in this case, it obtains its
    last argument as a list containing all extra arguments.
 
-   The short form of the {Function} call merely declares a {RuleBase}
-   for the new function but does not define any function body. This is
-   a convenient shorthand for {RuleBase} and {RuleBaseListed}, when
-   definitions of the function are to be supplied by rules. If the new
-   function has been already declared with the same number of
-   arguments (with or without variable arguments), {Function} returns
-   false and does nothing.
+   The short form of the :func:`Function` call merely declares a 
+   :func:`RuleBase` for the new function but does not define any 
+   function body. This is a convenient shorthand for :func:`RuleBase`
+   and :func:`RuleBaseListed`, when definitions of the function are to
+   be supplied by rules. If the new function has been already declared
+   with the same number of arguments (with or without variable arguments),
+   :func:`Function` returns false and does nothing.
 
-   The second, longer form of the {Function} call declares a function
+   The second, longer form of the :func:`Function` call declares a function
    and also defines a function body. It is equivalent to a single rule
-   such as {op(_arg1, _arg2) <-- body}. The rule will be declared at
-   precedence 1025. Any previous rules associated with {"op"} (with
+   such as ``funcname(_arg1, _arg2) <-- body``. The rule will be declared at
+   precedence 1025. Any previous rules associated with ``funcname`` (with
    the same arity) will be discarded. More complicated functions (with
    more than one body) can be defined by adding more rules.
 
@@ -339,7 +331,7 @@ Control flow functions
       In> Function() f1(x,y);
       Out> False;
 
-   This defines a function {FirstOf} which returns the first element
+   This defines a function ``FirstOf`` which returns the first element
    of a list. Equivalent definitions would be ``FirstOf(_list) <--
    list[1]`` or ``FirstOf(list) := list[1]``::
 
@@ -362,15 +354,13 @@ Control flow functions
                 :func:`Retract`
 
 
-.. function:: bodied Macro(func)
+.. function:: bodied Macro(func(args))
+              bodied Macro(body, funcname, {args})
 
    declare or define a macro
 
-   :param func: function declaration, e.g. {f(x,y)}
-   :param "op": string, name of the function
-   :param {arglist}: list of atoms, formal arguments to the function
-   :param ...: literal ellipsis symbol "{...}" used to denote a
-               variable number of arguments
+   :param func(args): function declaration, e.g. ``f(x,y)``
+   :param args: list of atoms, formal arguments to the function
    :param body: expression comprising the body of the function
 
    This does the same as :func:`Function`, but for macros. One can
@@ -379,15 +369,16 @@ Control flow functions
 
    :Example:
 
-   ::
+   The following example defines a looping function ::
 
-      the following example defines a looping function.
       In> Macro("myfor",{init,pred,inc,body}) [@init;While(@pred)[@body;@inc;];True;];
       Out> True;
       In> a:=10
       Out> 10;
-      Here this new macro {myfor} is used to loop, using a variable {a} from the
-      calling environment.
+
+   Here this new macro ``myfor`` is used to loop, using a variable ``a``
+   from the calling environment ::
+
       In> myfor(i:=1,i<10,i++,Echo(a*i))
       10
       20
@@ -770,7 +761,7 @@ Control flow functions
    .. seealso:: :func:`TraceStack`, :func:`TraceRule`
 
 
-.. function:: TraceRule(template) expr
+.. function:: bodied TraceRule(expr, template)
 
    turn on tracing for a particular function
 
