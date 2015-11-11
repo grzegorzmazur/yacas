@@ -1,3 +1,7 @@
+=====
+yacas
+=====
+
 Yacas (Yet Another Computer Algebra System) is a small and highly flexible
 general-purpose Computer Algebra System (CAS). The syntax uses an
 infix-operator grammar parser. The distribution contains a small library
