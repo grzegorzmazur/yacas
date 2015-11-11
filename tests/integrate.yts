@@ -76,3 +76,4 @@ LocalSymbols(TestMatchLinearTrue,TestMatchLinearFalse) [
 
 ];
 
+Verify(IntegrateRationalFunction(1,x,x), SumLog(t,1-t,0,x));
