@@ -16,6 +16,8 @@ gallery:
       caption: sample session on MacOS X
     - image_url: screenshot-yagy-autocompletion.png
       caption: basic autocompletion
+    - image_url: screenshot-yacas_kernel_mathjax.png
+      caption: yacas in jupyter
 ---
 
 {% include gallery %}
