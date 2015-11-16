@@ -1081,14 +1081,17 @@ void NormalizeFloat(ANumber& a2, LispInt digitsNeeded)
   }
 
   const std::size_t min = std::max(1+digitsNeeded, a2.iExp+1);
-  while (a2.size()>min ||
-          (a2.size()==min && a2[a2.size()-1]>10))
+  
+  std::size_t n = a2.size();
+  while (n > min ||
+          (n == min && a2.back() > 10))
   {
     PlatDoubleWord carry = 0;
     BaseDivideInt(a2, 10, WordBase,carry);
     if (a2.back() == 0)
         a2.pop_back();
     a2.iTensExp++;
+    n = a2.size();
   }
 }
 
@@ -1101,27 +1104,21 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
     // This value should at least be WordDigits, so grow a1
     // by WordDigits-(a1.iExp-a2.iExp) = WordDigits+a2.iExp-a1.iExp
     LispInt digitsNeeded = WordDigits(aQuotient.iPrecision, 10);
-    {
-        NormalizeFloat(a2,digitsNeeded);
 
-        LispInt toadd = a2.iExp-a1.iExp;
-        {
-          LispInt i;
-          PlatWord zero=0;
-          for (i=0;i<toadd;i++)
-          {
-              a1.insert(a1.begin(),zero);
-              a1.iExp++;
-          }
-        }
+    NormalizeFloat(a2,digitsNeeded);
 
-        if (!a1.IsZero())
-        {
-          while (a1.size()<a2.size()+digitsNeeded || a1[a1.size()-1]<a2[a2.size()-1])
-          {
+    const LispInt toadd = a2.iExp-a1.iExp;
+    PlatWord zero=0;
+    if (toadd > 0) {
+        a1.insert(a1.begin(), toadd, zero);
+        a1.iExp += toadd;
+    }
+
+    if (!a1.IsZero()) {
+        const std::size_t n = a2.size();
+        while (a1.size()< n + digitsNeeded || a1.back() < a2.back()) {
             WordBaseTimesInt(a1, 10);
             a1.iTensExp--;
-          }
         }
     }
 
