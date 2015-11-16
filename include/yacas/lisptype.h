@@ -12,7 +12,6 @@
 // Type definitions for the base types
 typedef char LispChar;
 typedef signed int LispInt;
-typedef unsigned long LispUnsLong;
 
 #ifndef WIN32
 #  define LISPEXPORT
