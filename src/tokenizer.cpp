@@ -4,6 +4,8 @@
 
 #include "yacas/utf8.h"
 
+#include <cstdint>
+
 namespace {
     static const char symbolics[] = "~`!@#$^&*-=+:<>?/\\|";
 }
@@ -20,7 +22,11 @@ bool IsSymbolic(LispChar c)
 const LispString* LispTokenizer::NextToken(LispInput& aInput,
                                            LispHashTable& aHashTable)
 {
-    std::uint32_t c;
+#ifdef YACAS_UINT32_T_IN_GLOBAL_NAMESPACE
+	uint32_t c;
+#else
+	std::uint32_t c;
+#endif
 
     // skip whitespaces and comments
     for (;;) {
