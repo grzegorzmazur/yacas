@@ -2,6 +2,7 @@
 #include "yacas/commandline.h"
 
 #include <algorithm>
+#include <cstdint>
 
 namespace {
     struct IsPrefix {
@@ -60,8 +61,13 @@ void CCommandLine::ReadLineSub(const std::string& prompt)
 
     for (;;)
     {
-        std::uint32_t c = GetKey();
+       
 
+#ifdef YACAS_UINT32_T_IN_GLOBAL_NAMESPACE
+		uint32_t c = GetKey();
+#else
+		std::uint32_t c = GetKey();
+#endif
         const std::size_t len = utf8::distance(iSubLine.begin(), iSubLine.end());
         
         switch (c)
