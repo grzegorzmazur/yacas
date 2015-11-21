@@ -4,8 +4,6 @@ branches:
 
 skip_tags: true
 
-clone_folder: c:\projects\yacas
-
 shallow_clone: true
 
 platform:
@@ -14,12 +12,19 @@ platform:
 configuration:
   - Release
 
+environment:
+  matrix:
+    - CMAKE_GENERATOR: "Visual Studio 12 2013 Win64"
+    - CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
+
 before_build:
   - cd c:\projects\yacas
-  - cmake -DCMAKE_INSTALL_PREFIX=%P% -G "Visual Studio 14 2015" 
+  - cmake -H. -Bbuild -G "%CMAKE_GENERATOR%" 
 
 build:
-  project: ALL_BUILD.vcxproj
+  project: build\ALL_BUILD.vcxproj
 
-test_script:
-  - cmd: msbuild "RUN_TESTS.vcxproj" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+after_build:
+  - cmake --build build --use-stderr --config "%CONFIGURATION%" -- /verbosity:minimal
+  - cmake --build build --use-stderr --config "%CONFIGURATION%" --target check -- /verbosity:minimal
+  - cmake --build build --use-stderr --config "%CONFIGURATION%" --target package -- /verbosity:minimal
