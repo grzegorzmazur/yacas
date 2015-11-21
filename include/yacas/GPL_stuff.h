@@ -8,7 +8,8 @@
 "discretion) any later version for the full conditions.\n"
 
 #define Yacas_Web_info \
-"See http://yacas.sf.net for more information and documentation on Yacas.\n"\
+"See http://grzegorzmazur.github.io/yacas/ for more information on yacas.\n" \
+"and documentation.\n"\
 "Type ?? for help. Or type ?function for help on a function.\n"
 
 #define Yacas_help_info \

@@ -178,6 +178,31 @@ UnFence("IntegrateMultiplicative",4);
   `AntiDeriv(@var,@ee);
 ];
 
+15 # IntRat(_var,_exy / _exx,_exyu,_exxu)_
+        (Degree(exyu, var) = 0 And Degree(exxu, var) = 2 And
+         IsNumericList(Coef(exxu,var,0 .. Degree(exxu))) And
+         IsNumericList(Coef(exyu,var,0 .. Degree(exyu)))) <-- [
+    Local(a,b,c,d,e,delta);
+    {d} := Coef(exyu, var, 0 .. 0);
+    {c, b, a} := Coef(exxu, var, 0 .. 2);
+
+    delta := b^2-4*a*c;
+
+    2 * d / Sqrt(-delta) * ArcTan((2*a*var+b) / Sqrt(-delta));
+];
+
+15 # IntRat(_var,_exy / _exx,_exyu,_exxu)_
+        (Degree(exyu, var) = 1 And Degree(exxu, var) = 2 And
+         IsNumericList(Coef(exxu,var,0 .. Degree(exxu))) And
+         IsNumericList(Coef(exyu,var,0 .. Degree(exyu)))) <-- [
+    Local(a,b,c,d,e,r);
+    {e, d} := Coef(exyu, var, 0 .. 1);
+    {c, b, a} := Coef(exxu, var, 0 .. 2);
+
+    r := (e - b * d / (2 * a)) / exx;
+
+    d / (2 * a) * Ln(exx) + `AntiDeriv(@var, @r);
+];
 
 20 # IntRat(_var,_exy / _exx,_exyu,_exxu) <--
      `Hold(AntiDeriv(@var,((@exy)/(@exx))));

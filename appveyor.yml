@@ -1,0 +1,25 @@
+branches:
+  only:
+    - master
+
+skip_tags: true
+
+clone_folder: c:\projects\yacas
+
+shallow_clone: true
+
+platform:
+  - x64
+
+configuration:
+  - Release
+
+before_build:
+  - cd c:\projects\yacas
+  - cmake -DCMAKE_INSTALL_PREFIX=%P% -G "Visual Studio 14 2015" 
+
+build:
+  project: ALL_BUILD.vcxproj
+
+test_script:
+  - cmd: msbuild "RUN_TESTS.vcxproj" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"

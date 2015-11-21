@@ -52,12 +52,18 @@ set (YACAS_TESTS
     trace.yts
     transforms.yts)
 
+if (WIN32)
+    set (TEST_YACAS_CMD "${PROJECT_SOURCE_DIR}/tests/test-yacas.bat")
+else ()
+    set (TEST_YACAS_CMD "${PROJECT_SOURCE_DIR}/tests/test-yacas")
+endif ()
+
 foreach (_test ${YACAS_TESTS})
-    add_test(NAME cyacas-${_test} WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND ${PROJECT_SOURCE_DIR}/tests/test-yacas "$<TARGET_FILE:yacas> -pc --rootdir ${PROJECT_SOURCE_DIR}/scripts:$<TARGET_FILE_DIR:yacas>/scripts" ${PROJECT_SOURCE_DIR}/tests ${_test})
+    add_test(NAME cyacas-${_test} WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND "${TEST_YACAS_CMD}" "$<TARGET_FILE:yacas> -pc --rootdir ${PROJECT_SOURCE_DIR}/scripts" ${PROJECT_SOURCE_DIR}/tests ${_test})
 endforeach()
 
 if (ENABLE_JYACAS)
     foreach (_test ${YACAS_TESTS})
-        add_test(NAME jyacas-${_test} WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND ${PROJECT_SOURCE_DIR}/tests/test-yacas "${Java_JAVA_EXECUTABLE} -jar ${JYACAS_JAR_FILE}" ${PROJECT_SOURCE_DIR}/tests ${_test})
+        add_test(NAME jyacas-${_test} WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND "${TEST_YACAS_CMD}" "${Java_JAVA_EXECUTABLE} -jar ${JYACAS_JAR_FILE}" ${PROJECT_SOURCE_DIR}/tests ${_test})
     endforeach()
 endif ()

@@ -659,7 +659,7 @@ IntRationalLogPart(A_CanBeUni, D_CanBeUni, x_IsVariable) <-- [
 
     ForEach (i, 1 .. n) [
         If (i = Degree(D), [
-            Echo("not implemented");
+            DestructiveAppend(S, D);
         ], [
             Local(A, Qi, Si);
             ForEach(pr, PRS) [

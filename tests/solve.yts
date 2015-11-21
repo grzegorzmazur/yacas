@@ -85,6 +85,18 @@ VerifySolve(Solve(x^5 == 1, x),
             { x == 1, x == Exp(2/5*I*Pi), x == Exp(4/5*I*Pi), 
               x == Exp(-2/5*I*Pi), x == Exp(-4/5*I*Pi)});
 
+VerifySolve(Solve(x^3 == 1, x),
+            {x==1,x==Complex((-1)/2,Sqrt(3/4)),x==Complex((-1)/2,-Sqrt(3/4))});
+
+VerifySolve(Solve(x^3 == -1, x),
+            {x==Complex(1/2,Sqrt(3/4)),x==(-1),x==Complex(1/2,-Sqrt(3/4))});
+
+VerifySolve(Solve(-x^3 == 1, x),
+            {x==Complex(1/2,Sqrt(3/4)),x==(-1),x==Complex(1/2,-Sqrt(3/4))});
+
+VerifySolve(Solve(-x^3 == -1, x),
+            {x==1,x==Complex((-1)/2,Sqrt(3/4)),x==Complex((-1)/2,-Sqrt(3/4))});
+
 VerifySolve(Solve(Sqrt(x) == 1, x),  { x == 1 });
 VerifySolve(Solve(Sqrt(x) == -1, x), { });
 VerifySolve(Solve(Sqrt(x) == I, x),  { x == -1 });

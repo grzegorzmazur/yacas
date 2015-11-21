@@ -109,7 +109,7 @@ class YacasObject(ObjectDescription):
         """May return true if an empty argument list is to be generated even if
         the document contains none.
         """
-        return False
+        return self.objtype == 'function'
 
     def handle_signature(self, sig, signode):
         """Transform a Yacas signature into RST nodes.
@@ -125,17 +125,10 @@ class YacasObject(ObjectDescription):
             raise ValueError
         syntax, name, arglist = m.groups()
 
-        # determine module and class name (if applicable), as well as full name
-        modname = self.options.get(
-            'module', self.env.temp_data.get('ys:module'))
-
         add_module = False
 
-        classname = ''
         fullname = name
 
-        signode['module'] = modname
-        signode['class'] = classname
         signode['fullname'] = fullname
 
         sig_prefix = self.get_signature_prefix(sig)
@@ -195,7 +188,12 @@ class YacasObject(ObjectDescription):
 
     def get_index_text(self, modname, name):
         """Return the text for the index entry of the object."""
-        raise NotImplementedError('must be implemented in subclasses')
+        if self.objtype == 'function':
+            return _('%s()') % name[0]
+        elif self.objtype == 'data':
+            return _('%s') % name[0]
+        else:
+            return ''
 
     def add_target_and_index(self, name_cls, sig, signode):
         modname = self.options.get(
@@ -230,228 +228,6 @@ class YacasObject(ObjectDescription):
         if self.clsname_set:
             self.env.temp_data['yacas:class'] = None
 
-
-class YacasModulelevel(YacasObject):
-    """
-    Description of an object on module level (functions, data).
-    """
-
-    def needs_arglist(self):
-        return self.objtype == 'function'
-
-    def get_index_text(self, modname, name_cls):
-        if self.objtype == 'function':
-            if not modname:
-                return _('%s() (built-in function)') % name_cls[0]
-            return _('%s() (in module %s)') % (name_cls[0], modname)
-        elif self.objtype == 'data':
-            if not modname:
-                return _('%s (built-in variable)') % name_cls[0]
-            return _('%s (in module %s)') % (name_cls[0], modname)
-        else:
-            return ''
-
-
-class YacasClasslike(YacasObject):
-    """
-    Description of a class-like object (classes, interfaces, exceptions).
-    """
-
-    def get_signature_prefix(self, sig):
-        return self.objtype + ' '
-
-    def get_index_text(self, modname, name_cls):
-        if self.objtype == 'class':
-            if not modname:
-                return _('%s (built-in class)') % name_cls[0]
-            return _('%s (class in %s)') % (name_cls[0], modname)
-        elif self.objtype == 'exception':
-            return name_cls[0]
-        else:
-            return ''
-
-    def before_content(self):
-        YacasObject.before_content(self)
-        if self.names:
-            self.env.temp_data['ys:class'] = self.names[0][0]
-            self.clsname_set = True
-
-
-class YacasClassmember(YacasObject):
-    """
-    Description of a class member (methods, attributes).
-    """
-
-    def needs_arglist(self):
-        return self.objtype.endswith('method')
-
-    def get_signature_prefix(self, sig):
-        if self.objtype == 'staticmethod':
-            return 'static '
-        elif self.objtype == 'classmethod':
-            return 'classmethod '
-        return ''
-
-    def get_index_text(self, modname, name_cls):
-        name, cls = name_cls
-        add_modules = self.env.config.add_module_names
-        if self.objtype == 'method':
-            try:
-                clsname, methname = name.rsplit('.', 1)
-            except ValueError:
-                if modname:
-                    return _('%s() (in module %s)') % (name, modname)
-                else:
-                    return '%s()' % name
-            if modname and add_modules:
-                return _('%s() (%s.%s method)') % (methname, modname, clsname)
-            else:
-                return _('%s() (%s method)') % (methname, clsname)
-        elif self.objtype == 'staticmethod':
-            try:
-                clsname, methname = name.rsplit('.', 1)
-            except ValueError:
-                if modname:
-                    return _('%s() (in module %s)') % (name, modname)
-                else:
-                    return '%s()' % name
-            if modname and add_modules:
-                return _('%s() (%s.%s static method)') % (methname, modname,
-                                                          clsname)
-            else:
-                return _('%s() (%s static method)') % (methname, clsname)
-        elif self.objtype == 'classmethod':
-            try:
-                clsname, methname = name.rsplit('.', 1)
-            except ValueError:
-                if modname:
-                    return _('%s() (in module %s)') % (name, modname)
-                else:
-                    return '%s()' % name
-            if modname:
-                return _('%s() (%s.%s class method)') % (methname, modname,
-                                                         clsname)
-            else:
-                return _('%s() (%s class method)') % (methname, clsname)
-        elif self.objtype == 'attribute':
-            try:
-                clsname, attrname = name.rsplit('.', 1)
-            except ValueError:
-                if modname:
-                    return _('%s (in module %s)') % (name, modname)
-                else:
-                    return name
-            if modname and add_modules:
-                return _('%s (%s.%s attribute)') % (attrname, modname, clsname)
-            else:
-                return _('%s (%s attribute)') % (attrname, clsname)
-        else:
-            return ''
-
-    def before_content(self):
-        YacasObject.before_content(self)
-        lastname = self.names and self.names[-1][1]
-        if lastname and not self.env.temp_data.get('ys:class'):
-            self.env.temp_data['ys:class'] = lastname.strip('.')
-            self.clsname_set = True
-
-
-class YacasDecoratorMixin(object):
-    """
-    Mixin for decorator directives.
-    """
-    def handle_signature(self, sig, signode):
-        ret = super(YacasDecoratorMixin, self).handle_signature(sig, signode)
-        signode.insert(0, addnodes.desc_addname('@', '@'))
-        return ret
-
-    def needs_arglist(self):
-        return False
-
-
-class YacasDecoratorFunction(YacasDecoratorMixin, YacasModulelevel):
-    """
-    Directive to mark functions meant to be used as decorators.
-    """
-    def run(self):
-        # a decorator function is a function after all
-        self.name = 'ys:function'
-        return YacasModulelevel.run(self)
-
-
-class YacasDecoratorMethod(YacasDecoratorMixin, YacasClassmember):
-    """
-    Directive to mark methods meant to be used as decorators.
-    """
-    def run(self):
-        self.name = 'ys:method'
-        return YacasClassmember.run(self)
-
-
-class YacasModule(Directive):
-    """
-    Directive to mark description of a new module.
-    """
-
-    has_content = False
-    required_arguments = 1
-    optional_arguments = 0
-    final_argument_whitespace = False
-    option_spec = {
-        'platform': lambda x: x,
-        'synopsis': lambda x: x,
-        'noindex': directives.flag,
-        'deprecated': directives.flag,
-    }
-
-    def run(self):
-        env = self.state.document.settings.env
-        modname = self.arguments[0].strip()
-        noindex = 'noindex' in self.options
-        env.temp_data['ys:module'] = modname
-        ret = []
-        if not noindex:
-            env.domaindata['ys']['modules'][modname] = \
-                (env.docname, self.options.get('synopsis', ''),
-                 self.options.get('platform', ''), 'deprecated' in self.options)
-            # make a duplicate entry in 'objects' to facilitate searching for
-            # the module in YacasDomain.find_obj()
-            env.domaindata['ys']['objects'][modname] = (env.docname, 'module')
-            targetnode = nodes.target('', '', ids=['module-' + modname],
-                                      ismod=True)
-            self.state.document.note_explicit_target(targetnode)
-            # the platform and synopsis aren't printed; in fact, they are only
-            # used in the modindex currently
-            ret.append(targetnode)
-            indextext = _('%s (module)') % modname
-            inode = addnodes.index(entries=[('single', indextext,
-                                             'module-' + modname, '')])
-            ret.append(inode)
-        return ret
-
-
-class YacasCurrentModule(Directive):
-    """
-    This directive is just to tell Sphinx that we're documenting
-    stuff in module foo, but links to module foo won't lead here.
-    """
-
-    has_content = False
-    required_arguments = 1
-    optional_arguments = 0
-    final_argument_whitespace = False
-    option_spec = {}
-
-    def run(self):
-        env = self.state.document.settings.env
-        modname = self.arguments[0].strip()
-        if modname == 'None':
-            env.temp_data['ys:module'] = None
-        else:
-            env.temp_data['ys:module'] = modname
-        return []
-
-
 class YacasXRefRole(XRefRole):
     def process_link(self, env, refnode, has_explicit_title, title, target):
         refnode['ys:module'] = env.temp_data.get('ys:module')
@@ -473,78 +249,6 @@ class YacasXRefRole(XRefRole):
             refnode['refspecific'] = True
         return title, target
 
-
-class YacasModuleIndex(Index):
-    """
-    Index subclass to provide the Yacas module index.
-    """
-
-    name = 'modindex'
-    localname = l_('Yacas Module Index')
-    shortname = l_('modules')
-
-    def generate(self, docnames=None):
-        content = {}
-        self.domain.data['modules'] = {}
-        # list of prefixes to ignore
-        ignores = self.domain.env.config['modindex_common_prefix']
-        ignores = sorted(ignores, key=len, reverse=True)
-        # list of all modules, sorted by module name
-        modules = sorted(self.domain.data['modules'].items(),
-                         key=lambda x: x[0].lower())
-        # sort out collapsable modules
-        prev_modname = ''
-        num_toplevels = 0
-        for modname, (docname, synopsis, platforms, deprecated) in modules:
-            if docnames and docname not in docnames:
-                continue
-
-            for ignore in ignores:
-                if modname.startswith(ignore):
-                    modname = modname[len(ignore):]
-                    stripped = ignore
-                    break
-            else:
-                stripped = ''
-
-            # we stripped the whole module name?
-            if not modname:
-                modname, stripped = stripped, ''
-
-            entries = content.setdefault(modname[0].lower(), [])
-
-            package = modname.split('.')[0]
-            if package != modname:
-                # it's a submodule
-                if prev_modname == package:
-                    # first submodule - make parent a group head
-                    if entries:
-                        entries[-1][1] = 1
-                elif not prev_modname.startswith(package):
-                    # submodule without parent in list, add dummy entry
-                    entries.append([stripped + package, 1, '', '', '', '', ''])
-                subtype = 2
-            else:
-                num_toplevels += 1
-                subtype = 0
-
-            qualifier = deprecated and _('Deprecated') or ''
-            entries.append([stripped + modname, subtype, docname,
-                            'module-' + stripped + modname, platforms,
-                            qualifier, synopsis])
-            prev_modname = modname
-
-        # apply heuristics when to collapse modindex at page load:
-        # only collapse if number of toplevel modules is larger than
-        # number of submodules
-        collapse = len(modules) - num_toplevels < num_toplevels
-
-        # sort by first letter
-        content = sorted(content.items())
-
-        return content, collapse
-
-
 class YacasDomain(Domain):
     """Yacas language domain."""
     name = 'ys'
@@ -552,55 +256,25 @@ class YacasDomain(Domain):
     object_types = {
         'function':     ObjType(l_('function'),      'func', 'obj'),
         'data':         ObjType(l_('data'),          'data', 'obj'),
-        'class':        ObjType(l_('class'),         'class', 'obj'),
-        'exception':    ObjType(l_('exception'),     'exc', 'obj'),
-        'method':       ObjType(l_('method'),        'meth', 'obj'),
-        'classmethod':  ObjType(l_('class method'),  'meth', 'obj'),
-        'staticmethod': ObjType(l_('static method'), 'meth', 'obj'),
-        'attribute':    ObjType(l_('attribute'),     'attr', 'obj'),
-        'module':       ObjType(l_('module'),        'mod', 'obj'),
     }
 
     directives = {
-        'function':        YacasModulelevel,
-        'data':            YacasModulelevel,
-        'class':           YacasClasslike,
-        'exception':       YacasClasslike,
-        'method':          YacasClassmember,
-        'classmethod':     YacasClassmember,
-        'staticmethod':    YacasClassmember,
-        'attribute':       YacasClassmember,
-        'module':          YacasModule,
-        'currentmodule':   YacasCurrentModule,
-        'decorator':       YacasDecoratorFunction,
-        'decoratormethod': YacasDecoratorMethod,
+        'function':        YacasObject,#YacasModulelevel,
+        'data':            YacasObject,#YacasModulelevel,
     }
     roles = {
         'data':  YacasXRefRole(),
-        'exc':   YacasXRefRole(),
         'func':  YacasXRefRole(fix_parens=True),
-        'class': YacasXRefRole(),
         'const': YacasXRefRole(),
-        'attr':  YacasXRefRole(),
-        'meth':  YacasXRefRole(fix_parens=True),
-        'mod':   YacasXRefRole(),
-        'obj':   YacasXRefRole(),
     }
     initial_data = {
         'objects': {},  # fullname -> docname, objtype
-        'modules': {},  # modname -> docname, synopsis, platform, deprecated
     }
-    indices = [
-        YacasModuleIndex,
-    ]
 
     def clear_doc(self, docname):
         for fullname, (fn, _) in list(self.data['objects'].items()):
             if fn == docname:
                 del self.data['objects'][fullname]
-        for modname, (fn, _, _, _) in list(self.data['modules'].items()):
-            if fn == docname:
-                del self.data['modules'][modname]
 
     def find_obj(self, env, modname, classname, name, type, searchmode=0):
         """Find a Yacas object for "name", perhaps using the given module
@@ -696,8 +370,6 @@ class YacasDomain(Domain):
                                 contnode, name)
 
     def get_objects(self):
-        for modname, info in self.data['modules'].items():
-            yield (modname, modname, 'module', info[0], 'module-' + modname, 0)
         for refname, (docname, type) in self.data['objects'].items():
             yield (refname, refname, type, docname, refname, 1)
 
