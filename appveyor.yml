@@ -23,8 +23,9 @@ before_build:
 
 build:
   project: build\ALL_BUILD.vcxproj
-
+  
+test_script:
+  - cmd: msbuild "RUN_TESTS.vcxproj" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  
 after_build:
-  - cmake --build build --use-stderr --config "%CONFIGURATION%" -- /verbosity:minimal
-  - cmake --build build --use-stderr --config "%CONFIGURATION%" --target check -- /verbosity:minimal
-  - cmake --build build --use-stderr --config "%CONFIGURATION%" --target package -- /verbosity:minimal
+  - cmake --build build --use-stderr --config "%CONFIGURATION%" --target PACKAGE
