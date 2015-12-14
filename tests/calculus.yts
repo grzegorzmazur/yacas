@@ -51,6 +51,8 @@ Verify(Limit(x,Infinity)(1/x * Sin(x)), 0);
 Verify(Limit(x,Infinity)Sin(x)/x, 0);
 Verify(Limit(x, Infinity) (x^2 + Sin(x)), Infinity);
 
+Verify(Limit(x,+Infinity) (x^3-x)/x^2 - x, 0);
+
 // Some limit tests adapted from mpreduce via mathpiper
 
 Verify(Limit(x,0)(Exp(x)-1)/x, 1);
