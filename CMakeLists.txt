@@ -241,6 +241,8 @@ set (YACAS_SCRIPTS
     scripts/radsimp.rep/code.ys.def
     scripts/random.rep/code.ys
     scripts/random.rep/code.ys.def
+    scripts/rational.rep/code.ys
+    scripts/rational.rep/code.ys.def
     scripts/simplify.rep/code.ys
     scripts/simplify.rep/code.ys.def
     scripts/simplify.rep/factorial.ys

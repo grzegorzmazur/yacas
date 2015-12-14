@@ -47,6 +47,7 @@ Defun(DefFileList,{}) {
     "rabinmiller.rep/code.ys",
     "radsimp.rep/code.ys",
     "random.rep/code.ys",
+    "rational.rep/code.ys",
     "simplify.rep/code.ys",
     "simplify.rep/factorial.ys",
     "solve.rep/code.ys",

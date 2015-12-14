@@ -41,6 +41,7 @@ set (YACAS_TESTS
     predicates.yts
     programming.yts
     radsimp.yts
+    rational.yts
     regress.yts
     scopestack.yts
     simplify.yts
