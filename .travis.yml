@@ -26,7 +26,7 @@ addons:
       name: "grzegorzmazur/yacas"
       description: "Computer calculations made easy"
     notification_email: teoretyk@gmail.com
-    build_command_prepend: "cmake ."
+    build_command_prepend: "cov-configure --comptype gcc --compiler /usr/bin/gcc-4.9 && cov-configure --comptype g++ --compiler /usr/bin/g++-4.9 && cmake ."
     build_command: "make VERBOSE=1"
     branch_pattern: coverity_scan
 
