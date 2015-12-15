@@ -17,8 +17,10 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    - gcc-5
-    - g++-5
+    #- gcc-5
+    #- g++-5
+    - gcc-4.9
+    - g++-4.9
   coverity_scan:
     project:
       name: "grzegorzmazur/yacas"
@@ -29,7 +31,8 @@ addons:
     branch_pattern: coverity_scan
 
 before_install:
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then export CC=gcc-5 CXX=g++-5; fi
+  #- if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then export CC=gcc-5 CXX=g++-5; fi
+  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then export CC=gcc-4.9 CXX=g++-4.9; fi
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a ${TRAVIS_OS_NAME} = "osx" ]; then brew update && brew tap caskroom/cask && brew install brew-cask && brew cask install java && brew install ant; fi
   
 before_script:
