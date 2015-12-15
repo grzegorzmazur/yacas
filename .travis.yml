@@ -26,8 +26,8 @@ addons:
       name: "grzegorzmazur/yacas"
       description: "Computer calculations made easy"
     notification_email: teoretyk@gmail.com
-    build_command_prepend: "cov-configure --comptype gcc --compiler /usr/bin/gcc-4.9 && cov-configure --comptype g++ --compiler /usr/bin/g++-4.9 && cmake ."
-    build_command: "make VERBOSE=1"
+    build_command_prepend: if [ "${TRAVIS_OS_NAME}" = "linux" ]; then cov-configure --comptype gcc --compiler /usr/bin/gcc-4.9 && cov-configure --comptype g++ --compiler /usr/bin/g++-4.9 && cmake .; fi
+    build_command: if [ "${TRAVIS_OS_NAME}" = "linux" ]; then make VERBOSE=1 && cat /home/travis/build/grzegorzmazur/yacas/cmake_build/cov-int/scm_log.txt && cat /home/travis/build/grzegorzmazur/yacas/cmake_build/cov-int/build_log.txt; fi
     branch_pattern: coverity_scan
 
 before_install:
