@@ -25,7 +25,7 @@ addons:
       description: "Computer calculations made easy"
     notification_email: teoretyk@gmail.com
     build_command_prepend: "cmake ."
-    build_command: "make"
+    build_command: "make VERBOSE=1"
     branch_pattern: coverity_scan
 
 before_install:
