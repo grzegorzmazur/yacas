@@ -17,22 +17,19 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    #- gcc-5
-    #- g++-5
-    - gcc-4.9
-    - g++-4.9
+    - gcc-5
+    - g++-5
   coverity_scan:
     project:
       name: "grzegorzmazur/yacas"
       description: "Computer calculations made easy"
     notification_email: teoretyk@gmail.com
-    build_command_prepend: cov-configure --comptype gcc --compiler /usr/bin/gcc-4.9 && cov-configure --comptype g++ --compiler /usr/bin/g++-4.9 && cmake .
+    build_command_prepend: cov-configure --comptype gcc --compiler /usr/bin/gcc-5 && cov-configure --comptype g++ --compiler /usr/bin/g++-5 && cmake .
     build_command: make VERBOSE=1
     branch_pattern: coverity_scan
 
 before_install:
-  #- if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then export CC=gcc-5 CXX=g++-5; fi
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then export CC=gcc-4.9 CXX=g++-4.9; fi
+  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then export CC=gcc-5 CXX=g++-5; fi
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a ${TRAVIS_OS_NAME} = "osx" ]; then brew update && brew tap caskroom/cask && brew install brew-cask && brew cask install java && brew install ant; fi
   
 before_script:
@@ -42,7 +39,6 @@ before_script:
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "osx" ]; then unset CC; unset CXX; cmake -G Xcode .. ; fi
 
 script:
-  - if [ "${COVERITY_SCAN_BRANCH}" = "1" ]; then cat /home/travis/build/grzegorzmazur/yacas/cmake_build/cov-int/scm_log.txt; cat /home/travis/build/grzegorzmazur/yacas/cmake_build/cov-int/build-log.txt; fi
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "linux" ]; then make; fi
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "linux" ]; then make test ; fi
   - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "osx" ]; then xcodebuild -project yacas.xcodeproj -target ALL_BUILD; fi
