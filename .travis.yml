@@ -57,3 +57,6 @@ matrix:
   exclude:
     - os: osx
     - branch: coverity_scan
+  include:
+    - os: osx
+    - branch: master
