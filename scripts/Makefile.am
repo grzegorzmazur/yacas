@@ -46,6 +46,7 @@ SCRIPTFILES1 = 	        										    \
 	rabinmiller.rep/code.ys rabinmiller.rep/code.ys.def 						    \
 	radsimp.rep/code.ys radsimp.rep/code.ys.def 							    \
 	random.rep/code.ys random.rep/code.ys.def 							    \
+	rational.rep/code.ys rational.rep/code.ys.def 							    \
 	simplify.rep/code.ys simplify.rep/code.ys.def simplify.rep/factorial.ys simplify.rep/factorial.ys.def 							    \
 	solve.rep/code.ys solve.rep/code.ys.def                                                		    \
 	debug.rep/code.ys debug.rep/code.ys.def			  					    \

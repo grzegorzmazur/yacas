@@ -1,3 +1,16 @@
+=====
+yacas
+=====
+
+.. image:: https://travis-ci.org/grzegorzmazur/yacas.svg?branch=master
+    :target: https://travis-ci.org/grzegorzmazur/yacas
+
+.. image:: https://ci.appveyor.com/api/projects/status/r8gm1gdk61qe4rgd?svg=true
+    :target: https://ci.appveyor.com/project/grzegorzmazur/yacas
+
+.. image:: http://readthedocs.org/projects/yacas/badge/?version=latest
+    :target: http://yacas.readthedocs.org/en/latest/?badge=latest
+
 Yacas (Yet Another Computer Algebra System) is a small and highly flexible
 general-purpose Computer Algebra System (CAS). The syntax uses an
 infix-operator grammar parser. The distribution contains a small library
@@ -11,7 +24,7 @@ Yacas. Yacas is portable across most Unix-ish platforms (including MacOS X)
 as well as all modern MS Windows versions.
 
 For detailed information on Yacas features and usage, please see the
-included documentation or go to http://yacas.sourceforge.net/
+included documentation or go to http://grzegorzmazur.github.io/yacas/
 
 Yacas is distributed under the GNU LESSER GENERAL PUBLIC LICENSE v2.1 or, at
 your discretion, any later version.

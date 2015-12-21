@@ -15,9 +15,7 @@ const LispString* LispHashTable::LookUp(const std::string& s)
 
 void LispHashTable::GarbageCollect()
 {
-    typedef std::unordered_map<std::string, LispStringSmartPtr>::iterator iterator;
-
-    for (iterator i = _rep.begin(); i != _rep.end(); ++i)
+    for (auto i = _rep.begin(); i != _rep.end(); ++i)
         while (i != _rep.end() && i->second->iReferenceCount == 1)
             i = _rep.erase(i);
 }

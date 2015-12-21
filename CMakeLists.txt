@@ -21,13 +21,14 @@ else ()
 endif ()
 
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -std=c++11")
-elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
-    add_definitions(-DYACAS_NO_CONSTEXPR -DYACAS_NO_ATOMIC_TYPES)
+elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4800")
+    add_definitions(-DYACAS_NO_CONSTEXPR -DYACAS_NO_ATOMIC_TYPES -DYACAS_UINT32_T_IN_GLOBAL_NAMESPACE)
 endif ()
 
-if ("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s DISABLE_EXCEPTION_CATCHING=0")
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --embed-file ${PROJECT_SOURCE_DIR}/scripts@/share/yacas/scripts")
 endif ()
@@ -57,6 +58,7 @@ set (YACAS_LIB_HEADERS
     include/yacas/anumber.inl
     include/yacas/arggetter.h
     include/yacas/arrayclass.h
+    include/yacas/associationclass.h
     include/yacas/choices.h
     include/yacas/commandline.h
     include/yacas/corefunctions.h
@@ -102,6 +104,10 @@ set (YACAS_LIB_HEADERS
     include/yacas/stubs.h
     include/yacas/substitute.h
     include/yacas/tokenizer.h
+    include/yacas/utf8/core.h
+    include/yacas/utf8/checked.h
+    include/yacas/utf8/unchecked.h
+    include/yacas/utf8.h
     include/yacas/xmltokenizer.h
     include/yacas/yacasbase.h
     include/yacas/yacas.h
@@ -235,6 +241,8 @@ set (YACAS_SCRIPTS
     scripts/radsimp.rep/code.ys.def
     scripts/random.rep/code.ys
     scripts/random.rep/code.ys.def
+    scripts/rational.rep/code.ys
+    scripts/rational.rep/code.ys.def
     scripts/simplify.rep/code.ys
     scripts/simplify.rep/code.ys.def
     scripts/simplify.rep/factorial.ys

@@ -78,7 +78,7 @@ LispInFixOperator* LispOperators::LookUp(const LispString* aString)
     const auto i = _map.find(aString);
     if (i != _map.end())
         return &i->second;
-    return 0;
+    return nullptr;
 }
 
 void ParsedObject::ReadToken()

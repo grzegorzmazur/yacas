@@ -21,7 +21,7 @@ hints: manripper removeduplicates $(REFSOURCES) $(REFPROGSOURCES) ref.book.txt r
 	rm -f hints.unsorted
 	for file in ref.book.txt $(REFSOURCES) refprog.book.txt $(REFPROGSOURCES); do \
 	./manripper $(srcdir)/"$$file" >> hints.unsorted ; done
-	sort -t ":" hints.unsorted > hints.sorted
+	LC_ALL=C sort -t ":" hints.unsorted > hints.sorted
 	./removeduplicates hints.sorted hints.singlesorted
 	echo "::::" > tail.txt
 	cat hints.singlesorted tail.txt > hints

@@ -24,7 +24,7 @@ class GenericStruct : public GenericClass, NonCopyable
 public:
   GenericStruct(LispChar * aTypeName, void* aData, void (*aDestructor)(void*));
   virtual ~GenericStruct();
-  virtual const LispChar * TypeName();
+  virtual const LispChar * TypeName() const override;
   inline void* Data() {return iData;}
 
   void* iData;

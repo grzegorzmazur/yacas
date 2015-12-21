@@ -1,0 +1,12 @@
+Testing("Rational Functions");
+
+Verify(IsRationalFunction(x,x), True);
+Verify(IsRationalFunction(x^2-1,x), True);
+Verify(IsRationalFunction((x^3-x)/x^2-x,x), True);
+Verify(IsRationalFunction(Sin(x),x), False);
+Verify(IsRationalFunction(x*Sqrt(x),x), False);
+
+Verify(IsPureRationalFunction(x,x), False);
+Verify(IsPureRationalFunction(x^2-1,x), False);
+Verify(IsPureRationalFunction(1/(x+1),x), True);
+Verify(IsPureRationalFunction((x^3-x)/x^2-x,x), True);

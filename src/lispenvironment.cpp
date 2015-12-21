@@ -188,7 +188,7 @@ void LispEnvironment::SetVariable(const LispString* aVariable, LispPtr& aValue, 
     if (Protected(aVariable))
         throw LispErrProtectedSymbol(*aVariable);
 
-    LispGlobal::iterator i = iGlobals.find(aVariable);
+    auto i = iGlobals.find(aVariable);
     if (i != iGlobals.end())
         i->second = LispGlobalVariable(aValue);
     else
@@ -207,7 +207,7 @@ void LispEnvironment::GetVariable(const LispString* aVariable, LispPtr& aResult)
         return;
     }
 
-    LispGlobal::iterator i = iGlobals.find(aVariable);
+    auto i = iGlobals.find(aVariable);
 
     if (i != iGlobals.end()) {
         LispGlobalVariable* l = &i->second;
@@ -331,7 +331,7 @@ void LispEnvironment::SetCurrentOutput(std::ostream& aOutput)
 
 LispUserFunction* LispEnvironment::UserFunction(LispPtr& aArguments)
 {
-    LispUserFunctions::iterator i = iUserFunctions.find(aArguments->String());
+    auto i = iUserFunctions.find(aArguments->String());
     if (i != iUserFunctions.end()) {
         LispMultiUserFunction* multiUserFunc = &i->second;
         LispInt arity = InternalListLength(aArguments)-1;
@@ -343,7 +343,7 @@ LispUserFunction* LispEnvironment::UserFunction(LispPtr& aArguments)
 
 LispUserFunction* LispEnvironment::UserFunction(const LispString* aName, LispInt aArity)
 {
-    LispUserFunctions::iterator i = iUserFunctions.find(aName);
+    auto i = iUserFunctions.find(aName);
     if (i != iUserFunctions.end())
         return i->second.UserFunc(aArity);
 
@@ -357,7 +357,7 @@ void LispEnvironment::UnFenceRule(const LispString* aOperator, LispInt aArity)
     if (Protected(aOperator))
         throw LispErrProtectedSymbol(*aOperator);
 
-    LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
+    auto i = iUserFunctions.find(aOperator);
 
     if (i == iUserFunctions.end())
         throw LispErrInvalidArg();
@@ -377,7 +377,7 @@ void LispEnvironment::Retract(const LispString* aOperator, LispInt aArity)
     if (Protected(aOperator))
         throw LispErrProtectedSymbol(*aOperator);
 
-    LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
+    auto i = iUserFunctions.find(aOperator);
 
     if (i != iUserFunctions.end())
         i->second.DeleteBase(aArity);
@@ -439,7 +439,7 @@ void LispEnvironment::DeclareMacroRuleBase(const LispString* aOperator, LispPtr&
 
 LispMultiUserFunction* LispEnvironment::MultiUserFunction(const LispString* aOperator)
 {
-    LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
+    auto i = iUserFunctions.find(aOperator);
 
     if (i != iUserFunctions.end())
         return &i->second;
@@ -452,7 +452,7 @@ LispMultiUserFunction* LispEnvironment::MultiUserFunction(const LispString* aOpe
 
 void LispEnvironment::HoldArgument(const LispString*  aOperator, const LispString* aVariable)
 {
-    LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
+    auto i = iUserFunctions.find(aOperator);
 
     if (i == iUserFunctions.end())
         throw LispErrInvalidArg();
@@ -485,7 +485,7 @@ void LispEnvironment::DefineRule(const LispString* aOperator,LispInt aArity,
         throw LispErrProtectedSymbol(*aOperator);
 
     // Find existing multiuser func.
-    LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
+    auto i = iUserFunctions.find(aOperator);
 
     if (i == iUserFunctions.end())
         throw LispErrCreatingRule();
@@ -518,7 +518,7 @@ void LispEnvironment::DefineRulePattern(const LispString* aOperator,LispInt aAri
 //        throw LispErrProtectedSymbol(*aOperator);
 
     // Find existing multiuser func.
-    LispUserFunctions::iterator i = iUserFunctions.find(aOperator);
+    auto i = iUserFunctions.find(aOperator);
 
     if (i == iUserFunctions.end())
         throw LispErrCreatingRule();

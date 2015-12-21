@@ -2,6 +2,7 @@
 #include "yacas/commandline.h"
 
 #include <algorithm>
+#include <cstdint>
 
 namespace {
     struct IsPrefix {
@@ -60,8 +61,13 @@ void CCommandLine::ReadLineSub(const std::string& prompt)
 
     for (;;)
     {
-        std::uint32_t c = GetKey();
+       
 
+#ifdef YACAS_UINT32_T_IN_GLOBAL_NAMESPACE
+		uint32_t c = GetKey();
+#else
+		std::uint32_t c = GetKey();
+#endif
         const std::size_t len = utf8::distance(iSubLine.begin(), iSubLine.end());
         
         switch (c)
@@ -254,7 +260,7 @@ bool CConsoleHistory::ArrowUp(std::string& s, unsigned c)
     
     const std::string prefix(s.begin(), i);
 
-    std::vector<std::string>::reverse_iterator p = iHistory.rbegin();
+    auto p = iHistory.rbegin();
     std::advance(p, iHistory.size() - history);
     
     const std::vector<std::string>::reverse_iterator q =
@@ -278,7 +284,7 @@ bool CConsoleHistory::ArrowDown(std::string& s, unsigned c)
     
     const std::string prefix(s.begin(), i);
 
-    std::vector<std::string>::iterator p = iHistory.begin();
+    auto p = iHistory.begin();
     std::advance(p, history + 1);
 
     const std::vector<std::string>::iterator q =
@@ -322,7 +328,7 @@ bool CConsoleHistory::Complete(std::string& s, unsigned& c)
     utf8::advance(i, c, s.end());
     const std::string prefix(s.begin(), i);
 
-    std::vector<std::string>::reverse_iterator p = iHistory.rbegin();
+    auto p = iHistory.rbegin();
     std::advance(p, iHistory.size() - history);
     
     const std::vector<std::string>::reverse_iterator q =

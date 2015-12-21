@@ -1,0 +1,24 @@
+
+10 # IsRationalFunction(_p, x_IsVariable)_CanBeUni(x, p) <-- True;
+10 # IsRationalFunction(_p / _q, x_IsVariable)_(CanBeUni(x, p) And CanBeUni(x, q)) <-- True;
+50 # IsRationalFunction(_f + _g, x_IsVariable)_(IsRationalFunction(f, x) And IsRationalFunction(g, x)) <-- True;
+50 # IsRationalFunction(_f - _g, x_IsVariable)_(IsRationalFunction(f, x) And IsRationalFunction(g, x)) <-- True;
+
+100 # IsRationalFunction(_p, x_IsVariable) <-- False;
+
+
+200 # Numer(p_CanBeUni) <-- p;
+300 # Numer(p_CanBeUni / q_CanBeUni) <-- p;
+300 # Numer(p_CanBeUni / q_CanBeUni + r_CanBeUni) <-- p + r * q;
+300 # Numer(p_CanBeUni / q_CanBeUni - r_CanBeUni) <-- p - r * q;
+300 # Numer(p_CanBeUni / q_CanBeUni + r_CanBeUni / s_CanBeUni) <-- p * s + r * q;
+300 # Numer(p_CanBeUni / q_CanBeUni - r_CanBeUni / s_CanBeUni) <-- p * s - r * q;
+
+200 # Denom(p_CanBeUni) <-- 1;
+300 # Denom(p_CanBeUni / q_CanBeUni) <-- q;
+300 # Denom(p_CanBeUni / q_CanBeUni + r_CanBeUni) <-- q;
+300 # Denom(p_CanBeUni / q_CanBeUni - r_CanBeUni) <-- q;
+300 # Denom(p_CanBeUni / q_CanBeUni + r_CanBeUni / s_CanBeUni) <-- q * s;
+300 # Denom(p_CanBeUni / q_CanBeUni - r_CanBeUni / s_CanBeUni) <-- q * s;
+
+IsPureRationalFunction(_p, x_IsVariable)_IsRationalFunction(p, x) <-- Degree(Numer(p), x) < Degree(Denom(p), x);

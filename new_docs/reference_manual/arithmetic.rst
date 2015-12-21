@@ -3,24 +3,14 @@ Arithmetic and other operations on numbers
 ==========================================
 
 .. function:: infix +(x,y)
-              prefix -(x)
-              infix -(x,y)
-              infix *(x,y)
-              infix /(x,y)
-              infix ^(x,y)
 
-  arithmetic addition, negation, subtraction, multiplication, division and exponentiation
+  addition
 
-  The arithmetic operators can work on integers, rational numbers,
+  Addition can work on integers, rational numbers,
   complex numbers, vectors, matrices and lists.
 
-  .. note::
-    All the operations are element-wise, except for multiplication and 
-    exponentiation, which in the case of matrices are defined in terms of
-    standard matrix product.
-
   .. hint::
-    Arithmetic operations are implemented in the standard math library (as
+    Addition is implemented in the standard math library (as
     opposed to being built-in). This means that it can be extended by the user.
 
 
@@ -30,23 +20,135 @@ Arithmetic and other operations on numbers
 
     In> 2+3
     Out> 5
-    In> 2-3
-    Out> -1
+
+.. function:: prefix -(x)
+
+  negation
+
+  Negation can work on integers, rational numbers,
+  complex numbers, vectors, matrices and lists.
+
+  .. hint::
+    Negation is implemented in the standard math library (as
+    opposed to being built-in). This means that it can be extended by the user.
+
+
+  :Example:
+
+  ::
+
     In> - 3
     Out> -3
+
+.. function:: infix -(x,y)
+
+  subtraction
+
+  Subtraction can work on integers, rational numbers,
+  complex numbers, vectors, matrices and lists.
+
+  .. hint::
+    Subtraction is implemented in the standard math library (as
+    opposed to being built-in). This means that it can be extended by the user.
+
+
+  :Example:
+
+  ::
+
+    In> 2-3
+    Out> -1
+
+.. function:: infix *(x,y)
+
+  multiplication
+
+  Multiplication can work on integers, rational numbers,
+  complex numbers, vectors, matrices and lists.
+
+  .. note::
+    In the case of matrices, multiplication is defined in
+    terms of standard matrix product.
+
+  .. hint::
+    Multiplication is implemented in the standard math library (as
+    opposed to being built-in). This means that it can be extended by the user.
+
+
+  :Example:
+
+  ::
+
     In> 2*3
     Out> 6
+
+.. function:: infix /(x,y)
+
+  division
+
+  Division can work on integers, rational numbers,
+  complex numbers, vectors, matrices and lists.
+
+  .. note::
+    For matrices division is element-wise.
+
+  .. hint::
+    Division is implemented in the standard math library (as
+    opposed to being built-in). This means that it can be extended by the user.
+
+
+  :Example:
+
+  ::
+
     In> 6/2
     Out> 3
+
+.. function:: infix ^(x,y)
+
+  exponentiation
+
+  Exponentiation can work on integers, rational numbers,
+  complex numbers, vectors, matrices and lists.
+
+  .. note::
+    In the case of matrices, exponentiation is defined in
+    terms of standard matrix product.
+
+  .. hint::
+    Exponentiation is implemented in the standard math library (as
+    opposed to being built-in). This means that it can be extended by the user.
+
+
+  :Example:
+
+  ::
+
     In> 2^3
     Out> 8
 
 .. function:: Div(x,y)
-              Mod(x,y)
 
-   determine divisor and remainder
+   determine divisor
 
-  :func:`Div` performs integer division and :func:`Mod` returns the remainder.
+  :func:`Div` performs integer division.
+  If ``Div(x,y)`` returns ``a`` and ``Mod(x,y)`` equals ``b``, then these
+  numbers satisfy :math:`x =ay + b` and :math:`0 \leq b < y`.
+
+  :Example:
+
+  ::
+
+    In> Div(5,3)
+    Out> 1
+
+  .. seealso:: :func:`Mod`, :func:`Gcd`, :func:`Lcm`
+
+.. function:: Mod(x,y)
+
+   determine remainder
+
+  :func:`Mod` returns the division remainder.
   If ``Div(x,y)`` returns ``a`` and ``Mod(x,y)`` equals ``b``, then these
   numbers satisfy :math:`x =ay + b` and :math:`0 \leq b < y`.
 
@@ -60,7 +162,7 @@ Arithmetic and other operations on numbers
     Out> 2
       
 
-  .. seealso:: :func:`Gcd`, :func:`Lcm`
+  .. seealso:: :func:`Div`, :func:`Gcd`, :func:`Lcm`
 
 .. function:: Gcd(n,m)
               Gcd(list)
@@ -134,19 +236,19 @@ Arithmetic and other operations on numbers
    :param expression: expression to evaluate
    :param precision: integer, precision to use
 
-   The function {N} instructs {Yacas} to try to coerce an expression
-   in to a numerical approximation to the  expression {expr}, using
-   {prec} digits precision if the second calling  sequence is used,
+   The function :func:`N` instructs yacas to try to coerce an expression
+   in to a numerical approximation to the  expression ``expr``, using
+   ``prec`` digits precision if the second calling  sequence is used,
    and the default precision otherwise. This overrides the normal
    behaviour, in which expressions are kept in symbolic form (eg.
-   {Sqrt(2)} instead of {1.41421}).    Application of the {N} operator
-   will make Yacas  calculate floating point representations of
-   functions whenever  possible. In addition, the variable {Pi} is
-   bound to  the value of $Pi$ calculated at the current precision.
-   (This value is a "cached constant", so it is not recalculated each
-   time {N} is used, unless the precision is increased.)      {N} is a
-   macro. Its argument {expr} will only   be evaluated after switching
-   to numeric mode.
+   ``Sqrt(2)`` instead of ``1.41421``). Application of the :func:`N` operator
+   will make yacas  calculate floating point representations of
+   functions whenever  possible. In addition, the variable :data:`Pi` is
+   bound to  the value of :math:`\pi` calculated at the current precision.
+
+   .. note::
+     :func:`N` is a macro. Its argument ``expr`` will only be evaluated after
+     switching to numeric mode.
 
    :Example:
 
@@ -271,8 +373,8 @@ Arithmetic and other operations on numbers
 
    :param x: a number
 
-   This function returns $Floor(x)$, the largest integer smaller than
-   or equal to $x$.
+   This function returns :math:`\left \lfloor{x}\right \rfloor`, the largest
+   integer smaller than or equal to ``x``.
 
    :Example:
 
@@ -292,8 +394,8 @@ Arithmetic and other operations on numbers
 
    :param x: a number
 
-   This function returns $Ceil(x)$, the smallest integer larger than
-   or equal to $x$.
+   This function returns :math:`\left \lceil{x}\right \rceil`, the smallest 
+   integer larger than or equal to ``x``.
 
    :Example:
 
@@ -390,8 +492,8 @@ Arithmetic and other operations on numbers
    :param expr: expression to determine numerator of
 
    This function determines the numerator of the rational expression
-   "expr" and returns it. As a special case, if its argument is
-   numeric  but not rational, it returns this number. If "expr" is
+   ``expr`` and returns it. As a special case, if its argument is
+   numeric  but not rational, it returns this number. If ``expr`` is
    neither  rational nor numeric, the function returns unevaluated.
 
    :Example:
@@ -415,8 +517,8 @@ Arithmetic and other operations on numbers
    :param expr: expression to determine denominator of
 
    This function determines the denominator of the rational expression
-   "expr" and returns it. As a special case, if its argument is
-   numeric  but not rational, it returns {1}. If "expr" is  neither
+   ``expr`` and returns it. As a special case, if its argument is
+   numeric but not rational, it returns ``1``. If ``expr`` is  neither
    rational nor numeric, the function returns unevaluated.
 
    :Example:
@@ -441,17 +543,19 @@ Arithmetic and other operations on numbers
    :param precision: required number of digits precision of calculation
 
    This function is an integer relation detection algorithm. This
-   means  that, given the numbers $x[i]$ in the list "xlist", it tries
-   to find integer coefficients $a[i]$ such that  $a[1]*x[1]$ + ... +
-   $a[n]*x[n] = 0$.  The list of integer coefficients is returned.
-   The numbers in "xlist" must evaluate to floating point numbers if
-   the {N} operator is applied on them.
+   means  that, given the numbers :math:`x_i` in the list ``xlist``, it tries
+   to find integer coefficients 
+   :math:`a_i` such that  :math:`a_1*x_`+\ldots+a_n*x_n = 0`. The list of
+   integer coefficients is returned.
+   The numbers in "xlist" must evaluate to floating point numbers when
+   the :func:`N` operator is applied to them.
 
 .. function:: infix <(e1, e2)
 
    test for "less than"
 
-   :param e1}, {e2: expressions to be compared
+   :param e1: expression to be compared
+   :param e2: expression to be compared
 
    The two expression are evaluated. If both results are numeric, they
    are compared. If the first expression is smaller than the second
@@ -481,7 +585,8 @@ Arithmetic and other operations on numbers
 
    test for "greater than"
 
-   :param e1, e2: expressions to be compared
+   :param e1: expression to be compared
+   :param e2: expression to be compared
 
    The two expression are evaluated. If both results are numeric, they
    are compared. If the first expression is larger than the second
@@ -511,7 +616,8 @@ Arithmetic and other operations on numbers
 
    test for "less or equal"
 
-   :param e1}, {e2: expressions to be compared
+   :param e1: expression to be compared
+   :param e2: expression to be compared
 
    The two expression are evaluated. If both results are numeric, they
    are compared. If the first expression is smaller than or equals the
@@ -541,7 +647,8 @@ Arithmetic and other operations on numbers
 
    test for "greater or equal"
 
-   :param e1}, {e2: expressions to be compared
+   :param e1: expression to be compared
+   :param e2: expression to be compared
 
    The two expression are evaluated. If both results are numeric, they
    are compared. If the first expression is larger than or equals the
@@ -573,8 +680,8 @@ Arithmetic and other operations on numbers
 
    :param n: number to test
 
-   {IsZero(n)} evaluates to :data:`True` if  "n" is zero. In case "n" is not
-   a number, the function returns  :data:`False`.
+   ``IsZero(n)`` evaluates to :data:`True` if  ``n`` is zero. In case ``n`` is
+   not a number, the function returns  :data:`False`.
 
    :Example:
 
