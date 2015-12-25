@@ -18,6 +18,7 @@ set(SPHINX_CACHE_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc/_doctrees")
 
 # HTML output directory
 set(SPHINX_HTML_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc/html")
+set(SPHINX_SINGLEHTML_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc/singlehtml")
 
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/new_docs/conf.py.in"
@@ -30,13 +31,14 @@ file (COPY new_docs/yacaslogo.png DESTINATION "${BINARY_BUILD_DIR}/doc")
 
 add_custom_target(yacas_docs ALL
     ${SPHINX_EXECUTABLE}
-        -q -b html
+        -q -b singlehtml
         -c "${BINARY_BUILD_DIR}/doc"
         -d "${SPHINX_CACHE_DIR}"
         "${CMAKE_CURRENT_SOURCE_DIR}/new_docs"
-        "${SPHINX_HTML_DIR}"
+        "${SPHINX_SINGLEHTML_DIR}"
     COMMENT "Building HTML documentation with Sphinx")
 
+install (DIRECTORY "${SPHINX_SINGLEHTML_DIR}" DESTINATION share/yacas/documentation COMPONENT doc)
 
 find_program (PERL perl)
 find_package (LATEX)
