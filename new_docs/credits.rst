@@ -6,6 +6,7 @@ Original/primary authors [*]_
 =============================
 
 *   **Ayal Pinkus**                  apinkus "AT" xs4all "DOT" nl
+
     This project was started by Ayal Pinkus who remains the main author and the primary maintainer.
 
 *   **Serge Winitzki**               serge "AT" cosmos "DOT" phy "DOT" tufts "DOT" edu
