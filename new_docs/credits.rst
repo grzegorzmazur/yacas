@@ -4,20 +4,20 @@ Credits [*]_
 
 Original/primary authors 
 ========================
-Ayal Pinkus                  *apinkus "AT" xs4all "DOT" nl*
+  Ayal Pinkus                  *apinkus "AT" xs4all "DOT" nl*
 
-    This project was started by Ayal Pinkus who remains the main author and the primary maintainer.
+      This project was started by Ayal Pinkus who remains the main author and the primary maintainer.
 
-Serge Winitzki               *serge "AT" cosmos "DOT" phy "DOT" tufts "DOT" edu*
+  Serge Winitzki               *serge "AT" cosmos "DOT" phy "DOT" tufts "DOT" edu*
     
-    Added factorials over rationals, TeXForm, did a major overhaul of the introduction manual (actually, he wrote
-    large part of the manual as it is), and initiated numerous improvements and test code for Yacas, and
-    implemented yacas_client. Actually, Serge has been one of the larger contributors, and the main force behind
-    the improved documentation.
+      Added factorials over rationals, TeXForm, did a major overhaul of the introduction manual (actually, he wrote
+      large part of the manual as it is), and initiated numerous improvements and test code for Yacas, and
+      implemented yacas_client. Actually, Serge has been one of the larger contributors, and the main force behind
+      the improved documentation.
 
-Jitse Niesen                 *jn221 "AT" damtp "DOT" cam "DOT" ac "DOT" uk*
+  Jitse Niesen                 *jn221 "AT" damtp "DOT" cam "DOT" ac "DOT" uk*
     
-    Reported some bugs, helped improve various parts of Yacas, and greatly improved the manual for Yacas.
+      Reported some bugs, helped improve various parts of Yacas, and greatly improved the manual for Yacas.
 
 Maintainer
 ==========
