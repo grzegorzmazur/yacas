@@ -12,6 +12,7 @@ Documentation
     programming_in_yacas/index
     book_of_algorithms/index
     yagy/index
+    license
     glossary
 
 Indices and tables

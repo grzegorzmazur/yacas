@@ -130,6 +130,7 @@ bool hideconsolewindow = false;
 bool exit_after_files = false;
 
 std::string root_dir;
+std::string doc_dir;
 #ifdef _WIN32
 HANDLE htimer = 0;
 #endif
@@ -219,14 +220,12 @@ std::string ReadInputString(const std::string& prompt)
     } else if (inpline.front() == '?') {
         const std::string key(inpline.begin() + 1, inpline.end());
 
-        const std::string prefix = "http://yacas.sourceforge.net/";
-        std::string url = prefix + "ref.html?" + key;
-        if (key == "licence" || key == "license")
-            url = prefix + "refprogchapter9.html";
-        else if (key == "warranty")
-            url = prefix + "refprogchapter9.html#c9s2";
+        const std::string prefix = "file://" + doc_dir + "/index.html";
+        std::string url = prefix + "#" + key;
+        if (key == "licence" || key == "license" || key == "warranty")
+            url = prefix + "#document-license";
         else if (key == "?")
-            url = prefix + "refmanual.html";
+            url = prefix + "index.html#document-reference_manual/index";
 
 #ifndef _WIN32
         const std::string viewer = "xdg-open";
@@ -1069,6 +1068,7 @@ int main(int argc, char** argv)
 #error "This platform is not yet supported. Please contact developers at yacas@googlegroups.com"
 #endif
 
+    doc_dir = root_dir + "/share/yacas/documentation/singlehtml";
     root_dir += "/share/yacas/scripts";
 
     int fileind = parse_options(argc, argv);

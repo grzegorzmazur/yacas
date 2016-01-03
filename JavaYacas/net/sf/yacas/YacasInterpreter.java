@@ -31,11 +31,11 @@ public class YacasInterpreter {
 
         yacas = new CYacas(out);
 
-        URL initURL = java.lang.ClassLoader.getSystemResource(scriptsDir + "yacasinit.ys");
-
+        URL initURL = yacas.getClass().getClassLoader().getResource(scriptsDir + "yacasinit.ys");
+        
         if (initURL == null)
             throw new NoSuchFileException("yacasinit.ys not found in " + scriptsDir);
-
+        
         String initPath = initURL.getPath();
 
         if (initPath.lastIndexOf('!') >= 0) {
