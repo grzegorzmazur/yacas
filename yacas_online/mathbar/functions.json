@@ -1,0 +1,176 @@
+{
+    "categories": {
+            "number": [ "Sqrt", "Exp", "Ln"],
+            "function_1": ["Simplify","Integrate","Derivative", "Plot2D","Limit" ],
+            "function_2": ["Simplify","Integrate","Derivative", "Plot3D" ]
+        },
+    "functions":{
+        "Sqrt":
+            {
+                "parameters": [],
+                "parser": "square_root_parser"
+            },
+        "Exp":
+            {
+                "parameters": [],
+                "parser": "exponential_parser"
+            },
+        "Ln":
+            {
+                "parameters": [],
+                "parser": "natural_logarithm_parser"
+            },
+        "Simplify":
+            {
+                "parameters": [],
+                "parser": "simplify_parser"
+            },
+        "Integrate":
+            {
+                "parameters": [
+                               {
+                               "parameterName": "variable",
+                               "parameterType": "select",
+                               "defaultValue": ["x"],
+                               "text" : "over"
+                               },
+                               {
+                               "parameterName": "definite",
+                               "parameterType": "condition",
+                               "text" : "",
+                               "defaultValue": "false",
+                               "parameters": [
+                                              {
+                                              "parameterName": "from",
+                                              "parameterType": "edit",
+                                              "defaultValue": "0",
+                                              "widestValue": "-Infinity"
+                                              },
+                                              {
+                                              "parameterName": "to",
+                                              "parameterType": "edit",
+                                              "defaultValue": "5",
+                                              "widestValue": "-Infinity"                                              }
+                                              ]
+                               }
+                               ],
+                "parser": "integrate_parser"
+            },
+        "Derivative":
+            {
+                "parameters": [
+                               {
+                               "parameterName": "variable",
+                               "parameterType": "select",
+                               "defaultValue": ["x"],
+                               "text": "with respect to"
+                               }
+                               ],
+                "parser": "derivative_parser"
+            },
+        "Plot2D":
+            {
+                "parameters": [
+                               {
+                               "parameterName": "from",
+                               "parameterType": "edit",
+                               "defaultValue": "-5",
+                               "widestValue": "00000"
+                               },
+                               {
+                               "parameterName": "to",
+                               "parameterType": "edit",
+                               "defaultValue": "5",
+                               "widestValue": "00000"
+                               }
+                               ],
+                "text": "Plot",
+                "parser": "plot_2d_parser"
+            },
+        "Limit":
+            {
+                "parameters": [
+                               {
+                               "parameterName": "variable",
+                               "parameterType": "select",
+                               "defaultValue": "x",
+                               "text":"as"
+                               },
+                               {
+                               "parameterName": "value",
+                               "parameterType": "edit",
+                               "defaultValue": "0",
+                               "text": "approaches",
+                               "widestValue": "-Infinity"
+                               },
+                               {
+                               "parameterName": "direction",
+                               "parameterType": "condition",
+                               "text" : "",
+                               "defaultValue": "false",
+                               "parameters": [
+                                              {
+                                              "parameterName": "from",
+                                              "parameterType": "select",
+                                              "defaultValue": ["Left","Right"]
+                                              }
+                                              ]
+                               }
+                               ],
+                "parser": "limit_parser"
+            },
+        "Plot3D":
+            {
+                "parameters": [
+                               {
+                               "parameterName": "var",
+                               "parameterType": "label",
+                               "defaultValue": "%VARIABLE%0%",
+                               "text" : ""
+                               },
+                               
+                               {
+                               "parameterName": "variable_0_from",
+                               "parameterType": "edit",
+                               "defaultValue": "-5",
+                               "widestValue": "00000",
+                               "text": "from"
+                               },
+                               {
+                               "parameterName": "variable_0_to",
+                               "parameterType": "edit",
+                               "defaultValue": "5",
+                               "widestValue": "00000",
+                               "text": "to"
+                               },
+                               {
+                               "parameterName": "var",
+                               "parameterType": "label",
+                               "defaultValue": "%VARIABLE%1%",
+                               "text" : ""
+                               },
+                               {
+                               "parameterName": "variable_1_from",
+                               "parameterType": "edit",
+                               "defaultValue": "-5",
+                               "widestValue": "00000",
+                               "text": "from"
+                               },
+                               {
+                               "parameterName": "variable_1_to",
+                               "parameterType": "edit",
+                               "defaultValue": "5",
+                               "widestValue": "00000",
+                               "text": "to"
+                               }
+
+                               
+                               
+                
+                ],
+                "text": "Plot",
+                "parser": "plot_3d_parser"
+            }
+            
+    }
+    }

@@ -16,9 +16,9 @@ widget2:
   url: https://yacas.readthedocs.org/
   text: Yacas comes with extensive documentation covering the scripting language, the functionality that is already implemented in the system and the algorithms used.
 widget3:
-  title: Yagy
-  url: /yagy/
-  text: Computer calculations made good looking.
+  title: Yacas Online
+  url: /yacas_online/yacas_online.html
+  text: Demo of yacas running in your browser
 
 permalink: /index.html
 ---
