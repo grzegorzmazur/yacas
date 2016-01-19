@@ -220,7 +220,7 @@
                               else if (isConstant && !(isVector || isMatrix))
                                   expressionType = 'constant';
                               else if (isVector)
-                                  expressionType = "vector";
+                                  expressionType = 'vector';
                               else if (isSquareMatrix)
                                   expressionType = 'square_matrix';
                               else if (isMatrix)
@@ -228,7 +228,11 @@
 
                               yacas_evaluate('VarList(Hold(' + result + '));');
                               var variables = yacas_result();
-                              variables = variables.trim().substr(1, variables.length - 3).split(',');
+                              variables = variables.trim().substr(1, variables.length - 3);
+                              if (variables === '')
+                                  variables = []
+                              else
+                                  variables = variables.split(',');
                               
                               evaluationResult['type'] = 'Expression';
                               evaluationResult['expression'] = result;
