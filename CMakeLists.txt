@@ -22,14 +22,14 @@ endif ()
 
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -std=c++11")
+   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -std=c++11")
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4800")
     add_definitions(-DYACAS_NO_CONSTEXPR -DYACAS_NO_ATOMIC_TYPES -DYACAS_UINT32_T_IN_GLOBAL_NAMESPACE)
 endif ()
 
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s DISABLE_EXCEPTION_CATCHING=0")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s DISABLE_EXCEPTION_CATCHING=0 -s ASSERTIONS=1")
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --embed-file ${PROJECT_SOURCE_DIR}/scripts@/share/yacas/scripts")
 endif ()
 
@@ -121,12 +121,18 @@ set (YACAS_WIN32_SOURCES src/win32commandline.cpp res/yacas.rc)
 set (YACAS_UNIX_HEADERS include/yacas/unixcommandline.h)
 set (YACAS_WIN32_HEADERS include/yacas/win32commandline.h)
 
+set (YACAS_JS_INTERFACE_SOURCES src/js_interface.cpp)
+
 if (UNIX)
   set (YACAS_SOURCES ${YACAS_COMMON_SOURCES} ${YACAS_UNIX_SOURCES})
   set (YACAS_HEADERS ${YACAS_UNIX_HEADERS})
 else ()
   set (YACAS_SOURCES ${YACAS_COMMON_SOURCES} ${YACAS_WIN32_SOURCES})
   set (YACAS_HEADERS ${YACAS_WIN32_HEADERS})
+endif ()
+
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten")
+  set (YACAS_SOURCES ${YACAS_SOURCES} ${YACAS_JS_INTERFACE_SOURCES})
 endif ()
 
 set (YACAS_SCRIPTS 
