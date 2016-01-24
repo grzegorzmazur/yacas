@@ -8,13 +8,11 @@
 "discretion) any later version for the full conditions.\n"
 
 #define Yacas_Web_info \
-"See http://grzegorzmazur.github.io/yacas/ for more information on yacas.\n" \
-"and documentation.\n"\
+"See http://www.yacas.org/ for more information on yacas. and documentation.\n"\
 "Type ?? for help. Or type ?function for help on a function.\n"
 
 #define Yacas_help_info \
-"Type ?license or ?licence to see the LGPL version 2.1;\n"\
-"type ?warranty for warranty info.\n"
+"Type ?license or ?licence to see the LGPL version 2.1;\n"
 
 // This is the full text for systems where the online help (?blah) is available
 #define GPL_blurb GPL_base_text Yacas_help_info Yacas_Web_info "\n"
