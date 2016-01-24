@@ -240,10 +240,13 @@ std::string ReadInputString(const std::string& prompt)
             url = prefix + "#document-reference_manual/index";
 
 #ifndef _WIN32
+        
+#if defined (__APPLE__)
+        const std::string cmd = "osascript -e 'open location \"" + url + "\"'";
+#else
         const std::string viewer = "xdg-open";
-
         const std::string cmd = viewer + " " + url;
-
+#endif
         if (system(cmd.c_str()) == 0)
             inpline = "True";
         else
