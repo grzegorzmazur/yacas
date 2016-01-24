@@ -5,12 +5,9 @@
 #
 #  Created by Marta Noga on 06.04.2014.
 #
-if [ APPLE ]
-then
- INSTALL_PATH="/usr"
-else
- INSTALL_PATH="/usr/local"
-fi
+
+INSTALL_PATH="/usr/local"
+
 
 echo "Removing binary"
 rm ${INSTALL_PATH}/bin/yacas
