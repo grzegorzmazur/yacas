@@ -196,6 +196,18 @@ void LispExitRequested(LispEnvironment& aEnvironment, LispInt aStackTop)
         InternalFalse(aEnvironment, RESULT);
 }
 
+std::string get_default_browser()
+{
+	HKEY key;
+	RegOpenKeyEx(HKEY_CLASSES_ROOT, "http\\shell\\open\\command", 0, KEY_QUERY_VALUE, &key);
+	TCHAR buf[256];
+	DWORD size = 256;
+	RegQueryValueEx(key, nullptr, nullptr, nullptr, (LPBYTE)buf, &size);
+	RegCloseKey(key);
+
+	return buf;
+}
+
 
 std::string ReadInputString(const std::string& prompt)
 {
@@ -225,7 +237,7 @@ std::string ReadInputString(const std::string& prompt)
         if (key == "licence" || key == "license" || key == "warranty")
             url = prefix + "#document-license";
         else if (key == "?")
-            url = prefix + "index.html#document-reference_manual/index";
+            url = prefix + "#document-reference_manual/index";
 
 #ifndef _WIN32
         const std::string viewer = "xdg-open";
@@ -237,7 +249,20 @@ std::string ReadInputString(const std::string& prompt)
         else
             inpline = "False";
 #else
-        if ((intptr_t)ShellExecuteA(0, "open", url.c_str(), 0, 0, SW_SHOWNORMAL) > 32)
+		const std::string viewer = get_default_browser();
+
+		std::string cmd = viewer;
+		cmd.replace(cmd.find("%1"), 2, url);
+
+		STARTUPINFO si;
+		PROCESS_INFORMATION pi;
+
+		ZeroMemory(&si, sizeof si);
+		ZeroMemory(&pi, sizeof pi);
+
+		si.cb = sizeof si;
+
+		if (CreateProcess(nullptr, (LPSTR)cmd.c_str(), nullptr, nullptr, 0, 0,  nullptr, nullptr, &si, &pi))
             inpline = "True";
         else
             inpline = "False";
