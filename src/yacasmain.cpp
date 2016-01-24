@@ -196,6 +196,7 @@ void LispExitRequested(LispEnvironment& aEnvironment, LispInt aStackTop)
         InternalFalse(aEnvironment, RESULT);
 }
 
+#ifdef _WIN32
 std::string get_default_browser()
 {
 	HKEY key;
@@ -207,7 +208,7 @@ std::string get_default_browser()
 
 	return buf;
 }
-
+#endif
 
 std::string ReadInputString(const std::string& prompt)
 {
