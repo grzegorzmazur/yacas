@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 2.8.7)
 
 option (ENABLE_DOCS "generate documentation" OFF)
+option (ENABLE_OLD_DOCS "generate documentation" OFF)
 option (ENABLE_JYACAS "build the Java yacas engine" OFF)
 
 if (APPLE)
