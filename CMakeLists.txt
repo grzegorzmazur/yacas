@@ -35,8 +35,8 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten")
 endif ()
 
 set (YACAS_VERSION_MAJOR 1)
-set (YACAS_VERSION_MINOR 3)
-set (YACAS_VERSION_MICRO 6)
+set (YACAS_VERSION_MINOR 4)
+set (YACAS_VERSION_MICRO 0)
 
 set (YACAS_VERSION ${YACAS_VERSION_MAJOR}.${YACAS_VERSION_MINOR}.${YACAS_VERSION_MICRO})
 
@@ -341,7 +341,7 @@ set_target_properties(libyacas_shared PROPERTIES OUTPUT_NAME "yacas" SOVERSION 1
 #to generate yacas framework on macos:
 if (APPLE)
   add_library (libyacas_framework SHARED ${YACAS_LIB_SOURCES})
-  set_target_properties(libyacas_framework PROPERTIES OUTPUT_NAME "yacas" VERSION ${YACAS_VERSION} SOVERSION 1.0.0 FRAMEWORK ON)
+  set_target_properties(libyacas_framework PROPERTIES OUTPUT_NAME "yacas" VERSION ${YACAS_VERSION} SOVERSION 14.0.0 FRAMEWORK ON)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/scripts $<TARGET_FILE_DIR:libyacas_framework>/Resources/scripts)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_BINARY_DIR}/scripts $<TARGET_FILE_DIR:libyacas_framework>/Resources/scripts)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/include $<TARGET_FILE_DIR:libyacas_framework>/Headers)
