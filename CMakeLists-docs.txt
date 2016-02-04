@@ -25,6 +25,7 @@ file (
         new_docs/util
         new_docs/favicon.ico
         new_docs/yacaslogo.png
+        new_docs/yacaslogo_w250px.png
         new_docs/conf.py
     DESTINATION
         "${BINARY_BUILD_DIR}/doc")
