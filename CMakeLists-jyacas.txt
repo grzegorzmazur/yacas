@@ -6,13 +6,6 @@ configure_file (
 set (CMAKE_JAVA_INCLUDE_PATH ${CMAKE_CURRENT_BINARY_DIR}/CMakeFiles/jyacas.dir/)
 
 set (JYACAS_SRCS ${CMAKE_CURRENT_BINARY_DIR}/CVersion.java
-         JavaYacas/net/sf/yacas/GraphicsPrimitives.java 
-         JavaYacas/net/sf/yacas/SBox.java
-         JavaYacas/net/sf/yacas/SBoxBuilder.java
-         JavaYacas/net/sf/yacas/TeXParser.java
-         JavaYacas/net/sf/yacas/FormulaViewApplet.java
-         JavaYacas/net/sf/yacas/Grapher.java
-         JavaYacas/net/sf/yacas/GrapherApplet.java
          JavaYacas/net/sf/yacas/StdFileInput.java
          JavaYacas/net/sf/yacas/StreamGobbler.java
          JavaYacas/net/sf/yacas/JarInputFile.java
@@ -68,23 +61,12 @@ set (JYACAS_SRCS ${CMAKE_CURRENT_BINARY_DIR}/CVersion.java
          JavaYacas/net/sf/yacas/PatternClass.java
          JavaYacas/net/sf/yacas/CYacas.java
          JavaYacas/net/sf/yacas/YacasConsole.java
-         JavaYacas/net/sf/yacas/ConsoleApplet.java
-         JavaYacas/net/sf/yacas/CDataReader.java
-         JavaYacas/net/sf/yacas/HintItem.java
-         JavaYacas/net/sf/yacas/HintWindow.java
-         JavaYacas/net/sf/yacas/Hints.java
-         JavaYacas/net/sf/yacas/SelectSymbol.java
-         JavaYacas/net/sf/yacas/TResult.java
          JavaYacas/net/sf/yacas/YacasInterpreter.java
          JavaYacas/net/sf/yacas/YacasParamMatcherBase.java
          JavaYacas/net/sf/yacas/MatchSubList.java
          JavaYacas/net/sf/yacas/MatchNumber.java
          JavaYacas/net/sf/yacas/MatchAtom.java
          JavaYacas/net/sf/yacas/MatchVariable.java
-         JavaYacas/net/sf/yacas/TWord.java
-         JavaYacas/net/sf/yacas/YacasGraphicsContext.java
-         JavaYacas/net/sf/yacas/Article.java
-         JavaYacas/net/sf/yacas/DatahubApplet.java
          JavaYacas/net/sf/yacas/XmlTokenizer.java
          JavaYacas/net/sf/yacas/SubstBehaviourBase.java
          JavaYacas/net/sf/yacas/SubstBehaviour.java
