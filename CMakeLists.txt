@@ -1,7 +1,6 @@
 cmake_minimum_required (VERSION 2.8.7)
 
 option (ENABLE_DOCS "generate documentation" OFF)
-option (ENABLE_OLD_DOCS "generate documentation" OFF)
 option (ENABLE_JYACAS "build the Java yacas engine" OFF)
 
 if (APPLE)
@@ -372,12 +371,6 @@ if (WIN32)
 endif()
 
 add_executable (gencorefunctions src/gencorefunctions.cpp)
-
-add_executable (autocompleter docs/autocompleter.cpp)
-add_executable (riptestfromyart docs/riptestfromyart.cpp)
-
-add_executable (manripper manmake/manripper.cpp)
-add_executable (removeduplicates manmake/removeduplicates.cpp)
 
 if (CMAKE_CROSSCOMPILING)
   set (YACAS ${YACAS_NATIVE_BUILD}/yacas)
