@@ -12,6 +12,7 @@
 #include "lispevalhash.h"
 #include "lispuserfunc.h"
 #include "deffile.h"
+#include "lisperror.h"
 #include "lispio.h"
 #include "stringio.h"
 #include "lispglobals.h"

@@ -61,5 +61,3 @@ inline void InternalNot(LispPtr& aResult, LispEnvironment& aEnvironment, LispPtr
         InternalTrue(aEnvironment,aResult);
     }
 }
-
-

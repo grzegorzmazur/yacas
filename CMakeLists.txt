@@ -78,7 +78,6 @@ set (YACAS_LIB_HEADERS
     include/yacas/lisphash.h
     include/yacas/lispio.h
     include/yacas/lispobject.h
-    include/yacas/lispobject.inl
     include/yacas/lispparser.h
     include/yacas/lispstring.h
     include/yacas/lisptype.h

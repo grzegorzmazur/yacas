@@ -206,8 +206,20 @@ public:
   inline const LispObject* getObj() const { return (*_Ptr).operator->(); }
 };
 
+inline LispPtr& LispObject::Nixed()
+{
+    return iNext;
+}
 
-#include "lispobject.inl"
+inline LispInt LispObject::operator==(LispObject& aOther)
+{
+    return Equal(aOther);
+}
+
+inline LispInt LispObject::operator!=(LispObject& aOther)
+{
+    return !Equal(aOther);
+}
 
 
 #endif
