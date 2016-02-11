@@ -6,7 +6,7 @@
 #include "yacas/lispeval.h"
 #include "yacas/lispatom.h"
 #include "yacas/lispparser.h"
-#include "yacas/stdfileio.h"
+#include "yacas/platfileio.h"
 #include "yacas/stringio.h"
 #include "yacas/lisperror.h"
 #include "yacas/infixparser.h"

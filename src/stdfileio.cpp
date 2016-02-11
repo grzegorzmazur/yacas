@@ -1,5 +1,5 @@
 #include "yacas/yacasprivate.h"
-#include "yacas/stdfileio.h"
+#include "yacas/platfileio.h"
 
 #ifdef _WIN32
 #define MAP_TO_WIN32_PATH_SEPARATOR

@@ -95,7 +95,6 @@ set (YACAS_LIB_HEADERS
     include/yacas/standard.h
     include/yacas/standard.inl
     include/yacas/stdcommandline.h
-    include/yacas/stdfileio.h
     include/yacas/stringio.h
     include/yacas/string_utils.h
     include/yacas/stubs.h

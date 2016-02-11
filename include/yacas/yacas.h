@@ -10,7 +10,7 @@
 #include "lisphash.h"
 #include "lispevalhash.h"
 #include "infixparser.h"
-#include "stdfileio.h"
+#include "platfileio.h"
 #include "lispatom.h"
 #include "lispeval.h"
 #include "lispglobals.h"

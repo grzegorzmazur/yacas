@@ -1,6 +1,7 @@
 #ifndef YACAS_PLATFILEIO_H
 #define YACAS_PLATFILEIO_H
 
+#include "lispenvironment.h"
 #include "noncopyable.h"
 
 #include <fstream>
