@@ -2,9 +2,6 @@
 #define YACAS_NUMBERS_H
 
 #include "lispenvironment.h"
-#include "yacasbase.h"
-
-
 
 /// Whether the numeric library supports 1.0E-10 and such.
 LispInt NumericSupportForMantissa();

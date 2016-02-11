@@ -2,7 +2,6 @@
 #ifndef _xmltokenizer_h_
 #define _xmltokenizer_h_
 
-#include "yacasbase.h"
 #include "tokenizer.h"
 
 class XmlTokenizer : public LispTokenizer

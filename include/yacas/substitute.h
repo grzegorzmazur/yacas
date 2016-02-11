@@ -1,7 +1,6 @@
 #ifndef YACAS_SUBSTITUTE_H
 #define YACAS_SUBSTITUTE_H
 
-#include "yacasbase.h"
 #include "lispobject.h"
 #include "lispenvironment.h"
 

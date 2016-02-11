@@ -1,7 +1,6 @@
 #ifndef YACAS_ANUMBER_H
 #define YACAS_ANUMBER_H
 
-#include "yacasbase.h"
 #include "lispstring.h"
 
 #include <cassert>

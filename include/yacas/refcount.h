@@ -2,7 +2,8 @@
 #define YACAS_REFCOUNT_H
 
 #include <cassert>
-#include "yacasbase.h"
+
+#include "lisptype.h"
 
 //------------------------------------------------------------------------------
 // RefPtr - Smart pointer for (intrusive) reference counting.

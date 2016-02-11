@@ -6,7 +6,6 @@
 #ifndef YACAS_INFIXPARSER_H
 #define YACAS_INFIXPARSER_H
 
-#include "yacasbase.h"
 #include "lispparser.h"
 
 #include <ostream>

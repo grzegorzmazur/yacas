@@ -1,5 +1,4 @@
 #include "yacas/yacasprivate.h"
-#include "yacas/yacasbase.h"
 #include "yacas/patterns.h"
 #include "yacas/standard.h"
 #include "yacas/mathuserfunc.h"

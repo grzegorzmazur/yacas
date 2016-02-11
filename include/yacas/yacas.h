@@ -4,7 +4,6 @@
 #ifndef YACAS_YACAS_H
 #define YACAS_YACAS_H
 
-#include "yacasbase.h"
 #include "lispstring.h"
 #include "stringio.h"
 #include "tokenizer.h"

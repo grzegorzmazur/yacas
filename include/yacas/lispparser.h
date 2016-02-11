@@ -6,7 +6,6 @@
 #ifndef YACAS_LISPPARSER_H
 #define YACAS_LISPPARSER_H
 
-#include "yacasbase.h"
 #include "lispobject.h"
 #include "tokenizer.h"
 #include "lispio.h"

@@ -1,7 +1,6 @@
 #ifndef YACAS_STANDARD_H
 #define YACAS_STANDARD_H
 
-#include "yacasbase.h"
 #include "lispobject.h"
 #include "lispenvironment.h"
 #include "lisphash.h"

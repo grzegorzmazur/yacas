@@ -6,7 +6,6 @@
 #ifndef YACAS_TOKENIZER_H
 #define YACAS_TOKENIZER_H
 
-#include "yacasbase.h"
 #include "lispstring.h"
 #include "lispio.h"
 #include "lisphash.h"

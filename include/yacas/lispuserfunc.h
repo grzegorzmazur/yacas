@@ -1,7 +1,6 @@
 #ifndef YACAS_LISPUSERFUNC_H
 #define YACAS_LISPUSERFUNC_H
 
-#include "yacasbase.h"
 #include "lispobject.h"
 #include "evalfunc.h"
 

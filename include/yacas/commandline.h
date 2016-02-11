@@ -19,7 +19,6 @@
 #include <vector>
 
 #include "lispstring.h"
-#include "yacasbase.h"
 #include "utf8.h"
 
 enum ESpecialChars

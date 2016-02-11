@@ -14,7 +14,6 @@
 /// to use these variables).
 
 
-#include "yacasbase.h"
 #include "lisptype.h"
 #include "lispenvironment.h"
 #include "noncopyable.h"

@@ -3,7 +3,6 @@
  */
 
 #include "yacas/yacasprivate.h"
-#include "yacas/yacasbase.h"
 #include "yacas/numbers.h"
 #include "yacas/standard.h"
 #include "yacas/anumber.h"

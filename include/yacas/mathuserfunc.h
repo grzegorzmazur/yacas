@@ -1,7 +1,6 @@
 #ifndef YACAS_MATHUSERFUNC_H
 #define YACAS_MATHUSERFUNC_H
 
-#include "yacasbase.h"
 #include "lispuserfunc.h"
 #include "patternclass.h"
 #include "noncopyable.h"

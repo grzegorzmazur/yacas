@@ -1,7 +1,6 @@
 #ifndef YACAS_MATHCOMMANDS_H
 #define YACAS_MATHCOMMANDS_H
 
-#include "yacasbase.h"
 #include "lispenvironment.h"
 #include "lispevalhash.h"
 #include "lispobject.h"

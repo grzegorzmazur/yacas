@@ -6,7 +6,6 @@
 #ifndef YACAS_LISPEVAL_H
 #define YACAS_LISPEVAL_H
 
-#include "yacasbase.h"
 #include "lispobject.h"
 #include "lispenvironment.h"
 

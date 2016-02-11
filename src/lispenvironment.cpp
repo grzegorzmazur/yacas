@@ -1,5 +1,4 @@
 
-#include "yacas/yacasbase.h"
 #include "yacas/lispenvironment.h"
 #include "yacas/lispeval.h"
 #include "yacas/lispatom.h"

@@ -3,7 +3,6 @@
 #ifndef YACAS_GENERICSTRUCT_H
 #define YACAS_GENERICSTRUCT_H
 
-#include "yacasbase.h"
 #include "genericobject.h"
 #include "noncopyable.h"
 

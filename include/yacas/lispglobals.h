@@ -7,7 +7,6 @@
 #ifndef YACAS_LISPGLOBALS_H
 #define YACAS_LISPGLOBALS_H
 
-#include "yacasbase.h"
 #include "lispobject.h"
 #include "lisphash.h"
 

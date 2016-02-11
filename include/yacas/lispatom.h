@@ -21,7 +21,6 @@
 #ifndef YACAS_LISPATOM_H
 #define YACAS_LISPATOM_H
 
-#include "yacasbase.h"
 #include "lispobject.h"
 #include "lispstring.h"
 #include "numbers.h"  // RefPtr<BigNumber> needs definition of BigNumber
