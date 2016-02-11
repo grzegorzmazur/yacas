@@ -82,9 +82,6 @@ public:
   /// \sa FindLocal
   void SetVariable(const LispString* aString, LispPtr& aValue, bool aGlobalLazyVariable);
 
-  /// In debug mode, DebugModeVerifySettingGlobalVariables raises a warning if a global variable is set.
-  void DebugModeVerifySettingGlobalVariables(LispPtr & aVariable, bool aGlobalLazyVariable);
-
   /// Get the value assigned to a variable.
   /// \param aVariable name of the variable
   /// \param aResult (on exit) value of \a aVariable
