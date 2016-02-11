@@ -4,8 +4,7 @@
 #include "yacasbase.h"
 
 /// Abstract class which can be put inside a LispGenericClass.
-class GenericClass : public YacasBase
-{
+class GenericClass {
 public:
     GenericClass() : iReferenceCount(0) {};
     virtual ~GenericClass() = default;

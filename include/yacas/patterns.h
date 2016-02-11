@@ -23,7 +23,7 @@
 #include <vector>
 
 /// Abstract class for matching one argument to a pattern.
-class YacasParamMatcherBase: public YacasBase {
+class YacasParamMatcherBase {
 public:
     /// Destructor.
     virtual ~YacasParamMatcherBase() = default;
@@ -136,7 +136,7 @@ MatchVariable::MatchVariable(LispInt aVarIndex):
 /// This class (specifically, the Matches() member function) can match
 /// function parameters to a pattern, check for predicates on the
 /// arguments, and return whether there was a match.
-class YacasPatternPredicateBase : public YacasBase, NonCopyable {
+class YacasPatternPredicateBase: NonCopyable {
 public:
     /// Constructor.
     /// \param aEnvironment the underlying Lisp environment

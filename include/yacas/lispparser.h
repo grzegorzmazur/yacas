@@ -14,8 +14,7 @@
 
 #include <ostream>
 
-class LispParser : public YacasBase
-{
+class LispParser {
 public:
     LispParser(LispTokenizer& aTokenizer, LispInput& aInput,
                LispEnvironment& aEnvironment);
@@ -32,8 +31,7 @@ public:
     LispInt iListed;
 };
 
-class LispPrinter : public YacasBase
-{
+class LispPrinter {
 public:
     virtual void Print(
         const LispPtr& aExpression,

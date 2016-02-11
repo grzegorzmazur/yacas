@@ -13,8 +13,7 @@
 
 #include <cctype>
 
-class LispTokenizer : public YacasBase
-{
+class LispTokenizer {
 public:
   LispTokenizer() : iToken() {}
   /// NextToken returns a string representing the next token,

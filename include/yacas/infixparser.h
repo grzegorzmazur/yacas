@@ -87,8 +87,7 @@ private:
     void ParseCont(LispPtr& aResult);
 };
 
-class ParsedObject : public YacasBase
-{
+class ParsedObject {
 public:
     ParsedObject(InfixParser& aParser):
         iParser(aParser),

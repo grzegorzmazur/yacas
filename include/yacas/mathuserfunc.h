@@ -18,8 +18,7 @@ class BranchingUserFunction : public LispArityUserFunction
 {
 public:
   /// Structure containing name of parameter and whether it is put on hold.
-  class BranchParameter : public YacasBase
-  {
+  class BranchParameter {
   public:
     BranchParameter(const LispString* aParameter = nullptr, LispInt aHold=false)
         : iParameter(aParameter), iHold(aHold) {}
@@ -28,8 +27,7 @@ public:
   };
 
   /// Abstract base class for rules.
-  class BranchRuleBase : public YacasBase
-  {
+  class BranchRuleBase {
   public:
     virtual ~BranchRuleBase() = default;
     virtual bool Matches(LispEnvironment& aEnvironment, LispPtr* aArguments) = 0;

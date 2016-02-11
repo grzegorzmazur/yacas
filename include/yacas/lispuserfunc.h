@@ -63,8 +63,7 @@ class LispDefFile;
 /// can be selected by providing its name. Additionally, the name of
 /// the file in which the function is defined, can be specified.
 
-class LispMultiUserFunction : public YacasBase
-{
+class LispMultiUserFunction {
 public:
   /// Constructor.
   LispMultiUserFunction() : iFunctions(),iFileToOpen(nullptr) {};

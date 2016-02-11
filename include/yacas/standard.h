@@ -55,8 +55,7 @@ void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnviron
 void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
                         const LispChar* aString);
 
-class LispObjectAdder : public YacasBase
-{
+class LispObjectAdder {
 public:
     LispObjectAdder(LispObject* aPtr)
         : iPtr(aPtr) {};

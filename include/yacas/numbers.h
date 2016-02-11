@@ -49,8 +49,7 @@ class ANumber;
 
 /// Main class for multiple-precision arithmetic.
 /// All calculations are done at given precision. Integers grow as needed, floats don't grow beyond given precision.
-class BigNumber : public YacasBase
-{
+class BigNumber {
 public: //constructors
   BigNumber(const LispChar * aString,LispInt aPrecision,LispInt aBase=10);
 /// copy constructor

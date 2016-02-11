@@ -74,8 +74,7 @@ protected:
   std::size_t history;
 };
 
-class CCommandLine : public YacasBase
-{
+class CCommandLine {
 public:
   CCommandLine():
       full_line_dirty(false),

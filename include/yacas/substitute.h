@@ -9,8 +9,7 @@
 
 /** Behaviour for substituting sub-expressions.
  */
-class SubstBehaviourBase : public YacasBase
-{
+class SubstBehaviourBase {
 public:
     virtual ~SubstBehaviourBase() = default;
     virtual bool Matches(LispPtr& aResult, LispPtr& aElement) = 0;

@@ -17,8 +17,7 @@
 typedef ReferenceType ReferenceCount;
 
 template<class T>
-class RefPtr : public YacasBase  // derived, so we can 'NEW LispPtr[nnn]'
-{
+class RefPtr {
 public:
   // Default constructor (not explicit, so it auto-initializes)
   inline RefPtr() : iPtr(nullptr) {}

@@ -15,8 +15,7 @@ void InternalEval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExp
 */
 
 
-class UserStackInformation : public YacasBase
-{
+class UserStackInformation {
 public:
     UserStackInformation()
       : iOperator(),iExpression(),iRulePrecedence(-1),iSide(0)
@@ -37,8 +36,7 @@ public:
 /// Eval() is a pure virtual function, to be provided by the derived class.
 /// The other functions are stubs.
 
-class LispEvaluatorBase : public YacasBase
-{
+class LispEvaluatorBase {
 public:
   LispEvaluatorBase() : iBasicInfo() {}
   virtual ~LispEvaluatorBase() = default;
@@ -138,8 +136,7 @@ void ShowExpression(LispString& outString, LispEnvironment& aEnvironment,
                     LispPtr& aExpression);
 
 
-class YacasDebuggerBase : public YacasBase
-{
+class YacasDebuggerBase {
 public:
   virtual ~YacasDebuggerBase();
   virtual void Start() = 0;

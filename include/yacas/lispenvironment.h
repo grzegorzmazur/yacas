@@ -47,8 +47,7 @@ class LispEnvironment;
 /// This huge class is the central class of the Yacas program. It
 /// implements a dialect of Lisp.
 
-class LispEnvironment : public YacasBase, NonCopyable
-{
+class LispEnvironment: NonCopyable {
 public:
   /// \name Constructor and destructor
   //@{
