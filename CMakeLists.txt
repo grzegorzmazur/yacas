@@ -51,7 +51,7 @@ include_directories(
   "${PROJECT_BINARY_DIR}"
   )
 
-set (YACAS_LIB_SOURCES src/stdcommandline.cpp src/deffile.cpp src/infixparser.cpp src/lispatom.cpp src/lispenvironment.cpp src/lispeval.cpp src/lisperror.cpp src/lispio.cpp src/lispobject.cpp src/lispparser.cpp src/lispuserfunc.cpp src/mathcommands.cpp src/mathuserfunc.cpp src/standard.cpp src/stdfileio.cpp src/arggetter.cpp src/stringio.cpp src/tokenizer.cpp src/yacasapi.cpp src/lispevalhash.cpp src/patterns.cpp src/patternclass.cpp src/substitute.cpp src/mathcommands2.cpp src/mathcommands3.cpp src/errors.cpp src/patcher.cpp src/genericstructs.cpp src/xmltokenizer.cpp src/commandline.cpp src/anumber.cpp src/yacasnumbers.cpp src/numbers.cpp src/platmath.cpp src/stdstubs.cpp src/obmalloc.cpp src/lisphash.cpp src/yacasbase.cpp src/debugmem.cpp)
+set (YACAS_LIB_SOURCES src/stdcommandline.cpp src/deffile.cpp src/infixparser.cpp src/lispatom.cpp src/lispenvironment.cpp src/lispeval.cpp src/lisperror.cpp src/lispio.cpp src/lispobject.cpp src/lispparser.cpp src/lispuserfunc.cpp src/mathcommands.cpp src/mathuserfunc.cpp src/standard.cpp src/stdfileio.cpp src/arggetter.cpp src/stringio.cpp src/tokenizer.cpp src/yacasapi.cpp src/lispevalhash.cpp src/patterns.cpp src/patternclass.cpp src/substitute.cpp src/mathcommands2.cpp src/mathcommands3.cpp src/errors.cpp src/patcher.cpp src/genericstructs.cpp src/xmltokenizer.cpp src/commandline.cpp src/anumber.cpp src/yacasnumbers.cpp src/numbers.cpp src/platmath.cpp src/stdstubs.cpp src/obmalloc.cpp src/lisphash.cpp src/yacasbase.cpp)
 
 set (YACAS_LIB_HEADERS
     include/yacas/anumber.h
@@ -59,11 +59,9 @@ set (YACAS_LIB_HEADERS
     include/yacas/arggetter.h
     include/yacas/arrayclass.h
     include/yacas/associationclass.h
-    include/yacas/choices.h
     include/yacas/commandline.h
     include/yacas/corefunctions.h
     include/yacas/core_yacasmain.h
-    include/yacas/debugmem.h
     include/yacas/deffile.h
     include/yacas/errors.h
     include/yacas/evalfunc.h

@@ -10,22 +10,10 @@ class YacasBase
 {
 public:
   inline YacasBase() {};
-#ifdef YACAS_DEBUG
-  // New operators with additional debug arguments need to be handled differently
-  static inline void* operator new(size_t size, const char* aFile, int aLine)
-    { return YacasMallocPrivate(size,aFile,aLine); }
-  static inline void* operator new[](size_t size, const char* aFile, int aLine)
-    { return YacasMallocPrivate(size,aFile,aLine); }
-#else
-  // Normal versions of operator new
   static inline void* operator new(size_t size)
     { return PlatAlloc(size); }
   static inline void* operator new[](size_t size)
     { return PlatAlloc(size); }
-#endif
-  /* Operators delete are shared, they behave the same whether in debug or release (as
-     PlatFree is mapped to the debug version of freeing memory any way)
-   */
   static inline void operator delete(void* object)
     { PlatFree(object); }
   static inline void operator delete[](void* object)

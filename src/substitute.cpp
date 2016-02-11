@@ -26,7 +26,6 @@ void InternalSubstitute(LispPtr& aTarget, LispPtr& aSource,
             }
 
             aTarget = (LispSubList::New(newList));
-            DBG_( aTarget->SetFileAndLine(object->iFileName,object->iLine); )
         }
         else
         {
@@ -75,7 +74,6 @@ bool LocalSymbolBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
         if (name == iOriginalNames[i])
         {
             aResult = LispAtom::New(iEnvironment, *iNewNames[i]);
-            DBG_( aResult->SetFileAndLine(aElement->iFileName,aElement->iLine); )
             return true;
         }
     }

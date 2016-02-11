@@ -87,30 +87,15 @@ void LispCharString(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispInDebugMode(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifdef YACAS_DEBUG
-    InternalTrue(aEnvironment,RESULT);
-#else
     InternalFalse(aEnvironment,RESULT);
-#endif
 }
 
 void LispDebugFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef YACAS_DEBUG
     throw LispErrGeneric("Cannot call DebugFile in non-debug version of Yacas");
-#else
-  const LispChar * file = ARGUMENT(1)->iFileName;
-  if (!file) file = "";
-  LispString * str = aEnvironment.HashTable().LookUpStringify(file);
-  RESULT = LispAtom::New(aEnvironment, *str);
-#endif
 }
 
 void LispDebugLine(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef YACAS_DEBUG
     throw LispErrGeneric("Cannot call DebugLine in non-debug version of Yacas");
-#else
-  RESULT = LispAtom::New(aEnvironment, std::to_string(ARGUMENT(1)->iLine));
-#endif
 }

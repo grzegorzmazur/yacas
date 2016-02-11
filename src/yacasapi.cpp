@@ -5,12 +5,6 @@
 #include "yacas/mathcommands.h"
 #include "yacas/standard.h"
 
-#ifdef YACAS_DEBUG
-long theNrDefinedBuiltIn=0;
-long theNrDefinedUser=0;
-#endif
-
-
 #define OPERATOR(kind,prec,name) \
   kind##operators.SetOperator(prec,hash.LookUp(#name));
 // for example: OPERATOR(bodied,KMaxPrecedence,While) produces:

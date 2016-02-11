@@ -19,17 +19,12 @@ class UserStackInformation {
 public:
     UserStackInformation()
       : iOperator(),iExpression(),iRulePrecedence(-1),iSide(0)
-#ifdef YACAS_DEBUG
-      , iFileName("(no file)"),iLine(0)
-#endif // YACAS_DEBUG
     {
     }
     LispPtr iOperator;
     LispPtr iExpression;
     LispInt iRulePrecedence;
     LispInt iSide; // 0=pattern, 1=body
-    DBG_( const LispChar * iFileName; )
-    DBG_( LispInt iLine; )
 };
 
 /// Abstract evaluator for Lisp expressions.

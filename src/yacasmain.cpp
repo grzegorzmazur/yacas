@@ -121,9 +121,6 @@ bool use_texmacs_out = false;
 
 int stack_size = 50000;
 
-#ifdef YACAS_DEBUG
-bool verbose_debug = true;
-#endif
 bool patchload = false;
 bool winsockinitialised = false;
 bool hideconsolewindow = false;
@@ -153,26 +150,6 @@ static bool restart = false;
 
 void ReportNrCurrent()
 {
-#ifdef YACAS_DEBUG
-    if (verbose_debug) {
-        extern long theNrCurrent;
-        extern long theNrConstructed;
-        extern long theNrDestructed;
-        extern long theNrTokens;
-        extern long theNrDefinedBuiltIn;
-        extern long theNrDefinedUser;
-
-        std::cout << "left-over: " << theNrCurrent << " objects\n"
-                  << theNrConstructed << " constructed, "
-                  << theNrDestructed << " destructed\n"
-                  << "nr tokens: " << theNrTokens << "\n"
-                  << "-------------------------------\n"
-                  << "Total " << theNrDefinedBuiltIn+theNrDefinedUser
-                  << " functions defined ("
-                  << theNrDefinedBuiltIn << " built-in, "
-                  << theNrDefinedUser << " user)\n";
-    }
-#endif
 }
 
 
@@ -350,9 +327,6 @@ void my_exit()
         }
 
         ReportNrCurrent();
-#ifdef YACAS_DEBUG
-        CheckAllPtrs(1);
-#endif
     }
 #ifdef _WIN32
 #ifdef SUPPORT_SERVER
@@ -408,7 +382,7 @@ void LoadYacas(std::ostream& os)
 
     busy = true;
 
-    yacas = NEW CYacas(os, stack_size);
+    yacas = new CYacas(os, stack_size);
 
 
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) yacas->getDefEnv().getEnv().SetCommand(fname,iname,nrargs,flags);
@@ -659,9 +633,6 @@ int runserver(int argc,char** argv)
 #endif
                     {
                         FD_SET(client_sockfd, &readfds);
-#ifdef YACAS_DEBUG
-                        std::cout << "adding client on fd " << client_sockfd << "\n";
-#endif
                     }
 
                 } else {
@@ -685,9 +656,6 @@ int runserver(int argc,char** argv)
                         if (server_single_user && nrSessions == 0)
                             std::exit(EXIT_SUCCESS);
 
-#ifdef YACAS_DEBUG
-                        std::cout << "YacasServer: Removing client on " << fd << "\n";
-#endif
                     } else {
                         std::vector<char> buffer(nread + 1);
                         std::string finalbuffer;
@@ -711,16 +679,10 @@ int runserver(int argc,char** argv)
                             }
                         }
 
-#ifdef YACAS_DEBUG
-                        std::cout << "YacasServer: Servicing on " fd << " (" << used_clients[clsockindex] << ")\n";
-#endif
 
                         if (clsockindex < maxConnections) {
                             if (used_clients[clsockindex] == 0) {
 
-#ifdef YACAS_DEBUG
-                                std::cout << "Loading new Yacas environment\n";
-#endif
                                 std::stringstream* out = new std::stringstream;
                                 LoadYacas(*out);
                                 used_clients[clsockindex] = yacas;
@@ -749,9 +711,6 @@ int runserver(int argc,char** argv)
                                     SetWaitableTimer(htimer, &timedue, 0, stopClient, 0, 0);
 #endif
                                 }
-#ifdef YACAS_DEBUG
-                                std::cout << "In> " << finalbuffer << "\n";
-#endif
                                 outStrings.clear();
                                 used_clients[clsockindex]->Evaluate(finalbuffer.c_str());
 
@@ -775,10 +734,6 @@ int runserver(int argc,char** argv)
 
 
                                 const std::size_t buflen = std::strlen(response);
-#ifdef YACAS_DEBUG
-                                std::cout << outStrings.c_str()
-                                          << "Out> " << response << "\n";
-#endif
                                 if (response) {
 #ifndef _WIN32
                                     ssize_t c =
@@ -869,9 +824,6 @@ void runconsole(const std::string& inprompt, const std::string& outprompt)
 
     if (read_eval_print) {
         while (busy) {
-#ifdef YACAS_DEBUG
-            LispLocalEvaluator local(yacas->getDefEnv().getEnv(), NEW TracedStackEvaluator);
-#endif
             yacas->Evaluate(read_eval_print);
 
             if (yacas->IsError())
@@ -879,10 +831,6 @@ void runconsole(const std::string& inprompt, const std::string& outprompt)
         }
     } else {
         while (busy) {
-#ifdef YACAS_DEBUG
-            LispLocalEvaluator local(yacas->getDefEnv().getEnv(), NEW TracedStackEvaluator);
-#endif
-
             ReadInputString(inprompt);
 
             const std::string inpline =  commandline->iLine;
@@ -923,12 +871,6 @@ int parse_options(int argc, char** argv)
                 read_eval_print = nullptr;
             } else if (!std::strcmp(argv[fileind],"--patchload")) {
                 patchload = true;
-            } else if (!std::strcmp(argv[fileind],"--verbose-debug")) {
-#ifdef YACAS_DEBUG
-                verbose_debug = true;
-#else
-                std::cout << "Warning: --verbose-debug is only supported in debug the version of this program.\n";
-#endif
             } else if (!std::strcmp(argv[fileind],"--init")) {
                 fileind++;
                 if (fileind<argc)

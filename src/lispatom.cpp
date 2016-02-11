@@ -12,9 +12,9 @@
 LispObject* LispAtom::New(LispEnvironment& aEnvironment, const std::string& aString)
 {
     if (IsNumber(aString.c_str(),true))  // check if aString is a number (int or float)
-        return NEW LispNumber(NEW LispString(aString), aEnvironment.Precision());
+        return new LispNumber(new LispString(aString), aEnvironment.Precision());
 
-    return NEW LispAtom(aEnvironment.HashTable().LookUp(aString));
+    return new LispAtom(aEnvironment.HashTable().LookUp(aString));
 }
 
 LispAtom::LispAtom(const LispString* aString) : iString(aString)
@@ -45,7 +45,7 @@ const LispString* LispAtom::String()
 
 LispSubList* LispSubList::New(LispObject* aSubList)
 {
-    LispSubList* self = NEW LispSubList(aSubList);
+    LispSubList* self = new LispSubList(aSubList);
 
     if (!self)
       throw LispErrNotEnoughMemory();
@@ -91,7 +91,7 @@ LispSubList::~LispSubList()
 
 LispGenericClass* LispGenericClass::New(GenericClass* aClass)
 {
-    LispGenericClass* self = NEW LispGenericClass(aClass);
+    LispGenericClass* self = new LispGenericClass(aClass);
 
     if (!self)
       throw LispErrNotEnoughMemory();
@@ -126,7 +126,7 @@ LispString * LispNumber::String()
   if (!iString)
   {
     assert(iNumber.ptr());  // either the string is null or the number but not both
-    LispString *str = NEW LispString;
+    LispString *str = new LispString;
     // export the current number to string and store it as LispNumber::iString
     iNumber->ToString(*str, bits_to_digits(std::max(1,iNumber->GetPrecision()),BASE10), BASE10);
     iString = str;
@@ -144,7 +144,7 @@ BigNumber* LispNumber::Number(LispInt aBasePrecision)
     RefPtr<LispString> str;
     str = iString;
     // aBasePrecision is in digits, not in bits, ok
-    iNumber = NEW BigNumber(str->c_str(), aBasePrecision, BASE10);
+    iNumber = new BigNumber(str->c_str(), aBasePrecision, BASE10);
   }
 
   // check if the BigNumber object has enough precision, if not, extend it

@@ -99,9 +99,9 @@ void LispMultiply(LispEnvironment& aEnvironment, LispInt aStackTop)
       RefPtr<BigNumber> y;
       GetNumber(x,aEnvironment, aStackTop, 1);
       GetNumber(y,aEnvironment, aStackTop, 2);
-      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+      BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
       z->Multiply(*x, *y, aEnvironment.BinaryPrecision());
-      RESULT = (NEW LispNumber(z));
+      RESULT = new LispNumber(z);
       return;
 }
 
@@ -128,7 +128,7 @@ void LispAdd(LispEnvironment& aEnvironment, LispInt aStackTop)
     {
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aStackTop, 1);
-      RESULT = (NEW LispNumber(x.ptr()));
+      RESULT = (new LispNumber(x.ptr()));
       return;
     }
     else
@@ -138,9 +138,9 @@ void LispAdd(LispEnvironment& aEnvironment, LispInt aStackTop)
       GetNumber(x,aEnvironment, aStackTop, 1);
       GetNumber(y,aEnvironment, aStackTop, 2);
       LispInt bin = aEnvironment.BinaryPrecision();
-      BigNumber *z = NEW BigNumber(bin);
+      BigNumber *z = new BigNumber(bin);
       z->Add(*x.ptr(),*y.ptr(),aEnvironment.BinaryPrecision());
-      RESULT = (NEW LispNumber(z));
+      RESULT = (new LispNumber(z));
       return;
     }
 }
@@ -152,9 +152,9 @@ void LispSubtract(LispEnvironment& aEnvironment, LispInt aStackTop)
     {
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aStackTop, 1);
-      BigNumber *z = NEW BigNumber(*x/*aEnvironment.BinaryPrecision()*/);
+      BigNumber *z = new BigNumber(*x/*aEnvironment.BinaryPrecision()*/);
       z->Negate(*z /* *x.Ptr() */);
-      RESULT = (NEW LispNumber(z));
+      RESULT = (new LispNumber(z));
       return;
     }
     else
@@ -165,9 +165,9 @@ void LispSubtract(LispEnvironment& aEnvironment, LispInt aStackTop)
       GetNumber(y,aEnvironment, aStackTop, 2);
       BigNumber yneg(*y);
       yneg.Negate(yneg);
-      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+      BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
       z->Add(*x,yneg,aEnvironment.BinaryPrecision());
-      RESULT = (NEW LispNumber(z));
+      RESULT = (new LispNumber(z));
       return;
     }
 }
@@ -181,7 +181,7 @@ void LispDivide(LispEnvironment& aEnvironment, LispInt aStackTop)
   RefPtr<BigNumber> y;
   GetNumber(x,aEnvironment, aStackTop, 1);
   GetNumber(y,aEnvironment, aStackTop, 2);
-  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+  BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
   // if both arguments are integers, then BigNumber::Divide would perform an integer divide, but we want a float divide here.
   if (x->IsInt() && y->IsInt())
   {
@@ -198,7 +198,7 @@ void LispDivide(LispEnvironment& aEnvironment, LispInt aStackTop)
   {
     z->Divide(*x, *y,aEnvironment.BinaryPrecision());
   }
-  RESULT = (NEW LispNumber(z));
+  RESULT = (new LispNumber(z));
   return;
 }
 
@@ -213,9 +213,9 @@ void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
 { \
       RefPtr<BigNumber> x; \
       GetNumber(x,aEnvironment, aStackTop, 1); \
-      BigNumber *z = NEW BigNumber(  *x ); \
+      BigNumber *z = new BigNumber(  *x ); \
       z->BigNumName( *z ); \
-      RESULT = (NEW LispNumber(z)); \
+      RESULT = (new LispNumber(z)); \
 }
 #define BINARYFUNCTION(LispName, BigNumName, OldName) \
 void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
@@ -224,9 +224,9 @@ void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
       RefPtr<BigNumber> y; \
       GetNumber(x,aEnvironment, aStackTop, 1); \
       GetNumber(y,aEnvironment, aStackTop, 2); \
-      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision()); \
+      BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision()); \
       z->BigNumName(*x, *y); \
-      RESULT = (NEW LispNumber(z)); \
+      RESULT = (new LispNumber(z)); \
 }
 
 UNARYFUNCTION(LispFloor, Floor, FloorFloat)
@@ -240,9 +240,9 @@ void LispFloor(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aStackTop, 1);
-      BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+      BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
       z->Floor(*x.Ptr());
-      RESULT = (NEW LispNumber(z));
+      RESULT = (new LispNumber(z));
 }
 */
 /* FIXME Eventually the BigNumber support will be stable and we can remove old code and simplify these macros */
@@ -252,13 +252,13 @@ void LispGetExactBits(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
-  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+  BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
   z->SetTo(
   (x->IsInt())
     ? x->BitCount()  // for integers, return the bit count
     : x->GetPrecision()   // for floats, return the precision
   );
-  RESULT = (NEW LispNumber(z));
+  RESULT = (new LispNumber(z));
 }
 /// set internal precision data on a number object.
 void LispSetExactBits(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -267,12 +267,12 @@ void LispSetExactBits(LispEnvironment& aEnvironment, LispInt aStackTop)
   RefPtr<BigNumber> y;
   GetNumber(x,aEnvironment, aStackTop, 1);
   GetNumber(y,aEnvironment, aStackTop, 2);
-  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+  BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
   z->SetTo(*x);
   // do nothing for integers
   if (!(z->IsInt()))
     z->Precision((long)(y->Double()));  // segfaults unless y is defined?
-  RESULT = (NEW LispNumber(z));
+  RESULT = (new LispNumber(z));
 }
 
 
@@ -281,9 +281,9 @@ void LispBitCount(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
-  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+  BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
   z->SetTo(x->BitCount());
-  RESULT = (NEW LispNumber(z));
+  RESULT = (new LispNumber(z));
 }
 
 /// obtain the sign of a number object.
@@ -291,9 +291,9 @@ void LispMathSign(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
-  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+  BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
   z->SetTo(x->Sign());
-  RESULT = (NEW LispNumber(z));
+  RESULT = (new LispNumber(z));
 }
 
 /// check whether a number object fits into a platform type.
@@ -309,22 +309,22 @@ void LispCeil(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
-  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+  BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
   z->Negate(*x);
   z->Floor(*z);  // danger: possible exception raised in Floor() leads to a memory leak because z is not destroyed
   z->Negate(*z);
-  RESULT = (NEW LispNumber(z));
+  RESULT = (new LispNumber(z));
 }
 
 void LispAbs(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
-  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+  BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
   z->SetTo(*x);
   if (x->Sign()<0)
     z->Negate(*x);
-  RESULT = (NEW LispNumber(z));
+  RESULT = (new LispNumber(z));
 }
 //BINARYFUNCTION(LispMod, Mod, ModFloat)
 /* this will be gone */
@@ -342,9 +342,9 @@ void LispDiv(LispEnvironment& aEnvironment, LispInt aStackTop)
   GetNumber(y,aEnvironment, aStackTop, 2);
   if (x->IsInt() && y->IsInt())
   {  // both integer, perform integer division
-    BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+    BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
     z->Divide(*x,*y,aEnvironment.BinaryPrecision());
-    RESULT = (NEW LispNumber(z));
+    RESULT = (new LispNumber(z));
     return;
   }
   else
@@ -377,9 +377,9 @@ void LispFastIsPrime(LispEnvironment& aEnvironment, LispInt aStackTop)
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
   long result = primes_table_check((unsigned long)(x->Double()));
-  BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());
+  BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
   z->SetTo(result);
-  RESULT = (NEW LispNumber(z));
+  RESULT = (new LispNumber(z));
 }
 
 // define a macro to replace all platform math functions
@@ -390,9 +390,9 @@ void LispFastIsPrime(LispEnvironment& aEnvironment, LispInt aStackTop)
         RefPtr<BigNumber> x;                                            \
         GetNumber(x,aEnvironment, aStackTop, 1);                        \
         double result = PlatformName(x->Double());                      \
-        BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());   \
+        BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());   \
         z->SetTo(result);                                               \
-        RESULT = (NEW LispNumber(z));                                   \
+        RESULT = (new LispNumber(z));                                   \
     }
 
 #define PLATFORM_BINARY(LispName, PlatformName, LispBackupName, OldName) \
@@ -402,9 +402,9 @@ void LispFastIsPrime(LispEnvironment& aEnvironment, LispInt aStackTop)
         GetNumber(x,aEnvironment, aStackTop, 1);                        \
         GetNumber(y,aEnvironment, aStackTop, 2);                        \
         double result = PlatformName(x->Double(), y->Double());         \
-        BigNumber *z = NEW BigNumber(aEnvironment.BinaryPrecision());   \
+        BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());   \
         z->SetTo(result);                                               \
-        RESULT = (NEW LispNumber(z));                                   \
+        RESULT = (new LispNumber(z));                                   \
     }
 
 // now we can define all such functions, e.g.:
@@ -464,8 +464,8 @@ void LispFromBase(LispEnvironment& aEnvironment, LispInt aStackTop)
   // FIXME: API breach, must pass precision in base digits and not in bits!
   // if converting an integer, the precision argument is ignored,
   // but if converting a float, need to use bits_to_digits(BinaryPrecision, base)
-    BigNumber *z = NEW BigNumber(str2->c_str(),aEnvironment.BinaryPrecision(),base);
-    RESULT = (NEW LispNumber(z));
+    BigNumber *z = new BigNumber(str2->c_str(),aEnvironment.BinaryPrecision(),base);
+    RESULT = (new LispNumber(z));
 }
 void LispToBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
@@ -824,9 +824,9 @@ void LispBitsToDigits(LispEnvironment& aEnvironment, LispInt aStackTop)
       buf << "BitsToDigits: error: arguments (" << x->Double() << ", " << y->Double() << " must be small integers";
       throw LispErrGeneric(buf.str());
   }
-  BigNumber *z = NEW BigNumber();
+  BigNumber *z = new BigNumber();
   z->SetTo(result);
-  RESULT = (NEW LispNumber(z));
+  RESULT = (new LispNumber(z));
 }
 
 /// convert digits to bits. Use the kernel function digits_to_bits. Arguments must be small integers.
@@ -849,7 +849,7 @@ void LispDigitsToBits(LispEnvironment& aEnvironment, LispInt aStackTop)
       buf << "BitsToDigits: error: arguments (" << x->Double() << ", " << y->Double() << " must be small integers";
       throw LispErrGeneric(buf.str());
   }
-  BigNumber *z = NEW BigNumber();
+  BigNumber *z = new BigNumber();
   z->SetTo(result);
-  RESULT = (NEW LispNumber(z));
+  RESULT = (new LispNumber(z));
 }

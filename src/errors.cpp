@@ -41,10 +41,6 @@ void ShowArgTypeErrorInfo(LispInt aArgNr, LispPtr& aArguments, LispEnvironment& 
     PrintExpression(strout, eval, aEnvironment, LIM_AL);
 
     aEnvironment.iErrorOutput << " evaluated to " << strout << '\n';
-
-    DBG_( printf("Problem occurred at %s(%d)\n",
-                 aArguments->iFileName,
-                 aArguments->iLine ); )
 }
 
 void CheckArg(bool pred, LispInt arg_idx, LispEnvironment& env, LispInt stack_top)

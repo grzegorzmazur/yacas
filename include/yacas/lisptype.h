@@ -7,7 +7,6 @@
 #define YACAS_LISPTYPE_H
 
 #include <stdlib.h>
-#include "choices.h"
 
 // Type definitions for the base types
 typedef char LispChar;

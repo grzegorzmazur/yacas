@@ -77,16 +77,10 @@ static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, boo
     {
         LispPtr result;
         InternalEval(aEnvironment, result, ARGUMENT(1));
-#ifdef YACAS_DEBUG
-        aEnvironment.DebugModeVerifySettingGlobalVariables(result, aGlobalLazyVariable);
-#endif // YACAS_DEBUG
         varstring = result->String();
     }
     else
     {
-#ifdef YACAS_DEBUG
-        aEnvironment.DebugModeVerifySettingGlobalVariables(ARGUMENT(1), aGlobalLazyVariable);
-#endif // YACAS_DEBUG
         varstring = ARGUMENT(1)->String();
     }
     CheckArg(varstring, 1, aEnvironment, aStackTop);
@@ -1605,7 +1599,7 @@ void GenArrayCreate(LispEnvironment& aEnvironment,LispInt aStackTop)
 
     LispPtr initarg(ARGUMENT(2));
 
-    ArrayClass *array = NEW ArrayClass(size,initarg);
+    ArrayClass *array = new ArrayClass(size,initarg);
     RESULT = (LispGenericClass::New(array));
 }
 
@@ -1723,8 +1717,8 @@ void GenAssociationDrop(LispEnvironment& aEnvironment,LispInt aStackTop)
 void LispCustomEval(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
   if (aEnvironment.iDebugger) delete aEnvironment.iDebugger;
-  aEnvironment.iDebugger = NEW DefaultDebugger(ARGUMENT(1), ARGUMENT(2),ARGUMENT(3));
-  LispLocalEvaluator local(aEnvironment,NEW TracedEvaluator);
+  aEnvironment.iDebugger = new DefaultDebugger(ARGUMENT(1), ARGUMENT(2),ARGUMENT(3));
+  LispLocalEvaluator local(aEnvironment,new TracedEvaluator);
   aEnvironment.iDebugger->Start();
   InternalEval(aEnvironment, RESULT, ARGUMENT(4));
   aEnvironment.iDebugger->Finish();
@@ -1765,7 +1759,7 @@ void LispCustomEvalStop(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispTraceStack(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    LispLocalEvaluator local(aEnvironment,NEW TracedStackEvaluator);
+    LispLocalEvaluator local(aEnvironment,new TracedStackEvaluator);
     InternalEval(aEnvironment, RESULT, ARGUMENT(1));
 }
 
@@ -1920,8 +1914,8 @@ void GenPatternCreate(LispEnvironment& aEnvironment,LispInt aStackTop)
     ++iter;
 
     YacasPatternPredicateBase* matcher =
-        NEW YacasPatternPredicateBase(aEnvironment, *iter,postpredicate);
-    PatternClass *p = NEW PatternClass(matcher);
+        new YacasPatternPredicateBase(aEnvironment, *iter,postpredicate);
+    PatternClass *p = new PatternClass(matcher);
     RESULT = (LispGenericClass::New(p));
 }
 
@@ -1981,12 +1975,6 @@ void LispDefLoadFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
             LispDefFile* def = multiUserFunc->iFileToOpen;
             if (!def->IsLoaded())
             {
-#ifdef YACAS_DEBUG
-                /*Show loading... */
-                extern int verbose_debug;
-                if (verbose_debug)
-                    printf("Debug> Loading file %s for function %s\n",def->iFileName->c_str(),oper.c_str());
-#endif
                 multiUserFunc->iFileToOpen=nullptr;
                 //InternalUse(aEnvironment, def->FileName());
       }

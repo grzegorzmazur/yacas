@@ -116,10 +116,6 @@ void ParsedObject::Combine(LispInt aNrArgsToCombine)
 {
     LispPtr subList(LispSubList::New(iResult));
 
-    DBG_(subList->SetFileAndLine(
-                                 iParser.iInput.Status().FileName(),
-                                 iParser.iInput.Status().LineNumber()););
-
     // TODO: woof -- such ugliness!
 
     LispIterator iter(iResult);
@@ -150,10 +146,6 @@ void ParsedObject::GetOtherSide(LispInt aNrArgsToCombine, LispInt depth)
 void ParsedObject::InsertAtom(const LispString* aString)
 {
     LispPtr ptr(LispAtom::New(iParser.iEnvironment, *aString));
-
-    DBG_(ptr->SetFileAndLine(
-                             iParser.iInput.Status().FileName(),
-                             iParser.iInput.Status().LineNumber()););
 
     ptr->Nixed() = iResult;
     iResult = ptr;
@@ -267,13 +259,8 @@ void ParsedObject::ReadAtom()
     }        // Parse prog bodies
     else if (iLookAhead == iParser.iEnvironment.iProgOpen->String()) {
         LispInt nrargs = 0;
-        // For prog bodies at least, I'd prefer the line it points to to be the line of the opening bracket.
-        // Maybe we should change this for all expressions: the line number referring to the first atom in
-        // the expression in stead of the last.
-        // Ayal
-        DBG_(LispInt startLine = iParser.iInput.Status().LineNumber();)
 
-                MatchToken(iLookAhead);
+        MatchToken(iLookAhead);
         while (iLookAhead != iParser.iEnvironment.iProgClose->String()) {
             ReadExpression(KMaxPrecedence); // least precedence
             nrargs++;
@@ -289,10 +276,6 @@ void ParsedObject::ReadAtom()
         InsertAtom(theOperator);
 
         Combine(nrargs);
-        // Set the line to the beginning of the prog
-        DBG_(iResult->SetFileAndLine(
-                                     iParser.iInput.Status().FileName(),
-                                     startLine);)
     }        // Else we have an atom.
     else {
         const LispString* theOperator = iLookAhead;
