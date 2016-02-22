@@ -5,10 +5,7 @@
 #include "yacas/standard.h"
 
 #define OPERATOR(kind,prec,name) \
-  kind##operators.SetOperator(prec,hash.LookUp(#name));
-// for example: OPERATOR(bodied,KMaxPrecedence,While) produces:
-//    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("While"));
-
+  kind##operators[hash.LookUp(#name)] = LispInFixOperator(prec);
 
 DefaultYacasEnvironment::DefaultYacasEnvironment(std::ostream& os, LispInt aStackSize)
   : output(os),

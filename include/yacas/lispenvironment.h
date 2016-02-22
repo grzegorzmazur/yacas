@@ -15,6 +15,7 @@
 #include "lispio.h"
 #include "stringio.h"
 #include "lispglobals.h"
+#include "lispoperator.h"
 #include "xmltokenizer.h"
 #include "errors.h"
 #include "noncopyable.h"
@@ -34,7 +35,6 @@ class LispDefFiles;
 class LispInput;
 class LispOutput;
 class LispPrinter;
-class LispOperators;
 class LispUserFunction;
 class LispMultiUserFunction;
 class LispEvaluatorBase;

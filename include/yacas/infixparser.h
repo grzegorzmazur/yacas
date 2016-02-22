@@ -7,61 +7,10 @@
 #define YACAS_INFIXPARSER_H
 
 #include "lispparser.h"
+#include "lispoperator.h"
 
 #include <ostream>
 #include <unordered_map>
-
-#ifdef YACAS_NO_CONSTEXPR
-const LispInt KMaxPrecedence = 60000;
-#else
-constexpr LispInt KMaxPrecedence = 60000;
-#endif
-
-class LispInFixOperator {
-public:
-    explicit
-#ifndef YACAS_NO_CONSTEXPR
-    constexpr
-#endif
-    LispInFixOperator(LispInt aPrecedence = KMaxPrecedence):
-        iPrecedence(aPrecedence),
-        iLeftPrecedence(aPrecedence),
-        iRightPrecedence(aPrecedence),
-        iRightAssociative(false)
-    {}
-
-    void SetRightAssociative()
-    {
-        iRightAssociative = true;
-    }
-
-    void SetLeftPrecedence(LispInt aPrecedence)
-    {
-        iLeftPrecedence = aPrecedence;
-    }
-
-    void SetRightPrecedence(LispInt aPrecedence)
-    {
-        iRightPrecedence = aPrecedence;
-    }
-
-    LispInt iPrecedence;
-    LispInt iLeftPrecedence;
-    LispInt iRightPrecedence;
-    bool iRightAssociative;
-};
-
-class LispOperators {
-public:
-    void SetOperator(LispInt aPrecedence, const LispString* aString);
-    void SetRightAssociative(const LispString* aString);
-    void SetLeftPrecedence(const LispString* aString, LispInt aPrecedence);
-    void SetRightPrecedence(const LispString* aString, LispInt aPrecedence);
-    LispInFixOperator* LookUp(const LispString* aString);
-
-private:
-    std::unordered_map<const LispStringSmartPtr, LispInFixOperator, std::hash<const LispString*> > _map;
-};
 
 class InfixParser : public LispParser
 {

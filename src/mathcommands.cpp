@@ -696,7 +696,7 @@ static void MultiFix(LispEnvironment& aEnvironment, LispInt aStackTop, LispOpera
     CheckArg(precedence->String(), 2, aEnvironment, aStackTop);
     LispInt prec = InternalAsciiToInt(*precedence->String());
     CheckArg(prec <= KMaxPrecedence, 2, aEnvironment, aStackTop);
-    aOps.SetOperator(prec,SymbolName(aEnvironment,*orig));
+    aOps[SymbolName(aEnvironment,*orig)] = LispInFixOperator(prec);
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -711,7 +711,7 @@ static void SingleFix(LispInt aPrecedence, LispEnvironment& aEnvironment, LispIn
     CheckArg(ARGUMENT(1), 1, aEnvironment, aStackTop);
     const LispString* orig = ARGUMENT(1)->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
-    aOps.SetOperator(aPrecedence,SymbolName(aEnvironment,*orig));
+    aOps[SymbolName(aEnvironment,*orig)] = LispInFixOperator(aPrecedence);
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -1367,7 +1367,11 @@ void LispRightAssociative(LispEnvironment& aEnvironment, LispInt aStackTop)
     const LispString* orig = ARGUMENT(1)->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
 
-    aEnvironment.InFix().SetRightAssociative(SymbolName(aEnvironment,*orig));
+    LispOperators::iterator opi = aEnvironment.InFix().find(SymbolName(aEnvironment,*orig));
+    if (opi == aEnvironment.InFix().end())
+        throw LispErrNotAnInFixOperator();
+    opi->second.SetRightAssociative();
+    
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -1384,7 +1388,11 @@ void LispLeftPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
     CheckArg(index->String(), 2, aEnvironment, aStackTop);
     LispInt ind = InternalAsciiToInt(*index->String());
 
-    aEnvironment.InFix().SetLeftPrecedence(SymbolName(aEnvironment,*orig),ind);
+    LispOperators::iterator opi = aEnvironment.InFix().find(SymbolName(aEnvironment,*orig));
+    if (opi == aEnvironment.InFix().end())
+        throw LispErrNotAnInFixOperator();
+    opi->second.SetLeftPrecedence(ind);
+
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -1401,7 +1409,11 @@ void LispRightPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
     CheckArg(index->String(), 2, aEnvironment, aStackTop);
     LispInt ind = InternalAsciiToInt(*index->String());
 
-    aEnvironment.InFix().SetRightPrecedence(SymbolName(aEnvironment,*orig),ind);
+    LispOperators::iterator opi = aEnvironment.InFix().find(SymbolName(aEnvironment,*orig));
+    if (opi == aEnvironment.InFix().end())
+        throw LispErrNotAnInFixOperator();
+    opi->second.SetRightPrecedence(ind);
+
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -1415,7 +1427,10 @@ static LispInFixOperator* OperatorInfo(LispEnvironment& aEnvironment,LispInt aSt
     const LispString* orig = evaluated->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
 
-    return aOperators.LookUp(SymbolName(aEnvironment,*orig));
+    const LispOperators::iterator opi = aOperators.find(SymbolName(aEnvironment,*orig));
+    if (opi != aOperators.end())
+        return &opi->second;
+    return nullptr;
 }
 
 void LispIsInFix(LispEnvironment& aEnvironment, LispInt aStackTop)

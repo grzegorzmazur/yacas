@@ -44,43 +44,6 @@ void InfixParser::ParseCont(LispPtr& aResult)
     aResult = object.iResult;
 }
 
-void LispOperators::SetOperator(LispInt aPrecedence, const LispString* aString)
-{
-    _map[aString] = LispInFixOperator(aPrecedence);
-}
-
-void LispOperators::SetRightAssociative(const LispString* aString)
-{
-    auto i = _map.find(aString);
-    if (i == _map.end())
-        throw LispErrNotAnInFixOperator();
-    i->second.SetRightAssociative();
-}
-
-void LispOperators::SetLeftPrecedence(const LispString* aString, LispInt aPrecedence)
-{
-    auto i = _map.find(aString);
-    if (i == _map.end())
-        throw LispErrNotAnInFixOperator();
-    i->second.SetLeftPrecedence(aPrecedence);
-}
-
-void LispOperators::SetRightPrecedence(const LispString* aString, LispInt aPrecedence)
-{
-    auto i = _map.find(aString);
-    if (i == _map.end())
-        throw LispErrNotAnInFixOperator();
-    i->second.SetRightPrecedence(aPrecedence);
-}
-
-LispInFixOperator* LispOperators::LookUp(const LispString* aString)
-{
-    const auto i = _map.find(aString);
-    if (i != _map.end())
-        return &i->second;
-    return nullptr;
-}
-
 void ParsedObject::ReadToken()
 {
     // Get token.
@@ -172,47 +135,48 @@ void ParsedObject::ReadExpression(LispInt depth)
             InsertAtom(theOperator);
             Combine(2);
         } else {
-            LispInFixOperator* op = iParser.iInfixOperators.LookUp(iLookAhead);
-            if (!op) {
-                if (IsSymbolic((*iLookAhead)[0])) {
-                    LispInt origlen = iLookAhead->size();
-                    LispInt len = origlen;
-
-                    while (len > 1) {
-                        len--;
-                        const LispString* lookUp =
-                                iParser.iEnvironment.HashTable().LookUp(iLookAhead->substr(0, len));
-
-                        op = iParser.iInfixOperators.LookUp(lookUp);
-                        if (op) {
-
-                            const LispString* lookUpRight =
-                                    iParser.iEnvironment.HashTable().LookUp(iLookAhead->substr(len, origlen - len));
-
-
-                            if (iParser.iPrefixOperators.LookUp(lookUpRight)) {
-                                iLookAhead = lookUp;
-                                LispInput& input = iParser.iInput;
-                                LispInt newPos = input.Position()-(origlen - len);
-                                input.SetPosition(newPos);
-                                break;
-                            } else op = nullptr;
-                        }
-                    }
-                    if (!op) return;
-                } else {
+            LispOperators::const_iterator opi = iParser.iInfixOperators.find(iLookAhead);
+            
+            if (opi == iParser.iInfixOperators.end()) {
+                if (!IsSymbolic((*iLookAhead)[0]))
                     return;
+                
+                const std::size_t origlen = iLookAhead->size();
+                std::size_t len = origlen;
+
+                while (len > 1) {
+                    len -= 1;
+                    const LispString* lookUp =
+                            iParser.iEnvironment.HashTable().LookUp(iLookAhead->substr(0, len));
+
+                    opi = iParser.iInfixOperators.find(lookUp);
+
+                    if (opi != iParser.iInfixOperators.end()) {
+
+                        const LispString* lookUpRight =
+                                iParser.iEnvironment.HashTable().LookUp(iLookAhead->substr(len, origlen - len));
+
+                        if (iParser.iPrefixOperators.find(lookUpRight) != iParser.iPrefixOperators.end()) {
+                            iLookAhead = lookUp;
+                            LispInput& input = iParser.iInput;
+                            LispInt newPos = input.Position() - (origlen - len);
+                            input.SetPosition(newPos);
+                            break;
+                        }
+
+                        opi == iParser.iInfixOperators.end();
+                    }
                 }
 
-
-
-
-                //              return;
+                if (opi == iParser.iInfixOperators.end())
+                    return;
             }
-            if (depth < op->iPrecedence)
+
+            
+            if (depth < opi->second.iPrecedence)
                 return;
-            LispInt upper = op->iPrecedence;
-            if (!op->iRightAssociative)
+            LispInt upper = opi->second.iPrecedence;
+            if (!opi->second.iRightAssociative)
                 upper--;
             GetOtherSide(2, upper);
         }
@@ -221,14 +185,13 @@ void ParsedObject::ReadExpression(LispInt depth)
 
 void ParsedObject::ReadAtom()
 {
-    LispInFixOperator* op;
-    // Parse prefix operators
-    op = iParser.iPrefixOperators.LookUp(iLookAhead);
-    if (op) {
+    LispOperators::const_iterator opi =
+            iParser.iPrefixOperators.find(iLookAhead);
+    if (opi != iParser.iPrefixOperators.end()) {
         const LispString* theOperator = iLookAhead;
         MatchToken(iLookAhead);
         {
-            ReadExpression(op->iPrecedence);
+            ReadExpression(opi->second.iPrecedence);
             InsertAtom(theOperator);
             Combine(1);
         }
@@ -297,9 +260,9 @@ void ParsedObject::ReadAtom()
             }
             MatchToken(iLookAhead);
 
-            op = iParser.iBodiedOperators.LookUp(theOperator);
-            if (op) {
-                ReadExpression(op->iPrecedence); // KMaxPrecedence
+            opi = iParser.iBodiedOperators.find(theOperator);
+            if (opi != iParser.iBodiedOperators.end()) {
+                ReadExpression(opi->second.iPrecedence); // KMaxPrecedence
                 nrargs++;
             }
         }
@@ -311,7 +274,7 @@ void ParsedObject::ReadAtom()
 
     // Parse postfix operators
 
-    while (iParser.iPostfixOperators.LookUp(iLookAhead)) {
+    while (iParser.iPostfixOperators.find(iLookAhead) != iParser.iPostfixOperators.end()) {
         InsertAtom(iLookAhead);
         MatchToken(iLookAhead);
         Combine(1);
@@ -377,33 +340,46 @@ void InfixPrinter::Print(
     } else {
         LispInt length = InternalListLength(*subList);
         string = (*subList)->String();
-        LispInFixOperator* prefix = iPrefixOperators.LookUp(string);
-        LispInFixOperator* infix = iInfixOperators.LookUp(string);
-        LispInFixOperator* postfix = iPostfixOperators.LookUp(string);
-        LispInFixOperator* bodied = iBodiedOperators.LookUp(string);
-        LispInFixOperator* op = nullptr;
 
-        if (length != 2) {
-            prefix = nullptr;
-            postfix = nullptr;
-        }
-        if (length != 3) {
-            infix = nullptr;
-        }
-        if (prefix) op = prefix;
-        if (postfix) op = postfix;
-        if (infix) op = infix;
+        const LispOperators::const_iterator prefix =
+                length != 2
+                ? iPrefixOperators.end() 
+                : iPrefixOperators.find(string);
+        
+        const LispOperators::const_iterator infix =
+                length != 3
+                ? iInfixOperators.end()
+                : iInfixOperators.find(string);
+        
+        const LispOperators::const_iterator postfix =
+                length != 2
+                ? iPostfixOperators.end()
+                : iPostfixOperators.find(string);
+        
+        const LispOperators::const_iterator bodied =
+                iBodiedOperators.find(string);
+        
+        const LispInFixOperator* op = nullptr;
+
+        if (prefix != iPrefixOperators.end())
+            op = &prefix->second;
+        
+        if (postfix != iPostfixOperators.end())
+            op = &postfix->second;
+        
+        if (infix != iInfixOperators.end())
+            op = &infix->second;
 
         if (op) {
             LispPtr* left = nullptr;
             LispPtr* right = nullptr;
 
-            if (prefix) {
+            if (prefix != iPrefixOperators.end()) {
                 right = &(*subList)->Nixed();
-            } else if (infix) {
+            } else if (infix != iInfixOperators.end()) {
                 left = &(*subList)->Nixed();
                 right = &(*subList)->Nixed()->Nixed();
-            } else if (postfix) {
+            } else if (postfix  != iPostfixOperators.end()) {
                 left = &(*subList)->Nixed();
             }
 
@@ -444,9 +420,9 @@ void InfixPrinter::Print(
                 WriteToken(aOutput, "]");
             } else {
                 LispInt bracket = false;
-                if (bodied) {
+                if (bodied != iBodiedOperators.end()) {
                     //printf("%d > %d\n",iPrecedence, bodied->iPrecedence);
-                    if (iPrecedence < bodied->iPrecedence)
+                    if (iPrecedence < bodied->second.iPrecedence)
                         bracket = true;
                 }
                 if (bracket) WriteToken(aOutput, "(");
@@ -465,7 +441,7 @@ void InfixPrinter::Print(
                     nr++;
                 }
 
-                if (bodied)
+                if (bodied != iBodiedOperators.end())
                     nr--;
                 while (nr--) {
                     Print(*iter, aOutput, KMaxPrecedence);
@@ -475,8 +451,8 @@ void InfixPrinter::Print(
                 }
                 WriteToken(aOutput, ")");
                 if (iter.getObj()) {
-                    assert(bodied);
-                    Print(*iter, aOutput, bodied->iPrecedence);
+                    assert(bodied != iBodiedOperators.end());
+                    Print(*iter, aOutput, bodied->second.iPrecedence);
                 }
 
                 if (bracket)
