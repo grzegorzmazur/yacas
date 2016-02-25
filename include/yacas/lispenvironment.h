@@ -112,7 +112,7 @@ public:
   //@{
 
   /// Return the #iCoreCommands attribute.
-  inline YacasCoreCommands& CoreCommands();
+  const YacasCoreCommands& CoreCommands();
 
   /// Add a command to the list of core commands.
   /// \param aEvaluatorFunc C function evaluating the core command
@@ -377,7 +377,7 @@ inline LispInt LispEnvironment::BinaryPrecision(void) const
 
 
 
-inline YacasCoreCommands& LispEnvironment::CoreCommands()
+inline const YacasCoreCommands& LispEnvironment::CoreCommands()
 {
     return iCoreCommands;
 }

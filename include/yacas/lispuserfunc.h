@@ -18,8 +18,6 @@ class LispUserFunction : public EvalFuncBase
 {
 public:
     LispUserFunction() : iFenced(true),iTraced(false) {};
-    virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
-                  LispPtr& aArguments)=0;
     virtual void HoldArgument(const LispString* aVariable) = 0;
     virtual void DeclareRule(LispInt aPrecedence, LispPtr& aPredicate,
                              LispPtr& aBody) = 0;
@@ -30,11 +28,11 @@ public:
 
 public: //unfencing
     inline void UnFence() {iFenced = false;};
-    inline bool Fenced() {return iFenced;};
+    inline bool Fenced() const {return iFenced;};
 public: //tracing
     inline void Trace() {iTraced = true;};
     inline void UnTrace() {iTraced = false;};
-    inline bool Traced() {return iTraced;};
+    inline bool Traced() const {return iTraced;};
 private:
     bool iFenced;
     bool iTraced;

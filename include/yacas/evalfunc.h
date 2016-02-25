@@ -8,7 +8,7 @@ class EvalFuncBase
 {
 public:
     virtual void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
-                  LispPtr& aArguments)=0;
+                  LispPtr& aArguments) const = 0;
     virtual ~EvalFuncBase() = default;
 };
 

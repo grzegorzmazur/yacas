@@ -65,7 +65,7 @@ BranchingUserFunction::~BranchingUserFunction()
 }
 
 void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
-                                     LispPtr& aArguments)
+                                     LispPtr& aArguments) const
 {
     const LispInt arity = Arity();
     LispInt i;
@@ -279,7 +279,7 @@ LispInt ListedBranchingUserFunction::IsArity(LispInt aArity) const
 }
 
 void ListedBranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
-                                           LispPtr& aArguments)
+                                           LispPtr& aArguments) const
 {
   LispPtr newArgs;
   LispIterator iter(aArguments);
@@ -323,7 +323,7 @@ MacroUserFunction::MacroUserFunction(LispPtr& aParameters)
 }
 
 void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
-              LispPtr& aArguments)
+              LispPtr& aArguments) const
 {
     const LispInt arity = Arity();
     LispInt i;
@@ -432,7 +432,7 @@ LispInt ListedMacroUserFunction::IsArity(LispInt aArity) const
 }
 
 void ListedMacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
-              LispPtr& aArguments)
+              LispPtr& aArguments) const
 {
   LispPtr newArgs;
   LispIterator iter(aArguments);

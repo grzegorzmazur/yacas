@@ -9,7 +9,7 @@
 
 
 
-void YacasEvaluator::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,LispPtr& aArguments)
+void YacasEvaluator::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,LispPtr& aArguments) const
 {
 
   if (!(iFlags & Variable))

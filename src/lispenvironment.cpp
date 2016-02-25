@@ -490,16 +490,16 @@ void LispEnvironment::SetCommand(YacasEvalCaller aEvaluatorFunc, const LispChar 
 {
   const LispString* name = HashTable().LookUp(aString);
   YacasEvaluator eval(aEvaluatorFunc,aNrArgs,aFlags);
-  auto i = CoreCommands().find(name);
-  if (i != CoreCommands().end())
+  auto i = iCoreCommands.find(name);
+  if (i != iCoreCommands.end())
       i->second = eval;
   else
-      CoreCommands().insert(std::make_pair(name, eval));
+      iCoreCommands.insert(std::make_pair(name, eval));
 }
 
 void LispEnvironment::RemoveCoreCommand(LispChar* aString)
 {
-  CoreCommands().erase(HashTable().LookUp(aString));
+  iCoreCommands.erase(HashTable().LookUp(aString));
 }
 
 LispLocalEvaluator::LispLocalEvaluator(LispEnvironment& aEnvironment,LispEvaluatorBase* aNewEvaluator)

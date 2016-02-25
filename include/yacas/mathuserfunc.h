@@ -137,7 +137,7 @@ public:
   /// first rule that matches is evaluated, and the result is put in
   /// \a aResult. If no rule matches, \a aResult will recieve a new
   /// expression with evaluated arguments.
-  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
+  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments) const override;
 
   /// Put an argument on hold.
   /// \param aVariable name of argument to put un hold
@@ -190,7 +190,7 @@ class ListedBranchingUserFunction : public BranchingUserFunction
 public:
   ListedBranchingUserFunction(LispPtr& aParameters);
   LispInt IsArity(LispInt aArity) const;
-  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
+  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments) const override;
 };
 
 
@@ -198,7 +198,7 @@ class MacroUserFunction : public BranchingUserFunction
 {
 public:
   MacroUserFunction(LispPtr& aParameters);
-  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
+  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments) const override;
 };
 
 
@@ -207,7 +207,7 @@ class ListedMacroUserFunction : public MacroUserFunction
 public:
   ListedMacroUserFunction(LispPtr& aParameters);
   LispInt IsArity(LispInt aArity) const;
-  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
+  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments) const override;
 };
 
 

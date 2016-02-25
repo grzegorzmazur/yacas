@@ -31,7 +31,7 @@ public:
   }
   void Evaluate(LispPtr& aResult,
                 LispEnvironment& aEnvironment,
-                LispPtr& aArguments);
+                LispPtr& aArguments) const override;
 private:
   YacasEvalCaller iCaller;
   LispInt iNrArgs;
