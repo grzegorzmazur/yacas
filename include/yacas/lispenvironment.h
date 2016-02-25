@@ -112,7 +112,8 @@ public:
   //@{
 
   /// Return the #iCoreCommands attribute.
-  const YacasCoreCommands& CoreCommands();
+  const YacasCoreCommands& CoreCommands() const;
+  const LispUserFunctions& UserFunctions() const;
 
   /// Add a command to the list of core commands.
   /// \param aEvaluatorFunc C function evaluating the core command
@@ -376,11 +377,15 @@ inline LispInt LispEnvironment::BinaryPrecision(void) const
 
 
 
-inline const YacasCoreCommands& LispEnvironment::CoreCommands()
+inline const YacasCoreCommands& LispEnvironment::CoreCommands() const
 {
     return iCoreCommands;
 }
 
+inline const LispUserFunctions& LispEnvironment::UserFunctions() const
+{
+    return iUserFunctions;
+}
 
 inline LispHashTable& LispEnvironment::HashTable()
 {
