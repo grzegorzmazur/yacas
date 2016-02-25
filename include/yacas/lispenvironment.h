@@ -121,7 +121,6 @@ public:
   /// \param aFlags flags, see YacasEvaluator::FunctionFlags
   void SetCommand(YacasEvalCaller aEvaluatorFunc, const LispChar * aString,LispInt aNrArgs,LispInt aFlags);
 
-  void RemoveCommand(LispChar * aString);
   void RemoveCoreCommand(LispChar * aString);
 
   inline  LispHashTable& HashTable();
