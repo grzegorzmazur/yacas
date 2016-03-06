@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT(yacas, 1.4.0,  yacas@googlegroups.com, , http://www.yacas.org/)
+AC_INIT(yacas, 1.4.1,  yacas@googlegroups.com, , http://www.yacas.org/)
 
 AC_CONFIG_SRCDIR(src/yacasmain.cpp)
 

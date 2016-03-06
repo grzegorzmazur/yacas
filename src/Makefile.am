@@ -3,7 +3,7 @@
 AM_CPPFLAGS=-I $(builddir)/../include -I $(top_srcdir)/include
 
 lib_LTLIBRARIES = libyacas.la
-YACAS_LIBRARY_VERSION = 14:0:0
+YACAS_LIBRARY_VERSION = 14:1:0
 libyacas_la_LDFLAGS = -version-info $(YACAS_LIBRARY_VERSION)
 
 pkginclude_HEADERS = $(top_srcdir)/include/yacas/anumber.h	\
