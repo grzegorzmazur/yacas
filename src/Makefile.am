@@ -3,10 +3,11 @@
 AM_CPPFLAGS=-I $(builddir)/../include -I $(top_srcdir)/include
 
 lib_LTLIBRARIES = libyacas.la
-YACAS_LIBRARY_VERSION = 1:0:0
+YACAS_LIBRARY_VERSION = 14:0:0
 libyacas_la_LDFLAGS = -version-info $(YACAS_LIBRARY_VERSION)
 
 pkginclude_HEADERS = $(top_srcdir)/include/yacas/anumber.h	\
+	$(top_srcdir)/include/yacas/associationclass.h			\
 	$(top_srcdir)/include/yacas/choices.h					\
 	$(top_srcdir)/include/yacas/deffile.h					\
 	$(top_srcdir)/include/yacas/infixparser.h				\
@@ -59,14 +60,12 @@ pkginclude_HEADERS = $(top_srcdir)/include/yacas/anumber.h	\
 	$(top_srcdir)/include/yacas/lisptype.h					\
 	$(top_srcdir)/include/yacas/platfileio.h				\
 	$(top_srcdir)/include/yacas/debugmem.h                  \
-	$(top_srcdir)/include/yacas/noncopyable.h		\
-	$(top_srcdir)/include/yacas/string_utils.h
-        $(top_srcdir)/include/yacas/noncopyable.h                               \
-        $(top_srcdir)/include/yacas/string_utils.h                              \
-        $(top_srcdir)/include/yacas/utf8.h                                      \
-        $(top_srcdir)/include/yacas/utf8/checked.h                              \
-        $(top_srcdir)/include/yacas/utf8/core.h                                 \
-        $(top_srcdir)/include/yacas/utf8/unchecked.h
+	$(top_srcdir)/include/yacas/noncopyable.h				\
+	$(top_srcdir)/include/yacas/string_utils.h				\
+	$(top_srcdir)/include/yacas/utf8.h						\
+	$(top_srcdir)/include/yacas/utf8/checked.h				\
+	$(top_srcdir)/include/yacas/utf8/core.h					\
+	$(top_srcdir)/include/yacas/utf8/unchecked.h
 
 libyacas_la_SOURCES = $(libyacas_la_HEADERS) stdcommandline.cpp		 \
 	deffile.cpp infixparser.cpp lispatom.cpp                         \
