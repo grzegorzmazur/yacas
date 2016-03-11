@@ -66,15 +66,7 @@ REDO:
 
         next = FindEndCommand(aFileContent,i);
 
-        LispString content;
-
-        content.resize(next-i+1);
-        {
-            LispInt j;
-            for (j=0;j<next-i;j++)
-                content[j] = aFileContent[i+j];
-            content[next-i] = '\0';
-        }
+        const std::string content(aFileContent + i, next - i);
 
         InputStatus oldstatus = aEnvironment.iInputStatus;
         aEnvironment.iInputStatus.SetTo("String");
