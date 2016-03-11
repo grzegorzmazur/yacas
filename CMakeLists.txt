@@ -336,12 +336,12 @@ if (WIN32 AND CMAKE_CROSSCOMPILING)
 endif()
 
 set_target_properties(libyacas_static PROPERTIES OUTPUT_NAME "yacas")
-set_target_properties(libyacas_shared PROPERTIES OUTPUT_NAME "yacas" SOVERSION 1.0.0) 
+set_target_properties(libyacas_shared PROPERTIES OUTPUT_NAME "yacas" SOVERSION 14.2.0) 
 
 #to generate yacas framework on macos:
 if (APPLE)
   add_library (libyacas_framework SHARED ${YACAS_LIB_SOURCES})
-  set_target_properties(libyacas_framework PROPERTIES OUTPUT_NAME "yacas" VERSION ${YACAS_VERSION} SOVERSION 14.1.0 FRAMEWORK ON)
+  set_target_properties(libyacas_framework PROPERTIES OUTPUT_NAME "yacas" VERSION ${YACAS_VERSION} SOVERSION 14.2.0 FRAMEWORK ON)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/scripts $<TARGET_FILE_DIR:libyacas_framework>/Resources/scripts)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_BINARY_DIR}/scripts $<TARGET_FILE_DIR:libyacas_framework>/Resources/scripts)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/include $<TARGET_FILE_DIR:libyacas_framework>/Headers)
