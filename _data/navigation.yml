@@ -4,6 +4,9 @@
 - title: Download
   url: /getting_started/downloads/
   side: left
+- title: Screenshots
+  url: /getting_started/screenshots/
+  side: left
 - title: Search
   url: /search/
   side: right
