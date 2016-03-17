@@ -4,6 +4,8 @@
 #include "yacas/lispio.h"
 #include "yacas/standard.h"
 
+#include <algorithm>
+
 /** PatchLoad: patch a string, and write to current output.
  *  Everything between <? and ?> is evaluated. The result
  *  is thrown away.
