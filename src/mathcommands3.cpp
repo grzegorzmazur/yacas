@@ -600,7 +600,7 @@ void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     std::string content(std::istreambuf_iterator<char>(localFP.stream), std::istreambuf_iterator<char>());
 
-    PatchLoad(content.c_str(), aEnvironment.CurrentOutput(), aEnvironment);
+    PatchLoad(content, aEnvironment.CurrentOutput(), aEnvironment);
 
     aEnvironment.iInputStatus.RestoreFrom(oldstatus);
     InternalTrue(aEnvironment, RESULT);
@@ -615,7 +615,7 @@ void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
 
   std::ostringstream os;
   LispLocalOutput localOutput(aEnvironment, os);
-  PatchLoad(oper.c_str(), os, aEnvironment);
+  PatchLoad(oper, os, aEnvironment);
   RESULT = LispAtom::New(aEnvironment, stringify(os.str()));
 }
 
