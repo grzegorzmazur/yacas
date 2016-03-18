@@ -2,6 +2,7 @@ cmake_minimum_required (VERSION 2.8.7)
 
 option (ENABLE_DOCS "generate documentation" OFF)
 option (ENABLE_JYACAS "build the Java yacas engine" OFF)
+option (ENABLE_SERVER "enable built-in yacas server" OFF)
 
 if (APPLE)
 #  if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
@@ -20,6 +21,9 @@ else ()
   project (YACAS CXX C)
 endif ()
 
+if (ENABLE_SERVER)
+  add_definitions (-DSUPPORT_SERVER) 
+endif ()
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -std=c++11")
