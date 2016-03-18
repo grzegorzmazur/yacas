@@ -102,7 +102,6 @@
 #include <winsock2.h>
 #endif
 
-#define SOCKLEN_T unsigned int //socklen_t
 #endif
 
 #if defined(__APPLE__)
@@ -522,7 +521,7 @@ int runserver(int argc,char** argv)
 #endif
 
     int server_sockfd, client_sockfd;
-    SOCKLEN_T server_len, client_len;
+    socklen_t server_len, client_len;
     struct sockaddr_in server_address;
     struct sockaddr_in client_address;
     int result;
@@ -623,7 +622,7 @@ int runserver(int argc,char** argv)
                 if(fd == server_sockfd) {
                     client_len = sizeof(client_address);
 #ifndef _WIN32
-                    client_sockfd = accept(server_sockfd, (struct sockaddr *)&client_address, (ACCEPT_TYPE_ARG3)&client_len);
+                    client_sockfd = accept(server_sockfd, (struct sockaddr *)&client_address, &client_len);
 #else
                     client_sockfd = accept(server_sockfd, (struct sockaddr *)&client_address, (int *)&client_len);
 #endif
