@@ -9,11 +9,6 @@
 #include "lispobject.h"
 #include "lispenvironment.h"
 
-/*
-void InternalEval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
-*/
-
-
 class UserStackInformation {
 public:
     UserStackInformation()
