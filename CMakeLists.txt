@@ -370,8 +370,6 @@ if (WIN32)
   target_link_libraries (yacas wsock32 ws2_32 shlwapi)
 endif()
 
-add_executable (gencorefunctions src/gencorefunctions.cpp)
-
 if (CMAKE_CROSSCOMPILING)
   set (YACAS ${YACAS_NATIVE_BUILD}/yacas)
 else ()
