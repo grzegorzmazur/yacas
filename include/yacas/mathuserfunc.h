@@ -144,25 +144,25 @@ public:
   ///
   /// The \c iHold flag of the corresponding argument is set. This
   /// implies that this argument is not evaluated by Evaluate().
-  virtual void HoldArgument(const LispString* aVariable);
+  void HoldArgument(const LispString* aVariable) override;
 
   /// Return true if the arity of the function equals \a aArity.
-  virtual LispInt IsArity(LispInt aArity) const;
+  LispInt IsArity(LispInt aArity) const override;
 
   /// Return the arity (number of arguments) of the function.
-  LispInt Arity() const;
+  LispInt Arity() const override;
 
   /// Add a BranchRule to the list of rules.
   /// \sa InsertRule()
-  virtual void DeclareRule(LispInt aPrecedence, LispPtr& aPredicate, LispPtr& aBody);
+  void DeclareRule(LispInt aPrecedence, LispPtr& aPredicate, LispPtr& aBody) override;
 
   /// Add a BranchRuleTruePredicate to the list of rules.
   /// \sa InsertRule()
-  virtual void DeclareRule(LispInt aPrecedence, LispPtr& aBody);
+  void DeclareRule(LispInt aPrecedence, LispPtr& aBody) override;
 
   /// Add a BranchPattern to the list of rules.
   /// \sa InsertRule()
-  void DeclarePattern(LispInt aPrecedence, LispPtr& aPredicate, LispPtr& aBody);
+  void DeclarePattern(LispInt aPrecedence, LispPtr& aPredicate, LispPtr& aBody) override;
 
   /// Insert any BranchRuleBase object in the list of rules.
   /// This function does the real work for DeclareRule() and
@@ -172,7 +172,7 @@ public:
   void InsertRule(LispInt aPrecedence,BranchRuleBase* newRule);
 
   /// Return the argument list, stored in #iParamList
-  virtual const LispPtr& ArgList() const;
+  const LispPtr& ArgList() const override;
 
 protected:
   /// List of arguments, with corresponding \c iHold property.
@@ -189,7 +189,7 @@ class ListedBranchingUserFunction : public BranchingUserFunction
 {
 public:
   ListedBranchingUserFunction(LispPtr& aParameters);
-  LispInt IsArity(LispInt aArity) const;
+  LispInt IsArity(LispInt aArity) const override;
   void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments) const override;
 };
 
@@ -206,7 +206,7 @@ class ListedMacroUserFunction : public MacroUserFunction
 {
 public:
   ListedMacroUserFunction(LispPtr& aParameters);
-  LispInt IsArity(LispInt aArity) const;
+  LispInt IsArity(LispInt aArity) const override;
   void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments) const override;
 };
 

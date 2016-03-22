@@ -86,12 +86,12 @@ public:
           iBodiedOperators(aBodiedOperators),
           iPrevLastChar(0),iCurrentEnvironment(nullptr){}
 
-    virtual void Print(
+    void Print(
         const LispPtr& aExpression,
         std::ostream& aOutput,
-        LispEnvironment& aEnvironment);
+        LispEnvironment& aEnvironment) override;
 
-    virtual void RememberLastChar(LispChar aChar);
+    void RememberLastChar(LispChar aChar) override;
 
 private:
     void Print(
