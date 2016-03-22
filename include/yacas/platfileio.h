@@ -21,7 +21,7 @@ public:
     LispEnvironment& environment;
 };
 
-class StdFileInput : public LispInput {
+class StdFileInput: public LispInput {
 public:
     StdFileInput(std::istream&, InputStatus& aStatus);
     StdFileInput(LispLocalFile& aFile,InputStatus& aStatus);
@@ -42,7 +42,7 @@ private:
     mutable char32_t _cp;
 };
 
-class StdUserInput: public StdFileInput {
+class StdUserInput final: public StdFileInput {
 public:
     StdUserInput(InputStatus& aStatus):
         StdFileInput(std::cin, aStatus)

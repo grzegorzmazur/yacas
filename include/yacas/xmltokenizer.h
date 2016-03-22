@@ -4,7 +4,7 @@
 
 #include "tokenizer.h"
 
-class XmlTokenizer : public LispTokenizer
+class XmlTokenizer final: public LispTokenizer
 {
 public:
   XmlTokenizer() {}

@@ -87,7 +87,7 @@ protected:
 };
 
 
-class TracedStackEvaluator : public BasicEvaluator
+class TracedStackEvaluator final: public BasicEvaluator
 {
 public:
   TracedStackEvaluator() : objs() {}
@@ -137,7 +137,7 @@ public:
   virtual bool Stopped() = 0;
 };
 
-class DefaultDebugger : public YacasDebuggerBase
+class DefaultDebugger final: public YacasDebuggerBase
 {
 public:
   DefaultDebugger(LispPtr& aEnter, LispPtr& aLeave, LispPtr& aError)

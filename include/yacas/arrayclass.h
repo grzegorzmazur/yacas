@@ -6,7 +6,7 @@
 
 #include <vector>
 
-class ArrayClass : public GenericClass
+class ArrayClass final: public GenericClass
 {
 public:
     //required

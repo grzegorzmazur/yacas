@@ -5,7 +5,7 @@
 
 #include "commandline.h"
 
-class CWin32CommandLine : public CCommandLine
+class CWin32CommandLine final: public CCommandLine
 {
 public:
     CWin32CommandLine();

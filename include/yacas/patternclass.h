@@ -10,7 +10,7 @@
 /// Wrapper for YacasPatternPredicateBase.
 /// This class allows a YacasPatternPredicateBase to be put in a
 /// LispGenericObject.
-class PatternClass : public GenericClass, NonCopyable
+class PatternClass final: public GenericClass, NonCopyable
 {
 public:
   PatternClass(YacasPatternPredicateBase* aPatternMatcher);

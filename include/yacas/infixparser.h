@@ -12,7 +12,7 @@
 #include <ostream>
 #include <unordered_map>
 
-class InfixParser : public LispParser
+class InfixParser final: public LispParser
 {
 public:
     InfixParser(LispTokenizer& aTokenizer,
@@ -73,7 +73,7 @@ public:
 };
 
 
-class InfixPrinter : public LispPrinter
+class InfixPrinter final: public LispPrinter
 {
 public:
     InfixPrinter(LispOperators& aPrefixOperators,

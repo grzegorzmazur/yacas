@@ -23,7 +23,7 @@ void InternalSubstitute(LispPtr& aTarget, LispPtr& aSource,
 /** Substing one expression for another. The simplest form
  * of substitution
  */
-class SubstBehaviour : public SubstBehaviourBase
+class SubstBehaviour final: public SubstBehaviourBase
 {
 public:
     SubstBehaviour(LispEnvironment& aEnvironment,LispPtr& aToMatch,
@@ -38,7 +38,7 @@ private:
 /** subst behaviour for changing the local variables to have unique
  * names.
  */
-class LocalSymbolBehaviour : public SubstBehaviourBase
+class LocalSymbolBehaviour final: public SubstBehaviourBase
 {
 public:
     LocalSymbolBehaviour(
@@ -62,7 +62,7 @@ private:
  *    head of function if a is a function. For instance, if
  *    a is f(x) and f is g, then f(x) gets replaced by g(x)
  */
-class BackQuoteBehaviour : public SubstBehaviourBase
+class BackQuoteBehaviour final: public SubstBehaviourBase
 {
 public:
     BackQuoteBehaviour(LispEnvironment& aEnvironment)

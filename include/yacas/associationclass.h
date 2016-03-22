@@ -31,7 +31,7 @@
 
 #include <map>
 
-class AssociationClass : public GenericClass
+class AssociationClass final: public GenericClass
 {
 public:
     AssociationClass(const LispEnvironment& env);

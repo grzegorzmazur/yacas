@@ -185,7 +185,7 @@ protected:
   LispPtr iParamList;
 };
 
-class ListedBranchingUserFunction : public BranchingUserFunction
+class ListedBranchingUserFunction final: public BranchingUserFunction
 {
 public:
   ListedBranchingUserFunction(LispPtr& aParameters);
@@ -202,7 +202,7 @@ public:
 };
 
 
-class ListedMacroUserFunction : public MacroUserFunction
+class ListedMacroUserFunction final: public MacroUserFunction
 {
 public:
   ListedMacroUserFunction(LispPtr& aParameters);

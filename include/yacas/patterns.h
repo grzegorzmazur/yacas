@@ -74,7 +74,7 @@ MatchNumber::MatchNumber(BigNumber* aNumber):
 }
 
 /// Class for matching against a list of YacasParamMatcherBase objects.
-class MatchSubList : public YacasParamMatcherBase, NonCopyable {
+class MatchSubList final: public YacasParamMatcherBase, NonCopyable {
 public:
     explicit MatchSubList(const std::vector<const YacasParamMatcherBase*>&& aMatchers);
     ~MatchSubList() override;
@@ -102,7 +102,7 @@ MatchSubList::~MatchSubList()
 }
 
 /// Class for matching against a pattern variable.
-class MatchVariable: public YacasParamMatcherBase
+class MatchVariable final: public YacasParamMatcherBase
 {
 public:
     explicit MatchVariable(LispInt aVarIndex);

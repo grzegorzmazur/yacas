@@ -9,7 +9,7 @@
 /** Unix command line class, using assorted termios functionality
  *  and sending ansi character sequences to the console.
  */
-class CUnixCommandLine : public CCommandLine
+class CUnixCommandLine final: public CCommandLine
 {
 public:
     CUnixCommandLine();
