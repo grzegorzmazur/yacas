@@ -7,7 +7,6 @@
 #include "yacas/lispeval.h"
 #include "yacas/arggetter.h"
 #include "yacas/platmath.h"
-#include "yacas/genericstructs.h"
 #include "yacas/errors.h"
 
 static
