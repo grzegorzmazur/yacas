@@ -33,8 +33,8 @@ public:
     /// \param arguments (input/output) actual values of the pattern
     /// variables for \a aExpression.
     virtual bool ArgumentMatches(LispEnvironment& aEnvironment,
-                                        LispPtr& aExpression,
-                                        LispPtr* arguments) const = 0;
+                                 LispPtr& aExpression,
+                                 LispPtr* arguments) const = 0;
 };
 
 /// Class for matching an expression to a given atom.
@@ -42,9 +42,9 @@ class MatchAtom : public YacasParamMatcherBase
 {
 public:
     explicit MatchAtom(const LispString* aString);
-    virtual bool ArgumentMatches(LispEnvironment& aEnvironment,
-                                        LispPtr& aExpression,
-                                        LispPtr* arguments) const;
+    bool ArgumentMatches(LispEnvironment& aEnvironment,
+                         LispPtr& aExpression,
+                         LispPtr* arguments) const override;
 protected:
     const LispString* iString;
 };
@@ -60,9 +60,9 @@ class MatchNumber : public YacasParamMatcherBase
 {
 public:
     explicit MatchNumber(BigNumber* aNumber);
-    virtual bool ArgumentMatches(LispEnvironment& aEnvironment,
-                                        LispPtr& aExpression,
-                                        LispPtr* arguments) const;
+    bool ArgumentMatches(LispEnvironment& aEnvironment,
+                         LispPtr& aExpression,
+                         LispPtr* arguments) const override;
 protected:
     RefPtr<BigNumber> iNumber;
 };
@@ -77,12 +77,12 @@ MatchNumber::MatchNumber(BigNumber* aNumber):
 class MatchSubList : public YacasParamMatcherBase, NonCopyable {
 public:
     explicit MatchSubList(const std::vector<const YacasParamMatcherBase*>&& aMatchers);
-    ~MatchSubList();
+    ~MatchSubList() override;
 
     bool ArgumentMatches(
         LispEnvironment& aEnvironment,
         LispPtr& aExpression,
-        LispPtr* arguments) const;
+        LispPtr* arguments) const override;
 
 protected:
     std::vector<const YacasParamMatcherBase*> iMatchers;
@@ -117,9 +117,9 @@ public:
     /// pattern matches and \a aExpression is stored in this
     /// entry. Otherwise, the pattern only matches if the entry equals
     /// \a aExpression.
-    virtual bool ArgumentMatches(LispEnvironment& aEnvironment,
-                                        LispPtr& aExpression,
-                                        LispPtr* arguments) const;
+    bool ArgumentMatches(LispEnvironment& aEnvironment,
+                         LispPtr& aExpression,
+                         LispPtr* arguments) const override;
 protected:
     /// Index of variable in YacasPatternPredicateBase::iVariables.
     LispInt iVarIndex;
@@ -164,14 +164,12 @@ public:
     /// function also returns false. Otherwise, SetPatternVariables()
     /// is called again, but now in the current LispLocalFrame, and
     /// this function returns true.
-    bool Matches(LispEnvironment& aEnvironment,
-                        LispPtr& aArguments);
+    bool Matches(LispEnvironment& aEnvironment, LispPtr& aArguments);
 
     /// Try to match the pattern against \a aArguments.
     /// This function does the same as Matches(LispEnvironment&,LispPtr&),
     /// but differs in the type of the arguments.
-    bool Matches(LispEnvironment& aEnvironment,
-                        LispPtr* aArguments);
+    bool Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
 
 protected:
     /// Construct a pattern matcher out of a Lisp expression.

@@ -23,7 +23,7 @@ public:
                 LispOperators& aPostfixOperators,
                 LispOperators& aBodiedOperators);
 
-    virtual void Parse(LispPtr& aResult);
+    void Parse(LispPtr& aResult) override;
 
 public:
     LispOperators& iPrefixOperators;

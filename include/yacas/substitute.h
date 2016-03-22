@@ -28,7 +28,7 @@ class SubstBehaviour : public SubstBehaviourBase
 public:
     SubstBehaviour(LispEnvironment& aEnvironment,LispPtr& aToMatch,
                   LispPtr& aToReplaceWith);
-    virtual bool Matches(LispPtr& aResult, LispPtr& aElement);
+    bool Matches(LispPtr& aResult, LispPtr& aElement) override;
 private:
     LispEnvironment& iEnvironment;
     LispPtr& iToMatch;
@@ -46,7 +46,7 @@ public:
         const std::vector<const LispString*>&& aOriginalNames,
         const std::vector<const LispString*>&& aNewNames);
 
-    virtual bool Matches(LispPtr& aResult, LispPtr& aElement);
+    bool Matches(LispPtr& aResult, LispPtr& aElement) override;
 
 private:
     LispEnvironment& iEnvironment;
@@ -67,7 +67,9 @@ class BackQuoteBehaviour : public SubstBehaviourBase
 public:
     BackQuoteBehaviour(LispEnvironment& aEnvironment)
         : iEnvironment(aEnvironment) {};
-    virtual bool Matches(LispPtr& aResult, LispPtr& aElement);
+    bool Matches(LispPtr& aResult, LispPtr& aElement) override;
+    
+private:
     LispEnvironment& iEnvironment;
 };
 

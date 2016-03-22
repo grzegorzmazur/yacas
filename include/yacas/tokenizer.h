@@ -15,11 +15,12 @@
 class LispTokenizer {
 public:
   LispTokenizer() : iToken() {}
+  virtual ~LispTokenizer() = default;
+
   /// NextToken returns a string representing the next token,
   /// or an empty list.
   virtual const LispString* NextToken(LispInput& aInput,
                                       LispHashTable& aHashTable);
-  virtual ~LispTokenizer(){}
 protected:
   LispString iToken; //Can be used as a token container.
 };

@@ -382,10 +382,6 @@ REENTER:
       throw LispErrGeneric("");
 }
 
-YacasDebuggerBase::~YacasDebuggerBase()
-{
-}
-
 void DefaultDebugger::Start()
 {
 }

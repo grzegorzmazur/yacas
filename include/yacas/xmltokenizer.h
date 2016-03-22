@@ -11,7 +11,7 @@ public:
   /// NextToken returns a string representing the next token,
   /// or an empty list.
   const LispString* NextToken(LispInput& aInput,
-                              LispHashTable& aHashTable);
+                              LispHashTable& aHashTable) override;
 };
 
 #endif

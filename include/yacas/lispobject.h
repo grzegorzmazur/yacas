@@ -111,12 +111,14 @@ class WithExtraInfo : public T
 public:
   WithExtraInfo(const T& aT, LispObject* aData = 0) : T(aT), iExtraInfo(aData) {}
   WithExtraInfo(const WithExtraInfo& other) : T(other), iExtraInfo(other.iExtraInfo) {}
-    virtual LispObject* ExtraInfo() { return iExtraInfo; }
-  virtual LispObject* SetExtraInfo(LispObject* aData) { iExtraInfo = aData; return this; }
-  virtual LispObject* Copy() const
+  LispObject* ExtraInfo() override { return iExtraInfo; }
+  LispObject* SetExtraInfo(LispObject* aData) override { iExtraInfo = aData; return this; }
+  LispObject* Copy() const override
   {
-    if (!iExtraInfo.ptr()) return T::Copy();
-        return new WithExtraInfo(*this, iExtraInfo->Copy());
+    if (!iExtraInfo.ptr())
+        return T::Copy();
+    
+    return new WithExtraInfo(*this, iExtraInfo->Copy());
   }
 private:
   LispPtr iExtraInfo;
@@ -130,8 +132,8 @@ protected:
   typedef ObjectHelper ASuper;  // for use by the derived class
   ObjectHelper() = default;
   ObjectHelper(const ObjectHelper& other) : U(other) {}
-  virtual ~ObjectHelper() = default;
-  virtual LispObject* SetExtraInfo(LispObject* aData)
+  ~ObjectHelper() override = default;
+  LispObject* SetExtraInfo(LispObject* aData) override
   {
     if (!aData) return this;
     //T * pT = dynamic_cast<T*>(this); LISPASSERT(pT);
