@@ -164,7 +164,7 @@ void ParsedObject::ReadExpression(LispInt depth)
                             break;
                         }
 
-                        opi == iParser.iInfixOperators.end();
+                        opi = iParser.iInfixOperators.end();
                     }
                 }
 
