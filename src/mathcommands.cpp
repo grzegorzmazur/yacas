@@ -22,6 +22,7 @@
 #include "yacas/arggetter.h"
 #include "yacas/string_utils.h"
 
+#include <string>
 #include <cstring>
 #include <limits.h>
 #include <stdlib.h>
