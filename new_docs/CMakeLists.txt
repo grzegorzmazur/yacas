@@ -11,31 +11,31 @@ if(NOT DEFINED SPHINX_THEME_DIR)
 endif()
 
 # configured documentation tools and intermediate build results
-set(BINARY_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc/_build")
+set(BINARY_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/_build")
 
 # Sphinx cache with pickled ReST documents
-set(SPHINX_CACHE_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc/_doctrees")
+set(SPHINX_CACHE_DIR "${CMAKE_CURRENT_BINARY_DIR}/_doctrees")
 
 # HTML output directory
-set(SPHINX_HTML_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc/html")
-set(SPHINX_SINGLEHTML_DIR "${CMAKE_CURRENT_BINARY_DIR}/doc/singlehtml")
+set(SPHINX_HTML_DIR "${CMAKE_CURRENT_BINARY_DIR}/html")
+set(SPHINX_SINGLEHTML_DIR "${CMAKE_CURRENT_BINARY_DIR}/singlehtml")
 
 file (
     COPY
-        new_docs/util
-        new_docs/favicon.ico
-        new_docs/yacaslogo.png
-        new_docs/yacaslogo_w250px.png
-        new_docs/conf.py
+      util
+      favicon.ico
+      yacaslogo.png
+      yacaslogo_w250px.png
+      conf.py
     DESTINATION
-        "${BINARY_BUILD_DIR}/doc")
+      "${BINARY_BUILD_DIR}")
 
 add_custom_target(yacas_docs ALL
     ${SPHINX_EXECUTABLE}
         -q -b singlehtml
-        -c "${BINARY_BUILD_DIR}/doc"
+        -c "${BINARY_BUILD_DIR}"
         -d "${SPHINX_CACHE_DIR}"
-        "${CMAKE_CURRENT_SOURCE_DIR}/new_docs"
+        "${CMAKE_CURRENT_SOURCE_DIR}"
         "${SPHINX_SINGLEHTML_DIR}"
     COMMENT "Building HTML documentation with Sphinx")
 

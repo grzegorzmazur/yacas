@@ -412,7 +412,7 @@ else ()
 endif ()
 
 if (ENABLE_DOCS)
-    include (CMakeLists-docs.txt)
+  add_subdirectory (new_docs)
 endif()
 
 install (TARGETS yacas RUNTIME DESTINATION bin COMPONENT app)
@@ -422,9 +422,11 @@ install (DIRECTORY include/ DESTINATION include COMPONENT dev)
 install (FILES ${PROJECT_BINARY_DIR}/include/yacas/yacas_version.h DESTINATION include/yacas COMPONENT dev)
 
 if (ENABLE_JYACAS)
-    include (CMakeLists-jyacas.txt)
+    add_subdirectory (JavaYacas)
 endif ()
 
-include (CMakeLists-tests.txt)
+include (CTest)
+
+add_subdirectory (tests)
 
 include (CMakeLists-packages.txt)
