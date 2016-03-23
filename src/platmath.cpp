@@ -7,8 +7,6 @@
 #include "yacas/platmath.h"
 #include "yacas/errors.h"
 
-#include <stdio.h>
-
 #include <bitset>
 #include <cmath>
 #include <sstream>
