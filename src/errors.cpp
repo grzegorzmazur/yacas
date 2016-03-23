@@ -6,8 +6,6 @@
 #include "yacas/errors.h"
 #include "yacas/infixparser.h"
 
-#include <stdio.h>
-
 void ShowStack(LispEnvironment& aEnvironment)
 {
     aEnvironment.iEvaluator->ShowStack(aEnvironment,
