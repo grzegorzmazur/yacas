@@ -405,12 +405,6 @@ if (WIN32)
   target_link_libraries (yacas wsock32 ws2_32 shlwapi)
 endif()
 
-if (CMAKE_CROSSCOMPILING)
-  set (YACAS ${YACAS_NATIVE_BUILD}/yacas)
-else ()
-  set (YACAS ${PROJECT_BINARY_DIR}/yacas)
-endif ()
-
 if (ENABLE_DOCS)
   add_subdirectory (new_docs)
 endif()
