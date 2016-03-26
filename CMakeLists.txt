@@ -4,6 +4,8 @@ option (ENABLE_DOCS "generate documentation" OFF)
 option (ENABLE_JYACAS "build the Java yacas engine" OFF)
 option (ENABLE_SERVER "enable built-in yacas server" OFF)
 
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+
 if (APPLE)
 #  if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
     SET(CMAKE_INSTALL_PREFIX "/usr/" CACHE PATH "Yacas install prefix" FORCE)

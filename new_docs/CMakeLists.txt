@@ -1,5 +1,3 @@
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-
 find_package(Sphinx REQUIRED)
 
 if(NOT DEFINED SPHINX_THEME)
