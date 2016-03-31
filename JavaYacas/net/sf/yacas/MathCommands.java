@@ -453,6 +453,15 @@ class MathCommands
          "Association'Drop",
          new YacasEvaluator(new GenAssociationDrop(), 2, YacasEvaluator.Fixed|YacasEvaluator.Function));
     aEnvironment.CoreCommands().put(
+         "Association'Keys",
+         new YacasEvaluator(new GenAssociationKeys(), 1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Association'ToList",
+         new YacasEvaluator(new GenAssociationToList(), 1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
+         "Association'Head",
+         new YacasEvaluator(new GenAssociationHead(), 1, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
          "CustomEval",
          new YacasEvaluator(new LispCustomEval(),4, YacasEvaluator.Fixed|YacasEvaluator.Macro));
     aEnvironment.CoreCommands().put(
@@ -3442,6 +3451,51 @@ class MathCommands
                 LispStandard.InternalFalse(env, RESULT(env, stack_top));
         }
     }
+    
+    class GenAssociationKeys extends YacasEvalCaller {
+
+        @Override
+        public void Eval(LispEnvironment env, int stack_top) throws Exception {
+            LispPtr evaluated = new LispPtr();
+            evaluated.Set(ARGUMENT(env, stack_top, 1).Get());
+
+            GenericClass gen = evaluated.Get().Generic();
+            LispError.CHK_ARG_CORE(env, stack_top, gen != null, 1);
+            LispError.CHK_ARG_CORE(env, stack_top, gen.TypeName().equals("\"Association\""), 1);
+
+            RESULT(env, stack_top).Set(((AssociationClass)gen).Keys().Get());
+        }        
+    }
+    
+    class GenAssociationToList extends YacasEvalCaller {
+
+        @Override
+        public void Eval(LispEnvironment env, int stack_top) throws Exception {
+            LispPtr evaluated = new LispPtr();
+            evaluated.Set(ARGUMENT(env, stack_top, 1).Get());
+
+            GenericClass gen = evaluated.Get().Generic();
+            LispError.CHK_ARG_CORE(env, stack_top, gen != null, 1);
+            LispError.CHK_ARG_CORE(env, stack_top, gen.TypeName().equals("\"Association\""), 1);
+
+            RESULT(env, stack_top).Set(((AssociationClass)gen).ToList().Get());
+        }        
+    }
+    
+    class GenAssociationHead extends YacasEvalCaller {
+        @Override
+        public void Eval(LispEnvironment env, int stack_top) throws Exception {
+            LispPtr evaluated = new LispPtr();
+            evaluated.Set(ARGUMENT(env, stack_top, 1).Get());
+
+            GenericClass gen = evaluated.Get().Generic();
+            LispError.CHK_ARG_CORE(env, stack_top, gen != null, 1);
+            LispError.CHK_ARG_CORE(env, stack_top, gen.TypeName().equals("\"Association\""), 1);
+
+            RESULT(env, stack_top).Set(((AssociationClass)gen).Head().Get());
+        }
+    }
+
 
   class LispCustomEval extends YacasEvalCaller
   {

@@ -58,6 +58,7 @@ include_directories(
   )
 
 set (YACAS_LIB_SOURCES
+  src/associationclass.cpp
   src/stdcommandline.cpp
   src/deffile.cpp
   src/infixparser.cpp

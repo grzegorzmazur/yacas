@@ -16,12 +16,19 @@ NextTest("Association");
     Verify(Length(a), 0);
 
     Verify(Association'Set(a, x, y), True);
-    Verify(Association'Size(a), 1);
-    Verify(Length(a), 1);
+    Verify(Association'Set(a, p, q), True);
+    Verify(Association'Keys(a), {p, x});
+    Verify(Association'ToList(a), {{p,q}, {x,y}});
+    Verify(Association'Head(a), {p,q});
+    Verify(Association'Size(a), 2);
+    Verify(Length(a), 2);
     Verify(Association'Get(a, x), y);
     Verify(Association'Drop(a, x), True);
     Verify(Association'Drop(a, x), False);
     Verify(Association'Get(a, x), Undefined);
-    Verify(Association'Size(a), 0);
-    Verify(Length(a), 0);
+    Verify(Association'Size(a), 1);
+    Verify(Length(a), 1);
+
+    a := Association'CreateFromList({{1,2},{3,4}});
+    Verify(Association'ToList(a), {{1,2}, {3,4}});
 ];

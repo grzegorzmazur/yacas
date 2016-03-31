@@ -1729,6 +1729,37 @@ void GenAssociationDrop(LispEnvironment& aEnvironment,LispInt aStackTop)
         InternalFalse(aEnvironment,RESULT);
 }
 
+void GenAssociationKeys(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+    LispPtr p(ARGUMENT(1));
+    GenericClass* gen = p->Generic();
+    AssociationClass* a = dynamic_cast<AssociationClass*>(gen);
+    CheckArg(a, 1, aEnvironment, aStackTop);
+
+    RESULT = a->Keys();
+}
+
+void GenAssociationToList(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+    LispPtr p(ARGUMENT(1));
+    GenericClass* gen = p->Generic();
+    AssociationClass* a = dynamic_cast<AssociationClass*>(gen);
+    CheckArg(a, 1, aEnvironment, aStackTop);
+
+    RESULT = a->ToList();
+}
+
+void GenAssociationHead(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+    LispPtr p(ARGUMENT(1));
+    GenericClass* gen = p->Generic();
+    AssociationClass* a = dynamic_cast<AssociationClass*>(gen);
+    CheckArg(a, 1, aEnvironment, aStackTop);
+    CheckArg(a->Size(), 1, aEnvironment, aStackTop);
+
+    RESULT = a->Head();
+}
+
 void LispCustomEval(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
   if (aEnvironment.iDebugger) delete aEnvironment.iDebugger;
