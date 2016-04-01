@@ -26,18 +26,8 @@ protected:
 };
 
 // utility functions
-inline
-bool IsAlpha(LispChar c)
-{
-    return std::isalpha(c) || c == '\'';
-}
-
-inline
-bool IsAlNum(LispChar c)
-{
-  return IsAlpha(c) || std::isdigit(c);
-}
-
+bool IsAlpha(std::uint32_t c);
+bool IsAlNum(std::uint32_t c);
 bool IsSymbolic(LispChar c);
 
 #endif
