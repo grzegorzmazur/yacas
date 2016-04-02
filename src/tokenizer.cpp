@@ -4,7 +4,6 @@
 
 #include "yacas/utf8.h"
 
-#include <cstdint>
 #include <set>
 
 namespace {

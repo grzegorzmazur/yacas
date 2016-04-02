@@ -11,6 +11,7 @@
 #include "lisphash.h"
 
 #include <cctype>
+#include <cstdint>
 
 class LispTokenizer {
 public:
