@@ -5,6 +5,8 @@
 #include "yacas/standard.h"
 #include "yacas/lisperror.h"
 #include "yacas/errors.h"
+#include "yacas/arrayclass.h"
+#include "yacas/associationclass.h"
 
 #include <cassert>
 #include <string>
@@ -328,9 +330,27 @@ void InfixPrinter::Print(
         return;
     }
 
-    if (aExpression->Generic()) {
-        //TODO display genericclass
-        WriteToken(aOutput, aExpression->Generic()->TypeName());
+    if (const GenericClass* g = aExpression->Generic()) {
+        if (const AssociationClass* a = dynamic_cast<const AssociationClass*>(g)) {
+            WriteToken(aOutput, "Association");
+            WriteToken(aOutput, "(");
+            Print(a->ToList(), aOutput, KMaxPrecedence);
+            WriteToken(aOutput, ")");
+        } else if (const ArrayClass* a = dynamic_cast<const ArrayClass*>(g)) {
+            WriteToken(aOutput, "Array");
+            WriteToken(aOutput, "(");
+            WriteToken(aOutput, "{");
+            const std::size_t n = a->Size();
+            for (std::size_t i = 1; i <= n; ++i) {
+                Print(LispPtr(a->GetElement(i)), aOutput, KMaxPrecedence);
+                if (i != n)
+                    WriteToken(aOutput, ",");
+            }
+            WriteToken(aOutput, "}");
+            WriteToken(aOutput, ")");
+        } else {
+            WriteToken(aOutput, g->TypeName());
+        }
         return;
     }
 
