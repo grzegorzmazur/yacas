@@ -26,8 +26,14 @@ protected:
 };
 
 // utility functions
-bool IsAlpha(std::uint32_t c);
-bool IsAlNum(std::uint32_t c);
+#ifdef YACAS_UINT32_T_IN_GLOBAL_NAMESPACE
+    bool IsAlpha(uint32_t c);
+    bool IsAlNum(uint32_t c);
+#else
+    bool IsAlpha(std::uint32_t c);
+    bool IsAlNum(std::uint32_t c);
+#endif
+
 bool IsSymbolic(LispChar c);
 
 #endif

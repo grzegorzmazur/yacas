@@ -509,12 +509,20 @@ bool IsSymbolic(LispChar c)
 }
 
 // utility functions
+#ifdef YACAS_UINT32_T_IN_GLOBAL_NAMESPACE
+bool IsAlpha(uint32_t c)
+#else
 bool IsAlpha(std::uint32_t c)
+#endif
 {
     return letters.count(c) || c == '\'';
 }
 
+#ifdef YACAS_UINT32_T_IN_GLOBAL_NAMESPACE
+bool IsAlNum(uint32_t c)
+#else
 bool IsAlNum(std::uint32_t c)
+#endif
 {
   return IsAlpha(c) || std::isdigit(c);
 }
