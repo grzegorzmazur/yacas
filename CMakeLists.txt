@@ -414,7 +414,6 @@ endif()
 
 install (TARGETS yacas RUNTIME DESTINATION bin COMPONENT app)
 install (DIRECTORY scripts/ DESTINATION share/yacas/scripts COMPONENT app)
-install (DIRECTORY tests/ DESTINATION share/yacas/tests COMPONENT app)
 install (DIRECTORY include/ DESTINATION include COMPONENT dev)
 install (FILES ${PROJECT_BINARY_DIR}/include/yacas/yacas_version.h DESTINATION include/yacas COMPONENT dev)
 

@@ -58,6 +58,9 @@ else ()
     set (TEST_YACAS_CMD "${PROJECT_SOURCE_DIR}/tests/test-yacas")
 endif ()
 
+install (FILES ${YACAS_TESTS} DESTINATION share/yacas/tests COMPONENT app)
+install (PROGRAMS ${TEST_YACAS_CMD} DESTINATION share/yacas/tests COMPONENT app)
+
 foreach (_test ${YACAS_TESTS})
     add_test (NAME cyacas-${_test} WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND "${TEST_YACAS_CMD}" "$<TARGET_FILE:yacas> -pc --rootdir ${PROJECT_SOURCE_DIR}/scripts" ${PROJECT_SOURCE_DIR}/tests ${_test})
 endforeach ()
