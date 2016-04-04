@@ -373,7 +373,7 @@ if (WIN32 AND CMAKE_CROSSCOMPILING)
 endif()
 
 set_target_properties(libyacas_static PROPERTIES OUTPUT_NAME "yacas")
-set_target_properties(libyacas_shared PROPERTIES OUTPUT_NAME "yacas" SOVERSION 1.0.0)
+set_target_properties(libyacas_shared PROPERTIES OUTPUT_NAME "yacas" SOVERSION ${YACAS_VERSION})
 
 #to generate yacas framework on macos:
 if (APPLE)
