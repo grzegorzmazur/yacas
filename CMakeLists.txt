@@ -3,7 +3,6 @@ cmake_minimum_required (VERSION 2.8.7)
 option (ENABLE_DOCS "generate documentation" OFF)
 option (ENABLE_JYACAS "build the Java yacas engine" OFF)
 option (ENABLE_SHARED_LIB "build shared library" OFF)
-option (ENABLE_SERVER "enable built-in yacas server" OFF)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
@@ -22,10 +21,6 @@ if (ENABLE_JYACAS)
   project (YACAS CXX Java C)
 else ()
   project (YACAS CXX C)
-endif ()
-
-if (ENABLE_SERVER)
-  add_definitions (-DSUPPORT_SERVER)
 endif ()
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
