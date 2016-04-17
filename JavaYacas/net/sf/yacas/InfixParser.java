@@ -1,7 +1,7 @@
 package net.sf.yacas;
 
 
-class InfixParser extends LispParser
+final class InfixParser extends LispParser
 {
   public InfixParser(LispTokenizer aTokenizer, LispInput aInput,
                 LispEnvironment aEnvironment,

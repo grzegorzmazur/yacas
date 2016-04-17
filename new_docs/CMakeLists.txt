@@ -37,4 +37,7 @@ add_custom_target(yacas_docs ALL
         "${SPHINX_SINGLEHTML_DIR}"
     COMMENT "Building HTML documentation with Sphinx")
 
-install (DIRECTORY "${SPHINX_SINGLEHTML_DIR}" DESTINATION share/yacas/documentation COMPONENT doc)
+install (DIRECTORY "${SPHINX_SINGLEHTML_DIR}"
+         DESTINATION share/yacas/documentation
+         COMPONENT doc
+         PATTERN ".buildinfo" EXCLUDE)

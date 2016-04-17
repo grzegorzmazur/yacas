@@ -3,7 +3,7 @@ package net.sf.yacas;
 import java.io.Writer;
 import java.math.*;
 
-class BigNumber
+final class BigNumber
 {
   //constructors
   public BigNumber( String aString,int aBasePrecision,int aBase/*=10*/)

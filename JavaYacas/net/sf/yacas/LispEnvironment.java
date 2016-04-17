@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 import static net.sf.yacas.LispError.Check;
 
-class LispEnvironment
+final class LispEnvironment
 {
   //TODO FIXME
 

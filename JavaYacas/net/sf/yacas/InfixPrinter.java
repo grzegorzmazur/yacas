@@ -3,7 +3,7 @@ package net.sf.yacas;
 import java.io.Writer;
 
 
-class InfixPrinter extends LispPrinter
+final class InfixPrinter extends LispPrinter
 {
 
   static int KMaxPrecedence = 60000;

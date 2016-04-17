@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-class AssociationClass extends GenericClass {
+final class AssociationClass extends GenericClass {
 
     private static class Cmp implements Comparator<LispPtr> {
         public Cmp(LispEnvironment env) {
