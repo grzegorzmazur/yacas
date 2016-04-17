@@ -7,10 +7,6 @@ option (ENABLE_SHARED_LIB "build shared library" OFF)
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
 if (APPLE)
-#  if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-    SET(CMAKE_INSTALL_PREFIX "/usr/" CACHE PATH "Yacas install prefix" FORCE)
-#  endif(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-
   set(CMAKE_MACOSX_RPATH 1)
   set(CMAKE_FRAMEWORK_INSTALL_DIR "/Library/Frameworks" CACHE STRING "Directory to install frameworks to.")
 endif()
