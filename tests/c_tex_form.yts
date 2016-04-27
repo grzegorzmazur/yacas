@@ -1,13 +1,5 @@
-/*Use("texform");*/
+NextTest("TeXForm");
 
-NextTest("TeXForm()...");
-
-/* it worketh no more...
-Testing("Realistic example");
-f:=Exp(I*lambda*eta)*w(T*(k+k1+lambda));
-g:=Simplify(Subst(lambda,0) f+(k+k1)*(D(lambda)f)+k*k1*D(lambda)D(lambda)f );
-Verify(TeXForm(g), ...);
-*/
 
 Verify(
 TeXForm(Hold(Cos(A-B)*Sqrt(C+D)-(a+b)*c^d+2*I+Complex(a+b,a-b)/Complex(0,1)))
@@ -76,12 +68,7 @@ TeXForm(x^(1/3)+x^(1/2))
 , "$\\sqrt[3]{x} + \\sqrt{x}$"
 );
 
-/*
-Verify(
-TeXForm()
-,"" 
-);
-*/
+NextTest("CForm");
 
 Verify(
 CForm(Hold(Cos(A-B)*Sin(a)*func(b,c,d*(e+Pi))*Sqrt(Abs(C)+D)-(g(a+b)^(c+d))^(c+d)))
