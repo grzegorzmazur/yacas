@@ -2,7 +2,6 @@ cmake_minimum_required (VERSION 2.8.7)
 
 option (ENABLE_DOCS "generate documentation" OFF)
 option (ENABLE_JYACAS "build the Java yacas engine" OFF)
-option (ENABLE_SHARED_LIB "build shared library" OFF)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
@@ -357,23 +356,13 @@ set (YACAS_SCRIPTS
   scripts/univar.rep/sturm.ys.def
   scripts/yacasinit.ys)
 
-add_library (libyacas_static STATIC ${YACAS_LIB_SOURCES} ${YACAS_LIB_HEADERS})
-set_target_properties (libyacas_static PROPERTIES OUTPUT_NAME "yacas")
-
-if (ENABLE_SHARED_LIB)
-    add_library (libyacas_shared SHARED ${YACAS_LIB_SOURCES} ${YACAS_LIB_HEADERS})
-
-    if (WIN32 AND CMAKE_CROSSCOMPILING)
-      target_link_libraries (libyacas_shared pthread)
-    endif ()
-
-    set_target_properties (libyacas_shared PROPERTIES OUTPUT_NAME "yacas" SOVERSION ${YACAS_VERSION})
-endif ()
+add_library (libyacas ${YACAS_LIB_SOURCES} ${YACAS_LIB_HEADERS})
+set_target_properties (libyacas PROPERTIES OUTPUT_NAME "yacas")
 
 #to generate yacas framework on macos:
 if (APPLE)
   add_library (libyacas_framework SHARED ${YACAS_LIB_SOURCES})
-  set_target_properties(libyacas_framework PROPERTIES OUTPUT_NAME "yacas" VERSION ${YACAS_VERSION} SOVERSION 14.0.0 FRAMEWORK ON)
+  set_target_properties(libyacas_framework PROPERTIES OUTPUT_NAME "yacas" VERSION ${YACAS_VERSION} SOVERSION ${YACAS_VERSION} FRAMEWORK ON)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/scripts $<TARGET_FILE_DIR:libyacas_framework>/Resources/scripts)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_BINARY_DIR}/scripts $<TARGET_FILE_DIR:libyacas_framework>/Resources/scripts)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/include $<TARGET_FILE_DIR:libyacas_framework>/Headers)
@@ -383,15 +372,7 @@ if (APPLE)
   install (TARGETS libyacas_framework FRAMEWORK DESTINATION ${CMAKE_FRAMEWORK_INSTALL_DIR} COMPONENT framework)
 endif()
 
-install (TARGETS libyacas_static ARCHIVE DESTINATION lib COMPONENT dev)
-
-if (ENABLE_SHARED_LIB)
-    if (APPLE)
-      install (TARGETS libyacas_shared LIBRARY DESTINATION lib COMPONENT app)
-    else()
-      install (TARGETS libyacas_shared LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin COMPONENT app)
-    endif()
-endif ()
+install (TARGETS libyacas ARCHIVE DESTINATION lib RUNTIME DESTINATION bin COMPONENT app)
 
 add_executable (yacas ${YACAS_SOURCES} ${YACAS_HEADERS})
 
@@ -399,7 +380,7 @@ if (APPLE)
     set_target_properties(yacas PROPERTIES INSTALL_RPATH "@loader_path/../lib")
 endif()
 
-target_link_libraries (yacas libyacas_static)
+target_link_libraries (yacas libyacas)
 
 if (WIN32)
   target_link_libraries (yacas wsock32 ws2_32 shlwapi)
