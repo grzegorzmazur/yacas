@@ -44,6 +44,7 @@ Defun(DefFileList,{}) {
     "predicates.rep/code.ys",
     "probability.rep/code.ys",
     "pslq.rep/code.ys",
+    "r_form.rep/code.ys",
     "rabinmiller.rep/code.ys",
     "radsimp.rep/code.ys",
     "random.rep/code.ys",

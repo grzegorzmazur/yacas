@@ -1,0 +1,294 @@
+/*
+ * Copyright (C) 2016 Grzegorz Mazur.
+ *
+ * Yacas is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * Yacas is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
+
+/* RForm: convert yacas objects to R code. */
+/* Derived from CForm */
+
+RuleBase("RForm",{expression});
+RuleBase("RForm",{expression, precedence});
+
+// auxilliary functions
+Function ("RFormBracketIf", {predicate, string})
+[
+	Check(IsBoolean(predicate) And IsString(string), "RForm internal error: non-boolean and/or non-string argument of RFormBracketIf");
+	If(predicate, ConcatStrings("( ", string, ") "), string);
+];
+
+RFormArgs(list_IsList) <--
+[
+  Local(i,nr,result);
+  result:="";
+  nr:=Length(list);
+  For (i:=1,i<=nr,i++)
+  [
+    result:=result:RForm(list[i]);
+    If (i<nr, result:=result:", ");
+  ];
+  result;
+];
+
+LocalSymbols(rindent) [
+  rindent:=1;
+
+  NlIndented():=
+  [
+    Local(result);
+    result:=
+"
+";
+    Local(i);
+    For(i:=1,i<rindent,i++)
+    [
+      result:=result:"  ";
+    ];
+    result;
+  ];
+  RIndent() :=
+  [
+  (rindent++);
+  "";
+  ];
+  RUndent() :=
+  [
+  (rindent--);
+  "";
+  ];
+];
+
+RFormStatement(_x) <-- RForm(x) : ";" : NlIndented();
+
+// RFormMaxPrec should perhaps only be used from within this file, it is thus not in the .def file.
+RFormMaxPrec() := 60000;	 /* This precedence will never be bracketed. It is equal to KMaxPrec */
+
+100 # RForm(_x) <-- RForm(x, RFormMaxPrec());
+
+// Strings must be quoted but not bracketed
+100 # RForm(x_IsString, _p) <-- ConcatStrings("\"", x, "\"");
+
+// Numbers
+110 # RForm(x_IsNumber, _p) <-- String(x);
+
+// Complex numbers
+110 # RForm(Complex(_x, _y), _p) <-- ConcatStrings("complex(", RFormArgs({1, x, y}), ")");
+
+// Lists
+110 # RForm(l_IsList, _p)_ListHasFunc(l, List) <-- ConcatStrings("rbind(", RFormArgs(l), ")");
+111 # RForm(l_IsList, _p) <-- ConcatStrings("c(", RFormArgs(l), ")");
+
+// Variables are left as is, except some special ones
+115 # RForm(False, _p) <-- "FALSE";
+115 # RForm(True, _p) <-- "TRUE";
+115 # RForm(x_IsAtom, _p) <-- String(x);
+
+/* Replace operations */
+
+// unary operators
+100 # RForm(+ _y, _p) <-- RFormBracketIf(p<OpPrecedence("+"), ConcatStrings(" + ", RForm(y, OpRightPrecedence("+")) ) );
+100 # RForm(- _y, _p) <-- RFormBracketIf(p<OpPrecedence("-"), ConcatStrings(" - ", RForm(y, OpRightPrecedence("-")) ) );
+
+
+// regular arithmetic operations
+
+LocalSymbols(rformRegularOps) [
+  rformRegularOps := { {"+"," + "}, {"-"," - "}, {"*"," * "},
+                       {"/"," / "}, {":="," <- "}, {"=="," == "},
+                       {"="," == "}, {"!="," != "}, {"<="," <= "},
+                       {">="," >= "}, {"<"," < "}, {">"," > "},
+                       {"And"," & "}, {"Or"," | "}, 
+                       { "%", " %% " }, { "^", " ^ " }, { "..", ":" }
+                     };
+
+  RFormRegularOps() := rformRegularOps;
+];
+
+120 # RForm(expr_IsFunction, _p)_(NrArgs(expr)=2 And Contains(AssocIndices(RFormRegularOps()), Type(expr)) ) <--
+      RFormBracketIf(p<OpPrecedence(Type(expr)), ConcatStrings(RForm(Listify(expr)[2], OpLeftPrecedence(Type(expr))), RFormRegularOps()[Type(expr)], RForm(Listify(expr)[3], OpRightPrecedence(Type(expr))) ) );
+
+
+// bitwise operations
+
+LocalSymbols(rformBitwiserOps) [
+  rformBitwiseOps := { 
+      {">>", "bitwShiftR"},
+      {"<<", "bitwShiftL" },
+      {"&", "bitAnd" },
+      {"|", "bitOr" }
+  };
+
+  RFormBitwiseOps() := rformBitwiseOps;
+];
+
+120 # RForm(expr_IsFunction, _p)_(NrArgs(expr)=2 And Contains(AssocIndices(RFormBitwiseOps()), Type(expr)) ) <--
+      ConcatStrings(RFormBitwiseOps()[Type(expr)], "(", RForm( Listify(expr)[2], RFormMaxPrec()), ", ", RForm( Listify(expr)[3], RFormMaxPrec()), ")" );
+
+// standard math functions
+LocalSymbols(rformMathFunctions) [
+  rformMathFunctions :=
+    {
+      {"Sqrt","sqrt"},
+      {"Cos","cos"},
+      {"Sin","sin"},
+      {"Tan","tan"},
+      {"Cosh","cosh"},
+      {"Sinh","sinh"},
+      {"Tanh","tanh"},
+      {"Exp","exp"},
+      {"Ln","log"},
+      {"ArcCos","acos"},
+      {"ArcSin","asin"},
+      {"ArcTan","atan"},
+      {"ArcCosh","acosh"},
+      {"ArcSinh","asinh"},
+      {"ArcTanh","atanh"},
+      {"Max","max"},
+      {"Min","min"},
+      {"Abs","fabs"},
+      {"Floor","floor"},
+      {"Ceil","ceil"},
+      {"!","factorial"}
+    };
+
+  RFormMathFunctions() := rformMathFunctions;
+
+];
+
+120 # RForm(expr_IsFunction, _p) _
+      (NrArgs(expr)=1 And Contains(AssocIndices(RFormMathFunctions()), Type(expr)) ) <--
+      ConcatStrings(RFormMathFunctions()[Type(expr)], "(", RForm( Listify(expr)[2], RFormMaxPrec()),")" );
+
+// Special cases
+120 # RForm(Mod(_x, _y), _p) <-- RFormBracketIf(p<OpPrecedence("/"), ConcatStrings(RForm(x, OpPrecedence("/")), " %% ", RForm(y, OpPrecedence("/")) ) );
+120 # RForm(Nth(_x, _i), _p) <-- ConcatStrings(RForm(x, RFormMaxPrec()), "[", RForm(i, RFormMaxPrec()), "]");
+120 # RForm(expr_IsFunction, _p)_(Type(expr) = "Echo") <-- ConcatStrings("print(", RFormArgs(Tail(Listify(expr))), ")");
+
+120 # RForm(if(_pred)_body, _p) <-- "if (":RForm(pred,60000):") ":RForm(body);
+120 # RForm(_left else _right, _p) <-- RForm(left):" else ":RForm(right);
+
+120 # RForm(_x,_p)_(Type(x) = "Prog") <--
+[
+  Local(result);
+  result:=RIndent():"{":NlIndented();
+  ForEach(item,Tail(Listify(x)))
+  [
+    result:=result:RFormStatement(item);
+  ];
+  result:=result:"}":RUndent():NlIndented();
+  result;
+];
+
+120 # RForm(If(_pred,_then), _p) <--
+	"if(" : RForm(pred,RFormMaxPrec()) : ")"
+	: RIndent() : NlIndented()
+	: RFormStatement(then)
+        : RUndent();
+
+120 # RForm(If(_pred,_then,_else), _p) <--
+	"if(" : RForm(pred,RFormMaxPrec()) : ") {"
+	: RIndent() : NlIndented()
+	: RFormStatement(then)
+        : RUndent() : " } else { "
+	: RIndent() : NlIndented()
+	: RFormStatement(else)
+        : RUndent() : " }";
+
+120 # RForm(For(_from,_to,_step)_body,_p) <--
+  "for(" : RForm(from,RFormMaxPrec()) : ";"
+	: RForm(to,RFormMaxPrec()) : ";"
+	: RForm(step,RFormMaxPrec()) : ")"
+	: RIndent() : NlIndented()
+	: RFormStatement(body) : RUndent();
+
+120 # RForm(ForEach(_element,_list)_body,_p) <--
+  "for(" : RForm(element,RFormMaxPrec()) : " in "
+	: RForm(list,RFormMaxPrec()) : ")"
+	: RIndent() : NlIndented()
+	: RFormStatement(body) : RUndent();
+
+120 # RForm(While(_pred)_body, _p) <--
+	"while(" : RForm(pred,RFormMaxPrec()) : ")"
+	: RIndent() : NlIndented()
+	: RFormStatement(body) : RUndent();
+
+120 # RForm(Until(_pred)_body, _p) <--
+	"repeat {"
+	: RIndent() : NlIndented() 
+	: RFormStatement(body)
+        : "if(" : RForm(pred, RFormMaxPrec()) : ") break; "
+        : RUndent() : "}";
+
+// Other functions
+200 # RForm(_x, _p)_(IsFunction(x)) <--
+[
+  ConcatStrings(Type(x), "(", RFormArgs(Tail(Listify(x))),")" );
+];
+
+//////////////////////////////////////////////////
+/// IsRFormable
+//////////////////////////////////////////////////
+
+LocalSymbols(RFormAllFunctions) [
+
+  /// predicate to test whether an expression can be successfully exported to C code
+
+  /// interface with empty extra function list
+  // need the backquote stuff b/c we have HoldArg now
+  IsRFormable(_expr) <-- `IsRFormable(@expr, {});
+
+  // need to check that expr contains only allowed functions
+  IsRFormable(_expr, funclist_IsList) <--
+  [
+    Local(bad'functions);
+    bad'functions := Difference(`FuncList(@expr), Concat(RFormAllFunctions, funclist));
+    If(Length(bad'functions)=0,
+      True,
+      [
+        If(InVerboseMode(),
+          Echo(Concat({"IsRFormable: Info: unexportable function(s): "}, bad'functions))
+        );
+        False;
+      ]
+    );
+  ];
+  HoldArgNr("IsRFormable", 1, 1);
+  HoldArgNr("IsRFormable", 2, 1);
+
+  /// This is a list of all function atoms which RForm can safely handle
+  RFormAllFunctions :=
+    MapSingle(Atom,
+        Concat(AssocIndices(RFormMathFunctions()),
+        AssocIndices(RFormRegularOps()),
+        AssocIndices(RFormBitwiseOps()),
+        // list of other functions supported by RForm: needs to be updated when RForm is extended to handle new functions
+        {
+          "Complex",
+          "List",
+          "Mod",
+          "Nth",
+          "Echo",
+          "Prog",
+          "if",
+          "else",
+          "If",
+          "For",
+          "ForEach",
+          "While",
+          "Until",
+        })
+    );
+];
