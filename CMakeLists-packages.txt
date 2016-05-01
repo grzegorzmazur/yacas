@@ -42,6 +42,7 @@ set(CPACK_COMPONENT_FRAMEWORK_DESCRIPTION "Yacas.framework wil be installed into
 
 
 if(APPLE)
+    set (CPACK_GENERATOR "PackageMaker")
     configure_file(
         "${PROJECT_SOURCE_DIR}/COPYING"
         "${PROJECT_BINARY_DIR}/COPYING.txt"
