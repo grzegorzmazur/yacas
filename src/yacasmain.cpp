@@ -4,9 +4,6 @@
  * It is heavily tailored to Unix (Linux), but you should be able
  * to easily make a version that links with libyacas.a and provides
  * an interface for a different platform.
- * The platform-dependent parts are readline.cpp (which maintains
- * a history for keyed-in expressions on the command line), and
- * the directories it looks in for input files.
  */
 
 // Usage :
@@ -17,13 +14,12 @@
 //   3) yacas <options>
 //      where options is of the form -<opt>. <opt> can be any
 //      of the combinations of:
-//      - d for returning the directory of the default scripts.
-//      - v prints the version number
+//      - d return the directory of the default scripts.
+//      - v print the version number
 //      - f : treats stdin as one file, and executes the first
 //            read statement only.
 //      - p : plain mode. No fancy readline functionality.
 //      - c : inhibits printing the prompt to the console
-//      - w : hides the console window in Windows
 //   4)
 //  -i <command> : execute <command>
 //
@@ -110,9 +106,6 @@ bool exit_after_files = false;
 
 std::string root_dir;
 std::string doc_dir;
-#ifdef _WIN32
-HANDLE htimer = 0;
-#endif
 std::string init_script = "yacasinit.ys";
 
 const char* read_eval_print = "REP()";
