@@ -94,7 +94,7 @@ public://arithmetic
   void Mod(const BigNumber& aY, const BigNumber& aZ);
 
   /// For debugging purposes, dump internal state of this object into a string
-  void DumpDebugInfo() const;
+  void DumpDebugInfo(std::ostream&) const;
 
 public:
   /// assign self to Floor(aX) if possible

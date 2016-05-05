@@ -45,7 +45,7 @@ public:
     bool IsNegative() const;
     bool IsEven() const;
 
-    void Print(const std::string& prefix) const;
+    void Print(std::ostream&, const std::string& prefix) const;
 
 public:
     LispInt iExp;

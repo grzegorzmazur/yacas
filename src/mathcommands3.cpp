@@ -88,7 +88,7 @@ void LispDumpBigNumberDebugInfo(LispEnvironment& aEnvironment, LispInt aStackTop
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
-  x->DumpDebugInfo();
+  x->DumpDebugInfo(aEnvironment.CurrentOutput());
   InternalTrue(aEnvironment,RESULT);
 }
 

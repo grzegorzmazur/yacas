@@ -885,12 +885,12 @@ LispInt BigNumber::Sign() const
 }
 
 
-void BigNumber::DumpDebugInfo() const
+void BigNumber::DumpDebugInfo(std::ostream& os) const
 {
     if (!iNumber)
-        std::cout << "No number representation\n";
+        os << "No number representation\n";
     else
-        iNumber->Print("Number:");
+        iNumber->Print(os, "Number:");
 }
 
 
