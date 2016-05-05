@@ -387,7 +387,7 @@ if (WIN32)
 endif()
 
 if (ENABLE_DOCS)
-  add_subdirectory (new_docs)
+  add_subdirectory (docs)
 endif()
 
 install (TARGETS yacas RUNTIME DESTINATION bin COMPONENT app)
