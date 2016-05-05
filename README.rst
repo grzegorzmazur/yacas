@@ -19,12 +19,14 @@ you can easily write your own symbolic manipulation algorithms. The core engine
 supports arbitrary precision arithmetic and is able to execute symbolic
 manipulations on various mathematical objects by following user-defined rules.  
 
-Read the file INSTALL for instructions on how to compile and install
-Yacas. Yacas is portable across most Unix-ish platforms (including MacOS X) 
-as well as all modern MS Windows versions.
+Read the docs/getting_started/index.rst or 
+`<https://yacas.readthedocs.io/en/latest/getting_started/index.html>`_
+for instructions on how to compile and install yacas. Yacas is portable across
+most Unix-ish platforms (including OSX) as well as all modern MS Windows
+versions.
 
-For detailed information on Yacas features and usage, please see the
-included documentation or go to http://grzegorzmazur.github.io/yacas/
+For detailed information on yacas features and usage, see 
+`<http://www.yacas.org>`_.
 
 Yacas is distributed under the GNU LESSER GENERAL PUBLIC LICENSE v2.1 or, at
 your discretion, any later version.
