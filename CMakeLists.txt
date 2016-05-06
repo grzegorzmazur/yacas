@@ -1,4 +1,6 @@
-cmake_minimum_required (VERSION 2.8.7)
+cmake_minimum_required (VERSION 3.0)
+
+cmake_policy(SET CMP0048 NEW)
 
 option (ENABLE_DOCS "generate documentation" OFF)
 option (ENABLE_JYACAS "build the Java yacas engine" OFF)
@@ -10,13 +12,15 @@ if (APPLE)
   set(CMAKE_FRAMEWORK_INSTALL_DIR "/Library/Frameworks" CACHE STRING "Directory to install frameworks to.")
 endif()
 
+set (LANGUAGES CXX)
+
 if (ENABLE_JYACAS)
   find_package (Java)
   include (${CMAKE_ROOT}/Modules/UseJava.cmake)
-  project (YACAS CXX Java C)
-else ()
-  project (YACAS CXX C)
+  set (LANGUAGES ${LANGUAGES} Java)
 endif ()
+
+project (YACAS VERSION 1.4.99 LANGUAGES ${LANGUAGES})
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -std=c++11")
@@ -29,12 +33,6 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten")
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s DISABLE_EXCEPTION_CATCHING=0 -s ASSERTIONS=1")
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --embed-file ${PROJECT_SOURCE_DIR}/scripts@/share/yacas/scripts")
 endif ()
-
-set (YACAS_VERSION_MAJOR 1)
-set (YACAS_VERSION_MINOR 4)
-set (YACAS_VERSION_MICRO 99)
-
-set (YACAS_VERSION ${YACAS_VERSION_MAJOR}.${YACAS_VERSION_MINOR}.${YACAS_VERSION_MICRO})
 
 include (CMakeLists-conf.txt)
 
@@ -362,7 +360,7 @@ set_target_properties (libyacas PROPERTIES OUTPUT_NAME "yacas")
 #to generate yacas framework on macos:
 if (APPLE)
   add_library (libyacas_framework SHARED ${YACAS_LIB_SOURCES})
-  set_target_properties(libyacas_framework PROPERTIES OUTPUT_NAME "yacas" VERSION ${YACAS_VERSION} SOVERSION ${YACAS_VERSION} FRAMEWORK ON)
+  set_target_properties(libyacas_framework PROPERTIES OUTPUT_NAME "yacas" VERSION ${PROJECT_VERSION} SOVERSION ${PROJECT_VERSION} FRAMEWORK ON)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/scripts $<TARGET_FILE_DIR:libyacas_framework>/Resources/scripts)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_BINARY_DIR}/scripts $<TARGET_FILE_DIR:libyacas_framework>/Resources/scripts)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/include $<TARGET_FILE_DIR:libyacas_framework>/Headers)
