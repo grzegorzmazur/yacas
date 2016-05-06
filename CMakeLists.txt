@@ -403,4 +403,4 @@ include (CTest)
 
 add_subdirectory (tests)
 
-include (CMakeLists-packages.txt)
+add_subdirectory (packaging)

@@ -72,10 +72,10 @@ endif ()
 
 
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-    install (FILES debian/copyright DESTINATION share/doc/yacas COMPONENT app)
+    install (FILES deb/copyright DESTINATION share/doc/yacas COMPONENT app)
 
     find_package (UnixCommands REQUIRED)
-    add_custom_target (compress_changelog ALL COMMAND ${GZIP} -9 -c ${PROJECT_SOURCE_DIR}/debian/changelog > changelog.gz)
+    add_custom_target (compress_changelog ALL COMMAND ${GZIP} -9 -n -c ${PROJECT_SOURCE_DIR}/packaging/deb/changelog > changelog.gz)
 
     install (FILES ${PROJECT_BINARY_DIR}/changelog.gz DESTINATION share/doc/yacas COMPONENT app)
 
@@ -98,7 +98,6 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
         set (CPACK_DEBIAN_PACKAGE_DESCRIPTION ${CPACK_PACKAGE_DESCRIPTION})
         set (CPACK_DEBIAN_PACKAGE_SECTION "math")
         set (CPACK_DEBIAN_PACKAGE_RECOMMENDS "yagy")
-        set( CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_CURRENT_SOURCE_DIR}/debian/postinst;")
         set (CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
     endif ()
 
