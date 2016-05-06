@@ -12,7 +12,7 @@ if (APPLE)
   set(CMAKE_FRAMEWORK_INSTALL_DIR "/Library/Frameworks" CACHE STRING "Directory to install frameworks to.")
 endif()
 
-set (LANGUAGES CXX)
+set (LANGUAGES CXX C)
 
 if (ENABLE_JYACAS)
   find_package (Java)
