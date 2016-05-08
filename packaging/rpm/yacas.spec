@@ -7,7 +7,7 @@
 #
 
 Name:           yacas
-Version:        1.4.99
+Version:        1.5.0
 Release:        1%{?dist}
 Summary:        Easy to use, general purpose computer algebra system
 %if 0%{?suse_version}
