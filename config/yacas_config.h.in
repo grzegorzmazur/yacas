@@ -6,7 +6,5 @@
 #cmakedefine HAVE_MEMORY_H
 #cmakedefine HAVE_STDLIB_H
 #cmakedefine HAVE_STDIO_H
-#cmakedefine HAVE_CTYPE_H
-#cmakedefine HAVE_DIRENT_H
 #cmakedefine HAVE_SIGNAL_H
 #cmakedefine HAVE_STRING_H

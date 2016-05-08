@@ -13,12 +13,12 @@ check_include_files (signal.h HAVE_SIGNAL_H)
 check_include_files (string.h HAVE_STRING_H)
 
 configure_file (
-  "${PROJECT_SOURCE_DIR}/config.h.in"
-  "${PROJECT_BINARY_DIR}/config.h"
+  "${PROJECT_SOURCE_DIR}/config/yacas_config.h.in"
+  "${PROJECT_BINARY_DIR}/include/yacas/yacas_config.h"
   )
 
 configure_file (
-  "${PROJECT_SOURCE_DIR}/yacas_version.h.in"
+  "${PROJECT_SOURCE_DIR}/config/yacas_version.h.in"
   "${PROJECT_BINARY_DIR}/include/yacas/yacas_version.h"
   )
 

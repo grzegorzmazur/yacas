@@ -16,7 +16,7 @@ set (LANGUAGES CXX C)
 
 if (ENABLE_JYACAS)
   find_package (Java)
-  include (${CMAKE_ROOT}/Modules/UseJava.cmake)
+  include (UseJava)
   set (LANGUAGES ${LANGUAGES} Java)
 endif ()
 
@@ -34,7 +34,7 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten")
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --embed-file ${PROJECT_SOURCE_DIR}/scripts@/share/yacas/scripts")
 endif ()
 
-include (CMakeLists-conf.txt)
+add_subdirectory (config)
 
 if (APPLE OR WIN32)
     add_definitions(-DNO_GLOBALS)
@@ -43,7 +43,7 @@ endif ()
 include_directories(
   "${PROJECT_SOURCE_DIR}/include"
   "${PROJECT_BINARY_DIR}/include"
-  "${PROJECT_BINARY_DIR}"
+  "${PROJECT_BINARY_DIR}/include/yacas"
   )
 
 set (YACAS_LIB_SOURCES
@@ -392,6 +392,7 @@ install (TARGETS yacas RUNTIME DESTINATION bin COMPONENT app)
 install (DIRECTORY scripts/ DESTINATION share/yacas/scripts COMPONENT app)
 install (DIRECTORY include/ DESTINATION include COMPONENT dev)
 install (FILES ${PROJECT_BINARY_DIR}/include/yacas/yacas_version.h DESTINATION include/yacas COMPONENT dev)
+install (FILES ${PROJECT_BINARY_DIR}/include/yacas/yacas_config.h DESTINATION include/yacas COMPONENT dev)
 
 if (ENABLE_JYACAS)
     add_subdirectory (JavaYacas)
