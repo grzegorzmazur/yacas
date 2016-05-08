@@ -22,8 +22,8 @@
 
   <target name="compile" depends="init"
           description="compile the source" >
-    <delete file="${src}/CVersion.java" quiet="true" />
-    <copy file="${src}/CVersion.java.in" tofile="${src}/CVersion.java" >
+    <delete file="${src}/net/sf/yacas/CVersion.java" quiet="true" />
+    <copy file="${src}/CVersion.java.in" tofile="${src}/net/sf/yacas//CVersion.java" >
       <filterchain>
         <replacestring from="$${YACAS_VERSION}" to="${version}"/>
       </filterchain>
