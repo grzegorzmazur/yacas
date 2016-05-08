@@ -1,7 +1,6 @@
 #ifndef YACAS_SUBSTITUTE_H
 #define YACAS_SUBSTITUTE_H
 
-#include "yacasbase.h"
 #include "lispobject.h"
 #include "lispenvironment.h"
 
@@ -9,8 +8,7 @@
 
 /** Behaviour for substituting sub-expressions.
  */
-class SubstBehaviourBase : public YacasBase
-{
+class SubstBehaviourBase {
 public:
     virtual ~SubstBehaviourBase() = default;
     virtual bool Matches(LispPtr& aResult, LispPtr& aElement) = 0;
@@ -25,12 +23,12 @@ void InternalSubstitute(LispPtr& aTarget, LispPtr& aSource,
 /** Substing one expression for another. The simplest form
  * of substitution
  */
-class SubstBehaviour : public SubstBehaviourBase
+class SubstBehaviour final: public SubstBehaviourBase
 {
 public:
     SubstBehaviour(LispEnvironment& aEnvironment,LispPtr& aToMatch,
                   LispPtr& aToReplaceWith);
-    virtual bool Matches(LispPtr& aResult, LispPtr& aElement);
+    bool Matches(LispPtr& aResult, LispPtr& aElement) override;
 private:
     LispEnvironment& iEnvironment;
     LispPtr& iToMatch;
@@ -40,7 +38,7 @@ private:
 /** subst behaviour for changing the local variables to have unique
  * names.
  */
-class LocalSymbolBehaviour : public SubstBehaviourBase
+class LocalSymbolBehaviour final: public SubstBehaviourBase
 {
 public:
     LocalSymbolBehaviour(
@@ -48,7 +46,7 @@ public:
         const std::vector<const LispString*>&& aOriginalNames,
         const std::vector<const LispString*>&& aNewNames);
 
-    virtual bool Matches(LispPtr& aResult, LispPtr& aElement);
+    bool Matches(LispPtr& aResult, LispPtr& aElement) override;
 
 private:
     LispEnvironment& iEnvironment;
@@ -64,12 +62,14 @@ private:
  *    head of function if a is a function. For instance, if
  *    a is f(x) and f is g, then f(x) gets replaced by g(x)
  */
-class BackQuoteBehaviour : public SubstBehaviourBase
+class BackQuoteBehaviour final: public SubstBehaviourBase
 {
 public:
     BackQuoteBehaviour(LispEnvironment& aEnvironment)
         : iEnvironment(aEnvironment) {};
-    virtual bool Matches(LispPtr& aResult, LispPtr& aElement);
+    bool Matches(LispPtr& aResult, LispPtr& aElement) override;
+    
+private:
     LispEnvironment& iEnvironment;
 };
 

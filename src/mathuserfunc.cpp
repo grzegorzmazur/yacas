@@ -65,7 +65,7 @@ BranchingUserFunction::~BranchingUserFunction()
 }
 
 void BranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
-                                     LispPtr& aArguments)
+                                     LispPtr& aArguments) const
 {
     const LispInt arity = Arity();
     LispInt i;
@@ -179,7 +179,7 @@ void BranchingUserFunction::DeclareRule(LispInt aPrecedence, LispPtr& aPredicate
                          LispPtr& aBody)
 {
     // New branching rule.
-    BranchRule* newRule = NEW BranchRule(aPrecedence,aPredicate,aBody);
+    BranchRule* newRule = new BranchRule(aPrecedence,aPredicate,aBody);
 
     if (!newRule)
         throw LispErrCreatingRule();
@@ -190,7 +190,7 @@ void BranchingUserFunction::DeclareRule(LispInt aPrecedence, LispPtr& aPredicate
 void BranchingUserFunction::DeclareRule(LispInt aPrecedence, LispPtr& aBody)
 {
     // New branching rule.
-    BranchRule* newRule = NEW BranchRuleTruePredicate(aPrecedence,aBody);
+    BranchRule* newRule = new BranchRuleTruePredicate(aPrecedence,aBody);
 
     if (!newRule)
         throw LispErrCreatingRule();
@@ -202,7 +202,7 @@ void BranchingUserFunction::DeclarePattern(LispInt aPrecedence, LispPtr& aPredic
                                            LispPtr& aBody)
 {
     // New branching rule.
-    BranchPattern* newRule = NEW BranchPattern(aPrecedence,aPredicate,aBody);
+    BranchPattern* newRule = new BranchPattern(aPrecedence,aPredicate,aBody);
 
     if (!newRule)
         throw LispErrCreatingRule();
@@ -279,7 +279,7 @@ LispInt ListedBranchingUserFunction::IsArity(LispInt aArity) const
 }
 
 void ListedBranchingUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
-                                           LispPtr& aArguments)
+                                           LispPtr& aArguments) const
 {
   LispPtr newArgs;
   LispIterator iter(aArguments);
@@ -323,7 +323,7 @@ MacroUserFunction::MacroUserFunction(LispPtr& aParameters)
 }
 
 void MacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
-              LispPtr& aArguments)
+              LispPtr& aArguments) const
 {
     const LispInt arity = Arity();
     LispInt i;
@@ -432,7 +432,7 @@ LispInt ListedMacroUserFunction::IsArity(LispInt aArity) const
 }
 
 void ListedMacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,
-              LispPtr& aArguments)
+              LispPtr& aArguments) const
 {
   LispPtr newArgs;
   LispIterator iter(aArguments);

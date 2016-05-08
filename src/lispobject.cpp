@@ -2,27 +2,6 @@
 #include "yacas/yacasprivate.h"
 #include "yacas/lispobject.h"
 
-#ifdef YACAS_DEBUG
-long theNrCurrent=0;
-long theNrConstructed=0;
-long theNrDestructed=0;
-void IncNrObjects()
-{
-    theNrConstructed++;
-    theNrCurrent++;
-}
-void DecNrObjects()
-{
-    theNrDestructed++;
-    theNrCurrent--;
-}
-#endif
-
-LispObject::~LispObject()
-{
-   DecNrObjects_destructor();
-}
-
 LispInt LispObject::Equal(LispObject& aOther)
 {
     // next line handles the fact that either one is a string

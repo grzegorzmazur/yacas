@@ -7,7 +7,6 @@
 #ifndef YACAS_LISPGLOBALS_H
 #define YACAS_LISPGLOBALS_H
 
-#include "yacasbase.h"
 #include "lispobject.h"
 #include "lisphash.h"
 
@@ -19,8 +18,7 @@
 /// evaluated to get the value of the Lisp variable.
 /// \sa LispEnvironment::GetVariable()
 
-class LispGlobalVariable : public YacasBase
-{
+class LispGlobalVariable {
 public:
     LispGlobalVariable(const LispGlobalVariable& aOther);
     LispGlobalVariable(LispPtr& aValue): iValue(aValue), iEvalBeforeReturn(false) {}

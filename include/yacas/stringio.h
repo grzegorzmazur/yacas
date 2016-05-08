@@ -10,7 +10,7 @@
 
 #include <string>
 
-class StringInput : public LispInput
+class StringInput final: public LispInput
 {
 public:
     StringInput(const std::string&, InputStatus&);

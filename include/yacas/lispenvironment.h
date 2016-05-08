@@ -6,15 +6,16 @@
 #ifndef YACAS_LISPENVIRONMENT_H
 #define YACAS_LISPENVIRONMENT_H
 
-#include "yacasbase.h"
 #include "lispobject.h"
 #include "lisphash.h"
 #include "lispevalhash.h"
 #include "lispuserfunc.h"
 #include "deffile.h"
+#include "lisperror.h"
 #include "lispio.h"
 #include "stringio.h"
 #include "lispglobals.h"
+#include "lispoperator.h"
 #include "xmltokenizer.h"
 #include "errors.h"
 #include "noncopyable.h"
@@ -34,7 +35,6 @@ class LispDefFiles;
 class LispInput;
 class LispOutput;
 class LispPrinter;
-class LispOperators;
 class LispUserFunction;
 class LispMultiUserFunction;
 class LispEvaluatorBase;
@@ -47,8 +47,7 @@ class LispEnvironment;
 /// This huge class is the central class of the Yacas program. It
 /// implements a dialect of Lisp.
 
-class LispEnvironment : public YacasBase, NonCopyable
-{
+class LispEnvironment: NonCopyable {
 public:
   /// \name Constructor and destructor
   //@{
@@ -83,9 +82,6 @@ public:
   /// \sa FindLocal
   void SetVariable(const LispString* aString, LispPtr& aValue, bool aGlobalLazyVariable);
 
-  /// In debug mode, DebugModeVerifySettingGlobalVariables raises a warning if a global variable is set.
-  void DebugModeVerifySettingGlobalVariables(LispPtr & aVariable, bool aGlobalLazyVariable);
-
   /// Get the value assigned to a variable.
   /// \param aVariable name of the variable
   /// \param aResult (on exit) value of \a aVariable
@@ -116,7 +112,8 @@ public:
   //@{
 
   /// Return the #iCoreCommands attribute.
-  inline YacasCoreCommands& CoreCommands();
+  const YacasCoreCommands& CoreCommands() const;
+  const LispUserFunctions& UserFunctions() const;
 
   /// Add a command to the list of core commands.
   /// \param aEvaluatorFunc C function evaluating the core command
@@ -125,7 +122,6 @@ public:
   /// \param aFlags flags, see YacasEvaluator::FunctionFlags
   void SetCommand(YacasEvalCaller aEvaluatorFunc, const LispChar * aString,LispInt aNrArgs,LispInt aFlags);
 
-  void RemoveCommand(LispChar * aString);
   void RemoveCoreCommand(LispChar * aString);
 
   inline  LispHashTable& HashTable();
@@ -381,11 +377,15 @@ inline LispInt LispEnvironment::BinaryPrecision(void) const
 
 
 
-inline YacasCoreCommands& LispEnvironment::CoreCommands()
+inline const YacasCoreCommands& LispEnvironment::CoreCommands() const
 {
     return iCoreCommands;
 }
 
+inline const LispUserFunctions& LispEnvironment::UserFunctions() const
+{
+    return iUserFunctions;
+}
 
 inline LispHashTable& LispEnvironment::HashTable()
 {

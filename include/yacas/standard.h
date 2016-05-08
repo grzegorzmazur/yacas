@@ -1,7 +1,6 @@
 #ifndef YACAS_STANDARD_H
 #define YACAS_STANDARD_H
 
-#include "yacasbase.h"
 #include "lispobject.h"
 #include "lispenvironment.h"
 #include "lisphash.h"
@@ -55,8 +54,7 @@ void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnviron
 void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
                         const LispChar* aString);
 
-class LispObjectAdder : public YacasBase
-{
+class LispObjectAdder {
 public:
     LispObjectAdder(LispObject* aPtr)
         : iPtr(aPtr) {};

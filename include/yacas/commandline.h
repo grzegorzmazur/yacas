@@ -19,7 +19,6 @@
 #include <vector>
 
 #include "lispstring.h"
-#include "yacasbase.h"
 #include "utf8.h"
 
 enum ESpecialChars
@@ -74,8 +73,7 @@ protected:
   std::size_t history;
 };
 
-class CCommandLine : public YacasBase
-{
+class CCommandLine {
 public:
   CCommandLine():
       full_line_dirty(false),

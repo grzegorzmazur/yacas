@@ -1,6 +1,4 @@
 
-#include "yacas/yacasbase.h"
-#include "yacas/choices.h"
 #include "yacas/lispenvironment.h"
 #include "yacas/lispeval.h"
 #include "yacas/lispatom.h"
@@ -11,10 +9,6 @@
 
 // we need this only for digits_to_bits
 #include "yacas/numbers.h"
-
-#ifdef YACAS_DEBUG
-#include <stdio.h> // Safe, only included if YACAS_DEBUG is defined
-#endif
 
 LispEnvironment::LispEnvironment(
                     YacasCoreCommands& aCoreCommands,
@@ -38,7 +32,7 @@ LispEnvironment::LispEnvironment(
     iEvalDepth(0),
     iMaxEvalDepth(1000),
     stop_evaluation(false),
-    iEvaluator(NEW BasicEvaluator),
+    iEvaluator(new BasicEvaluator),
     iInputStatus(),
     secure(false),
     iTrue(),
@@ -144,38 +138,6 @@ LispPtr* LispEnvironment::FindLocal(const LispString* aVariable)
     }
     return nullptr;
 }
-
-
-#ifdef YACAS_DEBUG
-void LispEnvironment::DebugModeVerifySettingGlobalVariables(LispPtr & aVariable, bool aGlobalLazyVariable)
-{
-  LispString *varString = aVariable->String();
-  LispPtr *local = FindLocal(varString);
-  if (local)
-  {
-    if (aGlobalLazyVariable)
-    {
-      printf("WARNING: setting local variable \"%s\" (file %s, line %d), but doing it through a method that is trying to set a global lazy variable. This is probably unintended.\n",
-        varString->c_str(),
-        aVariable->iFileName,
-        aVariable->iLine);
-    }
-    return;
-  }
-
-  {
-    int warn = 1;
-    // If a variable is guarded with LocalSymbol it can not interfere with other scripts.
-    if ((*varString)[0] ==  '$') warn = 0;
-    if (aGlobalLazyVariable) warn = 0;
-    if (warn)
-      printf("WARNING: setting global variable \"%s\" (file %s, line %d) (global variables might have undesired side effects, please use Local or LocalSymbols).\n",
-        varString->c_str(),
-        aVariable->iFileName,
-        aVariable->iLine);
-  }
-}
-#endif // YACAS_DEBUG
 
 void LispEnvironment::SetVariable(const LispString* aVariable, LispPtr& aValue, bool aGlobalLazyVariable)
 {
@@ -400,18 +362,12 @@ void LispEnvironment::DeclareRuleBase(const LispString* aOperator,
         */
 
     // add an operator with this arity to the multiuserfunc.
-    BranchingUserFunction *newFunc;
-    if (aListed)
-    {
-        newFunc = NEW ListedBranchingUserFunction(aParameters);
-    }
-    else
-    {
-        newFunc = NEW BranchingUserFunction(aParameters);
-    }
-    multiUserFunc->DefineRuleBase(newFunc);
+    BranchingUserFunction* newFunc = 
+            aListed
+            ? new ListedBranchingUserFunction(aParameters) 
+            : new BranchingUserFunction(aParameters);
 
-    DBG_({ extern long theNrDefinedUser; theNrDefinedUser++; })
+    multiUserFunc->DefineRuleBase(newFunc);
 }
 
 void LispEnvironment::DeclareMacroRuleBase(const LispString* aOperator, LispPtr& aParameters, LispInt aListed)
@@ -420,18 +376,13 @@ void LispEnvironment::DeclareMacroRuleBase(const LispString* aOperator, LispPtr&
         throw LispErrProtectedSymbol(*aOperator);
 
     LispMultiUserFunction* multiUserFunc = MultiUserFunction(aOperator);
-    MacroUserFunction *newFunc;
-    if (aListed)
-    {
-      newFunc = NEW ListedMacroUserFunction(aParameters);
-    }
-    else
-    {
-      newFunc = NEW MacroUserFunction(aParameters);
-    }
-    multiUserFunc->DefineRuleBase(newFunc);
 
-  DBG_({ extern long theNrDefinedUser; theNrDefinedUser++; })
+    MacroUserFunction* newFunc = 
+            aListed 
+            ? new ListedMacroUserFunction(aParameters) 
+            : new MacroUserFunction(aParameters);
+
+    multiUserFunc->DefineRuleBase(newFunc);
 }
 
 
@@ -537,19 +488,18 @@ void LispEnvironment::DefineRulePattern(const LispString* aOperator,LispInt aAri
 
 void LispEnvironment::SetCommand(YacasEvalCaller aEvaluatorFunc, const LispChar * aString,LispInt aNrArgs,LispInt aFlags)
 {
-  DBG_({ extern long theNrDefinedBuiltIn; theNrDefinedBuiltIn++; })
   const LispString* name = HashTable().LookUp(aString);
   YacasEvaluator eval(aEvaluatorFunc,aNrArgs,aFlags);
-  auto i = CoreCommands().find(name);
-  if (i != CoreCommands().end())
+  auto i = iCoreCommands.find(name);
+  if (i != iCoreCommands.end())
       i->second = eval;
   else
-      CoreCommands().insert(std::make_pair(name, eval));
+      iCoreCommands.insert(std::make_pair(name, eval));
 }
 
 void LispEnvironment::RemoveCoreCommand(LispChar* aString)
 {
-  CoreCommands().erase(HashTable().LookUp(aString));
+  iCoreCommands.erase(HashTable().LookUp(aString));
 }
 
 LispLocalEvaluator::LispLocalEvaluator(LispEnvironment& aEnvironment,LispEvaluatorBase* aNewEvaluator)

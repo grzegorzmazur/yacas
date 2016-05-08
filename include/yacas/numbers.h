@@ -2,9 +2,6 @@
 #define YACAS_NUMBERS_H
 
 #include "lispenvironment.h"
-#include "yacasbase.h"
-
-
 
 /// Whether the numeric library supports 1.0E-10 and such.
 LispInt NumericSupportForMantissa();
@@ -49,8 +46,7 @@ class ANumber;
 
 /// Main class for multiple-precision arithmetic.
 /// All calculations are done at given precision. Integers grow as needed, floats don't grow beyond given precision.
-class BigNumber : public YacasBase
-{
+class BigNumber {
 public: //constructors
   BigNumber(const LispChar * aString,LispInt aPrecision,LispInt aBase=10);
 /// copy constructor
@@ -98,7 +94,7 @@ public://arithmetic
   void Mod(const BigNumber& aY, const BigNumber& aZ);
 
   /// For debugging purposes, dump internal state of this object into a string
-  void DumpDebugInfo() const;
+  void DumpDebugInfo(std::ostream&) const;
 
 public:
   /// assign self to Floor(aX) if possible

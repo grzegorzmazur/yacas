@@ -1,5 +1,6 @@
 #include "yacas/deffile.h"
 
+#include "yacas/lisperror.h"
 #include "yacas/lispuserfunc.h"
 #include "yacas/standard.h"
 #include "yacas/lispio.h"

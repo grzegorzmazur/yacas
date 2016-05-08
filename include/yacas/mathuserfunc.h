@@ -1,7 +1,6 @@
 #ifndef YACAS_MATHUSERFUNC_H
 #define YACAS_MATHUSERFUNC_H
 
-#include "yacasbase.h"
 #include "lispuserfunc.h"
 #include "patternclass.h"
 #include "noncopyable.h"
@@ -18,8 +17,7 @@ class BranchingUserFunction : public LispArityUserFunction
 {
 public:
   /// Structure containing name of parameter and whether it is put on hold.
-  class BranchParameter : public YacasBase
-  {
+  class BranchParameter {
   public:
     BranchParameter(const LispString* aParameter = nullptr, LispInt aHold=false)
         : iParameter(aParameter), iHold(aHold) {}
@@ -28,8 +26,7 @@ public:
   };
 
   /// Abstract base class for rules.
-  class BranchRuleBase : public YacasBase
-  {
+  class BranchRuleBase {
   public:
     virtual ~BranchRuleBase() = default;
     virtual bool Matches(LispEnvironment& aEnvironment, LispPtr* aArguments) = 0;
@@ -140,32 +137,32 @@ public:
   /// first rule that matches is evaluated, and the result is put in
   /// \a aResult. If no rule matches, \a aResult will recieve a new
   /// expression with evaluated arguments.
-  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
+  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments) const override;
 
   /// Put an argument on hold.
   /// \param aVariable name of argument to put un hold
   ///
   /// The \c iHold flag of the corresponding argument is set. This
   /// implies that this argument is not evaluated by Evaluate().
-  virtual void HoldArgument(const LispString* aVariable);
+  void HoldArgument(const LispString* aVariable) override;
 
   /// Return true if the arity of the function equals \a aArity.
-  virtual LispInt IsArity(LispInt aArity) const;
+  LispInt IsArity(LispInt aArity) const override;
 
   /// Return the arity (number of arguments) of the function.
-  LispInt Arity() const;
+  LispInt Arity() const override;
 
   /// Add a BranchRule to the list of rules.
   /// \sa InsertRule()
-  virtual void DeclareRule(LispInt aPrecedence, LispPtr& aPredicate, LispPtr& aBody);
+  void DeclareRule(LispInt aPrecedence, LispPtr& aPredicate, LispPtr& aBody) override;
 
   /// Add a BranchRuleTruePredicate to the list of rules.
   /// \sa InsertRule()
-  virtual void DeclareRule(LispInt aPrecedence, LispPtr& aBody);
+  void DeclareRule(LispInt aPrecedence, LispPtr& aBody) override;
 
   /// Add a BranchPattern to the list of rules.
   /// \sa InsertRule()
-  void DeclarePattern(LispInt aPrecedence, LispPtr& aPredicate, LispPtr& aBody);
+  void DeclarePattern(LispInt aPrecedence, LispPtr& aPredicate, LispPtr& aBody) override;
 
   /// Insert any BranchRuleBase object in the list of rules.
   /// This function does the real work for DeclareRule() and
@@ -175,7 +172,7 @@ public:
   void InsertRule(LispInt aPrecedence,BranchRuleBase* newRule);
 
   /// Return the argument list, stored in #iParamList
-  virtual const LispPtr& ArgList() const;
+  const LispPtr& ArgList() const override;
 
 protected:
   /// List of arguments, with corresponding \c iHold property.
@@ -188,12 +185,12 @@ protected:
   LispPtr iParamList;
 };
 
-class ListedBranchingUserFunction : public BranchingUserFunction
+class ListedBranchingUserFunction final: public BranchingUserFunction
 {
 public:
   ListedBranchingUserFunction(LispPtr& aParameters);
-  LispInt IsArity(LispInt aArity) const;
-  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
+  LispInt IsArity(LispInt aArity) const override;
+  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments) const override;
 };
 
 
@@ -201,16 +198,16 @@ class MacroUserFunction : public BranchingUserFunction
 {
 public:
   MacroUserFunction(LispPtr& aParameters);
-  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
+  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments) const override;
 };
 
 
-class ListedMacroUserFunction : public MacroUserFunction
+class ListedMacroUserFunction final: public MacroUserFunction
 {
 public:
   ListedMacroUserFunction(LispPtr& aParameters);
-  LispInt IsArity(LispInt aArity) const;
-  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments);
+  LispInt IsArity(LispInt aArity) const override;
+  void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments) const override;
 };
 
 

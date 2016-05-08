@@ -1,11 +1,8 @@
 #ifndef YACAS_GENERICOBJECT_H
 #define YACAS_GENERICOBJECT_H
 
-#include "yacasbase.h"
-
 /// Abstract class which can be put inside a LispGenericClass.
-class GenericClass : public YacasBase
-{
+class GenericClass {
 public:
     GenericClass() : iReferenceCount(0) {};
     virtual ~GenericClass() = default;

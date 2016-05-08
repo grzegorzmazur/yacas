@@ -5,11 +5,11 @@ Installation from sources
 Getting sources
 ---------------
 
-Version 1.4.0 can be downloaded from
-`<https://github.com/grzegorzmazur/yacas/archive/v1.4.0.zip>`_ or
-`<https://github.com/grzegorzmazur/yacas/archive/v1.4.0.tar.gz>`_,
+Version 1.5.0 can be downloaded from
+`<https://github.com/grzegorzmazur/yacas/archive/v1.5.0.zip>`_ or
+`<https://github.com/grzegorzmazur/yacas/archive/v1.5.0.tar.gz>`_,
 while the current development version is accessible from
-`<https://github.com/grzegorzmazur/yacas/archive/master.zip>`_.
+`<https://github.com/grzegorzmazur/yacas/archive/develop.zip>`_.
 
 Compilation
 -----------
@@ -17,9 +17,9 @@ Compilation
 MacOS X
 ~~~~~~~
 
-* open ``Terminal`` window
-* change directory to the yacas source directory
-* execute
+* Open ``Terminal`` window
+* Change directory to the yacas source directory
+* Execute
 
   .. code-block:: bash
                 
@@ -27,14 +27,14 @@ MacOS X
      cd build
      cmake -G Xcode ..
                   
-* open generated project in ``Xcode``
+* Open generated project in ``Xcode``
 
 Microsoft Windows
 ~~~~~~~~~~~~~~~~~
 
-* open ``Command Prompt`` window
-* change directory to the yacas source directory
-* execute
+* Open ``Command Prompt`` window
+* Change directory to the yacas source directory
+* Execute
 
   .. code-block:: bat
                 
@@ -42,27 +42,26 @@ Microsoft Windows
      cd build
      cmake -G "Visual Studio 14 2015 Win64" ..
 
-* open generated project in ``Visual Studio``
+* Open generated project in ``Visual Studio``
 
 Linux
 ~~~~~
 
-* open ``Terminal`` window
-* change directory to the yacas source directory
-* execute
+* Open ``Terminal`` window
+* Change directory to the yacas source directory
+* Execute
 
   .. code-block:: bash
                 
      mkdir build
      cd build
-     cmake ..
+     cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_DOCS=On ..
      make
 
-* to install newly built binaries either ``make install`` or build the
-  binary package using ``make package`` and install it
+* To install newly built binaries execute ``make install``
 
 Java
 ~~~~
-* open ``Terminal`` or ``Command Prompt`` window
-* change directory to the yacas source directory
-* execute ``ant jar``
+* Open ``Terminal`` or ``Command Prompt`` window
+* Change directory to the yacas source directory
+* Execute ``ant jar``

@@ -1,10 +1,7 @@
 #ifndef YACAS_YACASPRIVATE_H
 #define YACAS_YACASPRIVATE_H
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
+#include "yacas_config.h"
 #include "lisptype.h"
 #include "stubs.h"
 

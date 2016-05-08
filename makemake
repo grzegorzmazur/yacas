@@ -1,7 +1,0 @@
-#! /bin/sh -v
-
-libtoolize
-aclocal 
-autoheader
-automake --foreign --add-missing 
-autoconf 

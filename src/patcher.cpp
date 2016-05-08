@@ -1,90 +1,44 @@
+#include "yacas/patcher.h"
 
-#include "yacas/yacasprivate.h"
-#include "yacas/yacasbase.h"
+#include "yacas/lisperror.h"
 #include "yacas/lispio.h"
 #include "yacas/standard.h"
-#include "yacas/lispenvironment.h"
 
-static LispInt FindMarkerBegin(const LispChar* aPtr, LispInt aFrom)
-{
-REDO:
-    while (aPtr[aFrom] && aPtr[aFrom] != '<') aFrom++;
+#include <algorithm>
 
-    if (aPtr[aFrom] == '\0')
-        return aFrom;
-
-    if (aPtr[aFrom+1] == '?')
-        return aFrom;
-    aFrom+=2;
-    goto REDO;
-}
-static LispInt FindMarkerEnd(const LispChar* aPtr, LispInt aFrom)
-{
-    for (;;) {
-        while (aPtr[aFrom] && aPtr[aFrom] != '?')
-            aFrom++;
-
-        if (aPtr[aFrom] == '\0')
-            return aFrom;
-
-        if (aPtr[aFrom+1] == '>')
-            return aFrom;
-
-        aFrom+=2;
-    }
-}
-
-static LispInt FindEndAscii(const LispChar* aPtr, LispInt aFrom)
-{
-    return FindMarkerBegin(aPtr,aFrom);
-}
-static LispInt FindEndCommand(const LispChar* aPtr, LispInt aFrom)
-{
-    return FindMarkerEnd(aPtr,aFrom);
-}
-
-/** PatchLoad: patch a file, and write to current output.
+/** PatchLoad: patch a string, and write to current output.
  *  Everything between <? and ?> is evaluated. The result
  *  is thrown away.
  */
-void PatchLoad(const LispChar* aFileContent, std::ostream& aOutput,
-               LispEnvironment& aEnvironment)
+void PatchLoad(const std::string& content, std::ostream& out, LispEnvironment& env)
 {
-    LispInt i=0;
-    LispInt next;
+    std::size_t i = 0;
+    
+    for (;;) {
+        const std::size_t p = content.find("<?", i);
 
-REDO:
-    next = FindEndAscii(aFileContent,i);
-    while (i<next)
-    {
-        aOutput.put(aFileContent[i]);
-        i++;
-    }
-    if (aFileContent[i] == '<')
-    {
-        i+=2;
+        const bool found_start_marker = (p != std::string::npos);
+        
+        out << content.substr(i, std::min(p, content.length()) - i);
 
-        next = FindEndCommand(aFileContent,i);
+        if (!found_start_marker)
+            break;
+            
+        std::size_t q = content.find("?>", p + 2);
 
-        const std::string content(aFileContent + i, next - i);
+        if (q == std::string::npos)
+            throw LispErrGeneric("closing tag not found when patching");
 
-        InputStatus oldstatus = aEnvironment.iInputStatus;
-        aEnvironment.iInputStatus.SetTo("String");
+        InputStatus oldstatus = env.iInputStatus;
+        env.iInputStatus.SetTo("String");
 
-        StringInput newInput(content,aEnvironment.iInputStatus);
-        LispLocalInput localInput(aEnvironment, &newInput);
+        StringInput newInput(content.substr(p + 2, q - p - 2), env.iInputStatus);
+        LispLocalInput localInput(env, &newInput);
 
-        DoInternalLoad(aEnvironment,&newInput);
+        DoInternalLoad(env,&newInput);
 
-        aEnvironment.iInputStatus.RestoreFrom(oldstatus);
+        env.iInputStatus.RestoreFrom(oldstatus);
 
-        i=next;
-        if (aFileContent[i] == '?')
-        {
-            i+=2;
-            goto REDO;
-        }
+        i = q + 2;
     }
 }
-
-

@@ -1,14 +1,11 @@
 /* Math using the standard library, if the precision is less than 13 */
 #include "yacas/yacasprivate.h"
-#include "yacas/yacasbase.h"
 #include "yacas/lispobject.h"
 #include "yacas/lispatom.h"
 #include "yacas/lispenvironment.h"
 #include "yacas/numbers.h"
 #include "yacas/platmath.h"
 #include "yacas/errors.h"
-
-#include <stdio.h>
 
 #include <bitset>
 #include <cmath>

@@ -21,7 +21,6 @@
 #ifndef YACAS_LISPATOM_H
 #define YACAS_LISPATOM_H
 
-#include "yacasbase.h"
 #include "lispobject.h"
 #include "lispstring.h"
 #include "numbers.h"  // RefPtr<BigNumber> needs definition of BigNumber
@@ -43,9 +42,9 @@ class LispAtom : public ObjectHelper<LispAtom>
 {
 public:
   static LispObject* New(LispEnvironment& aEnvironment, const std::string& aString);
-  virtual ~LispAtom();
-  virtual const LispString* String();
-  virtual LispObject* Copy() const { return NEW LispAtom(*this); }
+  ~LispAtom() override;
+  const LispString* String() override;
+  LispObject* Copy() const override { return new LispAtom(*this); }
 private:
   LispAtom(const LispString* aString);
   LispAtom& operator=(const LispAtom& aOther)
@@ -67,9 +66,9 @@ class LispSubList : public ObjectHelper<LispSubList>
 {
 public:
   static LispSubList* New(LispObject* aSubList);
-  virtual ~LispSubList();
-  virtual LispPtr* SubList() { return &iSubList; }
-  virtual LispObject* Copy() const { return NEW LispSubList(*this); }
+  ~LispSubList() override;
+  LispPtr* SubList() override { return &iSubList; }
+  LispObject* Copy() const override { return new LispSubList(*this); }
 private:
   // Constructor is private -- use New() instead
   LispSubList(LispObject* aSubList) : iSubList(aSubList) {}  // iSubList's constructor is messed up (it's a LispPtr, duh)
@@ -87,9 +86,9 @@ class LispGenericClass : public ObjectHelper<LispGenericClass>
 {
 public:
   static LispGenericClass* New(GenericClass* aClass);
-  virtual ~LispGenericClass();
-  virtual GenericClass* Generic();
-  virtual LispObject* Copy() const { return NEW LispGenericClass(*this); }
+  ~LispGenericClass() override;
+  GenericClass* Generic() override;
+  LispObject* Copy() const override { return new LispGenericClass(*this); }
 private:
   // Constructor is private -- use New() instead
   LispGenericClass(GenericClass* aClass);
@@ -116,12 +115,11 @@ public:
   /// construct from a decimal string representation (also create a number object) and use aBasePrecision decimal digits
   LispNumber(LispString * aString, LispInt aBasePrecision) : iNumber(nullptr), iString(aString) { Number(aBasePrecision); }
 
-  virtual ~LispNumber() {}
-  virtual LispObject* Copy() const { return NEW LispNumber(*this); }
+  LispObject* Copy() const override { return new LispNumber(*this); }
   /// return a string representation in decimal with maximum decimal precision allowed by the inherent accuracy of the number
-  virtual LispString * String();
+  LispString * String() override;
   /// give access to the BigNumber object; if necessary, will create a BigNumber object out of the stored string, at given precision (in decimal?)
-  virtual BigNumber* Number(LispInt aPrecision);
+  BigNumber* Number(LispInt aPrecision) override;
 private:
   /// number object; nullptr if not yet converted from string
   RefPtr<BigNumber> iNumber;

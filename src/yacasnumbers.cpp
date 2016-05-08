@@ -3,7 +3,6 @@
  */
 
 #include "yacas/yacasprivate.h"
-#include "yacas/yacasbase.h"
 #include "yacas/numbers.h"
 #include "yacas/standard.h"
 #include "yacas/anumber.h"
@@ -46,9 +45,9 @@ LispObject* GcdInteger(LispObject* int1, LispObject* int2,
   if (i1->iNumber->iExp != 0 || i2->iNumber->iExp != 0)
       throw LispErrNotInteger();
 
-  BigNumber* res = NEW BigNumber();
+  BigNumber* res = new BigNumber();
   BaseGcd(*res->iNumber,*i1->iNumber,*i2->iNumber);
-  return NEW LispNumber(res);
+  return new LispNumber(res);
 }
 
 
@@ -368,19 +367,19 @@ LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aP
 
 LispObject* ShiftLeft( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-  BigNumber *number = NEW BigNumber();
+  BigNumber *number = new BigNumber();
   LispInt bits = InternalAsciiToInt(*int2->String());
   number->ShiftLeft(*int1->Number(aPrecision),bits);
-  return NEW LispNumber(number);
+  return new LispNumber(number);
 }
 
 
 LispObject* ShiftRight( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
 {
-  BigNumber *number = NEW BigNumber();
+  BigNumber *number = new BigNumber();
   LispInt bits = InternalAsciiToInt(*int2->String());
   number->ShiftRight(*int1->Number(aPrecision),bits);
-  return NEW LispNumber(number);
+  return new LispNumber(number);
 }
 
 static void DivideInteger(ANumber& aQuotient, ANumber& aRemainder,
@@ -480,13 +479,13 @@ BigNumber::BigNumber(const LispChar * aString,LispInt aBasePrecision,LispInt aBa
 BigNumber::BigNumber(const BigNumber& aOther)
  : iReferenceCount(),iPrecision(aOther.GetPrecision()),iType(KInt),iNumber(nullptr)
 {
-  iNumber = NEW ANumber(*aOther.iNumber);
+  iNumber = new ANumber(*aOther.iNumber);
   SetIsInteger(aOther.IsInt());
 }
 BigNumber::BigNumber(LispInt aPrecision)
  : iReferenceCount(),iPrecision(aPrecision),iType(KInt),iNumber(nullptr)
 {
-  iNumber = NEW ANumber(bits_to_digits(aPrecision,10));
+  iNumber = new ANumber(bits_to_digits(aPrecision,10));
   SetIsInteger(true);
 }
 
@@ -500,7 +499,7 @@ void BigNumber::SetTo(const BigNumber& aOther)
   iPrecision = aOther.GetPrecision();
   if (!iNumber)
   {
-    iNumber = NEW ANumber(*aOther.iNumber);
+    iNumber = new ANumber(*aOther.iNumber);
   }
   else
   {
@@ -886,12 +885,12 @@ LispInt BigNumber::Sign() const
 }
 
 
-void BigNumber::DumpDebugInfo() const
+void BigNumber::DumpDebugInfo(std::ostream& os) const
 {
     if (!iNumber)
-        std::cout << "No number representation\n";
+        os << "No number representation\n";
     else
-        iNumber->Print("Number:");
+        iNumber->Print(os, "Number:");
 }
 
 
@@ -1257,7 +1256,7 @@ void BigNumber::SetTo(const LispChar * aString,LispInt aBasePrecision,LispInt aB
     isFloat = 1;
   }
 */
-  if (!iNumber)   iNumber = NEW ANumber(digits);
+  if (!iNumber)   iNumber = new ANumber(digits);
   iNumber->SetPrecision(digits);
   iNumber->SetTo(aString,aBase);
 

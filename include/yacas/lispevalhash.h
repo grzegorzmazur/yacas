@@ -6,7 +6,6 @@
 #ifndef YACAS_LISPEVALHASH_H
 #define YACAS_LISPEVALHASH_H
 
-#include "yacasbase.h"
 #include "lispobject.h"
 #include "evalfunc.h"
 
@@ -32,7 +31,7 @@ public:
   }
   void Evaluate(LispPtr& aResult,
                 LispEnvironment& aEnvironment,
-                LispPtr& aArguments);
+                LispPtr& aArguments) const override;
 private:
   YacasEvalCaller iCaller;
   LispInt iNrArgs;

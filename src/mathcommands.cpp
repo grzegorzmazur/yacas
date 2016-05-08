@@ -1,13 +1,12 @@
 
 #include "yacas/yacasprivate.h"
 
-#include "yacas/yacasbase.h"
 #include "yacas/lispenvironment.h"
 #include "yacas/standard.h"
 #include "yacas/lispeval.h"
 #include "yacas/lispatom.h"
 #include "yacas/lispparser.h"
-#include "yacas/stdfileio.h"
+#include "yacas/platfileio.h"
 #include "yacas/stringio.h"
 #include "yacas/lisperror.h"
 #include "yacas/infixparser.h"
@@ -23,6 +22,7 @@
 #include "yacas/arggetter.h"
 #include "yacas/string_utils.h"
 
+#include <string>
 #include <cstring>
 #include <limits.h>
 #include <stdlib.h>
@@ -77,16 +77,10 @@ static void InternalSetVar(LispEnvironment& aEnvironment, LispInt aStackTop, boo
     {
         LispPtr result;
         InternalEval(aEnvironment, result, ARGUMENT(1));
-#ifdef YACAS_DEBUG
-        aEnvironment.DebugModeVerifySettingGlobalVariables(result, aGlobalLazyVariable);
-#endif // YACAS_DEBUG
         varstring = result->String();
     }
     else
     {
-#ifdef YACAS_DEBUG
-        aEnvironment.DebugModeVerifySettingGlobalVariables(ARGUMENT(1), aGlobalLazyVariable);
-#endif // YACAS_DEBUG
         varstring = ARGUMENT(1)->String();
     }
     CheckArg(varstring, 1, aEnvironment, aStackTop);
@@ -703,7 +697,7 @@ static void MultiFix(LispEnvironment& aEnvironment, LispInt aStackTop, LispOpera
     CheckArg(precedence->String(), 2, aEnvironment, aStackTop);
     LispInt prec = InternalAsciiToInt(*precedence->String());
     CheckArg(prec <= KMaxPrecedence, 2, aEnvironment, aStackTop);
-    aOps.SetOperator(prec,SymbolName(aEnvironment,*orig));
+    aOps[SymbolName(aEnvironment,*orig)] = LispInFixOperator(prec);
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -718,7 +712,7 @@ static void SingleFix(LispInt aPrecedence, LispEnvironment& aEnvironment, LispIn
     CheckArg(ARGUMENT(1), 1, aEnvironment, aStackTop);
     const LispString* orig = ARGUMENT(1)->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
-    aOps.SetOperator(aPrecedence,SymbolName(aEnvironment,*orig));
+    aOps[SymbolName(aEnvironment,*orig)] = LispInFixOperator(aPrecedence);
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -1374,7 +1368,11 @@ void LispRightAssociative(LispEnvironment& aEnvironment, LispInt aStackTop)
     const LispString* orig = ARGUMENT(1)->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
 
-    aEnvironment.InFix().SetRightAssociative(SymbolName(aEnvironment,*orig));
+    LispOperators::iterator opi = aEnvironment.InFix().find(SymbolName(aEnvironment,*orig));
+    if (opi == aEnvironment.InFix().end())
+        throw LispErrNotAnInFixOperator();
+    opi->second.SetRightAssociative();
+    
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -1391,7 +1389,11 @@ void LispLeftPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
     CheckArg(index->String(), 2, aEnvironment, aStackTop);
     LispInt ind = InternalAsciiToInt(*index->String());
 
-    aEnvironment.InFix().SetLeftPrecedence(SymbolName(aEnvironment,*orig),ind);
+    LispOperators::iterator opi = aEnvironment.InFix().find(SymbolName(aEnvironment,*orig));
+    if (opi == aEnvironment.InFix().end())
+        throw LispErrNotAnInFixOperator();
+    opi->second.SetLeftPrecedence(ind);
+
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -1408,7 +1410,11 @@ void LispRightPrecedence(LispEnvironment& aEnvironment, LispInt aStackTop)
     CheckArg(index->String(), 2, aEnvironment, aStackTop);
     LispInt ind = InternalAsciiToInt(*index->String());
 
-    aEnvironment.InFix().SetRightPrecedence(SymbolName(aEnvironment,*orig),ind);
+    LispOperators::iterator opi = aEnvironment.InFix().find(SymbolName(aEnvironment,*orig));
+    if (opi == aEnvironment.InFix().end())
+        throw LispErrNotAnInFixOperator();
+    opi->second.SetRightPrecedence(ind);
+
     InternalTrue(aEnvironment,RESULT);
 }
 
@@ -1422,7 +1428,10 @@ static LispInFixOperator* OperatorInfo(LispEnvironment& aEnvironment,LispInt aSt
     const LispString* orig = evaluated->String();
     CheckArg(orig, 1, aEnvironment, aStackTop);
 
-    return aOperators.LookUp(SymbolName(aEnvironment,*orig));
+    const LispOperators::iterator opi = aOperators.find(SymbolName(aEnvironment,*orig));
+    if (opi != aOperators.end())
+        return &opi->second;
+    return nullptr;
 }
 
 void LispIsInFix(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1605,7 +1614,7 @@ void GenArrayCreate(LispEnvironment& aEnvironment,LispInt aStackTop)
 
     LispPtr initarg(ARGUMENT(2));
 
-    ArrayClass *array = NEW ArrayClass(size,initarg);
+    ArrayClass *array = new ArrayClass(size,initarg);
     RESULT = (LispGenericClass::New(array));
 }
 
@@ -1720,11 +1729,42 @@ void GenAssociationDrop(LispEnvironment& aEnvironment,LispInt aStackTop)
         InternalFalse(aEnvironment,RESULT);
 }
 
+void GenAssociationKeys(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+    LispPtr p(ARGUMENT(1));
+    GenericClass* gen = p->Generic();
+    AssociationClass* a = dynamic_cast<AssociationClass*>(gen);
+    CheckArg(a, 1, aEnvironment, aStackTop);
+
+    RESULT = a->Keys();
+}
+
+void GenAssociationToList(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+    LispPtr p(ARGUMENT(1));
+    GenericClass* gen = p->Generic();
+    AssociationClass* a = dynamic_cast<AssociationClass*>(gen);
+    CheckArg(a, 1, aEnvironment, aStackTop);
+
+    RESULT = a->ToList();
+}
+
+void GenAssociationHead(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+    LispPtr p(ARGUMENT(1));
+    GenericClass* gen = p->Generic();
+    AssociationClass* a = dynamic_cast<AssociationClass*>(gen);
+    CheckArg(a, 1, aEnvironment, aStackTop);
+    CheckArg(a->Size(), 1, aEnvironment, aStackTop);
+
+    RESULT = a->Head();
+}
+
 void LispCustomEval(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
   if (aEnvironment.iDebugger) delete aEnvironment.iDebugger;
-  aEnvironment.iDebugger = NEW DefaultDebugger(ARGUMENT(1), ARGUMENT(2),ARGUMENT(3));
-  LispLocalEvaluator local(aEnvironment,NEW TracedEvaluator);
+  aEnvironment.iDebugger = new DefaultDebugger(ARGUMENT(1), ARGUMENT(2),ARGUMENT(3));
+  LispLocalEvaluator local(aEnvironment,new TracedEvaluator);
   aEnvironment.iDebugger->Start();
   InternalEval(aEnvironment, RESULT, ARGUMENT(4));
   aEnvironment.iDebugger->Finish();
@@ -1765,7 +1805,7 @@ void LispCustomEvalStop(LispEnvironment& aEnvironment,LispInt aStackTop)
 
 void LispTraceStack(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
-    LispLocalEvaluator local(aEnvironment,NEW TracedStackEvaluator);
+    LispLocalEvaluator local(aEnvironment,new TracedStackEvaluator);
     InternalEval(aEnvironment, RESULT, ARGUMENT(1));
 }
 
@@ -1920,8 +1960,8 @@ void GenPatternCreate(LispEnvironment& aEnvironment,LispInt aStackTop)
     ++iter;
 
     YacasPatternPredicateBase* matcher =
-        NEW YacasPatternPredicateBase(aEnvironment, *iter,postpredicate);
-    PatternClass *p = NEW PatternClass(matcher);
+        new YacasPatternPredicateBase(aEnvironment, *iter,postpredicate);
+    PatternClass *p = new PatternClass(matcher);
     RESULT = (LispGenericClass::New(p));
 }
 
@@ -1981,12 +2021,6 @@ void LispDefLoadFunction(LispEnvironment& aEnvironment,LispInt aStackTop)
             LispDefFile* def = multiUserFunc->iFileToOpen;
             if (!def->IsLoaded())
             {
-#ifdef YACAS_DEBUG
-                /*Show loading... */
-                extern int verbose_debug;
-                if (verbose_debug)
-                    printf("Debug> Loading file %s for function %s\n",def->iFileName->c_str(),oper.c_str());
-#endif
                 multiUserFunc->iFileToOpen=nullptr;
                 //InternalUse(aEnvironment, def->FileName());
       }

@@ -1,8 +1,12 @@
 #ifndef YACAS_PATCHER_H
 #define YACAS_PATCHER_H
 
-void PatchLoad(const LispChar* aFileContent, std::ostream& aOutput,
-               LispEnvironment& aEnvironment);
+#include <string>
+#include <ostream>
+
+#include "lispenvironment.h"
+
+void PatchLoad(const std::string&, std::ostream&, LispEnvironment&);
 
 #endif
 

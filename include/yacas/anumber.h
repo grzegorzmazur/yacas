@@ -1,7 +1,6 @@
 #ifndef YACAS_ANUMBER_H
 #define YACAS_ANUMBER_H
 
-#include "yacasbase.h"
 #include "lispstring.h"
 
 #include <cassert>
@@ -46,7 +45,7 @@ public:
     bool IsNegative() const;
     bool IsEven() const;
 
-    void Print(const std::string& prefix) const;
+    void Print(std::ostream&, const std::string& prefix) const;
 
 public:
     LispInt iExp;

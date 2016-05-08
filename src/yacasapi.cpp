@@ -1,21 +1,11 @@
 
 #include "yacas/yacasprivate.h"
-#include "yacas/yacasbase.h"
 #include "yacas/yacas.h"
 #include "yacas/mathcommands.h"
 #include "yacas/standard.h"
 
-#ifdef YACAS_DEBUG
-long theNrDefinedBuiltIn=0;
-long theNrDefinedUser=0;
-#endif
-
-
 #define OPERATOR(kind,prec,name) \
-  kind##operators.SetOperator(prec,hash.LookUp(#name));
-// for example: OPERATOR(bodied,KMaxPrecedence,While) produces:
-//    bodiedoperators.SetOperator(KMaxPrecedence,hash.LookUp("While"));
-
+  kind##operators[hash.LookUp(#name)] = LispInFixOperator(prec);
 
 DefaultYacasEnvironment::DefaultYacasEnvironment(std::ostream& os, LispInt aStackSize)
   : output(os),

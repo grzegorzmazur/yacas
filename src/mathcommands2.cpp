@@ -1,14 +1,11 @@
 
 #include "yacas/yacasprivate.h"
 
-#include "yacas/yacasbase.h"
 #include "yacas/lispenvironment.h"
 #include "yacas/standard.h"
 #include "yacas/lispeval.h"
 #include "yacas/lispatom.h"
 #include "yacas/lispparser.h"
-#include "yacas/stdfileio.h"
-#include "yacas/stringio.h"
 #include "yacas/lisperror.h"
 #include "yacas/infixparser.h"
 #include "yacas/lispuserfunc.h"
@@ -87,30 +84,15 @@ void LispCharString(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispInDebugMode(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifdef YACAS_DEBUG
-    InternalTrue(aEnvironment,RESULT);
-#else
     InternalFalse(aEnvironment,RESULT);
-#endif
 }
 
 void LispDebugFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef YACAS_DEBUG
     throw LispErrGeneric("Cannot call DebugFile in non-debug version of Yacas");
-#else
-  const LispChar * file = ARGUMENT(1)->iFileName;
-  if (!file) file = "";
-  LispString * str = aEnvironment.HashTable().LookUpStringify(file);
-  RESULT = LispAtom::New(aEnvironment, *str);
-#endif
 }
 
 void LispDebugLine(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-#ifndef YACAS_DEBUG
     throw LispErrGeneric("Cannot call DebugLine in non-debug version of Yacas");
-#else
-  RESULT = LispAtom::New(aEnvironment, std::to_string(ARGUMENT(1)->iLine));
-#endif
 }

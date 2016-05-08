@@ -3,7 +3,7 @@ package net.sf.yacas;
 import java.io.Writer;
 
 
-class InfixPrinter extends LispPrinter
+final class InfixPrinter extends LispPrinter
 {
 
   static int KMaxPrecedence = 60000;
@@ -50,10 +50,27 @@ class InfixPrinter extends LispPrinter
         return;
     }
 
-    if (aExpression.Get().Generic() != null)
-    {
-        //TODO display genericclass
-        WriteToken(aOutput,aExpression.Get().Generic().TypeName());
+    if (aExpression.Get().Generic() != null) {
+        if (aExpression.Get().Generic() instanceof ArrayClass) {
+            WriteToken(aOutput, "Array");
+            WriteToken(aOutput, "(");
+            ArrayClass a = (ArrayClass)aExpression.Get().Generic();
+            int n = a.Size();
+            for (int i = 1; i <=n; ++i) {
+                Print(new LispPtr(a.GetElement(i)), aOutput, KMaxPrecedence);
+                if (i != n)
+                    WriteToken(aOutput, ",");
+            }
+            WriteToken(aOutput, ")");
+        } else if (aExpression.Get().Generic() instanceof AssociationClass) {
+            WriteToken(aOutput, "Association");
+            WriteToken(aOutput, "(");
+            Print(((AssociationClass)aExpression.Get().Generic()).ToList(), aOutput, KMaxPrecedence);
+            WriteToken(aOutput, ")");
+        } else {
+            WriteToken(aOutput,aExpression.Get().Generic().TypeName());
+        }
+        
         return;
     }
 

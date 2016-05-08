@@ -4,9 +4,6 @@
  * It is heavily tailored to Unix (Linux), but you should be able
  * to easily make a version that links with libyacas.a and provides
  * an interface for a different platform.
- * The platform-dependent parts are readline.cpp (which maintains
- * a history for keyed-in expressions on the command line), and
- * the directories it looks in for input files.
  */
 
 // Usage :
@@ -17,13 +14,12 @@
 //   3) yacas <options>
 //      where options is of the form -<opt>. <opt> can be any
 //      of the combinations of:
-//      - d for returning the directory of the default scripts.
-//      - v prints the version number
+//      - d return the directory of the default scripts.
+//      - v print the version number
 //      - f : treats stdin as one file, and executes the first
 //            read statement only.
 //      - p : plain mode. No fancy readline functionality.
 //      - c : inhibits printing the prompt to the console
-//      - w : hides the console window in Windows
 //   4)
 //  -i <command> : execute <command>
 //
@@ -72,6 +68,7 @@
 #if defined (__FreeBSD__) || defined (__DragonFly__)
 #include <stddef.h>
 #include <unistd.h>
+#include <sys/syslimits.h>
 #include <sys/types.h>
 #include <sys/sysctl.h>
 #endif
@@ -86,23 +83,6 @@
 
 #ifndef YACAS_VERSION
 #include "yacas/yacas_version.h"
-#endif
-
-#ifdef SUPPORT_SERVER
-#include <cstdlib>
-#include <sys/types.h>
-
-#ifndef _WIN32
-#include <sys/ioctl.h>
-#include <sys/socket.h>
-#include <sys/wait.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#else
-#include <winsock2.h>
-#endif
-
-#define SOCKLEN_T unsigned int //socklen_t
 #endif
 
 #if defined(__APPLE__)
@@ -121,29 +101,17 @@ bool use_texmacs_out = false;
 
 int stack_size = 50000;
 
-#ifdef YACAS_DEBUG
-bool verbose_debug = true;
-#endif
 bool patchload = false;
-bool winsockinitialised = false;
-bool hideconsolewindow = false;
 bool exit_after_files = false;
 
 std::string root_dir;
 std::string doc_dir;
-#ifdef _WIN32
-HANDLE htimer = 0;
-#endif
 std::string init_script = "yacasinit.ys";
 
 const char* read_eval_print = "REP()";
 
 
 static bool readmode = false;
-
-bool server_mode = false;
-bool server_single_user = false;
-int server_port = 9734;
 
 const char* execute_commnd = nullptr;
 
@@ -153,26 +121,6 @@ static bool restart = false;
 
 void ReportNrCurrent()
 {
-#ifdef YACAS_DEBUG
-    if (verbose_debug) {
-        extern long theNrCurrent;
-        extern long theNrConstructed;
-        extern long theNrDestructed;
-        extern long theNrTokens;
-        extern long theNrDefinedBuiltIn;
-        extern long theNrDefinedUser;
-
-        std::cout << "left-over: " << theNrCurrent << " objects\n"
-                  << theNrConstructed << " constructed, "
-                  << theNrDestructed << " destructed\n"
-                  << "nr tokens: " << theNrTokens << "\n"
-                  << "-------------------------------\n"
-                  << "Total " << theNrDefinedBuiltIn+theNrDefinedUser
-                  << " functions defined ("
-                  << theNrDefinedBuiltIn << " built-in, "
-                  << theNrDefinedUser << " user)\n";
-    }
-#endif
 }
 
 
@@ -350,19 +298,7 @@ void my_exit()
         }
 
         ReportNrCurrent();
-#ifdef YACAS_DEBUG
-        CheckAllPtrs(1);
-#endif
     }
-#ifdef _WIN32
-#ifdef SUPPORT_SERVER
-    if (winsockinitialised)
-    {
-        WSACleanup();
-        winsockinitialised = false;
-    }
-#endif
-#endif
 }
 
 #define TEXMACS_DATA_BEGIN   ((char)2)
@@ -408,7 +344,7 @@ void LoadYacas(std::ostream& os)
 
     busy = true;
 
-    yacas = NEW CYacas(os, stack_size);
+    yacas = new CYacas(os, stack_size);
 
 
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) yacas->getDefEnv().getEnv().SetCommand(fname,iname,nrargs,flags);
@@ -507,346 +443,6 @@ void InterruptHandler(void)
 }
 
 
-#ifdef SUPPORT_SERVER
-
-CYacas* clientToStop = 0;
-
-#ifndef _WIN32
-#ifdef SIGHANDLER_NO_ARGS
-void stopClient(void)
-#else
-    void stopClient(int sig)
-#endif
-#else
-    VOID CALLBACK stopClient(LPVOID lpArgToCompletionRoutine, DWORD dwTimerLowValue, DWORD dwTimerHighValue)
-#endif
-{
-    if (clientToStop)
-        clientToStop->getDefEnv().getEnv().iEvalDepth = clientToStop->getDefEnv().getEnv().iMaxEvalDepth+100;
-}
-
-#define MAX_CONNECTIONS  1000
-#define BUFFER_CHUNKSIZE 256
-
-int runserver(int argc,char** argv)
-{
-#ifdef _WIN32
-    if (hideconsolewindow) {
-        // format a "unique" newWindowTitle
-        char newWindowTitle[256];
-        wsprintf(newWindowTitle, "%d/%d", GetTickCount(), GetCurrentProcessId());
-        // change current window title
-        SetConsoleTitle(newWindowTitle);
-        // ensure window title has been updated
-        Sleep(40);
-        // look for newWindowTitle
-        HWND hwndFound = FindWindow(0, newWindowTitle);
-        // If found, hide it
-        if (hwndFound)
-            ShowWindow(hwndFound, SW_HIDE);
-    }
-#endif
-
-    int server_sockfd, client_sockfd;
-    SOCKLEN_T server_len, client_len;
-    struct sockaddr_in server_address;
-    struct sockaddr_in client_address;
-    int result;
-    int maxConnections;
-    int nrSessions = 0;
-    fd_set readfds, testfds;
-    // LispString outStrings[MAX_CONNECTIONS];
-    LispString outStrings;
-
-    CYacas* used_clients[MAX_CONNECTIONS];
-    bool serverbusy;
-
-    int seconds = 30; // give each calculation only so many seconds
-    if (server_single_user)
-        seconds = 0;
-
-    serverbusy=true;
-    maxConnections=MAX_CONNECTIONS;
-    nrSessions=0;
-
-#ifndef _WIN32
-    signal(SIGPIPE,SIG_IGN);
-#else
-    WSADATA wsadata;
-
-    if (WSAStartup(0x101, &wsadata)) {
-        std::cerr << "YacasServer Could not initiate Winsock DLL\n";
-        std::exit(EXIT_FAILURE);
-    } else {
-        winsockinitialised = true;
-    }
-#endif
-
-    server_sockfd = socket(AF_INET, SOCK_STREAM, 0);
-
-    {
-        int rsp;
-#ifndef _WIN32
-        if (setsockopt(server_sockfd,SOL_SOCKET,SO_REUSEADDR,(void*)&rsp,sizeof(int)))
-#else
-        if (setsockopt(server_sockfd,SOL_SOCKET,SO_REUSEADDR,(const char *)&rsp,sizeof(int)))
-#endif
-            {
-                std::cerr << "YacasServer Could not set socket options\n";
-                std::exit(EXIT_FAILURE);
-            }
-    }
-
-    server_address.sin_family = AF_INET;
-    server_address.sin_addr.s_addr = htonl(INADDR_ANY);
-    server_address.sin_port = htons(server_port);
-    server_len = sizeof(server_address);
-
-    std::cout << "Accepting requests from port " << server_port << "\n";
-
-    if (bind(server_sockfd, (struct sockaddr *)&server_address, server_len)) {
-        std::cerr << "YacasServer: Could not bind to the socket\n";
-        std::exit(EXIT_FAILURE);
-    }
-
-    if (listen(server_sockfd, maxConnections)) {
-        std::cerr << "YacasServer: Could not bind to the socket\n";
-        std::exit(EXIT_FAILURE);
-    }
-
-    for (int i=0; i < MAX_CONNECTIONS; ++i)
-        used_clients[i] = 0;
-
-    FD_ZERO(&readfds);
-    FD_SET(server_sockfd, &readfds);
-    while(serverbusy)
-    {
-        int fd;
-        int nread;
-        testfds = readfds;
-
-        result = select(FD_SETSIZE, &testfds, (fd_set *)0,
-                        (fd_set *)0, (struct timeval *) 0);
-
-        if(result < 1) {
-            std::cerr << "YacasServer: select failed\n";
-            std::exit(EXIT_FAILURE);
-        }
-
-#ifndef _WIN32
-        int socketcount = FD_SETSIZE;
-#else
-        int socketcount = readfds.fd_count;
-#endif
-        for(int sockindex = 0; sockindex < socketcount; ++sockindex) {
-#ifndef _WIN32
-            while(waitpid(-1,0,WNOHANG) > 0); /* clean up child processes */
-            fd = sockindex;
-#else
-            fd = readfds.fd_array[sockindex];
-#endif
-            if(FD_ISSET(fd,&testfds)) {
-                if(fd == server_sockfd) {
-                    client_len = sizeof(client_address);
-#ifndef _WIN32
-                    client_sockfd = accept(server_sockfd, (struct sockaddr *)&client_address, (ACCEPT_TYPE_ARG3)&client_len);
-#else
-                    client_sockfd = accept(server_sockfd, (struct sockaddr *)&client_address, (int *)&client_len);
-#endif
-
-#ifdef __CYGWIN__
-                    if (client_sockfd != 0xffffffff)
-#endif
-                    {
-                        FD_SET(client_sockfd, &readfds);
-#ifdef YACAS_DEBUG
-                        std::cout << "adding client on fd " << client_sockfd << "\n";
-#endif
-                    }
-
-                } else {
-                    int clsockindex = sockindex - 1;
-#ifndef _WIN32
-                    ioctl(fd, FIONREAD, &nread);
-#else
-                    ioctlsocket(fd, FIONREAD, (unsigned long *)&nread);
-#endif
-                    if(nread == 0) {
-#ifndef _WIN32
-                        close(fd);
-#else
-                        closesocket(fd);
-#endif
-                        FD_CLR(fd, &readfds);
-                        delete used_clients[clsockindex];
-                        used_clients[clsockindex] = 0;
-                        nrSessions--;
-
-                        if (server_single_user && nrSessions == 0)
-                            std::exit(EXIT_SUCCESS);
-
-#ifdef YACAS_DEBUG
-                        std::cout << "YacasServer: Removing client on " << fd << "\n";
-#endif
-                    } else {
-                        std::vector<char> buffer(nread + 1);
-                        std::string finalbuffer;
-
-                        int bytesread;
-
-#ifndef _WIN32
-                        while ((bytesread = read(fd, &buffer.front(), nread)) != 0)
-#else
-                        while(bytesread = recv(fd, &buffer.front(), nread, 0))
-#endif
-                        {
-                            buffer[bytesread] = '\0';
-                            finalbuffer.append(&buffer.front());
-
-                            const std::size_t semi_pos =
-                                finalbuffer.find_first_of(";");
-                            if (semi_pos != std::string::npos) {
-                                finalbuffer.erase(semi_pos);
-                                break;
-                            }
-                        }
-
-#ifdef YACAS_DEBUG
-                        std::cout << "YacasServer: Servicing on " fd << " (" << used_clients[clsockindex] << ")\n";
-#endif
-
-                        if (clsockindex < maxConnections) {
-                            if (used_clients[clsockindex] == 0) {
-
-#ifdef YACAS_DEBUG
-                                std::cout << "Loading new Yacas environment\n";
-#endif
-                                std::stringstream* out = new std::stringstream;
-                                LoadYacas(*out);
-                                used_clients[clsockindex] = yacas;
-                                yacas = 0;
-                                nrSessions++;
-                            }
-
-                            // enable if fork needed
-                            //                        if (fork() == 0)
-                            {
-                                const char* response = finalbuffer.c_str();
-                                if (!server_single_user)
-                                    used_clients[clsockindex]->getDefEnv().getEnv().secure = true;
-
-
-                                if (seconds > 0) {
-                                    clientToStop = used_clients[clsockindex];
-#ifndef _WIN32
-                                    signal(SIGALRM,stopClient);
-                                    alarm(seconds);
-#else
-                                    LARGE_INTEGER timedue;
-                                    timedue.QuadPart = seconds  * -10000000;
-
-                                    htimer = CreateWaitableTimer(0, true, "WaitableTimer");
-                                    SetWaitableTimer(htimer, &timedue, 0, stopClient, 0, 0);
-#endif
-                                }
-#ifdef YACAS_DEBUG
-                                std::cout << "In> " << finalbuffer << "\n";
-#endif
-                                outStrings.clear();
-                                used_clients[clsockindex]->Evaluate(finalbuffer.c_str());
-
-                                if (server_single_user && !busy)
-                                    std::exit(EXIT_SUCCESS);
-
-                                if (seconds>0) {
-#ifndef _WIN32
-                                    signal(SIGALRM,SIG_IGN);
-#else
-
-                                    if (htimer)
-                                        CancelWaitableTimer(htimer);
-#endif
-                                }
-
-                                if (used_clients[clsockindex]->IsError())
-                                    response = used_clients[clsockindex]->Error().c_str();
-                                else
-                                    response = used_clients[clsockindex]->Result().c_str();
-
-
-                                const std::size_t buflen = std::strlen(response);
-#ifdef YACAS_DEBUG
-                                std::cout << outStrings.c_str()
-                                          << "Out> " << response << "\n";
-#endif
-                                if (response) {
-#ifndef _WIN32
-                                    ssize_t c =
-                                        write(fd, outStrings.c_str(), strlen(outStrings.c_str()));
-                                    if (c < 0)
-                                        perror("yacasserver");
-
-                                    c = write(fd,"]\r\n",3);
-                                    if (c < 0)
-                                        perror("yacasserver");
-
-                                    if (buflen > 0) {
-                                        c = write(fd, response, buflen);
-                                        if (c < 0)
-                                            perror("yacasserver");
-                                        c = write(fd,"\r\n",2);
-                                        if (c < 0)
-                                            perror("yacasserver");
-                                    }
-
-                                    c = write(fd,"]\r\n",3);
-                                    if (c < 0)
-                                        perror("yacasserver");
-#else
-                                    send(fd, outStrings.c_str(), strlen(outStrings.c_str()), 0);
-                                    send(fd,"]\r\n",3, 0);
-                                    if (buflen > 0) {
-                                        send(fd, response, buflen, 0);
-                                        send(fd,"\r\n",2, 0);
-                                    }
-                                    send(fd,"]\r\n",3, 0);
-#endif
-                                }
-                            }
-
-                            // enable if fork needed
-                            //                            std::exit(EXIT_SUCCESS);
-                        } else {
-                            const char* limtxt = "Maximum number of connections reached, sorry\r\n";
-#ifndef _WIN32
-                            ssize_t c;
-                            c = write(fd,"]\r\n",3);
-                            if (c < 0)
-                                perror("yacasserver");
-                            c = write(fd, limtxt, strlen(limtxt));
-                            if (c < 0)
-                                perror("yacasserver");
-                            c = write(fd,"]\r\n",3);
-                            if (c < 0)
-                                perror("yacasserver");
-#else
-                            send(fd,"]\r\n",3, 0);
-                            send(fd, limtxt, strlen(limtxt), 0);
-                            send(fd,"]\r\n",3, 0);
-#endif
-                        }
-                    }
-                }
-            }
-        }
-    }
-#ifdef _WIN32
-    WSACleanup();
-#endif
-    return 0;
-}
-#endif
-
 void runconsole(const std::string& inprompt, const std::string& outprompt)
 {
     if (show_prompt) {
@@ -869,9 +465,6 @@ void runconsole(const std::string& inprompt, const std::string& outprompt)
 
     if (read_eval_print) {
         while (busy) {
-#ifdef YACAS_DEBUG
-            LispLocalEvaluator local(yacas->getDefEnv().getEnv(), NEW TracedStackEvaluator);
-#endif
             yacas->Evaluate(read_eval_print);
 
             if (yacas->IsError())
@@ -879,10 +472,6 @@ void runconsole(const std::string& inprompt, const std::string& outprompt)
         }
     } else {
         while (busy) {
-#ifdef YACAS_DEBUG
-            LispLocalEvaluator local(yacas->getDefEnv().getEnv(), NEW TracedStackEvaluator);
-#endif
-
             ReadInputString(inprompt);
 
             const std::string inpline =  commandline->iLine;
@@ -923,12 +512,6 @@ int parse_options(int argc, char** argv)
                 read_eval_print = nullptr;
             } else if (!std::strcmp(argv[fileind],"--patchload")) {
                 patchload = true;
-            } else if (!std::strcmp(argv[fileind],"--verbose-debug")) {
-#ifdef YACAS_DEBUG
-                verbose_debug = true;
-#else
-                std::cout << "Warning: --verbose-debug is only supported in debug the version of this program.\n";
-#endif
             } else if (!std::strcmp(argv[fileind],"--init")) {
                 fileind++;
                 if (fileind<argc)
@@ -946,14 +529,6 @@ int parse_options(int argc, char** argv)
                 fileind++;
                 if (fileind < argc)
                     root_dir = argv[fileind];
-            } else if (!std::strcmp(argv[fileind],"--server")) {
-                fileind++;
-                if (fileind < argc) {
-                    server_mode = true;
-                    server_port = atoi(argv[fileind]);
-                }
-            } else if (!std::strcmp(argv[fileind],"--single-user-server")) {
-                server_single_user = true;
             } else if (!std::strcmp(argv[fileind],"--stacksize")) {
                 fileind++;
                 if (fileind < argc)
@@ -995,16 +570,10 @@ int parse_options(int argc, char** argv)
                     std::cout << root_dir << "\n";
                     std::exit(EXIT_SUCCESS);
                 }
-                if (std::strchr(argv[fileind],'w')) {
-                    hideconsolewindow = true;
-                }
-
-#ifdef HAVE_CONFIG_H
                 if (std::strchr(argv[fileind],'v')) {
                     std::cout << YACAS_VERSION << "\n";
-                    return -1;
+                    std::exit(EXIT_SUCCESS);
                 }
-#endif
 
 #ifndef NO_GLOBALS
                 if (std::strchr(argv[fileind],'m')) {
@@ -1107,13 +676,6 @@ int main(int argc, char** argv)
 
     std::atexit(my_exit);
 
-#ifdef SUPPORT_SERVER
-    if (server_mode) {
-        runserver(argc,argv);
-        std::exit(EXIT_SUCCESS);
-    }
-#endif
-
     signal(SIGINT, InterruptHandler);
 
     if (!use_plain) {
@@ -1204,4 +766,3 @@ int main(int argc, char** argv)
 
     std::exit(EXIT_SUCCESS);
 }
-

@@ -1,3 +1,7 @@
+Testing("Patching");
+
+Verify(PatchString("2 + 2 = <? Echo(2 + 2); ?>"), "2 + 2 = 4 " : Nl());
+
 Testing("Error reporting");
 
 // generate no errors

@@ -1,7 +1,7 @@
 package net.sf.yacas;
 
 
-class ArrayClass extends GenericClass
+final class ArrayClass extends GenericClass
 {
   public ArrayClass(int aSize,LispObject aInitialItem)
   {

@@ -42,3 +42,13 @@ LocalSymbols(hash, key, element, hash'expr)
 
 ];	// LocalSymbols(hash, ...)
 
+Association'CreateFromList(list) := [
+    Local(a, e);
+
+    a := Association'Create();
+
+    ForEach(e, list)
+        Association'Set(a, e[1], e[2]);
+
+    a;
+];

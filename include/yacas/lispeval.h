@@ -6,39 +6,26 @@
 #ifndef YACAS_LISPEVAL_H
 #define YACAS_LISPEVAL_H
 
-#include "yacasbase.h"
 #include "lispobject.h"
 #include "lispenvironment.h"
 
-/*
-void InternalEval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
-*/
-
-
-class UserStackInformation : public YacasBase
-{
+class UserStackInformation {
 public:
     UserStackInformation()
       : iOperator(),iExpression(),iRulePrecedence(-1),iSide(0)
-#ifdef YACAS_DEBUG
-      , iFileName("(no file)"),iLine(0)
-#endif // YACAS_DEBUG
     {
     }
     LispPtr iOperator;
     LispPtr iExpression;
     LispInt iRulePrecedence;
     LispInt iSide; // 0=pattern, 1=body
-    DBG_( const LispChar * iFileName; )
-    DBG_( LispInt iLine; )
 };
 
 /// Abstract evaluator for Lisp expressions.
 /// Eval() is a pure virtual function, to be provided by the derived class.
 /// The other functions are stubs.
 
-class LispEvaluatorBase : public YacasBase
-{
+class LispEvaluatorBase {
 public:
   LispEvaluatorBase() : iBasicInfo() {}
   virtual ~LispEvaluatorBase() = default;
@@ -88,28 +75,27 @@ public:
   ///
   /// The LispPtr it can be stored in to is passed in as argument, so it
   /// does not need to be constructed by the calling environment.
-  virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
-  virtual ~BasicEvaluator() = default;
+  void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression) override;
 };
 
 class TracedEvaluator : public BasicEvaluator
 {
 public:
-  void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
+  void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression) override;
 protected:
   std::ostringstream errorOutput;
 };
 
 
-class TracedStackEvaluator : public BasicEvaluator
+class TracedStackEvaluator final: public BasicEvaluator
 {
 public:
   TracedStackEvaluator() : objs() {}
-  virtual ~TracedStackEvaluator();
-  virtual void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression);
-  virtual void ResetStack();
-  virtual UserStackInformation& StackInformation();
-  virtual void ShowStack(LispEnvironment& aEnvironment, std::ostream& aOutput);
+  ~TracedStackEvaluator() override;
+  void Eval(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression) override;
+  void ResetStack() override;
+  UserStackInformation& StackInformation() override;
+  void ShowStack(LispEnvironment& aEnvironment, std::ostream& aOutput) override;
 private:
   void PushFrame();
   void PopFrame();
@@ -138,10 +124,9 @@ void ShowExpression(LispString& outString, LispEnvironment& aEnvironment,
                     LispPtr& aExpression);
 
 
-class YacasDebuggerBase : public YacasBase
-{
+class YacasDebuggerBase {
 public:
-  virtual ~YacasDebuggerBase();
+  virtual ~YacasDebuggerBase() = default;
   virtual void Start() = 0;
   virtual void Finish() = 0;
   virtual void Enter(LispEnvironment& aEnvironment,
@@ -152,19 +137,17 @@ public:
   virtual bool Stopped() = 0;
 };
 
-class DefaultDebugger : public YacasDebuggerBase
+class DefaultDebugger final: public YacasDebuggerBase
 {
 public:
-  inline DefaultDebugger(LispPtr& aEnter, LispPtr& aLeave, LispPtr& aError)
+  DefaultDebugger(LispPtr& aEnter, LispPtr& aLeave, LispPtr& aError)
     : iEnter(aEnter), iLeave(aLeave), iError(aError), iTopExpr(),iTopResult(),iStopped(false),defaultEval() {};
-  virtual void Start();
-  virtual void Finish();
-  virtual void Enter(LispEnvironment& aEnvironment,
-                      LispPtr& aExpression);
-  virtual void Leave(LispEnvironment& aEnvironment, LispPtr& aResult,
-                      LispPtr& aExpression);
-  virtual void Error(LispEnvironment& aEnvironment);
-  virtual bool Stopped();
+  void Start() override;
+  void Finish() override;
+  void Enter(LispEnvironment& aEnvironment, LispPtr& aExpression) override;
+  void Leave(LispEnvironment& aEnvironment, LispPtr& aResult, LispPtr& aExpression) override;
+  void Error(LispEnvironment& aEnvironment) override;
+  bool Stopped() override;
   LispPtr iEnter;
   LispPtr iLeave;
   LispPtr iError;

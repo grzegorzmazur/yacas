@@ -1,0 +1,25 @@
+name: yacas
+version: 1.5.0-snap1
+summary: Yet Another Computer Algebra System
+description: |
+  Yacas is an easy to use, general purpose Computer Algebra System, a
+  program for symbolic manipulation of mathematical expressions. It
+  uses its own programming language designed for symbolic as well as
+  arbitrary-precision numerical computations. The system has a library
+  of scripts that implement many of the symbolic algebra operations;
+  new algorithms can be easily added to the library.
+
+apps:
+  yacas:
+    command: bin/yacas
+  
+build-packages: [g++, python3-sphinx, python3-sphinx-rtd-theme]
+
+parts:
+  yacas:
+    source: https://github.com/grzegorzmazur/yacas/archive/v1.5.0.tar.gz
+    plugin: cmake
+    configflags:
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DENABLE_DOCS=On
+    

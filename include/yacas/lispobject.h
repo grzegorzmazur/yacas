@@ -13,16 +13,11 @@
 #ifndef YACAS_LISPOBJECT_H
 #define YACAS_LISPOBJECT_H
 
-#include "yacasbase.h"
 #include "refcount.h"
 #include "lispstring.h"
 #include "genericobject.h"
-
-#ifdef YACAS_DEBUG
-#define DBG_(xxx) xxx
-#else
-#define DBG_(xxx) /*xxx*/
-#endif
+#include "noncopyable.h"
+#include "stubs.h"
 
 class LispObject;
 class BigNumber;
@@ -36,21 +31,6 @@ class BigNumber;
  */
 typedef RefPtr<LispObject> LispPtr;
 
-
-#ifdef YACAS_DEBUG
-void IncNrObjects();
-void DecNrObjects();
-#else
-#define IncNrObjects()
-#define DecNrObjects()
-#endif
-
-// Should we DecNrObjects by the delete, or in the destructor?
-// Put a DecNrObjects_xxx() macro in both places, and CHOOSE here.
-#define DecNrObjects_delete()    DECNROBJECTS_CHOOSE(DecNrObjects(),)
-#define DecNrObjects_destructor()  DECNROBJECTS_CHOOSE(,DecNrObjects())
-#define DECNROBJECTS_CHOOSE(bydelete,bydestructor) bydestructor
-
 /** class LispObject is the base object class that can be put in
  *  linked lists. It either has a pointer to a string, obtained through
  *  String(), or it is a holder for a sublist, obtainable through SubList(),
@@ -58,13 +38,13 @@ void DecNrObjects();
  *  Only one of these three functions should return a non-nullptr value.
  *  It is a reference-counted object. LispPtr handles the reference counting.
  */
-class LispObject : public YacasBase
+class LispObject
 {
 public:
   inline LispPtr& Nixed();
 
 public: //Derivables
-  virtual ~LispObject();
+  virtual ~LispObject() = default;
 
   /** Return string representation, or nullptr if the object doesn't have one.
    *  the string representation is only relevant if the object is a
@@ -93,40 +73,18 @@ public:
   LispInt Equal(LispObject& aOther);
   inline LispInt operator==(LispObject& aOther);
   inline LispInt operator!=(LispObject& aOther);
-  DBG_( const LispChar * iFileName; )
-  DBG_( LispInt iLine; )
-  inline void SetFileAndLine(const LispChar * aFileName, LispInt aLine)
-  {
-    DBG_( iFileName = aFileName; )
-    DBG_( iLine = aLine; )
-  }
 protected:
   inline LispObject() :
-#ifdef YACAS_DEBUG
-   iFileName(nullptr),iLine(0),
-#endif // YACAS_DEBUG
    iNext(),iReferenceCount()
   {
-    IncNrObjects();
-    DBG_( iFileName = nullptr; )
-    DBG_( iLine = 0; )
   }
   inline LispObject(const LispObject& other) :
-#ifdef YACAS_DEBUG
-  iFileName(other.iFileName),iLine(other.iLine),
-#endif // YACAS_DEBUG
   iNext(),iReferenceCount()
   {
-    IncNrObjects();
   }
 
   inline LispObject& operator=(const LispObject& other)
   {
-#ifdef YACAS_DEBUG
-    iFileName = other.iFileName;
-    iLine     = other.iLine;
-#endif // YACAS_DEBUG
-    IncNrObjects();
     return *this;
   }
 
@@ -135,6 +93,15 @@ private:
   LispPtr   iNext;
 public:
   ReferenceCount iReferenceCount;
+  
+  static inline void* operator new(size_t size) { return PlatAlloc(size); }
+  static inline void* operator new[](size_t size) { return PlatAlloc(size); }
+  static inline void operator delete(void* object) { PlatFree(object); }
+  static inline void operator delete[](void* object) { PlatFree(object); }
+  // Placement form of new and delete.
+  static inline void* operator new(size_t, void* where) { return where; }
+  static inline void operator delete(void*, void*) {}
+
 };
 
 
@@ -144,12 +111,14 @@ class WithExtraInfo : public T
 public:
   WithExtraInfo(const T& aT, LispObject* aData = 0) : T(aT), iExtraInfo(aData) {}
   WithExtraInfo(const WithExtraInfo& other) : T(other), iExtraInfo(other.iExtraInfo) {}
-    virtual LispObject* ExtraInfo() { return iExtraInfo; }
-  virtual LispObject* SetExtraInfo(LispObject* aData) { iExtraInfo = aData; return this; }
-  virtual LispObject* Copy() const
+  LispObject* ExtraInfo() override { return iExtraInfo; }
+  LispObject* SetExtraInfo(LispObject* aData) override { iExtraInfo = aData; return this; }
+  LispObject* Copy() const override
   {
-    if (!iExtraInfo.ptr()) return T::Copy();
-        return NEW WithExtraInfo(*this, iExtraInfo->Copy());
+    if (!iExtraInfo.ptr())
+        return T::Copy();
+    
+    return new WithExtraInfo(*this, iExtraInfo->Copy());
   }
 private:
   LispPtr iExtraInfo;
@@ -163,12 +132,12 @@ protected:
   typedef ObjectHelper ASuper;  // for use by the derived class
   ObjectHelper() = default;
   ObjectHelper(const ObjectHelper& other) : U(other) {}
-  virtual ~ObjectHelper() = default;
-  virtual LispObject* SetExtraInfo(LispObject* aData)
+  ~ObjectHelper() override = default;
+  LispObject* SetExtraInfo(LispObject* aData) override
   {
     if (!aData) return this;
     //T * pT = dynamic_cast<T*>(this); LISPASSERT(pT);
-    LispObject * pObject = NEW WithExtraInfo<T>(*static_cast<T*>(this), aData);
+    LispObject * pObject = new WithExtraInfo<T>(*static_cast<T*>(this), aData);
     return pObject;
   }
 };
@@ -248,8 +217,20 @@ public:
   inline const LispObject* getObj() const { return (*_Ptr).operator->(); }
 };
 
+inline LispPtr& LispObject::Nixed()
+{
+    return iNext;
+}
 
-#include "lispobject.inl"
+inline LispInt LispObject::operator==(LispObject& aOther)
+{
+    return Equal(aOther);
+}
+
+inline LispInt LispObject::operator!=(LispObject& aOther)
+{
+    return !Equal(aOther);
+}
 
 
 #endif

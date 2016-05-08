@@ -1,62 +1,30 @@
-sudo: false
+language: cpp
 
 os:
   - linux
   - osx
 
-env:
-  global:
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "travis encrypt" command using the project repo's public key
-   - secure: "IIinoeFZyP/twtjsKE9Vi7RFdZYKMUW12fS6Pguc5hLokxzmCPgf5TciIeblm/nHnzrPjyyESZf7jkae8hST33nSCWmKg8ZAvlaN5+jbwFLpmZJo7dkwhwUw2FxcbLUzqMPD3TdZpcIPlaZs5eXkeVV/jJal/1geG3ivMCF23Z0ibtT/Kjf8iaFMvHhNqBcQUBQu6lzIDGzRnCgFE13MXNLz/JBuSqy5i45ScVpthTMd+L/uTHHPBsip8/Ow4D9DqM2Kdm339cK8fQtP8l2llCVv2+So4zb2oKTx5FQQy9+aWfkDwWuvGjKG3ge5q0CsdOOT/+/nyj6vLjRQgsoqvmt8d7Ugpm0T08xuBTC+cUVvpVTIhzXhVksXKaf8Y1qtNDjiI1WdS5UXikyEeOCpwBvWkRmrW1x8L+3eYv66DSsAHv0Yc9QDLDg6gy3IVPDY3/Le7FZVXNkgX65Xg1vque64sbf/GXgE1xfOUZ3Waf1AIX6q+cBz8auB2gqiSEbdInXbRmE+o60mROVo5EqrB4pZcQMBBYQu750pc2qaDZho/OaHhbh6ogqhe5PaEPJdxGzoND/e1i4jcgSkVjJBc8lfVosMR7wCn1KMnc1aF/9dZL2H6p9Eha4wcT1fcD/J0Bvg9h8UqQm1jzDQK6MBV3PtvFJOIB49znjWzKHTqpo="
-
-language: cpp
-
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - gcc-5
-    - g++-5
-  coverity_scan:
-    project:
-      name: "grzegorzmazur/yacas"
-      description: "Computer calculations made easy"
-    notification_email: teoretyk@gmail.com
-    build_command_prepend: cov-configure --comptype gcc --compiler /usr/bin/gcc-5 && cov-configure --comptype g++ --compiler /usr/bin/g++-5 && cmake .
-    build_command: make VERBOSE=1
-    branch_pattern: coverity_scan
+dist: trusty
+sudo: required
 
 before_install:
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then export CC=gcc-5 CXX=g++-5; fi
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a ${TRAVIS_OS_NAME} = "osx" ]; then brew update && brew tap caskroom/cask && brew install brew-cask && brew cask install java && brew install ant; fi
+  - if [ ${TRAVIS_OS_NAME} = "osx" ]; then brew update && brew tap caskroom/cask && brew install brew-cask && brew cask install java && brew install ant; fi
   
 before_script:
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then mkdir cmake_build ; fi
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then cd cmake_build ; fi
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "linux" ]; then cmake .. ; fi
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "osx" ]; then unset CC; unset CXX; cmake -G Xcode .. ; fi
+  - mkdir cmake_build && cd cmake_build
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then cmake .. ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then unset CXX; unset CC; cmake -G Xcode .. ; fi
 
 script:
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "linux" ]; then make; fi
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "linux" ]; then make test ; fi
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "osx" ]; then xcodebuild -project yacas.xcodeproj -target ALL_BUILD; fi
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 -a "${TRAVIS_OS_NAME}" = "osx" ]; then xcodebuild -project yacas.xcodeproj -target RUN_TESTS; fi
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then cd .. ; fi
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then ant ; fi
-  - if [ "${COVERITY_SCAN_BRANCH}" != 1 ]; then ant test ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then make; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then make test ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then xcodebuild -project yacas.xcodeproj -target ALL_BUILD; fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then xcodebuild -project yacas.xcodeproj -target RUN_TESTS; fi
+  - cd .. && ant && ant test
 
 branches:
   except:
     - gh_pages
     - vendor
     - bignum_experiments
-    
-matrix:
-  exclude:
-    - os: osx
-    - branch: coverity_scan
-  include:
-    - os: osx
-    - branch: master
+    - coverity_scan

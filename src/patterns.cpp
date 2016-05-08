@@ -1,15 +1,10 @@
 #include "yacas/yacasprivate.h"
-#include "yacas/yacasbase.h"
 #include "yacas/patterns.h"
 #include "yacas/standard.h"
 #include "yacas/mathuserfunc.h"
 #include "yacas/lispobject.h"
 #include "yacas/lispeval.h"
 #include "yacas/standard.h"
-
-#ifdef YACAS_DEBUG
-#include <stdio.h>
-#endif // YACAS_DEBUG
 
 #include <memory>
 
@@ -104,11 +99,11 @@ const YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnv
         return nullptr;
 
     if (aPattern->Number(aEnvironment.Precision()))
-        return NEW MatchNumber(aPattern->Number(aEnvironment.Precision()));
+        return new MatchNumber(aPattern->Number(aEnvironment.Precision()));
 
     // Deal with atoms
     if (aPattern->String())
-        return NEW MatchAtom(aPattern->String());
+        return new MatchAtom(aPattern->String());
 
     // Else it must be a sublist
     if (aPattern->SubList())
@@ -151,12 +146,9 @@ const YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnv
 
                         last->Nixed() = LispAtom::New(aEnvironment, *second->String());
 
-                        LispPtr pred(LispSubList::New(third));
-                        DBG_( third->Nixed()->SetFileAndLine(second->iFileName,second->iLine); )
-                        DBG_( pred->SetFileAndLine(head->iFileName,head->iLine); )
-                        iPredicates.push_back(pred);
+                        iPredicates.push_back(LispPtr(LispSubList::New(third)));
                     }
-                    return NEW MatchVariable(index);
+                    return new MatchVariable(index);
                 }
             }
         }
@@ -168,7 +160,7 @@ const YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnv
             matchers.push_back(MakeParamMatcher(aEnvironment,iter.getObj()));
             assert(matchers[i]);
         }
-        return NEW MatchSubList(std::move(matchers));
+        return new MatchSubList(std::move(matchers));
     }
 
     return nullptr;
@@ -273,14 +265,6 @@ bool YacasPatternPredicateBase::CheckPredicates(LispEnvironment& aEnvironment)
     {
 #define LIM_AL 60
       LispString strout;
-
-#ifdef YACAS_DEBUG
-        if (iPredicates[i]->iFileName)
-        {
-          printf("File %s, line %d\n",iPredicates[i]->iFileName, iPredicates[i]->iLine);
-        }
-#endif
-
 
       aEnvironment.iErrorOutput << "The predicate\n\t";
       PrintExpression(strout, iPredicates[i], aEnvironment, LIM_AL);

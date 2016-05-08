@@ -4,14 +4,13 @@
 #ifndef YACAS_YACAS_H
 #define YACAS_YACAS_H
 
-#include "yacasbase.h"
 #include "lispstring.h"
 #include "stringio.h"
 #include "tokenizer.h"
 #include "lisphash.h"
 #include "lispevalhash.h"
 #include "infixparser.h"
-#include "stdfileio.h"
+#include "platfileio.h"
 #include "lispatom.h"
 #include "lispeval.h"
 #include "lispglobals.h"
