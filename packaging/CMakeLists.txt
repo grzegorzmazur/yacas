@@ -75,7 +75,7 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     install (FILES deb/copyright DESTINATION share/doc/yacas COMPONENT app)
 
     find_package (UnixCommands REQUIRED)
-    add_custom_target (compress_changelog ALL COMMAND ${GZIP} -9 -n -c ${PROJECT_SOURCE_DIR}/packaging/deb/changelog > changelog.gz)
+    add_custom_target (compress_changelog ALL COMMAND ${GZIP} -9 -n -c ${PROJECT_SOURCE_DIR}/packaging/deb/changelog > ${PROJECT_BINARY_DIR}/changelog.gz)
 
     install (FILES ${PROJECT_BINARY_DIR}/changelog.gz DESTINATION share/doc/yacas COMPONENT app)
 
