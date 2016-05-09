@@ -19,6 +19,7 @@ urlimg: /images/
 
 logo: logo-small-white.png
 
+gems: [jekyll-paginate]
 
 # Paginates all X entries
 paginate: 5
