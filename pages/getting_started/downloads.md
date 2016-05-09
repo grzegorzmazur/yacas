@@ -19,22 +19,17 @@ breadcrumb: true
 <div class="medium-8 medium-pull-4 columns" markdown="1">
 
 ## Current stable version
-* yacas version 1.4.2
-  * source code: [tgz](https://github.com/grzegorzmazur/yacas/archive/v1.4.2.tar.gz) and [zip](https://github.com/grzegorzmazur/yacas/archive/v1.4.2.zip)
+* yacas version 1.5.0
+  * source code: [tgz](https://github.com/grzegorzmazur/yacas/archive/v1.5.0.tar.gz) and [zip](https://github.com/grzegorzmazur/yacas/archive/v1.5.0.zip)
   * binary packages for
-    * [Java](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas-1.4.2.jar)
+    * [Java](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas-1.5.0.jar)
     * Linux
-      * [Debian 8.2 (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas_1.4.2-1jessie_amd64.deb)
-      * [Fedora 23 (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas-1.4.2-1.fc23.x86_64.rpm)
       * Ubuntu
-        * [15.10 (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas_1.4.2-1wily_amd64.deb)
-        * [14.04 (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas_1.4.2-1trusty_amd64.deb)
-    * Microsoft Windows (7 or newer)
-      * [installer (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas-1.4.2-win64.exe)
-      * [installer (32 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas-1.4.2-win32.exe)
-      * [archive (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas-1.4.2-win64.zip)
-      * [archive (32 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas-1.4.2-win32.zip)
-    * [OS X](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas-1.4.2-Darwin.dmg)
+        * 16.04 (64 bit):
+          * [application (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacasv_1.5.0-1xenial1_amd64.deb)
+          * [documentation (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas-doc_1.5.0-1xenial1_all.deb)
+          * [development (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas-dev_1.5.0-1xenial1_amd64.deb)
+    * [OS X](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas-1.5.0-Darwin.dmg)
 * yagy version 1.1.0
   * source code: [tgz](https://github.com/grzegorzmazur/yagy/archive/v1.1.0.tar.gz) and [zip](https://github.com/grzegorzmazur/yagy/archive/v1.1.0.zip)
   * binary packages for
@@ -58,6 +53,22 @@ breadcrumb: true
     * [source code](https://github.com/grzegorzmazur/yagy/archive/master.zip)
 
 ## Archive
+* yacas version 1.4.2
+  * source code: [tgz](https://github.com/grzegorzmazur/yacas/archive/v1.4.2.tar.gz) and [zip](https://github.com/grzegorzmazur/yacas/archive/v1.4.2.zip)
+  * binary packages for
+    * [Java](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas-1.4.2.jar)
+    * Linux
+      * [Debian 8.2 (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas_1.4.2-1jessie_amd64.deb)
+      * [Fedora 23 (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas-1.4.2-1.fc23.x86_64.rpm)
+      * Ubuntu
+        * [15.10 (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas_1.4.2-1wily_amd64.deb)
+        * [14.04 (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas_1.4.2-1trusty_amd64.deb)
+    * Microsoft Windows (7 or newer)
+      * [installer (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas-1.4.2-win64.exe)
+      * [installer (32 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas-1.4.2-win32.exe)
+      * [archive (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas-1.4.2-win64.zip)
+      * [archive (32 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas-1.4.2-win32.zip)
+    * [OS X](https://github.com/grzegorzmazur/yacas/releases/download/v1.4.2/yacas-1.4.2-Darwin.dmg)
 * yacas version 1.4.0
   * source code: [tgz](https://github.com/grzegorzmazur/yacas/archive/v1.4.0.tar.gz) and [zip](https://github.com/grzegorzmazur/yacas/archive/v1.4.0.zip)
   * binary packages for
