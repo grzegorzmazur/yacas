@@ -1,5 +1,5 @@
 #include "yacas/yacasprivate.h"
-#include "yacas/commandline.h"
+#include "commandline.h"
 
 #include <algorithm>
 #include <cstdint>

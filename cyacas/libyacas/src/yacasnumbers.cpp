@@ -10,10 +10,6 @@
 #include "yacas/lisperror.h"
 #include "yacas/errors.h"
 
-#ifdef HAVE_CONFIG_H
-  #include <config.h>
-#endif
-
 #include <iomanip>
 #include <iostream>
 #include <sstream>

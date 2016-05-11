@@ -2,15 +2,11 @@ cmake_minimum_required (VERSION 3.0)
 
 cmake_policy(SET CMP0048 NEW)
 
-option (ENABLE_DOCS "generate documentation" OFF)
+option (ENABLE_CYACAS "build the C++ yacas engine" ON)
 option (ENABLE_JYACAS "build the Java yacas engine" OFF)
+option (ENABLE_DOCS "generate documentation" OFF)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-
-if (APPLE)
-  set(CMAKE_MACOSX_RPATH 1)
-  set(CMAKE_FRAMEWORK_INSTALL_DIR "/Library/Frameworks" CACHE STRING "Directory to install frameworks to.")
-endif()
 
 set (LANGUAGES CXX C)
 
@@ -20,147 +16,11 @@ if (ENABLE_JYACAS)
   set (LANGUAGES ${LANGUAGES} Java)
 endif ()
 
-project (YACAS VERSION 1.5.0 LANGUAGES ${LANGUAGES})
+project (YACAS VERSION 1.5.99 LANGUAGES ${LANGUAGES})
 
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "AppleClang")
-   set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pedantic -Wall -std=c++11")
-elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /wd4800")
-    add_definitions(-DYACAS_NO_CONSTEXPR -DYACAS_NO_ATOMIC_TYPES -DYACAS_UINT32_T_IN_GLOBAL_NAMESPACE)
-endif ()
-
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s DISABLE_EXCEPTION_CATCHING=0 -s ASSERTIONS=1")
-    set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --embed-file ${PROJECT_SOURCE_DIR}/scripts@/share/yacas/scripts")
-endif ()
-
-add_subdirectory (config)
-
-if (APPLE OR WIN32)
-    add_definitions(-DNO_GLOBALS)
-endif ()
-
-include_directories(
-  "${PROJECT_SOURCE_DIR}/include"
-  "${PROJECT_BINARY_DIR}/include"
-  "${PROJECT_BINARY_DIR}/include/yacas"
-  )
-
-set (YACAS_LIB_SOURCES
-  src/associationclass.cpp
-  src/stdcommandline.cpp
-  src/deffile.cpp
-  src/infixparser.cpp
-  src/lispatom.cpp
-  src/lispenvironment.cpp
-  src/lispeval.cpp
-  src/lisperror.cpp
-  src/lispio.cpp
-  src/lispobject.cpp
-  src/lispparser.cpp
-  src/lispuserfunc.cpp
-  src/mathcommands.cpp
-  src/mathuserfunc.cpp
-  src/standard.cpp
-  src/stdfileio.cpp
-  src/arggetter.cpp
-  src/stringio.cpp
-  src/tokenizer.cpp
-  src/yacasapi.cpp
-  src/lispevalhash.cpp
-  src/patterns.cpp
-  src/patternclass.cpp
-  src/substitute.cpp
-  src/mathcommands2.cpp
-  src/mathcommands3.cpp
-  src/errors.cpp
-  src/patcher.cpp
-  src/xmltokenizer.cpp
-  src/commandline.cpp
-  src/anumber.cpp
-  src/yacasnumbers.cpp
-  src/numbers.cpp
-  src/platmath.cpp
-  src/stdstubs.cpp
-  src/obmalloc.cpp
-  src/lisphash.cpp)
-
-set (YACAS_LIB_HEADERS
-  include/yacas/anumber.h
-  include/yacas/anumber.inl
-  include/yacas/arggetter.h
-  include/yacas/arrayclass.h
-  include/yacas/associationclass.h
-  include/yacas/commandline.h
-  include/yacas/corefunctions.h
-  include/yacas/core_yacasmain.h
-  include/yacas/deffile.h
-  include/yacas/errors.h
-  include/yacas/evalfunc.h
-  include/yacas/genericobject.h
-  include/yacas/GPL_stuff.h
-  include/yacas/infixparser.h
-  include/yacas/lispatom.h
-  include/yacas/lispenvironment.h
-  include/yacas/lisperror.h
-  include/yacas/lispeval.h
-  include/yacas/lispevalhash.h
-  include/yacas/lispglobals.h
-  include/yacas/lisphash.h
-  include/yacas/lispio.h
-  include/yacas/lispobject.h
-  include/yacas/lispoperator.h
-  include/yacas/lispparser.h
-  include/yacas/lispstring.h
-  include/yacas/lisptype.h
-  include/yacas/lispuserfunc.h
-  include/yacas/mathcommands.h
-  include/yacas/mathuserfunc.h
-  include/yacas/noncopyable.h
-  include/yacas/numbers.h
-  include/yacas/patcher.h
-  include/yacas/patternclass.h
-  include/yacas/patterns.h
-  include/yacas/platfileio.h
-  include/yacas/platmath.h
-  include/yacas/refcount.h
-  include/yacas/standard.h
-  include/yacas/standard.inl
-  include/yacas/stdcommandline.h
-  include/yacas/stringio.h
-  include/yacas/string_utils.h
-  include/yacas/stubs.h
-  include/yacas/substitute.h
-  include/yacas/tokenizer.h
-  include/yacas/utf8/core.h
-  include/yacas/utf8/checked.h
-  include/yacas/utf8/unchecked.h
-  include/yacas/utf8.h
-  include/yacas/xmltokenizer.h
-  include/yacas/yacas.h
-  include/yacas/yacasprivate.h)
-
-set (YACAS_COMMON_SOURCES src/yacasmain.cpp)
-
-set (YACAS_UNIX_SOURCES src/unixcommandline.cpp)
-set (YACAS_WIN32_SOURCES src/win32commandline.cpp res/yacas.rc)
-
-set (YACAS_UNIX_HEADERS include/yacas/unixcommandline.h)
-set (YACAS_WIN32_HEADERS include/yacas/win32commandline.h)
-
-set (YACAS_JS_INTERFACE_SOURCES src/js_interface.cpp)
-
-if (UNIX)
-  set (YACAS_SOURCES ${YACAS_COMMON_SOURCES} ${YACAS_UNIX_SOURCES})
-  set (YACAS_HEADERS ${YACAS_UNIX_HEADERS})
-else ()
-  set (YACAS_SOURCES ${YACAS_COMMON_SOURCES} ${YACAS_WIN32_SOURCES})
-  set (YACAS_HEADERS ${YACAS_WIN32_HEADERS})
-endif ()
-
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten")
-  set (YACAS_SOURCES ${YACAS_SOURCES} ${YACAS_JS_INTERFACE_SOURCES})
-endif ()
+#if (${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten")
+#  set (YACAS_SOURCES ${YACAS_SOURCES} ${YACAS_JS_INTERFACE_SOURCES})
+#endif ()
 
 set (YACAS_SCRIPTS
   scripts/array.rep/code.ys
@@ -354,52 +214,20 @@ set (YACAS_SCRIPTS
   scripts/univar.rep/sturm.ys.def
   scripts/yacasinit.ys)
 
-add_library (libyacas ${YACAS_LIB_SOURCES} ${YACAS_LIB_HEADERS})
-set_target_properties (libyacas PROPERTIES OUTPUT_NAME "yacas")
-
-#to generate yacas framework on macos:
-if (APPLE)
-  add_library (libyacas_framework SHARED ${YACAS_LIB_SOURCES})
-  set_target_properties(libyacas_framework PROPERTIES OUTPUT_NAME "yacas" VERSION ${PROJECT_VERSION} SOVERSION ${PROJECT_VERSION} FRAMEWORK ON)
-  add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/scripts $<TARGET_FILE_DIR:libyacas_framework>/Resources/scripts)
-  add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_BINARY_DIR}/scripts $<TARGET_FILE_DIR:libyacas_framework>/Resources/scripts)
-  add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/include $<TARGET_FILE_DIR:libyacas_framework>/Headers)
-  add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_BINARY_DIR}/include $<TARGET_FILE_DIR:libyacas_framework>/Headers)
-  add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ln -sf  $<TARGET_FILE_DIR:libyacas_framework>/Headers $<TARGET_FILE_DIR:libyacas_framework>/../../Headers)
-
-  install (TARGETS libyacas_framework FRAMEWORK DESTINATION ${CMAKE_FRAMEWORK_INSTALL_DIR} COMPONENT framework)
-endif()
-
-install (TARGETS libyacas ARCHIVE DESTINATION lib RUNTIME DESTINATION bin COMPONENT app)
-
-add_executable (yacas ${YACAS_SOURCES} ${YACAS_HEADERS})
-
-if (APPLE)
-    set_target_properties(yacas PROPERTIES INSTALL_RPATH "@loader_path/../lib")
-endif()
-
-target_link_libraries (yacas libyacas)
-
-if (WIN32)
-  target_link_libraries (yacas wsock32 ws2_32 shlwapi)
-endif()
-
 if (ENABLE_DOCS)
   add_subdirectory (docs)
 endif()
 
-install (TARGETS yacas RUNTIME DESTINATION bin COMPONENT app)
 install (DIRECTORY scripts/ DESTINATION share/yacas/scripts COMPONENT app)
-install (DIRECTORY include/ DESTINATION include COMPONENT dev)
-install (FILES ${PROJECT_BINARY_DIR}/include/yacas/yacas_version.h DESTINATION include/yacas COMPONENT dev)
-install (FILES ${PROJECT_BINARY_DIR}/include/yacas/yacas_config.h DESTINATION include/yacas COMPONENT dev)
 
 if (ENABLE_JYACAS)
-    add_subdirectory (JavaYacas)
+    add_subdirectory (jyacas)
+endif ()
+
+if (ENABLE_CYACAS)
+    add_subdirectory (cyacas)
 endif ()
 
 include (CTest)
 
 add_subdirectory (tests)
-
-add_subdirectory (packaging)

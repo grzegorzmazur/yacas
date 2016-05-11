@@ -339,20 +339,14 @@ void LispDiv(LispEnvironment& aEnvironment, LispInt aStackTop)
   RefPtr<BigNumber> y;
   GetNumber(x,aEnvironment, aStackTop, 1);
   GetNumber(y,aEnvironment, aStackTop, 2);
-  if (x->IsInt() && y->IsInt())
-  {  // both integer, perform integer division
-    BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
-    z->Divide(*x,*y,aEnvironment.BinaryPrecision());
-    RESULT = (new LispNumber(z));
-    return;
-  }
-  else
-  {//TODO FIXME: either need to report error that one or both of the arguments are not integer, or coerce them to integers
-#ifdef HAVE_STDIO_H
-    fprintf(stderr, "LispDiv: error: both arguments must be integer\n");
-#endif
-    return;
-  }
+  
+  //TODO FIXME: either need to report error that one or both of the arguments are not integer, or coerce them to integers
+  CheckArg(x->IsInt(), 1, aEnvironment, aStackTop);
+  CheckArg(y->IsInt(), 2, aEnvironment, aStackTop);
+  
+  BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
+  z->Divide(*x,*y,aEnvironment.BinaryPrecision());
+  RESULT = (new LispNumber(z));
 }
 
 

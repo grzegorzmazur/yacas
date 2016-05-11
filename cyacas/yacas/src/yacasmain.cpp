@@ -29,11 +29,8 @@
 
 #include "yacas/yacasprivate.h"
 
-#ifdef HAVE_SIGNAL_H
-#include <signal.h>
-#endif
-
 #include <ctime>
+#include <csignal>
 #include <cstring>
 #include <cstdlib>
 #include <fstream>
@@ -53,12 +50,12 @@
 #include <unistd.h>
 #include <libgen.h>
 
-#include "yacas/unixcommandline.h"
+#include "unixcommandline.h"
 #define FANCY_COMMAND_LINE CUnixCommandLine
 #else
 #define _WINSOCKAPI_            // Prevent inclusion of winsock.h in windows.h
 #define _WIN32_WINDOWS 0x0410      // Make sure that Waitable Timer functions are declared in winbase.h
-#include "yacas/win32commandline.h"
+#include "win32commandline.h"
 #define FANCY_COMMAND_LINE CWin32CommandLine
 #include <windows.h>
 #include <shlobj.h>
@@ -73,7 +70,7 @@
 #include <sys/sysctl.h>
 #endif
 
-#include "yacas/stdcommandline.h"
+#include "stdcommandline.h"
 #include "yacas/standard.h"
 #include "yacas/numbers.h"
 #include "yacas/arggetter.h"
@@ -349,7 +346,7 @@ void LoadYacas(std::ostream& os)
 
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) yacas->getDefEnv().getEnv().SetCommand(fname,iname,nrargs,flags);
 
-#include "yacas/core_yacasmain.h"
+#include "core_yacasmain.h"
 
 #undef CORE_KERNEL_FUNCTION
 

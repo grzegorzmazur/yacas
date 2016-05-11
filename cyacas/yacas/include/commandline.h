@@ -18,8 +18,8 @@
 #include <string>
 #include <vector>
 
-#include "lispstring.h"
-#include "utf8.h"
+#include "yacas/lispstring.h"
+#include "yacas/utf8.h"
 
 enum ESpecialChars
 {

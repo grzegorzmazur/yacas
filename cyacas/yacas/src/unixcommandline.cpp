@@ -1,5 +1,5 @@
 #include "yacas/yacasprivate.h"
-#include "yacas/unixcommandline.h"
+#include "unixcommandline.h"
 
 #include <sys/ioctl.h>
 

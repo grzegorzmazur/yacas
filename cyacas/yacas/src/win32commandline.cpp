@@ -1,4 +1,4 @@
-#include "yacas/win32commandline.h"
+#include "win32commandline.h"
 
 #include <fstream>
 #include <string>

@@ -75,7 +75,7 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     install (FILES deb/copyright DESTINATION share/doc/yacas COMPONENT app)
 
     find_package (UnixCommands REQUIRED)
-    add_custom_target (compress_changelog ALL COMMAND ${GZIP} -9 -n -c ${PROJECT_SOURCE_DIR}/packaging/deb/changelog > ${PROJECT_BINARY_DIR}/changelog.gz)
+    add_custom_target (compress_changelog ALL COMMAND ${GZIP} -9 -n -c ${PROJECT_SOURCE_DIR}/cyacas/packaging/deb/changelog > ${PROJECT_BINARY_DIR}/changelog.gz)
 
     install (FILES ${PROJECT_BINARY_DIR}/changelog.gz DESTINATION share/doc/yacas COMPONENT app)
 
@@ -125,7 +125,7 @@ elseif (WIN32 AND NOT UNIX)
     set (CPACK_NSIS_ENABLE_UNINSTALL_BEFORE_INSTALL "ON")
     set (CPACK_NSIS_HELP_LINK "http://www.yacas.org/")
     set (CPACK_NSIS_URL_INFO_ABOUT "http://www.yacas.org/")
-    set (CPACK_NSIS_MUI_ICON "${PROJECT_SOURCE_DIR}/res/yacas.ico")
+    set (CPACK_NSIS_MUI_ICON "${PROJECT_SOURCE_DIR}/cyacas/yacas/res/yacas.ico")
     set (CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\yacas.exe")
     set (CPACK_CREATE_DESKTOP_LINKS "yacas.exe" "yacas")
 endif ()
