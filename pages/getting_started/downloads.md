@@ -30,6 +30,11 @@ breadcrumb: true
           * [documentation (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas-doc-1.5.0-1.fc23.x86_64.rpm)
           * [development (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas-devel-1.5.0-1.fc23.x86_64.rpm)
           * [debug info (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas-debuginfo-1.5.0-1.fc23.x86_64.rpm)
+        * Fedora 22 (64 bit):
+          * [application (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas-1.5.0-1.fc22.x86_64.rpm)
+          * [documentation (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas-doc-1.5.0-1.fc22.x86_64.rpm)
+          * [development (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas-devel-1.5.0-1.fc22.x86_64.rpm)
+          * [debug info (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas-debuginfo-1.5.0-1.fc22.x86_64.rpm)
       * Ubuntu
         * 16.04 (64 bit):
           * [application (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas_1.5.0-1xenial1_amd64.deb)
