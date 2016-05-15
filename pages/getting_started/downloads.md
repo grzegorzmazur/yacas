@@ -40,6 +40,11 @@ breadcrumb: true
           * [application (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas_1.5.0-1xenial1_amd64.deb)
           * [documentation (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas-doc_1.5.0-1xenial1_all.deb)
           * [development (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas-dev_1.5.0-1xenial1_amd64.deb)
+    * Microsoft Windows (7 or newer)
+      * [installer (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas-1.5.0-win64.exe)
+      * [installer (32 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas-1.5.0-win32.exe)
+      * [archive (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas-1.5.0-win64.zip)
+      * [archive (32 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas-1.5.0-win32.zip)
     * [OS X](https://github.com/grzegorzmazur/yacas/releases/download/v1.5.0/yacas-1.5.0-Darwin.dmg)
 * yagy version 1.1.0
   * source code: [tgz](https://github.com/grzegorzmazur/yagy/archive/v1.1.0.tar.gz) and [zip](https://github.com/grzegorzmazur/yagy/archive/v1.1.0.zip)
