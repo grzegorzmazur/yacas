@@ -1,0 +1,91 @@
+body{
+    margin: 0px;
+}
+
+#Elements{
+    border-collapse:collapse;
+    width:100%;
+    table-layout: fixed;
+    
+}
+
+#Elements>tbody>tr>td:first-child{
+    font-size: x-small;
+    width: 45px;
+    background-color: #66CD00;
+    color: white;
+}
+
+.New>tr>td:first-child{
+    background-color: LightGray !important;
+    color: black !important;
+}
+
+.Error>tr>td:first-child{
+    background-color: red !important;
+    color: white !important;
+}
+
+.Modified>tr>td:first-child{
+    background-color: gold !important;
+    color: black !important;
+}
+
+
+td{
+    font-family: monospace;
+    font-size: small;
+    padding: 5px;
+}
+
+
+.Expression>tr.Out>td{
+    font-size: 16px;
+}
+
+
+.CodeMirror {
+    box-sizing:border-box;
+    height: auto;
+    width: 100%
+}
+.CodeMirror-focused {
+    border: 1px solid #ddd;
+}
+#expression_0 .CodeMirror{
+    border: 1px solid #ddd;
+}
+
+textarea{
+    width:100%;
+    font-family: courier;
+    font-size: small;
+    resize: none;
+    padding: 4px;
+    height: 14px;
+    
+}
+.containment{
+    width:100%;
+    
+}
+.editable{
+    color: SlateGray;
+}
+
+.Error{
+    color: red;
+}
+
+.Plot2D{
+    height:300px;
+}
+
+.Plot3D{
+    height:300px;
+}
+
+.Plot3DActive{
+    -webkit-box-sizing:border-box;
+    border:2px solid #41403b;
+}

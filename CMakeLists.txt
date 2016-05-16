@@ -2,9 +2,13 @@ cmake_minimum_required (VERSION 3.0)
 
 cmake_policy(SET CMP0048 NEW)
 
-option (ENABLE_CYACAS "build the C++ yacas engine" ON)
+option (ENABLE_CYACAS_CONSOLE "build the C++ yacas engine" ON)
+option (ENABLE_CYACAS_GUI "build the C++ yacas engine" ON)
+option (ENABLE_CYACAS_KERNEL "build the C++ yacas engine" ON)
 option (ENABLE_JYACAS "build the Java yacas engine" OFF)
 option (ENABLE_DOCS "generate documentation" OFF)
+
+set (ENABLE_CYACAS ${ENABLE_CYACAS_CONSOLE} OR ${ENABLE_CYACAS_GUI} OR ${ENABLE_CYACAS_KERNEL})
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
@@ -190,6 +194,14 @@ set (YACAS_SCRIPTS
   scripts/sums.rep/code.ys
   scripts/sums.rep/code.ys.def
   scripts/sums.rep/om.ys
+  scripts/trigsimp.rep/code.ys.def
+  scripts/univar.rep/Cyclotomic.ys
+  scripts/univar.rep/Cyclotomic.ys.def
+  scripts/univar.rep/code.ys
+  scripts/trigsimp.rep/code.ys.def
+  scripts/univar.rep/Cyclotomic.ys
+  scripts/univar.rep/Cyclotomic.ys.def
+  scripts/univar.rep/code.ys
   scripts/sums.rep/taylor.ys
   scripts/sums.rep/taylor.ys.def
   scripts/sums.rep/taylor3.ys
@@ -201,6 +213,10 @@ set (YACAS_SCRIPTS
   scripts/texform.rep/code.ys
   scripts/texform.rep/code.ys.def
   scripts/transforms.rep/code.ys
+  scripts/trigsimp.rep/code.ys.def
+  scripts/univar.rep/Cyclotomic.ys
+  scripts/univar.rep/Cyclotomic.ys.def
+  scripts/univar.rep/code.ys
   scripts/transforms.rep/code.ys.def
   scripts/trigsimp.rep/code.ys
   scripts/trigsimp.rep/code.ys.def
@@ -214,11 +230,13 @@ set (YACAS_SCRIPTS
   scripts/univar.rep/sturm.ys.def
   scripts/yacasinit.ys)
 
+if (${ENABLE_CYACAS})
+    install (DIRECTORY scripts/ DESTINATION share/yacas/scripts COMPONENT app)
+endif ()
+
 if (ENABLE_DOCS)
   add_subdirectory (docs)
 endif()
-
-install (DIRECTORY scripts/ DESTINATION share/yacas/scripts COMPONENT app)
 
 if (ENABLE_JYACAS)
     add_subdirectory (jyacas)
@@ -228,6 +246,7 @@ if (ENABLE_CYACAS)
     add_subdirectory (cyacas)
 endif ()
 
-include (CTest)
-
-add_subdirectory (tests)
+if (${ENABLE_CYACAS} OR ${ENABLE_JYACAS})
+    include (CTest)
+    add_subdirectory (tests)
+endif ()

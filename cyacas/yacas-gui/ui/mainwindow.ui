@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>740</width>
+    <height>682</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Yagy</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="img.qrc">
+    <normaloff>:/resources/img/icon.png</normaloff>:/resources/img/icon.png</iconset>
+  </property>
+  <property name="toolButtonStyle">
+   <enum>Qt::ToolButtonFollowStyle</enum>
+  </property>
+  <property name="documentMode">
+   <bool>false</bool>
+  </property>
+  <property name="dockNestingEnabled">
+   <bool>false</bool>
+  </property>
+  <property name="unifiedTitleAndToolBarOnMac">
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QWebView" name="webView">
+      <property name="minimumSize">
+       <size>
+        <width>250</width>
+        <height>100</height>
+       </size>
+      </property>
+      <property name="url">
+       <url>
+        <string>qrc:/view.html</string>
+       </url>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonIconOnly</enum>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_New"/>
+   <addaction name="action_Open"/>
+   <addaction name="action_Save"/>
+   <addaction name="separator"/>
+   <addaction name="action_Previous"/>
+   <addaction name="action_Next"/>
+   <addaction name="separator"/>
+   <addaction name="actionInsert_Before"/>
+   <addaction name="actionInsert_After"/>
+   <addaction name="actionDelete_Current"/>
+   <addaction name="separator"/>
+   <addaction name="actionEvaluate_Current"/>
+   <addaction name="actionEvaluate_All"/>
+   <addaction name="action_Stop"/>
+   <addaction name="separator"/>
+   <addaction name="actionPreferences"/>
+   <addaction name="actionCurrent_Symbol_Help"/>
+   <addaction name="actionYacas_Manual"/>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>740</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_File">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="action_New"/>
+    <addaction name="action_Open"/>
+    <addaction name="action_Save"/>
+    <addaction name="action_Save_As"/>
+    <addaction name="action_Print"/>
+    <addaction name="action_Close"/>
+    <addaction name="action_Quit"/>
+   </widget>
+   <widget class="QMenu" name="menu_Help">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionYacas_Manual"/>
+    <addaction name="actionCurrent_Symbol_Help"/>
+    <addaction name="action_About"/>
+   </widget>
+   <widget class="QMenu" name="menu_Edit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionCu_t"/>
+    <addaction name="action_Copy"/>
+    <addaction name="action_Paste"/>
+    <addaction name="separator"/>
+    <addaction name="actionPreferences"/>
+   </widget>
+   <widget class="QMenu" name="menuScript">
+    <property name="title">
+     <string>&amp;Script</string>
+    </property>
+    <addaction name="action_Use"/>
+    <addaction name="separator"/>
+    <addaction name="action_Import"/>
+    <addaction name="action_Export"/>
+   </widget>
+   <widget class="QMenu" name="menu_Evaluate">
+    <property name="title">
+     <string>E&amp;valuate</string>
+    </property>
+    <addaction name="actionEvaluate_Current"/>
+    <addaction name="actionEvaluate_All"/>
+    <addaction name="separator"/>
+    <addaction name="action_Stop"/>
+    <addaction name="separator"/>
+    <addaction name="action_Restart"/>
+   </widget>
+   <widget class="QMenu" name="menu_Cell">
+    <property name="title">
+     <string>&amp;Cell</string>
+    </property>
+    <addaction name="action_Previous"/>
+    <addaction name="action_Next"/>
+    <addaction name="separator"/>
+    <addaction name="actionInsert_Before"/>
+    <addaction name="actionInsert_After"/>
+    <addaction name="actionDelete_Current"/>
+   </widget>
+   <addaction name="menu_File"/>
+   <addaction name="menu_Edit"/>
+   <addaction name="menu_Cell"/>
+   <addaction name="menu_Evaluate"/>
+   <addaction name="menuScript"/>
+   <addaction name="menu_Help"/>
+  </widget>
+  <action name="action_New">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/new_document.svg</normaloff>:/resources/img/new_document.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;New</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="action_Open">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/open_document_dark.svg</normaloff>:/resources/img/open_document_dark.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Open...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="action_Save">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/save_document.svg</normaloff>:/resources/img/save_document.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Save</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="action_Save_As">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/save_as.svg</normaloff>:/resources/img/save_as.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Save &amp;As...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="action_About">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/info.svg</normaloff>:/resources/img/info.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="action_Quit">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/exit.svg</normaloff>:/resources/img/exit.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="action_Print">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/print.svg</normaloff>:/resources/img/print.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Print...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionYacas_Manual">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/help_2.svg</normaloff>:/resources/img/help_2.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Yacas &amp;Manual</string>
+   </property>
+  </action>
+  <action name="action_Copy">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/copy.svg</normaloff>:/resources/img/copy.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Copy</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="action_Paste">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/paste.svg</normaloff>:/resources/img/paste.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Paste</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
+   </property>
+  </action>
+  <action name="action_Use">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/use_script.svg</normaloff>:/resources/img/use_script.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Use</string>
+   </property>
+  </action>
+  <action name="action_Import">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/import.svg</normaloff>:/resources/img/import.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Import</string>
+   </property>
+  </action>
+  <action name="action_Restart">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/restart_yacas.svg</normaloff>:/resources/img/restart_yacas.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Restart Yacas</string>
+   </property>
+  </action>
+  <action name="action_Stop">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/interupt.svg</normaloff>:/resources/img/interupt.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Stop</string>
+   </property>
+   <property name="toolTip">
+    <string>Stop evaluation</string>
+   </property>
+  </action>
+  <action name="actionEvaluate_Current">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/evaluate.svg</normaloff>:/resources/img/evaluate.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Current</string>
+   </property>
+   <property name="toolTip">
+    <string>Evaluate current cell</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+Return</string>
+   </property>
+  </action>
+  <action name="actionEvaluate_All">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/reevaluate_2.svg</normaloff>:/resources/img/reevaluate_2.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;All</string>
+   </property>
+   <property name="toolTip">
+    <string>Reevaluate all</string>
+   </property>
+  </action>
+  <action name="action_Export">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/export.svg</normaloff>:/resources/img/export.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Export</string>
+   </property>
+  </action>
+  <action name="action_Close">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/close_document.svg</normaloff>:/resources/img/close_document.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Close Window</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="actionInsert_Before">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/add_above.svg</normaloff>:/resources/img/add_above.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Insert &amp;Before</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Up</string>
+   </property>
+  </action>
+  <action name="actionInsert_After">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/add_below.svg</normaloff>:/resources/img/add_below.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Insert &amp;After</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Down</string>
+   </property>
+  </action>
+  <action name="actionDelete_Current">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/delete_current.svg</normaloff>:/resources/img/delete_current.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Delete Current</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionCurrent_Symbol_Help">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/help.svg</normaloff>:/resources/img/help.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Current &amp;Symbol Help</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
+   </property>
+  </action>
+  <action name="action_Next">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/cell_next.svg</normaloff>:/resources/img/cell_next.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Next</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Down</string>
+   </property>
+  </action>
+  <action name="action_Previous">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/cell_previous.svg</normaloff>:/resources/img/cell_previous.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Previous</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Up</string>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/preferences.svg</normaloff>:/resources/img/preferences.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Preferences...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+,</string>
+   </property>
+  </action>
+  <action name="actionCu_t">
+   <property name="icon">
+    <iconset resource="img.qrc">
+     <normaloff>:/resources/img/cut.svg</normaloff>:/resources/img/cut.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Cu&amp;t</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QWebView</class>
+   <extends>QWidget</extends>
+   <header>QtWebKitWidgets/QWebView</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="img.qrc"/>
+  <include location="img.qrc"/>
+ </resources>
+ <connections/>
+</ui>

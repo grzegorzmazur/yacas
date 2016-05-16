@@ -34,5 +34,17 @@ endif ()
 include_directories ("libyacas/include")
 
 add_subdirectory (libyacas)
-add_subdirectory (yacas)
+
+if (${ENABLE_CYACAS_CONSOLE})
+    add_subdirectory (yacas)
+endif ()
+
+if (${ENABLE_CYACAS_GUI})
+    add_subdirectory (yacas-gui)
+endif ()
+
+if (${ENABLE_CYACAS_KERNEL})
+    add_subdirectory (yacas-kernel)
+endif ()
+
 add_subdirectory (packaging)

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=yacas-gui
+Comment=Yacas
+Exec=yacas-gui
+Icon=/usr/share/yagy/yacas-gui.png
+Terminal=false
+Type=Application
+Categories=Education;Science;Math;
