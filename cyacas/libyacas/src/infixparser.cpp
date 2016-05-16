@@ -161,7 +161,7 @@ void ParsedObject::ReadExpression(LispInt depth)
                         if (iParser.iPrefixOperators.find(lookUpRight) != iParser.iPrefixOperators.end()) {
                             iLookAhead = lookUp;
                             LispInput& input = iParser.iInput;
-                            LispInt newPos = input.Position() - (origlen - len);
+                            std::size_t newPos = input.Position() - (origlen - len);
                             input.SetPosition(newPos);
                             break;
                         }
