@@ -11,6 +11,7 @@ before_install:
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get -qq update; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y libzmq-dev; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y qt5-default libqt5webkit5-dev libqt5printsupport5; fi
+  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y libboost-date-time-dev libjsoncpp-dev openssl; fi
   - if [ ${TRAVIS_OS_NAME} = "osx" ]; then brew update && brew tap caskroom/cask && brew install brew-cask && brew cask install java && brew install ant; fi
   
 before_script:
