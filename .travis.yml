@@ -16,7 +16,7 @@ before_install:
   
 before_script:
   - mkdir cmake_build && cd cmake_build
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then cmake .. ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then cmake ENABLE_CYACAS_KERNEL=Off .. ; fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then unset CXX; unset CC; cmake -G Xcode .. ; fi
 
 script:
