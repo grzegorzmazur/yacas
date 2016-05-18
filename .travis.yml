@@ -19,7 +19,7 @@ before_install:
 before_script:
   - mkdir cmake_build && cd cmake_build
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then cmake -DENABLE_CYACAS_KERNEL=Off .. ; fi
-  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then unset CXX; unset CC; cmake -G Xcode -DENABLE_CYACAS_KERNEL=Off .. ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then unset CXX; unset CC; export PATH=/usr/local/opt/qt5/bin:$PATH; cmake -G Xcode -DENABLE_CYACAS_KERNEL=Off .. ; fi
 
 script:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then make; fi
