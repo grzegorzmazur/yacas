@@ -1,14 +1,13 @@
 package net.sf.yacas;
 
-import org.junit.*;
-
+import java.io.File;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import org.junit.Assert;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-
-import java.util.ArrayList;
-import java.io.File;
-import java.io.StringWriter;
 
 @RunWith(Parameterized.class)
 public class YacasTest {
