@@ -73,12 +73,8 @@ add_subdirectory (resources)
 
 install (TARGETS yacas-gui DESTINATION bin)
 
-install (FILES resources/img/yacas-gui.png DESTINATION share/yacas)
-
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-
-    install (PROGRAMS yagy.desktop PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ DESTINATION share/applications)
-
+    install (PROGRAMS yacas-gui.desktop PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ DESTINATION share/applications)
 endif ()
 
 if (WIN32)
