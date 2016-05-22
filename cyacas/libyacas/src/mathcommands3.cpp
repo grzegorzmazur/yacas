@@ -613,30 +613,6 @@ void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
   RESULT = LispAtom::New(aEnvironment, stringify(os.str()));
 }
 
-void YacasExtraInfoSet(LispEnvironment& aEnvironment, LispInt aStackTop)
-{
-    LispPtr object(ARGUMENT(1));
-    LispPtr info(ARGUMENT(2));
-    RESULT = ( object->SetExtraInfo(info) );
-}
-
-
-void YacasExtraInfoGet(LispEnvironment& aEnvironment, LispInt aStackTop)
-{
-    LispPtr object(ARGUMENT(1));
-
-    LispObject* result = object->ExtraInfo();
-    if (!result)
-    {
-        InternalFalse(aEnvironment,RESULT);
-    }
-    else
-    {
-        RESULT = ((result));
-    }
-}
-
-
 void LispDefaultTokenizer(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
   aEnvironment.iCurrentTokenizer = &aEnvironment.iDefaultTokenizer;

@@ -241,8 +241,6 @@ CORE_KERNEL_FUNCTION("GarbageCollect",LispGarbageCollect,0,YacasEvaluator::Funct
 CORE_KERNEL_FUNCTION("SetGlobalLazyVariable",LispSetGlobalLazyVariable,2,YacasEvaluator::Macro | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("PatchLoad",LispPatchLoad,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("PatchString",LispPatchString,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
-CORE_KERNEL_FUNCTION("ExtraInfo'Set",YacasExtraInfoSet,2,YacasEvaluator::Function | YacasEvaluator::Fixed)
-CORE_KERNEL_FUNCTION("ExtraInfo'Get",YacasExtraInfoGet,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("DefaultTokenizer",LispDefaultTokenizer,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("XmlTokenizer",LispXmlTokenizer,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("XmlExplodeTag",LispExplodeTag,1,YacasEvaluator::Function | YacasEvaluator::Fixed)

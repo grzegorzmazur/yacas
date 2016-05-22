@@ -63,12 +63,6 @@ public: //Derivables
 
   virtual LispObject* Copy() const = 0;
 
- /** Return a pointer to extra info. This allows for annotating
-  *  an object. Returns nullptr by default.
-  *  LispObject's implementation of this handles almost all derived classes.
-  */
-  virtual LispObject* ExtraInfo() { return nullptr; }
-  virtual LispObject* SetExtraInfo(LispObject* aData) = 0;
 public:
   LispInt Equal(LispObject& aOther);
   inline LispInt operator==(LispObject& aOther);
@@ -102,44 +96,6 @@ public:
   static inline void* operator new(size_t, void* where) { return where; }
   static inline void operator delete(void*, void*) {}
 
-};
-
-
-template <class T>
-class WithExtraInfo : public T
-{
-public:
-  WithExtraInfo(const T& aT, LispObject* aData = 0) : T(aT), iExtraInfo(aData) {}
-  WithExtraInfo(const WithExtraInfo& other) : T(other), iExtraInfo(other.iExtraInfo) {}
-  LispObject* ExtraInfo() override { return iExtraInfo; }
-  LispObject* SetExtraInfo(LispObject* aData) override { iExtraInfo = aData; return this; }
-  LispObject* Copy() const override
-  {
-    if (!iExtraInfo.ptr())
-        return T::Copy();
-    
-    return new WithExtraInfo(*this, iExtraInfo->Copy());
-  }
-private:
-  LispPtr iExtraInfo;
-};
-
-
-template <class T, class U = LispObject>
-class ObjectHelper : public U
-{
-protected:
-  typedef ObjectHelper ASuper;  // for use by the derived class
-  ObjectHelper() = default;
-  ObjectHelper(const ObjectHelper& other) : U(other) {}
-  ~ObjectHelper() override = default;
-  LispObject* SetExtraInfo(LispObject* aData) override
-  {
-    if (!aData) return this;
-    //T * pT = dynamic_cast<T*>(this); LISPASSERT(pT);
-    LispObject * pObject = new WithExtraInfo<T>(*static_cast<T*>(this), aData);
-    return pObject;
-  }
 };
 
 /**

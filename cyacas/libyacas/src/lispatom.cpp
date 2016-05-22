@@ -23,7 +23,7 @@ LispAtom::LispAtom(const LispString* aString) : iString(aString)
     ++aString->iReferenceCount;
 }
 
-LispAtom::LispAtom(const LispAtom& other) : ASuper(other), iString(other.iString)
+LispAtom::LispAtom(const LispAtom& other) : LispObject(other), iString(other.iString)
 {
   ++iString->iReferenceCount;
 }
