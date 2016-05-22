@@ -25,17 +25,6 @@ class LispSubList extends LispObject
     LispObject copied = new LispSubList(iSubList.Get());
     return copied;
   }
-  @Override
-    public LispObject SetExtraInfo(LispPtr aData)
-  {
-//TODO FIXME
-/*
-    LispObject* result = NEW LispAnnotatedObject<LispSubList>(this);
-    result->SetExtraInfo(aData);
-    return result;
-*/
-return null;
-  }
     LispSubList(LispObject aSubList)
   {
     iSubList.Set(aSubList);

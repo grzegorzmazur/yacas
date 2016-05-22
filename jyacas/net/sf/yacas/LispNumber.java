@@ -71,17 +71,6 @@ class LispNumber extends LispObject
 
     return iNumber;
   }
-    /// annotate
-    @Override
-    public LispObject SetExtraInfo(LispPtr aData)
-  {
-    /*TODO FIXME
-    LispObject* result = NEW LispAnnotatedObject<LispNumber>(this);
-    result->SetExtraInfo(aData);
-    return result;
-    */
-    return null;
-  }
     /// number object; NULL if not yet converted from string
     BigNumber iNumber;
     /// string representation in decimal; NULL if not yet converted from BigNumber

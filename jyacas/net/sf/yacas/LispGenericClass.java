@@ -25,13 +25,6 @@ class LispGenericClass extends LispObject
       LispObject copied = new LispGenericClass(iClass);
       return copied;
     }
-    @Override
-    public LispObject SetExtraInfo(LispPtr aData)
-    {
-      //TODO FIXME
-      return null;
-    }
-
     LispGenericClass(GenericClass aClass)
     {
       iClass = aClass;

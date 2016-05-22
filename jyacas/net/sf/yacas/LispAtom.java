@@ -27,18 +27,6 @@ class LispAtom extends LispObject
   {
      return new LispAtom(iString);
   }
-    @Override
-    public LispObject SetExtraInfo(LispPtr aData)
-  {
-    //TODO FIXME
-    System.out.println("NOT YET IMPLEMENTED!!!");
-/*
-    LispObject result = new LispAnnotatedObject<LispAtom>(this);
-    result->SetExtraInfo(aData);
-    return result;
-*/
-        return null;
-  }
     LispAtom(String aString)
   {
     iString = aString;

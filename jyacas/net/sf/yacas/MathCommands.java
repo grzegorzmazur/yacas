@@ -558,12 +558,6 @@ class MathCommands
          "PatchString",
          new YacasEvaluator(new LispPatchString(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
     aEnvironment.CoreCommands().put(
-         "ExtraInfo'Set",
-         new YacasEvaluator(new YacasExtraInfoSet(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
-    aEnvironment.CoreCommands().put(
-         "ExtraInfo'Get",
-         new YacasEvaluator(new YacasExtraInfoGet(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
-    aEnvironment.CoreCommands().put(
          "DefaultTokenizer",
          new YacasEvaluator(new LispDefaultTokenizer(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
     aEnvironment.CoreCommands().put(
@@ -4088,45 +4082,6 @@ class MathCommands
         resultStream.close();
 
         RESULT(aEnvironment, aStackTop).Set(LispAtom.New(aEnvironment, resultStream.toString()));
-    }
-  }
-
-  class YacasExtraInfoSet extends YacasEvalCaller
-  {
-    @Override
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      LispPtr object = new LispPtr();
-      object.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
-
-      LispPtr info = new LispPtr();
-      info.Set(ARGUMENT(aEnvironment, aStackTop, 2).Get());
-
-      RESULT(aEnvironment, aStackTop).Set( object.Get().SetExtraInfo(info) );
-    }
-  }
-
-  class YacasExtraInfoGet extends YacasEvalCaller
-  {
-    @Override
-    public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception
-    {
-      LispPtr object = new LispPtr();
-      object.Set(ARGUMENT(aEnvironment, aStackTop, 1).Get());
-
-      LispPtr result = object.Get().ExtraInfo();
-      if (result == null)
-      {
-        LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
-      }
-      else if (result.Get() == null)
-      {
-        LispStandard.InternalFalse(aEnvironment,RESULT(aEnvironment, aStackTop));
-      }
-      else
-      {
-        RESULT(aEnvironment, aStackTop).Set(result.Get());
-      }
     }
   }
 
