@@ -171,10 +171,10 @@ void InternalFlatCopy(LispPtr& aResult, const LispPtr& aOriginal)
     }
 }
 
-LispInt InternalListLength(const LispPtr& aOriginal)
+std::size_t InternalListLength(const LispPtr& aOriginal)
 {
     LispConstIterator iter(aOriginal);
-    LispInt length = 0;
+    std::size_t length = 0;
     while (iter.getObj()) {
         ++iter;
         length++;

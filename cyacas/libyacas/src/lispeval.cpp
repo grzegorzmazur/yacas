@@ -9,6 +9,7 @@
 #include "yacas/infixparser.h"
 #include "yacas/errors.h"
 
+#include <regex>
 #include <sstream>
 
 LispUserFunction* GetUserFunction(LispEnvironment& aEnvironment,
@@ -144,12 +145,8 @@ void ShowExpression(LispString& outString, LispEnvironment& aEnvironment,
   std::ostringstream stream;
   infixprinter.Print(aExpression, stream, aEnvironment);
   outString.append(stream.str());
-  // Escape quotes
-  for (LispInt i = outString.size()-1; i >= 0; --i)
-  {
-    if (outString[i] == '\"')
-      outString.insert(outString.begin() + i, LispChar('\\'));
-  }
+
+  std::regex_replace(outString, std::regex("(^\")|([^\\\\]\")"), "\\\"");
 }
 
 static void TraceShowExpression(LispEnvironment& aEnvironment,
@@ -242,11 +239,9 @@ void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, std::ostream
 {
   LispLocalEvaluator local(aEnvironment,new BasicEvaluator);
 
-  LispInt i;
-  LispInt from=0;
-  LispInt upto = objs.size();
+  const std::size_t upto = objs.size();
 
-  for (i=from;i<upto;i++)
+  for (std::size_t i = 0; i < upto; ++i)
   {
     aEnvironment.CurrentOutput() << i << ": ";
     aEnvironment.CurrentPrinter().Print(objs[i]->iOperator, aEnvironment.CurrentOutput(),aEnvironment);

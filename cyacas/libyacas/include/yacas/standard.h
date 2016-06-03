@@ -23,7 +23,7 @@ void InternalAssociate(LispPtr& aResult, const LispPtr& aKey,
 
 void InternalReverseList(LispPtr& aResult, const LispPtr& aOriginal);
 void InternalFlatCopy(LispPtr& aResult, const LispPtr& aOriginal);
-LispInt InternalListLength(const LispPtr& aOriginal);
+std::size_t InternalListLength(const LispPtr& aOriginal);
 
 bool InternalStrictTotalOrder(const LispEnvironment& env,
                   const LispPtr& e1,
