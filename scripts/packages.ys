@@ -7,6 +7,7 @@ Defun(DefFileList,{}) {
     "complex.rep/code.ys",
     "constants.rep/code.ys",
     "controlflow.rep/code.ys",
+    "cse.rep/cse.ys",
     "debug.rep/code.ys",
     "deffunc.rep/code.ys",
     "deriv.rep/code.ys",

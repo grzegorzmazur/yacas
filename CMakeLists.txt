@@ -45,6 +45,8 @@ set (YACAS_SCRIPTS
   scripts/constants.rep/om.ys
   scripts/controlflow.rep/code.ys
   scripts/controlflow.rep/code.ys.def
+  scripts/cse.rep/cse.ys
+  scripts/cse.rep/cse.ys.def
   scripts/debug.rep/code.ys
   scripts/debug.rep/code.ys.def
   scripts/deffunc.rep/code.ys
