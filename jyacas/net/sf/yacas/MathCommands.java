@@ -444,6 +444,9 @@ class MathCommands
          "Association'Size",
          new YacasEvaluator(new GenAssociationSize(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
     aEnvironment.CoreCommands().put(
+         "Association'Contains",
+         new YacasEvaluator(new GenAssociationContains(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
+    aEnvironment.CoreCommands().put(
          "Association'Get",
          new YacasEvaluator(new GenAssociationGet(),2, YacasEvaluator.Fixed|YacasEvaluator.Function));
     aEnvironment.CoreCommands().put(
@@ -3397,6 +3400,29 @@ class MathCommands
                 RESULT(env, stack_top).Set(v.Copy(false));
             else
                 RESULT(env, stack_top).Set(LispAtom.New(env, "Undefined"));
+        }
+    }
+
+    class GenAssociationContains extends YacasEvalCaller {
+
+        @Override
+        public void Eval(LispEnvironment env, int stack_top) throws Exception {
+            LispPtr evaluated = new LispPtr();
+            evaluated.Set(ARGUMENT(env, stack_top, 1).Get());
+
+            GenericClass gen = evaluated.Get().Generic();
+            LispError.CHK_ARG_CORE(env, stack_top, gen != null, 1);
+            LispError.CHK_ARG_CORE(env, stack_top, gen.TypeName().equals("\"Association\""), 1);
+
+            LispPtr k = new LispPtr();
+            k.Set(ARGUMENT(env, stack_top, 2).Get());
+
+            LispError.CHK_ARG_CORE(env, stack_top, k.Get() != null, 2);
+
+            if (((AssociationClass)gen).GetElement(k.Get()) != null)
+                LispStandard.InternalTrue(env,YacasEvalCaller.RESULT(env, stack_top));
+            else
+                LispStandard.InternalFalse(env,YacasEvalCaller.RESULT(env, stack_top));
         }
     }
 
