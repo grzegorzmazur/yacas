@@ -146,7 +146,7 @@ void ShowExpression(LispString& outString, LispEnvironment& aEnvironment,
   infixprinter.Print(aExpression, stream, aEnvironment);
   outString.append(stream.str());
 
-  std::regex_replace(outString, std::regex("(^\")|([^\\\\]\")"), static_cast<const char*>("\\\""));
+  std::regex_replace(outString, std::regex("(^\")|([^\\\\]\")"), std::string("\\\""));
 }
 
 static void TraceShowExpression(LispEnvironment& aEnvironment,
