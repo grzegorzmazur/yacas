@@ -201,6 +201,7 @@ CORE_KERNEL_FUNCTION("Array'Get",GenArrayGet,2,YacasEvaluator::Function | YacasE
 CORE_KERNEL_FUNCTION("Array'Set",GenArraySet,3,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("Association'Create",GenAssociationCreate,0,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("Association'Size",GenAssociationSize,1,YacasEvaluator::Function | YacasEvaluator::Fixed)
+CORE_KERNEL_FUNCTION("Association'Contains",GenAssociationContains,2,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("Association'Get",GenAssociationGet,2,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("Association'Set",GenAssociationSet,3,YacasEvaluator::Function | YacasEvaluator::Fixed)
 CORE_KERNEL_FUNCTION("Association'Drop",GenAssociationDrop,2,YacasEvaluator::Function | YacasEvaluator::Fixed)

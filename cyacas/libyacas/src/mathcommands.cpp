@@ -1684,6 +1684,21 @@ void GenAssociationSize(LispEnvironment& aEnvironment,LispInt aStackTop)
     RESULT = LispAtom::New(aEnvironment, std::to_string(a->Size()));
 }
 
+void GenAssociationContains(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+    LispPtr p(ARGUMENT(1));
+    GenericClass* gen = p->Generic();
+    AssociationClass* a = dynamic_cast<AssociationClass*>(gen);
+    CheckArg(a, 1, aEnvironment, aStackTop);
+
+    LispPtr k(ARGUMENT(2));
+
+    if (a->GetElement(k))
+        InternalTrue(aEnvironment,RESULT);
+    else
+        InternalFalse(aEnvironment,RESULT);
+}
+
 void GenAssociationGet(LispEnvironment& aEnvironment,LispInt aStackTop)
 {
     LispPtr p(ARGUMENT(1));
