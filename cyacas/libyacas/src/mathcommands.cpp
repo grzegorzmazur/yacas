@@ -731,16 +731,11 @@ void LispPreFix(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispPostFix(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispInt nrArguments = InternalListLength(ARGUMENT(0));
+    const std::size_t nrArguments = InternalListLength(ARGUMENT(0));
     if (nrArguments == 2)
-    {
         SingleFix(0, aEnvironment, aStackTop, aEnvironment.PostFix());
-    }
     else
-    {
         MultiFix(aEnvironment, aStackTop, aEnvironment.PostFix());
-    }
-//    SingleFix(0, aEnvironment, RESULT,aArguments, aEnvironment.PostFix());
 }
 
 void LispBodied(LispEnvironment& aEnvironment, LispInt aStackTop)

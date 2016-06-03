@@ -358,7 +358,7 @@ void InfixPrinter::Print(
     if (!subList) {
         throw LispErrUnprintableToken();
     } else {
-        LispInt length = InternalListLength(*subList);
+        const std::size_t length = InternalListLength(*subList);
         string = (*subList)->String();
 
         const LispOperators::const_iterator prefix =
