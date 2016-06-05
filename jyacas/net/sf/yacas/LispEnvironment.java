@@ -1,6 +1,7 @@
 package net.sf.yacas;
 
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -44,10 +45,9 @@ final class LispEnvironment
     Protect(iHashTable.LookUp("Infinity"));
     Protect(iHashTable.LookUp("Undefined"));
 
-    iStack = new YacasArgStack(50000 /*TODO FIXME*/);
+    iStack = new ArrayList<>();
     MathCommands mc = new MathCommands();
     mc.AddCommands(this);
-    mc=null;
     PushLocalFrame(true);
   }
 
@@ -92,58 +92,7 @@ final class LispEnvironment
   int iEvalDepth = 0;
   int iMaxEvalDepth = 1000;
 
-
-    /**
-     * YacasArgStack implements a stack of pointers to objects that can be used
-     * to pass arguments to functions, and receive results back.
-     */
-    class YacasArgStack {
-
-        public YacasArgStack(int aStackSize) {
-            maxSize = aStackSize;
-            iStack = new java.util.ArrayList<>();
-        }
-
-        public int GetStackTop() {
-            return iStack.size();
-        }
-
-        public void RaiseStackOverflowError() throws Exception {
-            LispError.RaiseError("Argument stack reached maximum. Please extend argument stack with --stack argument on the command line.");
-        }
-
-        public void PushArgOnStack(LispObject aObject) throws Exception {
-            if (iStack.size() >= maxSize)
-                RaiseStackOverflowError();
-
-            iStack.add(new LispPtr(aObject));
-        }
-
-        public void PushNulls(int aNr) throws Exception {
-            if (iStack.size() + aNr > maxSize)
-                RaiseStackOverflowError();
-
-            for (int i = 0; i < aNr; ++i)
-                iStack.add(null);
-        }
-
-        public LispPtr GetElement(int aPos) throws Exception {
-            LispError.LISPASSERT(aPos >= 0 && aPos < iStack.size());
-            return iStack.get(aPos);
-        }
-
-        public void PopTo(int aTop) throws Exception {
-            LispError.LISPASSERT(aTop <= iStack.size());
-            while (iStack.size() > aTop)
-                iStack.remove(iStack.size() - 1);
-        }
-
-        java.util.ArrayList<LispPtr> iStack;
-        int maxSize;
-    };
-
-  YacasArgStack iStack;
-
+  ArrayList<LispPtr> iStack;
 
   public HashMap<String, YacasEvaluator> CoreCommands()
   {

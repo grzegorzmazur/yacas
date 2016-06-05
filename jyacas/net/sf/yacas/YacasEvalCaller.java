@@ -7,11 +7,11 @@ abstract class YacasEvalCaller
 
   public static LispPtr RESULT(LispEnvironment aEnvironment,int aStackTop) throws Exception
   {
-    return aEnvironment.iStack.GetElement(aStackTop);
+    return aEnvironment.iStack.get(aStackTop);
   }
   public static LispPtr ARGUMENT(LispEnvironment aEnvironment,int aStackTop, int i)  throws Exception
   {
-    return aEnvironment.iStack.GetElement(aStackTop+i);
+    return aEnvironment.iStack.get(aStackTop+i);
   }
 
   public static LispPtr Argument(LispPtr cur, int n) throws Exception
