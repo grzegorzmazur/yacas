@@ -1,10 +1,9 @@
 package net.sf.yacas;
 
 import java.io.Writer;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.HashMap;
-
+import java.util.HashSet;
+import java.util.Set;
 import static net.sf.yacas.LispError.Check;
 
 final class LispEnvironment

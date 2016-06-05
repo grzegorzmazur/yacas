@@ -1,11 +1,10 @@
 package net.sf.yacas;
 
 
+import java.awt.Desktop;
 import java.io.*;
-
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.awt.Desktop;
 
 public class YacasConsole extends Thread
 {

@@ -68,15 +68,12 @@ bool LocalSymbolBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
     if (!name)
         return false;
 
-    const LispInt iNrNames = iOriginalNames.size();
-    for (LispInt i=0;i<iNrNames;i++)
-    {
-        if (name == iOriginalNames[i])
-        {
+    const std::size_t iNrNames = iOriginalNames.size();
+    for (std::size_t i = 0; i < iNrNames; ++i)
+        if (name == iOriginalNames[i]) {
             aResult = LispAtom::New(iEnvironment, *iNewNames[i]);
             return true;
         }
-    }
     return false;
 }
 

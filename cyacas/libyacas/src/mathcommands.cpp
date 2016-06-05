@@ -272,7 +272,7 @@ void LispDestructiveReverse(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispLength(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispInt size = 0;
+    std::size_t size = 0;
 
     if (LispPtr* subList = ARGUMENT(1)->SubList()) {
         size = InternalListLength((*subList)->Nixed());
@@ -621,13 +621,11 @@ void LispWriteString(LispEnvironment& aEnvironment, LispInt aStackTop)
   CheckArg((*str)[0] == '\"', 1, aEnvironment, aStackTop);
   CheckArg((*str)[str->size()-1] == '\"', 1, aEnvironment, aStackTop);
 
-  LispInt i=1;
-  LispInt nr=str->size()-1;
+  const std::size_t nr = str->size()-1;
   //((*str)[i] != '\"')
-  for (i=1;i<nr;i++)
-  {
+  for (std::size_t i = 1; i < nr; ++i)
     aEnvironment.CurrentOutput().put((*str)[i]);
-  }
+
   // pass last printed character to the current printer
   aEnvironment.CurrentPrinter().RememberLastChar((*str)[nr-1]);  // hacky hacky
   InternalTrue(aEnvironment,RESULT);
@@ -733,16 +731,11 @@ void LispPreFix(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispPostFix(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
-    LispInt nrArguments = InternalListLength(ARGUMENT(0));
+    const std::size_t nrArguments = InternalListLength(ARGUMENT(0));
     if (nrArguments == 2)
-    {
         SingleFix(0, aEnvironment, aStackTop, aEnvironment.PostFix());
-    }
     else
-    {
         MultiFix(aEnvironment, aStackTop, aEnvironment.PostFix());
-    }
-//    SingleFix(0, aEnvironment, RESULT,aArguments, aEnvironment.PostFix());
 }
 
 void LispBodied(LispEnvironment& aEnvironment, LispInt aStackTop)
@@ -1682,6 +1675,21 @@ void GenAssociationSize(LispEnvironment& aEnvironment,LispInt aStackTop)
     AssociationClass* a = dynamic_cast<AssociationClass*>(gen);
     CheckArg(a, 1, aEnvironment, aStackTop);
     RESULT = LispAtom::New(aEnvironment, std::to_string(a->Size()));
+}
+
+void GenAssociationContains(LispEnvironment& aEnvironment,LispInt aStackTop)
+{
+    LispPtr p(ARGUMENT(1));
+    GenericClass* gen = p->Generic();
+    AssociationClass* a = dynamic_cast<AssociationClass*>(gen);
+    CheckArg(a, 1, aEnvironment, aStackTop);
+
+    LispPtr k(ARGUMENT(2));
+
+    if (a->GetElement(k))
+        InternalTrue(aEnvironment,RESULT);
+    else
+        InternalFalse(aEnvironment,RESULT);
 }
 
 void GenAssociationGet(LispEnvironment& aEnvironment,LispInt aStackTop)

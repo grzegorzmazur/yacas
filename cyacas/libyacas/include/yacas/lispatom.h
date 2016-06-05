@@ -38,7 +38,7 @@ constexpr int BASE2 = 2;
 
 class LispEnvironment;
 
-class LispAtom : public ObjectHelper<LispAtom>
+class LispAtom: public LispObject
 {
 public:
   static LispObject* New(LispEnvironment& aEnvironment, const std::string& aString);
@@ -62,7 +62,7 @@ private:
 //------------------------------------------------------------------------------
 // LispSublist
 
-class LispSubList : public ObjectHelper<LispSubList>
+class LispSubList: public LispObject
 {
 public:
   static LispSubList* New(LispObject* aSubList);
@@ -73,7 +73,7 @@ private:
   // Constructor is private -- use New() instead
   LispSubList(LispObject* aSubList) : iSubList(aSubList) {}  // iSubList's constructor is messed up (it's a LispPtr, duh)
 public:
-  LispSubList(const LispSubList& other) : ASuper(other), iSubList(other.iSubList) {}
+  LispSubList(const LispSubList& other): LispObject(other), iSubList(other.iSubList) {}
 private:
   LispPtr iSubList;
 };
@@ -82,7 +82,7 @@ private:
 //------------------------------------------------------------------------------
 // LispGenericClass
 
-class LispGenericClass : public ObjectHelper<LispGenericClass>
+class LispGenericClass: public LispObject
 {
 public:
   static LispGenericClass* New(GenericClass* aClass);
@@ -93,7 +93,7 @@ private:
   // Constructor is private -- use New() instead
   LispGenericClass(GenericClass* aClass);
 public:
-  LispGenericClass(const LispGenericClass& other) : ASuper(other), iClass(other.iClass) { iClass->iReferenceCount++; }
+  LispGenericClass(const LispGenericClass& other) : LispObject(other), iClass(other.iClass) { iClass->iReferenceCount++; }
 private:
   LispGenericClass& operator=(const LispGenericClass& other)
   {
@@ -105,13 +105,13 @@ private:
     GenericClass* iClass;
 };
 
-class LispNumber : public ObjectHelper<LispNumber>
+class LispNumber: public LispObject
 {
 public:
     /// constructors:
     /// construct from another LispNumber
   LispNumber(BigNumber* aNumber) : iNumber(aNumber), iString(nullptr) {}
-  LispNumber(const LispNumber& other) : ASuper(other), iNumber(other.iNumber), iString(other.iString) {}
+  LispNumber(const LispNumber& other) : LispObject(other), iNumber(other.iNumber), iString(other.iString) {}
   /// construct from a decimal string representation (also create a number object) and use aBasePrecision decimal digits
   LispNumber(LispString * aString, LispInt aBasePrecision) : iNumber(nullptr), iString(aString) { Number(aBasePrecision); }
 
@@ -129,5 +129,3 @@ private:
 
 
 #endif
-
-

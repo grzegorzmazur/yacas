@@ -41,15 +41,6 @@ abstract class LispObject extends LispPtr
 
   public abstract LispObject Copy(boolean aRecursed) throws Exception;
 
-  /** Return a pointer to extra info. This allows for annotating
-    *  an object. Returns NULL by default.
-    */
-  public LispPtr ExtraInfo()
-  {
-    return null;
-  }
-  public abstract LispObject SetExtraInfo(LispPtr aData);
-
   public boolean Equal(LispObject aOther) throws Exception
   {
     // next line handles the fact that either one is a string
