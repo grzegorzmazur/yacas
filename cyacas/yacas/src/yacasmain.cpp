@@ -96,8 +96,6 @@ bool use_plain = false;
 bool show_prompt = true;
 bool use_texmacs_out = false;
 
-int stack_size = 50000;
-
 bool patchload = false;
 bool exit_after_files = false;
 
@@ -123,8 +121,8 @@ void ReportNrCurrent()
 
 
 
-#define RESULT aEnvironment.iStack.GetElement(aStackTop)
-#define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
+#define RESULT aEnvironment.iStack[aStackTop]
+#define ARGUMENT(i) aEnvironment.iStack[aStackTop+i]
 
 void LispExit(LispEnvironment& aEnvironment, LispInt aStackTop)
 {
@@ -341,7 +339,7 @@ void LoadYacas(std::ostream& os)
 
     busy = true;
 
-    yacas = new CYacas(os, stack_size);
+    yacas = new CYacas(os);
 
 
 #define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) yacas->getDefEnv().getEnv().SetCommand(fname,iname,nrargs,flags);
@@ -526,10 +524,6 @@ int parse_options(int argc, char** argv)
                 fileind++;
                 if (fileind < argc)
                     root_dir = argv[fileind];
-            } else if (!std::strcmp(argv[fileind],"--stacksize")) {
-                fileind++;
-                if (fileind < argc)
-                    stack_size = atoi(argv[fileind]);
             } else if (!std::strcmp(argv[fileind],"--execute")) {
                 fileind++;
                 if (fileind < argc)

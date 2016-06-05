@@ -12,7 +12,7 @@
 static
 const LispString* GetIntegerArgument(LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
 {
-  const LispString* str = aEnvironment.iStack.GetElement(aStackTop + aArgNr)->String();
+  const LispString* str = aEnvironment.iStack[aStackTop + aArgNr]->String();
   CheckArg(str, aArgNr, aEnvironment, aStackTop);
   CheckArg(IsNumber(str->c_str(),false), aArgNr, aEnvironment, aStackTop);
   return str;

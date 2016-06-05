@@ -29,8 +29,8 @@
 
 
 #define InternalEval aEnvironment.iEvaluator->Eval
-#define RESULT aEnvironment.iStack.GetElement(aStackTop)
-#define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
+#define RESULT aEnvironment.iStack[aStackTop]
+#define ARGUMENT(i) aEnvironment.iStack[aStackTop+i]
 
 
 

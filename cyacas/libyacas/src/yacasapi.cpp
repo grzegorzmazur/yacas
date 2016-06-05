@@ -7,7 +7,7 @@
 #define OPERATOR(kind,prec,name) \
   kind##operators[hash.LookUp(#name)] = LispInFixOperator(prec);
 
-DefaultYacasEnvironment::DefaultYacasEnvironment(std::ostream& os, LispInt aStackSize)
+DefaultYacasEnvironment::DefaultYacasEnvironment(std::ostream& os)
   : output(os),
     infixprinter(prefixoperators,
                  infixoperators,
@@ -17,7 +17,7 @@ DefaultYacasEnvironment::DefaultYacasEnvironment(std::ostream& os, LispInt aStac
                  globals,hash,output,infixprinter,
                  prefixoperators,infixoperators,
                  postfixoperators,bodiedoperators,
-                 protected_symbols, &input, aStackSize),
+                 protected_symbols, &input),
     input(iEnvironment.iInputStatus)
 {
     // Define the built-in functions by tying their string representation
@@ -31,15 +31,15 @@ DefaultYacasEnvironment::DefaultYacasEnvironment(std::ostream& os, LispInt aStac
 }
 
 
-CYacas::CYacas(std::ostream& os, LispInt aStackSize):
-    environment(os, aStackSize)
+CYacas::CYacas(std::ostream& os):
+    environment(os)
 {
 }
 
 void CYacas::Evaluate(const std::string& aExpression)
 {
     LispEnvironment& env = environment.getEnv();
-    LispInt stackTop = env.iStack.GetStackTop();
+    LispInt stackTop = env.iStack.size();
 
     env.iErrorOutput.clear();
     env.iErrorOutput.str("");
@@ -110,7 +110,7 @@ void CYacas::Evaluate(const std::string& aExpression)
         HandleError(error, env, env.iErrorOutput);
      }
 
-     env.iStack.PopTo(stackTop);
+     env.iStack.resize(stackTop);
 
      _result = iResultOutput.str();
      _error = env.iErrorOutput.str();
