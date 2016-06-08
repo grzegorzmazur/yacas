@@ -1,0 +1,76 @@
+/*
+ * Copyright (C) 2016 Grzegorz Mazur.
+ *
+ * Yacas is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * Yacas is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
+
+Function("CSE'FindSimpleSubexpressions", {e, ss})
+[
+    If(Not IsAtom(e), [
+        Local(p, l);
+        l := Listify(e);
+
+        If(Apply("And",(MapSingle("IsAtom",l))) And Not Head(l) = List, [
+            Association'Set(ss, l, If (Association'Contains(ss, l), Association'Get(ss, l), 0) + 1);
+        ], [
+            ForEach(p, Tail(l))
+                ss := CSE'FindSimpleSubexpressions(p, ss);
+        ]);
+    ]);
+    ss;
+];
+
+Function("CSE'RemoveSporadicSubexpressions", {ss})
+[
+    Local(r, h);
+    r := {};
+    ForEach(h, Association'ToList(ss))
+        If (h[2] > 1, DestructiveAppend(r, UnList(h[1])));
+    r;
+];
+
+Function("CSE'TagSubexpressions", {l})
+[
+    Local(r);
+    r := {};
+    ForEach(i, l)
+        DestructiveAppend(r, {UniqueConstant(), i});
+    r;
+];
+
+// For an expression e:
+//   - find all simple subexpressions present more then once
+//   - generate unique ids for for each of them
+//   - substitute them with the ids in e
+//   - return simplified expression and list of substitutions
+Function("CSE", {e})
+[
+    Local(re, csl, t, i);
+
+    re := e;
+    csl := {};
+    t := {};
+   
+    Until(Length(t) = 0) [
+        t := CSE'TagSubexpressions(CSE'RemoveSporadicSubexpressions(CSE'FindSimpleSubexpressions(re, Association'Create())));
+        ForEach(i, t) [
+            re := Subst(i[2], i[1]) re;
+            DestructiveAppend(csl, i);
+        ];
+    ];
+
+    { re, csl };
+];

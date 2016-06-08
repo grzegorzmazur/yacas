@@ -17,3 +17,4 @@ relevant issues of design and implementation of these algorithms.
    transforms.rst
    sturm-sequences.rst
    numtheory.rst
+   references.rst

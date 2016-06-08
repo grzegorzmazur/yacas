@@ -1,0 +1,72 @@
+<!DOCTYPE html >
+
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        
+        <title>Yagy</title>
+
+        <link rel="stylesheet" href="codemirror/lib/codemirror.css" />
+        <link rel="stylesheet" href="codemirror/addon/hint/show-hint.css" />
+        <link rel="stylesheet" href="yagy_ui/yagy_ui.css" />
+        <link rel="stylesheet" href="mathbar/mathbar.css" />
+        <link rel="stylesheet" href="jquery/jquery-ui-1.11.2.min.css" />
+        <link rel="stylesheet" href="vis/vis.min.css" />
+
+        <script type="text/x-mathjax-config">
+            MathJax.Hub.Config({
+                        tex2jax: {
+                            inlineMath: [["$","$"],["\\(","\\)"]],
+                            displayMath: [["$$","$$"], ["\[","\]"]]
+                        },
+                        "HTML-CSS": {
+                            matchFontHeight: false,
+                            linebreaks: { automatic: true }
+                        },
+                        showMathMenu: false,
+                        displayAlign: "left"
+            });
+        </script>
+        
+        <script type="text/javascript" src="yagy_ui/yagy_ui.js"></script>
+        <script type="text/javascript" src="jquery/jquery-1.11.0.min.js"></script>
+        <script type="text/javascript" src="jquery/jquery-ui-1.11.2.min.js"></script>
+        <script type="text/javascript" src="jquery/jquery.jeditable.js"></script>
+        <script type="text/javascript" src="jquery/jquery.jeditable.autogrow.js"></script>
+        <script type="text/javascript" src="jquery/jquery.autosize.min.js"></script>
+        <script type="text/javascript" src="jquery/jquery.ui-contextmenu.min.js"></script>
+        <script type="text/javascript" src="mathjax/unpacked/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="flot/jquery.flot.js"></script>
+        <script type="text/javascript" src="flot/jquery.flot.resize.js"></script>
+        <script type="text/javascript" src="three/three.min.js"></script>
+        <script type="text/javascript" src="three/Detector.js"></script>
+        <script type="text/javascript" src="three/TrackballControls.js"></script>
+        <script type="text/javascript" src="plot3d/delaunay.js"></script>
+        <script type="text/javascript" src="plot3d/plot3d.js"></script>
+        <script type="text/javascript" src="mathbar/mathBar.js"></script>  
+        <script type="text/javascript" src="mathbar/functions_parser.js"></script>
+        <script type="text/javascript" src="codemirror/lib/codemirror.js"></script>
+        <script type="text/javascript" src="codemirror/mode/yacas/yacas.js"></script>
+        <script type="text/javascript" src="codemirror/addon/edit/matchbrackets.js"></script>
+        <script type="text/javascript" src="codemirror/addon/edit/closebrackets.js"></script>
+        <script type="text/javascript" src="codemirror/addon/hint/show-hint.js"></script>
+        <script type="text/javascript" src="codemirror/addon/hint/anyword-hint.js"></script>
+        <script type="text/javascript" src="vis/vis.min.js"></script>
+        <script>$( document ).ready( load )</script>
+    </head>
+
+    <body>
+        <div id="YacasAREA">
+
+            <table id="Elements">
+                <tbody id="expression_0" class="New">
+                <tr id='tr_input'>
+                    <td>in&nbsp&nbsp:</td>
+                    <td><textarea class='jtransform' id='inputExpression' onKeyDown='return submitenter(this,event)' autofocus></textarea></td>
+                </tr>
+                </tbody>
+             </table>
+        </div>
+        <div id="MathBarStringWidthTest"></div>
+    </body>
+</html>

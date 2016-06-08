@@ -47,4 +47,5 @@ Sparsity
 MatrixSolve
 Cholesky
 LU
+LDU
 }

@@ -1,0 +1,32 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/img/icon.png</file>
+        <file>resources/img/splash.png</file>
+        <file>resources/img/evaluate.svg</file>
+        <file>resources/img/interupt.svg</file>
+        <file>resources/img/save_document.svg</file>
+        <file>resources/img/new_document.svg</file>
+        <file>resources/img/open_document_dark.svg</file>
+        <file>resources/img/close_document.svg</file>
+        <file>resources/img/exit.svg</file>
+        <file>resources/img/save_as.svg</file>
+        <file>resources/img/print.svg</file>
+        <file>resources/img/help_2.svg</file>
+        <file>resources/img/help.svg</file>
+        <file>resources/img/info.svg</file>
+        <file>resources/img/export.svg</file>
+        <file>resources/img/import.svg</file>
+        <file>resources/img/paste.svg</file>
+        <file>resources/img/copy.svg</file>
+        <file>resources/img/delete_current.svg</file>
+        <file>resources/img/add_below.svg</file>
+        <file>resources/img/add_above.svg</file>
+        <file>resources/img/reevaluate_2.svg</file>
+        <file>resources/img/restart_yacas.svg</file>
+        <file>resources/img/use_script.svg</file>
+        <file>resources/img/cell_next.svg</file>
+        <file>resources/img/cell_previous.svg</file>
+        <file>resources/img/preferences.svg</file>
+        <file>resources/img/cut.svg</file>
+    </qresource>
+</RCC>
