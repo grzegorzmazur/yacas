@@ -969,7 +969,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 		// look for the max number in the column below (i,i)
 		j:=i;
 		ForEach(k,i+1 .. n) [
-		   If(Abs(matrix[k][i])>Abs(matrix[j][i]), j:=k);
+		   If(matrix[i][i]=0 And Not(Type(matrix[k][i])=''), j:=k);
                 ];
 		If(j>i, [
 		   // swap the rows i and j
