@@ -1007,3 +1007,71 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	];
 	{P,L,D,U};
 ];
+
+// InverseL
+// inverse a unit lower triangular matrix 
+10 # InverseL(A_IsSquareMatrix) <--
+[
+	Local(n,L,Inv);
+	n:=Length(A);
+	Inv:=Identity(n);
+	L:=ZeroMatrix(n,n);
+
+        ForEach(i,1 .. n)
+                ForEach(j,1 .. n)
+                        L[i][j] := A[i][j];
+
+	ForEach(i,1 .. (n-1))
+		ForEach(k,i+1 .. n)
+			ForEach(j,i+1 .. k)
+				Inv[k][i] := Inv[k][i] - Inv[k][j] * L[j][i];
+	Inv;
+];
+
+// InverseU
+// inverse a unit upper triangular matrix 
+10 # InverseU(A_IsSquareMatrix) <--
+[
+	Local(n,U,Inv);
+	n:=Length(A);
+	Inv:=Identity(n);
+	U:=ZeroMatrix(n,n);
+
+        ForEach(i,1 .. n)
+                ForEach(j,1 .. n)
+                        U[i][j] := A[i][j];
+
+	ForEach(i,1 .. (n-1))
+		ForEach(k,i+1 .. n)
+			ForEach(j,i+1 .. k)
+				Inv[i][k] := Inv[i][k] - U[i][j] * Inv[j][k];
+	Inv;
+];
+
+// InverseD
+// inverse a diagonal matrix
+10 # InverseD(A_IsSquareMatrix) <--
+[
+	Local(n,Inv);
+	n:=Length(A);
+	Inv:=Identity(n);
+
+        ForEach(i,1 .. n)
+                        Inv[i][i] := 1/A[i][i];
+	Inv;
+];
+
+// 
+// Inverse by PLDU decomposition  (PA = LDU) => (A^-1 = U^-1 D^-1 L^-1 P)
+//  
+10 # InversePLDU(A_IsSquareMatrix) <--
+[
+	Local(n,P,L,D,U,InvU,InvD,InvL,Inv);
+	{P,L,D,U} := PLDU(A);
+	InvU:=InverseU(U);
+	InvD:=InverseD(D);
+	InvL:=InverseL(L);
+	Inv:=InvU * InvD * InvL * P;
+	Inv;
+];
+

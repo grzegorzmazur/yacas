@@ -47,4 +47,9 @@ Sparsity
 MatrixSolve
 Cholesky
 LU
+PLDU
+InverseL
+InverseU
+InverseD
+InversePLDU
 }
