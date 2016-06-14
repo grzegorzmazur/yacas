@@ -1005,6 +1005,10 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 		L[i][i]:=1;
 		U[i][i]:=1;
 	];
+	// PrintMatrix(P);
+	// PrintMatrix(L);
+	// PrintMatrix(D);
+	// PrintMatrix(U);
 	{P,L,D,U};
 ];
 
@@ -1045,6 +1049,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 		ForEach(k,i+1 .. n)
 			ForEach(j,i+1 .. k)
 				Inv[i][k] := Inv[i][k] - U[i][j] * Inv[j][k];
+	// PrintMatrix(Inv);
 	Inv;
 ];
 
@@ -1066,12 +1071,76 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 //  
 10 # InversePLDU(A_IsSquareMatrix) <--
 [
-	Local(n,P,L,D,U,InvU,InvD,InvL,Inv);
+	Local(P,L,D,U,InvU,InvD,InvL,Inv);
 	{P,L,D,U} := PLDU(A);
 	InvU:=InverseU(U);
 	InvD:=InverseD(D);
 	InvL:=InverseL(L);
 	Inv:=InvU * InvD * InvL * P;
 	Inv;
+];
+
+// 
+// DAG: (x = Ax + 1) => (x = A'x + b') where A' is a lower triangular matrix
+//  
+DAG(A_IsSquareMatrix) <--
+[
+	Local(n,matrix,I,b,X,P,L,D,U,J,d,LL,x,bb,AA,B,InvU,InvD,InvL,Inv);
+	n:=Length(A);
+	I:=Identity(n);
+	b:=I[1];
+	P:=ZeroMatrix(n,n);
+	L:=ZeroMatrix(n,n);
+	D:=ZeroMatrix(n,n);
+	U:=ZeroMatrix(n,n);
+	X:=ZeroMatrix(n,n);
+	J:=ZeroMatrix(n,n);
+	matrix:=ZeroMatrix(n,n);
+        ForEach(i,1 .. n)
+                ForEach(j,1 .. n)
+                        matrix[i][j] := A[i][j];
+	// J is the anti-identity matrix
+        ForEach(i,1 .. n)
+		J[i][n+1-i]:=1;
+	X:=J*(I-matrix)*J;
+	// PrintMatrix(X);
+	{P,L,D,U} := PLDU(X);
+	d:=True;
+        ForEach(i,1 .. n) [
+	   d:=d And (D[i][i]>0);	
+	];
+	InvU:=InverseU(U);
+	InvD:=InverseD(D);
+	InvL:=InverseL(L);
+	LL:=J*U*J;
+	// PrintMatrix(LL);
+	// AA:=Simplify(I - LL);
+	AA:=I - LL;
+	// PrintMatrix(AA);
+	// B:=Simplify(J*InvD*InvL*Transpose(P)*J);
+	B:=J*InvD*InvL*Transpose(P)*J;
+	bb:=B*b;
+	// x:=Simplify(J*InvU*J*bb);
+	x:=J*InvU*J*bb;
+	{x, AA, bb, d};
+];
+
+// 
+// PrintMatrix 
+//  
+10 # PrintMatrix(A_IsSquareMatrix) <--
+[
+	Local(n);
+	n:=Length(A);
+        ForEach(i,1 .. n) [
+	   Echo("");
+	   Write(i);
+	   Write(|);
+           ForEach(j,1 .. n) [
+		Write(		);
+		Write(A[i][j]);
+	   ];
+	];
+	Echo("");
 ];
 
