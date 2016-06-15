@@ -329,10 +329,60 @@ LocalSymbols(x)
 
 /********** Solve'System **********/
 
-// for now, just use a very simple backsubstitution scheme
-Solve'System(_eqns, _vars) <-- Solve'SimpleBackSubstitution(eqns,vars);
+Solve'System(_eqns, _vars) <-- [ 
+    Local(rules, e, ee, linear, A, b);
 
-// Check(False, "Solve'System: not implemented");
+    ee := (eqns /:: { _lhs == _rhs <- lhs - rhs });
+
+    linear := True;
+
+    b := {};
+    A := {};
+
+    ForEach (e, ee) [
+        Local(m, homogenous, Arow);
+
+        Arow := ZeroVector(Length(vars));
+
+        m := MM(e, vars);
+        homogenous := True;
+
+        While (linear And m[2] != {}) [
+            Local(mld, mlc);
+            mld := MultiDegree(m);
+            mlc := MultiLeadingCoef(m);
+
+            If (IsZeroVector(mld), [
+                DestructiveAppend(b, -mlc);
+                homogenous := False;
+            ], [
+                If (Min(mld) = 0 And Max(mld) = 1 And Add(mld) = 1, [
+                    Arow[Find(mld, 1)] := mlc;
+                ], [
+                    linear := False;
+                ]);
+            ]);
+
+            m := DropZeroLC(MultiNomialAdd(m, MultiNomialNegate(MultiLT(m))));
+        ];
+
+        If (homogenous, DestructiveAppend(b, 0));
+
+        DestructiveAppend(A, Arow);
+    ];
+
+    If (linear, [
+        Local(r, e);
+        r := {};
+        ForEach(e, Transpose({vars, MatrixSolve(A, b)})) [
+            DestructiveAppend(r, e[1] == e[2]);
+        ];
+        {r};
+    ], [
+        // for anything else, just try to use a simple backsubstitution scheme
+        Solve'SimpleBackSubstitution(eqns,vars);
+    ]);
+];
 
 10 # Solve'SimpleBackSubstitution'FindAlternativeForms((_lx) == (_rx)) <--
 [
