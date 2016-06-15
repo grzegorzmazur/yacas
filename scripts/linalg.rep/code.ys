@@ -355,8 +355,47 @@ Function("CoFactor",{matrix,ii,jj})
 
 Minor(matrix,i,j) := CoFactor(matrix,i,j)*(-1)^(i+j);
 
-Function("Inverse",{matrix})
+10 # Inverse(A_IsDiagonal) <--
 [
+	Local(i,n,Inv);
+	n:=Length(A);
+	Inv:=Identity(n);
+
+        ForEach(i,1 .. n)
+        	Inv[i][i] := 1/A[i][i];
+	Inv;
+];
+
+50 # InverseL(A_IsLowerTriangular) <--
+[
+	Local(i,j,k,n,Inv);
+	n:=Length(A);
+	Inv:=Identity(n);
+
+	ForEach(i,1 .. (n-1))
+		ForEach(k,i+1 .. n)
+			ForEach(j,i+1 .. k)
+				Inv[k][i] := Inv[k][i] - Inv[k][j] * L[j][i];
+	Inv;
+];
+
+
+50 # Inverse(A_IsUpperTriangular) <--
+[
+	Local(i,j,k,n,Inv);
+	n:=Length(A);
+	Inv:=Identity(n);
+	U:=ZeroMatrix(n,n);
+
+	ForEach(i,1 .. (n-1))
+		ForEach(k,i+1 .. n)
+			ForEach(j,i+1 .. k)
+				Inv[i][k] := Inv[i][k] - A[i][j] * Inv[j][k];
+	Inv;
+];
+
+
+100 # Inverse(matrix_IsSquareMatrix) <-- [
   Local(perms,indices,inv,det,n);
   n:=Length(matrix);
   indices:=Table(i,i,1,n,1);
@@ -1074,9 +1113,9 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 [
 	Local(P,L,D,U,InvU,InvD,InvL,Inv);
 	{P,L,D,U} := PLDU(A);
-	InvU:=InverseU(U);
-	InvD:=InverseD(D);
-	InvL:=InverseL(L);
+	InvU:=Inverse(U);
+	InvD:=Inverse(D);
+	InvL:=Inverse(L);
 	Inv:=InvU * InvD * InvL * P;
 	Inv;
 ];

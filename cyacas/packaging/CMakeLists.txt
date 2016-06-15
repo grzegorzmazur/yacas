@@ -58,8 +58,6 @@ else ()
     set (CPACK_RESOURCE_FILE_README "${PROJECT_SOURCE_DIR}/README.rst")
 endif ()
 
-
-
 if (WIN32 AND CMAKE_CROSSCOMPILING)
     if (CMAKE_SIZEOF_VOID_P EQUAL 8)
         exec_program (${CMAKE_CXX_COMPILER} ARGS -print-file-name=libgcc_s_seh-1.dll OUTPUT_VARIABLE SJLJ_PATH)
@@ -70,49 +68,7 @@ if (WIN32 AND CMAKE_CROSSCOMPILING)
     install (FILES ${SJLJ_PATH} ${WINPTHREAD_PATH} DESTINATION bin COMPONENT app)
 endif ()
 
-
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-    install (FILES deb/copyright DESTINATION share/doc/yacas COMPONENT app)
-
-    find_package (UnixCommands REQUIRED)
-    add_custom_target (compress_changelog ALL COMMAND ${GZIP} -9 -n -c ${PROJECT_SOURCE_DIR}/cyacas/packaging/deb/changelog > ${PROJECT_BINARY_DIR}/changelog.gz)
-
-    install (FILES ${PROJECT_BINARY_DIR}/changelog.gz DESTINATION share/doc/yacas COMPONENT app)
-
-    find_program (RST2MAN rst2man)
-
-    if (RST2MAN)
-        add_custom_target (man ALL COMMAND ${RST2MAN} ${PROJECT_SOURCE_DIR}/yacas.1.rst | ${GZIP} -9 > ${PROJECT_BINARY_DIR}/yacas.1.gz)
-        install (FILES ${PROJECT_BINARY_DIR}/yacas.1.gz DESTINATION share/man/man1 COMPONENT app)
-    endif ()
-
-    find_package(LSB REQUIRED)
-
-    if (${LSB_RELEASE_ID_SHORT} MATCHES "Ubuntu|Debian")
-        set (CPACK_GENERATOR DEB)
-
-        execute_process (COMMAND dpkg --print-architecture OUTPUT_VARIABLE CPACK_DEBIAN_PACKAGE_ARCHITECTURE)
-        string (REGEX REPLACE "(\r?\n)+$" "" CPACK_DEBIAN_PACKAGE_ARCHITECTURE "${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
-        set (CPACK_DEBIAN_PACKAGE_RELEASE 1)
-        set (CPACK_PACKAGE_FILE_NAME "yacas_${PROJECT_VERSION}-${CPACK_DEBIAN_PACKAGE_RELEASE}${LSB_RELEASE_CODENAME_SHORT}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
-        set (CPACK_DEBIAN_PACKAGE_DESCRIPTION ${CPACK_PACKAGE_DESCRIPTION})
-        set (CPACK_DEBIAN_PACKAGE_SECTION "math")
-        set (CPACK_DEBIAN_PACKAGE_RECOMMENDS "yagy")
-        set (CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-    endif ()
-
-    if (${LSB_RELEASE_ID_SHORT} MATCHES "Fedora")
-        set (CPACK_GENERATOR RPM)
-	execute_process (COMMAND uname -m OUTPUT_VARIABLE CPACK_RPM_PACKAGE_ARCHITECTURE)
-	string (STRIP "${CPACK_RPM_PACKAGE_ARCHITECTURE}" CPACK_RPM_PACKAGE_ARCHITECTURE)
-	set (CPACK_RPM_PACKAGE_RELEASE 1)
-        set (CPACK_PACKAGE_FILE_NAME "yacas_${YACAS_VERSION}-${CPACK_RPM_PACKAGE_RELEASE}.fc${LSB_RELEASE_RELEASE_SHORT}.${CPACK_RPM_PACKAGE_ARCHITECTURE}")
-        set (CPACK_RPM_PACKAGE_DESCRIPTION ${CPACK_PACKAGE_DESCRIPTION})
-	set (CPACK_RPM_PACKAGE_LICENSE "LGPLv2+")
-	set (CPACK_RPM_PACKAGE_GROUP "Applications/Engineering")
-    endif ()
-
-elseif (WIN32 AND NOT UNIX)
+if (WIN32 AND NOT UNIX)
     set (CPACK_GENERATOR NSIS)
     set (CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP 1)
     include (InstallRequiredSystemLibraries)
@@ -130,4 +86,6 @@ elseif (WIN32 AND NOT UNIX)
     set (CPACK_CREATE_DESKTOP_LINKS "yacas.exe" "yacas")
 endif ()
 
-include (CPack)
+if (WIN32 OR APPLE)
+    include (CPack)
+endif ()
