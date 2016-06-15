@@ -53,5 +53,6 @@ InverseU
 InverseD
 InversePLDU
 DAG
+NormaliseMDP
 PrintMatrix
 }

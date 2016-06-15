@@ -1104,7 +1104,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	   WriteString("|");
            ForEach(j,1 .. m) [
 		WriteString("		");
-		Write(A[i][j]);
+		Write(N(Eval(A[i][j])));
 	   ];
 	];
 	Echo("");
@@ -1124,7 +1124,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	   Write(i);
 	   Write(|);
 	   WriteString("		");
-	   Write(A[i]);
+	   Write(N(Eval(A[i])));
 	];
 	Echo("");
 ];
@@ -1172,4 +1172,43 @@ DAG(A_IsSquareMatrix, Impact_IsVector) <--
 		r[i]:=x[i]*Impact[i];
 	];
 	{r, x, AA, bb, d};
+];
+
+NormaliseMDP(P_IsSquareMatrix, Impact_IsVector) <--
+[
+	Local(n,I,p,r,d,c1,P1,P2,Impact2);
+	n:=Length(A);
+	I:=Identity(n);
+	p:=ZeroVector(n);
+	r:=ZeroVector(n);
+	c1:=ZeroVector(n);
+	Impact2:=ZeroVector(n);
+	d:=True;
+	sum:=0;
+	P1:=ZeroMatrix(n,n);
+	P2:=ZeroMatrix(n,n);
+
+	c:=I[1]; // PrintMatrix("c", c);
+	{r, p, P1, c1, d} := DAG(P, Impact);
+	// PrintMatrix("r", r);
+	// PrintMatrix("p", p);
+	// PrintMatrix("P'", P1);
+	// PrintMatrix("c'", c1);
+	// PrintMatrix("d", d);
+	ForEach(j,1 .. n) [
+	  sum:=0;
+	  ForEach(i,1 .. n) [
+		sum:=sum + P1[i][j];
+	  ];
+	  If(Not(sum=0), [
+		  ForEach(i,1 .. n) [
+			P2[i][j] := P1[i][j] / sum;
+		  ];
+	  ]);
+	];
+	p2 := DAG(P2, Impact)[2];
+	ForEach(i,1 .. n) [
+	  Impact2[i] := N(Eval(Impact[i])*Eval(p[i])/Eval(p2[i]));
+	];
+	{r, p, p2, P1, c1, P2, Impact2};
 ];
