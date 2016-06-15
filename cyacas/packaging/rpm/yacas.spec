@@ -44,26 +44,60 @@ cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_DOCS=ON -DENABLE_CYACAS_KERNEL=OFF -DC
 %{__make} DESTDIR=%{buildroot} install
 %clean
 rm -rf %{buildroot}
+
+%package console
+Summary:        Yacas text console
+%if 0%{?suse_version}
+Group:          Productivity/Scientific/Math
+%else
+Group:          Applications/Engineering
+%endif
+%description console
+Yacas text console. Yacas is an easy to use, general
+purpose Computer Algebra System, a program for symbolic manipulation 
+of mathematical expressions. It uses its own programming language
+designed for symbolic as well as arbitrary-precision numerical
+computations. The system has a library of scripts that implement
+many of the symbolic algebra operations; new algorithms can be easily
+added to the library. Yacas comes with extensive documentation 
+covering the scripting language, the functionality that is already
+implemented in the system, and the algorithms we used.
 %files
 %defattr(-,root,root,-)
 "/usr/bin/yacas"
-"/usr/share/man/man1/yacas.1.gz"
-%dir "/usr/share/doc/yacas"
-"/usr/share/doc/yacas/*"
+
+%package common
+Summary:        Yacas common files
+%if 0%{?suse_version}
+Group:          Productivity/Scientific/Math
+%else
+Group:          Applications/Engineering
+%endif
+%description common
+Common files for yacas and yacas GUI. Yacas is an easy to use, general
+purpose Computer Algebra System, a program for symbolic manipulation 
+of mathematical expressions. It uses its own programming language
+designed for symbolic as well as arbitrary-precision numerical
+computations. The system has a library of scripts that implement
+many of the symbolic algebra operations; new algorithms can be easily
+added to the library. Yacas comes with extensive documentation 
+covering the scripting language, the functionality that is already
+implemented in the system, and the algorithms we used.
+%files common
 %dir "/usr/share/yacas"
 %dir "/usr/share/yacas/scripts"
 "/usr/share/yacas/scripts/*"
 %dir "/usr/share/yacas/tests"
 "/usr/share/yacas/tests/*"
 
-%package yacas-gui
+%package gui
 Summary:        Yacas GUI
 %if 0%{?suse_version}
 Group:          Productivity/Scientific/Math
 %else
 Group:          Applications/Engineering
 %endif
-%description yacas-gui
+%description gui
 GUI for yacas. Yacas is an easy to use, general purpose Computer
 Algebra System, a program for symbolic manipulation of mathematical
 expressions. It uses its own programming language designed for
@@ -99,6 +133,9 @@ covering the scripting language, the functionality that is already
 implemented in the system, and the algorithms we used.
 %files doc
 %defattr(-,root,root,-)
+"/usr/share/man/man1/yacas.1.gz"
+%dir "/usr/share/doc/yacas"
+"/usr/share/doc/yacas/*"
 %dir "/usr/share/yacas/documentation"
 %dir "/usr/share/yacas/documentation/singlehtml"
 %docdir "/usr/share/yacas/documentation/singlehtml"
