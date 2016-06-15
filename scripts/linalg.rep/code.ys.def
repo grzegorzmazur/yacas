@@ -48,4 +48,11 @@ MatrixSolve
 Cholesky
 LU
 LDU
+PLDU
+InverseL
+InverseU
+InverseD
+InversePLDU
+DAG
+PrintMatrix
 }
