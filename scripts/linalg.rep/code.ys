@@ -366,34 +366,46 @@ Minor(matrix,i,j) := CoFactor(matrix,i,j)*(-1)^(i+j);
 	Inv;
 ];
 
-50 # InverseL(A_IsLowerTriangular) <--
+// Make sure the matrix is unit (all diagonal elements are 1)
+50 # Inverse(A_IsLowerTriangular) <--
 [
-	Local(i,j,k,n,Inv);
+	Local(i,j,k,n,L,Inv);
 	n:=Length(A);
 	Inv:=Identity(n);
+	L:=ZeroMatrix(n,n);
 
-	ForEach(i,1 .. (n-1))
-		ForEach(k,i+1 .. n)
-			ForEach(j,i+1 .. k)
-				Inv[k][i] := Inv[k][i] - Inv[k][j] * L[j][i];
-	Inv;
+        ForEach(i,1 .. n)
+                ForEach(j,1 .. n)
+                        L[i][j] := A[i][j];
+
+	If(n>1, [
+		ForEach(j,1 .. (n-1))
+			ForEach(i,j+1 .. n)
+				ForEach(k,1 .. j)
+					Inv[i][i-j] := Inv[i][i-j] - L[i][i-j+k-1] * Inv[i-j+k-1][i-j];
+		Inv;
+	], L);
 ];
 
-
+// Make sure the matrix is unit (all diagonal elements are 1)
 50 # Inverse(A_IsUpperTriangular) <--
 [
-	Local(i,j,k,n,Inv);
+	Local(i,j,k,n,U,Inv);
 	n:=Length(A);
 	Inv:=Identity(n);
 	U:=ZeroMatrix(n,n);
 
-	ForEach(i,1 .. (n-1))
-		ForEach(k,i+1 .. n)
-			ForEach(j,i+1 .. k)
-				Inv[i][k] := Inv[i][k] - A[i][j] * Inv[j][k];
-	Inv;
+        ForEach(i,1 .. n)
+                ForEach(j,1 .. n)
+                        U[i][j] := A[i][j];
+	If(n>1, [
+		ForEach(j,1 .. (n-1))
+			ForEach(i,j+1 .. n)
+				ForEach(k,1 .. j)
+					Inv[i-j][i] := Inv[i-j][i] - Inv[i-j][i-j+k-1] * U[i-j+k-1][i];
+		Inv;
+	], U);
 ];
-
 
 100 # Inverse(matrix_IsSquareMatrix) <-- [
   Local(perms,indices,inv,det,n);
@@ -1044,65 +1056,11 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 		L[i][i]:=1;
 		U[i][i]:=1;
 	];
-	// PrintMatrix(P);
-	// PrintMatrix(L);
-	// PrintMatrix(D);
-	// PrintMatrix(U);
+	//PrintMatrix(P);
+	//PrintMatrix(L);
+	//PrintMatrix(D);
+	//PrintMatrix(U);
 	{P,L,D,U};
-];
-
-// InverseL
-// inverse a unit lower triangular matrix 
-10 # InverseL(A_IsSquareMatrix) <--
-[
-	Local(n,L,Inv);
-	n:=Length(A);
-	Inv:=Identity(n);
-	L:=ZeroMatrix(n,n);
-
-        ForEach(i,1 .. n)
-                ForEach(j,1 .. n)
-                        L[i][j] := A[i][j];
-
-	ForEach(i,1 .. (n-1))
-		ForEach(k,i+1 .. n)
-			ForEach(j,i+1 .. k)
-				Inv[k][i] := Inv[k][i] - Inv[k][j] * L[j][i];
-	Inv;
-];
-
-// InverseU
-// inverse a unit upper triangular matrix 
-10 # InverseU(A_IsSquareMatrix) <--
-[
-	Local(n,U,Inv);
-	n:=Length(A);
-	Inv:=Identity(n);
-	U:=ZeroMatrix(n,n);
-
-        ForEach(i,1 .. n)
-                ForEach(j,1 .. n)
-                        U[i][j] := A[i][j];
-
-	ForEach(i,1 .. (n-1))
-		ForEach(k,i+1 .. n)
-			ForEach(j,i+1 .. k)
-				Inv[i][k] := Inv[i][k] - U[i][j] * Inv[j][k];
-	// PrintMatrix(Inv);
-	Inv;
-];
-
-// InverseD
-// inverse a diagonal matrix
-10 # InverseD(A_IsSquareMatrix) <--
-[
-	Local(n,Inv);
-	n:=Length(A);
-	Inv:=Identity(n);
-
-        ForEach(i,1 .. n)
-                        Inv[i][i] := 1/A[i][i];
-	Inv;
 ];
 
 // 
@@ -1119,15 +1077,64 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	Inv;
 ];
 
+10 # PrintMatrix(Prompt_IsString, A_IsMatrix) <--
+[
+	Local(n, m);
+	n:=Length(A);
+	m:=Length(A[1]);
+	Echo("");
+	WriteString(Prompt);
+           ForEach(j,1 .. m) [
+		WriteString("		");
+		Write(j);
+	   ];
+	Echo("");
+	WriteString("=");
+           ForEach(j,1 .. m) [
+		WriteString("		");
+		WriteString("--");
+	   ];
+        ForEach(i,1 .. n) [
+	   Echo("");
+	   Write(i);
+	   WriteString("|");
+           ForEach(j,1 .. m) [
+		WriteString("		");
+		Write(N(Eval(A[i][j])));
+	   ];
+	];
+	Echo("");
+];
+
+10 # PrintMatrix(Prompt_IsString, A_IsVector) <--
+[
+	Local(i,n,m);
+	n:=Length(A);
+	m:=1;
+	Echo(Prompt);
+	WriteString("=");
+	WriteString("		");
+	WriteString("--");
+        ForEach(i,1 .. n) [
+	   Echo("");
+	   Write(i);
+	   Write(|);
+	   WriteString("		");
+	   Write(N(Eval(A[i])));
+	];
+	Echo("");
+];
+
 // 
 // DAG: (x = Ax + 1) => (x = A'x + b') where A' is a lower triangular matrix
 //  
-DAG(A_IsSquareMatrix) <--
+DAG(A_IsSquareMatrix, Impact_IsVector) <--
 [
-	Local(n,matrix,I,b,X,P,L,D,U,J,d,LL,x,bb,AA,B,InvU,InvD,InvL,Inv);
+	Local(i,j,n,matrix,I,b,X,P,L,D,U,J,d,LL,x,r,bb,AA,B,InvP,InvU,InvD,InvL,Inv);
 	n:=Length(A);
 	I:=Identity(n);
-	b:=I[1];
+	b:=I[1]; // PrintMatrix(b);
+	r:=ZeroVector(n);
 	P:=ZeroMatrix(n,n);
 	L:=ZeroMatrix(n,n);
 	D:=ZeroMatrix(n,n);
@@ -1141,45 +1148,62 @@ DAG(A_IsSquareMatrix) <--
 	// J is the anti-identity matrix
         ForEach(i,1 .. n)
 		J[i][n+1-i]:=1;
-	X:=J*(I-matrix)*J;
-	// PrintMatrix(X);
-	{P,L,D,U} := PLDU(X);
+	X:=J*(I-matrix)*J; // PrintMatrix(X);
+	{P,L,D,U} := PLDU(X); // PrintMatrix(P*X); PrintMatrix(L*D*U);
 	d:=True;
         ForEach(i,1 .. n) [
 	   d:=d And (D[i][i]>0);	
 	];
-	InvU:=Inverse(U);
-	InvD:=Inverse(D);
-	InvL:=Inverse(L);
-	LL:=J*U*J;
-	// PrintMatrix(LL);
-	// AA:=Simplify(I - LL);
-	AA:=I - LL;
-	// PrintMatrix(AA);
-	// B:=Simplify(J*InvD*InvL*Transpose(P)*J);
-	B:=J*InvD*InvL*Transpose(P)*J;
-	bb:=B*b;
-	// x:=Simplify(J*InvU*J*bb);
-	x:=J*InvU*J*bb;
-	{x, AA, bb, d};
-];
-
-// 
-// PrintMatrix 
-//  
-10 # PrintMatrix(A_IsSquareMatrix) <--
-[
-	Local(n);
-	n:=Length(A);
+	InvD:=Inverse(J*D*J); // PrintMatrix("D^-1", InvD);
+	InvU:=Inverse(J*L*J); // PrintMatrix("U^-1", InvU);
+	InvP:=Transpose(P); // PrintMatrix("P^-1", InvP);
+	LL:=J*U*J; // PrintMatrix("L", LL);
+	InvL:=Inverse(LL); // PrintMatrix("L^-1", InvL);PrintMatrix("LL^-1", LL*InvL);
+	AA:=I - LL; // PrintMatrix(AA);
+	B:=InvD*InvU*InvP; // PrintMatrix("B", B);
+	bb:=B*b; // PrintMatrix("b'", bb);
+	x:=InvL*bb; // PrintMatrix("x", x);
         ForEach(i,1 .. n) [
-	   Echo("");
-	   Write(i);
-	   Write(|);
-           ForEach(j,1 .. n) [
-		Write(		);
-		Write(A[i][j]);
-	   ];
+		r[i]:=x[i]*Impact[i];
 	];
-	Echo("");
+	{r, x, AA, bb, d};
 ];
 
+NormaliseMDP(P_IsSquareMatrix, Impact_IsVector) <--
+[
+	Local(i,j,n,sum,I,p,r,d,c1,P1,P2,Impact2);
+	n:=Length(A);
+	I:=Identity(n);
+	p:=ZeroVector(n);
+	r:=ZeroVector(n);
+	c1:=ZeroVector(n);
+	Impact2:=ZeroVector(n);
+	d:=True;
+	sum:=0;
+	P1:=ZeroMatrix(n,n);
+	P2:=ZeroMatrix(n,n);
+
+	c:=I[1]; // PrintMatrix("c", c);
+	{r, p, P1, c1, d} := DAG(P, Impact);
+	// PrintMatrix("r", r);
+	// PrintMatrix("p", p);
+	// PrintMatrix("P'", P1);
+	// PrintMatrix("c'", c1);
+	// PrintMatrix("d", d);
+	ForEach(j,1 .. n) [
+	  sum:=0;
+	  ForEach(i,1 .. n) [
+		sum:=sum + P1[i][j];
+	  ];
+	  If(Not(sum=0), [
+		  ForEach(i,1 .. n) [
+			P2[i][j] := P1[i][j] / sum;
+		  ];
+	  ]);
+	];
+	p2 := DAG(P2, Impact)[2];
+	ForEach(i,1 .. n) [
+	  Impact2[i] := N(Eval(Impact[i])*Eval(p[i])/Eval(p2[i]));
+	];
+	{r, p, p2, P1, c1, P2, Impact2};
+];
