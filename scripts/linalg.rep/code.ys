@@ -366,34 +366,46 @@ Minor(matrix,i,j) := CoFactor(matrix,i,j)*(-1)^(i+j);
 	Inv;
 ];
 
-50 # InverseL(A_IsLowerTriangular) <--
+// Make sure the matrix is unit (all diagonal elements are 1)
+50 # Inverse(A_IsLowerTriangular) <--
 [
-	Local(i,j,k,n,Inv);
+	Local(i,j,k,n,L,Inv);
 	n:=Length(A);
 	Inv:=Identity(n);
+	L:=ZeroMatrix(n,n);
 
-	ForEach(i,1 .. (n-1))
-		ForEach(k,i+1 .. n)
-			ForEach(j,i+1 .. k)
-				Inv[k][i] := Inv[k][i] - Inv[k][j] * L[j][i];
-	Inv;
+        ForEach(i,1 .. n)
+                ForEach(j,1 .. n)
+                        L[i][j] := A[i][j];
+
+	If(n>1, [
+		ForEach(j,1 .. (n-1))
+			ForEach(i,j+1 .. n)
+				ForEach(k,1 .. j)
+					Inv[i][i-j] := Inv[i][i-j] - L[i][i-j+k-1] * Inv[i-j+k-1][i-j];
+		Inv;
+	], L);
 ];
 
-
+// Make sure the matrix is unit (all diagonal elements are 1)
 50 # Inverse(A_IsUpperTriangular) <--
 [
-	Local(i,j,k,n,Inv);
+	Local(i,j,k,n,U,Inv);
 	n:=Length(A);
 	Inv:=Identity(n);
 	U:=ZeroMatrix(n,n);
 
-	ForEach(i,1 .. (n-1))
-		ForEach(k,i+1 .. n)
-			ForEach(j,i+1 .. k)
-				Inv[i][k] := Inv[i][k] - A[i][j] * Inv[j][k];
-	Inv;
+        ForEach(i,1 .. n)
+                ForEach(j,1 .. n)
+                        U[i][j] := A[i][j];
+	If(n>1, [
+		ForEach(j,1 .. (n-1))
+			ForEach(i,j+1 .. n)
+				ForEach(k,1 .. j)
+					Inv[i-j][i] := Inv[i-j][i] - Inv[i-j][i-j+k-1] * U[i-j+k-1][i];
+		Inv;
+	], U);
 ];
-
 
 100 # Inverse(matrix_IsSquareMatrix) <-- [
   Local(perms,indices,inv,det,n);
@@ -1051,61 +1063,6 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	{P,L,D,U};
 ];
 
-// Inverse a unit lower triangular matrix 
-10 # InverseL(A_IsSquareMatrix) <--
-[
-	Local(n,L,Inv);
-	n:=Length(A);
-	Inv:=Identity(n);
-	L:=ZeroMatrix(n,n);
-
-        ForEach(i,1 .. n)
-                ForEach(j,1 .. n)
-                        L[i][j] := A[i][j];
-
-	If(n>1, [
-		ForEach(j,1 .. (n-1))
-			ForEach(i,j+1 .. n)
-				ForEach(k,1 .. j)
-					Inv[i][i-j] := Inv[i][i-j] - L[i][i-j+k-1] * Inv[i-j+k-1][i-j];
-		Inv;
-	], L);
-];
-
-// InverseU
-// inverse a unit upper triangular matrix 
-10 # InverseU(A_IsSquareMatrix) <--
-[
-	Local(n,U,Inv);
-	n:=Length(A);
-	Inv:=Identity(n);
-	U:=ZeroMatrix(n,n);
-
-        ForEach(i,1 .. n)
-                ForEach(j,1 .. n)
-                        U[i][j] := A[i][j];
-	If(n>1, [
-		ForEach(j,1 .. (n-1))
-			ForEach(i,j+1 .. n)
-				ForEach(k,1 .. j)
-					Inv[i-j][i] := Inv[i-j][i] - Inv[i-j][i-j+k-1] * U[i-j+k-1][i];
-		Inv;
-	], U);
-];
-
-// InverseD
-// inverse a diagonal matrix
-10 # InverseD(A_IsSquareMatrix) <--
-[
-	Local(n,Inv);
-	n:=Length(A);
-	Inv:=Identity(n);
-
-        ForEach(i,1 .. n)
-                        Inv[i][i] := 1/A[i][i];
-	Inv;
-];
-
 // 
 // Inverse by PLDU decomposition  (PA = LDU) => (A^-1 = U^-1 D^-1 L^-1 P)
 //  
@@ -1151,7 +1108,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 
 10 # PrintMatrix(Prompt_IsString, A_IsVector) <--
 [
-	Local(n, m);
+	Local(i,n,m);
 	n:=Length(A);
 	m:=1;
 	Echo(Prompt);
@@ -1168,13 +1125,12 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	Echo("");
 ];
 
-
 // 
 // DAG: (x = Ax + 1) => (x = A'x + b') where A' is a lower triangular matrix
 //  
 DAG(A_IsSquareMatrix, Impact_IsVector) <--
 [
-	Local(n,matrix,I,b,X,P,L,D,U,J,d,LL,x,r,bb,AA,B,InvP,InvU,InvD,InvL,Inv);
+	Local(i,j,n,matrix,I,b,X,P,L,D,U,J,d,LL,x,r,bb,AA,B,InvP,InvU,InvD,InvL,Inv);
 	n:=Length(A);
 	I:=Identity(n);
 	b:=I[1]; // PrintMatrix(b);
@@ -1198,11 +1154,11 @@ DAG(A_IsSquareMatrix, Impact_IsVector) <--
         ForEach(i,1 .. n) [
 	   d:=d And (D[i][i]>0);	
 	];
-	InvD:=InverseD(J*D*J); // PrintMatrix("D^-1", InvD);
-	InvU:=InverseU(J*L*J); // PrintMatrix("U^-1", InvU);
+	InvD:=Inverse(J*D*J); // PrintMatrix("D^-1", InvD);
+	InvU:=Inverse(J*L*J); // PrintMatrix("U^-1", InvU);
 	InvP:=Transpose(P); // PrintMatrix("P^-1", InvP);
 	LL:=J*U*J; // PrintMatrix("L", LL);
-	InvL:=InverseL(LL); // PrintMatrix("L^-1", InvL);PrintMatrix("LL^-1", LL*InvL);
+	InvL:=Inverse(LL); // PrintMatrix("L^-1", InvL);PrintMatrix("LL^-1", LL*InvL);
 	AA:=I - LL; // PrintMatrix(AA);
 	B:=InvD*InvU*InvP; // PrintMatrix("B", B);
 	bb:=B*b; // PrintMatrix("b'", bb);
@@ -1215,7 +1171,7 @@ DAG(A_IsSquareMatrix, Impact_IsVector) <--
 
 NormaliseMDP(P_IsSquareMatrix, Impact_IsVector) <--
 [
-	Local(n,I,p,r,d,c1,P1,P2,Impact2);
+	Local(i,j,n,sum,I,p,r,d,c1,P1,P2,Impact2);
 	n:=Length(A);
 	I:=Identity(n);
 	p:=ZeroVector(n);
