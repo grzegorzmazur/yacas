@@ -1005,15 +1005,14 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 		L[i][i]:=1;
 		U[i][i]:=1;
 	];
-	// PrintMatrix(P);
-	// PrintMatrix(L);
-	// PrintMatrix(D);
-	// PrintMatrix(U);
+	//PrintMatrix(P);
+	//PrintMatrix(L);
+	//PrintMatrix(D);
+	//PrintMatrix(U);
 	{P,L,D,U};
 ];
 
-// InverseL
-// inverse a unit lower triangular matrix 
+// Inverse a unit lower triangular matrix 
 10 # InverseL(A_IsSquareMatrix) <--
 [
 	Local(n,L,Inv);
@@ -1025,11 +1024,13 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
                 ForEach(j,1 .. n)
                         L[i][j] := A[i][j];
 
-	ForEach(i,1 .. (n-1))
-		ForEach(k,i+1 .. n)
-			ForEach(j,i+1 .. k)
-				Inv[k][i] := Inv[k][i] - Inv[k][j] * L[j][i];
-	Inv;
+	If(n>1, [
+		ForEach(j,1 .. (n-1))
+			ForEach(i,j+1 .. n)
+				ForEach(k,1 .. j)
+					Inv[i][i-j] := Inv[i][i-j] - L[i][i-j+k-1] * Inv[i-j+k-1][i-j];
+		Inv;
+	], L);
 ];
 
 // InverseU
@@ -1044,13 +1045,13 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
         ForEach(i,1 .. n)
                 ForEach(j,1 .. n)
                         U[i][j] := A[i][j];
-
-	ForEach(i,1 .. (n-1))
-		ForEach(k,i+1 .. n)
-			ForEach(j,i+1 .. k)
-				Inv[i][k] := Inv[i][k] - U[i][j] * Inv[j][k];
-	// PrintMatrix(Inv);
-	Inv;
+	If(n>1, [
+		ForEach(j,1 .. (n-1))
+			ForEach(i,j+1 .. n)
+				ForEach(k,1 .. j)
+					Inv[i-j][i] := Inv[i-j][i] - Inv[i-j][i-j+k-1] * U[i-j+k-1][i];
+		Inv;
+	], U);
 ];
 
 // InverseD
@@ -1080,15 +1081,65 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	Inv;
 ];
 
+10 # PrintMatrix(Prompt_IsString, A_IsMatrix) <--
+[
+	Local(n, m);
+	n:=Length(A);
+	m:=Length(A[1]);
+	Echo("");
+	WriteString(Prompt);
+           ForEach(j,1 .. m) [
+		WriteString("		");
+		Write(j);
+	   ];
+	Echo("");
+	WriteString("=");
+           ForEach(j,1 .. m) [
+		WriteString("		");
+		WriteString("--");
+	   ];
+        ForEach(i,1 .. n) [
+	   Echo("");
+	   Write(i);
+	   WriteString("|");
+           ForEach(j,1 .. m) [
+		WriteString("		");
+		Write(A[i][j]);
+	   ];
+	];
+	Echo("");
+];
+
+10 # PrintMatrix(Prompt_IsString, A_IsVector) <--
+[
+	Local(n, m);
+	n:=Length(A);
+	m:=1;
+	Echo(Prompt);
+	WriteString("=");
+	WriteString("		");
+	WriteString("--");
+        ForEach(i,1 .. n) [
+	   Echo("");
+	   Write(i);
+	   Write(|);
+	   WriteString("		");
+	   Write(A[i]);
+	];
+	Echo("");
+];
+
+
 // 
 // DAG: (x = Ax + 1) => (x = A'x + b') where A' is a lower triangular matrix
 //  
-DAG(A_IsSquareMatrix) <--
+DAG(A_IsSquareMatrix, Impact_IsVector) <--
 [
-	Local(n,matrix,I,b,X,P,L,D,U,J,d,LL,x,bb,AA,B,InvU,InvD,InvL,Inv);
+	Local(n,matrix,I,b,X,P,L,D,U,J,d,LL,x,r,bb,AA,B,InvP,InvU,InvD,InvL,Inv);
 	n:=Length(A);
 	I:=Identity(n);
-	b:=I[1];
+	b:=I[1]; // PrintMatrix(b);
+	r:=ZeroVector(n);
 	P:=ZeroMatrix(n,n);
 	L:=ZeroMatrix(n,n);
 	D:=ZeroMatrix(n,n);
@@ -1102,45 +1153,23 @@ DAG(A_IsSquareMatrix) <--
 	// J is the anti-identity matrix
         ForEach(i,1 .. n)
 		J[i][n+1-i]:=1;
-	X:=J*(I-matrix)*J;
-	// PrintMatrix(X);
-	{P,L,D,U} := PLDU(X);
+	X:=J*(I-matrix)*J; // PrintMatrix(X);
+	{P,L,D,U} := PLDU(X); // PrintMatrix(P*X); PrintMatrix(L*D*U);
 	d:=True;
         ForEach(i,1 .. n) [
 	   d:=d And (D[i][i]>0);	
 	];
-	InvU:=InverseU(U);
-	InvD:=InverseD(D);
-	InvL:=InverseL(L);
-	LL:=J*U*J;
-	// PrintMatrix(LL);
-	// AA:=Simplify(I - LL);
-	AA:=I - LL;
-	// PrintMatrix(AA);
-	// B:=Simplify(J*InvD*InvL*Transpose(P)*J);
-	B:=J*InvD*InvL*Transpose(P)*J;
-	bb:=B*b;
-	// x:=Simplify(J*InvU*J*bb);
-	x:=J*InvU*J*bb;
-	{x, AA, bb, d};
-];
-
-// 
-// PrintMatrix 
-//  
-10 # PrintMatrix(A_IsSquareMatrix) <--
-[
-	Local(n);
-	n:=Length(A);
+	InvD:=InverseD(J*D*J); // PrintMatrix("D^-1", InvD);
+	InvU:=InverseU(J*L*J); // PrintMatrix("U^-1", InvU);
+	InvP:=Transpose(P); // PrintMatrix("P^-1", InvP);
+	LL:=J*U*J; // PrintMatrix("L", LL);
+	InvL:=InverseL(LL); // PrintMatrix("L^-1", InvL);PrintMatrix("LL^-1", LL*InvL);
+	AA:=I - LL; // PrintMatrix(AA);
+	B:=InvD*InvU*InvP; // PrintMatrix("B", B);
+	bb:=B*b; // PrintMatrix("b'", bb);
+	x:=InvL*bb; // PrintMatrix("x", x);
         ForEach(i,1 .. n) [
-	   Echo("");
-	   Write(i);
-	   Write(|);
-           ForEach(j,1 .. n) [
-		Write(		);
-		Write(A[i][j]);
-	   ];
+		r[i]:=x[i]*Impact[i];
 	];
-	Echo("");
+	{r, x, AA, bb, d};
 ];
-
