@@ -1125,39 +1125,34 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 ];
 
 // 
-// DAG: (x = Ax + 1) => (x = A'x + b') where A' is a lower triangular matrix
+// DAG: (p = Pp + c) => (p = P'x + c') where P' is a lower triangular matrix
+// risks vectorR = vectorP * vectorI
 //  
-10 # DAG(A_IsSquareMatrix, Impact_IsVector) <--
+10 # DAG(matrixP_IsSquareMatrix, vectorI_IsVector) <--
 [
-	Local(i,j,n,matrix,I,b,X,P,L,D,U,J,diagonals,LL,x,r,bb,AA,B,InvP,InvU,InvD,InvL,Inv);
-	n:=Length(A);
-	I:=Identity(n);
-	b:=I[1]; // PrintMatrix(b);
-	r:=ZeroVector(n);
-	P:=ZeroMatrix(n,n);
-	L:=ZeroMatrix(n,n);
-	D:=ZeroMatrix(n,n);
-	U:=ZeroMatrix(n,n);
-	X:=ZeroMatrix(n,n);
-	J:=ZeroMatrix(n,n);
-	matrix:=ZeroMatrix(n,n);
-
-        ForEach(i,1 .. n) ForEach(j,1 .. n) matrix[i][j] := A[i][j]; // PrintMatrix("A", A);
-        ForEach(i,1 .. n) J[i][n+1-i]:=1; // J is the anti-identity matrix
-	X:=J*(I-matrix)*J; // PrintMatrix("J(I-A)J", X);
-	{P,L,D,U} := PLDU(X); // PrintMatrix("PA", P*X); PrintMatrix("LDU", L*D*U);
-	diagonals:=True; ForEach(i,1 .. n) diagonals:=diagonals And (D[i][i]>0);	
-	InvD:=Inverse(J*D*J); // PrintMatrix("D'^-1", InvD);
-	InvU:=Inverse(J*L*J); // PrintMatrix("U'^-1", InvU);
-	InvP:=Transpose(J*P*J); // PrintMatrix("P'^-1", InvP);
-	LL:=J*U*J; // PrintMatrix("L'", LL);
-	InvL:=Inverse(LL); // PrintMatrix("L'^-1", InvL);PrintMatrix("L'*L'^-1", LL*InvL);
-	AA:=I - LL; // PrintMatrix("I-L'", AA);
-	B:=InvD*InvU*InvP; // PrintMatrix("B", B);
-	bb:=B*b; // PrintMatrix("b'", bb);
-	x:=InvL*bb; // PrintMatrix("x", x);
-        ForEach(i,1 .. n) r[i]:=x[i]*Impact[i]; // PrintMatrix("r", r);
-	{r, x, AA, bb, diagonals};
+	Local(i,j,n,diagonals,
+		vectorP,vectorP1,vectorC,vectorR,
+		matrixI,matrixX,matrixM,matrixL,matrixD,matrixU,matrixJ,matrixLL,matrixM1,matrixB,matrixInvM,matrixInvU,matrixInvD,matrixInvL,matrixInv);
+	n:=Length(matrixP);
+	matrixI:=Identity(n);
+	vectorC:=matrixI[1];
+	vectorR:=ZeroVector(n);
+	matrixJ:=ZeroMatrix(n,n);
+        ForEach(i,1 .. n) matrixJ[i][n+1-i]:=1; // J is the anti-identity matrix
+	matrixX:=matrixJ*(matrixI-matrixP)*matrixJ; 				// PrintMatrix("J(I-P)J", matrixX);
+	{matrixM,matrixL,matrixD,matrixU} := PLDU(matrixX); 			// PrintMatrix("PA", matrixM*matrixX); PrintMatrix("LDU", matrixL*matrixD*matrixU);
+	diagonals:=True; ForEach(i,1 .. n) diagonals:=diagonals And (matrixD[i][i]>0);	
+	matrixInvD:=Inverse(matrixJ*matrixD*matrixJ); 				// PrintMatrix("D'^-1", matrixInvD);
+	matrixInvU:=Inverse(matrixJ*matrixL*matrixJ); 				// PrintMatrix("U'^-1", matrixInvU);
+	matrixInvM:=Transpose(matrixJ*matrixM*matrixJ); 			// PrintMatrix("P'^-1", matrixInvM);
+	matrixLL:=matrixJ*matrixU*matrixJ; 					// PrintMatrix("L'", matrixLL);
+	matrixInvL:=Inverse(matrixLL); 						// PrintMatrix("L'*L'^-1", matrixLL*matrixInvL);
+	matrixP1:=matrixI - matrixLL; 						// PrintMatrix("I-L'", matrixP1);
+	matrixB:=matrixInvD*matrixInvU*matrixInvM; 				// PrintMatrix("B", matrixB);
+	vectorC1:=matrixB*vectorC; 						// PrintMatrix("c'", vectorC);
+	vectorP:=matrixInvL*vectorC1; 						// PrintMatrix("p", vectorP);
+        ForEach(i,1 .. n) vectorR[i]:=vectorP[i]*vectorI[i]; 			// PrintMatrix("r", vectorR);
+	{vectorR, vectorP, matrixP1, vectorC1, diagonals};
 ];
 
 NormaliseMDP(matrixP_IsSquareMatrix, vectorI_IsVector) <--
@@ -1165,13 +1160,7 @@ NormaliseMDP(matrixP_IsSquareMatrix, vectorI_IsVector) <--
 	Local(i,j,n,sum,diagonals,vectorP1,vectorP2,vectorR,vectorC,vectorI2,matrixP1,matrixP2);
 	n:=Length(matrixP);
 	sum:=0;
-	diagonals:=True;
-	vectorP1:=ZeroVector(n);
-	vectorP2:=ZeroVector(n);
-	vectorR:=ZeroVector(n);
-	vectorC:=ZeroVector(n);
 	vectorI2:=ZeroVector(n);
-	matrixP1:=ZeroMatrix(n,n);
 	matrixP2:=ZeroMatrix(n,n);
 
 	// direct acyclic graph
