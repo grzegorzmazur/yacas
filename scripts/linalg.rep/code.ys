@@ -407,27 +407,16 @@ Minor(matrix,i,j) := CoFactor(matrix,i,j)*(-1)^(i+j);
 	], U);
 ];
 
-100 # Inverse(matrix_IsSquareMatrix) <-- [
-  Local(perms,indices,inv,det,n);
-  n:=Length(matrix);
-  indices:=Table(i,i,1,n,1);
-  perms:=Permutations(indices);
-  inv:=ZeroMatrix(n,n);
-  det:=0;
-  ForEach(item,perms)
-  [
-    Local(i,lc);
-    lc := LeviCivita(item);
-    det:=det+Factorize(i,1,n,matrix[i][item[i] ])* lc;
-    For(i:=1,i<=n,i++)
-        [
-         inv[item[i] ][i] := inv[item[i] ][i]+
-           Factorize(j,1,n,
-             If(j=i,1,matrix[j][item[j] ]))*lc;
-        ];
-  ];
-  Check(det != 0, "Zero determinant");
-  (1/det)*inv;
+// Inverse by PLDU decomposition  (PA = LDU) => (A^-1 = U^-1 D^-1 L^-1 P)
+100 # Inverse(A_IsSquareMatrix) <--
+[
+	Local(P,L,D,U,InvU,InvD,InvL,Inv);
+	{P,L,D,U} := PLDU(A);
+	InvU:=Inverse(U);
+	InvD:=Inverse(D);
+	InvL:=Inverse(L);
+	Inv:=InvU * InvD * InvL * P;
+	Inv;
 ];
 
 Tr(x_IsList) <--
@@ -1056,72 +1045,11 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 		L[i][i]:=1;
 		U[i][i]:=1;
 	];
-	//PrintMatrix(P);
-	//PrintMatrix(L);
-	//PrintMatrix(D);
-	//PrintMatrix(U);
+	//PrettyForm(P);
+	//PrettyForm(L);
+	//PrettyForm(D);
+	//PrettyForm(U);
 	{P,L,D,U};
-];
-
-// 
-// Inverse by PLDU decomposition  (PA = LDU) => (A^-1 = U^-1 D^-1 L^-1 P)
-//  
-10 # InversePLDU(A_IsSquareMatrix) <--
-[
-	Local(P,L,D,U,InvU,InvD,InvL,Inv);
-	{P,L,D,U} := PLDU(A);
-	InvU:=Inverse(U);
-	InvD:=Inverse(D);
-	InvL:=Inverse(L);
-	Inv:=InvU * InvD * InvL * P;
-	Inv;
-];
-
-5 # PrintMatrix(Prompt_IsString, A_IsVector) <--
-[
-	Local(i,n);
-	n:=Length(A);
-	Echo(Prompt);
-	WriteString("=");
-	WriteString("		");
-	WriteString("--");
-        ForEach(i,1 .. n) [
-	   Echo("");
-	   Write(i);
-	   Write(|);
-	   WriteString("		");
-	   Write(A[i]);
-	];
-	Echo("");
-];
-
-10 # PrintMatrix(Prompt_IsString, A_IsMatrix) <--
-[
-	Local(n, m);
-	n:=Length(A);
-	m:=Length(A[1]);
-	Echo("");
-	WriteString(Prompt);
-           ForEach(j,1 .. m) [
-		WriteString("		");
-		Write(j);
-	   ];
-	Echo("");
-	WriteString("=");
-           ForEach(j,1 .. m) [
-		WriteString("		");
-		WriteString("--");
-	   ];
-        ForEach(i,1 .. n) [
-	   Echo("");
-	   Write(i);
-	   WriteString("|");
-           ForEach(j,1 .. m) [
-		WriteString("		");
-		Write(A[i][j]);
-	   ];
-	];
-	Echo("");
 ];
 
 // 
@@ -1139,19 +1067,39 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	vectorR:=ZeroVector(n);
 	matrixJ:=ZeroMatrix(n,n);
         ForEach(i,1 .. n) matrixJ[i][n+1-i]:=1; // J is the anti-identity matrix
-	matrixX:=matrixJ*(matrixI-matrixP)*matrixJ; 				// PrintMatrix("J(I-P)J", matrixX);
-	{matrixM,matrixL,matrixD,matrixU} := PLDU(matrixX); 			// PrintMatrix("PA", matrixM*matrixX); PrintMatrix("LDU", matrixL*matrixD*matrixU);
+	matrixX:=matrixJ*(matrixI-matrixP)*matrixJ; 				// PrettyForm(matrixX);
+	Echo("...PLDU");
+	{matrixM,matrixL,matrixD,matrixU} := PLDU(matrixX); 			// PrettyForm(matrixM*matrixX); PrettyForm(matrixL*matrixD*matrixU);
+	Echo(".");
 	diagonals:=True; ForEach(i,1 .. n) diagonals:=diagonals And (matrixD[i][i]>0);	
-	matrixInvD:=Inverse(matrixJ*matrixD*matrixJ); 				// PrintMatrix("D'^-1", matrixInvD);
-	matrixInvU:=Inverse(matrixJ*matrixL*matrixJ); 				// PrintMatrix("U'^-1", matrixInvU);
-	matrixInvM:=Transpose(matrixJ*matrixM*matrixJ); 			// PrintMatrix("P'^-1", matrixInvM);
-	matrixLL:=matrixJ*matrixU*matrixJ; 					// PrintMatrix("L'", matrixLL);
-	matrixInvL:=Inverse(matrixLL); 						// PrintMatrix("L'*L'^-1", matrixLL*matrixInvL);
-	matrixP1:=matrixI - matrixLL; 						// PrintMatrix("I-L'", matrixP1);
-	matrixB:=matrixInvD*matrixInvU*matrixInvM; 				// PrintMatrix("B", matrixB);
-	vectorC1:=matrixB*vectorC; 						// PrintMatrix("c'", vectorC);
-	vectorP:=matrixInvL*vectorC1; 						// PrintMatrix("p", vectorP);
-        ForEach(i,1 .. n) vectorR[i]:=vectorP[i]*vectorI[i]; 			// PrintMatrix("r", vectorR);
+	Echo("...InvD");
+	matrixInvD:=Inverse(matrixJ*matrixD*matrixJ); 				// PrettyForm(matrixInvD);
+	Echo(".");
+	Echo("...InvU");
+	matrixInvU:=Inverse(matrixJ*matrixL*matrixJ); 				// PrettyForm(matrixInvU);
+	Echo(".");
+	Echo("...InvM");
+	matrixInvM:=Transpose(matrixJ*matrixM*matrixJ); 			// PrettyForm(matrixInvM);
+	Echo(".");
+	matrixLL:=matrixJ*matrixU*matrixJ; 					// PrettyForm(matrixLL);
+	Echo("...InvL");
+	matrixInvL:=Inverse(matrixLL); 						// PrettyForm(matrixLL*matrixInvL);
+	Echo(".");
+	Echo("...L'");
+	matrixP1:=matrixI - matrixLL; 						// PrettyForm(matrixP1);
+	Echo(".");
+	Echo("...DUM");
+	matrixB:=matrixInvD*matrixInvU*matrixInvM; 				// PrettyForm(matrixB);
+	Echo(".");
+	Echo("...c'");
+	vectorC1:=matrixB*vectorC; 						// PrettyForm(vectorC);
+	Echo(".");
+	Echo("...P'");
+	vectorP:=matrixInvL*vectorC1; 						// PrettyForm(vectorP);
+	Echo(".");
+	Echo("...r");
+        ForEach(i,1 .. n) vectorR[i]:=vectorP[i]*vectorI[i]; 			// PrettyForm(vectorR);
+	Echo(".");
 	{vectorR, vectorP, matrixP1, vectorC1, diagonals};
 ];
 
@@ -1164,8 +1112,11 @@ NormaliseMDP(matrixP_IsSquareMatrix, vectorI_IsVector) <--
 	matrixP2:=ZeroMatrix(n,n);
 
 	// direct acyclic graph
+	Echo("...DAG");
 	{vectorR, vectorP1, matrixP1, vectorC, diagonals} := DAG(matrixP, vectorI);
+	Echo(".");
 
+	Echo("...P''");
 	// normalise to MDP
 	ForEach(j,1 .. n) [
 	  sum:=0;
@@ -1178,11 +1129,16 @@ NormaliseMDP(matrixP_IsSquareMatrix, vectorI_IsVector) <--
 		  ];
 	  ]);
 	];
+	Echo(".");
 
 	// update impact for equivalent risks
+	Echo("...DAG");
 	vectorP2 := DAG(matrixP2, vectorI)[2];
+	Echo(".");
+	Echo("...I'");
 	ForEach(i,1 .. n) [
-	  vectorI2[i] := vectorI[i]*vectorP1[i]/vectorP2[i];
+	  vectorI2[i] := vectorI[i]* vectorP1[i]/vectorP2[i];
 	];
+	Echo(".");
 	{vectorR, vectorP1, vectorP2, matrixP1, vectorC, matrixP2, vectorI2};
 ];
