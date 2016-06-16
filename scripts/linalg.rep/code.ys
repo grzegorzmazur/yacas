@@ -1077,6 +1077,24 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	Inv;
 ];
 
+5 # PrintMatrix(Prompt_IsString, A_IsVector) <--
+[
+	Local(i,n);
+	n:=Length(A);
+	Echo(Prompt);
+	WriteString("=");
+	WriteString("		");
+	WriteString("--");
+        ForEach(i,1 .. n) [
+	   Echo("");
+	   Write(i);
+	   Write(|);
+	   WriteString("		");
+	   Write(A[i]);
+	];
+	Echo("");
+];
+
 10 # PrintMatrix(Prompt_IsString, A_IsMatrix) <--
 [
 	Local(n, m);
@@ -1100,27 +1118,8 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	   WriteString("|");
            ForEach(j,1 .. m) [
 		WriteString("		");
-		Write(N(Eval(A[i][j])));
+		Write(A[i][j]);
 	   ];
-	];
-	Echo("");
-];
-
-10 # PrintMatrix(Prompt_IsString, A_IsVector) <--
-[
-	Local(i,n,m);
-	n:=Length(A);
-	m:=1;
-	Echo(Prompt);
-	WriteString("=");
-	WriteString("		");
-	WriteString("--");
-        ForEach(i,1 .. n) [
-	   Echo("");
-	   Write(i);
-	   Write(|);
-	   WriteString("		");
-	   Write(N(Eval(A[i])));
 	];
 	Echo("");
 ];
@@ -1128,9 +1127,9 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 // 
 // DAG: (x = Ax + 1) => (x = A'x + b') where A' is a lower triangular matrix
 //  
-DAG(A_IsSquareMatrix, Impact_IsVector) <--
+10 # DAG(A_IsSquareMatrix, Impact_IsVector) <--
 [
-	Local(i,j,n,matrix,I,b,X,P,L,D,U,J,d,LL,x,r,bb,AA,B,InvP,InvU,InvD,InvL,Inv);
+	Local(i,j,n,matrix,I,b,X,P,L,D,U,J,diagonals,LL,x,r,bb,AA,B,InvP,InvU,InvD,InvL,Inv);
 	n:=Length(A);
 	I:=Identity(n);
 	b:=I[1]; // PrintMatrix(b);
@@ -1142,68 +1141,59 @@ DAG(A_IsSquareMatrix, Impact_IsVector) <--
 	X:=ZeroMatrix(n,n);
 	J:=ZeroMatrix(n,n);
 	matrix:=ZeroMatrix(n,n);
-        ForEach(i,1 .. n)
-                ForEach(j,1 .. n)
-                        matrix[i][j] := A[i][j];
-	// J is the anti-identity matrix
-        ForEach(i,1 .. n)
-		J[i][n+1-i]:=1;
-	X:=J*(I-matrix)*J; // PrintMatrix(X);
-	{P,L,D,U} := PLDU(X); // PrintMatrix(P*X); PrintMatrix(L*D*U);
-	d:=True;
-        ForEach(i,1 .. n) [
-	   d:=d And (D[i][i]>0);	
-	];
-	InvD:=Inverse(J*D*J); // PrintMatrix("D^-1", InvD);
-	InvU:=Inverse(J*L*J); // PrintMatrix("U^-1", InvU);
-	InvP:=Transpose(P); // PrintMatrix("P^-1", InvP);
-	LL:=J*U*J; // PrintMatrix("L", LL);
-	InvL:=Inverse(LL); // PrintMatrix("L^-1", InvL);PrintMatrix("LL^-1", LL*InvL);
-	AA:=I - LL; // PrintMatrix(AA);
+
+        ForEach(i,1 .. n) ForEach(j,1 .. n) matrix[i][j] := A[i][j]; // PrintMatrix("A", A);
+        ForEach(i,1 .. n) J[i][n+1-i]:=1; // J is the anti-identity matrix
+	X:=J*(I-matrix)*J; // PrintMatrix("J(I-A)J", X);
+	{P,L,D,U} := PLDU(X); // PrintMatrix("PA", P*X); PrintMatrix("LDU", L*D*U);
+	diagonals:=True; ForEach(i,1 .. n) diagonals:=diagonals And (D[i][i]>0);	
+	InvD:=Inverse(J*D*J); // PrintMatrix("D'^-1", InvD);
+	InvU:=Inverse(J*L*J); // PrintMatrix("U'^-1", InvU);
+	InvP:=Transpose(J*P*J); // PrintMatrix("P'^-1", InvP);
+	LL:=J*U*J; // PrintMatrix("L'", LL);
+	InvL:=Inverse(LL); // PrintMatrix("L'^-1", InvL);PrintMatrix("L'*L'^-1", LL*InvL);
+	AA:=I - LL; // PrintMatrix("I-L'", AA);
 	B:=InvD*InvU*InvP; // PrintMatrix("B", B);
 	bb:=B*b; // PrintMatrix("b'", bb);
 	x:=InvL*bb; // PrintMatrix("x", x);
-        ForEach(i,1 .. n) [
-		r[i]:=x[i]*Impact[i];
-	];
-	{r, x, AA, bb, d};
+        ForEach(i,1 .. n) r[i]:=x[i]*Impact[i]; // PrintMatrix("r", r);
+	{r, x, AA, bb, diagonals};
 ];
 
-NormaliseMDP(P_IsSquareMatrix, Impact_IsVector) <--
+NormaliseMDP(matrixP_IsSquareMatrix, vectorI_IsVector) <--
 [
-	Local(i,j,n,sum,I,p,r,d,c1,P1,P2,Impact2);
-	n:=Length(A);
-	I:=Identity(n);
-	p:=ZeroVector(n);
-	r:=ZeroVector(n);
-	c1:=ZeroVector(n);
-	Impact2:=ZeroVector(n);
-	d:=True;
+	Local(i,j,n,sum,diagonals,vectorP1,vectorP2,vectorR,vectorC,vectorI2,matrixP1,matrixP2);
+	n:=Length(matrixP);
 	sum:=0;
-	P1:=ZeroMatrix(n,n);
-	P2:=ZeroMatrix(n,n);
+	diagonals:=True;
+	vectorP1:=ZeroVector(n);
+	vectorP2:=ZeroVector(n);
+	vectorR:=ZeroVector(n);
+	vectorC:=ZeroVector(n);
+	vectorI2:=ZeroVector(n);
+	matrixP1:=ZeroMatrix(n,n);
+	matrixP2:=ZeroMatrix(n,n);
 
-	c:=I[1]; // PrintMatrix("c", c);
-	{r, p, P1, c1, d} := DAG(P, Impact);
-	// PrintMatrix("r", r);
-	// PrintMatrix("p", p);
-	// PrintMatrix("P'", P1);
-	// PrintMatrix("c'", c1);
-	// PrintMatrix("d", d);
+	// direct acyclic graph
+	{vectorR, vectorP1, matrixP1, vectorC, diagonals} := DAG(matrixP, vectorI);
+
+	// normalise to MDP
 	ForEach(j,1 .. n) [
 	  sum:=0;
 	  ForEach(i,1 .. n) [
-		sum:=sum + P1[i][j];
+		sum:=sum + matrixP1[i][j];
 	  ];
 	  If(Not(sum=0), [
 		  ForEach(i,1 .. n) [
-			P2[i][j] := P1[i][j] / sum;
+			matrixP2[i][j] := matrixP1[i][j] / sum;
 		  ];
 	  ]);
 	];
-	p2 := DAG(P2, Impact)[2];
+
+	// update impact for equivalent risks
+	vectorP2 := DAG(matrixP2, vectorI)[2];
 	ForEach(i,1 .. n) [
-	  Impact2[i] := N(Eval(Impact[i])*Eval(p[i])/Eval(p2[i]));
+	  vectorI2[i] := vectorI[i]*vectorP1[i]/vectorP2[i];
 	];
-	{r, p, p2, P1, c1, P2, Impact2};
+	{vectorR, vectorP1, vectorP2, matrixP1, vectorC, matrixP2, vectorI2};
 ];
