@@ -49,8 +49,6 @@ Cholesky
 LU
 LDU
 PLDU
-InversePLDU
 DAG
 NormaliseMDP
-PrintMatrix
 }
