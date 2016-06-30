@@ -263,10 +263,12 @@ final class BigNumber
     boolean floatResult = (aX.decimal != null || aY.decimal != null);
     if (floatResult)
     {
+      integer = null;
+
       BigDecimal dX = GetDecimal(aX);
       BigDecimal dY = GetDecimal(aY);
 
-      integer = null;
+      iTensExp = aX.iTensExp;
       if (aX.iTensExp > aY.iTensExp)
       {
         dY = dY.movePointLeft(aX.iTensExp-aY.iTensExp);
@@ -277,6 +279,7 @@ final class BigNumber
         dX = dX.movePointLeft(aY.iTensExp-aX.iTensExp);
         iTensExp = aY.iTensExp;
       }
+      
       decimal = dX.add(dY);
     }
     else
