@@ -107,7 +107,7 @@ algebra operations; new algorithms can be easily added to the
 library. Yacas comes with extensive documentation (hundreds of pages)
 covering the scripting language, the functionality that is already
 implemented in the system, and the algorithms we used.
-%files yacas-gui
+%files gui
 %defattr(-,root,root,-)
 "/usr/bin/yacas-gui"
 %dir "/usr/share/yacas/resources"
@@ -134,8 +134,6 @@ implemented in the system, and the algorithms we used.
 %files doc
 %defattr(-,root,root,-)
 "/usr/share/man/man1/yacas.1.gz"
-%dir "/usr/share/doc/yacas"
-"/usr/share/doc/yacas/*"
 %dir "/usr/share/yacas/documentation"
 %dir "/usr/share/yacas/documentation/singlehtml"
 %docdir "/usr/share/yacas/documentation/singlehtml"
