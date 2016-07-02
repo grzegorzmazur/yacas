@@ -19,7 +19,7 @@ ExternalProject_Add (yacas-gui_flot
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
 
-install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_flot/jquery.flot.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/flot/jquery.flot.resize.js DESTINATION share/yacas/resources/flot)
+install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_flot/jquery.flot.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_flot/jquery.flot.resize.js DESTINATION share/yacas/resources/flot)
 
 ExternalProject_Add (yacas-gui_three
     PREFIX external_packages
@@ -28,7 +28,7 @@ ExternalProject_Add (yacas-gui_three
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
 
-install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/build/three.min.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/three/examples/js/Detector.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/three/examples/js/controls/TrackballControls.js DESTINATION share/yacas/resources/three)
+install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/build/three.min.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/examples/js/Detector.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/examples/js/controls/TrackballControls.js DESTINATION share/yacas/resources/three)
 
 ExternalProject_Add (yacas-gui_vis
     PREFIX external_packages
@@ -37,7 +37,7 @@ ExternalProject_Add (yacas-gui_vis
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
 
-install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_vis/dist/vis.min.css ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/vis/dist/vis.min.js DESTINATION share/yacas/resources/vis)
+install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_vis/dist/vis.min.css ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_vis/dist/vis.min.js DESTINATION share/yacas/resources/vis)
 
 ExternalProject_Add (yacas-gui_mathjax
     PREFIX external_packages
