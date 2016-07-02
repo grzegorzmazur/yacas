@@ -7,10 +7,10 @@ ExternalProject_Add (yacas-gui_codemirror
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
 
-install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/codemirror/lib DESTINATION share/yacas/resources/codemirror)
-install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/codemirror/mode/yacas DESTINATION share/yacas/resources/codemirror/mode)
-install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/codemirror/addon/edit DESTINATION share/yacas/resources/codemirror/addon)
-install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/codemirror/addon/hint DESTINATION share/yacas/resources/codemirror/addon)
+install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_codemirror/lib DESTINATION share/yacas/resources/codemirror)
+install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_codemirror/mode/yacas DESTINATION share/yacas/resources/codemirror/mode)
+install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_codemirror/addon/edit DESTINATION share/yacas/resources/codemirror/addon)
+install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_codemirror/addon/hint DESTINATION share/yacas/resources/codemirror/addon)
 
 ExternalProject_Add (yacas-gui_flot
     PREFIX external_packages
@@ -19,7 +19,7 @@ ExternalProject_Add (yacas-gui_flot
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
 
-install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/flot/jquery.flot.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/flot/jquery.flot.resize.js DESTINATION share/yacas/resources/flot)
+install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_flot/jquery.flot.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/flot/jquery.flot.resize.js DESTINATION share/yacas/resources/flot)
 
 ExternalProject_Add (yacas-gui_three
     PREFIX external_packages
@@ -28,7 +28,7 @@ ExternalProject_Add (yacas-gui_three
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
 
-install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/three/build/three.min.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/three/examples/js/Detector.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/three/examples/js/controls/TrackballControls.js DESTINATION share/yacas/resources/three)
+install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/build/three.min.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/three/examples/js/Detector.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/three/examples/js/controls/TrackballControls.js DESTINATION share/yacas/resources/three)
 
 ExternalProject_Add (yacas-gui_vis
     PREFIX external_packages
@@ -37,7 +37,7 @@ ExternalProject_Add (yacas-gui_vis
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
 
-install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/vis/dist/vis.min.css ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/vis/dist/vis.min.js DESTINATION share/yacas/resources/vis)
+install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_vis/dist/vis.min.css ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/vis/dist/vis.min.js DESTINATION share/yacas/resources/vis)
 
 ExternalProject_Add (yacas-gui_mathjax
     PREFIX external_packages
@@ -46,10 +46,10 @@ ExternalProject_Add (yacas-gui_mathjax
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
 
-install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/mathjax/fonts/HTML-CSS/STIX-Web/otf DESTINATION share/yacas/resources/fonts/HTML-CSS/STIX-Web)
-install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/mathjax/fonts/HTML-CSS/STIX-Web/woff DESTINATION share/yacas/resources/fonts/HTML-CSS/STIX-Web)
-install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/mathjax/fonts/HTML-CSS/TeX/otf DESTINATION share/yacas/resources/fonts/HTML-CSS/TeX)
-install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/mathjax/unpacked DESTINATION share/yacas/resources/mathjax)
+install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_mathjax/fonts/HTML-CSS/STIX-Web/otf DESTINATION share/yacas/resources/fonts/HTML-CSS/STIX-Web)
+install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_mathjax/fonts/HTML-CSS/STIX-Web/woff DESTINATION share/yacas/resources/fonts/HTML-CSS/STIX-Web)
+install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_mathjax/fonts/HTML-CSS/TeX/otf DESTINATION share/yacas/resources/fonts/HTML-CSS/TeX)
+install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_mathjax/unpacked DESTINATION share/yacas/resources/mathjax)
 
 ExternalProject_Add (yacas-gui_delanuay
     PREFIX external_packages
@@ -58,7 +58,7 @@ ExternalProject_Add (yacas-gui_delanuay
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
 
-install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/delanuay/delaunay.js DESTINATION share/yacas/resources/plot3d)
+install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_delanuay/delaunay.js DESTINATION share/yacas/resources/plot3d)
 
 install (FILES plot3d/plot3d.js DESTINATION share/yacas/resources/plot3d)
 install (DIRECTORY jquery DESTINATION share/yacas/resources)
