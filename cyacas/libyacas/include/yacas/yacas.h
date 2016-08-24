@@ -30,7 +30,7 @@
 class DefaultYacasEnvironment: NonCopyable
 {
 public:
-  DefaultYacasEnvironment(std::ostream&, LispInt aStackSize);
+  explicit DefaultYacasEnvironment(std::ostream&);
   LispEnvironment& getEnv() {return iEnvironment;}
 
 private:
@@ -69,7 +69,7 @@ public:
 class CYacas {
 public:
     /// Constructor
-    LISPIMPORT CYacas(std::ostream&, LispInt aStackSize = 50000);
+    LISPIMPORT explicit CYacas(std::ostream&);
 
     /// Return the underlying Yacas environment.
     DefaultYacasEnvironment& getDefEnv() {return environment;}

@@ -35,8 +35,8 @@
 #endif
 
 #define InternalEval aEnvironment.iEvaluator->Eval
-#define RESULT aEnvironment.iStack.GetElement(aStackTop)
-#define ARGUMENT(i) aEnvironment.iStack.GetElement(aStackTop+i)
+#define RESULT aEnvironment.iStack[aStackTop]
+#define ARGUMENT(i) aEnvironment.iStack[aStackTop+i]
 
 
 class Command {
@@ -812,7 +812,7 @@ void LispTmpFile(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 void LispProtect(LispEnvironment& env, LispInt top)
 {
-    LispPtr p(env.iStack.GetElement(top + 1));
+    LispPtr p(env.iStack[top + 1]);
 
     CheckArg(p, 1, env, top);
     const LispString* s = p->String();
@@ -820,12 +820,12 @@ void LispProtect(LispEnvironment& env, LispInt top)
 
     env.Protect(s);
 
-    InternalTrue(env, env.iStack.GetElement(top));
+    InternalTrue(env, env.iStack[top]);
 }
 
 void LispUnProtect(LispEnvironment& env, LispInt top)
 {
-    LispPtr p(env.iStack.GetElement(top + 1));
+    LispPtr p(env.iStack[top + 1]);
 
     CheckArg(p, 1, env, top);
     const LispString* s = p->String();
@@ -833,18 +833,18 @@ void LispUnProtect(LispEnvironment& env, LispInt top)
 
     env.UnProtect(s);
 
-    InternalTrue(env, env.iStack.GetElement(top));
+    InternalTrue(env, env.iStack[top]);
 }
 
 void LispIsProtected(LispEnvironment& env, LispInt top)
 {
-    LispPtr p(env.iStack.GetElement(top + 1));
+    LispPtr p(env.iStack[top + 1]);
 
     CheckArg(p, 1, env, top);
     const LispString* s = p->String();
     CheckArg(s, 1, env, top);
 
-    env.iStack.GetElement(top) = env.Protected(s) ? env.iTrue->Copy() : env.iFalse->Copy();
+    env.iStack[top] = env.Protected(s) ? env.iTrue->Copy() : env.iFalse->Copy();
 }
 
 /// Implements the Yacas functions \c RuleBase and \c MacroRuleBase .

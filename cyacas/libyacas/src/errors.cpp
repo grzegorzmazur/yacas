@@ -44,7 +44,7 @@ void ShowArgTypeErrorInfo(LispInt aArgNr, LispPtr& aArguments, LispEnvironment& 
 void CheckArg(bool pred, LispInt arg_idx, LispEnvironment& env, LispInt stack_top)
 {
     if (!pred) {
-        ShowArgTypeErrorInfo(arg_idx, env.iStack.GetElement(stack_top), env);
+        ShowArgTypeErrorInfo(arg_idx, env.iStack[stack_top], env);
         throw LispErrInvalidArg();
     }
 }
@@ -52,7 +52,7 @@ void CheckArg(bool pred, LispInt arg_idx, LispEnvironment& env, LispInt stack_to
 void CheckArgIsString(LispPtr arg, LispInt arg_idx, LispEnvironment& env, LispInt stack_top)
 {
     if (!InternalIsString(arg->String())) {
-        ShowArgTypeErrorInfo(arg_idx, env.iStack.GetElement(stack_top), env);
+        ShowArgTypeErrorInfo(arg_idx, env.iStack[stack_top], env);
         throw LispErrNotString();
     }
 }
@@ -60,13 +60,13 @@ void CheckArgIsString(LispPtr arg, LispInt arg_idx, LispEnvironment& env, LispIn
 
 void CheckArgIsString(LispInt arg_idx, LispEnvironment& env, LispInt stack_top)
 {
-    CheckArgIsString(env.iStack.GetElement(stack_top + arg_idx), arg_idx, env, stack_top);
+    CheckArgIsString(env.iStack[stack_top + arg_idx], arg_idx, env, stack_top);
 }
 
 void CheckArgIsList(LispPtr arg, LispInt arg_idx, LispEnvironment& env, LispInt stack_top)
 {
     if (!InternalIsList(env, arg)) {
-        ShowArgTypeErrorInfo(arg_idx, env.iStack.GetElement(stack_top), env);
+        ShowArgTypeErrorInfo(arg_idx, env.iStack[stack_top], env);
         throw LispErrNotList();
     }
 }
@@ -74,7 +74,7 @@ void CheckArgIsList(LispPtr arg, LispInt arg_idx, LispEnvironment& env, LispInt 
 
 void CheckArgIsList(LispInt arg_idx, LispEnvironment& env, LispInt stack_top)
 {
-    CheckArgIsList(env.iStack.GetElement(stack_top + arg_idx), arg_idx, env, stack_top);
+    CheckArgIsList(env.iStack[stack_top + arg_idx], arg_idx, env, stack_top);
 }
 
 void CheckNrArgs(LispInt n, LispPtr& aArguments,
@@ -100,7 +100,7 @@ void CheckSecure(LispEnvironment& env, LispInt stack_top)
 {
     if (env.secure) {
         ShowStack(env);
-        ShowFunctionError(env.iStack.GetElement(stack_top), env);
+        ShowFunctionError(env.iStack[stack_top], env);
         throw LispErrSecurityBreach();
     }
 }

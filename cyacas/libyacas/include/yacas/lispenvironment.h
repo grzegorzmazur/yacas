@@ -24,6 +24,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <deque>
 
 #include <unordered_set>
 
@@ -62,8 +63,7 @@ public:
                   LispOperators &aPostFixOperators,
                   LispOperators &aBodiedOperators,
                   LispIdentifiers& protected_symbols,
-                  LispInput*    aCurrentInput,
-                  LispInt aStackSize);
+                  LispInput*    aCurrentInput);
   ~LispEnvironment();
   //@}
 
@@ -313,56 +313,7 @@ public:
   XmlTokenizer  iXmlTokenizer;
   LispTokenizer* iCurrentTokenizer;
 
-public:
-  /** YacasArgStack implements a stack of pointers to objects that can be used to pass
-  *  arguments to functions, and receive results back.
-  */
-  class YacasArgStack {
-  public:
-    explicit YacasArgStack(std::size_t aStackSize):
-      iStackCnt(0)
-    {
-      iStack.resize( aStackSize );
-    }
-
-    std::size_t GetStackTop() const
-    {
-        return iStackCnt;
-    }
-
-    void PushArgOnStack(LispObject* aObject)
-    {
-      if (iStackCnt >= iStack.size())
-        RaiseStackOverflowError();
-
-      iStack[iStackCnt++] = aObject;
-    }
-
-    LispPtr& GetElement(std::size_t aPos)
-    {
-      assert(aPos<iStackCnt);
-      return iStack[aPos];
-    }
-
-    void PopTo(std::size_t aTop)
-    {
-      assert(aTop<=iStackCnt);
-      iStackCnt=aTop;
-    }
-
-  private:
-    void RaiseStackOverflowError() const
-    {
-      throw LispErrGeneric("Argument stack reached maximum. Please extend argument stack with --stack argument on the command line.");
-    }
-
-    // Invariants:
-    //    0 <= iStackCnt <= iStack.Size()
-    std::vector<LispPtr> iStack;
-    std::size_t iStackCnt;    // number of items on the stack
-  };
-
-  YacasArgStack iStack;
+  std::deque<LispPtr> iStack;
 };
 
 inline LispInt LispEnvironment::Precision(void) const
