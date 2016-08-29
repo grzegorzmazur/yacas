@@ -1,5 +1,5 @@
 name: yacas
-version: 1.5.0-snap1
+version: 1.5.99-snap1
 summary: Yet Another Computer Algebra System
 description: |
   Yacas is an easy to use, general purpose Computer Algebra System, a
@@ -9,17 +9,38 @@ description: |
   of scripts that implement many of the symbolic algebra operations;
   new algorithms can be easily added to the library.
 
+confinement: strict
+
 apps:
   yacas:
-    command: bin/yacas
+    command: yacas
+    plugs: [home]
+  gui:
+    command: desktop-launch yacas-gui
+    plugs: [home, unity7, x11]
+  kernel:
+    command: yacas-kernel
+    plugs: [home]
   
-build-packages: [g++, python3-sphinx, python3-sphinx-rtd-theme]
+build-packages:
+  - g++
+  - python3-sphinx
+  - python3-sphinx-rtd-theme
+  - libqt5webkit5-dev
+  - libssl-dev
+  - libzmqpp-dev
+  - libzmq3-dev
+  - libboost-date-time-dev
+  - libboost-program-options-dev
+  - libjsoncpp-dev
 
 parts:
   yacas:
-    source: https://github.com/grzegorzmazur/yacas/archive/v1.5.0.tar.gz
+    source: https://github.com/grzegorzmazur/yacas/archive/develop.tar.gz
     plugin: cmake
     configflags:
       - -DCMAKE_BUILD_TYPE=Release
       - -DENABLE_DOCS=On
-    
+    after: [desktop-qt5]  
+    stage-packages:
+      - libqt5webkit
