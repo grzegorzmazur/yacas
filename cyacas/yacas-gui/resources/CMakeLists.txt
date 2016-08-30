@@ -46,9 +46,9 @@ ExternalProject_Add (yacas-gui_mathjax
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
 
-install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_mathjax/fonts/HTML-CSS/STIX-Web/otf DESTINATION share/yacas/resources/fonts/HTML-CSS/STIX-Web)
-install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_mathjax/fonts/HTML-CSS/STIX-Web/woff DESTINATION share/yacas/resources/fonts/HTML-CSS/STIX-Web)
-install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_mathjax/fonts/HTML-CSS/TeX/otf DESTINATION share/yacas/resources/fonts/HTML-CSS/TeX)
+install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_mathjax/fonts/HTML-CSS/STIX-Web/otf DESTINATION share/yacas/resources/mathjax/fonts/HTML-CSS/STIX-Web)
+install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_mathjax/fonts/HTML-CSS/STIX-Web/woff DESTINATION share/yacas/resources/mathjax/fonts/HTML-CSS/STIX-Web)
+install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_mathjax/fonts/HTML-CSS/TeX/otf DESTINATION share/yacas/resources/mathjax/fonts/HTML-CSS/TeX)
 install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_mathjax/unpacked DESTINATION share/yacas/resources/mathjax)
 
 ExternalProject_Add (yacas-gui_delanuay
