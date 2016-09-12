@@ -47,4 +47,8 @@ Sparsity
 MatrixSolve
 Cholesky
 LU
+LDU
+PLDU
+DAG
+NormaliseMDP
 }

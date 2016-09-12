@@ -1,3 +1,5 @@
+#define YAGY_ENABLE_INSPECTOR
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "preferences_dialog.h"

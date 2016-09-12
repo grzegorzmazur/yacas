@@ -593,7 +593,7 @@ represented as lists of lists.
 
 .. function:: Cholesky(A)
 
-   find the Cholesky Decomposition
+   find the Cholesky decomposition
 
    :param A: a square positive definite matrix
 
@@ -623,6 +623,62 @@ represented as lists of lists.
       
 
    .. seealso:: :func:`IsSymmetric`, :func:`IsDiagonal`, :func:`Diagonal`
+
+.. function:: LU(A)
+
+   find the LU decomposition
+
+   :param A: square matrix
+
+   :func:`LU` performs `LU decomposition`_ of a matrix.
+
+   :Example:
+
+   ::
+
+      In> A := {{1,2}, {3,4}}
+      Out> {{1,2},{3,4}}
+      In> {l,u} := LU(A)
+      Out> {{{1,0},{3,1}},{{1,2},{0,-2}}}
+      In> IsLowerTriangular(l)
+      Out> True
+      In> IsUpperTriangular(u)
+      Out> True
+      In> l * u
+      Out> {{1,2},{3,4}}
+
+   .. seealso:: :func:`LDU`, :func:`IsLowerTriangular`, :func:`IsUpperTriangular`
+   
+   .. _LU decomposition: https://en.wikipedia.org/wiki/LU_decomposition
+
+.. function:: LDU(A)
+
+   find the LDU decomposition
+
+   :param A: square matrix
+
+   :func:`LDU` performs `LDU decomposition`_ of a matrix.
+
+   :Example:
+
+   ::
+
+      In> A := {{1,2}, {3,4}}
+      Out> {{1,2},{3,4}}
+      In> {l,d,u} := LDU(A)
+      Out> {{{1,0},{3,1}},{{1,0},{0,-2}},{{1,2},{0,1}}}
+      In> IsLowerTriangular(l)
+      Out> True
+      In> IsDiagonal(d)
+      Out> True
+      In> IsUpperTriangular(u)
+      Out> True
+      In> l * d * u
+      Out> {{1,2},{3,4}}
+
+   .. seealso:: :func:`LU`, :func:`IsDiagonal`, :func:`IsLowerTriangular`, :func:`IsUpperTriangular`
+   
+   .. _LDU decomposition: https://en.wikipedia.org/wiki/LU_decomposition#Definitions
 
 .. function:: IsScalar(expr)
 

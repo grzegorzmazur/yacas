@@ -119,11 +119,11 @@ final class BigNumber
           }
         }
         result = result.substring(0,endpos);
-        if ((iTensExp+extraExp) != 0)
-        {
-          result = result + "e"+(iTensExp+extraExp);
-        }
       }
+
+      if (iTensExp + extraExp != 0)
+        result = result + "e" + (iTensExp+extraExp);
+
       return result;
     }
   }
@@ -146,33 +146,33 @@ final class BigNumber
   //basic object manipulation
   public boolean Equals( BigNumber aOther)
   {
-    if (integer != null)
-    {
-      if (aOther.integer == null)
-      {
-        //hier
+    if (integer != null) {
+        if (aOther.integer != null)
+            return (integer.compareTo(aOther.integer) == 0);
+
         BigDecimal x = GetDecimal(this);
-        return x.compareTo(aOther.decimal) == 0;
-      }
-      return (integer.compareTo(aOther.integer) == 0);
+        BigDecimal y = aOther.decimal;
+
+        if (iTensExp > aOther.iTensExp)
+            x = x.movePointRight(iTensExp - aOther.iTensExp);
+        else if (iTensExp < aOther.iTensExp)
+            y = y.movePointRight(iTensExp - aOther.iTensExp);
+        
+        return x.compareTo(y) == 0;
     }
-    if (decimal != null)
-    {
-      BigDecimal thisd = decimal;
-      BigDecimal otherd = aOther.decimal;
-      if (otherd == null)
-      {
-        otherd = GetDecimal(aOther);
-      }
-      if (iTensExp > aOther.iTensExp)
-      {
-        thisd = thisd.movePointRight(iTensExp - aOther.iTensExp);
-      }
-      else if (iTensExp < aOther.iTensExp)
-      {
-        otherd = otherd.movePointRight(iTensExp - aOther.iTensExp);
-      }
-      return (thisd.compareTo(otherd) == 0);
+    
+    if (decimal != null) {
+        BigDecimal thisd = decimal;
+        BigDecimal otherd = aOther.decimal;
+        if (otherd == null)
+            otherd = GetDecimal(aOther);
+
+        if (iTensExp > aOther.iTensExp)
+            thisd = thisd.movePointRight(iTensExp - aOther.iTensExp);
+        else if (iTensExp < aOther.iTensExp)
+            otherd = otherd.movePointRight(iTensExp - aOther.iTensExp);
+        
+        return thisd.compareTo(otherd) == 0;
     }
     return true;
   }
@@ -263,10 +263,12 @@ final class BigNumber
     boolean floatResult = (aX.decimal != null || aY.decimal != null);
     if (floatResult)
     {
+      integer = null;
+
       BigDecimal dX = GetDecimal(aX);
       BigDecimal dY = GetDecimal(aY);
 
-      integer = null;
+      iTensExp = aX.iTensExp;
       if (aX.iTensExp > aY.iTensExp)
       {
         dY = dY.movePointLeft(aX.iTensExp-aY.iTensExp);
@@ -277,6 +279,7 @@ final class BigNumber
         dX = dX.movePointLeft(aY.iTensExp-aX.iTensExp);
         iTensExp = aY.iTensExp;
       }
+      
       decimal = dX.add(dY);
     }
     else

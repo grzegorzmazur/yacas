@@ -149,6 +149,9 @@ Yannick Versley              *yannick "AT" versley "DOT" de*
 
 Adrian V.                    *qwert2003 "AT" users "DOT" sourceforge "DOT" net*
 
+Yijun Yu                     *y.yu "AT" open "DOT" ac "DOT" uk*
+    Implemented LDU decomposition
+
 Ladislav Zejda
     Supplied patches to make Yacas work on Dec Alpha's.
 

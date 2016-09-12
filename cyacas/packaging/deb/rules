@@ -44,7 +44,17 @@ install: build
 
 	# Add here commands to install the package
 	cd build && make install DESTDIR=../debian/yacas && cd ..
-	rm debian/yacas/usr/share/doc/yacas/changelog.gz
+	mkdir -p debian/yacas-common/usr/share/yacas
+	mv debian/yacas/usr/share/yacas/scripts debian/yacas-common/usr/share/yacas
+	mv debian/yacas/usr/share/yacas/tests debian/yacas-common/usr/share/yacas
+	mkdir -p debian/yacas-console/usr/bin
+	mv debian/yacas/usr/bin/yacas debian/yacas-console/usr/bin
+	mkdir -p debian/yacas-gui/usr/bin
+	mv debian/yacas/usr/bin/yacas-gui debian/yacas-gui/usr/bin
+	mkdir -p debian/yacas-gui/usr/share/yacas
+	mv debian/yacas/usr/share/yacas/resources debian/yacas-gui/usr/share/yacas
+	mkdir -p debian/yacas-kernel/usr/bin
+	mv debian/yacas/usr/bin/yacas-kernel debian/yacas-kernel/usr/bin
 	mkdir -p debian/yacas-dev/usr
 	mv debian/yacas/usr/lib debian/yacas-dev/usr
 	mv debian/yacas/usr/include debian/yacas-dev/usr

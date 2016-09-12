@@ -238,6 +238,7 @@ endif ()
 
 if (ENABLE_DOCS)
   add_subdirectory (docs)
+  add_subdirectory (man)
 endif()
 
 if (ENABLE_JYACAS)
