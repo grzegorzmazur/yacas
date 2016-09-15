@@ -16,6 +16,8 @@ public:
     void submit(YacasRequest*);
     void cancel();
 
+    QStringList symbols() const;
+    
 signals:
     void start_processing();
     void interrupt();

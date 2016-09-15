@@ -32,6 +32,7 @@ public:
 
 public slots:
     void eval(int idx, QString expr);
+    QStringList complete(QString s);
     void help(QString, int);
     bool isWebGLEnabled();
     void copyToClipboard( QString newText );

@@ -11,7 +11,29 @@ function scrollListener(e){
     e.preventDefault();
 }
 
+function hint(cm, option) {
+    
+    var cursor = cm.getCursor();
+    var line = cm.getLine(cursor.line);
 
+    var start = cursor.ch;
+    var end = cursor.ch;
+
+    while (start && /\w/.test(line.charAt(start - 1)))
+        --start;
+
+    while (end < line.length && /\w/.test(line.charAt(end)))
+        ++end;
+
+    var word = line.slice(start, end);
+
+    return {
+        list: yacas.complete(word),
+        from: CodeMirror.Pos(cursor.line, start),
+        to: CodeMirror.Pos(cursor.line, end)
+    };
+}
+  
 function load(){
     
     MathBar.initializeFunctions( "mathbar/functions.json" );
@@ -38,6 +60,7 @@ function load(){
     CodeMirror.defaults['autoCloseBrackets'] = '()[]{}""';
     CodeMirror.defaults['readOnly'] = false;
     CodeMirror.defaults['lineWrapping'] = true;
+    CodeMirror.defaults['hintOptions'] = {hint: hint};
     
     if ( /Mac/.test( navigator.platform ))
         CodeMirror.defaults['extraKeys'] = {'Cmd-Space': 'autocomplete'};

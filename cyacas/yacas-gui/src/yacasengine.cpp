@@ -4,6 +4,7 @@
 
 #include <QtCore/QMutexLocker>
 #include <QtCore/QFile>
+#include <QtCore/QSet>
 
 YacasEngine::YacasEngine(const QString& scripts_path, YacasRequestQueue& requests, QObject* parent):
     QObject(parent),
@@ -27,6 +28,8 @@ YacasEngine::YacasEngine(const QString& scripts_path, YacasRequestQueue& request
     _yacas->Evaluate("Plot3DS'yagy(values_IsList, _options'hash) <-- Yagy'Plot3DS'Data(values, options'hash);");
     _yacas->Evaluate("Plot3DS'outputs() := { {\"default\", \"yagy\"}, {\"data\", \"Plot3DS'data\"}, {\"gnuplot\", \"Plot3DS'gnuplot\"}, {\"yagy\", \"Plot3DS'yagy\"},};");
     _yacas->Evaluate("Protect(Plot3DS'outputs);");
+    
+    _update_symbols();
 }
 
 YacasEngine::~YacasEngine()
@@ -38,6 +41,13 @@ void YacasEngine::cancel()
 {
     _yacas->getDefEnv().getEnv().stop_evaluation = true;
 }
+
+QStringList YacasEngine::symbols() const
+{
+    QMutexLocker lock(&_symbols_mtx);
+    return _symbols;
+}
+
 
 void YacasEngine::on_start_processing()
 {
@@ -71,6 +81,8 @@ void YacasEngine::on_start_processing()
             _side_effects.str("");
             _yacas->Evaluate((expr + ";").toStdString());
 
+            _update_symbols();
+            
             if (!_yacas->IsError()) {
                 QString result = QString::fromStdString(_yacas->Result());
                 result = result.left(result.length() - 1).trimmed();
@@ -98,4 +110,31 @@ void YacasEngine::on_start_processing()
             _requests.mtx.lock();
         }
     }
+}
+
+void YacasEngine::_update_symbols()
+{
+    QMutexLocker lock(&_symbols_mtx);
+
+    QSet<QString> ss;
+
+    for (auto op: _yacas->getDefEnv().getEnv().PreFix())
+        ss.insert(QString::fromStdString(*op.first));
+
+    for (auto op: _yacas->getDefEnv().getEnv().InFix())
+        ss.insert(QString::fromStdString(*op.first));
+
+    for (auto op: _yacas->getDefEnv().getEnv().PostFix())
+        ss.insert(QString::fromStdString(*op.first));
+
+    for (auto op: _yacas->getDefEnv().getEnv().Bodied())
+        ss.insert(QString::fromStdString(*op.first));
+
+    for (auto op: _yacas->getDefEnv().getEnv().CoreCommands())
+        ss.insert(QString::fromStdString(*op.first));
+
+    for (auto op: _yacas->getDefEnv().getEnv().UserFunctions())
+        ss.insert(QString::fromStdString(*op.first));
+    
+    _symbols = QStringList::fromSet(ss);
 }

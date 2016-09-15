@@ -465,6 +465,20 @@ void MainWindow::eval(int idx, QString expr)
     }
 }
 
+QStringList MainWindow::complete(QString p)
+{
+    QStringList hints;
+    
+    for (const QString& s: _yacas_server->symbols())
+        if (s.startsWith(p))
+            hints.push_back(s);
+    
+    hints.sort();
+    
+    return hints;
+}
+
+
 void MainWindow::help(QString s, int cp)
 {
     if (s.length() == 0)

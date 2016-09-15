@@ -39,6 +39,12 @@ void YacasServer::cancel()
     _engine->cancel();
 }
 
+QStringList YacasServer::symbols() const
+{
+    return _engine->symbols();
+}
+
+
 void YacasServer::on_engine_busy(bool b)
 {
     busy(b);
