@@ -4,6 +4,7 @@ include_directories(
 
 
 set (YACAS_COMMON_SOURCES src/yacasmain.cpp src/commandline.cpp src/stdcommandline.cpp)
+set (YACAS_COMMON_HEADERS include/commandline.h include/stdcommandline.h)
 
 set (YACAS_UNIX_SOURCES src/unixcommandline.cpp)
 set (YACAS_WIN32_SOURCES src/win32commandline.cpp res/yacas.rc)
@@ -13,10 +14,10 @@ set (YACAS_WIN32_HEADERS include/win32commandline.h)
 
 if (UNIX)
   set (YACAS_SOURCES ${YACAS_COMMON_SOURCES} ${YACAS_UNIX_SOURCES})
-  set (YACAS_HEADERS ${YACAS_UNIX_HEADERS})
+  set (YACAS_HEADERS ${YACAS_COMMON_HEADERS} ${YACAS_UNIX_HEADERS})
 else ()
   set (YACAS_SOURCES ${YACAS_COMMON_SOURCES} ${YACAS_WIN32_SOURCES})
-  set (YACAS_HEADERS ${YACAS_WIN32_HEADERS})
+  set (YACAS_HEADERS ${YACAS_COMMON_HEADERS} ${YACAS_WIN32_HEADERS})
 endif ()
 
 add_executable (yacas ${YACAS_SOURCES} ${YACAS_HEADERS})
