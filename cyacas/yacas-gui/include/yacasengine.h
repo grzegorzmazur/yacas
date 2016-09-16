@@ -1,11 +1,12 @@
 #ifndef YACASENGINE_H
 #define YACASENGINE_H
 
-#include <QObject>
+#include <QtCore/QObject>
 
-#include <QMutex>
-#include <QQueue>
-#include <QWaitCondition>
+#include <QtCore/QMutex>
+#include <QtCore/QQueue>
+#include <QtCore/QWaitCondition>
+#include <QtCore/QStringList>
 
 #include <sstream>
 
