@@ -46,5 +46,3 @@ endif ()
 if (${ENABLE_CYACAS_KERNEL})
     add_subdirectory (yacas-kernel)
 endif ()
-
-add_subdirectory (packaging)
