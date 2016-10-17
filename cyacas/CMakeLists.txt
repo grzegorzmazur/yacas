@@ -12,7 +12,8 @@ install (FILES "${PROJECT_BINARY_DIR}/cyacas/config/yacas/yacas_version.h" DESTI
 
 if (APPLE)
   set(CMAKE_MACOSX_RPATH 1)
-  set(CMAKE_FRAMEWORK_INSTALL_DIR "/Library/Frameworks" CACHE STRING "Directory to install frameworks to.")
+  set(CMAKE_INSTALL_FRAMEWORK_PREFIX "/Library/Frameworks" CACHE STRING "Directory to install frameworks to.")
+  set(CMAKE_INSTALL_BUNDLE_PREFIX "/Applications" CACHE STRING "Directory to install application bundles to.")
 endif()
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "AppleClang")
