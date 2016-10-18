@@ -85,7 +85,7 @@ if (APPLE)
     add_dependencies (yacas-gui yacas-gui_codemirror yacas-gui_flot yacas-gui_three yacas-gui_vis yacas-gui_mathjax yacas-gui_delanuay)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove_directory $<TARGET_FILE_DIR:yacas-gui>/../Frameworks/yacas.framework)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory $<TARGET_FILE_DIR:libyacas_framework>/../../.. $<TARGET_FILE_DIR:yacas-gui>/../Frameworks)
-    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND /Users/Marta/Qt/5.5/clang_64/bin/macdeployqt $<TARGET_FILE_DIR:yacas-gui>/../..)
+    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${_qt5Core_install_prefix}/bin/macdeployqt $<TARGET_FILE_DIR:yacas-gui>/../..)
 
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources/plot3d $<TARGET_FILE_DIR:yacas-gui>/../Resources/plot3d)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources/jquery $<TARGET_FILE_DIR:yacas-gui>/../Resources/jquery)
