@@ -177,9 +177,9 @@ represented as lists of lists.
    :param n: number of rows
    :param m: number of columns
 
-   This command returns a matrix with {n} rows and {m} columns,
+   This command returns a matrix with `n` rows and `m` columns,
    completely filled with zeroes. If only given one parameter,  it
-   returns the square {n} by {n} zero matrix.
+   returns the square `n` by `n` zero matrix.
 
    :Example:
 
