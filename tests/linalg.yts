@@ -5,6 +5,15 @@ Verify(LeviCivita({1,2,3}),1);
 Verify(LeviCivita({2,1,3}),-1);
 Verify(LeviCivita({1,1,3}),0);
 
+Testing("Kronecker delta");
+Verify(KroneckerDelta(1,2),0);
+Verify(KroneckerDelta(3,3),1);
+Verify(KroneckerDelta(i,i),1);
+Verify(KroneckerDelta({2,2,2}),1);
+Verify(KroneckerDelta(1 .. 5),0);
+Verify(KroneckerDelta({i,i,k,j,l}),0);
+Verify(KroneckerDelta({2*i,2*i,2*i}),1);
+
 Testing("VectorProducts");
 [
   Local(l,m,n);

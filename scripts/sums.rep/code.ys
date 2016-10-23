@@ -165,6 +165,19 @@ Function() Add(val, ...);
 // Add(1) should return 1
 30 # Add(_value) <-- value;
 
+Function() Multiply(val, ...);
+
+10 # Multiply({}) <-- 1;
+20 # Multiply(values_IsList) <--
+[
+   Local(i, prod);
+   prod:=1;
+   ForEach(i, values) [ prod := prod * i; ];
+   prod;
+];
+
+// Multiply(1) should return 1
+30 # Multiply(_value) <-- value;
 
 Function("Factorize",{sumvar,sumfrom,sumto,sumbody})
 [

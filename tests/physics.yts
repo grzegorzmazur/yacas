@@ -1,0 +1,5 @@
+NextTest("Clebsch-Gordan coefficients");
+
+Verify(ClebschGordan({j,j},{j,j},{j,j}), 1);
+
+Verify(ClebschGordan({3/2, 3/2}, {1/2, -1/2}, {1, 1}), Sqrt(3/4));

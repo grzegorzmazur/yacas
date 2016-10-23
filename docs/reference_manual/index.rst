@@ -42,3 +42,4 @@ the usage of the functions that are useful when doing calculations.
    number-theory
    numerical-methods
    programming
+   physics

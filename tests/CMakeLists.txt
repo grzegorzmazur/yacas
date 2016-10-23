@@ -35,6 +35,7 @@ set (YACAS_TESTS
   orthopoly.yts
   outer.yts
   padic.yts
+  physics.yts
   plots.yts
   poly.yts
   predicates.yts

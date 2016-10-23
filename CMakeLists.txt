@@ -120,6 +120,8 @@ set (YACAS_SCRIPTS
   scripts/padic.rep/code.ys.def
   scripts/patterns.rep/code.ys
   scripts/patterns.rep/code.ys.def
+  scripts/physics.rep/quantum/clebsch-gordan.ys
+  scripts/physics.rep/quantum/clebsch-gordan.ys.def
   scripts/plots.rep/backends-2d.ys
   scripts/plots.rep/backends-3d.ys
   scripts/plots.rep/code.ys

@@ -1,0 +1,13 @@
+10 # ClebschGordan({_j1, _m1}, {_j2, _m2}, {_J, _M})_(j1 = m1 And j2 = m2 And J = M) <-- 1;
+
+20 # ClebschGordan({_j1, _m1}, {_j2, _m2}, {0, 0})_(j1 = j2 And m1 = -m2) <-- (-1)^(j1-m1) / Sqrt(2*j1+1);
+
+100 # ClebschGordan({_j1, m1_IsRationalOrNumber}, {_j2, m2_IsRationalOrNumber}, {_J, M_IsRationalOrNumber})_(m1 + m2 != M) <-- 0;
+
+200 # ClebschGordan({j1_IsRationalOrNumber, m1_IsRationalOrNumber}, {j2_IsRationalOrNumber, m2_IsRationalOrNumber}, {J_IsRationalOrNumber, M_IsRationalOrNumber}) <-- [
+    Local(s,p,q,i);
+    s := j1 + j2 + J;
+    p := Sqrt((2*J+1) / (s+1)! * Multiply(MapSingle(!,{s-2*J,s-2*j2,s-2*j1,j1+m1,j1-m1,j2+m2,j2-m2,J+M,J-M})));
+    q := Sum(i, Max(-J + j1 + m2, -J + j2 - m1, 0), Min(j2 + m2, j1 - m1, s - J), (-1)^i / (i! * (j1+j2-J-i)! * (j1-m1-i)! * (j2+m2-i)! * (J-j2+m1+i)! * (J-j1-m2+i)!));
+    p*q;
+];

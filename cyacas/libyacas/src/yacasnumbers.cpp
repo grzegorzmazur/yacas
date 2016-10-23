@@ -17,19 +17,11 @@
 
 static LispObject* FloatToString(ANumber& aInt, LispEnvironment& aEnvironment, LispInt aBase = 10);
 
-LispInt NumericSupportForMantissa()
-{
-  return true;
-}
-
-
-
 /* Converting between internal formats and ascii format.
  * It is best done as little as possible. Usually, during calculations,
  * the ascii version of a number will not be required, so only the
  * internal version needs to be stored.
  */
-
 
 
 LispObject* GcdInteger(LispObject* int1, LispObject* int2,
@@ -44,254 +36,6 @@ LispObject* GcdInteger(LispObject* int1, LispObject* int2,
   BigNumber* res = new BigNumber();
   BaseGcd(*res->iNumber,*i1->iNumber,*i2->iNumber);
   return new LispNumber(res);
-}
-
-
-
-static void Trigonometry(ANumber& x,ANumber& i,ANumber& sum,ANumber& term)
-{
-  while (x.iTensExp<0)
-  {
-    PlatDoubleWord carry=0;
-    BaseDivideInt(x,10, WordBase, carry);
-    x.iTensExp++;
-  }
-
-    ANumber x2(sum.iPrecision);
-    Multiply(x2,x,x);
-    ANumber one("1",sum.iPrecision);
-    ANumber dummy(10);
-
-    LispInt requiredDigits = WordDigits(sum.iPrecision, 10)+
-        x2.size()-x2.iExp+1;
-//    printf("WordDigits=%d\n",requiredDigits);
-//    printf("[%d,%d]:",x.size()-x.iExp,x.iExp);
-
-    // While (term>epsilon)
-    while (1 /* Significant(term)*/)
-    {
-        if (!Significant(term)) break;
-
-        ANumber orig(sum.iPrecision);
-
-        //   term <- term*x^2/((i+1)(i+2))
-        //   i <= i+2
-
-        // added this: truncate digits to speed up the calculation
-        {
-            LispInt toDunk = term.iExp - requiredDigits;
-            if (toDunk > 0)
-            {
-                term.erase(term.begin(),term.begin()+toDunk);
-                term.iExp = requiredDigits;
-            }
-        }
-
-        orig.CopyFrom(term);
-
-        Multiply(term,orig,x2);
-//
-        BaseAdd(i, one, WordBase);
-        orig.CopyFrom(term);
-        Divide(term, dummy, orig, i);
-//
-        BaseAdd(i, one, WordBase);
-        orig.CopyFrom(term);
-        Divide(term, dummy, orig, i);
-
-        //   negate term
-        term.Negate();
-        //   sum <- sum+term
-        orig.CopyFrom(sum);
-        Add(sum, orig, term);
-
-
-    }
-
-//    printf("[%d,%d]:",sum.size()-sum.iExp,sum.iExp);
-}
-
-static void SinFloat(ANumber& aResult, ANumber& x)
-{
-  // Sin(x)=Sum(i=0 to Inf) (-1)^i x^(2i+1) /(2i+1)!
-  // Which incrementally becomes the algorithm:
-  //
-  // i <- 1
-  ANumber i("1",aResult.iPrecision);
-  // sum <- x
-  aResult.CopyFrom(x);
-  // term <- x
-  ANumber term(aResult.iPrecision);
-  term.CopyFrom(x);
-  Trigonometry(x,i,aResult,term);
-}
-
-
-static void CosFloat(ANumber& aResult, ANumber& x)
-{
-    // i <- 0
-    ANumber i("0",aResult.iPrecision);
-    // sum <- 1
-    aResult.SetTo("1.0");
-    // term <- 1
-    ANumber term("1.0",aResult.iPrecision);
-    Trigonometry(x,i,aResult,term);
-}
-
-
-LispObject* SinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
-{
-//PrintNumber("Sin input: %s\n",*int1->Number(aPrecision)->iNumber);
-  ANumber sum(aPrecision);
-  ANumber x(*int1->Number(aPrecision)->iNumber);  // woof
-  x.ChangePrecision(aPrecision);
-  SinFloat(sum, x);
-  return FloatToString(sum, aEnvironment);
-}
-
-
-LispObject* CosFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
-{
-  ANumber sum(aPrecision);
-  ANumber x(*int1->Number(aPrecision)->iNumber);
-  x.ChangePrecision(aPrecision);
-  CosFloat(sum, x);
-  return FloatToString(sum, aEnvironment);
-}
-
-LispObject* TanFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
-{
-  // Tan(x) = Sin(x)/Cos(x)
-  ANumber s(aPrecision);
-  {
-    ANumber x(*int1->Number(aPrecision)->iNumber);
-    x.ChangePrecision(aPrecision);
-    SinFloat(s, x);
-  }
-  ANumber c(aPrecision);
-  {
-    ANumber x(*int1->Number(aPrecision)->iNumber);
-    x.ChangePrecision(aPrecision);
-    CosFloat(c, x);
-  }
-  ANumber result(aPrecision);
-  ANumber dummy(aPrecision);
-  Divide(result,dummy,s,c);
-  return FloatToString(result, aEnvironment);
-}
-
-
-LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
-{
-//PrintNumber("ArcSin input: \n",*int1->Number(aPrecision)->iNumber);
-
-  // Use Newton's method to solve sin(x) = y by iteration:
-    // x := x - (Sin(x) - y) / Cos(x)
-  // this is similar to PiFloat()
-  // we are using PlatArcSin() as the initial guess
-  // maybe, for y very close to 1 or to -1 convergence will
-  // suffer but seems okay in some tests
-//printf("%s(%d)\n",__FILE__,__LINE__);
-//printf("input: %s\n",int1->String()->c_str());
-//PrintNumber("digits ",*int1->Number(aPrecision)->iNumber);
-  RefPtr<LispObject> iResult(PlatArcSin(aEnvironment, int1,  0));
-  ANumber result(*iResult->Number(aPrecision)->iNumber);  // hack, hack, hack
-  result.ChangePrecision(aPrecision);
-
-  // how else do I get an ANumber from the result of PlatArcSin()?
-  ANumber x(aPrecision);  // dummy variable
-//  ANumber q("10", aPrecision);  // initial value must be "significant"
-
-  ANumber q( aPrecision);  // initial value must be "significant"
-  {
-    ANumber x(aPrecision);
-    ANumber s(aPrecision);
-    x.CopyFrom(result);
-    SinFloat(s,x);
-    ANumber orig(aPrecision);
-    orig.CopyFrom(*int1->Number(aPrecision)->iNumber);
-    orig.Negate();
-    Add(q,s,orig);
-  }
-
-  ANumber s(aPrecision);
-  ANumber c(aPrecision);
-
-  while (Significant(q))
-  {
-    x.CopyFrom(result);
-    SinFloat(s, x);
-    s.Negate();
-    x.CopyFrom(s);
-    ANumber y(*int1->Number(aPrecision)->iNumber);
-//PrintNumber("y = ",y);
-    Add(s, x, y);
-    // now s = y - Sin(x)
-    x.CopyFrom(result);
-    CosFloat(c, x);
-    Divide(q,x,s,c);
-    // now q = (y - Sin(x)) / Cos(x)
-
-    // Calculate result:=result+q;
-    x.CopyFrom(result);
-    Add(result,x,q);
-  }
-  return FloatToString(result, aEnvironment);
-}
-
-static void ExpFloat(ANumber& aResult, ANumber& x)
-{
-    // Exp(x)=Sum(i=0 to Inf)  x^(i) /(i)!
-    // Which incrementally becomes the algorithm:
-    //
-    ANumber one("1",aResult.iPrecision);
-    // i <- 0
-    ANumber i("0",aResult.iPrecision);
-    // sum <- 1
-    aResult.SetTo("1");
-    // term <- 1
-    ANumber term("1",aResult.iPrecision);
-    ANumber dummy(10);
-
-    LispInt requiredDigits = WordDigits(aResult.iPrecision, 10)+
-        x.size()-x.iExp+1;
-
-    // While (term>epsilon)
-    while (Significant(term))
-    {
-        ANumber orig(aResult.iPrecision);
-
-        {
-            LispInt toDunk = term.iExp - requiredDigits;
-            if (toDunk > 0)
-            {
-                term.erase(term.begin(),term.begin()+toDunk);
-                term.iExp = requiredDigits;
-            }
-        }
-
-
-        //   i <- i+1
-        BaseAdd(i, one, WordBase);
-
-        //   term <- term*x/(i)
-        orig.CopyFrom(term);
-        Multiply(term,orig,x);
-        orig.CopyFrom(term);
-        Divide(term, dummy, orig, i);
-
-        //   sum <- sum+term
-        orig.CopyFrom(aResult);
-        Add(aResult, orig, term);
-    }
-}
-
-LispObject* ExpFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision)
-{
-    ANumber sum(aPrecision);
-    ANumber x(*int1->Number(aPrecision)->iNumber);
-    ExpFloat(sum, x);
-    return FloatToString(sum, aEnvironment);
 }
 
 LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
@@ -355,10 +99,6 @@ LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aP
     Sqrt(res,i1);
     return FloatToString(res, aEnvironment);
 }
-
-
-
-
 
 
 LispObject* ShiftLeft( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision)
@@ -1258,7 +998,3 @@ void BigNumber::SetTo(const LispChar * aString,LispInt aBasePrecision,LispInt aB
 
   SetIsInteger(!isFloat && iNumber->iExp == 0 && iNumber->iTensExp == 0);
 }
-
-
-
-

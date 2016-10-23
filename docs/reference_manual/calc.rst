@@ -629,6 +629,26 @@ equations.
       In> Add(1 .. 10);
       Out> 55;
       
+.. function:: Multiply(val1, val2, ...)
+              Multiply(list)
+
+   product of a list of values
+
+   :param val1 val2: expressions
+   :param list: list of expressions to add
+
+   Multiply all arguments and returns their product. It
+   accepts any  number of arguments. The arguments can be also passed
+   as a list.
+
+   :Example:
+
+   ::
+
+      In> Multiply(2,3,4);
+      Out> 24
+      In> Multiply(1 .. 10)
+      Out> 3628800
 
 .. function:: Sum(var, from, to, body)
 
