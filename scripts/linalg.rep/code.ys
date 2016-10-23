@@ -1,3 +1,9 @@
+50 # KroneckerDelta(i_IsInteger, j_IsInteger)_(i=j) <-- 1;
+50 # KroneckerDelta(i_IsInteger, j_IsInteger)_(i!=j) <-- 0;
+
+100 # KroneckerDelta(_i, _i) <-- 1;
+
+200 # KroneckerDelta(list_IsList) <-- If (Length(RemoveDuplicates(list))=1, 1, 0);
 
 /* Levi-civita symbol */
 Function("LeviCivita",{indices})

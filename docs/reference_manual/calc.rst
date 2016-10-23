@@ -450,8 +450,8 @@ equations.
    :param x1: first point of definite integration
    :param x2: second point of definite integration
 
-   This function integrates the expression {expr} with respect to the
-   variable {var}. In the case of definite integral, the integration
+   This function integrates the expression `expr` with respect to the
+   variable `var`. In the case of definite integral, the integration
    is carried out from $var=x1$ to $var=x2$". Some simple integration
    rules have currently been implemented.  Polynomials, some quotients
    of polynomials, trigonometric functions and their inverses,
@@ -609,11 +609,12 @@ equations.
    .. seealso:: :func:`Random`, :func:`RandomIntegerVector`
 
 .. function:: Add(val1, val2, ...)
+              Add(list)
 
    find sum of a list of values
 
-   :param val1}, {val2: expressions
-   :param {list}: list of expressions to add
+   :param val1 val2: expressions
+   :param list: list of expressions to add
 
    This function adds all its arguments and returns their sum. It
    accepts any  number of arguments. The arguments can be also passed
@@ -967,18 +968,28 @@ equations.
 
    .. seealso:: :func:`Bin`
 
+.. function:: KroneckerDelta(i,j)
+              KroneckerDelta({i,j,...})
+
+   Kronecker delta
+
+   Calculates the `Kronecker delta`_, which gives :math:`1`
+   if all arguments are equal and :math:`0` otherwise. 
+
+.. _Kronecker delta: https://en.wikipedia.org/wiki/Kronecker_delta
+
+
 .. function:: LeviCivita(list)
 
    totally anti-symmetric Levi-Civita symbol
 
-   :param list: a list of integers 1 .. n in some order
+   :param list: a list of integers :math:`1,\ldots,n` in some order
 
-   {LeviCivita} implements the Levi-Civita symbol. This is generally
-   useful for tensor calculus.  {list}  should be a list of integers,
-   and this function returns 1 if the integers are in successive
-   order,  eg. {LeviCivita( {1,2,3,...} )}  would return 1. Swapping
-   two elements of this  list would return -1. So, {LeviCivita(
-   {2,1,3} )} would evaluate  to -1.
+   :func:`LeviCivita` implements the Levi-Civita symbol. `list`  should
+   be a list of integers, and this function returns 1 if the integers
+   are in successive order,  eg. `LeviCivita({1,2,3,...})`  would return 1.
+   Swapping two elements of this  list would return -1. So, 
+   `LeviCivita({2,1,3})` would evaluate  to -1.
 
    :Example:
 
