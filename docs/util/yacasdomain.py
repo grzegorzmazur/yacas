@@ -88,15 +88,9 @@ class YacasObject(ObjectDescription):
     }
 
     doc_field_types = [
-        TypedField('parameter', label=l_('Parameters'),
-                   names=('param', 'parameter', 'arg', 'argument',
-                          'keyword', 'kwarg', 'kwparam'),
-                   typerolename='obj', typenames=('paramtype', 'type'),
-                   can_collapse=True),
+        Field('parameter', label=l_('Arguments'), names=('param')),
         Field('returnvalue', label=l_('Returns'), has_arg=False,
               names=('returns', 'return')),
-        Field('returntype', label=l_('Return type'), has_arg=False,
-              names=('rtype',)),
     ]
 
     def get_signature_prefix(self, sig):
@@ -218,7 +212,7 @@ class YacasObject(ObjectDescription):
         indextext = self.get_index_text(modname, name_cls)
         if indextext:
             self.indexnode['entries'].append(('single', indextext,
-                                              fullname, ''))
+                                              fullname, '', None))
 
     def before_content(self):
         # needed for automatic qualification of members (reset in subclasses)
