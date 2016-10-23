@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<installer-gui-script minSpecVersion="1">
+    <title>Yacas</title>
+    <license file="license.txt" mime-type="text/plain"/>
+    <options require-scripts="false"/>
+    <choices-outline>
+        <line choice="yacas-cli"/>
+        <line choice="yacas-gui"/>
+    </choices-outline>
+
+    <choice id="yacas-cli" title="Yacas (text console)">
+        <pkg-ref id="yacas-cli"/>
+    </choice>
+
+    <choice id="yacas-gui" title="Yacas.app (GUI)">
+        <pkg-ref id="yacas-gui"/>
+    </choice>
+
+    <pkg-ref id="yacas-cli" version="0" onConclusion="none">yacas-cli.pkg</pkg-ref>
+    <pkg-ref id="yacas-gui" version="0" onConclusion="none">yacas-gui.pkg</pkg-ref>
+    
+</installer-gui-script>
