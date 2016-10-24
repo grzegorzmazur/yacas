@@ -27,6 +27,3 @@ build:
   
 test_script:
   - cmd: msbuild "build\RUN_TESTS.vcxproj" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
-  
-after_build:
-  - cmake --build build --use-stderr --config "%CONFIGURATION%" --target PACKAGE
