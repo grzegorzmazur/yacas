@@ -11,7 +11,6 @@ Documentation
     reference_manual/index
     programming_in_yacas/index
     book_of_algorithms/index
-    yagy/index
     credits
     license
     glossary
