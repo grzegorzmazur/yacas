@@ -20,6 +20,10 @@ else ()
   set (YACAS_HEADERS ${YACAS_COMMON_HEADERS} ${YACAS_WIN32_HEADERS})
 endif ()
 
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten")
+    list (APPEND YACAS_SOURCES src/js_interface.cpp)
+endif ()
+
 add_executable (yacas ${YACAS_SOURCES} ${YACAS_HEADERS})
 
 if (APPLE)
