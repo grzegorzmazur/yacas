@@ -2,7 +2,7 @@ Source: yacas
 Section: math
 Priority: extra
 Maintainer: Grzegorz Mazur <teoretyk@gmail.com>
-Standards-Version: 3.9.7
+Standards-Version: 3.9.8
 Build-Depends: debhelper (>=9),
                cmake,
                python-sphinx,
