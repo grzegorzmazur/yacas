@@ -18,14 +18,31 @@ Installation from sources
 Getting sources
 ---------------
 
-Version 1.5.0 can be downloaded from
-`<https://github.com/grzegorzmazur/yacas/archive/v1.5.0.zip>`_ or
-`<https://github.com/grzegorzmazur/yacas/archive/v1.5.0.tar.gz>`_,
+Version 1.6.0 can be downloaded from
+`<https://github.com/grzegorzmazur/yacas/archive/v1.6.0.zip>`_ or
+`<https://github.com/grzegorzmazur/yacas/archive/v1.6.0.tar.gz>`_,
 while the current development version is accessible from
 `<https://github.com/grzegorzmazur/yacas/archive/develop.zip>`_.
 
 Compilation
 -----------
+
+Common build options
+^^^^^^^^^^^^^^^^^^^^
+`ENABLE_CYACAS_CONSOLE`
+   Build text console for the native yacas engine. Enabled by default.
+
+`ENABLE_CYACAS_GUI`
+   Build graphical interface for the native yacas engine. Requires Qt 5.5. Enabled by default.
+
+`ENABLE_CYACAS_KERNEL`
+   Build native yacas kernel for Jupyter Notebook. Requires Boost, ZeroMQ and zmqpp. Disabled by default.
+
+`ENABLE_JYACAS`
+   Build the Java yacas engine and text console for it. Disabled by default.
+
+`ENABLE_DOCS`
+   Generate HTML documentation. Disabled by default.
 
 MacOS X
 ~~~~~~~
@@ -38,9 +55,9 @@ MacOS X
                 
      mkdir build
      cd build
-     cmake -G Xcode ..
+     cmake -G Xcode [-Dcommon_option=value] ..
                   
-* Open generated project in ``Xcode``
+* Open generated project in ``Xcode`` and build the Release variant
 
 Microsoft Windows
 ~~~~~~~~~~~~~~~~~
@@ -53,9 +70,9 @@ Microsoft Windows
                 
      mkdir build
      cd build
-     cmake -G "Visual Studio 14 2015 Win64" ..
+     cmake -G "Visual Studio 14 2015 Win64" [-Dcommon_option=value] ..
 
-* Open generated project in ``Visual Studio``
+* Open generated project in ``Visual Studio`` and build the Release variant
 
 Linux
 ~~~~~
@@ -68,7 +85,7 @@ Linux
                 
      mkdir build
      cd build
-     cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_DOCS=On ..
+     cmake -DCMAKE_BUILD_TYPE=Release [-Dcommon_option=value] ..
      make
 
 * To install newly built binaries execute ``make install``

@@ -419,13 +419,11 @@ void MainWindow::on_actionCurrent_Symbol_Help_triggered()
 void MainWindow::on_action_About_triggered()
 {
     QString about =
-        "Yet Another Gui for Yacas\n"
+        "Yacas GUI version %1\n"
         "\n"
         "Powered by Yacas version %1";
 
-
-
-    QMessageBox::about(this, "About Yagy", about.arg(YACAS_VERSION));
+    QMessageBox::about(this, "About Yacas GUI", about.arg(YACAS_VERSION));
 }
 
 void MainWindow::handle_engine_busy(bool busy)

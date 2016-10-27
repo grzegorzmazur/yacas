@@ -1,14 +1,3 @@
-configure_file (
-  "libyacas/config/yacas_version.h.in"
-  "${PROJECT_BINARY_DIR}/cyacas/config/yacas/yacas_version.h"
-  )
-
-include_directories(
-  "${PROJECT_BINARY_DIR}/cyacas/config"
-  "${PROJECT_BINARY_DIR}/cyacas/config/yacas"
-  )
-
-install (FILES "${PROJECT_BINARY_DIR}/cyacas/config/yacas/yacas_version.h" DESTINATION include/yacas COMPONENT dev)
 
 if (APPLE)
   set(CMAKE_MACOSX_RPATH 1)
@@ -31,8 +20,6 @@ endif ()
 if (APPLE OR WIN32)
     add_definitions(-DNO_GLOBALS)
 endif ()
-
-include_directories ("libyacas/include")
 
 add_subdirectory (libyacas)
 

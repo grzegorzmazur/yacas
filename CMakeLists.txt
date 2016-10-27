@@ -20,11 +20,7 @@ if (ENABLE_JYACAS)
   set (LANGUAGES ${LANGUAGES} Java)
 endif ()
 
-project (YACAS VERSION 1.5.99 LANGUAGES ${LANGUAGES})
-
-#if (${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten")
-#  set (YACAS_SOURCES ${YACAS_SOURCES} ${YACAS_JS_INTERFACE_SOURCES})
-#endif ()
+project (YACAS VERSION 1.6.0 LANGUAGES ${LANGUAGES})
 
 set (YACAS_SCRIPTS
   scripts/array.rep/code.ys

@@ -1,3 +1,8 @@
+configure_file (
+  "config/yacas/yacas_version.h.in"
+  "${CMAKE_CURRENT_BINARY_DIR}/config/yacas/yacas_version.h"
+  )
+
 set (SOURCES
   src/associationclass.cpp
   src/deffile.cpp
@@ -89,8 +94,11 @@ set (HEADERS
 
 add_library (libyacas ${SOURCES} ${HEADERS})
 set_target_properties (libyacas PROPERTIES OUTPUT_NAME "yacas")
+target_include_directories (libyacas PUBLIC include "${CMAKE_CURRENT_BINARY_DIR}/config")
+
 install (TARGETS libyacas ARCHIVE DESTINATION lib RUNTIME DESTINATION bin COMPONENT app)
 install (DIRECTORY include/ DESTINATION include COMPONENT dev)
+install (FILES "${CMAKE_CURRENT_BINARY_DIR}/config/yacas/yacas_version.h" DESTINATION include/yacas COMPONENT dev)
 
 if (APPLE)
   add_library (libyacas_framework SHARED ${SOURCES} ${HEADERS})
