@@ -13,7 +13,7 @@
 #include <unordered_map>
 
 // new-style evaluator, passing arguments onto the stack in LispEnvironment
-typedef void (*YacasEvalCaller)(LispEnvironment& aEnvironment,LispInt aStackTop);
+typedef void (*YacasEvalCaller)(LispEnvironment& aEnvironment,int aStackTop);
 class YacasEvaluator: public EvalFuncBase
 {
 public:
@@ -25,7 +25,7 @@ public:
     Fixed = 0,    // fixed number of arguments
     Variable = 2  // variable number of arguments
   };
-  YacasEvaluator(YacasEvalCaller aCaller,LispInt aNrArgs, LispInt aFlags)
+  YacasEvaluator(YacasEvalCaller aCaller,int aNrArgs, int aFlags)
     : iCaller(aCaller), iNrArgs(aNrArgs), iFlags(aFlags)
   {
   }
@@ -34,8 +34,8 @@ public:
                 LispPtr& aArguments) const override;
 private:
   YacasEvalCaller iCaller;
-  LispInt iNrArgs;
-  LispInt iFlags;
+  int iNrArgs;
+  int iFlags;
 };
 
 typedef std::unordered_map<LispStringSmartPtr, YacasEvaluator, std::hash<const LispString*> > YacasCoreCommands;

@@ -11,7 +11,7 @@ class ArrayClass final: public GenericClass
 public:
     //required
     ArrayClass(std::size_t aSize,LispObject* aInitialItem);
-    const LispChar* TypeName() const override;
+    const char* TypeName() const override;
 
     //array-specific
     std::size_t Size() const;
@@ -29,7 +29,7 @@ ArrayClass::ArrayClass(std::size_t aSize, LispObject* aInitialItem):
 }
 
 inline
-const LispChar* ArrayClass::TypeName() const
+const char* ArrayClass::TypeName() const
 {
     return "\"Array\"";
 }

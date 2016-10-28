@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <string.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 #ifndef WIN32
 #include <pthread.h>
@@ -15,8 +16,6 @@ typedef SSIZE_T ssize_t;
 #endif
 
 #include <sys/types.h>
-
-#include "yacas/yacasprivate.h"
 
 #define WITH_PYMALLOC
 

@@ -7,6 +7,15 @@
 #include <vector>
 #include <cctype>
 
+// These define the internal types for the arbitrary precision
+// number module. The larger they are the better. PlatDoubleWord
+// should be at least twice as big as PlatWord, to prevent overflowing
+// during multiplication.
+
+typedef unsigned short PlatWord;
+typedef unsigned long PlatDoubleWord;
+typedef signed long PlatSignedDoubleWord;
+
 /* Quantities derived from the platform-dependent types for doing
  * arithmetic.
  */
@@ -22,8 +31,8 @@
 class ANumber : public std::vector<PlatWord>
 {
 public:
-    ANumber(const LispChar * aString,LispInt aPrecision,LispInt aBase=10);
-    ANumber(LispInt aPrecision);
+    ANumber(const char* aString,int aPrecision,int aBase=10);
+    ANumber(int aPrecision);
     //TODO the properties of this object are set in the member initialization list, but then immediately overwritten by the CopyFrom. We can make this slightly cleaner by only initializing once.
     inline ANumber(const ANumber& aOther) : iExp(0),iNegative(false),iPrecision(0),iTensExp(0)
     {
@@ -31,10 +40,10 @@ public:
     }
     void CopyFrom(const ANumber& aOther);
     bool ExactlyEqual(const ANumber& aOther);
-    void SetTo(const LispChar * aString,LispInt aBase=10);
-    LispInt Precision() const;
-    void SetPrecision(LispInt aPrecision) {iPrecision = aPrecision;}
-    void ChangePrecision(LispInt aPrecision);
+    void SetTo(const char* aString,int aBase=10);
+    int Precision() const;
+    void SetPrecision(int aPrecision) {iPrecision = aPrecision;}
+    void ChangePrecision(int aPrecision);
     void RoundBits();
     void DropTrailZeroes();
     void Expand();
@@ -48,14 +57,14 @@ public:
     void Print(std::ostream&, const std::string& prefix) const;
 
 public:
-    LispInt iExp;
+    int iExp;
     bool iNegative;
-    LispInt iPrecision;
-    LispInt iTensExp;
+    int iPrecision;
+    int iTensExp;
 };
 
 inline
-LispInt ANumber::Precision() const
+int ANumber::Precision() const
 {
     return iPrecision;
 }
@@ -69,23 +78,23 @@ void IntegerDivide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber
 
 bool Significant(ANumber& a);
 
-LispInt WordDigits(LispInt aPrecision, LispInt aBase);
+int WordDigits(int aPrecision, int aBase);
 
 // Operations on ANumber.
 void Negate(ANumber& aNumber);
-void  ANumberToString(LispString& aResult, ANumber& aNumber, LispInt aBase, bool aForceFloat=false);
+void  ANumberToString(LispString& aResult, ANumber& aNumber, int aBase, bool aForceFloat=false);
 void Add(ANumber& aResult, ANumber& a1, ANumber& a2);
 void Subtract(ANumber& aResult, ANumber& a1, ANumber& a2);
 void Multiply(ANumber& aResult, ANumber& a1, ANumber& a2);
 void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2);
 bool GreaterThan(ANumber& a1, ANumber& a2);
 bool LessThan(ANumber& a1, ANumber& a2);
-void BaseShiftRight(ANumber& a, LispInt aNrBits);
-void BaseShiftLeft(ANumber& a, LispInt aNrBits);
+void BaseShiftRight(ANumber& a, int aNrBits);
+void BaseShiftLeft(ANumber& a, int aNrBits);
 void BaseGcd(ANumber& aResult, ANumber& a1, ANumber& a2);
 void Sqrt(ANumber& aResult, ANumber& N);
 
-void NormalizeFloat(ANumber& a2, LispInt digitsNeeded);
+void NormalizeFloat(ANumber& a2, int digitsNeeded);
 
 inline
 void ANumber::Negate()

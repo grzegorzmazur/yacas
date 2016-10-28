@@ -1,5 +1,3 @@
-
-#include "yacas/yacasprivate.h"
 #include "yacas/patternclass.h"
 
 PatternClass::PatternClass(YacasPatternPredicateBase* aPatternMatcher)
@@ -12,7 +10,7 @@ PatternClass::~PatternClass()
     delete iPatternMatcher;
 }
 
-const LispChar * PatternClass::TypeName() const
+const char* PatternClass::TypeName() const
 {
     return "\"Pattern\"";
 }

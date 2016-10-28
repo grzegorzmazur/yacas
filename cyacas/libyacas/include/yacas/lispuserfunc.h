@@ -19,10 +19,10 @@ class LispUserFunction : public EvalFuncBase
 public:
     LispUserFunction() : iFenced(true),iTraced(false) {};
     virtual void HoldArgument(const LispString* aVariable) = 0;
-    virtual void DeclareRule(LispInt aPrecedence, LispPtr& aPredicate,
+    virtual void DeclareRule(int aPrecedence, LispPtr& aPredicate,
                              LispPtr& aBody) = 0;
-    virtual void DeclareRule(LispInt aPrecedence, LispPtr& aBody) = 0;
-    virtual void DeclarePattern(LispInt aPrecedence, LispPtr& aPredicate,
+    virtual void DeclareRule(int aPrecedence, LispPtr& aBody) = 0;
+    virtual void DeclarePattern(int aPrecedence, LispPtr& aPredicate,
                              LispPtr& aBody) = 0;
     virtual const LispPtr& ArgList() const = 0;
 
@@ -46,8 +46,8 @@ private:
 class LispArityUserFunction : public LispUserFunction
 {
 public:
-    virtual LispInt Arity() const = 0;
-    virtual LispInt IsArity(LispInt aArity) const = 0;
+    virtual int Arity() const = 0;
+    virtual int IsArity(int aArity) const = 0;
 };
 
 
@@ -87,7 +87,7 @@ public:
   }
 
   /// Return user function with given arity.
-  LispUserFunction* UserFunc(LispInt aArity);
+  LispUserFunction* UserFunc(int aArity);
 
   /// Destructor.
   virtual ~LispMultiUserFunction();
@@ -99,7 +99,7 @@ public:
   virtual void DefineRuleBase(LispArityUserFunction* aNewFunction);
 
   /// Delete tuser function with given arity.
-  virtual void DeleteBase(LispInt aArity);
+  virtual void DeleteBase(int aArity);
 
 private:
   /// Set of LispArityUserFunction's provided by this LispMultiUserFunction.

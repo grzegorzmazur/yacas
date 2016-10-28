@@ -1,5 +1,4 @@
 
-#include "yacas/yacasprivate.h"
 #include "yacas/lispparser.h"
 #include "yacas/lispatom.h"
 #include "yacas/lisperror.h"
@@ -79,10 +78,10 @@ void LispPrinter::Print(
     PrintExpression(aExpression, aOutput, aEnvironment, 0);
 }
 
-void LispPrinter::Indent(std::ostream& aOutput, LispInt aDepth)
+void LispPrinter::Indent(std::ostream& aOutput, int aDepth)
 {
     aOutput.put('\n');
-    LispInt i;
+    int i;
     for (i = aDepth; i > 0; i--) {
         aOutput.write("  ", 2);
     }
@@ -91,10 +90,10 @@ void LispPrinter::Indent(std::ostream& aOutput, LispInt aDepth)
 void LispPrinter::PrintExpression(const LispPtr& aExpression,
                                   std::ostream& aOutput,
                                   LispEnvironment& aEnvironment,
-                                  LispInt aDepth)
+                                  int aDepth)
 {
     const LispPtr* iter = &aExpression;
-    LispInt item = 0;
+    int item = 0;
     while (!!(*iter)) {
         // if String not null pointer: print string
         const LispString* string = (*iter)->String();
@@ -120,7 +119,7 @@ void LispPrinter::PrintExpression(const LispPtr& aExpression,
 
 // does nothing in the LispPrinter but is used in derived classes
 
-void LispPrinter::RememberLastChar(LispChar aChar)
+void LispPrinter::RememberLastChar(char aChar)
 {
 }
 

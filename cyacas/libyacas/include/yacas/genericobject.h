@@ -6,9 +6,9 @@ class GenericClass {
 public:
     GenericClass() : iReferenceCount(0) {};
     virtual ~GenericClass() = default;
-    virtual const LispChar* TypeName() const = 0;
+    virtual const char* TypeName() const = 0;
 public:
-    ReferenceType iReferenceCount; //TODO: perhaps share the method of reference counting with how it is done in other places
+    unsigned iReferenceCount; //TODO: perhaps share the method of reference counting with how it is done in other places
 };
 
 #endif

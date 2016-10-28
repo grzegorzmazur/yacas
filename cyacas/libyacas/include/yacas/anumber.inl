@@ -8,7 +8,7 @@ template<class T>
 inline void BaseTimesInt(T& a,PlatDoubleWord aNumber, PlatDoubleWord aBase)
 {
   PlatDoubleWord carry=0;
-  const LispInt nr=a.size();
+  const int nr=a.size();
 
   typename T::value_type * aptr = &a[0];
   for (int i=0;i<nr;i++)
@@ -25,7 +25,7 @@ template<class T>
 inline void WordBaseTimesInt(T& a,PlatDoubleWord aNumber)
 {
   PlatDoubleWord carry=0;
-  const LispInt nr=a.size();
+  const int nr=a.size();
 
   typename T::value_type * aptr = &a[0];
   for (int i=0;i<nr;i++)
@@ -43,7 +43,7 @@ inline void WordBaseTimesInt(T& a,PlatDoubleWord aNumber)
 template<class T>
 inline void BaseDivideInt(T& a,PlatDoubleWord aNumber, PlatDoubleWord aBase, PlatDoubleWord& aCarry)
 {
-    const LispInt nr=a.size();
+    const int nr=a.size();
 
     PlatDoubleWord carry=0;
 
@@ -80,13 +80,13 @@ inline void BaseAdd(T& aTarget, const T& aSource, PlatDoubleWord aBase)
     GrowDigits(aTarget,aSource.size());
     aTarget.push_back(0);
 
-    LispInt nr = std::min(aTarget.size(), aSource.size());
+    int nr = std::min(aTarget.size(), aSource.size());
 
     PlatDoubleWord carry=0;
 
    const typename T::value_type * sourcePtr = &aSource[0];
    typename T::value_type * targetPtr = &aTarget[0];
-   for (LispInt digit=0;digit<nr;digit++)
+   for (int digit=0;digit<nr;digit++)
     {
         PlatDoubleWord word;
         word = (PlatDoubleWord)targetPtr[digit] +
@@ -115,13 +115,13 @@ inline void WordBaseAdd(T& aTarget, const T& aSource)
     GrowDigits(aTarget,aSource.size());
     aTarget.push_back(0);
 
-    LispInt nr = std::min(aTarget.size(), aSource.size());
+    int nr = std::min(aTarget.size(), aSource.size());
 
     PlatDoubleWord carry=0;
 
    const typename T::value_type * sourcePtr = &aSource[0];
    typename T::value_type * targetPtr = &aTarget[0];
-   for (LispInt digit=0;digit<nr;digit++)
+   for (int digit=0;digit<nr;digit++)
     {
         PlatDoubleWord word;
         word = (PlatDoubleWord)targetPtr[digit] +
@@ -146,13 +146,13 @@ inline void WordBaseAdd(T& aTarget, const T& aSource)
 
 
 template<class T>
-inline void BaseSubtract(T& aResult, T& a2, LispInt offset)
+inline void BaseSubtract(T& aResult, T& a2, int offset)
 {
     if (a2.IsZero())
         return;
 
     // Initialize result
-    LispInt nr = a2.size();
+    int nr = a2.size();
 
     typename T::value_type * resultPtr = &aResult[0];
     typename T::value_type * a2ptr = &a2[0];
@@ -162,7 +162,7 @@ inline void BaseSubtract(T& aResult, T& a2, LispInt offset)
 
     // Subtract on a per-digit basis
     PlatSignedDoubleWord carry=0;
-    LispInt digit;
+    int digit;
 
     for (digit=0;digit<nr;digit++)
     {
@@ -183,7 +183,7 @@ inline void BaseSubtract(T& aResult, T& a2, LispInt offset)
     {
         assert(nr+offset<aResult.size());
 
-        LispInt newCarry = 0;
+        int newCarry = 0;
         PlatSignedDoubleWord ww = resultPtr[nr+offset]+carry;
         while (ww<0)
         {
@@ -319,12 +319,12 @@ template<class T>
 inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
 {
     // Find the values n and m as described in Knuth II:
-    LispInt n=a2.size();
+    int n=a2.size();
     assert(n>0);
     assert(a2[n-1] != 0);
 
     //a1.size() = m+n => m = a1.size()-n
-    LispInt m = a1.size()-n;
+    int m = a1.size()-n;
     assert(m>=0);
 
     aQuotient.resize(m+1);
@@ -340,7 +340,7 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
     a2.push_back(0);
 
     //D2:
-    LispInt j = m;
+    int j = m;
 
     while (j>=0)
     {
@@ -364,7 +364,7 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
         sub.push_back(0);
 
         PlatSignedDoubleWord carry;
-        LispInt digit;
+        int digit;
         {//Subtract the two
             //TODO this can be generalized!!!!
             //
@@ -429,6 +429,6 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
 inline
 void ANumber::Expand()
 {
-    if (iExp+1>LispInt(size()))
-        insert(end(), iExp+1-LispInt(size()), 0);
+    if (iExp+1>int(size()))
+        insert(end(), iExp+1-int(size()), 0);
 }

@@ -50,12 +50,12 @@ public:
 private:
     void ReadToken();
     void MatchToken(const LispString * aToken);
-    void ReadExpression(LispInt depth);
+    void ReadExpression(int depth);
     void ReadAtom();
 
 private:
-    void GetOtherSide(LispInt aNrArgsToCombine, LispInt depth);
-    void Combine(LispInt aNrArgsToCombine);
+    void GetOtherSide(int aNrArgsToCombine, int depth);
+    void Combine(int aNrArgsToCombine);
     void InsertAtom(const LispString* aString);
 
 private:
@@ -91,13 +91,13 @@ public:
         std::ostream& aOutput,
         LispEnvironment& aEnvironment) override;
 
-    void RememberLastChar(LispChar aChar) override;
+    void RememberLastChar(char aChar) override;
 
 private:
     void Print(
         const LispPtr& aExpression,
         std::ostream& aOutput,
-        LispInt iPrecedence);
+        int iPrecedence);
 
     void WriteToken(std::ostream& aOutput, const std::string&  aString);
 
@@ -106,7 +106,7 @@ private:
     LispOperators& iInfixOperators;
     LispOperators& iPostfixOperators;
     LispOperators& iBodiedOperators;
-    LispChar iPrevLastChar;
+    char iPrevLastChar;
     LispEnvironment* iCurrentEnvironment;
 };
 

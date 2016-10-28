@@ -1,4 +1,3 @@
-#include "yacas/yacasprivate.h"
 #include "yacas/lisphash.h"
 
 const LispString* LispHashTable::LookUp(const std::string& s)

@@ -59,14 +59,14 @@ public: //Derivables
 
   /** If this is a number, return a BigNumber representation
    */
-  virtual BigNumber* Number(LispInt aPrecision) { return nullptr; }
+  virtual BigNumber* Number(int aPrecision) { return nullptr; }
 
   virtual LispObject* Copy() const = 0;
 
 public:
-  LispInt Equal(LispObject& aOther);
-  inline LispInt operator==(LispObject& aOther);
-  inline LispInt operator!=(LispObject& aOther);
+  int Equal(LispObject& aOther);
+  inline int operator==(LispObject& aOther);
+  inline int operator!=(LispObject& aOther);
 protected:
   inline LispObject() :
    iNext(),iReferenceCount()
@@ -86,7 +86,7 @@ protected:
 private:
   LispPtr   iNext;
 public:
-  ReferenceCount iReferenceCount;
+  unsigned iReferenceCount;
   
   static inline void* operator new(size_t size) { return PlatAlloc(size); }
   static inline void* operator new[](size_t size) { return PlatAlloc(size); }
@@ -178,12 +178,12 @@ inline LispPtr& LispObject::Nixed()
     return iNext;
 }
 
-inline LispInt LispObject::operator==(LispObject& aOther)
+inline int LispObject::operator==(LispObject& aOther)
 {
     return Equal(aOther);
 }
 
-inline LispInt LispObject::operator!=(LispObject& aOther)
+inline int LispObject::operator!=(LispObject& aOther)
 {
     return !Equal(aOther);
 }

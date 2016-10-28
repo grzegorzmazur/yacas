@@ -1,4 +1,3 @@
-#include "yacas/yacasprivate.h"
 #include "yacas/patterns.h"
 #include "yacas/standard.h"
 #include "yacas/mathuserfunc.h"
@@ -67,8 +66,8 @@ bool MatchSubList::ArgumentMatches(LispEnvironment& aEnvironment,
 
   iter = *pPtr;
 
-  const LispInt iNrMatchers = iMatchers.size();
-  for (LispInt i=0;i<iNrMatchers;i++,++iter)
+  const int iNrMatchers = iMatchers.size();
+  for (int i=0;i<iNrMatchers;i++,++iter)
   {
     if (!iter.getObj())
       return false;
@@ -80,7 +79,7 @@ bool MatchSubList::ArgumentMatches(LispEnvironment& aEnvironment,
   return true;
 }
 
-LispInt YacasPatternPredicateBase::LookUp(const LispString * aVariable)
+int YacasPatternPredicateBase::LookUp(const LispString * aVariable)
 {
     const std::size_t n = iVariables.size();
     for (std::size_t i = 0; i < n; ++i)
@@ -112,7 +111,7 @@ const YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnv
         LispPtr* sublist = aPattern->SubList();
         assert(sublist);
 
-        LispInt num = InternalListLength(*sublist);
+        int num = InternalListLength(*sublist);
 
         // variable matcher here...
         if (num>1)
@@ -123,7 +122,7 @@ const YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnv
                 LispObject* second = head->Nixed();
                 if (second->String())
                 {
-                    LispInt index = LookUp(second->String());
+                    int index = LookUp(second->String());
 
                     // Make a predicate for the type, if needed
                     if (num>2)
@@ -156,7 +155,7 @@ const YacasParamMatcherBase* YacasPatternPredicateBase::MakeParamMatcher(LispEnv
         std::vector<const YacasParamMatcherBase*> matchers;
         matchers.reserve(num);
         LispIterator iter(*sublist);
-        for (LispInt i = 0; i < num; ++i, ++iter) {
+        for (int i = 0; i < num; ++i, ++iter) {
             matchers.push_back(MakeParamMatcher(aEnvironment,iter.getObj()));
             assert(matchers[i]);
         }

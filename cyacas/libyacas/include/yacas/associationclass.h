@@ -35,7 +35,7 @@ class AssociationClass final: public GenericClass
 {
 public:
     AssociationClass(const LispEnvironment& env);
-    const LispChar* TypeName() const override;
+    const char* TypeName() const override;
 
     std::size_t Size() const;
     bool Contains(LispObject* k) const;
@@ -79,7 +79,7 @@ AssociationClass::AssociationClass(const LispEnvironment& env):
 }
 
 inline
-const LispChar* AssociationClass::TypeName() const
+const char* AssociationClass::TypeName() const
 {
     return "\"Association\"";
 }

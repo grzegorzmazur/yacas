@@ -15,8 +15,6 @@
   One can use RefPtr on any arbitrary object from that moment on.
  */
 
-typedef ReferenceType ReferenceCount;
-
 template<class T>
 class RefPtr {
 public:

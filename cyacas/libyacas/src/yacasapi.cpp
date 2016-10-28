@@ -1,5 +1,4 @@
 
-#include "yacas/yacasprivate.h"
 #include "yacas/yacas.h"
 #include "yacas/mathcommands.h"
 #include "yacas/standard.h"
@@ -39,7 +38,7 @@ CYacas::CYacas(std::ostream& os):
 void CYacas::Evaluate(const std::string& aExpression)
 {
     LispEnvironment& env = environment.getEnv();
-    LispInt stackTop = env.iStack.size();
+    int stackTop = env.iStack.size();
 
     env.iErrorOutput.clear();
     env.iErrorOutput.str("");

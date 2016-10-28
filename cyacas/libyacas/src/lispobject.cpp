@@ -1,8 +1,7 @@
 
-#include "yacas/yacasprivate.h"
 #include "yacas/lispobject.h"
 
-LispInt LispObject::Equal(LispObject& aOther)
+int LispObject::Equal(LispObject& aOther)
 {
     // next line handles the fact that either one is a string
     if (String() != aOther.String())

@@ -35,7 +35,7 @@ protected:
     bool IsAlNum(std::uint32_t c);
 #endif
 
-bool IsSymbolic(LispChar c);
+bool IsSymbolic(char c);
 
 #endif
 

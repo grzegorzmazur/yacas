@@ -27,8 +27,6 @@
 //          showing no prompts, and with no readline functionality.
 //
 
-#include "yacas/yacasprivate.h"
-
 #include <ctime>
 #include <csignal>
 #include <cstring>
@@ -124,14 +122,14 @@ void ReportNrCurrent()
 #define RESULT aEnvironment.iStack[aStackTop]
 #define ARGUMENT(i) aEnvironment.iStack[aStackTop+i]
 
-void LispExit(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispExit(LispEnvironment& aEnvironment, int aStackTop)
 {
     busy = false;
     InternalTrue(aEnvironment, RESULT);
 }
 
 
-void LispExitRequested(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispExitRequested(LispEnvironment& aEnvironment, int aStackTop)
 {
     if (!busy)
         InternalTrue(aEnvironment, RESULT);
@@ -219,7 +217,7 @@ std::string ReadInputString(const std::string& prompt)
     return inpline;
 }
 
-static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispInt aStackTop)
+static void LispReadCmdLineString(LispEnvironment& aEnvironment, int aStackTop)
 {
     CheckArgIsString(1, aEnvironment, aStackTop);
     LispPtr promptObject = (ARGUMENT(1));
@@ -228,9 +226,9 @@ static void LispReadCmdLineString(LispEnvironment& aEnvironment, LispInt aStackT
     RESULT = LispAtom::New(aEnvironment, stringify(output));
 }
 
-static void LispHistorySize(LispEnvironment& aEnvironment, LispInt aStackTop)
+static void LispHistorySize(LispEnvironment& aEnvironment, int aStackTop)
 {
-    LispInt depth = GetShortIntegerArgument(aEnvironment, aStackTop, 1);
+    int depth = GetShortIntegerArgument(aEnvironment, aStackTop, 1);
 
     if (commandline)
         commandline->MaxHistoryLinesSaved(depth);
@@ -238,7 +236,7 @@ static void LispHistorySize(LispEnvironment& aEnvironment, LispInt aStackTop)
     InternalTrue(aEnvironment, RESULT);
 }
 
-void LispTime(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispTime(LispEnvironment& aEnvironment, int aStackTop)
 {
     const std::clock_t starttime = std::clock();
     LispPtr res;
@@ -251,7 +249,7 @@ void LispTime(LispEnvironment& aEnvironment, LispInt aStackTop)
     RESULT = LispAtom::New(aEnvironment, os.str());
 }
 
-void LispFileSize(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispFileSize(LispEnvironment& aEnvironment, int aStackTop)
 {
     CheckArgIsString(1, aEnvironment, aStackTop);
     LispPtr fnameObject = (ARGUMENT(1));
@@ -267,7 +265,7 @@ void LispFileSize(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 
 
-void LispIsPromptShown(LispEnvironment& aEnvironment,LispInt aStackTop)
+void LispIsPromptShown(LispEnvironment& aEnvironment,int aStackTop)
 { // this function must access show_prompt which is a *global* in yacasmain.cpp, so it's not possible to put this function in mathcommands.cpp
     InternalBoolean(aEnvironment, RESULT, show_prompt);
 }

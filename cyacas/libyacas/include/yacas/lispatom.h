@@ -113,13 +113,13 @@ public:
   LispNumber(BigNumber* aNumber) : iNumber(aNumber), iString(nullptr) {}
   LispNumber(const LispNumber& other) : LispObject(other), iNumber(other.iNumber), iString(other.iString) {}
   /// construct from a decimal string representation (also create a number object) and use aBasePrecision decimal digits
-  LispNumber(LispString * aString, LispInt aBasePrecision) : iNumber(nullptr), iString(aString) { Number(aBasePrecision); }
+  LispNumber(LispString * aString, int aBasePrecision) : iNumber(nullptr), iString(aString) { Number(aBasePrecision); }
 
   LispObject* Copy() const override { return new LispNumber(*this); }
   /// return a string representation in decimal with maximum decimal precision allowed by the inherent accuracy of the number
   LispString * String() override;
   /// give access to the BigNumber object; if necessary, will create a BigNumber object out of the stored string, at given precision (in decimal?)
-  BigNumber* Number(LispInt aPrecision) override;
+  BigNumber* Number(int aPrecision) override;
 private:
   /// number object; nullptr if not yet converted from string
   RefPtr<BigNumber> iNumber;

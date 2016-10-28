@@ -1,5 +1,3 @@
-
-#include "yacas/yacasprivate.h"
 #include "yacas/substitute.h"
 #include "yacas/lispatom.h"
 #include "yacas/standard.h"

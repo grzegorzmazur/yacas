@@ -1,9 +1,8 @@
 
-#include "yacas/yacasprivate.h"
 #include "yacas/lispuserfunc.h"
 #include "yacas/standard.h"
 
-LispUserFunction* LispMultiUserFunction::UserFunc(LispInt aArity)
+LispUserFunction* LispMultiUserFunction::UserFunc(int aArity)
 {
     //Find function body with the right arity
     const std::size_t nrc=iFunctions.size();
@@ -19,7 +18,7 @@ LispUserFunction* LispMultiUserFunction::UserFunc(LispInt aArity)
     return nullptr;
 }
 
-void LispMultiUserFunction::DeleteBase(LispInt aArity)
+void LispMultiUserFunction::DeleteBase(int aArity)
 {
     //Find function body with the right arity
     const std::size_t nrc = iFunctions.size();

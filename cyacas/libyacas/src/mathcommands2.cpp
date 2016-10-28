@@ -1,6 +1,3 @@
-
-#include "yacas/yacasprivate.h"
-
 #include "yacas/lispenvironment.h"
 #include "yacas/standard.h"
 #include "yacas/lispeval.h"
@@ -24,7 +21,7 @@
 #define ARGUMENT(i) aEnvironment.iStack[aStackTop+i]
 
 
-void LispSubst(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispSubst(LispEnvironment& aEnvironment, int aStackTop)
 {
     LispPtr from (ARGUMENT(1));
     LispPtr to   (ARGUMENT(2));
@@ -34,17 +31,17 @@ void LispSubst(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 
-void LispLocalSymbols(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispLocalSymbols(LispEnvironment& aEnvironment, int aStackTop)
 {
-    LispInt nrArguments = InternalListLength(ARGUMENT(0));
+    int nrArguments = InternalListLength(ARGUMENT(0));
 
-    LispInt nrSymbols = nrArguments-2;
+    int nrSymbols = nrArguments-2;
 
     std::vector<const LispString*> names(nrSymbols);
     std::vector<const LispString*> localnames(nrSymbols);
 
-    LispInt uniquenumber = aEnvironment.GetUniqueId();
-    LispInt i;
+    int uniquenumber = aEnvironment.GetUniqueId();
+    int i;
     for (i=0;i<nrSymbols;i++)
     {
         const LispString* atomname = Argument(ARGUMENT(0), i+1)->String();
@@ -66,33 +63,33 @@ void LispLocalSymbols(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 
 
-void LispCharString(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispCharString(LispEnvironment& aEnvironment, int aStackTop)
 {
   const LispString* str = ARGUMENT(1)->String();
   CheckArg(str, 2, aEnvironment, aStackTop);
   CheckArg(IsNumber(str->c_str(), false), 2, aEnvironment, aStackTop);
-  LispInt asciiCode = InternalAsciiToInt(*str);
+  int asciiCode = InternalAsciiToInt(*str);
 
-  LispChar ascii[4];
+  char ascii[4];
   ascii[0] = '\"';
-  ascii[1] = (LispChar)asciiCode;
+  ascii[1] = (char)asciiCode;
   ascii[2] = '\"';
   ascii[3] = '\0';
   RESULT = (LispAtom::New(aEnvironment,ascii));
 }
 
 
-void LispInDebugMode(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispInDebugMode(LispEnvironment& aEnvironment, int aStackTop)
 {
     InternalFalse(aEnvironment,RESULT);
 }
 
-void LispDebugFile(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispDebugFile(LispEnvironment& aEnvironment, int aStackTop)
 {
     throw LispErrGeneric("Cannot call DebugFile in non-debug version of Yacas");
 }
 
-void LispDebugLine(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispDebugLine(LispEnvironment& aEnvironment, int aStackTop)
 {
     throw LispErrGeneric("Cannot call DebugLine in non-debug version of Yacas");
 }

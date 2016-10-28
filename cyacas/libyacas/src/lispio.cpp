@@ -1,5 +1,4 @@
 
-#include "yacas/yacasprivate.h"
 #include "yacas/lispio.h"
 
 void InputStatus::SetTo(const std::string& aFileName)

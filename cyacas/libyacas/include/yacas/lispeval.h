@@ -17,8 +17,8 @@ public:
     }
     LispPtr iOperator;
     LispPtr iExpression;
-    LispInt iRulePrecedence;
-    LispInt iSide; // 0=pattern, 1=body
+    int iRulePrecedence;
+    int iSide; // 0=pattern, 1=body
 };
 
 /// Abstract evaluator for Lisp expressions.

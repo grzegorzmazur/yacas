@@ -4,26 +4,26 @@
 #include "lispenvironment.h"
 
 /// Whether the numeric library supports 1.0E-10 and such.
-LispInt NumericSupportForMantissa();
+int NumericSupportForMantissa();
 
 LispObject* GcdInteger(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment);
 
-LispObject* SinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
-LispObject* CosFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
-LispObject* TanFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
-LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
-LispObject* ExpFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
-LispObject* LnFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
+LispObject* SinFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
+LispObject* CosFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
+LispObject* TanFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
+LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
+LispObject* ExpFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
+LispObject* LnFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
 
-LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
+LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
 LispObject* ModFloat( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,
-                        LispInt aPrecision);
+                        int aPrecision);
 
 LispObject* PowerFloat(LispObject* int1, LispObject* int2,
-                         LispEnvironment& aEnvironment,LispInt aPrecision);
-LispObject* ShiftLeft( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision);
-LispObject* ShiftRight( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,LispInt aPrecision);
-LispObject* LispFactorial(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
+                         LispEnvironment& aEnvironment,int aPrecision);
+LispObject* ShiftLeft( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,int aPrecision);
+LispObject* ShiftRight( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,int aPrecision);
+LispObject* LispFactorial(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
 
 
 
@@ -48,23 +48,23 @@ class ANumber;
 /// All calculations are done at given precision. Integers grow as needed, floats don't grow beyond given precision.
 class BigNumber {
 public: //constructors
-  BigNumber(const LispChar * aString,LispInt aPrecision,LispInt aBase=10);
+  BigNumber(const char* aString,int aPrecision,int aBase=10);
 /// copy constructor
   BigNumber(const BigNumber& aOther);
   // no constructors from int or double to avoid automatic conversions
-  BigNumber(LispInt aPrecision = 20);
+  BigNumber(int aPrecision = 20);
   ~BigNumber();
   // assign from another number
   void SetTo(const BigNumber& aOther);
   // assign from string, precision in base digits
-  void SetTo(const LispChar * aString,LispInt aPrecision,LispInt aBase=10);
+  void SetTo(const char* aString,int aPrecision,int aBase=10);
     // assign from a platform type
   void SetTo(long value);
-  inline void SetTo(LispInt value) { SetTo(long(value)); };
+  inline void SetTo(int value) { SetTo(long(value)); };
   void SetTo(double value);
 public: // Convert back to other types
   /// ToString : return string representation of number in aResult to given precision (base digits)
-  void ToString(LispString& aResult, LispInt aPrecision, LispInt aBase=10) const;
+  void ToString(LispString& aResult, int aPrecision, int aBase=10) const;
   /// Give approximate representation as a double number
   double Double() const;
 
@@ -74,21 +74,21 @@ public://basic object manipulation
   bool IsIntValue() const;
   bool IsSmall() const;
   void BecomeInt();
-  void BecomeFloat(LispInt aPrecision=0);
+  void BecomeFloat(int aPrecision=0);
   bool LessThan(const BigNumber& aOther) const;
 public://arithmetic
   /// Multiply two numbers at given precision and put result in *this
-  void Multiply(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision);
+  void Multiply(const BigNumber& aX, const BigNumber& aY, int aPrecision);
   /** Multiply two numbers, and add to *this (this is useful and generally efficient to implement).
    * This is most likely going to be used by internal functions only, using aResult as an accumulator.
    */
-  void MultiplyAdd(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision);
+  void MultiplyAdd(const BigNumber& aX, const BigNumber& aY, int aPrecision);
   /// Add two numbers at given precision and return result in *this
-  void Add(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision);
+  void Add(const BigNumber& aX, const BigNumber& aY, int aPrecision);
   /// Negate the given number, return result in *this
   void Negate(const BigNumber& aX);
   /// Divide two numbers and return result in *this. Note: if the two arguments are integer, it should return an integer result!
-  void Divide(const BigNumber& aX, const BigNumber& aY, LispInt aPrecision);
+  void Divide(const BigNumber& aX, const BigNumber& aY, int aPrecision);
 
   /// integer operation: *this = y mod z
   void Mod(const BigNumber& aY, const BigNumber& aZ);
@@ -100,11 +100,11 @@ public:
   /// assign self to Floor(aX) if possible
   void Floor(const BigNumber& aX);
   /// set precision (in bits)
-  void Precision(LispInt aPrecision);
+  void Precision(int aPrecision);
 
 public:/// Bitwise operations, return result in *this.
-  void ShiftLeft( const BigNumber& aX, LispInt aNrToShift);
-  void ShiftRight( const BigNumber& aX, LispInt aNrToShift);
+  void ShiftLeft( const BigNumber& aX, int aNrToShift);
+  void ShiftRight( const BigNumber& aX, int aNrToShift);
   void BitAnd(const BigNumber& aX, const BigNumber& aY);
   void BitOr(const BigNumber& aX, const BigNumber& aY);
   void BitXor(const BigNumber& aX, const BigNumber& aY);
@@ -114,10 +114,10 @@ public:/// Bitwise operations, return result in *this.
   signed long BitCount() const;
 
   /// Give sign (-1, 0, 1)
-  LispInt Sign() const;
+  int Sign() const;
 
 public:
-  inline LispInt GetPrecision() const {return iPrecision;};
+  inline int GetPrecision() const {return iPrecision;};
 
 private:
   BigNumber& operator=(const BigNumber& aOther)
@@ -127,9 +127,9 @@ private:
     return *this;
   }
 public:
-  ReferenceCount iReferenceCount;
+  unsigned iReferenceCount;
 private:
-  LispInt iPrecision;
+  int iPrecision;
 
 public:
   /// Internal library wrapper starts here.
@@ -143,15 +143,15 @@ private:
     ENumType iType;
 
     friend LispObject* GcdInteger(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment);
-    friend LispObject* SinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
-    friend LispObject* CosFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
-    friend LispObject* TanFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
-    friend LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
-    friend LispObject* ExpFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
-    friend LispObject* LnFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
-    friend LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,LispInt aPrecision);
+    friend LispObject* SinFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
+    friend LispObject* CosFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
+    friend LispObject* TanFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
+    friend LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
+    friend LispObject* ExpFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
+    friend LispObject* LnFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
+    friend LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
     friend LispObject* PowerFloat(LispObject* int1, LispObject* int2,
-                           LispEnvironment& aEnvironment,LispInt aPrecision);
+                           LispEnvironment& aEnvironment,int aPrecision);
     ANumber* iNumber;
   /// Internal library wrapper ends here.
 };

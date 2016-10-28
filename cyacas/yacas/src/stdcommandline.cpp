@@ -1,4 +1,3 @@
-#include "yacas/yacasprivate.h"
 #include "stdcommandline.h"
 
 #include <iostream>

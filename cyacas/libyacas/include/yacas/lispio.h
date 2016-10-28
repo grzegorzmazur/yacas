@@ -18,7 +18,7 @@ public:
 
   void SetTo(const std::string& aFileName);
   void RestoreFrom(InputStatus& aPreviousStatus);
-  LispInt LineNumber();
+  int LineNumber();
   const std::string& FileName();
   void NextLine();
 
@@ -35,11 +35,11 @@ public:
 
 private:
   std::string iFileName;
-  LispInt  iLineNumber;
+  int  iLineNumber;
 };
 
 inline
-LispInt InputStatus::LineNumber()
+int InputStatus::LineNumber()
 {
   return iLineNumber;
 }

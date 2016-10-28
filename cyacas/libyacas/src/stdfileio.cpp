@@ -1,4 +1,3 @@
-#include "yacas/yacasprivate.h"
 #include "yacas/platfileio.h"
 
 #ifdef _WIN32
@@ -103,7 +102,7 @@ void StdFileInput::_get() const
 }
 
 
-std::string InternalFindFile(const LispChar* fname, const std::vector<std::string>& dirs)
+std::string InternalFindFile(const char* fname, const std::vector<std::string>& dirs)
 {
     std::string path(fname);
 

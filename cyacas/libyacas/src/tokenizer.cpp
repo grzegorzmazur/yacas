@@ -498,7 +498,7 @@ namespace {
     };
 }
 
-bool IsSymbolic(LispChar c)
+bool IsSymbolic(char c)
 {
     for (const char *ptr = symbolics; *ptr; ++ptr)
         if (*ptr == c)

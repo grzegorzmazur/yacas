@@ -1,4 +1,3 @@
-#include "yacas/yacasprivate.h"
 #include "unixcommandline.h"
 
 #include <sys/ioctl.h>
@@ -30,8 +29,8 @@ void CUnixCommandLine::ShowLine(const std::string& prompt, unsigned cursor)
     
     const std::size_t prompt_len = prompt.length();
 
-    const LispInt l = (cursor + prompt_len) / w.ws_col;
-    const LispInt c = (cursor + prompt_len) % w.ws_col;
+    const int l = (cursor + prompt_len) / w.ws_col;
+    const int c = (cursor + prompt_len) % w.ws_col;
 
     if (_cursor_line)
         std::cout << "\x1b[" << _cursor_line << "F";
@@ -40,7 +39,7 @@ void CUnixCommandLine::ShowLine(const std::string& prompt, unsigned cursor)
         if (_last_line)
             std::cout << "\x1b[" << _last_line << "B";
 
-        for (LispInt i = 0; i < _last_line; ++i)
+        for (int i = 0; i < _last_line; ++i)
             std::cout << "\r\x1b[K\x1b[F";
 
         std::cout << "\r\x1b[K\x1b[K" << prompt << iSubLine;

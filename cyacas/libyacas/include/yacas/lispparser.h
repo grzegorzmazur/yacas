@@ -27,7 +27,7 @@ public:
     LispTokenizer& iTokenizer;
     LispInput& iInput;
     LispEnvironment& iEnvironment;
-    LispInt iListed;
+    int iListed;
 };
 
 class LispPrinter {
@@ -37,16 +37,16 @@ public:
         std::ostream& aOutput,
         LispEnvironment& aEnvironment);
 
-    virtual void RememberLastChar(LispChar aChar);
+    virtual void RememberLastChar(char aChar);
 
 private:
     void PrintExpression(
         const LispPtr& aExpression,
         std::ostream& aOutput,
         LispEnvironment& aEnvironment,
-        LispInt aDepth=0);
+        int aDepth=0);
 
-    void Indent(std::ostream& aOutput, LispInt aDepth);
+    void Indent(std::ostream& aOutput, int aDepth);
 };
 
 

@@ -105,7 +105,7 @@ MatchSubList::~MatchSubList()
 class MatchVariable final: public YacasParamMatcherBase
 {
 public:
-    explicit MatchVariable(LispInt aVarIndex);
+    explicit MatchVariable(int aVarIndex);
 
     /// Matches an expression against the pattern variable.
     /// \param aEnvironment the underlying Lisp environment.
@@ -122,11 +122,11 @@ public:
                          LispPtr* arguments) const override;
 protected:
     /// Index of variable in YacasPatternPredicateBase::iVariables.
-    LispInt iVarIndex;
+    int iVarIndex;
 };
 
 inline
-MatchVariable::MatchVariable(LispInt aVarIndex):
+MatchVariable::MatchVariable(int aVarIndex):
     iVarIndex(aVarIndex)
 {
 }
@@ -197,7 +197,7 @@ protected:
     /// appears.
     ///
     /// If \a aVariable is not in #iVariables, it is added.
-    LispInt LookUp(const LispString* aVariable);
+    int LookUp(const LispString* aVariable);
 
 protected:
     /// Set local variables corresponding to the pattern variables.

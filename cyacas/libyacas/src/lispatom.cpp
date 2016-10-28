@@ -1,5 +1,4 @@
 
-#include "yacas/yacasprivate.h"
 #include "yacas/lispatom.h"
 #include "yacas/lisperror.h"
 #include "yacas/numbers.h"
@@ -136,7 +135,7 @@ LispString * LispNumber::String()
 
 /// Return a BigNumber object.
 // Will create a BigNumber object out of a stored string, at given precision (in decimal) - that's why the aPrecision argument must be here - but only if no BigNumber object is already present
-BigNumber* LispNumber::Number(LispInt aBasePrecision)
+BigNumber* LispNumber::Number(int aBasePrecision)
 {
   if (!iNumber)
   {  // create and store a BigNumber out of string
@@ -149,7 +148,7 @@ BigNumber* LispNumber::Number(LispInt aBasePrecision)
 
   // check if the BigNumber object has enough precision, if not, extend it
   // (applies only to floats). Note that iNumber->GetPrecision() might be < 0
-  else if (!iNumber->IsInt() && iNumber->GetPrecision() < (LispInt)digits_to_bits(aBasePrecision, BASE10))
+  else if (!iNumber->IsInt() && iNumber->GetPrecision() < (int)digits_to_bits(aBasePrecision, BASE10))
   {
     if (iString)
     {// have string representation, can extend precision

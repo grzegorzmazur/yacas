@@ -1,4 +1,3 @@
-#include "yacas/yacasprivate.h"
 #include "commandline.h"
 
 #include <algorithm>
@@ -181,7 +180,7 @@ void CCommandLine::ReadLineSub(const std::string& prompt)
 }
 
 void CCommandLine::ShowOpen(const std::string& prompt,
-                            LispChar aOpen, LispChar aClose,
+                            char aOpen, char aClose,
                             unsigned cursor)
 {
     if (cursor < 2)
@@ -189,7 +188,7 @@ void CCommandLine::ShowOpen(const std::string& prompt,
     
     cursor -= 2;
     
-    LispInt count = 1;
+    int count = 1;
 
     std::string::iterator p = iSubLine.begin();
     utf8::advance(p, cursor, iSubLine.end());

@@ -1,5 +1,4 @@
 
-#include "yacas/yacasprivate.h"
 #include "yacas/lispeval.h"
 #include "yacas/lispuserfunc.h"
 #include "yacas/standard.h"
@@ -160,7 +159,7 @@ static void TraceShowExpression(LispEnvironment& aEnvironment,
 void TraceShowArg(LispEnvironment& aEnvironment,LispPtr& aParam,
                   LispPtr& aValue)
 {
-  for (LispInt i=0;i<aEnvironment.iEvalDepth+2;i++)
+  for (int i=0;i<aEnvironment.iEvalDepth+2;i++)
     aEnvironment.CurrentOutput().write("  ", 2);
   aEnvironment.CurrentOutput() << "TrArg(\"";
   TraceShowExpression(aEnvironment, aParam);
@@ -172,11 +171,11 @@ void TraceShowArg(LispEnvironment& aEnvironment,LispPtr& aParam,
 void TraceShowEnter(LispEnvironment& aEnvironment,
                     LispPtr& aExpression)
 {
-  for (LispInt i=0;i<aEnvironment.iEvalDepth;i++)
+  for (int i=0;i<aEnvironment.iEvalDepth;i++)
     aEnvironment.CurrentOutput().write("  ", 2);
   aEnvironment.CurrentOutput() << "TrEnter(\"";
   {
-    const LispChar * function = "";
+    const char* function = "";
     if (aExpression->SubList())
     {
       LispPtr *sub = aExpression->SubList();
@@ -197,7 +196,7 @@ void TraceShowEnter(LispEnvironment& aEnvironment,
 void TraceShowLeave(LispEnvironment& aEnvironment, LispPtr& aResult,
                     LispPtr& aExpression)
 {
-  for (LispInt i=0;i<aEnvironment.iEvalDepth;i++)
+  for (int i=0;i<aEnvironment.iEvalDepth;i++)
     aEnvironment.CurrentOutput().write("  ", 2);
   aEnvironment.CurrentOutput().write("TrLeave(\"", 9);
   TraceShowExpression(aEnvironment, aExpression);
@@ -246,7 +245,7 @@ void TracedStackEvaluator::ShowStack(LispEnvironment& aEnvironment, std::ostream
     aEnvironment.CurrentOutput() << i << ": ";
     aEnvironment.CurrentPrinter().Print(objs[i]->iOperator, aEnvironment.CurrentOutput(),aEnvironment);
 
-    LispInt internal;
+    int internal;
     internal =
             aEnvironment.CoreCommands().find(objs[i]->iOperator->String()) != aEnvironment.CoreCommands().end();
     if (internal)

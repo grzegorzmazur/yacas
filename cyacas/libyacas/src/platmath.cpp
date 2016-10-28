@@ -1,5 +1,4 @@
 /* Math using the standard library, if the precision is less than 13 */
-#include "yacas/yacasprivate.h"
 #include "yacas/lispobject.h"
 #include "yacas/lispatom.h"
 #include "yacas/lispenvironment.h"
@@ -31,22 +30,22 @@ LispObject* Double(LispEnvironment& aEnvironment,double aValue)
 }
 
 
-LispObject* PlatArcSin(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
+LispObject* PlatArcSin(LispEnvironment& aEnvironment,LispObject* int1, int aPrecision)
 {
     return Double(aEnvironment, std::asin(GetDouble(int1)));
 }
 
-LispObject* PlatLn(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
+LispObject* PlatLn(LispEnvironment& aEnvironment,LispObject* int1, int aPrecision)
 {
     return Double(aEnvironment, std::log(GetDouble(int1)));
 }
 
-LispObject* PlatPower(LispEnvironment& aEnvironment,LispObject* int1, LispObject* int2, LispInt aPrecision)
+LispObject* PlatPower(LispEnvironment& aEnvironment,LispObject* int1, LispObject* int2, int aPrecision)
 {
     return Double(aEnvironment, std::pow(GetDouble(int1),GetDouble(int2)));
 }
 
-LispObject* PlatDiv(LispEnvironment& aEnvironment,LispObject* int1, LispObject* int2,LispInt aPrecision)
+LispObject* PlatDiv(LispEnvironment& aEnvironment,LispObject* int1, LispObject* int2,int aPrecision)
 {
     return Double(aEnvironment,((long)GetDouble(int1))/((long)GetDouble(int2)));
 }
@@ -86,7 +85,7 @@ unsigned primes_table_check(unsigned long p)
     return !_primes_table.test(p / 2);
 }
 
-LispObject* PlatIsPrime(LispEnvironment& aEnvironment,LispObject* int1, LispInt aPrecision)
+LispObject* PlatIsPrime(LispEnvironment& aEnvironment,LispObject* int1, int aPrecision)
 {
     return Double(aEnvironment, primes_table_check((unsigned long)(GetDouble(int1))));
 }

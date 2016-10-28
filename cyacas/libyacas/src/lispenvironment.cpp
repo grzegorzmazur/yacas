@@ -105,13 +105,13 @@ LispEnvironment::~LispEnvironment()
     delete iDebugger;
 }
 
-void LispEnvironment::SetPrecision(LispInt aPrecision)
+void LispEnvironment::SetPrecision(int aPrecision)
 {
     iPrecision = aPrecision;  // precision in decimal digits
   iBinaryPrecision = digits_to_bits(aPrecision, BASE10);  // in bits
 }
 
-LispInt LispEnvironment::GetUniqueId()
+int LispEnvironment::GetUniqueId()
 {
     return iLastUniqueId++;
 }
@@ -294,14 +294,14 @@ LispUserFunction* LispEnvironment::UserFunction(LispPtr& aArguments)
     auto i = iUserFunctions.find(aArguments->String());
     if (i != iUserFunctions.end()) {
         LispMultiUserFunction* multiUserFunc = &i->second;
-        LispInt arity = InternalListLength(aArguments)-1;
+        int arity = InternalListLength(aArguments)-1;
         return  multiUserFunc->UserFunc(arity);
     }
     return nullptr;
 }
 
 
-LispUserFunction* LispEnvironment::UserFunction(const LispString* aName, LispInt aArity)
+LispUserFunction* LispEnvironment::UserFunction(const LispString* aName, int aArity)
 {
     auto i = iUserFunctions.find(aName);
     if (i != iUserFunctions.end())
@@ -312,7 +312,7 @@ LispUserFunction* LispEnvironment::UserFunction(const LispString* aName, LispInt
 
 
 
-void LispEnvironment::UnFenceRule(const LispString* aOperator, LispInt aArity)
+void LispEnvironment::UnFenceRule(const LispString* aOperator, int aArity)
 {
     if (Protected(aOperator))
         throw LispErrProtectedSymbol(*aOperator);
@@ -332,7 +332,7 @@ void LispEnvironment::UnFenceRule(const LispString* aOperator, LispInt aArity)
     userFunc->UnFence();
 }
 
-void LispEnvironment::Retract(const LispString* aOperator, LispInt aArity)
+void LispEnvironment::Retract(const LispString* aOperator, int aArity)
 {
     if (Protected(aOperator))
         throw LispErrProtectedSymbol(*aOperator);
@@ -345,7 +345,7 @@ void LispEnvironment::Retract(const LispString* aOperator, LispInt aArity)
 
 void LispEnvironment::DeclareRuleBase(const LispString* aOperator,
                                       LispPtr& aParameters,
-                                      LispInt aListed)
+                                      int aListed)
 {
     if (Protected(aOperator))
         throw LispErrProtectedSymbol(*aOperator);
@@ -368,7 +368,7 @@ void LispEnvironment::DeclareRuleBase(const LispString* aOperator,
     multiUserFunc->DefineRuleBase(newFunc);
 }
 
-void LispEnvironment::DeclareMacroRuleBase(const LispString* aOperator, LispPtr& aParameters, LispInt aListed)
+void LispEnvironment::DeclareMacroRuleBase(const LispString* aOperator, LispPtr& aParameters, int aListed)
 {
     if (Protected(aOperator))
         throw LispErrProtectedSymbol(*aOperator);
@@ -426,8 +426,8 @@ bool LispEnvironment::Protected(const LispString* symbol) const
     return protected_symbols.find(symbol) != protected_symbols.end();
 }
 
-void LispEnvironment::DefineRule(const LispString* aOperator,LispInt aArity,
-                                 LispInt aPrecedence, LispPtr& aPredicate,
+void LispEnvironment::DefineRule(const LispString* aOperator,int aArity,
+                                 int aPrecedence, LispPtr& aPredicate,
                                  LispPtr& aBody)
 {
     if (Protected(aOperator))
@@ -459,8 +459,8 @@ void LispEnvironment::DefineRule(const LispString* aOperator,LispInt aArity,
         userFunc->DeclareRule(aPrecedence, aPredicate,aBody);
 }
 
-void LispEnvironment::DefineRulePattern(const LispString* aOperator,LispInt aArity,
-                                        LispInt aPrecedence, LispPtr& aPredicate,
+void LispEnvironment::DefineRulePattern(const LispString* aOperator,int aArity,
+                                        int aPrecedence, LispPtr& aPredicate,
                                         LispPtr& aBody)
 {
 //    if (Protected(aOperator))
@@ -484,7 +484,7 @@ void LispEnvironment::DefineRulePattern(const LispString* aOperator,LispInt aAri
     userFunc->DeclarePattern(aPrecedence, aPredicate,aBody);
 }
 
-void LispEnvironment::SetCommand(YacasEvalCaller aEvaluatorFunc, const LispChar * aString,LispInt aNrArgs,LispInt aFlags)
+void LispEnvironment::SetCommand(YacasEvalCaller aEvaluatorFunc, const char* aString,int aNrArgs,int aFlags)
 {
   const LispString* name = HashTable().LookUp(aString);
   YacasEvaluator eval(aEvaluatorFunc,aNrArgs,aFlags);
@@ -495,7 +495,7 @@ void LispEnvironment::SetCommand(YacasEvalCaller aEvaluatorFunc, const LispChar 
       iCoreCommands.insert(std::make_pair(name, eval));
 }
 
-void LispEnvironment::RemoveCoreCommand(LispChar* aString)
+void LispEnvironment::RemoveCoreCommand(char* aString)
 {
   iCoreCommands.erase(HashTable().LookUp(aString));
 }

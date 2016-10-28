@@ -1,7 +1,6 @@
 // \file standard.cpp
 // Implementation of some standard lisp operations
 //
-#include "yacas/yacasprivate.h"
 #include "yacas/standard.h"
 #include "yacas/lispatom.h"
 #include "yacas/lisperror.h"
@@ -57,9 +56,9 @@ std::string InternalUnstringify(const std::string& s)
     return std::string(s.c_str() + 1, s.size() - 2);
 }
 
-LispInt InternalAsciiToInt(const LispString& aString)
+int InternalAsciiToInt(const LispString& aString)
 {
-    const LispChar* ptr = aString.c_str();
+    const char* ptr = aString.c_str();
 
     if (!IsNumber(ptr, false))
         throw LispErrInvalidArg();
@@ -67,13 +66,13 @@ LispInt InternalAsciiToInt(const LispString& aString)
     return std::stoi(aString);
 }
 
-bool IsNumber(const LispChar * ptr,bool aAllowFloat)
+bool IsNumber(const char* ptr,bool aAllowFloat)
 {
     if (*ptr == '-' || *ptr == '+')
         ptr++;
 
-    LispInt nrDigits=0;
-    LispInt index=0;
+    int nrDigits=0;
+    int index=0;
     while(std::isdigit(ptr[index])) {
         nrDigits++;
         index++;
@@ -105,7 +104,7 @@ bool IsNumber(const LispChar * ptr,bool aAllowFloat)
 }
 
 
-void InternalNth(LispPtr& aResult, const LispPtr& aArg, LispInt n)
+void InternalNth(LispPtr& aResult, const LispPtr& aArg, int n)
 {
     if (n < 0 || !aArg || !aArg->SubList())
         throw LispErrInvalidArg();
@@ -495,7 +494,7 @@ void InternalApplyPure(LispPtr& oper,LispPtr& args2,LispPtr& aResult,LispEnviron
 
 
 void InternalEvalString(LispEnvironment& aEnvironment, LispPtr& aResult,
-                        const LispChar* aString)
+                        const char* aString)
 {
     LispString full(aString);
     full.push_back(';');
@@ -524,7 +523,7 @@ LispObject* operator+(const LispObjectAdder& left, const LispObjectAdder& right)
   return left.iPtr;
 }
 
-void ParseExpression(LispPtr& aResult, const LispChar* aString,LispEnvironment& aEnvironment)
+void ParseExpression(LispPtr& aResult, const char* aString,LispEnvironment& aEnvironment)
 {
     LispString full(aString);
     full.push_back(';');

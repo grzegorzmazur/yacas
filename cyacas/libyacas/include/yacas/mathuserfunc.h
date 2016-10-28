@@ -19,10 +19,10 @@ public:
   /// Structure containing name of parameter and whether it is put on hold.
   class BranchParameter {
   public:
-    BranchParameter(const LispString* aParameter = nullptr, LispInt aHold=false)
+    BranchParameter(const LispString* aParameter = nullptr, int aHold=false)
         : iParameter(aParameter), iHold(aHold) {}
     const LispString* iParameter;
-    LispInt iHold;
+    int iHold;
   };
 
   /// Abstract base class for rules.
@@ -30,7 +30,7 @@ public:
   public:
     virtual ~BranchRuleBase() = default;
     virtual bool Matches(LispEnvironment& aEnvironment, LispPtr* aArguments) = 0;
-    virtual LispInt Precedence() const = 0;
+    virtual int Precedence() const = 0;
     virtual LispPtr& Body() = 0;
   };
 
@@ -39,7 +39,7 @@ public:
   class BranchRule : public BranchRuleBase
   {
   public:
-    BranchRule(LispInt aPrecedence,LispPtr& aPredicate,LispPtr& aBody) : iPrecedence(aPrecedence),iBody(aBody),iPredicate(aPredicate)
+    BranchRule(int aPrecedence,LispPtr& aPredicate,LispPtr& aBody) : iPrecedence(aPrecedence),iBody(aBody),iPredicate(aPredicate)
     {
     }
 
@@ -49,14 +49,14 @@ public:
     bool Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
 
     /// Access #iPrecedence.
-    LispInt Precedence() const;
+    int Precedence() const;
 
     /// Access #iBody.
     LispPtr& Body();
   protected:
     BranchRule() : iPrecedence(0),iBody(),iPredicate() {};
   protected:
-    LispInt iPrecedence;
+    int iPrecedence;
     LispPtr iBody;
     LispPtr iPredicate;
   };
@@ -65,7 +65,7 @@ public:
   class BranchRuleTruePredicate : public BranchRule
   {
   public:
-    BranchRuleTruePredicate(LispInt aPrecedence,LispPtr& aBody)
+    BranchRuleTruePredicate(int aPrecedence,LispPtr& aBody)
     {
       iPrecedence = aPrecedence;
       iBody = (aBody);
@@ -82,7 +82,7 @@ public:
     /// \param aPrecedence precedence of the rule
     /// \param aPredicate generic object of type \c Pattern
     /// \param aBody body of the rule
-    BranchPattern(LispInt aPrecedence,LispPtr& aPredicate,LispPtr& aBody) : iPrecedence(aPrecedence),iBody(aBody),iPredicate(aPredicate),iPatternClass(nullptr)
+    BranchPattern(int aPrecedence,LispPtr& aPredicate,LispPtr& aBody) : iPrecedence(aPrecedence),iBody(aBody),iPredicate(aPredicate),iPatternClass(nullptr)
     {
       GenericClass *gen = aPredicate->Generic();
       PatternClass* pat = dynamic_cast<PatternClass*>(gen);
@@ -95,14 +95,14 @@ public:
     bool Matches(LispEnvironment& aEnvironment, LispPtr* aArguments);
 
     /// Access #iPrecedence
-    LispInt Precedence() const;
+    int Precedence() const;
 
     /// Access #iBody
     LispPtr& Body();
 
   protected:
     /// The precedence of this rule.
-    LispInt iPrecedence;
+    int iPrecedence;
 
     /// The body of this rule.
     LispPtr iBody;
@@ -147,29 +147,29 @@ public:
   void HoldArgument(const LispString* aVariable) override;
 
   /// Return true if the arity of the function equals \a aArity.
-  LispInt IsArity(LispInt aArity) const override;
+  int IsArity(int aArity) const override;
 
   /// Return the arity (number of arguments) of the function.
-  LispInt Arity() const override;
+  int Arity() const override;
 
   /// Add a BranchRule to the list of rules.
   /// \sa InsertRule()
-  void DeclareRule(LispInt aPrecedence, LispPtr& aPredicate, LispPtr& aBody) override;
+  void DeclareRule(int aPrecedence, LispPtr& aPredicate, LispPtr& aBody) override;
 
   /// Add a BranchRuleTruePredicate to the list of rules.
   /// \sa InsertRule()
-  void DeclareRule(LispInt aPrecedence, LispPtr& aBody) override;
+  void DeclareRule(int aPrecedence, LispPtr& aBody) override;
 
   /// Add a BranchPattern to the list of rules.
   /// \sa InsertRule()
-  void DeclarePattern(LispInt aPrecedence, LispPtr& aPredicate, LispPtr& aBody) override;
+  void DeclarePattern(int aPrecedence, LispPtr& aPredicate, LispPtr& aBody) override;
 
   /// Insert any BranchRuleBase object in the list of rules.
   /// This function does the real work for DeclareRule() and
   /// DeclarePattern(): it inserts the rule in #iRules, while
   /// keeping it sorted. The algorithm is \f$O(\log n)\f$, where
   /// \f$n\f$ denotes the number of rules.
-  void InsertRule(LispInt aPrecedence,BranchRuleBase* newRule);
+  void InsertRule(int aPrecedence,BranchRuleBase* newRule);
 
   /// Return the argument list, stored in #iParamList
   const LispPtr& ArgList() const override;
@@ -189,7 +189,7 @@ class ListedBranchingUserFunction final: public BranchingUserFunction
 {
 public:
   ListedBranchingUserFunction(LispPtr& aParameters);
-  LispInt IsArity(LispInt aArity) const override;
+  int IsArity(int aArity) const override;
   void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments) const override;
 };
 
@@ -206,7 +206,7 @@ class ListedMacroUserFunction final: public MacroUserFunction
 {
 public:
   ListedMacroUserFunction(LispPtr& aParameters);
-  LispInt IsArity(LispInt aArity) const override;
+  int IsArity(int aArity) const override;
   void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments) const override;
 };
 

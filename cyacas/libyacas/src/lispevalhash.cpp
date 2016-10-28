@@ -1,6 +1,5 @@
 
 
-#include "yacas/yacasprivate.h"
 #include "yacas/lispevalhash.h"
 #include "yacas/lispenvironment.h"
 #include "yacas/lispatom.h"
@@ -17,7 +16,7 @@ void YacasEvaluator::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,Lis
     CheckNrArgs(iNrArgs+1,aArguments,aEnvironment);
   }
 
-  LispInt stacktop = aEnvironment.iStack.size();
+  int stacktop = aEnvironment.iStack.size();
 
   // Push a place holder for the result: push full expression so it is available for error reporting
   aEnvironment.iStack.push_back(aArguments);
@@ -25,8 +24,8 @@ void YacasEvaluator::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,Lis
   LispIterator iter(aArguments);
   ++iter;
 
-  LispInt i;
-  LispInt nr = iNrArgs;
+  int i;
+  int nr = iNrArgs;
 
   if (iFlags & Variable) nr--;
 

@@ -21,7 +21,7 @@ public:
   bool Matches(LispEnvironment& aEnvironment,
                       LispPtr* aArguments);
 
-  const LispChar * TypeName() const override;
+  const char* TypeName() const override;
 
 protected:
   YacasPatternPredicateBase* iPatternMatcher;

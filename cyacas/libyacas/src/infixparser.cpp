@@ -1,5 +1,4 @@
 
-#include "yacas/yacasprivate.h"
 #include "yacas/infixparser.h"
 #include "yacas/lispatom.h"
 #include "yacas/standard.h"
@@ -77,14 +76,14 @@ void ParsedObject::Parse()
         Fail();
 }
 
-void ParsedObject::Combine(LispInt aNrArgsToCombine)
+void ParsedObject::Combine(int aNrArgsToCombine)
 {
     LispPtr subList(LispSubList::New(iResult));
 
     // TODO: woof -- such ugliness!
 
     LispIterator iter(iResult);
-    for (LispInt i = 0; i < aNrArgsToCombine; i++, ++iter)
+    for (int i = 0; i < aNrArgsToCombine; i++, ++iter)
         if (!iter.getObj())
             Fail();
 
@@ -99,7 +98,7 @@ void ParsedObject::Combine(LispInt aNrArgsToCombine)
     iResult = subList;
 }
 
-void ParsedObject::GetOtherSide(LispInt aNrArgsToCombine, LispInt depth)
+void ParsedObject::GetOtherSide(int aNrArgsToCombine, int depth)
 {
     const LispString* theOperator = iLookAhead;
     MatchToken(iLookAhead);
@@ -116,7 +115,7 @@ void ParsedObject::InsertAtom(const LispString* aString)
     iResult = ptr;
 }
 
-void ParsedObject::ReadExpression(LispInt depth)
+void ParsedObject::ReadExpression(int depth)
 {
     ReadAtom();
 
@@ -177,7 +176,7 @@ void ParsedObject::ReadExpression(LispInt depth)
             
             if (depth < opi->second.iPrecedence)
                 return;
-            LispInt upper = opi->second.iPrecedence;
+            int upper = opi->second.iPrecedence;
             if (!opi->second.iRightAssociative)
                 upper--;
             GetOtherSide(2, upper);
@@ -204,7 +203,7 @@ void ParsedObject::ReadAtom()
         MatchToken(iParser.iEnvironment.iBracketClose->String());
     }        //Parse lists
     else if (iLookAhead == iParser.iEnvironment.iListOpen->String()) {
-        LispInt nrargs = 0;
+        int nrargs = 0;
         MatchToken(iLookAhead);
         while (iLookAhead != iParser.iEnvironment.iListClose->String()) {
             ReadExpression(KMaxPrecedence); // least precedence
@@ -223,7 +222,7 @@ void ParsedObject::ReadAtom()
 
     }        // Parse prog bodies
     else if (iLookAhead == iParser.iEnvironment.iProgOpen->String()) {
-        LispInt nrargs = 0;
+        int nrargs = 0;
 
         MatchToken(iLookAhead);
         while (iLookAhead != iParser.iEnvironment.iProgClose->String()) {
@@ -246,7 +245,7 @@ void ParsedObject::ReadAtom()
         const LispString* theOperator = iLookAhead;
         MatchToken(iLookAhead);
 
-        LispInt nrargs = -1;
+        int nrargs = -1;
         if (iLookAhead == iParser.iEnvironment.iBracketOpen->String()) {
             nrargs = 0;
             MatchToken(iLookAhead);
@@ -294,7 +293,7 @@ void InfixPrinter::WriteToken(std::ostream& aOutput, const std::string& aString)
     RememberLastChar(aString.back());
 }
 
-void InfixPrinter::RememberLastChar(LispChar aChar)
+void InfixPrinter::RememberLastChar(char aChar)
 {
     iPrevLastChar = aChar;
 }
@@ -311,13 +310,13 @@ void InfixPrinter::Print(
 void InfixPrinter::Print(
                          const LispPtr& aExpression,
                          std::ostream& aOutput,
-                         LispInt iPrecedence)
+                         int iPrecedence)
 {
     assert(aExpression);
 
     const LispString* string = aExpression->String();
     if (string) {
-        LispInt bracket = 0;
+        int bracket = 0;
         if (iPrecedence < KMaxPrecedence &&
                 (*string)[0] == '-' &&
                 (std::isdigit((*string)[1]) || (*string)[1] == '.')
@@ -439,7 +438,7 @@ void InfixPrinter::Print(
                 Print(*iter, aOutput, KMaxPrecedence);
                 WriteToken(aOutput, "]");
             } else {
-                LispInt bracket = false;
+                int bracket = false;
                 if (bodied != iBodiedOperators.end()) {
                     //printf("%d > %d\n",iPrecedence, bodied->iPrecedence);
                     if (iPrecedence < bodied->second.iPrecedence)
@@ -454,7 +453,7 @@ void InfixPrinter::Print(
                 WriteToken(aOutput, "(");
 
                 LispIterator counter(*iter);
-                LispInt nr = 0;
+                int nr = 0;
 
                 while (counter.getObj()) {
                     ++counter;

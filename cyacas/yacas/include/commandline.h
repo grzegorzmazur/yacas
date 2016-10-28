@@ -107,7 +107,7 @@ protected:
 private:
   void GetHistory(std::size_t aLine);
   void ShowOpen(const std::string& prompt,
-                 LispChar aOpen, LispChar aClose,
+                 char aOpen, char aClose,
                  unsigned aCurPos);
 protected:
   bool full_line_dirty;

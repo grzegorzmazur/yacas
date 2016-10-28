@@ -69,7 +69,7 @@ public:
 class CYacas {
 public:
     /// Constructor
-    LISPIMPORT explicit CYacas(std::ostream&);
+    explicit CYacas(std::ostream&);
 
     /// Return the underlying Yacas environment.
     DefaultYacasEnvironment& getDefEnv() {return environment;}

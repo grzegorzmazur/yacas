@@ -26,9 +26,9 @@
 #define LISPOPERATOR_H
 
 #ifdef YACAS_NO_CONSTEXPR
-const LispInt KMaxPrecedence = 60000;
+const int KMaxPrecedence = 60000;
 #else
-constexpr LispInt KMaxPrecedence = 60000;
+constexpr int KMaxPrecedence = 60000;
 #endif
 
 class LispInFixOperator {
@@ -37,7 +37,7 @@ public:
 #ifndef YACAS_NO_CONSTEXPR
     constexpr
 #endif
-    LispInFixOperator(LispInt aPrecedence = KMaxPrecedence):
+    LispInFixOperator(int aPrecedence = KMaxPrecedence):
         iPrecedence(aPrecedence),
         iLeftPrecedence(aPrecedence),
         iRightPrecedence(aPrecedence),
@@ -49,19 +49,19 @@ public:
         iRightAssociative = true;
     }
 
-    void SetLeftPrecedence(LispInt aPrecedence)
+    void SetLeftPrecedence(int aPrecedence)
     {
         iLeftPrecedence = aPrecedence;
     }
 
-    void SetRightPrecedence(LispInt aPrecedence)
+    void SetRightPrecedence(int aPrecedence)
     {
         iRightPrecedence = aPrecedence;
     }
 
-    LispInt iPrecedence;
-    LispInt iLeftPrecedence;
-    LispInt iRightPrecedence;
+    int iPrecedence;
+    int iLeftPrecedence;
+    int iRightPrecedence;
     bool iRightAssociative;
 };
 

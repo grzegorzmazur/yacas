@@ -120,13 +120,13 @@ public:
   /// \param aString name of the command
   /// \param aNrArgs number of arguments
   /// \param aFlags flags, see YacasEvaluator::FunctionFlags
-  void SetCommand(YacasEvalCaller aEvaluatorFunc, const LispChar * aString,LispInt aNrArgs,LispInt aFlags);
+  void SetCommand(YacasEvalCaller aEvaluatorFunc, const char* aString,int aNrArgs,int aFlags);
 
-  void RemoveCoreCommand(LispChar * aString);
+  void RemoveCoreCommand(char* aString);
 
   inline  LispHashTable& HashTable();
   LispUserFunction* UserFunction(LispPtr& aArguments);
-  LispUserFunction* UserFunction(const LispString* aName,LispInt aArity);
+  LispUserFunction* UserFunction(const LispString* aName,int aArity);
 
   /// Return LispMultiUserFunction with given name.
   /// \param aArguments name of the multi user function
@@ -139,19 +139,19 @@ public:
 
   LispDefFiles& DefFiles();
   void DeclareRuleBase(const LispString* aOperator, LispPtr& aParameters,
-                       LispInt aListed);
+                       int aListed);
   void DeclareMacroRuleBase(const LispString* aOperator, LispPtr& aParameters,
-                       LispInt aListed);
-  void DefineRule(const LispString* aOperator,LispInt aArity,
-                          LispInt aPrecedence, LispPtr& aPredicate,
+                       int aListed);
+  void DefineRule(const LispString* aOperator,int aArity,
+                          int aPrecedence, LispPtr& aPredicate,
                           LispPtr& aBody);
-  void DefineRulePattern(const LispString* aOperator,LispInt aArity,
-                         LispInt aPrecedence, LispPtr& aPredicate,
+  void DefineRulePattern(const LispString* aOperator,int aArity,
+                         int aPrecedence, LispPtr& aPredicate,
                          LispPtr& aBody);
 
 
-  void UnFenceRule(const LispString* aOperator,LispInt aArity);
-  void Retract(const LispString* aOperator,LispInt aArity);
+  void UnFenceRule(const LispString* aOperator,int aArity);
+  void Retract(const LispString* aOperator,int aArity);
   void HoldArgument(const LispString* aOperator, const LispString* aVariable);
 
   void Protect(const LispString*);
@@ -164,9 +164,9 @@ public:
   //@{
 
   /// set precision to a given number of decimal digits
-  void SetPrecision(LispInt aPrecision);
-  LispInt Precision(void) const;
-  LispInt BinaryPrecision(void) const;
+  void SetPrecision(int aPrecision);
+  int Precision(void) const;
+  int BinaryPrecision(void) const;
   //@}
 
 public:
@@ -177,7 +177,7 @@ public:
   const LispString* PrettyReader();
 
 public:
-  LispInt GetUniqueId();
+  int GetUniqueId();
 public:
   LispPrinter& CurrentPrinter();
 
@@ -202,13 +202,13 @@ public:
 
 protected:
   /// current precision for user interaction, in decimal and in binary
-  LispInt iPrecision;
-  LispInt iBinaryPrecision;
+  int iPrecision;
+  int iBinaryPrecision;
 public:
   std::vector<std::string> iInputDirectories;
   //DeletingLispCleanup iCleanup;
-  LispInt iEvalDepth;
-  LispInt iMaxEvalDepth;
+  int iEvalDepth;
+  int iMaxEvalDepth;
 #ifdef YACAS_NO_ATOMIC_TYPES
   volatile bool
 #else
@@ -237,7 +237,7 @@ public: // pre-found
   RefPtr<LispObject> iList;
   RefPtr<LispObject> iProg;
 
-  LispInt iLastUniqueId;
+  int iLastUniqueId;
 
 public: // Error reporting
   std::ostringstream iErrorOutput;
@@ -316,12 +316,12 @@ public:
   std::deque<LispPtr> iStack;
 };
 
-inline LispInt LispEnvironment::Precision(void) const
+inline int LispEnvironment::Precision(void) const
 {
     return iPrecision;
 }
 
-inline LispInt LispEnvironment::BinaryPrecision(void) const
+inline int LispEnvironment::BinaryPrecision(void) const
 {
   return iBinaryPrecision;
 }

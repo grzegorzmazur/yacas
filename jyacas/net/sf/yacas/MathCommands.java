@@ -598,7 +598,7 @@ class MathCommands
          new YacasEvaluator(new LispDebugLine(),1, YacasEvaluator.Fixed|YacasEvaluator.Function));
     aEnvironment.CoreCommands().put(
          "Interpreter",
-         new YacasEvaluator(new LispInterpreter(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
+         new YacasEvaluator(new interpreter(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
     aEnvironment.CoreCommands().put(
          "Version",
          new YacasEvaluator(new LispVersion(),0, YacasEvaluator.Fixed|YacasEvaluator.Function));
@@ -4363,7 +4363,7 @@ class MathCommands
     }
   }
 
-  class LispInterpreter extends YacasEvalCaller
+  class interpreter extends YacasEvalCaller
   {
     @Override
     public void Eval(LispEnvironment aEnvironment,int aStackTop) throws Exception

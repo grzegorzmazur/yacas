@@ -22,7 +22,7 @@ public:
     explicit LispString(const std::string& = "");
 
 public:
-    mutable ReferenceCount iReferenceCount;
+    mutable unsigned iReferenceCount;
 };
 
 

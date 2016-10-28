@@ -89,8 +89,7 @@ set (HEADERS
   include/yacas/utf8/unchecked.h
   include/yacas/utf8.h
   include/yacas/xmltokenizer.h
-  include/yacas/yacas.h
-  include/yacas/yacasprivate.h)
+  include/yacas/yacas.h)
 
 add_library (libyacas ${SOURCES} ${HEADERS})
 set_target_properties (libyacas PROPERTIES OUTPUT_NAME "yacas")

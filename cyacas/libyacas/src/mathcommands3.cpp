@@ -1,6 +1,3 @@
-
-#include "yacas/yacasprivate.h"
-
 #include "yacas/lispenvironment.h"
 #include "yacas/standard.h"
 #include "yacas/lispeval.h"
@@ -40,19 +37,19 @@
 /// \param aEnvironment the current environment
 /// \param aStackTop the index of the top of the stack
 /// \param aArgNr the index of the argument to be converted
-void GetNumber(RefPtr<BigNumber>& x, LispEnvironment& aEnvironment, LispInt aStackTop, LispInt aArgNr)
+void GetNumber(RefPtr<BigNumber>& x, LispEnvironment& aEnvironment, int aStackTop, int aArgNr)
 {
     x = ARGUMENT(aArgNr)->Number(aEnvironment.Precision());
     CheckArg(x, aArgNr, aEnvironment, aStackTop);
 }
 
 //FIXME remove these
-void LispArithmetic2(LispEnvironment& aEnvironment, LispInt aStackTop,
-                     LispObject* (*func)(LispObject* f1, LispObject* f2,LispEnvironment& aEnvironment,LispInt aPrecision),
+void LispArithmetic2(LispEnvironment& aEnvironment, int aStackTop,
+                     LispObject* (*func)(LispObject* f1, LispObject* f2,LispEnvironment& aEnvironment,int aPrecision),
                     bool arbbase=false);
 
-void LispArithmetic1(LispEnvironment& aEnvironment, LispInt aStackTop,
-                     LispObject* (*func)(LispObject* f1, LispEnvironment& aEnvironment,LispInt aPrecision));
+void LispArithmetic1(LispEnvironment& aEnvironment, int aStackTop,
+                     LispObject* (*func)(LispObject* f1, LispEnvironment& aEnvironment,int aPrecision));
 
 
 
@@ -60,8 +57,8 @@ void LispArithmetic1(LispEnvironment& aEnvironment, LispInt aStackTop,
 
 
 //FIXME remove these
-void LispArithmetic1(LispEnvironment& aEnvironment, LispInt aStackTop,
-                     LispObject* (*func)(LispObject* f1, LispEnvironment& aEnvironment,LispInt aPrecision))
+void LispArithmetic1(LispEnvironment& aEnvironment, int aStackTop,
+                     LispObject* (*func)(LispObject* f1, LispEnvironment& aEnvironment,int aPrecision))
 {
     CheckArg(ARGUMENT(1)->Number(0), 1, aEnvironment, aStackTop);
     RESULT = (func(ARGUMENT(1), aEnvironment, aEnvironment.Precision()));
@@ -69,8 +66,8 @@ void LispArithmetic1(LispEnvironment& aEnvironment, LispInt aStackTop,
 
 
 //FIXME remove these
-void LispArithmetic2(LispEnvironment& aEnvironment, LispInt aStackTop,
-                     LispObject* (*func)(LispObject* f1, LispObject* f2,LispEnvironment& aEnvironment,LispInt aPrecision),
+void LispArithmetic2(LispEnvironment& aEnvironment, int aStackTop,
+                     LispObject* (*func)(LispObject* f1, LispObject* f2,LispEnvironment& aEnvironment,int aPrecision),
                     bool arbbase)
 {
     if (!arbbase)
@@ -84,7 +81,7 @@ void LispArithmetic2(LispEnvironment& aEnvironment, LispInt aStackTop,
 }
 
 
-void LispDumpBigNumberDebugInfo(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispDumpBigNumberDebugInfo(LispEnvironment& aEnvironment, int aStackTop)
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
@@ -92,7 +89,7 @@ void LispDumpBigNumberDebugInfo(LispEnvironment& aEnvironment, LispInt aStackTop
   InternalTrue(aEnvironment,RESULT);
 }
 
-void LispMultiply(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispMultiply(LispEnvironment& aEnvironment, int aStackTop)
 {
       RefPtr<BigNumber> x;
       RefPtr<BigNumber> y;
@@ -105,7 +102,7 @@ void LispMultiply(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 //TODO we need to have Gcd in BigNumber!
-void LispGcd(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispGcd(LispEnvironment& aEnvironment, int aStackTop)
 {
     CheckArg(ARGUMENT(1)->Number(0), 1, aEnvironment, aStackTop);
     CheckArg(ARGUMENT(2)->Number(0), 2, aEnvironment, aStackTop);
@@ -120,9 +117,9 @@ void LispGcd(LispEnvironment& aEnvironment, LispInt aStackTop)
 /// both argument are converted to a BigNumber, and these are added
 /// together at the current precision. The sum is returned.
 /// \sa GetNumber(), BigNumber::Add()
-void LispAdd(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispAdd(LispEnvironment& aEnvironment, int aStackTop)
 {
-    LispInt length = InternalListLength(ARGUMENT(0));
+    int length = InternalListLength(ARGUMENT(0));
     if (length == 2)
     {
       RefPtr<BigNumber> x;
@@ -136,7 +133,7 @@ void LispAdd(LispEnvironment& aEnvironment, LispInt aStackTop)
       RefPtr<BigNumber> y;
       GetNumber(x,aEnvironment, aStackTop, 1);
       GetNumber(y,aEnvironment, aStackTop, 2);
-      LispInt bin = aEnvironment.BinaryPrecision();
+      int bin = aEnvironment.BinaryPrecision();
       BigNumber *z = new BigNumber(bin);
       z->Add(*x.ptr(),*y.ptr(),aEnvironment.BinaryPrecision());
       RESULT = (new LispNumber(z));
@@ -144,9 +141,9 @@ void LispAdd(LispEnvironment& aEnvironment, LispInt aStackTop)
     }
 }
 
-void LispSubtract(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispSubtract(LispEnvironment& aEnvironment, int aStackTop)
 {
-    LispInt length = InternalListLength(ARGUMENT(0));
+    int length = InternalListLength(ARGUMENT(0));
     if (length == 2)
     {
       RefPtr<BigNumber> x;
@@ -172,7 +169,7 @@ void LispSubtract(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 
-void LispDivide(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispDivide(LispEnvironment& aEnvironment, int aStackTop)
 {
   // Serge, what was the deal again with divide, floats and integers mixed in the same function?
   //  yes, divide works differently on integers and on floats -- see new.chapt -- Serge
@@ -201,14 +198,14 @@ void LispDivide(LispEnvironment& aEnvironment, LispInt aStackTop)
   return;
 }
 
-void LispSqrt(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispSqrt(LispEnvironment& aEnvironment, int aStackTop)
 {//FIXME move to scripts
     LispArithmetic1(aEnvironment, aStackTop, SqrtFloat);
 }
 
 
 #define UNARYFUNCTION(LispName, BigNumName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
+void LispName(LispEnvironment& aEnvironment, int aStackTop) \
 { \
       RefPtr<BigNumber> x; \
       GetNumber(x,aEnvironment, aStackTop, 1); \
@@ -217,7 +214,7 @@ void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
       RESULT = (new LispNumber(z)); \
 }
 #define BINARYFUNCTION(LispName, BigNumName, OldName) \
-void LispName(LispEnvironment& aEnvironment, LispInt aStackTop) \
+void LispName(LispEnvironment& aEnvironment, int aStackTop) \
 { \
       RefPtr<BigNumber> x; \
       RefPtr<BigNumber> y; \
@@ -235,7 +232,7 @@ UNARYFUNCTION(LispMathNegate, Negate, NegateFloat)
   UNARYFUNCTION(LispFloor, Floor, FloorFloat)
 is used to help interface Yacas with BigNumber. Suppose we need to access a unary function named 'Floor' in BigNumber and 'LispFloor' here, with 'FloorFloat' the backup function for no BigNumber support.
 The macro produces the following equivalent code for the unary function:
-void LispFloor(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispFloor(LispEnvironment& aEnvironment, int aStackTop)
 {
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aStackTop, 1);
@@ -247,7 +244,7 @@ void LispFloor(LispEnvironment& aEnvironment, LispInt aStackTop)
 /* FIXME Eventually the BigNumber support will be stable and we can remove old code and simplify these macros */
 
 /// obtain internal precision data on a number object.
-void LispGetExactBits(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispGetExactBits(LispEnvironment& aEnvironment, int aStackTop)
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
@@ -260,7 +257,7 @@ void LispGetExactBits(LispEnvironment& aEnvironment, LispInt aStackTop)
   RESULT = (new LispNumber(z));
 }
 /// set internal precision data on a number object.
-void LispSetExactBits(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispSetExactBits(LispEnvironment& aEnvironment, int aStackTop)
 {
   RefPtr<BigNumber> x;
   RefPtr<BigNumber> y;
@@ -276,7 +273,7 @@ void LispSetExactBits(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 
 /// obtain the bit count of a number object.
-void LispBitCount(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispBitCount(LispEnvironment& aEnvironment, int aStackTop)
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
@@ -286,7 +283,7 @@ void LispBitCount(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 /// obtain the sign of a number object.
-void LispMathSign(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispMathSign(LispEnvironment& aEnvironment, int aStackTop)
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
@@ -296,7 +293,7 @@ void LispMathSign(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 /// check whether a number object fits into a platform type.
-void LispMathIsSmall(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispMathIsSmall(LispEnvironment& aEnvironment, int aStackTop)
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
@@ -304,7 +301,7 @@ void LispMathIsSmall(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 
-void LispCeil(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispCeil(LispEnvironment& aEnvironment, int aStackTop)
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
@@ -315,7 +312,7 @@ void LispCeil(LispEnvironment& aEnvironment, LispInt aStackTop)
   RESULT = (new LispNumber(z));
 }
 
-void LispAbs(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispAbs(LispEnvironment& aEnvironment, int aStackTop)
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
@@ -327,13 +324,13 @@ void LispAbs(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 //BINARYFUNCTION(LispMod, Mod, ModFloat)
 /* this will be gone */
-void LispMod(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispMod(LispEnvironment& aEnvironment, int aStackTop)
 {//FIXME
     LispArithmetic2(aEnvironment, aStackTop, ModFloat);
 }
 /* up to here */
 
-void LispDiv(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispDiv(LispEnvironment& aEnvironment, int aStackTop)
 {
   RefPtr<BigNumber> x;
   RefPtr<BigNumber> y;
@@ -350,14 +347,14 @@ void LispDiv(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 
-void LispPower(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispPower(LispEnvironment& aEnvironment, int aStackTop)
 {//FIXME move to scripts
     LispArithmetic2(aEnvironment, aStackTop, PowerFloat);
 }
 
 
 
-void LispFac(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispFac(LispEnvironment& aEnvironment, int aStackTop)
 {//FIXME move to scripts
     LispArithmetic1(aEnvironment, aStackTop, LispFactorial);
 }
@@ -365,7 +362,7 @@ void LispFac(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 // platform functions, taking/returning a platform int/float
 
-void LispFastIsPrime(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispFastIsPrime(LispEnvironment& aEnvironment, int aStackTop)
 {//TODO FIXME
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
@@ -378,7 +375,7 @@ void LispFastIsPrime(LispEnvironment& aEnvironment, LispInt aStackTop)
 // define a macro to replace all platform math functions
 
 #define PLATFORM_UNARY(LispName, PlatformName, LispBackupName, OldName) \
-    void LispName(LispEnvironment& aEnvironment, LispInt aStackTop)     \
+    void LispName(LispEnvironment& aEnvironment, int aStackTop)     \
     {                                                                   \
         RefPtr<BigNumber> x;                                            \
         GetNumber(x,aEnvironment, aStackTop, 1);                        \
@@ -389,7 +386,7 @@ void LispFastIsPrime(LispEnvironment& aEnvironment, LispInt aStackTop)
     }
 
 #define PLATFORM_BINARY(LispName, PlatformName, LispBackupName, OldName) \
-    void LispName(LispEnvironment& aEnvironment, LispInt aStackTop)     \
+    void LispName(LispEnvironment& aEnvironment, int aStackTop)     \
     {                                                                   \
         RefPtr<BigNumber> x, y;                                         \
         GetNumber(x,aEnvironment, aStackTop, 1);                        \
@@ -417,11 +414,11 @@ BINARYFUNCTION(LispBitXor, BitXor, BitXor)
 //BINARYFUNCTION(LispBitNot, BitNot, BitNot)
 */
 /* this will be gone */
-void LispShiftLeft(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispShiftLeft(LispEnvironment& aEnvironment, int aStackTop)
 {//FIXME
     LispArithmetic2(aEnvironment, aStackTop, ShiftLeft);
 }
-void LispShiftRight(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispShiftRight(LispEnvironment& aEnvironment, int aStackTop)
 {//FIXME
     LispArithmetic2(aEnvironment, aStackTop, ShiftRight);
 }
@@ -430,7 +427,7 @@ void LispShiftRight(LispEnvironment& aEnvironment, LispInt aStackTop)
 /* up to here */
 
 
-void LispFromBase(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispFromBase(LispEnvironment& aEnvironment, int aStackTop)
 {
     // Get the base to convert to:
     // Evaluate first argument, and store result in oper
@@ -442,7 +439,7 @@ void LispFromBase(LispEnvironment& aEnvironment, LispInt aStackTop)
     CheckArg(num->IsInt() && num->Double() >= BASE2 && num->Double() <= log2_table_range(), 1, aEnvironment, aStackTop);
 
     // Get a short platform integer from the first argument
-    LispInt base = (LispInt)(num->Double());
+    int base = (int)(num->Double());
 
     // Get the number to convert
     LispPtr fromNum(ARGUMENT(2));
@@ -460,7 +457,7 @@ void LispFromBase(LispEnvironment& aEnvironment, LispInt aStackTop)
     BigNumber *z = new BigNumber(str2->c_str(),aEnvironment.BinaryPrecision(),base);
     RESULT = (new LispNumber(z));
 }
-void LispToBase(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispToBase(LispEnvironment& aEnvironment, int aStackTop)
 {
     // Get the base to convert to:
     // Evaluate first argument, and store result in oper
@@ -472,7 +469,7 @@ void LispToBase(LispEnvironment& aEnvironment, LispInt aStackTop)
     CheckArg(num->IsInt() && num->Double() >= BASE2 && num->Double() <= log2_table_range(), 1, aEnvironment, aStackTop);
 
     // Get a short platform integer from the first argument
-    LispInt base = (LispInt)(num->Double());
+    int base = (int)(num->Double());
 
     // Get the number to convert
     RefPtr<BigNumber> x;
@@ -491,7 +488,7 @@ void LispToBase(LispEnvironment& aEnvironment, LispInt aStackTop)
 
 
 
-void LispApplyPure(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispApplyPure(LispEnvironment& aEnvironment, int aStackTop)
 {
     LispPtr oper(ARGUMENT(1));
     LispPtr args(ARGUMENT(2));
@@ -518,9 +515,9 @@ void LispApplyPure(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 
-void YacasPrettyReaderSet(LispEnvironment& aEnvironment, LispInt aStackTop)
+void YacasPrettyReaderSet(LispEnvironment& aEnvironment, int aStackTop)
 {
-  LispInt nrArguments = InternalListLength(ARGUMENT(0));
+  int nrArguments = InternalListLength(ARGUMENT(0));
 
   if (nrArguments == 1)
   {
@@ -537,7 +534,7 @@ void YacasPrettyReaderSet(LispEnvironment& aEnvironment, LispInt aStackTop)
   InternalTrue(aEnvironment,RESULT);
 }
 
-void YacasPrettyReaderGet(LispEnvironment& aEnvironment, LispInt aStackTop)
+void YacasPrettyReaderGet(LispEnvironment& aEnvironment, int aStackTop)
 {
   if (!aEnvironment.PrettyReader())
     RESULT = LispAtom::New(aEnvironment, "\"\"");
@@ -545,9 +542,9 @@ void YacasPrettyReaderGet(LispEnvironment& aEnvironment, LispInt aStackTop)
     RESULT = LispAtom::New(aEnvironment, *aEnvironment.PrettyReader());
 }
 
-void YacasPrettyPrinterSet(LispEnvironment& aEnvironment, LispInt aStackTop)
+void YacasPrettyPrinterSet(LispEnvironment& aEnvironment, int aStackTop)
 {
-  LispInt nrArguments = InternalListLength(ARGUMENT(0));
+  int nrArguments = InternalListLength(ARGUMENT(0));
 
   if (nrArguments == 1)
   {
@@ -564,7 +561,7 @@ void YacasPrettyPrinterSet(LispEnvironment& aEnvironment, LispInt aStackTop)
   InternalTrue(aEnvironment,RESULT);
 }
 
-void YacasPrettyPrinterGet(LispEnvironment& aEnvironment, LispInt aStackTop)
+void YacasPrettyPrinterGet(LispEnvironment& aEnvironment, int aStackTop)
 {
   if (!aEnvironment.PrettyPrinter())
     RESULT = LispAtom::New(aEnvironment, "\"\"");
@@ -572,13 +569,13 @@ void YacasPrettyPrinterGet(LispEnvironment& aEnvironment, LispInt aStackTop)
     RESULT = LispAtom::New(aEnvironment, *aEnvironment.PrettyPrinter());
 }
 
-void LispGarbageCollect(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispGarbageCollect(LispEnvironment& aEnvironment, int aStackTop)
 {
   aEnvironment.HashTable().GarbageCollect();
   InternalTrue(aEnvironment,RESULT);
 }
 
-void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispPatchLoad(LispEnvironment& aEnvironment, int aStackTop)
 {
     LispPtr evaluated(ARGUMENT(1));
     const LispString* string = evaluated->String();
@@ -600,7 +597,7 @@ void LispPatchLoad(LispEnvironment& aEnvironment, LispInt aStackTop)
     InternalTrue(aEnvironment, RESULT);
 }
 
-void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispPatchString(LispEnvironment& aEnvironment, int aStackTop)
 {
   LispPtr evaluated(ARGUMENT(1));
   const LispString* string = evaluated->String();
@@ -613,25 +610,25 @@ void LispPatchString(LispEnvironment& aEnvironment, LispInt aStackTop)
   RESULT = LispAtom::New(aEnvironment, stringify(os.str()));
 }
 
-void LispDefaultTokenizer(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispDefaultTokenizer(LispEnvironment& aEnvironment, int aStackTop)
 {
   aEnvironment.iCurrentTokenizer = &aEnvironment.iDefaultTokenizer;
   InternalTrue(aEnvironment,RESULT);
 }
 
 
-void LispXmlTokenizer(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispXmlTokenizer(LispEnvironment& aEnvironment, int aStackTop)
 {
   aEnvironment.iCurrentTokenizer = &aEnvironment.iXmlTokenizer;
   InternalTrue(aEnvironment,RESULT);
 }
 
-void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispExplodeTag(LispEnvironment& aEnvironment, int aStackTop)
 {
   LispPtr out(ARGUMENT(1));
   CheckArgIsString(1, aEnvironment, aStackTop);
 
-  const LispChar* str = out->String()->c_str();
+  const char* str = out->String()->c_str();
   str++;
   if (str[0] != '<')
   {
@@ -639,13 +636,13 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
     return;
   }
   str++;
-  const LispChar * type = (str[0] == '/') ? (str++, "\"Close\"") : "\"Open\"";
+  const char* type = (str[0] == '/') ? (str++, "\"Close\"") : "\"Open\"";
   std::string tag;
 
   tag.push_back('\"');
   while (IsAlpha(*str))
   {
-    LispChar c = *str++;
+    char c = *str++;
     if (c >= 'a' && c <= 'z')
       c = c + ('A'-'a');
     tag.push_back(c);
@@ -662,7 +659,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
 
     while (IsAlpha(*str))
     {
-      LispChar c = *str++;
+      char c = *str++;
       if (c >= 'a' && c <= 'z')
         c = c + ('A'-'a');
       name.push_back(c);
@@ -703,7 +700,7 @@ void LispExplodeTag(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 
-void YacasBuiltinAssoc(LispEnvironment& aEnvironment, LispInt aStackTop)
+void YacasBuiltinAssoc(LispEnvironment& aEnvironment, int aStackTop)
 {
     // Check that we have two arguments.
 
@@ -744,17 +741,17 @@ void YacasBuiltinAssoc(LispEnvironment& aEnvironment, LispInt aStackTop)
     RESULT = (LispAtom::New(aEnvironment, "Empty"));
 }
 
-void LispCurrentFile(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispCurrentFile(LispEnvironment& aEnvironment, int aStackTop)
 {
     RESULT = LispAtom::New(aEnvironment, stringify(aEnvironment.iInputStatus.FileName()));
 }
 
-void LispCurrentLine(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispCurrentLine(LispEnvironment& aEnvironment, int aStackTop)
 {
     RESULT = LispAtom::New(aEnvironment, std::to_string(aEnvironment.iInputStatus.LineNumber()));
 }
 
-void LispBackQuote(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispBackQuote(LispEnvironment& aEnvironment, int aStackTop)
 {
     BackQuoteBehaviour behaviour(aEnvironment);
     LispPtr result;
@@ -762,19 +759,19 @@ void LispBackQuote(LispEnvironment& aEnvironment, LispInt aStackTop)
     InternalEval(aEnvironment, RESULT, result);
 }
 
-void LispInterpreter(LispEnvironment& aEnvironment, LispInt aStackTop)
+void interpreter(LispEnvironment& aEnvironment, int aStackTop)
 {
     RESULT = (LispAtom::New(aEnvironment,"\"yacas\""));
 }
 
-void LispVersion(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispVersion(LispEnvironment& aEnvironment, int aStackTop)
 {
     RESULT = (LispAtom::New(aEnvironment,"\"" YACAS_VERSION "\""));
 }
 
 
 /// convert bits to digits. Use the kernel function bits_to_digits. Arguments must be small integers.
-void LispBitsToDigits(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispBitsToDigits(LispEnvironment& aEnvironment, int aStackTop)
 {
   RefPtr<BigNumber> x;
   RefPtr<BigNumber> y;
@@ -799,7 +796,7 @@ void LispBitsToDigits(LispEnvironment& aEnvironment, LispInt aStackTop)
 }
 
 /// convert digits to bits. Use the kernel function digits_to_bits. Arguments must be small integers.
-void LispDigitsToBits(LispEnvironment& aEnvironment, LispInt aStackTop)
+void LispDigitsToBits(LispEnvironment& aEnvironment, int aStackTop)
 {
   RefPtr<BigNumber> x;
   RefPtr<BigNumber> y;

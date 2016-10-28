@@ -1,7 +1,7 @@
 
 
 
-inline LispPtr& Argument(LispPtr& cur, LispInt n)
+inline LispPtr& Argument(LispPtr& cur, int n)
 {
     assert(n>=0);
 
