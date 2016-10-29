@@ -17,7 +17,7 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten")
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --embed-file ${PROJECT_SOURCE_DIR}/scripts@/share/yacas/scripts")
 endif ()
 
-if (APPLE OR WIN32)
+if (APPLE OR WIN32 OR (${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten"))
     add_definitions(-DNO_GLOBALS)
 endif ()
 
