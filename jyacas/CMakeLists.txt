@@ -75,7 +75,7 @@ set (JYACAS_SRCS
   net/sf/yacas/BackQuoteBehaviour.java
   net/sf/yacas/YacasException.java)
 
-add_jar (jyacas ${JYACAS_SRCS} ENTRY_POINT net/sf/yacas/YacasConsole VERSION ${YACAS_VERSION})
+add_jar (jyacas ${JYACAS_SRCS} ENTRY_POINT net/sf/yacas/YacasConsole VERSION ${YACAS_VERSION} OUTPUT_NAME "yacas-${YACAS_VERSION}.jar")
 
 get_target_property(JYACAS_JAR_FILE jyacas JAR_FILE)
 

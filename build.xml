@@ -53,7 +53,7 @@
   <target name="jar" depends="compile"
           description="generate the distribution" >
     <mkdir dir="${dist}"/>
-    <jar destfile="${dist}/yacas.jar" basedir="${build}" excludes="tests/**">
+    <jar destfile="${dist}/yacas-${version}.jar" basedir="${build}" excludes="tests/**">
       <manifest>
         <attribute name="Main-Class" value="${main}"/>
         <attribute name="Specification-Version" value="${version}"/>
