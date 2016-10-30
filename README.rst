@@ -23,7 +23,7 @@ For detailed information on yacas features and usage, see
 
 Yacas is available for a variety of platforms. See 
 `<http://www.yacas.org/getting_started/downloads/>`_ for binary packages
-and installation instructions. Read INSTALL or
+and installation instructions. Read ``INSTALL.rst`` or
 `<https://yacas.readthedocs.io/en/latest/getting_started/index.html>`_ for 
 instructions on how to compile yacas from sources.
 
