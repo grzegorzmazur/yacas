@@ -50,7 +50,7 @@ MacOS X
                 
      mkdir build
      cd build
-     cmake -G Xcode [-Dcommon_option=value] ..
+     cmake -G Xcode [-Dcommon_option=value ...] ..
                   
 * Open generated project in ``Xcode`` and build the Release variant
 
@@ -65,7 +65,7 @@ Microsoft Windows
                 
      mkdir build
      cd build
-     cmake -G "Visual Studio 14 2015 Win64" [-Dcommon_option=value] ..
+     cmake -G "Visual Studio 14 2015 Win64" [-Dcommon_option=value ...] ..
 
 * Open generated project in ``Visual Studio`` and build the Release variant
 
@@ -80,7 +80,7 @@ Linux
                 
      mkdir build
      cd build
-     cmake -DCMAKE_BUILD_TYPE=Release [-Dcommon_option=value] ..
+     cmake -DCMAKE_BUILD_TYPE=Release [-Dcommon_option=value ...] ..
      make
 
 * To install newly built binaries execute ``make install``
@@ -90,3 +90,31 @@ Java
 * Open ``Terminal`` or ``Command Prompt`` window
 * Change directory to the yacas source directory
 * Execute ``ant jar``
+
+
+yacas-online
+~~~~~~~~~~~~
+
+* build yacas using emscripten
+
+  .. code-block:: bat
+
+     mkdir build_js
+     cd build_js
+     cmake -DCMAKE_TOOLCHAIN_FILE=<EMSCRIPTEN_ROOT>/cmake/Modules/Platform/Emscripten.cmake \
+     -DENABLE_CYACAS_GUI=No -DENABLE_CYACAS_KERNEL=No -DENABLE_JYACAS=No -DENABLE_DOCS=No -DCMAKE_BUILD_TYPE=Release ..
+     cd ..
+
+  where ``<EMSCRIPTEN_ROOT>`` stands for the Emscripten root directory
+
+* copy
+
+  * ``build_js/cyacas/yacas/yacas.js``
+  * ``build_js/cyacas/yacas/yacas.js.mem``
+  * ``cyacas/yacas-gui/resources/yacas-online.html``
+  * ``cyacas/yacas-gui/resources/jquery/``
+  * ``cyacas/yacas-gui/resources/mathbar/``
+  * ``cyacas/yacas-gui/resources/plot3d/``
+  * ``cyacas/yacas-gui/resources/yagy_ui/``
+
+  to the installation directory
