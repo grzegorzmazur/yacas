@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <installer-gui-script minSpecVersion="1">
     <title>Yacas</title>
+    <readme file="readme.html" mime-type="text/html"/>
     <license file="license.txt" mime-type="text/plain"/>
     <options require-scripts="false"/>
     <choices-outline>
