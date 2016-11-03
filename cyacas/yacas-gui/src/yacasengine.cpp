@@ -133,7 +133,7 @@ void YacasEngine::_update_symbols()
     for (auto op: _yacas->getDefEnv().getEnv().CoreCommands())
         ss.insert(QString::fromStdString(*op.first));
 
-    for (auto op: _yacas->getDefEnv().getEnv().UserFunctions())
+    for (auto& op: _yacas->getDefEnv().getEnv().UserFunctions())
         ss.insert(QString::fromStdString(*op.first));
     
     _symbols = QStringList::fromSet(ss);
