@@ -2,7 +2,7 @@ include (${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
 ExternalProject_Add (yacas-gui_codemirror
     PREFIX external_packages
-    URL https://github.com/codemirror/CodeMirror/archive/5.20.2.zip
+    URL https://github.com/codemirror/CodeMirror/archive/5.19.0.zip
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
