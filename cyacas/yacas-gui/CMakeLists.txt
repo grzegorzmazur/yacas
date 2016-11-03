@@ -79,7 +79,7 @@ add_executable (yacas-gui ${OS_BUNDLE} ${SOURCES} ${HEADERS} ${QRESOURCES})
 if (APPLE)
     target_link_libraries(yacas-gui Qt5::Core Qt5::Widgets Qt5::WebKit Qt5::WebKitWidgets Qt5::Svg Qt5::PrintSupport libyacas_framework)
 else ()
-    target_link_libraries(yacas-gui Qt5::Core Qt5::Widgets Qt5::WebKit Qt5::WebKitWidgets Qt5::Svg ≤Qt5::PrintSupport libyacas)
+    target_link_libraries(yacas-gui Qt5::Core Qt5::Widgets Qt5::WebKit Qt5::WebKitWidgets Qt5::Svg Qt5::PrintSupport libyacas)
 endif ()
 
 if (APPLE)
