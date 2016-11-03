@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 3.0)
 
 cmake_policy(SET CMP0048 NEW)
+cmake_policy(SET CMP0054 NEW)
 
 option (ENABLE_CYACAS_CONSOLE "build the C++ yacas engine" ON)
 option (ENABLE_CYACAS_GUI "build the C++ yacas engine" ON)
