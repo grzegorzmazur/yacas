@@ -115,7 +115,7 @@ extern "C" char* EMSCRIPTEN_KEEPALIVE yacas_complete(const char* const p)
         if (op.first->substr(0, pn) == p)
             ss.insert(*op.first);
 
-    for (auto op: _yacas->getDefEnv().getEnv().UserFunctions())
+    for (auto& op: _yacas->getDefEnv().getEnv().UserFunctions())
         if (op.first->substr(0, pn) == p)
             ss.insert(*op.first);
 
