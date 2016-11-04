@@ -22,7 +22,7 @@ License:        LGPLv2+
 %endif
 URL:            http://www.yacas.org
 Source:         v%{version}.tar.gz
-BuildRequires:  cmake gcc-c++ python-sphinx python-sphinx_rtd_theme qt5-qtwebkit-devel
+BuildRequires:  cmake gcc-c++ python-sphinx python-sphinx_rtd_theme qt5-qtwebkit-devel qt5-qtsvg-devel
 %description
 Yacas is an easy to use, general purpose Computer Algebra System, a
 program for symbolic manipulation of mathematical expressions. It uses
@@ -167,9 +167,9 @@ algorithms used.
 "/usr/include/yacas/*"
 
 %changelog
-* Mon Apr 4 2016 Grzegorz Mazur <teoretyk@gmail.com> 1.4.99-1
-- Initial RPM release
-* Wed Aug 24 2016 Grzegorz Mazur <teoretyk@gmail.com> 1.5.99-1
-- Spec file adjusted to fit upcoming version 1.6
 * Thu Oct 27 2016 Grzegorz Mazur <teoretyk@gmail.com> 1.6.0-1
 - Bump version number
+* Wed Aug 24 2016 Grzegorz Mazur <teoretyk@gmail.com> 1.5.99-1
+- Spec file adjusted to fit upcoming version 1.6
+* Mon Apr 4 2016 Grzegorz Mazur <teoretyk@gmail.com> 1.4.99-1
+- Initial RPM release
