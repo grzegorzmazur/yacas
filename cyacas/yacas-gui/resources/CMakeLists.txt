@@ -50,6 +50,8 @@ if (NOT APPLE)
     install (DIRECTORY mathbar DESTINATION share/yacas/resources)
     install (DIRECTORY yagy_ui DESTINATION share/yacas/resources)
     install (FILES yagy_ui.html DESTINATION share/yacas/resources)
+    install (DIRECTORY pixmaps DESTINATION share)
+    install (DIRECTORY icons DESTINATION share)
 
     install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_codemirror/lib DESTINATION share/yacas/resources/codemirror)
     install (DIRECTORY ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_codemirror/mode/yacas DESTINATION share/yacas/resources/codemirror/mode)

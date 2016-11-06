@@ -7,7 +7,7 @@
 #
 
 Name:           yacas
-Version:        1.6.0
+Version:        1.6.1
 Release:        1%{?dist}
 Summary:        Easy to use, general purpose computer algebra system
 %if 0%{?suse_version}
@@ -114,6 +114,10 @@ implemented in the system and the algorithms used.
 "/usr/bin/yacas-gui"
 %dir "/usr/share/yacas/resources"
 "/usr/share/yacas/resources/*"
+%dir "/usr/yacas/icons"
+"/usr/share/icons/*"
+%dir "/usr/share/pixmaps"
+"/usr/share/pixmaps/*"
 "/usr/share/applications/yacas-gui.desktop"
 
 %package doc
@@ -167,9 +171,5 @@ algorithms used.
 "/usr/include/yacas/*"
 
 %changelog
-* Thu Oct 27 2016 Grzegorz Mazur <teoretyk@gmail.com> 1.6.0-1
-- Bump version number
-* Wed Aug 24 2016 Grzegorz Mazur <teoretyk@gmail.com> 1.5.99-1
-- Spec file adjusted to fit upcoming version 1.6
-* Mon Apr 4 2016 Grzegorz Mazur <teoretyk@gmail.com> 1.4.99-1
-- Initial RPM release
+* Sun Nov 06 2016 Grzegorz Mazur <teoretyk@gmail.com> 1.6.1-1
+- Changes are none, there is only the now (Ayal Pinkus)

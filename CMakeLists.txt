@@ -21,7 +21,7 @@ if (ENABLE_JYACAS)
   set (LANGUAGES ${LANGUAGES} Java)
 endif ()
 
-project (YACAS VERSION 1.6.0 LANGUAGES ${LANGUAGES})
+project (YACAS VERSION 1.6.1 LANGUAGES ${LANGUAGES})
 
 set (YACAS_SCRIPTS
   scripts/array.rep/code.ys
