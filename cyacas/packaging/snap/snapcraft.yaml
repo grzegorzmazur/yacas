@@ -37,7 +37,7 @@ build-packages:
 
 parts:
   yacas:
-    source: https://github.com/grzegorzmazur/yacas/archive/v1.6.0.tar.gz
+    source: https://github.com/grzegorzmazur/yacas/archive/v1.6.1.tar.gz
     plugin: cmake
     configflags:
       - -DCMAKE_BUILD_TYPE=Release
