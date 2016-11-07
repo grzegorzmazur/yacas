@@ -114,7 +114,7 @@ implemented in the system and the algorithms used.
 "/usr/bin/yacas-gui"
 %dir "/usr/share/yacas/resources"
 "/usr/share/yacas/resources/*"
-%dir "/usr/yacas/icons"
+%dir "/usr/share/icons"
 "/usr/share/icons/*"
 %dir "/usr/share/pixmaps"
 "/usr/share/pixmaps/*"

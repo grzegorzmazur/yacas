@@ -53,9 +53,9 @@ install: build
 	mv debian/yacas/usr/bin/yacas-gui debian/yacas-gui/usr/bin
 	mkdir -p debian/yacas-gui/usr/share/yacas
 	mv debian/yacas/usr/share/yacas/resources debian/yacas-gui/usr/share/yacas
-        mv debian/yacas/usr/share/yacas/applications debian/yacas-gui/usr/share
-        mv debian/yacas/usr/share/pixmaps debian/yacas-gui/usr/share
-        mv debian/yacas/usr/share/icons debian/yacas-gui/usr/share
+	mv debian/yacas/usr/share/applications debian/yacas-gui/usr/share
+	mv debian/yacas/usr/share/pixmaps debian/yacas-gui/usr/share
+	mv debian/yacas/usr/share/icons debian/yacas-gui/usr/share
 	mkdir -p debian/yacas-kernel/usr/bin
 	mv debian/yacas/usr/bin/yacas-kernel debian/yacas-kernel/usr/bin
 	mkdir -p debian/yacas-dev/usr
