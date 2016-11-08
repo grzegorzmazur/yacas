@@ -2,9 +2,34 @@
     "categories": {
             "number": [ "Sqrt", "Exp", "Ln"],
             "function_1": ["Simplify","Integrate","Derivative", "Plot2D","Limit" ],
-            "function_2": ["Simplify","Integrate","Derivative", "Plot3D" ]
+            "function_2": ["Simplify","Integrate","Derivative", "Plot3D" ],
+            "constant": [ "N" ]
         },
     "functions":{
+        "N":
+        {
+            
+            "parameters": [
+                           {
+                           "parameterName": "with_precision",
+                           "parameterType": "condition",
+                           "text" : "",
+                           "defaultValue": "false",
+                           "parameters": [
+                                          {
+                                          "parameterName": "precision",
+                                          "parameterType": "edit",
+                                          "defaultValue": "10",
+                                          "widestValue": "0000",
+                                          "text": "with precision"
+                                          }
+                           ]
+                           }
+                           
+],
+            "parser": "numerical_value_parser"
+        },
+        
         "Sqrt":
             {
                 "parameters": [],

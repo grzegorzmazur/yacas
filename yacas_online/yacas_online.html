@@ -6,8 +6,8 @@
         
         <title>Yacas Online</title>
 
-        <link rel="stylesheet" href="codemirror/lib/codemirror.css" />
-        <link rel="stylesheet" href="codemirror/addon/hint/show-hint.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.19.0/codemirror.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.19.0/addon/hint/show-hint.css" />
         <link rel="stylesheet" href="yagy_ui/yagy_ui.css" />
         <link rel="stylesheet" href="mathbar/mathbar.css" />
         <link rel="stylesheet" href="jquery/jquery-ui-1.11.2.min.css" />
@@ -38,19 +38,19 @@
         <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.resize.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r73/three.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r82/three.min.js"></script>
         <script type="text/javascript" src="three/Detector.js"></script>
         <script type="text/javascript" src="three/TrackballControls.js"></script>
         <script type="text/javascript" src="plot3d/delaunay.js"></script>
         <script type="text/javascript" src="plot3d/plot3d.js"></script>
         <script type="text/javascript" src="mathbar/mathBar.js"></script>  
         <script type="text/javascript" src="mathbar/functions_parser.js"></script>
-        <script type="text/javascript" src="codemirror/lib/codemirror.js"></script>
-        <script type="text/javascript" src="codemirror/mode/yacas/yacas.js"></script>
-        <script type="text/javascript" src="codemirror/addon/edit/matchbrackets.js"></script>
-        <script type="text/javascript" src="codemirror/addon/edit/closebrackets.js"></script>
-        <script type="text/javascript" src="codemirror/addon/hint/show-hint.js"></script>
-        <script type="text/javascript" src="codemirror/addon/hint/anyword-hint.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.19.0/codemirror.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.19.0/mode/yacas/yacas.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.19.0/addon/edit/matchbrackets.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.19.0/addon/edit/closebrackets.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.19.0/addon/hint/show-hint.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.19.0/addon/hint/anyword-hint.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.12.0/vis.min.js"></script>
 
         <script type='text/javascript'>
@@ -67,6 +67,7 @@
                   var yacas_is_error = Module.cwrap('yacas_is_error', 'number', []);
                   var yacas_result = Module.cwrap('yacas_result', 'string', []);
                   var yacas_side_effects = Module.cwrap('yacas_side_effects', 'string', []);
+                  var yacas_complete = Module.cwrap('yacas_complete', 'string', ['string']);
 
                   yacas_evaluate("Plot2D'outputs();");
                   yacas_evaluate("UnProtect(Plot2D'outputs);");
@@ -242,6 +243,9 @@
                           }
                           
                           printResults(evaluationResult);
+                      },
+                      complete: function (ps) {
+                          return yacas_complete(ps).split(';');
                       }
                   };
                   load();
@@ -266,7 +270,8 @@
         <div>
             <p>This is online demo of <a href="http://www.yacas.org" target="blank_">yacas</a>, a simple yet capable Computer Algebra System
             <p>Use Shift+Enter to perform calculations
-            <p>Please note that this is only a demo, it's slower than than the desktop version and doesn't allow saving or loading
+            <p>Use Ctrl+Space for simple automatic completion
+            <p>Please note that this is only a demo, it's slower than the desktop version and doesn't allow saving or loading your calculations
         </div>
         <div id="YacasAREA">
 

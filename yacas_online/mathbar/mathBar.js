@@ -104,7 +104,7 @@ MathBar.prototype.createFunctionsDiv = function(){
         var func = MathBar.functions[this.categories[i]];
         var text = func["text"];
         
-        var $input = $("<input>", { type: "radio", name: outputID, value: this.categories[i]})
+        var $input = $("<input>", { type: "radio", name: this.outputID, value: this.categories[i]})
         
         if ( i == 0 ) $input.prop( "checked", true );
         
@@ -278,7 +278,6 @@ MathBar.ParseParameter = function( parameter ){
 
 MathBar.prototype.optionClicked = function( functionName, VIF ){
 
-    
     if ( this.currentOptionVIF && functionName == MathBar.selectMoreText ) return;
     this.currentOptionVIF = VIF;
     this.currentOption = functionName;
@@ -307,7 +306,12 @@ MathBar.prototype.optionClicked = function( functionName, VIF ){
 };
 
 MathBar.prototype.changeConstToVariables = function ( text ){
+    
     var variables = this.defaultParameters["variable"];
+    
+    if (variables == undefined ){
+        return text;
+    }
     
     if ( $.isArray( text ) ){
         for ( var k = 0; k < text.length; k++ ){
@@ -334,12 +338,19 @@ MathBar.prototype.getPropertyLabel = function( parameter ){
     var $label = $("<label>");
     var type = parameter["parameterType"];
 
-    var value = this.defaultParameters[parameter["parameterName"]];
-    if( value == undefined ) value = parameter["defaultValue"];
-   
-    value = this.changeConstToVariables( value );
+    if ( this.defaultParameters != undefined )
+        var value = this.defaultParameters[parameter["parameterName"]];
     
-    var text =  this.changeConstToVariables( parameter["text"] );
+    if( value == undefined ) value = parameter["defaultValue"];
+    var text = parameter["text"]
+
+    if ( this.defaultParameters != undefined ){
+        value = this.changeConstToVariables( value );
+        text = this.changeConstToVariables( text );
+    }
+    
+    
+    if ( this.defaultParameters != undefined )
     
     if ( type == "select" ){
         if ( value.length == 1 ){

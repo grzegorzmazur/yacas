@@ -1,3 +1,5 @@
+/* global CodeMirror, MathBar, MathJax, THREE, vis, yacas */
+
 //Function stops scrolling event, and just scrool the window
 //Otherwise Code-Mirror editor kept scrolling one line up even if there was no line to scroll
 function scrollListener(e){
@@ -9,10 +11,32 @@ function scrollListener(e){
     e.preventDefault();
 }
 
+function hint(cm, option) {
+    
+    var cursor = cm.getCursor();
+    var line = cm.getLine(cursor.line);
 
+    var start = cursor.ch;
+    var end = cursor.ch;
+
+    while (start && /\w/.test(line.charAt(start - 1)))
+        --start;
+
+    while (end < line.length && /\w/.test(line.charAt(end)))
+        ++end;
+
+    var word = line.slice(start, end);
+
+    return {
+        list: yacas.complete(word),
+        from: CodeMirror.Pos(cursor.line, start),
+        to: CodeMirror.Pos(cursor.line, end)
+    };
+}
+  
 function load(){
     
-    MathBar.initializeFunctions( "mathbar/functions.json" )
+    MathBar.initializeFunctions( "mathbar/functions.json" );
 
     //To keep CodeMirror editor from bad scrolling
     document.body.addEventListener( "mousewheel", function(e){ scrollListener(e);} );
@@ -36,6 +60,7 @@ function load(){
     CodeMirror.defaults['autoCloseBrackets'] = '()[]{}""';
     CodeMirror.defaults['readOnly'] = false;
     CodeMirror.defaults['lineWrapping'] = true;
+    CodeMirror.defaults['hintOptions'] = {hint: hint};
     
     if ( /Mac/.test( navigator.platform ))
         CodeMirror.defaults['extraKeys'] = {'Cmd-Space': 'autocomplete'};
@@ -187,7 +212,7 @@ function addOutput( lineid, number, rootElementID ){
     $row.append( "<td><div id='" + outputID+ "' ></div></td>" );
     
     $( rootElementID ).append( $row );
-    $( "#" + outputID ).append( "<img src='img/progressbar.indicator.gif' width='20' ></img>");
+    $( "#" + outputID ).append( "<img src='yagy_ui/progressbar.indicator.gif' width='20' ></img>");
 }
 
 function addSideEffects( number, side_effects, rootElementID ){
@@ -230,7 +255,7 @@ function printResults( result ){
         if ( MathBar.supportsExpressionType( result["expression_type"], result["variables"].length )){
             
             var options = {};
-            options["layout"] = "multiline";
+            options["layout"] = "singleline";
             options["VIF"] = "max";
             options["type"] = result["expression_type"];
             
@@ -327,6 +352,7 @@ function printResults( result ){
           edges: vis_edges
         };
         var options = {};
+        
         var network = new vis.Network(output[0], data, options);
 
         var width = output.width();
