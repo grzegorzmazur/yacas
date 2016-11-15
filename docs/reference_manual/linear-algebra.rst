@@ -304,7 +304,7 @@ represented as lists of lists.
 
    :param M: a matrix
 
-   {Transpose} returns the transpose of a matrix $M$. Because matrices
+   {Transpose} returns the transpose of a matrix :math:`M`. Because matrices
    are  just lists of lists, this is a useful operation too for lists.
 
    :Example:
@@ -339,7 +339,7 @@ represented as lists of lists.
 
    :param M: a matrix
 
-   {Trace} returns the trace of a matrix $M$ (defined as the sum of
+   {Trace} returns the trace of a matrix :math:`M` (defined as the sum of
    the  elements on the diagonal of the matrix).
 
    :Example:
@@ -358,7 +358,7 @@ represented as lists of lists.
 
    :param M: a matrix
 
-   Inverse returns the inverse of matrix $M$. The determinant of $M$
+   Inverse returns the inverse of matrix :math:`M`. The determinant of :math:`M`
    should  be non-zero. Because this function uses {Determinant} for
    calculating  the inverse of a matrix, you can supply matrices with
    non-numeric (symbolic)  matrix elements.
@@ -385,9 +385,9 @@ represented as lists of lists.
    :param M: a matrix
    :param i}, {j: positive integers
 
-   Minor returns the minor of a matrix around  the element ($i$, $j$).
-   The minor is the determinant of the matrix obtained from $M$ by
-   deleting the $i$-th row and the $j$-th column.
+   Minor returns the minor of a matrix around  the element :math:`i, j`.
+   The minor is the determinant of the matrix obtained from :math:`M` by
+   deleting the :math:`i`-th row and the :math:`j`-th column.
 
    :Example:
 
@@ -420,7 +420,7 @@ represented as lists of lists.
    :param i}, {j: positive integers
 
    {CoFactor} returns the cofactor of a matrix around  the element
-   ($i$, $j$). The cofactor is the minor times  $(-1)^(i+j)$.
+   :math:`i,j`. The cofactor is the minor times  :math:`(-1)^(i+j)`.
 
    :Example:
 
@@ -466,8 +466,8 @@ represented as lists of lists.
    :param M: a matrix
    :param v: a vector
 
-   {SolveMatrix} returns the vector $x$ that satisfies  the equation
-   $M*x = v$. The determinant of $M$ should be non-zero.
+   {SolveMatrix} returns the vector :math:`x` that satisfies  the equation
+   :math:`M*x = v`. The determinant of :math:`M` should be non-zero.
 
    :Example:
 
@@ -517,7 +517,7 @@ represented as lists of lists.
    :param matrix: a square matrix
 
    EigenValues returns the eigenvalues of a matrix.  The eigenvalues x
-   of a matrix M are the numbers such that  $M*v=x*v$ for some vector.
+   of a matrix M are the numbers such that  :math:`M*v=x*v` for some vector.
    It first determines the characteristic equation, and then
    factorizes this  equation, returning the roots of the
    characteristic equation  Det(matrix-x*identity).
@@ -801,8 +801,8 @@ represented as lists of lists.
    :param A: a square matrix
 
    IsHermitian(A) returns :data:`True` if {A} is Hermitian and :data:`False`
-   otherwise. $A$ is a Hermitian matrix iff Conjugate( Transpose $A$
-   )=$A$.  If $A$ is a real matrix, it must be symmetric to be
+   otherwise. :math:`A` is a Hermitian matrix iff Conjugate( Transpose :math:`A`
+   )=:math:`A`.  If :math:`A` is a real matrix, it must be symmetric to be
    Hermitian.
 
    :Example:
@@ -824,8 +824,8 @@ represented as lists of lists.
    :param A: square matrix
 
    {IsOrthogonal(A)} returns :data:`True` if {A} is orthogonal and :data:`False`
-   otherwise. $A$ is orthogonal iff $A$*Transpose($A$) = Identity, or
-   equivalently Inverse($A$) = Transpose($A$).
+   otherwise. :math:`A` is orthogonal iff :math:`A`*Transpose(:math:`A`) = Identity, or
+   equivalently Inverse(:math:`A`) = Transpose(:math:`A`).
 
    :Example:
 
@@ -909,7 +909,7 @@ represented as lists of lists.
    :param A: a matrix
 
    {IsSymmetric(A)} returns :data:`True` if {A} is symmetric and :data:`False`
-   otherwise.  $A$ is symmetric iff Transpose ($A$) =$A$.
+   otherwise.  :math:`A` is symmetric iff Transpose (:math:`A`) =:math:`A`.
 
    :Example:
 
@@ -943,7 +943,7 @@ represented as lists of lists.
    :param A: a square matrix
 
    {IsSkewSymmetric(A)} returns :data:`True` if {A} is skew symmetric and
-   :data:`False` otherwise.  $A$ is skew symmetric iff $Transpose(A)$ =$-A$.
+   :data:`False` otherwise.  :math:`A` is skew symmetric iff :math:`Transpose(A)` =:math:`-A`.
 
    :Example:
 
@@ -970,9 +970,9 @@ represented as lists of lists.
 
    :param A: a square matrix
 
-   This function tries to find out if A is unitary.    A matrix $A$ is
-   orthogonal iff $A^(-1)$ = Transpose( Conjugate($A$) ). This is
-   equivalent to the fact that the columns of $A$ build an orthonormal
+   This function tries to find out if A is unitary.    A matrix :math:`A` is
+   orthogonal iff :math:`A^(-1)` = Transpose( Conjugate(:math:`A`) ). This is
+   equivalent to the fact that the columns of :math:`A` build an orthonormal
    system  (with respect to the scalar product defined by
    {InProduct}).
 
@@ -995,8 +995,8 @@ represented as lists of lists.
    :param A: a square matrix
 
    {IsIdempotent(A)} returns :data:`True` if {A} is idempotent and :data:`False`
-   otherwise.  $A$ is idempotent iff $A^2=A$. Note that this also
-   implies that $A$ raised  to any power is also equal to $A$.
+   otherwise.  :math:`A` is idempotent iff :math:`A^2=A`. Note that this also
+   implies that :math:`A` raised  to any power is also equal to :math:`A`.
 
    :Example:
 
@@ -1011,15 +1011,15 @@ represented as lists of lists.
 
 .. function:: JacobianMatrix(functions,variables)
 
-   calculate the Jacobian matrix of $n$ functions in $n$ variables
+   calculate the Jacobian matrix of :math:`n` functions in :math:`n` variables
 
-   :param functions: an $n$-dimensional vector of functions
-   :param variables: an $n$-dimensional vector of variables
+   :param functions: an :math:`n`-dimensional vector of functions
+   :param variables: an :math:`n`-dimensional vector of variables
 
    The function {JacobianMatrix} calculates the Jacobian matrix  of n
-   functions in n variables.    The ($i$,$j$)-th element of the
-   Jacobian matrix is defined as the derivative  of $i$-th function
-   with respect to the $j$-th variable.
+   functions in n variables.    The :math:`(i,j)`-th element of the
+   Jacobian matrix is defined as the derivative  of :math:`i`-th function
+   with respect to the :math:`j`-th variable.
 
    :Example:
 
@@ -1039,11 +1039,11 @@ represented as lists of lists.
 
    create the Vandermonde matrix
 
-   :param vector: an $n$-dimensional vector
+   :param vector: an :math:`n`-dimensional vector
 
    The function {VandermondeMatrix} calculates the Vandermonde matrix
-   of a vector.    The ($i$,$j$)-th element of the Vandermonde matrix
-   is defined as $i^(j-1)$.
+   of a vector.    The :math:`(i,j)`-th element of the Vandermonde matrix
+   is defined as :math:`i^(j-1)`.
 
    :Example:
 
@@ -1067,13 +1067,13 @@ represented as lists of lists.
 
    create the Hessian matrix
 
-   :param function: a function in $n$ variables
-   :param var: an $n$-dimensional vector of variables
+   :param function: a function in :math:`n` variables
+   :param var: an :math:`n`-dimensional vector of variables
 
    The function {HessianMatrix} calculates the Hessian matrix  of a
-   vector.    If $f(x)$ is a function of an $n$-dimensional vector
-   $x$, then the ($i$,$j$)-th element of the Hessian matrix of the
-   function $f(x)$ is defined as   $ Deriv(x[i]) Deriv(x[j]) f(x) $.
+   vector.    If :math:`f(x)` is a function of an :math:`n`-dimensional vector
+   :math:`x`, then the :math:`(i,j)`-th element of the Hessian matrix of the
+   function :math:`f(x)` is defined as   :math:` Deriv(x[i]) Deriv(x[j]) f(x)`.
    If the third  order mixed partials are continuous, then the Hessian
    matrix is symmetric (a standard theorem of calculus).    The
    Hessian matrix is used in the second derivative test   to discern
@@ -1164,10 +1164,10 @@ represented as lists of lists.
 
    create a Toeplitz matrix
 
-   :param N: an $n$-dimensional row vector
+   :param N: an :math:`n`-dimensional row vector
 
    The function {ToeplitzMatrix} calculates the Toeplitz matrix given
-   an $n$-dimensional row vector. This matrix has the same entries in
+   an :math:`n`-dimensional row vector. This matrix has the same entries in
    all diagonal columns, from upper left to lower right.
 
    :Example:
@@ -1192,14 +1192,14 @@ represented as lists of lists.
 
    create the Wronskian matrix
 
-   :param func: an $n$-dimensional vector of functions
+   :param func: an :math:`n`-dimensional vector of functions
    :param var: a variable to differentiate with respect to
 
    The function {WronskianMatrix} calculates the Wronskian matrix  of
-   $n$ functions.    The Wronskian matrix is created by putting each
+   :math:`n` functions.    The Wronskian matrix is created by putting each
    function as the  first element of each column, and filling in the
-   rest of each  column by the ($i-1$)-th derivative, where $i$ is the
-   current row.    The Wronskian matrix is used to verify that the $n$
+   rest of each  column by the :math:`(i-1)`-th derivative, where :math:`i` is the
+   current row.    The Wronskian matrix is used to verify that the :math:`n`
    functions are linearly  independent, usually solutions to a
    differential equation.  If the determinant of the Wronskian matrix
    is zero, then the functions  are dependent, otherwise they are
@@ -1263,7 +1263,7 @@ represented as lists of lists.
       In> Simplify(B)
       Out> 3*a^2-a^3;
       The above example shows that the two polynomials have common
-      zeros if $ a = 3 $.
+      zeros if :math:` a = 3 :math:`.
       
 
    .. seealso:: :func:`Determinant`, :func:`Simplify`, :func:`Solve`, :func:`PSolve`

@@ -37,10 +37,10 @@ expressions.
    :param expr: an expression containing nested radicals
 
    This function tries to write the expression "expr" as a sum of
-   roots  of integers: $Sqrt(e1) + Sqrt(e2) + ...$, where $e1$, $e2$
+   roots  of integers: :math:`Sqrt(e1) + Sqrt(e2) + ...`, where :math:`e1`, :math:`e2`
    and  so on are natural numbers. The expression "expr" may not
    contain  free variables.    It does this by trying all possible
-   combinations for $e1$, $e2$, ...  Every possibility is numerically
+   combinations for :math:`e1`, :math:`e2`, ...  Every possibility is numerically
    evaluated using {N} and compared with the numerical evaluation of
    "expr". If the approximations are equal (up to a certain margin),
    this possibility is returned. Otherwise, the expression is returned
@@ -77,8 +77,8 @@ expressions.
    :param expression: expression to simplify
 
    {FactorialSimplify} takes an expression that may contain
-   factorials,  and tries to simplify it. An expression like $ (n+1)!
-   / n! $ would  simplify to $(n+1)$.     The following steps are
+   factorials,  and tries to simplify it. An expression like :math:`(n+1)!
+   / n!` would  simplify to :math:`(n+1)`.     The following steps are
    taken to simplify:
 
 .. function:: LnExpand(expr)
@@ -87,13 +87,13 @@ expressions.
 
    :param expr: the logarithm of an expression
 
-   {LnExpand} takes an expression of the form $Ln(expr)$, and applies
+   {LnExpand} takes an expression of the form :math:`Ln(expr)`, and applies
    logarithm  rules to expand this into multiple {Ln} expressions
-   where possible.  An  expression like $Ln(a*b^n)$ would be expanded
-   to $Ln(a)+n*Ln(b)$.    If the logarithm of an integer is
+   where possible.  An  expression like :math:`Ln(a*b^n)` would be expanded
+   to :math:`Ln(a)+n*Ln(b)`.    If the logarithm of an integer is
    discovered, it is factorised using {Factors}  and expanded as
    though {LnExpand} had been given the factorised form.  So
-   $Ln(18)$ goes to $Ln(x)+2*Ln(3)$.
+   :math:`Ln(18)` goes to :math:`Ln(x)+2*Ln(3)`.
 
 .. function:: LnCombine(expr)
 
@@ -112,7 +112,7 @@ expressions.
    :param expr: expression to simplify
 
    This function applies the product rules of trigonometry, e.g.
-   $Cos(u)*Sin(v) = (1/2)*(Sin(v-u) + Sin(v+u))$. As a  result, all
+   :math:`Cos(u)*Sin(v) = (1/2)*(Sin(v-u) + Sin(v+u))`. As a  result, all
    products of the trigonometric functions {Cos} and {Sin} disappear.
    The function also tries to simplify the resulting expression as
    much as  possible by combining all similar terms.    This function

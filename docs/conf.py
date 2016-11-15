@@ -34,6 +34,7 @@ sys.path.insert(0, os.path.abspath('./util'))
 extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.todo',
+    'sphinxcontrib.bibtex',
     'yacasdomain'
 ]
 
@@ -79,6 +80,7 @@ release = '1.6.1'
 exclude_patterns = ['_build']
 
 primary_domain = 'ys'
+highlight_language = 'none'
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.

@@ -208,7 +208,7 @@ In general one has to be careful when functions like {Apply}, {Map} or
 Rules
 =====
 
-<i>Rules</i> are special properties of functions that are applied when
+*Rules* are special properties of functions that are applied when
 the function object is being evaluated. A function object could have
 just one rule bound to it; this is similar to a "subroutine" having a
 "function body" in usual procedural languages. However, Yacas function
@@ -282,7 +282,7 @@ procedural by nature.
 
 Rule-based programming normally makes heavy use of recursion and it is
 important to control the order in which replacement rules are to be
-applied. For this purpose, each rule is given a <i>precedence</i>.
+applied. For this purpose, each rule is given a *precedence*.
 Precedences go from low to high, so all rules with precedence 0 will
 be tried before any rule with precedence 1.
 
@@ -395,7 +395,7 @@ Finally, {HoldArg("function",argument)} specifies that the argument
 "{argument}" should not be evaluated before being bound to that
 variable. This holds for {foreachitem} and {foreachbody}, since
 {foreachitem} specifies a variable to be set to that value, and
-{foreachbody} is the expression that should be evaluated <i>after</i>
+{foreachbody} is the expression that should be evaluated *after*
 that variable is set.
 
 Inside the body of the function definition there are calls to
@@ -404,7 +404,7 @@ be visible within a block {[ ... ]}. The command {MacroLocal()} works
 almost the same. The difference is that it evaluates its arguments
 before performing the action on it. This is needed in this case,
 because the variable {foreachitem} is bound to a variable to be used
-as the loop iterator, and it is <i>the variable it is bound to</i>
+as the loop iterator, and it is *the variable it is bound to*
 that we want to make local, not {foreachitem} itself. {MacroSet()}
 works similarly: it does the same as {Set()} except that it also first
 evaluates the first argument, thus setting the variable requested by
@@ -513,7 +513,7 @@ compare with what follows.)
 
 However, this will have to be done for every function {f}
 separately. We would like to define a procedure that will define {Nf},
-given <i>any</i> function {f}. We would like to use it like this: ::
+given *any* function {f}. We would like to use it like this: ::
 
   NFunction("Nf", "f", {x,y,z});
 
@@ -549,7 +549,7 @@ like this: ::
   )  "actual new name" @ {actual arg list};
 
 Note that we need to produce expressions such as {"new name" @
-arg'list} and not <i>results</i> of evaluation of these
+arg'list} and not *results* of evaluation of these
 expressions. We can produce these expressions by using {UnList()},
 e.g. ::
 
@@ -679,7 +679,7 @@ the {Local()} function.
 
 When entering a block, a new stack frame is pushed for the local
 variables; it means that the code inside a block doesn't see the local
-variables of the <i>caller</i> either!  You can tell the interpreter
+variables of the *caller* either!  You can tell the interpreter
 that a function should see local variables of the calling environment;
 to do this, declare UnFence(funcname, arity) on that function.
 
@@ -692,7 +692,7 @@ what goes on behind the scenes when evaluating expressions, or in this
 case simplifying expressions.
 
 This section aims to explain how evaluation (and simplification) of
-expressions works internally, in {Yacas}.
+expressions works internally, in yacas.
 
 =================
 The LISP heritage
@@ -713,7 +713,7 @@ where the first atom is a function name of the function to be invoked,
 and the atoms following are the arguments to be passed in as
 parameters to that function.
 
-{Yacas} has the function {FullForm} to show the internal representation: ::
+Yacas has the function :func:`FullForm` to show the internal representation::
 
   In> FullForm(a+b)
   (+ a b )
@@ -725,8 +725,8 @@ parameters to that function.
   (+ (+ a b )c )
   Out> a+b+c;
 
-The internal representation is very close to what {FullForm} shows
-on screen. {a+b+c} would be {(+ (+ a b )c )} internally, or: ::
+The internal representation is very close to what :func:`FullForm` shows
+on screen. ``{a+b+c}`` would be ``{(+ (+ a b )c )}`` internally, or::
 
     ()
     |
@@ -743,7 +743,7 @@ Evaluation
 
 An expression like described above is done in the following manner:
 first the arguments are evaluated (if they need to be evaluated,
-{Yacas} can be told to not evaluate certain parameters to functions),
+yacas can be told to not evaluate certain parameters to functions),
 and only then are these arguments passed in to the function for
 evaluation. They are passed in by binding local variables to the
 values, so these arguments are available as local values.
@@ -754,7 +754,7 @@ during evaluation, the top expression refers to function "{+}".  Its
 arguments are ``(* 2 3)`` and {4}. First ``(* 2 3)`` gets evaluated.
 This is a function call to the function ``*`` with arguments {2} and
 {3}, which evaluate to themselves. Then the function "{*}" is invoked
-with these arguments. The {Yacas} standard script library has code
+with these arguments. The yacas standard script library has code
 that accepts numeric input and performs the multiplication
 numerically, resulting in {6}.
 
@@ -773,10 +773,10 @@ is 10: ::
   In> 2*3+4
   Out> 10;
 
-Note that in {Yacas}, the script language does not define a "{+}"
+Note that in yacas, the script language does not define a ``+``
 function in the core. This and other functions are all implemented in
-the script library.  The feature "when the arguments to "{+}" are
-numeric, perform the numeric addition" is considered to be a "policy"
+the script library.  The feature *when the arguments to* ``+`` *are
+numeric, perform the numeric addition* is considered to be a *policy*
 which should be configurable.  It should not be a part of the core
 language.
 
@@ -786,8 +786,8 @@ evaluated. In some sense, you might feel that the evaluation of the
 arguments is part of evaluation of the function. It is not. Arguments
 are evaluated before the function gets called.
 
-Suppose we define the function {f}, which adds two numbers, and
-traces itself, as: ::
+Suppose we define the function :func:`f`, which adds two numbers, and
+traces itself, as::
 
   In> f(a,b):= \
   In> [\
@@ -808,26 +808,26 @@ Then the following interaction shows this principle: ::
   Leave f with result 9 
   Out> 9;
 
-The first Enter/Leave combination is for {f(2,3)}, and only then is
-the outer call to {f} entered.
+The first Enter/Leave combination is for ``f(2,3)``, and only then is
+the outer call to :func:`f` entered.
 
-This has important consequences for the way {Yacas} simplifies
+This has important consequences for the way yacas simplifies
 expressions: the expression trees are traversed bottom up, as the
 lowest parts of the expression trees are simplified first, before
 being passed along up to the calling function.
 
-===================================================
-{Yacas}-specific extensions for CAS implementations
-===================================================
+=================================================
+Yacas-specific extensions for CAS implementations
+=================================================
 
-{Yacas} has a few language features specifically designed for use when
+Yacas has a few language features specifically designed for use when
 implementing a CAS.
 
 The transformation rules
 ------------------------
 
 Working with transformation rules is explained in the introduction and
-tutorial book. This section mainly deals with how {Yacas} works with
+tutorial book. This section mainly deals with how yacas works with
 transformation rules under the hood.
 
 A transformation rule consists of two parts: a condition that an
@@ -841,7 +841,7 @@ A pattern is again simply an expression, stored in internal format: ::
   (+ (_ a IsInteger )(* (_ b IsInteger )(_ x )))
   Out> a _IsInteger+b _IsInteger*_x;
 
-{Yacas} maintains structures of transformation rules, and tries to
+Yacas maintains structures of transformation rules, and tries to
 match them to the expression being evaluated. It first tries to match
 the structure of the pattern to the expression. In the above case, it
 tries to match to {a+b*x}. If this matches, local variables {a}, {b}
@@ -887,7 +887,7 @@ where the code to evaluate to determine the result depends on the form
 of the input expression, or the type of the arguments, or some other
 conditions.
 
-{Yacas} allows to define several transformation rules for one and the
+Yacas allows to define several transformation rules for one and the
 same function, if the rules are to be applied under different
 conditions.
 
@@ -973,14 +973,14 @@ numerically: ::
 The "Evaluation is Simplification" hack
 =======================================
 
-One of the ideas behind the {Yacas} scripting language is that
+One of the ideas behind the yacas scripting language is that
 evaluation is used for simplifying expressions.  One consequence of
 this is that objects can be returned unevaluated when they can not be
 simplified further. This happens to variables that are not assigned,
 functions that are not defined, or function invocations where the
 arguments passed in as parameters are not actually handled by any code
-in the scripts.  An integral that can not be performed by {Yacas}
-should be returned unevaluated: ::
+in the scripts.  An integral that can not be performed by yacas
+should be returned unevaluated::
 
   In> 2+3
   Out> 5;
@@ -1000,18 +1000,18 @@ should be returned unevaluated: ::
   Out> 6;
 
 Other languages usually do not allow evaluation of unbound variables,
-or undefined functions. In {Yacas}, these are interpreted as some yet
+or undefined functions. In yacas, these are interpreted as some yet
 undefined global variables or functions, and returned unevaluated.
 
 ======================
 Destructive operations
 ======================
 
-{Yacas} tries to keep as few copies of objects in memory as
+Yacas tries to keep as few copies of objects in memory as
 possible. Thus when assigning the value of one variable to another, a
 reference is copied, and both variables refer to the same memory,
 physically. This is relevant for programming; for example, one should
-use {FlatCopy} to actually make a new copy of an object.  Another
+use :func:`FlatCopy` to actually make a new copy of an object.  Another
 feature relevant to reference semantics is "destructive operations";
 these are functions that modify their arguments rather than work on a
 copy. Destructive operations on lists are generally recognized because
@@ -1154,11 +1154,11 @@ definition of how to work on vectors, and a different one for working
 on numbers.
 
 When writing rules for an operator, it is assumed that the operator
-working on arguments, e.g. {Cos} or ``*``, will always have the same
+working on arguments, e.g. :func:`Cos` or ``*``, will always have the same
 properties regardless of the arguments. The Taylor series expansion of
-$Cos(a)$ is the same regardless of whether $a$ is a real number,
+:math:`\cos(a)` is the same regardless of whether :math:`a` is a real number,
 complex number or even a matrix.  Certain trigonometric identities
-should hold for the {Cos} function, regardless of the type of its
+should hold for the :func:`Cos` function, regardless of the type of its
 argument.
 
 If a function is defined which does not adhere to these rules when
@@ -1198,9 +1198,10 @@ A rule with precedence 100 is defined by the syntax such as ::
 The problem mentioned above with a rule for vectors and scalars could
 be solved by making two rules:
 
-* 1. $a*b$ (if $b$ is a vector and $a$ is a number) {<--} return
-  vector of each component multiplied by $a$.
-* 1. $a*0$ {<--} $0$
+1. :math:`a*b` (if :math:`b` is a vector and :math:`a` is a number) ``<--``
+   return vector of each component multiplied by :math:`a`.
+2. :math:`a*0` ``<--`` :math:`0`
+
 
 So vector multiplication would be tried first.
 
@@ -1285,20 +1286,21 @@ The "symbolic" function usually has multiple rules while the
 number-crunching code.
 
 
-Using {N()} and {InNumericMode()} in scripts
---------------------------------------------
+Using :func:`N` and :func:`InNumericMode` in scripts
+----------------------------------------------------
 
-As a rule, {N()} should be avoided in code that implements basic
-numerical algorithms. This is because {N()} itself is implemented in
+As a rule, :func:`N` should be avoided in code that implements basic
+numerical algorithms. This is because :func:`N` itself is implemented in
 the library and it may need to use some of these algorithms.
 Arbitrary-precision math can be handled by core functions such as
-{MathDivide}, {MathSin} and so on, without using {N()}. For example,
-if your code needs to evaluate $Sqrt(Pi)$ to many digits as an
-intermediate result, it is better to write {MathSqrt(Internal'Pi())}
-than {N(Sqrt(Pi))} because it makes for faster, more reliable code.
+:func:`MathDivide`, :func:`MathSin` and so on, without using :func:`N`.
+For example, if your code needs to evaluate :math:`\sqrt{\pi}` to many
+digits as an intermediate result, it is better to write
+``MathSqrt(Internal'Pi())`` than ``N(Sqrt(Pi))`` because it makes for faster,
+more reliable code.
 
-Using {Builtin'Precision'Set()}
--------------------------------
+Using :func:`Builtin'Precision'Set`
+-----------------------------------
 
 The usual assumption is that numerical functions will evaluate
 floating-point results to the currently set precision. For
@@ -1313,9 +1315,9 @@ Using verbose mode
 For routines using complicated algorithms, or when evaluation takes a
 long time, it is usually helpful to print some diagnostic information,
 so that the user can at least watch some progress. The current
-convention is that if {InVerboseMode()} returns :data:`True`, functions may
+convention is that if :func:`InVerboseMode` returns :data:`True`, functions may
 print diagnostic information. (But do not print too much!). Verbose
-mode is turned on by using the function {V(expression)}. The
+mode is turned on by using the function :func:`V`. The
 expression is evaluated in verbose mode.
 
 Procedural programming or rule-based programming?
@@ -1324,7 +1326,7 @@ Procedural programming or rule-based programming?
 Two considerations are relevant to this decision. First, whether to
 use multiple rules with predicates or one rule with multiple {If()}s.
 Consider the following sample code for the "double factorial" function
-:math:n!! := n(n-2)...` written using predicates and rules: ::
+:math:n!! := n(n-2)\ldots 1` written using predicates and rules::
 
    1# 0 !! <-- 1;
    1# 1 !! <-- 1;
@@ -1338,15 +1340,15 @@ and an equivalent code with one rule: ::
       If(IsOdd(n), n*(n-2)!!, Hold(n!!)))
     );
 
-(Note: This is not the way $n!!$ is implemented in the library.) The
+(Note: This is not the way :math:`n!!` is implemented in the library.) The
 first version is a lot more clear. Yacas is very quick in rule
 matching and evaluation of predicates, so the first version is
 (marginally) faster. So it seems better to write a few rules with
-predicates than one rule with multiple {If()} statements.
+predicates than one rule with multiple :func:If` statements.
 
 The second question is whether to use recursion or loops. Recursion
 makes code more elegant but it is slower and limited in depth.
-Currently the default recursion depth of $1000$ is enough for most
+Currently the default recursion depth of :math:1000` is enough for most
 casual calculations and yet catches infinite recursion errors
 relatively quickly. Because of clearer code, it seems better to use
 recursion in situations where the number of list elements will never
@@ -1573,7 +1575,7 @@ repetition of code.
 Yacas programming pitfalls
 ==========================
 
-No programming language is without programming pitfalls, and {Yacas}
+No programming language is without programming pitfalls, and yacas
 has its fair share of pitfalls.
 
 All rules are global
@@ -1583,7 +1585,7 @@ All rules are global, and a consequence is that rules can clash or
 silently shadow each other, if the user defines two rules with the
 same patterns and predicates but different bodies.
 
-For example: ::
+For example::
 
   In> f(0) <-- 1
   Out> True;
@@ -1592,7 +1594,7 @@ For example: ::
 
 This can happen in practice, if care is not taken. Here two
 transformation rules are defined which both have the same precedence
-(since their precedence was not explicitly set). In that case {Yacas}
+(since their precedence was not explicitly set). In that case yacas
 gets to decide which one to try first.  Such problems can also occur
 where one transformation rule (possibly defined in some other file)
 has a wrong precedence, and thus masks another transformation rule. It
@@ -1600,10 +1602,9 @@ is necessary to think of a scheme for assigning precedences first. In
 many cases, the order in which transformation rules are applied is
 important.
 
-In the above example, because {Yacas} gets to decide which rule to try
-first, it is possible that f(0) invokes the second rule, which would
-then mask the first so the first rule is never called.  Indeed, in
-{Yacas} version 1.0.51, ::
+In the above example, because yacas gets to decide which rule to try
+first, it is possible that ``f(0)`` invokes the second rule, which would
+then mask the first so the first rule is never called.  Indeed ::
 
   In> f(0)
   Out> Undefined;
@@ -1613,7 +1614,7 @@ the same. The precedences should only be the same if order does not
 matter. This is the case if, for instance, the two rules apply to
 different argument patters that could not possibly mask each other.
 
-The solution could have been either: ::
+The solution could have been either::
 
   In> 10 # f(0) <-- 1
   Out> True;
@@ -1637,13 +1638,13 @@ have mutually exclusive predicates, so that they do not collide.
 Objects that look like functions
 --------------------------------
 
-An expression that looks like a "function", for example {AbcDef(x,y)},
-is in fact either a call to a "core function" or to a "user function",
+An expression that *looks like a function*, for example ``AbcDef(x,y)``,
+is in fact either a call to a *core function* or to a *user function*,
 and there is a huge difference between the behaviors. Core functions
 immediately evaluate to something, while user functions are really
 just symbols to which evaluation rules may or may not be applied.
 
-For example: ::
+For example::
 
   In> a+b
   Out> a+b;
@@ -1658,29 +1659,29 @@ For example: ::
   In> MathAdd(2,3)
   Out> 5;
 
-The {+} operator will return the object unsimplified if the arguments
-are not numeric. The {+} operator is defined in the standard scripts.
-{MathAdd}, however, is a function defined in the "core" to performs
+The ``+`` operator will return the object unsimplified if the arguments
+are not numeric. The ``+`` operator is defined in the standard scripts.
+:func:`MathAdd`, however, is a function defined in the *core* to performs
 the numeric addition. It can only do this if the arguments are numeric
-and it fails on symbolic arguments.  (The {+} operator calls {MathAdd}
+and it fails on symbolic arguments.  (The ``+`` operator calls :func:`MathAdd`
 after it has verified that the arguments passed to it are numeric.)
 
-A core function such as {MathAdd} can never return unevaluated, but an
-operator such as "{+}" is a "user function" which might or might not
+A core function such as :func:`MathAdd` can never return unevaluated, but an
+operator such as ``+`` is a *user function* which might or might not
 be evaluated to something.
 
 A user function does not have to be defined before it is used. A
 consequence of this is that a typo in a function name or a variable
-name will always go unnoticed.  For example: ::
+name will always go unnoticed.  For example::
 
   In> f(x_IsInteger,y_IsInteger) <-- Mathadd(x,y)
   Out> True;
   In> f(1,2)
   Out> Mathadd(1,2);
 
-Here we made a typo: we should have written {MathAdd}, but wrote
-{Mathadd} instead. {Yacas} happily assumed that we mean a new and (so
-far) undefined "user function" {Mathadd} and returned the expression
+Here we made a typo: we should have written :func:`MathAdd`, but wrote
+:func:`Mathadd` instead. Yacas` happily assumed that we mean a new and (so
+far) undefined *user function* :func:`Mathadd` and returned the expression
 unevaluated.
 
 In the above example it was easy to spot the error. But this feature
@@ -1721,54 +1722,54 @@ The problem of distinguishing evaluated and unevaluated objects
 becomes worse when we need to create a function that does not evaluate
 its arguments.
 
-Since in {Yacas} evaluation starts from the bottom of the expression
-tree, all "user functions" will appear to evaluate their arguments by
+Since in yacas evaluation starts from the bottom of the expression
+tree, all *user functions* will appear to evaluate their arguments by
 default. But sometimes it is convenient to prohibit evaluation of a
-particular argument (using {HoldArg} or {HoldArgNr}).
+particular argument (using :func:`HoldArg` or :func:`HoldArgNr`).
 
-For example, suppose we need a function {A(x,y)} that, as a
-side-effect, assigns the variable {x} to the sum of {x} and {y}. This
-function will be called when {x} already has some value, so clearly
-the argument {x} in {A(x,y)} should be unevaluated. It is possible to
-make this argument unevaluated by putting {Hold()} on it and always
-calling {A(Hold(x), y)}, but this is not very convenient and easy to
-forget. It would be better to define {A} so that it always keeps its
+For example, suppose we need a function ``A(x,y)`` that, as a
+side-effect, assigns the variable ``x`` to the sum of ``x`` and ``y``. This
+function will be called when ``x`` already has some value, so clearly
+the argument ``x`` in ``A(x,y)`` should be unevaluated. It is possible to
+make this argument unevaluated by putting :func:`Hold()` on it and always
+calling ``A(Hold(x), y)``, but this is not very convenient and easy to
+forget. It would be better to define :func`A` so that it always keeps its
 first argument unevaluated.
 
-If we define a rule base for {A} and declare {HoldArg}, ::
+If we define a rule base for :func:`A` and declare :func:`HoldArg`, ::
 
   Function() A(x,y);
   HoldArg("A", x);
 
 then we shall encounter a difficulty when working with the argument
-{x} inside of a rule body for {A}. For instance, the simple-minded
+``x`` inside of a rule body for :func:`A`. For instance, the simple-minded
 implementation ::
 
   A(_x, _y) <-- (x := x+y);
 
-does not work: ::
+does not work::
 
   In> [ a:=1; b:=2; A(a,b);]
   Out> a+2;
 
-In other words, the {x} inside the body of {A(x,y)} did not evaluate
-to {1} when we called the function {:=}. Instead, it was left
-unevaluated as the atom {x} on the left hand side of {:=}, since {:=}
+In other words, the ``x`` inside the body of ``A(x,y)`` did not evaluate
+to ``1`` when we called the function ``:=``. Instead, it was left
+unevaluated as the atom ``x`` on the left hand side of ``:=``, since ``:=``
 does not evaluate its left argument. It however evaluates its right
-argument, so the {y} argument was evaluated to {2} and the {x+y}
-became {a+2}.
+argument, so the ``y`` argument was evaluated to ``2`` and the ``x+y``
+became ``a+2``.
 
-The evaluation of {x} in the body of {A(x,y)} was prevented by the
-{HoldArg} declaration. So in the body, {x} will just be the atom {x},
-unless it is evaluated again. If you pass {x} to other functions, they
-will just get the atom {x}. Thus in our example, we passed {x} to the
-function {:=}, thinking that it will get {a}, but it got an
-unevaluated atom {x} on the left side and proceeded with that.
+The evaluation of ``x`` in the body of ``A(x,y)`` was prevented by the
+:func:`HoldArg` declaration. So in the body, ``x`` will just be the atom ``x``,
+unless it is evaluated again. If you pass ``x`` to other functions, they
+will just get the atom ``x``. Thus in our example, we passed ``x`` to the
+function ``:=``, thinking that it will get ``a``, but it got an
+unevaluated atom ``x`` on the left side and proceeded with that.
 
-We need an explicit evaluation of {x} in this case. It can be
-performed using {Eval}, or with backquoting, or by using a core
+We need an explicit evaluation of ``x`` in this case. It can be
+performed using :func:`Eval`, or with backquoting, or by using a core
 function that evaluates its argument. Here is some code that
-illustrates these three possibilities: ::
+illustrates these three possibilities::
 
     A(_x, _y) <-- [ Local(z); z:=Eval(x); z:=z+y; ]
 
@@ -1780,20 +1781,20 @@ illustrates these three possibilities: ::
 
     A(_x, _y) <-- MacroSet(x, x+y);
 
-(using a core function {MacroSet} that evaluates its first argument).
+(using a core function :func:`MacroSet` that evaluates its first argument).
 
 However, beware of a clash of names when using explicit evaluations
-(as explained above). In other words, the function {A} as defined
+(as explained above). In other words, the function :func:`A` as defined
 above will not work correctly if we give it a variable also named
-{x}. The {LocalSymbols} call should be used to get around this
+``x``. The :func:`LocalSymbols` call should be used to get around this
 problem.
 
 Another caveat is that when we call another function that does not
 evaluate its argument, we need to substitute an explicitly evaluated
-{x} into it. A frequent case is the following: suppose we have a
-function {B(x,y)} that does not evaluate {x}, and we need to write an
-interface function {B(x)} which will just call {B(x,0)}. We should use
-an explicit evaluation of {x} to accomplish this, for example ::
+``x`` into it. A frequent case is the following: suppose we have a
+function ``B(x,y)`` that does not evaluate ``x}``, and we need to write an
+interface function ``B(x)`` which will just call ``B(x,0)``. We should use
+an explicit evaluation of ``x`` to accomplish this, for example ::
 
     B(_x) <-- `B(@x,0);
 
@@ -1801,11 +1802,11 @@ or ::
 
     B(_x) <-- B @ {x, 0};
 
-Otherwise {B(x,y)} will not get the correct value of its first
-parameter {x}.
+Otherwise ``B(x,y)`` will not get the correct value of its first
+parameter ``x``.
 
-Special behavior of {Hold}, {UnList} and {Eval}
------------------------------------------------
+Special behavior of :func:`Hold`, :func:`UnList` and :func:`Eval`
+-----------------------------------------------------------------
 
 When an expression is evaluated, all matching rules are applied to it
 repeatedly until no more rules match. Thus an expression is
@@ -1813,12 +1814,12 @@ repeatedly until no more rules match. Thus an expression is
 application of rules is stopped at a certain point, leaving an
 expression not "completely" evaluated:
 
-* The expression which is the result of a call to a Yacas core
+* The expression which is the result of a call to a yacas core
   function is not evaluated further, even if some rules apply to it.
 * The expression is a variable that has a value assigned to it; for
   example, the variable {x} might have the expression {y+1} as the
   value. That value is not evaluated again, so even if {y} has been
-  assigned another value, say, {y=2} a Yacas expression such as
+  assigned another value, say, {y=2} a yacas expression such as
   {2*x+1} will evaluate to {2*(y+1)+1} and not to {7}. Thus, a
   variable can have some unevaluated expression as its value and the
   expression will not be re-evaluated when the variable is used.
@@ -1886,9 +1887,9 @@ Then the example above will be concluded with: ::
 Correctness of parameters to functions is not checked
 -----------------------------------------------------
 
-Because {Yacas} does not enforce type checking of arguments, it is
+Because yacas does not enforce type checking of arguments, it is
 possible to call functions with invalid arguments. The default way
-functions in {Yacas} should deal with situations where an action can
+functions in yacas should deal with situations where an action can
 not be performed, is to return the expression unevaluated. A function
 should know when it is failing to perform a task. The typical symptoms
 are errors that seem obscure, but just mean the function called should
@@ -2032,7 +2033,7 @@ Yacas supports a special form of evaluation where hooks are placed
 when evaluation enters or leaves an expression.
 
 This section will explain the way custom evaluation is supported in
-{Yacas}, and will proceed to demonstrate how it can be used by showing
+yacas, and will proceed to demonstrate how it can be used by showing
 code to trace, interactively step through, profile, and write custom
 debugging code.
 
@@ -2343,62 +2344,64 @@ deeper into the workings of Yacas.
 The problem
 -----------
 
-Suppose we want to define special symbols $A(k)$ and $B(k)$ that we
-can multiply with each other or by a number, or add to each other, but
-not commute with each other, i.e. $A(k)*B(k) != B(k)*A(k)$. Here $k$
-is merely a label to denote that $A(1)$ and $A(2)$ are two different
-objects. (In physics, these are called "creation" and "annihilation"
-operators for "bosonic quantum fields".) Yacas already assumes that
-the usual multiplication operator "{*}" is commutative. Rather than
-trying to redefine {*}, we shall introduce a special multiplication
-sign "{**}" that we shall use with the objects $A(k)$ and $B(k)$;
-between usual numbers this would be the same as normal
-multiplication. The symbols $A(k)$, $B(k)$ will never be evaluated to
-numbers, so an expression such as {2 ** A(k1) ** B(k2) ** A(k3)} is
-just going to remain like that. (In physics, commuting numbers are
-called "classical quantities" or "c-numbers" while non-commuting
-objects made up of A(k) and B(k) are called "quantum quantities" or
-"q-numbers".) There are certain commutation relations for these
-symbols: the $A$'s commute between themselves, $A(k)*A(l) =
-A(l)*A(k)$, and also the $B$'s, $B(k)*B(l) = B(l)*B(k)$. However, the
-$A$'s don't commute with the $B$'s: $A(k)*B(l) - B(l)*A(k) =
-delta(k-l)$. Here the "{delta}" is a "classical" function (called the
-"Dirac $delta$-function") but we aren't going to do anything about it,
-just leave it symbolic.
+Suppose we want to define special symbols :math:`A(k)` and :math:`B(k)`
+that we can multiply with each other or by a number, or add to each other,
+but not commute with each other, i.e. :math:`A(k)B(k)\ne B(k)A(k)`. Here
+:math:`k` is merely a label to denote that :math:`A(1)` and :math:`A(2)`
+are two different objects. (In physics, these are called *creation* and
+*annihilation* operators for *bosonic quantum fields*.) Yacas already
+assumes that the usual multiplication operator ``*`` is commutative.
+Rather than trying to redefine ``*``, we shall introduce a special
+multiplication sign ``**`` that we shall use with the objects
+:math:`A(k)` and :math:`B(k)`; between usual numbers this would be the same
+as normal multiplication. The symbols :math:`A(k)`, :math:`B(k)` will never
+be evaluated to numbers, so an expression such as
+``2 ** A(k1) ** B(k2) ** A(k3)`` is just going to remain like that.
+(In physics, commuting numbers are called *classical quantities* or
+*c-numbers* while non-commuting objects made up of :math:`A(k)` and
+:math:`B(k)` are called *quantum quantities* or *q-numbers*.)
+There are certain commutation relations for these
+symbols: the :math:`A`'s commute between themselves, :math:`A(k)A(l) =
+A(l)A(k)`, and also the :math:`B`'s, :math:`B(k)B(l) = B(l)B(k)`.
+However, the :math:`A`'s don't commute with the :math:`B`'s:
+:math:`A(k)B(l) - B(l)*A(k) = \delta(k-l)`. Here the :math:`\delta` is a
+*classical* function (called the *Dirac* :math:`\delta` *function*)
+but we aren't going to do anything about it, just leave it symbolic.
 
 We would like to be able to manipulate such expressions, expanding
 brackets, collecting similar terms and so on, while taking care to
 always keep the non-commuting terms in the correct order. For example,
-we want Yacas to automatically simplify {2**B(k1)**3**A(k2)} to
-{6**B(k1)**A(k2)}. Our goal is not to implement a general package to
+we want Yacas to automatically simplify ``2**B(k1)**3**A(k2)`` to
+``6**B(k1)**A(k2)``. Our goal is not to implement a general package to
 tackle complicated non-commutative operations; we merely want to teach
-Yacas about these two kinds of "quantum objects" called {A(k)} and
-{B(k)}, and we shall define one function that a physicist would need
+Yacas about these two kinds of *quantum objects* called ``A(k)`` and
+``B(k)``, and we shall define one function that a physicist would need
 to apply to these objects. This function applied to any given
-expression containing $A$'s and $B$'s will compute something called a
-"vacuum expectation value", or "VEV" for short, of that
+expression containing :math:`A`'s and :math:`B`'s will compute something
+called a *vacuum expectation value*, or *VEV* for short, of that
 expression. This function has "classical", i.e. commuting, values and
 is defined as follows: VEV of a commuting number is just that number,
-e.g. $VEV(4) = 4$, $VEV(delta(k-l)) = delta(k-l)$; and $VEV(X*A(k)) =
-0$, $VEV(B(k)*X) = 0$ where $X$ is any expression, commutative or
-not. It is straightforward to compute VEV of something that contains
-$A$'s and $B$'s: one just uses the commutation relations to move all
-$B$'s to the left of all $A$'s, and then applies the definition of
-VEV, simply throwing out any remaining q-numbers.
+e.g. :math:`\mathrm{VEV}(4) = 4`,
+:math:`\mathrm{VEV}(\delta(k-l)) = \delta(k-l)`; and
+:math:`\mathrm{VEV}(X*A(k)) = 0`, :math:`\mathrm{VEV}(B(k)*X) = 0` where
+:math:`X` is any expression, commutative or not. It is straightforward to
+compute VEV of something that contains :math:`A`'s and :math:`B`'s: one
+just uses the commutation relations to move all :math:`B`'s to the left of
+all :math:`A`'s, and then applies the definition of VEV, simply throwing
+out any remaining q-numbers.
 
 First steps
 -----------
 
 The first thing that comes to mind when we start implementing this in
-Yacas is to write a rule such as ::
+yacas is to write a rule such as ::
 
-  10 # A(_k)**B(_l) <-- B(l)**A(k)
-    + delta(k-l);
+  10 # A(_k)**B(_l) <-- B(l)**A(k) + delta(k-l);
 
 However, this is not going to work right away. In fact this will
 immediately give a syntax error because Yacas doesn't know yet about
 the new multiplication ``**``. Let's fix that: we shall define a new
-infix operator with the same precedence as multiplication. ::
+infix operator with the same precedence as multiplication::
 
   RuleBase("**", {x,y});
   Infix("**", OpPrecedence("*"));
@@ -2412,7 +2415,7 @@ things don't quite work: ::
   In> A(x)**B(y)
   Out> B(l)**A(k)+delta(k-l);
 
-Yacas doesn't grok that {delta(k)}, {A(k)} and {B(k)} are
+Yacas doesn't grok that ``delta(k)``, ``A(k)`` and ``B(k)`` are
 functions. This can be fixed by declaring ::
 
   RuleBase("A", {k});
@@ -2427,8 +2430,8 @@ Now things work as intended: ::
 Structure of expressions
 ------------------------
 
-Are we done yet? Let's try to calculate more things with our $A$'s and
-$B$'s: ::
+Are we done yet? Let's try to calculate more things with our :math:`A`'s and
+:math:`B`'s: ::
 
   In> A(k)*2**B(l)
   Out> 2*A(k)**B(l);
@@ -2437,72 +2440,72 @@ $B$'s: ::
   In> (A(x)+B(x))**2**B(y)*3
   Out> 3*(A(x)+B(x))**2**B(y);
 
-After we gave it slightly more complicated input, Yacas didn't fully
-evaluate expressions containing the new {**} operation: it didn't move
-constants {2} and {3} together, didn't expand brackets, and, somewhat
+After we gave it slightly more complicated input, yacas didn't fully
+evaluate expressions containing the new ``**`` operation: it didn't move
+constants ``2`` and ``3`` together, didn't expand brackets, and, somewhat
 mysteriously, it didn't apply the rule in the first line above --
 although it seems like it should have. Before we hurry to fix these
-things, let's think some more about how Yacas represents our new
-expressions. Let's start with the first line above: ::
+things, let's think some more about how yacas represents our new
+expressions. Let's start with the first line above::
 
   In> FullForm( A(k)*2**B(l) )
   (** (* 2 (A k ))(B l ))
   Out> 2*A(k)**B(l);
 
-What looks like {2*A(k)**B(l)} on the screen is really {(2*A(k)) **
-B(l)} inside Yacas. In other words, the commutation rule didn't apply
-because there is no subexpression of the form {A(...)**B(...)} in this
+What looks like ``2*A(k)**B(l)`` on the screen is really ``(2*A(k)) **
+B(l)`` inside yacas. In other words, the commutation rule didn't apply
+because there is no subexpression of the form ``A(...)**B(...)`` in this
 expression. It seems that we would need many rules to exhaust all ways
-in which the adjacent factors {A(k)} and {B(l)} might be divided
-between subexpressions. We run into this difficulty because Yacas
+in which the adjacent factors ``A(k)`` and ``B(l)`` might be divided
+between subexpressions. We run into this difficulty because yacas
 represents all expressions as trees of functions and leaves the
-semantics to us. To Yacas, the "{*}" operator is fundamentally no
-different from any other function, so {(a*b)*c} and {a*(b*c)} are two
+semantics to us. To yacas, the ``*`` operator is fundamentally no
+different from any other function, so ``(a*b)*c`` and ``a*(b*c)`` are two
 basically different expressions. It would take a considerable amount
-of work to teach Yacas to recognize all such cases as identical. This
-is a design choice and it was made by the author of Yacas to achieve
+of work to teach yacas to recognize all such cases as identical. This
+is a design choice and it was made by the author of yacas to achieve
 greater flexibility and extensibility.
 
 A solution for this problem is not to write rules for all possible
 cases (there are infinitely many cases) but to systematically reduce
-expressions to a <i>canonical form</i>. "Experience has shown that" (a
+expressions to a *canonical form*. "Experience has shown that" (a
 phrase used when we can't come up with specific arguments) symbolic
 manipulation of unevaluated trees is not efficient unless these trees
 are forced to a pattern that reflects their semantics.
 
 We should choose a canonical form for all such expressions in a way
-that makes our calculations -- namely, the function {VEV()} --
+that makes our calculations -- namely, the function :func:`VEV` --
 easier. In our case, our expressions contain two kinds of ingredients:
 normal, commutative numbers and maybe a number of noncommuting symbols
-{A(k)} and {B(k)} multiplied together with the "{**}" operator. It
-will not be possible to divide anything by $A(k)$ or $B(k)$ -- such
-division is undefined.
+``A(k)`` and ``B(k)`` multiplied together with the ``**`` operator. It
+will not be possible to divide anything by :math:`A(k)` or :math:`B(k)`
+-- such division is undefined.
 
-A possible canonical form for expressions with A's and B's is the
-following. All commutative numbers are moved to the left of the
+A possible canonical form for expressions with :math:`A`'s and :math:`B`'s
+is the following. All commutative numbers are moved to the left of the
 expression and grouped together as one factor; all non-commutative
 products are simplified to a single chain, all brackets expanded. A
 canonical expression should not contain any extra brackets in its
-non-commutative part. For example, (A(x)+B(x)*x)**B(y)*y**A(z) should
-be regrouped as a sum of two terms, (y)**(A(x)**(B(y))**A(z)) and
-(x*y)**(B(x)**(B(y))**A(z)). Here we wrote out all parentheses to show
+non-commutative part. For example, ``(A(x)+B(x)*x)**B(y)*y**A(z)`` should
+be regrouped as a sum of two terms, ``(y)**(A(x)**(B(y))**A(z))`` and
+``(x*y)**(B(x)**(B(y))**A(z))``. Here we wrote out all parentheses to show
 explicitly which operations are grouped.  (We have chosen the grouping
 of non-commutative factors to go from left to right, however this does
 not seem to be an important choice.) On the screen this will look
-simply {y ** A(x) ** B(y)} and {x*y** B(x) ** B(y) ** A(z)} because we
-have defined the precedence of the "**" operator to be the same as
-that of the normal multiplication, so Yacas won't insert any more
+simply ``{y ** A(x) ** B(y)}`` and ``{x*y** B(x) ** B(y) ** A(z)}`` because we
+have defined the precedence of the ``**`` operator to be the same as
+that of the normal multiplication, so yacas won't insert any more
 parentheses.
 
-This canonical form will allow Yacas to apply all the usual rules on
+This canonical form will allow yacas to apply all the usual rules on
 the commutative factor while cleanly separating all non-commutative
 parts for special treatment. Note that a commutative factor such as
-{2*x} will be multiplied by a single non-commutative piece with
-"{**}".
+``2*x`` will be multiplied by a single non-commutative piece with
+``**``.
 
-The basic idea behind the "canonical form" is this: we should define
+The basic idea behind the canonical form is this: we should define
 our evaluation rules in such a way that any expression containing
-{A(k)} and {B(k)} will be always automatically reduced to the
+``A(k)`` and ``B(k)`` will be always automatically reduced to the
 canonical form after one full evaluation. All functions on our new
 objects will assume that the object is already in the canonical form
 and should return objects in the same canonical form.
@@ -2512,15 +2515,15 @@ Implementing the canonical form
 
 Now that we have a design, let's look at some implementation
 issues. We would like to write evaluation rules involving the new
-operator "{**}" as well as the ordinary multiplications and additions
-involving usual numbers, so that all "classical" numbers and all
-"quantum" objects are grouped together separately. This should be
+operator ``**`` as well as the ordinary multiplications and additions
+involving usual numbers, so that all classical numbers and all
+quantum objects are grouped together separately. This should be
 accomplished with rules that expand brackets, exchange the bracketing
 order of expressions and move commuting factors to the left. For now,
 we shall not concern ourselves with divisions and subtractions.
 
-First, we need to distinguish "classical" terms from "quantum"
-ones. For this, we shall define a predicate {IsQuantum()} recursively,
+First, we need to distinguish classical terms from the quantum
+ones. For this, we shall define a predicate :func:`IsQuantum` recursively,
 as follows: ::
 
   /* Predicate IsQuantum(): will return
@@ -2530,13 +2533,10 @@ as follows: ::
   10 # IsQuantum(B(_x)) <-- True;
       /* Result of a binary operation may
         be Quantum */
-  20 # IsQuantum(_x + _y) <-- IsQuantum(x)
-    Or IsQuantum(y);
+  20 # IsQuantum(_x + _y) <-- IsQuantum(x) Or IsQuantum(y);
   20 # IsQuantum(+ _y) <-- IsQuantum(y);
-  20 # IsQuantum(_x * _y) <-- IsQuantum(x)
-    Or IsQuantum(y);
-  20 # IsQuantum(_x ** _y) <-- IsQuantum(x)
-    Or IsQuantum(y);
+  20 # IsQuantum(_x * _y) <-- IsQuantum(x) Or IsQuantum(y);
+  20 # IsQuantum(_x ** _y) <-- IsQuantum(x) Or IsQuantum(y);
       /* If none of the rules apply, the
         object is not Quantum */
   30 # IsQuantum(_x) <-- False;
@@ -2549,12 +2549,10 @@ benefit from all simplifications at earlier precedences. ::
   /* First, replace * by ** if one of the
      factors is Quantum to guard against
      user error */
-  10 # (_x * _y)_(IsQuantum(x) Or
-    IsQuantum(y)) <-- x ** y;
+  10 # (_x * _y)_(IsQuantum(x) Or IsQuantum(y)) <-- x ** y;
       /* Replace ** by * if neither of the
         factors is Quantum */
-  10 # (_x ** _y)_(Not(IsQuantum(x) Or
-   IsQuantum(y))) <-- x * y;
+  10 # (_x ** _y)_(Not(IsQuantum(x) Or IsQuantum(y))) <-- x * y;
       /* Now we are guaranteed that ** is
         used between Quantum values */
       /* Expand all brackets involving
@@ -2568,19 +2566,16 @@ benefit from all simplifications at earlier precedences. ::
   20 # (_x ** _y) ** _z <-- x ** (y ** z);
       /* Move classical factors to the left:
         first, inside brackets */
-  30 # (x_IsQuantum ** _y)_(Not(IsQuantum(y)))
-    <-- y ** x;
+  30 # (x_IsQuantum ** _y)_(Not(IsQuantum(y))) <-- y ** x;
       /* Then, move across brackets:
         y and z are already ordered
         by the previous rule */
       /* First, if we have Q ** (C ** Q) */
-  35 # (x_IsQuantum ** (_y ** _z))
-    _(Not(IsQuantum(y))) <-- y ** (x ** z);
+  35 # (x_IsQuantum ** (_y ** _z))_(Not(IsQuantum(y))) <-- y ** (x ** z);
       /* Second, if we have C ** (C ** Q) */
-  35 # (_x ** (_y ** _z))_(Not(IsQuantum(x)
-    Or IsQuantum(y))) <-- (x*y) ** z;
+  35 # (_x ** (_y ** _z))_(Not(IsQuantum(x) Or IsQuantum(y))) <-- (x*y) ** z;
 
-After we execute this in Yacas, all expressions involving additions
+After we execute this in yacas, all expressions involving additions
 and multiplications are automatically reduced to the canonical
 form. Extending these rules to subtractions and divisions is
 straightforward.
@@ -2590,45 +2585,39 @@ Implementing commutation relations
 
 But we still haven't implemented the commutation relations. It is
 perhaps not necessary to have commutation rules automatically applied
-at each evaluation. We shall define the function {OrderBA()} that will
-bring all $B$'s to the left of all $A$'s by using the commutation
-relation. (In physics, this is called "normal-ordering".) Again, our
+at each evaluation. We shall define the function :func:`OrderBA` that will
+bring all :math:`B`'s to the left of all :math:`A`'s by using the commutation
+relation. (In physics, this is called *normal ordering*.) Again, our
 definition will be recursive. We shall assign it a later precedence
 than our quantum evaluation rules, so that our objects will always be
 in canonical form. We need a few more rules to implement the
 commutation relation and to propagate the ordering operation down the
-expression tree: ::
+expression tree::
 
   /* Commutation relation */
-  40 # OrderBA(A(_k) ** B(_l))
-    <-- B(l)**A(k) + delta(k-l);
-  40 # OrderBA(A(_k) ** (B(_l) ** _x))
-    <-- OrderBA(OrderBA(A(k)**B(l)) ** x);
+  40 # OrderBA(A(_k) ** B(_l)) <-- B(l)**A(k) + delta(k-l);
+  40 # OrderBA(A(_k) ** (B(_l) ** _x)) <-- OrderBA(OrderBA(A(k)**B(l)) ** x);
       /* Ordering simple terms */
   40 # OrderBA(_x)_(Not(IsQuantum(x))) <-- x;
   40 # OrderBA(A(_k)) <-- A(k);
   40 # OrderBA(B(_k)) <-- B(k);
       /* Sums of terms */
-  40 # OrderBA(_x + _y) <-- OrderBA(x)
-    + OrderBA(y);
+  40 # OrderBA(_x + _y) <-- OrderBA(x) + OrderBA(y);
       /* Product of a classical and
         a quantum value */
-  40 # OrderBA(_x ** _y)_(Not(IsQuantum(x)))
-    <-- x ** OrderBA(y);
+  40 # OrderBA(_x ** _y)_(Not(IsQuantum(x))) <-- x ** OrderBA(y);
       /* B() ** X : B is already at left,
         no need to order it */
-  50 # OrderBA(B(_k) ** _x)<-- B(k)
-    ** OrderBA(x);
+  50 # OrderBA(B(_k) ** _x)<-- B(k) ** OrderBA(x);
       /* A() ** X : need to order X first */
-  50 # OrderBA(A(_k) ** _x) <-- OrderBA(A(k)
-    ** OrderBA(x));
+  50 # OrderBA(A(_k) ** _x) <-- OrderBA(A(k) ** OrderBA(x));
 
 These rules seem to be enough for our purposes. Note that the
 commutation relation is implemented by the first two rules; the first
 one is used by the second one which applies when interchanging factors
 A and B separated by brackets. This inconvenience of having to define
 several rules for what seems to be "one thing to do" is a consequence
-of tree-like structure of expressions in Yacas. It is perhaps the
+of tree-like structure of expressions in yacas. It is perhaps the
 price we have to pay for conceptual simplicity of the design.
 
 Avoiding infinite recursion
@@ -2636,7 +2625,7 @@ Avoiding infinite recursion
 
 However, we quickly discover that our definitions don't
 work. Actually, we have run into a difficulty typical of rule-based
-programming: ::
+programming::
 
   In> OrderBA(A(k)**A(l))
   Error on line 1 in file [CommandLine]
@@ -2648,70 +2637,63 @@ programming: ::
 
 This error message means that we have created an infinite
 recursion. It is easy to see that the last rule is at fault: it never
-stops applying itself when it operates on a term containing only $A$'s
-and no $B$'s. When encountering a term such as {A()**X}, the routine
-cannot determine whether {X} has already been normal-ordered or not,
+stops applying itself when it operates on a term containing only :math:`A`'s
+and no :math:`B`'s. When encountering a term such as ``A(k) ** X``, the routine
+cannot determine whether ``X`` has already been normal-ordered or not,
 and it unnecessarily keeps trying to normal-order it again and
 again. We can circumvent this difficulty by using an auxiliary
-ordering function that we shall call {OrderBAlate()}. This function
-will operate only on terms of the form {A()**X} and only after {X} has
+ordering function that we shall call :func:`OrderBAlate`. This function
+will operate only on terms of the form ``A(k)**X`` and only after ``X`` has
 been ordered.  It will not perform any extra simplifications but
-instead delegate all work to {OrderBA()}. ::
+instead delegate all work to :func:OrderBA`::
 
-  50 # OrderBA(A(_k) ** _x) <-- OrderBAlate(
-    A(k) ** OrderBA(x));
-  55 # OrderBAlate(_x + _y) <-- OrderBAlate(
-    x) + OrderBAlate(y);
-  55 # OrderBAlate(A(_k) ** B(_l)) <--
-    OrderBA(A(k)**B(l));
-  55 # OrderBAlate(A(_k) ** (B(_l) ** _x))
-    <-- OrderBA(A(k)**(B(l)**x));
+  50 # OrderBA(A(_k) ** _x) <-- OrderBAlate(A(k) ** OrderBA(x));
+  55 # OrderBAlate(_x + _y) <-- OrderBAlate(x) + OrderBAlate(y);
+  55 # OrderBAlate(A(_k) ** B(_l)) <--  OrderBA(A(k)**B(l));
+  55 # OrderBAlate(A(_k) ** (B(_l) ** _x)) <-- OrderBA(A(k)**(B(l)**x));
   60 # OrderBAlate(A(_k) ** _x) <-- A(k)**x;
   65 # OrderBAlate(_x) <-- OrderBA(x);
 
-Now {OrderBA()} works as desired.
+Now :func:`OrderBA` works as desired.
 
 
-Implementing VEV()
-------------------
+Implementing :func:`VEV`
+------------------------
 
-Now it is easy to define the function {VEV()}. This function should
-first execute the normal-ordering operation, so that all $B$'s move to
-the left of $A$'s. After an expression is normal-ordered, all of its
-"quantum" terms will either end with an $A(k)$ or begin with a $B(k)$,
-or both, and {VEV()} of those terms will return $0$. The value of
-{VEV()} of a non-quantum term is just that term. The implementation
-could look like this: ::
+Now it is easy to define the function :func:`VEV`. This function should
+first execute the normal-ordering operation, so that all :math:`B`'s move to
+the left of :math:`A`'s. After an expression is normal-ordered, all of its
+quantum terms will either end with an :math:`A(k)` or begin with a :math:`B(k)`,
+or both, and :func:`VEV` of those terms will return :math:`0`. The value of
+:func:`VEV` of a non-quantum term is just that term. The implementation
+could look like this::
 
   100 # VEV(_x) <-- VEVOrd(OrderBA(x));
       /* Everything is expanded now,
         deal term by term */
-  100 # VEVOrd(_x + _y) <-- VEVOrd(x)
-    + VEVOrd(y);
+  100 # VEVOrd(_x + _y) <-- VEVOrd(x) + VEVOrd(y);
       /* Now cancel all quantum terms */
   110 # VEVOrd(x_IsQuantum) <-- 0;
       /* Classical terms are left */
   120 # VEVOrd(_x) <-- x;
 
-To avoid infinite recursion in calling {OrderBA()}, we had to
-introduce an auxiliary function {VEVOrd()} that assumes its argument
+To avoid infinite recursion in calling :func:`OrderBA`, we had to
+introduce an auxiliary function :func:`VEVOrd` that assumes its argument
 to be ordered.
 
-Finally, we try some example calculations to test our rules: ::
+Finally, we try some example calculations to test our rules::
 
   In> OrderBA(A(x)*B(y))
   Out> B(y)**A(x)+delta(x-y);
   In> OrderBA(A(x)*B(y)*B(z))
-  Out> B(y)**B(z)**A(x)+delta(x-z)**B(y)
-    +delta(x-y)**B(z);
+  Out> B(y)**B(z)**A(x)+delta(x-z)**B(y)+delta(x-y)**B(z);
   In> VEV(A(k)*B(l))
   Out> delta(k-l);
   In> VEV(A(k)*B(l)*A(x)*B(y))
   Out> delta(k-l)*delta(x-y);
   In> VEV(A(k)*A(l)*B(x)*B(y))
-  Out> delta(l-y)*delta(k-x)+delta(l-x)
-    *delta(k-y);
+  Out> delta(l-y)*delta(k-x)+delta(l-x)*delta(k-y);
 
-Things now work as expected. Yacas's {Simplify()} facilities can be
-used on the result of {VEV()} if it needs simplification.
+Things now work as expected. Yacas's :func:`Simplify` facilities can be
+used on the result of :func:`VEV` if it needs simplification.
 

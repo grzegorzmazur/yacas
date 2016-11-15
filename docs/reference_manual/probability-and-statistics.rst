@@ -46,7 +46,7 @@ parameters for a distribution are invalid, the functions return
 
 .. function:: tDistribution(m)
 
-   Student's $t$ distribution
+   Student's :math:`t` distribution
 
    :param {m}: integer, number of degrees of freedom
 

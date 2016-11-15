@@ -19,8 +19,8 @@ Propositional logic theorem prover
    Yacas can prove that is correct by applying {CanProve}  to it:
    In> CanProve(( (a=>b) And (b=>c) ) => (a=>c))         Out> True;
    It does this in the following way: in order to prove a proposition
-   $p$, it  suffices to prove that  $Not p$ is false. It continues to
-   simplify  $Not p$  using the rules:           Not  ( Not x)
+   :math:`p`, it  suffices to prove that  :math:`Not p` is false. It continues to
+   simplify  :math:`Not p`  using the rules:           Not  ( Not x)
    --> x  (eliminate double negation),         x=>y  -->  Not x  Or  y
    (eliminate implication),         Not (x And y)  -->  Not x  Or  Not
    y  (De Morgan's law),         Not (x Or y) -->  Not x  And  Not y

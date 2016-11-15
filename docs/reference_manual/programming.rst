@@ -6,8 +6,8 @@ Introduction
 ------------
 
 This document aims to be a reference for functions that are useful 
-when programming in {Yacas}, but which are not necessarily useful when 
-using {Yacas}. There is another document that describes the functions
+when programming in yacas, but which are not necessarily useful when 
+using yacas. There is another document that describes the functions
 that are useful from a users point of view.
 
 Programming
@@ -648,17 +648,17 @@ and ``*/`` may delimit a multi-line comment.
    interpretation will be different.
 
    With the usual functions, the evaluation model is that of the
-   <i>applicative-order model of substitution</i>, meaning that first
+   *applicative-order model of substitution*, meaning that first
    the arguments are evaluated, and then the function is applied to
    the result of evaluating these arguments. The function is entered,
    and the code inside the function can not access local variables
    outside of its own local variables.
 
-   With macros, the evaluation model is that of the <i>normal-order
-   model of substitution</i>, meaning that all occurrences of
+   With macros, the evaluation model is that of the *normal-order
+   model of substitution*, meaning that all occurrences of
    variables in an expression are first substituted into the body of
    the macro, and only then is the resulting expression evaluated
-   <i>in its calling environment</i>. This is important, because then
+   *in its calling environment*. This is important, because then
    in principle a macro body can access the local variables from the
    calling environment, whereas functions can not do that.
 
@@ -803,7 +803,7 @@ and ``*/`` may delimit a multi-line comment.
    so, will add or modify certain entries of the association list,
    preserving any other tag information.
 
-   Note that {FlatCopy} currently does <i>not</i> copy the tag
+   Note that {FlatCopy} currently does *not* copy the tag
    information (see examples).
 
    :Example:
@@ -909,10 +909,10 @@ calculations with arbitrary precision.
 
    The function {MultiplyNum} is used to speed up multiplication of
    floating-point numbers with rational numbers. Suppose we need to
-   compute $(p/q)*x$ where $p$, $q$ are integers and $x$ is a
+   compute :math:`(p/q)*x` where :math:`p`, :math:`q` are integers and :math:`x` is a
    floating-point number. At high precision, it is faster to multiply
-   $x$ by an integer $p$ and divide by an integer $q$ than to compute
-   $p/q$ to high precision and then multiply by $x$. The function
+   :math:`x` by an integer :math:`p` and divide by an integer :math:`q` than to compute
+   :math:`p/q` to high precision and then multiply by :math:`x`. The function
    {MultiplyNum} performs this optimization.
 
    The function accepts any number of arguments (not less than two) or
@@ -948,7 +948,7 @@ calculations with arbitrary precision.
    exist, it will be created.
 
    This mechanism is currently used by {N()} to precompute the values
-   of $Pi$ and $gamma$ (and the golden ratio through {GoldenRatio},
+   of :math:`Pi` and :math:`gamma` (and the golden ratio through {GoldenRatio},
    and {Catalan}).  The name of the cache for {N()} is
    {CacheOfConstantsN}.  The code in the function {N()} assigns
    unevaluated calls to {Internal'Pi()} and {Internal'gamma()} to the
@@ -1038,37 +1038,37 @@ calculations with arbitrary precision.
    SumTaylorNum(x, NthTerm, TermFactor, order)
    SumTaylorNum(x, ZerothTerm, TermFactor, order)
 
-   {NthTerm} -- a function specifying $n$-th coefficient of the series
-   {ZerothTerm} -- value of the $0$-th coefficient of the series
+   {NthTerm} -- a function specifying :math:`n`-th coefficient of the series
+   {ZerothTerm} -- value of the :math:`0`-th coefficient of the series
    {x} -- number, value of the expansion variable
-   {TermFactor} -- a function specifying the ratio of $n$-th term to the previous one
-   {order} -- power of $x$ in the last term
+   {TermFactor} -- a function specifying the ratio of :math:`n`-th term to the previous one
+   {order} -- power of :math:`x` in the last term
 
-   {SumTaylorNum} computes a Taylor series $Sum(k,0,n,a[k]*x^k)$
+   {SumTaylorNum} computes a Taylor series :math:`Sum(k,0,n,a[k]*x^k)`
    numerically. This function allows very efficient computations of
    functions given by Taylor series, although some tweaking of the
    parameters is required for good results.
 
-   The coefficients $a[k]$ of the Taylor series are given as functions
-   of one integer variable ($k$). It is convenient to pass them to
+   The coefficients :math:`a_k` of the Taylor series are given as functions
+   of one integer variable (:math:`k`). It is convenient to pass them to
    {SumTaylorNum} as closures.  For example, if a function {a(k)} is
    defined, then ::
 
     SumTaylorNum(x, {{k}, a(k)}, n)
 
-   computes the series $Sum(k, 0, n, a(k)*x^k)$.
+   computes the series :math:`Sum(k, 0, n, a(k)*x^k)`.
 
-   Often a simple relation between successive coefficients $a[k-1]$,
-   $a[k]$ of the series is available; usually they are related by a
+   Often a simple relation between successive coefficients :math:`a_{k-1}`,
+   :math:`a{k}` of the series is available; usually they are related by a
    rational factor. In this case, the second form of {SumTaylorNum}
    should be used because it will compute the series faster. The
-   function {TermFactor} applied to an integer $k>=1$ must return the
-   ratio $a[k]$/$a[k-1]$. (If possible, the function {TermFactor}
+   function {TermFactor} applied to an integer :math:`k>=1` must return the
+   ratio :math:`a_k/a_{k-1}`. (If possible, the function {TermFactor}
    should return a rational number and not a floating-point number.)
    The function {NthTerm} may also be given, but the current
    implementation only calls {NthTerm(0)} and obtains all other
    coefficients by using {TermFactor}.  Instead of the function
-   {NthTerm}, a number giving the $0$-th term can be given.
+   {NthTerm}, a number giving the :math:`0`-th term can be given.
 
    The algorithm is described elsewhere in the documentation.  The
    number of terms {order}+1 must be specified and a sufficiently high
@@ -1078,7 +1078,7 @@ calculations with arbitrary precision.
 
    :Example:
 
-   To compute 20 digits of $Exp(1)$ using the Taylor series, one needs
+   To compute 20 digits of :math:`Exp(1)` using the Taylor series, one needs
    21 digits of working precision and 21 terms of the series. ::
 
      In> Builtin'Precision'Set(21)
@@ -1103,11 +1103,11 @@ calculations with arbitrary precision.
    {mult} -- a function that performs one multiplication
    {unity} -- value of the unity with respect to that multiplication
 
-   {IntPowerNum} computes the power $x^n$ using the fast binary
-   algorithm.  It can compute integer powers with $n>=0$ in any ring
+   {IntPowerNum} computes the power :math:`x^n` using the fast binary
+   algorithm.  It can compute integer powers with :math:`n>=0` in any ring
    where multiplication with unity is defined.  The multiplication
    function and the unity element must be specified.  The number of
-   multiplications is no more than $2*Ln(n)/Ln(2)$.
+   multiplications is no more than :math:`2*Ln(n)/Ln(2)`.
 
    Mathematically, this function is a generalization of {MathPower} to
    rings other than that of real numbers.
@@ -1129,7 +1129,7 @@ calculations with arbitrary precision.
      In> IntPowerNum(HilbertMatrix(2), 4, *, Identity(2))
      Out> {{289/144,29/27},{29/27,745/1296}};
 
-   Compute $Mod(3^100,7)$: ::
+   Compute :math:`Mod(3^100,7)`: ::
 
      In> IntPowerNum(3,100,{{x,y},Mod(x*y,7)},1)
      Out> 4;
@@ -1156,14 +1156,14 @@ calculations with arbitrary precision.
    The binary splitting method is an efficient way to evaluate many
    series when fast multiplication is available and when the series
    contains only rational numbers.  The function {BinSplitNum}
-   evaluates a series of the form $$ S(n[1],n[2])=Sum(k,n[1],n[2],
-   a(k)/b(k)*(p(0)/q(0)) * ... * p(k)/q(k)) $$.  Most series for
+   evaluates a series of the form :math:`S(n[1],n[2])=Sum(k,n[1],n[2],
+   a(k)/b(k)*(p(0)/q(0)) * ... * p(k)/q(k))`.  Most series for
    elementary and special functions at rational points are of this
-   form when the functions $a(k)$, $b(k)$, $p(k)$, $q(k)$ are chosen
+   form when the functions :math:`a(k)`, :math:`b(k)`, :math:`p(k)`, :math:`q(k)` are chosen
    appropriately.
 
    The last four arguments of {BinSplitNum} are functions of one
-   argument that give the coefficients $a(k)$, $b(k)$, $p(k)$, $q(k)$.
+   argument that give the coefficients :math:`a(k)`, :math:`b(k)`, :math:`p(k)`, :math:`q(k)`.
    In most cases these will be short integers that are simple to
    determine.  The binary splitting method will work also for
    non-integer coefficients, but the calculation will take much longer
@@ -1180,17 +1180,17 @@ calculations with arbitrary precision.
    calculation.
 
    The binary splitting method recursively reduces the calculation of
-   $S(n[1],n[2])$ to the same calculation for the two halves of the
-   interval [$n[1]$, $n[2]$].  The intermediate results of a binary
+   :math:`S(n[1],n[2])` to the same calculation for the two halves of the
+   interval :math:`[n_1, n_2]`.  The intermediate results of a binary
    splitting calculation are returned by {BinSplitData} and consist of
-   four integers $P$, $Q$, $B$, $T$.  These four integers are
-   converted into the final answer $S$ by the routine {BinSplitFinal}
-   using the relation $$ S = T / (B*Q) $$.
+   four integers :math:`P`, :math:`Q`, :math:`B`, :math:`T`.  These four integers are
+   converted into the final answer :math:`S` by the routine {BinSplitFinal}
+   using the relation :math:`S = T / (B*Q)`.
 
    :Example:
 
-   Compute the series for $e=Exp(1)$ using binary splitting.
-   (We start from $n=1$ to simplify the coefficient functions.)::
+   Compute the series for :math:`e=Exp(1)` using binary splitting.
+   (We start from :math:`n=1` to simplify the coefficient functions.)::
 
      In> Builtin'Precision'Set(21)
      Out> True;
@@ -1224,12 +1224,12 @@ calculations with arbitrary precision.
    allow to query or set the precision flags of individual number
    objects.
 
-   {MathGetExactBits(x)} returns an integer number $n$ such that {x}
-   represents a real number in the interval [$x*(1-2^(-n))$,
-   $x*(1+2^(-n))$] if $x!=0$ and in the interval [$-2^(-n)$, $2^(-n)$]
-   if $x=0$.  The integer $n$ is always nonnegative unless {x} is zero
+   {MathGetExactBits(x)} returns an integer number :math:`n` such that {x}
+   represents a real number in the interval :math:`[x*(1-2^(-n)),
+   x*(1+2^(-n))]` if :math:`x!=0` and in the interval :math:`[-2^(-n), 2^(-n)]`
+   if :math:`x=0`.  The integer :math:`n` is always nonnegative unless {x} is zero
    (a "floating zero").  A floating zero can have a negative value of
-   the number $n$ of exact bits.
+   the number :math:`n` of exact bits.
 
    These functions are only meaningful for floating-point numbers.
    (All integers are always exact.)  For integer {x}, the function
@@ -1270,25 +1270,25 @@ calculations with arbitrary precision.
    {expr} -- expression to evaluate
    {prec} -- integer, precision to use
 
-   When in numeric mode, {InNumericMode()} will return :data:`True`, else it
-   will return :data:`False`. {Yacas} is in numeric mode when evaluating an
-   expression with the function {N}. Thus when calling {N(expr)},
-   {InNumericMode()} will return :data:`True` while {expr} is being
+   When in numeric mode, :func:`InNumericMode` will return :data:`True`, else it
+   will return :data:`False`. Yacas is in numeric mode when evaluating an
+   expression with the function :func:`N`. Thus when calling ``N(expr)``,
+   :func:`InNumericMode` will return :data:`True` while ``expr`` is being
    evaluated.
 
-   {InNumericMode()} would typically be used to define a
+   :func:`InNumericMode` would typically be used to define a
    transformation rule that defines how to get a numeric approximation
    of some expression. One could define a transformation rule::
 
      f(_x)_InNumericMode() <- [... some code to get a numeric approximation of f(x) ... ];
 
-   {InNumericMode()} usually returns :data:`False`, so transformation rules
+   :func:`InNumericMode` usually returns :data:`False`, so transformation rules
    that check for this predicate are usually left alone.
 
-   When in numeric mode, {NonN} can be called to switch back to non-numeric
+   When in numeric mode, :func:`NonN` can be called to switch back to non-numeric
    mode temporarily.
 
-   {NonN} is a macro. Its argument {expr} will only be evaluated after
+   :func:`NonN` is a macro. Its argument ``expr`` will only be evaluated after
    the numeric mode has been set appropriately.
 
    :Example:
@@ -1314,7 +1314,7 @@ calculations with arbitrary precision.
 
    {IntLog} calculates the integer part of the logarithm of {n} in
    base {base}. The algorithm uses only integer math and may be faster
-   than computing $$Ln(n)/Ln(base)$$ with multiple precision
+   than computing :math:`Ln(n)/Ln(base)` with multiple precision
    floating-point math and rounding off to get the integer part.
 
    This function can also be used to quickly count the digits in a
@@ -1337,13 +1337,13 @@ calculations with arbitrary precision.
 
 .. function:: IntNthRoot(x, n)
 
-   integer part of $n$-th root
+   integer part of :math:`n`-th root
 
    {x}, {n} -- positive integers
 
-   {IntNthRoot} calculates the integer part of the $n$-th root of
-   $x$. The algorithm uses only integer math and may be faster than
-   computing $x^(1/n)$ with floating-point and rounding.
+   {IntNthRoot} calculates the integer part of the :math:`n`-th root of
+   :math:`x`. The algorithm uses only integer math and may be faster than
+   computing :math:`x^(1/n)` with floating-point and rounding.
 
    This function is used to test numbers for prime powers.
 
@@ -1362,13 +1362,13 @@ calculations with arbitrary precision.
 
    calculate/simplify nth root of an integer
 
-   {m} -- a non-negative integer ($m>0$)
-   {n} -- a positive integer greater than 1 ($n>1$)
+   {m} -- a non-negative integer (`m>0`)
+   {n} -- a positive integer greater than 1 (`n>1`)
 
-   {NthRoot(m,n)} calculates the integer part of the $n$-th root
-   $m^(1/n)$ and returns a list {{f,r}}. {f} and {r} are both positive
-   integers that satisfy :math:`f^nr=m`.  In other words, $f$ is the
-   largest integer such that $m$ divides $f^n$ and $r$ is the
+   {NthRoot(m,n)} calculates the integer part of the :math:`n`-th root
+   :math:`m^(1/n)` and returns a list {{f,r}}. {f} and {r} are both positive
+   integers that satisfy :math:`f^nr=m`.  In other words, :math:`f` is the
+   largest integer such that :math:`m` divides :math:`f^n` and :math:`r` is the
    remaining factor.
 
    For large {m} and small {n} {NthRoot} may work quite slowly. Every
@@ -1455,7 +1455,7 @@ calculations with arbitrary precision.
    Unlike the function {Rationalize()} which converts floating-point
    numbers to rationals without loss of precision, the functions
    {GuessRational()} and {NearRational()} are intended to find the
-   best rational that is <i>approximately</i> equal to a given value.
+   best rational that is *approximately* equal to a given value.
 
    The function {GuessRational()} is useful if you have obtained a
    floating-point representation of a rational number and you know
@@ -1484,7 +1484,7 @@ calculations with arbitrary precision.
    The function {BracketRational(x,eps)} can be used to find
    approximations with a given relative precision from above and from
    below.  This function returns a list of two rational numbers
-   {{r1,r2}} such that $r1<x<r2$ and $Abs(r2-r1)<Abs(x*eps)$.  The
+   {{r1,r2}} such that :math:`r1<x<r2` and :math:`Abs(r2-r1)<Abs(x*eps)`.  The
    argument {x} must be already evaluated to enough precision so that
    this approximation can be meaningfully found.  If the approximation
    with the desired precision cannot be found, the function returns an
@@ -1516,7 +1516,7 @@ calculations with arbitrary precision.
      In> NearRational(x, 10)
      Out> 956/1013;
 
-   Find an approximation to $Ln(10)$ good to 8 digits::
+   Find an approximation to :math:`Ln(10)` good to 8 digits::
 
      In> BracketRational(N(Ln(10)), 10^(-8))
      Out> {12381/5377,41062/17833};
@@ -1532,14 +1532,14 @@ calculations with arbitrary precision.
 
    {r} -- a number
 
-   {TruncRadian} calculates $Mod(r,2*Pi)$, returning a value between
-   $0$ and $2*Pi$. This function is used in the trigonometry
+   {TruncRadian} calculates :math:`Mod(r,2*Pi)`, returning a value between
+   :math:`0` and :math:`2*Pi`. This function is used in the trigonometry
    functions, just before doing a numerical calculation using a Taylor
    series. It greatly speeds up the calculation if the value passed is
    a large number.
 
-   The library uses the formula $$TruncRadian(r) = r - Floor( r/(2*Pi)
-   )*2*Pi$$, where $r$ and $2*Pi$ are calculated with twice the
+   The library uses the formula :math:`TruncRadian(r) = r - Floor( r/(2*Pi)
+   )*2*Pi`, where :math:`r` and :math:`2*Pi` are calculated with twice the
    precision used in the environment to make sure there is no rounding
    error in the significant digits.
 
@@ -2151,7 +2151,7 @@ bodied functions and infix operators are declared in the same file.
    (remainder of division, or x mod y)
 
    These commands perform the calculation of elementary mathematical
-   functions.  The arguments <i>must</i> be numbers.  The reason for
+   functions.  The arguments *must* be numbers.  The reason for
    the prefix {Math} is that the library needs to define equivalent
    non-numerical functions for symbolic computations, such as {Exp},
    {Sin} and so on.
@@ -2386,29 +2386,29 @@ meant to be used in test scripts.
    or :data:`False`.
 
    For some calculations, the demand that two expressions are
-   <I>identical</I> syntactically is too stringent. The Yacas system
-   might change at various places in the future, but $ 1+x $ would
-   still be equivalent, from a mathematical point of view, to $ x+1 $.
+   *identical* syntactically is too stringent. The yacas system
+   might change at various places in the future, but :math:` 1+x` would
+   still be equivalent, from a mathematical point of view, to :math:`x+1`.
 
-   The general problem of deciding that two expressions $ a $ and $ b
-   $ are equivalent, which is the same as saying that $ a-b=0 $ , is
-   generally hard to decide on. The following commands solve this
+   The general problem of deciding that two expressions :math:`a` and
+   :math:`b` are equivalent, which is the same as saying that :math:`a-b=0`,
+   is generally hard to decide on. The following commands solve this
    problem by having domain-specific comparisons.
 
    The comparison commands do the following comparison types:
 
-   * {Verify} -- verify for literal equality. 
+   * :func:`Verify` -- verify for literal equality. 
      This is the fastest and simplest comparison, and can be 
-     used, for example, to test that an expression evaluates to $ 2 $.
-   * {TestYacas} -- compare two expressions after simplification as
+     used, for example, to test that an expression evaluates to :math:`2`.
+   * :func:`TestYacas` -- compare two expressions after simplification as
      multivariate polynomials. If the two arguments are equivalent
-     multivariate polynomials, this test succeeds. {TestYacas} uses
-     {Simplify}. Note: {TestYacas} currently should not be used to
+     multivariate polynomials, this test succeeds. :func:`TestYacas` uses
+     :func:`Simplify`. Note: :func:`TestYacas` currently should not be used to
      test equality of lists.
-   * {LogicVerify} -- Perform a test by using {CanProve} to verify
-     that from {question} the expression {answer} follows. This test
-     command is used for testing the logic theorem prover in Yacas.
-   * {LogicTest} -- Generate a truth table for the two expressions and
+   * :func:`LogicVerify` -- Perform a test by using :func:`CanProve` to verify
+     that from ``question`` the expression ``answer`` follows. This test
+     command is used for testing the logic theorem prover in yacas.
+   * :func:`LogicTest` -- Generate a truth table for the two expressions and
      compare these two tables. They should be the same if the two
      expressions are logically the same.
 
@@ -2442,7 +2442,7 @@ meant to be used in test scripts.
     ******************
     CommandLine: 1 
     
-    $TrueFalse4({A,B,C},Not(Not A And Not B))
+    :math:`TrueFalse4({A,B,C},Not(Not A And Not B))
      evaluates to 
     {{{False,False},{True,True}},{{True,True},{True,True}}}
      which differs from 
@@ -2529,8 +2529,8 @@ meant to be used in test scripts.
    provable theorem.
 
    {VerifyArithmetic} verifies for an arbitrary set of numbers
-   $ x $, $ n $ and $ m $ that
-   $$ (x^n-1)*(x^m-1) = x^(n+m)-(x^n)-(x^m)+1 $$.
+   :math:`x`, :math:`n` and :math:`m` that
+   :math:`(x^n-1)*(x^m-1) = x^(n+m)-(x^n)-(x^m)+1`.
 
    The left and right side represent two ways to arrive at the
    same result, and so an arithmetic module actually doing the
@@ -2541,7 +2541,7 @@ meant to be used in test scripts.
    random values, {n} times.
 
    {VerifyDiv(u,v)} checks that 
-   $$ u = v*Div(u,v) + Mod(u,v) $$.
+   :math:`u = v*Div(u,v) + Mod(u,v)`.
 
    :Example:
 

@@ -40,7 +40,7 @@ that only holds for a positive integer would use a pattern such as
    function {Equals} does  the same.    Note that the test is on
    syntactic equality, not mathematical equality. Hence  even if the
    result is :data:`False`, the expressions can still be
-   <i>mathematically</i> equal; see the examples below. Put otherwise,
+   *mathematically* equal; see the examples below. Put otherwise,
    this  function tests whether the two expressions would be displayed
    in the same way  if they were printed.
 
@@ -153,7 +153,7 @@ that only holds for a positive integer would use a pattern such as
    This function checks whether the expression "expr" (after being
    evaluated) depends on the variable "var". It returns :data:`False` if
    this is the case and :data:`True`  otherwise.    The second form test
-   whether the expression depends on <i>any</i> of  the variables
+   whether the expression depends on *any* of  the variables
    named in the list. The result is :data:`True` if none of the variables
    appear in the expression and :data:`False` otherwise.
 
@@ -257,29 +257,27 @@ that only holds for a positive integer would use a pattern such as
    :param expression: mathematical expression
    :param variable: variable
 
-   These functions return True if Yacas can determine that the
+   These functions return :data:`True` if yacas can determine that the
    function is even or odd respectively. Even functions are  defined
-   to be functions that have the property:    $$ f(x) = f(-x) $$
-   And odd functions have the property:    $$ f(x) = -f(-x) $$
-   {Sin(x)} is an example of an odd function, and {Cos(x)}  is an
-   example of an even function.    
+   to be functions that have the property:    :math:`f(x) = f(-x)`
+   And odd functions have the property: :math:`f(x) = -f(-x)`.
+   :math:`\sin(x)` is an example of an odd function, and :math:`cos(x)`
+   is an example of an even function.    
    
    
    .. note::
 
-      One can decompose a
-      function into an  even and an odd part $$ f(x) = f_{even}(x) +
-      f_{odd}(x) $$    where     $$ f_{even}(x) = (f(x)+f(-x))/2 $$    and
-      $$ f_{odd}(x) = (f(x)-f(-x))/2 $$
+      One can decompose a function into an  even and an odd part
+      :math:`f(x) = f_{even}(x) + f_{odd}(x)` where
+      :math:`f_{even}(x) = \frac{f(x)+f(-x)}{2}` and
+      :math:`f_{odd}(x) = \frac{f(x)-f(-x)}{2}`
 
 .. function:: IsFunction(expr)
 
    test for a composite object
 
-   :param expr: expression to test
-
-   This function tests whether "expr" is a composite object, i.e. not
-   an  atom. This includes not only obvious functions such as {f(x)},
+   This function tests whether ``expr`` is a composite object, i.e. not
+   an  atom. This includes not only obvious functions such as ``f(x)``,
    but also expressions such as ``x+5`` and lists.
 
    :Example:
@@ -298,9 +296,7 @@ that only holds for a positive integer would use a pattern such as
 
    test for an atom
 
-   :param expr: expression to test
-
-   This function tests whether "expr" is an atom. Numbers, strings,
+   This function tests whether ``expr`` is an atom. Numbers, strings,
    and  variables are all atoms.
 
    :Example:
@@ -450,8 +446,8 @@ that only holds for a positive integer would use a pattern such as
 
    :param n: number to test
 
-   {IsNegativeNumber(n)} evaluates to :data:`True` if $n$ is (strictly)
-   negative, i.e.  if $n<0$. If {n} is not a number, the functions
+   {IsNegativeNumber(n)} evaluates to :data:`True` if :math:`n` is (strictly)
+   negative, i.e.  if :math:`n<0`. If {n} is not a number, the functions
    return :data:`False`.
 
    :Example:
@@ -494,8 +490,8 @@ that only holds for a positive integer would use a pattern such as
 
    :param n: number to test
 
-   {IsPositiveNumber(n)} evaluates to :data:`True` if $n$ is (strictly)
-   positive, i.e.  if $n>0$. If {n} is not a number the function
+   {IsPositiveNumber(n)} evaluates to :data:`True` if :math:`n` is (strictly)
+   positive, i.e.  if :math:`n>0`. If {n} is not a number the function
    returns :data:`False`.
 
    :Example:
@@ -684,8 +680,8 @@ that only holds for a positive integer would use a pattern such as
 
    This function returns :data:`True` if the argument is a Gaussian integer
    and :data:`False` otherwise.  A Gaussian integer is a generalization  of
-   integers into the complex plane. A complex number $a+b*I$ is a
-   Gaussian  integer if and only if $a$ and $b$ are integers.
+   integers into the complex plane. A complex number :math:`a+b*I` is a
+   Gaussian  integer if and only if :math:`a` and :math:`b` are integers.
 
    :Example:
 

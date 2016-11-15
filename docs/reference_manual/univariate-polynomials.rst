@@ -227,10 +227,9 @@ polynomials.
 
    :param p: a polynomial in {x}
 
-   Given a polynomial   $$ p = p[1]^n[1]* ... * p[m]^n[m] $$  with
-   irreducible polynomials $ p[i] $,  return the square-free version
-   part (with all the factors having  multiplicity 1):  $$ p[1]* ... *
-   p[m] $$
+   Given a polynomial   :math:`p = p_1^n_1\ldots p_m^n_m`  with
+   irreducible polynomials :math:`p_i`,  return the square-free version
+   part (with all the factors having multiplicity 1):  :math:`p_1\ldots p_m`
 
    :Example:
 
@@ -252,9 +251,9 @@ polynomials.
 
    :param p: a polynomial in {x}
 
-   Given a polynomial $p$ having square-free decomposition   $$ p =
-   p[1]^n[1] * ... * p[m]^n[m] $$  where $p[i]$ are square-free and
-   $n[i+1]>n[i]$,  return the list of pairs ($p[i]$, $n[i]$)
+   Given a polynomial :math:`p` having square-free decomposition :math:`p =
+   p_1^n_1\ldots p_m^n_m`  where :math:`p_i` are square-free and
+   :math:`n_{i+1}>n_i`,  return the list of pairs (:math:`p_i`, :math:`n_i`)
 
    :Example:
 
@@ -277,10 +276,10 @@ polynomials.
 
    This command turns the polynomial {expr}, considered as a
    univariate  polynomial in {var}, into Horner form. A polynomial in
-   normal form  is an expression such as  $$c[0] + c[1]*x + ... +
-   c[n]*x^n$$.    If one converts this polynomial into Horner form,
-   one gets the  equivalent expression  $$(...( c[n] * x + c[n-1] ) *
-   x + ...  + c[1] ) * x + c[0]$$.    Both expression are equal, but
+   normal form  is an expression such as  :math:`c_0 + c_1x + \ldots +
+   c_nx^n`.    If one converts this polynomial into Horner form,
+   one gets the  equivalent expression  :math:`(\ldots( c_nx + c_{n-1})
+   x + \ldots  + c_1)x + c_0`.    Both expression are equal, but
    the latter form gives a more  efficient way to evaluate the
    polynomial as  the powers have  disappeared.
 
@@ -303,8 +302,8 @@ polynomials.
    :param expr: an expression
 
    This command tries to expand all the brackets by repeatedly using
-   the  distributive laws $a * (b+c) = a*b + a*c$ and $(a+b) * c = a*c
-   + b*c$.  It goes further than {Expand}, in that it expands all
+   the  distributive laws :math:`a * (b+c) = a*b + a*c` and :math:`(a+b) * c = a*c
+   + b*c`.  It goes further than {Expand}, in that it expands all
    brackets.
 
    :Example:
@@ -330,7 +329,7 @@ polynomials.
 
    This function evaluates a polynomial given as a list of its
    coefficients, using  the Horner scheme. The list of coefficients
-   starts with the $0$-th power.
+   starts with the :math:`0`-th power.
 
 .. function:: OrthoP(n, x);
 
@@ -344,14 +343,12 @@ polynomials.
    polynomial  of degree {n} at the point {x}. The second form does
    the same for the Jacobi  polynomial with parameters {a} and {b},
    which should be both greater than -1.    The Jacobi polynomials are
-   orthogonal with respect to the weight  function $(1-x)^a *(1+x)^b$
+   orthogonal with respect to the weight  function :math:`(1-x)^a *(1+x)^b`
    on the interval [-1,1]. They satisfy the  recurrence relation
-   $$P(n,a,b,x) = (2*n+a+b-1)/(2*n+a+b-2) $$*  $$
-   ((a^2-b^2+x*(2*n+a+b-2)*(n+a+b))/(2*n*(n+a+b))) * P(n-1,a,b,x)$$
-   $$ -
-   ((n+a-1)*(n+b-1)*(2*n+a+b))/(n*(n+a+b)*(2*n+a+b-2))*P(n-2,a,b,x)$$
-   for $n > 1$, with  $P(0,a,b,x) = 1$,  $$P(1,a,b,x) =
-   (a-b)/2+x*(1+(a+b)/2)$$.
+   :math:`P(n,a,b,x) = (2*n+a+b-1)/(2*n+a+b-2)((a^2-b^2+x*(2*n+a+b-2)*(n+a+b))/(2*n*(n+a+b))) * P(n-1,a,b,x) -
+   ((n+a-1)*(n+b-1)*(2*n+a+b))/(n*(n+a+b)*(2*n+a+b-2))*P(n-2,a,b,x)`
+   for :math:`n > 1`, with  :math:`P(0,a,b,x) = 1`,  :math:`P(1,a,b,x) =
+   (a-b)/2+x*(1+(a+b)/2)`.
 
 .. function:: OrthoH(n, x);
 
@@ -362,10 +359,10 @@ polynomials.
 
    This function evaluates the Hermite polynomial of degree {n} at the
    point {x}.    The Hermite polynomials are orthogonal with respect
-   to the weight  function $Exp(-x^2/2)$ on the entire real axis. They
-   satisfy the  recurrence relation  $$ H(n,x) = 2*x*H(n-1,x) -
-   2*(n-1)*H(n-2,x) $$  for $n > 1$, with  $H(0,x) = 1$,  $H(1,x) =
-   2*x$.    Most of the work is performed by the internal function
+   to the weight  function :math:`Exp(-x^2/2)` on the entire real axis. They
+   satisfy the  recurrence relation  :math:`H(n,x) = 2*x*H(n-1,x) - 2*(n-1)*H(n-2,x)`
+   for :math:`n > 1`, with  :math:`H(0,x) = 1`,  :math:`H(1,x) =
+   2*x`.    Most of the work is performed by the internal function
    {OrthoPoly}.
 
    :Example:
@@ -392,11 +389,11 @@ polynomials.
    polynomial  with parameter {a} and degree {n} at the point {x}. The
    parameter {a} should be greater than -1/2.    The Gegenbauer
    polynomials are orthogonal with respect to the weight  function
-   $(1-x^2)^(a-1/2)$ on the interval [-1,1]. Hence they are  connected
-   to the Jacobi polynomials via   $$ G(n, a, x) = P(n, a-1/2, a-1/2,
-   x) $$.  They satisfy the recurrence relation  $$ G(n,a,x) =
-   2*(1+(a-1)/n)*x*G(n-1,a,x) $$  $$ -(1+2*(a-2)/n)*G(n-2,a,x) $$  for
-   $n>1$, with  $G(0,a,x) = 1$,  $G(1,a,x) = 2*x$.
+   :math:`(1-x^2)^(a-1/2)` on the interval [-1,1]. Hence they are  connected
+   to the Jacobi polynomials via   :math:`G(n, a, x) = P(n, a-1/2, a-1/2,
+   x)`.  They satisfy the recurrence relation  :math:`G(n,a,x) =
+   2*(1+(a-1)/n)*x*G(n-1,a,x) -(1+2*(a-2)/n)*G(n-2,a,x)`  for
+   :math:`n>1`, with  :math:`G(0,a,x) = 1`,  :math:`G(1,a,x) = 2*x`.
 
 .. function:: OrthoL(n, a, x);
 
@@ -409,10 +406,10 @@ polynomials.
    This function evaluates the Laguerre polynomial with parameter {a}
    and degree {n} at the point {x}. The parameter {a} should be
    greater than -1.    The Laguerre polynomials are orthogonal with
-   respect to the weight  function $x^a * Exp(-x)$ on the positive
-   real axis. They satisfy the  recurrence relation  $$ L(n,a,x) =
-   (2+(a-1-x)/n)* L(n-1,a,x) $$  $$ -(1-(a-1)/n)*L(n-2,a,x) $$  for
-   $n>1$, with   $L(0,a,x) = 1$,  $L(1,a,x) = a + 1 - x$.
+   respect to the weight  function :math:`x^a * Exp(-x)` on the positive
+   real axis. They satisfy the  recurrence relation  :math:`L(n,a,x) =
+   (2+(a-1-x)/n)* L(n-1,a,x) -(1-(a-1)/n)*L(n-2,a,x)`  for
+   :math:`n>1`, with   :math:`L(0,a,x) = 1`,  :math:`L(1,a,x) = a + 1 - x`.
 
 .. function:: OrthoT(n, x);
 
@@ -422,15 +419,15 @@ polynomials.
    :param x: point to evaluate polynomial at
 
    These functions evaluate the Chebyshev polynomials of the first
-   kind  $T(n,x)$ and of the second kind $U(n,x)$, of degree {n} at
+   kind  :math:`T(n,x)` and of the second kind :math:`U(n,x)`, of degree {n} at
    the point {x}. (The  name of this Russian mathematician is also
    sometimes spelled {Tschebyscheff}.)    The Chebyshev polynomials
    are orthogonal with respect to the weight  function
-   $(1-x^2)^(-1/2)$. Hence they are a special case of the Gegenbauer
-   polynomials $G(n,a,x)$, with $a=0$. They satisfy the recurrence
-   relations  $$ T(n,x) = 2* x* T(n-1,x) - T(n-2,x) $$,  $$ U(n,x) =
-   2* x* U(n-1,x) - U(n-2,x) $$  for $n > 1$, with  $T(0,x) = 1$,
-   $T(1,x) = x$,  $U(0,x) = 1$,  $U(1,x) = 2*x$.
+   :math:`(1-x^2)^(-1/2)`. Hence they are a special case of the Gegenbauer
+   polynomials :math:`G(n,a,x)`, with :math:`a=0`. They satisfy the recurrence
+   relations  :math:`T(n,x) = 2xT(n-1,x) - T(n-2,x)`,  :math:`U(n,x) =
+   2xU(n-1,x) - U(n-2,x)`  for :math:`n > 1`, with  :math:`T(0,x) = 1`,
+   :math:`T(1,x) = x`,  :math:`U(0,x) = 1`,  :math:`U(1,x) = 2x`.
 
    :Example:
 
@@ -499,15 +496,15 @@ polynomials.
    associated to the key  is a pure function that takes two arguments:
    the order {n} and the  extra parameters {p}, and returns a list of
    two lists: the first list  contains the coefficients {A,B} of the
-   n=1 polynomial, i.e. $A+B*x$;  the second list contains the
-   coefficients {A,B,C} in the recurrence  relation, i.e. $P[n] =
-   (A+B*x)*P[n-1]+C*P[n-2]$. (There are  only 3 coefficients in the
-   second list, because none of the polynomials use $C+D*x$ instead of
-   $C$ in the recurrence relation. This is assumed in the
-   implementation!)    If the argument {x} is numerical, the function
-   {OrthoPolyNumeric} is called. Otherwise, the function
-   {OrthoPolyCoeffs} computes a list of coefficients, and
-   {EvaluateHornerScheme} converts this list into a  polynomial
+   n=1 polynomial, i.e. :math:`A+Bx`;  the second list contains the
+   coefficients {A,B,C} in the recurrence  relation, i.e. :math:`P_n =
+   (A+Bx)*P_{n-1}+C*P_{n-2}`. (There are  only 3 coefficients in the
+   second list, because none of the polynomials use :math:`C+Dx` instead of
+   :math:`C` in the recurrence relation. This is assumed in the
+   implementation!)    If the argument ``x`` is numerical, the function
+   :func:`OrthoPolyNumeric` is called. Otherwise, the function
+   :func:`OrthoPolyCoeffs` computes a list of coefficients, and
+   :func:`EvaluateHornerScheme` converts this list into a  polynomial
    expression.
 
    .. seealso:: :func:`OrthoP`, :func:`OrthoG`, :func:`OrthoH`, :func:`OrthoL`, :func:`OrthoT`, :func:`OrthoU`, :func:`OrthoPolySum`

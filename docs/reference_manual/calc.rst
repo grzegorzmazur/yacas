@@ -19,8 +19,8 @@ equations.
    approximations of these functions   can be forced by using the {N}
    function.    Yacas knows some trigonometric identities, so it can
    simplify to exact  results even if {N} is not used. This is the
-   case, for instance,  when the argument is a multiple of $Pi$/6 or
-   $Pi$/4.
+   case, for instance,  when the argument is a multiple of :math:`Pi/6` or
+   :math:`Pi/4`.
    
    :func:`Sin` is :term:`threaded <threaded function>`.
 
@@ -50,8 +50,8 @@ equations.
    approximations of these functions   can be forced by using the {N}
    function.    Yacas knows some trigonometric identities, so it can
    simplify to exact  results even if {N} is not used. This is the
-   case, for instance,  when the argument is a multiple of $Pi$/6 or
-   $Pi$/4.    These functions are threaded, meaning that if the
+   case, for instance,  when the argument is a multiple of :math:`Pi/6` or
+   :math:`Pi/4`.    These functions are threaded, meaning that if the
    argument {x} is a  list, the function is applied to all entries in
    the list.
 
@@ -83,8 +83,8 @@ equations.
    approximations of these functions   can be forced by using the {N}
    function.    Yacas knows some trigonometric identities, so it can
    simplify to exact  results even if {N} is not used. This is the
-   case, for instance,  when the argument is a multiple of $Pi$/6 or
-   $Pi$/4.    These functions are threaded, meaning that if the
+   case, for instance,  when the argument is a multiple of :math:`Pi/6` or
+   :math:`Pi/4`.    These functions are threaded, meaning that if the
    argument {x} is a  list, the function is applied to all entries in
    the list.
 
@@ -109,11 +109,11 @@ equations.
    :param x: argument to the function
 
    This function represents the inverse trigonometric function
-   arcsine. For  instance, the value of $ArcSin(x)$ is a number $y$
-   such that  $Sin(y)$ equals $x$.    Note that the number $y$ is not
-   unique. For instance, $Sin(0)$ and  $Sin(Pi)$ both equal 0, so what
-   should $ArcSin(0)$ be? In Yacas,  it is agreed that the value of
-   $ArcSin(x)$ should be in the interval  [-$Pi$/2,$Pi$/2].
+   arcsine. For  instance, the value of :math:`ArcSin(x)` is a number :math:`y`
+   such that  :math:`Sin(y)` equals :math:`x`.    Note that the number :math:`y` is not
+   unique. For instance, :math:`Sin(0)` and  :math:`Sin(Pi)` both equal 0, so what
+   should :math:`ArcSin(0)` be? In Yacas,  it is agreed that the value of
+   :math:`ArcSin(x)` should be in the interval  :math:`[-Pi/2,Pi/2]`.
    Usually, Yacas leaves this function alone unless it is forced to do
    a numerical evaluation by the {N} function. If the  argument is -1,
    0, or 1 however, Yacas will simplify the  expression. If the
@@ -147,11 +147,11 @@ equations.
    :param x: argument to the function
 
    This function represents the inverse trigonometric function
-   arc-cosine. For  instance, the value of $ArcCos(x)$ is a number $y$
-   such that  $Cos(y)$ equals $x$.    Note that the number $y$ is not
-   unique. For instance, $Cos(Pi/2)$ and  $Cos(3*Pi/2)$ both equal 0,
-   so what should $ArcCos(0)$ be? In Yacas,  it is agreed that the
-   value of $ArcCos(x)$ should be in the interval [0,$Pi$] .
+   arc-cosine. For  instance, the value of :math:`ArcCos(x)` is a number :math:`y`
+   such that  :math:`Cos(y)` equals :math:`x`.    Note that the number :math:`y` is not
+   unique. For instance, :math:`Cos(Pi/2)` and  :math:`Cos(3*Pi/2)` both equal 0,
+   so what should :math:`ArcCos(0)` be? In Yacas,  it is agreed that the
+   value of :math:`ArcCos(x)` should be in the interval :math:`[0,Pi]`.
    Usually, Yacas leaves this function alone unless it is forced to do
    a numerical evaluation by the {N} function. If the  argument is -1,
    0, or 1 however, Yacas will simplify the  expression. If the
@@ -185,11 +185,11 @@ equations.
    :param x: argument to the function
 
    This function represents the inverse trigonometric function
-   arctangent. For  instance, the value of $ArcTan(x)$ is a number $y$
-   such that  $Tan(y)$ equals $x$.    Note that the number $y$ is not
-   unique. For instance, $Tan(0)$ and  $Tan(2*Pi)$ both equal 0, so
-   what should $ArcTan(0)$ be? In Yacas,  it is agreed that the value
-   of $ArcTan(x)$ should be in the interval  [-$Pi$/2,$Pi$/2].
+   arctangent. For  instance, the value of :math:`ArcTan(x)` is a number :math:`y`
+   such that  :math:`Tan(y)` equals :math:`x`.    Note that the number :math:`y` is not
+   unique. For instance, :math:`Tan(0)` and  :math:`Tan(2*Pi)` both equal 0, so
+   what should :math:`ArcTan(0)` be? In Yacas,  it is agreed that the value
+   of :math:`ArcTan(x)` should be in the interval :math:`[-Pi/2,Pi/2]`.
    Usually, Yacas leaves this function alone unless it is forced to do
    a numerical evaluation by the {N} function. Yacas will try to
    simplify  as much as possible while keeping the result exact. If
@@ -249,9 +249,9 @@ equations.
    :param x: argument to the function
 
    This function calculates the natural logarithm of "x". This is the
-   inverse function of the exponential function, {Exp}, i.e. $Ln(x) =
-   y$ implies that $Exp(y) = x$. For complex  arguments, the imaginary
-   part of the logarithm is in the interval  (-$Pi$,$Pi$]. This is
+   inverse function of the exponential function, {Exp}, i.e. :math:`Ln(x) =
+   y` implies that :math:`Exp(y) = x`. For complex  arguments, the imaginary
+   part of the logarithm is in the interval `(-\pi,\pi]`. This is
    compatible with the branch cut of {Arg}.    This function is
    threaded, meaning that if the argument {x} is a  list, the function
    is applied to all entries in the list.
@@ -336,11 +336,11 @@ equations.
 
    :param x: argument to the function
 
-   This function returns the sign of the real number $x$. It is "1"
-   for positive numbers and "-1" for negative numbers. Somewhat
+   This function returns the sign of the real number :math:`x`. It is 1
+   for positive numbers and -1 for negative numbers. Somewhat
    arbitrarily, {Sign(0)} is defined to be 1.    This function is
-   connected to the {Abs} function by  the identity $Abs(x) * Sign(x)
-   = x$ for real $x$.    This function is threaded, meaning that if
+   connected to the {Abs} function by  the identity :math:`Abs(x) * Sign(x)
+   = x` for real :math:`x`.    This function is threaded, meaning that if
    the argument {x} is a  list, the function is applied to all entries
    in the list.
 
@@ -394,7 +394,7 @@ equations.
    in  the list {expr} is differentiated with respect to the first
    entry in  the list {var}, the second entry in {expr} is
    differentiated with  respect to the second entry in {var}, and so
-   on.    The {D} operator returns the original function if $n=0$, a
+   on.    The {D} operator returns the original function if :math:`n=0`, a
    common  mathematical idiom that simplifies many formulae.
 
    :Example:
@@ -452,7 +452,7 @@ equations.
 
    This function integrates the expression `expr` with respect to the
    variable `var`. In the case of definite integral, the integration
-   is carried out from $var=x1$ to $var=x2$". Some simple integration
+   is carried out from :math:`var=x1` to :math:`var=x2`". Some simple integration
    rules have currently been implemented.  Polynomials, some quotients
    of polynomials, trigonometric functions and their inverses,
    hyperbolic functions and their inverses, {Exp}, and {Ln}, and
@@ -521,7 +521,7 @@ equations.
    and used to call {Rng} and {RngSeed}.    {Rng(r)} returns a
    floating-point random number between 0 and 1 and updates the RNG
    object {r}.  (Currently, the Gaussian option makes a RNG return a
-   <i>complex</i> random number instead of a real random number.)
+   *complex* random number instead of a real random number.)
    {RngSeed(r,init)} re-initializes the RNG object {r} with the seed
    value {init}.  The seed value should be a positive integer.    The
    {RngCreate} function accepts several options as arguments.
@@ -774,7 +774,7 @@ equations.
 
 .. function:: ReversePoly(f, g, var, newvar, degree)
 
-   solve $h(f(x)) = g(x) + O(x^n)$ for $h$
+   solve :math:`h(f(x)) = g(x) + O(x^n)` for :math:`h`
 
    :param f: function of ``var``
    :param g: function of ``var``
@@ -886,19 +886,19 @@ equations.
    :param a}, {b: numbers
 
    The factorial function {n!} calculates the factorial of integer or
-   half-integer numbers. For  nonnegative integers, $n! :=
-   n*(n-1)*(n-2)*...*1$. The factorial of  half-integers is defined
-   via Euler's Gamma function, $z! := Gamma(z+1)$. If $n=0$ the
-   function returns $1$.    The "double factorial" function {n!!}
-   calculates $n*(n-2)*(n-4)*...$. This product terminates either with
-   $1$ or with $2$ depending on whether $n$ is odd or even. If $n=0$
-   the function returns $1$.    The "partial factorial" function {a
-   *** b} calculates the product $a*(a+1)*...$ which is terminated at
-   the least integer not greater than $b$. The arguments $a$ and $b$
-   do not have to be integers; for integer arguments, {a *** b} = $b!
-   / (a-1)!$. This function is sometimes a lot faster than evaluating
-   the two factorials, especially if $a$ and $b$ are close together.
-   If $a>b$ the function returns $1$.    The {Subfactorial} function
+   half-integer numbers. For  nonnegative integers, :math:`n! :=
+   n*(n-1)*(n-2)*...*1`. The factorial of  half-integers is defined
+   via Euler's Gamma function, :math:`z! := Gamma(z+1)`. If :math:`n=0` the
+   function returns :math:`1`.    The "double factorial" function {n!!}
+   calculates :math:`n*(n-2)*(n-4)*...`. This product terminates either with
+   :math:`1` or with :math:`2` depending on whether :math:`n` is odd or even. If :math:`n=0`
+   the function returns :math:`1`.    The "partial factorial" function {a
+   *** b} calculates the product :math:`a*(a+1)*...` which is terminated at
+   the least integer not greater than :math:`b`. The arguments :math:`a` and :math:`b`
+   do not have to be integers; for integer arguments, {a *** b} = :math:`b!
+   / (a-1)!`. This function is sometimes a lot faster than evaluating
+   the two factorials, especially if :math:`a` and :math:`b` are close together.
+   If :math:`a>b` the function returns :math:`1`.    The {Subfactorial} function
    can be interpreted as the  number of permutations of {m} objects in
    which no object   appears in its natural place, also called
    "derangements."     The factorial functions are threaded, meaning
@@ -908,7 +908,7 @@ equations.
    such as {+} or {*}. Therefore, you should enter a space  after {!}
    in expressions such as {x! +1}.    The factorial functions
    terminate and print an error message if the arguments are too large
-   (currently the limit is $n < 65535$) because exact factorials of
+   (currently the limit is :math:`n < 65535`) because exact factorials of
    such large numbers are computationally expensive and most probably
    not useful. One can call {Internal'LnGammaNum()} to evaluate
    logarithms of such factorials to desired precision.
@@ -948,7 +948,7 @@ equations.
    :param n}, {m: integers
 
    This function calculates the binomial coefficient "n" above  "m",
-   which equals $$n! / (m! * (n-m)!)$$    This is equal to the number
+   which equals :math:`n! / (m! * (n-m)!)`    This is equal to the number
    of ways  to choose "m" objects out of a total of "n" objects if
    order is  not taken into account. The binomial coefficient is
    defined to be zero  if "m" is negative or greater than "n";
@@ -973,8 +973,8 @@ equations.
    :param n}, {m: integers
 
    The Eulerian numbers can be viewed as a generalization of the
-   binomial coefficients,  and are given explicitly by $$
-   Sum(j,0,k+1,(-1)^j*Bin(n+1,j)*(k-j+1)^n) $$ .
+   binomial coefficients,  and are given explicitly by :math:`
+   Sum(j,0,k+1,(-1)^j*Bin(n+1,j)*(k-j+1)^n)`.
 
    :Example:
 
@@ -1052,11 +1052,11 @@ equations.
    :param x: expression
    :param number: expression that can be evaluated to a number
 
-   {Gamma(x)} is an interface to Euler's Gamma function $Gamma(x)$. It
+   {Gamma(x)} is an interface to Euler's Gamma function :math:`Gamma(x)`. It
    returns exact values on integer and half-integer arguments.
    {N(Gamma(x)} takes a numeric parameter and always returns a
    floating-point number in the current precision.    Note that
-   Euler's constant $gamma<=>0.57722$ is the lowercase {gamma} in
+   Euler's constant :math:`gamma<=>0.57722` is the lowercase {gamma} in
    Yacas.
 
    :Example:
@@ -1082,7 +1082,7 @@ equations.
    :param x: expression
    :param number: expression that can be evaluated to a number
 
-   {Zeta(x)} is an interface to Riemann's Zeta function $zeta(s)$. It
+   {Zeta(x)} is an interface to Riemann's Zeta function :math:`zeta(s)`. It
    returns exact values on integer and half-integer arguments.
    {N(Zeta(x)} takes a numeric parameter and always returns a
    floating-point number in the current precision.
@@ -1114,8 +1114,8 @@ equations.
    :param x: expression that will be the variable in the polynomial
    :param index: expression that can be evaluated to an integer
 
-   {Bernoulli(n)} evaluates the $n$-th Bernoulli number. {Bernoulli(n,
-   x)} returns the $n$-th Bernoulli polynomial in the variable $x$.
+   {Bernoulli(n)} evaluates the :math:`n`-th Bernoulli number. {Bernoulli(n,
+   x)} returns the :math:`n`-th Bernoulli polynomial in the variable :math:`x`.
    The polynomial is returned in the Horner form.
 
 .. function:: Euler(index)
@@ -1125,8 +1125,8 @@ equations.
    :param x: expression that will be the variable in the polynomial
    :param index: expression that can be evaluated to an integer
 
-   {Euler(n)} evaluates the $n$-th Euler number. {Euler(n,x)} returns
-   the $n$-th Euler polynomial in the variable $x$.
+   {Euler(n)} evaluates the :math:`n`-th Euler number. {Euler(n,x)} returns
+   the :math:`n`-th Euler polynomial in the variable :math:`x`.
 
    :Example:
 
@@ -1154,12 +1154,12 @@ equations.
    .. math:: W(z)e^{W(z)}=z
 
    The :math:`W` function is sometimes useful to represent solutions
-   of transcendental equations. For example, the equation $Ln(x)=3*x$
-   can be "solved" by writing $x= -3*W(-1/3)$. It is also possible to
+   of transcendental equations. For example, the equation :math:`Ln(x)=3*x`
+   can be "solved" by writing :math:`x= -3*W(-1/3)`. It is also possible to
    take a derivative or integrate this function "explicitly".  For
-   real arguments $x$, $W(x)$ is real if $x>= -Exp(-1)$.  To compute
-   the numeric value of the principal branch of Lambert's $W$ function
-   for real arguments $x>= -Exp(-1)$ to current precision, one can
+   real arguments :math:`x`, :math:`W(x)` is real if :math:`x>= -Exp(-1)`.  To compute
+   the numeric value of the principal branch of Lambert's :math:`W` function
+   for real arguments :math:`x>= -Exp(-1)` to current precision, one can
    call {N(LambertW(x))} (where the function {N} tries to approximate
    its argument with a real value).
 

@@ -131,11 +131,11 @@ which simply read a specified file.
 
 .. function:: TeXForm(expr)
 
-   export expressions to $LaTeX$
+   export expressions to LaTeX
 
    :param expr: an expression to be exported
 
-   {TeXForm} returns a string containing a $LaTeX$ representation of
+   {TeXForm} returns a string containing a :math:`LaTeX` representation of
    the Yacas expression {expr}. Currently the exporter handles most
    expression types but not all.
 
@@ -448,9 +448,9 @@ which simply read a specified file.
    ::
 
       The following defines a function that when invoked keeps asking
-      for an expression (the <i>read</i> step), and then takes
-      the derivative of it (the <i>eval</i> step) and then
-      uses PrettyForm to display the result (the <i>print</i> step).
+      for an expression (the *read* step), and then takes
+      the derivative of it (the *eval* step) and then
+      uses PrettyForm to display the result (the *print* step).
       In> ReEvPr() := \
       In>   While(True) [ \
       In>     PrettyForm(Deriv(x) \
@@ -722,13 +722,13 @@ which simply read a specified file.
 
    :param f(x): unevaluated expression containing one variables (function to be plotted)
    :param list: list of functions to plot
-   :param a}, {b: numbers, plotting range in the $x$ coordinate
+   :param a}, {b: numbers, plotting range in the :math:`x` coordinate
    :param option: atom, option name
    :param value: atom, number or string (value of option)
 
    The routine {Plot2D} performs adaptive plotting of one or several
    functions  of one variable in the specified range.  The result is
-   presented as a line given by the equation $y=f(x)$.  Several
+   presented as a line given by the equation :math:`y=f(x)`.  Several
    functions can be plotted at once.  Various plotting options can be
    specified.  Output can be directed to a plotting program (the
    default is to use  {data}) to a list of values.    The function
@@ -749,8 +749,8 @@ which simply read a specified file.
    {V()}.    The current algorithm uses Newton-Cotes quadratures and
    some heuristics for error estimation (see
    <*yacasdoc://Algo/3/1/*>).  The initial grid of {points+1} points
-   is refined between any grid points $a$, $b$ if the integral
-   $Integrate(x,a,b)f(x)$ is not approximated to the given precision
+   is refined between any grid points :math:`a`, :math:`b` if the integral
+   :math:`Integrate(x,a,b)f(x)` is not approximated to the given precision
    by  the existing grid.    Default plotting range is {-5:5}. Range
    can also be specified as {x= -5:5} (note the mandatory space
    separating "{=}" and "{-}");  currently the variable name {x} is
@@ -768,13 +768,13 @@ which simply read a specified file.
    * {points}: initial number of points (default 23) -- at least that
      many points will be plotted. The initial grid of this many points
      will be adaptively refined.
-   * {precision}: graphing precision (default $10^(-6)$). This is
+   * {precision}: graphing precision (default :math:`10^(-6)`). This is
      interpreted as the relative precision of computing the integral
-     of $f(x)-Min(f(x))$ using the grid points. For a smooth,
+     of :math:`f(x)-Min(f(x))` using the grid points. For a smooth,
      non-oscillating function this value should be roughly 1/(number
      of screen pixels in the plot).
    * {depth}: max. refinement depth, logarithmic (default 5) -- means
-     there will be at most $2^depth$ extra points per initial grid
+     there will be at most :math:`2^depth` extra points per initial grid
      point.
    * {output}: name of the plotting backend. Supported names: {data}
      (default).  The {data} backend will return the data as a list of
@@ -804,13 +804,13 @@ which simply read a specified file.
 
    :param f(x,y): unevaluated expression containing two variables (function to be plotted)
    :param list: list of functions to plot
-   :param a}, {b}, {c}, {d: numbers, plotting ranges in the $x$ and $y$ coordinates
+   :param a}, {b}, {c}, {d: numbers, plotting ranges in the :math:`x` and :math:`y` coordinates
    :param option: atom, option name
    :param value: atom, number or string (value of option)
 
    The routine {Plot3DS} performs adaptive plotting of a function  of
    two variables in the specified ranges.  The result is presented as
-   a surface given by the equation $z=f(x,y)$.  Several functions can
+   a surface given by the equation :math:`z=f(x,y)`.  Several functions can
    be plotted at once, by giving a list of functions.  Various
    plotting options can be specified.  Output can be directed to a
    plotting program (the default is to use  {data}), to a list of
@@ -833,7 +833,7 @@ which simply read a specified file.
    some heuristics for error estimation (see
    <*yacasdoc://Algo/3/1/*>).  The initial rectangular grid of
    {xpoints+1}*{ypoints+1} points is refined within any rectangle
-   where the integral  of $f(x,y)$ is not approximated to the given
+   where the integral  of :math:`f(x,y)` is not approximated to the given
    precision by  the existing grid.    Default plotting range is
    {-5:5} in both coordinates.  A range can also be specified with a
    variable name, e.g. {x= -5:5} (note the mandatory space separating
@@ -853,7 +853,7 @@ which simply read a specified file.
    * {xrange}, {yrange}: optionally override coordinate ranges. Note
      that {xrange} is always the first variable and {yrange} the
      second variable, regardless of the actual variable names.
-   * {zrange}: the range of the $z$ axis to use for plotting, e.g.
+   * {zrange}: the range of the :math:`z` axis to use for plotting, e.g.
      {zrange=0:20}. If no range is specified, the default is usually
      to leave the choice to the plotting backend. Automatic choice
      based on actual values may give visually inadequate plots if the
@@ -864,13 +864,13 @@ which simply read a specified file.
      adaptively refined.  If {points} is specified, it serves as a
      default for both {xpoints} and {ypoints}; this value may be
      overridden by {xpoints} and {ypoints} values.
-   * {precision}: graphing precision (default $0.01$). This is
+   * {precision}: graphing precision (default :math:`0.01`). This is
      interpreted as the relative precision of computing the integral
-     of $f(x,y)-Min(f(x,y))$ using the grid points. For a smooth,
+     of :math:`f(x,y)-Min(f(x,y))` using the grid points. For a smooth,
      non-oscillating function this value should be roughly 1/(number
      of screen pixels in the plot).
    * {depth}: max. refinement depth, logarithmic (default 3) -- means
-     there will be at most $2^depth$ extra points per initial grid
+     there will be at most :math:`2^depth` extra points per initial grid
      point (in each coordinate).
    * {output}: name of the plotting backend. Supported names: {data}
      (default). The {data} backend will return the data as a list of
@@ -993,7 +993,7 @@ which simply read a specified file.
      the user typed {<a>} and the {Out>} prompt with the resulting
      expression appeared.
    * The resulting expression is an atom with the string
-     representation {<a>}; it is <i>not</i> a string.
+     representation {<a>}; it is *not* a string.
 
 .. seealso:: :func:`OMRead`, :func:`TrapError`, :func:`XmlExplodeTag`,
              :func:`ReadToken`, :func:`FromFile`, :func:`FromString`
@@ -1193,7 +1193,7 @@ which simply read a specified file.
 
    ::
   
-      In> OMDef( "Sqrt" ,  "arith1", "root", { $, _1, 2 }, $(_1)_(_2=2) | (_1^(1/_2)) );
+      In> OMDef( "Sqrt" ,  "arith1", "root", { :math:`, _1, 2 }, :math:`(_1)_(_2=2) | (_1^(1/_2)) );
       Out> True
       In> OMForm(Sqrt(3))
       <OMOBJ>
@@ -1210,10 +1210,10 @@ which simply read a specified file.
       Out> 16^(1/3)
   
       In> OMDef("Limit", "limit1", "limit", \
-            {  $, _2, OMS("limit1", "under"), OMBIND(OMS("fns1", "lambda"), OMBVAR(_1), _4) }_(_3=Left)  \
-            |{ $, _2, OMS("limit1", "above"), OMBIND(OMS("fns1", "lambda"), OMBVAR(_1), _4) }_(_3=Right) \
-            |{ $, _2, OMS("limit1", "both_sides"), OMBIND(OMS("fns1", "lambda"), OMBVAR(_1), _3) },      \
-            { $, _{3,2,1}, _1, Left,  _{3,3}}_(_2=OMS("limit1", "below")) \
+            {  :math:`, _2, OMS("limit1", "under"), OMBIND(OMS("fns1", "lambda"), OMBVAR(_1), _4) }_(_3=Left)  \
+            |{ :math:`, _2, OMS("limit1", "above"), OMBIND(OMS("fns1", "lambda"), OMBVAR(_1), _4) }_(_3=Right) \
+            |{ :math:`, _2, OMS("limit1", "both_sides"), OMBIND(OMS("fns1", "lambda"), OMBVAR(_1), _3) },      \
+            { :math:`, _{3,2,1}, _1, Left,  _{3,3}}_(_2=OMS("limit1", "below")) \
             |{$, _{3,2,1}, _1, Right, _{3,3}}_(_2=OMS("limit1", "above")) \
             |{$, _{3,2,1}, _1, _{3,3}}                                    \
            );

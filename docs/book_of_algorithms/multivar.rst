@@ -19,8 +19,8 @@ not be used in these cases.
 Internal structure
 ------------------
 
-A key is defined to be a list of integer numbers ($ n[1] $, ..., $
-n[m] $).  Thus for a two-dimensional key, one item in the sparse tree
+A key is defined to be a list of integer numbers :math:`(n_1,\ldots, n_m)`.
+Thus for a two-dimensional key, one item in the sparse tree
 database could be reflected as the (key,value) pair { {{1,2},3} },
 which states that element {(1,2)} has value {3}. (Note: this is not
 the way it is stored in the database!).
@@ -68,18 +68,18 @@ The sparse tree can be traversed, one element at a time, with
 
 An example of the use of this function could be multiplying a sparse
 matrix with a sparse vector, where the entire matrix can be scanned
-with {SparseTreeScan}, and each non-zero matrix element $ A[i][j] $
-can then be multiplied with a vector element $ v[j] $, and the result
-added to a sparse vector $ w[i] $, using the {SparseTreeGet} and
+with {SparseTreeScan}, and each non-zero matrix element :math:`A_{ij}`
+can then be multiplied with a vector element :math:`v_j`, and the result
+added to a sparse vector :math:`w_i`, using the {SparseTreeGet} and
 {SparseTreeSet} functions.  Multiplying two sparse matrices would
 require two nested calls to {SparseTreeScan} to multiply every item
 from one matrix with an element from the other, and add it to the
 appropriate element in the resulting sparse matrix.
 
-When the matrix elements $ A[i][j] $ are defined by a function $
-f(i,j) $ (which can be considered a dense representation), and it
-needs to be multiplied with a sparse vector $ v[j] $, it is better to
-iterate over the sparse vector $ v[j] $.  Representation defines the
+When the matrix elements :math:`A_{ij}` are defined by a function :math:`f(i,j`)
+(which can be considered a dense representation), and it
+needs to be multiplied with a sparse vector :math:`v_j`, it is better to
+iterate over the sparse vector :math:`v_j`.  Representation defines the
 most efficient algorithm to use in this case.
 
 The API to sparse trees is:
@@ -112,9 +112,9 @@ Implementation of multivariate polynomials
 ------------------------------------------
 
 This section describes the implementation of multivariate
-polynomials in yacas.
-
-Concepts and ideas are taken from the books [Davenport1988]_ and [Gathen1999]_.
+polynomials in yacas. Concepts and ideas are taken from the books
+:cite:`davenport1988:computer_algebra` and
+:cite:`gathen1999:modern_computer_algebra`.
 
 
 Definitions

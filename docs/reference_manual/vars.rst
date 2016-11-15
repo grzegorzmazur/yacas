@@ -49,7 +49,7 @@ Variables
    not evaluated immediately, but only when the function {fn} is
    used. If this takes time, it may be better to force an immediate
    evaluation with {Eval} (see the last example).  If the expression
-   on the right hand side begins with {Eval()}, then it <i>will</i> be
+   on the right hand side begins with {Eval()}, then it *will* be
    evaluated before defining the new function. A variant of the
    function definition can be used to make a function accepting a
    variable number of arguments. The last argument
@@ -437,7 +437,7 @@ Variables
    ::
 
       In> LocalSymbols(a,b)a+b
-      Out> $a6+ $b6;
+      Out> :math:`a6+ :math:`b6;
       
 
    .. seealso:: :func:`UniqueConstant`

@@ -282,8 +282,8 @@ Arithmetic and other operations on numbers
    Converting the floating point numbers to rational numbers will
    force  calculations to be done with infinite precision (by using
    rational  numbers as representations).    It does this by finding
-   the smallest integer $n$ such that multiplying  the number with
-   $10^n$ is an integer. Then it divides by $10^n$ again,  depending
+   the smallest integer :math:`n` such that multiplying  the number with
+   :math:`10^n` is an integer. Then it divides by :math:`10^n` again,  depending
    on the internal gcd calculation to reduce the resulting  division
    of integers.
 
@@ -415,8 +415,8 @@ Arithmetic and other operations on numbers
 
    :param x: a number
 
-   This function returns the integer closest to $x$. Half-integers
-   (i.e. numbers of the form $n + 0.5$, with $n$ an integer) are
+   This function returns the integer closest to :math:`x`. Half-integers
+   (i.e. numbers of the form :math:`n + 0.5`, with :math:`n` an integer) are
    rounded upwards.
 
    :Example:
@@ -436,26 +436,29 @@ Arithmetic and other operations on numbers
    .. seealso:: :func:`Floor`, :func:`Ceil`
 
 .. function:: Min(x,y)
+              Min(list)
 
    minimum of a number of values
 
-   :param x}, {y: pair of values to determine the minimum of
-   :param list: list of values from which the minimum is sought
+   :parameters: * **x, y** -- pair of values to determine the minimum of
+                * **list** -- list of values from which the minimum is sought
 
    This function returns the minimum value of its argument(s). If the
-   first calling sequence is used, the smaller of "x" and "y" is
+   first calling sequence is used, the smaller of ``x`` and ``y`` is
    returned. If one uses the second form, the smallest of the entries
-   in  "list" is returned. In both cases, this function can only be
+   in  ``list`` is returned. In both cases, this function can only be
    used  with numerical values and not with symbolic arguments.
 
    :Example:
 
    ::
 
-      In> Min(2,3);
-      Out> 2;
-      In> Min({5,8,4});
-      Out> 4;
+      In> Min(2,3)
+      Out> 2
+      In> Min({5,8,4})
+      Out> 4
+      In> Min(Pi, Exp(1))
+      Out> Exp(1)
       
 
    .. seealso:: :func:`Max`, :func:`Sum`

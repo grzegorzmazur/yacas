@@ -4,13 +4,13 @@ Glossary
 .. glossary::
   arity 
        Arity is the number of arguments of a function.  For example,
-       the function {Cos(x)} has one argument and so we say that
-       "{Cos} has arity 1".  Arity of a function can be 0, 1, 2, ...
+       the function :func:`Cos` has one argument and so we say that
+       :func:`Cos` *has arity 1*.  Arity of a function can be 0, 1, 2, ...
 
-       {Yacas} allows to define functions with the same name but
+       Yacas allows to define functions with the same name but
        different arities, and different rules corresponding to these
        arities will be used.  Also, it is possible to define a
-       function with optional arguments, for example, {Plot2D} is one
+       function with optional arguments, for example, :func:`Plot2D` is one
        such function.  Such functions can have any arity larger or
        equal to a certain minimum arity (the number of non-optional
        arguments).
@@ -37,7 +37,7 @@ Glossary
 
     Atoms can be of type string, number, or symbol. For example, {y1}
     is a symbolic atom, {954} is a number atom, and {""} is an
-    (empty) string atom.  Symbolic atoms are normally used in {Yacas}
+    (empty) string atom.  Symbolic atoms are normally used in yacas
     to denote mathematical unknowns and function names. Number and
     string atoms are used to denote values.
 
@@ -56,7 +56,7 @@ Glossary
      Integrate(x) Sin(x);
 
   CAS
-    Abbreviation for "computer algebra system". {Yacas} is a CAS.
+    Abbreviation for "computer algebra system". Yacas is a CAS.
 
 
   constant
@@ -112,7 +112,7 @@ Glossary
     The rules to which ``+`` is bound are such that the expression
     ``Pi+0`` is evaluated to the symbolic atom ``Pi``.  The rules for
     ``Cos`` are such that the expression ``Cos(Pi)`` is evaluated to
-    the numeric atom ``-1``.  The example {Yacas} session is::
+    the numeric atom ``-1``.  The example yacas session is::
 
       In> Cos(Pi+0)
       Out> -1
@@ -130,18 +130,21 @@ Glossary
     .. seealso:: :func:`Function`, :func:`Rule`, :func:`<--`
 
   list
-    A list is a basic {Yacas} container object. A list is written as
-    e.g. {{a, b, c}} or {{}} (empty list).  Individual elements of a
-    list can be accessed using the {[]} operation.  Lists can be
+    A list is a basic yacas container object. A list is written as
+    e.g. ``{{a, b, c}}`` or ``{{}}`` (empty list).  Individual elements of a
+    list can be accessed using the ``[]`` operation.  Lists can be
     concatenated, and individual elements can be removed or inserted.
 
-    Lists are ubiquitous in {Yacas}.  Most data structures in the
+    Lists are ubiquitous in yacas.  Most data structures in the
     standard library is based on lists.
 
-    Lists are also used internally to represent {Yacas} expressions.
-    For example, the expression {Cos(x+1)} is represented internally
-    as a nested list: In> FullForm( Cos(x+1) ) (Cos (+ x 1 )) Out>
-    Cos(x+1);
+    Lists are also used internally to represent yacas expressions.
+    For example, the expression ``Cos(x+1)`` is represented internally
+    as a nested list::
+
+        In> FullForm( Cos(x+1) )
+        (Cos (+ x 1 ))
+        Out> Cos(x+1);
 
 
     .. seealso:: :func:`List`, :func:`Listify`, :func:`UnList`,
@@ -149,7 +152,7 @@ Glossary
 
   matrix
     A matrix is represented as a list of lists.  Matrices are
-    represented in the "row-major" order: a matrix is a list of rows,
+    represented in the *row-major* order: a matrix is a list of rows,
     and each row is a list of its elements.
 
     Some basic linear algebra operations on matrices are supported.
@@ -159,7 +162,7 @@ Glossary
 
   operator
     Operators are functions that have special syntax declared for
-    them.  An operator can be "bodied", infix, prefix or postfix.
+    them.  An operator can be *bodied*, infix, prefix or postfix.
     Because of this, operators must have precedence.
 
     Apart from the syntax, operators are exactly the same as any
@@ -175,17 +178,15 @@ Glossary
     special syntax, can have precedence.  Precedence values are
     nonnegative integers: 0, 1, ...  Lower numbers bind more tightly.
 
-    For example, the operator "{+}" binds less tightly (i.e. has a
-    <i>higher</i> precedence value) than the operator "{*}" and so
-    the expression {a+b*c} is parsed as {a+(b*c)}, as one would
+    For example, the operator ``+`` binds less tightly (i.e. has a
+    *higher* precedence value) than the operator ``*`` and so
+    the expression ``a+b*c`` is parsed as ``a+(b*c)``, as one would
     expect.
 
     Infix operators can have different left-side and right-side
-    precedence.  For example, the infix operator "{-}" has left
-    precedence ``*EVAL OpLeftPrecedence("-") and right precedence
-    *EVAL OpRightPrecedence("-")`` -- this allows us to parse
-    expressions such as {a-b+c} correctly, as $(a-b)+c$, and not as
-    $a-(b+c)$.
+    precedence -- this allows us to parse
+    expressions such as :math:`a-b+c` correctly, as :math:`(a-b)+c`, and not as
+    :math:`a-(b+c)`.
 
     .. seealso:: :func:`Bodied`, :func:`OpPrecedence`,
                  :func:`OpLeftPrecedence`, :func:`OpRightPrecedence`
@@ -198,14 +199,14 @@ Glossary
       In> a:= ExtraInfo'Set(1+x,y);
       Out> 1+x;
     
-    Now {a} refers to an expression {1+x} which is different from all
-    other copies of {1+x} because it is tagged by {y}.
+    Now ``a`` refers to an expression ``1+x`` which is different from all
+    other copies of ``1+x`` because it is tagged by ``y``.
 
     .. seealso:: :func:`ExtraInfo'Get`, :func:`ExtraInfo'Set`
 
   rule
     Rules are the principal mechanism of expression evaluation in
-    {Yacas}.  A rule specifies that a certain symbolic expression is
+    yacas.  A rule specifies that a certain symbolic expression is
     to be replaced by another expression.  If no rule that matches a
     given symbolic expression can be found, the expression is left
     unevaluated.  This is usually the desired behavior for a CAS.  For
@@ -228,15 +229,15 @@ Glossary
 
   string
     A string is an atom with character string value, for example,
-    {"abcd"}.  Individual characters of the string can be accessed
-    using the {[]} operation.  Some string manipulation functions are
+    ``"abcd"``.  Individual characters of the string can be accessed
+    using the ``[]`` operation.  Some string manipulation functions are
     supported.
 
     .. seealso:: :func:`String`, :func:`StringMid'Get`,
                  :func:`StringMid'Set`
 
   syntax
-    {Yacas} uses an infix syntax similar to C or Fortran.  However,
+    Yacas uses an infix syntax similar to C or Fortran.  However,
     the syntax is entirely user-defined and very flexible.  Infix,
     prefix, postfix operators can be defined, as well as "bodied"
     functions.  This allows to write mathematical expressions more
@@ -270,6 +271,5 @@ Glossary
     .. seealso:: :func:`Eval`, :func:`:=`, :func:`Clear`
 
   warranty
-    {Yacas} is Free Software ("logiciel libre") and comes with {NO
-    WARRANTY}.  See <*the appropriate section of the
-    GPL|yacasdoc://refprog/1/2/*> for full information.
+    Yacas is Free Software (*logiciel libre*) and comes with **NO
+    WARRANTY**.  See :ref:`lgpl-2.1` for more information.

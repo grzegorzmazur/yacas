@@ -18,8 +18,8 @@ Symbolic Solvers
    :param var: variable to solve for
 
    This command tries to solve an equation. If {eq} does not contain
-   the  {==} operator, it is assumed that the user wants to solve $eq
-   ==  0$. The result is a list of equations of the form {var ==
+   the  {==} operator, it is assumed that the user wants to solve :math:`eq
+   ==  0`. The result is a list of equations of the form {var ==
    value}, each  representing a solution of the given equation. The
    {Where} operator  can be used to substitute this solution in
    another expression. If the  given equation {eq} does not have any
@@ -241,7 +241,7 @@ Numeric Solvers
 
    :param p: a polynomial in {x}
 
-   Return a list with the real roots of $ p $. It tries to find the
+   Return a list with the real roots of :math:`p`. It tries to find the
    real-valued  roots, and thus requires numeric floating point
    calculations. The precision  of the result can be improved by
    increasing the calculation precision.
@@ -264,10 +264,10 @@ Numeric Solvers
 
    return the number of real roots of a polynomial
 
-   :param p: a polynomial in {x}
+   :param p: a polynomial in ``x``
 
-   Returns the number of real roots of a polynomial $ p $.  The
-   polynomial must use the variable {x} and no other variables.
+   Returns the number of real roots of a polynomial :math:`p`.  The
+   polynomial must use the variable ``x`` and no other variables.
 
    :Example:
 
@@ -286,7 +286,7 @@ Numeric Solvers
 
    return lower bounds on the absolute values of real roots of a polynomial
 
-   :param p: a polynomial in $x$
+   :param p: a polynomial in :math:`x`
 
    Return minimum and maximum bounds for the absolute values of the
    real  roots of a polynomial {p}. The polynomial has to be converted

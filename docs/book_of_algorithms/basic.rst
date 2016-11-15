@@ -46,9 +46,9 @@ number of equal subintervals, and then repeatedly splits each
 subinterval in half until the function is well enough approximated by
 the resulting grid. The integer parameter {depth} gives the maximum
 number of binary splittings for a given initial interval; thus, at
-most :math:`2^depth` additional grid points will be generated. The
-function {Plot2D'adaptive} should return a list of pairs of points
-{{{x1,y1}, {x2,y2}, ...}} to be used directly for plotting.
+most :math:`2^{depth}` additional grid points will be generated. The
+function :func:`Plot2D'adaptive` should return a list of pairs of points
+``{{{x1,y1}, {x2,y2}, ...}}`` to be used directly for plotting.
 
 The adaptive plotting algorithm works like this:
 
@@ -89,7 +89,7 @@ The adaptive plotting algorithm works like this:
    points :math:`a`, :math:`a_1`, :math:`b`, :math:`b_1` and the
    second quadrature uses :math:`b`, :math:`b_1`, :math:`c`.) If the
    absolute value of the difference between these quadratures is less
-   than :math:`epsilon` * (value of the second quadrature), then we
+   than :math:`epsilon` times the value of the second quadrature, then we
    are done and we return the list of these five points and values.
 5. Otherwise, we need to refine the grid. We compute
    :func:`Plot2D'adaptive` recursively for the two halves of the
@@ -121,8 +121,7 @@ Newton-Cotes quadratures
 The meaning of Newton-Cotes quadrature coefficients is that an
 integral of a function :math:`f(x)` is approximated by a sum
 
-.. math::
-   \int_{a_0}^{a_n}f(x)\,\mathrm{d}x\approx h\sum_{k=0}^nc_kf(a_k)
+.. math:: \int_{a_0}^{a_n}f(x)\,\mathrm{d}x\approx h\sum_{k=0}^nc_kf(a_k)
 
 where :math:`a_k` are the grid points, :math:`h:=a_1-a_0` is the grid
 step, and :math:`c_k` are the quadrature coefficients.  It may seem

@@ -1,4 +1,3 @@
-
 *******
 License
 *******
@@ -8,7 +7,7 @@ modify it under certain conditions. Yacas comes with ABSOLUTELY NO WARRANTY.
 See the :ref:`GNU Lesser General Public License (LGPL) version 2.1 <lgpl-2.1>`
 or (at your discretion) `any later version <http://www.gnu.org/licenses/lgpl.html>`_
 for the full conditions. Yacas documentation is distributed under the terms of 
-:ref:`GNU Free Documentation License <gfdl-1.1>`.
+:ref:`gfdl-1.1`.
 
 .. _lgpl-2.1:
 
