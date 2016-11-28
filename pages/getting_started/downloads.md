@@ -64,6 +64,8 @@ breadcrumb: true
         * optionally, download the optional files
         * open terminal and execute `sudo apt install ./Downloads/yacas-*_1.6.1-1*1_*.deb`
   * [macOS](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-1.6.1-macOS.pkg)
+  * Microsoft Windows (7 or newer)
+    * [archive (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-1.6.1-win64.zip)
 
 ## Development version
   * [repository](https://github.com/grzegorzmazur/yacas/tree/develop)
