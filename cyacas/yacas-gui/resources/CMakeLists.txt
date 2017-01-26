@@ -2,9 +2,10 @@ include (${CMAKE_ROOT}/Modules/ExternalProject.cmake)
 
 ExternalProject_Add (yacas-gui_codemirror
     PREFIX external_packages
-    URL https://github.com/codemirror/CodeMirror/archive/5.19.0.zip
+    URL https://github.com/codemirror/CodeMirror/archive/5.23.0.zip
     CONFIGURE_COMMAND ""
-    BUILD_COMMAND ""
+    BUILD_IN_SOURCE 1
+    BUILD_COMMAND npm install --no-progress
     INSTALL_COMMAND "")
 
 ExternalProject_Add (yacas-gui_flot
@@ -16,21 +17,21 @@ ExternalProject_Add (yacas-gui_flot
 
 ExternalProject_Add (yacas-gui_three
     PREFIX external_packages
-    URL https://github.com/mrdoob/three.js/archive/r82.zip
+    URL https://github.com/mrdoob/three.js/archive/r84.zip
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
 
 ExternalProject_Add (yacas-gui_vis
     PREFIX external_packages
-    URL https://github.com/almende/vis/archive/v4.16.1.zip
+    URL https://github.com/almende/vis/archive/v4.18.0.zip
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
 
 ExternalProject_Add (yacas-gui_mathjax
     PREFIX external_packages
-    URL https://github.com/mathjax/MathJax/archive/2.6.1.zip
+    URL https://github.com/mathjax/MathJax/archive/2.7.0.zip
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
