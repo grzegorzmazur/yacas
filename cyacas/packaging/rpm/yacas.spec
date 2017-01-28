@@ -22,7 +22,11 @@ License:        LGPLv2+
 %endif
 URL:            http://www.yacas.org
 Source:         v%{version}.tar.gz
+%if 0%{?suse_version}
+BuildRequires:  cmake gcc-c++ python-sphinx python-sphinx_rtd_theme libqt5-qtsvg-devel libQt5WebKitWidgets-devel libQt5PrintSupport-devel
+%else
 BuildRequires:  cmake gcc-c++ python-sphinx python-sphinx_rtd_theme qt5-qtwebkit-devel qt5-qtsvg-devel
+%endif
 %description
 Yacas is an easy to use, general purpose Computer Algebra System, a
 program for symbolic manipulation of mathematical expressions. It uses
