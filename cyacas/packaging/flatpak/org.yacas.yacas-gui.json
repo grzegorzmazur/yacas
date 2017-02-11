@@ -1,0 +1,124 @@
+{
+    "app-id": "org.yacas.yacas-gui",
+    "branch": "1.6",
+    "runtime": "org.gnome.Platform",
+    "runtime-version": "3.22",
+    "sdk": "org.gnome.Sdk",
+    "command": "yacas-gui",
+    "finish-args": [
+        "--socket=x11",
+        "--share=network",
+        "--filesystem=home"
+    ],
+    "rename-desktop-file": "yacas-gui.desktop",
+    "rename-icon": "yacas-gui",
+    "copy-icon": true,
+    "modules": [
+        {
+            "name": "qt5-qtbase",
+            "cleanup": [ "/bin" ],
+            "config-opts": [ "--confirm-license", "--opensource",
+                             "--release", "--shared",
+                             "-platform", "linux-g++",
+                             "-accessibility",
+                             "-dbus-linked",
+                             "-fontconfig",
+                             "-iconv",
+                             "-icu",
+                             "-no-alsa",
+                             "-no-pch",
+                             "-no-rpath",
+                             "-no-separate-debug-info",
+                             "-no-directfb",
+                             "-no-linuxfb",
+                             "-no-kms",
+                             "-no-cups",
+                             "-no-gtkstyle",
+                             "-nomake", "examples",
+                             "-nomake", "tests",
+                             "-optimized-qmake",
+                             "-system-proxies",
+                             "-qt-harfbuzz",
+                             "-qt-zlib",
+                             "-qt-libjpeg",
+                             "-qt-libpng",
+                             "-qt-pcre",
+                             "-reduce-relocations",
+                             "-prefix", "/app"
+                           ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "git://code.qt.io/qt/qtbase.git",
+                    "branch": "v5.6.2"
+                }
+            ]
+        },
+        {
+            "name": "qt5-qtsvg",
+            "cleanup": [ "/bin", "/mkspecs" ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "git://code.qt.io/qt/qtsvg.git",
+                    "branch": "v5.6.2"
+                },
+                {
+                    "type": "script",
+                    "commands": [ "qmake" ],
+                    "dest-filename": "configure"
+                }
+            ]
+        },
+        {
+            "name": "qt5-qtwebkit",
+            "cleanup": [ "/bin", "/mkspecs" ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "http://download.qt.io/community_releases/5.6/5.6.2/qtwebkit-opensource-src-5.6.2.tar.gz",
+                    "sha256": "0b85d8e0ac30b0b797d2b8502024a6a1352dc4b7ea95d256904fbd62a82a27d5"
+                },
+                {
+                    "type": "script",
+                    "commands": [ "qmake" ],
+                    "dest-filename": "configure"
+                }
+            ]
+        },
+        {
+            "name": "yacas-gui",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/grzegorzmazur/yacas/archive/v1.6.1.tar.gz",
+                    "sha256": "6b94394f705bed70a9d104967073efd6c23e9eb1a832805c4d805ef875555ae5"
+                }
+            ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/grzegorzmazur/yacas/archive/v1.6.1.tar.gz",
+                    "sha256": "6b94394f705bed70a9d104967073efd6c23e9eb1a832805c4d805ef875555ae5"
+                }
+            ],
+            "buildsystem": "cmake",
+            "build-options": {
+                "build-args": [
+                    "--share=network"
+                ]
+            },
+            "config-opts": [
+                "-DCMAKE_BUILD_TYPE=Release",
+                "-DCMAKE_INSTALL_PREFIX=/app",
+                "-DENABLE_CYACAS_GUI=On",
+                "-DENABLE_CYACAS_KERNEL=Off",
+                "-DENABLE_JYACAS=Off"
+            ],
+            "cleanup": [
+                "/include",
+                "/lib"
+            ]
+        }
+    ]
+}
