@@ -28,9 +28,12 @@ breadcrumb: true
         * Make sure you have snap installed
         * Open terminal and execute `snap install yacas`
         * To run yacas in text console execute `yacas`
-        * To run yacas in graphical console execute `yacas.gui`
+        * To run yacas in graphical mode execute `yacas.gui`
       * Flatpak
-        * Application bundles for both [text](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-1.6.1.flatpak) and [graphical](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-gui-1.6.1.flatpak) consoles are available. Unfortunately, right now installing flatpak application bundles goes beyond what could be expected from normal user. On the other hand, I don't have a server to host flatpak repository, so either you are knowledgeable enough to handle flatpak application bundles on your own or I'd advise using other packaging format.
+        * Download [text](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-1.6.1.flatpak) and/or [graphical](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-gui-1.6.1.flatpak) yacas console bundles.
+        * Open terminal and execute `flatpak install  --user --bundle yacas-1.6.1.flatpak` to install yacas text console and/or `flatpak install  --user --bundle yacas-gui-1.6.1.flatpak` to install yacas graphical console
+        * To run yacas in text console execute `flatpak run org.yacas.yacas`
+        * To run yacas in graphic mode execute `flatpak run org.yacas.yacas-gui`
     * RedHat
       * Fedora 24 (64 bit):
         * [common files (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-common-1.6.1-1.fc24.x86_64.rpm)
