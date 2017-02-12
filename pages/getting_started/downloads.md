@@ -30,8 +30,12 @@ breadcrumb: true
         * To run yacas in text console execute `yacas`
         * To run yacas in graphical mode execute `yacas.gui`
       * Flatpak
+        * Make sure you have flatpak installed
+        * Open terminal and execute
+          `flatpak remote-add --from gnome https://sdk.gnome.org/gnome.flatpakrepo`
+          followed by `flatpak install gnome org.gnome.Platform//3.22`
         * Download [text](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-1.6.1.flatpak) and/or [graphical](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-gui-1.6.1.flatpak) yacas console bundles.
-        * Open terminal and execute `flatpak install  --user --bundle yacas-1.6.1.flatpak` to install yacas text console and/or `flatpak install  --user --bundle yacas-gui-1.6.1.flatpak` to install yacas graphical console
+        * Execute `flatpak install  --user --bundle yacas-1.6.1.flatpak` to install yacas text console and/or `flatpak install  --user --bundle yacas-gui-1.6.1.flatpak` to install yacas graphical console
         * To run yacas in text console execute `flatpak run org.yacas.yacas`
         * To run yacas in graphic mode execute `flatpak run org.yacas.yacas-gui`
     * RedHat
