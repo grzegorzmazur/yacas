@@ -1,9 +1,9 @@
 {
     "app-id": "org.yacas.yacas-gui",
     "branch": "1.6",
-    "runtime": "org.gnome.Platform",
-    "runtime-version": "3.22",
-    "sdk": "org.gnome.Sdk",
+    "runtime": "org.freedesktop.Platform",
+    "runtime-version": "1.4",
+    "sdk": "org.freedesktop.Sdk",
     "command": "yacas-gui",
     "finish-args": [
         "--socket=x11",
