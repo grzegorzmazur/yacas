@@ -1,0 +1,12 @@
+---
+layout: page
+title: State of the Package
+teaser: One of the priorities of the current (1.6) release was to provide decent <a href="http://www.yacas.org/getting_started/downloads/">binary packages for wide range of users</a>. Even though this was the first time I tried to manually build binary packages for so many platforms, I had known that it’s not going to be an easy task. And it wasn’t.
+author: grzegorzmazur
+---
+
+In the end I managed to prepare all the packages I planned except for the MS Windows installer, on which I'm still working. On the other hand, yacas is now fully relocatable, so providing a ZIP archive with MS Windows binaries should satisfy majority of users (and from the [number of downloads](http://www.somsubhra.com/github-release-stats/?username=grzegorzmazur&repository=yacas) I'd reckon that it does).
+
+Was it worth it? Only to some extent. Definitely it's the way to go in the case of macOS and MS Windows. The Linux situation is not so obvious. DEB and RPM packages seem to be used only if they are accessible from some repository. As a result, preparing binary packages and uploading them to github seems to be not enough to make people actually use them. Admittedly, I could try to set up a [Personal Package Archive (PPA)](https://en.wikipedia.org/wiki/Personal_Package_Archive) or [copr](https://copr.fedorainfracloud.org/) repository, but it's not that trivial in the case of a fairly intricate yacas buildsystem. And while [openSUSE-provided Open Build Service (OBS)](https://build.opensuse.org/package/show/home:grzegorzmazur/yacas-1.6.1) is certainly useful, it doesn't provide repository for the packages it builds. All in all, either distribution maintainers pick recent yacas version and provide packaging for it (like in [gentoo](https://packages.gentoo.org/packages/sci-mathematics/yacas) or [arch](https://aur.archlinux.org/packages/yacas/)), or the users are [S.O.L.](http://etymonline.com/index.php?term=S.O.L.&allowed_in_frame=0).
+
+Is the situation going to improve? Hopefully yes. With the advent of [snappy](https://en.wikipedia.org/wiki/Snappy_(package_manager)) and [flatpak](https://en.wikipedia.org/wiki/Flatpak) developers stand a fighting chance of providing users with recent versions of the software. And while both package managers are yet far from perfect, they are already usable. Hence, for the next yacas release on linux I will concentrate on building snappy and flatpak packages.
