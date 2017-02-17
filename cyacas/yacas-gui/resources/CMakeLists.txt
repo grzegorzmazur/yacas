@@ -24,7 +24,7 @@ ExternalProject_Add (yacas-gui_three
 
 ExternalProject_Add (yacas-gui_vis
     PREFIX external_packages
-    URL https://github.com/almende/vis/archive/v4.18.0.zip
+    URL https://github.com/almende/vis/archive/v4.18.1.zip
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
