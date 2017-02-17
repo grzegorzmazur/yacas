@@ -24,7 +24,7 @@ before_script:
 script:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then make; fi
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then make test ; fi
-  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then xcodebuild -project yacas.xcodeproj -target ALL_BUILD; fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then travis_wait xcodebuild -project yacas.xcodeproj -target ALL_BUILD; fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then xcodebuild -project yacas.xcodeproj -target RUN_TESTS; fi
   - cd .. && ant && ant test
 
