@@ -54,6 +54,10 @@
 Dir(Right) <-- 1;
 Dir(Left) <-- -1;
 
+// make sure standard definition of Sign() is pulled in before we
+// special-case it
+Sign(1);
+
 UnProtect(Sign);
 
 /*  To get the sign of the denominator on one side:  */
