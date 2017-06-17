@@ -12,11 +12,11 @@
 #include <QtCore/QList>
 #include <QtCore/QUrl>
 #include <QtCore/QVariant>
+
 #include <QtGui/QDesktopServices>
-#include <QtWebKit/QWebElement>
-#include <QtWebKit/QWebElementCollection>
-#include <QtWebKitWidgets/QWebPage>
-#include <QtWebKitWidgets/QWebFrame>
+
+#include <QtWebEngineWidgets/QtWebEngineWidgets>
+
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #include <QtPrintSupport/QPrintDialog>
@@ -45,14 +45,10 @@ MainWindow::MainWindow(Preferences& prefs, QWidget *parent) :
     _has_file(false),
     _modified(false),
     _fname(QString("Untitled Notebook ") + QString::number(_cntr++))
-#ifdef YAGY_ENABLE_INSPECTOR
-    ,
-    _inspector(nullptr)
-#endif
 {
     _yacas_server = new YacasServer(_scripts_path);
     
-    connect(_yacas_server, SIGNAL(busy(bool)), this, SLOT(handle_engine_busy(bool)));
+    connect(_yacas_server, &YacasServer::busy, this, &MainWindow::handle_engine_busy);
     
     _yacas2tex->Evaluate(((std::string("DefaultDirectory(\"") + _scripts_path.toStdString() + "\");")));
     _yacas2tex->Evaluate("Load(\"yacasinit.ys\");");
@@ -64,16 +60,16 @@ MainWindow::MainWindow(Preferences& prefs, QWidget *parent) :
     _update_title();
 
     loadYacasPage();
-    _ui->webView->setAttribute(Qt::WA_AcceptTouchEvents, false);
+    _ui->webEngineView->setAttribute(Qt::WA_AcceptTouchEvents, false);
     
-    _ui->webView->addAction(_ui->actionInsert_Before);
-    _ui->webView->addAction(_ui->actionInsert_After);
-    _ui->webView->addAction(_ui->actionDelete_Current);
-    _ui->webView->addAction(_ui->actionCurrent_Symbol_Help);
+    _ui->webEngineView->addAction(_ui->actionInsert_Before);
+    _ui->webEngineView->addAction(_ui->actionInsert_After);
+    _ui->webEngineView->addAction(_ui->actionDelete_Current);
+    _ui->webEngineView->addAction(_ui->actionCurrent_Symbol_Help);
     
     _windows.append(this);
     
-    connect(&_prefs, SIGNAL(changed()), this, SLOT(handle_prefs_changed()));
+    connect(&_prefs, &Preferences::changed, this, &MainWindow::handle_prefs_changed);
 }
 
 MainWindow::~MainWindow()
@@ -109,30 +105,18 @@ void MainWindow::loadYacasPage()
     QDir resources_dir(_prefs.get_resources_path());
     const QUrl url = QUrl::fromLocalFile(resources_dir.absoluteFilePath("yagy_ui.html"));
     
-    connect(_ui->webView->page()->currentFrame(), SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(initObjectMapping()));
-    connect(_ui->webView->page()->currentFrame(), SIGNAL(loadFinished(bool)), this, SLOT(handle_prefs_changed()));
-    connect(_ui->webView->page(), SIGNAL(contentsChanged()), this, SLOT(on_contentsChanged()));
-    _ui->webView->load(url) ;
-    _ui->webView->page()->currentFrame()->setScrollBarPolicy(Qt::Vertical, Qt::ScrollBarAlwaysOn);
+    QWebChannel* c = new QWebChannel();
+    c->registerObject("yacas", this);
+    _ui->webEngineView->page()->setWebChannel(c);
 
-#ifdef YAGY_ENABLE_INSPECTOR
-    _ui->webView->page()->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
-
-    _inspector = new QWebInspector();
-    _inspector->setPage(_ui->webView->page());
-    _inspector->showMaximized();
-    _inspector->setVisible(true);
-#endif
-}
-
-void MainWindow::initObjectMapping()
-{
-    _ui->webView->page()->currentFrame()->addToJavaScriptWindowObject("yacas", this);
+    _ui->webEngineView->load(url) ;
 }
 
 void MainWindow::print(QPrinter* printer)
 {
-    _ui->webView->print(printer);
+#if QT_VERSION_MAJOR >= 5 && QT_VERSION_MINOR >= 8
+    _ui->webEngineView->page()->print(printer);
+#endif
 }
 
 
@@ -162,7 +146,7 @@ void MainWindow::on_action_Open_triggered()
     loadYacasPage();
 
     foreach (const QJsonValue& v, QJsonDocument::fromJson(data).array())
-        _ui->webView->page()->currentFrame()->evaluateJavaScript(QString("calculate(\"") + v.toObject()["input"].toString().replace("\"", "\\\"") + QString("\");"));
+        _ui->webEngineView->page()->runJavaScript(QString("calculate(\"") + v.toObject()["input"].toString().replace("\"", "\\\"") + QString("\");"));
 
     _fname = fname;
     _modified = false;
@@ -221,17 +205,17 @@ void MainWindow::on_action_Quit_triggered()
 
 void MainWindow::on_actionCu_t_triggered()
 {
-    _ui->webView->triggerPageAction(QWebPage::Cut);
+    _ui->webEngineView->triggerPageAction(QWebEnginePage::Cut);
 }
 
 void MainWindow::on_action_Copy_triggered()
 {
-    _ui->webView->triggerPageAction(QWebPage::Copy);
+    _ui->webEngineView->triggerPageAction(QWebEnginePage::Copy);
 }
 
 void MainWindow::on_action_Paste_triggered()
 {
-    _ui->webView->triggerPageAction(QWebPage::Paste);
+    _ui->webEngineView->triggerPageAction(QWebEnginePage::Paste);
 }
 
 void MainWindow::on_actionPreferences_triggered()
@@ -241,27 +225,27 @@ void MainWindow::on_actionPreferences_triggered()
 
 void MainWindow::on_actionInsert_Before_triggered()
 {
-    _ui->webView->page()->currentFrame()->evaluateJavaScript("insertBeforeCurrent();");
+    _ui->webEngineView->page()->runJavaScript("insertBeforeCurrent();");
 }
 
 void MainWindow::on_action_Previous_triggered()
 {
-    _ui->webView->page()->currentFrame()->evaluateJavaScript("previousCell();");
+    _ui->webEngineView->page()->runJavaScript("previousCell();");
 }
 
 void MainWindow::on_action_Next_triggered()
 {
-    _ui->webView->page()->currentFrame()->evaluateJavaScript("nextCell();");
+    _ui->webEngineView->page()->runJavaScript("nextCell();");
 }
 
 void MainWindow::on_actionInsert_After_triggered()
 {
-    _ui->webView->page()->currentFrame()->evaluateJavaScript("insertAfterCurrent();");
+    _ui->webEngineView->page()->runJavaScript("insertAfterCurrent();");
 }
 
 void MainWindow::on_actionDelete_Current_triggered()
 {
-    _ui->webView->page()->currentFrame()->evaluateJavaScript("deleteCurrent();");
+    _ui->webEngineView->page()->runJavaScript("deleteCurrent();");
 }
 
 void MainWindow::on_action_Use_triggered()
@@ -279,7 +263,7 @@ void MainWindow::on_action_Use_triggered()
         return;
     }
 
-    _ui->webView->page()->currentFrame()->evaluateJavaScript(QString("calculate('Use(\"") + fname + "\")');");
+    _ui->webEngineView->page()->runJavaScript(QString("calculate('Use(\"") + fname + "\")');");
 }
 
 void MainWindow::on_action_Import_triggered()
@@ -349,44 +333,40 @@ void MainWindow::on_action_Import_triggered()
     }
 
     foreach (const QString& s, l)
-        _ui->webView->page()->currentFrame()->evaluateJavaScript(QString("calculate('") + s + "');");
+        _ui->webEngineView->page()->runJavaScript(QString("calculate('") + s + "');");
 }
 
 void MainWindow::on_action_Export_triggered()
 {
-    QString fname =
-            QFileDialog::getSaveFileName(this, "Open", "", "Yacas scripts (*.ys);;All files (*)");
+    QString fname = "/tmp/smieci";
+            //QFileDialog::getSaveFileName(this, "Open", "", "Yacas scripts (*.ys);;All files (*)");
 
     if (fname.length() == 0)
         return;
 
-    QFile f(fname);
+    _ui->webEngineView->page()->runJavaScript("exportScript();", [fname](const QVariant& v) {
+        QFile f(fname);
 
-    if (!f.open(QIODevice::WriteOnly)) {
-        qWarning("Couldn't open file for saving.");
-        return;
-    }
+        if (!f.open(QIODevice::WriteOnly)) {
+            qWarning("Couldn't open file for saving.");
+            return;
+        }
 
-    const QWebElementCollection c = _ui->webView->page()->currentFrame()->findAllElements(".editable");
-
-    foreach (const QWebElement& e, c) {
-        const QString s = e.toPlainText().trimmed();
-        f.write(s.toLatin1());
-        if (!s.endsWith(";"))
-            f.write(";");
-        f.write("\n");
-    }
+        for (const QString& s: v.toStringList()) {
+            f.write(s.toLatin1());
+            f.write("\n");
+        }
+    });
 }
 
 void MainWindow::on_actionEvaluate_Current_triggered()
 {
-    _ui->webView->page()->currentFrame()->evaluateJavaScript(QString("evaluateCurrent()"));
+    _ui->webEngineView->page()->runJavaScript(QString("evaluateCurrent()"));
 }
 
 void MainWindow::on_actionEvaluate_All_triggered()
 {
-    _ui->webView->page()->currentFrame()->evaluateJavaScript(QString("evaluateAll()"));
-
+    _ui->webEngineView->page()->runJavaScript(QString("evaluateAll()"));
 }
 
 void MainWindow::on_action_Stop_triggered()
@@ -413,7 +393,7 @@ void MainWindow::on_actionYacas_Manual_triggered()
 
 void MainWindow::on_actionCurrent_Symbol_Help_triggered()
 {
-    _ui->webView->page()->currentFrame()->evaluateJavaScript("contextHelp()");
+    _ui->webEngineView->page()->runJavaScript("contextHelp()");
 }
 
 void MainWindow::on_action_About_triggered()
@@ -434,11 +414,11 @@ void MainWindow::handle_engine_busy(bool busy)
 void MainWindow::handle_prefs_changed()
 {
     _ui->toolBar->setVisible(_prefs.get_enable_toolbar());
-    _ui->webView->page()->currentFrame()->evaluateJavaScript(QString("changeMathJaxScale(%1)").arg(_prefs.get_math_font_scale()));
+    _ui->webEngineView->page()->runJavaScript(QString("changeMathJaxScale(%1)").arg(_prefs.get_math_font_scale()));
     QString font = _prefs.get_math_font();
     if (font == "Default")
         font = "TeX";
-    _ui->webView->page()->currentFrame()->evaluateJavaScript(QString("changeMathJaxFont(\"%1\")").arg(font));
+    _ui->webEngineView->page()->runJavaScript(QString("changeMathJaxFont(\"%1\")").arg(font));
     
     if (_scripts_path != _prefs.get_scripts_path()) {
         _scripts_path = _prefs.get_scripts_path();
@@ -453,7 +433,7 @@ void MainWindow::handle_prefs_changed()
 
 void MainWindow::eval(int idx, QString expr)
 {
-    new CellProxy(_ui->webView->page()->currentFrame(), idx, expr, *_yacas_server, *_yacas2tex);
+    new CellProxy(_ui->webEngineView->page(), idx, expr, *_yacas_server, *_yacas2tex);
 
     if (!_modified) {
         _modified = true;
@@ -517,12 +497,17 @@ void MainWindow::on_contentsChanged()
     }
 }
 
-bool MainWindow::isWebGLEnabled(){
-    return _prefs.get_enable_WebGL();
+void MainWindow::on_initComplete()
+{
+    handle_prefs_changed();
+    _modified = false;
+    _update_title();
 }
 
-bool MainWindow::isWebGLSupported(){
-    return _ui->webView->page()->currentFrame()->evaluateJavaScript("isWebGLSupported()").toBool();
+
+int MainWindow::getIsWebGLEnabled()
+{
+    return _prefs.get_enable_WebGL();
 }
 
 void MainWindow::_save()
@@ -534,18 +519,18 @@ void MainWindow::_save()
         return;
     }
 
-    QVariant v = _ui->webView->page()->currentFrame()->evaluateJavaScript("getAllInputs()");
+    _ui->webEngineView->page()->runJavaScript("getAllInputs()", [&f](const QVariant &v) {
+        QJsonArray j;
+        foreach (const QVariant e, v.toList()) {
+            QJsonObject o;
+            o["input"] = e.toString();
+            j.push_back(o);
+        }
 
-    QJsonArray j;
-    foreach (const QVariant e, v.toList()) {
-        QJsonObject o;
-        o["input"] = e.toString();
-        j.push_back(o);
-    }
+        QJsonDocument d(j);
 
-    QJsonDocument d(j);
-
-    f.write(d.toJson());
+        f.write(d.toJson());
+    });
 
     _modified = false;
     _has_file = true;

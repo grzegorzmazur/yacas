@@ -11,10 +11,6 @@
 
 #include <QtPrintSupport/QPrinter>
 
-#ifdef YAGY_ENABLE_INSPECTOR
-#include <QtWebKitWidgets/QWebInspector>
-#endif
-
 #include "yacasserver.h"
 #include "yacas/yacas.h"
 
@@ -30,13 +26,17 @@ public:
     explicit MainWindow(Preferences& prefs, QWidget* parent = 0);
     ~MainWindow();
 
+    Q_INVOKABLE QStringList complete(QString);
+
+    Q_INVOKABLE int getIsWebGLEnabled();
+    Q_PROPERTY(int isWebGLEnabled READ getIsWebGLEnabled)
+    
 public slots:
     void eval(int idx, QString expr);
-    QStringList complete(QString s);
     void help(QString, int);
-    bool isWebGLEnabled();
     void copyToClipboard( QString newText );
     
+    void on_initComplete();
     void on_contentsChanged();
 
 protected:
@@ -45,8 +45,6 @@ protected:
     void loadYacasPage();
 
 private slots:
-    void initObjectMapping();
-
     void print(QPrinter*);
 
     void on_action_New_triggered();
@@ -87,8 +85,7 @@ private slots:
 private:
     void _save();
     void _update_title();
-    bool isWebGLSupported();
-    
+
     Preferences& _prefs;
     
     Ui::MainWindow* _ui;
@@ -112,12 +109,10 @@ private:
     bool _modified;
     QString _fname;
     
+    QString _to_complete;
+    
     static QList<MainWindow*> _windows;
     static unsigned _cntr;
-    
-#ifdef YAGY_ENABLE_INSPECTOR    
-    QWebInspector* _inspector;
-#endif
 };
 
 #endif // MAINWINDOW_H

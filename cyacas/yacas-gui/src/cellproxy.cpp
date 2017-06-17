@@ -3,9 +3,9 @@
 #include <QtCore/QVariant>
 #include <QtCore/QJsonDocument>
 
-CellProxy::CellProxy(QWebFrame* frame, int idx, QString expr, YacasServer& yacas_server, CYacas& yacas2tex, QObject* parent):
+CellProxy::CellProxy(QWebEnginePage* page, int idx, QString expr, YacasServer& yacas_server, CYacas& yacas2tex, QObject* parent):
     QObject(parent),
-    _frame(frame),
+    _page(page),
     _idx(idx),
     _expr(expr),
     _yacas_server(yacas_server),
@@ -236,8 +236,8 @@ void CellProxy::on_request_state_changed(YacasRequest::State state)
                 break;
             }
         }
-        
-        _frame->evaluateJavaScript(QString("printResults(") + (QJsonDocument::fromVariant(evaluation_result)).toJson() + ");");
+ 
+        _page->runJavaScript(QString("printResults(") + (QJsonDocument::fromVariant(evaluation_result)).toJson() + ");");
         
         deleteLater();
     }

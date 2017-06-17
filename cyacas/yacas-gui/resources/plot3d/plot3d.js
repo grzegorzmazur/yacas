@@ -288,7 +288,6 @@ Plot3D.prototype.label = function (text, color) {
 
     var material = new THREE.SpriteMaterial({
         map: texture,
-        useScreenCoordinates: false,
         transparent: true
     });
 

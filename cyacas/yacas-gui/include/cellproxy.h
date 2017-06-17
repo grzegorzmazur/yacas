@@ -2,7 +2,7 @@
 #define	CELLPROXY_H
 
 #include <QtCore/QObject>
-#include <QtWebKitWidgets/QWebFrame>
+#include <QtWebEngineWidgets/QWebEnginePage>
 
 #include "yacasrequest.h"
 #include "yacasserver.h"
@@ -10,14 +10,14 @@
 class CellProxy: public QObject {
     Q_OBJECT
 public:
-    CellProxy(QWebFrame* frame, int idx, QString expr, YacasServer& yacas_server, CYacas& yacas2tex, QObject* = 0);
+    CellProxy(QWebEnginePage* page, int idx, QString expr, YacasServer& yacas_server, CYacas& yacas2tex, QObject* = 0);
     ~CellProxy();
     
 public slots:
     void on_request_state_changed(YacasRequest::State);
     
 private:
-    QWebFrame* _frame;
+    QWebEnginePage* _page;
     const int _idx;
     QString _expr;
     YacasServer& _yacas_server;

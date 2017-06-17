@@ -122,6 +122,7 @@ bool Preferences::get_enable_WebGL() const
 {
     return _settings.value("View/enable_WebGL", true).toBool();
 }
+
 void Preferences::set_enable_WebGL(bool state)
 {
  

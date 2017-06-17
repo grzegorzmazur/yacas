@@ -47,7 +47,7 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QWebView" name="webView">
+     <widget class="QWebEngineView" name="webEngineView">
       <property name="minimumSize">
        <size>
         <width>250</width>
@@ -480,9 +480,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QWebView</class>
+   <class>QWebEngineView</class>
    <extends>QWidget</extends>
-   <header>QtWebKitWidgets/QWebView</header>
+   <header>QtWebEngineWidgets/QWebEngineView</header>
   </customwidget>
  </customwidgets>
  <resources>

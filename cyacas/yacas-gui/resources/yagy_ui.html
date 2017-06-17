@@ -44,6 +44,8 @@
         <script type="text/javascript" src="three/three.min.js"></script>
         <script type="text/javascript" src="three/Detector.js"></script>
         <script type="text/javascript" src="three/TrackballControls.js"></script>
+        <script type="text/javascript" src="three/Projector.js"></script>
+        <script type="text/javascript" src="three/CanvasRenderer.js"></script>
         <script type="text/javascript" src="plot3d/delaunay.js"></script>
         <script type="text/javascript" src="plot3d/plot3d.js"></script>
         <script type="text/javascript" src="mathbar/mathBar.js"></script>  
@@ -54,7 +56,19 @@
         <script type="text/javascript" src="codemirror/addon/edit/closebrackets.js"></script>
         <script type="text/javascript" src="codemirror/addon/hint/show-hint.js"></script>
         <script type="text/javascript" src="vis/vis.min.js"></script>
-        <script>$( document ).ready( load )</script>
+        <script type="text/javascript" src="webchannel/qwebchannel.js"></script>
+        <script>
+            var channel;
+            var yacas;
+            
+            $( document ).ready(function () {
+                channel = new QWebChannel(qt.webChannelTransport, function(channel) {
+                    yacas = channel.objects.yacas;
+                    load();
+                    yacas.on_initComplete();
+                });
+            });
+        </script>
     </head>
 
     <body>

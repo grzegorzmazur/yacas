@@ -10,8 +10,8 @@ endif()
 
 find_package (Qt5Core REQUIRED)
 find_package (Qt5Widgets REQUIRED)
-find_package (Qt5WebKit REQUIRED)
-find_package (Qt5WebKitWidgets REQUIRED)
+find_package (Qt5WebEngine REQUIRED)
+find_package (Qt5WebEngineWidgets REQUIRED)
 find_package (Qt5Svg REQUIRED)
 find_package (Qt5PrintSupport REQUIRED)
 
@@ -20,15 +20,6 @@ if (Qt5_POSITION_INDEPENDENT_CODE)
 endif()
 
 include_directories (include)
-
-# seems to be required for older qt5 cmake modules
-include_directories (
-    ${Qt5Core_INCLUDE_DIRS}
-    ${Qt5Widgets_INCLUDE_DIRS}
-    ${Qt5WebKit_INCLUDE_DIRS}
-    ${Qt5WebKitWidgets_INCLUDE_DIRS}
-    ${Qt5PrintSupport_INCLUDE_DIRS}
-)
 
 qt5_wrap_ui (ui_mainwindow.h ui/mainwindow.ui)
 qt5_wrap_ui (ui_preferences_dialog.h ui/preferences_dialog.ui)
@@ -76,10 +67,12 @@ endif ()
 
 add_executable (yacas-gui ${OS_BUNDLE} ${SOURCES} ${HEADERS} ${QRESOURCES})
 
+target_link_libraries(yacas-gui Qt5::Core Qt5::Widgets Qt5::WebEngine Qt5::WebEngineWidgets Qt5::Svg Qt5::PrintSupport)
+
 if (APPLE)
-    target_link_libraries(yacas-gui Qt5::Core Qt5::Widgets Qt5::WebKit Qt5::WebKitWidgets Qt5::Svg Qt5::PrintSupport libyacas_framework)
+    target_link_libraries(yacas-gui libyacas_framework)
 else ()
-    target_link_libraries(yacas-gui Qt5::Core Qt5::Widgets Qt5::WebKit Qt5::WebKitWidgets Qt5::Svg Qt5::PrintSupport libyacas)
+    target_link_libraries(yacas-gui libyacas)
 endif ()
 
 if (APPLE)

@@ -48,6 +48,7 @@ install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/
 if (NOT APPLE)
     install (FILES plot3d/plot3d.js DESTINATION share/yacas/resources/plot3d)
     install (DIRECTORY jquery DESTINATION share/yacas/resources)
+    install (DIRECTORY webchannel DESTINATION share/yacas/resources)
     install (DIRECTORY mathbar DESTINATION share/yacas/resources)
     install (DIRECTORY yagy_ui DESTINATION share/yacas/resources)
     install (FILES yagy_ui.html DESTINATION share/yacas/resources)
@@ -61,7 +62,7 @@ if (NOT APPLE)
 
     install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_flot/jquery.flot.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_flot/jquery.flot.resize.js DESTINATION share/yacas/resources/flot)
 
-    install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/build/three.min.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/examples/js/Detector.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/examples/js/controls/TrackballControls.js DESTINATION share/yacas/resources/three)
+    install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/build/three.min.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/examples/js/Detector.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/examples/js/controls/TrackballControls.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/examples/js/renderers/CanvasRenderer.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/examples/js/renderers/Projector.js DESTINATION share/yacas/resources/three)
 
     install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_vis/dist/vis.min.css ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_vis/dist/vis.min.js DESTINATION share/yacas/resources/vis)
 
