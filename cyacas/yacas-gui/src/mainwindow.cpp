@@ -115,7 +115,7 @@ void MainWindow::loadYacasPage()
 void MainWindow::print(QPrinter* printer)
 {
 #if QT_VERSION_MAJOR >= 5 && QT_VERSION_MINOR >= 8
-    _ui->webEngineView->page()->print(printer);
+    _ui->webEngineView->page()->print(printer, [](bool){});
 #endif
 }
 
