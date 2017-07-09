@@ -151,8 +151,8 @@ char32_t CUnixCommandLine::GetKey()
 
     if (c == term_chars[VERASE]) /* Backspace */
         ch = eBackSpace;
-    else if (c == term_chars[VEOF]) /* delete */
-        ch = eDelete;
+    else if (c == term_chars[VEOF]) /* end of file/delete */
+        ch = eCtrlD;
     else {
         switch (c) {
             case 9: //  9   tab
@@ -167,7 +167,8 @@ char32_t CUnixCommandLine::GetKey()
             case 005: /* ^E  (unix end) */
                 ch = eEnd;
                 break;
-            case 004: /* ^D  (unix delete) */
+            case 004: /* ^D  (unix delete/end of file) */
+                ch = eCtrlD;
             case 127:
                 ch = eDelete;
                 break;

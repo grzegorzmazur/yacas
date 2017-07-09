@@ -68,9 +68,16 @@ void CCommandLine::ReadLineSub(const std::string& prompt)
 		std::uint32_t c = GetKey();
 #endif
         const std::size_t len = utf8::distance(iSubLine.begin(), iSubLine.end());
+
+        if (c == eCtrlD && len == 0) {
+            iSubLine = "Exit()";
+            NewLine();
+            return;
+        }
         
         switch (c)
         {
+        case eCtrlD:
         case eDelete:
             if (cursor < len)
             {

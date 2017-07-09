@@ -24,6 +24,7 @@
 enum ESpecialChars
 {
     eDelete     = utf8::internal::CODE_POINT_MAX + 1,
+    eCtrlD,
     eBackSpace,
     eLeft,
     eRight,
