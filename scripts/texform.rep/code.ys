@@ -282,7 +282,7 @@ LocalSymbols(TeXFormMathFunctions, TeXFormMathFunctions2) [
 
 100 # TeXForm(Sum(_x, _x1, _x2, _expr), _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings("\\sum _{", TeXForm(x, TeXFormMaxPrec()), " = ", TeXForm(x1, TeXFormMaxPrec()), "} ^{", TeXForm(x2, TeXFormMaxPrec()), "} ", TeXForm(expr, OpPrecedence("*")) ) );
 
-100 # TeXForm(Factorize(_x, _x1, _x2, _expr), _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings("\\prod _{", TeXForm(x, TeXFormMaxPrec()), " = ", TeXForm(x1, TeXFormMaxPrec()), "} ^{", TeXForm(x2, TeXFormMaxPrec()), "} ", TeXForm(expr, OpPrecedence("*")) ) );
+100 # TeXForm(Product(_x, _x1, _x2, _expr), _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings("\\prod _{", TeXForm(x, TeXFormMaxPrec()), " = ", TeXForm(x1, TeXFormMaxPrec()), "} ^{", TeXForm(x2, TeXFormMaxPrec()), "} ", TeXForm(expr, OpPrecedence("*")) ) );
 
 100 # TeXForm(Integrate(_x, _x1, _x2) _expr, _p) <-- TeXFormBracketIf(p<OpPrecedence("/"), ConcatStrings(
 "\\int _{", TeXForm(x1, TeXFormMaxPrec()), "} ^{", TeXForm(x2, TeXFormMaxPrec()), " } ", TeXForm(expr, OpPrecedence("*")), " d", TeXForm(x, TeXFormMaxPrec())

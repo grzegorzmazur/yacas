@@ -121,11 +121,11 @@ TestYacas(( a*(Sqrt(b ))^2/2), (a*b)/2);
 Verify(Gcd(0,0),1);
 Verify(Gcd({0}),1);
 
-// Factorize didn't check for correct input
-Verify(Factorize(10), Factorize(10));
-Verify(Factorize(-1), Factorize(-1));
-Verify(Factorize(Infinity), Factorize(Infinity));
-Verify(Factorize(1 .. 10),3628800);
+// Multiply didn't check for correct input
+Verify(Multiply(10), Multiply(10));
+Verify(Multiply(-1), Multiply(-1));
+Verify(Multiply(Infinity), Multiply(Infinity));
+Verify(Multiply(1 .. 10),3628800);
 
 //
 TestYacas(Sin(Pi-22),-Sin(22-Pi));

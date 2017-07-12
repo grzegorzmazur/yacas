@@ -1,0 +1,6 @@
+Testing("Product");
+
+Verify(Product(i,1,3,i), 6);
+Verify(Product(k,1,n,k), n!);
+Verify(Product(k,1,n,2), 2^n);
+Verify(Product(k,1,Infinity,1), 1);

@@ -131,6 +131,8 @@ set (YACAS_SCRIPTS
   scripts/predicates.rep/code.ys.def
   scripts/probability.rep/code.ys
   scripts/probability.rep/code.ys.def
+  scripts/products.rep/code.ys
+  scripts/products.rep/code.ys.def
   scripts/pslq.rep/code.ys
   scripts/pslq.rep/code.ys.def
   scripts/rabinmiller.rep/code.ys

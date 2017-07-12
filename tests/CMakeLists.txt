@@ -39,6 +39,7 @@ set (YACAS_TESTS
   plots.yts
   poly.yts
   predicates.yts
+  products.yts
   programming.yts
   radsimp.yts
   rational.yts

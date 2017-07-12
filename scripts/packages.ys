@@ -45,6 +45,7 @@ Defun(DefFileList,{}) {
     "plots.rep/plot3d.ys",
     "predicates.rep/code.ys",
     "probability.rep/code.ys",
+    "products.rep/code.ys",
     "pslq.rep/code.ys",
     "r_form.rep/code.ys",
     "rabinmiller.rep/code.ys",

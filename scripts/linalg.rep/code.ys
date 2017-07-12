@@ -314,17 +314,15 @@ GaussianDeterminant(matrix):=
 ];
 
 
-20 # SymbolicDeterminant(_matrix) <-- 
-[
-  Local(perms,indices,result);
-  Check((IsMatrix(matrix)),"Determinant: Argument must be a matrix");
-  indices:=Table(i,i,1,Length(matrix),1);
-  perms:=Permutations(indices);
-  result:=0;
-  ForEach(item,perms)
-     result:=result+Factorize(i,1,Length(matrix),matrix[i][item[i] ])*
-                    LeviCivita(item);
-  result;
+20 # SymbolicDeterminant(_matrix) <-- [
+    Local(perms,indices,result);
+    Check((IsMatrix(matrix)),"Determinant: Argument must be a matrix");
+    indices:=Table(i,i,1,Length(matrix),1);
+    perms:=Permutations(indices);
+    result:=0;
+    ForEach(item,perms)
+        result:=result+Product(i,1,Length(matrix),matrix[i][item[i] ]) * LeviCivita(item);
+    result;
 ];
 
 
@@ -344,17 +342,19 @@ Function("Sparsity",{matrix})
 
 Function("CoFactor",{matrix,ii,jj})
 [
-  Local(perms,indices,result);
-  indices:=Table(i,i,1,Length(matrix),1);
-  perms:=Permutations(indices);
-  result:=0;
-  ForEach(item,perms)
-     If(item[ii] = jj,
-       result:=result+
-         Factorize(i,1,Length(matrix),
-         If(ii=i,1,matrix[i][item[i] ])
-                  )*LeviCivita(item));
-  result;
+    Local(perms,indices,result);
+    indices:=Table(i,i,1,Length(matrix),1);
+    perms:=Permutations(indices);
+    result:=0;
+    ForEach(item,perms)
+        If(item[ii] = jj, [
+            Local(i, t);
+            t := 1;
+            For (i := 1, i <= Length(matrix), i++)
+                t := t * If(ii=i,1,matrix[i][item[i]]);
+            result := result + t * LeviCivita(item);
+        ]);
+    result;
 ];
 
 

@@ -186,7 +186,7 @@ LagrangeInt(_var,_list) <--
 [
   Local(nr);
   nr:=Length(list);
-  Factorize(FillList(var,nr)-list);
+  Multiply(FillList(var,nr)-list);
 ];
 
 LagrangeInterpolant(list_IsList,_values,_var) <--

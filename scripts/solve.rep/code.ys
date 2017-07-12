@@ -624,26 +624,26 @@ SuchThat(_function,_var) <-- SuchThat(function,0,var);
 
 Function("SolveMatrix",{matrix,vector})
 [
-  Local(perms,indices,inv,det,n);
-  n:=Length(matrix);
-  indices:=Table(i,i,1,n,1);
-  perms:=Permutations(indices);
-  inv:=ZeroVector(n);
-  det:=0;
-  ForEach(item,perms)
-  [
-    Local(i,lc);
-    lc := LeviCivita(item);
-    det:=det+Factorize(i,1,n,matrix[i][item[i] ])* lc;
-    For(i:=1,i<=n,i++)
-        [
-         inv[i] := inv[i]+
-           Factorize(j,1,n,
-           If(item[j] =i,vector[j ],matrix[j][item[j] ]))*lc;
+    Local(perms,indices,inv,det,n);
+    n:=Length(matrix);
+    indices:=Table(i,i,1,n,1);
+    perms:=Permutations(indices);
+    inv:=ZeroVector(n);
+    det:=0;
+    ForEach(item,perms) [
+        Local(i,lc);
+        lc := LeviCivita(item);
+        det:=det+Product(i,1,n,matrix[i][item[i] ])* lc;
+        For(i:=1,i<=n,i++) [
+            Local(j, t);
+            t := 1;
+            For (j := 1, j <= Length(matrix), j++)
+                t := t * If(item[j] = i,vector[j],matrix[j][item[j]]);
+            inv[i] := inv[i] + t * lc;
         ];
-  ];
-  Check(det != 0, "Zero determinant");
-  (1/det)*inv;
+    ];
+    Check(det != 0, "Zero determinant");
+    (1/det)*inv;
 ];
 
 

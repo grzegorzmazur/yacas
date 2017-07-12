@@ -112,7 +112,7 @@ MultiPrimitivePart(MultiNomial(vars_IsList,_terms))
 
 10 # MultiLeadingMono(MultiNomial(_vars,{})) <-- 0;
 20 # MultiLeadingMono(MultiNomial(_vars,_terms))
-   <-- Factorize(vars^(MultiDegree(MultiNomial(vars,terms))));
+   <-- Multiply(vars^(MultiDegree(MultiNomial(vars,terms))));
 
 20 # MultiLeadingTerm(_m) <-- MultiLeadingCoef(m) * MultiLeadingMono(m);
 
@@ -289,7 +289,7 @@ MultiS(_g,_h,MultiNomial(_vars,_terms)) <--
 
   gamma :=Max(MultiDegree(g),MultiDegree(h));
   Local(result,topterm);
-  topterm := MM(Factorize(vars^gamma));
+  topterm := MM(Multiply(vars^gamma));
 
   result :=
     MultiDivTerm(topterm,MultiLT(g))*g -

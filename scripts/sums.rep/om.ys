@@ -20,6 +20,6 @@ OMDef( "Sum", "arith1","sum", // Same argument reordering as Integrate.
        { $, _2 .. _3, OMBIND(OMS("fns1", "lambda"), OMBVAR(_1), _4) },
        { $, _{2,2,1}, _{1,1}, _{1,2}, _{2,3} }
       );
-OMDef( "Factorize", "yacas","Factorize" );
+OMDef( "Product", "yacas","Product" );
 OMDef( "Taylor",    "yacas","Taylor" );
 OMDef( "Subfactorial", "yacas","Subfactorial" );

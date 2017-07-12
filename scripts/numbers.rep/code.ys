@@ -263,7 +263,7 @@ LocalSymbols(p, q)
 		If(
 			IsInteger(p),
 			p,
-			p := Factorize(Select({{q}, Mod(q^2,24)=1 And IsSmallPrime(q)}, 5 .. 257))
+			p := Multiply(Select({{q}, Mod(q^2,24)=1 And IsSmallPrime(q)}, 5 .. 257))
 		);
 //		p;
 	];
@@ -399,7 +399,7 @@ Function("FermatNumber",{n})[
 
 IsPerfect(n_IsPositiveInteger) <-- ProperDivisorsSum(n)=n;
 
-5  # IsCoprime(list_IsList)                     <-- (Lcm(list) = Product(list));
+5  # IsCoprime(list_IsList)                     <-- (Lcm(list) = Multiply(list));
 10 # IsCoprime(n_IsInteger,m_IsInteger)		<-- (Gcd(n,m) = 1);
 
 // Algorithm adapted from:
@@ -613,17 +613,6 @@ PartitionsP'recur(number_IsPositiveInteger) <--
 	cache[number+1];
 ];
 PartitionsP'recur(0) <-- 1;
-
-// the product of all the elements of a list
-Product(list_IsList) <--
-[
-	Local(product);
-	product:=1;
-	ForEach(i,list)
-		product:=product*i;
-	product;
-];
-
 
 Eulerian(n_IsInteger,k_IsInteger) <-- Sum(j,0,k+1,(-1)^j*Bin(n+1,j)*(k-j+1)^n);
 

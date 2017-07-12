@@ -1,7 +1,7 @@
 
 Mean(x) := Add(x)/Length(x);
 
-GeometricMean(x) := Factorize(x)^(1/Length(x));
+GeometricMean(x) := Multiply(x)^(1/Length(x));
 
 Median(x) :=
 [

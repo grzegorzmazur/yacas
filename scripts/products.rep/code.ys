@@ -1,0 +1,84 @@
+Function() Multiply(val, ...);
+
+10 # Multiply({}) <-- 1;
+20 # Multiply(values_IsList) <--
+[
+   Local(i, prod);
+   prod:=1;
+   ForEach(i, values) [ prod := prod * i; ];
+   prod;
+];
+
+30 # Multiply(_value) <-- value;
+
+RuleBase("Product",{pvar'arg,pfrom'arg,pto'arg,pbody'arg});
+
+5  # Product(_pvar,pfrom_IsNumber,pto_IsNumber,_pbody)_(pfrom>pto) <-- 1;
+
+10 # Product(_pvar,pfrom_IsNumber,pto_IsNumber,_pbody)_(pto<pfrom) <--
+     ApplyPure("Product",{pvar,pto,pfrom,pbody});
+
+20 # Product(_pvar,pfrom_IsNumber,pto_IsNumber,_pbody) <--
+LocalSymbols(pi,pp)[
+    Local(pi,pp);
+    pp:=1;
+    For(pi:=pfrom,pi<=pto,pi++) [
+        MacroLocal(pvar);
+        MacroSet(pvar,pi);
+        pp:=pp*Eval(pbody);
+    ];
+    pp;
+];
+
+
+LocalSymbols(c,d,expr,from,to,factor,product,predicate,k,n,r,var,x) [
+
+    Function() ProductFunc(k,from,to,factor, product, predicate );
+    Function() ProductFunc(k,from,to,factor, product);
+    HoldArg(ProductFunc,predicate);
+    HoldArg(ProductFunc,product);
+    HoldArg(ProductFunc,factor);
+
+    ProductFunc(_productvar,productfrom_IsInteger,_productto,_productbody,_product) <--
+    [
+        // Take the given answer and create 2 rules, one for an exact match
+        // for productfrom, and one which will catch sums starting at a different
+        // index and subtract off the difference
+
+        `(40 # Product(@productvar,@productfrom,@productto,@productbody )   <-- Eval(@product) );
+        `(41 # Product(@productvar,p_IsInteger,@productto,@productbody)_(p > @productfrom) <-- [
+            Local(denom);
+            (denom := Eval(UnList({Product,productvar'arg,@productfrom,p-1,productbody'arg})));
+            Simplify(Eval(@product) / denom);
+        ]);
+    ];
+
+    ProductFunc(_productvar,productfrom_IsInteger,_productto,_productbody,_product,_condition) <--
+    [
+
+        `(40 # Product(@productvar,@productfrom,@productto,@productbody)_(@condition)    <-- Eval(@product) );
+        `(41 # Product(@productvar,p_IsInteger,@productto,@productbody )_(@condition And p > @productfrom)
+            <-- [
+                Local(denom);
+                `(denom := Eval(UnList({Product,productvar'arg,@productfrom,p-1,productbody'arg})));
+                Simplify(Eval(@product) / denom);
+            ]);
+    ];
+
+    // Some type of canonical form is needed so that these match when
+    // given in a different order
+    ProductFunc(_k,1,_n,_c*_d,
+        Eval(UnList({Product,productvar'arg,1,n,c})) *
+        Eval(UnList({Product,productvar'arg,1,n,d}))
+    );
+    ProductFunc(_k,1,_n,_c*_expr,Eval(c^n*UnList({Product,productvar'arg,1,n,expr})), IsFreeOf(k,c) );
+    ProductFunc(_k,1,_n,_expr/_c,Eval(UnList({Product,productvar'arg,1,n,expr})/c^n), IsFreeOf(k,c) );
+
+    ProductFunc(_k,1,Infinity,0,0);
+    ProductFunc(_k,1,Infinity,1,1);
+    ProductFunc(_k,1,Infinity,1/_k,0);
+    ProductFunc(_k,1,Infinity,_k,Infinity);
+
+    ProductFunc(_k,1,_n,_c,(c)^n,IsFreeOf(k,c));
+    ProductFunc(_k,1,_n,_k, n!);
+];

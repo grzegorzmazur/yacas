@@ -165,48 +165,6 @@ Function() Add(val, ...);
 // Add(1) should return 1
 30 # Add(_value) <-- value;
 
-Function() Multiply(val, ...);
-
-10 # Multiply({}) <-- 1;
-20 # Multiply(values_IsList) <--
-[
-   Local(i, prod);
-   prod:=1;
-   ForEach(i, values) [ prod := prod * i; ];
-   prod;
-];
-
-// Multiply(1) should return 1
-30 # Multiply(_value) <-- value;
-
-Function("Factorize",{sumvar,sumfrom,sumto,sumbody})
-[
-   Local(sumi,sumsum);
-   sumsum:=1;
-   For(sumi:=sumfrom,sumi<=sumto And sumsum!=0,sumi++)
-       [
-        MacroLocal(sumvar);
-        MacroSet(sumvar,sumi);
-        sumsum:=sumsum*Eval(sumbody);
-       ];
-   sumsum;
-];
-UnFence("Factorize",4);
-HoldArg("Factorize",sumvar);
-HoldArg("Factorize",sumbody);
-
-Factorize(sumlist_IsList) <--
-[
-   Local(sumi,sumsum);
-   sumsum:=1;
-   ForEach(sumi,sumlist)
-   [
-     sumsum:=sumsum*sumi;
-   ];
-   sumsum;
-];
-
-
 /*COMMENT FROM AYAL: Jitse, I added some code to make Taylor2 work in the most general case too I believe.
   Could you check to see if you agree with my changes? If that is correct, perhaps we can start calling Taylor2
   by default in stead of Taylor1.

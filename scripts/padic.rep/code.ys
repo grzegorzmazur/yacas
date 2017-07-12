@@ -150,7 +150,7 @@ ChineseRemainderInteger(mlist_IsList,vlist_IsList) <--
 [
   Local(m,i,nr,result,msub,euclid,clist);
   clist:={};
-  m:=Factorize(mlist);
+  m:=Multiply(mlist);
   result:=0;
   
   nr:=Length(mlist);
@@ -170,7 +170,7 @@ ChineseRemainderPoly(mlist_IsList,vlist_IsList) <--
 [
   Local(m,i,nr,result,msub,euclid,clist);
   clist:={};
-  m:=Factorize(mlist);
+  m:=Multiply(mlist);
   result:=0;
 
 /* Echo({mlist,m}); */

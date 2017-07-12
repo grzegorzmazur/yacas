@@ -61,9 +61,9 @@ FactorialSimplify(x):=
 10 # CommonDivisors((_x)! ^ _m, (_y)! ^ _m)_IsInteger(Simplify(x-y))  <-- CommonFact(Simplify(x-y),y)^m;
 
 10 # CommonFact(dist_IsNegativeInteger,_y) 
-   <-- {1,Factorize(i,1,-dist,Simplify(y+i+dist)),Simplify(y+dist)!};
+   <-- {1,Product(i,1,-dist,Simplify(y+i+dist)),Simplify(y+dist)!};
 11 # CommonFact(_dist,_y) 
-   <-- {Factorize(i,1,dist,Simplify(y+i)),1,Simplify(y)!};
+   <-- {Product(i,1,dist,Simplify(y+i)),1,Simplify(y)!};
 60000 # CommonDivisors(_x,_y) <-- {x,y,1};
 
 10 # CommonFactors((_x)!,_y)_(Simplify(y-x) = 1) <-- {y!,1};
@@ -157,8 +157,8 @@ LocalSymbols(n,d,c)
       common:=common*c;
     ];
 //Echo("final ",{x,y,common});
-//Echo("finalor ",{Factorize(x),Factorize(y),common});
-    {Factorize(x),Factorize(y),common};
+//Echo("finalor ",{Multiply(x),Multiply(y),common});
+    {Multiply(x),Multiply(y),common};
   ];
 ];
 
@@ -245,7 +245,7 @@ LocalSymbols(n,d,c)
           common[i]:=f2;
         ]);
     ];    
-    common := Factorize(common);
+    common := Multiply(common);
     {common,terms};
   ];
 ];  

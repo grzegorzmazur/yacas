@@ -557,7 +557,7 @@ _[
    _ (CanBeUni(x,y) And Degree(y,x) = 1 And Coef(y,x,0) != 0) <-- 
 [ 
    Local(j); 
-   Coef(y,x,0)^(1/2-n) * Factorize(j,0,n-1,1/2-j) * Coef(y,x,1)^n/n!;
+   Coef(y,x,0)^(1/2-n) * Product(j,0,n-1,1/2-j) * Coef(y,x,1)^n/n!;
 ];
 
 /* Exp */
