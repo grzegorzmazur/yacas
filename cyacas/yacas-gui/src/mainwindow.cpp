@@ -23,17 +23,6 @@
 
 #include "yacas/yacas_version.h"
 
-#if defined(__APPLE__)
-#include <CoreFoundation/CoreFoundation.h>
-#elif defined (__linux__)
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <libgen.h>
-#elif defined(_WIN32)
-#include <shlwapi.h>
-#endif
-
 MainWindow::MainWindow(Preferences& prefs, QWidget *parent) :
     QMainWindow(parent),
     _prefs(prefs),
