@@ -11,53 +11,53 @@
 
 #include "preferences.h"
 
-void addSplashScreen( MainWindow* widget );
+void addSplashScreen(MainWindow* widget);
 
 int main(int argc, char *argv[])
 {
-  QApplication app(argc, argv);
-    
-  try {
-    #ifndef NO_GLOBALS
-      PlatObSetThreadSafe(true);
-    #endif    
+    QApplication app(argc, argv);
 
-	app.setApplicationName("yagy");
-    app.setApplicationDisplayName("Yagy");
-    app.setOrganizationName("yagy.sourceforge.net");
-    app.setOrganizationDomain("yagy.sourceforge.net");
-        
-    #ifndef _WIN32
-	  app.setAttribute(Qt::AA_DontShowIconsInMenus);
-    #endif        
+    try {
+#ifndef NO_GLOBALS
+        PlatObSetThreadSafe(true);
+#endif    
 
-	qRegisterMetaType<YacasRequest::State>("YacasRequest::State");
+        app.setApplicationName("yacas-gui");
+        app.setApplicationDisplayName("Yacas GUI");
+        app.setOrganizationName("yacas.org");
+        app.setOrganizationDomain("yacas.org");
 
-	Preferences prefs(app);
-        
-	MainWindow  *widget = new MainWindow (prefs);
-    
-   
-    
-    #ifndef __APPLE__
-      addSplashScreen( widget );
-    #endif
+#ifndef _WIN32
+        app.setAttribute(Qt::AA_DontShowIconsInMenus);
+#endif        
 
-    widget->show();
-    
-    return app.exec();
-  } catch (const std::exception& e) {
-    QMessageBox::critical(nullptr, "YAGY Error", e.what());
-    return 1;
-  } catch (...) {
-    QMessageBox::critical(nullptr, "YAGY Error", "Unknown error");
-    return 1;
-  }
-    
-  return 0;
+        qRegisterMetaType<YacasRequest::State>("YacasRequest::State");
+
+        Preferences prefs(app);
+
+        MainWindow *widget = new MainWindow(prefs);
+
+
+
+#ifndef __APPLE__
+        addSplashScreen(widget);
+#endif
+
+        widget->show();
+
+        return app.exec();
+    } catch (const std::exception& e) {
+        QMessageBox::critical(nullptr, "Yacas GUI Error", e.what());
+        return 1;
+    } catch (...) {
+        QMessageBox::critical(nullptr, "Yacas GUI Error", "Unknown error");
+        return 1;
+    }
+
+    return 0;
 }
 
-void addSplashScreen( MainWindow* widget )
+void addSplashScreen(MainWindow* widget)
 {
     QPixmap si(":/resources/img/splash.png");
     QSplashScreen ss(widget, si, Qt::WindowStaysOnTopHint);
