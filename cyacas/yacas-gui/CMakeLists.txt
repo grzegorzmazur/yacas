@@ -52,7 +52,7 @@ set (HEADERS
 )
 
 if (WIN32)
-    set (SOURCES ${SOURCES} winres/yagy.rc)
+    set (SOURCES ${SOURCES} winres/yacas_gui.rc)
 endif ()
 
 if (APPLE)
@@ -86,8 +86,8 @@ if (APPLE)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources/plot3d $<TARGET_FILE_DIR:yacas-gui>/../Resources/plot3d)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources/jquery $<TARGET_FILE_DIR:yacas-gui>/../Resources/jquery)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources/mathbar $<TARGET_FILE_DIR:yacas-gui>/../Resources/mathbar)
-    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources/yagy_ui $<TARGET_FILE_DIR:yacas-gui>/../Resources/yagy_ui)
-    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/resources/yagy_ui.html $<TARGET_FILE_DIR:yacas-gui>/../Resources)
+    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources/yacas_gui $<TARGET_FILE_DIR:yacas-gui>/../Resources/yagy_ui)
+    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/resources/yacas_gui.html $<TARGET_FILE_DIR:yacas-gui>/../Resources)
 
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_codemirror/lib DESTINATION $<TARGET_FILE_DIR:yacas-gui>/../Resources/codemirror/lib)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_codemirror/mode/yacas DESTINATION $<TARGET_FILE_DIR:yacas-gui>/../Resources/codemirror/mode/yacas)

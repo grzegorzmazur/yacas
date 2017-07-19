@@ -16,7 +16,7 @@ BEGIN
         BEGIN
             VALUE "FileVersion",      YACAS_VERSION
             VALUE "LegalCopyright",   "GPL2"
-            VALUE "ProductName",      "yacas-gui"
+            VALUE "ProductName",      "yacas_gui"
             VALUE "ProductVersion",   YACAS_VERSION
         END
     END
@@ -26,4 +26,4 @@ BEGIN
     END
 END
 
-100             ICON "yacas-gui.ico"
+100             ICON "yacas_gui.ico"
