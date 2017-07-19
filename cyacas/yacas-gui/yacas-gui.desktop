@@ -2,7 +2,7 @@
 Name=yacas-gui
 Comment=Yacas GUI
 Exec=yacas-gui
-Icon=yacas-gui.png
+Icon=yacas-gui
 Terminal=false
 Type=Application
-Categories=Education;Science;Math;
+Categories=Science;Math
