@@ -36,12 +36,12 @@ void Preferences::set_enable_toolbar(bool state)
 
 unsigned Preferences::get_math_font_scale() const
 {
-    return _settings.value("View/math_font_scale", 100u).toUInt();
+    return _settings.value("View/math_font_scale", 80u).toUInt();
 }
 
 void Preferences::set_math_font_scale(unsigned scale)
 {
-    if (_settings.value("View/math_font_scale", 100u).toUInt() != scale) {
+    if (_settings.value("View/math_font_scale", 80u).toUInt() != scale) {
         _settings.setValue("View/math_font_scale", scale);
         emit changed();
     }

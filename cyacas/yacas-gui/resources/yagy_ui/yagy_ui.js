@@ -107,7 +107,7 @@ function load() {
 
 
 function changeMathJaxScale(newScale) {
-    MathJax.Hub.Config({"HTML-CSS": {
+    MathJax.Hub.Config({CommonHTML: {
             scale: newScale}
     });
     MathJax.Hub.Queue(["Rerender", MathJax.Hub]);
@@ -115,7 +115,7 @@ function changeMathJaxScale(newScale) {
 }
 
 function changeMathJaxFont(newFont) {
-    MathJax.Hub.Config({"HTML-CSS": {
+    MathJax.Hub.Config({CommonHTML: {
             preferredFont: newFont}
     });
     MathJax.Hub.Queue(["Rerender", MathJax.Hub]);
