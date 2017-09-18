@@ -14,3 +14,4 @@ CMakeCache.txt
 /yacas-logfile.txt
 /jyacas/net/sf/yacas/CVersion.java
 .DS_Store
+.vscode/.cmaketools.json
