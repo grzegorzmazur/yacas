@@ -126,7 +126,7 @@ public class YacasConsole extends Thread
     out.write("discretion) any later version for the full conditions.\n");
     out.write("Type ?license or ?licence to see the LGPL version 2.1;\n");
     out.write("type ?warranty for warranty info.\n");
-    out.write("See http://grzegorzmazur.github.io/yacas/ for more information on yacas\n");
+    out.write("See http://www.yacas.org for more information on yacas\n");
     out.write("and documentation.\n");
     out.write("Type ?? for help. Or type ?function for help on a function.\n\n");
 
