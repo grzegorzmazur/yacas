@@ -55,6 +55,11 @@ public class YacasConsole extends Thread
         i++;
         archive = argv[i];
       }
+      else if (argv[i].equals("-v"))
+      {
+        System.out.println(CVersion.VERSION);
+        System.exit(0);
+      }
       else if (argv[i].equals("-i"))
       {
         i++;
@@ -107,7 +112,7 @@ public class YacasConsole extends Thread
     {
       for (;scriptsToRun<argv.length;scriptsToRun++)
       {
-        yacas.Evaluate("Load(\""+argv[scriptsToRun]+"\");");
+          yacas.Evaluate("Load(\""+argv[scriptsToRun]+"\");");
       }
       return;
     }
