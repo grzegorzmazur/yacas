@@ -37,9 +37,3 @@ if (WIN32)
 endif()
 
 install (TARGETS yacas RUNTIME DESTINATION bin COMPONENT app)
-
-#include (CTest)
-#
-#add_subdirectory (tests)
-#
-#add_subdirectory (packaging)
