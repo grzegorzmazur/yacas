@@ -137,6 +137,8 @@ set (YACAS_SCRIPTS
     scripts/products.rep/code.ys.def
     scripts/pslq.rep/code.ys
     scripts/pslq.rep/code.ys.def
+    scripts/r_form.rep/code.ys
+    scripts/r_form.rep/code.ys.def
     scripts/rabinmiller.rep/code.ys
     scripts/rabinmiller.rep/code.ys.def
     scripts/radsimp.rep/code.ys
