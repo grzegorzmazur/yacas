@@ -44,7 +44,14 @@ MainWindow::MainWindow(Preferences& prefs, QWidget *parent) :
 
     _ui->setupUi(this);
 
-    _ui->toolBar->setIconSize(QSize(20, 20));
+    const qreal scale = QGuiApplication::primaryScreen()->logicalDotsPerInch() / 96.0;
+
+    resize(size() * scale);
+
+    const qreal icon_size = 16 * scale;
+    _ui->toolBar->setIconSize(QSize(size, size));
+
+    _ui->webEngineView->setZoomFactor(scale);
 
     _update_title();
 
@@ -92,7 +99,7 @@ void MainWindow::closeEvent(QCloseEvent* event)
 void MainWindow::loadYacasPage()
 {
     QDir resources_dir(_prefs.get_resources_path());
-    const QUrl url = QUrl::fromLocalFile(resources_dir.absoluteFilePath("yagy_ui.html"));
+    const QUrl url = QUrl::fromLocalFile(resources_dir.absoluteFilePath("yacas_gui.html"));
     
     QWebChannel* c = new QWebChannel();
     c->registerObject("yacas", this);
