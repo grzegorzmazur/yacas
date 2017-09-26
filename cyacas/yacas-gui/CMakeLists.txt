@@ -142,7 +142,7 @@ if (WIN32)
     get_target_property(QtCore_location Qt5::Core LOCATION)
     get_filename_component(QT_DLL_DIR ${QtCore_location} DIRECTORY)
 	
-    set (QT_DLLS Qt5WebKit.dll Qt5WebKitWidgets.dll Qt5WebChannel.dll icuin54.dll icuuc54.dll icudt54.dll Qt5Core.dll  Qt5Gui.dll Qt5Multimedia.dll Qt5MultimediaWidgets.dll Qt5Network.dll Qt5OpenGL.dll Qt5Positioning.dll Qt5PrintSupport.dll Qt5Qml.dll Qt5Quick.dll Qt5Sensors.dll Qt5Sql.dll Qt5Svg.dll Qt5Widgets.dll)
+    set (QT_DLLS Qt5WebEngine.dll Qt5WebEngineCore.dll Qt5WebEngineWidgets.dll Qt5WebChannel.dll Qt5Core.dll  Qt5Gui.dll Qt5Multimedia.dll Qt5MultimediaWidgets.dll Qt5Network.dll Qt5OpenGL.dll Qt5Positioning.dll Qt5PrintSupport.dll Qt5Qml.dll Qt5Quick.dll Qt5QuickWidgets.dll Qt5Sensors.dll Qt5Sql.dll Qt5Svg.dll Qt5Widgets.dll)
     
     foreach (_dll ${QT_DLLS})
         install (FILES "${QT_DLL_DIR}/${_dll}" DESTINATION bin)
