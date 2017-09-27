@@ -49,7 +49,7 @@ MainWindow::MainWindow(Preferences& prefs, QWidget *parent) :
     resize(size() * scale);
 
     const qreal icon_size = 16 * scale;
-    _ui->toolBar->setIconSize(QSize(size, size));
+    _ui->toolBar->setIconSize(QSize(icon_size, icon_size));
 
     _ui->webEngineView->setZoomFactor(scale);
 
