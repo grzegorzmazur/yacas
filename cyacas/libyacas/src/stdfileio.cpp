@@ -102,7 +102,7 @@ void StdFileInput::_get() const
 }
 
 
-std::string InternalFindFile(const char* fname, const std::vector<std::string>& dirs)
+std::string InternalFindFile(const std::string& fname, const std::vector<std::string>& dirs)
 {
     std::string path(fname);
 
