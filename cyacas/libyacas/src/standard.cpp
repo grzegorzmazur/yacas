@@ -66,8 +66,10 @@ int InternalAsciiToInt(const LispString& aString)
     return std::stoi(aString);
 }
 
-bool IsNumber(const char* ptr,bool aAllowFloat)
+bool IsNumber(const std::string& s,bool aAllowFloat)
 {
+    const char* ptr = s.c_str();
+
     if (*ptr == '-' || *ptr == '+')
         ptr++;
 

@@ -14,7 +14,7 @@ bool InternalIsList(const LispEnvironment& env, const LispPtr& aPtr);
 bool InternalIsString(const LispString* aOriginal);
 std::string InternalUnstringify(const std::string& s);
 int InternalAsciiToInt(const LispString& aString);
-bool IsNumber(const char* ptr, bool aAllowFloat);
+bool IsNumber(const std::string& s, bool aAllowFloat);
 
 void InternalNth(LispPtr& aResult, const LispPtr& aArg, int n);
 void InternalTail(LispPtr& aResult, const LispPtr& aArg);
