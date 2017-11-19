@@ -71,14 +71,16 @@ Yacas allows for use of the infix notation, but with some
 additions. Functions can be *bodied*, meaning that the last argument
 is written past the close bracket. An example is ``ForEach``, where we
 write ``ForEach(item, 1 .. 10) Echo(item);``.  ``Echo(item)`` is the
-last argument to the function ``ForEach``.  <br /> A list is enclosed
-with curly braces, and is written out with commas between the
+last argument to the function ``ForEach``.
+
+A list is enclosed with curly braces, and is written out with commas between the
 elements, like for example ``{1,2,3}``.  items in lists (and things
 that can be made to look like lists, like arrays and strings), can
 then be accessed by indicating the index between square brackets after
 the object. ``{a,b,c}[2]`` should return ``b``, as ``b`` is the second
 element in the list (Yacas starts counting from 1 when accessing
-elements). The same can be done with strings: ``"abc"[2]``.  <br />
+elements). The same can be done with strings: ``"abc"[2]``.
+
 And finally, function calls can be grouped together, where they get
 executed one at a time, and the result of executing the last
 expression is returned. This is done through square brackets, as ``[
