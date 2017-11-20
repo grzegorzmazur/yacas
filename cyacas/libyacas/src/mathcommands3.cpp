@@ -23,6 +23,7 @@
 #include "yacas/yacas_version.h"
 
 #include <sstream>
+#include <iomanip>
 
 
 #define InternalEval aEnvironment.iEvaluator->Eval
@@ -95,7 +96,8 @@ void LispMultiply(LispEnvironment& aEnvironment, int aStackTop)
       RefPtr<BigNumber> y;
       GetNumber(x,aEnvironment, aStackTop, 1);
       GetNumber(y,aEnvironment, aStackTop, 2);
-      BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
+      BigNumber *z = new BigNumber("0", aEnvironment.BinaryPrecision());
+      z->Precision(aEnvironment.BinaryPrecision());
       z->Multiply(*x, *y, aEnvironment.BinaryPrecision());
       RESULT = new LispNumber(z);
       return;
@@ -133,8 +135,8 @@ void LispAdd(LispEnvironment& aEnvironment, int aStackTop)
       RefPtr<BigNumber> y;
       GetNumber(x,aEnvironment, aStackTop, 1);
       GetNumber(y,aEnvironment, aStackTop, 2);
-      int bin = aEnvironment.BinaryPrecision();
-      BigNumber *z = new BigNumber(bin);
+      BigNumber *z = new BigNumber("0", aEnvironment.BinaryPrecision());
+      z->Precision(aEnvironment.BinaryPrecision());
       z->Add(*x.ptr(),*y.ptr(),aEnvironment.BinaryPrecision());
       RESULT = (new LispNumber(z));
       return;
@@ -148,8 +150,8 @@ void LispSubtract(LispEnvironment& aEnvironment, int aStackTop)
     {
       RefPtr<BigNumber> x;
       GetNumber(x,aEnvironment, aStackTop, 1);
-      BigNumber *z = new BigNumber(*x/*aEnvironment.BinaryPrecision()*/);
-      z->Negate(*z /* *x.Ptr() */);
+      BigNumber *z = new BigNumber(*x);
+      z->Negate(*z);
       RESULT = (new LispNumber(z));
       return;
     }
@@ -161,7 +163,8 @@ void LispSubtract(LispEnvironment& aEnvironment, int aStackTop)
       GetNumber(y,aEnvironment, aStackTop, 2);
       BigNumber yneg(*y);
       yneg.Negate(yneg);
-      BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
+      BigNumber *z = new BigNumber("0", aEnvironment.BinaryPrecision());
+      z->Precision(aEnvironment.BinaryPrecision());
       z->Add(*x,yneg,aEnvironment.BinaryPrecision());
       RESULT = (new LispNumber(z));
       return;
@@ -177,16 +180,15 @@ void LispDivide(LispEnvironment& aEnvironment, int aStackTop)
   RefPtr<BigNumber> y;
   GetNumber(x,aEnvironment, aStackTop, 1);
   GetNumber(y,aEnvironment, aStackTop, 2);
-  BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
+  BigNumber *z = new BigNumber("0", aEnvironment.BinaryPrecision());
+  z->Precision(aEnvironment.BinaryPrecision());
   // if both arguments are integers, then BigNumber::Divide would perform an integer divide, but we want a float divide here.
   if (x->IsInt() && y->IsInt())
   {
     // why can't we just say BigNumber temp; ?
-    BigNumber tempx(aEnvironment.BinaryPrecision());
-    tempx.SetTo(*x);  // was: *x.Ptr()
+    BigNumber tempx(*x);
     tempx.BecomeFloat(aEnvironment.BinaryPrecision());  // coerce x to float
-    BigNumber tempy(aEnvironment.BinaryPrecision());
-    tempy.SetTo(*y);
+    BigNumber tempy(*y);
     tempy.BecomeFloat(aEnvironment.BinaryPrecision());  // coerce x to float
     z->Divide(tempx, tempy,aEnvironment.BinaryPrecision());
   }
@@ -204,7 +206,7 @@ void LispSqrt(LispEnvironment& aEnvironment, int aStackTop)
 }
 
 
-#define UNARYFUNCTION(LispName, BigNumName, OldName) \
+#define UNARYFUNCTION(LispName, BigNumName) \
 void LispName(LispEnvironment& aEnvironment, int aStackTop) \
 { \
       RefPtr<BigNumber> x; \
@@ -213,20 +215,20 @@ void LispName(LispEnvironment& aEnvironment, int aStackTop) \
       z->BigNumName( *z ); \
       RESULT = (new LispNumber(z)); \
 }
-#define BINARYFUNCTION(LispName, BigNumName, OldName) \
+#define BINARYFUNCTION(LispName, BigNumName) \
 void LispName(LispEnvironment& aEnvironment, int aStackTop) \
 { \
       RefPtr<BigNumber> x; \
       RefPtr<BigNumber> y; \
       GetNumber(x,aEnvironment, aStackTop, 1); \
       GetNumber(y,aEnvironment, aStackTop, 2); \
-      BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision()); \
+      BigNumber *z = new BigNumber("0", 0); \
       z->BigNumName(*x, *y); \
       RESULT = (new LispNumber(z)); \
 }
 
-UNARYFUNCTION(LispFloor, Floor, FloorFloat)
-UNARYFUNCTION(LispMathNegate, Negate, NegateFloat)
+UNARYFUNCTION(LispFloor, Floor)
+UNARYFUNCTION(LispMathNegate, Negate)
 
 /** the macro
   UNARYFUNCTION(LispFloor, Floor, FloorFloat)
@@ -248,12 +250,7 @@ void LispGetExactBits(LispEnvironment& aEnvironment, int aStackTop)
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
-  BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
-  z->SetTo(
-  (x->IsInt())
-    ? x->BitCount()  // for integers, return the bit count
-    : x->GetPrecision()   // for floats, return the precision
-  );
+  BigNumber* z = new BigNumber(std::to_string(x->IsInt() ? x->BitCount() : x->GetPrecision()), aEnvironment.BinaryPrecision());
   RESULT = (new LispNumber(z));
 }
 /// set internal precision data on a number object.
@@ -263,8 +260,7 @@ void LispSetExactBits(LispEnvironment& aEnvironment, int aStackTop)
   RefPtr<BigNumber> y;
   GetNumber(x,aEnvironment, aStackTop, 1);
   GetNumber(y,aEnvironment, aStackTop, 2);
-  BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
-  z->SetTo(*x);
+  BigNumber *z = new BigNumber(*x);
   // do nothing for integers
   if (!(z->IsInt()))
     z->Precision((long)(y->Double()));  // segfaults unless y is defined?
@@ -277,8 +273,7 @@ void LispBitCount(LispEnvironment& aEnvironment, int aStackTop)
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
-  BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
-  z->SetTo(x->BitCount());
+  BigNumber *z = new BigNumber(std::to_string(x->BitCount()), aEnvironment.BinaryPrecision());
   RESULT = (new LispNumber(z));
 }
 
@@ -287,8 +282,7 @@ void LispMathSign(LispEnvironment& aEnvironment, int aStackTop)
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
-  BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
-  z->SetTo(x->Sign());
+  BigNumber *z = new BigNumber(std::to_string(x->Sign()), aEnvironment.BinaryPrecision());
   RESULT = (new LispNumber(z));
 }
 
@@ -305,7 +299,7 @@ void LispCeil(LispEnvironment& aEnvironment, int aStackTop)
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
-  BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
+  BigNumber *z = new BigNumber("0", aEnvironment.BinaryPrecision());
   z->Negate(*x);
   z->Floor(*z);  // danger: possible exception raised in Floor() leads to a memory leak because z is not destroyed
   z->Negate(*z);
@@ -316,8 +310,7 @@ void LispAbs(LispEnvironment& aEnvironment, int aStackTop)
 {
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
-  BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
-  z->SetTo(*x);
+  BigNumber *z = new BigNumber(*x);
   if (x->Sign()<0)
     z->Negate(*x);
   RESULT = (new LispNumber(z));
@@ -341,7 +334,8 @@ void LispDiv(LispEnvironment& aEnvironment, int aStackTop)
   CheckArg(x->IsInt(), 1, aEnvironment, aStackTop);
   CheckArg(y->IsInt(), 2, aEnvironment, aStackTop);
   
-  BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
+  BigNumber *z = new BigNumber("0", aEnvironment.BinaryPrecision());
+  z->Precision(aEnvironment.BinaryPrecision());
   z->Divide(*x,*y,aEnvironment.BinaryPrecision());
   RESULT = (new LispNumber(z));
 }
@@ -367,33 +361,35 @@ void LispFastIsPrime(LispEnvironment& aEnvironment, int aStackTop)
   RefPtr<BigNumber> x;
   GetNumber(x,aEnvironment, aStackTop, 1);
   long result = primes_table_check((unsigned long)(x->Double()));
-  BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());
-  z->SetTo(result);
+  BigNumber* z = new BigNumber(std::to_string(result), aEnvironment.BinaryPrecision());
   RESULT = (new LispNumber(z));
 }
 
 // define a macro to replace all platform math functions
 
 #define PLATFORM_UNARY(LispName, PlatformName, LispBackupName, OldName) \
-    void LispName(LispEnvironment& aEnvironment, int aStackTop)     \
+    void LispName(LispEnvironment& aEnvironment, int aStackTop)         \
     {                                                                   \
         RefPtr<BigNumber> x;                                            \
         GetNumber(x,aEnvironment, aStackTop, 1);                        \
-        double result = PlatformName(x->Double());                      \
-        BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());   \
-        z->SetTo(result);                                               \
+        std::ostringstream buf;                                         \
+        buf << std::setprecision(53) << PlatformName(x->Double());      \
+        BigNumber* z =                                                  \
+          new BigNumber(buf.str(), aEnvironment.BinaryPrecision());     \
         RESULT = (new LispNumber(z));                                   \
     }
 
-#define PLATFORM_BINARY(LispName, PlatformName, LispBackupName, OldName) \
-    void LispName(LispEnvironment& aEnvironment, int aStackTop)     \
+#define PLATFORM_BINARY(LispName, PlatformName, LispBackupName, OldName)\
+    void LispName(LispEnvironment& aEnvironment, int aStackTop)         \
     {                                                                   \
         RefPtr<BigNumber> x, y;                                         \
         GetNumber(x,aEnvironment, aStackTop, 1);                        \
         GetNumber(y,aEnvironment, aStackTop, 2);                        \
-        double result = PlatformName(x->Double(), y->Double());         \
-        BigNumber *z = new BigNumber(aEnvironment.BinaryPrecision());   \
-        z->SetTo(result);                                               \
+        std::ostringstream buf;                                         \
+        buf << std::setprecision(53)                                    \
+            << PlatformName(x->Double(), y->Double());                  \
+        BigNumber* z =                                                  \
+          new BigNumber(buf.str(), aEnvironment.BinaryPrecision());     \
         RESULT = (new LispNumber(z));                                   \
     }
 
@@ -406,9 +402,9 @@ PLATFORM_BINARY(LispFastPower, std::pow, LispPower, PlatPower)
 
 
 
-BINARYFUNCTION(LispBitAnd, BitAnd, BitAnd)
-BINARYFUNCTION(LispBitOr, BitOr, BitOr)
-BINARYFUNCTION(LispBitXor, BitXor, BitXor)
+BINARYFUNCTION(LispBitAnd, BitAnd)
+BINARYFUNCTION(LispBitOr, BitOr)
+BINARYFUNCTION(LispBitXor, BitXor)
 /*
 // BitNot not yet in yacasapi etc.
 //BINARYFUNCTION(LispBitNot, BitNot, BitNot)
@@ -454,7 +450,7 @@ void LispFromBase(LispEnvironment& aEnvironment, int aStackTop)
   // FIXME: API breach, must pass precision in base digits and not in bits!
   // if converting an integer, the precision argument is ignored,
   // but if converting a float, need to use bits_to_digits(BinaryPrecision, base)
-    BigNumber *z = new BigNumber(str2->c_str(),aEnvironment.BinaryPrecision(),base);
+    BigNumber *z = new BigNumber(*str2,aEnvironment.BinaryPrecision(),base);
     RESULT = (new LispNumber(z));
 }
 void LispToBase(LispEnvironment& aEnvironment, int aStackTop)
@@ -790,8 +786,7 @@ void LispBitsToDigits(LispEnvironment& aEnvironment, int aStackTop)
       buf << "BitsToDigits: error: arguments (" << x->Double() << ", " << y->Double() << " must be small integers";
       throw LispErrGeneric(buf.str());
   }
-  BigNumber *z = new BigNumber();
-  z->SetTo(result);
+  BigNumber* z = new BigNumber(std::to_string(result), aEnvironment.BinaryPrecision());
   RESULT = (new LispNumber(z));
 }
 
@@ -815,7 +810,6 @@ void LispDigitsToBits(LispEnvironment& aEnvironment, int aStackTop)
       buf << "BitsToDigits: error: arguments (" << x->Double() << ", " << y->Double() << " must be small integers";
       throw LispErrGeneric(buf.str());
   }
-  BigNumber *z = new BigNumber();
-  z->SetTo(result);
+  BigNumber *z = new BigNumber(std::to_string(result), aEnvironment.BinaryPrecision());
   RESULT = (new LispNumber(z));
 }

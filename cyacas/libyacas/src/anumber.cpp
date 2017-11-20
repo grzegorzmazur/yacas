@@ -82,7 +82,7 @@ ANumber::ANumber(int aPrecision) : iExp(0),iNegative(false),iPrecision(aPrecisio
 
 
 /* ANumber: Constructor for an arbitrary precision number. */
-ANumber::ANumber(const char* aString,int aPrecision,int aBase): iExp(0),iNegative(false),iPrecision(aPrecision),iTensExp(0)
+ANumber::ANumber(const std::string& aString,int aPrecision,int aBase): iExp(0),iNegative(false),iPrecision(aPrecision),iTensExp(0)
 {
     SetPrecision(aPrecision);
     SetTo(aString,aBase);
@@ -120,7 +120,7 @@ int WordDigits(int aPrecision, int aBase)
 }
 
 
-void ANumber::SetTo(const char* aString,int aBase)
+void ANumber::SetTo(const std::string& str, int aBase)
 {
     clear();
 
@@ -130,6 +130,7 @@ void ANumber::SetTo(const char* aString,int aBase)
     iExp = 0;
     iTensExp = 0;
 
+    const char* aString = str.c_str();
     const char* endptr = aString;
 
     // Parse minus sign
@@ -538,7 +539,7 @@ bool LessThan(ANumber& a1, ANumber& a2)
 }
 
 
-void  ANumberToString(LispString& aResult, ANumber& aNumber, int aBase, bool aForceFloat)
+void  ANumberToString(std::string& aResult, ANumber& aNumber, int aBase, bool aForceFloat)
 {
     while (aNumber.size() > 1 && aNumber.back() == 0)
         aNumber.pop_back();

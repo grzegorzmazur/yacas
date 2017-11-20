@@ -67,7 +67,7 @@ void LispCharString(LispEnvironment& aEnvironment, int aStackTop)
 {
   const LispString* str = ARGUMENT(1)->String();
   CheckArg(str, 2, aEnvironment, aStackTop);
-  CheckArg(IsNumber(str->c_str(), false), 2, aEnvironment, aStackTop);
+  CheckArg(IsNumber(*str, false), 2, aEnvironment, aStackTop);
   int asciiCode = InternalAsciiToInt(*str);
 
   char ascii[4];

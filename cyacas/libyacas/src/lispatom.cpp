@@ -10,7 +10,7 @@
 /// construct an atom from a string representation.
 LispObject* LispAtom::New(LispEnvironment& aEnvironment, const std::string& aString)
 {
-    if (IsNumber(aString.c_str(),true))  // check if aString is a number (int or float)
+    if (IsNumber(aString, true))  // check if aString is a number (int or float)
         return new LispNumber(new LispString(aString), aEnvironment.Precision());
 
     return new LispAtom(aEnvironment.HashTable().LookUp(aString));
@@ -143,21 +143,15 @@ BigNumber* LispNumber::Number(int aBasePrecision)
     RefPtr<LispString> str;
     str = iString;
     // aBasePrecision is in digits, not in bits, ok
-    iNumber = new BigNumber(str->c_str(), aBasePrecision, BASE10);
+    iNumber = new BigNumber(*str, aBasePrecision, BASE10);
   }
 
   // check if the BigNumber object has enough precision, if not, extend it
   // (applies only to floats). Note that iNumber->GetPrecision() might be < 0
   else if (!iNumber->IsInt() && iNumber->GetPrecision() < (int)digits_to_bits(aBasePrecision, BASE10))
   {
-    if (iString)
-    {// have string representation, can extend precision
-      iNumber->SetTo(iString->c_str(),aBasePrecision, BASE10);
-    }
-    else
-    {
-  // do not have string representation, cannot extend precision!
-    }
+    if (iString) // have string representation, can extend precision
+      iNumber = new BigNumber(*iString,aBasePrecision, BASE10);
   }
   return iNumber;
 }

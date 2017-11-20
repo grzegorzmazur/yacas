@@ -82,7 +82,7 @@ static void InternalSetVar(LispEnvironment& aEnvironment, int aStackTop, bool aM
         varstring = ARGUMENT(1)->String();
     }
     CheckArg(varstring, 1, aEnvironment, aStackTop);
-    CheckArg(!IsNumber(varstring->c_str(), true), 1, aEnvironment, aStackTop);
+    CheckArg(!IsNumber(*varstring, true), 1, aEnvironment, aStackTop);
 
     LispPtr result;
     InternalEval(aEnvironment, result, ARGUMENT(2));
@@ -1573,7 +1573,7 @@ void LispFindFile(LispEnvironment& aEnvironment,int aStackTop)
     const std::string oper = InternalUnstringify(*orig);
 
     const std::string path =
-            InternalFindFile(oper.c_str(), aEnvironment.iInputDirectories);
+            InternalFindFile(oper, aEnvironment.iInputDirectories);
 
     RESULT = LispAtom::New(aEnvironment, stringify(path));
 }
