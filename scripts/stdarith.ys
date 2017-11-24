@@ -12,6 +12,13 @@
 100 # _x + _x   <-- 2*x;
 100 # _x + n_IsConstant*(_x)   <-- (n+1)*x;
 100 # n_IsConstant*(_x) + _x   <-- (n+1)*x;
+100 # m_IsConstant*(_x) + n_IsConstant*(_x) <-- (m + n) * x;
+100 # _x / m_IsConstant + _x <-- (m + 1) * x / m;
+100 # _x + _x / m_IsConstant <-- (m + 1) * x / m;
+100 # _x / m_IsConstant + _x / n_IsConstant <-- (m + n) * x / (m * n);
+100 # (a_IsConstant * _x) / m_IsConstant + _x / n_IsConstant <-- (a * n + m) * x / (m * n);
+100 # _x / m_IsConstant + (b_IsConstant * _x) / n_IsConstant <-- (n + b * m) * x / (m * n);
+100 # (a_IsConstant * _x) / m_IsConstant + (b_IsConstant * _x) / n_IsConstant <-- (a * n + b * m) * x / (m * n);
 101 # _x + - _y <-- x-y;
 101 # _x + (- _y)/(_z) <-- x-(y/z);
 101 # (- _y)/(_z) + _x  <-- x-(y/z);
