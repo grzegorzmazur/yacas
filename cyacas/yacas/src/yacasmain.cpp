@@ -86,7 +86,7 @@
 
 #include "yacas/GPL_stuff.h"
 
-CYacas* yacas = nullptr;
+CYacas* engine = nullptr;
 CCommandLine *commandline = nullptr;
 
 bool use_stdin = false;
@@ -273,7 +273,7 @@ void LispIsPromptShown(LispEnvironment& aEnvironment,int aStackTop)
 
 void my_exit()
 {
-    if (yacas) {
+    if (engine) {
         if (show_prompt)
             std::cout << "Quitting...\n";
 
@@ -285,9 +285,9 @@ void my_exit()
             commandline = nullptr;
         }
 
-        if (yacas) {
-            delete yacas;
-            yacas = nullptr;
+        if (engine) {
+            delete engine;
+            engine = nullptr;
         }
 
         ReportNrCurrent();
@@ -303,11 +303,11 @@ void ShowResult(const std::string& prompt)
     if (use_texmacs_out)
         std::cout << TEXMACS_DATA_BEGIN << "latex:";
 
-    if (yacas->IsError())
-        std::cout << yacas->Error() << "\n";
+    if (engine->IsError())
+        std::cout << engine->Error() << "\n";
     else
-        if (yacas->getDefEnv().getEnv().PrettyPrinter() == nullptr)
-            std::cout << prompt << yacas->Result() << "\n";
+        if (engine->getDefEnv().getEnv().PrettyPrinter() == nullptr)
+            std::cout << prompt << engine->Result() << "\n";
 
     if (use_texmacs_out)
         std::cout << TEXMACS_DATA_END;
@@ -324,23 +324,23 @@ void DeclarePath(const char *ptr2)
     else
         os << "DefaultDirectory(\"" << ptr2 << "\");";
 
-    yacas->Evaluate(os.str());
+    engine->Evaluate(os.str());
 
-    if (yacas->IsError())
-        std::cout << "Failed to set default directory: " << yacas->Error() << "\n";
+    if (engine->IsError())
+        std::cout << "Failed to set default directory: " << engine->Error() << "\n";
 }
 
 void LoadYacas(std::ostream& os)
 {
-    if (yacas)
+    if (engine)
         return;
 
     busy = true;
 
-    yacas = new CYacas(os);
+    engine = new CYacas(os);
 
 
-#define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) yacas->getDefEnv().getEnv().SetCommand(fname,iname,nrargs,flags);
+#define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) engine->getDefEnv().getEnv().SetCommand(fname,iname,nrargs,flags);
 
 #include "core_yacasmain.h"
 
@@ -371,15 +371,15 @@ void LoadYacas(std::ostream& os)
 
         std::ostringstream os;
         os << "Load(\"" << init_script << "\");";
-        yacas->Evaluate(os.str());
-        if (yacas->IsError())
+        engine->Evaluate(os.str());
+        if (engine->IsError())
         {
             ShowResult("");
             read_eval_print = nullptr;
         }
     }
 
-    if (yacas->IsError())
+    if (engine->IsError())
         ShowResult("");
 
     if (use_texmacs_out)
@@ -400,7 +400,7 @@ void LoadYacas(std::ostream& os)
 
         std::ostringstream os;
         os << "Load(\"" << yacasrc_path << "\");";
-        yacas->Evaluate(os.str());
+        engine->Evaluate(os.str());
     }
 #else
     if (const char* home = getenv("HOME")) {
@@ -411,7 +411,7 @@ void LoadYacas(std::ostream& os)
         if (test) {
             std::ostringstream os;
             os << "Load(\"" << home << "/.yacasrc" << "\");";
-            yacas->Evaluate(os.str());
+            engine->Evaluate(os.str());
         }
     }
 #endif
@@ -429,7 +429,7 @@ void InterruptHandler(void)
 #endif
 {
     std::cout << "^C pressed\n";
-    yacas->getDefEnv().getEnv().stop_evaluation = true;
+    engine->getDefEnv().getEnv().stop_evaluation = true;
 
     if (readmode)
         std::exit(EXIT_SUCCESS);
@@ -458,10 +458,10 @@ void runconsole(const std::string& inprompt, const std::string& outprompt)
 
     if (read_eval_print) {
         while (busy) {
-            yacas->Evaluate(read_eval_print);
+            engine->Evaluate(read_eval_print);
 
-            if (yacas->IsError())
-                std::cout << yacas->Error() << "\n";
+            if (engine->IsError())
+                std::cout << engine->Error() << "\n";
         }
     } else {
         while (busy) {
@@ -476,7 +476,7 @@ void runconsole(const std::string& inprompt, const std::string& outprompt)
                     if (use_texmacs_out)
                         std::cout << TEXMACS_DATA_BEGIN << "latex:";
 
-                    yacas->Evaluate(inpline);
+                    engine->Evaluate(inpline);
 
                     if (use_texmacs_out)
                         std::cout << TEXMACS_DATA_END;
@@ -534,13 +534,13 @@ int parse_options(int argc, char** argv)
                         LoadYacas(std::cout);
 
                         if (use_texmacs_out)
-                            yacas->getDefEnv().getEnv().SetPrettyPrinter(yacas->getDefEnv().getEnv().HashTable().LookUp("\"TexForm\""));
+                            engine->getDefEnv().getEnv().SetPrettyPrinter(engine->getDefEnv().getEnv().HashTable().LookUp("\"TexForm\""));
 
-                        yacas->Evaluate(immediate);
+                        engine->Evaluate(immediate);
 
-                        if (yacas->IsError())
+                        if (engine->IsError())
                             std::cout << "Error in immediate command " << immediate << ":\n"
-                                      << yacas->Error() << "\n";
+                                      << engine->Error() << "\n";
 
                         exit_after_files = true;
                     }
@@ -689,7 +689,7 @@ int main(int argc, char** argv)
     LoadYacas(std::cout);
 
     if (use_texmacs_out)
-        yacas->getDefEnv().getEnv().SetPrettyPrinter(yacas->getDefEnv().getEnv().HashTable().LookUp("\"TexForm\""));
+        engine->getDefEnv().getEnv().SetPrettyPrinter(engine->getDefEnv().getEnv().HashTable().LookUp("\"TexForm\""));
 
     for ( ; fileind<argc; fileind++) {
         std::ostringstream os;
@@ -698,11 +698,11 @@ int main(int argc, char** argv)
         else
             os << "Load(\"" << argv[fileind] << "\");";
 
-        yacas->Evaluate(os.str());
+        engine->Evaluate(os.str());
 
-        if (yacas->IsError())
+        if (engine->IsError())
             std::cout << "Error in file " << argv[fileind] << "\n"
-                      << yacas->Error() << "\n";
+                      << engine->Error() << "\n";
 
         exit_after_files = true;
     }
@@ -715,11 +715,11 @@ int main(int argc, char** argv)
 
     if (execute_commnd) {
 
-        yacas->Evaluate(execute_commnd);
+        engine->Evaluate(execute_commnd);
 
-        if (yacas->IsError())
+        if (engine->IsError())
             std::cout << "Error in file " << argv[fileind] << "\n"
-                      << yacas->Error() << "\n";
+                      << engine->Error() << "\n";
 
         if (show_prompt && (!use_texmacs_out))
             ShowResult("");
@@ -734,7 +734,7 @@ int main(int argc, char** argv)
             buffer.append(line);
         } while(std::cin.good());
 
-        yacas->Evaluate(buffer);
+        engine->Evaluate(buffer);
         ShowResult(outprompt);
 
         std::exit(EXIT_SUCCESS);
@@ -746,8 +746,8 @@ int main(int argc, char** argv)
         runconsole(inprompt, outprompt);
 
         if (restart) {
-            delete yacas;
-            yacas = nullptr;
+            delete engine;
+            engine = nullptr;
             LoadYacas(std::cout);
         }
 
