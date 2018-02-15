@@ -209,8 +209,6 @@ function addInputEditor(lineid, number, value, rootElementID) {
     return editor;
 }
 
-
-
 function addOutput(lineid, number, rootElementID) {
     var outputID = "output_" + lineid;
 
@@ -220,7 +218,7 @@ function addOutput(lineid, number, rootElementID) {
     $row.append("<td><div id='" + outputID + "' ></div></td>");
 
     $(rootElementID).append($row);
-    $("#" + outputID).append("<img src='yagy_ui/progressbar.indicator.gif' width='20' ></img>");
+    $("#" + outputID).append("<img src='yacas_gui/progressbar.indicator.gif' width='20' ></img>");
 }
 
 function addSideEffects(number, side_effects, rootElementID) {

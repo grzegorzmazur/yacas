@@ -1,11 +1,11 @@
-include (${CMAKE_ROOT}/Modules/ExternalProject.cmake)
+include (ExternalProject)
 
 ExternalProject_Add (yacas-gui_codemirror
     PREFIX external_packages
-    URL https://github.com/codemirror/CodeMirror/archive/5.23.0.zip
-    CONFIGURE_COMMAND ""
+    URL https://github.com/codemirror/CodeMirror/archive/5.34.0.zip
+    CONFIGURE_COMMAND npm install --no-progress
     BUILD_IN_SOURCE 1
-    BUILD_COMMAND npm install --no-progress
+    BUILD_COMMAND npm run-script build
     INSTALL_COMMAND "")
 
 ExternalProject_Add (yacas-gui_flot
@@ -17,7 +17,7 @@ ExternalProject_Add (yacas-gui_flot
 
 ExternalProject_Add (yacas-gui_three
     PREFIX external_packages
-    URL https://github.com/mrdoob/three.js/archive/r84.zip
+    URL https://github.com/mrdoob/three.js/archive/r90.zip
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
@@ -31,7 +31,7 @@ ExternalProject_Add (yacas-gui_vis
 
 ExternalProject_Add (yacas-gui_mathjax
     PREFIX external_packages
-    URL https://github.com/mathjax/MathJax/archive/2.7.0.zip
+    URL https://github.com/mathjax/MathJax/archive/2.7.3.zip
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
@@ -62,7 +62,14 @@ if (NOT APPLE)
 
     install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_flot/jquery.flot.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_flot/jquery.flot.resize.js DESTINATION share/yacas/resources/flot)
 
-    install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/build/three.min.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/examples/js/Detector.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/examples/js/controls/TrackballControls.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/examples/js/renderers/CanvasRenderer.js ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/examples/js/renderers/Projector.js DESTINATION share/yacas/resources/three)
+    install (FILES
+            ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/build/three.min.js
+            ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/examples/js/Detector.js
+            ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/examples/js/controls/TrackballControls.js
+            ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/examples/js/renderers/CanvasRenderer.js
+            ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/examples/js/renderers/Projector.js
+            ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_three/examples/js/utils/SceneUtils.js
+            DESTINATION share/yacas/resources/three)
 
     install (FILES ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_vis/dist/vis.min.css ${CMAKE_BINARY_DIR}/cyacas/yacas-gui/resources/external_packages/src/yacas-gui_vis/dist/vis.min.js DESTINATION share/yacas/resources/vis)
 
