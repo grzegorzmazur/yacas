@@ -24,7 +24,7 @@ include_directories (include)
 qt5_wrap_ui (ui_mainwindow.h ui/mainwindow.ui)
 qt5_wrap_ui (ui_preferences_dialog.h ui/preferences_dialog.ui)
 
-qt5_add_resources (qrc_img.cpp img.qrc --compress 9)
+qt5_add_resources (qrc_img.cpp img.qrc OPTIONS --compress 9)
 
 set (QRESOURCES qrc_img.cpp)
 
