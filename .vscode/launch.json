@@ -1,0 +1,82 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(gdb) Launch yacas",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/build/cyacas/yacas/yacas",
+            "args": ["--rootdir", "${workspaceRoot}/scripts/"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "(gdb) Launch yacas arithmetic.yts",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/build/cyacas/yacas/yacas",
+            "args": ["--rootdir", "${workspaceRoot}/scripts/", "${workspaceRoot}/tests/arithmetic.yts"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "(gdb) Launch yacas numerics.yts",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/build/cyacas/yacas/yacas",
+            "args": ["--rootdir", "${workspaceRoot}/scripts/", "${workspaceRoot}/tests/numerics.yts"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        },
+        {
+            "name": "(gdb) Launch yacas orthopoly.yts",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/build/cyacas/yacas/yacas",
+            "args": ["--rootdir", "${workspaceRoot}/scripts/", "${workspaceRoot}/tests/orthoppoly.yts"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
+        }
+    ],
+    "compounds": []
+}

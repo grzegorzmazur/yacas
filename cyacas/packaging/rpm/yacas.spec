@@ -7,7 +7,7 @@
 #
 
 Name:           yacas
-Version:        1.6.1
+Version:        1.7.0
 Release:        1%{?dist}
 Summary:        Easy to use, general purpose computer algebra system
 %if 0%{?suse_version}
@@ -175,5 +175,5 @@ algorithms used.
 "/usr/include/yacas/*"
 
 %changelog
-* Sun Nov 06 2016 Grzegorz Mazur <teoretyk@gmail.com> 1.6.1-1
+* Thu Feb 15 2018 Grzegorz Mazur <teoretyk@gmail.com> 1.7.0-1
 - Changes are none, there is only the now (Ayal Pinkus)

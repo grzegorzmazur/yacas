@@ -18,8 +18,8 @@ Getting sources
 ---------------
 
 Version 1.6.0 can be downloaded from
-`<https://github.com/grzegorzmazur/yacas/archive/v1.6.0.zip>`_ or
-`<https://github.com/grzegorzmazur/yacas/archive/v1.6.0.tar.gz>`_,
+`<https://github.com/grzegorzmazur/yacas/archive/v1.7.0.zip>`_ or
+`<https://github.com/grzegorzmazur/yacas/archive/v1.7.0.tar.gz>`_,
 while the current development version is accessible from
 `<https://github.com/grzegorzmazur/yacas/archive/develop.zip>`_.
 

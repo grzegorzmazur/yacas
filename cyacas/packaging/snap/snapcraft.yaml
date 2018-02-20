@@ -1,5 +1,5 @@
 name: yacas
-version: 1.6.1-snap1
+version: 1.7.0--snap1
 grade: stable
 summary: Yet Another Computer Algebra System
 description: |
@@ -37,7 +37,7 @@ build-packages:
 
 parts:
   yacas:
-    source: https://github.com/grzegorzmazur/yacas/archive/v1.6.1.tar.gz
+    source: https://github.com/grzegorzmazur/yacas/archive/v1.7.0.tar.gz
     plugin: cmake
     configflags:
       - -DCMAKE_BUILD_TYPE=Release

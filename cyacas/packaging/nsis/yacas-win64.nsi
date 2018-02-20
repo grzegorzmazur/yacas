@@ -3,8 +3,8 @@
 !define APPNAME "Yacas"
 !define DESCRIPTION "Yet Another Computer Algebra System"
 !define VERSIONMAJOR 1
-!define VERSIONMINOR 6
-!define VERSIONPATCH 1
+!define VERSIONMINOR 7
+!define VERSIONPATCH 0
 !define HELPURL "http://www.yacas.org"
 !define UPDATEURL "http://www.yacas.org/downloads"
 !define ABOUTURL "http://www.yacas.org"

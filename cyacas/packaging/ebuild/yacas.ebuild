@@ -19,16 +19,16 @@ IUSE="doc gui java +jupyter static-libs"
 
 DEPEND="
 	doc? ( dev-python/sphinx )
-	gui? (	>=dev-qt/qtcore-5.5[icu]
-			>=dev-qt/qtgui-5.5
-			>=dev-qt/qtwidgets-5.5
-			>=dev-qt/qtnetwork-5.5
-			>=dev-qt/qtwebkit-5.5
-			>=dev-qt/qtmultimedia-5.5
-			>=dev-qt/qtsql-5.5
-			>=dev-qt/qtprintsupport-5.5
-			>=dev-qt/qtopengl-5.5
-			>=dev-qt/qtprintsupport-5.5 )
+	gui? (	>=dev-qt/qtcore-5.6[icu]
+			>=dev-qt/qtgui-5.6
+			>=dev-qt/qtwidgets-5.6
+			>=dev-qt/qtnetwork-5.6
+			>=dev-qt/qtwebkit-5.6
+			>=dev-qt/qtmultimedia-5.6
+			>=dev-qt/qtsql-5.6
+			>=dev-qt/qtprintsupport-5.6
+			>=dev-qt/qtopengl-5.6
+			>=dev-qt/qtprintsupport-5.6 )
 	jupyter? (	dev-python/jupyter
 				dev-libs/boost
 				dev-libs/jsoncpp

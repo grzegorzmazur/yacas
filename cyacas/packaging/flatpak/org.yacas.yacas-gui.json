@@ -1,8 +1,8 @@
 {
     "app-id": "org.yacas.yacas-gui",
-    "branch": "1.6",
+    "branch": "1.7",
     "runtime": "org.freedesktop.Platform",
-    "runtime-version": "1.4",
+    "runtime-version": "1.6",
     "sdk": "org.freedesktop.Sdk",
     "command": "yacas-gui",
     "finish-args": [
@@ -50,7 +50,7 @@
                 {
                     "type": "git",
                     "url": "git://code.qt.io/qt/qtbase.git",
-                    "branch": "v5.6.2"
+                    "branch": "v5.10.1"
                 }
             ]
         },
@@ -61,7 +61,7 @@
                 {
                     "type": "git",
                     "url": "git://code.qt.io/qt/qtsvg.git",
-                    "branch": "v5.6.2"
+                    "branch": "v5.10.1"
                 },
                 {
                     "type": "script",
@@ -71,13 +71,13 @@
             ]
         },
         {
-            "name": "qt5-qtwebkit",
+            "name": "qt5-qtwebengine",
             "cleanup": [ "/bin", "/mkspecs" ],
             "sources": [
                 {
-                    "type": "archive",
-                    "url": "http://download.qt.io/community_releases/5.6/5.6.2/qtwebkit-opensource-src-5.6.2.tar.gz",
-                    "sha256": "0b85d8e0ac30b0b797d2b8502024a6a1352dc4b7ea95d256904fbd62a82a27d5"
+                    "type": "git",
+                    "url": "git://code.qt.io/qt/qtwebengine.git",
+                    "branch": "v5.10.1"
                 },
                 {
                     "type": "script",
@@ -91,14 +91,14 @@
             "sources": [
                 {
                     "type": "archive",
-                    "url": "https://github.com/grzegorzmazur/yacas/archive/v1.6.1.tar.gz",
+                    "url": "https://github.com/grzegorzmazur/yacas/archive/v1.7.0.tar.gz",
                     "sha256": "6b94394f705bed70a9d104967073efd6c23e9eb1a832805c4d805ef875555ae5"
                 }
             ],
             "sources": [
                 {
                     "type": "archive",
-                    "url": "https://github.com/grzegorzmazur/yacas/archive/v1.6.1.tar.gz",
+                    "url": "https://github.com/grzegorzmazur/yacas/archive/v1.7.0.tar.gz",
                     "sha256": "6b94394f705bed70a9d104967073efd6c23e9eb1a832805c4d805ef875555ae5"
                 }
             ],

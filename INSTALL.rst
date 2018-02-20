@@ -13,9 +13,9 @@ Installation from sources
 Getting sources
 ---------------
 
-Version 1.6.0 can be downloaded from
-`<https://github.com/grzegorzmazur/yacas/archive/v1.6.0.zip>`_ or
-`<https://github.com/grzegorzmazur/yacas/archive/v1.6.0.tar.gz>`_,
+Version 1.7.0 can be downloaded from
+`<https://github.com/grzegorzmazur/yacas/archive/v1.7.0.zip>`_ or
+`<https://github.com/grzegorzmazur/yacas/archive/v1.7.0.tar.gz>`_,
 while the current development version is accessible from
 `<https://github.com/grzegorzmazur/yacas/archive/develop.zip>`_.
 
@@ -28,7 +28,7 @@ Common build options
    Build text console for the native yacas engine. Enabled by default.
 
 `ENABLE_CYACAS_GUI`
-   Build graphical interface for the native yacas engine. Requires Qt 5.5. Enabled by default.
+   Build graphical interface for the native yacas engine. Requires Qt 5.9+. Enabled by default.
 
 `ENABLE_CYACAS_KERNEL`
    Build native yacas kernel for Jupyter Notebook. Requires Boost, ZeroMQ and zmqpp. Disabled by default.
