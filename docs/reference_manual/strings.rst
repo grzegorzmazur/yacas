@@ -105,12 +105,12 @@ String manipulation
 
 .. function:: PatchString(string)
 
-   execute commands between {<?} and {?>} in strings
+   execute commands between ``<?`` and ``?>`` in strings
 
    :param string: a string to patch
 
-   This function does the same as PatchLoad, but it works on a string
-   instead of on the contents of a text file. See PatchLoad for more
+   This function does the same as :func:`PatchLoad`, but it works on a string
+   instead of on the contents of a text file. See :func:`PatchLoad` for more
    details.
 
    :Example:

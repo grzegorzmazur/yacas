@@ -31,20 +31,22 @@ which simply read a specified file.
       In> FullForm(2*I*b^2);
       (* (Complex 0 2 )(^ b 2 ))
       Out> Complex(0,2)*b^2;
-      The first example shows how the expression {a+b+c} is
-      internally represented. In the second example, {2*I} is
-      first evaluated to {Complex(0,2)} before the expression
-      is printed.
+
+   The first example shows how the expression :math:`a+b+c` is
+   internally represented. In the second example, :math:`2i` is
+   first evaluated to ``Complex(0,2)`` before the expression
+   is printed.
       
 
    .. seealso:: :func:`LispRead`, :func:`Listify`, :func:`Unlist`
 
 .. function:: Echo(item)
+              Echo(items)
 
    high-level printing routine
 
    :param item: the item to be printed
-   :param list: a list of items to be printed
+   :param items: a list of items to be printed
 
    If passed a single item, {Echo} will evaluate it and print it to
    the  current output, followed by a newline. If {item} is a string,
@@ -87,9 +89,9 @@ which simply read a specified file.
 
    :param expr: an expression
 
-   {PrettyForm} renders an expression in a nicer way, using ascii art.
-   This is generally useful when the result of a calculation is more
-   complex than a simple number.
+   :func:`PrettyForm` renders an expression in a nicer way, using ascii art.
+   This is generally useful when the result of a calculation is more complex
+   than a simple number.
 
    :Example:
 
@@ -98,10 +100,10 @@ which simply read a specified file.
       In> Taylor(x,0,9)Sin(x)
       Out> x-x^3/6+x^5/120-x^7/5040+x^9/362880;
       In> PrettyForm(%)
-      3    5      7       9
-      x    x      x       x
+           3    5      7       9
+          x    x      x       x
       x - -- + --- - ---- + ------
-      6    120   5040   362880
+          6    120   5040   362880
       Out> True;
       
 
@@ -113,18 +115,18 @@ which simply read a specified file.
 
    :param expr: an expression
 
-   Show an evaluation in a nice way, using {PrettyPrinter'Set}  to
-   show 'input = output'.
+   Show an evaluation in a nice way, using :func:`PrettyPrinter'Set`  to show
+   'input = output'.
 
    :Example:
 
    ::
 
       In> EvalFormula(Taylor(x,0,7)Sin(x))
-      3    5
-      x    x
+                                            3    5
+                                           x    x
       Taylor( x , 0 , 5 , Sin( x ) ) = x - -- + ---
-      6    120
+                                           6    120
       
 
    .. seealso:: :func:`PrettyForm`
@@ -135,36 +137,36 @@ which simply read a specified file.
 
    :param expr: an expression to be exported
 
-   {TeXForm} returns a string containing a :math:`LaTeX` representation of
-   the Yacas expression {expr}. Currently the exporter handles most
+   :func:`TeXForm` returns a string containing a :math:`\LaTeX` representation
+   of the yacas expression ``expr``. Currently the exporter handles most
    expression types but not all.
 
 .. function:: CForm(expr)
 
-   export expression to C++ code
+   export expression to C code
 
    :param expr: expression to be exported
 
-   {CForm} returns a string containing C++ code that attempts to
-   implement the Yacas expression {expr}. Currently the exporter
+   :func:`CForm` returns a string containing C code that attempts to
+   implement the yacas expression ``expr``. Currently the exporter
    handles most expression types but not all.
 
 .. function:: IsCFormable(expr)
+              IsCFormable(expr, funclist)
 
-   check possibility to export expression to C++ code
+   check possibility to export expression to C code
 
    :param expr: expression to be exported (this argument is not evaluated)
    :param funclist: list of "allowed" function atoms
 
-   {IsCFormable} returns :data:`True` if the Yacas expression {expr} can be
-   exported  into C++ code. This is a check whether the C++ exporter
-   {CForm} can be safely  used on the expression.    A Yacas
-   expression is considered exportable if it contains only functions
-   that can be translated into C++ (e.g. {UnList} cannot be exported).
-   All variables and constants are considered exportable.    The
-   verbose option prints names of functions that are not exportable.
-   The second calling format of {IsCFormable} can be used to "allow"
-   certain function names that will be available in the C++ code.
+   :func:`IsCFormable` returns :data:`True` if the yacas expression ``expr`` can
+   be exported  into C code. This is a check whether the C exporter :func:`CForm`
+   can be safely  used on the expression.    A yacas expression is considered
+   exportable if it contains only functions that can be translated into C
+   (e.g. :func:`UnList` cannot be exported). All variables and constants are
+   considered exportable. The verbose option prints names of functions that
+   are not exportable. The second calling format of :func:`IsCFormable` can be used to
+   allow certain function names that will be available in the C code.
 
    :Example:
 
@@ -176,9 +178,11 @@ which simply read a specified file.
       IsCFormable: Info: unexportable function(s):
       func123
       Out> False;
-      This returned :data:`False` because the function {func123} is not available in C++. We can
-      explicitly allow this function and then the expression will be considered
-      exportable:
+
+   This returned :data:`False` because the function :func:`func123` is not
+   available in C. We can explicitly allow this function and then the expression
+   will be considered exportable::
+
       In> IsCFormable(1+func123(b1), {func123})
       Out> True;
       
@@ -191,10 +195,10 @@ which simply read a specified file.
 
    :param expr: expression to be printed
 
-   The expression "expr" is evaluated and written to the current
-   output. Note that Write accept an arbitrary number of arguments,
-   all  of which are written to the current output (see second
-   example). {Write} always returns :data:`True`.
+   The expression ``expr`` is evaluated and written to the current output. Note
+   that :func:`Write` accepts an arbitrary number of arguments, all of which are
+   written to the current output (see second example). :func:`Write` always
+   returns :data:`True`.
 
    :Example:
 
@@ -204,8 +208,9 @@ which simply read a specified file.
       1Out> True;
       In> Write(1,2);
       1 2Out> True;
-      Write does not write a newline, so the {Out>} prompt
-      immediately follows the output of {Write}.
+
+   Write does not write a newline, so the ``Out>`` prompt immediately follows
+   the output of :func:`Write`.
       
 
    .. seealso:: :func:`Echo`, :func:`WriteString`
@@ -216,9 +221,9 @@ which simply read a specified file.
 
    :param string: the string to be printed
 
-   The expression "string" is evaluated and written to the current
+   The expression ``string`` is evaluated and written to the current
    output without quotation marks. The argument should be a  string.
-   WriteString always returns True.
+   :func:`WriteString` always returns :data:`True`.
 
    :Example:
 
@@ -228,73 +233,72 @@ which simply read a specified file.
       "Hello, world!"Out> True;
       In> WriteString("Hello, world!");
       Hello, world!Out> True;
-      This example clearly shows the difference between Write and
-      WriteString. Note that Write and WriteString do not write a newline,
-      so the {Out>} prompt immediately follows the output.
+
+   This example clearly shows the difference between :func:`Write` and
+   :func:`WriteString`. Note that :func:`Write` and :func:`WriteString` do not
+   write a newline, so the ``Out>`` prompt immediately follows the output.
       
 
    .. seealso:: :func:`Echo`, :func:`Write`
 
 .. function:: Space()
+              Space(n)
 
    print one or more spaces
 
-   :param nr: the number of spaces to print
+   :param n: the number of spaces to print
 
-   The command {Space()} prints one space on the  current output. The
-   second form prints {nr} spaces on the current  output. The result
-   is always True.
+   :func:`Space` prints one space on the  current output. The second form prints
+   ``n`` spaces on the current  output. The result is always :data:`True`.
 
    :Example:
 
    ::
 
       In> Space(5);
-      Out> True;
+           Out> True;
       
 
    .. seealso:: :func:`Echo`, :func:`Write`, :func:`NewLine`
 
 .. function:: NewLine()
+              NewLine(n)
 
    print one or more newline characters
 
-   :param nr: the number of newline characters to print
+   :param n: the number of newline characters to print
 
-   The command {NewLine()} prints one newline character  on the
-   current output. The second form prints "nr" newlines on the
-   current output. The result is always True.
+   :func:`NewLine` prints a newline character on the current output. The second
+   form prints ``n`` newlines on the current output. The result is always
+   :data:`True`.
 
    :Example:
 
    ::
 
       In> NewLine();
+      
       Out> True;
       
 
    .. seealso:: :func:`Echo`, :func:`Write`, :func:`Space`
 
-.. function:: FromFile(name) body
+.. function:: bodied FromFile(body, name)
 
    connect current input to a file
 
-   :param name: string, the name of the file to read
+   :param name: name of the file to read
    :param body: expression to be evaluated
 
-   The current input is connected to the file "name". Then the
-   expression  "body" is evaluated. If some functions in "body" try to
-   read  from current input, they will now read from the file "name".
-   Finally, the  file is closed and the result of evaluating "body" is
-   returned.
+   The current input is connected to the file ``name``. Then the expression
+   ``body`` is evaluated. If some functions in ``body`` try to read  from
+   current input, they will read from the file ``name``. Finally, the  file is
+   closed and the result of evaluating ``body`` is returned.
 
    :Example:
 
-   ::
+   Suppose that the file ``foo`` contains ``2 + 5;``::
 
-      Suppose that the file {foo} contains
-      2 + 5;
-      Then we can have the following dialogue:
       In> FromFile("foo") res := Read();
       Out> 2+5;
       In> FromFile("foo") res := ReadToken();
@@ -303,97 +307,94 @@ which simply read a specified file.
 
    .. seealso:: :func:`ToFile`, :func:`FromString`, :func:`Read`, :func:`ReadToken`
 
-.. function:: FromString(str) body;
+.. function:: bodied FromString(body, str)
 
    connect current input to a string
 
    :param str: a string containing the text to parse
    :param body: expression to be evaluated
 
-   The commands in "body" are executed, but everything that is read
-   from the current input is now read from the string "str". The
-   result of "body" is returned.
+   The commands in ``body`` are executed, but every read is done from the string
+   ``str``. The result of evaluating ``body`` is returned.
 
    :Example:
 
    ::
 
-      In> FromString("2+5; this is never read") \
-      res := Read();
+      In> FromString("2+5; this is never read") res := Read();
       Out> 2+5;
-      In> FromString("2+5; this is never read") \
-      res := Eval(Read());
+      In> FromString("2+5; this is never read") res := Eval(Read());
       Out> 7;
       
 
    .. seealso:: :func:`ToString`, :func:`FromFile`, :func:`Read`, :func:`ReadToken`
 
-.. function:: ToFile(name) body
+.. function:: bodied ToFile(body, name)
 
    connect current output to a file
 
-   :param name: string, the name of the file to write the result to
+   :param name: name of the file to write the result to
    :param body: expression to be evaluated
 
-   The current output is connected to the file "name". Then the
-   expression  "body" is evaluated. Everything that the commands in
-   "body" print  to the current output, ends up in the file "name".
-   Finally, the  file is closed and the result of evaluating "body" is
-   returned.    If the file is opened again, the old contents will be
-   overwritten.  This is a limitation of {ToFile}: one cannot append
-   to a file that has already been created.
+   The current output is connected to the file ``name``. Then the expression
+   ``body`` is evaluated. Everything that the commands in ``body`` prints ends
+   up in the file ``name``. Finally, the  file is closed and the result of
+   evaluating ``body`` is returned. If the file is opened again, the old
+   contents will be overwritten.  This is a limitation of :func:`ToFile`: one
+   cannot append to a file that has already been created.
 
    :Example:
 
-   ::
+   Here is how one can create a file with C code to evaluate an expression::
+      
+      In> ToFile("expr1.c") WriteString(CForm(Sqrt(x-y)*Sin(x)));
+      Out> True;
 
-      Here is how one can create a file with C code to evaluate an expression:
-      In> ToFile("expr1.c") WriteString(
-      CForm(Sqrt(x-y)*Sin(x)) );
-      Out> True;
-      The file {expr1.c} was created in the current working directory and it
-      contains the line
-      sqrt(x-y)*sin(x)
-      As another example, take a look at the following command:
-      In> [ Echo("Result:");  \
-      PrettyForm(Taylor(x,0,9) Sin(x)); ];
+   The file ``expr1.c`` was created in the current working directory and it
+   contains the line ``sqrt(x-y)*sin(x)``.
+      
+   As another example, take a look at the following command::
+
+      In> [ Echo("Result:");  PrettyForm(Taylor(x,0,9) Sin(x)); ];
       Result:
-      3    5      7       9
-      x    x      x       x
+           3    5      7       9
+          x    x      x       x
       x - -- + --- - ---- + ------
-      6    120   5040   362880
+          6    120   5040   362880
       Out> True;
-      Now suppose one wants to send the output of this command to a
-      file. This can be achieved as follows:
-      In> ToFile("out") [ Echo("Result:");  \
-      PrettyForm(Taylor(x,0,9) Sin(x)); ];
+
+   Now suppose one wants to send the output of this command to a
+   file. This can be achieved as follows::
+   
+      In> ToFile("out") [ Echo("Result:"); PrettyForm(Taylor(x,0,9) Sin(x)); ];
       Out> True;
-      After this command the file {out} contains:
+
+   After this command the file ``out`` contains::
+
       Result:
-      3    5      7       9
-      x    x      x       x
+           3    5      7       9
+          x    x      x       x
       x - -- + --- - ---- + ------
-      6    120   5040   362880
+          6    120   5040   362880
       
 
    .. seealso:: :func:`FromFile`, :func:`ToString`, :func:`Echo`, :func:`Write`, :func:`WriteString`, :func:`PrettyForm`, :func:`Taylor`
 
-.. function:: ToString() body
+.. function:: bodied ToString(body)
 
    connect current output to a string
 
    :param body: expression to be evaluated
 
-   The commands in "body" are executed. Everything that is printed on
-   the current output, by {Echo} for instance, is  collected in a
-   string and this string is returned.
+   The commands in ``body`` are executed. Everything that is printed, by
+   :func:`Echo` for instance, is collected in a string and this string is
+   returned.
 
    :Example:
 
    ::
 
-      In> str := ToString() [ WriteString(  \
-      "The square of 8 is "); Write(8^2); ];
+      In> str := ToString() [ WriteString("The square of 8 is "); Write(8^2); ];
       Out> "The square of 8 is  64";
       
 
@@ -420,16 +421,15 @@ which simply read a specified file.
 
    .. seealso:: :func:`FromFile`, :func:`FromString`, :func:`LispRead`, :func:`ReadToken`, :func:`Write`
 
-.. function:: ToStdout() body
+.. function:: bodied ToStdout(body)
 
    select initial output stream for output
 
    :param body: expression to be evaluated
 
-   When using {ToString} or {ToFile}, it might happen that something
-   needs to be  written to the standard default initial output
-   (typically the screen). {ToStdout} can be used to select this
-   stream.
+   When using :func:`ToString` or :func:`ToFile`, it might happen that something
+   needs to be  written to the (initial) standard output (typically the screen).
+   :func:`ToStdout` can be used to select this stream.
 
 .. function:: ReadCmdLineString(prompt)
 
@@ -445,29 +445,30 @@ which simply read a specified file.
 
    :Example:
 
-   ::
+   The following defines a function that when invoked keeps asking
+   for an expression (the *read* step), and then takes
+   the derivative of it (the *eval* step) and then
+   uses :func:`PrettyForm` to display the result (the *print* step)::
 
-      The following defines a function that when invoked keeps asking
-      for an expression (the *read* step), and then takes
-      the derivative of it (the *eval* step) and then
-      uses PrettyForm to display the result (the *print* step).
       In> ReEvPr() := \
       In>   While(True) [ \
       In>     PrettyForm(Deriv(x) \
       In>      FromString(ReadCmdLineString("Deriv> "):";")Read()); \
       In> ];
       Out> True;
-      Then one can invoke the command, from which the following interaction
-      might follow:
+
+   Then one can invoke the command, from which the following interaction
+   might follow::
+
       In> ReEvPr()
       Deriv> Sin(a^2*x/b)
-      /  2     \
-      | a  * x |    2
+         /  2     \
+         | a  * x |    2
       Cos| ------ | * a  * b
-      \   b    /
+         \   b    /
       ----------------------
-      2
-      b
+                2
+               b
       Deriv> Sin(x)
       Cos( x )
       Deriv>
@@ -479,13 +480,12 @@ which simply read a specified file.
 
    read expressions in LISP syntax
 
-   The function {LispRead} reads an expression in the LISP syntax from
-   the current input, and returns  it unevaluated. When the end of an
-   input file is encountered, the  special token atom {EndOfFile} is
-   returned.    The Yacas expression {a+b} is written in the LISP
-   syntax as {(+ a b)}. The advantage of this syntax is that it is
-   less ambiguous than the infix operator grammar that Yacas uses by
-   default. 
+   :func:`LispRead` reads an expression in the LISP syntax from the current
+   input, and returns  it unevaluated. When the end of an input file is
+   encountered, the  special token atom :data:`EndOfFile` is returned. The yacas
+   expression ``a+b`` is written in the LISP syntax as ``(+ a b)``. The
+   advantage of this syntax is that it is less ambiguous than the infix operator
+   grammar that yacas uses by default. 
 
    :Example:
 
@@ -505,14 +505,13 @@ which simply read a specified file.
 
    read expressions in LISP syntax
 
-   The function {LispReadListed} reads a LISP expression
-   and returns  it in a list, instead of the form usual to Yacas
-   (expressions).  The result can be thought of as applying {Listify}
-   to {LispRead}.  The function {LispReadListed} is more useful for
-   reading arbitrary LISP expressions, because the   first object in a
-   list can be itself a list (this is never the case for Yacas
-   expressions where the first object in a list is always a function
-   atom).
+   :func:`LispReadListed` reads a LISP expression and returns it in a list,
+   instead of the form usual to yacas (expressions). The result can be thought
+   of as applying :func:`Listify` to :func:`LispRead`.  The function
+   :func:`LispReadListed` is more useful for reading arbitrary LISP expressions,
+   because the first object in a list can be itself a list (this is never the
+   case for yacas expressions where the first object in a list is always a
+   function atom).
 
    :Example:
 
@@ -547,9 +546,7 @@ which simply read a specified file.
 
    ::
 
-      In> FromString("a := Sin(x)") While \
-      ((tok := ReadToken()) != EndOfFile) \
-      Echo(tok);
+      In> FromString("a := Sin(x)") While((tok := ReadToken()) != EndOfFile) Echo(tok);
       a
       :=
       Sin
@@ -557,13 +554,16 @@ which simply read a specified file.
       x
       )
       Out> True;
-      We can read some junk too:
+
+   We can read some junk too::
+   
       In> FromString("-$3")ReadToken();
       Out> -$;
-      The result is an atom with the string representation {-$}.
-      Yacas assumes that {-$} is an operator symbol yet to be defined.
-      The "{3}" will be in the next token.
-      (The results will be different if a non-default tokenizer is selected.)
+   
+   The result is an atom with the string representation ``-$``. Yacas assumes
+   that ``-$`` is an operator symbol yet to be defined. The ``3`` will be in the
+   next token. (The results will be different if a non-default tokenizer is
+   selected.)
       
    .. seealso:: :func:`FromFile`, :func:`FromString`, :func:`Read`, :func:`LispRead`, :func:`DefaultTokenizer`
 
@@ -571,10 +571,10 @@ which simply read a specified file.
 
    evaluate all expressions in a file
 
-   :param name: string, name of the file to load
+   :param name: name of the file to load
 
-   The file "name" is opened. All expressions in the file are read and
-   evaluated. {Load} always returns {true}.
+   The file ``name`` is opened. All expressions in the file are read and
+   evaluated. :func:`Load` always returns :data:`True`.
 
    .. seealso:: :func:`Use`, :func:`DefLoad`, :func:`DefaultDirectory`, :func:`FindFile`
 
@@ -582,30 +582,28 @@ which simply read a specified file.
 
    load a file, but not twice
 
-   :param name: string, name of the file to load
+   :param name: name of the file to load
 
-   If the file "name" has been loaded before, either by an earlier
-   call  to {Use} or via the {DefLoad}  mechanism, nothing happens.
-   Otherwise all expressions in the file are  read and evaluated.
-   {Use} always returns {true}.    The purpose of this function is to
-   make sure that the file will at  least have been loaded, but is not
-   loaded twice.
+   If the file ``name`` has been loaded before, either by an earlier call to
+   :func:`Use` or via the :func:`DefLoad` mechanism, nothing happens. Otherwise
+   all expressions in the file are  read and evaluated. :func:`Use` always
+   returns :data:`True`. The purpose of this function is to make sure that the
+   file will at least have been loaded, but is not loaded twice.
 
    .. seealso:: :func:`Load`, :func:`DefLoad`, :func:`DefaultDirectory`
 
 .. function:: DefLoad(name)
 
-   load a {.def} file
+   load a ``.def`` file
 
-   :param name: string, name of the file (without {.def} suffix)
+   :param name: name of the file (without the ``.def`` suffix)
 
-   The suffix {.def} is appended to "name" and the  file with this
-   name is loaded. It should contain a list of functions,  terminated
-   by a closing brace \} (the end-of-list delimiter). This  tells the
-   system to load the file "name" as soon as the user calls  one of
-   the functions named in the file (if not done so already). This
-   allows for faster startup times, since not all of the rules
-   databases  need to be loaded, just the descriptions on which files
+   The suffix ``.def`` is appended to ``name`` and the  file with this name is
+   loaded. It should contain a list of functions,  terminated by a closing brace
+   ``\}`` (the end-of-list delimiter). This  tells the system to load the file
+   ``name`` as soon as the user calls  one of the functions named in the file (if
+   not done so already). This allows for faster startup times, since not all of
+   the rules databases  need to be loaded, just the descriptions on which files
    to load for  which functions.
 
    .. seealso:: :func:`Load`, :func:`Use`, :func:`DefaultDirectory`
@@ -627,18 +625,17 @@ which simply read a specified file.
 
 .. function:: PatchLoad(name)
 
-   execute commands between {<?} and {?>} in file
+   execute commands between ``<?`` and ``?>`` in file
 
    :param name: string, name of the file to "patch"
 
-   {PatchLoad} loads in a file and outputs the contents to the current
-   output. The file can contain blocks delimited by {<?} and {?>}
-   (meaning "Yacas Begin" and "Yacas End"). The piece of text between
-   such delimiters is treated as a separate file with Yacas
-   instructions,  which is then loaded and executed. All output of
-   write statements  in that block will be written to the same current
-   output.    This is similar to the way PHP works. You can have a
-   static text file  with dynamic content generated by Yacas.
+   :func:`PatchLoad` loads in a file and outputs the contents to the current
+   output. The file can contain blocks delimited by ``<?`` and ``?>``. The piece
+   of text between such delimiters is treated as a separate file with yacas
+   instructions,  which is then loaded and executed. All output of write
+   statements  in that block will be written to the same current output. This is
+   similar to the way PHP works. You can have a static text file  with dynamic
+   content generated by yacas.
 
    .. seealso:: :func:`PatchString`, :func:`Load`
 
@@ -646,11 +643,9 @@ which simply read a specified file.
 
    the newline character
 
-
    This function returns a string with one element in it, namely a
-   newline  character. This may be useful for building strings to send
-   to some  output in the end.    Note that the second letter in the
-   name of this command is a lower  case {L} (from "line").
+   newline character. This may be useful for building strings to send
+   to some output in the end.
 
    :Example:
 
