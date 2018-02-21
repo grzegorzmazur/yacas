@@ -2,17 +2,17 @@
 Integration
 ===========
 
-Integration can be performed by the function {Integrate}, which has
-two calling conventions:
+Integration can be performed by the function :func:`Integrate`, which has
+two calling conventions::
 
-* Integrate(variable) expression
-* Integrate(variable, from, to) expression
+    Integrate(variable) expression
+    Integrate(variable, from, to) expression
 
-Integrate can have its own set of rules for specific integrals, which
-might return a correct answer immediately. Alternatively, it calls the
-function AntiDeriv, to see if the anti-derivative can be determined
-for the integral requested. If this is the case, the anti-derivative
-is used to compose the output.
+:func:`Integrate` can have its own set of rules for specific integrals, which
+might return a correct answer immediately. Alternatively, it calls the function
+:func:`AntiDeriv`, to see if the anti-derivative can be determined for the
+integral requested. If this is the case, the anti-derivative is used to compose
+the output.
 
 If the integration algorithm cannot perform the integral, the
 expression is returned unsimplified.
@@ -20,25 +20,21 @@ expression is returned unsimplified.
 The integration algorithm
 -------------------------
 
-This section describes the steps taken in doing integration.
-
 General structure
 ^^^^^^^^^^^^^^^^^
 
-The integration starts at the function {Integrate}, but the task is
-delegated to other functions, one after the other.  Each function can
-deem the integral unsolvable, and thus return the integral
-unevaluated. These different functions offer hooks for adding new
-types of integrals to be handled.
+The integration starts at the function :func:`Integrate`, but the task is
+delegated to other functions, one after the other. Each function can deem the
+integral unsolvable, and thus return the integral unevaluated. These different
+functions offer hooks for adding new types of integrals to be handled.
 
 Expression clean-up
 ^^^^^^^^^^^^^^^^^^^
 
 Integration starts by first cleaning up the expression, by calling
-{TrigSimpCombine} to simplify expressions containing multiplications
-of trigonometric functions into additions of trigonometric functions
-(for which the integration rules are trivial), and then passing the
-result to {Simplify}.
+:func:`TrigSimpCombine` to simplify expressions containing multiplications of
+trigonometric functions into additions of trigonometric functions (for which the
+integration rules are trivial), and then passing the result to :func:`Simplify`.
 
 Generalized integration rules
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -63,7 +59,7 @@ and adding the integrals.
 Integration tables
 ^^^^^^^^^^^^^^^^^^
 
-For elementary functions, Yacas uses integration tables. For instance,
+For elementary functions, yacas uses integration tables. For instance,
 the fact that the anti-derivative of :math:`\cos(x)` is :math:`\sin(x)` is
 declared in an integration table.
 
