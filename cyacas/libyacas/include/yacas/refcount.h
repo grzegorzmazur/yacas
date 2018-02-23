@@ -27,31 +27,20 @@ public:
   // Destructor
   ~RefPtr()
   {
-    if (iPtr)
-    {
-      iPtr->iReferenceCount--;
-      if (iPtr->iReferenceCount == 0)
-      {
+      if (iPtr && !--iPtr->iReferenceCount)
         delete iPtr;
-      }
-    }
   }
   // Assignment from pointer
   RefPtr &operator=(T *ptr)
   {
     if (ptr)
-    {
       ptr->iReferenceCount++;
-    }
-    if (iPtr)
-    {
-      iPtr->iReferenceCount--;
-      if (iPtr->iReferenceCount == 0)
-      {
-        delete iPtr;
-      }
-    }
+
+    if (iPtr && !--iPtr->iReferenceCount)
+      delete iPtr;
+
     iPtr = ptr;
+
     return *this;
   }
   // Assignment from another
