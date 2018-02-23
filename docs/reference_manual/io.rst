@@ -665,11 +665,10 @@ which simply read a specified file.
 
    :param expression: expression to be evaluated in verbose mode
 
-   The function {V(expression)} will evaluate the expression in
-   verbose mode. Various parts of Yacas can show extra information
-   about the work done while doing a calculation when using {V}.    In
-   verbose mode, {InVerboseMode()} will return :data:`True`, otherwise  it
-   will return :data:`False`.
+   :function:`V` will evaluate the expression in verbose mode. Various parts of
+   yacas can show extra information about the work done while doing a
+   calculation when using :func:`V`. In verbose mode, :func:`InVerboseMode` will
+   return :data:`True`, otherwise  it will return :data:`False`.
 
    :Example:
 
@@ -695,7 +694,7 @@ which simply read a specified file.
 
    check for verbose output mode
 
-   In verbose mode, {InVerboseMode()} will return :data:`True`, otherwise it
+   In verbose mode, :func:`InVerboseMode` will return :data:`True`, otherwise it
    will return :data:`False`.
 
    :Example:
