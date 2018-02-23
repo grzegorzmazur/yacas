@@ -112,7 +112,7 @@ std::string InternalFindFile(const std::string& fname, const std::vector<std::st
     for (std::size_t i = 0; !f.good() && i < dirs.size(); ++i) {
         path = dirs[i] + fname;
         MapPathSeparators(path);
-        f = std::ifstream(path);
+        f = std::move(std::ifstream(path));
     }
 
     if (!f.good())
