@@ -27,8 +27,6 @@ public: //constructors
   BigNumber(const std::string& aString,int aPrecision,int aBase=10);
 /// copy constructor
   explicit BigNumber(const BigNumber& aOther);
-  // no constructors from int or double to avoid automatic conversions
-  //explicit BigNumber(int aPrecision = 20);
   ~BigNumber();
 
   BigNumber& operator = (const BigNumber&);
