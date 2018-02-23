@@ -53,5 +53,23 @@
         "*.ipp": "cpp"
     },
     "python.pythonPath": "/usr/bin/python3",
-    "restructuredtext.workspaceRoot": "/home/mazur/Code/yacas-develop"
+    "restructuredtext.workspaceRoot": "/home/mazur/Code/yacas-develop",
+    "restructuredtext.linter.sphinxDirectives": [
+        "toctree",
+        "function",
+        "seealso"
+    ],
+    "restructuredtext.linter.sphinxTextRoles": [
+        "doc",
+        "ref",
+        "func"
+    ],
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/build": true
+    }
 }
