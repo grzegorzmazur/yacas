@@ -1,5 +1,7 @@
 #include "yacas/platfileio.h"
 
+#include <memory>
+
 #ifdef _WIN32
 #define MAP_TO_WIN32_PATH_SEPARATOR
 #endif // WIN32
@@ -108,14 +110,14 @@ std::string InternalFindFile(const std::string& fname, const std::vector<std::st
 
     MapPathSeparators(path);
 
-    std::ifstream f(path);
-    for (std::size_t i = 0; !f.good() && i < dirs.size(); ++i) {
+    std::unique_ptr<std::ifstream> f(new std::ifstream(path));
+    for (std::size_t i = 0; !f->good() && i < dirs.size(); ++i) {
         path = dirs[i] + fname;
         MapPathSeparators(path);
-        f = std::move(std::ifstream(path));
+        f.reset(new std::ifstream(path));
     }
 
-    if (!f.good())
+    if (!f->good())
         return "";
 
     return path;
