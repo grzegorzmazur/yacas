@@ -62,17 +62,11 @@ public:
   LispStringSmartPtr& operator = (const LispString* aString);
 
   // Assignment from another (the *default* simply assigns members, not what we want).
-  // (we return void, not *this).
   LispStringSmartPtr& operator=(const LispStringSmartPtr &aOther) { this->operator=(aOther.iString); return *this; }
 
   // Expected pointer behavior.
   operator const LispString*()    const { return  iString; }  // implicit conversion to pointer to T
   const LispString* operator->()  const { return  iString; }  // so (smartPtr->member) accesses T's member
-
-  // Operators below are not used yet, so they are commented out. If you want to use them you need to test if they work.
-  //LispString &operator*() const { return *iString; }  // so (*smartPtr) is a reference to T
-  //LispString *ptr()       const { return  iString; }  // so (smartPtr.ptr()) returns the pointer to T (boost calls this method 'get')
-  //bool operator!()        const { return !iString; }  // is null pointer
 
 private:
   const LispString* iString;
@@ -81,14 +75,10 @@ private:
 inline
 LispStringSmartPtr& LispStringSmartPtr::operator=(const LispString* aString)
 {
-  // Increment first.
   if (aString)
     ++aString->iReferenceCount;
-  if (iString)
-  {
-    --iString->iReferenceCount;
-    if (iString->iReferenceCount == 0) delete iString;
-  }
+  if (iString && !--iString->iReferenceCount)
+    delete iString;
   iString = aString;
   return *this;
 }
