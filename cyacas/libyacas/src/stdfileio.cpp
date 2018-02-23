@@ -108,18 +108,14 @@ std::string InternalFindFile(const std::string& fname, const std::vector<std::st
 
     MapPathSeparators(path);
 
-    FILE* file = fopen(path.c_str(), "rb");
-    for (std::size_t i = 0; !file && i < dirs.size(); ++i) {
-        path = dirs[i];
-        path += fname;
+    std::ifstream f(path);
+    for (std::size_t i = 0; !f.good() && i < dirs.size(); ++i) {
+        path = dirs[i] + fname;
         MapPathSeparators(path);
-        file = fopen(path.c_str(), "rb");
+        f = std::ifstream(path);
     }
 
-    if (file)
-        fclose(file);
-
-    if (!file)
+    if (!f.good())
         return "";
 
     return path;
