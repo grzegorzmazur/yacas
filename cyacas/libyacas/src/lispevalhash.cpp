@@ -61,29 +61,12 @@ void YacasEvaluator::Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment,Lis
     }
     if (iFlags & Variable)
     {
-
-//LispString res;
-
-//printf("Enter\n");
       LispPtr head(aEnvironment.iList->Copy());
       head->Nixed() = (iter.getObj());
       LispPtr list(LispSubList::New(head));
 
-
-/*
-PrintExpression(res, list,aEnvironment,100);
-printf("before %s\n",res.String());
-*/
-
       aEnvironment.iEvaluator->Eval(aEnvironment, arg, list);
-
-/*
-PrintExpression(res, arg,aEnvironment,100);
-printf("after %s\n",res.String());
-*/
-
       aEnvironment.iStack.push_back(arg);
-//printf("Leave\n");
     }
   }
 
