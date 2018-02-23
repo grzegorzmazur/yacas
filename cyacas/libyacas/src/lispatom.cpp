@@ -140,10 +140,8 @@ BigNumber* LispNumber::Number(int aBasePrecision)
   if (!iNumber)
   {  // create and store a BigNumber out of string
     assert(iString.ptr());
-    RefPtr<LispString> str;
-    str = iString;
     // aBasePrecision is in digits, not in bits, ok
-    iNumber = new BigNumber(*str, aBasePrecision, BASE10);
+    iNumber = new BigNumber(*iString, aBasePrecision, BASE10);
   }
 
   // check if the BigNumber object has enough precision, if not, extend it
