@@ -71,14 +71,16 @@ Yacas allows for use of the infix notation, but with some
 additions. Functions can be *bodied*, meaning that the last argument
 is written past the close bracket. An example is ``ForEach``, where we
 write ``ForEach(item, 1 .. 10) Echo(item);``.  ``Echo(item)`` is the
-last argument to the function ``ForEach``.  <br /> A list is enclosed
-with curly braces, and is written out with commas between the
+last argument to the function ``ForEach``.
+
+A list is enclosed with curly braces, and is written out with commas between the
 elements, like for example ``{1,2,3}``.  items in lists (and things
 that can be made to look like lists, like arrays and strings), can
 then be accessed by indicating the index between square brackets after
 the object. ``{a,b,c}[2]`` should return ``b``, as ``b`` is the second
 element in the list (Yacas starts counting from 1 when accessing
-elements). The same can be done with strings: ``"abc"[2]``.  <br />
+elements). The same can be done with strings: ``"abc"[2]``.
+
 And finally, function calls can be grouped together, where they get
 executed one at a time, and the result of executing the last
 expression is returned. This is done through square brackets, as ``[
@@ -262,8 +264,8 @@ derivative:
 * ``D(x) D(x) Sin(x);`` (taking a derivative twice)
 
 The :func:`D` function also accepts an argument specifying how many times the
-derivative has to be taken. In that case, the above expressions can
-also be written as:
+derivative has to be taken. In that case, the above expressions can also be
+written as:
 
 * ``D(x,1) Sin(x);`` (taking a derivative)
 * ``D(x,2) Sin(x);`` (taking a derivative twice)
@@ -272,12 +274,12 @@ also be written as:
 Analytic functions
 ==================
 
-Many of the usual analytic functions have been defined in the Yacas
-library. Examples are ``Exp(1)``, ``Sin(2)``, ``ArcSin(1/2)``,
-``Sqrt(2)``.  These will not evaluate to a numeric result in general,
-unless the result is an integer, like ``Sqrt(4)``. If asked to reduce
-the result to a numeric approximation with the function ``N``, then
-*yacas will do so*, as for example in ``N(Sqrt(2),50)``.
+Many of the usual analytic functions have been defined in the yacas library.
+Examples are ``Exp(1)``, ``Sin(2)``, ``ArcSin(1/2)``, ``Sqrt(2)``.  These will
+not evaluate to a numeric result in general, unless the result is an integer,
+like ``Sqrt(4)``. If asked to reduce the result to a numeric approximation with
+the function :func:`N`, then *yacas will do so*, as for example in
+``N(Sqrt(2),50)``.
 
 =========
 Variables
@@ -320,17 +322,15 @@ argument.
 Boolean expressions and predicates
 ==================================
 
-Yacas predefines ``True`` and ``False`` as boolean values. Functions
-returning boolean values are called *predicates*. For example,
-:func:`IsNumber` and :func:`IsInteger` are predicates defined in the yacas
-environment. For example, try ``IsNumber(2+x)``, or
-``IsInteger(15/5)``.
+Yacas predefines :data:`True` and :data:`False` as boolean values. Functions
+returning boolean values are called *predicates*. For example, :func:`IsNumber`
+and :func:`IsInteger` are predicates defined in the yacas environment. For
+example, try ``IsNumber(2+x)``, or ``IsInteger(15/5)``.
 
-There are also comparison operators. Typing ``2 > 1`` would return
-``True``. You can also use the infix operators ``And`` and ``Or``, and
-the prefix operator ``Not``, to make more complex boolean
-expressions. For example, try ``True And False``, ``True Or False``,
-``True And Not(False)``.
+There are also comparison operators. Typing ``2 > 1`` would return :data:`True`.
+You can also use the infix operators ``And`` and ``Or``, and the prefix operator
+``Not``, to make more complex boolean expressions. For example, try ``True And
+False``, ``True Or False``, ``True And Not(False)``.
 
 =================
 Strings and lists
@@ -401,9 +401,9 @@ that this already works for input value zero, with ``f(0)``.
 
 Now we come to the more complex line ``20 # f(n_IsIntegerGreaterThanZero) <--
 n*f(n-1);`` Now we realize we need a function :func:`IsGreaterThanZero`, so we
-define this function, with ``IsIntegerGreaterThanZero(_n) <-- 
-(IsInteger(n) And n > 0);`` You can verify that it works
-by trying ``f(5)``, which should return the same value as ``5!``.
+define this function, with ``IsIntegerGreaterThanZero(_n) <-- (IsInteger(n) And
+n > 0);`` You can verify that it works by trying ``f(5)``, which should return
+the same value as ``5!``.
 
 In the above example we have first defined two *simplification rules*
 for a new function :func:`f`. Then we realized that we need to define a
@@ -440,15 +440,13 @@ otherwise the pattern is not matched. The underscore operator is to be
 used only on the left hand side of the rule definition operator
 ``<--``.
 
-There is another, slightly longer but equivalent way of writing the
-second rule: ``20 # f(_n)_(IsIntegerGreaterThanZero(n))
-<-- n*f(n-1);`` The underscore after the function object
-denotes a *postpredicate* that should return ``True`` or else there is
-no match. This predicate may be a complicated expression involving
-several logical operations, unlike the simple checking of just one
-predicate in the ``n_IsIntegerGreaterThanZero`` construct. The
-postpredicate can also use the variable ``n`` (without the
-underscore).
+There is another, slightly longer but equivalent way of writing the second rule:
+``20 # f(_n)_(IsIntegerGreaterThanZero(n)) <-- n*f(n-1);`` The underscore after
+the function object denotes a *postpredicate* that should return :data:`True` or
+else there is no match. This predicate may be a complicated expression involving
+several logical operations, unlike the simple checking of just one predicate in
+the ``n_IsIntegerGreaterThanZero`` construct. The postpredicate can also use the
+variable ``n`` (without the underscore).
 
 Precedence values for rules are given by a number followed by the
 ``#`` infix operator (and the transformation rule after it). This
@@ -732,10 +730,10 @@ best. Evaluate the following expression ::
 
    Macro(for,{st,pr,in,bd}) [(@st);While(@pr)[(@bd);(@in);];];
 
-This expression defines a macro that allows for looping.  Yacas has a 
-:func:`For` function already, but this is how it could be defined in one
-line (In yacas the :func:`For` function is bodied, we left that out here for
-clarity, as the example is about macros).
+This expression defines a macro that allows for looping.  Yacas has a
+:func:`For` function already, but this is how it could be defined in one line
+(In yacas the :func:`For` function is bodied, we left that out here for clarity,
+as the example is about macros).
 
 To see it work just type ``for(i:=0,i<3,i:=i+1,Echo(i))``. You will see
 the count from one to three.
