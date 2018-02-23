@@ -1,7 +1,10 @@
 cmake_minimum_required (VERSION 3.0)
 
-cmake_policy(SET CMP0048 NEW)
-cmake_policy(SET CMP0054 NEW)
+foreach (p CMP0048 CMP0054 CMP0071)
+    if (POLICY ${p})
+        cmake_policy(SET ${p} NEW)
+    endif ()
+endforeach ()
 
 option (ENABLE_CYACAS_CONSOLE "build the C++ yacas engine" ON)
 option (ENABLE_CYACAS_GUI "build the C++ yacas engine" ON)
