@@ -2,7 +2,7 @@ include (ExternalProject)
 
 ExternalProject_Add (yacas-gui_codemirror
     PREFIX external_packages
-    URL https://github.com/codemirror/CodeMirror/archive/5.34.0.zip
+    URL https://github.com/codemirror/CodeMirror/archive/5.35.0.zip
     CONFIGURE_COMMAND npm install --no-progress
     BUILD_IN_SOURCE 1
     BUILD_COMMAND npm run-script build
@@ -24,7 +24,7 @@ ExternalProject_Add (yacas-gui_three
 
 ExternalProject_Add (yacas-gui_vis
     PREFIX external_packages
-    URL https://github.com/almende/vis/archive/v4.18.1.zip
+    URL https://github.com/almende/vis/archive/v4.21.0.zip
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
