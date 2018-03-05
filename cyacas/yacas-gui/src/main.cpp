@@ -18,10 +18,6 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     try {
-#ifndef NO_GLOBALS
-        PlatObSetThreadSafe(true);
-#endif    
-
         app.setApplicationName("yacas-gui");
         app.setApplicationDisplayName("Yacas GUI");
         app.setOrganizationName("yacas.org");

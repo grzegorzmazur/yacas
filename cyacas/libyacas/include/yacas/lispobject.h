@@ -17,7 +17,6 @@
 #include "lispstring.h"
 #include "genericobject.h"
 #include "noncopyable.h"
-#include "stubs.h"
 
 class LispObject;
 class BigNumber;
@@ -87,15 +86,6 @@ private:
   LispPtr   iNext;
 public:
   unsigned iReferenceCount;
-  
-  static inline void* operator new(size_t size) { return PlatAlloc(size); }
-  static inline void* operator new[](size_t size) { return PlatAlloc(size); }
-  static inline void operator delete(void* object) { PlatFree(object); }
-  static inline void operator delete[](void* object) { PlatFree(object); }
-  // Placement form of new and delete.
-  static inline void* operator new(size_t, void* where) { return where; }
-  static inline void operator delete(void*, void*) {}
-
 };
 
 /**

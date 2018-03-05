@@ -29,6 +29,7 @@ set (SOURCES
   src/substitute.cpp
   src/mathcommands2.cpp
   src/mathcommands3.cpp
+  src/mempool.cpp
   src/errors.cpp
   src/patcher.cpp
   src/xmltokenizer.cpp
@@ -36,8 +37,6 @@ set (SOURCES
   src/yacasnumbers.cpp
   src/numbers.cpp
   src/platmath.cpp
-  src/stdstubs.cpp
-  src/obmalloc.cpp
   src/lisphash.cpp)
 
 set (HEADERS
@@ -69,6 +68,7 @@ set (HEADERS
   include/yacas/lispuserfunc.h
   include/yacas/mathcommands.h
   include/yacas/mathuserfunc.h
+  include/yacas/mempool.h
   include/yacas/noncopyable.h
   include/yacas/numbers.h
   include/yacas/patcher.h
@@ -81,7 +81,6 @@ set (HEADERS
   include/yacas/standard.inl
   include/yacas/stringio.h
   include/yacas/string_utils.h
-  include/yacas/stubs.h
   include/yacas/substitute.h
   include/yacas/tokenizer.h
   include/yacas/utf8/core.h

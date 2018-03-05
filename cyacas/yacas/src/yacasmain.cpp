@@ -563,24 +563,6 @@ int parse_options(int argc, char** argv)
                     std::cout << YACAS_VERSION << "\n";
                     std::exit(EXIT_SUCCESS);
                 }
-
-#ifndef NO_GLOBALS
-                if (std::strchr(argv[fileind],'m')) {
-                    extern void
-                        Malloc_SetHooks( void *(*malloc_func)(size_t),
-                                         void *(*calloc_func)(size_t, size_t),
-                                         void *(*realloc_func)(void *, size_t),
-                                         void (*free_func)(void *) );
-
-                    Malloc_SetHooks( malloc,
-                                     calloc,
-                                     realloc,
-                                     free );
-
-
-
-                }
-#endif
             }
         }
     }
