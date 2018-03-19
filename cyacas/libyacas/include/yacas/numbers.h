@@ -2,6 +2,7 @@
 #define YACAS_NUMBERS_H
 
 #include "lispenvironment.h"
+#include "anumber.h"
 
 LispObject* GcdInteger(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment);
 LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
@@ -18,18 +19,11 @@ LispObject* LispFactorial(LispObject* int1, LispEnvironment& aEnvironment,int aP
  */
 
 
-class ANumber;
-
 /// Main class for multiple-precision arithmetic.
 /// All calculations are done at given precision. Integers grow as needed, floats don't grow beyond given precision.
 class BigNumber {
 public: //constructors
   BigNumber(const std::string& aString,int aPrecision,int aBase=10);
-/// copy constructor
-  explicit BigNumber(const BigNumber& aOther);
-  ~BigNumber();
-
-  BigNumber& operator = (const BigNumber&);
 
   /// ToString : return string representation of number in aResult to given precision (base digits)
   void ToString(std::string& aResult, int aPrecision, int aBase=10) const;
@@ -83,31 +77,18 @@ public: //constructors
 
   unsigned iReferenceCount;
 
-  /// Internal library wrapper starts here.
-  inline void SetIsInteger(bool aIsInteger) {iType = (aIsInteger ? KInt : KFloat);}
+  inline void SetIsInteger(bool is_int) { _is_int = is_int; }
 
 private:
     int iPrecision;
 
-    enum ENumType
-    {
-      KInt = 0,
-      KFloat
-    };
-    ENumType iType;
+    bool _is_int;
 
     friend LispObject* GcdInteger(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment);
-    friend LispObject* SinFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
-    friend LispObject* CosFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
-    friend LispObject* TanFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
-    friend LispObject* ArcSinFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
-    friend LispObject* ExpFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
-    friend LispObject* LnFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
     friend LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
-    friend LispObject* PowerFloat(LispObject* int1, LispObject* int2,
-                           LispEnvironment& aEnvironment,int aPrecision);
-    ANumber* iNumber;
-  /// Internal library wrapper ends here.
+    friend LispObject* PowerFloat(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,int aPrecision);
+
+    ANumber iNumber;
 };
 
 /// bits_to_digits and digits_to_bits, utility functions
