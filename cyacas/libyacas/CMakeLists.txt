@@ -94,8 +94,7 @@ add_library (libyacas ${SOURCES} ${HEADERS})
 set_target_properties (libyacas PROPERTIES OUTPUT_NAME "yacas")
 target_include_directories (libyacas PUBLIC include "${CMAKE_CURRENT_BINARY_DIR}/config")
 
-install (TARGETS libyacas LIBRARY_DESTINATION lib RUNTIME DESTINATION bin COMPONENT app)
-install (TARGETS libyacas ARCHIVE DESTINATION lib COMPONENT dev)
+install (TARGETS libyacas LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin COMPONENT app)
 install (DIRECTORY include/ DESTINATION include COMPONENT dev)
 install (FILES "${CMAKE_CURRENT_BINARY_DIR}/config/yacas/yacas_version.h" DESTINATION include/yacas COMPONENT dev)
 
