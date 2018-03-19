@@ -94,7 +94,8 @@ add_library (libyacas ${SOURCES} ${HEADERS})
 set_target_properties (libyacas PROPERTIES OUTPUT_NAME "yacas")
 target_include_directories (libyacas PUBLIC include "${CMAKE_CURRENT_BINARY_DIR}/config")
 
-install (TARGETS libyacas ARCHIVE DESTINATION lib RUNTIME DESTINATION bin COMPONENT app)
+install (TARGETS libyacas LIBRARY_DESTINATION lib RUNTIME DESTINATION bin COMPONENT app)
+install (TARGETS libyacas ARCHIVE DESTINATION lib COMPONENT dev)
 install (DIRECTORY include/ DESTINATION include COMPONENT dev)
 install (FILES "${CMAKE_CURRENT_BINARY_DIR}/config/yacas/yacas_version.h" DESTINATION include/yacas COMPONENT dev)
 
@@ -108,4 +109,3 @@ if (APPLE)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND cd "$<TARGET_FILE_DIR:libyacas_framework>/../.." && rm -f Headers && ln -s Versions/Current/Headers Headers)
   install (TARGETS libyacas_framework FRAMEWORK DESTINATION ${CMAKE_INSTALL_FRAMEWORK_PREFIX} COMPONENT framework)
 endif()
-
