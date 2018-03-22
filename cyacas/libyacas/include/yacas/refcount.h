@@ -21,7 +21,7 @@ public:
   // Default constructor (not explicit, so it auto-initializes)
   inline RefPtr() : iPtr(nullptr) {}
   // Construct from pointer to T
-  explicit RefPtr(T *ptr) : iPtr(ptr) { if (ptr) { ptr->iReferenceCount++; } }
+  /*explicit*/ RefPtr(T* ptr) : iPtr(ptr) { if (ptr) { ptr->iReferenceCount++; } }
   // Copy constructor
   RefPtr(const RefPtr &refPtr) : iPtr(refPtr.ptr()) { if (iPtr) { iPtr->iReferenceCount++; } }
   // Destructor
