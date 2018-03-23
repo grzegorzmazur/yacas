@@ -77,6 +77,7 @@ static int Digit(int c)
 ANumber::ANumber(int aPrecision) : iExp(0),iNegative(false),iPrecision(aPrecision),iTensExp(0)
 {
   assert(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
+  reserve(16);
   push_back(0);
 }
 
@@ -84,6 +85,7 @@ ANumber::ANumber(int aPrecision) : iExp(0),iNegative(false),iPrecision(aPrecisio
 /* ANumber: Constructor for an arbitrary precision number. */
 ANumber::ANumber(const std::string& aString,int aPrecision,int aBase): iExp(0),iNegative(false),iPrecision(aPrecision),iTensExp(0)
 {
+    reserve(16);
     SetPrecision(aPrecision);
     SetTo(aString,aBase);
 }
@@ -123,6 +125,7 @@ int WordDigits(int aPrecision, int aBase)
 void ANumber::SetTo(const std::string& str, int aBase)
 {
     clear();
+    reserve(16);
 
     assert(sizeof(PlatDoubleWord) >= 2*sizeof(PlatWord));
     assert(aBase<=36);
