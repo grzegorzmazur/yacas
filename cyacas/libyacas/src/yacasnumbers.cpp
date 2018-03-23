@@ -258,7 +258,7 @@ LispObject *LispFactorial(LispObject *int1, LispEnvironment &aEnvironment, int a
 // this will use the new BigNumber/BigInt/BigFloat scheme
 
 BigNumber::BigNumber(const std::string& aString, int aBasePrecision, int aBase):
-    iReferenceCount(0), iNumber(0)
+    iNumber(0)
 {
     bool isFloat = false;
     const int digits = aBasePrecision;

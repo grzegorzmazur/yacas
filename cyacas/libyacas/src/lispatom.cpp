@@ -19,19 +19,11 @@ LispObject* LispAtom::New(LispEnvironment& aEnvironment, const std::string& aStr
 LispAtom::LispAtom(const LispString* aString) : iString(aString)
 {
     assert(aString);
-    ++aString->iReferenceCount;
 }
 
 LispAtom::LispAtom(const LispAtom& other) : LispObject(other), iString(other.iString)
 {
-  ++iString->iReferenceCount;
 }
-
-LispAtom::~LispAtom()
-{
-  --iString->iReferenceCount;
-}
-
 
 const LispString* LispAtom::String()
 {
@@ -61,7 +53,7 @@ LispSubList::~LispSubList()
     {
         LispPtr next;
         LispIterator iter(iSubList);
-        bool busy = (iter.getObj()->iReferenceCount == 1);
+        bool busy = (iter.getObj()->use_count() == 1);
         while (busy) // while there are things to delete...
         {
       // TODO: woof -- fix this ugliness!
@@ -69,7 +61,7 @@ LispSubList::~LispSubList()
             // Make sure "next" holds the tail of the list
             nextToDelete = (iter.getObj()->Nixed());
             // Separate out the current element...
-            if (iter.getObj()->iReferenceCount == 1)
+            if (iter.getObj()->use_count() == 1)
             {// Destructive operation only if necessary...
                 iter.getObj()->Nixed() = (nullptr);
                 // And delete it.

@@ -248,23 +248,12 @@ private:
 
     struct LispLocalVariable {
         LispLocalVariable(const LispString* var, LispObject* val):
-        var(var), val(val)
+            var(var), val(val)
         {
-            ++var->iReferenceCount;
         }
 
-        LispLocalVariable(const LispLocalVariable& v):
-        var(v.var), val(v.val)
-        {
-            ++var->iReferenceCount;
-        }
 
-        ~LispLocalVariable()
-        {
-            --var->iReferenceCount;
-        }
-
-        const LispString* var;
+        LispStringSmartPtr var;
         LispPtr val;
     };
 

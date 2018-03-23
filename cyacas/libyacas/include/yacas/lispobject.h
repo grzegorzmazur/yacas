@@ -37,7 +37,7 @@ typedef RefPtr<LispObject> LispPtr;
  *  Only one of these three functions should return a non-nullptr value.
  *  It is a reference-counted object. LispPtr handles the reference counting.
  */
-class LispObject
+class LispObject: public RefCount
 {
 public:
   inline LispPtr& Nixed();
@@ -68,11 +68,11 @@ public:
   inline int operator!=(LispObject& aOther);
 protected:
   inline LispObject() :
-   iNext(),iReferenceCount()
+   iNext()
   {
   }
   inline LispObject(const LispObject& other) :
-  iNext(),iReferenceCount()
+  iNext()
   {
   }
 
@@ -84,8 +84,6 @@ protected:
 
 private:
   LispPtr   iNext;
-public:
-  unsigned iReferenceCount;
 };
 
 /**

@@ -218,7 +218,7 @@ protected:
     std::vector<const YacasParamMatcherBase*> iParamMatchers;
 
     /// List of variables appearing in the pattern.
-    std::vector<const LispString*> iVariables;
+    std::vector<LispStringSmartPtr> iVariables;
 
     /// List of predicates which need to be true for a match.
     std::vector<LispPtr> iPredicates;

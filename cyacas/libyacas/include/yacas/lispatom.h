@@ -43,7 +43,6 @@ class LispAtom: public LispObject, public FastAlloc<LispAtom>
 {
 public:
   static LispObject* New(LispEnvironment& aEnvironment, const std::string& aString);
-  ~LispAtom() override;
   const LispString* String() override;
   LispObject* Copy() const override { return new LispAtom(*this); }
 private:
@@ -57,7 +56,7 @@ private:
 public:
   LispAtom(const LispAtom& other);
 private:
-  const LispString* iString;
+  LispStringSmartPtr iString;
 };
 
 //------------------------------------------------------------------------------

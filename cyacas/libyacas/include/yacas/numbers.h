@@ -3,6 +3,7 @@
 
 #include "lispenvironment.h"
 #include "anumber.h"
+#include "refcount.h"
 
 LispObject* GcdInteger(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment);
 LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
@@ -21,7 +22,7 @@ LispObject* LispFactorial(LispObject* int1, LispEnvironment& aEnvironment,int aP
 
 /// Main class for multiple-precision arithmetic.
 /// All calculations are done at given precision. Integers grow as needed, floats don't grow beyond given precision.
-class BigNumber {
+class BigNumber: public RefCount {
 public: //constructors
   BigNumber(const std::string& aString,int aPrecision,int aBase=10);
 
@@ -74,8 +75,6 @@ public: //constructors
   int Sign() const;
 
   inline int GetPrecision() const {return iPrecision;};
-
-  unsigned iReferenceCount;
 
   inline void SetIsInteger(bool is_int) { _is_int = is_int; }
 

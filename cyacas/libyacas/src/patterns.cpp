@@ -86,7 +86,6 @@ int YacasPatternPredicateBase::LookUp(const LispString * aVariable)
         if (iVariables[i] == aVariable)
             return i;
 
-    aVariable->iReferenceCount += 1;
     iVariables.push_back(aVariable);
     return iVariables.size() - 1;
 }
@@ -291,10 +290,6 @@ void YacasPatternPredicateBase::SetPatternVariables(LispEnvironment& aEnvironmen
 
 YacasPatternPredicateBase::~YacasPatternPredicateBase()
 {
-    for (const LispString* p: iVariables)
-        if (--p->iReferenceCount == 0)
-            delete p;
-
     for (const YacasParamMatcherBase* p: iParamMatchers)
         delete p;
 }

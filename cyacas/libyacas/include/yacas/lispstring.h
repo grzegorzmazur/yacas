@@ -13,19 +13,15 @@
 /** \class LispString : zero-terminated byte-counted string.
  * Also keeps a reference count for any one interested.
  */
-class LispString : public std::string
+class LispString: public RefCount, public std::string
 {
 public:
     explicit LispString(const std::string& = "");
-
-public:
-    mutable unsigned iReferenceCount;
 };
 
 
 inline LispString::LispString(const std::string& s):
-    std::string(s),
-    iReferenceCount(0)
+    std::string(s)
 {
 }
 
