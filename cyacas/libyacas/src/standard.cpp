@@ -197,8 +197,8 @@ bool InternalStrictTotalOrder(
     if (e1.ptr() && !e2.ptr())
         return false;
     
-    BigNumber* n1 = e1->Number(env.Precision());
-    BigNumber* n2 = e2->Number(env.Precision());
+    const BigNumber* n1 = e1->Number(env.Precision());
+    const BigNumber* n2 = e2->Number(env.Precision());
     
     if (n1 && !n2)
         return true;

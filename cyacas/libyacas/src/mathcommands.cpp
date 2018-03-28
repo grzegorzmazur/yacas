@@ -179,11 +179,11 @@ void LispLexCompare2(LispEnvironment& aEnvironment, int aStackTop,
     LispPtr result1(ARGUMENT(1));
     LispPtr result2(ARGUMENT(2));
     bool cmp;
-    RefPtr<BigNumber> n1; n1 = result1->Number(aEnvironment.Precision());
-    RefPtr<BigNumber> n2; n2 = result2->Number(aEnvironment.Precision());
-    if (!!n1 && !!n2)
+    BigNumber* n1 = result1->Number(aEnvironment.Precision());
+    BigNumber* n2 = result2->Number(aEnvironment.Precision());
+    if (n1 && n2)
     {
-      cmp =numfunc(*n1,*n2);
+      cmp = numfunc(*n1,*n2);
     }
     else
     {
@@ -1029,15 +1029,8 @@ void LispIsInteger(LispEnvironment& aEnvironment,int aStackTop)
 {
   LispPtr result(ARGUMENT(1));
 
-  RefPtr<BigNumber> num ; num = result->Number(aEnvironment.Precision());
-  if (!num)
-  {
-    InternalFalse(aEnvironment,RESULT);
-  }
-  else
-  {
-    InternalBoolean(aEnvironment, RESULT, num->IsInt());
-  }
+  BigNumber* num(result->Number(aEnvironment.Precision()));
+  InternalBoolean(aEnvironment, RESULT, num && num->IsInt());
 }
 
 void LispIsList(LispEnvironment& aEnvironment,int aStackTop)
@@ -1088,13 +1081,9 @@ void LispIf(LispEnvironment& aEnvironment, int aStackTop)
     {
         CheckArg(IsFalse(aEnvironment, predicate), 1, aEnvironment, aStackTop);
         if (nrArguments == 4)
-        {
             InternalEval(aEnvironment, RESULT, Argument(ARGUMENT(0),3));
-        }
         else
-        {
             InternalFalse(aEnvironment,RESULT);
-        }
     }
 }
 
