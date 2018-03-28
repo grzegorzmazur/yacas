@@ -47,15 +47,7 @@ public:
   LispObject* Copy() const override { return new LispAtom(*this); }
 private:
   LispAtom(const LispString* aString);
-  LispAtom& operator=(const LispAtom& aOther)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-    return *this;
-  }
-public:
-  LispAtom(const LispAtom& other);
-private:
+
   LispStringSmartPtr iString;
 };
 

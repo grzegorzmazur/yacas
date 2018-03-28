@@ -21,10 +21,6 @@ LispAtom::LispAtom(const LispString* aString) : iString(aString)
     assert(aString);
 }
 
-LispAtom::LispAtom(const LispAtom& other) : LispObject(other), iString(other.iString)
-{
-}
-
 const LispString* LispAtom::String()
 {
     assert(iString);
