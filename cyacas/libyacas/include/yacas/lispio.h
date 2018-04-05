@@ -18,8 +18,8 @@ public:
 
   void SetTo(const std::string& aFileName);
   void RestoreFrom(InputStatus& aPreviousStatus);
-  int LineNumber();
-  const std::string& FileName();
+  int LineNumber() const;
+  const std::string& FileName() const;
   void NextLine();
 
 private:
@@ -28,13 +28,13 @@ private:
 };
 
 inline
-int InputStatus::LineNumber()
+int InputStatus::LineNumber() const
 {
   return iLineNumber;
 }
 
 inline
-const std::string& InputStatus::FileName()
+const std::string& InputStatus::FileName() const
 {
   return iFileName;
 }
