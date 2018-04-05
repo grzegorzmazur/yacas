@@ -12,6 +12,7 @@ platform:
 
 configuration:
   - Release
+  - Debug
 
 environment:
   matrix:
