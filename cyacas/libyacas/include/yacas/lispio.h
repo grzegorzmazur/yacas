@@ -22,17 +22,6 @@ public:
   const std::string& FileName();
   void NextLine();
 
-  inline InputStatus(const InputStatus& aOther) : iFileName(aOther.iFileName) , iLineNumber(aOther.iLineNumber)
-  {
-  }
-
-  inline InputStatus& operator=(const InputStatus& aOther)
-  {
-    iFileName   = aOther.iFileName;
-    iLineNumber = aOther.iLineNumber;
-    return *this;
-  }
-
 private:
   std::string iFileName;
   int  iLineNumber;
