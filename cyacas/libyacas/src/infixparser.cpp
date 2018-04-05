@@ -13,9 +13,9 @@
 void ParsedObject::Fail()
 {
     if (iLookAhead && !iLookAhead->empty())
-        throw LispErrGeneric(std::string("Error parsing expression, near token ") + *iLookAhead);
+        throw LispErrInvalidExpression(*iLookAhead);
 
-    throw LispErrGeneric("Error parsing expression");
+    throw LispErrInvalidExpression();
 }
 
 InfixParser::InfixParser(LispTokenizer& aTokenizer,
@@ -87,7 +87,7 @@ void ParsedObject::Combine(int aNrArgsToCombine)
             Fail();
 
     if (!iter.getObj())
-        Fail();
+        Fail(); 
 
     subList->Nixed() = *++iter;
     *iter = nullptr;

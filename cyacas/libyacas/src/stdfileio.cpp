@@ -100,6 +100,10 @@ void StdFileInput::_get() const
         return;
     
     utf8::utf8to32(p, q, &_cp);
+    
+    if (_cp == '\n')
+        iStatus.NextLine();
+
     _cp_ready = true;
 }
 
