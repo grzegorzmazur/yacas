@@ -1,9 +1,6 @@
 #ifndef YACAS_LISPERROR_H
 #define YACAS_LISPERROR_H
 
-#include "lisptype.h"
-#include "lispstring.h"
-
 #include <string>
 
 class LispError {

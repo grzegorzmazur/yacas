@@ -64,7 +64,6 @@ set (HEADERS
   include/yacas/lispoperator.h
   include/yacas/lispparser.h
   include/yacas/lispstring.h
-  include/yacas/lisptype.h
   include/yacas/lispuserfunc.h
   include/yacas/mathcommands.h
   include/yacas/mathuserfunc.h

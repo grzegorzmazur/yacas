@@ -1,4 +1,3 @@
-#include "yacas/lisptype.h"
 #include "yacas/numbers.h"
 #include "yacas/standard.h"
 #include "yacas/errors.h"

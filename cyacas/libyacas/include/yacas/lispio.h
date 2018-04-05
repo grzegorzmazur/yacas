@@ -9,8 +9,6 @@
 #include <cstddef>
 #include <string>
 
-#include "lisptype.h"
-
 class InputStatus
 {
 public:

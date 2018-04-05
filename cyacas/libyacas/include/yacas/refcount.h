@@ -3,8 +3,6 @@
 
 #include <cassert>
 
-#include "lisptype.h"
-
 //------------------------------------------------------------------------------
 // RefPtr - Smart pointer for (intrusive) reference counting.
 // Simply, an object's reference count is the number of RefPtrs refering to it.

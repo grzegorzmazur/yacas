@@ -14,7 +14,6 @@
 /// to use these variables).
 
 
-#include "lisptype.h"
 #include "lispenvironment.h"
 #include "noncopyable.h"
 #include "numbers.h"
