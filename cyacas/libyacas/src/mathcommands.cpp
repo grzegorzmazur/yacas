@@ -1201,7 +1201,7 @@ void LispReadToken(LispEnvironment& aEnvironment, int aStackTop)
 {
   LispTokenizer &tok = *aEnvironment.iCurrentTokenizer;
   const LispString* result =
-    tok.NextToken(*aEnvironment.CurrentInput(), aEnvironment.HashTable());
+    aEnvironment.HashTable().LookUp(tok.NextToken(*aEnvironment.CurrentInput()));
 
   if (result->empty())
   {

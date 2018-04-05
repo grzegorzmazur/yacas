@@ -18,7 +18,7 @@ void LispParser::Parse(LispPtr& aResult)
     aResult = nullptr;
 
     // Get token.
-    const LispString* token = iTokenizer.NextToken(iInput, iEnvironment.HashTable());
+    const LispString* token = iEnvironment.HashTable().LookUp(iTokenizer.NextToken(iInput));
 
     if (token->empty()) {
         aResult = iEnvironment.iEndOfFile->Copy();
@@ -53,7 +53,7 @@ void LispParser::ParseList(LispPtr& aResult)
     }
     for (;;) {
         //Get token.
-        const LispString* token = iTokenizer.NextToken(iInput, iEnvironment.HashTable());
+        const LispString* token = iEnvironment.HashTable().LookUp(iTokenizer.NextToken(iInput));
 
         // if token is empty string, error!
         if (token->empty())

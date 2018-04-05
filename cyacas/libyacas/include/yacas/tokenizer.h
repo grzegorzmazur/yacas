@@ -6,24 +6,19 @@
 #ifndef YACAS_TOKENIZER_H
 #define YACAS_TOKENIZER_H
 
-#include "lispstring.h"
 #include "lispio.h"
-#include "lisphash.h"
 
 #include <cctype>
 #include <cstdint>
+#include <string>
 
 class LispTokenizer {
 public:
-  LispTokenizer() : iToken() {}
-  virtual ~LispTokenizer() = default;
+    virtual ~LispTokenizer() = default;
 
-  /// NextToken returns a string representing the next token,
-  /// or an empty list.
-  virtual const LispString* NextToken(LispInput& aInput,
-                                      LispHashTable& aHashTable);
-protected:
-  LispString iToken; //Can be used as a token container.
+    /// NextToken returns a string representing the next token,
+    /// or an empty list.
+    virtual std::string NextToken(LispInput& aInput);
 };
 
 // utility functions
@@ -38,5 +33,3 @@ protected:
 bool IsSymbolic(char c);
 
 #endif
-
-

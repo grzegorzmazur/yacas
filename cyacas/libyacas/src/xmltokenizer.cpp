@@ -3,18 +3,18 @@
 
 #include <cctype>
 
-const LispString* XmlTokenizer::NextToken(LispInput& aInput, LispHashTable& aHashTable)
+std::string XmlTokenizer::NextToken(LispInput& aInput)
 {
     char c;
 
     if (aInput.EndOfStream())
-        return aHashTable.LookUp("");
+        return "";
 
     while (std::isspace(aInput.Peek()))
         aInput.Next();
 
     if (aInput.EndOfStream())
-        return aHashTable.LookUp("");
+        return "";
 
     std::string s;
 
@@ -37,5 +37,5 @@ const LispString* XmlTokenizer::NextToken(LispInput& aInput, LispHashTable& aHas
         }
     }
 
-    return aHashTable.LookUp(s);
+    return s;
 }

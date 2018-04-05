@@ -4,14 +4,14 @@
 
 #include "yacas/utf8.h"
 
-#include <set>
+#include <unordered_set>
 
 namespace {
     static const char symbolics[] = "~`!@#$^&*-=+:<>?/\\|";
 
     // Ll and Lu categories combined
     // see http://www.fileformat.info/info/unicode/category/index.htm
-    static const std::set<std::uint32_t> letters = {
+    static const std::unordered_set<std::uint32_t> letters = {
         0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4a,
         0x4b, 0x4c, 0x4d, 0x4e, 0x4f, 0x50, 0x51, 0x52, 0x53, 0x54,
         0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x61, 0x62, 0x63, 0x64,
@@ -514,7 +514,7 @@ bool IsAlpha(uint32_t c)
 bool IsAlpha(std::uint32_t c)
 #endif
 {
-    return letters.count(c) || c == '\'';
+    return c == '\'' || letters.find(c) != letters.end();
 }
 
 #ifdef YACAS_UINT32_T_IN_GLOBAL_NAMESPACE
@@ -527,8 +527,7 @@ bool IsAlNum(std::uint32_t c)
 }
 
 
-const LispString* LispTokenizer::NextToken(LispInput& aInput,
-                                           LispHashTable& aHashTable)
+std::string LispTokenizer::NextToken(LispInput& aInput)
 {
 #ifdef YACAS_UINT32_T_IN_GLOBAL_NAMESPACE
 	uint32_t c;
@@ -540,7 +539,7 @@ const LispString* LispTokenizer::NextToken(LispInput& aInput,
     for (;;) {
         // End of stream: return empty string
         if (aInput.EndOfStream())
-            return aHashTable.LookUp("");
+            return "";
 
         c = aInput.Next();
     
@@ -578,15 +577,15 @@ const LispString* LispTokenizer::NextToken(LispInput& aInput,
 
     // parse brackets
     if (c == '(' || c == ')' || c == '{' || c == '}' || c == '[' || c == ']')
-        return aHashTable.LookUp(std::string(1, c));
+        return std::string(1, c);
 
     // percent
     if (c == '%')
-        return aHashTable.LookUp(std::string(1, c));
+        return std::string(1, c);
 
     // comma and semicolon
     if (c == ',' || c == ';')
-        return aHashTable.LookUp(std::string(1, c));
+        return std::string(1, c);
 
     // parse . or ..
     if (c == '.' && !std::isdigit(aInput.Peek())) {
@@ -594,7 +593,7 @@ const LispString* LispTokenizer::NextToken(LispInput& aInput,
         token.push_back(c);
         while (aInput.Peek() == '.')
             token.push_back(aInput.Next());
-        return aHashTable.LookUp(token);
+        return token;
     }
 
     // parse literal strings
@@ -614,7 +613,7 @@ const LispString* LispTokenizer::NextToken(LispInput& aInput,
                 throw LispErrParsingInput();
         }
         utf8::append(aInput.Next(), std::back_inserter(str));
-        return aHashTable.LookUp(str);
+        return str;
     }
 
     // parse atoms
@@ -623,7 +622,7 @@ const LispString* LispTokenizer::NextToken(LispInput& aInput,
         utf8::append(c, std::back_inserter(atom));
         while (IsAlNum(aInput.Peek()))
             utf8::append(aInput.Next(), std::back_inserter(atom));
-        return aHashTable.LookUp(atom);
+        return atom;
     }
 
     // parse operators
@@ -632,7 +631,7 @@ const LispString* LispTokenizer::NextToken(LispInput& aInput,
         op.push_back(c);
         while (IsSymbolic(aInput.Peek()))
             op.push_back(aInput.Next());
-        return aHashTable.LookUp(op);
+        return op;
     }
 
     // parse subscripts
@@ -641,7 +640,7 @@ const LispString* LispTokenizer::NextToken(LispInput& aInput,
         utf8::append(c, std::back_inserter(token));
         while (aInput.Peek() == '_')
             utf8::append(aInput.Next(), std::back_inserter(token));
-        return aHashTable.LookUp(token);
+        return token;
     }
 
     // parse numbers
@@ -666,7 +665,7 @@ const LispString* LispTokenizer::NextToken(LispInput& aInput,
                 number.push_back(aInput.Next());
         }
 
-        return aHashTable.LookUp(number);
+        return number;
     }
 
     throw InvalidToken();

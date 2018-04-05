@@ -47,8 +47,8 @@ static void DoLoadDefFile(
   while (!endoffile)
   {
     // Read expression
-    const LispString* token =
-        tok.NextToken(*aEnvironment.CurrentInput(), aEnvironment.HashTable());
+    const LispString* token = 
+        aEnvironment.HashTable().LookUp(tok.NextToken(*aEnvironment.CurrentInput()));
 
     // Check for end of file
     if (token == eof || token == end)

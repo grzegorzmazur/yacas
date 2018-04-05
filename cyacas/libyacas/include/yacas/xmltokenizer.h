@@ -10,8 +10,7 @@ public:
   XmlTokenizer() {}
   /// NextToken returns a string representing the next token,
   /// or an empty list.
-  const LispString* NextToken(LispInput& aInput,
-                              LispHashTable& aHashTable) override;
+  std::string NextToken(LispInput& aInput) override;
 };
 
 #endif

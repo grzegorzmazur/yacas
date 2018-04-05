@@ -48,8 +48,7 @@ void InfixParser::ParseCont(LispPtr& aResult)
 void ParsedObject::ReadToken()
 {
     // Get token.
-    iLookAhead = iParser.iTokenizer.NextToken(iParser.iInput,
-                                              iParser.iEnvironment.HashTable());
+    iLookAhead = iParser.iEnvironment.HashTable().LookUp(iParser.iTokenizer.NextToken(iParser.iInput));
     if (iLookAhead->empty())
         iEndOfFile = true;
 }

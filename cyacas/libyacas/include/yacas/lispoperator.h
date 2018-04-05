@@ -25,6 +25,8 @@
 #ifndef LISPOPERATOR_H
 #define LISPOPERATOR_H
 
+#include <unordered_map>
+
 #ifdef YACAS_NO_CONSTEXPR
 const int KMaxPrecedence = 60000;
 #else
