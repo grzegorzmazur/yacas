@@ -169,9 +169,9 @@ int BranchingUserFunction::Arity() const
     return iParameters.size();
 }
 
-int BranchingUserFunction::IsArity(int aArity) const
+bool BranchingUserFunction::IsArity(int aArity) const
 {
-    return (Arity() == aArity);
+    return Arity() == aArity;
 }
 
 void BranchingUserFunction::DeclareRule(int aPrecedence, LispPtr& aPredicate,
@@ -270,7 +270,7 @@ ListedBranchingUserFunction::ListedBranchingUserFunction(LispPtr& aParameters)
 {
 }
 
-int ListedBranchingUserFunction::IsArity(int aArity) const
+bool ListedBranchingUserFunction::IsArity(int aArity) const
 {
     // nr arguments handled is bound by a minimum: the number of arguments
     // to this function.
@@ -425,7 +425,7 @@ ListedMacroUserFunction::ListedMacroUserFunction(LispPtr& aParameters)
 {
 }
 
-int ListedMacroUserFunction::IsArity(int aArity) const
+bool ListedMacroUserFunction::IsArity(int aArity) const
 {
     return Arity() <= aArity;
 }

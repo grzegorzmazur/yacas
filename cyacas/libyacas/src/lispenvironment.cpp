@@ -395,7 +395,6 @@ LispMultiUserFunction* LispEnvironment::MultiUserFunction(const LispString* aOpe
 
     LispMultiUserFunction newMulti;
     return &iUserFunctions.insert(std::make_pair(aOperator, newMulti)).first->second;
-    //SetAssociation(newMulti, aOperator);
 }
 
 

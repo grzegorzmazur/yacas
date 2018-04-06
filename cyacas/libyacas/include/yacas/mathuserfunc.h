@@ -147,7 +147,7 @@ public:
   void HoldArgument(const LispString* aVariable) override;
 
   /// Return true if the arity of the function equals \a aArity.
-  int IsArity(int aArity) const override;
+  bool IsArity(int aArity) const override;
 
   /// Return the arity (number of arguments) of the function.
   int Arity() const override;
@@ -189,7 +189,7 @@ class ListedBranchingUserFunction final: public BranchingUserFunction
 {
 public:
   ListedBranchingUserFunction(LispPtr& aParameters);
-  int IsArity(int aArity) const override;
+  bool IsArity(int aArity) const override;
   void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments) const override;
 };
 
@@ -206,7 +206,7 @@ class ListedMacroUserFunction final: public MacroUserFunction
 {
 public:
   ListedMacroUserFunction(LispPtr& aParameters);
-  int IsArity(int aArity) const override;
+  bool IsArity(int aArity) const override;
   void Evaluate(LispPtr& aResult,LispEnvironment& aEnvironment, LispPtr& aArguments) const override;
 };
 
