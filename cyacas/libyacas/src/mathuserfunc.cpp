@@ -436,15 +436,12 @@ void ListedMacroUserFunction::Evaluate(LispPtr& aResult,LispEnvironment& aEnviro
   LispPtr newArgs;
   LispIterator iter(aArguments);
   LispPtr* ptr =  &newArgs;
-  int arity = Arity();
-  int i=0;
+  const int arity = Arity();
   // TODO: the code would look a lot easier if we could do with only an iterator
-  while (i < arity && iter.getObj())
+  for (int i = 0; i < arity && iter.getObj(); ++i, ++iter)
   {
-    (*ptr) = (iter.getObj()->Copy());
+    *ptr = (*iter)->Copy();
     ptr = &((*ptr)->Nixed());
-    i++;
-    ++iter;
   }
 
   if (!iter.getObj()->Nixed()) {
