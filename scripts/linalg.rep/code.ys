@@ -372,45 +372,30 @@ Minor(matrix,i,j) := CoFactor(matrix,i,j)*(-1)^(i+j);
 	Inv;
 ];
 
-// Make sure the matrix is unit (all diagonal elements are 1)
 50 # Inverse(A_IsLowerTriangular) <--
 [
-	Local(i,j,k,n,L,Inv);
-	n:=Length(A);
-	Inv:=Identity(n);
-	L:=ZeroMatrix(n,n);
+	Local(i,m,n,l,Inv);
+	l:=Length(A);
+	Inv:=ZeroMatrix(l,l);
 
-        ForEach(i,1 .. n)
-                ForEach(j,1 .. n)
-                        L[i][j] := A[i][j];
+	ForEach(m, 1 .. l)
+		ForEach (n, 1 .. m)
+			Inv[m][n] := (KroneckerDelta(m, n) - Sum(i, 1, m-1, A[m][i] * Inv[i][n])) / A[m][m];
 
-	If(n>1, [
-		ForEach(j,1 .. (n-1))
-			ForEach(i,j+1 .. n)
-				ForEach(k,1 .. j)
-					Inv[i][i-j] := Inv[i][i-j] - L[i][i-j+k-1] * Inv[i-j+k-1][i-j];
-		Inv;
-	], L);
+	Inv;
 ];
 
-// Make sure the matrix is unit (all diagonal elements are 1)
 50 # Inverse(A_IsUpperTriangular) <--
 [
-	Local(i,j,k,n,U,Inv);
-	n:=Length(A);
-	Inv:=Identity(n);
-	U:=ZeroMatrix(n,n);
+	Local(i,m,n,l,Inv);
+	l:=Length(A);
+	Inv:=ZeroMatrix(l,l);
 
-        ForEach(i,1 .. n)
-                ForEach(j,1 .. n)
-                        U[i][j] := A[i][j];
-	If(n>1, [
-		ForEach(j,1 .. (n-1))
-			ForEach(i,j+1 .. n)
-				ForEach(k,1 .. j)
-					Inv[i-j][i] := Inv[i-j][i] - Inv[i-j][i-j+k-1] * U[i-j+k-1][i];
-		Inv;
-	], U);
+	ForEach(m, l .. 1)
+		ForEach (n, m .. l)
+			Inv[m][n] := (KroneckerDelta(m, n) - Sum(i, m + 1, l, A[m][i] * Inv[i][n])) / A[m][m];
+
+	Inv;
 ];
 
 // Inverse by PLDU decomposition  (PA = LDU) => (A^-1 = U^-1 D^-1 L^-1 P)
