@@ -1175,3 +1175,20 @@ equations.
 
    .. seealso:: :func:`Exp`
 
+.. function:: Fibonacci(n)
+
+   Fibonacci sequence
+
+   The function returns :math:`n`-th `Fibonacci number`_
+
+   :Example:
+
+   ::
+      In> Fibonacci(4)
+      Out> 3
+      In> Fibonacci(8)
+      Out> 21
+      In> Table(Fibonacci(i), i, 1, 10, 1)
+      Out> {1,1,2,3,5,8,13,21,34,55}
+
+.. _Fibonacci number: https://en.wikipedia.org/wiki/Fibonacci_number

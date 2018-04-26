@@ -1,4 +1,6 @@
 
+Verify(Table(Fibonacci(i), i, 1, 10, 1), {1,1,2,3,5,8,13,21,34,55});
+
 Verify( Sum(k,1,n,k), n*(n+1)/2 );
 Verify( Simplify(Sum(k,1,n,k^3)), Simplify( (n*(n+1))^2 / 4 ) );
 Verify( Sum(k,1,Infinity,1/k^2), Zeta(2) );

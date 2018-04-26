@@ -230,6 +230,42 @@ Function("Subfactorial",{n})
 
 30 # Subfactorial(n_IsList) <-- MapSingle("Subfactorial",n);
 
+10 # Fibonacci(0) <-- 0;
+10 # Fibonacci(1) <-- 1;
+
+20 # Fibonacci(n_IsPositiveInteger) <-- [
+    Local(a,b,c);
+    a := 0;
+    b := 1;
+    ForEach(i, 1 .. n - 1) [
+        c := b + a;
+        a := b;
+        b := c;
+    ];
+
+    b;
+];
+
+30 # Fibonacci(n_IsInteger) <-- (-1)^(-n+1) * Fibonacci(-n);
+
+5 # LucasU(_n, 1, -1) <-- Fibonacci(n);
+
+10 # LucasU(0, p, q) <-- 0;
+10 # LucasU(1, p, q) <-- 1;
+
+20 # LucasU(n_IsPositiveInteger, p, q) <-- [
+    Local(a,b,c);
+    a := 0;
+    b := 1;
+    ForEach(i, 1 .. n - 1) [
+        c := p * b - q * a;
+        a := b;
+        b := c;
+    ];
+
+    b;
+];
+
 // Attempt to Sum series
 
 LocalSymbols(c,d,expr,from,to,summand,sum,predicate,k,n,r,var,x) [
