@@ -24,17 +24,23 @@
 
 #include "hmac_sha256.hpp"
 
+#include <openssl/opensslv.h>
+
 namespace {
     static const char hex_digit[] = {
         '0', '1', '2', '3', '4', '5', '6', '7',
-	'8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+	    '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
     };
 }
 
-HMAC_SHA256::HMAC_SHA256(const std::string& key)
+HMAC_SHA256::HMAC_SHA256(const std::string& key):
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+    _ctx(new HMAC_CTX))
+#else
+    _ctx(HMAC_CTX_new())
+#endif
 {
-    HMAC_CTX_init(&_ctx);
-    HMAC_Init_ex(&_ctx, key.c_str(), key.size(), EVP_sha256(), nullptr);
+    HMAC_Init_ex(_ctx, key.c_str(), key.size(), EVP_sha256(), nullptr);
 }
 
 HMAC_SHA256::HMAC_SHA256(const std::string& key, const std::string& msg):
@@ -45,18 +51,23 @@ HMAC_SHA256::HMAC_SHA256(const std::string& key, const std::string& msg):
 
 HMAC_SHA256::HMAC_SHA256(const HMAC_SHA256& other)
 {
-    HMAC_CTX_copy(&_ctx, const_cast<HMAC_CTX*>(&other._ctx));
+    HMAC_CTX_copy(_ctx, const_cast<HMAC_CTX*>(other._ctx));
 }
 
 HMAC_SHA256::~HMAC_SHA256()
 {
-    HMAC_CTX_cleanup(&_ctx);
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+    HMACS_CTX_cleanup(ctx);
+    delete _ctx;
+#else
+    HMAC_CTX_free(_ctx);
+#endif
 }
 
 
 void HMAC_SHA256::update(const std::string& msg)
 {
-    HMAC_Update(&_ctx, (const unsigned char*)(msg.c_str()), msg.size());
+    HMAC_Update(_ctx, (const unsigned char*)(msg.c_str()), msg.size());
 }
 
 std::string HMAC_SHA256::hexdigest()
@@ -65,7 +76,7 @@ std::string HMAC_SHA256::hexdigest()
     
     unsigned char result[n];
     unsigned result_len = n;
-    HMAC_Final(&_ctx, result, &result_len);
+    HMAC_Final(_ctx, result, &result_len);
 
     std::string s(2 * n, 0);
     for (unsigned i = 0; i < n; ++i) {

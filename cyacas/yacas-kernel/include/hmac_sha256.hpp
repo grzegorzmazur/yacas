@@ -40,7 +40,7 @@ public:
     std::string hexdigest();
 
 private:
-    HMAC_CTX _ctx;
+    HMAC_CTX* _ctx;
 };
 
 #endif
