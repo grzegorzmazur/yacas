@@ -50,7 +50,9 @@
         "sstream": "cpp",
         "streambuf": "cpp",
         "algorithm": "cpp",
-        "*.ipp": "cpp"
+        "*.ipp": "cpp",
+        "deque": "cpp",
+        "string": "cpp"
     },
     "python.pythonPath": "/usr/bin/python3",
     "restructuredtext.workspaceRoot": "/home/mazur/Code/yacas-develop",
