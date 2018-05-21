@@ -3,8 +3,8 @@
 #include <algorithm>
 #include <cassert>
 
-MemPool::MemPool(unsigned block_size, unsigned no_blocks):
-    _block_size(std::max(static_cast<std::size_t>(block_size), sizeof (void*))),
+MemPool::MemPool(unsigned block_size, unsigned no_blocks) :
+    _block_size(std::max(static_cast<std::size_t>(block_size), sizeof(void*))),
     _no_blocks(no_blocks),
     _no_free_blocks(no_blocks),
     _no_initialized_blocks(0),
@@ -34,7 +34,8 @@ void* MemPool::alloc()
         void* ret = _next_free_block;
 
         if (--_no_free_blocks)
-            _next_free_block = *reinterpret_cast<std::uint8_t**>(_next_free_block);
+            _next_free_block =
+                *reinterpret_cast<std::uint8_t**>(_next_free_block);
         else
             _next_free_block = nullptr;
 
@@ -51,14 +52,14 @@ void MemPool::free(void* p) noexcept
 {
     if (p >= _pool && p < _pool + _block_size * _no_blocks) {
         if (_next_free_block) {
-            *reinterpret_cast<std::uint8_t **>(p) = _next_free_block;
-            _next_free_block = static_cast<std::uint8_t *>(p);
+            *reinterpret_cast<std::uint8_t**>(p) = _next_free_block;
+            _next_free_block = static_cast<std::uint8_t*>(p);
         } else {
-            *reinterpret_cast<std::uint8_t **>(p) = _pool + _no_blocks;
+            *reinterpret_cast<std::uint8_t**>(p) = _pool + _no_blocks;
             _next_free_block = static_cast<std::uint8_t*>(p);
         }
         _no_free_blocks += 1;
-    } else  {
+    } else {
         _next_pool->free(p);
     }
 }

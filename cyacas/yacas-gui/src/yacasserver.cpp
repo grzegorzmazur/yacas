@@ -3,7 +3,7 @@
 #include <QDebug>
 #include <QMutexLocker>
 
-YacasServer::YacasServer(const QString& scripts_path, QObject *parent) :
+YacasServer::YacasServer(const QString& scripts_path, QObject* parent) :
     QObject(parent)
 {
     _requests.shutdown = false;
@@ -12,9 +12,10 @@ YacasServer::YacasServer(const QString& scripts_path, QObject *parent) :
     _engine->moveToThread(&_engine_thread);
     _engine_thread.start();
     connect(&_engine_thread, SIGNAL(finished()), _engine, SLOT(deleteLater()));
-    connect(this, SIGNAL(start_processing()), _engine, SLOT(on_start_processing()));
+    connect(
+        this, SIGNAL(start_processing()), _engine, SLOT(on_start_processing()));
     connect(_engine, SIGNAL(busy(bool)), this, SLOT(on_engine_busy(bool)));
-    
+
     emit start_processing();
 }
 
@@ -43,7 +44,6 @@ QStringList YacasServer::symbols() const
 {
     return _engine->symbols();
 }
-
 
 void YacasServer::on_engine_busy(bool b)
 {

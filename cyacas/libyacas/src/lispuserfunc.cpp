@@ -4,10 +4,9 @@
 
 LispUserFunction* LispMultiUserFunction::UserFunc(int aArity)
 {
-    //Find function body with the right arity
-    const std::size_t nrc=iFunctions.size();
-    for (std::size_t i = 0; i < nrc; ++i)
-    {
+    // Find function body with the right arity
+    const std::size_t nrc = iFunctions.size();
+    for (std::size_t i = 0; i < nrc; ++i) {
         assert(iFunctions[i]);
         if (iFunctions[i]->IsArity(aArity))
             return iFunctions[i];
@@ -20,13 +19,11 @@ LispUserFunction* LispMultiUserFunction::UserFunc(int aArity)
 
 void LispMultiUserFunction::DeleteBase(int aArity)
 {
-    //Find function body with the right arity
+    // Find function body with the right arity
     const std::size_t nrc = iFunctions.size();
-    for (std::size_t i = 0; i < nrc; ++i)
-    {
+    for (std::size_t i = 0; i < nrc; ++i) {
         assert(iFunctions[i]);
-        if (iFunctions[i]->IsArity(aArity))
-        {
+        if (iFunctions[i]->IsArity(aArity)) {
             delete iFunctions[i];
             iFunctions.erase(iFunctions.begin() + i);
             return;
@@ -34,10 +31,9 @@ void LispMultiUserFunction::DeleteBase(int aArity)
     }
 }
 
-
 LispMultiUserFunction::~LispMultiUserFunction()
 {
-    for (LispArityUserFunction* p: iFunctions)
+    for (LispArityUserFunction* p : iFunctions)
         delete p;
 }
 
@@ -52,16 +48,14 @@ void LispMultiUserFunction::HoldArgument(const LispString* aVariable)
 
 void LispMultiUserFunction::DefineRuleBase(LispArityUserFunction* aNewFunction)
 {
-    //Find function body with the right arity
+    // Find function body with the right arity
     const std::size_t nrc = iFunctions.size();
-    for (std::size_t i = 0; i < nrc; ++i)
-    {
+    for (std::size_t i = 0; i < nrc; ++i) {
         assert(iFunctions[i]);
         assert(aNewFunction);
-        if (iFunctions[i]->IsArity(aNewFunction->Arity()) || aNewFunction->IsArity(iFunctions[i]->Arity()))
+        if (iFunctions[i]->IsArity(aNewFunction->Arity()) ||
+            aNewFunction->IsArity(iFunctions[i]->Arity()))
             throw LispErrArityAlreadyDefined();
-
     }
     iFunctions.push_back(aNewFunction);
 }
-

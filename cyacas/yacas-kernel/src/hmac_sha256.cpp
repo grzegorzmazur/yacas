@@ -9,16 +9,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with yacas_kernel.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
-/* 
+/*
  * File:   HMAC_SHA256.cpp
  * Author: mazur
- * 
+ *
  * Created on November 4, 2015, 11:55 AM
  */
 
@@ -27,10 +27,22 @@
 #include <openssl/opensslv.h>
 
 namespace {
-    static const char hex_digit[] = {
-        '0', '1', '2', '3', '4', '5', '6', '7',
-	    '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
-    };
+    static const char hex_digit[] = {'0',
+                                     '1',
+                                     '2',
+                                     '3',
+                                     '4',
+                                     '5',
+                                     '6',
+                                     '7',
+                                     '8',
+                                     '9',
+                                     'a',
+                                     'b',
+                                     'c',
+                                     'd',
+                                     'e',
+                                     'f'};
 }
 
 HMAC_SHA256::HMAC_SHA256(const std::string& key):
@@ -43,7 +55,7 @@ HMAC_SHA256::HMAC_SHA256(const std::string& key):
     HMAC_Init_ex(_ctx, key.c_str(), key.size(), EVP_sha256(), nullptr);
 }
 
-HMAC_SHA256::HMAC_SHA256(const std::string& key, const std::string& msg):
+HMAC_SHA256::HMAC_SHA256(const std::string& key, const std::string& msg) :
     HMAC_SHA256(key)
 {
     update(msg);
@@ -64,7 +76,6 @@ HMAC_SHA256::~HMAC_SHA256()
 #endif
 }
 
-
 void HMAC_SHA256::update(const std::string& msg)
 {
     HMAC_Update(_ctx, (const unsigned char*)(msg.c_str()), msg.size());
@@ -73,7 +84,7 @@ void HMAC_SHA256::update(const std::string& msg)
 std::string HMAC_SHA256::hexdigest()
 {
     const unsigned n = 32;
-    
+
     unsigned char result[n];
     unsigned result_len = n;
     HMAC_Final(_ctx, result, &result_len);
@@ -83,6 +94,6 @@ std::string HMAC_SHA256::hexdigest()
         s[2 * i] = hex_digit[result[i] / 16];
         s[2 * i + 1] = hex_digit[result[i] % 16];
     }
-    
+
     return s;
 }

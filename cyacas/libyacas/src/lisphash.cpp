@@ -2,7 +2,8 @@
 
 const LispString* LispHashTable::LookUp(const std::string& s)
 {
-    std::unordered_map<std::string, LispStringSmartPtr>::const_iterator i = _rep.find(s);
+    std::unordered_map<std::string, LispStringSmartPtr>::const_iterator i =
+        _rep.find(s);
     if (i != _rep.end())
         return i->second;
 

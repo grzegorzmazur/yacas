@@ -1,11 +1,11 @@
 
 #include "yacas/infixparser.h"
-#include "yacas/lispatom.h"
-#include "yacas/standard.h"
-#include "yacas/lisperror.h"
-#include "yacas/errors.h"
 #include "yacas/arrayclass.h"
 #include "yacas/associationclass.h"
+#include "yacas/errors.h"
+#include "yacas/lispatom.h"
+#include "yacas/lisperror.h"
+#include "yacas/standard.h"
 
 #include <cassert>
 #include <string>
@@ -48,7 +48,8 @@ void InfixParser::ParseCont(LispPtr& aResult)
 void ParsedObject::ReadToken()
 {
     // Get token.
-    iLookAhead = iParser.iEnvironment.HashTable().LookUp(iParser.iTokenizer.NextToken(iParser.iInput));
+    iLookAhead = iParser.iEnvironment.HashTable().LookUp(
+        iParser.iTokenizer.NextToken(iParser.iInput));
     if (iLookAhead->empty())
         iEndOfFile = true;
 }
@@ -87,7 +88,7 @@ void ParsedObject::Combine(int aNrArgsToCombine)
             Fail();
 
     if (!iter.getObj())
-        Fail(); 
+        Fail();
 
     subList->Nixed() = *++iter;
     *iter = nullptr;
@@ -119,7 +120,7 @@ void ParsedObject::ReadExpression(int depth)
     ReadAtom();
 
     for (;;) {
-        //Handle special case: a[b]. a is matched with lowest precedence!!
+        // Handle special case: a[b]. a is matched with lowest precedence!!
         if (iLookAhead == iParser.iEnvironment.iProgOpen->String()) {
             // Match opening bracket
             MatchToken(iLookAhead);
@@ -127,7 +128,10 @@ void ParsedObject::ReadExpression(int depth)
             ReadExpression(KMaxPrecedence);
             // Match closing bracket
             if (iLookAhead != iParser.iEnvironment.iProgClose->String())
-                throw LispErrGeneric(std::string("Expecting a ] close bracket for program block, but got ") + *iLookAhead + std::string(" instead"));
+                throw LispErrGeneric(
+                    std::string("Expecting a ] close bracket for program "
+                                "block, but got ") +
+                    *iLookAhead + std::string(" instead"));
 
             MatchToken(iLookAhead);
             // Build into Ntn(...)
@@ -135,31 +139,36 @@ void ParsedObject::ReadExpression(int depth)
             InsertAtom(theOperator);
             Combine(2);
         } else {
-            LispOperators::const_iterator opi = iParser.iInfixOperators.find(iLookAhead);
-            
+            LispOperators::const_iterator opi =
+                iParser.iInfixOperators.find(iLookAhead);
+
             if (opi == iParser.iInfixOperators.end()) {
                 if (!IsSymbolic((*iLookAhead)[0]))
                     return;
-                
+
                 const std::size_t origlen = iLookAhead->size();
                 std::size_t len = origlen;
 
                 while (len > 1) {
                     len -= 1;
                     const LispString* lookUp =
-                            iParser.iEnvironment.HashTable().LookUp(iLookAhead->substr(0, len));
+                        iParser.iEnvironment.HashTable().LookUp(
+                            iLookAhead->substr(0, len));
 
                     opi = iParser.iInfixOperators.find(lookUp);
 
                     if (opi != iParser.iInfixOperators.end()) {
 
                         const LispString* lookUpRight =
-                                iParser.iEnvironment.HashTable().LookUp(iLookAhead->substr(len, origlen - len));
+                            iParser.iEnvironment.HashTable().LookUp(
+                                iLookAhead->substr(len, origlen - len));
 
-                        if (iParser.iPrefixOperators.find(lookUpRight) != iParser.iPrefixOperators.end()) {
+                        if (iParser.iPrefixOperators.find(lookUpRight) !=
+                            iParser.iPrefixOperators.end()) {
                             iLookAhead = lookUp;
                             LispInput& input = iParser.iInput;
-                            std::size_t newPos = input.Position() - (origlen - len);
+                            std::size_t newPos =
+                                input.Position() - (origlen - len);
                             input.SetPosition(newPos);
                             break;
                         }
@@ -172,7 +181,6 @@ void ParsedObject::ReadExpression(int depth)
                     return;
             }
 
-            
             if (depth < opi->second.iPrecedence)
                 return;
             int upper = opi->second.iPrecedence;
@@ -186,7 +194,7 @@ void ParsedObject::ReadExpression(int depth)
 void ParsedObject::ReadAtom()
 {
     LispOperators::const_iterator opi =
-            iParser.iPrefixOperators.find(iLookAhead);
+        iParser.iPrefixOperators.find(iLookAhead);
     if (opi != iParser.iPrefixOperators.end()) {
         const LispString* theOperator = iLookAhead;
         MatchToken(iLookAhead);
@@ -195,12 +203,12 @@ void ParsedObject::ReadAtom()
             InsertAtom(theOperator);
             Combine(1);
         }
-    }        // Else parse brackets
+    } // Else parse brackets
     else if (iLookAhead == iParser.iEnvironment.iBracketOpen->String()) {
         MatchToken(iLookAhead);
         ReadExpression(KMaxPrecedence); // least precedence
         MatchToken(iParser.iEnvironment.iBracketClose->String());
-    }        //Parse lists
+    } // Parse lists
     else if (iLookAhead == iParser.iEnvironment.iListOpen->String()) {
         int nrargs = 0;
         MatchToken(iLookAhead);
@@ -210,8 +218,12 @@ void ParsedObject::ReadAtom()
 
             if (iLookAhead == iParser.iEnvironment.iComma->String()) {
                 MatchToken(iLookAhead);
-            } else if (iLookAhead != iParser.iEnvironment.iListClose->String()) {
-                throw LispErrGeneric(std::string("Expecting a } close bracket for program block, but got ") + *iLookAhead + std::string(" instead"));
+            } else if (iLookAhead !=
+                       iParser.iEnvironment.iListClose->String()) {
+                throw LispErrGeneric(
+                    std::string("Expecting a } close bracket for program "
+                                "block, but got ") +
+                    *iLookAhead + std::string(" instead"));
             }
         }
         MatchToken(iLookAhead);
@@ -219,7 +231,7 @@ void ParsedObject::ReadAtom()
         InsertAtom(theOperator);
         Combine(nrargs);
 
-    }        // Parse prog bodies
+    } // Parse prog bodies
     else if (iLookAhead == iParser.iEnvironment.iProgOpen->String()) {
         int nrargs = 0;
 
@@ -231,7 +243,9 @@ void ParsedObject::ReadAtom()
             if (iLookAhead == iParser.iEnvironment.iEndStatement->String()) {
                 MatchToken(iLookAhead);
             } else {
-                throw LispErrGeneric(std::string("Expecting ; end of statement in program block, but got ") + *iLookAhead + std::string(" instead"));
+                throw LispErrGeneric(std::string("Expecting ; end of statement "
+                                                 "in program block, but got ") +
+                                     *iLookAhead + std::string(" instead"));
             }
         }
         MatchToken(iLookAhead);
@@ -239,7 +253,7 @@ void ParsedObject::ReadAtom()
         InsertAtom(theOperator);
 
         Combine(nrargs);
-    }        // Else we have an atom.
+    } // Else we have an atom.
     else {
         const LispString* theOperator = iLookAhead;
         MatchToken(iLookAhead);
@@ -254,8 +268,12 @@ void ParsedObject::ReadAtom()
 
                 if (iLookAhead == iParser.iEnvironment.iComma->String()) {
                     MatchToken(iLookAhead);
-                } else if (iLookAhead != iParser.iEnvironment.iBracketClose->String()) {
-                    throw LispErrGeneric(std::string("Expecting a ) closing bracket for sub-expression, but got ") + *iLookAhead + std::string(" instead"));
+                } else if (iLookAhead !=
+                           iParser.iEnvironment.iBracketClose->String()) {
+                    throw LispErrGeneric(
+                        std::string("Expecting a ) closing bracket for "
+                                    "sub-expression, but got ") +
+                        *iLookAhead + std::string(" instead"));
                 }
             }
             MatchToken(iLookAhead);
@@ -269,12 +287,12 @@ void ParsedObject::ReadAtom()
         InsertAtom(theOperator);
         if (nrargs >= 0)
             Combine(nrargs);
-
     }
 
     // Parse postfix operators
 
-    while (iParser.iPostfixOperators.find(iLookAhead) != iParser.iPostfixOperators.end()) {
+    while (iParser.iPostfixOperators.find(iLookAhead) !=
+           iParser.iPostfixOperators.end()) {
         InsertAtom(iLookAhead);
         MatchToken(iLookAhead);
         Combine(1);
@@ -297,8 +315,7 @@ void InfixPrinter::RememberLastChar(char aChar)
     iPrevLastChar = aChar;
 }
 
-void InfixPrinter::Print(
-                         const LispPtr& aExpression,
+void InfixPrinter::Print(const LispPtr& aExpression,
                          std::ostream& aOutput,
                          LispEnvironment& aEnvironment)
 {
@@ -306,8 +323,7 @@ void InfixPrinter::Print(
     Print(aExpression, aOutput, KMaxPrecedence);
 }
 
-void InfixPrinter::Print(
-                         const LispPtr& aExpression,
+void InfixPrinter::Print(const LispPtr& aExpression,
                          std::ostream& aOutput,
                          int iPrecedence)
 {
@@ -316,20 +332,21 @@ void InfixPrinter::Print(
     const LispString* string = aExpression->String();
     if (string) {
         int bracket = 0;
-        if (iPrecedence < KMaxPrecedence &&
-                (*string)[0] == '-' &&
-                (std::isdigit((*string)[1]) || (*string)[1] == '.')
-                ) {
+        if (iPrecedence < KMaxPrecedence && (*string)[0] == '-' &&
+            (std::isdigit((*string)[1]) || (*string)[1] == '.')) {
             bracket = 1;
         }
-        if (bracket) WriteToken(aOutput, "(");
+        if (bracket)
+            WriteToken(aOutput, "(");
         WriteToken(aOutput, *string);
-        if (bracket) WriteToken(aOutput, ")");
+        if (bracket)
+            WriteToken(aOutput, ")");
         return;
     }
 
     if (const GenericClass* g = aExpression->Generic()) {
-        if (const AssociationClass* a = dynamic_cast<const AssociationClass*>(g)) {
+        if (const AssociationClass* a =
+                dynamic_cast<const AssociationClass*>(g)) {
             WriteToken(aOutput, "Association");
             WriteToken(aOutput, "(");
             Print(a->ToList(), aOutput, KMaxPrecedence);
@@ -360,31 +377,27 @@ void InfixPrinter::Print(
         string = (*subList)->String();
 
         const LispOperators::const_iterator prefix =
-                length != 2
-                ? iPrefixOperators.end() 
-                : iPrefixOperators.find(string);
-        
+            length != 2 ? iPrefixOperators.end()
+                        : iPrefixOperators.find(string);
+
         const LispOperators::const_iterator infix =
-                length != 3
-                ? iInfixOperators.end()
-                : iInfixOperators.find(string);
-        
+            length != 3 ? iInfixOperators.end() : iInfixOperators.find(string);
+
         const LispOperators::const_iterator postfix =
-                length != 2
-                ? iPostfixOperators.end()
-                : iPostfixOperators.find(string);
-        
+            length != 2 ? iPostfixOperators.end()
+                        : iPostfixOperators.find(string);
+
         const LispOperators::const_iterator bodied =
-                iBodiedOperators.find(string);
-        
+            iBodiedOperators.find(string);
+
         const LispInFixOperator* op = nullptr;
 
         if (prefix != iPrefixOperators.end())
             op = &prefix->second;
-        
+
         if (postfix != iPostfixOperators.end())
             op = &postfix->second;
-        
+
         if (infix != iInfixOperators.end())
             op = &infix->second;
 
@@ -397,14 +410,14 @@ void InfixPrinter::Print(
             } else if (infix != iInfixOperators.end()) {
                 left = &(*subList)->Nixed();
                 right = &(*subList)->Nixed()->Nixed();
-            } else if (postfix  != iPostfixOperators.end()) {
+            } else if (postfix != iPostfixOperators.end()) {
                 left = &(*subList)->Nixed();
             }
 
             if (iPrecedence < op->iPrecedence) {
                 WriteToken(aOutput, "(");
             } else {
-                //Vladimir?    aOutput.Write(" ");
+                // Vladimir?    aOutput.Write(" ");
             }
             if (left)
                 Print(*left, aOutput, op->iLeftPrecedence);
@@ -418,7 +431,8 @@ void InfixPrinter::Print(
             if (string == iCurrentEnvironment->iList->String()) {
                 WriteToken(aOutput, "{");
                 for (int ii = 0; iter.getObj(); ii++, ++iter) {
-                    if (ii) WriteToken(aOutput, ",");
+                    if (ii)
+                        WriteToken(aOutput, ",");
                     Print(*iter, aOutput, KMaxPrecedence);
                 }
                 WriteToken(aOutput, "}");
@@ -439,11 +453,12 @@ void InfixPrinter::Print(
             } else {
                 int bracket = false;
                 if (bodied != iBodiedOperators.end()) {
-                    //printf("%d > %d\n",iPrecedence, bodied->iPrecedence);
+                    // printf("%d > %d\n",iPrecedence, bodied->iPrecedence);
                     if (iPrecedence < bodied->second.iPrecedence)
                         bracket = true;
                 }
-                if (bracket) WriteToken(aOutput, "(");
+                if (bracket)
+                    WriteToken(aOutput, "(");
                 if (string) {
                     WriteToken(aOutput, *string);
                 } else {

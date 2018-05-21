@@ -8,10 +8,12 @@
 #include <cassert>
 
 /// construct an atom from a string representation.
-LispObject* LispAtom::New(LispEnvironment& aEnvironment, const std::string& aString)
+LispObject* LispAtom::New(LispEnvironment& aEnvironment,
+                          const std::string& aString)
 {
-    if (IsNumber(aString, true))  // check if aString is a number (int or float)
-        return new LispNumber(new LispString(aString), aEnvironment.Precision());
+    if (IsNumber(aString, true)) // check if aString is a number (int or float)
+        return new LispNumber(new LispString(aString),
+                              aEnvironment.Precision());
 
     return new LispAtom(aEnvironment.HashTable().LookUp(aString));
 }
@@ -35,7 +37,7 @@ LispSubList* LispSubList::New(LispObject* aSubList)
     LispSubList* self = new LispSubList(aSubList);
 
     if (!self)
-      throw LispErrNotEnoughMemory();
+        throw LispErrNotEnoughMemory();
 
     return self;
 }
@@ -45,30 +47,28 @@ LispSubList* LispSubList::New(LispObject* aSubList)
 // a tail-recursive way...
 LispSubList::~LispSubList()
 {
-    if (!!iSubList)
-    {
+    if (!!iSubList) {
         LispPtr next;
         LispIterator iter(iSubList);
         bool busy = (iter.getObj()->use_count() == 1);
         while (busy) // while there are things to delete...
         {
-      // TODO: woof -- fix this ugliness!
+            // TODO: woof -- fix this ugliness!
             LispPtr nextToDelete;
             // Make sure "next" holds the tail of the list
             nextToDelete = (iter.getObj()->Nixed());
             // Separate out the current element...
-            if (iter.getObj()->use_count() == 1)
-            {// Destructive operation only if necessary...
+            if (iter.getObj()->use_count() ==
+                1) { // Destructive operation only if necessary...
                 iter.getObj()->Nixed() = (nullptr);
                 // And delete it.
                 (*iter) = (nullptr);
-            }
-            else
-                busy=false;
+            } else
+                busy = false;
             next = (nextToDelete);
             iter = next;
             if (!iter.getObj())
-                busy=false;
+                busy = false;
         }
     }
 }
@@ -81,14 +81,14 @@ LispGenericClass* LispGenericClass::New(GenericClass* aClass)
     LispGenericClass* self = new LispGenericClass(aClass);
 
     if (!self)
-      throw LispErrNotEnoughMemory();
+        throw LispErrNotEnoughMemory();
 
     return self;
 }
 
 LispGenericClass::LispGenericClass(GenericClass* aClass) : iClass(aClass)
 {
-    assert(aClass!=nullptr);
+    assert(aClass != nullptr);
     aClass->iReferenceCount++;
 }
 
@@ -106,39 +106,44 @@ GenericClass* LispGenericClass::Generic()
 //------------------------------------------------------------------------------
 // LispNumber methods - proceed at your own risk
 
-
 /// return a string representation in decimal
-LispString * LispNumber::String()
+LispString* LispNumber::String()
 {
-  if (!iString)
-  {
-    assert(iNumber.ptr());  // either the string is null or the number but not both
-    LispString *str = new LispString;
-    // export the current number to string and store it as LispNumber::iString
-    iNumber->ToString(*str, bits_to_digits(std::max(1,iNumber->GetPrecision()),BASE10), BASE10);
-    iString = str;
-  }
-  return iString;
+    if (!iString) {
+        assert(
+            iNumber
+                .ptr()); // either the string is null or the number but not both
+        LispString* str = new LispString;
+        // export the current number to string and store it as
+        // LispNumber::iString
+        iNumber->ToString(
+            *str,
+            bits_to_digits(std::max(1, iNumber->GetPrecision()), BASE10),
+            BASE10);
+        iString = str;
+    }
+    return iString;
 }
 
 /// Return a BigNumber object.
-// Will create a BigNumber object out of a stored string, at given precision (in decimal) - that's why the aPrecision argument must be here - but only if no BigNumber object is already present
+// Will create a BigNumber object out of a stored string, at given precision (in
+// decimal) - that's why the aPrecision argument must be here - but only if no
+// BigNumber object is already present
 BigNumber* LispNumber::Number(int aBasePrecision)
 {
-  if (!iNumber)
-  {  // create and store a BigNumber out of string
-    assert(iString.ptr());
-    // aBasePrecision is in digits, not in bits, ok
-    iNumber = new BigNumber(*iString, aBasePrecision, BASE10);
-  }
+    if (!iNumber) { // create and store a BigNumber out of string
+        assert(iString.ptr());
+        // aBasePrecision is in digits, not in bits, ok
+        iNumber = new BigNumber(*iString, aBasePrecision, BASE10);
+    }
 
-  // check if the BigNumber object has enough precision, if not, extend it
-  // (applies only to floats). Note that iNumber->GetPrecision() might be < 0
-  else if (!iNumber->IsInt() && iNumber->GetPrecision() < (int)digits_to_bits(aBasePrecision, BASE10))
-  {
-    if (iString) // have string representation, can extend precision
-      iNumber = new BigNumber(*iString,aBasePrecision, BASE10);
-  }
-  return iNumber;
+    // check if the BigNumber object has enough precision, if not, extend it
+    // (applies only to floats). Note that iNumber->GetPrecision() might be < 0
+    else if (!iNumber->IsInt() &&
+             iNumber->GetPrecision() <
+                 (int)digits_to_bits(aBasePrecision, BASE10)) {
+        if (iString) // have string representation, can extend precision
+            iNumber = new BigNumber(*iString, aBasePrecision, BASE10);
+    }
+    return iNumber;
 }
-

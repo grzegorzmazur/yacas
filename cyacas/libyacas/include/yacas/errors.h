@@ -1,6 +1,8 @@
 #ifndef YACAS_ERRORS_H
 #define YACAS_ERRORS_H
 
+#include "lispenvironment.h"
+
 void CheckArg(bool pred, int arg_idx, LispEnvironment& env, int stack_top);
 
 void CheckArgIsString(LispPtr arg, int arg_idx, LispEnvironment& env, int stack_top);

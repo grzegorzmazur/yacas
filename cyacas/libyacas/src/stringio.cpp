@@ -1,6 +1,6 @@
 #include "yacas/stringio.h"
 
-StringInput::StringInput(const std::string& aString, InputStatus& aStatus):
+StringInput::StringInput(const std::string& aString, InputStatus& aStatus) :
     LispInput(aStatus),
     _string(aString),
     _current(_string.begin())
@@ -11,8 +11,9 @@ char32_t StringInput::Next()
 {
     if (EndOfStream())
         return std::char_traits<char32_t>::eof();
-    
-    const char32_t cp = utf8::next(_current, std::string::const_iterator(_string.end()));
+
+    const char32_t cp =
+        utf8::next(_current, std::string::const_iterator(_string.end()));
 
     if (cp == '\n')
         iStatus.NextLine();
@@ -25,7 +26,8 @@ char32_t StringInput::Peek()
     if (EndOfStream())
         return std::char_traits<char32_t>::eof();
 
-    return utf8::peek_next(_current, std::string::const_iterator(_string.end()));
+    return utf8::peek_next(_current,
+                           std::string::const_iterator(_string.end()));
 }
 
 bool StringInput::EndOfStream() const

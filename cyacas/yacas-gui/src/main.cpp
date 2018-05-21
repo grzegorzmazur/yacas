@@ -1,11 +1,11 @@
 #include "mainwindow.h"
 
+#include <QtCore/QTimer>
+#include <QtGui/QBitmap>
+#include <QtGui/QPixmap>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QSplashScreen>
-#include <QtGui/QBitmap>
-#include <QtGui/QPixmap>
-#include <QtCore/QTimer>
 
 #include "yacasrequest.h"
 
@@ -13,7 +13,7 @@
 
 void addSplashScreen(MainWindow* widget);
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
 
@@ -25,15 +25,13 @@ int main(int argc, char *argv[])
 
 #ifndef _WIN32
         app.setAttribute(Qt::AA_DontShowIconsInMenus);
-#endif        
+#endif
 
         qRegisterMetaType<YacasRequest::State>("YacasRequest::State");
 
         Preferences prefs(app);
 
-        MainWindow *widget = new MainWindow(prefs);
-
-
+        MainWindow* widget = new MainWindow(prefs);
 
 #ifndef __APPLE__
         addSplashScreen(widget);

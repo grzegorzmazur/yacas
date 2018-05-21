@@ -9,13 +9,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with yacas_kernel.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
-/* 
+/*
  * File:   main.cpp
  * Author: mazur
  *
@@ -33,23 +33,23 @@ int main(int argc, char** argv)
         std::cerr << "yacas_kernel: wrong number of arguments\n";
         return 1;
     }
-    
+
     Json::Value config;
 
     {
         std::ifstream config_file(argv[1]);
         config_file >> config;
     }
-    
+
     std::string scripts_path = "/usr/share/yacas/scripts/";
-    
+
     if (argc == 3)
         scripts_path = argv[2];
-    
+
     if (scripts_path.back() != '/')
         scripts_path.push_back('/');
-    
+
     YacasKernel kernel(scripts_path, config);
-    
+
     kernel.run();
 }

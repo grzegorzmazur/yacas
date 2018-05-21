@@ -27,67 +27,69 @@
 //          showing no prompts, and with no readline functionality.
 //
 
-#include <ctime>
 #include <csignal>
-#include <cstring>
 #include <cstdlib>
+#include <cstring>
+#include <ctime>
 #include <fstream>
 #include <iostream>
-#include <string>
 #include <sstream>
+#include <string>
 #include <vector>
 
-#define PATH_SEPARATOR   '/'
+#define PATH_SEPARATOR '/'
 #define PATH_SEPARATOR_2 "/"
 
 #include "yacas/yacas.h"
 
 #ifndef _WIN32
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <libgen.h>
+#    include <libgen.h>
+#    include <sys/stat.h>
+#    include <sys/types.h>
+#    include <unistd.h>
 
-#include "unixcommandline.h"
-#define FANCY_COMMAND_LINE CUnixCommandLine
+#    include "unixcommandline.h"
+#    define FANCY_COMMAND_LINE CUnixCommandLine
 #else
-#define _WINSOCKAPI_            // Prevent inclusion of winsock.h in windows.h
-#define _WIN32_WINDOWS 0x0410      // Make sure that Waitable Timer functions are declared in winbase.h
-#include "win32commandline.h"
-#define FANCY_COMMAND_LINE CWin32CommandLine
-#include <windows.h>
-#include <shlobj.h>
-#include <shlwapi.h>
+#    define _WINSOCKAPI_ // Prevent inclusion of winsock.h in windows.h
+#    define _WIN32_WINDOWS                                                     \
+        0x0410 // Make sure that Waitable Timer functions are declared in
+               // winbase.h
+#    include "win32commandline.h"
+#    define FANCY_COMMAND_LINE CWin32CommandLine
+#    include <shlobj.h>
+#    include <shlwapi.h>
+#    include <windows.h>
 #endif
 
-#if defined (__FreeBSD__) || defined (__DragonFly__)
-#include <stddef.h>
-#include <unistd.h>
-#include <sys/syslimits.h>
-#include <sys/types.h>
-#include <sys/sysctl.h>
+#if defined(__FreeBSD__) || defined(__DragonFly__)
+#    include <stddef.h>
+#    include <sys/sysctl.h>
+#    include <sys/syslimits.h>
+#    include <sys/types.h>
+#    include <unistd.h>
 #endif
 
 #include "stdcommandline.h"
-#include "yacas/standard.h"
-#include "yacas/numbers.h"
 #include "yacas/arggetter.h"
+#include "yacas/numbers.h"
+#include "yacas/standard.h"
 
 #include "yacas/errors.h"
 #include "yacas/string_utils.h"
 
 #ifndef YACAS_VERSION
-#include "yacas/yacas_version.h"
+#    include "yacas/yacas_version.h"
 #endif
 
 #if defined(__APPLE__)
-#include <mach-o/dyld.h>
+#    include <mach-o/dyld.h>
 #endif
 
 #include "yacas/GPL_stuff.h"
 
 CYacas* engine = nullptr;
-CCommandLine *commandline = nullptr;
+CCommandLine* commandline = nullptr;
 
 bool use_stdin = false;
 bool use_plain = false;
@@ -103,7 +105,6 @@ std::string init_script = "yacasinit.ys";
 
 const char* read_eval_print = "REP()";
 
-
 static bool readmode = false;
 
 const char* execute_commnd = nullptr;
@@ -111,23 +112,16 @@ const char* execute_commnd = nullptr;
 static bool busy = true;
 static bool restart = false;
 
-
-void ReportNrCurrent()
-{
-}
-
-
-
+void ReportNrCurrent() {}
 
 #define RESULT aEnvironment.iStack[aStackTop]
-#define ARGUMENT(i) aEnvironment.iStack[aStackTop+i]
+#define ARGUMENT(i) aEnvironment.iStack[aStackTop + i]
 
 void LispExit(LispEnvironment& aEnvironment, int aStackTop)
 {
     busy = false;
     InternalTrue(aEnvironment, RESULT);
 }
-
 
 void LispExitRequested(LispEnvironment& aEnvironment, int aStackTop)
 {
@@ -140,14 +134,18 @@ void LispExitRequested(LispEnvironment& aEnvironment, int aStackTop)
 #ifdef _WIN32
 std::string get_default_browser()
 {
-	HKEY key;
-	RegOpenKeyEx(HKEY_CLASSES_ROOT, "http\\shell\\open\\command", 0, KEY_QUERY_VALUE, &key);
-	TCHAR buf[256];
-	DWORD size = 256;
-	RegQueryValueEx(key, nullptr, nullptr, nullptr, (LPBYTE)buf, &size);
-	RegCloseKey(key);
+    HKEY key;
+    RegOpenKeyEx(HKEY_CLASSES_ROOT,
+                 "http\\shell\\open\\command",
+                 0,
+                 KEY_QUERY_VALUE,
+                 &key);
+    TCHAR buf[256];
+    DWORD size = 256;
+    RegQueryValueEx(key, nullptr, nullptr, nullptr, (LPBYTE)buf, &size);
+    RegCloseKey(key);
 
-	return buf;
+    return buf;
 }
 #endif
 
@@ -159,7 +157,7 @@ std::string ReadInputString(const std::string& prompt)
     readmode = true;
     commandline->ReadLine(prompt);
     readmode = false;
-    std::string inpline =  commandline->iLine;
+    std::string inpline = commandline->iLine;
 
     trim(inpline);
 
@@ -170,7 +168,7 @@ std::string ReadInputString(const std::string& prompt)
         restart = true;
         busy = false;
     } else if (inpline == "quit") {
-        busy=false;
+        busy = false;
     } else if (inpline.front() == '?') {
         const std::string key(inpline.begin() + 1, inpline.end());
 
@@ -182,32 +180,41 @@ std::string ReadInputString(const std::string& prompt)
             url = prefix + "#document-reference_manual/index";
 
 #ifndef _WIN32
-        
-#if defined (__APPLE__)
+
+#    if defined(__APPLE__)
         const std::string cmd = "osascript -e 'open location \"" + url + "\"'";
-#else
+#    else
         const std::string viewer = "xdg-open";
         const std::string cmd = viewer + " " + url;
-#endif
+#    endif
         if (system(cmd.c_str()) == 0)
             inpline = "True";
         else
             inpline = "False";
 #else
-		const std::string viewer = get_default_browser();
+        const std::string viewer = get_default_browser();
 
-		std::string cmd = viewer;
-		cmd.replace(cmd.find("%1"), 2, url);
+        std::string cmd = viewer;
+        cmd.replace(cmd.find("%1"), 2, url);
 
-		STARTUPINFO si;
-		PROCESS_INFORMATION pi;
+        STARTUPINFO si;
+        PROCESS_INFORMATION pi;
 
-		ZeroMemory(&si, sizeof si);
-		ZeroMemory(&pi, sizeof pi);
+        ZeroMemory(&si, sizeof si);
+        ZeroMemory(&pi, sizeof pi);
 
-		si.cb = sizeof si;
+        si.cb = sizeof si;
 
-		if (CreateProcess(nullptr, (LPSTR)cmd.c_str(), nullptr, nullptr, 0, 0,  nullptr, nullptr, &si, &pi))
+        if (CreateProcess(nullptr,
+                          (LPSTR)cmd.c_str(),
+                          nullptr,
+                          nullptr,
+                          0,
+                          0,
+                          nullptr,
+                          nullptr,
+                          &si,
+                          &pi))
             inpline = "True";
         else
             inpline = "False";
@@ -262,14 +269,12 @@ void LispFileSize(LispEnvironment& aEnvironment, int aStackTop)
     RESULT = LispAtom::New(aEnvironment, os.str());
 }
 
-
-
-
-void LispIsPromptShown(LispEnvironment& aEnvironment,int aStackTop)
-{ // this function must access show_prompt which is a *global* in yacasmain.cpp, so it's not possible to put this function in mathcommands.cpp
+void LispIsPromptShown(LispEnvironment& aEnvironment, int aStackTop)
+{ // this function must access show_prompt which is a
+  // *global* in yacasmain.cpp, so it's not possible to put
+  // this function in mathcommands.cpp
     InternalBoolean(aEnvironment, RESULT, show_prompt);
 }
-
 
 void my_exit()
 {
@@ -294,9 +299,9 @@ void my_exit()
     }
 }
 
-#define TEXMACS_DATA_BEGIN   ((char)2)
-#define TEXMACS_DATA_END     ((char)5)
-#define TEXMACS_DATA_ESCAPE  ((char)27)
+#define TEXMACS_DATA_BEGIN ((char)2)
+#define TEXMACS_DATA_END ((char)5)
+#define TEXMACS_DATA_ESCAPE ((char)27)
 
 void ShowResult(const std::string& prompt)
 {
@@ -305,9 +310,8 @@ void ShowResult(const std::string& prompt)
 
     if (engine->IsError())
         std::cout << engine->Error() << "\n";
-    else
-        if (engine->getDefEnv().getEnv().PrettyPrinter() == nullptr)
-            std::cout << prompt << engine->Result() << "\n";
+    else if (engine->getDefEnv().getEnv().PrettyPrinter() == nullptr)
+        std::cout << prompt << engine->Result() << "\n";
 
     if (use_texmacs_out)
         std::cout << TEXMACS_DATA_END;
@@ -315,11 +319,11 @@ void ShowResult(const std::string& prompt)
     std::cout << std::flush;
 }
 
-void DeclarePath(const char *ptr2)
+void DeclarePath(const char* ptr2)
 {
     std::ostringstream os;
 
-    if (ptr2[strlen(ptr2)-1] != PATH_SEPARATOR)
+    if (ptr2[strlen(ptr2) - 1] != PATH_SEPARATOR)
         os << "DefaultDirectory(\"" << ptr2 << PATH_SEPARATOR_2 << "\");";
     else
         os << "DefaultDirectory(\"" << ptr2 << "\");";
@@ -327,7 +331,8 @@ void DeclarePath(const char *ptr2)
     engine->Evaluate(os.str());
 
     if (engine->IsError())
-        std::cout << "Failed to set default directory: " << engine->Error() << "\n";
+        std::cout << "Failed to set default directory: " << engine->Error()
+                  << "\n";
 }
 
 void LoadYacas(std::ostream& os)
@@ -339,8 +344,8 @@ void LoadYacas(std::ostream& os)
 
     engine = new CYacas(os);
 
-
-#define CORE_KERNEL_FUNCTION(iname,fname,nrargs,flags) engine->getDefEnv().getEnv().SetCommand(fname,iname,nrargs,flags);
+#define CORE_KERNEL_FUNCTION(iname, fname, nrargs, flags)                      \
+    engine->getDefEnv().getEnv().SetCommand(fname, iname, nrargs, flags);
 
 #include "core_yacasmain.h"
 
@@ -372,8 +377,7 @@ void LoadYacas(std::ostream& os)
         std::ostringstream os;
         os << "Load(\"" << init_script << "\");";
         engine->Evaluate(os.str());
-        if (engine->IsError())
-        {
+        if (engine->IsError()) {
             ShowResult("");
             read_eval_print = nullptr;
         }
@@ -387,14 +391,15 @@ void LoadYacas(std::ostream& os)
 
 #ifdef _WIN32
     char appdata_dir_buf[MAX_PATH];
-    SHGetFolderPathA(nullptr, CSIDL_APPDATA, nullptr, SHGFP_TYPE_CURRENT, appdata_dir_buf);
+    SHGetFolderPathA(
+        nullptr, CSIDL_APPDATA, nullptr, SHGFP_TYPE_CURRENT, appdata_dir_buf);
 
     const std::string yacas_data_dir = std::string(appdata_dir_buf) + "\\yacas";
     std::string yacasrc_path = yacas_data_dir + "\\yacasrc";
 
     std::ifstream test(yacasrc_path.c_str());
     if (test) {
-        for (char& c: yacasrc_path)
+        for (char& c : yacasrc_path)
             if (c == '\\')
                 c = '/';
 
@@ -410,7 +415,8 @@ void LoadYacas(std::ostream& os)
         std::ifstream test(os.str().c_str(), std::ios::binary);
         if (test) {
             std::ostringstream os;
-            os << "Load(\"" << home << "/.yacasrc" << "\");";
+            os << "Load(\"" << home << "/.yacasrc"
+               << "\");";
             engine->Evaluate(os.str());
         }
     }
@@ -425,7 +431,7 @@ void LoadYacas(std::ostream& os)
 #ifdef SIGHANDLER_NO_ARGS
 void InterruptHandler(void)
 #else
-    void InterruptHandler(int errupt)
+void InterruptHandler(int errupt)
 #endif
 {
     std::cout << "^C pressed\n";
@@ -435,14 +441,12 @@ void InterruptHandler(void)
         std::exit(EXIT_SUCCESS);
 }
 
-
 void runconsole(const std::string& inprompt, const std::string& outprompt)
 {
     if (show_prompt) {
         if (use_texmacs_out) {
             std::cout << TEXMACS_DATA_BEGIN << "verbatim:"
-                      << "This is Yacas version `"
-                      << YACAS_VERSION
+                      << "This is Yacas version `" << YACAS_VERSION
                       << "' under TeXmacs\n"
                       << GPL_blurb_nohelp << TEXMACS_DATA_END;
         } else {
@@ -467,7 +471,7 @@ void runconsole(const std::string& inprompt, const std::string& outprompt)
         while (busy) {
             ReadInputString(inprompt);
 
-            const std::string inpline =  commandline->iLine;
+            const std::string inpline = commandline->iLine;
             if (use_texmacs_out)
                 std::cout << TEXMACS_DATA_BEGIN << "verbatim:";
 
@@ -499,34 +503,34 @@ int parse_options(int argc, char** argv)
     if (argc > 1) {
 
         for (; fileind < argc && argv[fileind][0] == '-'; ++fileind) {
-            if (!std::strcmp(argv[fileind],"--texmacs")) {
+            if (!std::strcmp(argv[fileind], "--texmacs")) {
                 use_texmacs_out = true;
                 use_plain = true;
                 read_eval_print = nullptr;
-            } else if (!std::strcmp(argv[fileind],"--patchload")) {
+            } else if (!std::strcmp(argv[fileind], "--patchload")) {
                 patchload = true;
-            } else if (!std::strcmp(argv[fileind],"--init")) {
+            } else if (!std::strcmp(argv[fileind], "--init")) {
                 fileind++;
-                if (fileind<argc)
+                if (fileind < argc)
                     init_script = argv[fileind];
-            } else if (!std::strcmp(argv[fileind],"--read-eval-print")) {
+            } else if (!std::strcmp(argv[fileind], "--read-eval-print")) {
                 fileind++;
 
-                if (fileind<argc) {
+                if (fileind < argc) {
                     if (argv[fileind][0])
                         read_eval_print = argv[fileind];
                     else
                         read_eval_print = nullptr;
                 }
-            } else if (!std::strcmp(argv[fileind],"--rootdir")) {
+            } else if (!std::strcmp(argv[fileind], "--rootdir")) {
                 fileind++;
                 if (fileind < argc)
                     root_dir = argv[fileind];
-            } else if (!std::strcmp(argv[fileind],"--execute")) {
+            } else if (!std::strcmp(argv[fileind], "--execute")) {
                 fileind++;
                 if (fileind < argc)
                     execute_commnd = argv[fileind];
-            } else if (!std::strcmp(argv[fileind],"-i")) {
+            } else if (!std::strcmp(argv[fileind], "-i")) {
                 fileind++;
                 if (fileind < argc) {
                     const char* immediate = argv[fileind];
@@ -534,32 +538,35 @@ int parse_options(int argc, char** argv)
                         LoadYacas(std::cout);
 
                         if (use_texmacs_out)
-                            engine->getDefEnv().getEnv().SetPrettyPrinter(engine->getDefEnv().getEnv().HashTable().LookUp("\"TexForm\""));
+                            engine->getDefEnv().getEnv().SetPrettyPrinter(
+                                engine->getDefEnv().getEnv().HashTable().LookUp(
+                                    "\"TexForm\""));
 
                         engine->Evaluate(immediate);
 
                         if (engine->IsError())
-                            std::cout << "Error in immediate command " << immediate << ":\n"
+                            std::cout << "Error in immediate command "
+                                      << immediate << ":\n"
                                       << engine->Error() << "\n";
 
                         exit_after_files = true;
                     }
                 }
             } else {
-                if (std::strchr(argv[fileind],'f')) {
+                if (std::strchr(argv[fileind], 'f')) {
                     use_stdin = true;
                 }
-                if (std::strchr(argv[fileind],'p')) {
+                if (std::strchr(argv[fileind], 'p')) {
                     use_plain = true;
                 }
-                if (std::strchr(argv[fileind],'c')) {
+                if (std::strchr(argv[fileind], 'c')) {
                     show_prompt = false;
                 }
-                if (std::strchr(argv[fileind],'d')) {
+                if (std::strchr(argv[fileind], 'd')) {
                     std::cout << root_dir << "\n";
                     std::exit(EXIT_SUCCESS);
                 }
-                if (std::strchr(argv[fileind],'v')) {
+                if (std::strchr(argv[fileind], 'v')) {
                     std::cout << YACAS_VERSION << "\n";
                     std::exit(EXIT_SUCCESS);
                 }
@@ -572,16 +579,16 @@ int parse_options(int argc, char** argv)
 
 int main(int argc, char** argv)
 {
-#if defined (__APPLE__)
+#if defined(__APPLE__)
     char buf[PATH_MAX];
-    uint32_t size = sizeof (buf);
+    uint32_t size = sizeof(buf);
     _NSGetExecutablePath(buf, &size);
 
     char path[PATH_MAX];
     realpath(buf, path);
     root_dir = dirname(dirname(path));
-#elif defined (__FreeBSD__) || defined (__DragonFly__)
-    int mib[4] = { CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1 };
+#elif defined(__FreeBSD__) || defined(__DragonFly__)
+    int mib[4] = {CTL_KERN, KERN_PROC, KERN_PROC_PATHNAME, -1};
     char buf[PATH_MAX] = {};
     size_t cb = sizeof(buf);
     if (sysctl(mib, 4, buf, &cb, NULL, 0) != 0) {
@@ -599,7 +606,8 @@ int main(int argc, char** argv)
 
         std::vector<char> buf(sb.st_size + 1);
 
-        const ssize_t r = readlink("/proc/self/exe", buf.data(), sb.st_size + 1);
+        const ssize_t r =
+            readlink("/proc/self/exe", buf.data(), sb.st_size + 1);
 
         if (r == -1) {
             std::cerr << "yacas: failed to read /proc/self/exe, bailing out\n";
@@ -607,7 +615,8 @@ int main(int argc, char** argv)
         }
 
         if (r > sb.st_size) {
-            std::cerr << "yacas: /proc/self/exe changed between stat and readlink\n";
+            std::cerr
+                << "yacas: /proc/self/exe changed between stat and readlink\n";
             std::exit(EXIT_FAILURE);
         }
 
@@ -618,8 +627,8 @@ int main(int argc, char** argv)
 #elif defined(_WIN32)
     char buf[MAX_PATH];
     if (!GetModuleFileName(nullptr, buf, MAX_PATH)) {
-            std::cerr << "yacas: failed to locate the executable, bailing out\n";
-            exit(EXIT_FAILURE);
+        std::cerr << "yacas: failed to locate the executable, bailing out\n";
+        exit(EXIT_FAILURE);
     }
 
     PathRemoveFileSpec(buf);
@@ -627,14 +636,15 @@ int main(int argc, char** argv)
 
     root_dir = buf;
 
-    for (char& c: root_dir)
+    for (char& c : root_dir)
         if (c == '\\')
             c = '/';
 #elif defined(EMSCRIPTEN)
     root_dir = "";
     use_plain = true;
 #else
-#error "This platform is not yet supported. Please contact developers at yacas@googlegroups.com"
+#    error                                                                     \
+        "This platform is not yet supported. Please contact developers at yacas@googlegroups.com"
 #endif
 
     doc_dir = root_dir + "/share/yacas/documentation/singlehtml";
@@ -671,9 +681,10 @@ int main(int argc, char** argv)
     LoadYacas(std::cout);
 
     if (use_texmacs_out)
-        engine->getDefEnv().getEnv().SetPrettyPrinter(engine->getDefEnv().getEnv().HashTable().LookUp("\"TexForm\""));
+        engine->getDefEnv().getEnv().SetPrettyPrinter(
+            engine->getDefEnv().getEnv().HashTable().LookUp("\"TexForm\""));
 
-    for ( ; fileind<argc; fileind++) {
+    for (; fileind < argc; fileind++) {
         std::ostringstream os;
         if (patchload)
             os << "PatchLoad(\"" << argv[fileind] << "\");";
@@ -714,7 +725,7 @@ int main(int argc, char** argv)
             std::string line;
             std::getline(std::cin, line);
             buffer.append(line);
-        } while(std::cin.good());
+        } while (std::cin.good());
 
         engine->Evaluate(buffer);
         ShowResult(outprompt);

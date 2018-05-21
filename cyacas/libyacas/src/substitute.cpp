@@ -1,32 +1,28 @@
 #include "yacas/substitute.h"
 #include "yacas/lispatom.h"
-#include "yacas/standard.h"
 #include "yacas/lispeval.h"
+#include "yacas/standard.h"
 
-//Subst, Substitute, FullSubstitute
-void InternalSubstitute(LispPtr& aTarget, LispPtr& aSource,
+// Subst, Substitute, FullSubstitute
+void InternalSubstitute(LispPtr& aTarget,
+                        LispPtr& aSource,
                         SubstBehaviourBase& aBehaviour)
 {
     LispObject* object = aSource;
     assert(object);
-    if (!aBehaviour.Matches(aTarget,aSource))
-    {
+    if (!aBehaviour.Matches(aTarget, aSource)) {
         LispPtr* oldList = object->SubList();
-        if (oldList)
-        {
+        if (oldList) {
             LispPtr newList;
             LispPtr* next = &newList;
-            while (!!(*oldList))
-            {
+            while (!!(*oldList)) {
                 InternalSubstitute(*next, *oldList, aBehaviour);
                 oldList = &(*oldList)->Nixed();
                 next = &(*next)->Nixed();
             }
 
             aTarget = (LispSubList::New(newList));
-        }
-        else
-        {
+        } else {
             aTarget = (object->Copy());
         }
     }
@@ -34,16 +30,16 @@ void InternalSubstitute(LispPtr& aTarget, LispPtr& aSource,
 
 SubstBehaviour::SubstBehaviour(LispEnvironment& aEnvironment,
                                LispPtr& aToMatch,
-                               LispPtr& aToReplaceWith)
-: iEnvironment(aEnvironment), iToMatch(aToMatch),
-  iToReplaceWith(aToReplaceWith)
+                               LispPtr& aToReplaceWith) :
+    iEnvironment(aEnvironment),
+    iToMatch(aToMatch),
+    iToReplaceWith(aToReplaceWith)
 {
 }
 
 bool SubstBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
 {
-    if (InternalEquals(iEnvironment, aElement, iToMatch))
-    {
+    if (InternalEquals(iEnvironment, aElement, iToMatch)) {
         aResult = iToReplaceWith->Copy();
         return true;
     }
@@ -53,7 +49,7 @@ bool SubstBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
 LocalSymbolBehaviour::LocalSymbolBehaviour(
     LispEnvironment& aEnvironment,
     const std::vector<const LispString*>&& aOriginalNames,
-    const std::vector<const LispString*>&& aNewNames):
+    const std::vector<const LispString*>&& aNewNames) :
     iEnvironment(aEnvironment),
     iOriginalNames(aOriginalNames),
     iNewNames(aNewNames)
@@ -77,15 +73,17 @@ bool LocalSymbolBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
 
 bool BackQuoteBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
 {
-    if (!aElement->SubList()) return false;
+    if (!aElement->SubList())
+        return false;
     LispObject* ptr = (*aElement->SubList());
-    if (!ptr) return false;
-    if (!ptr->String()) return false;
+    if (!ptr)
+        return false;
+    if (!ptr->String())
+        return false;
 
-    if (*ptr->String() == "`")
-    {
-      aResult = (aElement);
-      return true;
+    if (*ptr->String() == "`") {
+        aResult = (aElement);
+        return true;
     }
 
     if (*ptr->String() != "@")
@@ -95,19 +93,16 @@ bool BackQuoteBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
     if (!ptr)
         return false;
 
-    if (ptr->String())
-    {
+    if (ptr->String()) {
         LispPtr cur(ptr);
-/*
-        LispPtr result;
-        iEnvironment.iEvaluator->Eval(iEnvironment, result, cur);
-        InternalSubstitute(aResult, result,*this);
-*/
+        /*
+                LispPtr result;
+                iEnvironment.iEvaluator->Eval(iEnvironment, result, cur);
+                InternalSubstitute(aResult, result,*this);
+        */
         iEnvironment.iEvaluator->Eval(iEnvironment, aResult, cur);
         return true;
-    }
-    else
-    {
+    } else {
         ptr = (*ptr->SubList());
         LispPtr cur(ptr);
         LispPtr args(ptr->Nixed());
@@ -115,9 +110,8 @@ bool BackQuoteBehaviour::Matches(LispPtr& aResult, LispPtr& aElement)
         iEnvironment.iEvaluator->Eval(iEnvironment, result, cur);
         result->Nixed() = (args);
         LispPtr result2(LispSubList::New(result));
-        InternalSubstitute(aResult, result2,*this);
+        InternalSubstitute(aResult, result2, *this);
         return true;
     }
     return false;
 }
-

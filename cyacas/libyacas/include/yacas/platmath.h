@@ -1,6 +1,8 @@
 #ifndef YACAS_PLATMATH_H
 #define YACAS_PLATMATH_H
 
+#include "lispenvironment.h"
+
 // Beware the use of these functions! They cannot be guaranteed to be
 // supported on any platform.
 double GetDouble(LispObject* aInteger);

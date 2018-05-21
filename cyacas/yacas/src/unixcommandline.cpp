@@ -2,11 +2,9 @@
 
 #include <sys/ioctl.h>
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <stdexcept>
-
-
 
 void CUnixCommandLine::NewLine()
 {
@@ -18,15 +16,16 @@ void CUnixCommandLine::NewLine()
 
 void CUnixCommandLine::Pause()
 {
-    clock_t i=clock()+CLOCKS_PER_SEC/4;
-    while (clock()<i);
+    clock_t i = clock() + CLOCKS_PER_SEC / 4;
+    while (clock() < i)
+        ;
 }
 
 void CUnixCommandLine::ShowLine(const std::string& prompt, unsigned cursor)
 {
     struct winsize w;
     ioctl(0, TIOCGWINSZ, &w);
-    
+
     const std::size_t prompt_len = prompt.length();
 
     const int l = (cursor + prompt_len) / w.ws_col;
@@ -64,8 +63,7 @@ void CUnixCommandLine::ShowLine(const std::string& prompt, unsigned cursor)
     full_line_dirty = false;
 }
 
-
-CUnixCommandLine::CUnixCommandLine():
+CUnixCommandLine::CUnixCommandLine() :
     _cursor_line(0),
     _last_line(0),
     _max_lines(1024)
@@ -79,19 +77,19 @@ CUnixCommandLine::CUnixCommandLine():
     /* set termio so we can do our own input processing */
     tcgetattr(0, &orig_termio);
     rl_termio = orig_termio;
-    rl_termio.c_iflag &= ~(BRKINT|PARMRK|INPCK/*|IUCLC*/|IXON|IXOFF);
-    rl_termio.c_iflag |=  (IGNBRK|IGNPAR);
+    rl_termio.c_iflag &= ~(BRKINT | PARMRK | INPCK /*|IUCLC*/ | IXON | IXOFF);
+    rl_termio.c_iflag |= (IGNBRK | IGNPAR);
     /* rl_termio.c_oflag &= ~(ONOCR); Costas Sphocleous Irvine,CA */
-    rl_termio.c_lflag &= ~(ICANON|ECHO|ECHOE|ECHOK|ECHONL|NOFLSH);
-    rl_termio.c_lflag |=  (ISIG);
+    rl_termio.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHOK | ECHONL | NOFLSH);
+    rl_termio.c_lflag |= (ISIG);
     rl_termio.c_cc[VMIN] = 1;
     rl_termio.c_cc[VTIME] = 0;
-    term_chars[VERASE]   = orig_termio.c_cc[VERASE];
-    term_chars[VEOF]     = orig_termio.c_cc[VEOF];
-    term_chars[VKILL]    = orig_termio.c_cc[VKILL];
-    term_chars[VWERASE]  = orig_termio.c_cc[VWERASE];
+    term_chars[VERASE] = orig_termio.c_cc[VERASE];
+    term_chars[VEOF] = orig_termio.c_cc[VEOF];
+    term_chars[VKILL] = orig_termio.c_cc[VKILL];
+    term_chars[VWERASE] = orig_termio.c_cc[VWERASE];
     term_chars[VREPRINT] = orig_termio.c_cc[VREPRINT];
-    term_chars[VSUSP]    = orig_termio.c_cc[VSUSP];
+    term_chars[VSUSP] = orig_termio.c_cc[VSUSP];
     /* disable suspending process on ^Z */
     rl_termio.c_cc[VSUSP] = 0;
     tcsetattr(0, TCSADRAIN, &rl_termio);
@@ -139,7 +137,6 @@ void CUnixCommandLine::MaxHistoryLinesSaved(std::size_t n)
     _max_lines = n;
 }
 
-
 char32_t CUnixCommandLine::GetKey()
 {
     int c = getc(stdin);
@@ -155,77 +152,74 @@ char32_t CUnixCommandLine::GetKey()
         ch = eCtrlD;
     else {
         switch (c) {
-            case 9: //  9   tab
-                ch = eTab;
-                break;
-            case 10: /* Enter */
-                ch = eEnter;
-                break;
-            case 001: /* ^A  (unix home) */
-                ch = eHome;
-                break;
-            case 005: /* ^E  (unix end) */
-                ch = eEnd;
-                break;
-            case 004: /* ^D  (unix delete/end of file) */
-                ch = eCtrlD;
-            case 127:
-                ch = eDelete;
-                break;
-            case 8: /* ^H  (unix backspace) */
-                ch = eBackSpace;
-                break;
-            case 11: /* ^K (unix kill to the end of line */
-                ch = eKill;
-                break;
-            case 033:
-            {
-                c = getc(stdin); /* check for CSI */
+        case 9: //  9   tab
+            ch = eTab;
+            break;
+        case 10: /* Enter */
+            ch = eEnter;
+            break;
+        case 001: /* ^A  (unix home) */
+            ch = eHome;
+            break;
+        case 005: /* ^E  (unix end) */
+            ch = eEnd;
+            break;
+        case 004: /* ^D  (unix delete/end of file) */
+            ch = eCtrlD;
+        case 127:
+            ch = eDelete;
+            break;
+        case 8: /* ^H  (unix backspace) */
+            ch = eBackSpace;
+            break;
+        case 11: /* ^K (unix kill to the end of line */
+            ch = eKill;
+            break;
+        case 033: {
+            c = getc(stdin); /* check for CSI */
 
+            switch (c) {
+            case 27:
+                ch = eEscape;
+                break;
+            case '[':
+            case 79: {
+                c = getc(stdin); /* get command character */
                 switch (c) {
-                    case 27:
-                        ch = eEscape;
-                        break;
-                    case '[':
-                    case 79:
-                    {
-                        c = getc(stdin); /* get command character */
-                        switch (c) {
-                            case 'D': /* left arrow key */
-                                ch = eLeft;
-                                break;
-                            case 'C': /* right arrow key */
-                                ch = eRight;
-                                break;
-                            case 'A': /* up arrow key */
-                                ch = eUp;
-                                break;
-                            case 'B': /* down arrow key */
-                                ch = eDown;
-                                break;
-                            case 'H': /* home */
-                                ch = eHome;
-                                break;
-                            case 'F': /* end */
-                                ch = eEnd;
-                                break;
-                        }
-                        break;
-                    }
+                case 'D': /* left arrow key */
+                    ch = eLeft;
+                    break;
+                case 'C': /* right arrow key */
+                    ch = eRight;
+                    break;
+                case 'A': /* up arrow key */
+                    ch = eUp;
+                    break;
+                case 'B': /* down arrow key */
+                    ch = eDown;
+                    break;
+                case 'H': /* home */
+                    ch = eHome;
+                    break;
+                case 'F': /* end */
+                    ch = eEnd;
+                    break;
                 }
                 break;
             }
-            default:
-            {
-                char p[4] = {static_cast<char>(c), 0, 0, 0};
-                char* q = p + 1;
-                while (!utf8::is_valid(p, q))
-                    *q++ = getc(stdin);
-
-                utf8::utf8to32(p, q, &ch);
-                
-                break;
             }
+            break;
+        }
+        default: {
+            char p[4] = {static_cast<char>(c), 0, 0, 0};
+            char* q = p + 1;
+            while (!utf8::is_valid(p, q))
+                *q++ = getc(stdin);
+
+            utf8::utf8to32(p, q, &ch);
+
+            break;
+        }
         }
     }
     return ch;

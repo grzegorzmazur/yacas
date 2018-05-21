@@ -9,13 +9,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with yacas_kernel.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
-/* 
+/*
  * File:   hmac_sha256.hpp
  * Author: mazur
  *
@@ -25,8 +25,8 @@
 #ifndef HMAC_SHA256_HPP
 #define HMAC_SHA256_HPP
 
-#include <string>
 #include <openssl/hmac.h>
+#include <string>
 
 class HMAC_SHA256 {
 public:

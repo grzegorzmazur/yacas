@@ -1,11 +1,12 @@
 
 #include "yacas/lispparser.h"
 #include "yacas/lispatom.h"
-#include "yacas/lisperror.h"
 #include "yacas/lispenvironment.h"
+#include "yacas/lisperror.h"
 
-LispParser::LispParser(LispTokenizer& aTokenizer, LispInput& aInput,
-                       LispEnvironment& aEnvironment):
+LispParser::LispParser(LispTokenizer& aTokenizer,
+                       LispInput& aInput,
+                       LispEnvironment& aEnvironment) :
     iTokenizer(aTokenizer),
     iInput(aInput),
     iEnvironment(aEnvironment),
@@ -18,7 +19,8 @@ void LispParser::Parse(LispPtr& aResult)
     aResult = nullptr;
 
     // Get token.
-    const LispString* token = iEnvironment.HashTable().LookUp(iTokenizer.NextToken(iInput));
+    const LispString* token =
+        iEnvironment.HashTable().LookUp(iTokenizer.NextToken(iInput));
 
     if (token->empty()) {
         aResult = iEnvironment.iEndOfFile->Copy();
@@ -52,8 +54,9 @@ void LispParser::ParseList(LispPtr& aResult)
         iter = &(aResult->Nixed());
     }
     for (;;) {
-        //Get token.
-        const LispString* token = iEnvironment.HashTable().LookUp(iTokenizer.NextToken(iInput));
+        // Get token.
+        const LispString* token =
+            iEnvironment.HashTable().LookUp(iTokenizer.NextToken(iInput));
 
         // if token is empty string, error!
         if (token->empty())
@@ -70,8 +73,7 @@ void LispParser::ParseList(LispPtr& aResult)
     }
 }
 
-void LispPrinter::Print(
-                        const LispPtr& aExpression,
+void LispPrinter::Print(const LispPtr& aExpression,
                         std::ostream& aOutput,
                         LispEnvironment& aEnvironment)
 {
@@ -100,13 +102,14 @@ void LispPrinter::PrintExpression(const LispPtr& aExpression,
 
         if (string) {
             aOutput << *string << ' ';
-        }            // else print "(", print sublist, and print ")"
+        } // else print "(", print sublist, and print ")"
         else if ((*iter)->SubList()) {
             if (item != 0) {
                 Indent(aOutput, aDepth + 1);
             }
             aOutput.put('(');
-            PrintExpression(*((*iter)->SubList()), aOutput, aEnvironment, aDepth + 1);
+            PrintExpression(
+                *((*iter)->SubList()), aOutput, aEnvironment, aDepth + 1);
             aOutput.put(')');
             item = 0;
         } else {
@@ -119,7 +122,4 @@ void LispPrinter::PrintExpression(const LispPtr& aExpression,
 
 // does nothing in the LispPrinter but is used in derived classes
 
-void LispPrinter::RememberLastChar(char aChar)
-{
-}
-
+void LispPrinter::RememberLastChar(char aChar) {}

@@ -5,13 +5,14 @@
 
 namespace {
     struct IsPrefix {
-        
-        IsPrefix(const std::string& p): _p(p), _l(p.length()) {}
-        
-        bool operator() (const std::string& s) const {
+
+        IsPrefix(const std::string& p) : _p(p), _l(p.length()) {}
+
+        bool operator()(const std::string& s) const
+        {
             return _p.compare(0, _l, s, 0, _l) == 0;
         }
-        
+
     private:
         std::string _p;
         std::size_t _l;
@@ -23,9 +24,7 @@ void CCommandLine::GetHistory(std::size_t aLine)
     iSubLine = iHistoryList.GetLine(aLine);
 }
 
-void CCommandLine::MaxHistoryLinesSaved(std::size_t aNrLines)
-{
-}
+void CCommandLine::MaxHistoryLinesSaved(std::size_t aNrLines) {}
 
 void CCommandLine::ReadLine(const std::string& prompt)
 {
@@ -51,36 +50,33 @@ void CCommandLine::ReadLine(const std::string& prompt)
 void CCommandLine::ReadLineSub(const std::string& prompt)
 {
     unsigned cursor = 0;
- 
+
     iHistoryList.ResetHistoryPosition();
     history_unchanged = false;
 
     full_line_dirty = true;
     ShowLine(prompt, cursor);
 
-    for (;;)
-    {
-       
+    for (;;) {
 
 #ifdef YACAS_UINT32_T_IN_GLOBAL_NAMESPACE
-		uint32_t c = GetKey();
+        uint32_t c = GetKey();
 #else
-		std::uint32_t c = GetKey();
+        std::uint32_t c = GetKey();
 #endif
-        const std::size_t len = utf8::distance(iSubLine.begin(), iSubLine.end());
+        const std::size_t len =
+            utf8::distance(iSubLine.begin(), iSubLine.end());
 
         if (c == eCtrlD && len == 0) {
             iSubLine = "Exit()";
             NewLine();
             return;
         }
-        
-        switch (c)
-        {
+
+        switch (c) {
         case eCtrlD:
         case eDelete:
-            if (cursor < len)
-            {
+            if (cursor < len) {
                 std::string::iterator i = iSubLine.begin();
                 utf8::advance(i, cursor, iSubLine.end());
                 std::string::iterator j = i;
@@ -91,8 +87,7 @@ void CCommandLine::ReadLineSub(const std::string& prompt)
             }
             break;
         case eBackSpace:
-            if (cursor>0)
-            {
+            if (cursor > 0) {
                 cursor -= 1;
                 std::string::iterator i = iSubLine.begin();
                 utf8::advance(i, cursor, iSubLine.end());
@@ -104,7 +99,7 @@ void CCommandLine::ReadLineSub(const std::string& prompt)
             }
             break;
         case eLeft:
-            if (cursor>0)
+            if (cursor > 0)
                 cursor--;
             break;
         case eRight:
@@ -112,18 +107,16 @@ void CCommandLine::ReadLineSub(const std::string& prompt)
                 cursor++;
             break;
 
-
         case eUp:
             history_unchanged = true;
             full_line_dirty = true;
-            iHistoryList.ArrowUp(iSubLine,cursor);
+            iHistoryList.ArrowUp(iSubLine, cursor);
             break;
         case eDown:
             history_unchanged = true;
             full_line_dirty = true;
-            iHistoryList.ArrowDown(iSubLine,cursor);
+            iHistoryList.ArrowDown(iSubLine, cursor);
             break;
-
 
         case eTab:
             iHistoryList.Complete(iSubLine, cursor);
@@ -144,17 +137,15 @@ void CCommandLine::ReadLineSub(const std::string& prompt)
             cursor = len;
             break;
         case eEnter:
-            if (!iSubLine.empty())
-            {
-              NewLine();
-              iHistoryList.AddLine(iSubLine);
-              return;
+            if (!iSubLine.empty()) {
+                NewLine();
+                iHistoryList.AddLine(iSubLine);
+                return;
             }
             full_line_dirty = true;
             break;
         case eKill:
-            if (cursor < len)
-            {
+            if (cursor < len) {
                 std::string::iterator i = iSubLine.begin();
                 utf8::advance(i, cursor, iSubLine.end());
                 iSubLine.erase(i, iSubLine.end());
@@ -162,39 +153,45 @@ void CCommandLine::ReadLineSub(const std::string& prompt)
                 history_unchanged = false;
             }
             break;
-        default:
-            {
-                std::string octets;
-                utf8::append(c, std::back_inserter(octets));
-                std::string::iterator i = iSubLine.begin();
-                utf8::advance(i, cursor, iSubLine.end());
-                iSubLine.insert(i, octets.begin(), octets.end());
-                full_line_dirty = true;
-                history_unchanged = false;
-                cursor++;
-            }
-            break;
+        default: {
+            std::string octets;
+            utf8::append(c, std::back_inserter(octets));
+            std::string::iterator i = iSubLine.begin();
+            utf8::advance(i, cursor, iSubLine.end());
+            iSubLine.insert(i, octets.begin(), octets.end());
+            full_line_dirty = true;
+            history_unchanged = false;
+            cursor++;
+        } break;
         }
-        switch (c)
-        {
-        case ')': ShowOpen(prompt, '(', ')', cursor); break;
-        case '}': ShowOpen(prompt, '{', '}', cursor); break;
-        case ']': ShowOpen(prompt, '[', ']', cursor); break;
-        case '\"': ShowOpen(prompt, '\"', '\"', cursor); break;
+        switch (c) {
+        case ')':
+            ShowOpen(prompt, '(', ')', cursor);
+            break;
+        case '}':
+            ShowOpen(prompt, '{', '}', cursor);
+            break;
+        case ']':
+            ShowOpen(prompt, '[', ']', cursor);
+            break;
+        case '\"':
+            ShowOpen(prompt, '\"', '\"', cursor);
+            break;
         }
         ShowLine(prompt, cursor);
     }
 }
 
 void CCommandLine::ShowOpen(const std::string& prompt,
-                            char aOpen, char aClose,
+                            char aOpen,
+                            char aClose,
                             unsigned cursor)
 {
     if (cursor < 2)
         return;
-    
+
     cursor -= 2;
-    
+
     int count = 1;
 
     std::string::iterator p = iSubLine.begin();
@@ -208,10 +205,10 @@ void CCommandLine::ShowOpen(const std::string& prompt,
 
         if (count == 0)
             break;
-        
+
         if (p == iSubLine.begin())
             break;
-        
+
         utf8::prior(p, iSubLine.begin());
         cursor -= 1;
     }
@@ -222,10 +219,7 @@ void CCommandLine::ShowOpen(const std::string& prompt,
     }
 }
 
-CConsoleHistory::CConsoleHistory():
-    history(0)
-{
-}
+CConsoleHistory::CConsoleHistory() : history(0) {}
 
 void CConsoleHistory::Append(const std::string& s)
 {
@@ -243,7 +237,6 @@ void CConsoleHistory::AddLine(const std::string& s)
     } else if (iHistory[history] != s) {
         history_changed = true;
     }
- 
 
     if (history_changed) {
         iHistory.push_back(s);
@@ -255,7 +248,6 @@ void CConsoleHistory::AddLine(const std::string& s)
     iHistory.push_back(orig);
 }
 
-
 bool CConsoleHistory::ArrowUp(std::string& s, unsigned c)
 {
     if (history == 0)
@@ -263,18 +255,18 @@ bool CConsoleHistory::ArrowUp(std::string& s, unsigned c)
 
     std::string::iterator i = s.begin();
     utf8::advance(i, c, s.end());
-    
+
     const std::string prefix(s.begin(), i);
 
     auto p = iHistory.rbegin();
     std::advance(p, iHistory.size() - history);
-    
+
     const std::vector<std::string>::reverse_iterator q =
-            std::find_if(p, iHistory.rend(), IsPrefix(prefix));
-    
+        std::find_if(p, iHistory.rend(), IsPrefix(prefix));
+
     if (q == iHistory.rend())
         return false;
-    
+
     s = *q;
     history -= std::distance(p, q) + 1;
     return true;
@@ -287,14 +279,14 @@ bool CConsoleHistory::ArrowDown(std::string& s, unsigned c)
 
     std::string::iterator i = s.begin();
     utf8::advance(i, c, s.end());
-    
+
     const std::string prefix(s.begin(), i);
 
     auto p = iHistory.begin();
     std::advance(p, history + 1);
 
     const std::vector<std::string>::iterator q =
-            std::find_if(p, iHistory.end(), IsPrefix(prefix));
+        std::find_if(p, iHistory.end(), IsPrefix(prefix));
 
     if (q != iHistory.end()) {
         s = *q;
@@ -309,16 +301,16 @@ bool CConsoleHistory::ArrowDown(std::string& s, unsigned c)
 
 std::size_t CConsoleHistory::NrLines()
 {
-  return iHistory.size();
+    return iHistory.size();
 }
 
 const std::string& CConsoleHistory::GetLine(std::size_t n)
 {
-  return iHistory[n];
+    return iHistory[n];
 }
 void CConsoleHistory::ResetHistoryPosition()
 {
-  history = iHistory.size();
+    history = iHistory.size();
 }
 
 bool CConsoleHistory::Complete(std::string& s, unsigned& c)
@@ -327,24 +319,24 @@ bool CConsoleHistory::Complete(std::string& s, unsigned& c)
         return false;
 
     const std::size_t old_history = history;
-    
+
     history = iHistory.size() - 1;
-    
+
     std::string::iterator i = s.begin();
     utf8::advance(i, c, s.end());
     const std::string prefix(s.begin(), i);
 
     auto p = iHistory.rbegin();
     std::advance(p, iHistory.size() - history);
-    
+
     const std::vector<std::string>::reverse_iterator q =
-            std::find_if(p, iHistory.rend(), IsPrefix(prefix));
-    
+        std::find_if(p, iHistory.rend(), IsPrefix(prefix));
+
     if (q == iHistory.rend()) {
         history = old_history;
         return false;
     }
-    
+
     s = *q;
     c = utf8::distance(s.begin(), s.end());
     history -= std::distance(p, q) + 1;

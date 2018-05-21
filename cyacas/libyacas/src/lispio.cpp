@@ -4,7 +4,7 @@
 void InputStatus::SetTo(const std::string& aFileName)
 {
     iFileName = aFileName;
-    iLineNumber=1;
+    iLineNumber = 1;
 }
 
 void InputStatus::RestoreFrom(InputStatus& aPreviousStatus)

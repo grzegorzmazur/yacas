@@ -23,7 +23,7 @@ LispPtr AssociationClass::Keys() const
 {
     LispPtr head(LispAtom::New(const_cast<LispEnvironment&>(_env), "List"));
     LispPtr p(head);
-    for (std::map<Key, LispPtr>::const_reference e: _map) {
+    for (std::map<Key, LispPtr>::const_reference e : _map) {
         p->Nixed() = e.first.value->Copy();
         p = p->Nixed();
     }
@@ -34,7 +34,7 @@ LispPtr AssociationClass::ToList() const
 {
     LispPtr head(LispAtom::New(const_cast<LispEnvironment&>(_env), "List"));
     LispPtr p(head);
-    for (std::map<Key, LispPtr>::const_reference e: _map) {
+    for (std::map<Key, LispPtr>::const_reference e : _map) {
         LispPtr q(LispAtom::New(const_cast<LispEnvironment&>(_env), "List"));
         p->Nixed() = LispSubList::New(q);
         p = p->Nixed();
@@ -48,7 +48,7 @@ LispPtr AssociationClass::ToList() const
 LispPtr AssociationClass::Head() const
 {
     assert(_map.size());
-    
+
     std::map<Key, LispPtr>::const_reference e = *_map.begin();
     LispPtr p(LispAtom::New(const_cast<LispEnvironment&>(_env), "List"));
     LispPtr q(p);

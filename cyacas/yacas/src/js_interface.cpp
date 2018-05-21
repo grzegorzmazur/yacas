@@ -9,13 +9,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with yacas.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
-/* 
+/*
  * File:   js_interface.cpp
  * Author: mazur
  *
@@ -92,46 +92,46 @@ extern "C" void EMSCRIPTEN_KEEPALIVE yacas_evaluate(const char* const p)
 extern "C" char* EMSCRIPTEN_KEEPALIVE yacas_complete(const char* const p)
 {
     const std::size_t pn = std::strlen(p);
-    
+
     std::set<std::string> ss;
-    
-    for (auto op: _yacas->getDefEnv().getEnv().PreFix())
+
+    for (auto op : _yacas->getDefEnv().getEnv().PreFix())
         if (op.first->substr(0, pn) == p)
             ss.insert(*op.first);
 
-    for (auto op: _yacas->getDefEnv().getEnv().InFix())
+    for (auto op : _yacas->getDefEnv().getEnv().InFix())
         if (op.first->substr(0, pn) == p)
             ss.insert(*op.first);
 
-    for (auto op: _yacas->getDefEnv().getEnv().PostFix())
+    for (auto op : _yacas->getDefEnv().getEnv().PostFix())
         if (op.first->substr(0, pn) == p)
             ss.insert(*op.first);
 
-    for (auto op: _yacas->getDefEnv().getEnv().Bodied())
+    for (auto op : _yacas->getDefEnv().getEnv().Bodied())
         if (op.first->substr(0, pn) == p)
             ss.insert(*op.first);
 
-    for (auto op: _yacas->getDefEnv().getEnv().CoreCommands())
+    for (auto op : _yacas->getDefEnv().getEnv().CoreCommands())
         if (op.first->substr(0, pn) == p)
             ss.insert(*op.first);
 
-    for (auto& op: _yacas->getDefEnv().getEnv().UserFunctions())
+    for (auto& op : _yacas->getDefEnv().getEnv().UserFunctions())
         if (op.first->substr(0, pn) == p)
             ss.insert(*op.first);
 
     std::string s;
-    for (const std::string& t: ss) {
+    for (const std::string& t : ss) {
         s.append(t);
         s.append(";");
     }
     s.pop_back();
-    
+
     const std::size_t sn = s.length();
     char* r = new char[sn + 1];
     for (std::size_t i = 0; i < sn; ++i)
         r[i] = s[i];
 
     r[sn] = 0;
-    
+
     return r;
 }

@@ -5,9 +5,9 @@
 
 #include <conio.h>
 
-#include <windows.h>
 #include <shlobj.h>
 #include <shlwapi.h>
+#include <windows.h>
 
 /*
   This displays a message box.
@@ -18,18 +18,16 @@ static void win_assert(BOOL condition)
         return;
 
     LPVOID lpMsgBuf;
-    FormatMessage(
-        FORMAT_MESSAGE_ALLOCATE_BUFFER |
-        FORMAT_MESSAGE_FROM_SYSTEM |
-        FORMAT_MESSAGE_IGNORE_INSERTS,
-        nullptr,
-        GetLastError(),
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-        (LPTSTR) &lpMsgBuf,
-        0,
-        nullptr);
+    FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM |
+                      FORMAT_MESSAGE_IGNORE_INSERTS,
+                  nullptr,
+                  GetLastError(),
+                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+                  (LPTSTR)&lpMsgBuf,
+                  0,
+                  nullptr);
 
-    MessageBox( nullptr, (LPCTSTR)lpMsgBuf, "Error", MB_OK | MB_ICONINFORMATION );
+    MessageBox(nullptr, (LPCTSTR)lpMsgBuf, "Error", MB_OK | MB_ICONINFORMATION);
 
     LocalFree(lpMsgBuf);
 
@@ -50,7 +48,8 @@ void CWin32CommandLine::color_print(const std::string& str, WORD text_attrib)
     win_assert(status);
 
     DWORD written;
-    status = WriteConsole(out_console, str.c_str(), str.length(), &written, nullptr);
+    status =
+        WriteConsole(out_console, str.c_str(), str.length(), &written, nullptr);
     win_assert(status);
     // restore the attributes
     status = SetConsoleTextAttribute(out_console, old_attrib);
@@ -97,16 +96,19 @@ void CWin32CommandLine::ShowLine(const std::string& prompt, unsigned cursor)
             coords.X = 0;
             coords.Y = csbi.dwCursorPosition.Y + i;
             DWORD no_written;
-            FillConsoleOutputCharacter(out_console, ' ', no_cols, coords, &no_written);
+            FillConsoleOutputCharacter(
+                out_console, ' ', no_cols, coords, &no_written);
         }
 
         const std::string line = prompt + iSubLine.c_str();
-        color_print(line.c_str(), FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY );
+        color_print(line.c_str(),
+                    FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 
         _last_line = line.length() / no_cols;
 
         if (csbi.dwCursorPosition.Y + _last_line >= no_rows)
-            csbi.dwCursorPosition.Y -= csbi.dwCursorPosition.Y + _last_line + 1 - no_rows;
+            csbi.dwCursorPosition.Y -=
+                csbi.dwCursorPosition.Y + _last_line + 1 - no_rows;
     }
 
     coords.X = c;
@@ -127,7 +129,8 @@ CWin32CommandLine::CWin32CommandLine() :
     win_assert(INVALID_HANDLE_VALUE != out_console);
 
     char appdata_dir_buf[MAX_PATH];
-    SHGetFolderPathA(nullptr, CSIDL_APPDATA, nullptr, SHGFP_TYPE_CURRENT, appdata_dir_buf);
+    SHGetFolderPathA(
+        nullptr, CSIDL_APPDATA, nullptr, SHGFP_TYPE_CURRENT, appdata_dir_buf);
 
     const std::string yacas_data_dir = std::string(appdata_dir_buf) + "\\yacas";
 
@@ -143,7 +146,8 @@ CWin32CommandLine::CWin32CommandLine() :
 CWin32CommandLine::~CWin32CommandLine()
 {
     char appdata_dir_buf[MAX_PATH];
-    SHGetFolderPathA(nullptr, CSIDL_APPDATA, nullptr, SHGFP_TYPE_CURRENT, appdata_dir_buf);
+    SHGetFolderPathA(
+        nullptr, CSIDL_APPDATA, nullptr, SHGFP_TYPE_CURRENT, appdata_dir_buf);
 
     const std::string yacas_data_dir = std::string(appdata_dir_buf) + "\\yacas";
 
@@ -175,36 +179,36 @@ char32_t CWin32CommandLine::GetKey()
 
     switch (c) {
     case 8:
-        c = eBackSpace;         // Backspace
+        c = eBackSpace; // Backspace
         break;
-    case 9:                                     //  Tab
+    case 9: //  Tab
         c = eTab;
         break;
-    case 13:                            // Enter
+    case 13: // Enter
         c = eEnter;
         break;
     case 0xE0:
-        c = _getwch();           // Get extended scan code
+        c = _getwch(); // Get extended scan code
         switch (c) {
-        case 75:                // left arrow key
+        case 75: // left arrow key
             c = eLeft;
             break;
-        case 77:                // right arrow key
+        case 77: // right arrow key
             c = eRight;
             break;
-        case 72:                // up arrow key
+        case 72: // up arrow key
             c = eUp;
             break;
-        case 80:                // down arrow key
+        case 80: // down arrow key
             c = eDown;
             break;
-        case 71:                // home
+        case 71: // home
             c = eHome;
             break;
-        case 79:                // end
+        case 79: // end
             c = eEnd;
             break;
-        case 83:                // delete
+        case 83: // delete
             c = eDelete;
             break;
         }

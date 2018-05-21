@@ -9,13 +9,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with yacas_kernel.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  */
 
-/* 
+/*
  * File:   yacas_kernel.cpp
  * Author: mazur
  *
@@ -28,10 +28,10 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
-#include <iostream>
 #include <fstream>
-#include <string>
+#include <iostream>
 #include <set>
+#include <string>
 
 namespace {
     std::string now()
@@ -42,7 +42,8 @@ namespace {
     }
 }
 
-YacasKernel::YacasKernel(const std::string& scripts_path, const Json::Value& config):
+YacasKernel::YacasKernel(const std::string& scripts_path,
+                         const Json::Value& config) :
     _session(config["key"].asString()),
     _hb_socket(_ctx, zmqpp::socket_type::reply),
     _iopub_socket(_ctx, zmqpp::socket_type::publish),
@@ -59,31 +60,37 @@ YacasKernel::YacasKernel(const std::string& scripts_path, const Json::Value& con
     const std::string transport = config["transport"].asString();
     const std::string ip = config["ip"].asString();
 
-    _hb_socket.bind(transport + "://" + ip + ":" + config["hb_port"].asString());
-    _iopub_socket.bind(transport + "://" + ip + ":" + config["iopub_port"].asString());
-    _control_socket.bind(transport + "://" + ip + ":" + config["control_port"].asString());
-    _stdin_socket.bind(transport + "://" + ip + ":" + config["stdin_port"].asString());
-    _shell_socket.bind(transport + "://" + ip + ":" + config["shell_port"].asString());
+    _hb_socket.bind(transport + "://" + ip + ":" +
+                    config["hb_port"].asString());
+    _iopub_socket.bind(transport + "://" + ip + ":" +
+                       config["iopub_port"].asString());
+    _control_socket.bind(transport + "://" + ip + ":" +
+                         config["control_port"].asString());
+    _stdin_socket.bind(transport + "://" + ip + ":" +
+                       config["stdin_port"].asString());
+    _shell_socket.bind(transport + "://" + ip + ":" +
+                       config["shell_port"].asString());
     _engine_socket.bind("inproc://engine");
-    
-    _yacas.Evaluate(std::string("DefaultDirectory(\"") + scripts_path + std::string("\");"));
+
+    _yacas.Evaluate(std::string("DefaultDirectory(\"") + scripts_path +
+                    std::string("\");"));
     _yacas.Evaluate("Load(\"yacasinit.ys\");");
 }
 
 void YacasKernel::run()
 {
     zmqpp::poller poller;
-    
+
     poller.add(_hb_socket);
     poller.add(_control_socket);
     poller.add(_stdin_socket);
     poller.add(_shell_socket);
     poller.add(_iopub_socket);
     poller.add(_engine_socket);
-    
+
     for (;;) {
         poller.poll();
-        
+
         if (poller.has_input(_hb_socket)) {
             zmqpp::message msg;
             _hb_socket.receive(msg);
@@ -100,7 +107,7 @@ void YacasKernel::run()
             zmqpp::message msg;
             _control_socket.receive(msg);
             Request request(_session, msg);
-            
+
             if (request.header()["msg_type"].asString() == "shutdown_request")
                 _shutdown = true;
         }
@@ -108,12 +115,11 @@ void YacasKernel::run()
         if (_shutdown)
             return;
 
-
         if (poller.has_input(_stdin_socket)) {
             zmqpp::message msg;
             _stdin_socket.receive(msg);
         }
-        
+
         if (poller.has_input(_engine_socket)) {
             zmqpp::message msg;
             _engine_socket.receive(msg);
@@ -122,14 +128,14 @@ void YacasKernel::run()
     }
 }
 
-YacasKernel::Session::Session(const std::string& key):
+YacasKernel::Session::Session(const std::string& key) :
     _auth(key),
     _uuid(_uuid_gen())
 {
 }
 
-
-YacasKernel::Request::Request(const Session& session, const zmqpp::message& msg):
+YacasKernel::Request::Request(const Session& session,
+                              const zmqpp::message& msg) :
     _session(session)
 {
     std::string header_buf;
@@ -142,7 +148,7 @@ YacasKernel::Request::Request(const Session& session, const zmqpp::message& msg)
     msg.get(content_buf, 6);
 
     HMAC_SHA256 auth(_session.auth());
-    
+
     auth.update(header_buf);
     auth.update(parent_header_buf);
     auth.update(metadata_buf);
@@ -150,12 +156,12 @@ YacasKernel::Request::Request(const Session& session, const zmqpp::message& msg)
 
     std::string signature_buf;
     msg.get(signature_buf, 2);
- 
+
     if (auth.hexdigest() != signature_buf)
         throw std::runtime_error("invalid signature");
 
     msg.get(_identities_buf, 0);
-    
+
     Json::Reader reader;
 
     reader.parse(header_buf, _header);
@@ -163,13 +169,15 @@ YacasKernel::Request::Request(const Session& session, const zmqpp::message& msg)
     reader.parse(metadata_buf, _metadata);
 }
 
-void YacasKernel::Request::reply(zmqpp::socket& socket, const std::string& msg_type, const Json::Value& content) const
+void YacasKernel::Request::reply(zmqpp::socket& socket,
+                                 const std::string& msg_type,
+                                 const Json::Value& content) const
 {
     Json::Value header;
     header["username"] = "kernel";
     header["version"] = "5.0";
     header["session"] = boost::uuids::to_string(_session.uuid());
-    header["date"]  = now();
+    header["date"] = now();
     header["msg_id"] = boost::uuids::to_string(_session.generate_msg_uuid());
     header["msg_type"] = msg_type;
 
@@ -180,14 +188,14 @@ void YacasKernel::Request::reply(zmqpp::socket& socket, const std::string& msg_t
     const std::string metadata_buf = "{}";
     const std::string header_buf = Json::writeString(builder, header);
     const std::string parent_header_buf = Json::writeString(builder, _header);
-    
+
     HMAC_SHA256 auth(_session.auth());
-    
+
     auth.update(header_buf);
     auth.update(parent_header_buf);
     auth.update(metadata_buf);
     auth.update(content_buf);
-    
+
     zmqpp::message msg;
     msg.add(_identities_buf);
     msg.add("<IDS|MSG>");
@@ -196,14 +204,14 @@ void YacasKernel::Request::reply(zmqpp::socket& socket, const std::string& msg_t
     msg.add(parent_header_buf);
     msg.add(metadata_buf);
     msg.add(content_buf);
-    
+
     socket.send(msg);
 }
 
 void YacasKernel::_handle_shell(const std::shared_ptr<Request>& request)
 {
     const std::string msg_type = request->header()["msg_type"].asString();
-    
+
     if (msg_type == "kernel_info_request") {
         Json::Value language_info;
         language_info["name"] = "yacas";
@@ -218,11 +226,11 @@ void YacasKernel::_handle_shell(const std::shared_ptr<Request>& request)
         Json::Value docs;
         docs["text"] = "Yacas Documentation";
         docs["url"] = "http://yacas.readthedocs.org";
-        
+
         Json::Value help_links;
         help_links.append(homepage);
         help_links.append(docs);
-        
+
         Json::Value reply_content;
         reply_content["protocol_version"] = "5.1";
         reply_content["implementation"] = "yacas_kernel";
@@ -234,9 +242,10 @@ void YacasKernel::_handle_shell(const std::shared_ptr<Request>& request)
         request->reply(_shell_socket, "kernel_info_reply", reply_content);
     } else if (msg_type == "execute_request") {
 
-        _execute_requests.insert(std::make_pair(_execution_count, std::move(request)));
+        _execute_requests.insert(
+            std::make_pair(_execution_count, std::move(request)));
         _engine.submit(_execution_count, request->content()["code"].asString());
-        
+
         _execution_count += 1;
     } else if (msg_type == "complete_request") {
         std::string code = request->content()["code"].asString();
@@ -245,44 +254,43 @@ void YacasKernel::_handle_shell(const std::shared_ptr<Request>& request)
         while (start > 0 && std::isalpha(code[start - 1]))
             start -= 1;
         const std::string prefix = code.substr(start, cursor - start);
-        
+
         std::set<std::string> matches;
-        
-        for (auto op: _yacas.getDefEnv().getEnv().PreFix())
-            if (op.first->compare(0, prefix.length(), prefix) == 0)
-                matches.insert(*op.first);
- 
-        for (auto op: _yacas.getDefEnv().getEnv().InFix())
-            if (op.first->compare(0, prefix.length(), prefix) == 0)
-                matches.insert(*op.first);
-        
-        for (auto op: _yacas.getDefEnv().getEnv().PostFix())
-            if (op.first->compare(0, prefix.length(), prefix) == 0)
-                matches.insert(*op.first);
-        
-        for (auto op: _yacas.getDefEnv().getEnv().Bodied())
-            if (op.first->compare(0, prefix.length(), prefix) == 0)
-                matches.insert(*op.first);
-        
-        for (auto op: _yacas.getDefEnv().getEnv().CoreCommands())
+
+        for (auto op : _yacas.getDefEnv().getEnv().PreFix())
             if (op.first->compare(0, prefix.length(), prefix) == 0)
                 matches.insert(*op.first);
 
-        for (auto op: _yacas.getDefEnv().getEnv().UserFunctions())
+        for (auto op : _yacas.getDefEnv().getEnv().InFix())
+            if (op.first->compare(0, prefix.length(), prefix) == 0)
+                matches.insert(*op.first);
+
+        for (auto op : _yacas.getDefEnv().getEnv().PostFix())
+            if (op.first->compare(0, prefix.length(), prefix) == 0)
+                matches.insert(*op.first);
+
+        for (auto op : _yacas.getDefEnv().getEnv().Bodied())
+            if (op.first->compare(0, prefix.length(), prefix) == 0)
+                matches.insert(*op.first);
+
+        for (auto op : _yacas.getDefEnv().getEnv().CoreCommands())
+            if (op.first->compare(0, prefix.length(), prefix) == 0)
+                matches.insert(*op.first);
+
+        for (auto op : _yacas.getDefEnv().getEnv().UserFunctions())
             if (op.first->compare(0, prefix.length(), prefix) == 0)
                 matches.insert(*op.first);
 
         Json::Value reply_content_matches;
-        for (const std::string& match: matches)
+        for (const std::string& match : matches)
             reply_content_matches.append(match);
 
-        
         Json::Value reply_content;
         reply_content["status"] = "ok";
         reply_content["cursor_start"] = start;
         reply_content["cursor_end"] = cursor;
         reply_content["matches"] = reply_content_matches;
-        
+
         request->reply(_shell_socket, "complete_reply", reply_content);
 
     } else if (msg_type == "shutdown_request") {
@@ -300,17 +308,18 @@ void YacasKernel::_handle_engine(const zmqpp::message& msg)
 {
     std::string msg_type;
     msg.get(msg_type, 0);
-    
+
     std::string content_buf;
     msg.get(content_buf, 1);
 
     Json::Value content;
     Json::Reader().parse(content_buf, content);
 
-    std::shared_ptr<YacasKernel::Request> request = _execute_requests[content["id"].asUInt64()];
-    
+    std::shared_ptr<YacasKernel::Request> request =
+        _execute_requests[content["id"].asUInt64()];
+
     bool condemned = false;
-    
+
     if (msg_type == "calculate") {
         Json::Value status_content;
         status_content["execution_state"] = "busy";
@@ -323,7 +332,7 @@ void YacasKernel::_handle_engine(const zmqpp::message& msg)
 
         request->reply(_iopub_socket, "execute_input", execute_input_content);
     } else if (msg_type == "result") {
-        
+
         if (content.isMember("side_effects")) {
             Json::Value stream_content;
             stream_content["name"] = "stdout";
@@ -334,7 +343,7 @@ void YacasKernel::_handle_engine(const zmqpp::message& msg)
 
         if (content.isMember("error")) {
             Json::Value reply_content;
-            reply_content["status"] =  "error";
+            reply_content["status"] = "error";
             reply_content["execution_count"] = content["id"];
             reply_content["ename"] = Json::Value();
             reply_content["evalue"] = Json::Value();
@@ -347,13 +356,13 @@ void YacasKernel::_handle_engine(const zmqpp::message& msg)
             error_content["ename"] = Json::Value();
             error_content["evalue"] = Json::Value();
             error_content["traceback"].append(content["error"]);
-            
+
             request->reply(_iopub_socket, "error", error_content);
         } else {
             std::string text_result = content["result"].asString();
             if (text_result.back() == ';')
                 text_result.pop_back();
-            
+
             Json::Value content_data;
             content_data["text/plain"] = text_result;
 
@@ -361,16 +370,17 @@ void YacasKernel::_handle_engine(const zmqpp::message& msg)
                 _side_effects.clear();
                 _side_effects.str("");
 
-                _yacas.Evaluate(std::string("TeXForm(Hold(") + text_result + "));");
+                _yacas.Evaluate(std::string("TeXForm(Hold(") + text_result +
+                                "));");
 
                 std::string tex_result = _yacas.Result();
                 tex_result = tex_result.substr(1, tex_result.size() - 3);
 
                 content_data["text/latex"] = tex_result;
             }
-            
+
             Json::Value reply_content;
-            reply_content["status"] =  "ok";
+            reply_content["status"] = "ok";
             reply_content["execution_count"] = content["id"];
             reply_content["data"] = content_data;
 
@@ -380,9 +390,9 @@ void YacasKernel::_handle_engine(const zmqpp::message& msg)
             result_content["execution_count"] = content["id"];
             result_content["data"] = content_data;
             result_content["metadata"] = "{}";
-            
+
             request->reply(_iopub_socket, "execute_result", result_content);
-            
+
             condemned = true;
         }
 
@@ -390,7 +400,7 @@ void YacasKernel::_handle_engine(const zmqpp::message& msg)
         status_content["execution_state"] = "idle";
 
         request->reply(_iopub_socket, "status", status_content);
-        
+
         if (condemned)
             _execute_requests.erase(content["id"].asUInt64());
     }

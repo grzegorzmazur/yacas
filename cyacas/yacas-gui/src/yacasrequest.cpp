@@ -1,6 +1,6 @@
 #include "yacasrequest.h"
 
-YacasRequest::YacasRequest(QString expr, QObject *parent):
+YacasRequest::YacasRequest(QString expr, QObject* parent) :
     QObject(parent),
     _expr(expr),
     _state(WAITING)
@@ -19,7 +19,10 @@ QString YacasRequest::take()
     return _expr;
 }
 
-void YacasRequest::answer(unsigned idx, ResultType type, QString result, QString side_effects)
+void YacasRequest::answer(unsigned idx,
+                          ResultType type,
+                          QString result,
+                          QString side_effects)
 {
     _idx = idx;
     _result_type = type;
@@ -45,4 +48,3 @@ QString YacasRequest::side_effects() const
 {
     return _side_effects;
 }
-
