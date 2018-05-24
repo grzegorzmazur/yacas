@@ -488,21 +488,21 @@ function evaluateCurrent() {
 }
 
 
-
 function evaluateAll() {
     $(".InputTextarea").each(function () {
-        editor = this.editor;
-        //editor.save();
+        var editor = this.editor;
         processChange(editor.getValue(), editor.number, null);
-
-
     });
-    inputVal = $("#inputExpression")[0].editor.getValue();
-    if (inputVal !== "")
-        calculate(inputVal);
-    $("#inputExpression").focus();
-}
 
+    var $input = $("#inputExpression");
+    if ($input.length) {
+        var inputVal = $input[0].editor.getValue();
+        if (inputVal !== "")
+            calculate(inputVal);
+    }
+
+    $input.focus();
+}
 
 
 
