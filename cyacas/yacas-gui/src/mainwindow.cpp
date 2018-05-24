@@ -350,9 +350,8 @@ void MainWindow::on_action_Import_triggered()
 
 void MainWindow::on_action_Export_triggered()
 {
-    QString fname = "/tmp/smieci";
-    // QFileDialog::getSaveFileName(this, "Open", "", "Yacas scripts (*.ys);;All
-    // files (*)");
+    QString fname = QFileDialog::getSaveFileName(
+        this, "Open", "", "Yacas scripts (*.ys);;All files (*)");
 
     if (fname.length() == 0)
         return;
