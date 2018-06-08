@@ -1,365 +1,10 @@
-=================================
-Calculus and elementary functions
-=================================
+========
+Calculus
+========
 
 In this chapter, some facilities for doing calculus are
 described. These include functions implementing differentiation,
-integration, standard mathematical functions, and solving of
-equations.
-
-.. function:: Sin(x)
-
-   trigonometric sine function
-
-   :param x: argument to the function, in radians
-
-   This function represents the trigonometric function sine. Yacas
-   leaves   expressions alone even if x is a number, trying to keep
-   the result as   exact as possible. The floating point
-   approximations of these functions   can be forced by using the {N}
-   function.    Yacas knows some trigonometric identities, so it can
-   simplify to exact  results even if {N} is not used. This is the
-   case, for instance,  when the argument is a multiple of :math:`Pi/6` or
-   :math:`Pi/4`.
-   
-   :func:`Sin` is :term:`threaded <threaded function>`.
-
-   :Example:
-
-   ::
-
-      In> Sin(1)
-      Out> Sin(1);
-      In> N(Sin(1),20)
-      Out> 0.84147098480789650665;
-      In> Sin(Pi/4)
-      Out> Sqrt(2)/2;
-      
-
-   .. seealso:: :func:`Cos`, :func:`Tan`, :func:`ArcSin`, :func:`ArcCos`, :func:`ArcTan`, :func:`N`, :func:`Pi`
-
-.. function:: Cos(x)
-
-   trigonometric cosine function
-
-   :param x: argument to the function, in radians
-
-   This function represents the trigonometric function cosine. Yacas
-   leaves   expressions alone even if x is a number, trying to keep
-   the result as   exact as possible. The floating point
-   approximations of these functions   can be forced by using the {N}
-   function.    Yacas knows some trigonometric identities, so it can
-   simplify to exact  results even if {N} is not used. This is the
-   case, for instance,  when the argument is a multiple of :math:`Pi/6` or
-   :math:`Pi/4`.    These functions are threaded, meaning that if the
-   argument {x} is a  list, the function is applied to all entries in
-   the list.
-
-    :func:`Cos` is :term:`threaded <threaded function>`.
-
-   :Example:
-
-   ::
-
-      In> Cos(1)
-      Out> Cos(1);
-      In> N(Cos(1),20)
-      Out> 0.5403023058681397174;
-      In> Cos(Pi/4)
-      Out> Sqrt(1/2);
-      
-
-   .. seealso:: :func:`Sin`, :func:`Tan`, :func:`ArcSin`, :func:`ArcCos`, :func:`ArcTan`, :func:`N`, :func:`Pi`
-
-.. function:: Tan(x)
-
-   trigonometric tangent function
-
-   :param x: argument to the function, in radians
-
-   This function represents the trigonometric function tangent. Yacas
-   leaves   expressions alone even if x is a number, trying to keep
-   the result as   exact as possible. The floating point
-   approximations of these functions   can be forced by using the {N}
-   function.    Yacas knows some trigonometric identities, so it can
-   simplify to exact  results even if {N} is not used. This is the
-   case, for instance,  when the argument is a multiple of :math:`Pi/6` or
-   :math:`Pi/4`.    These functions are threaded, meaning that if the
-   argument {x} is a  list, the function is applied to all entries in
-   the list.
-
-   :Example:
-
-   ::
-
-      In> Tan(1)
-      Out> Tan(1);
-      In> N(Tan(1),20)
-      Out> 1.5574077246549022305;
-      In> Tan(Pi/4)
-      Out> 1;
-      
-
-   .. seealso:: :func:`Sin`, :func:`Cos`, :func:`ArcSin`, :func:`ArcCos`, :func:`ArcTan`, :func:`N`, :func:`Pi`
-
-.. function:: ArcSin(x)
-
-   inverse trigonometric function arc-sine
-
-   :param x: argument to the function
-
-   This function represents the inverse trigonometric function
-   arcsine. For  instance, the value of :math:`ArcSin(x)` is a number :math:`y`
-   such that  :math:`Sin(y)` equals :math:`x`.    Note that the number :math:`y` is not
-   unique. For instance, :math:`Sin(0)` and  :math:`Sin(Pi)` both equal 0, so what
-   should :math:`ArcSin(0)` be? In Yacas,  it is agreed that the value of
-   :math:`ArcSin(x)` should be in the interval  :math:`[-Pi/2,Pi/2]`.
-   Usually, Yacas leaves this function alone unless it is forced to do
-   a numerical evaluation by the {N} function. If the  argument is -1,
-   0, or 1 however, Yacas will simplify the  expression. If the
-   argument is complex,  the expression will be  rewritten using the
-   {Ln} function.    This function is threaded, meaning that if the
-   argument {x} is a  list, the function is applied to all entries in
-   the list.
-
-   :Example:
-
-   ::
-
-      In> ArcSin(1)
-      Out> Pi/2;
-      In> ArcSin(1/3)
-      Out> ArcSin(1/3);
-      In> Sin(ArcSin(1/3))
-      Out> 1/3;
-      In> x:=N(ArcSin(0.75))
-      Out> 0.848062;
-      In> N(Sin(x))
-      Out> 0.7499999477;
-      
-
-   .. seealso:: :func:`Sin`, :func:`Cos`, :func:`Tan`, :func:`N`, :func:`Pi`, :func:`Ln`, :func:`ArcCos`, :func:`ArcTan`
-
-.. function:: ArcCos(x)
-
-   inverse trigonometric function arc-cosine
-
-   :param x: argument to the function
-
-   This function represents the inverse trigonometric function
-   arc-cosine. For  instance, the value of :math:`ArcCos(x)` is a number :math:`y`
-   such that  :math:`Cos(y)` equals :math:`x`.    Note that the number :math:`y` is not
-   unique. For instance, :math:`Cos(Pi/2)` and  :math:`Cos(3*Pi/2)` both equal 0,
-   so what should :math:`ArcCos(0)` be? In Yacas,  it is agreed that the
-   value of :math:`ArcCos(x)` should be in the interval :math:`[0,Pi]`.
-   Usually, Yacas leaves this function alone unless it is forced to do
-   a numerical evaluation by the {N} function. If the  argument is -1,
-   0, or 1 however, Yacas will simplify the  expression. If the
-   argument is complex,  the expression will be  rewritten using the
-   {Ln} function.    This function is threaded, meaning that if the
-   argument {x} is a  list, the function is applied to all entries in
-   the list.
-
-   :Example:
-
-   ::
-
-      In> ArcCos(0)
-      Out> Pi/2
-      In> ArcCos(1/3)
-      Out> ArcCos(1/3)
-      In> Cos(ArcCos(1/3))
-      Out> 1/3
-      In> x:=N(ArcCos(0.75))
-      Out> 0.7227342478
-      In> N(Cos(x))
-      Out> 0.75
-      
-
-   .. seealso:: :func:`Sin`, :func:`Cos`, :func:`Tan`, :func:`N`, :func:`Pi`, :func:`Ln`, :func:`ArcSin`, :func:`ArcTan`
-
-.. function:: ArcTan(x)
-
-   inverse trigonometric function arc-tangent
-
-   :param x: argument to the function
-
-   This function represents the inverse trigonometric function
-   arctangent. For  instance, the value of :math:`ArcTan(x)` is a number :math:`y`
-   such that  :math:`Tan(y)` equals :math:`x`.    Note that the number :math:`y` is not
-   unique. For instance, :math:`Tan(0)` and  :math:`Tan(2*Pi)` both equal 0, so
-   what should :math:`ArcTan(0)` be? In Yacas,  it is agreed that the value
-   of :math:`ArcTan(x)` should be in the interval :math:`[-Pi/2,Pi/2]`.
-   Usually, Yacas leaves this function alone unless it is forced to do
-   a numerical evaluation by the {N} function. Yacas will try to
-   simplify  as much as possible while keeping the result exact. If
-   the argument is   complex,  the expression will be rewritten using
-   the {Ln} function.    This function is threaded, meaning that if
-   the argument {x} is a  list, the function is applied to all entries
-   in the list.
-
-   :Example:
-
-   ::
-
-      In> ArcTan(1)
-      Out> Pi/4
-      In> ArcTan(1/3)
-      Out> ArcTan(1/3)
-      In> Tan(ArcTan(1/3))
-      Out> 1/3
-      In> x:=N(ArcTan(0.75))
-      Out> 0.643501108793285592213351264945231378078460693359375
-      In> N(Tan(x))
-      Out> 0.75
-      
-
-   .. seealso:: :func:`Sin`, :func:`Cos`, :func:`Tan`, :func:`N`, :func:`Pi`, :func:`Ln`, :func:`ArcSin`, :func:`ArcCos`
-
-.. function:: Exp(x)
-
-   exponential function
-
-   :param x: argument to the function
-
-   This function calculates :math:`e^x` where :math:`e` is the
-   mathematic constant 2.71828... One can use ``Exp(1)`` to represent
-   :math:`e`.  This function is :term:`threaded function`, meaning
-   that if the argument ``x`` is a list, the function is applied to
-   all entries in the list.
-
-   :Example:
-
-   ::
-
-      In> Exp(0)
-      Out> 1;
-      In> Exp(I*Pi)
-      Out> -1;
-      In> N(Exp(1))
-      Out> 2.7182818284;
-      
-
-   .. seealso:: :func:`Ln`, :func:`Sin`, :func:`Cos`, :func:`Tan`, :func:`N`
-
-.. function:: Ln(x)
-
-   natural logarithm
-
-   :param x: argument to the function
-
-   This function calculates the natural logarithm of "x". This is the
-   inverse function of the exponential function, {Exp}, i.e. :math:`Ln(x) =
-   y` implies that :math:`Exp(y) = x`. For complex  arguments, the imaginary
-   part of the logarithm is in the interval `(-\pi,\pi]`. This is
-   compatible with the branch cut of {Arg}.    This function is
-   threaded, meaning that if the argument {x} is a  list, the function
-   is applied to all entries in the list.
-
-   :Example:
-
-   ::
-
-      In> Ln(1)
-      Out> 0;
-      In> Ln(Exp(x))
-      Out> x;
-      In> D(x) Ln(x)
-      Out> 1/x;
-      
-
-   .. seealso:: :func:`Exp`, :func:`Arg`
-
-.. function:: Sqrt(x)
-
-   square root
-
-   :param x: argument to the function
-
-   This function calculates the square root of "x". If the result is
-   not rational, the call is returned unevaluated unless a numerical
-   approximation is forced with the {N} function. This  function can
-   also handle negative and complex arguments.    This function is
-   threaded, meaning that if the argument {x} is a  list, the function
-   is applied to all entries in the list.
-
-   :Example:
-
-   ::
-
-      In> Sqrt(16)
-      Out> 4;
-      In> Sqrt(15)
-      Out> Sqrt(15);
-      In> N(Sqrt(15))
-      Out> 3.8729833462;
-      In> Sqrt(4/9)
-      Out> 2/3;
-      In> Sqrt(-1)
-      Out> Complex(0,1);
-      
-
-   .. seealso:: :func:`Exp`, :func:`^`, :func:`N`
-
-.. function:: Abs(x)
-
-   absolute value or modulus of complex number
-
-   :param x: argument to the function
-
-   This function returns the absolute value (also called the modulus)
-   of "x". If "x" is positive, the absolute value is "x" itself; if
-   "x" is negative, the absolute value is "-x". For complex "x", the
-   modulus is the "r" in the polar decomposition :math:`x =
-   re^{\imath\phi}`.  This function is connected to the {Sign}
-   function by the identity ``Abs(x) * Sign(x) = x`` for real "x".
-   This function is threaded, meaning that if the argument {x} is a
-   list, the function is applied to all entries in the list.
-
-   :Example:
-
-   ::
-
-      In> Abs(2);
-      Out> 2;
-      In> Abs(-1/2);
-      Out> 1/2;
-      In> Abs(3+4*I);
-      Out> 5;
-      
-
-   .. seealso:: :func:`Sign`, :func:`Arg`
-
-.. function:: Sign(x)
-
-   sign of a number
-
-   :param x: argument to the function
-
-   This function returns the sign of the real number :math:`x`. It is 1
-   for positive numbers and -1 for negative numbers. Somewhat
-   arbitrarily, {Sign(0)} is defined to be 1.    This function is
-   connected to the {Abs} function by  the identity :math:`Abs(x) * Sign(x)
-   = x` for real :math:`x`.    This function is threaded, meaning that if
-   the argument {x} is a  list, the function is applied to all entries
-   in the list.
-
-   :Example:
-
-   ::
-
-      In> Sign(2)
-      Out> 1;
-      In> Sign(-3)
-      Out> -1;
-      In> Sign(0)
-      Out> 1;
-      In> Sign(-3) * Abs(-3)
-      Out> -3;
-      
-
-   .. seealso:: :func:`Arg`, :func:`Abs`
-
+integration, calculating limits etc.
 
 .. function:: bodied D(expression, variable[,n=1])
 
@@ -409,7 +54,7 @@ equations.
       Out> -Sin(x*y)*y^2;
       In> D(x){Sin(x),Cos(x)}
       Out> {Cos(x),-Sin(x)};
-      
+
 
    .. seealso:: :func:`Integrate`, :func:`Taylor`, :func:`Diverge`, :func:`Curl`
 
@@ -466,7 +111,7 @@ equations.
       Out> Sin(b)-Sin(a);
       In> Integrate(x) Cos(x)
       Out> Sin(x);
-      
+
 
    .. seealso:: :func:`D`, :func:`UniqueConstant`
 
@@ -503,110 +148,6 @@ equations.
       Out> -Infinity;
       In> Limit(x,0,Right) 1/x
       Out> Infinity;
-      Random numbers
-      
-
-.. function:: Random()
-
-   (pseudo-) random number generator
-
-   :param init: integer, initial seed value
-   :param option: atom, option name
-   :param value: atom, option value
-   :param r: a list, RNG object
-
-   These commands are an object-oriented interface to (pseudo-)random
-   number generators (RNGs).    {RngCreate} returns a list which is a
-   well-formed RNG object.  Its value should be saved in a variable
-   and used to call {Rng} and {RngSeed}.    {Rng(r)} returns a
-   floating-point random number between 0 and 1 and updates the RNG
-   object {r}.  (Currently, the Gaussian option makes a RNG return a
-   *complex* random number instead of a real random number.)
-   {RngSeed(r,init)} re-initializes the RNG object {r} with the seed
-   value {init}.  The seed value should be a positive integer.    The
-   {RngCreate} function accepts several options as arguments.
-   Currently the following options are available:
-
-.. function:: RandomIntegerMatrix(rows,cols,from,to)
-
-   generate a matrix of random integers
-
-   :param rows: number of rows in matrix
-   :param cols: number of cols in matrix
-   :param from: lower bound
-   :param to: upper bound
-
-   This function generates a {rows x cols} matrix of random integers.
-   All  entries lie between "from" and "to", including the boundaries,
-   and  are uniformly distributed in this interval.
-
-   :Example:
-
-   ::
-
-      In> PrettyForm( RandomIntegerMatrix(5,5,-2^10,2^10) )
-      /                                               \
-      | ( -506 ) ( 749 )  ( -574 ) ( -674 ) ( -106 )  |
-      |                                               |
-      | ( 301 )  ( 151 )  ( -326 ) ( -56 )  ( -277 )  |
-      |                                               |
-      | ( 777 )  ( -761 ) ( -161 ) ( -918 ) ( -417 )  |
-      |                                               |
-      | ( -518 ) ( 127 )  ( 136 )  ( 797 )  ( -406 )  |
-      |                                               |
-      | ( 679 )  ( 854 )  ( -78 )  ( 503 )  ( 772 )   |
-      \                                               /
-      
-
-   .. seealso:: :func:`RandomIntegerVector`, :func:`RandomPoly`
-
-.. function:: RandomIntegerVector(nr, from, to)
-
-   generate a vector of random integers
-
-   :param nr: number of integers to generate
-   :param from: lower bound
-   :param to: upper bound
-
-   This function generates a list with "nr" random integers. All
-   entries lie between "from" and "to", including the boundaries, and
-   are uniformly distributed in this interval.
-
-   :Example:
-
-   ::
-
-      In> RandomIntegerVector(4,-3,3)
-      Out> {0,3,2,-2};
-      
-
-   .. seealso:: :func:`Random`, :func:`RandomPoly`
-
-.. function:: RandomPoly(var,deg,coefmin,coefmax)
-
-   construct a random polynomial
-
-   :param var: free variable for resulting univariate polynomial
-   :param deg: degree of resulting univariate polynomial
-   :param coefmin: minimum value for coefficients
-   :param coefmax: maximum value for coefficients
-
-   RandomPoly generates a random polynomial in variable "var", of
-   degree "deg", with integer coefficients ranging from "coefmin" to
-   "coefmax" (inclusive). The coefficients are uniformly distributed
-   in  this interval, and are independent of each other.
-
-   :Example:
-
-   ::
-
-      In> RandomPoly(x,3,-10,10)
-      Out> 3*x^3+10*x^2-4*x-6;
-      In> RandomPoly(x,3,-10,10)
-      Out> -2*x^3-8*x^2+8;
-      
-
-   .. seealso:: :func:`Random`, :func:`RandomIntegerVector`
 
 .. function:: Add(val1, val2, ...)
               Add(list)
@@ -628,7 +169,7 @@ equations.
       Out> 14;
       In> Add(1 .. 10);
       Out> 55;
-      
+
 .. function:: Multiply(val1, val2, ...)
               Multiply(list)
 
@@ -672,7 +213,7 @@ equations.
 
       In> Sum(i, 1, 3, i^2);
       Out> 14;
-      
+
 
    .. seealso:: :func:`Factorize`
 
@@ -701,7 +242,7 @@ equations.
       Out> 24;
       In> Factorize(i, 1, 4, i);
       Out> 24;
-      
+
 
    .. seealso:: :func:`Sum`, :func:`Apply`
 
@@ -732,7 +273,7 @@ equations.
       x - -- + --- - ---- + ------
       6    120   5040   362880
       Out> True;
-      
+
 
    .. seealso:: :func:`D`, :func:`InverseTaylor`, :func:`ReversePoly`, :func:`BigOh`
 
@@ -768,7 +309,7 @@ equations.
       120   5040   6
       In> Simplify(exp1-exp2)
       0
-      
+
 
    .. seealso:: :func:`ReversePoly`, :func:`Taylor`, :func:`BigOh`
 
@@ -805,7 +346,7 @@ equations.
       Out> x^2;
       In> h(x)
       Out> (-2695*(x-1)^7)/131072+(791*(x-1)^6)/32768 +(-119*(x-1)^5)/4096+(37*(x-1)^4)/1024+(-3*(x-1)^3)/64+(x-1)^2/16;
-      
+
 
    .. seealso:: :func:`InverseTaylor`, :func:`Taylor`, :func:`BigOh`
 
@@ -826,7 +367,7 @@ equations.
 
       In> BigOh(1+x+x^2+x^3,x,2)
       Out> x+1;
-      
+
 
    .. seealso:: :func:`Taylor`, :func:`InverseTaylor`
 
@@ -873,7 +414,7 @@ equations.
       y3 * ( x - x1 ) * ( x - x2 )
       + ----------------------------
       ( x3 - x1 ) * ( x3 - x2 )
-      
+
 
    .. seealso:: :func:`Subst`
 
@@ -929,7 +470,7 @@ equations.
       Out> 17041024000/59049;
       In> Subfactorial(10)
       Out> 1334961;
-      
+
 
    .. seealso:: :func:`Bin`, :func:`Factorize`, :func:`Gamma`, :func:`!!`, :func:`***`, :func:`Subfactorial`
 
@@ -962,7 +503,7 @@ equations.
       Out> 210;
       In> 10! / (4! * 6!)
       Out> 210;
-      
+
 
    .. seealso:: :func:`!`, :func:`Eulerian`
 
@@ -984,7 +525,7 @@ equations.
       Out> 302;
       In> Eulerian(10,9)
       Out> 1;
-      
+
 
    .. seealso:: :func:`Bin`
 
@@ -994,7 +535,7 @@ equations.
    Kronecker delta
 
    Calculates the `Kronecker delta`_, which gives :math:`1`
-   if all arguments are equal and :math:`0` otherwise. 
+   if all arguments are equal and :math:`0` otherwise.
 
 .. _Kronecker delta: https://en.wikipedia.org/wiki/Kronecker_delta
 
@@ -1008,7 +549,7 @@ equations.
    :func:`LeviCivita` implements the Levi-Civita symbol. `list`  should
    be a list of integers, and this function returns 1 if the integers
    are in successive order,  eg. `LeviCivita({1,2,3,...})`  would return 1.
-   Swapping two elements of this  list would return -1. So, 
+   Swapping two elements of this  list would return -1. So,
    `LeviCivita({2,1,3})` would evaluate  to -1.
 
    :Example:
@@ -1021,7 +562,7 @@ equations.
       Out> -1;
       In> LeviCivita({2,2,3})
       Out> 0;
-      
+
 
    .. seealso:: :func:`Permutations`
 
@@ -1041,139 +582,10 @@ equations.
       In> Permutations({a,b,c})
       Out> {{a,b,c},{a,c,b},{c,a,b},{b,a,c},
       {b,c,a},{c,b,a}};
-      
+
 
    .. seealso:: :func:`LeviCivita`
 
-.. function:: Gamma(x)
-
-   Euler's Gamma function
-
-   :param x: expression
-   :param number: expression that can be evaluated to a number
-
-   {Gamma(x)} is an interface to Euler's Gamma function :math:`Gamma(x)`. It
-   returns exact values on integer and half-integer arguments.
-   {N(Gamma(x)} takes a numeric parameter and always returns a
-   floating-point number in the current precision.    Note that
-   Euler's constant :math:`gamma<=>0.57722` is the lowercase {gamma} in
-   Yacas.
-
-   :Example:
-
-   ::
-
-      In> Gamma(1.3)
-      Out> Gamma(1.3);
-      In> N(Gamma(1.3),30)
-      Out> 0.897470696306277188493754954771;
-      In> Gamma(1.5)
-      Out> Sqrt(Pi)/2;
-      In> N(Gamma(1.5),30);
-      Out> 0.88622692545275801364908374167;
-      
-
-   .. seealso:: :func:`!`, :func:`N`, :func:`gamma`
-
-.. function:: Zeta(x)
-
-   Riemann's Zeta function
-
-   :param x: expression
-   :param number: expression that can be evaluated to a number
-
-   {Zeta(x)} is an interface to Riemann's Zeta function :math:`zeta(s)`. It
-   returns exact values on integer and half-integer arguments.
-   {N(Zeta(x)} takes a numeric parameter and always returns a
-   floating-point number in the current precision.
-
-   :Example:
-
-   ::
-
-      In> Precision(30)
-      Out> True;
-      In> Zeta(1)
-      Out> Infinity;
-      In> Zeta(1.3)
-      Out> Zeta(1.3);
-      In> N(Zeta(1.3))
-      Out> 3.93194921180954422697490751058798;
-      In> Zeta(2)
-      Out> Pi^2/6;
-      In> N(Zeta(2));
-      Out> 1.64493406684822643647241516664602;
-      
-
-   .. seealso:: :func:`!`, :func:`N`
-
-.. function:: Bernoulli(index)
-
-   Bernoulli numbers and polynomials
-
-   :param x: expression that will be the variable in the polynomial
-   :param index: expression that can be evaluated to an integer
-
-   {Bernoulli(n)} evaluates the :math:`n`-th Bernoulli number. {Bernoulli(n,
-   x)} returns the :math:`n`-th Bernoulli polynomial in the variable :math:`x`.
-   The polynomial is returned in the Horner form.
-
-.. function:: Euler(index)
-
-   Euler numbers and polynomials
-
-   :param x: expression that will be the variable in the polynomial
-   :param index: expression that can be evaluated to an integer
-
-   {Euler(n)} evaluates the :math:`n`-th Euler number. {Euler(n,x)} returns
-   the :math:`n`-th Euler polynomial in the variable :math:`x`.
-
-   :Example:
-
-   ::
-
-      In> Euler(6)
-      Out> -61;
-      In> A:=Euler(5,x)
-      Out> (x-1/2)^5+(-10*(x-1/2)^3)/4+(25*(x-1/2))/16;
-      In> Simplify(A)
-      Out> (2*x^5-5*x^4+5*x^2-1)/2;
-      
-
-   .. seealso:: :func:`Bin`
-
-.. function:: LambertW(x)
-
-   Lambert's :math:`W` function
-
-   :param x: expression, argument of the function
-
-   Lambert's :math:`W` function is (a multiple-valued, complex
-   function) defined for any (complex) :math:`z` by
-
-   .. math:: W(z)e^{W(z)}=z
-
-   The :math:`W` function is sometimes useful to represent solutions
-   of transcendental equations. For example, the equation :math:`Ln(x)=3*x`
-   can be "solved" by writing :math:`x= -3*W(-1/3)`. It is also possible to
-   take a derivative or integrate this function "explicitly".  For
-   real arguments :math:`x`, :math:`W(x)` is real if :math:`x>= -Exp(-1)`.  To compute
-   the numeric value of the principal branch of Lambert's :math:`W` function
-   for real arguments :math:`x>= -Exp(-1)` to current precision, one can
-   call {N(LambertW(x))} (where the function {N} tries to approximate
-   its argument with a real value).
-
-   :Example:
-
-   ::
-
-      In> LambertW(0)
-      Out> 0;
-      In> N(LambertW(-0.24/Sqrt(3*Pi)))
-      Out> -0.0851224014;
-      
-
-   .. seealso:: :func:`Exp`
 
 .. function:: Fibonacci(n)
 

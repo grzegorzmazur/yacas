@@ -22,6 +22,7 @@ the usage of the functions that are useful when doing calculations.
    :maxdepth: 1
 
    arithmetic
+   elementary
    calc
    simplify
    solvers
@@ -38,7 +39,9 @@ the usage of the functions that are useful when doing calculations.
    vars
    io
    strings
+   random
    probability-and-statistics
+   special
    number-theory
    numerical-methods
    programming
