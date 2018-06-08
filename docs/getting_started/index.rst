@@ -122,6 +122,6 @@ yacas-online
   * ``cyacas/yacas-gui/resources/jquery/``
   * ``cyacas/yacas-gui/resources/mathbar/``
   * ``cyacas/yacas-gui/resources/plot3d/``
-  * ``cyacas/yacas-gui/resources/yagy_ui/``
+  * ``cyacas/yacas-gui/resources/yacas_gui/``
 
   to the installation directory
