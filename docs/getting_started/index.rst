@@ -6,7 +6,7 @@ Getting started
 Installation
 ============
 
-Yacas is available for a variety of platforms. See 
+Yacas is available for a variety of platforms. See
 `<http://www.yacas.org/getting_started/downloads/>`_ for binary packages
 and installation instructions.
 
@@ -32,10 +32,12 @@ Common build options
    Build text console for the native yacas engine. Enabled by default.
 
 `ENABLE_CYACAS_GUI`
-   Build graphical interface for the native yacas engine. Requires Qt 5.5. Enabled by default.
+   Build graphical interface for the native yacas engine. Requires Qt 5.5.
+   Enabled by default.
 
 `ENABLE_CYACAS_KERNEL`
-   Build native yacas kernel for Jupyter Notebook. Requires Boost, ZeroMQ and zmqpp. Disabled by default.
+   Build native yacas kernel for Jupyter Notebook. Requires Boost, ZeroMQ and
+   zmqpp. Disabled by default.
 
 `ENABLE_JYACAS`
    Build the Java yacas engine and text console for it. Disabled by default.
@@ -51,11 +53,11 @@ MacOS X
 * Execute
 
   .. code-block:: bash
-                
+
      mkdir build
      cd build
      cmake -G Xcode [-Dcommon_option=value ...] ..
-                  
+
 * Open generated project in ``Xcode`` and build the Release variant
 
 Microsoft Windows
@@ -66,7 +68,7 @@ Microsoft Windows
 * Execute
 
   .. code-block:: bat
-                
+
      mkdir build
      cd build
      cmake -G "Visual Studio 14 2015 Win64" [-Dcommon_option=value ...] ..
@@ -81,7 +83,7 @@ Linux
 * Execute
 
   .. code-block:: bash
-                
+
      mkdir build
      cd build
      cmake -DCMAKE_BUILD_TYPE=Release [-Dcommon_option=value ...] ..
@@ -106,7 +108,8 @@ yacas-online
      mkdir build_js
      cd build_js
      cmake -DCMAKE_TOOLCHAIN_FILE=<EMSCRIPTEN_ROOT>/cmake/Modules/Platform/Emscripten.cmake \
-     -DENABLE_CYACAS_GUI=No -DENABLE_CYACAS_KERNEL=No -DENABLE_JYACAS=No -DENABLE_DOCS=No -DCMAKE_BUILD_TYPE=Release ..
+     -DENABLE_CYACAS_GUI=No -DENABLE_CYACAS_KERNEL=No -DENABLE_JYACAS=No \
+     -DENABLE_DOCS=No -DCMAKE_BUILD_TYPE=Release ..
      cd ..
 
   where ``<EMSCRIPTEN_ROOT>`` stands for the Emscripten root directory
