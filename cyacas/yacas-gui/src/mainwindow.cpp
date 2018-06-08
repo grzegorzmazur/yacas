@@ -498,7 +498,7 @@ void MainWindow::help(QString s, int cp)
     doc_dir.cd("../SharedFrameworks/yacas.framework/Versions/Current/Resources/"
                "documentation/singlehtml");
 #else
-    doc_dir.cd("../share/yagy/documentation/singlehtml");
+    doc_dir.cd("../share/yacas/documentation/singlehtml");
 #endif
 
     const QString ref = QString("file://") + doc_dir.canonicalPath() +
