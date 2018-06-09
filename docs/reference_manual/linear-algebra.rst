@@ -471,6 +471,39 @@ represented as lists of lists.
 
    .. seealso:: :func:`Inverse`, :func:`Solve`, :func:`PSolve`, :func:`Determinant`
 
+.. function:: Sparsity(matrix)
+
+   get the sparsity of a matrix
+
+   :param matrix: a matrix
+
+   The function {Sparsity} returns a number between {0} and {1} which
+   represents the percentage of zero entries in the matrix. Although
+   there is no definite critical value, a sparsity of {0.75}  or more
+   is almost universally considered a "sparse" matrix. These type of
+   matrices can be handled in a different manner than "full" matrices
+   which speedup many calculations by orders of magnitude.
+
+   :Example:
+
+   ::
+
+      In> Sparsity(Identity(2))
+      Out> 0.5;
+      In> Sparsity(Identity(10))
+      Out> 0.9;
+      In> Sparsity(HankelMatrix(10))
+      Out> 0.45;
+      In> Sparsity(HankelMatrix(100))
+      Out> 0.495;
+      In> Sparsity(HilbertMatrix(10))
+      Out> 0;
+      In> Sparsity(ZeroMatrix(10,10))
+      Out> 1;
+
+Eigenproblem
+------------
+
 .. function:: CharacteristicEquation(matrix,var)
 
    get characteristic polynomial of a matrix
@@ -546,36 +579,9 @@ represented as lists of lists.
 
    .. seealso:: :func:`EigenValues`, :func:`CharacteristicEquation`
 
-.. function:: Sparsity(matrix)
 
-   get the sparsity of a matrix
-
-   :param matrix: a matrix
-
-   The function {Sparsity} returns a number between {0} and {1} which
-   represents the percentage of zero entries in the matrix. Although
-   there is no definite critical value, a sparsity of {0.75}  or more
-   is almost universally considered a "sparse" matrix. These type of
-   matrices can be handled in a different manner than "full" matrices
-   which speedup many calculations by orders of magnitude.
-
-   :Example:
-
-   ::
-
-      In> Sparsity(Identity(2))
-      Out> 0.5;
-      In> Sparsity(Identity(10))
-      Out> 0.9;
-      In> Sparsity(HankelMatrix(10))
-      Out> 0.45;
-      In> Sparsity(HankelMatrix(100))
-      Out> 0.495;
-      In> Sparsity(HilbertMatrix(10))
-      Out> 0;
-      In> Sparsity(ZeroMatrix(10,10))
-      Out> 1;
-
+Matrix decompositions
+---------------------
 
 .. function:: Cholesky(A)
 
@@ -1020,35 +1026,6 @@ represented as lists of lists.
       | ( 0 )        ( -( Sin( y ) ) )  |
       \                                 /
 
-
-.. function:: VandermondeMatrix(vector)
-
-   create the Vandermonde matrix
-
-   :param vector: an :math:`n`-dimensional vector
-
-   The function {VandermondeMatrix} calculates the Vandermonde matrix
-   of a vector.    The :math:`(i,j)`-th element of the Vandermonde matrix
-   is defined as :math:`i^(j-1)`.
-
-   :Example:
-
-   ::
-
-      In> VandermondeMatrix({1,2,3,4})
-      Out> {{1,1,1,1},{1,2,3,4},{1,4,9,16},{1,8,27,64}};
-      In>PrettyForm(%)
-      /                            \
-      | ( 1 ) ( 1 ) ( 1 )  ( 1 )   |
-      |                            |
-      | ( 1 ) ( 2 ) ( 3 )  ( 4 )   |
-      |                            |
-      | ( 1 ) ( 4 ) ( 9 )  ( 16 )  |
-      |                            |
-      | ( 1 ) ( 8 ) ( 27 ) ( 64 )  |
-      \                            /
-
-
 .. function:: HessianMatrix(function,var)
 
    create the Hessian matrix
@@ -1078,6 +1055,82 @@ represented as lists of lists.
       |                |
       | ( -2 ) ( 2 )   |
       \                /
+
+
+.. function:: WronskianMatrix(func,var)
+
+   create the Wronskian matrix
+
+   :param func: an :math:`n`-dimensional vector of functions
+   :param var: a variable to differentiate with respect to
+
+   The function {WronskianMatrix} calculates the Wronskian matrix  of :math:`n`
+   functions. The Wronskian matrix is created by putting each function as the
+   first element of each column, and filling in the rest of each  column by the
+   :math:`(i-1)`-th derivative, where :math:`i` is the current row.    The
+   Wronskian matrix is used to verify that the :math:`n` functions are linearly
+   independent, usually solutions to a differential equation.  If the
+   determinant of the Wronskian matrix is zero, then the functions  are
+   dependent, otherwise they are independent.
+
+   :Example:
+
+   ::
+
+      In> WronskianMatrix({Sin(x),Cos(x),x^4},x);
+      Out> {{Sin(x),Cos(x),x^4},{Cos(x),-Sin(x),4*x^3},
+      {-Sin(x),-Cos(x),12*x^2}};
+      In> PrettyForm(%)
+      /                                                 \
+      | ( Sin( x ) )      ( Cos( x ) )      /  4 \      |
+      |                                     \ x  /      |
+      |                                                 |
+      | ( Cos( x ) )      ( -( Sin( x ) ) ) /      3 \  |
+      |                                     \ 4 * x  /  |
+      |                                                 |
+      | ( -( Sin( x ) ) ) ( -( Cos( x ) ) ) /       2 \ |
+      |                                     \ 12 * x  / |
+      \                                                 /
+      The last element is a linear combination of the first two, so the determinant is zero:
+      In> A:=Determinant( WronskianMatrix( {x^4,x^3,2*x^4
+      + 3*x^3},x ) )
+      Out> x^4*3*x^2*(24*x^2+18*x)-x^4*(8*x^3+9*x^2)*6*x
+      +(2*x^4+3*x^3)*4*x^3*6*x-4*x^6*(24*x^2+18*x)+x^3
+      *(8*x^3+9*x^2)*12*x^2-(2*x^4+3*x^3)*3*x^2*12*x^2;
+      In> Simplify(A)
+      Out> 0;
+
+
+Special matrices
+----------------
+
+.. function:: VandermondeMatrix(vector)
+
+   create the Vandermonde matrix
+
+   :param vector: an :math:`n`-dimensional vector
+
+   The function {VandermondeMatrix} calculates the Vandermonde matrix
+   of a vector.    The :math:`(i,j)`-th element of the Vandermonde matrix
+   is defined as :math:`i^(j-1)`.
+
+   :Example:
+
+   ::
+
+      In> VandermondeMatrix({1,2,3,4})
+      Out> {{1,1,1,1},{1,2,3,4},{1,4,9,16},{1,8,27,64}};
+      In>PrettyForm(%)
+      /                            \
+      | ( 1 ) ( 1 ) ( 1 )  ( 1 )   |
+      |                            |
+      | ( 1 ) ( 2 ) ( 3 )  ( 4 )   |
+      |                            |
+      | ( 1 ) ( 4 ) ( 9 )  ( 16 )  |
+      |                            |
+      | ( 1 ) ( 8 ) ( 27 ) ( 64 )  |
+      \                            /
+
 
 
 .. function:: HilbertMatrix(n)
@@ -1174,51 +1227,6 @@ represented as lists of lists.
       \                                /
 
 
-.. function:: WronskianMatrix(func,var)
-
-   create the Wronskian matrix
-
-   :param func: an :math:`n`-dimensional vector of functions
-   :param var: a variable to differentiate with respect to
-
-   The function {WronskianMatrix} calculates the Wronskian matrix  of
-   :math:`n` functions.    The Wronskian matrix is created by putting each
-   function as the  first element of each column, and filling in the
-   rest of each  column by the :math:`(i-1)`-th derivative, where :math:`i` is the
-   current row.    The Wronskian matrix is used to verify that the :math:`n`
-   functions are linearly  independent, usually solutions to a
-   differential equation.  If the determinant of the Wronskian matrix
-   is zero, then the functions  are dependent, otherwise they are
-   independent.
-
-   :Example:
-
-   ::
-
-      In> WronskianMatrix({Sin(x),Cos(x),x^4},x);
-      Out> {{Sin(x),Cos(x),x^4},{Cos(x),-Sin(x),4*x^3},
-      {-Sin(x),-Cos(x),12*x^2}};
-      In> PrettyForm(%)
-      /                                                 \
-      | ( Sin( x ) )      ( Cos( x ) )      /  4 \      |
-      |                                     \ x  /      |
-      |                                                 |
-      | ( Cos( x ) )      ( -( Sin( x ) ) ) /      3 \  |
-      |                                     \ 4 * x  /  |
-      |                                                 |
-      | ( -( Sin( x ) ) ) ( -( Cos( x ) ) ) /       2 \ |
-      |                                     \ 12 * x  / |
-      \                                                 /
-      The last element is a linear combination of the first two, so the determinant is zero:
-      In> A:=Determinant( WronskianMatrix( {x^4,x^3,2*x^4
-      + 3*x^3},x ) )
-      Out> x^4*3*x^2*(24*x^2+18*x)-x^4*(8*x^3+9*x^2)*6*x
-      +(2*x^4+3*x^3)*4*x^3*6*x-4*x^6*(24*x^2+18*x)+x^3
-      *(8*x^3+9*x^2)*12*x^2-(2*x^4+3*x^3)*3*x^2*12*x^2;
-      In> Simplify(A)
-      Out> 0;
-
-
 .. function:: SylvesterMatrix(poly1,poly2,variable)
 
    calculate the Sylvester matrix of two polynomials
@@ -1227,11 +1235,10 @@ represented as lists of lists.
    :param poly2: polynomial
    :param variable: variable to express the matrix for
 
-   The function {SylvesterMatrix} calculates the Sylvester matrix  for
-   a pair of polynomials.    The Sylvester matrix is closely related
-   to the resultant, which  is defined as the determinant of the
-   Sylvester matrix. Two polynomials  share common roots only if the
-   resultant is zero.
+   The function {SylvesterMatrix} calculates the Sylvester matrix  for a pair of
+   polynomials. The Sylvester matrix is closely related to the resultant, which
+   is defined as the determinant of the Sylvester matrix. Two polynomials  share
+   common roots only if the resultant is zero.
 
    :Example:
 
