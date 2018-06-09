@@ -9,7 +9,7 @@
 import re
 
 from docutils import nodes
-from docutils.parsers.rst import directives
+from docutils.parsers.rst import directives, Directive
 
 from sphinx import addnodes
 from sphinx.roles import XRefRole
@@ -17,7 +17,6 @@ from sphinx.locale import l_, _
 from sphinx.domains import Domain, ObjType, Index
 from sphinx.directives import ObjectDescription
 from sphinx.util.nodes import make_refnode
-from sphinx.util.compat import Directive
 from sphinx.util.docfields import Field, GroupedField, TypedField
 
 
@@ -142,7 +141,7 @@ class YacasObject(ObjectDescription):
             signode += addnodes.desc_name(name, name)
             signode += addnodes.desc_type(arglist, arglist)
             return fullname, ''
-        
+
         if syntax == 'infix':
             left, right = arglist.split(',')
             left = left + ' '
@@ -151,7 +150,7 @@ class YacasObject(ObjectDescription):
             signode += addnodes.desc_name(name, name)
             signode += addnodes.desc_type(right, right)
             return fullname, ''
-            
+
         if syntax == 'postfix':
             signode += addnodes.desc_type(arglist, arglist)
             signode += addnodes.desc_name(name, name)
@@ -169,7 +168,7 @@ class YacasObject(ObjectDescription):
         if (syntax == 'bodied'):
             body = arglist.split(',')[0]
             arglist = str.join(',', arglist.split(',')[1:])
-        
+
         _pseudo_parse_arglist(signode, arglist)
 
         if (syntax == 'bodied'):
@@ -177,7 +176,7 @@ class YacasObject(ObjectDescription):
 
         if anno:
             signode += addnodes.desc_annotation(' ' + anno, ' ' + anno)
-            
+
         return fullname, ''
 
     def get_index_text(self, modname, name):
@@ -222,13 +221,14 @@ class YacasObject(ObjectDescription):
         if self.clsname_set:
             self.env.temp_data['yacas:class'] = None
 
+
 class YacasXRefRole(XRefRole):
     def process_link(self, env, refnode, has_explicit_title, title, target):
         refnode['ys:module'] = env.temp_data.get('ys:module')
         refnode['ys:class'] = env.temp_data.get('ys:class')
         if not has_explicit_title:
             title = title.lstrip('.')   # only has a meaning for the target
-            target = target.lstrip('~') # only has a meaning for the title
+            target = target.lstrip('~')  # only has a meaning for the title
             # if the first character is a tilde, don't display the module/class
             # parts of the contents
             if title[0:1] == '~':
@@ -243,6 +243,7 @@ class YacasXRefRole(XRefRole):
             refnode['refspecific'] = True
         return title, target
 
+
 class YacasDomain(Domain):
     """Yacas language domain."""
     name = 'ys'
@@ -253,8 +254,8 @@ class YacasDomain(Domain):
     }
 
     directives = {
-        'function':        YacasObject,#YacasModulelevel,
-        'data':            YacasObject,#YacasModulelevel,
+        'function':        YacasObject,  # YacasModulelevel,
+        'data':            YacasObject,  # YacasModulelevel,
     }
     roles = {
         'data':  YacasXRefRole(),
@@ -316,15 +317,15 @@ class YacasDomain(Domain):
             elif modname and modname + '.' + name in objects:
                 newname = modname + '.' + name
             elif modname and classname and \
-                     modname + '.' + classname + '.' + name in objects:
+                    modname + '.' + classname + '.' + name in objects:
                 newname = modname + '.' + classname + '.' + name
             # special case: builtin exceptions have module "exceptions" set
             elif type == 'exc' and '.' not in name and \
-                 'exceptions.' + name in objects:
+                    'exceptions.' + name in objects:
                 newname = 'exceptions.' + name
             # special case: object methods
             elif type in ('func', 'meth') and '.' not in name and \
-                 'object.' + name in objects:
+                    'object.' + name in objects:
                 newname = 'object.' + name
         if newname is not None:
             matches.append((newname, objects[newname]))
@@ -366,6 +367,7 @@ class YacasDomain(Domain):
     def get_objects(self):
         for refname, (docname, type) in self.data['objects'].items():
             yield (refname, refname, type, docname, refname, 1)
+
 
 def setup(sphinx):
     sphinx.add_domain(YacasDomain)
