@@ -75,7 +75,7 @@ Symbolic Solvers
       An example which {OldSolve} cannot solve:
       In> OldSolve({x^2-x == y^2-y,x^2-x == y^3+y},{x,y});
       Out> {};
-      
+
 
    .. seealso:: :func:`Solve`, :func:`SuchThat`, :func:`Eliminate`, :func:`PSolve`, :func:`==`
 
@@ -108,7 +108,7 @@ Symbolic Solvers
       Out> (a+b)*x+c;
       In> SuchThat(A, x)
       Out> (-c)/(a+b);
-      
+
 
    .. seealso:: :func:`Solve`, :func:`OldSolve`, :func:`Subst`, :func:`Simplify`
 
@@ -134,7 +134,7 @@ Symbolic Solvers
       Out> Sin(a)+c^2/c;
       In> Eliminate(Cos(b), c, Sin(a)+Cos(b)^2/c)
       Out> Sin(a)+c;
-      
+
 
    .. seealso:: :func:`SuchThat`, :func:`Subst`, :func:`Simplify`
 
@@ -162,7 +162,7 @@ Symbolic Solvers
       In> PSolve(c*x^2+b*x+a,x)
       Out> {(Sqrt(b^2-4*c*a)-b)/(2*c),(-(b+
       Sqrt(b^2-4*c*a)))/(2*c)};
-      
+
 
    .. seealso:: :func:`Solve`, :func:`Factor`
 
@@ -190,10 +190,10 @@ Symbolic Solvers
       In> MatrixSolve(A,b);
       Out> {1,2,3,4};
       Numeric solvers
-      
+
 
 Numeric Solvers
-----------------
+---------------
 
 
 .. function:: Newton(expr, var, initial, accuracy)
@@ -230,7 +230,7 @@ Numeric Solvers
       Out> 1;
       In> Newton(x^2+1,x,2,0.0001,-5,5)
       Out> Fail;
-      
+
 
    .. seealso:: :func:`Solve`, :func:`NewtonNum`
 
@@ -255,7 +255,7 @@ Numeric Solvers
       1394.2188*x^2-2590.476405*x-1783.5961073;
       In> FindRealRoots(p)
       Out> {-3.1,6.23};
-      
+
 
    .. seealso:: :func:`SquareFree`, :func:`NumRealRoots`, :func:`MinimumBound`, :func:`MaximumBound`, :func:`Factor`
 
@@ -277,7 +277,7 @@ Numeric Solvers
       Out> 2;
       In> NumRealRoots(x^2+1)
       Out> 0;
-      
+
 
    .. seealso:: :func:`FindRealRoots`, :func:`SquareFree`, :func:`MinimumBound`, :func:`MaximumBound`, :func:`Factor`
 
@@ -307,7 +307,75 @@ Numeric Solvers
       Out> 10986639613/1250000000;
       In> N(%)
       Out> 8.7893116904;
-      
+
 
    .. seealso:: :func:`SquareFree`, :func:`NumRealRoots`, :func:`FindRealRoots`, :func:`Factor`
+
+Auxilliary Functions
+--------------------
+
+.. function:: infix Where(expr, x==v)
+
+   substitute result into expression
+
+   :param expr: expression to evaluate
+   :param x: variable to set
+   :param v: value to substitute for variable
+
+   The operator :func:`Where` fills in values for variables, in its simplest
+   form.  It accepts sets of variable/value pairs defined as ``var1==val1 And
+   var2==val2 And ...``    and fills in the corresponding values. Lists of value
+   pairs are also possible, as: ``{var1==val1 And var2==val2, var1==val3 And
+   var2==val4}``. These values might be obtained through :func:`Solve`.
+
+   :Example:
+
+   ::
+
+      In> x^2+y^2 Where x==2
+      Out> y^2+4;
+      In> x^2+y^2 Where x==2 And y==3
+      Out> 13;
+      In> x^2+y^2 Where {x==2 And y==3}
+      Out> {13};
+      In> x^2+y^2 Where {x==2 And y==3,x==4 And y==5}
+      Out> {13,41};
+
+
+   .. seealso:: :func:`Solve`, :func:`AddTo`
+
+.. function:: infix AddTo(eq1,eq2)
+
+   add an equation to a set of equations or set of set of equations
+
+   :param eq: (set of) set of equations
+
+   Given two (sets of) sets of equations, the command AddTo combines
+   multiple sets of equations into one.     A list {a,b} means that a
+   is a solution, OR b is a solution.  AddTo then acts as a AND
+   operation:           (a or b) and (c or d) =>          (a or b)
+   Addto (c or d) =>          (a and c) or (a and d) or (b and c)
+   or (b and d)    This function is useful for adding an identity to
+   an already  existing set of equations. Suppose a solve command
+   returned  {a>=0 And x==a,a<0 And x== -a} from an expression
+   x==Abs(a),  then a new identity a==2 could be added as follows:
+   In> a==2 AddTo {a>=0 And x==a,a<0 And x== -a}         Out> {a==2
+   And a>=0 And x==a,a==2 And a<0           And x== -a};    Passing
+   this set of set of identities back to solve, solve  should
+   recognize that the second one is not a possibility  any more, since
+   a==2 And a<0 can never be true at the same time.
+
+   :Example:
+
+   ::
+
+      In> {A==2,c==d} AddTo {b==3 And d==2}
+      Out> {A==2 And b==3 And d==2,c==d
+      And b==3 And d==2};
+      In> {A==2,c==d} AddTo {b==3, d==2}
+      Out> {A==2 And b==3,A==2 And d==2,c==d
+      And b==3,c==d And d==2};
+
+
+   .. seealso:: :func:`Where`, :func:`Solve`
 

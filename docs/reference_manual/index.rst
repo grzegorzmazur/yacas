@@ -38,11 +38,12 @@ the usage of the functions that are useful when doing calculations.
    consts
    vars
    io
+   plot
    strings
    random
    probability-and-statistics
    special
    number-theory
    numerical-methods
-   programming
    physics
+   programming

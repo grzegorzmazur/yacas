@@ -7,17 +7,17 @@ be used to manipulate vectors, represented as lists, and matrices,
 represented as lists of lists.
 
 .. function:: Dot(t1,t2)
+              infix . (t1,t2)
 
-   get dot product of tensors
+   dot product of tensors
 
-   :param t1,t2: tensor lists (currently only vectors and matrices are supported)
+   :param t1,t2: tensors (currently only vectors and matrices are supported)
 
-   {Dot} returns the dot (aka inner) product of two tensors t1 and t2.
-   The last  index of t1 and the first index of t2 are contracted.
-   Currently {Dot} works  only for vectors and matrices.
-   {Dot}-multiplication of two vectors, a matrix  with a vector (and
-   vice versa) or two matrices yields either a scalar, a  vector or a
-   matrix.
+   :func:`Dot` returns the dot product (aka inner product) of two tensors ``t1``
+   and ``t2``. The last  index of ``t1`` and the first index of ``t2`` are
+   contracted. Currently :func:`Dot` works  only for vectors and matrices. Inner
+   product of two vectors, a matrix  with a vector (and vice versa) or two
+   matrices yields respectively a scalar, a vector or a matrix.
 
    :Example:
 
@@ -31,7 +31,9 @@ represented as lists of lists.
       Out> {23,34};
       In> Dot({{1,2},{3,4}},{{5,6},{7,8}})
       Out> {{19,22},{43,50}};
-      Or, using the "."-Operator:
+
+   Or, using the ``.`` operator::
+
       In> {1,2} . {3,4}
       Out> 11;
       In> {{1,2},{3,4}} . {5,6}
@@ -40,40 +42,19 @@ represented as lists of lists.
       Out> {23,34};
       In> {{1,2},{3,4}} . {{5,6},{7,8}}
       Out> {{19,22},{43,50}};
-      
+
 
    .. seealso:: :func:`Outer`, :func:`Cross`, :func:`IsScalar`, :func:`IsVector`, :func:`IsMatrix`
 
-.. function:: InProduct(a,b)
+.. function:: CrossProduct(u,v)
+              infix X(u,v)
 
-   inner product of vectors (deprecated)
+   cross outer product of vectors
 
-   :param a}, {b: vectors of equal length
+   :param u, v: three-dimensional vectors
 
-   The inner product of the two vectors "a" and "b" is returned. The
-   vectors need to have the same size.    This function is superceded
-   by the {.} operator.
-
-   :Example:
-
-   ::
-
-      In> {a,b,c} . {d,e,f};
-      Out> a*d+b*e+c*f;
-      
-
-   .. seealso:: :func:`Dot`, :func:`CrossProduct`
-
-.. function:: CrossProduct(a,b)
-
-   outer product of vectors
-
-   :param a}, {b: three-dimensional vectors
-
-   The cross product of the vectors "a"  and "b" is returned. The
-   result is perpendicular to both "a" and  "b" and its length is the
-   product of the lengths of the vectors.  Both "a" and "b" have to be
-   three-dimensional.
+   The `cross product`_ of the vectors ``u``  and ``v`` is returned. Both ``u``
+   and ``v`` have to be three-dimensional.
 
    :Example:
 
@@ -81,19 +62,22 @@ represented as lists of lists.
 
       In> {a,b,c} X {d,e,f};
       Out> {b*f-c*e,c*d-a*f,a*e-b*d};
-      
 
-   .. seealso:: :func:`InProduct`
+
+   .. seealso:: :func:`Dot`
+
+   .. _cross product: https://en.wikipedia.org/wiki/Cross_product
 
 .. function:: Outer(t1,t2)
+              infix o(t1,t2)
 
-   get outer tensor product
+   outer tensor product
 
-   :param t1,t2: tensor lists (currently only vectors are supported)
+   :param t1,t2: tensors (currently only vectors are supported)
 
-   {Outer} returns the outer product of two tensors t1 and t2.
-   Currently  {Outer} work works only for vectors, i.e. tensors of
-   rank 1. The outer  product of two vectors yields a matrix.
+   :func:`Outer` returns the outer product of two tensors ``t1`` and ``t2``.
+   Currently :func:`Outer` work works only for vectors, i.e. tensors of rank 1.
+   The outer product of two vectors yields a matrix.
 
    :Example:
 
@@ -103,12 +87,14 @@ represented as lists of lists.
       Out> {{3,4,5},{6,8,10}};
       In> Outer({a,b},{c,d})
       Out> {{a*c,a*d},{b*c,b*d}};
-      Or, using the "o"-Operator:
+
+   Or, using the ``o`` operator::
+
       In> {1,2} o {3,4,5}
       Out> {{3,4,5},{6,8,10}};
       In> {a,b} o {c,d}
       Out> {{a*c,a*d},{b*c,b*d}};
-      
+
 
    .. seealso:: :func:`Dot`, :func:`Cross`
 
@@ -118,7 +104,7 @@ represented as lists of lists.
 
    :param n: length of the vector to return
 
-   This command returns a vector of length "n", filled with zeroes.
+   This command returns a vector of length ``n``, filled with zeroes.
 
    :Example:
 
@@ -126,7 +112,7 @@ represented as lists of lists.
 
       In> ZeroVector(4)
       Out> {0,0,0,0};
-      
+
 
    .. seealso:: :func:`BaseVector`, :func:`ZeroMatrix`, :func:`IsZeroVector`
 
@@ -147,7 +133,7 @@ represented as lists of lists.
 
       In> BaseVector(2,4)
       Out> {0,1,0,0};
-      
+
 
    .. seealso:: :func:`ZeroVector`, :func:`Identity`
 
@@ -166,7 +152,7 @@ represented as lists of lists.
 
       In> Identity(3)
       Out> {{1,0,0},{0,1,0},{0,0,1}};
-      
+
 
    .. seealso:: :func:`BaseVector`, :func:`ZeroMatrix`, :func:`DiagonalMatrix`
 
@@ -189,7 +175,7 @@ represented as lists of lists.
       Out> {{0,0,0,0},{0,0,0,0},{0,0,0,0}};
       In> ZeroMatrix(3)
       Out> {{0,0,0},{0,0,0},{0,0,0}};
-      
+
 
    .. seealso:: :func:`ZeroVector`, :func:`Identity`
 
@@ -210,7 +196,7 @@ represented as lists of lists.
       Out> {5,5,5,5};
       In> Diagonal(HilbertMatrix(3))
       Out> {1,1/3,1/5};
-      
+
 
    .. seealso:: :func:`DiagonalMatrix`, :func:`IsDiagonal`
 
@@ -230,7 +216,7 @@ represented as lists of lists.
 
       In> DiagonalMatrix(1 .. 4)
       Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
-      
+
 
    .. seealso:: :func:`Identity`, :func:`ZeroMatrix`
 
@@ -251,7 +237,7 @@ represented as lists of lists.
 
       In> OrthogonalBasis({{1,1,0},{2,0,1},{2,2,1}})
       Out> {{1,1,0},{1,-1,1},{-1/3,1/3,2/3}};
-      
+
 
    .. seealso:: :func:`OrthonormalBasis`, :func:`InProduct`
 
@@ -273,7 +259,7 @@ represented as lists of lists.
       In> OrthonormalBasis({{1,1,0},{2,0,1},{2,2,1}})
       Out> {{Sqrt(1/2),Sqrt(1/2),0},{Sqrt(1/3),-Sqrt(1/3),Sqrt(1/3)},
       {-Sqrt(1/6),Sqrt(1/6),Sqrt(2/3)}};
-      
+
 
    .. seealso:: :func:`OrthogonalBasis`, :func:`InProduct`, :func:`Normalize`
 
@@ -294,7 +280,7 @@ represented as lists of lists.
       Out> {3/5,4/5};
       In> v . v
       Out> 1;
-      
+
 
    .. seealso:: :func:`InProduct`, :func:`CrossProduct`
 
@@ -313,7 +299,7 @@ represented as lists of lists.
 
       In> Transpose({{a,b}})
       Out> {{a},{b}};
-      
+
 
 .. function:: Determinant(M)
 
@@ -331,7 +317,7 @@ represented as lists of lists.
       Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
       In> Determinant(A)
       Out> 24;
-      
+
 
 .. function:: Trace(M)
 
@@ -350,7 +336,7 @@ represented as lists of lists.
       Out> {{1,0,0,0},{0,2,0,0},{0,0,3,0},{0,0,0,4}};
       In> Trace(A)
       Out> 10;
-      
+
 
 .. function:: Inverse(M)
 
@@ -374,7 +360,7 @@ represented as lists of lists.
       {0,0,(a*b)/(a*b*c)}};
       In> Simplify(B)
       Out> {{1/a,0,0},{0,1/b,0},{0,0,1/c}};
-      
+
 
    .. seealso:: :func:`Determinant`
 
@@ -408,7 +394,7 @@ represented as lists of lists.
       Out> -6;
       In> Determinant({{2,3}, {8,9}});
       Out> -6;
-      
+
 
    .. seealso:: :func:`CoFactor`, :func:`Determinant`, :func:`Inverse`
 
@@ -443,7 +429,7 @@ represented as lists of lists.
       Out> -6;
       In> Minor(A,1,2) * (-1)^(1+2);
       Out> 6;
-      
+
 
    .. seealso:: :func:`Minor`, :func:`Determinant`, :func:`Inverse`
 
@@ -481,7 +467,7 @@ represented as lists of lists.
       Out> {-4,9/2};
       In> A * x;
       Out> {5,6};
-      
+
 
    .. seealso:: :func:`Inverse`, :func:`Solve`, :func:`PSolve`, :func:`Determinant`
 
@@ -506,7 +492,7 @@ represented as lists of lists.
       Out> (a-x)*(b-x)*(c-x);
       In> Expand(B,x)
       Out> (b+a+c)*x^2-x^3-((b+a)*c+a*b)*x+a*b*c;
-      
+
 
    .. seealso:: :func:`EigenValues`, :func:`EigenVectors`
 
@@ -530,7 +516,7 @@ represented as lists of lists.
       Out> {{1,2},{2,1}};
       In> EigenValues(M)
       Out> {3,-1};
-      
+
 
    .. seealso:: :func:`EigenVectors`, :func:`CharacteristicEquation`
 
@@ -556,7 +542,7 @@ represented as lists of lists.
       Out> {3,-1};
       In> EigenVectors(M,e)
       Out> {{-ki2/ -1,ki2},{-ki2,ki2}};
-      
+
 
    .. seealso:: :func:`EigenValues`, :func:`CharacteristicEquation`
 
@@ -589,7 +575,7 @@ represented as lists of lists.
       Out> 0;
       In> Sparsity(ZeroMatrix(10,10))
       Out> 1;
-      
+
 
 .. function:: Cholesky(A)
 
@@ -620,7 +606,7 @@ represented as lists of lists.
       In> Cholesky(ToeplitzMatrix({1,2,3}))
       In function "Check" :
       CommandLine(1) : "Cholesky: Matrix is not positive definite"
-      
+
 
    .. seealso:: :func:`IsSymmetric`, :func:`IsDiagonal`, :func:`Diagonal`
 
@@ -648,7 +634,7 @@ represented as lists of lists.
       Out> {{1,2},{3,4}}
 
    .. seealso:: :func:`LDU`, :func:`IsLowerTriangular`, :func:`IsUpperTriangular`
-   
+
    .. _LU decomposition: https://en.wikipedia.org/wiki/LU_decomposition
 
 .. function:: LDU(A)
@@ -677,7 +663,7 @@ represented as lists of lists.
       Out> {{1,2},{3,4}}
 
    .. seealso:: :func:`LU`, :func:`IsDiagonal`, :func:`IsLowerTriangular`, :func:`IsUpperTriangular`
-   
+
    .. _LDU decomposition: https://en.wikipedia.org/wiki/LU_decomposition#Definitions
 
 .. function:: IsScalar(expr)
@@ -699,7 +685,7 @@ represented as lists of lists.
       Out> True;
       In> IsScalar({x,y})
       Out> False;
-      
+
 
    .. seealso:: :func:`IsList`, :func:`IsVector`, :func:`IsMatrix`
 
@@ -728,7 +714,7 @@ represented as lists of lists.
       Out> True;
       In> IsVector(IsInteger,{1,2.5,3})
       Out> False;
-      
+
 
    .. seealso:: :func:`IsList`, :func:`IsScalar`, :func:`IsMatrix`
 
@@ -760,7 +746,7 @@ represented as lists of lists.
       Out> False;
       In> IsMatrix(IsRational,{{1/2,2/3},{3/4,4/5}})
       Out> True;
-      
+
 
    .. seealso:: :func:`IsList`, :func:`IsVector`
 
@@ -790,7 +776,7 @@ represented as lists of lists.
       Out> False;
       In> IsSquareMatrix(IsBoolean,{{True,False},{False,True}});
       Out> True;
-      
+
 
    .. seealso:: :func:`IsMatrix`
 
@@ -813,7 +799,7 @@ represented as lists of lists.
       Out> True;
       In> IsHermitian({{0,I},{2,0}})
       Out> False;
-      
+
 
    .. seealso:: :func:`IsUnitary`
 
@@ -850,7 +836,7 @@ represented as lists of lists.
       Out> True;
       In> IsOrthogonal(A/3)
       Out> True;
-      
+
 
 .. function:: IsDiagonal(A)
 
@@ -869,7 +855,7 @@ represented as lists of lists.
       Out> True;
       In> IsDiagonal(HilbertMatrix(5))
       Out> False;
-      
+
 
 .. function:: IsLowerTriangular(A)
 
@@ -898,7 +884,7 @@ represented as lists of lists.
       A non-square matrix cannot be triangular:
       In> IsUpperTriangular({{1,2,3},{0,1,2}})
       Out> False;
-      
+
 
    .. seealso:: :func:`IsDiagonal`
 
@@ -932,7 +918,7 @@ represented as lists of lists.
       Out> True;
       In> IsSymmetric(A)
       Out> True;
-      
+
 
    .. seealso:: :func:`IsHermitian`, :func:`IsSkewSymmetric`
 
@@ -960,7 +946,7 @@ represented as lists of lists.
       Out> True;
       In> IsSkewSymmetric(A);
       Out> True;
-      
+
 
    .. seealso:: :func:`IsSymmetric`, :func:`IsHermitian`
 
@@ -984,7 +970,7 @@ represented as lists of lists.
       Out> True;
       In> IsUnitary({{0,I},{2,0}})
       Out> False;
-      
+
 
    .. seealso:: :func:`IsHermitian`, :func:`IsSymmetric`
 
@@ -1007,7 +993,7 @@ represented as lists of lists.
       In> IsIdempotent(Identity(20))
       Out> True;
       Special matrices
-      
+
 
 .. function:: JacobianMatrix(functions,variables)
 
@@ -1033,7 +1019,7 @@ represented as lists of lists.
       |                                 |
       | ( 0 )        ( -( Sin( y ) ) )  |
       \                                 /
-      
+
 
 .. function:: VandermondeMatrix(vector)
 
@@ -1061,7 +1047,7 @@ represented as lists of lists.
       |                            |
       | ( 1 ) ( 8 ) ( 27 ) ( 64 )  |
       \                            /
-      
+
 
 .. function:: HessianMatrix(function,var)
 
@@ -1092,7 +1078,7 @@ represented as lists of lists.
       |                |
       | ( -2 ) ( 2 )   |
       \                /
-      
+
 
 .. function:: HilbertMatrix(n)
 
@@ -1128,7 +1114,7 @@ represented as lists of lists.
       | | - | | - | | - | | - |  |
       | \ 4 / \ 5 / \ 6 / \ 7 /  |
       \                          /
-      
+
 
    .. seealso:: :func:`HilbertInverseMatrix`
 
@@ -1156,7 +1142,7 @@ represented as lists of lists.
       |                                         |
       | ( -140 ) ( 1680 )  ( -4200 ) ( 2800 )   |
       \                                         /
-      
+
 
    .. seealso:: :func:`HilbertMatrix`
 
@@ -1186,7 +1172,7 @@ represented as lists of lists.
       |                                |
       | ( 5 ) ( 4 ) ( 3 ) ( 2 ) ( 1 )  |
       \                                /
-      
+
 
 .. function:: WronskianMatrix(func,var)
 
@@ -1231,7 +1217,7 @@ represented as lists of lists.
       *(8*x^3+9*x^2)*12*x^2-(2*x^4+3*x^3)*3*x^2*12*x^2;
       In> Simplify(A)
       Out> 0;
-      
+
 
 .. function:: SylvesterMatrix(poly1,poly2,variable)
 
@@ -1264,7 +1250,7 @@ represented as lists of lists.
       Out> 3*a^2-a^3;
       The above example shows that the two polynomials have common
       zeros if :math:` a = 3 :math:`.
-      
+
 
    .. seealso:: :func:`Determinant`, :func:`Simplify`, :func:`Solve`, :func:`PSolve`
 

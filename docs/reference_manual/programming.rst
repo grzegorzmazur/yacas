@@ -5,15 +5,15 @@ Functions related to programming in Yacas
 Introduction
 ------------
 
-This document aims to be a reference for functions that are useful 
-when programming in yacas, but which are not necessarily useful when 
+This document aims to be a reference for functions that are useful
+when programming in yacas, but which are not necessarily useful when
 using yacas. There is another document that describes the functions
 that are useful from a users point of view.
 
 Programming
 -----------
 
-This chapter describes functions useful for writing Yacas scripts.
+This chapter describes functions useful for writing yacas scripts.
 
 ::
 
@@ -36,96 +36,78 @@ and ``*/`` may delimit a multi-line comment.
    a + /* add them */ b;
 
 
-.. function:: Prog(expr1, expr2, ...) 
-   
+.. function:: Prog(expr1, expr2, ...)
+
    block of statements
 
-    :param expr1: expression
+   The :func:`Prog` and the ``[ ... ]`` construct have the same effect: they
+   evaluate all arguments in order and return the result of the last evaluated
+   expression.
 
-    The {Prog} and the {[ ... ]} construct have the same effect: they evaluate all
-    arguments in order and return the result of the last evaluated expression.
-
-    {Prog(a,b);} is the same as typing {[a;b;];} and is very useful
-    for writing out function bodies. The {[ ... ]} construct is a
-    syntactically nicer version of the {Prog} call; it is converted
-    into {Prog(...)} during the parsing stage.
+   ``Prog(a,b);`` is the same as typing ``[a;b;];`` and is very useful for
+   writing out function bodies. The ``[ ... ]`` construct is a syntactically
+   nicer version of the :func:`Prog` call; it is converted into ``Prog(...)``
+   during the parsing stage.
 
 
 
 .. function:: Bodied(op, precedence)
 
-   declare op as :term:`bodied function`
-
-   :param op: string, the name of a function
-   :param precedence: nonnegative integer (evaluated)
+   declare ``op`` as :term:`bodied function`
 
    Declares a special syntax for the function to be parsed as a
-   :term:`bodied function`.
-
+   :term:`bodied function`. For example::
 
      For(pre, condition, post) statement;
 
-   Here the function ``For`` has 4 arguments and the last argument is
-   placed outside the parentheses.
+   Here the function :func:`For` has 4 arguments and the last argument is placed
+   outside the parentheses.
 
-   The ``precedence`` of a "bodied" function refers to how tightly the
-   last argument is bound to the parentheses.  This makes a difference
-   when the last argument contains other operators.  For example, when
-   taking the derivative D(x) Sin(x)+Cos(x) both {Sin} and {Cos} are
-   under the derivative because the bodied function {D} binds less
-   tightly than the infix operator "{+}".
+   The ``precedence`` of a :term:`bodied function` refers to how tightly the
+   last argument is bound to the parentheses.  This makes a difference when the
+   last argument contains other operators. For example, when taking the
+   derivative ``D(x) Sin(x)+Cos(x)`` both :func:`Sin` and :func:`Cos` are under
+   the derivative because the bodied function :func:`D` binds less tightly than the
+   infix operator ``+``.
 
    .. seealso:: :func:`IsBodied`, :func:`OpPrecedence`
 
 .. function:: Infix(op[, precedence])
 
-   define function syntax (infix operator)
+   declare ``op`` as infix operator
 
-   :param op: string, the name of a function
-   :param precedence: nonnegative integer (evaluated)
+   Declares a special syntax for the function ``op`` to be parsed as an infix
+   operator. Precedence is optional (will be set to 0 by default).
 
-   Declares a special syntax for the function to be parsed as a bodied, infix, postfix,
-   or prefix operator.
-
-   "Infix" functions must have two arguments and are syntactically
-   placed between their arguments.  Names of infix functions can be
-   arbitrary, although for reasons of readability they are usually
-   made of non-alphabetic characters.
+   Infix functions must have two arguments and are syntactically placed between
+   their arguments.  Names of infix functions can be arbitrary, although for
+   reasons of readability they are usually made of non-alphabetic characters.
 
    .. seealso:: :func:`IsBodied`, :func:`OpPrecedence`
 
 .. function:: Postfix(op[, precedence])
 
-   define function syntax (postfix operator)
+   declare ``op`` as postfix operator
 
-   :param op: string, the name of a function
-   :param precedence: nonnegative integer (evaluated)
+   Declares a special syntax for the function ``op`` to be parsed as a  postfix
+   operator. Precedence is optional (will be set to 0 by default).
 
-   Declares a special syntax for the function to be parsed as a bodied, infix, postfix,
-   or prefix operator.
-
-   "Postfix" functions must have one argument and are syntactically
-   placed after their argument.
+   Postfix functions must have one argument and are syntactically placed after
+   their argument.
 
    .. seealso:: :func:`IsBodied`, :func:`OpPrecedence`
 
 .. function:: Prefix(op[, precedence])
 
-   define function syntax (prefix operator)
+   declare ``op`` as postfix operator
 
-   :param op: string, the name of a function
-   :param precedence: nonnegative integer (evaluated)
+   Declares a special syntax for the function ``op`` to be parsed as a prefix
+   operator. Precedence is optional (will be set to 0 by default).
 
-   Declares a special syntax for the function to be parsed as a bodied, infix, postfix,
-   or prefix operator.
-
-   "Prefix" functions must have one argument and are syntactically
-   placed before their argument.
-
-   Function name can be any string but meaningful usage and
-   readability would require it to be either made up entirely of
-   letters or entirely of non-letter characters (such as "+", ":"
-   etc.).  Precedence is optional (will be set to 0 by default).
+   Prefix functions must have one argument and are syntactically placed before
+   their argument. Function name can be any string but meaningful usage and
+   readability would require it to be either made up entirely of letters or
+   entirely of non-letter characters (such as "+", ":" etc.).
 
    :Example:
 
@@ -133,7 +115,7 @@ and ``*/`` may delimit a multi-line comment.
 
       In> YY x := x+1;
       CommandLine(1) : Error parsing expression
-    
+
       In> Prefix("YY", 2)
       Out> True;
       In> YY x := x+1;
@@ -406,16 +388,16 @@ and ``*/`` may delimit a multi-line comment.
      In> f(A,B)
      Out> f(A,B);
      In> f(A,B,C)
-     three args A B C 
+     three args A B C
      Out> True;
      In> f(A,B,C,D)
-     four args A B C D 
+     four args A B C D
      Out> True;
      In> f(A,B,C,D,E)
-     more than four args A B {C,D,E} 
+     more than four args A B {C,D,E}
      Out> True;
      In> f(A,B,C,D,E,E)
-     more than four args A B {C,D,E,E} 
+     more than four args A B {C,D,E,E}
      Out> True;
 
    The function {f} now appears to occupy all arities greater than 3: ::
@@ -539,7 +521,7 @@ and ``*/`` may delimit a multi-line comment.
    define rules in functions
 
 .. function:: MacroLocal
-              
+
    define rules in functions
 
 .. function:: MacroRuleBase
@@ -731,15 +713,15 @@ and ``*/`` may delimit a multi-line comment.
         In> a:=10
         Out> 10;
         In> myfor(i:=1,i<10,i++,Echo(a*i))
-        10 
-        20 
-        30 
-        40 
-        50 
-        60 
-        70 
-        80 
-        90 
+        10
+        20
+        30
+        40
+        50
+        60
+        70
+        80
+        90
         Out> True;
         In> i
         Out> 10;
@@ -977,7 +959,7 @@ calculations with arbitrary precision.
       In> Internal'Ln2()
       Out> 0.6931471806;
       In> V(N(Internal'Ln2(),20))
-      CachedConstant: Info: constant Ln2 is being recalculated at precision 20 
+      CachedConstant: Info: constant Ln2 is being recalculated at precision 20
       Out> 0.69314718055994530942;
       In> my'cache
       Out> {{"Ln2",20,0.69314718055994530942}};
@@ -1214,7 +1196,7 @@ calculations with arbitrary precision.
    manipulate precision of floating-point numbers
 
    {x} -- an expression evaluating to a floating-point number
-   {bits} -- integer, number of bits 
+   {bits} -- integer, number of bits
 
    Each floating-point number in Yacas has an internal precision
    counter that stores the number of exact bits in the mantissa.  The
@@ -1425,7 +1407,7 @@ calculations with arbitrary precision.
       Out> 33/7;
       In> ContFracEval(Take(A,3), remainder)
       Out> 1/(1/(remainder+2)+1)+4;
-    
+
    .. seealso:: :func:`ContFrac`, :func:`GuessRational`
 
 .. function:: GuessRational(x[,digits])
@@ -1673,7 +1655,7 @@ This chapter contains commands useful for reporting errors to the user.
    :Example:
 
       In> [Check(1=0,"bad value"); Echo(OK);]
-      In function "Check" : 
+      In function "Check" :
       CommandLine(1) : "bad value"
 
    Note that {OK} is not printed.
@@ -1689,7 +1671,7 @@ This chapter contains commands useful for reporting errors to the user.
 
    .. seealso:: :func:`Assert`
 
-.. function:: Assert(pred, str, expr) 
+.. function:: Assert(pred, str, expr)
               Assert(pred, str) pred
               Assert(pred)
 
@@ -1842,7 +1824,7 @@ This chapter contains commands useful for reporting errors to the user.
       Out> True;
       In> IsError()
       Out> False;
-      
+
    .. seealso:: :func:`IsError`, :func:`Assert`, :func:`Check`,
                 :func:`ClearErrors`
 
@@ -1855,7 +1837,7 @@ This chapter contains commands useful for reporting errors to the user.
    return current line number on input
 
    The functions {CurrentFile} and {CurrentLine} return a string
-   with the file name of the current file and the current line 
+   with the file name of the current file and the current line
    of input respectively.
 
    These functions are most useful in batch file calculations, where
@@ -2059,7 +2041,7 @@ bodied functions and infix operators are declared in the same file.
    (subtract two numbers)
 
 .. function:: MathMultiply(x,y)
-   
+
    (multiply two numbers)
 
 .. function:: MathDivide(x,y)
@@ -2344,12 +2326,12 @@ This chapter describes commands used for verifying correct performance
 of Yacas.
 
 Yacas comes with a test suite which can be found in
-the directory {tests/}. Typing 
+the directory {tests/}. Typing
 
     make test
 
 on the command line after Yacas was built will run the test.
-This test can be run even before {make install}, as it only 
+This test can be run even before {make install}, as it only
 uses files in the local directory of the Yacas source tree.
 The default extension for test scripts is {.yts} (Yacas test script).
 
@@ -2397,8 +2379,8 @@ meant to be used in test scripts.
 
    The comparison commands do the following comparison types:
 
-   * :func:`Verify` -- verify for literal equality. 
-     This is the fastest and simplest comparison, and can be 
+   * :func:`Verify` -- verify for literal equality.
+     This is the fastest and simplest comparison, and can be
      used, for example, to test that an expression evaluates to :math:`2`.
    * :func:`TestYacas` -- compare two expressions after simplification as
      multivariate polynomials. If the two arguments are equivalent
@@ -2440,12 +2422,12 @@ meant to be used in test scripts.
     Out> True
     In> LogicTest({A,B,C},Not((Not A) And (Not B)),A Or C)
     ******************
-    CommandLine: 1 
-    
+    CommandLine: 1
+
     :math:`TrueFalse4({A,B,C},Not(Not A And Not B))
-     evaluates to 
+     evaluates to
     {{{False,False},{True,True}},{{True,True},{True,True}}}
-     which differs from 
+     which differs from
     {{{False,True},{False,True}},{{True,True},{True,True}}}
     ******************
     Out> False
@@ -2534,13 +2516,13 @@ meant to be used in test scripts.
 
    The left and right side represent two ways to arrive at the
    same result, and so an arithmetic module actually doing the
-   calculation does the calculation in two different ways. 
+   calculation does the calculation in two different ways.
    The results should be exactly equal.
 
    {RandVerifyArithmetic(n)} calls {VerifyArithmetic} with
    random values, {n} times.
 
-   {VerifyDiv(u,v)} checks that 
+   {VerifyDiv(u,v)} checks that
    :math:`u = v*Div(u,v) + Mod(u,v)`.
 
    :Example:

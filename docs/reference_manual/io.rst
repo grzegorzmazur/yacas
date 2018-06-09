@@ -1,14 +1,13 @@
-=========================
-Input/output and plotting
-=========================
+============
+Input/output
+============
 
-This chapter contains commands to use for input and output and
-plotting. All output commands write to the same destination stream,
-called the "current output". This is initially the screen, but may be
-redirected by some commands. Similarly, most input commands read from
-the "current input" stream, which can also be redirected. The
-exception to this rule are the commands for reading script files,
-which simply read a specified file.
+This chapter contains commands to use for input and output. All output commands
+write to the same destination stream, called the "current output". This is
+initially the screen, but may be redirected by some commands. Similarly, most
+input commands read from the "current input" stream, which can also be
+redirected. The exception to this rule are the commands for reading script
+files, which simply read a specified file.
 
 .. function:: FullForm(expr)
 
@@ -36,7 +35,7 @@ which simply read a specified file.
    internally represented. In the second example, :math:`2i` is
    first evaluated to ``Complex(0,2)`` before the expression
    is printed.
-      
+
 
    .. seealso:: :func:`LispRead`, :func:`Listify`, :func:`Unlist`
 
@@ -79,7 +78,7 @@ which simply read a specified file.
       In> Echo({{a,b,c}});
       {a,b,c}
       Out> True;
-      
+
 
    .. seealso:: :func:`PrettyForm`, :func:`Write`, :func:`WriteString`, :func:`RuleBaseListed`
 
@@ -105,7 +104,7 @@ which simply read a specified file.
       x - -- + --- - ---- + ------
           6    120   5040   362880
       Out> True;
-      
+
 
    .. seealso:: :func:`EvalFormula`, :func:`PrettyPrinter'Set`
 
@@ -127,7 +126,7 @@ which simply read a specified file.
                                            x    x
       Taylor( x , 0 , 5 , Sin( x ) ) = x - -- + ---
                                            6    120
-      
+
 
    .. seealso:: :func:`PrettyForm`
 
@@ -185,7 +184,7 @@ which simply read a specified file.
 
       In> IsCFormable(1+func123(b1), {func123})
       Out> True;
-      
+
 
    .. seealso:: :func:`CForm`, :func:`V`
 
@@ -211,7 +210,7 @@ which simply read a specified file.
 
    Write does not write a newline, so the ``Out>`` prompt immediately follows
    the output of :func:`Write`.
-      
+
 
    .. seealso:: :func:`Echo`, :func:`WriteString`
 
@@ -237,7 +236,7 @@ which simply read a specified file.
    This example clearly shows the difference between :func:`Write` and
    :func:`WriteString`. Note that :func:`Write` and :func:`WriteString` do not
    write a newline, so the ``Out>`` prompt immediately follows the output.
-      
+
 
    .. seealso:: :func:`Echo`, :func:`Write`
 
@@ -257,7 +256,7 @@ which simply read a specified file.
 
       In> Space(5);
            Out> True;
-      
+
 
    .. seealso:: :func:`Echo`, :func:`Write`, :func:`NewLine`
 
@@ -277,9 +276,9 @@ which simply read a specified file.
    ::
 
       In> NewLine();
-      
+
       Out> True;
-      
+
 
    .. seealso:: :func:`Echo`, :func:`Write`, :func:`Space`
 
@@ -303,7 +302,7 @@ which simply read a specified file.
       Out> 2+5;
       In> FromFile("foo") res := ReadToken();
       Out> 2;
-      
+
 
    .. seealso:: :func:`ToFile`, :func:`FromString`, :func:`Read`, :func:`ReadToken`
 
@@ -325,7 +324,7 @@ which simply read a specified file.
       Out> 2+5;
       In> FromString("2+5; this is never read") res := Eval(Read());
       Out> 7;
-      
+
 
    .. seealso:: :func:`ToString`, :func:`FromFile`, :func:`Read`, :func:`ReadToken`
 
@@ -346,13 +345,13 @@ which simply read a specified file.
    :Example:
 
    Here is how one can create a file with C code to evaluate an expression::
-      
+
       In> ToFile("expr1.c") WriteString(CForm(Sqrt(x-y)*Sin(x)));
       Out> True;
 
    The file ``expr1.c`` was created in the current working directory and it
    contains the line ``sqrt(x-y)*sin(x)``.
-      
+
    As another example, take a look at the following command::
 
       In> [ Echo("Result:");  PrettyForm(Taylor(x,0,9) Sin(x)); ];
@@ -365,7 +364,7 @@ which simply read a specified file.
 
    Now suppose one wants to send the output of this command to a
    file. This can be achieved as follows::
-   
+
       In> ToFile("out") [ Echo("Result:"); PrettyForm(Taylor(x,0,9) Sin(x)); ];
       Out> True;
 
@@ -376,7 +375,7 @@ which simply read a specified file.
           x    x      x       x
       x - -- + --- - ---- + ------
           6    120   5040   362880
-      
+
 
    .. seealso:: :func:`FromFile`, :func:`ToString`, :func:`Echo`, :func:`Write`, :func:`WriteString`, :func:`PrettyForm`, :func:`Taylor`
 
@@ -396,7 +395,7 @@ which simply read a specified file.
 
       In> str := ToString() [ WriteString("The square of 8 is "); Write(8^2); ];
       Out> "The square of 8 is  64";
-      
+
 
    .. seealso:: :func:`FromFile`, :func:`ToString`, :func:`Echo`, :func:`Write`, :func:`WriteString`
 
@@ -417,7 +416,7 @@ which simply read a specified file.
       Out> 2+5;
       In> FromString("") Read();
       Out> EndOfFile;
-      
+
 
    .. seealso:: :func:`FromFile`, :func:`FromString`, :func:`LispRead`, :func:`ReadToken`, :func:`Write`
 
@@ -472,7 +471,7 @@ which simply read a specified file.
       Deriv> Sin(x)
       Cos( x )
       Deriv>
-      
+
 
    .. seealso:: :func:`Read`, :func:`LispRead`, :func:`LispReadListed`
 
@@ -485,7 +484,7 @@ which simply read a specified file.
    encountered, the  special token atom :data:`EndOfFile` is returned. The yacas
    expression ``a+b`` is written in the LISP syntax as ``(+ a b)``. The
    advantage of this syntax is that it is less ambiguous than the infix operator
-   grammar that yacas uses by default. 
+   grammar that yacas uses by default.
 
    :Example:
 
@@ -519,7 +518,7 @@ which simply read a specified file.
 
       In> FromString("(+ a b)")LispReadListed()
       Out> {+,a,b};
-      
+
    .. seealso:: :func:`FromFile`, :func:`FromString`, :func:`Read`, :func:`ReadToken`, :func:`FullForm`, :func:`LispRead`
 
 .. function:: ReadToken()
@@ -556,15 +555,15 @@ which simply read a specified file.
       Out> True;
 
    We can read some junk too::
-   
+
       In> FromString("-$3")ReadToken();
       Out> -$;
-   
+
    The result is an atom with the string representation ``-$``. Yacas assumes
    that ``-$`` is an operator symbol yet to be defined. The ``3`` will be in the
    next token. (The results will be different if a non-default tokenizer is
    selected.)
-      
+
    .. seealso:: :func:`FromFile`, :func:`FromString`, :func:`Read`, :func:`LispRead`, :func:`DefaultTokenizer`
 
 .. function:: Load(name)
@@ -655,7 +654,7 @@ which simply read a specified file.
       First line
       Second line
       Out> True;
-      
+
 
    .. seealso:: :func:`NewLine`
 
@@ -686,7 +685,7 @@ which simply read a specified file.
       Out> False
       In> V(InVerboseMode())
       Out> True
-      
+
 
    .. seealso:: :func:`Echo`, :func:`N`, :func:`OldSolve`, :func:`InVerboseMode`
 
@@ -705,202 +704,10 @@ which simply read a specified file.
       Out> False
       In> V(InVerboseMode())
       Out> True
-      
+
 
    .. seealso:: :func:`Echo`, :func:`N`, :func:`OldSolve`, :func:`V`
 
-
-.. function:: Plot2D(f(x))
-
-   adaptive two-dimensional plotting
-
-   :param f(x): unevaluated expression containing one variables (function to be plotted)
-   :param list: list of functions to plot
-   :param a}, {b: numbers, plotting range in the :math:`x` coordinate
-   :param option: atom, option name
-   :param value: atom, number or string (value of option)
-
-   The routine {Plot2D} performs adaptive plotting of one or several
-   functions  of one variable in the specified range.  The result is
-   presented as a line given by the equation :math:`y=f(x)`.  Several
-   functions can be plotted at once.  Various plotting options can be
-   specified.  Output can be directed to a plotting program (the
-   default is to use  {data}) to a list of values.    The function
-   parameter {f(x)} must evaluate to a Yacas expression containing  at
-   most one variable. (The variable does not have to be called {x}.)
-   Also, {N(f(x))} must evaluate to a real (not complex) numerical
-   value when given a numerical value of the argument {x}.  If the
-   function {f(x)} does not satisfy these requirements, an error is
-   raised.    Several functions may be specified as a list and they do
-   not have to depend on the same variable, for example, {{f(x),
-   g(y)}}.  The functions will be plotted on the same graph using the
-   same coordinate ranges.    If you have defined a function which
-   accepts a number but does not  accept an undefined variable,
-   {Plot2D} will fail to plot it.  Use {NFunction} to overcome this
-   difficulty.    Data files are created in a temporary directory
-   {/tmp/plot.tmp/} unless otherwise requested.  File names  and other
-   information is printed if {InVerboseMode()} returns :data:`True` on using
-   {V()}.    The current algorithm uses Newton-Cotes quadratures and
-   some heuristics for error estimation (see
-   <*yacasdoc://Algo/3/1/*>).  The initial grid of {points+1} points
-   is refined between any grid points :math:`a`, :math:`b` if the integral
-   :math:`Integrate(x,a,b)f(x)` is not approximated to the given precision
-   by  the existing grid.    Default plotting range is {-5:5}. Range
-   can also be specified as {x= -5:5} (note the mandatory space
-   separating "{=}" and "{-}");  currently the variable name {x} is
-   ignored in this case.    Options are of the form {option=value}.
-   Currently supported option names  are: "points", "precision",
-   "depth", "output", "filename", "yrange". Option values  are either
-   numbers or special unevaluated atoms such as {data}.  If you need
-   to use the names of these atoms  in your script, strings can be
-   used. Several option/value pairs may be specified (the function
-   {Plot2D} has a variable number of arguments).
-
-   * {yrange}: the range of ordinates to use for plotting, e.g.
-     {yrange=0:20}. If no range is specified, the default is usually
-     to leave the choice to the plotting backend.
-   * {points}: initial number of points (default 23) -- at least that
-     many points will be plotted. The initial grid of this many points
-     will be adaptively refined.
-   * {precision}: graphing precision (default :math:`10^(-6)`). This is
-     interpreted as the relative precision of computing the integral
-     of :math:`f(x)-Min(f(x))` using the grid points. For a smooth,
-     non-oscillating function this value should be roughly 1/(number
-     of screen pixels in the plot).
-   * {depth}: max. refinement depth, logarithmic (default 5) -- means
-     there will be at most :math:`2^depth` extra points per initial grid
-     point.
-   * {output}: name of the plotting backend. Supported names: {data}
-     (default).  The {data} backend will return the data as a list of
-     pairs such as {{{x1,y1}, {x2,y2}, ...}}.
-   * {filename}: specify name of the created data file. For example:
-     {filename="data1.txt"}.  The default is the name {"output.data"}.
-     Note that if several functions are plotted, the data files will
-     have a number appended to the given name, for example
-     {data.txt1}, {data.txt2}.
-
-   Other options may be supported in the future.
-
-   The current implementation can deal with a singularity within the
-   plotting range only if the function {f(x)} returns {Infinity},
-   {-Infinity} or {Undefined} at the singularity.  If the function
-   {f(x)} generates a numerical error and fails at a singularity,
-   {Plot2D} will fail if one of the grid points falls on the
-   singularity.  (All grid points are generated by bisection so in
-   principle the endpoints and the {points} parameter could be chosen
-   to avoid numerical singularities.)
-
-.. seealso:: :func:`V`, :func:`NFunction`, :func:`Plot3DS`
-
-.. function:: Plot3DS(f(x,y))
-
-   three-dimensional (surface) plotting
-
-   :param f(x,y): unevaluated expression containing two variables (function to be plotted)
-   :param list: list of functions to plot
-   :param a}, {b}, {c}, {d: numbers, plotting ranges in the :math:`x` and :math:`y` coordinates
-   :param option: atom, option name
-   :param value: atom, number or string (value of option)
-
-   The routine {Plot3DS} performs adaptive plotting of a function  of
-   two variables in the specified ranges.  The result is presented as
-   a surface given by the equation :math:`z=f(x,y)`.  Several functions can
-   be plotted at once, by giving a list of functions.  Various
-   plotting options can be specified.  Output can be directed to a
-   plotting program (the default is to use  {data}), to a list of
-   values.    The function parameter {f(x,y)} must evaluate to a Yacas
-   expression containing  at most two variables. (The variables do not
-   have to be called {x} and {y}.)  Also, {N(f(x,y))} must evaluate to
-   a real (not complex) numerical value when given numerical values of
-   the arguments {x}, {y}.  If the function {f(x,y)} does not satisfy
-   these requirements, an error is raised.    Several functions may be
-   specified as a list but they have to depend on the same symbolic
-   variables, for example, {{f(x,y), g(y,x)}}, but not {{f(x,y),
-   g(a,b)}}.  The functions will be plotted on the same graph using
-   the same coordinate ranges.    If you have defined a function which
-   accepts a number but does not  accept an undefined variable,
-   {Plot3DS} will fail to plot it.  Use {NFunction} to overcome this
-   difficulty.    Data files are created in a temporary directory
-   {/tmp/plot.tmp/} unless otherwise requested.  File names  and other
-   information is printed if {InVerboseMode()} returns :data:`True` on using
-   {V()}.    The current algorithm uses Newton-Cotes cubatures and
-   some heuristics for error estimation (see
-   <*yacasdoc://Algo/3/1/*>).  The initial rectangular grid of
-   {xpoints+1}*{ypoints+1} points is refined within any rectangle
-   where the integral  of :math:`f(x,y)` is not approximated to the given
-   precision by  the existing grid.    Default plotting range is
-   {-5:5} in both coordinates.  A range can also be specified with a
-   variable name, e.g. {x= -5:5} (note the mandatory space separating
-   "{=}" and "{-}").  The variable name {x} should be the same as that
-   used in the function {f(x,y)}.  If ranges are not given with
-   variable names, the first variable encountered in the function
-   {f(x,y)} is associated with the first of the two ranges.    Options
-   are of the form {option=value}. Currently supported option names
-   are "points", "xpoints", "ypoints", "precision", "depth", "output",
-   "filename", "xrange", "yrange", "zrange". Option values  are either
-   numbers or special unevaluated atoms such as {data}.  If you need
-   to use the names of these atoms  in your script, strings can be
-   used (e.g. {output="data"}). Several option/value pairs may be
-   specified (the function {Plot3DS} has a variable number of
-   arguments).
-
-   * {xrange}, {yrange}: optionally override coordinate ranges. Note
-     that {xrange} is always the first variable and {yrange} the
-     second variable, regardless of the actual variable names.
-   * {zrange}: the range of the :math:`z` axis to use for plotting, e.g.
-     {zrange=0:20}. If no range is specified, the default is usually
-     to leave the choice to the plotting backend. Automatic choice
-     based on actual values may give visually inadequate plots if the
-     function has a singularity.
-   * {points}, {xpoints}, {ypoints}: initial number of points (default
-     10 each) -- at least that many points will be plotted in each
-     coordinate.  The initial grid of this many points will be
-     adaptively refined.  If {points} is specified, it serves as a
-     default for both {xpoints} and {ypoints}; this value may be
-     overridden by {xpoints} and {ypoints} values.
-   * {precision}: graphing precision (default :math:`0.01`). This is
-     interpreted as the relative precision of computing the integral
-     of :math:`f(x,y)-Min(f(x,y))` using the grid points. For a smooth,
-     non-oscillating function this value should be roughly 1/(number
-     of screen pixels in the plot).
-   * {depth}: max. refinement depth, logarithmic (default 3) -- means
-     there will be at most :math:`2^depth` extra points per initial grid
-     point (in each coordinate).
-   * {output}: name of the plotting backend. Supported names: {data}
-     (default). The {data} backend will return the data as a list of
-     triples such as {{{x1, y1, z1}, {x2, y2, z2}, ...}}.
-
-   Other options may be supported in the future.
-
-   The current implementation can deal with a singularity within the
-   plotting range only if the function {f(x,y)} returns {Infinity},
-   {-Infinity} or {Undefined} at the singularity.  If the function
-   {f(x,y)} generates a numerical error and fails at a singularity,
-   {Plot3DS} will fail only if one of the grid points falls on the
-   singularity.  (All grid points are generated by bisection so in
-   principle the endpoints and the {xpoints}, {ypoints} parameters
-   could be chosen to avoid numerical singularities.)
-
-   The {filename} option is optional if using graphical backends, but
-   can be used to specify the location of the created data file.
-
-   :Example:
-
-   ::
-
-      In> Plot3DS(a*b^2)
-      Out> True;
-      In> V(Plot3DS(Sin(x)*Cos(y),x=0:20, y=0:20,depth=3))
-      CachedConstant: Info: constant Pi is being 
-      recalculated at precision 10
-      CachedConstant: Info: constant Pi is being
-      recalculated at precision 11
-      Plot3DS: using 1699  points for function Sin(x)*Cos(y)
-      Plot3DS: max. used 8 subdivisions for Sin(x)*Cos(y)
-      Plot3DS'datafile: created file '/tmp/plot.tmp/data1'
-      Out> True;
-
-.. seealso:: :func:`V`, :func:`NFunction`, :func:`Plot2D`
 
 .. function:: XmlExplodeTag(xmltext)
 
@@ -1186,7 +993,7 @@ which simply read a specified file.
    :Example:
 
    ::
-  
+
       In> OMDef( "Sqrt" ,  "arith1", "root", { :math:`, _1, 2 }, :math:`(_1)_(_2=2) | (_1^(1/_2)) );
       Out> True
       In> OMForm(Sqrt(3))
@@ -1202,7 +1009,7 @@ which simply read a specified file.
       Out> Sqrt(16)
       In> FromString("<OMOBJ><OMA><OMS cd=\"arith1\" name=\"root\"/><OMI>16</OMI><OMI>3</OMI></OMA></OMOBJ> ")OMRead()
       Out> 16^(1/3)
-  
+
       In> OMDef("Limit", "limit1", "limit", \
             {  :math:`, _2, OMS("limit1", "under"), OMBIND(OMS("fns1", "lambda"), OMBVAR(_1), _4) }_(_3=Left)  \
             |{ :math:`, _2, OMS("limit1", "above"), OMBIND(OMS("fns1", "lambda"), OMBVAR(_1), _4) }_(_3=Right) \
@@ -1258,6 +1065,6 @@ which simply read a specified file.
       Out> Limit(x,0,Right)1/x
       In> %
       Out> Infinity
-  
+
    .. seealso:: :func:`OMRead`, :func:`OMForm`
-  
+
