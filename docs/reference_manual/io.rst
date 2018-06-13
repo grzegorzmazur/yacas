@@ -136,9 +136,9 @@ files, which simply read a specified file.
 
    :param expr: an expression to be exported
 
-   :func:`TeXForm` returns a string containing a :math:`\LaTeX` representation
-   of the yacas expression ``expr``. Currently the exporter handles most
-   expression types but not all.
+   :func:`TeXForm` returns a string containing LaTeX representation of the yacas
+   expression ``expr``. Currently the exporter handles most expression types but
+   not all.
 
 .. function:: CForm(expr)
 

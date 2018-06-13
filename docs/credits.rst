@@ -1,8 +1,10 @@
-************
-Credits [*]_
-************
+*******
+Credits
+*******
 
-Original/primary authors 
+Last-known email addresses mangled in an obvious way.
+
+Original/primary authors
 ========================
 Ayal Pinkus                  *apinkus "AT" xs4all "DOT" nl*
     This project was started by Ayal Pinkus who remains the main author and the primary maintainer.
@@ -154,7 +156,3 @@ Ladislav Zejda
 
 Andrei Zorine
     Started the body of statistics code.
-
-
-
-.. [*] All with last-known email addresses mangled in an obvious way

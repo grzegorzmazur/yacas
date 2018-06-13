@@ -39,7 +39,7 @@ polynomials.
       Out> x^2+2*(1-y)*x+(1-y)^2
       In> Expand((1+x-y)^2, {x,y})
       Out> x^2+((-2)*y+2)*x+y^2-2*y+1
-      
+
 
    .. seealso:: :func:`ExpandBrackets`
 
@@ -67,7 +67,7 @@ polynomials.
       Out> 1;
       In> Degree(a+b*x^3, x);
       Out> 3;
-      
+
 
    .. seealso:: :func:`Expand`, :func:`Coef`
 
@@ -95,7 +95,7 @@ polynomials.
       Out> 6*x^2;
       In> Coef(e,a,0 .. 4)
       Out> {x^4,4*x^3,6*x^2,4*x,1};
-      
+
 
    .. seealso:: :func:`Expand`, :func:`Degree`, :func:`LeadingCoef`
 
@@ -105,7 +105,7 @@ polynomials.
 
    :param expr: univariate polynomial
 
-   This command determines the 
+   This command determines the
    `content <http://en.wikipedia.org/wiki/Content_(algebra)>`_
    of a univariate polynomial.
 
@@ -121,7 +121,7 @@ polynomials.
       Out> x+2;
       In> Expand(pp*c);
       Out> 2*x^2+4*x;
-      
+
 
    .. seealso:: :func:`PrimitivePart`, :func:`Gcd`
 
@@ -148,7 +148,7 @@ polynomials.
       Out> x+2;
       In> Expand(pp*c);
       Out> 2*x^2+4*x;
-      
+
 
    .. seealso:: :func:`Content`
 
@@ -182,7 +182,7 @@ polynomials.
       Out> 2;
       In> LeadingCoef(2*a^2 + 3*a*b^2 + 5, b);
       Out> 3*a;
-      
+
 
    .. seealso:: :func:`Coef`, :func:`Monic`
 
@@ -217,7 +217,7 @@ polynomials.
       Out> a^2+(a*3*b^2)/2+5/2;
       In> Monic(2*a^2 + 3*a*b^2 + 5, b);
       Out> b^2+(2*a^2+5)/(3*a);
-      
+
 
    .. seealso:: :func:`LeadingCoef`
 
@@ -227,9 +227,9 @@ polynomials.
 
    :param p: a polynomial in {x}
 
-   Given a polynomial   :math:`p = p_1^n_1\ldots p_m^n_m`  with
-   irreducible polynomials :math:`p_i`,  return the square-free version
-   part (with all the factors having multiplicity 1):  :math:`p_1\ldots p_m`
+   Given a polynomial :math:`p = p_1^{n_1}\ldots p_m^{n_m}`  with irreducible
+   polynomials :math:`p_i`,  return the square-free version part (with all the
+   factors having multiplicity 1):  :math:`p_1\ldots p_m`
 
    :Example:
 
@@ -241,7 +241,7 @@ polynomials.
       Out> (x+1)/5;
       In> Monic(%)
       Out> x+1;
-      
+
 
    .. seealso:: :func:`FindRealRoots`, :func:`NumRealRoots`, :func:`MinimumBound`, :func:`MaximumBound`, :func:`Factor`
 
@@ -252,7 +252,7 @@ polynomials.
    :param p: a polynomial in {x}
 
    Given a polynomial :math:`p` having square-free decomposition :math:`p =
-   p_1^n_1\ldots p_m^n_m`  where :math:`p_i` are square-free and
+   p_1^{n_1}\ldots p_m^{n_m}`  where :math:`p_i` are square-free and
    :math:`n_{i+1}>n_i`,  return the list of pairs (:math:`p_i`, :math:`n_i`)
 
    :Example:
@@ -263,7 +263,7 @@ polynomials.
       Out> x^5+5*x^4+10*x^3+10*x^2+5*x+1
       In> SquareFreeFactorize(%,x)
       Out> {{x+1,5}}
-      
+
 
    .. seealso:: :func:`Factor`
 
@@ -291,7 +291,7 @@ polynomials.
       Out> x^4+4*x^3+6*x^2+4*x+1;
       In> Horner(expr1,x)
       Out> (((x+4)*x+6)*x+4)*x+1;
-      
+
 
    .. seealso:: :func:`Expand`, :func:`ExpandBrackets`, :func:`EvaluateHornerScheme`
 
@@ -316,7 +316,7 @@ polynomials.
       Out> x^2-(b+a)*x+b*a;
       In> ExpandBrackets((a-x)*(b-x))
       Out> a*b-x*b+x^2-a*x;
-      
+
 
    .. seealso:: :func:`Expand`
 
@@ -373,7 +373,7 @@ polynomials.
       Out> x*(8*x^2-12);
       In> OrthoH(6, 0.5);
       Out> 31;
-      
+
 
    .. seealso:: :func:`OrthoHSum`, :func:`OrthoPoly`
 
@@ -441,7 +441,7 @@ polynomials.
       Out> 4*x*(2*x^2-1);
       In> OrthoU(10, 0.9);
       Out> -2.2234571776;
-      
+
 
    .. seealso:: :func:`OrthoG`, :func:`OrthoTSum`, :func:`OrthoUSum`, :func:`OrthoPoly`
 
@@ -473,7 +473,7 @@ polynomials.
       Out> (7068985*x^4)/3981312+(1648577*x^3)/995328+
       (-3502049*x^2)/4644864+(-4372969*x)/6967296
       +28292143/27869184;
-      
+
 
    .. seealso:: :func:`OrthoP`, :func:`OrthoG`, :func:`OrthoH`, :func:`OrthoL`, :func:`OrthoT`, :func:`OrthoU`, :func:`OrthoPolySum`
 

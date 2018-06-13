@@ -501,177 +501,8 @@ represented as lists of lists.
       In> Sparsity(ZeroMatrix(10,10))
       Out> 1;
 
-Eigenproblem
-------------
-
-.. function:: CharacteristicEquation(matrix,var)
-
-   get characteristic polynomial of a matrix
-
-   :param matrix: a matrix
-   :param var: a free variable
-
-   CharacteristicEquation  returns the characteristic equation of
-   "matrix", using  "var". The zeros of this equation are the
-   eigenvalues  of the matrix, Det(matrix-I*var);
-
-   :Example:
-
-   ::
-
-      In> A:=DiagonalMatrix({a,b,c})
-      Out> {{a,0,0},{0,b,0},{0,0,c}};
-      In> B:=CharacteristicEquation(A,x)
-      Out> (a-x)*(b-x)*(c-x);
-      In> Expand(B,x)
-      Out> (b+a+c)*x^2-x^3-((b+a)*c+a*b)*x+a*b*c;
-
-
-   .. seealso:: :func:`EigenValues`, :func:`EigenVectors`
-
-.. function:: EigenValues(matrix)
-
-   get eigenvalues of a matrix
-
-   :param matrix: a square matrix
-
-   EigenValues returns the eigenvalues of a matrix.  The eigenvalues x
-   of a matrix M are the numbers such that  :math:`M*v=x*v` for some vector.
-   It first determines the characteristic equation, and then
-   factorizes this  equation, returning the roots of the
-   characteristic equation  Det(matrix-x*identity).
-
-   :Example:
-
-   ::
-
-      In> M:={{1,2},{2,1}}
-      Out> {{1,2},{2,1}};
-      In> EigenValues(M)
-      Out> {3,-1};
-
-
-   .. seealso:: :func:`EigenVectors`, :func:`CharacteristicEquation`
-
-.. function:: EigenVectors(A,eigenvalues)
-
-   get eigenvectors of a matrix
-
-   :param matrix: a square matrix
-   :param eigenvalues: list of eigenvalues as returned by {EigenValues}
-
-   {EigenVectors} returns a list of the eigenvectors of a matrix.  It
-   uses the eigenvalues and the matrix to set up n equations with  n
-   unknowns for each eigenvalue, and then calls {Solve} to determine
-   the values of each vector.
-
-   :Example:
-
-   ::
-
-      In> M:={{1,2},{2,1}}
-      Out> {{1,2},{2,1}};
-      In> e:=EigenValues(M)
-      Out> {3,-1};
-      In> EigenVectors(M,e)
-      Out> {{-ki2/ -1,ki2},{-ki2,ki2}};
-
-
-   .. seealso:: :func:`EigenValues`, :func:`CharacteristicEquation`
-
-
-Matrix decompositions
----------------------
-
-.. function:: Cholesky(A)
-
-   find the Cholesky decomposition
-
-   :param A: a square positive definite matrix
-
-   {Cholesky} returns a upper triangular matrix {R} such that
-   {Transpose(R)*R = A}.  The matrix {A} must be positive definite,
-   {Cholesky} will notify the user if the matrix  is not. Some
-   families of positive definite matrices are all symmetric matrices,
-   diagonal  matrices with positive elements and Hilbert matrices.
-
-   :Example:
-
-   ::
-
-      In> A:={{4,-2,4,2},{-2,10,-2,-7},{4,-2,8,4},{2,-7,4,7}}
-      Out> {{4,-2,4,2},{-2,10,-2,-7},{4,-2,8,4},{2,-7,4,7}};
-      In> R:=Cholesky(A);
-      Out> {{2,-1,2,1},{0,3,0,-2},{0,0,2,1},{0,0,0,1}};
-      In> Transpose(R)*R = A
-      Out> True;
-      In> Cholesky(4*Identity(5))
-      Out> {{2,0,0,0,0},{0,2,0,0,0},{0,0,2,0,0},{0,0,0,2,0},{0,0,0,0,2}};
-      In> Cholesky(HilbertMatrix(3))
-      Out> {{1,1/2,1/3},{0,Sqrt(1/12),Sqrt(1/12)},{0,0,Sqrt(1/180)}};
-      In> Cholesky(ToeplitzMatrix({1,2,3}))
-      In function "Check" :
-      CommandLine(1) : "Cholesky: Matrix is not positive definite"
-
-
-   .. seealso:: :func:`IsSymmetric`, :func:`IsDiagonal`, :func:`Diagonal`
-
-.. function:: LU(A)
-
-   find the LU decomposition
-
-   :param A: square matrix
-
-   :func:`LU` performs `LU decomposition`_ of a matrix.
-
-   :Example:
-
-   ::
-
-      In> A := {{1,2}, {3,4}}
-      Out> {{1,2},{3,4}}
-      In> {l,u} := LU(A)
-      Out> {{{1,0},{3,1}},{{1,2},{0,-2}}}
-      In> IsLowerTriangular(l)
-      Out> True
-      In> IsUpperTriangular(u)
-      Out> True
-      In> l * u
-      Out> {{1,2},{3,4}}
-
-   .. seealso:: :func:`LDU`, :func:`IsLowerTriangular`, :func:`IsUpperTriangular`
-
-   .. _LU decomposition: https://en.wikipedia.org/wiki/LU_decomposition
-
-.. function:: LDU(A)
-
-   find the LDU decomposition
-
-   :param A: square matrix
-
-   :func:`LDU` performs `LDU decomposition`_ of a matrix.
-
-   :Example:
-
-   ::
-
-      In> A := {{1,2}, {3,4}}
-      Out> {{1,2},{3,4}}
-      In> {l,d,u} := LDU(A)
-      Out> {{{1,0},{3,1}},{{1,0},{0,-2}},{{1,2},{0,1}}}
-      In> IsLowerTriangular(l)
-      Out> True
-      In> IsDiagonal(d)
-      Out> True
-      In> IsUpperTriangular(u)
-      Out> True
-      In> l * d * u
-      Out> {{1,2},{3,4}}
-
-   .. seealso:: :func:`LU`, :func:`IsDiagonal`, :func:`IsLowerTriangular`, :func:`IsUpperTriangular`
-
-   .. _LDU decomposition: https://en.wikipedia.org/wiki/LU_decomposition#Definitions
-
+Predicates
+----------
 .. function:: IsScalar(expr)
 
    test for a scalar
@@ -1001,6 +832,178 @@ Matrix decompositions
       Special matrices
 
 
+Eigenproblem
+------------
+
+.. function:: CharacteristicEquation(matrix,var)
+
+   get characteristic polynomial of a matrix
+
+   :param matrix: a matrix
+   :param var: a free variable
+
+   CharacteristicEquation  returns the characteristic equation of
+   "matrix", using  "var". The zeros of this equation are the
+   eigenvalues  of the matrix, Det(matrix-I*var);
+
+   :Example:
+
+   ::
+
+      In> A:=DiagonalMatrix({a,b,c})
+      Out> {{a,0,0},{0,b,0},{0,0,c}};
+      In> B:=CharacteristicEquation(A,x)
+      Out> (a-x)*(b-x)*(c-x);
+      In> Expand(B,x)
+      Out> (b+a+c)*x^2-x^3-((b+a)*c+a*b)*x+a*b*c;
+
+
+   .. seealso:: :func:`EigenValues`, :func:`EigenVectors`
+
+.. function:: EigenValues(matrix)
+
+   get eigenvalues of a matrix
+
+   :param matrix: a square matrix
+
+   EigenValues returns the eigenvalues of a matrix.  The eigenvalues x
+   of a matrix M are the numbers such that  :math:`M*v=x*v` for some vector.
+   It first determines the characteristic equation, and then
+   factorizes this  equation, returning the roots of the
+   characteristic equation  Det(matrix-x*identity).
+
+   :Example:
+
+   ::
+
+      In> M:={{1,2},{2,1}}
+      Out> {{1,2},{2,1}};
+      In> EigenValues(M)
+      Out> {3,-1};
+
+
+   .. seealso:: :func:`EigenVectors`, :func:`CharacteristicEquation`
+
+.. function:: EigenVectors(A,eigenvalues)
+
+   get eigenvectors of a matrix
+
+   :param matrix: a square matrix
+   :param eigenvalues: list of eigenvalues as returned by {EigenValues}
+
+   {EigenVectors} returns a list of the eigenvectors of a matrix.  It
+   uses the eigenvalues and the matrix to set up n equations with  n
+   unknowns for each eigenvalue, and then calls {Solve} to determine
+   the values of each vector.
+
+   :Example:
+
+   ::
+
+      In> M:={{1,2},{2,1}}
+      Out> {{1,2},{2,1}};
+      In> e:=EigenValues(M)
+      Out> {3,-1};
+      In> EigenVectors(M,e)
+      Out> {{-ki2/ -1,ki2},{-ki2,ki2}};
+
+
+   .. seealso:: :func:`EigenValues`, :func:`CharacteristicEquation`
+
+
+Matrix decompositions
+---------------------
+
+.. function:: Cholesky(A)
+
+   find the Cholesky decomposition
+
+   :param A: a square positive definite matrix
+
+   {Cholesky} returns a upper triangular matrix {R} such that
+   {Transpose(R)*R = A}.  The matrix {A} must be positive definite,
+   {Cholesky} will notify the user if the matrix  is not. Some
+   families of positive definite matrices are all symmetric matrices,
+   diagonal  matrices with positive elements and Hilbert matrices.
+
+   :Example:
+
+   ::
+
+      In> A:={{4,-2,4,2},{-2,10,-2,-7},{4,-2,8,4},{2,-7,4,7}}
+      Out> {{4,-2,4,2},{-2,10,-2,-7},{4,-2,8,4},{2,-7,4,7}};
+      In> R:=Cholesky(A);
+      Out> {{2,-1,2,1},{0,3,0,-2},{0,0,2,1},{0,0,0,1}};
+      In> Transpose(R)*R = A
+      Out> True;
+      In> Cholesky(4*Identity(5))
+      Out> {{2,0,0,0,0},{0,2,0,0,0},{0,0,2,0,0},{0,0,0,2,0},{0,0,0,0,2}};
+      In> Cholesky(HilbertMatrix(3))
+      Out> {{1,1/2,1/3},{0,Sqrt(1/12),Sqrt(1/12)},{0,0,Sqrt(1/180)}};
+      In> Cholesky(ToeplitzMatrix({1,2,3}))
+      In function "Check" :
+      CommandLine(1) : "Cholesky: Matrix is not positive definite"
+
+
+   .. seealso:: :func:`IsSymmetric`, :func:`IsDiagonal`, :func:`Diagonal`
+
+.. function:: LU(A)
+
+   find the LU decomposition
+
+   :param A: square matrix
+
+   :func:`LU` performs `LU decomposition`_ of a matrix.
+
+   :Example:
+
+   ::
+
+      In> A := {{1,2}, {3,4}}
+      Out> {{1,2},{3,4}}
+      In> {l,u} := LU(A)
+      Out> {{{1,0},{3,1}},{{1,2},{0,-2}}}
+      In> IsLowerTriangular(l)
+      Out> True
+      In> IsUpperTriangular(u)
+      Out> True
+      In> l * u
+      Out> {{1,2},{3,4}}
+
+   .. seealso:: :func:`LDU`, :func:`IsLowerTriangular`, :func:`IsUpperTriangular`
+
+   .. _LU decomposition: https://en.wikipedia.org/wiki/LU_decomposition
+
+.. function:: LDU(A)
+
+   find the LDU decomposition
+
+   :param A: square matrix
+
+   :func:`LDU` performs `LDU decomposition`_ of a matrix.
+
+   :Example:
+
+   ::
+
+      In> A := {{1,2}, {3,4}}
+      Out> {{1,2},{3,4}}
+      In> {l,d,u} := LDU(A)
+      Out> {{{1,0},{3,1}},{{1,0},{0,-2}},{{1,2},{0,1}}}
+      In> IsLowerTriangular(l)
+      Out> True
+      In> IsDiagonal(d)
+      Out> True
+      In> IsUpperTriangular(u)
+      Out> True
+      In> l * d * u
+      Out> {{1,2},{3,4}}
+
+   .. seealso:: :func:`LU`, :func:`IsDiagonal`, :func:`IsLowerTriangular`, :func:`IsUpperTriangular`
+
+   .. _LDU decomposition: https://en.wikipedia.org/wiki/LU_decomposition#Definitions
+
+
 .. function:: JacobianMatrix(functions,variables)
 
    calculate the Jacobian matrix of :math:`n` functions in :math:`n` variables
@@ -1055,50 +1058,6 @@ Matrix decompositions
       |                |
       | ( -2 ) ( 2 )   |
       \                /
-
-
-.. function:: WronskianMatrix(func,var)
-
-   create the Wronskian matrix
-
-   :param func: an :math:`n`-dimensional vector of functions
-   :param var: a variable to differentiate with respect to
-
-   The function {WronskianMatrix} calculates the Wronskian matrix  of :math:`n`
-   functions. The Wronskian matrix is created by putting each function as the
-   first element of each column, and filling in the rest of each  column by the
-   :math:`(i-1)`-th derivative, where :math:`i` is the current row.    The
-   Wronskian matrix is used to verify that the :math:`n` functions are linearly
-   independent, usually solutions to a differential equation.  If the
-   determinant of the Wronskian matrix is zero, then the functions  are
-   dependent, otherwise they are independent.
-
-   :Example:
-
-   ::
-
-      In> WronskianMatrix({Sin(x),Cos(x),x^4},x);
-      Out> {{Sin(x),Cos(x),x^4},{Cos(x),-Sin(x),4*x^3},
-      {-Sin(x),-Cos(x),12*x^2}};
-      In> PrettyForm(%)
-      /                                                 \
-      | ( Sin( x ) )      ( Cos( x ) )      /  4 \      |
-      |                                     \ x  /      |
-      |                                                 |
-      | ( Cos( x ) )      ( -( Sin( x ) ) ) /      3 \  |
-      |                                     \ 4 * x  /  |
-      |                                                 |
-      | ( -( Sin( x ) ) ) ( -( Cos( x ) ) ) /       2 \ |
-      |                                     \ 12 * x  / |
-      \                                                 /
-      The last element is a linear combination of the first two, so the determinant is zero:
-      In> A:=Determinant( WronskianMatrix( {x^4,x^3,2*x^4
-      + 3*x^3},x ) )
-      Out> x^4*3*x^2*(24*x^2+18*x)-x^4*(8*x^3+9*x^2)*6*x
-      +(2*x^4+3*x^3)*4*x^3*6*x-4*x^6*(24*x^2+18*x)+x^3
-      *(8*x^3+9*x^2)*12*x^2-(2*x^4+3*x^3)*3*x^2*12*x^2;
-      In> Simplify(A)
-      Out> 0;
 
 
 Special matrices

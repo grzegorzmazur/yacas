@@ -72,15 +72,18 @@ part of a polynomial. For example::
 Sturm sequences
 ---------------
 
-For a polynomial :math:`p(x)` of degree :math:`n`, the Sturm sequence 
+For a polynomial :math:`p(x)` of degree :math:`n`, the Sturm sequence
 :math:`p_0, p_1,\dots,p_n` is defined by the following equations
 (following :cite:`davenport1988:computer_algebra`):
 
 .. math::
+   :nowrap:
 
+   \begin{eqnarray}
    p_0 & = & p(x) \\
    p_1 & = & p'(x) \\
    p_i & = & -(p_{i-2} \bmod p_{i-1}).
+   \end{eqnarray}
 
 The polynomial :math:`p` can be assumed to have no multiple factors, and
 thus :math:`p` and :math:`p'` are relatively prime. The sequence of
@@ -140,7 +143,7 @@ between the elements in the Sturm sequence :math:`S`, at point :math:`x = y`::
   In> NumRealRoots(p)
   Out> 0;
 
-  
+
 Finding bounds on real roots
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -160,7 +163,7 @@ absolute value of the roots of the polynomial in question.  If :math:`p(0)\ne0`
 the minimum bound can be obtained also by considering the
 upper bound of :math:`p(\frac{1}{x})x^n`, and taking :math:`\frac{1}{bound}`.
 
-We thus know that given 
+We thus know that given
 
 .. math:: a_{max} = \mathrm{MaximumBound}(p)
 
@@ -168,7 +171,7 @@ and
 
 .. math:: a_{min} = \mathrm{MinimumBound}(p)
 
-for all roots :math:`a` of polynomial, either 
+for all roots :math:`a` of polynomial, either
 
 .. math:: -a_{max}\le a\le -a_{min}
 
@@ -242,9 +245,9 @@ variable :math:`x` is :func:`FindRealRoots`, for example::
   In> FindRealRoots(p)
   Out> {-3.1,6.23};
   In> p:=Expand((x+3.1)^3*(x-6.23))
-  Out> x^4+3.07*x^3-29.109*x^2-149.8199\ 
+  Out> x^4+3.07*x^3-29.109*x^2-149.8199\
   In> *x-185.59793;
-  In> p:=SquareFree(Rationalize( \ 
+  In> p:=SquareFree(Rationalize( \
   In> Expand((x+3.1)^3*(x-6.23))))
   Out> (-160000*x^2+500800*x+3090080)/2611467;
   In> FindRealRoots(p)

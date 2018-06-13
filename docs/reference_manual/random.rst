@@ -2,39 +2,81 @@
 Random numbers
 ==============
 
+Simple interface
+----------------
+
+.. function:: RandomSeed(seed)
+
+   seed the global pseudo-random generator
+
+   .. seealso:: :func:`Random`
+
 .. function:: Random()
 
-   (pseudo-) random number generator
+   generate pseudo-random number
 
-   :param init: integer, initial seed value
-   :param option: atom, option name
-   :param value: atom, option value
-   :param r: a list, RNG object
+   :func:`Random` generates a uniformly-distributed pseudo-random number
+   between 0 and 1.
 
-   These commands are an object-oriented interface to (pseudo-)random
-   number generators (RNGs).    {RngCreate} returns a list which is a
-   well-formed RNG object.  Its value should be saved in a variable
-   and used to call {Rng} and {RngSeed}.    {Rng(r)} returns a
-   floating-point random number between 0 and 1 and updates the RNG
-   object {r}.  (Currently, the Gaussian option makes a RNG return a
-   *complex* random number instead of a real random number.)
-   {RngSeed(r,init)} re-initializes the RNG object {r} with the seed
-   value {init}.  The seed value should be a positive integer.    The
-   {RngCreate} function accepts several options as arguments.
-   Currently the following options are available:
+   .. seealso:: :func:`RandomSeed`
+
+Advanced interface
+------------------
+
+.. function:: RngCreate()
+              RngCreate(seed)
+              RngCreate([seed=seed], [engine=engine], [dist=dist])
+              RngCreate({seed, engine, dist})
+
+   create a pseudo-random generator
+
+   :func:`RngCreate` returns a list which is a well-formed RNG object.  Its
+   value should be saved in a variable and used to call :func:`Rng` and
+   :func:`RngSeed`.
+
+   Engines:
+
+    * ``default``
+    * ``advanced``
+
+   Distributions:
+
+    * ``default`` (the same as ``flat``)
+    * ``flat`` (uniform)
+    * ``gauss`` (normal)
+
+.. seealso:: :func:`Rng`, :func:`RngSeed`
+
+.. function:: RngSeed(r, seed)
+
+   (re)seed pseudo-random number generator
+
+   :func:`RngSeed` re-initializes the RNG object ``r`` with the seed value
+   ``seed``. The seed value should be a positive integer.
+
+.. seealso:: :func:`RngCreate`, :func:`Rng`, :func:`RandomSeed`
+
+.. function:: Rng(r)
+
+   generate pseudo-random number
+
+   :func:`Rng(r)` returns a floating-point random number between 0 and 1 and
+   updates the RNG object ``r``.  (Currently, the Gaussian option makes a RNG
+   return a *complex* random number instead of a real random number.)
+
+   .. seealso:: :func:`RngCreate`, :func:`RngSeed`, :func:`Random`
+
+
+Auxilliary functions
+--------------------
 
 .. function:: RandomIntegerMatrix(rows,cols,from,to)
 
    generate a matrix of random integers
 
-   :param rows: number of rows in matrix
-   :param cols: number of cols in matrix
-   :param from: lower bound
-   :param to: upper bound
-
-   This function generates a {rows x cols} matrix of random integers.
-   All  entries lie between "from" and "to", including the boundaries,
-   and  are uniformly distributed in this interval.
+   This function generates a ``rows x cols`` matrix of random integers.
+   All  entries lie between ``from`` and ``to``, including the boundaries,
+   and are uniformly distributed in this interval.
 
    :Example:
 
@@ -56,16 +98,12 @@ Random numbers
 
    .. seealso:: :func:`RandomIntegerVector`, :func:`RandomPoly`
 
-.. function:: RandomIntegerVector(nr, from, to)
+.. function:: RandomIntegerVector(n, from, to)
 
    generate a vector of random integers
 
-   :param nr: number of integers to generate
-   :param from: lower bound
-   :param to: upper bound
-
-   This function generates a list with "nr" random integers. All
-   entries lie between "from" and "to", including the boundaries, and
+   This function generates a list with ``n`` random integers. All
+   entries lie between ``from`` and ``to``, including the boundaries, and
    are uniformly distributed in this interval.
 
    :Example:
@@ -82,15 +120,10 @@ Random numbers
 
    construct a random polynomial
 
-   :param var: free variable for resulting univariate polynomial
-   :param deg: degree of resulting univariate polynomial
-   :param coefmin: minimum value for coefficients
-   :param coefmax: maximum value for coefficients
-
-   RandomPoly generates a random polynomial in variable "var", of
-   degree "deg", with integer coefficients ranging from "coefmin" to
-   "coefmax" (inclusive). The coefficients are uniformly distributed
-   in  this interval, and are independent of each other.
+   :func:`RandomPoly` generates a random polynomial in the variable ``var``, of
+   degree ``deg``, with integer coefficients ranging from ``coefmin`` to
+   ``coefmax`` (inclusive). The coefficients are uniformly distributed in  this
+   interval, and are independent of each other.
 
    :Example:
 

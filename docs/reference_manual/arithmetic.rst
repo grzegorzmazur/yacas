@@ -160,7 +160,7 @@ Arithmetic and other operations on numbers
     Out> 1
     In> Mod(5,3)
     Out> 2
-      
+
 
   .. seealso:: :func:`Div`, :func:`Gcd`, :func:`Lcm`
 
@@ -169,7 +169,7 @@ Arithmetic and other operations on numbers
 
   greatest common divisor
 
-  This function returns the `greatest common divisor 
+  This function returns the `greatest common divisor
   <https://en.wikipedia.org/wiki/Greatest_common_divisor>`_ of ``n`` and ``m``
   or of all elements of ``list``.
 
@@ -180,7 +180,7 @@ Arithmetic and other operations on numbers
 
   least common multiple
 
-  This command returns the `least common multiple 
+  This command returns the `least common multiple
   <https://en.wikipedia.org/wiki/Least_common_multiple>`_ of ``n`` and ``m`` or
   of all elements of ``list``.
 
@@ -192,7 +192,7 @@ Arithmetic and other operations on numbers
     Out> 120
     In> Lcm({3,5,7,9})
     Out> 315
-      
+
 
   .. seealso:: :func:`Gcd`
 
@@ -212,7 +212,7 @@ Arithmetic and other operations on numbers
     In> 1 << 10
     Out> 1024
     In> -1024 >> 10
-    Out> -1      
+    Out> -1
 
 .. function:: FromBase(base,"string")
 
@@ -266,7 +266,7 @@ Arithmetic and other operations on numbers
       Out> Pi;
       In> N(Pi,20)
       Out> 3.14159265358979323846;
-      
+
 
    .. seealso:: :func:`Pi`
 
@@ -295,7 +295,7 @@ Arithmetic and other operations on numbers
       Out> {1.2,3.123,4.5};
       In> Rationalize(%)
       Out> {6/5,3123/1000,9/2};
-      
+
 
    .. seealso:: :func:`IsRational`
 
@@ -306,12 +306,12 @@ Arithmetic and other operations on numbers
    :param x: number or polynomial to expand in continued fractions
    :param depth: positive integer, maximum required depth
 
-   This command returns the continued fraction expansion of ``x``,
-   which should be either a floating point number or a polynomial. The
-   remainder is denoted by {rest}.  This is especially useful for
-   polynomials, since series expansions that converge slowly will
-   typically converge a lot faster if calculated using a continued
-   fraction expansion.
+   This command returns the `continued fraction
+   <https://en.wikipedia.org/wiki/Continued_fraction>`_ expansion of ``x``,
+   which should be either a floating point number or a polynomial. The remainder
+   is denoted by ``rest``.  This is especially useful for polynomials, since
+   series expansions that converge slowly will typically converge a lot faster
+   if calculated using a continued fraction expansion.
 
    :Example:
 
@@ -339,7 +339,7 @@ Arithmetic and other operations on numbers
       -------- + 1
       rest + 1
       Out> True;
-      
+
 
    .. seealso:: :func:`PAdicExpand`, :func:`N`
 
@@ -363,7 +363,7 @@ Arithmetic and other operations on numbers
       Out> {0,0,{4,5}};
       In> N(1/22,30)
       Out> 0.045454545454545454545454545454;
-      
+
 
    .. seealso:: :func:`N`
 
@@ -384,7 +384,7 @@ Arithmetic and other operations on numbers
       Out> 1;
       In> Floor(-1.1)
       Out> -2;
-      
+
 
    .. seealso:: :func:`Ceil`, :func:`Round`
 
@@ -394,7 +394,7 @@ Arithmetic and other operations on numbers
 
    :param x: a number
 
-   This function returns :math:`\left \lceil{x}\right \rceil`, the smallest 
+   This function returns :math:`\left \lceil{x}\right \rceil`, the smallest
    integer larger than or equal to ``x``.
 
    :Example:
@@ -405,7 +405,7 @@ Arithmetic and other operations on numbers
       Out> 2;
       In> Ceil(-1.1)
       Out> -1;
-      
+
 
    .. seealso:: :func:`Floor`, :func:`Round`
 
@@ -431,7 +431,7 @@ Arithmetic and other operations on numbers
       Out> -1;
       In> Round(-1.51)
       Out> -2;
-      
+
 
    .. seealso:: :func:`Floor`, :func:`Ceil`
 
@@ -440,13 +440,10 @@ Arithmetic and other operations on numbers
 
    minimum of a number of values
 
-   :parameters: * **x, y** -- pair of values to determine the minimum of
-                * **list** -- list of values from which the minimum is sought
-
    This function returns the minimum value of its argument(s). If the
    first calling sequence is used, the smaller of ``x`` and ``y`` is
    returned. If one uses the second form, the smallest of the entries
-   in  ``list`` is returned. In both cases, this function can only be
+   in ``list`` is returned. In both cases, this function can only be
    used  with numerical values and not with symbolic arguments.
 
    :Example:
@@ -459,21 +456,19 @@ Arithmetic and other operations on numbers
       Out> 4
       In> Min(Pi, Exp(1))
       Out> Exp(1)
-      
+
 
    .. seealso:: :func:`Max`, :func:`Sum`
 
 .. function:: Max(x,y)
+              Max(list)
 
    maximum of a number of values
 
-   :param x}, {y: pair of values to determine the maximum of
-   :param list: list of values from which the maximum is sought
-
    This function returns the maximum value of its argument(s). If the
-   first calling sequence is used, the larger of "x" and "y" is
+   first calling sequence is used, the larger of ``x`` and ``y`` is
    returned. If one uses the second form, the largest of the entries
-   in  "list" is returned. In both cases, this function can only be
+   in  ``list`` is returned. In both cases, this function can only be
    used  with numerical values and not with symbolic arguments.
 
    :Example:
@@ -484,15 +479,13 @@ Arithmetic and other operations on numbers
       Out> 3;
       In> Max({5,8,4});
       Out> 8;
-      
+
 
    .. seealso:: :func:`Min`, :func:`Sum`
 
 .. function:: Numer(expr)
 
    numerator of an expression
-
-   :param expr: expression to determine numerator of
 
    This function determines the numerator of the rational expression
    ``expr`` and returns it. As a special case, if its argument is
@@ -509,15 +502,13 @@ Arithmetic and other operations on numbers
       Out> a;
       In> Numer(5)
       Out> 5;
-      
+
 
    .. seealso:: :func:`Denom`, :func:`IsRational`, :func:`IsNumber`
 
 .. function:: Denom(expr)
 
    denominator of an expression
-
-   :param expr: expression to determine denominator of
 
    This function determines the denominator of the rational expression
    ``expr`` and returns it. As a special case, if its argument is
@@ -534,11 +525,11 @@ Arithmetic and other operations on numbers
       Out> x^2;
       In> Denom(5)
       Out> 1;
-      
+
 
    .. seealso:: :func:`Numer`, :func:`IsRational`, :func:`IsNumber`
 
-.. function:: Pslq(xlist,precision)
+.. function:: Pslq(xlist[,precision=6])
 
    search for integer relations between reals
 
@@ -547,8 +538,8 @@ Arithmetic and other operations on numbers
 
    This function is an integer relation detection algorithm. This
    means  that, given the numbers :math:`x_i` in the list ``xlist``, it tries
-   to find integer coefficients 
-   :math:`a_i` such that  :math:`a_1*x_`+\ldots+a_n*x_n = 0`. The list of
+   to find integer coefficients
+   :math:`a_i` such that  :math:`a_1*x_1+\ldots+a_n*x_n = 0`. The list of
    integer coefficients is returned.
    The numbers in "xlist" must evaluate to floating point numbers when
    the :func:`N` operator is applied to them.
@@ -580,7 +571,7 @@ Arithmetic and other operations on numbers
       Out> True;
       In> Cos(1) < 5;
       Out> True;
-      
+
 
    .. seealso:: :func:`IsNumber`, :func:`IsInfinity`, :func:`N`
 
@@ -611,7 +602,7 @@ Arithmetic and other operations on numbers
       Out> False;
       In> Cos(1) > 5;
       Out> False
-      
+
 
    .. seealso:: :func:`IsNumber`, :func:`IsInfinity`, :func:`N`
 
@@ -642,7 +633,7 @@ Arithmetic and other operations on numbers
       Out> True;
       In> Cos(1) <= 5;
       Out> True
-      
+
 
    .. seealso:: :func:`IsNumber`, :func:`IsInfinity`, :func:`N`
 
@@ -673,7 +664,7 @@ Arithmetic and other operations on numbers
       Out> False;
       In> Cos(1) >= 5;
       Out> False
-      
+
 
    .. seealso:: :func:`IsNumber`, :func:`IsInfinity`, :func:`N`
 
@@ -696,7 +687,7 @@ Arithmetic and other operations on numbers
       Out> True;
       In> IsZero(x)
       Out> False;
-      
+
 
    .. seealso:: :func:`IsNumber`, :func:`IsNotZero`
 
@@ -723,7 +714,7 @@ Arithmetic and other operations on numbers
       Out> False;
       In> IsRational(x + 1/x)
       Out> False;
-      
+
 
    .. seealso:: :func:`Numer`, :func:`Denom`
 

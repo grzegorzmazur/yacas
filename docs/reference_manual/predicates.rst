@@ -25,7 +25,7 @@ that only holds for a positive integer would use a pattern such as
       Out> True;
       In> 1 != 1;
       Out> False;
-      
+
 
    .. seealso:: :func:`=`
 
@@ -33,7 +33,7 @@ that only holds for a positive integer would use a pattern such as
 
    test for equality of expressions
 
-   :param e1}, {e2: expressions to be compared
+   :param e1, e2: expressions to be compared
 
    Both expressions are evaluated and compared. If they turn out to be
    equal, the  result is :data:`True`. Otherwise, the result is :data:`False`. The
@@ -56,18 +56,19 @@ that only holds for a positive integer would use a pattern such as
       Out> False;
       In> Expand(e1) = e2;
       Out> True;
-      
+
 
    .. seealso:: :func:`!=`, :func:`Equals`
 
-.. function:: Not expr
+.. function:: Not(expr)
+              prefix Not(expr)
 
    logical negation
 
    :param expr: a boolean expression
 
-   Not returns the logical negation of the argument expr. If {expr} is
-   :data:`False` it returns :data:`True`, and if {expr} is :data:`True`, {Not expr}
+   Not returns the logical negation of the argument expr. If ``expr`` is
+   :data:`False` it returns :data:`True`, and if ``expr`` is :data:`True`, {Not expr}
    returns :data:`False`.  If the argument is neither :data:`True` nor :data:`False`, it
    returns the entire  expression with evaluated arguments.
 
@@ -81,7 +82,7 @@ that only holds for a positive integer would use a pattern such as
       Out> True;
       In> Not(a)
       Out> Not a;
-      
+
 
    .. seealso:: :func:`And`, :func:`Or`
 
@@ -112,7 +113,7 @@ that only holds for a positive integer would use a pattern such as
       Out> And(a);
       In> And(True,a,True,b)
       Out> b And a;
-      
+
 
    .. seealso:: :func:`Or`, :func:`Not`
 
@@ -139,7 +140,7 @@ that only holds for a positive integer would use a pattern such as
       Out> Or(a);
       In> Or(False,a,b,True)
       Out> True;
-      
+
 
    .. seealso:: :func:`And`, :func:`Not`
 
@@ -171,7 +172,7 @@ that only holds for a positive integer would use a pattern such as
       Out> False;
       The third command returns :data:`True` because the
       expression {D(x) a*x+b} evaluates to {a}, which does not depend on {x}.
-      
+
 
    .. seealso:: :func:`Contains`
 
@@ -193,7 +194,7 @@ that only holds for a positive integer would use a pattern such as
       Out> False;
       In> IsZeroVector({x-x, 1 - D(x) x});
       Out> True;
-      
+
 
    .. seealso:: :func:`IsList`, :func:`ZeroVector`
 
@@ -224,7 +225,7 @@ that only holds for a positive integer would use a pattern such as
       Out> True;
       In> IsEven(-1);
       Out> False;
-      
+
 
    .. seealso:: :func:`IsOdd`, :func:`IsInteger`
 
@@ -246,7 +247,7 @@ that only holds for a positive integer would use a pattern such as
       Out> False;
       In> IsOdd(-1);
       Out> True;
-      
+
 
    .. seealso:: :func:`IsEven`, :func:`IsInteger`
 
@@ -262,9 +263,9 @@ that only holds for a positive integer would use a pattern such as
    to be functions that have the property:    :math:`f(x) = f(-x)`
    And odd functions have the property: :math:`f(x) = -f(-x)`.
    :math:`\sin(x)` is an example of an odd function, and :math:`cos(x)`
-   is an example of an even function.    
-   
-   
+   is an example of an even function.
+
+
    .. note::
 
       One can decompose a function into an  even and an odd part
@@ -288,7 +289,7 @@ that only holds for a positive integer would use a pattern such as
       Out> True;
       In> IsFunction(x);
       Out> False;
-      
+
 
    .. seealso:: :func:`IsAtom`, :func:`IsList`, :func:`Type`
 
@@ -307,7 +308,7 @@ that only holds for a positive integer would use a pattern such as
       Out> False;
       In> IsAtom(5);
       Out> True;
-      
+
 
    .. seealso:: :func:`IsFunction`, :func:`IsNumber`, :func:`IsString`
 
@@ -328,7 +329,7 @@ that only holds for a positive integer would use a pattern such as
       Out> True;
       In> IsString(duh);
       Out> False;
-      
+
 
    .. seealso:: :func:`IsAtom`, :func:`IsNumber`
 
@@ -355,7 +356,7 @@ that only holds for a positive integer would use a pattern such as
       Out> False;
       In> IsNumber("duh");
       Out> False;
-      
+
 
    .. seealso:: :func:`IsAtom`, :func:`IsString`, :func:`IsInteger`, :func:`IsPositiveNumber`, :func:`IsNegativeNumber`, :func:`Complex`
 
@@ -376,7 +377,7 @@ that only holds for a positive integer would use a pattern such as
       Out> True;
       In> IsList(2+3+5);
       Out> False;
-      
+
 
    .. seealso:: :func:`IsFunction`
 
@@ -411,7 +412,7 @@ that only holds for a positive integer would use a pattern such as
       Out> 5;
       In> IsBound(x);
       Out> True;
-      
+
 
    .. seealso:: :func:`IsAtom`
 
@@ -436,7 +437,7 @@ that only holds for a positive integer would use a pattern such as
       Out> True;
       In> IsBoolean(a And b)
       Out> True;
-      
+
 
    .. seealso:: :func:`True`, :func:`False`
 
@@ -458,7 +459,7 @@ that only holds for a positive integer would use a pattern such as
       Out> False;
       In> IsNegativeNumber(-2.5);
       Out> True;
-      
+
 
    .. seealso:: :func:`IsNumber`, :func:`IsPositiveNumber`, :func:`IsNotZero`, :func:`IsNegativeInteger`, :func:`IsNegativeReal`
 
@@ -480,7 +481,7 @@ that only holds for a positive integer would use a pattern such as
       Out> False;
       In> IsNegativeInteger(-2);
       Out> True;
-      
+
 
    .. seealso:: :func:`IsPositiveInteger`, :func:`IsNonZeroInteger`, :func:`IsNegativeNumber`
 
@@ -502,7 +503,7 @@ that only holds for a positive integer would use a pattern such as
       Out> True;
       In> IsPositiveNumber(-2.5);
       Out> False;
-      
+
 
    .. seealso:: :func:`IsNumber`, :func:`IsNegativeNumber`, :func:`IsNotZero`, :func:`IsPositiveInteger`, :func:`IsPositiveReal`
 
@@ -524,7 +525,7 @@ that only holds for a positive integer would use a pattern such as
       Out> True;
       In> IsPositiveInteger(-2);
       Out> False;
-      
+
 
    .. seealso:: :func:`IsNegativeInteger`, :func:`IsNonZeroInteger`, :func:`IsPositiveNumber`
 
@@ -545,7 +546,7 @@ that only holds for a positive integer would use a pattern such as
       Out> True;
       In> IsNotZero(0);
       Out> False;
-      
+
 
    .. seealso:: :func:`IsNumber`, :func:`IsPositiveNumber`, :func:`IsNegativeNumber`, :func:`IsNonZeroInteger`
 
@@ -566,7 +567,7 @@ that only holds for a positive integer would use a pattern such as
       Out> False;
       In> IsNonZeroInteger(-2)
       Out> True;
-      
+
 
    .. seealso:: :func:`IsPositiveInteger`, :func:`IsNegativeInteger`, :func:`IsNotZero`
 
@@ -587,7 +588,7 @@ that only holds for a positive integer would use a pattern such as
       Out> False;
       In> IsInfinity(-Infinity);
       Out> True;
-      
+
 
    .. seealso:: :func:`Integer`
 
@@ -615,7 +616,7 @@ that only holds for a positive integer would use a pattern such as
       The last result is because {Exp(x)} cannot be
       numerically approximated if {x} is not known. Hence
       Yacas can not determine the sign of this expression.
-      
+
 
    .. seealso:: :func:`IsNegativeReal`, :func:`IsPositiveNumber`, :func:`N`
 
@@ -643,7 +644,7 @@ that only holds for a positive integer would use a pattern such as
       The last result is because {Exp(x)} cannot be
       numerically approximated if {x} is not known. Hence
       Yacas can not determine the sign of this expression.
-      
+
 
    .. seealso:: :func:`IsPositiveReal`, :func:`IsNegativeNumber`, :func:`N`
 
@@ -668,7 +669,7 @@ that only holds for a positive integer would use a pattern such as
       Out> True;
       In> IsConstant(Cos(2+x))
       Out> False;
-      
+
 
    .. seealso:: :func:`IsNumber`, :func:`IsInteger`, :func:`VarList`
 
@@ -693,7 +694,7 @@ that only holds for a positive integer would use a pattern such as
       Out> True;
       In> IsGaussianInteger(1+2.5*I)
       Out> False;
-      
+
 
    .. seealso:: :func:`IsGaussianUnit`, :func:`IsGaussianPrime`
 
@@ -724,7 +725,7 @@ that only holds for a positive integer would use a pattern such as
       Out> {R+1,T-1};
       In> MatchLinear(x,Sin(x)*x+(T-1))
       Out> False;
-      
+
 
    .. seealso:: :func:`Integrate`
 
@@ -763,7 +764,7 @@ that only holds for a positive integer would use a pattern such as
       Out> True;
       In> HasExprSome({a+b*2,c/d},c,{List})
       Out> False;
-      
+
 
    .. seealso:: :func:`FuncList`, :func:`VarList`, :func:`HasFunc`
 
@@ -802,7 +803,7 @@ that only holds for a positive integer would use a pattern such as
       Out> True;
       In> HasFuncSome({a+b*2,c/d},*,{List})
       Out> False;
-      
+
 
    .. seealso:: :func:`FuncList`, :func:`VarList`, :func:`HasExpr`
 
