@@ -65,12 +65,10 @@ integration, calculating limits etc.
    :param vector: vector field to take the curl of
    :param basis: list of variables forming the basis
 
-   This function takes the curl of the vector field "vector" with
-   respect to the variables "basis". The curl is defined in the usual
-   way,           Curl(f,x) = {             D(x[2]) f[3] - D(x[3])
-   f[2],             D(x[3]) f[1] - D(x[1]) f[3],             D(x[1])
-   f[2] - D(x[2]) f[1]         }  Both "vector" and "basis" should be
-   lists of length 3.
+   This function takes the curl of the vector field ``vector`` with respect to
+   the variables ``basis``. The curl is defined in the usual way, ``Curl(f,x) =
+   {D(x[2]) f[3] - D(x[3]) f[2], D(x[3]) f[1] - D(x[1])f[3], D(x[1]) f[2] -
+   D(x[2]) f[1]}``.  Both ``vector`` and ``basis`` should be lists of length 3.
 
 .. function:: Diverge(vector, basis)
 
@@ -79,11 +77,67 @@ integration, calculating limits etc.
    :param vector: vector field to calculate the divergence of
    :param basis: list of variables forming the basis
 
-   This function calculates the divergence of the vector field
-   "vector"  with respect to the variables "basis". The divergence is
-   defined as           Diverge(f,x) = D(x[1]) f[1] + ...
-   + D(x[n]) f[n],  where {n} is the length of the lists "vector" and
-   "basis". These lists should have equal length.
+   This function calculates the divergence of the vector field ``vector``  with
+   respect to the variables ``basis``. The divergence is defined as
+   ``Diverge(f,x) = D(x[1]) f[1] + ... + D(x[n]) f[n]``,  where ``n`` is the
+   length of the lists ``vector`` and ``basis``. These lists should have equal
+   length.
+
+.. function:: HessianMatrix(function,var)
+
+   create the Hessian matrix
+
+   :param function: a function in :math:`n` variables
+   :param var: an :math:`n`-dimensional vector of variables
+
+   The function :func:`HessianMatrix` calculates the Hessian matrix of a vector.
+   If :math:`f(x)` is a function of an :math:`n`-dimensional vector :math:`x`,
+   then the :math:`(i,j)`-th element of the Hessian matrix of the function
+   :math:`f(x)` is defined as :math:` Deriv(x[i]) Deriv(x[j]) f(x)`. If the
+   second order mixed partials are continuous, then the Hessian matrix is
+   symmetric (a standard theorem of calculus). The Hessian matrix is used in the
+   second derivative test to discern if a critical point is a local maximum, a
+   local minimum or a saddle point.
+
+   :Example:
+
+   ::
+
+      In> HessianMatrix(3*x^2-2*x*y+y^2-8*y, {x,y} )
+      Out> {{6,-2},{-2,2}};
+      In> PrettyForm(%)
+      /                \
+      | ( 6 )  ( -2 )  |
+      |                |
+      | ( -2 ) ( 2 )   |
+      \                /
+
+
+.. function:: JacobianMatrix(functions,variables)
+
+   calculate the Jacobian matrix of :math:`n` functions in :math:`n` variables
+
+   :param functions: an :math:`n`-dimensional vector of functions
+   :param variables: an :math:`n`-dimensional vector of variables
+
+   The function {JacobianMatrix} calculates the Jacobian matrix  of n
+   functions in n variables.    The :math:`(i,j)`-th element of the
+   Jacobian matrix is defined as the derivative  of :math:`i`-th function
+   with respect to the :math:`j`-th variable.
+
+   :Example:
+
+   ::
+
+      In> JacobianMatrix( {Sin(x),Cos(y)}, {x,y} );
+      Out> {{Cos(x),0},{0,-Sin(y)}};
+      In> PrettyForm(%)
+      /                                 \
+      | ( Cos( x ) ) ( 0 )              |
+      |                                 |
+      | ( 0 )        ( -( Sin( y ) ) )  |
+      \                                 /
+
 
 .. function:: bodied Integrate(expr, var)
               bodied Integrate(expr, var, x1, x2)
@@ -511,11 +565,9 @@ integration, calculating limits etc.
 
    Eulerian numbers
 
-   :param n}, {m: integers
-
-   The Eulerian numbers can be viewed as a generalization of the
-   binomial coefficients,  and are given explicitly by :math:`
-   Sum(j,0,k+1,(-1)^j*Bin(n+1,j)*(k-j+1)^n)`.
+   The `Eulerian numbers <https://en.wikipedia.org/wiki/Eulerian_number>`_ can
+   be viewed as a generalization of the binomial coefficients,  and are given
+   explicitly by :math:`Sum(j,0,k+1,(-1)^j*Bin(n+1,j)*(k-j+1)^n)`.
 
    :Example:
 
@@ -525,7 +577,6 @@ integration, calculating limits etc.
       Out> 302;
       In> Eulerian(10,9)
       Out> 1;
-
 
    .. seealso:: :func:`Bin`
 
@@ -546,11 +597,12 @@ integration, calculating limits etc.
 
    :param list: a list of integers :math:`1,\ldots,n` in some order
 
-   :func:`LeviCivita` implements the Levi-Civita symbol. `list`  should
-   be a list of integers, and this function returns 1 if the integers
-   are in successive order,  eg. `LeviCivita({1,2,3,...})`  would return 1.
-   Swapping two elements of this  list would return -1. So,
-   `LeviCivita({2,1,3})` would evaluate  to -1.
+   :func:`LeviCivita` implements the `Levi-Civita symbol
+   <https://en.wikipedia.org/wiki/Levi-Civita_symbol>`_. ``list``  should be a
+   list of integers, and this function returns 1 if the integers are in
+   successive order,  eg. ``LeviCivita({1,2,3,...})``  would return 1. Swapping
+   two elements of this  list would return -1. So, ``LeviCivita({2,1,3})`` would
+   evaluate  to -1.
 
    :Example:
 
@@ -596,6 +648,7 @@ integration, calculating limits etc.
    :Example:
 
    ::
+
       In> Fibonacci(4)
       Out> 3
       In> Fibonacci(8)

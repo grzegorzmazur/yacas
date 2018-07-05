@@ -47,3 +47,5 @@ the usage of the functions that are useful when doing calculations.
    numerical-methods
    physics
    programming
+   debugging
+   misc

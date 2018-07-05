@@ -8,17 +8,15 @@ faster when the number of elements in a collection of objects doesn't
 change. Operations on lists have better support in the current system.
 
 .. function:: Head(list)
-   
-   Returns the first element of a list
 
-   :param list: a list
+   returns the first element of a list
 
    This function returns the first element of a list. If it is applied
    to a general expression, it returns the first operand. An error is
    returned if ``list`` is an atom.
 
    :Example:
-   
+
    ::
 
       In> Head({a,b,c})
@@ -30,14 +28,10 @@ change. Operations on lists have better support in the current system.
 
 .. function:: Tail(list)
 
-   Returns a list without its first element
-
-   :param list: a list
-
-   This function returns ``list`` without its first element.
+   returns a list without its first element
 
    :Example:
-   
+
    ::
 
       In> Tail({a,b,c})
@@ -45,13 +39,10 @@ change. Operations on lists have better support in the current system.
 
    .. seealso:: :func:`Head`, :func:`Length`
 
-.. function:: Length(object)
+.. function:: Length(list)
+              Length(string)
 
    The length of a list or string
-
-   :param object: a list or string
-
-   Length returns the length of a list or string.
 
    :Example:
 
@@ -67,9 +58,6 @@ change. Operations on lists have better support in the current system.
 .. function:: Map(fn, list)
 
    apply an *n*-ary function to all entries in a list
-
-   :param fn: to apply
-   :param list: list of lists of arguments
 
    This function applies ``fn`` to every list of arguments to be found
    in ``list``. So the first entry of ``list`` should be a list
@@ -92,9 +80,6 @@ change. Operations on lists have better support in the current system.
 .. function:: MapSingle(fn, list)
 
    apply a unary function to all entries in a list
-
-   :param fn: function to apply
-   :param list: list of arguments
 
    The function ``fn`` is successively applied to all entries in
    ``list``, and a list containing the respective results is
@@ -119,9 +104,6 @@ change. Operations on lists have better support in the current system.
 
    vector of uniquely numbered variable names
 
-   :param var: free variable
-   :param n: length of the vector
-
    A list of length ``n`` is generated. The first entry contains the
    identifier ``var`` with the number 1 appended to it, the second entry
    contains ``var`` with the suffix 2, and so on until the last entry
@@ -141,10 +123,7 @@ change. Operations on lists have better support in the current system.
 
    select entries satisfying some predicate
 
-   :param pred: a predicate
-   :param list: a list of elements to select from
-
-   ``Select`` returns a sublist of ``list`` which contains all the
+   :func:`Select` returns a sublist of ``list`` which contains all the
    entries for which the predicate ``pred`` returns ``True`` when
    applied to this entry.
 
@@ -161,9 +140,6 @@ change. Operations on lists have better support in the current system.
 .. function:: Nth(list, n)
 
    return the ``n``-th element of a list
-
-   :param list: list to choose from
-   :param n: index of the entry to pick
 
    The entry with index ``n`` from ``list`` is returned. The first
    entry has index 1. It is possible to pick several entries of the
@@ -221,11 +197,6 @@ change. Operations on lists have better support in the current system.
 
    construct a list
 
-   :param expr1:
-   :param expr2:
-   :param ...:
-      expressions making up the list
-
    A list is constructed whose first entry is ``expr1``, the second
    entry is ``expr2``, and so on. This command is equivalent to the
    expression ``{expr1, expr2, ...}``.
@@ -245,10 +216,8 @@ change. Operations on lists have better support in the current system.
 
 
 .. function:: UnList(list)
-   
-   convert a list to a function application
 
-   :param list: list to be converted
+   convert a list to a function application
 
    This command converts a list to a function application. The first
    entry of ``list`` is treated as a function atom, and the following
@@ -258,7 +227,7 @@ change. Operations on lists have better support in the current system.
 
    Note that ``list`` is evaluated before the function application is
    formed, but the resulting expression is left unevaluated. The
-   functions {UnList()} and {Hold()} both stop the process of
+   functions :func:`UnList()` and :func:`Hold()` both stop the process of
    evaluation.
 
    :Example:
@@ -281,8 +250,6 @@ change. Operations on lists have better support in the current system.
 
    convert a function application to a list
 
-   :param expr: expression to be converted
-
    The parameter ``expr`` is expected to be a compound object, i.e. not
    an atom. It is evaluated and then converted to a list. The first
    entry in the list is the top-level operator in the evaluated
@@ -297,18 +264,13 @@ change. Operations on lists have better support in the current system.
       Out> {Cos,x};
       In> Listify(3*a);
       Out> {*,3,a};
-     
+
    .. seealso:: :func:`List`, :func:`UnList`, :func:`IsAtom`
 
 
 .. function:: Concat(list1, list2, ...)
 
    concatenate lists
-
-   :param list1:
-   :param list2:
-   :param ...:
-      lists to concatenate
 
    The lists ``list1``, ``list2``, ... are evaluated and concatenated. The
    resulting big list is returned.
@@ -329,13 +291,10 @@ change. Operations on lists have better support in the current system.
 
    delete an element from a list
 
-   :param list: list from which an element should be removed
-   :param n: index of the element to remove
-
-   This command deletes the n-th element from "list". The first
-   parameter should be a list, while "n" should be a positive integer
-   less than or equal to the length of "list". The entry with index
-   "n" is removed (the first entry has index 1), and the resulting
+   This command deletes the ``n``-th element from ``list``. The first
+   parameter should be a list, while ``n`` should be a positive integer
+   less than or equal to the length of ``list``. The entry with index
+   ``n`` is removed (the first entry has index 1), and the resulting
    list is returned.
 
    :Example:
@@ -352,19 +311,15 @@ change. Operations on lists have better support in the current system.
 
    insert an element into a list
 
-   :param list: list in which ``expr`` should be inserted
-   :param n: index at which to insert
-   :param expr: expression to insert in ``list``
-
-   The expression "expr" is inserted just before the n-th entry in
-   "list". The first parameter "list" should be a list, while "n"
+   The expression ``expr`` is inserted just before the ``n``-th entry in
+   ``list``. The first parameter ``list`` should be a list, while ``n``
    should be a positive integer less than or equal to the length of
-   "list" plus one. The expression "expr" is placed between the
-   entries in "list" with entries "n-1" and "n". There are two border
-   line cases: if "n" is 1, the expression "expr" is placed in front
-   of the list (just as by the {:} operator); if "n" equals the length
-   of "list" plus one, the expression "expr" is placed at the end of
-   the list (just as by {Append}). In any case, the resulting list is
+   ``list`` plus one. The expression ``expr`` is placed between the
+   entries in ``list`` with indices ``n-1`` and ``n``. There are two border
+   line cases: if ``n`` is 1, the expression ``expr`` is placed in front
+   of the list (just as by the :func:`:` operator); if ``n`` equals the length
+   of ``list`` plus one, the expression ``expr`` is placed at the end of
+   the list (just as by :func:`Append`). In any case, the resulting list is
    returned.
 
    :Example:
@@ -384,10 +339,6 @@ change. Operations on lists have better support in the current system.
 .. function:: Replace(list, n, expr)
 
    replace an entry in a list
-
-   :param list: list of which an entry should be replaced
-   :param n: index of entry to replace
-   :param expr: expression to replace the ``n``-th entry with
 
    The ``n``-th entry of ``list`` is replaced by the expression
    ``expr``. This is equivalent to calling :func:`Delete` and :func:`Insert` in
@@ -409,8 +360,6 @@ change. Operations on lists have better support in the current system.
 
    copy the top level of a list
 
-   :param list: list to be copied
-
    A copy of ``list`` is made and returned. The list is not recursed
    into, only the first level is copied. This is useful in combination
    with the destructive commands that actually modify lists in place
@@ -423,8 +372,7 @@ change. Operations on lists have better support in the current system.
 
    ::
 
-      In> reverse(l_IsList) <-- DestructiveReverse \
-      (FlatCopy(l));
+      In> reverse(l_IsList) <-- DestructiveReverse(FlatCopy(l));
       Out> True;
       In> lst := {a,b,c,d,e};
       Out> {a,b,c,d,e};
@@ -438,14 +386,11 @@ change. Operations on lists have better support in the current system.
 
    test whether a list contains a certain element
 
-   :param list: list to examine
-   :param expr: expression to look for in ``list``
-
-   This command tests whether ``list`` contains the expression
-   ``expr`` as an entry. It returns ``True`` if it does and ``False``
-   otherwise. Only the top level of ``list`` is examined. The
-   parameter ``list`` may also be a general expression, in that case
-   the top-level operands are tested for the occurrence of ``expr``.
+   This command tests whether ``list`` contains the expression ``expr`` as an
+   entry. It returns :const:`True` if it does and :const:`False` otherwise. Only
+   the top level of ``list`` is examined. The parameter ``list`` may also be a
+   general expression, in that case the top-level operands are tested for the
+   occurrence of ``expr``.
 
    :Example:
 
@@ -467,12 +412,9 @@ change. Operations on lists have better support in the current system.
 
    get the index at which a certain element occurs
 
-   :param list: the list to examine
-   :param expr: expression to look for in ``list``
-
    This commands returns the index at which the expression ``expr``
    occurs in ``list``. If ``expr`` occurs more than once, the lowest
-   index is returned. If ``expr`` does not occur at all, {-1} is
+   index is returned. If ``expr`` does not occur at all, -1 is
    returned.
 
    :Example:
@@ -493,9 +435,6 @@ change. Operations on lists have better support in the current system.
 
    append an entry at the end of a list
 
-   :param list: list to append ``expr`` to
-   :param expr: expression to append to the list
-
    The expression ``expr`` is appended at the end of ``list`` and the
    resulting list is returned.
 
@@ -513,12 +452,9 @@ change. Operations on lists have better support in the current system.
 
    .. seealso:: :func:`Concat`, :func:`:`, :func:`DestructiveAppend`
 
-
 .. function:: RemoveDuplicates(list)
 
    remove any duplicates from a list
-
-   :param list: list to act on
 
    This command removes all duplicate elements from a given list and
    returns the resulting list.  To be precise, the second occurrence
@@ -538,14 +474,11 @@ change. Operations on lists have better support in the current system.
 
    swap two elements in a list
 
-   :param list: the list in which a pair of entries should be swapped
-   :param i1, i2: indices of the entries in ``list`` to swap
-
    This command swaps the pair of entries with entries ``i1`` and
    ``i2`` in ``list``. So the element at index ``i1`` ends up at index
    ``i2`` and the entry at ``i2`` is put at index ``i1``. Both indices
    should be valid to address elements in the list. Then the updated
-   list is returned.  {Swap()} works also on generic arrays.
+   list is returned.  :func:`Swap` works also on generic arrays.
 
    :Example:
 
@@ -562,9 +495,6 @@ change. Operations on lists have better support in the current system.
 .. function:: Count(list, expr)
 
    count the number of occurrences of an expression
-
-   :param list: the list to examine
-   :param expr: expression to look for in ``list``
 
    This command counts the number of times that the expression
    ``expr`` occurs in ``list`` and returns this number.
@@ -584,13 +514,9 @@ change. Operations on lists have better support in the current system.
 
    .. seealso:: :func:`Length`, :func:`Select`, :func:`Contains`
 
-
 .. function:: FillList(expr, n)
 
    fill a list with a certain expression
-
-   :param expr: expression to fill the list with
-   :param n: the length of the list to construct
 
    This command creates a list of length ``n`` in which all slots
    contain the expression ``expr`` and returns this list.
@@ -600,7 +526,7 @@ change. Operations on lists have better support in the current system.
    ::
 
       In> FillList(x, 5);
-    Out> {x,x,x,x,x};
+      Out> {x,x,x,x,x};
 
    .. seealso:: :func:`MakeVector`, :func:`ZeroVector`, :func:`RandomIntegerVector`
 
@@ -610,9 +536,6 @@ change. Operations on lists have better support in the current system.
               Drop(list, {m, n})
 
    drop a range of elements from a list
-
-   :param list: list to act on
-   :param n, m: indices
 
    This command removes a sublist of ``list`` and returns a list
    containing the remaining entries. The first calling sequence drops
@@ -642,9 +565,6 @@ change. Operations on lists have better support in the current system.
 
    take a sublist from a list, dropping the rest
 
-   :param list: list to act on
-   :param n, m: indices
-
    This command takes a sublist of ``list``, drops the rest, and
    returns the selected sublist. The first calling sequence selects
    the first ``n`` entries in ``list``. The second form takes the last
@@ -671,9 +591,6 @@ change. Operations on lists have better support in the current system.
 
    partition a list in sublists of equal length
 
-   :param list: list to partition
-   :param n: length of partitions
-
    This command partitions ``list`` into non-overlapping sublists of
    length ``n`` and returns a list of these sublists. The first ``n``
    entries in ``list`` form the first partition, the entries from
@@ -698,12 +615,9 @@ change. Operations on lists have better support in the current system.
 
    flatten expression w.r.t. some operator
 
-   :param expression: an expression
-   :param operator: string with the contents of an infix operator.
-
-   Flatten flattens an expression with respect to a specific operator,
+   :func:`Flatten` flattens an expression with respect to a specific operator,
    converting the result into a list.  This is useful for unnesting an
-   expression. Flatten is typically used in simple simplification
+   expression. :func:`Flatten` is typically used in simple simplification
    schemes.
 
    :Example:
@@ -717,21 +631,15 @@ change. Operations on lists have better support in the current system.
 
    .. seealso:: :func:`UnFlatten`
 
-
 .. function:: UnFlatten(list,operator,identity)
 
-   inverse operation of Flatten
+   inverse operation of :func:`Flatten`
 
-   :param list: list of objects the operator is to work on
-   :param operator: infix operator
-   :param identity: identity of the operator
-
-   UnFlatten is the inverse operation of Flatten. Given a list, it can
-   be turned into an expression representing for instance the addition
-   of these elements by calling UnFlatten with ``+`` as argument to
-   operator, and 0 as argument to identity (0 is the identity for
-   addition, since a+0=a). For multiplication the identity element
-   would be 1.
+   :func:`UnFlatten` is the inverse operation of :func:`Flatten`. Given a list,
+   it can be turned into an expression representing for instance the addition of
+   these elements by calling :func:`UnFlatten` with ``+`` as argument to
+   operator, and 0 as argument to identity (0 is the identity for addition,
+   since a+0=a). For multiplication the identity element would be 1.
 
    :Example:
 
@@ -748,8 +656,6 @@ change. Operations on lists have better support in the current system.
 .. function:: Type(expr)
 
    return the type of an expression
-
-   :param expr: expression to examine
 
    The type of the expression ``expr`` is represented as a string and
    returned. So, if ``expr`` is a list, the string ``"List"`` is
@@ -775,8 +681,6 @@ change. Operations on lists have better support in the current system.
 
    return number of top-level arguments
 
-   :param expr: expression to examine
-
    This function evaluates to the number of top-level arguments of the
    expression ``expr``. The argument ``expr`` may not be an atom,
    since that would lead to an error.
@@ -801,31 +705,26 @@ change. Operations on lists have better support in the current system.
 
    list of variables appearing in an expression
 
-   :param expr: an expression
-   :param list: a list of function atoms
-
-   The command {VarList(expr)} returns a list of all variables that
-   appear in the expression {expr}. The expression is traversed
+   The command :func:`VarList` returns a list of all variables that
+   appear in the expression ``expr``. The expression is traversed
    recursively.
 
-   The command {VarListSome} looks only at arguments of functions in
-   the {list}. All other functions are considered ``opaque`` (as if
-   they do not contain any variables) and their arguments are not
-   checked.  For example, {VarListSome(a + Sin(b-c))} will return {{a,
-   b, c}}, but {``VarListSome(a*Sin(b-c), {*})``} will not look at
-   arguments of {Sin()} and will return {{a,Sin(b-c)}}. Here
-   {Sin(b-c)} is considered a ``variable`` because the function {Sin}
-   does not belong to {list}.
+   The command :func:`VarListSome` looks only at arguments of functions in the
+   ``list``. All other functions are considered opaque (as if they do not
+   contain any variables) and their arguments are not checked.  For example,
+   ``VarListSome(a + Sin(b-c))`` will return ``{a, b, c}``, but
+   ``VarListSome(a*Sin(b-c), {*})`` will not look at arguments of :func:`Sin`
+   and will return ``{a,Sin(b-c)}``. Here ``Sin(b-c)`` is considered a
+   variable because the function :func:`Sin` does not belong to ``list``.
 
-   The command {VarListArith} returns a list of all variables that
-   appear arithmetically in the expression {expr}. This is implemented
-   through {VarListSome} by restricting to the arithmetic
-   functions {+}, {-}, {*}, {/}.  Arguments of other functions are not
-   checked.
+   The command "func:`VarListArith` returns a list of all variables that appear
+   arithmetically in the expression ``expr``. This is implemented through
+   :func:`VarListSome` by restricting to the arithmetic functions ``+``, ``-``,
+   ``*``, ``/``.  Arguments of other functions are not checked.
 
-   Note that since the operators ``{+}`` and ``{-}`` are prefix as
-   well as infix operators, it is currently required to use
-   {Atom(``+``)} to obtain the unevaluated atom ``{+}``.
+   Note that since the operators ``+`` and ``-`` are prefix as well as infix
+   operators, it is currently required to use ``Atom("+")`` to obtain the
+   unevaluated atom ``+``.
 
    :Example:
 
@@ -835,7 +734,7 @@ change. Operations on lists have better support in the current system.
       Out> {x};
       In> VarList(x+a*y)
       Out> {x,a,y};
-      In> VarListSome(x+a*y, {Atom(``+``)})
+      In> VarListSome(x+a*y, {Atom("+")})
       Out> {x,a*y};
       In> VarListArith(x+y*Cos(Ln(x)/x))
       Out> {x,y,Cos(Ln(x)/x)}
@@ -849,11 +748,8 @@ change. Operations on lists have better support in the current system.
 
    list of functions used in an expression
 
-   :param expr: an expression
-
-   The command {FuncList(expr)} returns a list of all function atoms
-   that appear in the expression {expr}. The expression is recursively
-   traversed.
+   The command :func:`FuncList` returns a list of all function atoms that appear
+   in the expression ``expr``. The expression is recursively traversed.
 
    :Example:
 
@@ -869,10 +765,8 @@ change. Operations on lists have better support in the current system.
 
    list of functions used in an expression
 
-   :param expr: an expression
-
-   ``FuncListArith`` is defined through :func:`FuncListSome` to look only
-   at arithmetic operations {+}, {-}, {*}, {/}.
+   :func:`FuncListArith` is defined through :func:`FuncListSome` to look only
+   at arithmetic operations ``+``, ``-``, ``*``, ``/``.
 
    :Example:
 
@@ -888,21 +782,16 @@ change. Operations on lists have better support in the current system.
 
    list of functions used in an expression
 
-   :param expr: an expression
-   :param list: list of function atoms to be considered `transparent`
+   The command :func:`FuncListSome` does the same as :func:`FuncList`, except it
+   only looks at arguments of a given ``list`` of functions. All other functions
+   become opaque (as if they do not contain any other functions).  For example,
+   ``FuncList(a + Sin(b-c))`` will see that the expression has a ``{-}``
+   operation and return {{+,Sin,-}}, but ``FuncListSome(a + Sin(b-c), {+})``
+   will not look at arguments of :func:`Sin` and will return ``{+,Sin}``.
 
-
-   The command {FuncListSome(expr, list)} does the same, except it
-   only looks at arguments of a given {list} of functions. All other
-   functions become ``opaque`` (as if they do not contain any other
-   functions).  For example, {FuncListSome(a + Sin(b-c))} will see
-   that the expression has a ``{-}`` operation and return {{+,Sin,-}},
-   but {FuncListSome(a + Sin(b-c), {+})} will not look at arguments of
-   {Sin()} and will return {{+,Sin}}.  
-
-   Note that since the operators ``{+}`` and ``{-}`` are prefix as
+   Note that since the operators ``+`` and ``-`` are prefix as
    well as infix operators, it is currently required to use
-   {Atom(``+``)} to obtain the unevaluated atom ``{+}``.
+   ``Atom("+")`` to obtain the unevaluated atom ``+``.
 
    :Example:
 
@@ -918,14 +807,11 @@ change. Operations on lists have better support in the current system.
 
    print list with padding
 
-   :param list: a list to be printed
-   :param padding: (optional) a string
-
    Prints ``list`` and inserts the ``padding`` string between each
    pair of items of the list. Items of the list which are strings are
    printed without quotes, unlike :func:`Write`. Items of the list which
    are themselves lists are printed inside braces ``{}``. If padding
-   is not specified, standard one is used (comma, space).
+   is not specified, standard one is used ", " (comma, space).
 
    :Example:
 
@@ -940,12 +826,6 @@ change. Operations on lists have better support in the current system.
 .. function:: Table(body, var, from, to, step)
 
    evaluate while some variable ranges over interval
-
-   :param body: expression to evaluate multiple times
-   :param var: variable to use as loop variable
-   :param from: initial value for ``var``
-   :param to: final value for ``var``
-   :param step: step size with which ``var`` is incremented
 
    This command generates a list of values from ``body``, by assigning
    variable ``var`` values from ``from`` up to ``to``, incrementing
@@ -975,9 +855,7 @@ change. Operations on lists have better support in the current system.
 
    print each entry in a list on a line
 
-   :param list: list to print
-
-   This functions writes out the list {list} in a better readable
+   This functions writes out the list ``list`` in a better readable
    form, by printing every element in the list on a separate line.
 
    :Example:
@@ -1003,22 +881,18 @@ change. Operations on lists have better support in the current system.
 Destructive operations
 ----------------------
 
+Destructive commands run faster than their nondestructive counterparts because
+the latter copy the list before they alter it.
+
 
 .. function:: DestructiveAppend(list, expr)
 
    destructively append an entry to a list
 
-   :param list: list to append ``expr`` to
-   :param expr: expression to append to the list
-
-   This is the destructive counterpart of {Append}. This command
-   yields the same result as the corresponding call to {Append}, but
-   the original list is modified. So if a variable is bound to
-   ``list``, it will now be bound to the list with the expression
-   ``expr`` inserted.
-
-   Destructive commands run faster than their nondestructive
-   counterparts because the latter copy the list before they alter it.
+   This is the destructive counterpart of :func:`Append`. This command yields
+   the same result as the corresponding call to :func:`Append`, but the original
+   list is modified. So if a variable is bound to ``list``, it will now be bound
+   to the list with the expression ``expr`` inserted.
 
    :Example:
 
@@ -1042,16 +916,10 @@ Destructive operations
 
    delete an element destructively from a list
 
-   :param list: list from which an element should be removed
-   :param n: index of the element to remove
-
-   This is the destructive counterpart of {Delete}. This command
-   yields the same result as the corresponding call to {Delete}, but
-   the original list is modified. So if a variable is bound to "list",
-   it will now be bound to the list with the n-th entry removed.
-
-   Destructive commands run faster than their nondestructive
-   counterparts because the latter copy the list before they alter it.
+   This is the destructive counterpart of :func`Delete`. This command yields the
+   same result as the corresponding call to :func:`Delete`, but the original
+   list is modified. So if a variable is bound to ``list``, it will now be bound
+   to the list with the ``n``-th entry removed.
 
    :Example:
 
@@ -1075,18 +943,11 @@ Destructive operations
 
    insert an element destructively into a list
 
-   :param list: list in which ``expr`` should be inserted
-   :param n: index at which to insert
-   :param expr: expression to insert in ``list``
-
    This is the destructive counterpart of :func:`Insert`. This command
    yields the same result as the corresponding call to :func:`Insert`, but
    the original list is modified. So if a variable is bound to
    ``list``, it will now be bound to the list with the expression
    ``expr`` inserted.
-
-   Destructive commands run faster than their nondestructive
-   counterparts because the latter copy the list before they alter it.
 
    :Example:
 
@@ -1120,9 +981,6 @@ Destructive operations
    ``list``, it will now be bound to the list with the expression
    ``expr`` inserted.
 
-   Destructive commands run faster than their nondestructive
-   counterparts because the latter copy the list before they alter it.
-
    :Example:
 
    ::
@@ -1146,16 +1004,10 @@ Destructive operations
 
    reverse a list destructively
 
-   :param list: list to reverse
-
    This command reverses ``list`` in place, so that the original is
    destroyed. This means that any variable bound to ``list`` will now
    have an undefined content, and should not be used any more.  The
    reversed list is returned.
-
-   Destructive commands are faster than their nondestructive
-   counterparts. `Reverse` is the non-destructive version of this
-   function.
 
    :Example:
 
@@ -1173,12 +1025,9 @@ Destructive operations
 Set operations
 --------------
 
-
 .. function:: Intersection(l1, l2)
 
    return the intersection of two lists
-
-   :param l1, l2: two lists
 
    The intersection of the lists ``l1`` and ``l2`` is determined and
    returned. The intersection contains all elements that occur in both
@@ -1199,12 +1048,9 @@ Set operations
 
    .. seealso:: :func:`Union`, :func:`Difference`
 
-
 .. function:: Union(l1, l2)
 
    return the union of two lists
-
-   :param l1, l2: two lists
 
    The union of the lists ``l1`` and ``l2`` is determined and
    returned. The union contains all elements that occur in one or both
@@ -1228,8 +1074,6 @@ Set operations
 .. function:: Difference(l1, l2)
 
    return the difference of two lists
-
-   :param l1}, {l2: two lists
 
    The difference of the lists ``l1`` and ``l2`` is determined and
    returned. The difference contains all elements that occur in ``l1``
@@ -1255,24 +1099,20 @@ Set operations
 Associative map
 ---------------
 
-
 .. function:: Assoc(key, alist)
 
    return element stored in association list
 
-   :param key: string, key under which element is stored
-   :param alist: association list to examine
-
    The association list ``alist`` is searched for an entry stored with
    index ``key``. If such an entry is found, it is returned. Otherwise
-   the atom {Empty} is returned.
+   the atom :const:`Empty` is returned.
 
    Association lists are represented as a list of two-entry lists. The
    first element in the two-entry list is the key, the second element
    is the value stored under this key.
 
-   The call {Assoc(key, alist)} can (probably more intuitively) be
-   accessed as {alist[key]}.
+   The call ``Assoc(key, alist)`` can (probably more intuitively) be
+   accessed as ``alist[key]``.
 
    :Example:
 
@@ -1298,8 +1138,6 @@ Associative map
 
    return the keys in an association list
 
-   :param alist: association list to examine
-   
    All the keys in the association list ``alist`` are assembled in a
    list and this list is returned.
 
@@ -1321,26 +1159,22 @@ Associative map
    .. seealso:: :func:`Assoc`, :func:`AssocDelete`
 
 
-.. function:: AssocDelete
+.. function:: AssocDelete(alist, key)
+              AssocDelete(alist, {key, value})
 
    delete an entry in an association list
-    AssocDelete(alist, ``key``)
-    AssocDelete(alist, {key, value})
 
-   :param alist: association list
-   :param ``key``: string, association key
-   :param value: value of the key to be deleted
-
-   The key {``key``} in the association list {alist} is deleted. (The
+   The key {``key``} in the association list ``alist`` is deleted. (The
    list itself is modified.) If the key was found and successfully
-   deleted, returns ``True``, otherwise if the given key was not found,
-   the function returns ``False``.
+   deleted, returns :const:`True`, otherwise if the given key was not found,
+   the function returns :const:`False`.
 
    The second, longer form of the function deletes the entry that has both the
    specified key and the specified value. It can be used for two purposes:
 
    * to make sure that we are deleting the right value;
-   * if several values are stored on the same key, to delete the specified entry (see the last example).
+   * if several values are stored on the same key, to delete the specified entry
+   (see the last example).
 
    At most one entry is deleted.
 
@@ -1383,21 +1217,17 @@ Sorting
 
    sort a list
 
-   :param list: list to sort
-   :param compare: function used to compare elements of {list}
+   This command returns ``list`` after it is sorted using ``compare`` to compare
+   elements. The function ``compare`` should accept two arguments, which will be
+   elements of ``list``, and compare them. It should return :const:`True` if in the
+   sorted list the second argument should come after the first one, and
+   :const:`False` otherwise.
 
-   This command returns {list} after it is sorted using {compare} to
-   compare elements. The function {compare} should accept two
-   arguments, which will be elements of {list}, and compare them. It
-   should return ``True`` if in the sorted list the second argument
-   should come after the first one, and ``False`` otherwise.
-
-   The function {BubbleSort} uses the so-called :func:`bubble sort
-   <http://en.wikipedia.org/wiki/Bubble_sort>` algorithm to do the
-   sorting by swapping elements that are out of order. This algorithm
-   is easy to implement, though it is not particularly fast. The
-   sorting time is proportional to :math:`n^2` where :math:`n` is the
-   length of the list.
+   The function :func:`BubbleSort` uses the so-called `bubble sort
+   <http://en.wikipedia.org/wiki/Bubble_sort>`_ algorithm to do the sorting by
+   swapping elements that are out of order. This algorithm is easy to implement,
+   though it is not particularly fast. The sorting time is proportional to
+   :math:`n^2` where :math:`n` is the length of the list.
 
    :Example:
 
@@ -1413,19 +1243,16 @@ Sorting
 
    sort a list
 
-   :param list: list to sort
-   :param compare: function used to compare elements of {list}
+   This command returns ``list`` after it is sorted using ``compare`` to compare
+   elements. The function ``compare`` should accept two arguments, which will be
+   elements of ``list``, and compare them. It should return :const:`True` if in the
+   sorted list the second argument should come after the first one, and
+   :const:`False` otherwise.
 
-   This command returns {list} after it is sorted using {compare} to
-   compare elements. The function {compare} should accept two
-   arguments, which will be elements of {list}, and compare them. It
-   should return ``True`` if in the sorted list the second argument
-   should come after the first one, and ``False`` otherwise.
-
-   The function {HeapSort} uses the :func:`heapsort algorithm
-   <http://en.wikipedia.org/wiki/Heapsort>` and is much faster for
-   large lists. The sorting time is proportional to :math:`n*\ln(n)`
-   where :math:`n` is the length of the list.
+   The function :func:`HeapSort` uses the :func:`heapsort algorithm
+   <http://en.wikipedia.org/wiki/Heapsort>` and is much faster for large lists.
+   The sorting time is proportional to :math:`n\ln(n)` where :math:`n` is the
+   length of the list.
 
    :Example:
 
@@ -1439,13 +1266,9 @@ Sorting
 Stack and queue operations
 --------------------------
 
-
 .. function:: Push(stack, expr)
 
    add an element on top of a stack
-
-   :param stack: a list (which serves as the stack container)
-   :param expr: expression to push on ``stack``
 
    This is part of a simple implementation of a stack, internally
    represented as a list. This command pushes the expression ``expr``
@@ -1470,9 +1293,6 @@ Stack and queue operations
 .. function:: Pop(stack, n)
 
    remove an element from a stack
-
-   :param stack: a list (which serves as the stack container)
-   :param n: index of the element to remove
 
    This is part of a simple implementation of a stack, internally
    represented as a list. This command removes the element with index
@@ -1504,8 +1324,6 @@ Stack and queue operations
 
    remove an element from the top of a stack
 
-   :param stack: a list (which serves as the stack container)
-
    This is part of a simple implementation of a stack, internally
    represented as a list. This command removes the element on the top
    of the stack and returns it. This is the last element that is
@@ -1535,8 +1353,6 @@ Stack and queue operations
 
    remove an element from the bottom of a stack
 
-   :param stack: a list (which serves as the stack container)
-
    This is part of a simple implementation of a stack, internally
    represented as a list. This command removes the element at the
    bottom of the stack and returns this element. Of course, the stack
@@ -1564,32 +1380,24 @@ Stack and queue operations
 Global stack
 ^^^^^^^^^^^^
 
+The functions below operate on a global stack, currently implemented as a list
+that is not accessible externally (it is protected through
+:func:`LocalSymbols`).
 
-.. function:: GlobalPop
+.. function:: GlobalPop()
+              GlobalPop(var)
 
    restore variables using a global stack
 
+   :func:`GlobalPop` removes the last pushed value from the stack. If a variable
+   name is given, the variable is assigned, otherwise the popped value is
+   returned. If the global stack is empty, an error message is printed.
 
-.. function:: GlobalPush
+   .. seealso:: :func:`GlobalPush`, :func:`Pop`, :func:`PopFront`
+
+.. function:: GlobalPush(expr)
 
    save variables using a global stack
-    GlobalPop(var)
-    GlobalPop()
-    GlobalPush(expr)
-
-   :param var: atom, name of variable to restore from the stack
-   :param expr: expression, value to save on the stack
-
-
-   These functions operate with a global stack, currently implemented
-   as a list that is not accessible externally (it is protected
-   through {LocalSymbols}).
-
-   {GlobalPush} stores a value on the stack. {GlobalPop} removes the
-   last pushed value from the stack. If a variable name is given, the
-   variable is assigned, otherwise the popped value is returned.
-
-   If the global stack is empty, an error message is printed.
 
    :Example:
 
@@ -1606,4 +1414,4 @@ Global stack
       In> x
       Out> 3;
 
-   .. seealso:: :func:`Push`, :func:`PopFront`
+   .. seealso:: :func:`GlobalPop`, :func:`Push`, :func:`PopFront`
