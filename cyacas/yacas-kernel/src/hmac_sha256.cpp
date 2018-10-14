@@ -47,7 +47,7 @@ namespace {
 
 HMAC_SHA256::HMAC_SHA256(const std::string& key):
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
-    _ctx(new HMAC_CTX))
+    _ctx(new HMAC_CTX)
 #else
     _ctx(HMAC_CTX_new())
 #endif
@@ -69,7 +69,7 @@ HMAC_SHA256::HMAC_SHA256(const HMAC_SHA256& other)
 HMAC_SHA256::~HMAC_SHA256()
 {
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
-    HMACS_CTX_cleanup(ctx);
+    HMAC_CTX_cleanup(_ctx);
     delete _ctx;
 #else
     HMAC_CTX_free(_ctx);
