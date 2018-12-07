@@ -249,6 +249,21 @@ void LispEnvironment::CurrentLocals(LispPtr& aResult)
                                LispObjectAdder(locals));
 }
 
+void LispEnvironment::GlobalVariables(LispPtr& aResult)
+{
+    LispPtr vars(iList->Copy());
+    LispIterator tail(vars);
+    ++tail;
+
+    for (const auto p: iGlobals) {
+        if (p.first->front() == '$' || p.first->front() == '%')
+            continue;
+        *tail = LispAtom::New(*this, *p.first);
+        ++tail;
+    }
+    aResult = LispSubList::New(vars);
+}
+
 LispPrinter& LispEnvironment::CurrentPrinter()
 {
     return iPrinter;

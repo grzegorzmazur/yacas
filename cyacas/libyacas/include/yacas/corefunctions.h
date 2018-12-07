@@ -64,6 +64,8 @@ CORE_KERNEL_FUNCTION("MacroClear",LispClearVar,1,YacasEvaluator::Function | Yaca
 CORE_KERNEL_FUNCTION("Local",LispNewLocal,1,YacasEvaluator::Macro | YacasEvaluator::Variable)
 CORE_KERNEL_FUNCTION("MacroLocal",LispNewLocal,1,YacasEvaluator::Function | YacasEvaluator::Variable)
 
+CORE_KERNEL_FUNCTION("Variables", LispVars, 0, YacasEvaluator::Function | YacasEvaluator::Fixed)
+
 //
 // List and compound object manipulation
 //

@@ -124,6 +124,13 @@ void LispClearVar(LispEnvironment& aEnvironment, int aStackTop)
     InternalTrue(aEnvironment, RESULT);
 }
 
+void LispVars(LispEnvironment& aEnvironment, int aStackTop)
+{
+    LispPtr vars;
+    aEnvironment.GlobalVariables(vars);
+    RESULT = vars;
+}
+
 /* StrCompare returns f1-f2: if f1 < f2 it returns -1, if f1=f2 it
  returns 0, and it returns 1 if f1>f2
  */

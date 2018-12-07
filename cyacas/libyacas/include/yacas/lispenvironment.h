@@ -105,6 +105,7 @@ public:
   void PopLocalFrame();
   void NewLocal(const LispString* aVariable, LispObject* aValue);
   void CurrentLocals(LispPtr& aResult);
+  void GlobalVariables(LispPtr& aResult);
   //@}
 
 public:
