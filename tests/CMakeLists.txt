@@ -65,7 +65,7 @@ install (PROGRAMS ${TEST_YACAS_CMD} DESTINATION share/yacas/tests COMPONENT app)
 
 if (${ENABLE_CYACAS_CONSOLE})
     foreach (_test ${YACAS_TESTS})
-        add_test (NAME cyacas-${_test} WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND "${TEST_YACAS_CMD}" "$<TARGET_FILE:yacas> -pc --rootdir ${PROJECT_SOURCE_DIR}/scripts" ${PROJECT_SOURCE_DIR}/tests ${_test})
+        add_test (NAME cyacas-${_test} WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND "${TEST_YACAS_CMD}" "'$<TARGET_FILE:yacas>' -pc --rootdir '${PROJECT_SOURCE_DIR}/scripts'" ${PROJECT_SOURCE_DIR}/tests ${_test})
     endforeach ()
 endif ()
 
