@@ -54,18 +54,17 @@ set (YACAS_TESTS
   trace.yts
   transforms.yts)
 
-if (WIN32)
-    set (TEST_YACAS_CMD "${PROJECT_SOURCE_DIR}/tests/test-yacas.bat")
-else ()
-    set (TEST_YACAS_CMD "${PROJECT_SOURCE_DIR}/tests/test-yacas")
-endif ()
 
 install (FILES ${YACAS_TESTS} DESTINATION share/yacas/tests COMPONENT app)
 install (PROGRAMS ${TEST_YACAS_CMD} DESTINATION share/yacas/tests COMPONENT app)
 
 if (${ENABLE_CYACAS_CONSOLE})
     foreach (_test ${YACAS_TESTS})
-        add_test (NAME cyacas-${_test} WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND "${TEST_YACAS_CMD}" "'$<TARGET_FILE:yacas>' -pc --rootdir '${PROJECT_SOURCE_DIR}/scripts'" ${PROJECT_SOURCE_DIR}/tests ${_test})
+        if (WIN32)
+            add_test (NAME cyacas-${_test} WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND "${PROJECT_SOURCE_DIR}/tests/test-yacas.bat" "\"$<TARGET_FILE:yacas>\" -pc --rootdir ${PROJECT_SOURCE_DIR}/scripts" "${PROJECT_SOURCE_DIR}/tests" "${_test}")
+        else ()
+            add_test (NAME cyacas-${_test} WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND "${PROJECT_SOURCE_DIR}/tests/test-yacas" "'$<TARGET_FILE:yacas>' -pc --rootdir ${PROJECT_SOURCE_DIR}/scripts" "${PROJECT_SOURCE_DIR}/tests" "${_test}")
+        endif ()
     endforeach ()
 endif ()
 
