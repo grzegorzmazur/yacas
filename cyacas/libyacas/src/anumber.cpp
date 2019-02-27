@@ -1018,7 +1018,7 @@ void Divide(ANumber& aQuotient, ANumber& aRemainder, ANumber& a1, ANumber& a2)
     // precision: the resulting precision will be a1.iExp-a2.iExp.
     // This value should at least be WordDigits, so grow a1
     // by WordDigits-(a1.iExp-a2.iExp) = WordDigits+a2.iExp-a1.iExp
-    int digitsNeeded = WordDigits(aQuotient.iPrecision, 10);
+    const int digitsNeeded = WordDigits(aQuotient.iPrecision, 10);
 
     NormalizeFloat(a2, digitsNeeded);
 
