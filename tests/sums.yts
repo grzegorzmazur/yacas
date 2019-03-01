@@ -1,7 +1,7 @@
 
 Verify(Table(Fibonacci(i), i, 1, 10, 1), {1,1,2,3,5,8,13,21,34,55});
 
-Verify( Sum(k,1,n,k), n*(n+1)/2 );
+TestYacas( Sum(k,1,n,k), n*(n+1)/2 );
 Verify( Simplify(Sum(k,1,n,k^3)), Simplify( (n*(n+1))^2 / 4 ) );
 Verify( Sum(k,1,Infinity,1/k^2), Zeta(2) );
 Verify( Sum(k,1,Infinity,1/k), Infinity );
@@ -10,6 +10,45 @@ Verify( Sum(k,1,Infinity,Sqrt(k)), Infinity );
 Verify( Sum(k,2,Infinity,x^k/k!), Exp(x)-(x+1) );
 Verify( Sum(k,1,n,Sin(a)+Sin(b)+p),(Sin(a)+Sin(b)+p)*n );
 Verify( Sum(i, 0, n-1, r^i), (1-r^(n-1+1))/(1-r) );
+
+// New tests for Sum() ->
+Verify( Sum(k,0,n,k), n*(n+1)/2 );
+Verify( Sum(k,1,n,k), (n^2+n)/2 );
+TestYacas( Sum(k,0,n,k), Sum(k,1,n,k) );
+
+Verify( Sum(k,0,n,2*k), n*(n+1) );
+Verify( Sum(k,1,n,2*k), n^2+n );
+TestYacas( Sum(k,0,n,2*k), Sum(k,1,n,2*k) );
+
+// Geometric sums
+Verify( Sum(i, 0, n, r^i), (1-r^(n+1))/(1-r) );
+Verify( Sum(i, 0, n-1, r^i), (1-r^(n-1+1))/(1-r) );
+Verify( Sum(i, 1, n, r^i), (r-r^(n+1))/(1-r) );
+Verify( Sum(i, 1, n-1, r^i), (r-r^n)/(1-r) );
+Verify( Sum(i, 0, n, i^0), n+1 );
+
+// Sums of powers
+TestYacas( Sum(i, 1, n, i^2), n*(n+1)*(2*n+1)/6 );
+TestYacas( Sum(i, 1, n, i^3), (n*(n+1))^2 / 4 );
+// starting from 0 or 1 gives the same:
+TestYacas( Sum(i, 0, n, i^2), n*(n+1)*(2*n+1)/6 );
+TestYacas( Sum(i, 0, n, i^3), (n*(n+1))^2 / 4 );
+TestYacas( Sum(i, 0, n, i^2), Sum(i, 1, n, i^2) );
+TestYacas( Sum(i, 0, n, i^4), Sum(i, 1, n, i^4 ) );
+
+// Harmonic sums
+Verify( Sum(i, 0, n, 1/i), Undefined );
+Verify( Sum(i, 0, n, a/i), Undefined );
+Verify( Sum(i, 1, n, 1/i), HarmonicNumber(n) );
+Verify( Sum(i, 1, n, a/i), a*HarmonicNumber(n) );
+
+// Low-order polylogarithms
+Verify( Sum(i, 0, n, z^i), (1-z^(n+1))/(1-z) ); // Geometric
+Verify( Sum(i, 1, n, i*z^i), z*(1-(n+1)*z^n + n*z^(n+1))/(1-z)^2 );
+Verify( Sum(i, 1, n, i^2 * z^i), (z*(1+z-((n+1)^2)*(z^n) + (2*(n^2)+2*n-1)*z^(n+1) - (n^2)*z^(n+2))/(1-z)^3) );
+// <- New tests for Sum()
+
+
 
 Verify(Add({1,2,3,4}), 10);
 Verify(Add({1}), 1);
