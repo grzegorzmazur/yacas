@@ -25,6 +25,7 @@ Verify( Sum(i, 0, n, r^i), (1-r^(n+1))/(1-r) );
 Verify( Sum(i, 0, n-1, r^i), (1-r^(n-1+1))/(1-r) );
 Verify( Sum(i, 1, n, r^i), (r-r^(n+1))/(1-r) );
 Verify( Sum(i, 1, n-1, r^i), (r-r^n)/(1-r) );
+Verify( Sum(i, 0, n, i^0), n+1 );
 
 // Sums of powers
 TestYacas( Sum(i, 1, n, i^2), n*(n+1)*(2*n+1)/6 );

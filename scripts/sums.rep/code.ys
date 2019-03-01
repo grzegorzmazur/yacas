@@ -337,8 +337,13 @@ SumFunc(_k,0,_n,_k, n*(n+1)/2 );
 //SumFunc(_k,1,_n,_k^3, (n*(n+1))^2 / 4 );
 SumFunc(_k,1,_n,_k^_p,(Bernoulli(p+1,n+1) - Bernoulli(p+1))/(p+1), IsInteger(p) );
 // starting from 0 or 1 gives the same for IsPositiveInteger(p):
-SumFunc(_k,0,_n,_k^0,Undefined);
 SumFunc(_k,0,_n,_k^_p,(Bernoulli(p+1,n+1) - Bernoulli(p+1))/(p+1), IsPositiveInteger(p) );
+// for p = 0: 0^0 in algebraic setting considered equal to 1:
+// n'th power mean n'fold multiplication:
+//   0-th power: no multiplication at all, but multiply it by 1, as it doesn't change anything
+//               this way we obtain 1 for zeroth power of any number, 0 included.
+SumFunc(_k,0,_n,_k^0,n+1);
+
 
 SumFunc(_k,1,_n,2*_k-1, n^2 );
 SumFunc(_k,1,_n,HarmonicNumber(_k),(n+1)*HarmonicNumber(n) - n );
