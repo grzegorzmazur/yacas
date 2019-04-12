@@ -10,16 +10,16 @@ sudo: required
 osx_image: xcode10.1
 
 before_install:
-  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo add-apt-repository --yes ppa:beineri/opt-qt58-trusty; fi
+  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo add-apt-repository --yes ppa:beineri/opt-qt-5.12.2-xenial; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get -qq update; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y libzmq3-dev libzmqpp-dev; fi
-  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y qt58webengine qt58webchannel qt58svg qt58base qt58location qt58tools; fi
+  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y qt512webengine qt512webchannel qt512svg qt512base qt512location qt512tools; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y libboost-date-time-dev libjsoncpp-dev openssl; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y ant ant-optional junit; fi
   - if [ ${TRAVIS_OS_NAME} = "osx" ]; then brew update && brew tap caskroom/cask && brew install ant && brew install qt; fi
 
 before_script:
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then source /opt/qt58/bin/qt58-env.sh; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then source /opt/qt512/bin/qt512-env.sh; fi
   - mkdir cmake_build && cd cmake_build
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then cmake -DENABLE_CYACAS_KERNEL=Off .. ; fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then unset CXX; unset CC; cmake -G Xcode -DCMAKE_PREFIX_PATH=`brew --prefix qt` -DENABLE_CYACAS_KERNEL=Off .. ; fi
