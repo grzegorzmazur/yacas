@@ -25,13 +25,15 @@ before_script:
   - cd googletest
   - mkdir build && cd build
   - cmake -DCMAKE_BUILD_TYPE=Release ..
-  - sudo cmake --build . --target install --config Release
+  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo env "PATH=$PATH" cmake --build . --target install --config Release; fi
+  - if [ ${TRAVIS_OS_NAME} = "osx" ]; then cmake --build . --target install --config Release; fi
   - cd ../..
   - git clone https://github.com/google/benchmark.git
   - cd benchmark
   - mkdir build && cd build
   - cmake -DCMAKE_BUILD_TYPE=Release ..
-  - sudo cmake --build . --target install --config Release
+  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo env "PATH=$PATH" cmake --build . --target install --config Release; fi
+  - if [ ${TRAVIS_OS_NAME} = "osx" ]; then cmake --build . --target install --config Release; fi
   - cd ../..
   - mkdir cmake_build && cd cmake_build
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then cmake -DENABLE_CYACAS_KERNEL=Off .. ; fi
