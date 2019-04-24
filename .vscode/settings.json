@@ -52,26 +52,26 @@
         "algorithm": "cpp",
         "*.ipp": "cpp",
         "deque": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "vector": "cpp",
+        "numeric": "cpp",
+        "optional": "cpp",
+        "string_view": "cpp"
     },
     "python.pythonPath": "/usr/bin/python3",
-    "restructuredtext.workspaceRoot": "/home/mazur/Code/yacas-develop",
-    "restructuredtext.linter.sphinxDirectives": [
-        "toctree",
-        "function",
-        "seealso"
-    ],
-    "restructuredtext.linter.sphinxTextRoles": [
-        "doc",
-        "ref",
-        "func"
-    ],
     "files.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/CVS": true,
         "**/.DS_Store": true,
-        "**/build": true
-    }
+        "**/.git": true,
+        "**/.hg": true,
+        "**/.svn": true,
+        "**/*.pyc": true,
+        "**/build": true,
+        "**/CVS": true
+    },
+    "files.trimTrailingWhitespace": true,
+    "restructuredtext.confPath": "${workspaceFolder}/docs",
+    "restructuredtext.builtDocumentationPath": "${workspaceRoot}/build/docs/html",
+    "cmake.configureOnOpen": true
 }
