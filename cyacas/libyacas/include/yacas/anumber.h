@@ -1,20 +1,19 @@
 #ifndef YACAS_ANUMBER_H
 #define YACAS_ANUMBER_H
 
-#include "lispstring.h"
-
 #include <cassert>
-#include <vector>
 #include <cctype>
+#include <string>
+#include <vector>
 
 // These define the internal types for the arbitrary precision
 // number module. The larger they are the better. PlatDoubleWord
 // should be at least twice as big as PlatWord, to prevent overflowing
 // during multiplication.
 
-typedef unsigned short PlatWord;
-typedef unsigned long PlatDoubleWord;
-typedef signed long PlatSignedDoubleWord;
+typedef std::uint32_t PlatWord;
+typedef std::uint64_t PlatDoubleWord;
+typedef std::int64_t PlatSignedDoubleWord;
 
 /* Quantities derived from the platform-dependent types for doing
  * arithmetic.
@@ -22,7 +21,6 @@ typedef signed long PlatSignedDoubleWord;
 
 #define WordBits  (8*sizeof(PlatWord))
 #define WordBase  (((PlatDoubleWord)1)<<WordBits)
-#define WordMask  (WordBase-1)
 
 /* Class ANumber represents an arbitrary precision number. it is
  * basically an array of PlatWord objects, with the first element

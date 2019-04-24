@@ -2,7 +2,6 @@
  * by yacas any way
  */
 
-#include "yacas/anumber.h"
 #include "yacas/errors.h"
 #include "yacas/lisperror.h"
 #include "yacas/numbers.h"
@@ -18,7 +17,7 @@ namespace {
     static LispObject*
     FloatToString(ANumber& aInt, LispEnvironment& aEnvironment, int aBase = 10)
     {
-        LispString result;
+        std::string result;
         ANumberToString(result, aInt, aBase);
         return LispAtom::New(aEnvironment, result);
     }
@@ -130,11 +129,19 @@ GcdInteger(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment)
     BigNumber* i1 = int1->Number(0);
     BigNumber* i2 = int2->Number(0);
 
-    if (i1->iNumber.iExp != 0 || i2->iNumber.iExp != 0)
+    BigNumber a(*i1);
+    BigNumber b(*i2);
+
+    if (!a.IsInt() && a.iNumber->iExp != 0)
         throw LispErrNotInteger();
 
-    BigNumber* res = new BigNumber("0", aEnvironment.BinaryPrecision());
-    BaseGcd(res->iNumber, i1->iNumber, i2->iNumber);
+    if (!b.IsInt() && b.iNumber->iExp != 0)
+        throw LispErrNotInteger();
+
+    a.BecomeInt();
+    b.BecomeInt();
+
+    BigNumber* res = new BigNumber(mp::gcd(*i1->_zz, *i2->_zz));
     return new LispNumber(res);
 }
 
@@ -143,15 +150,15 @@ LispObject* PowerFloat(LispObject* int1,
                        LispEnvironment& aEnvironment,
                        int aPrecision)
 {
-    if (int2->Number(aPrecision)->iNumber.iExp != 0)
+    if (int2->Number(aPrecision)->iNumber->iExp != 0)
         throw LispErrNotInteger();
 
     // Raising to the power of an integer can be done fastest by squaring
     // and bitshifting: x^(a+b) = x^a*x^b . Then, regarding each bit
     // in y (seen as a binary number) as added, the algorithm becomes:
     //
-    ANumber x(int1->Number(aPrecision)->iNumber);
-    ANumber y(int2->Number(aPrecision)->iNumber);
+    ANumber x(*int1->Number(aPrecision)->iNumber);
+    ANumber y(*int2->Number(aPrecision)->iNumber);
     const bool neg = y.iNegative;
     y.iNegative = false;
 
@@ -192,7 +199,7 @@ LispObject* PowerFloat(LispObject* int1,
 LispObject*
 SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment, int aPrecision)
 {
-    ANumber i1(int1->Number(aPrecision)->iNumber);
+    ANumber i1(*int1->Number(aPrecision)->iNumber);
     ANumber res(aPrecision);
     i1.ChangePrecision(aPrecision);
     Sqrt(res, i1);
@@ -257,32 +264,67 @@ LispObject* ModFloat(LispObject* int1,
 LispObject*
 LispFactorial(LispObject* int1, LispEnvironment& aEnvironment, int aPrecision)
 {
-    const int nr = InternalAsciiToInt(*int1->String());
+    int nr = InternalAsciiToInt(*int1->String());
 
     if (nr < 0)
         throw LispErrInvalidArg();
 
     ANumber fac("1", aPrecision);
-    for (int i = 2; i <= nr; i++)
+    int i;
+    for (i = 2; i <= nr; i++)
         BaseTimesInt(fac, i, WordBase);
 
     return FloatToString(fac, aEnvironment);
 }
 
-// this will use the new BigNumber/BigInt/BigFloat scheme
-
-BigNumber::BigNumber(const std::string& aString,
-                     int aBasePrecision,
-                     int aBase) :
-    iNumber(0)
+BigNumber::BigNumber(const std::string& aString, int aBasePrecision, int aBase)
 {
     bool isFloat = false;
+
     const int digits = aBasePrecision;
     iPrecision = CalculatePrecision(aString, aBasePrecision, aBase, isFloat);
 
-    iNumber = ANumber(aString, digits, aBase);
+    iNumber.reset(new ANumber(aString, digits, aBase));
 
-    SetIsInteger(!isFloat && iNumber.iExp == 0 && iNumber.iTensExp == 0);
+    if (!isFloat && iNumber->iExp == 0 && iNumber->iTensExp == 0) {
+        _zz.reset(new mp::ZZ(aString, aBase));
+        iNumber.release();
+    }
+}
+
+BigNumber::BigNumber(const mp::ZZ& zz) : iPrecision(0), _zz(new mp::ZZ(zz)) {}
+
+BigNumber::BigNumber(const BigNumber& aOther) :
+    iPrecision(aOther.GetPrecision())
+{
+    if (aOther.iNumber)
+        iNumber.reset(new ANumber(*aOther.iNumber));
+
+    if (aOther._zz)
+        _zz.reset(new mp::ZZ(*aOther._zz));
+}
+
+BigNumber& BigNumber::operator=(const BigNumber& bn)
+{
+    if (this == &bn)
+        return *this;
+
+    iPrecision = bn.GetPrecision();
+
+    if (bn.iNumber) {
+        if (iNumber)
+            iNumber->CopyFrom(*bn.iNumber);
+        else
+            iNumber.reset(new ANumber(*bn.iNumber));
+    }
+
+    if (bn._zz) {
+        if (_zz)
+            *_zz = *bn._zz;
+        else
+            _zz.reset(new mp::ZZ(*bn._zz));
+    }
+    return *this;
 }
 
 /// Export a number to a string in given base to given base digits
@@ -291,7 +333,12 @@ void BigNumber::ToString(std::string& aResult,
                          int aBasePrecision,
                          int aBase) const
 {
-    ANumber num(iNumber);
+    if (_zz) {
+        aResult = _zz->to_string(aBase);
+        return;
+    }
+
+    ANumber num(*iNumber);
 
     // TODO this round-off code is not correct yet, but will work in most cases
     // This is a bit of a messy way to round off numbers. It is probably
@@ -328,22 +375,37 @@ void BigNumber::ToString(std::string& aResult,
         }
     }
 
-    ANumberToString(aResult, num, aBase, !_is_int);
+    ANumberToString(aResult, num, aBase, !_zz);
 }
 
 double BigNumber::Double() const
 {
     std::string str;
-    ANumber num(iNumber);
-    ANumberToString(str, num, 10);
-    return std::stod(str);
+
+    if (IsInt()) {
+        str = _zz->to_string();
+    } else {
+        ANumber num(*iNumber);
+        ANumberToString(str, num, 10);
+    }
+
+    std::istringstream is(str);
+    double d;
+    is >> d;
+    return d;
 }
 
 void BigNumber::Multiply(const BigNumber& aX,
                          const BigNumber& aY,
                          int aPrecision)
 {
-    SetIsInteger(aX.IsInt() && aY.IsInt());
+    if (aX.IsInt() && aY.IsInt()) {
+        BecomeInt();
+        *_zz = *aX._zz;
+        *_zz *= *aY._zz;
+
+        return;
+    }
 
     if (aPrecision < aX.GetPrecision())
         aPrecision = aX.GetPrecision();
@@ -351,139 +413,181 @@ void BigNumber::Multiply(const BigNumber& aX,
     if (aPrecision < aY.GetPrecision())
         aPrecision = aY.GetPrecision();
 
-    iNumber.ChangePrecision(bits_to_digits(aPrecision, 10));
+    BecomeFloat(bits_to_digits(aPrecision, 10));
 
-    ANumber a1(aX.iNumber);
-    ANumber a2(aY.iNumber);
-    ::Multiply(iNumber, a1, a2);
+    BigNumber x(aX);
+    x.BecomeFloat(aPrecision);
+    BigNumber y(aY);
+    y.BecomeFloat(aPrecision);
+
+    ANumber a1(*x.iNumber);
+    ANumber a2(*y.iNumber);
+    ::Multiply(*iNumber, a1, a2);
 }
 
 void BigNumber::Add(const BigNumber& aX, const BigNumber& aY, int aPrecision)
 {
-    SetIsInteger(aX.IsInt() && aY.IsInt());
+    if (aX.IsInt() && aY.IsInt()) {
+        BecomeInt();
+        *_zz = *aX._zz;
+        *_zz += *aY._zz;
+        return;
+    }
+
 
     if (aPrecision < aX.GetPrecision())
         aPrecision = aX.GetPrecision();
     if (aPrecision < aY.GetPrecision())
         aPrecision = aY.GetPrecision();
 
-    ANumber a1(aX.iNumber);
-    ANumber a2(aY.iNumber);
-    ::Add(iNumber, a1, a2);
+    BecomeFloat(aPrecision);
 
-    iNumber.SetPrecision(aPrecision);
+    BigNumber x(aX);
+    BigNumber y(aY);
+
+    x.BecomeFloat(aPrecision);
+    y.BecomeFloat(aPrecision);
+
+
+    ::Add(*iNumber, *x.iNumber, *y.iNumber);
+
+    iNumber->SetPrecision(aPrecision);
 }
 
 void BigNumber::Negate(const BigNumber& aX)
 {
-    if (&aX != this)
-        iNumber.CopyFrom(aX.iNumber);
+    if (this == &aX) {
+        if (IsInt())
+            _zz->neg();
+        else
+            iNumber->Negate();
 
-    iNumber.Negate();
-    SetIsInteger(aX.IsInt());
+        return;
+    }
+    if (aX.IsInt()) {
+        BecomeInt();
+        *_zz = *aX._zz;
+        _zz->neg();
+    } else {
+        BecomeFloat(aX.iPrecision);
+        iNumber->CopyFrom(*aX.iNumber);
+        iNumber->Negate();
+    }
 }
 
 void BigNumber::Divide(const BigNumber& aX, const BigNumber& aY, int aPrecision)
 {
-    if (aPrecision < aX.GetPrecision())
-        aPrecision = aX.GetPrecision();
-    if (aPrecision < aY.GetPrecision())
-        aPrecision = aY.GetPrecision();
-
-    int digitPrecision = bits_to_digits(aPrecision, 10);
-    iPrecision = aPrecision;
-    iNumber.iPrecision = digitPrecision;
-
-    ANumber a1(aX.iNumber);
-    ANumber a2(aY.iNumber);
-    ANumber remainder(digitPrecision);
-
-    if (a2.IsZero())
-        throw LispErrInvalidArg();
-
     if (aX.IsInt() && aY.IsInt()) {
-        if (a1.iExp != 0 || a2.iExp != 0)
-            throw LispErrNotInteger();
+        if (aY._zz->is_zero())
+            throw LispErrInvalidArg();
 
-        SetIsInteger(true);
-        ::IntegerDivide(iNumber, remainder, a1, a2);
+        BecomeInt();
+        _zz.reset(new mp::ZZ(*aX._zz));
+        *_zz /= *aY._zz;
     } else {
-        SetIsInteger(false);
-        ::Divide(iNumber, remainder, a1, a2);
+        int aPrecision = iPrecision;
+
+        if (aPrecision < aX.GetPrecision())
+            aPrecision = aX.GetPrecision();
+        if (aPrecision < aY.GetPrecision())
+            aPrecision = aY.GetPrecision();
+
+        int digitPrecision = bits_to_digits(aPrecision, 10);
+        BecomeFloat(aPrecision);
+
+        BigNumber x(aX);
+        x.BecomeFloat(digitPrecision);
+        BigNumber y(aY);
+        y.BecomeFloat(digitPrecision);
+
+        iPrecision = aPrecision;
+        iNumber->iPrecision = digitPrecision;
+
+        ANumber a1(*x.iNumber);
+        a1.ChangePrecision(digitPrecision);
+        ANumber a2(*y.iNumber);
+        a2.ChangePrecision(digitPrecision);
+        ANumber remainder(digitPrecision);
+
+        if (a2.IsZero())
+            throw LispErrInvalidArg();
+
+        ::Divide(*iNumber, remainder, a1, a2);
     }
 }
 
 void BigNumber::ShiftLeft(const BigNumber& aX, int aNrToShift)
 {
-    if (&aX != this)
-        iNumber.CopyFrom(aX.iNumber);
+    if (this != &aX)
+        *this = aX;
 
-    ::BaseShiftLeft(iNumber, aNrToShift);
+    BecomeInt();
+
+    *_zz <<= aNrToShift;
 }
 
 void BigNumber::ShiftRight(const BigNumber& aX, int aNrToShift)
 {
-    if (&aX != this)
-        iNumber.CopyFrom(aX.iNumber);
+    if (this != &aX)
+        *this = aX;
 
-    ::BaseShiftRight(iNumber, aNrToShift);
+    BecomeInt();
+
+    *_zz >>= aNrToShift;
 }
 
 void BigNumber::BitAnd(const BigNumber& aX, const BigNumber& aY)
 {
-    int lenX = aX.iNumber.size(), lenY = aY.iNumber.size();
-    int min = lenX, max = lenY;
-    if (min > max)
-        std::swap(min, max);
-    iNumber.resize(min);
-    for (int i = 0; i < min; i++)
-        iNumber[i] = aX.iNumber[i] & aY.iNumber[i];
+    BecomeInt();
+
+    BigNumber x(aX);
+    x.BecomeInt();
+    BigNumber y(aY);
+    y.BecomeInt();
+
+    *_zz = *x._zz;
+    *_zz &= *y._zz;
 }
 
 void BigNumber::BitOr(const BigNumber& aX, const BigNumber& aY)
 {
-    int lenX = aX.iNumber.size(), lenY = aY.iNumber.size();
-    int min = lenX, max = lenY;
-    if (min > max)
-        std::swap(min, max);
+    BecomeInt();
 
-    iNumber.resize(max);
+    BigNumber x(aX);
+    x.BecomeInt();
+    BigNumber y(aY);
+    y.BecomeInt();
 
-    int i;
-    for (i = 0; i < min; i++)
-        iNumber[i] = aX.iNumber[i] | aY.iNumber[i];
-    for (; i < lenY; i++)
-        iNumber[i] = aY.iNumber[i];
-    for (; i < lenX; i++)
-        iNumber[i] = aX.iNumber[i];
+    *_zz = *x._zz;
+    *_zz |= *y._zz;
+    _zz->abs();
 }
 
 void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
 {
-    int lenX = aX.iNumber.size(), lenY = aY.iNumber.size();
-    int min = lenX, max = lenY;
-    if (min > max)
-        std::swap(min, max);
+    BecomeInt();
 
-    iNumber.resize(max);
+    BigNumber x(aX);
+    x.BecomeInt();
+    BigNumber y(aY);
+    y.BecomeInt();
 
-    int i;
-    for (i = 0; i < min; i++)
-        iNumber[i] = aX.iNumber[i] ^ aY.iNumber[i];
-    for (; i < lenY; i++)
-        iNumber[i] = aY.iNumber[i];
-    for (; i < lenX; i++)
-        iNumber[i] = aX.iNumber[i];
+    *_zz = *x._zz;
+    *_zz ^= *y._zz;
+    _zz->abs();
 }
 
 void BigNumber::BitNot(const BigNumber& aX)
-{ // FIXME?
-    const int len = aX.iNumber.size();
+{
+    abort();
+    // BecomeInt();
 
-    iNumber.resize(len);
+    // BigNumber x(aX);
+    // x.BecomeInt();
 
-    for (int i = 0; i < len; i++)
-        iNumber[i] = ~aX.iNumber[i];
+    // *_zz = *x._zz;
+    // _zz->neg();
+    // _zz->abs();
 }
 
 /// Bit count operation: return the number of significant bits if integer,
@@ -491,9 +595,16 @@ void BigNumber::BitNot(const BigNumber& aX)
 // give BitCount as platform integer
 signed long BigNumber::BitCount() const
 {
-    if (iNumber.IsZero())
+    if (_zz) {
+        if (_zz->is_zero())
+            return 0;
+        return _zz->no_bits();
+    }
+
+    if (iNumber->IsZero())
         return 0; //-(1L<<30);
-    ANumber num(iNumber);
+
+    ANumber num(*iNumber);
 
     if (num.iTensExp < 0) {
         int digs = WordDigits(num.iPrecision, 10);
@@ -531,43 +642,39 @@ signed long BigNumber::BitCount() const
 
 int BigNumber::Sign() const
 {
-    if (iNumber.iNegative)
+    if (IsInt()) {
+        if (_zz->is_negative())
+            return -1;
+        if (_zz->is_zero())
+            return 0;
+        return 1;
+    }
+
+    if (iNumber->iNegative)
         return -1;
-    if (iNumber.IsZero())
+    if (iNumber->IsZero())
         return 0;
     return 1;
 }
 
 void BigNumber::DumpDebugInfo(std::ostream& os) const
 {
-    iNumber.Print(os, "Number:");
-}
-
-/// integer operation: *this = y mod z
-void BigNumber::Mod(const BigNumber& aY, const BigNumber& aZ)
-{
-    ANumber a1(aY.iNumber);
-    ANumber a2(aZ.iNumber);
-
-    if (a1.iExp != 0 || a2.iExp != 0)
-        throw LispErrNotInteger();
-
-    if (a2.IsZero())
-        throw LispErrInvalidArg();
-
-    ANumber quotient(static_cast<int>(0));
-    ::IntegerDivide(quotient, iNumber, a1, a2);
-
-    if (iNumber.iNegative) {
-        ANumber a3(iNumber);
-        ::Add(iNumber, a3, a2);
-    }
-    SetIsInteger(true);
+    if (!iNumber)
+        os << "No number representation\n";
+    else
+        iNumber->Print(os, "Number:");
 }
 
 void BigNumber::Floor(const BigNumber& aX)
 {
-    iNumber.CopyFrom(aX.iNumber);
+    if (aX.IsInt()) {
+        BecomeInt();
+        *_zz = *aX._zz;
+
+        return;
+    }
+
+    iNumber->CopyFrom(*aX.iNumber);
     //  If iExp is zero, then we can not look at the decimals and determine the
     //  floor.
     // This number has to have digits (see code later in this routine that does
@@ -575,84 +682,101 @@ void BigNumber::Floor(const BigNumber& aX)
     // fail on n*10-m where n was an integer. The code below divides away the
     // 10^-m, but since iExp was zero, this resulted in a premature truncation
     // (seen when n<0)
-    if (iNumber.iExp == 0)
-        iNumber.ChangePrecision(iNumber.iPrecision);
+    if (iNumber->iExp == 0)
+        iNumber->ChangePrecision(iNumber->iPrecision);
 
-    if (iNumber.iExp > 1)
-        iNumber.RoundBits();
+    if (iNumber->iExp > 1)
+        iNumber->RoundBits();
 
     // TODO FIXME slow code! But correct
-    if (iNumber.iTensExp > 0) {
-        while (iNumber.iTensExp > 0) {
-            BaseTimesInt(iNumber, 10, WordBase);
-            iNumber.iTensExp--;
+    if (iNumber->iTensExp > 0) {
+        while (iNumber->iTensExp > 0) {
+            BaseTimesInt(*iNumber, 10, WordBase);
+            iNumber->iTensExp--;
         }
-    } else if (iNumber.iTensExp < 0) {
-        while (iNumber.iTensExp < 0) {
+    } else if (iNumber->iTensExp < 0) {
+        while (iNumber->iTensExp < 0) {
             PlatDoubleWord carry;
-            BaseDivideInt(iNumber, 10, WordBase, carry);
-            iNumber.iTensExp++;
+            BaseDivideInt(*iNumber, 10, WordBase, carry);
+            iNumber->iTensExp++;
         }
     }
-    iNumber.ChangePrecision(iNumber.iPrecision);
+    iNumber->ChangePrecision(iNumber->iPrecision);
     int i = 0;
     int fraciszero = true;
-    while (i < iNumber.iExp && fraciszero) {
-        PlatWord digit = iNumber[i];
+    while (i < iNumber->iExp && fraciszero) {
+        PlatWord digit = (*iNumber)[i];
         if (digit != 0)
             fraciszero = false;
         i++;
     }
-    iNumber.erase(iNumber.begin(), iNumber.begin() + iNumber.iExp);
-    iNumber.iExp = 0;
+    iNumber->erase(iNumber->begin(), iNumber->begin() + iNumber->iExp);
+    iNumber->iExp = 0;
 
-    if (iNumber.iNegative && !fraciszero) {
-        ANumber orig(iNumber);
+    if (iNumber->iNegative && !fraciszero) {
+        ANumber orig(*iNumber);
         ANumber minone("-1", 10);
-        ::Add(iNumber, orig, minone);
+        ::Add(*iNumber, orig, minone);
     }
-    SetIsInteger(true);
+
+    BecomeInt();
 }
 
 void BigNumber::Precision(int aPrecision)
 { // FIXME
     if (aPrecision < 0)
         aPrecision = 0;
-    if (aPrecision < iPrecision) {
-    } else {
-        iNumber.ChangePrecision(bits_to_digits(aPrecision, 10));
-    }
-    SetIsInteger(iNumber.iExp == 0 && iNumber.iTensExp == 0);
+
+    if (iNumber && aPrecision > iPrecision)
+        iNumber->ChangePrecision(bits_to_digits(aPrecision, 10));
+
     iPrecision = aPrecision;
 }
 
 // basic object manipulation
 bool BigNumber::Equals(const BigNumber& aOther) const
 {
-    if (iNumber.iExp == aOther.iNumber.iExp) {
-        ANumber a1(iNumber);
-        ANumber a2(aOther.iNumber);
+    if (IsInt() && aOther.IsInt())
+        return *_zz == *aOther._zz;
 
-        a1.DropTrailZeroes();
-        a2.DropTrailZeroes();
+    if (aOther.IsInt() && aOther._zz->is_zero()) {
+        BigNumber x(*this);
+        std::string s;
+        x.ToString(s, iPrecision);
+    }
 
-        if (a1.IsZero())
-            a1.iNegative = false;
-        if (a2.IsZero())
-            a2.iNegative = false;
-        if (a1.ExactlyEqual(a2))
+    if (IsInt() && _zz->is_zero()) {
+        BigNumber x(aOther);
+        std::string s;
+        x.ToString(s, iPrecision);
+    }
+
+    BigNumber x(*this);
+    BigNumber y(aOther);
+
+    int precision = std::max(x.iPrecision, y.iPrecision);
+
+    x.BecomeFloat(precision);
+    y.BecomeFloat(precision);
+
+    if (x.iNumber->iExp == y.iNumber->iExp) {
+        x.iNumber->DropTrailZeroes();
+        y.iNumber->DropTrailZeroes();
+
+        if (x.iNumber->IsZero())
+            x.iNumber->iNegative = false;
+        if (y.iNumber->IsZero())
+            y.iNumber->iNegative = false;
+        if (x.iNumber->ExactlyEqual(*y.iNumber))
             return true;
         if (IsInt())
             return false;
-        if (a2.iNegative != a1.iNegative)
+        if (aOther.Sign() != Sign())
             return false;
     }
 
     {
         // TODO optimize!!!!
-        int precision = GetPrecision();
-        if (precision < aOther.GetPrecision())
-            precision = aOther.GetPrecision();
         /*For tiny numbers like 1e-600, the following seemed necessary to
     compare it with zero. if (precision< (35*-iNumber->iTensExp)/10) precision =
     (35*-iNumber->iTensExp)/10; if (precision<
@@ -665,57 +789,43 @@ bool BigNumber::Equals(const BigNumber& aOther) const
         diff.Add(*this, otherNeg, bits_to_digits(precision, 10));
 
         // if the numbers are float, make sure they are normalized
-        if (diff.iNumber.iExp || diff.iNumber.iTensExp) {
-            int pr = diff.iNumber.iPrecision;
+        if (diff.iNumber->iExp || diff.iNumber->iTensExp) {
+            int pr = diff.iNumber->iPrecision;
             if (pr < iPrecision)
                 pr = iPrecision;
             if (pr < aOther.iPrecision)
                 pr = aOther.iPrecision;
-            NormalizeFloat(diff.iNumber, WordDigits(pr, 10));
+            NormalizeFloat(*diff.iNumber, WordDigits(pr, 10));
         }
 
-        return !Significant(diff.iNumber);
+        return !Significant(*diff.iNumber);
     }
 }
 
 bool BigNumber::IsInt() const
 {
-    return _is_int;
-}
-
-bool BigNumber::IsIntValue() const
-{
-    // FIXME I need to round first to get more reliable results.
-    if (IsInt())
-        return true;
-
-    ANumber a(iNumber);
-    a.DropTrailZeroes();
-    if (a.iExp == 0 && a.iTensExp == 0)
-        return true;
-    BigNumber num(*this);
-    num.Floor(*this);
-    return Equals(num);
+    return !!_zz;
 }
 
 bool BigNumber::IsSmall() const
 {
     if (IsInt()) {
-        const PlatWord* ptr = &(iNumber[iNumber.size() - 1]);
-        int nr = iNumber.size();
-        while (nr > 1 && *ptr == 0) {
-            ptr--;
-            nr--;
-        }
-        return (nr <= iNumber.iExp + 1);
+        return _zz->no_bits() <= 53;
+        // PlatWord* ptr = &((*iNumber)[iNumber->size() - 1]);
+        // int nr = iNumber->size();
+        // while (nr > 1 && *ptr == 0) {
+        //     ptr--;
+        //     nr--;
+        // }
+        // return (nr <= iNumber->iExp + 1);
     } else
     // a function to test smallness of a float is not present in ANumber, need
     // to code a workaround to determine whether a number fits into double.
     {
-        int tensExp = iNumber.iTensExp;
+        int tensExp = iNumber->iTensExp;
         if (tensExp < 0)
             tensExp = -tensExp;
-        return (iNumber.iPrecision <= 53 // standard float is 53 bits
+        return (iNumber->iPrecision <= 53 // standard float is 53 bits
                 && tensExp < 1021 // 306  // 1021 bits is about 306 decimals
         );
         // standard range of double precision is about 53 bits of mantissa and
@@ -725,18 +835,27 @@ bool BigNumber::IsSmall() const
 
 void BigNumber::BecomeInt()
 {
-    while (iNumber.iTensExp > 0) {
-        BaseTimesInt(iNumber, 10, WordBase);
-        iNumber.iTensExp--;
+    if (IsInt())
+        return;
+
+    while (iNumber->iTensExp > 0) {
+        BaseTimesInt(*iNumber, 10, WordBase);
+        iNumber->iTensExp--;
     }
-    while (iNumber.iTensExp < 0) {
+    while (iNumber->iTensExp < 0) {
         PlatDoubleWord carry = 0;
-        BaseDivideInt(iNumber, 10, WordBase, carry);
-        iNumber.iTensExp++;
+        BaseDivideInt(*iNumber, 10, WordBase, carry);
+        iNumber->iTensExp++;
     }
 
-    iNumber.ChangePrecision(0);
-    SetIsInteger(true);
+    iNumber->ChangePrecision(0);
+
+    ANumber a = *iNumber;
+    std::string s;
+    ANumberToString(s, a, 10, false);
+
+    _zz.reset(new mp::ZZ(s));
+    iNumber.release();
 }
 
 /// Transform integer to float, setting a given bit precision.
@@ -744,20 +863,32 @@ void BigNumber::BecomeInt()
 /// represent the integer).
 void BigNumber::BecomeFloat(int aPrecision)
 { // FIXME: need to specify precision explicitly
-    if (IsInt()) {
-        int precision = aPrecision;
-        if (iPrecision > aPrecision)
-            precision = iPrecision;
-        iNumber.ChangePrecision(
-            bits_to_digits(precision, 10)); // is this OK or ChangePrecision
-                                            // means floating-point precision?
-        SetIsInteger(false);
-    }
+    if (!IsInt())
+        return;
+
+    const int precision = std::max(iPrecision, aPrecision);
+    iNumber.reset(new ANumber(
+        _zz->to_string(),
+        bits_to_digits(precision, 10))); // is this OK or ChangePrecision means
+                                         // floating-point precision?
+
+    _zz.release();
 }
 
 bool BigNumber::LessThan(const BigNumber& aOther) const
 {
-    ANumber a1(this->iNumber);
-    ANumber a2(aOther.iNumber);
+    if (IsInt() && aOther.IsInt())
+        return *_zz < *aOther._zz;
+
+    BigNumber x(*this);
+    BigNumber y(aOther);
+
+    const int precision = std::max(x.iPrecision, y.iPrecision);
+
+    x.BecomeFloat(precision);
+    y.BecomeFloat(precision);
+
+    ANumber a1(*x.iNumber);
+    ANumber a2(*y.iNumber);
     return ::LessThan(a1, a2);
 }

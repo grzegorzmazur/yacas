@@ -140,7 +140,7 @@ IsNonZeroInteger(x) := (IsInteger(x) And x != 0);
 60000 # IsOne(_x) <-- False;
 
 IsEven(n) := IsInteger(n) And ( BitAnd(n,1)  = 0 );
-IsOdd(n)  := IsInteger(n) And ( BitAnd(n,1)  = 1 );
+IsOdd(n)  := IsInteger(n) And ( BitAnd(n,1)  != 0 );
 
 IsEvenFunction(f,x):= (f = Eval(Subst(x,-x)f));
 IsOddFunction(f,x):= (f = Eval(-Subst(x,-x)f));
@@ -319,10 +319,10 @@ HasExprArith(expr, atom) := HasExprSome(expr, atom, {Atom("+"), Atom("-"), *, /}
 HasFuncArith(expr, atom) := HasFuncSome(expr, atom, {Atom("+"), Atom("-"), *, /});
 
 
-/// TODO FIXME document this: FloatIsInt returns True if the argument is integer after removing potential trailing 
+/// TODO FIXME document this: FloatIsInt returns True if the argument is integer after removing potential trailing
 /// zeroes after the decimal point
 // but in fact this should be a call to BigNumber::IsIntValue()
-FloatIsInt(_x) <-- 
+FloatIsInt(_x) <--
    [
      x:=N(Eval(x));
      Local(prec,result,n);
@@ -337,4 +337,4 @@ FloatIsInt(_x) <--
      Builtin'Precision'Set(prec);
      result;
    ];
-//  
+//

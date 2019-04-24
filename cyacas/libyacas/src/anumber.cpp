@@ -7,6 +7,8 @@
 
 #include "yacas/anumber.h"
 
+#include "yacas/lispstring.h"
+
 #include <algorithm>
 #include <cstring>
 #include <iostream>

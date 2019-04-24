@@ -92,6 +92,7 @@ set (HEADERS
 add_library (libyacas ${SOURCES} ${HEADERS})
 set_target_properties (libyacas PROPERTIES OUTPUT_NAME "yacas")
 target_include_directories (libyacas PUBLIC include "${CMAKE_CURRENT_BINARY_DIR}/config")
+target_link_libraries (libyacas libyacas_mp)
 
 install (TARGETS libyacas LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin COMPONENT app)
 install (DIRECTORY include/ DESTINATION include COMPONENT dev)
