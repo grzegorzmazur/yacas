@@ -11,7 +11,9 @@ osx_image: xcode10.1
 
 before_install:
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo add-apt-repository --yes ppa:beineri/opt-qt-5.12.2-xenial; fi
+  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get -qq update; fi
+  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y gcc-8 g++-8; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y libzmq3-dev libzmqpp-dev; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y qt512webengine qt512webchannel qt512svg qt512base qt512location qt512tools libgl1-mesa-dev; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y libboost-date-time-dev libjsoncpp-dev openssl; fi
@@ -21,6 +23,7 @@ before_install:
 before_script:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then source /opt/qt512/bin/qt512-env.sh; fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then unset CXX; unset CC; fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then export CXX=g++-8; export CC=gcc-8; fi
   - git clone https://github.com/google/googletest.git
   - cd googletest
   - mkdir build && cd build
