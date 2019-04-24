@@ -20,9 +20,7 @@ before_install:
 
 before_script:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then source /opt/qt512/bin/qt512-env.sh; fi
-  - mkdir cmake_build && cd cmake_build
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then cmake -DENABLE_CYACAS_KERNEL=Off .. ; fi
-  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then unset CXX; unset CC; cmake -G Xcode -DCMAKE_PREFIX_PATH=`brew --prefix qt` -DENABLE_CYACAS_KERNEL=Off .. ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then unset CXX; unset CC; fi
   - git clone https://github.com/google/googletest.git
   - cd googletest
   - mkdir build && cd build
@@ -35,7 +33,9 @@ before_script:
   - cmake -DCMAKE_BUILD_TYPE=Release ..
   - cmake --build . --target install --config Release
   - cd ../..
-
+  - mkdir cmake_build && cd cmake_build
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then cmake -DENABLE_CYACAS_KERNEL=Off .. ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then cmake -G Xcode -DCMAKE_PREFIX_PATH=`brew --prefix qt` -DENABLE_CYACAS_KERNEL=Off .. ; fi
 
 script:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then make; fi
