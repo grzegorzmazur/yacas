@@ -23,6 +23,12 @@ before_script:
   - mkdir cmake_build && cd cmake_build
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then cmake -DENABLE_CYACAS_KERNEL=Off .. ; fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then unset CXX; unset CC; cmake -G Xcode -DCMAKE_PREFIX_PATH=`brew --prefix qt` -DENABLE_CYACAS_KERNEL=Off .. ; fi
+  - git clone https://github.com/google/benchmark.git
+  - cd benchmark
+  - mkdir build && cd build
+  - cmake -DCMAKE_BUILD_TYPE=Release ..
+  - cmake --build . --target install --config Release
+
 
 script:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then make; fi
