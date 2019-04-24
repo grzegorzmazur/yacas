@@ -24,6 +24,7 @@ before_script:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then cmake -DENABLE_CYACAS_KERNEL=Off .. ; fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then unset CXX; unset CC; cmake -G Xcode -DCMAKE_PREFIX_PATH=`brew --prefix qt` -DENABLE_CYACAS_KERNEL=Off .. ; fi
   - git clone https://github.com/google/benchmark.git
+  - git clone https://github.com/google/googletest.git benchmark/googletest
   - cd benchmark
   - mkdir build && cd build
   - cmake -DCMAKE_BUILD_TYPE=Release ..
