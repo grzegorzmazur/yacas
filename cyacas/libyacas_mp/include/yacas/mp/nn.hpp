@@ -403,7 +403,13 @@ namespace yacas {
             if (is_zero())
                 return 1;
 
+#ifdef _MSC_VER
+            Limb index = 0;
+            _BitScanReverse(&index, _limbs.back());
+            return _limbs.size() * LIMB_BITS - (31 - index);
+#else
             return _limbs.size() * LIMB_BITS - __builtin_clz(_limbs.back());
+#endif
         }
 
         inline unsigned long NN::no_digits() const

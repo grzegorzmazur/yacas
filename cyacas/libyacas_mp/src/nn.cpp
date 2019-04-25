@@ -18,7 +18,7 @@
 
 #include "yacas/mp/nn.hpp"
 
-#include <cstring>
+#include <cctype>
 
 namespace {
     using namespace yacas::mp;
