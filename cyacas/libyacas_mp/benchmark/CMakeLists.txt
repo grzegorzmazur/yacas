@@ -16,10 +16,10 @@
 #
 #
 
-find_package(Threads REQUIRED)
-find_library (BENCHMARK_LIBRARIES benchmark)
+find_package (Threads REQUIRED)
+find_package (benchmark REQUIRED)
 
 add_executable (yacas_mp_nn_benchmark src/nn_benchmark.cpp)
-target_link_libraries (yacas_mp_nn_benchmark libyacas_mp ${BENCHMARK_LIBRARIES} Threads::Threads)
+target_link_libraries (yacas_mp_nn_benchmark libyacas_mp benchmark::benchmark benchmark::benchmark_main Threads::Threads)
 
 add_custom_target(bench COMMAND yacas_mp_nn_benchmark --benchmark_min_time=0.1)
