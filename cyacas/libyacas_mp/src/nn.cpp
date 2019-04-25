@@ -700,7 +700,14 @@ namespace yacas {
             NN A(*this);
             NN B(d);
 
+#ifdef _MSC_VER
+            unsigned long index = 0;
+            _BitScanReverse(&index, B._limbs.back());
+            const unsigned k = 31 - index;
+
+#else
             const unsigned k = __builtin_clz(B._limbs.back());
+#endif
 
             B <<= k;
             A <<= k;

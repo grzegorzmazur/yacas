@@ -404,7 +404,7 @@ namespace yacas {
                 return 1;
 
 #ifdef _MSC_VER
-            Limb index = 0;
+            unsigned long index = 0;
             _BitScanReverse(&index, _limbs.back());
             return _limbs.size() * LIMB_BITS - (31 - index);
 #else
