@@ -22,7 +22,7 @@ environment:
 
 before_build:
   - cd c:\projects\yacas
-  - cmake -H. -Bbuild -G "%CMAKE_GENERATOR%" -DENABLE_CYACAS_KERNEL=Off -DCMAKE_PREFIX_PATH="%QTDIR%"
+  - cmake -H. -Bbuild -G "%CMAKE_GENERATOR%" -DENABLE_CYACAS_KERNEL=Off -DENABLE_CYACAS_UNIT_TESTS=Off -DENABLE_CYACAS_BENCHMARKS=Off  -DCMAKE_PREFIX_PATH="%QTDIR%"
 
 build:
   project: build\ALL_BUILD.vcxproj

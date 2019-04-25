@@ -9,10 +9,14 @@ endforeach ()
 option (ENABLE_CYACAS_CONSOLE "build the C++ yacas engine" ON)
 option (ENABLE_CYACAS_GUI "build the C++ yacas engine" ON)
 option (ENABLE_CYACAS_KERNEL "build the C++ yacas engine" ON)
+option (ENABLE_CYACAS_UNIT_TESTS "build the C++ yacas engine unit tests" ON)
+option (ENABLE_CYACAS_BENCHMARKS "build the C++ yacas engine benchmarks" ON)
 option (ENABLE_JYACAS "build the Java yacas engine" OFF)
 option (ENABLE_DOCS "generate documentation" OFF)
 
 set (ENABLE_CYACAS ${ENABLE_CYACAS_CONSOLE} OR ${ENABLE_CYACAS_GUI} OR ${ENABLE_CYACAS_KERNEL})
+set (ENABLE_CYACAS_UNIT_TESTS ${ENABLE_CYACAS_UNIT_TESTS} AND ${ENABLE_CYACAS})
+set (ENABLE_CYACAS_BENCHMARKS ${ENABLE_CYACAS_BENCHMARKS} AND ${ENABLE_CYACAS})
 
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
