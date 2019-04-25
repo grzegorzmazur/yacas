@@ -47,9 +47,9 @@ namespace yacas {
             }
 
             try {
-                _nn = NN(std::string_view(p, q - p), b);
+                _nn = NN(std::string_view(p, std::distance(p, q)), b);
             } catch (const NN::ParseError& e) {
-                throw ParseError(p, q - p);
+                throw ParseError(p, std::distance(p, q));
             }
 
             if (_nn.is_zero())

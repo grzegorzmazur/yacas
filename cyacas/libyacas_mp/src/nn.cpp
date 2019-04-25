@@ -144,10 +144,10 @@ namespace yacas {
                 else if (std::isalpha(c))
                     d = (c | 0x20) - 'a' + 10;
                 else
-                    throw ParseError(s, q - s.cbegin());
+                    throw ParseError(s, std::distance(s.cbegin(), q));
 
                 if (d >= b)
-                    throw ParseError(s, q - s.cbegin());
+                    throw ParseError(s, std::distance(s.cbegin(), q));
 
                 mul(b);
                 add(d);
