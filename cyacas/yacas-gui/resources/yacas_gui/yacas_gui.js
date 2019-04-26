@@ -667,9 +667,7 @@ function debounce(func, wait, immediate) {
 }
 
 function exportScript() {
-    window.console.log('exportScript');
     var elems = document.getElementsByClassName('InputTextarea');
-    window.console.log(elems);
     var r = [];
     for (var i = 0; i < elems.length; ++i) {
         var s = elems[i].value;
