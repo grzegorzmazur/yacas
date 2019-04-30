@@ -139,7 +139,7 @@ function clearInput() {
 function submitenter(input, event) {
     if (event.which === 13 && event.shiftKey) {
         $('#inputExpression')[0].editor.save();
-        value = $('#inputExpression')[0].editor.getValue();
+        const value = $('#inputExpression')[0].editor.getValue();
         calculate(value);
         return false;
     }
@@ -437,8 +437,8 @@ function calculate(value) {
 }
 
 function parseMathBarResult(value, outputID) {
-    number = outputID.split("_")[1];
-    nextNumber = findNextExpression(number);
+    const number = outputID.split("_")[1];
+    const nextNumber = findNextExpression(number);
     calculateAt(value, "expression_" + nextNumber);
     goto(nextNumber);
 }
