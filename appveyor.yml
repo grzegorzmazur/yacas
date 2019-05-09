@@ -29,3 +29,11 @@ build:
 
 test_script:
   - cmd: msbuild "build\RUN_TESTS.vcxproj" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+
+after_build:
+  - 7z a yacas.zip c:\projects\yacas\install\*
+
+artifacts:
+  - path: yacas.zip
+    name: yacas
+
