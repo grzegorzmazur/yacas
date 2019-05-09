@@ -22,10 +22,10 @@ environment:
 
 before_build:
   - cd c:\projects\yacas
-  - cmake -H. -Bbuild -G "%CMAKE_GENERATOR%" -DENABLE_CYACAS_KERNEL=Off -DENABLE_CYACAS_UNIT_TESTS=Off -DENABLE_CYACAS_BENCHMARKS=Off  -DCMAKE_PREFIX_PATH="%QTDIR%"
+  - cmake -H. -Bbuild -G "%CMAKE_GENERATOR%" -DENABLE_CYACAS_KERNEL=Off -DENABLE_CYACAS_UNIT_TESTS=Off -DENABLE_CYACAS_BENCHMARKS=Off  -DCMAKE_PREFIX_PATH="%QTDIR%" -DCMAKE_INSTALL_PREFIX=c:\projects\yacas\install
 
 build:
-  project: build\ALL_BUILD.vcxproj
+  project: build\INSTALL.vcxproj
 
 test_script:
   - cmd: msbuild "build\RUN_TESTS.vcxproj" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
