@@ -19,6 +19,9 @@
 add_library (libyacas_mp src/nn.cpp src/zz.cpp)
 target_include_directories (libyacas_mp PUBLIC include)
 
+install (TARGETS libyacas_mp LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin COMPONENT app)
+install (DIRECTORY include/ DESTINATION include COMPONENT dev)
+
 if (ENABLE_CYACAS_BENCHMARKS)
     add_subdirectory (benchmark)
 endif ()
