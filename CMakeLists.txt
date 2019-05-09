@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.0)
+cmake_minimum_required (VERSION 3.12)
 
 foreach (p CMP0048 CMP0054 CMP0071)
     if (POLICY ${p})
@@ -14,7 +14,7 @@ option (ENABLE_CYACAS_BENCHMARKS "build the C++ yacas engine benchmarks" ON)
 option (ENABLE_JYACAS "build the Java yacas engine" OFF)
 option (ENABLE_DOCS "generate documentation" OFF)
 
-if (${ENABLE_CYACAS_CONSOLE} OR ${ENABLE_CYACAS_GUI} OR ${ENABLE_CYACAS_KERNEL})
+if (ENABLE_CYACAS_CONSOLE OR ENABLE_CYACAS_GUI OR ENABLE_CYACAS_KERNEL)
     set (ENABLE_CYACAS ON)
 else ()
     set (ENABLE_CYACAS OFF)
@@ -250,7 +250,7 @@ set (YACAS_SCRIPTS
     scripts/univar.rep/sturm.ys.def
     scripts/yacasinit.ys)
 
-if (${ENABLE_CYACAS})
+if (ENABLE_CYACAS)
     install (DIRECTORY scripts/ DESTINATION share/yacas/scripts COMPONENT app)
 endif ()
 
@@ -267,6 +267,6 @@ if (ENABLE_CYACAS)
     add_subdirectory (cyacas)
 endif ()
 
-if (${ENABLE_CYACAS} OR ${ENABLE_JYACAS})
+if (ENABLE_CYACAS OR ENABLE_JYACAS)
     add_subdirectory (tests)
 endif ()

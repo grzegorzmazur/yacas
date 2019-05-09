@@ -58,7 +58,7 @@ set (YACAS_TESTS
 install (FILES ${YACAS_TESTS} DESTINATION share/yacas/tests COMPONENT app)
 install (PROGRAMS ${TEST_YACAS_CMD} DESTINATION share/yacas/tests COMPONENT app)
 
-if (${ENABLE_CYACAS_CONSOLE})
+if (ENABLE_CYACAS_CONSOLE)
     foreach (_test ${YACAS_TESTS})
         if (WIN32)
             add_test (NAME cyacas-${_test} WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND "${PROJECT_SOURCE_DIR}/tests/test-yacas.bat" "$<TARGET_FILE:yacas> -pc --rootdir ${PROJECT_SOURCE_DIR}/scripts" "${PROJECT_SOURCE_DIR}/tests" "${_test}")
@@ -70,7 +70,7 @@ if (${ENABLE_CYACAS_CONSOLE})
     endforeach ()
 endif ()
 
-if (${ENABLE_JYACAS})
+if (ENABLE_JYACAS)
     foreach (_test ${YACAS_TESTS})
         add_test (NAME jyacas-${_test} WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND "${TEST_YACAS_CMD}" "${Java_JAVA_EXECUTABLE} -jar $<TARGET_PROPERTY:jyacas,JAR_FILE>" ${PROJECT_SOURCE_DIR}/tests ${_test})
     endforeach ()

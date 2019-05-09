@@ -20,14 +20,14 @@ endif ()
 add_subdirectory (libyacas_mp)
 add_subdirectory (libyacas)
 
-if (${ENABLE_CYACAS_CONSOLE})
+if (ENABLE_CYACAS_CONSOLE)
     add_subdirectory (yacas)
 endif ()
 
-if (${ENABLE_CYACAS_GUI})
+if (ENABLE_CYACAS_GUI)
     add_subdirectory (yacas-gui)
 endif ()
 
-if (${ENABLE_CYACAS_KERNEL})
+if (ENABLE_CYACAS_KERNEL)
     add_subdirectory (yacas-kernel)
 endif ()

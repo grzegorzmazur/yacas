@@ -19,10 +19,10 @@
 add_library (libyacas_mp src/nn.cpp src/zz.cpp)
 target_include_directories (libyacas_mp PUBLIC include)
 
-if (${ENABLE_CYACAS_BENCHMARKS})
+if (ENABLE_CYACAS_BENCHMARKS)
     add_subdirectory (benchmark)
 endif ()
 
-if (${ENABLE_CYACAS_UNIT_TESTS})
+if (ENABLE_CYACAS_UNIT_TESTS)
     add_subdirectory (test)
 endif ()
