@@ -119,10 +119,6 @@ if (WIN32)
     target_link_libraries (yacas-gui shlwapi)
 endif ()
 
-set_property (TARGET yacas-gui APPEND PROPERTY
-    COMPILE_DEFINITIONS $<$<CONFIG:Debug>:YAGY_ENABLE_INSPECTOR>
-)
-
 add_subdirectory (resources)
 
 if (APPLE)
