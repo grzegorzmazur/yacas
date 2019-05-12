@@ -153,7 +153,7 @@ if (WIN32)
 
 
     install (DIRECTORY "${QT_DLL_DIR}/../plugins/bearer" DESTINATION bin)
-    install (DIRECTORY "${QT_DLL_DIR}/../plugins/platforms" DESTINATION bin FILES MATCHING "*.PDB" EXCLUDE)
+    install (DIRECTORY "${QT_DLL_DIR}/../plugins/platforms" DESTINATION bin FILES_MATCHING "*.PDB" EXCLUDE)
     install (DIRECTORY "${QT_DLL_DIR}/../plugins/imageformats" DESTINATION bin)
     install (DIRECTORY "${QT_DLL_DIR}/../plugins/iconengines" DESTINATION bin)
     install (DIRECTORY "${QT_DLL_DIR}/../plugins/position" DESTINATION bin)
