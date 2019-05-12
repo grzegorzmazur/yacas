@@ -17,6 +17,7 @@
 #
 
 add_library (libyacas_mp src/nn.cpp src/zz.cpp)
+set_target_properties (libyacas_mp PROPERTIES OUTPUT_NAME "yacas_mp")
 target_include_directories (libyacas_mp PUBLIC include)
 
 install (TARGETS libyacas_mp LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin COMPONENT app)
