@@ -45,7 +45,7 @@ function(windeployqt target)
     add_custom_command(TARGET ${target} POST_BUILD
         COMMAND "${CMAKE_COMMAND}" -E
             env PATH="${_qt_bin_dir}" "${WINDEPLOYQT_EXECUTABLE}"
-                --dir \"$<TARGET_FILE_DIR:${target}}>/windeployqt\"
+                --dir \"$<TARGET_FILE_DIR:${target}>/windeployqt\"
                 --no-compiler-runtime
                 --no-angle
                 --no-opengl-sw
@@ -53,7 +53,7 @@ function(windeployqt target)
         COMMENT "Deploying Qt..."
     )
 
-    install(DIRECTORY \"$<TARGET_FILE_DIR:${target}}>/windeployqt\" DESTINATION bin)
+    install(DIRECTORY \"$<TARGET_FILE_DIR:${target}>/windeployqt\" DESTINATION bin)
 
     # windeployqt doesn't work correctly with the system runtime libraries,
     # so we fall back to one of CMake's own modules for copying them over
