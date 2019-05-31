@@ -177,7 +177,7 @@ void MainWindow::on_action_Save_triggered()
 void MainWindow::on_action_Save_As_triggered()
 {
     QString fname = QFileDialog::getSaveFileName(
-        this, "Save", _fname, "Yagy files (*.ygy);;All files (*)");
+        this, "Save", _fname, "Yacas GUI files (*.ygy);;All files (*)");
 
     if (fname.length() == 0)
         return;
