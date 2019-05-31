@@ -6,8 +6,8 @@
 //Otherwise Code-Mirror editor kept scrolling one line up even if there was no line to scroll
 function scrollListener(e) {
 
-    dx = e.wheelDeltaX;
-    dy = -1 * e.wheelDeltaY;
+    const dx = e.wheelDeltaX;
+    const dy = -1 * e.wheelDeltaY;
 
     window.scrollBy(dx, dy);
     e.preventDefault();
@@ -92,7 +92,7 @@ function load() {
             {title: "Copy Yacas Expression", cmd: "copyYacasExpression"}
         ],
         select: function (event, ui) {
-            parents = ui.target.parents('.Expression');
+            const parents = ui.target.parents('.Expression');
 
             if (ui.cmd === "copyTeX") {
                 yacas.copyToClipboard($(parents[0]).children('script')[0].textContent);
@@ -645,7 +645,9 @@ function deleteCurrent() {
 }
 
 function contextHelp() {
+    console.log("help help");
     var e = document.activeElement;
+    console.log(e);
     yacas.help(e.value, e.selectionStart);
 }
 
