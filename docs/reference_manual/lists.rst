@@ -1174,7 +1174,7 @@ Associative map
 
    * to make sure that we are deleting the right value;
    * if several values are stored on the same key, to delete the specified entry
-   (see the last example).
+     (see the last example).
 
    At most one entry is deleted.
 
