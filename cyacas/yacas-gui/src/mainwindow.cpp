@@ -74,6 +74,12 @@ MainWindow::MainWindow(Preferences& prefs, QWidget* parent) :
             &Preferences::changed,
             this,
             &MainWindow::handle_prefs_changed);
+
+#ifdef __APPLE__
+    // workaround for a qt bug causing toolbar to be displayed with black
+    // background when QWebEngineView is used
+    unifiedTitleAndToolBarOnMac(false);
+#endif
 }
 
 MainWindow::~MainWindow()
