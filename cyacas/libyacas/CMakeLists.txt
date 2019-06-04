@@ -101,7 +101,7 @@ install (FILES "${CMAKE_CURRENT_BINARY_DIR}/config/yacas/yacas_version.h" DESTIN
 if (APPLE)
   add_library (libyacas_framework SHARED ${SOURCES} ${HEADERS})
   set_target_properties(libyacas_framework PROPERTIES OUTPUT_NAME "yacas" VERSION ${PROJECT_VERSION} SOVERSION ${PROJECT_VERSION} FRAMEWORK ON)
-  target_link_libraries(libyacas_framework libyacas_mp)
+  target_link_libraries(libyacas_framework libyacas_mp_framework)
   target_include_directories (libyacas_framework PUBLIC include "${CMAKE_CURRENT_BINARY_DIR}/config")
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/scripts $<TARGET_FILE_DIR:libyacas_framework>/Resources/scripts)
   add_custom_command(TARGET libyacas_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/include $<TARGET_FILE_DIR:libyacas_framework>/Headers)

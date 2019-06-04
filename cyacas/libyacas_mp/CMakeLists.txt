@@ -16,12 +16,30 @@
 #
 #
 
-add_library (libyacas_mp src/nn.cpp src/zz.cpp)
+set (SOURCES
+  src/nn.cpp
+  src/zz.cpp)
+
+set (HEADERS
+  include/yacas/mp/nn.hpp
+  include/yacas/mp/zz.hpp)
+
+
+add_library (libyacas_mp ${SOURCES} ${HEADERS})
 set_target_properties (libyacas_mp PROPERTIES OUTPUT_NAME "yacas_mp")
 target_include_directories (libyacas_mp PUBLIC include)
 
 install (TARGETS libyacas_mp LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin COMPONENT app)
 install (DIRECTORY include/ DESTINATION include COMPONENT dev)
+
+if (APPLE)
+  add_library (libyacas_mp_framework SHARED ${SOURCES} ${HEADERS})
+  set_target_properties(libyacas_mp_framework PROPERTIES OUTPUT_NAME "yacas_mp" VERSION ${PROJECT_VERSION} SOVERSION ${PROJECT_VERSION} FRAMEWORK ON)
+  add_custom_command(TARGET libyacas_mp_framework POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/include $<TARGET_FILE_DIR:libyacas_mp_framework>/Headers)
+  add_custom_command(TARGET libyacas_mp_framework POST_BUILD COMMAND cd "$<TARGET_FILE_DIR:libyacas_mp_framework>/../.." && rm -f Headers && ln -s Versions/Current/Headers Headers)
+  install (TARGETS libyacas_mp_framework FRAMEWORK DESTINATION ${CMAKE_INSTALL_FRAMEWORK_PREFIX} COMPONENT framework)
+endif()
+
 
 if (ENABLE_CYACAS_BENCHMARKS)
     add_subdirectory (benchmark)
