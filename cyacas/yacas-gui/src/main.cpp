@@ -31,13 +31,13 @@ int main(int argc, char* argv[])
 
         Preferences prefs(app);
 
-        MainWindow* widget = new MainWindow(prefs);
+        MainWindow widget(prefs);
 
 #ifndef __APPLE__
-        addSplashScreen(widget);
+        addSplashScreen(&widget);
 #endif
 
-        widget->show();
+        widget.show();
 
         return app.exec();
     } catch (const std::exception& e) {
