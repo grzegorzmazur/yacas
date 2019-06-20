@@ -6,7 +6,7 @@ Preferences::Preferences(const QApplication& app)
 {
     QDir dir(app.applicationDirPath());
 #ifdef __APPLE__
-    dir.cd("../Frameworks/yacas.framework/Versions/Current/Resources/scripts");
+    dir.cd("../Resources/scripts");
 #else
     dir.cd("../share/yacas/scripts");
 #endif
