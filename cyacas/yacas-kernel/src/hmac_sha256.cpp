@@ -61,7 +61,12 @@ HMAC_SHA256::HMAC_SHA256(const std::string& key, const std::string& msg) :
     update(msg);
 }
 
-HMAC_SHA256::HMAC_SHA256(const HMAC_SHA256& other)
+HMAC_SHA256::HMAC_SHA256(const HMAC_SHA256& other):
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+    _ctx(new HMAC_CTX)
+#else
+    _ctx(HMAC_CTX_new())
+#endif
 {
     HMAC_CTX_copy(_ctx, const_cast<HMAC_CTX*>(other._ctx));
 }
