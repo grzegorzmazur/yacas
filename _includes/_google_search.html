@@ -3,8 +3,7 @@
 <script language="Javascript" type="text/javascript">
 	function google_search() {
 		var query = document.getElementById("google-search").value;
-		//window.open("https://www.google.com/search?q=" + query + "+site:" + "{{ google_search_site | cgi_escape }}");
-        window.open("https://www.google.com/search?q=" + query + "+site:http://www.yacas.org");
+		window.open("https://www.google.com/search?q=" + query + "+site:" + "{{ google_search_site | cgi_escape }}");
 	}
 </script>
 

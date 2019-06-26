@@ -1,6 +1,6 @@
 ---
 layout: default
-format: blog-index
+format: frontpage
 ---
 <div id="header-home">
     <div class="row">
@@ -16,35 +16,39 @@ format: blog-index
 *
 {% endcomment %}
 <div class="row t60">
-	{% if page.widget1.title %}
-		{% include frontpage-widget widget=page.widget1 %}
+	{% if page.widget1.image or page.widget1.video or page.widget1.title %}
+		{% include _frontpage-widget.html widget=page.widget1 %}
 	{% endif %}
 
-
-	{% if page.widget2.title %}
-		{% include frontpage-widget widget=page.widget2 %}
+	{% if page.widget2.image or page.widget2.video or page.widget2.title %}
+		{% include _frontpage-widget.html widget=page.widget2 %}
 	{% endif %}
 
-
-	{% if page.widget3.title %}
-		{% include frontpage-widget widget=page.widget3 %}
+	{% if page.widget3.image or page.widget3.video or page.widget3.title %}
+		{% include _frontpage-widget.html widget=page.widget3 %}
 	{% endif %}
 </div><!-- /.row -->
-<div class="row t60">
-	{% if page.widget4.title %}
-		{% include frontpage-widget widget=page.widget4 %}
-	{% endif %}
 
 
-	{% if page.widget5.title %}
-		{% include frontpage-widget widget=page.widget5 %}
-	{% endif %}
 
+{% comment %}
+*
+* First check, if there is a call for action-button
+*
+{% endcomment %}
+{% if page.callforaction.url contains 'http' %}
+{% assign url = '' %}
+{% else %}
+{% capture url %}{{ site.url }}{{ site.baseurl }}{% endcapture %}
+{% endif %}
+{% if page.callforaction %}
+    <div class="row t60 b60">
+        <div class="small-12 text-center columns">
+            <a class="button large radius {{ page.callforaction.style }}" href="{{ url }}{{ page.callforaction.url }}"{% if page.callforaction.url contains 'http' %} target="_blank" {% endif %}>{{ page.callforaction.text }}</a>
+        </div><!-- /.small-12.columns -->
+    </div><!-- /.row -->
+{% endif %}
 
-	{% if page.widget6.title %}
-		{% include frontpage-widget widget=page.widget6 %}
-	{% endif %}
-</div><!-- /.row -->
 
 
 {% comment %}
@@ -59,10 +63,10 @@ format: blog-index
             {% for post in site.posts limit:1 %}
             {% if post.image.homepage %}
             <p>
-                <a href="{{ site.url }}{{ site.baseurl }}{{ post.url }}" title="{{ post.title escape_once }}"><img width="970" src="{{ site.urlimg }}{{ post.image.homepage }}" alt="{{ page.title escape_once }}"></a>
+                <a href="{{ site.url }}{{ site.baseurl }}{{ post.url }}" title="{{ post.title | escape_once }}"><img width="970" src="{{ site.urlimg }}{{ post.image.homepage }}" alt="{{ page.title | escape_once }}"></a>
             </p>
 
-            {% if post.image.caption_url && post.image.caption %}
+            {% if post.image.caption_url and post.image.caption %}
             <p class="text-right caption">
                 <a href="{{ post.image.caption_url }}">{{ post.image.caption }}</a>
             </p>
@@ -82,7 +86,7 @@ format: blog-index
             <h2><a href="{{ site.url }}{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></h2>
             <p>
                 {% if post.meta_description %}{{ post.meta_description | strip_html | escape }}{% else post.teaser %}{{ post.teaser | strip_html | escape }}{% endif %}
-                <a href="{{ site.url }}{{ site.baseurl }}{{ post.url }}" title="Read {{ post.title escape_once }}"><strong>{{ site.data.language.read_more }}</strong></a>
+                <a href="{{ site.url }}{{ site.baseurl }}{{ post.url }}" title="Read {{ post.title | escape_once }}"><strong>{{ site.data.language.read_more }}</strong></a>
             </p>
             {% endfor %}
         </div><!-- /.medium-5.columns -->

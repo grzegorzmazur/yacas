@@ -1,4 +1,12 @@
+{% if page.mediaplayer == true %}
+<script>
+$('audio,video').mediaelementplayer();
+</script>
+{% endif %}
+
+
 <script src="{{ site.url }}{{ site.baseurl }}/assets/js/javascript.min.js"></script>
+
 
 {% if page.header.image_fullwidth %}
 <script>
@@ -24,11 +32,12 @@
 {% endif %}
 
 
+
 {% comment %}
 #  Start of Tawk.to Script
-#  
+#
 #  More information in _config.yml
-#  
+#
 {% endcomment %}
 {% if site.tawkto_embed_uri and page.tawkto == true %}
 <script type="text/javascript">

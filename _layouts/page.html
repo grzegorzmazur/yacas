@@ -8,9 +8,9 @@ format: post
 			<header>
 				{% if page.image.title %}
 				<figure>
-					<img src="{{ site.urlimg }}{{ page.image.title }}" width="970" alt="{{ page.title escape_once }}" itemprop="image">
+					<img src="{{ site.urlimg }}{{ page.image.title }}" width="970" alt="{{ page.title | escape_once }}" itemprop="image">
 
-					{% if page.image.caption_url && page.image.caption %}
+					{% if page.image.caption_url and page.image.caption %}
 					<figcaption class="text-right">
 						<a href="{{ page.image.caption_url }}">{{ page.image.caption }}</a>
 					</figcaption>
@@ -22,10 +22,10 @@ format: post
 				</figure>
 				{% endif %}
 
-				<span itemprop="name">
+				<div itemprop="name">
 					{% if page.subheadline %}<p class="subheadline">{{ page.subheadline }}</p>{% endif %}
 					<h1>{{ page.title }}</h1>
-				</span>
+				</div>
 			</header>
 
 
@@ -35,16 +35,16 @@ format: post
 			</p>
 			{% endif %}
 
-			<span itemprop="articleSection">
+			<div itemprop="articleSection">
 			{{ content }}
-			</span>
+			</div>
 
 			{% if page.show_meta == true %}
-			{% include meta_information %}
+			{% include _meta_information.html %}
 			{% endif %}
 
 			{% if page.comments == true %}
-			{% include comments %}
+			{% include _comments.html %}
 			{% endif %}
 		</article>
 	</div><!-- /.medium-8.columns -->
@@ -52,14 +52,14 @@ format: post
 
 	{% if page.sidebar == "left" %}
 	<div class="medium-4 columns medium-pull-8">
-		{% include sidebar %}
+		{% include _sidebar.html %}
 	</div><!-- /.medium-4.columns -->
 	{% endif %}
 
 
 	{% if page.sidebar == "right" %}
 	<div class="medium-4 columns">
-		{% include sidebar %}
+		{% include _sidebar.html %}
 	</div><!-- /.medium-4.columns -->
 	{% endif %}
 </div><!-- /.row -->
