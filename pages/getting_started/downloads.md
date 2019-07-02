@@ -18,75 +18,81 @@ breadcrumb: true
 
 <div class="medium-8 medium-pull-4 columns" markdown="1">
 
-## Current stable version (1.6.1)
-* source code: [tgz](https://github.com/grzegorzmazur/yacas/archive/v1.6.1.tar.gz) and [zip](https://github.com/grzegorzmazur/yacas/archive/v1.6.1.zip)
+## Current stable version (1.7.0)
+* source code: [tgz](https://github.com/grzegorzmazur/yacas/archive/v1.7.0.tar.gz) and [zip](https://github.com/grzegorzmazur/yacas/archive/v1.7.0.zip)
 * binary packages for
-  * [Java](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-1.6.1.jar)
-  * Linux
-    * Distribution-independent
-      * Snap
-        * Make sure you have snap installed
-        * Open terminal and execute `snap install yacas`
-        * To run yacas in text console execute `yacas`
-        * To run yacas in graphical mode execute `yacas.gui`
-      * Flatpak
-        * Make sure you have flatpak installed
-        * Open terminal and execute
-          `flatpak remote-add --from gnome https://sdk.gnome.org/gnome.flatpakrepo`
-          followed by `flatpak install gnome org.gnome.Platform//3.22`
-        * Download [text](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-1.6.1.flatpak) and/or [graphical](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-gui-1.6.1.flatpak) yacas console bundles.
-        * Execute `flatpak install  --user --bundle yacas-1.6.1.flatpak` to install yacas text console and/or `flatpak install  --user --bundle yacas-gui-1.6.1.flatpak` to install yacas graphical console
-        * To run yacas in text console execute `flatpak run org.yacas.yacas`
-        * To run yacas in graphic mode execute `flatpak run org.yacas.yacas-gui`
-    * RedHat
-      * Fedora 24 (64 bit):
-        * [common files (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-common-1.6.1-1.fc24.x86_64.rpm)
-        * [documentation (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-doc-1.6.1-1.fc24.x86_64.rpm)
-        * [text console (alternative)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-console-1.6.1-1.fc24.x86_64.rpm)
-        * [graphical console (alternative)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-gui-1.6.1-1.fc24.x86_64.rpm)
-        * [development (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-devel-1.6.1-1.fc24.x86_64.rpm)
-        * [debug info (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-debuginfo-1.6.1-1.fc24.x86_64.rpm)
-      * Fedora 23 (64 bit):
-        * [common files (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-common-1.6.1-1.fc23.x86_64.rpm)
-        * [documentation (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-doc-1.6.1-1.fc23.x86_64.rpm)
-        * [text console (alternative)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-console-1.6.1-1.fc23.x86_64.rpm)
-        * [graphical console (alternative)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-gui-1.6.1-1.fc23.x86_64.rpm)
-        * [development (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-devel-1.6.1-1.fc23.x86_64.rpm)
-        * [debug info (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-debuginfo-1.6.1-1.fc23.x86_64.rpm)
-      * installation:
-        * download all mandatory files
-        * download at least one of alternative files
-        * optionally, download the optional files
-        * open terminal and execute `sudo dnf install Downloads/yacas-*-1.6.1-1.fc*.x86_64.rpm`
-    * Ubuntu
-      * 16.10 (64 bit):
-        * [common files (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-common_1.6.1-1yakkety1_all.deb)
-        * [documentation (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-doc_1.6.1-1yakkety1_all.deb)
-        * [text console (alternative)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-console_1.6.1-1yakkety1_amd64.deb)
-        * [graphical console (alternative)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-gui_1.6.1-1yakkety1_amd64.deb)
-        * [development (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-dev_1.6.1-1yakkety1_amd64.deb)
-        * [Jupyter Notebook kernel (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-kernel_1.6.1-1yakkety1_amd64.deb)
-      * 16.04 (64 bit):
-        * [common files (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-common_1.6.1-1xenial1_all.deb)
-        * [documentation (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-doc_1.6.1-1xenial1_all.deb)
-        * [text console (alternative)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-console_1.6.1-1xenial1_amd64.deb)
-        * [graphical console (alternative)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-gui_1.6.1-1xenial1_amd64.deb)
-        * [development (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-dev_1.6.1-1xenial1_amd64.deb)
-        * [Jupyter Notebook kernel (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-kernel_1.6.1-1xenial1_amd64.deb)
-      * installation:
-        * download all mandatory files
-        * download at least one of alternative files
-        * optionally, download the optional files
-        * open terminal and execute `sudo apt install ./Downloads/yacas-*_1.6.1-1*1_*.deb`
-  * [macOS](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-1.6.1-macOS.pkg)
+  * [Java](https://github.com/grzegorzmazur/yacas/releases/download/v1.7.0/yacas-1.7.0.jar)
   * Microsoft Windows (7 or newer)
-    * [archive (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-1.6.1-win64.zip)
+    * [archive (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.7.0/yacas-1.7.0-win64.zip)
 
 ## Development version
   * [repository](https://github.com/grzegorzmazur/yacas/tree/develop)
   * [source code](https://github.com/grzegorzmazur/yacas/archive/develop.zip)
 
 ## Archive
+* yacas version 1.6.1
+  * source code: [tgz](https://github.com/grzegorzmazur/yacas/archive/v1.6.1.tar.gz) and [zip](https://github.com/grzegorzmazur/yacas/archive/v1.6.1.zip)
+  * binary packages for
+    * [Java](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-1.6.1.jar)
+    * Linux
+      * Distribution-independent
+        * Snap
+          * Make sure you have snap installed
+          * Open terminal and execute `snap install yacas`
+          * To run yacas in text console execute `yacas`
+          * To run yacas in graphical mode execute `yacas.gui`
+        * Flatpak
+          * Make sure you have flatpak installed
+          * Open terminal and execute
+            `flatpak remote-add --from gnome https://sdk.gnome.org/gnome.flatpakrepo`
+            followed by `flatpak install gnome org.gnome.Platform//3.22`
+          * Download [text](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-1.6.1.flatpak) and/or [graphical](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-gui-1.6.1.flatpak) yacas console bundles.
+          * Execute `flatpak install  --user --bundle yacas-1.6.1.flatpak` to install yacas text console and/or `flatpak install  --user --bundle yacas-gui-1.6.1.flatpak` to install yacas graphical console
+          * To run yacas in text console execute `flatpak run org.yacas.yacas`
+          * To run yacas in graphic mode execute `flatpak run org.yacas.yacas-gui`
+      * RedHat
+        * Fedora 24 (64 bit):
+          * [common files (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-common-1.6.1-1.fc24.x86_64.rpm)
+          * [documentation (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-doc-1.6.1-1.fc24.x86_64.rpm)
+          * [text console (alternative)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-console-1.6.1-1.fc24.x86_64.rpm)
+          * [graphical console (alternative)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-gui-1.6.1-1.fc24.x86_64.rpm)
+          * [development (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-devel-1.6.1-1.fc24.x86_64.rpm)
+          * [debug info (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-debuginfo-1.6.1-1.fc24.x86_64.rpm)
+        * Fedora 23 (64 bit):
+          * [common files (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-common-1.6.1-1.fc23.x86_64.rpm)
+          * [documentation (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-doc-1.6.1-1.fc23.x86_64.rpm)
+          * [text console (alternative)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-console-1.6.1-1.fc23.x86_64.rpm)
+          * [graphical console (alternative)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-gui-1.6.1-1.fc23.x86_64.rpm)
+          * [development (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-devel-1.6.1-1.fc23.x86_64.rpm)
+          * [debug info (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-debuginfo-1.6.1-1.fc23.x86_64.rpm)
+        * installation:
+          * download all mandatory files
+          * download at least one of alternative files
+          * optionally, download the optional files
+          * open terminal and execute `sudo dnf install Downloads/yacas-*-1.6.1-1.fc*.x86_64.rpm`
+      * Ubuntu
+        * 16.10 (64 bit):
+          * [common files (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-common_1.6.1-1yakkety1_all.deb)
+          * [documentation (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-doc_1.6.1-1yakkety1_all.deb)
+          * [text console (alternative)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-console_1.6.1-1yakkety1_amd64.deb)
+          * [graphical console (alternative)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-gui_1.6.1-1yakkety1_amd64.deb)
+          * [development (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-dev_1.6.1-1yakkety1_amd64.deb)
+          * [Jupyter Notebook kernel (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-kernel_1.6.1-1yakkety1_amd64.deb)
+        * 16.04 (64 bit):
+          * [common files (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-common_1.6.1-1xenial1_all.deb)
+          * [documentation (mandatory)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-doc_1.6.1-1xenial1_all.deb)
+          * [text console (alternative)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-console_1.6.1-1xenial1_amd64.deb)
+          * [graphical console (alternative)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-gui_1.6.1-1xenial1_amd64.deb)
+          * [development (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-dev_1.6.1-1xenial1_amd64.deb)
+          * [Jupyter Notebook kernel (optional)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-kernel_1.6.1-1xenial1_amd64.deb)
+        * installation:
+          * download all mandatory files
+          * download at least one of alternative files
+          * optionally, download the optional files
+          * open terminal and execute `sudo apt install ./Downloads/yacas-*_1.6.1-1*1_*.deb`
+    * [macOS](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-1.6.1-macOS.pkg)
+    * Microsoft Windows (7 or newer)
+      * [archive (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.6.1/yacas-1.6.1-win64.zip)
 * yacas version 1.5.0
   * source code: [tgz](https://github.com/grzegorzmazur/yacas/archive/v1.5.0.tar.gz) and [zip](https://github.com/grzegorzmazur/yacas/archive/v1.5.0.zip)
   * binary packages for
