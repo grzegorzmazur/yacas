@@ -2,10 +2,9 @@ include (ExternalProject)
 
 ExternalProject_Add (yacas-gui_codemirror
     PREFIX external_packages
-    URL https://github.com/codemirror/CodeMirror/archive/5.35.0.zip
-    CONFIGURE_COMMAND npm install --no-progress
-    BUILD_IN_SOURCE 1
-    BUILD_COMMAND npm run-script build
+    URL https://github.com/Dominator008/CodeMirror-minified/archive/5.47.0.zip
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
     INSTALL_COMMAND "")
 
 ExternalProject_Add (yacas-gui_flot
