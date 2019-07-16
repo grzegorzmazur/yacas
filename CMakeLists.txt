@@ -30,12 +30,13 @@ if (ENABLE_JYACAS)
     set (LANGUAGES ${LANGUAGES} Java)
 endif ()
 
-project (YACAS VERSION 1.7.0 LANGUAGES ${LANGUAGES})
+project (yacas VERSION 1.7.0 LANGUAGES ${LANGUAGES})
 
 set (CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 set (CMAKE_CXX_EXTENSIONS OFF)
 
+include (GNUInstallDirs)
 include (CTest)
 
 set (YACAS_SCRIPTS
@@ -251,7 +252,7 @@ set (YACAS_SCRIPTS
     scripts/yacasinit.ys)
 
 if (ENABLE_CYACAS)
-    install (DIRECTORY scripts/ DESTINATION share/yacas/scripts COMPONENT app)
+    install (DIRECTORY scripts/ DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/yacas/scripts COMPONENT app)
 endif ()
 
 if (ENABLE_DOCS)

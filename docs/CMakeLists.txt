@@ -38,6 +38,6 @@ add_custom_target(yacas_docs ALL
     COMMENT "Building HTML documentation with Sphinx")
 
 install (DIRECTORY "${SPHINX_SINGLEHTML_DIR}"
-         DESTINATION share/yacas/documentation
+         DESTINATION ${CMAKE_INSTALL_DOCDIR}
          COMPONENT doc
          PATTERN ".buildinfo" EXCLUDE)

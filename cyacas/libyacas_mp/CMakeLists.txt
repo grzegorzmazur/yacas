@@ -29,8 +29,10 @@ add_library (libyacas_mp ${SOURCES} ${HEADERS})
 set_target_properties (libyacas_mp PROPERTIES OUTPUT_NAME "yacas_mp")
 target_include_directories (libyacas_mp PUBLIC include)
 
-install (TARGETS libyacas_mp LIBRARY DESTINATION lib ARCHIVE DESTINATION lib RUNTIME DESTINATION bin COMPONENT app)
-install (DIRECTORY include/ DESTINATION include COMPONENT dev)
+install (TARGETS libyacas_mp LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                             ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+                             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT app)
+install (DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} COMPONENT dev)
 
 # if (APPLE)
 #   add_library (libyacas_mp_framework SHARED ${SOURCES} ${HEADERS})

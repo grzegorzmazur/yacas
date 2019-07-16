@@ -121,11 +121,11 @@ add_subdirectory (resources)
 if (APPLE)
     install (TARGETS yacas-gui BUNDLE DESTINATION ${CMAKE_INSTALL_BUNDLE_PREFIX})
 else ()
-    install (TARGETS yacas-gui DESTINATION bin)
+    install (TARGETS yacas-gui DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif ()
 
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
-    install (PROGRAMS yacas-gui.desktop PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ DESTINATION share/applications)
+    install (PROGRAMS yacas-gui.desktop PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ WORLD_READ DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/applications)
 endif ()
 
 if (WIN32)
