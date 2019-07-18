@@ -55,8 +55,8 @@ set (YACAS_TESTS
   transforms.yts)
 
 
-install (FILES ${YACAS_TESTS} DESTINATION share/yacas/tests COMPONENT app)
-install (PROGRAMS ${TEST_YACAS_CMD} DESTINATION share/yacas/tests COMPONENT app)
+install (FILES ${YACAS_TESTS} DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/yacas/tests COMPONENT app)
+install (PROGRAMS ${TEST_YACAS_CMD} DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/yacas/tests COMPONENT app)
 
 if (ENABLE_CYACAS_CONSOLE)
     foreach (_test ${YACAS_TESTS})

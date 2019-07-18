@@ -36,4 +36,4 @@ if (WIN32)
   target_link_libraries (yacas wsock32 ws2_32 shlwapi)
 endif()
 
-install (TARGETS yacas RUNTIME DESTINATION bin COMPONENT app)
+install (TARGETS yacas RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} COMPONENT app)
