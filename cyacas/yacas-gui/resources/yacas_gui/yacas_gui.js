@@ -299,45 +299,35 @@ function printResults(result) {
         output.addClass("resizable");
 
     } else if (result["type"] === "Plot3D") {
+        let data = [];
 
-        var width = $("#" + outputID).width();
-        var height = 300;
-
-        var webGLEnabled = yacas.isWebGLEnabled;
-
-        var plot3d = new Plot3D(result["plot3d_data"], width, height);
-
-        plot3d.setRenderer(webGLEnabled);
-        plot3d.addLegend("#" + outputID);
-
-        output.append(plot3d.renderer.domElement);
-        output[0].plot3D = plot3d;
-
-        var controls = new THREE.TrackballControls(plot3d.camera, plot3d.renderer.domElement);
-        controls.addEventListener('change', ControlsChanged);
-        controls.enabled = false;
-        output[0].controls = controls;
-        plot3d.renderer.render(plot3d.scene, plot3d.camera);
-
-        function render() {
-            requestAnimationFrame(render);
-            controls.update();
+        for (let i = 0; i < result["plot3d_data"].length; ++i) {
+            let x=[];
+            let y=[];
+            let z=[];
+            const d = result["plot3d_data"][i]['data'];
+            for (let j = 0; j < d.length; ++j) {
+                x.push(d[j][0]);
+                y.push(d[j][1]);
+                z.push(d[j][2]);
+            }
+            data.push({
+                type: 'mesh3d',
+                opacity: 0.8,
+                x: x,
+                y: y,
+                z: z
+            });
         }
 
-        render();
+        const layout = {
+        };
 
-        output.resizable({maxWidth: width, minWidth: 200, minHeight: 200});
-        output.addClass("resizable");
-        output.resize(function () {
-            Plot3dResized(this);
-        });
-        output.mouseout(function (event) {
-            Plot3dMouseOut(this, event);
-        });
-        output.click(function (event) {
-            Plot3dClicked(this, event);
-        });
+        const options = {
+            responsive: true
+        };
 
+        Plotly.newPlot(output[0], data, layout, options);
     } else if (result["type"] === "Graph") {
         var vertices = result["graph_vertices"];
         var no_vertices = vertices.length;

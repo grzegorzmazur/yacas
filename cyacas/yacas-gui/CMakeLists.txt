@@ -70,7 +70,7 @@ add_executable (yacas-gui ${OS_BUNDLE} ${SOURCES} ${HEADERS} ${QRESOURCES})
 target_link_libraries(yacas-gui Qt5::Core Qt5::Widgets Qt5::WebEngine Qt5::WebEngineWidgets Qt5::Svg Qt5::PrintSupport libyacas)
 
 if (APPLE)
-    add_dependencies (yacas-gui yacas-gui_codemirror yacas-gui_flot yacas-gui_three yacas-gui_vis yacas-gui_mathjax yacas-gui_delanuay)
+    add_dependencies (yacas-gui yacas-gui_codemirror yacas-gui_flot yacas-gui_vis yacas-gui_mathjax)
     # add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove_directory $<TARGET_FILE_DIR:yacas-gui>/../Frameworks/yacas.framework)
     # add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory $<TARGET_FILE_DIR:libyacas_framework>/../../.. $<TARGET_FILE_DIR:yacas-gui>/../Frameworks)
     # add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove_directory $<TARGET_FILE_DIR:yacas-gui>/../Frameworks/yacas_mp.framework)
@@ -80,7 +80,6 @@ if (APPLE)
 
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources/webchannel $<TARGET_FILE_DIR:yacas-gui>/../Resources/webchannel)
 
-    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources/plot3d $<TARGET_FILE_DIR:yacas-gui>/../Resources/plot3d)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources/jquery $<TARGET_FILE_DIR:yacas-gui>/../Resources/jquery)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources/mathbar $<TARGET_FILE_DIR:yacas-gui>/../Resources/mathbar)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources/yacas_gui $<TARGET_FILE_DIR:yacas-gui>/../Resources/yacas_gui)
@@ -94,12 +93,7 @@ if (APPLE)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_flot/jquery.flot.js $<TARGET_FILE_DIR:yacas-gui>/../Resources/flot/jquery.flot.js)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_flot/jquery.flot.resize.js $<TARGET_FILE_DIR:yacas-gui>/../Resources/flot/jquery.flot.resize.js)
 
-    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_three/build/three.min.js $<TARGET_FILE_DIR:yacas-gui>/../Resources/three/three.min.js)
-
-    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_three/examples/js/Detector.js $<TARGET_FILE_DIR:yacas-gui>/../Resources/three/Detector.js)
-    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_three/examples/js/controls/TrackballControls.js $<TARGET_FILE_DIR:yacas-gui>/../Resources/three/TrackballControls.js)
-    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_three/examples/js/renderers/CanvasRenderer.js $<TARGET_FILE_DIR:yacas-gui>/../Resources/three/CanvasRenderer.js)
-    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_three/examples/js/renderers/Projector.js $<TARGET_FILE_DIR:yacas-gui>/../Resources/three/Projector.js)
+    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/third_party/plotly-1.49.0.min.js DESTINATION $<TARGET_FILE_DIR:yacas-gui>/../Resources/plotly-1.49.0.min.js)
 
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_vis/dist/vis.min.css $<TARGET_FILE_DIR:yacas-gui>/../Resources/vis/vis.min.css)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_vis/dist/vis.min.js $<TARGET_FILE_DIR:yacas-gui>/../Resources/vis/vis.min.js)
