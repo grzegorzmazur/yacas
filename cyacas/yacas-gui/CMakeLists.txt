@@ -70,7 +70,7 @@ add_executable (yacas-gui ${OS_BUNDLE} ${SOURCES} ${HEADERS} ${QRESOURCES})
 target_link_libraries(yacas-gui Qt5::Core Qt5::Widgets Qt5::WebEngine Qt5::WebEngineWidgets Qt5::Svg Qt5::PrintSupport libyacas)
 
 if (APPLE)
-    add_dependencies (yacas-gui yacas-gui_codemirror yacas-gui_flot yacas-gui_vis yacas-gui_mathjax)
+    add_dependencies (yacas-gui yacas-gui_codemirror yacas-gui_vis yacas-gui_mathjax)
     # add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove_directory $<TARGET_FILE_DIR:yacas-gui>/../Frameworks/yacas.framework)
     # add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory $<TARGET_FILE_DIR:libyacas_framework>/../../.. $<TARGET_FILE_DIR:yacas-gui>/../Frameworks)
     # add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove_directory $<TARGET_FILE_DIR:yacas-gui>/../Frameworks/yacas_mp.framework)
@@ -89,9 +89,6 @@ if (APPLE)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_codemirror/mode/yacas $<TARGET_FILE_DIR:yacas-gui>/../Resources/codemirror/mode/yacas)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_codemirror/addon/edit $<TARGET_FILE_DIR:yacas-gui>/../Resources/codemirror/addon/edit)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_codemirror/addon/hint $<TARGET_FILE_DIR:yacas-gui>/../Resources/codemirror/addon/hint)
-
-    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_flot/jquery.flot.js $<TARGET_FILE_DIR:yacas-gui>/../Resources/flot/jquery.flot.js)
-    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_flot/jquery.flot.resize.js $<TARGET_FILE_DIR:yacas-gui>/../Resources/flot/jquery.flot.resize.js)
 
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/third_party/plotly-1.49.0.min.js DESTINATION $<TARGET_FILE_DIR:yacas-gui>/../Resources/plotly-1.49.0.min.js)
 

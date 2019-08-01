@@ -290,14 +290,32 @@ function printResults(result) {
         output.append(result["error_message"]);
 
     } else if (result["type"] === "Plot2D") {
+        let data = [];
 
-        $.plot(output, result["plot2d_data"]);
+        for (let i = 0; i < result["plot2d_data"].length; ++i) {
+            let x=[];
+            let y=[];
+            const d = result["plot2d_data"][i]['data'];
+            for (let j = 0; j < d.length; ++j) {
+                x.push(d[j][0]);
+                y.push(d[j][1]);
+            }
+            data.push({
+                type: 'scatter',
+                name: result["plot2d_data"][i]['label'],
+                x: x,
+                y: y,
+            });
+        }
 
-        var width = $("#" + outputID).width();
+        const layout = {
+        };
 
-        output.resizable({maxWidth: width, minWidth: 200, minHeight: 200});
-        output.addClass("resizable");
+        const options = {
+            responsive: true
+        };
 
+        Plotly.newPlot(output[0], data, layout, options);
     } else if (result["type"] === "Plot3D") {
         let data = [];
 
