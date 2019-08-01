@@ -90,7 +90,7 @@ if (APPLE)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_codemirror/addon/edit $<TARGET_FILE_DIR:yacas-gui>/../Resources/codemirror/addon/edit)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_codemirror/addon/hint $<TARGET_FILE_DIR:yacas-gui>/../Resources/codemirror/addon/hint)
 
-    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/third_party/plotly-1.49.0.min.js DESTINATION $<TARGET_FILE_DIR:yacas-gui>/../Resources/plotly-1.49.0.min.js)
+    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/third_party/plotly-1.49.0.min.js DESTINATION $<TARGET_FILE_DIR:yacas-gui>/../Resources)
 
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_vis/dist/vis.min.css $<TARGET_FILE_DIR:yacas-gui>/../Resources/vis/vis.min.css)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_vis/dist/vis.min.js $<TARGET_FILE_DIR:yacas-gui>/../Resources/vis/vis.min.js)
@@ -99,8 +99,6 @@ if (APPLE)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_mathjax/fonts/HTML-CSS/STIX-Web/woff $<TARGET_FILE_DIR:yacas-gui>/../Resources/mathjax/fonts/HTML-CSS/STIX-Web/woff)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_mathjax/fonts/HTML-CSS/TeX/otf $<TARGET_FILE_DIR:yacas-gui>/../Resources/mathjax/fonts/HTML-CSS/TeX/otf)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_mathjax/unpacked $<TARGET_FILE_DIR:yacas-gui>/../Resources/mathjax/unpacked)
-
-    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/resources/external_packages/src/yacas-gui_delanuay/delaunay.js $<TARGET_FILE_DIR:yacas-gui>/../Resources/plot3d)
 endif ()
 
 if (WIN32)
