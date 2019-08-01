@@ -317,7 +317,7 @@ BigNumber& BigNumber::operator=(const BigNumber& bn)
         else
             iNumber.reset(new ANumber(*bn.iNumber));
 
-        _zz.release();
+        _zz.reset();
     }
 
     if (bn._zz) {
@@ -326,7 +326,7 @@ BigNumber& BigNumber::operator=(const BigNumber& bn)
         else
             _zz.reset(new mp::ZZ(*bn._zz));
 
-        iNumber.release();
+        iNumber.reset();
     }
     return *this;
 }
@@ -872,7 +872,7 @@ void BigNumber::BecomeFloat(int aPrecision)
 
     const int precision = std::max(iPrecision, aPrecision);
     iNumber.reset(new ANumber(
-        *_zz,
+        _zz->to_string(),
         bits_to_digits(precision, 10))); // is this OK or ChangePrecision means
                                          // floating-point precision?
 
