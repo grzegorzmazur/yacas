@@ -92,8 +92,20 @@ ANumber::ANumber(const std::string& aString, int aPrecision, int aBase) :
     iTensExp(0)
 {
     reserve(16);
-    SetPrecision(aPrecision);
     SetTo(aString, aBase);
+}
+
+ANumber::ANumber(const yacas::mp::ZZ& zz, int aPrecision):
+    std::vector<PlatWord>(zz.to_NN().limbs()),
+    iExp(0),
+    iNegative(zz.is_negative()),
+    iPrecision(aPrecision),
+    iTensExp(0)
+{
+    reserve(16);
+
+    if (zz.is_zero())
+        push_back(0);
 }
 
 std::string IntToBaseString(PlatDoubleWord aInt, int aBase)

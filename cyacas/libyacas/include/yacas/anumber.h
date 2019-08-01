@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include "yacas/mp/zz.hpp"
+
 // These define the internal types for the arbitrary precision
 // number module. The larger they are the better. PlatDoubleWord
 // should be at least twice as big as PlatWord, to prevent overflowing
@@ -30,6 +32,7 @@ class ANumber : public std::vector<PlatWord>
 {
 public:
     ANumber(const std::string& aString,int aPrecision,int aBase=10);
+    ANumber(const yacas::mp::ZZ&, int aPrecision);
     explicit ANumber(int aPrecision);
     //TODO the properties of this object are set in the member initialization list, but then immediately overwritten by the CopyFrom. We can make this slightly cleaner by only initializing once.
     inline ANumber(const ANumber& aOther) : iExp(0),iNegative(false),iPrecision(0),iTensExp(0)
