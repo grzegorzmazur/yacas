@@ -2,21 +2,21 @@ include (ExternalProject)
 
 ExternalProject_Add (yacas-gui_codemirror
     PREFIX external_packages
-    URL https://github.com/Dominator008/CodeMirror-minified/archive/5.47.0.zip
+    URL file://${CMAKE_SOURCE_DIR}/third_party/CodeMirror-minified-5.47.0.zip
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
 
 ExternalProject_Add (yacas-gui_vis
     PREFIX external_packages
-    URL https://github.com/almende/vis/archive/v4.21.0.zip
+    URL file://${CMAKE_SOURCE_DIR}/third_party/vis-4.21.0.zip
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
 
 ExternalProject_Add (yacas-gui_mathjax
     PREFIX external_packages
-    URL https://github.com/mathjax/MathJax/archive/2.7.3.zip
+    URL file://${CMAKE_SOURCE_DIR}/third_party/MathJax-2.7.3.zip
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND "")
