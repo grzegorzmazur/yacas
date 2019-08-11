@@ -329,7 +329,7 @@ LocalSymbols(x)
 
 /********** Solve'System **********/
 
-Solve'System(_eqns, _vars) <-- [ 
+Solve'System(_eqns, _vars) <-- [
     Local(rules, e, ee, linear, A, b);
 
     ee := (eqns /:: { _lhs == _rhs <- lhs - rhs });
@@ -379,8 +379,34 @@ Solve'System(_eqns, _vars) <-- [
         ];
         {r};
     ], [
-        // for anything else, just try to use a simple backsubstitution scheme
-        Solve'SimpleBackSubstitution(eqns,vars);
+        Local(polynomial);
+        polynomial := True;
+        ForEach (e, ee) [
+            Local(m);
+
+            Arow := ZeroVector(Length(vars));
+
+            m := MM(e, vars);
+
+            While (polynomial And m[2] != {}) [
+                Local(mld, mlc);
+                mld := MultiDegree(m);
+                mlc := MultiLeadingCoef(m);
+
+                If (Not(Min(mld) = 0 And IsRationalOrNumber(mlc)),
+                    polynomial := False
+                );
+
+                m := DropZeroLC(MultiNomialAdd(m, MultiNomialNegate(MultiLT(m))));
+            ];
+        ];
+
+        If (polynomial, [
+            Check(False, "Polynomial system, not implemented");
+        ], [
+            // for anything else, just try to use a simple backsubstitution scheme
+            Solve'SimpleBackSubstitution(eqns,vars);
+        ]);
     ]);
 ];
 
