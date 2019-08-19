@@ -393,9 +393,7 @@ Solve'System(_eqns, _vars) <-- [
                 mld := MultiDegree(m);
                 mlc := MultiLeadingCoef(m);
 
-                If (Not(Min(mld) = 0 And IsRationalOrNumber(mlc)),
-                    polynomial := False
-                );
+                polynomial := Min(mld) >= 0 And IsRationalOrNumber(mlc);
 
                 m := DropZeroLC(MultiNomialAdd(m, MultiNomialNegate(MultiLT(m))));
             ];
