@@ -400,7 +400,69 @@ Solve'System(_eqns, _vars) <-- [
         ];
 
         If (polynomial, [
-            Check(False, "Polynomial system, not implemented");
+            Local(g, i, j, x1, solutions, s, roots, r, solutions'final);
+            ee := Groebner(ee);
+            ForEach (i, 1 .. Length(ee))
+                ee[i] := MM(ee[i]);
+
+            g := FillList({}, Length(vars));
+
+            ForEach (e, ee)
+                DestructiveAppend(g[Length(MultiVars(e))], e);
+
+            Check(Length(g[1]) = 1, "Wrong Groebner basis");
+            ForEach (e, g)
+                Check(Length(e) >= 1, "Wrong Groebner basis");
+
+            x1 := MultiVars(Head(Head(g)));
+            Check(Length(x1) = 1, "Wrong Groebner basis");
+
+            solutions := {};
+
+            x1 := Head(x1);
+            roots := PSolve(NormalForm(Head(Head(g))), x1);
+            roots := If (Type(roots) = "List", RemoveDuplicates(roots), {roots});
+            ForEach (r, roots)
+                DestructiveAppend(solutions, {{x1}, {r}});
+
+            For (i := 2, i <= Length(g), i++) [
+                Local(solutions'new);
+                solutions'new := {};
+                ForEach (s, solutions) [
+                    Local(found, gij, gij'nf, gij'vars);
+                    found := {};
+                    For (j := 1, j <= Length(g[i]), j++) [
+                        gij := g[i][j];
+                        gij'nf := NormalForm(gij);
+                        gij'vars := MultiVars(gij);
+                        If (Length(Difference(gij'vars, s[1])) = 1, [
+                            Local(gij'unknown);
+                            gij'unknown := Head(Difference(gij'vars, s[1]));
+                            If (Not Contains(found, gij'unknown), [
+                                Local(gij'lc);
+                                gij'lc := LeadingCoef(gij'nf, gij'unknown);
+                                If (WithValue(s[1], s[2], gij'lc) != 0,  [
+                                    roots := PSolve(WithValue(s[1], s[2], gij'nf), gij'unknown);
+                                    roots := If (Type(roots) = "List", RemoveDuplicates(roots), {roots});
+                                    ForEach(r, roots)
+                                        DestructiveAppend(solutions'new, {Append(s[1], gij'unknown), Append(s[2], r)});
+                                    DestructiveAppend(found, gij'unknown);
+                                ]);
+                            ]);
+                        ]);
+                    ];
+                    solutions := solutions'new;
+                ];
+            ];
+
+            solutions'final := {};
+            ForEach (s, solutions) [
+                t := {};
+                ForEach (v, vars)
+                    DestructiveAppend(t, v == s[2][Find(s[1], v)]);
+                DestructiveAppend(solutions'final, t);
+            ];
+            RemoveDuplicates(solutions'final);
         ], [
             // for anything else, just try to use a simple backsubstitution scheme
             Solve'SimpleBackSubstitution(eqns,vars);
