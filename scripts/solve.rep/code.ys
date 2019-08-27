@@ -457,6 +457,16 @@ Solve'System(_eqns, _vars) <-- [
 
             solutions'final := {};
             ForEach (s, solutions) [
+                Local(ok);
+                ok := True;
+                For (i := 1, i <= Length(g) And ok, i++)
+                    For (j := 1, j <= Length(g[i]) And ok, j++)
+                        ok := WithValue(s[1], s[2], NormalForm(g[i][j])) = 0;
+                If (ok, DestructiveAppend(solutions'final, s));
+            ];
+            solutions := solutions'final;
+            solutions'final := {};
+            ForEach (s, solutions) [
                 t := {};
                 ForEach (v, vars)
                     DestructiveAppend(t, v == s[2][Find(s[1], v)]);
