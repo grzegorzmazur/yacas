@@ -363,7 +363,7 @@ Solve'System(_eqns, _vars) <-- [
                 ]);
             ]);
 
-            m := DropZeroLC(MultiNomialAdd(m, MultiNomialNegate(MultiLT(m))));
+            m := MultiDropLeadingZeroes(MultiNomialAdd(m, MultiNomialNegate(MultiLT(m))));
         ];
 
         If (homogenous, DestructiveAppend(b, 0));
@@ -395,7 +395,7 @@ Solve'System(_eqns, _vars) <-- [
 
                 polynomial := Min(mld) >= 0 And IsRationalOrNumber(mlc);
 
-                m := DropZeroLC(MultiNomialAdd(m, MultiNomialNegate(MultiLT(m))));
+                m := MultiDropLeadingZeroes(MultiNomialAdd(m, MultiNomialNegate(MultiLT(m))));
             ];
         ];
 

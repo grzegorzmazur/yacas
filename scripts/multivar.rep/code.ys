@@ -121,23 +121,6 @@ MultiVars(MultiNomial(_vars,_terms)) <-- vars;
 20 # MultiLT(multi_IsMulti)
    <-- CreateTerm(MultiVars(multi),MultiLeadingTerm(multi));
 
-10 # MultiLM(multi_IsMulti) <-- MultiDegree(multi);
-
-10 # MultiLC(MultiNomial(_vars,{})) <-- 0;
-20 # MultiLC(multi_IsMulti) <-- MultiLeadingCoef(multi);
-
-DropZeroLC(multi_IsMulti) <-- MultiDropLeadingZeroes(multi);
-
-
-
-
-
-
-
-
-
-
-
 
 /*************************************************************
   MultiDivide :
@@ -183,11 +166,11 @@ DropZeroLC(multi_IsMulti) <-- MultiDropLeadingZeroes(multi);
     [
       Set(glt, MultiLT(g[i]));
 
-      if (MultiLM(glt) = MultiLM(plt) Or MultiTermLess({MultiLM(glt),1}, {MultiLM(plt),1}))
-      if (Select({{n},n<0},MultiLM(plt)-MultiLM(glt)) = {})
+      if (MultiDegree(glt) = MultiDegree(plt) Or MultiTermLess({MultiDegree(glt),1}, {MultiDegree(plt),1}))
+      if (Select({{n},n<0},MultiDegree(plt)-MultiDegree(glt)) = {})
       [
         Local(ff);
-      Set(ff, CreateTerm(v,{MultiLM(plt)-MultiLM(glt),MultiLC(plt)/MultiLC(glt)}));
+      Set(ff, CreateTerm(v,{MultiDegree(plt)-MultiDegree(glt),MultiLeadingCoef(plt)/MultiLeadingCoef(glt)}));
         q[i] := q[i] + ff;
         Local(ltbefore,ltafter);
         Set(ltbefore,MultiLeadingTerm(p));
@@ -230,16 +213,16 @@ DropZeroLC(multi_IsMulti) <-- MultiDropLeadingZeroes(multi);
 ];
 
 
-5 # MultiGcd(f_IsMulti,g_IsMulti)_(MultiTermLess({MultiLM(f),1},{MultiLM(g),1})) <--
+5 # MultiGcd(f_IsMulti,g_IsMulti)_(MultiTermLess({MultiDegree(f),1},{MultiDegree(g),1})) <--
 [
 //Echo("lesser");
   MultiGcd(g,f);
 ];
 
-5  # MultiGcd(MultiNomial(_vars,_terms),g_IsMulti)_(MultiLM(MultiNomial(vars,terms)) = MultiLM(g))
+5  # MultiGcd(MultiNomial(_vars,_terms),g_IsMulti)_(MultiDegree(MultiNomial(vars,terms)) = MultiDegree(g))
      <-- CreateTerm(vars,{FillList(0,Length(vars)),1});
 
-5  # MultiGcd(MultiNomial(_vars,_terms),g_IsMulti)_(Select({{n},n<0},MultiLM(MultiNomial(vars,terms))-MultiLM(g)) != {})
+5  # MultiGcd(MultiNomial(_vars,_terms),g_IsMulti)_(Select({{n},n<0},MultiDegree(MultiNomial(vars,terms))-MultiDegree(g)) != {})
      <-- CreateTerm(vars,{FillList(0,Length(vars)),1});
 
 5  # MultiGcd(MultiNomial(_vars,_terms),g_IsMulti)_(NormalForm(g) = 0)

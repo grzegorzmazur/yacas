@@ -9,9 +9,7 @@ MultiPrimitivePart
 MultiRemoveGcd
 MultiDegree
 MultiLeadingCoef
-MultiLC
 MultiLeadingMono
-MultiLM
 MultiLeadingTerm
 MultiLT
 MultiVars
