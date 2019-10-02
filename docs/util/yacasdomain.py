@@ -9,7 +9,7 @@
 import re
 
 from docutils import nodes
-from docutils.parsers.rst import directives, Directive
+from docutils.parsers.rst import directives
 
 from sphinx import addnodes
 from sphinx.roles import XRefRole
