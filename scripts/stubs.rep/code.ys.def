@@ -20,4 +20,6 @@ Floor
 Ceil
 Round
 PolynomialGcd
+LnExpand
+LnCombine
 }
