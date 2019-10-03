@@ -583,15 +583,14 @@ void BigNumber::BitXor(const BigNumber& aX, const BigNumber& aY)
 
 void BigNumber::BitNot(const BigNumber& aX)
 {
-    abort();
-    // BecomeInt();
+    BecomeInt();
 
-    // BigNumber x(aX);
-    // x.BecomeInt();
+    BigNumber x(aX);
+    x.BecomeInt();
 
-    // *_zz = *x._zz;
-    // _zz->neg();
-    // _zz->abs();
+    *_zz = *x._zz;
+    _zz->neg();
+    _zz->abs();
 }
 
 /// Bit count operation: return the number of significant bits if integer,
