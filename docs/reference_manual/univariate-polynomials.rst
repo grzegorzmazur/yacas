@@ -106,7 +106,7 @@ polynomials.
    :param expr: univariate polynomial
 
    This command determines the
-   `content <http://en.wikipedia.org/wiki/Content_(algebra)>`_
+   `content <https://en.wikipedia.org/wiki/Primitive_part_and_content>`_
    of a univariate polynomial.
 
    :Example:
@@ -131,10 +131,11 @@ polynomials.
 
    :param expr: univariate polynomial
 
-   This command determines the primitive part of a univariate
-   polynomial. The primitive part is what remains after the content
-   is divided out. So the  product of the content and the primitive part equals
-   the original  polynomial.
+   This command determines the `primitive part
+   <https://en.wikipedia.org/wiki/Primitive_part_and_content>`_ of a univariate
+   polynomial. The primitive part is what remains after the content is divided
+   out. So the  product of the content and the primitive part equals the
+   original  polynomial.
 
    :Example:
 
@@ -153,18 +154,16 @@ polynomials.
    .. seealso:: :func:`Content`
 
 .. function:: LeadingCoef(poly)
+              LeadingCoef(poly, var)
 
    leading coefficient of a polynomial
 
-   :param poly: a polynomial
-   :param var: a variable
-
-   This function returns the leading coefficient of {poly}, regarded
-   as  a polynomial in the variable {var}. The leading coefficient is
-   the  coefficient of the term of highest degree. If only one
-   variable  appears in the expression {poly}, it is obvious that it
-   should be  regarded as a polynomial in this variable and the first
-   calling  sequence may be used.
+   This function returns the `leading coefficient
+   <https://en.wikipedia.org/wiki/Coefficient>`_ of ``poly``, regarded as  a
+   polynomial in the variable ``var``. The leading coefficient is the
+   coefficient of the term of highest degree. If only one variable  appears in
+   the expression ``poly``, it is obvious that it should be  regarded as a
+   polynomial in this variable and the first calling  sequence may be used.
 
    :Example:
 
@@ -187,19 +186,16 @@ polynomials.
    .. seealso:: :func:`Coef`, :func:`Monic`
 
 .. function:: Monic(poly)
+              Monic(poly, var)
 
    monic part of a polynomial
 
-   :param poly: a polynomial
-   :param var: a variable
-
-   This function returns the monic part of {poly}, regarded as a
-   polynomial in the variable {var}. The monic part of a polynomial is
-   the quotient of this polynomial by its leading coefficient. So the
-   leading coefficient of the monic part is always one. If only one
-   variable appears in the expression {poly}, it is obvious that it
-   should be regarded as a polynomial in this variable and the first
-   calling sequence may be used.
+   This function returns the monic part of ``poly``, regarded as a polynomial in
+   the variable ``var``. The monic part of a polynomial is the quotient of this
+   polynomial by its leading coefficient. So the leading coefficient of the
+   monic part is always one. If only one variable appears in the expression
+   ``poly``, it is obvious that it should be regarded as a polynomial in this
+   variable and the first calling sequence may be used.
 
    :Example:
 
@@ -271,16 +267,12 @@ polynomials.
 
    convert a polynomial into the Horner form
 
-   :param expr: a polynomial in {var}
-   :param var: a variable
-
-   This command turns the polynomial {expr}, considered as a
-   univariate  polynomial in {var}, into Horner form. A polynomial in
-   normal form  is an expression such as  :math:`c_0 + c_1x + \ldots +
-   c_nx^n`.    If one converts this polynomial into Horner form,
-   one gets the  equivalent expression  :math:`(\ldots( c_nx + c_{n-1})
-   x + \ldots  + c_1)x + c_0`.    Both expression are equal, but
-   the latter form gives a more  efficient way to evaluate the
+   This command turns the polynomial ``expr``, considered as a univariate
+   polynomial in ``var``, into the Horner form. A polynomial in normal form  is
+   an expression such as  :math:`c_0 + c_1x + \ldots + c_nx^n`. If one converts
+   this polynomial into Horner form, one gets the  equivalent expression
+   :math:`(\ldots( c_nx + c_{n-1}) x + \ldots  + c_1)x + c_0`. Both expression
+   are equal, but the latter form gives a more  efficient way to evaluate the
    polynomial as  the powers have  disappeared.
 
    :Example:
@@ -299,12 +291,9 @@ polynomials.
 
    expand all brackets
 
-   :param expr: an expression
-
-   This command tries to expand all the brackets by repeatedly using
-   the  distributive laws :math:`a * (b+c) = a*b + a*c` and :math:`(a+b) * c = a*c
-   + b*c`.  It goes further than {Expand}, in that it expands all
-   brackets.
+   This command tries to expand all the brackets by repeatedly using the
+   distributive laws :math:`a(b+c) = ab + ac` and :math:`(a+b)c = ac + bc`. It
+   goes further than :func:`Expand`, in that it expands all brackets.
 
    :Example:
 
@@ -317,53 +306,47 @@ polynomials.
       In> ExpandBrackets((a-x)*(b-x))
       Out> a*b-x*b+x^2-a*x;
 
-
    .. seealso:: :func:`Expand`
 
 .. function:: EvaluateHornerScheme(coeffs,x)
 
    fast evaluation of polynomials
 
-   :param coeffs: a list of coefficients
-   :param x: expression
+   This function evaluates a polynomial given as a list of its coefficients,
+   using the `Horner scheme <https://en.wikipedia.org/wiki/Horner%27s_method>`_.
+   The list of coefficients starts with the :math:`0`-th power.
 
-   This function evaluates a polynomial given as a list of its
-   coefficients, using  the Horner scheme. The list of coefficients
-   starts with the :math:`0`-th power.
-
-.. function:: OrthoP(n, x);
+.. function:: OrthoP(n, x)
+              OrthoP(n, a, b, x)
 
    Legendre and Jacobi orthogonal polynomials
 
-   :param n: degree of polynomial
-   :param x: point to evaluate polynomial at
-   :param a}, {b: parameters for Jacobi polynomial
+   The first calling format with two arguments evaluates the `Legendre
+   polynomial <https://en.wikipedia.org/wiki/Legendre_polynomials>`_  of degree
+   ``n`` at the point ``x``. The second form does the same for the `Jacobi
+   polynomial <https://en.wikipedia.org/wiki/Jacobi_polynomials>`_ with
+   parameters ``a`` and ``b``, which should be both greater than :math:`-1`.
 
-   The first calling format with two arguments evaluates the Legendre
-   polynomial  of degree {n} at the point {x}. The second form does
-   the same for the Jacobi  polynomial with parameters {a} and {b},
-   which should be both greater than -1.    The Jacobi polynomials are
-   orthogonal with respect to the weight  function :math:`(1-x)^a *(1+x)^b`
-   on the interval [-1,1]. They satisfy the  recurrence relation
-   :math:`P(n,a,b,x) = (2*n+a+b-1)/(2*n+a+b-2)((a^2-b^2+x*(2*n+a+b-2)*(n+a+b))/(2*n*(n+a+b))) * P(n-1,a,b,x) -
-   ((n+a-1)*(n+b-1)*(2*n+a+b))/(n*(n+a+b)*(2*n+a+b-2))*P(n-2,a,b,x)`
-   for :math:`n > 1`, with  :math:`P(0,a,b,x) = 1`,  :math:`P(1,a,b,x) =
-   (a-b)/2+x*(1+(a+b)/2)`.
+   The Jacobi polynomials are orthogonal with respect to the weight  function
+   :math:`(1-x)^a(1+x)^b` on the interval :math:`[-1,1]`. They satisfy the
+   recurrence relation :math:`P(n,a,b,x) =
+   \frac{2n+a+b-1}{2n+a+b-2}\frac{a^2-b^2+x(2n+a+b-2)(n+a+b)}{2n(n+a+b)}P(n-1,a,b,x) -
+   \frac{(n+a-1)(n+b-1)(2n+a+b)}{n(n+a+b)(2n+a+b-2)}P(n-2,a,b,x)` for
+   :math:`n > 1`, with  :math:`P(0,a,b,x) = 1`,  :math:`P(1,a,b,x) =
+   \frac{a-b}{2}+x(1+\frac{a+b}{2})`.
 
-.. function:: OrthoH(n, x);
+.. function:: OrthoH(n, x)
 
    Hermite orthogonal polynomials
 
-   :param n: degree of polynomial
-   :param x: point to evaluate polynomial at
+   This function evaluates the `Hermite polynomial
+   <https://en.wikipedia.org/wiki/Hermite_polynomials>`_ of degree ``n`` at the
+   point ``x``.
 
-   This function evaluates the Hermite polynomial of degree {n} at the
-   point {x}.    The Hermite polynomials are orthogonal with respect
-   to the weight  function :math:`Exp(-x^2/2)` on the entire real axis. They
-   satisfy the  recurrence relation  :math:`H(n,x) = 2*x*H(n-1,x) - 2*(n-1)*H(n-2,x)`
-   for :math:`n > 1`, with  :math:`H(0,x) = 1`,  :math:`H(1,x) =
-   2*x`.    Most of the work is performed by the internal function
-   {OrthoPoly}.
+   The Hermite polynomials are orthogonal with respect to the weight function
+   :math:`\exp(\frac{-x^2}{2})` on the entire real axis. They satisfy the
+   recurrence relation  :math:`H(n,x) = 2xH(n-1,x) - 2(n-1)H(n-2,x)` for
+   :math:`n > 1`, with  :math:`H(0,x) = 1`,  :math:`H(1,x) = 2x`.
 
    :Example:
 
@@ -374,60 +357,56 @@ polynomials.
       In> OrthoH(6, 0.5);
       Out> 31;
 
-
    .. seealso:: :func:`OrthoHSum`, :func:`OrthoPoly`
 
-.. function:: OrthoG(n, a, x);
+.. function:: OrthoG(n, a, x)
 
    Gegenbauer orthogonal polynomials
 
-   :param n: degree of polynomial
-   :param a: parameter
-   :param x: point to evaluate polynomial at
+   This function evaluates the `Gegenbauer (or ultraspherical) polynomial
+   <https://en.wikipedia.org/wiki/Gegenbauer_polynomials>`_ with parameter ``a``
+   and degree ``n`` at the point ``x``. The parameter ``a`` should be greater
+   than :math:`-\frac{1}{2}`.
 
-   This function evaluates the Gegenbauer (or ultraspherical)
-   polynomial  with parameter {a} and degree {n} at the point {x}. The
-   parameter {a} should be greater than -1/2.    The Gegenbauer
-   polynomials are orthogonal with respect to the weight  function
-   :math:`(1-x^2)^(a-1/2)` on the interval [-1,1]. Hence they are  connected
-   to the Jacobi polynomials via   :math:`G(n, a, x) = P(n, a-1/2, a-1/2,
-   x)`.  They satisfy the recurrence relation  :math:`G(n,a,x) =
-   2*(1+(a-1)/n)*x*G(n-1,a,x) -(1+2*(a-2)/n)*G(n-2,a,x)`  for
-   :math:`n>1`, with  :math:`G(0,a,x) = 1`,  :math:`G(1,a,x) = 2*x`.
+   The Gegenbauer polynomials are orthogonal with respect to the weight function
+   :math:`(1-x^2)^{a-\frac{1}{2}}` on the interval :math:`[-1,1]`. Hence they are
+   connected to the Jacobi polynomials via :math:`G(n, a, x) = P(n, a-\frac{1}{2},
+   a-\frac{1}{2}, x)`. They satisfy the recurrence relation :math:`G(n,a,x) =
+   2(1+\frac{a-1}{n})xG(n-1,a,x)-(1+2\frac{a-2}{n})G(n-2,a,x)`  for :math:`n>1`,
+   with :math:`G(0,a,x) = 1`, :math:`G(1,a,x) = 2x`.
 
-.. function:: OrthoL(n, a, x);
+.. function:: OrthoL(n, a, x)
 
    Laguerre orthogonal polynomials
 
-   :param n: degree of polynomial
-   :param a: parameter
-   :param x: point to evaluate polynomial at
+   This function evaluates the `Laguerre polynomial
+   <https://en.wikipedia.org/wiki/Laguerre_polynomials>`_ with parameter ``a``
+   and degree ``n`` at the point ``x``. The parameter ``a`` should be greater
+   than :math:`-1`.
 
-   This function evaluates the Laguerre polynomial with parameter {a}
-   and degree {n} at the point {x}. The parameter {a} should be
-   greater than -1.    The Laguerre polynomials are orthogonal with
-   respect to the weight  function :math:`x^a * Exp(-x)` on the positive
-   real axis. They satisfy the  recurrence relation  :math:`L(n,a,x) =
-   (2+(a-1-x)/n)* L(n-1,a,x) -(1-(a-1)/n)*L(n-2,a,x)`  for
-   :math:`n>1`, with   :math:`L(0,a,x) = 1`,  :math:`L(1,a,x) = a + 1 - x`.
+   The Laguerre polynomials are orthogonal with respect to the weight function
+   :math:`x^a\exp(-x)` on the positive real axis. They satisfy the  recurrence
+   relation  :math:`L(n,a,x) = (2+\frac{a-1-x}{n})L(n-1,a,x)
+   -(1-\frac{a-1}{n})L(n-2,a,x)`  for :math:`n>1`, with   :math:`L(0,a,x) = 1`,
+   :math:`L(1,a,x) = a + 1 - x`.
 
-.. function:: OrthoT(n, x);
+.. function:: OrthoT(n, x)
+              OrthoU(n, x)
 
    Chebyshev polynomials
 
-   :param n: degree of polynomial
-   :param x: point to evaluate polynomial at
+   These functions evaluate the `Chebyshev polynomials
+   <https://en.wikipedia.org/wiki/Chebyshev_polynomials>`_ of the first kind
+   :math:`T(n,x)` and of the second kind :math:`U(n,x)`, of degree ``n`` at the
+   point ``x``. (The  name of this Russian mathematician is also sometimes
+   spelled Tschebyscheff.)
 
-   These functions evaluate the Chebyshev polynomials of the first
-   kind  :math:`T(n,x)` and of the second kind :math:`U(n,x)`, of degree {n} at
-   the point {x}. (The  name of this Russian mathematician is also
-   sometimes spelled {Tschebyscheff}.)    The Chebyshev polynomials
-   are orthogonal with respect to the weight  function
-   :math:`(1-x^2)^(-1/2)`. Hence they are a special case of the Gegenbauer
+   The Chebyshev polynomials are orthogonal with respect to the weight  function
+   :math:`(1-x^2)^{-\frac{1}{2}}`. Hence they are a special case of the Gegenbauer
    polynomials :math:`G(n,a,x)`, with :math:`a=0`. They satisfy the recurrence
    relations  :math:`T(n,x) = 2xT(n-1,x) - T(n-2,x)`,  :math:`U(n,x) =
    2xU(n-1,x) - U(n-2,x)`  for :math:`n > 1`, with  :math:`T(0,x) = 1`,
-   :math:`T(1,x) = x`,  :math:`U(0,x) = 1`,  :math:`U(1,x) = 2x`.
+   :math:`T(1,x) = x`, :math:`U(0,x) = 1`, :math:`U(1,x) = 2x`.
 
    :Example:
 
@@ -442,95 +421,88 @@ polynomials.
       In> OrthoU(10, 0.9);
       Out> -2.2234571776;
 
-
    .. seealso:: :func:`OrthoG`, :func:`OrthoTSum`, :func:`OrthoUSum`, :func:`OrthoPoly`
 
-.. function:: OrthoPSum(c, x);
+.. function:: OrthoPSum(c, x)
+              OrthoPSum(c, a, b, x)
+              OrthoGSum(c, a, x)
+              OrthoHSum(c, x)
+              OrthoLSum(c, a, x)
+              OrthoTSum(c, x)
+              OrthoUSum(c, x)
 
    sums of series of orthogonal polynomials
 
-   :param c: list of coefficients
-   :param a}, {b: parameters of specific polynomials
-   :param x: point to evaluate polynomial at
+   These functions evaluate the sum of series of orthogonal polynomials at the
+   point ``x``, with given list of coefficients ``c`` of the series and fixed
+   polynomial parameters ``a``, ``b`` (if applicable). The list of coefficients
+   starts with the lowest order, so that for example  ``OrthoLSum(c, a, x) = c[1]
+   L[0](a,x) + c[2] L[1](a,x) + ... + c[N] L[N-1](a,x)``.
 
-   These functions evaluate the sum of series of orthogonal
-   polynomials at the point {x}, with given list of coefficients {c}
-   of the series and fixed polynomial parameters {a}, {b} (if
-   applicable).    The list of coefficients starts with the lowest
-   order, so that for example  OrthoLSum(c, a, x) = c[1] L[0](a,x) +
-   c[2] L[1](a,x) + ... + c[N] L[N-1](a,x).    See pages for specific
-   orthogonal polynomials for more details on the parameters of the
-   polynomials.    Most of the work is performed by the internal
-   function {OrthoPolySum}. The individual polynomials entering the
-   series are not computed, only the sum of the series.
+   See pages for specific orthogonal polynomials for more details on the
+   parameters of the polynomials.  Most of the work is performed by the internal
+   function :func:`OrthoPolySum`. The individual polynomials entering the series
+   are not computed, only the sum of the series.
 
    :Example:
 
    ::
 
-      In> Expand(OrthoPSum({1,0,0,1/7,1/8}, 3/2, \
-      2/3, x));
+      In> Expand(OrthoPSum({1,0,0,1/7,1/8}, 3/2, 2/3, x));
       Out> (7068985*x^4)/3981312+(1648577*x^3)/995328+
       (-3502049*x^2)/4644864+(-4372969*x)/6967296
-      +28292143/27869184;
+      +28292143/27869184
 
 
    .. seealso:: :func:`OrthoP`, :func:`OrthoG`, :func:`OrthoH`, :func:`OrthoL`, :func:`OrthoT`, :func:`OrthoU`, :func:`OrthoPolySum`
 
-.. function:: OrthoPoly(name, n, par, x)
+.. function:: OrthoPoly(name, n, params, x)
 
    internal function for constructing orthogonal polynomials
 
-   :param name: string containing name of orthogonal family
-   :param n: degree of the polynomial
-   :param par: list of values for the parameters
-   :param x: point to evaluate at
+   This function is used internally to construct orthogonal polynomials. It
+   returns the ``n``-th polynomial from the family ``name`` with parameters
+   ``params`` at the point ``x``. All known families are stored in the
+   association list returned by the function :func:`KnownOrthoPoly`. The
+   ``name`` serves as key.
 
-   This function is used internally to construct orthogonal
-   polynomials. It returns the {n}-th polynomial from the family
-   {name} with parameters {par} at the point {x}.    All known
-   families are stored in the association list returned by the
-   function {KnownOrthoPoly()}. The name serves as key. At the moment
-   the following names are known to Yacas: {"Jacobi"}, {"Gegenbauer"},
-   {"Laguerre"}, {"Hermite"}, {"Tscheb1"},  and {"Tscheb2"}. The value
-   associated to the key  is a pure function that takes two arguments:
-   the order {n} and the  extra parameters {p}, and returns a list of
-   two lists: the first list  contains the coefficients {A,B} of the
-   n=1 polynomial, i.e. :math:`A+Bx`;  the second list contains the
-   coefficients {A,B,C} in the recurrence  relation, i.e. :math:`P_n =
-   (A+Bx)*P_{n-1}+C*P_{n-2}`. (There are  only 3 coefficients in the
-   second list, because none of the polynomials use :math:`C+Dx` instead of
-   :math:`C` in the recurrence relation. This is assumed in the
-   implementation!)    If the argument ``x`` is numerical, the function
-   :func:`OrthoPolyNumeric` is called. Otherwise, the function
-   :func:`OrthoPolyCoeffs` computes a list of coefficients, and
-   :func:`EvaluateHornerScheme` converts this list into a  polynomial
-   expression.
+   At the moment the following names are known to yacas: ``"Jacobi"``,
+   ``"Gegenbauer"``, ``"Laguerre"``, ``"Hermite"``, ``"Tscheb1"``, and
+   ``"Tscheb2"``. The value associated to the key is a pure function that takes
+   two arguments: the order ``n`` and the  extra parameters ``p``, and returns a
+   list of two lists: the first list  contains the coefficients ``{A,B}`` of the
+   ``n=1`` polynomial, i.e. :math:`A+Bx`;  the second list contains the
+   coefficients ``{A,B,C}`` in the recurrence  relation, i.e. :math:`P_n =
+   (A+Bx)P_{n-1}+CP_{n-2}`.
+
+   .. note::
+     There are only 3 coefficients in the second list, because none of the
+     considered polynomials use :math:`C+Dx` instead of :math:`C` in the
+     recurrence relation. This is assumed in the implementation.
+
+   If the argument ``x`` is numerical, the function :func:`OrthoPolyNumeric` is
+   called. Otherwise, the function :func:`OrthoPolyCoeffs` computes a list of
+   coefficients, and :func:`EvaluateHornerScheme` converts this list into a
+   polynomial expression.
 
    .. seealso:: :func:`OrthoP`, :func:`OrthoG`, :func:`OrthoH`, :func:`OrthoL`, :func:`OrthoT`, :func:`OrthoU`, :func:`OrthoPolySum`
 
-.. function:: OrthoPolySum(name, c, par, x)
+.. function:: OrthoPolySum(name, c, params, x)
 
    internal function for computing series of orthogonal polynomials
 
-   :param name: string containing name of orthogonal family
-   :param c: list of coefficients
-   :param par: list of values for the parameters
-   :param x: point to evaluate at
+   This function is used internally to compute series of orthogonal polynomials.
+   It is similar to the function :func:`OrthoPoly` and returns the result of the
+   summation of series of polynomials from the family ``name`` with parameters
+   ``params``  at the point ``x``, where ``c`` is the list of coefficients of
+   the series. The algorithm used to compute the series without first computing
+   the individual polynomials is the Clenshaw-Smith recurrence scheme.  (See the
+   algorithms book for explanations.)
 
-   This function is used internally to compute series of orthogonal
-   polynomials.  It is similar to the function {OrthoPoly} and returns
-   the result of the  summation of series of polynomials from the
-   family {name} with parameters {par}  at the point {x}, where {c} is
-   the list of coefficients of the series.    The algorithm used to
-   compute the series without first computing the individual
-   polynomials is the Clenshaw-Smith recurrence scheme.  (See the
-   algorithms book for explanations.)    If the argument {x} is
-   numerical, the function {OrthoPolySumNumeric} is called.
-   Otherwise, the function {OrthoPolySumCoeffs} computes the list of
-   coefficients  of the resulting polynomial, and
-   {EvaluateHornerScheme} converts this list into  a polynomial
-   expression.
+   If the argument ``x`` is numerical, the function :func:`OrthoPolySumNumeric`
+   is called. Otherwise, the function :func:`OrthoPolySumCoeffs` computes the
+   list of coefficients  of the resulting polynomial, and
+   :func:`EvaluateHornerScheme` converts this list into a polynomial expression.
 
    .. seealso:: :func:`OrthoPSum`, :func:`OrthoGSum`, :func:`OrthoHSum`, :func:`OrthoLSum`, :func:`OrthoTSum`, :func:`OrthoUSum`, :func:`OrthoPoly`
 
