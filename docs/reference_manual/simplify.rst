@@ -37,7 +37,7 @@ expressions.
    on are natural numbers. The expression ``expr`` may not contain  free
    variables.
 
-   It does this by trying all possible combinations for :math:`e1,e2,\ldots`.
+   It does this by trying all possible combinations for :math:`e_1,e_2,\ldots`.
    Every possibility is numerically evaluated using :func:`N` and compared with
    the numerical evaluation of ``expr``. If the approximations are equal (up to
    a certain margin), this possibility is returned. Otherwise, the expression is
@@ -46,7 +46,13 @@ expressions.
    .. note::
      Due to the use of numerical approximations, there is a small chance that
      the expression returned by :func:`RadSimp` is close but not equal to
-     ``expr``. Furthermore, if the numerical value of ``expr`` is large, the
+     ``expr``::
+
+      In> RadSimp(Sqrt(1+10^(-6)))
+      Out> 1;
+
+   .. note::
+     If the numerical value of ``expr`` is large, the
      number of possibilities becomes exorbitantly big so the evaluation may take
      very long.
 
@@ -61,12 +67,7 @@ expressions.
       In> RadSimp(Sqrt(14+3*Sqrt(3+2*Sqrt(5-12*Sqrt(3-2*Sqrt(2))))))
       Out> Sqrt(2)+3;
 
-   But this command may yield incorrect results::
-
-      In> RadSimp(Sqrt(1+10^(-6)))
-      Out> 1;
-
-   .. seealso:: :func:`Simplify`, :func:`N`
+   .. seealso:: :func:`Simplify`, :func:`N`, :func:`Sqrt`
 
 .. function:: FactorialSimplify(expression)
 
