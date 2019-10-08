@@ -102,6 +102,8 @@ VerifySolve(Solve({x*(y-1)==0,y*(x-1)==0}, {x, y}), {{x==1,y==1},{x==0,y==0}});
 VerifySolve(Solve({(x*y)/2-3*a == 0, x^2/4-(3*a)/2 == 0, 45-(3*x+(3*y)/2) == 0}, {x, y, a}),
             {{x==0,y==30,a==0},{x==10,y==10,a==50/3}});
 
+VerifySolve(Solve({(-2)*(1-x)-400*x*(y-x^2), 200*(y-x^2)}, {x, y}), {{x==1,y==1}});
+
 VerifySolve(Solve(Sqrt(x) == 1, x),  { x == 1 });
 VerifySolve(Solve(Sqrt(x) == -1, x), { });
 VerifySolve(Solve(Sqrt(x) == I, x),  { x == -1 });
