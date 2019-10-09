@@ -46,24 +46,6 @@ namespace {
         }
     }
 
-    void _mul(Limb a, unsigned n, const Limb* __restrict p, Limb* __restrict r)
-    {
-        Limb carry = 0;
-
-        for (unsigned j = 0; j < n; ++j) {
-            const Limb2 v = static_cast<Limb2>(*p++) * a + carry;
-            carry = static_cast<Limb>(v >> LIMB_BITS);
-            *r += static_cast<Limb>(v);
-            carry += *r++ < static_cast<Limb>(v);
-        }
-
-        while (carry) {
-            const Limb v = *r + carry;
-            carry = v < *r;
-            *r++ = v;
-        }
-    }
-
     bool ssub(NN& a, const NN& b)
     {
         if (a >= b) {
@@ -477,12 +459,12 @@ namespace yacas {
                 const Limb* __restrict p = _limbs.data();
                 for (unsigned i = 0; i < n; ++i)
                     if (const Limb u = a._limbs[i])
-                        _mul(u, m, p, r + i);
+                        _mul(p, m, u, r + i);
             } else {
                 const Limb* __restrict q = a._limbs.data();
                 for (unsigned i = 0; i < m; ++i)
                     if (const Limb u = _limbs[i])
-                        _mul(u, n, q, r + i);
+                        _mul(q, n, u, r + i);
             }
 
             _limbs = std::move(result);
@@ -704,7 +686,6 @@ namespace yacas {
             unsigned long index = 0;
             _BitScanReverse(&index, B._limbs.back());
             const unsigned k = 31 - index;
-
 #else
             const unsigned k = __builtin_clz(B._limbs.back());
 #endif
