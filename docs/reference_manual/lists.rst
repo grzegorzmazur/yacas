@@ -70,8 +70,6 @@ change. Operations on lists have better support in the current system.
 
    ::
 
-      In> MapSingle("Sin",{a,b,c});
-      Out> {Sin(a),Sin(b),Sin(c)};
       In> Map("+",{{a,b},{c,d}});
       Out> {a+c,b+d};
 

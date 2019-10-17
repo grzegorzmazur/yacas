@@ -50,10 +50,7 @@ functional programming languages such as Miranda or Haskell.
 
    apply a function to all entries in a list
 
-   :param fn: function to apply
-   :param list: list of arguments
-
-   This function is a shorthand for :func:`MapSingle`. It  successively applies
+   This function is a shorthand for :func:`MapSingle`. It successively applies
    the function ``fn`` to all the entries in ``list`` and returns a list
    containing the results. The parameter ``fn`` can either be a string
    containing the name of a function or a pure  function.
