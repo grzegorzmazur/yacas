@@ -30,6 +30,13 @@ namespace {
 
     void _mul(const Limb* __restrict p, unsigned n, Limb a, Limb* __restrict r)
     {
+        if (n == 1) {
+            const Limb2 v = static_cast<Limb2>(*p) * a;
+            r[0] = static_cast<Limb>(v);
+            r[1] = static_cast<Limb>(v >> LIMB_BITS);
+            return;
+        }
+
         Limb carry = 0;
 
         for (unsigned j = 0; j < n; ++j) {
@@ -243,6 +250,11 @@ namespace yacas {
         {
             if (a == 0)
                 return;
+
+            if (_limbs.empty()) {
+                _limbs.push_back(a);
+                return;
+            }
 
             _limbs.push_back(0);
 
