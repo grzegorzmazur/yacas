@@ -8,6 +8,7 @@ endforeach ()
 
 option (ENABLE_CYACAS_CONSOLE "build the C++ yacas text console" ON)
 option (ENABLE_CYACAS_GUI "build the C++ yacas GUI application" ON)
+option (ENABLE_CYACAS_GUI_PRIVATE_MATHJAX "use private copy of MathJAX in yacas GUI application" OFF)
 option (ENABLE_CYACAS_KERNEL "build the C++ yacas Jupyter kernel" OFF)
 option (ENABLE_CYACAS_UNIT_TESTS "build the C++ yacas engine unit tests" OFF)
 option (ENABLE_CYACAS_BENCHMARKS "build the C++ yacas engine benchmarks" OFF)
