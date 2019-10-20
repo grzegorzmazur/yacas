@@ -1,4 +1,4 @@
-/* global CodeMirror, MathBar, MathJax, THREE, vis, yacas */
+/* global CodeMirror, MathBar, MathJax, Plotly, vis, yacas */
 
 'use strict';
 
@@ -60,6 +60,8 @@ function load() {
         });
         $(".resizable").resizable("option", "maxWidth", w);
         // $( ".CodeMirror").width( w - 2 );
+
+        return true;
     });
 
     CodeMirror.defaults['lineNumbers'] = false;
@@ -316,6 +318,20 @@ function printResults(result) {
         };
 
         Plotly.newPlot(output[0], data, layout, options);
+
+        output.resizable({
+            handles: 's,e',
+            minWidth: 200,
+            minHeight: 200,
+            resize: function (e, info) {
+                window.console.log("resize", info);
+                Plotly.relayout(output[0], {height: info['size']['height']});
+                return true;
+           }
+        });
+
+        output.addClass("resizable");
+
     } else if (result["type"] === "Plot3D") {
         let data = [];
 
@@ -346,6 +362,19 @@ function printResults(result) {
         };
 
         Plotly.newPlot(output[0], data, layout, options);
+
+        output.resizable({
+            handles: 's',
+            minWidth: 200,
+            minHeight: 200,
+            resize: function (e, info) {
+                Plotly.relayout(output[0], {height: info['size']['height']});
+                return true;
+           }
+        });
+
+        output.addClass("resizable");
+
     } else if (result["type"] === "Graph") {
         var vertices = result["graph_vertices"];
         var no_vertices = vertices.length;
@@ -381,34 +410,12 @@ function printResults(result) {
 
         output.resizable({maxWidth: width, minWidth: 200, minHeight: 200});
         output.addClass("resizable");
-
-
     }
 }
 
 function ControlsChanged(element, event) {
     var plot3d = element.target.domElement.parentElement.plot3D;
     plot3d.renderer.render(plot3d.scene, plot3d.camera);
-}
-
-function Plot3dResized(output) {
-    var height = $(output).height();
-    var width = $(output).width();
-    var plot3d = output.plot3D;
-    plot3d.resizePlot(width, height);
-    plot3d.renderer.render(plot3d.scene, plot3d.camera);
-}
-
-function Plot3dMouseOut(output, event) {
-    var controls = output.controls;
-    controls.enabled = false;
-    $(output).removeClass("Plot3DActive");
-}
-
-function Plot3dClicked(output, event) {
-    var controls = output.controls;
-    controls.enabled = true;
-    $(output).addClass("Plot3DActive");
 }
 
 function renderOutput(outputID) {
