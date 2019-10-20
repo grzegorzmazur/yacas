@@ -20,14 +20,14 @@ infix-operator grammar parser. The distribution contains a small library
 of mathematical functions, but its real strength is in the language in which
 you can easily write your own symbolic manipulation algorithms. The core engine
 supports arbitrary precision arithmetic and is able to execute symbolic
-manipulations on various mathematical objects by following user-defined rules.  
-For detailed information on yacas features and usage, see 
+manipulations on various mathematical objects by following user-defined rules.
+For detailed information on yacas features and usage, see
 `<http://www.yacas.org>`_.
 
-Yacas is available for a variety of platforms. See 
+Yacas is available for a variety of platforms. See
 `<http://www.yacas.org/getting_started/downloads/>`_ for binary packages
 and installation instructions. Read ``INSTALL.rst`` or
-`<https://yacas.readthedocs.io/en/latest/getting_started/index.html>`_ for 
+`<https://yacas.readthedocs.io/en/latest/getting_started/index.html>`_ for
 instructions on how to compile yacas from sources.
 
 Yacas is distributed under the GNU LESSER GENERAL PUBLIC LICENSE v2.1 or, at

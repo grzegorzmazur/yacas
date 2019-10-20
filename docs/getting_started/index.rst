@@ -17,9 +17,9 @@ Installation from sources
 Getting sources
 ---------------
 
-Version 1.7.0 can be downloaded from
-`<https://github.com/grzegorzmazur/yacas/archive/v1.7.0.zip>`_ or
-`<https://github.com/grzegorzmazur/yacas/archive/v1.7.0.tar.gz>`_,
+Version 1.8.0 can be downloaded from
+`<https://github.com/grzegorzmazur/yacas/archive/v1.8.0.zip>`_ or
+`<https://github.com/grzegorzmazur/yacas/archive/v1.8.0.tar.gz>`_,
 while the current development version is accessible from
 `<https://github.com/grzegorzmazur/yacas/archive/develop.zip>`_.
 

@@ -7,7 +7,7 @@
 #
 
 Name:           yacas
-Version:        1.7.0
+Version:        1.8.0
 Release:        1%{?dist}
 Summary:        Easy to use, general purpose computer algebra system
 %if 0%{?suse_version}
@@ -80,12 +80,12 @@ Group:          Applications/Engineering
 %endif
 %description common
 Common files for yacas and yacas GUI. Yacas is an easy to use, general
-purpose Computer Algebra System, a program for symbolic manipulation 
+purpose Computer Algebra System, a program for symbolic manipulation
 of mathematical expressions. It uses its own programming language
 designed for symbolic as well as arbitrary-precision numerical
 computations. The system has a library of scripts that implement
 many of the symbolic algebra operations; new algorithms can be easily
-added to the library. Yacas comes with extensive documentation 
+added to the library. Yacas comes with extensive documentation
 covering the scripting language, the functionality that is already
 implemented in the system and the algorithms used.
 %files common
@@ -175,5 +175,5 @@ algorithms used.
 "/usr/include/yacas/*"
 
 %changelog
-* Thu Feb 15 2018 Grzegorz Mazur <teoretyk@gmail.com> 1.7.0-1
+* Thu Feb 15 2018 Grzegorz Mazur <teoretyk@gmail.com> 1.8.0-1
 - Changes are none, there is only the now (Ayal Pinkus)

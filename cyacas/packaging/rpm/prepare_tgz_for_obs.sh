@@ -1,6 +1,6 @@
 #/usr/bin/bash
 
-YACAS_VERSION=1.7.0
+YACAS_VERSION=1.8.0
 
 wget https://github.com/grzegorzmazur/yacas/archive/v${YACAS_VERSION}.tar.gz
 tar xzf v${YACAS_VERSION}.tar.gz

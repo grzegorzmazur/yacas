@@ -2,7 +2,7 @@
 Installation
 ============
 
-Yacas is available for a variety of platforms. See 
+Yacas is available for a variety of platforms. See
 `<http://www.yacas.org/getting_started/downloads/>`_ for binary packages
 and installation instructions.
 
@@ -13,9 +13,9 @@ Installation from sources
 Getting sources
 ---------------
 
-Version 1.7.0 can be downloaded from
-`<https://github.com/grzegorzmazur/yacas/archive/v1.7.0.zip>`_ or
-`<https://github.com/grzegorzmazur/yacas/archive/v1.7.0.tar.gz>`_,
+Version 1.8.0 can be downloaded from
+`<https://github.com/grzegorzmazur/yacas/archive/v1.8.0.zip>`_ or
+`<https://github.com/grzegorzmazur/yacas/archive/v1.8.0.tar.gz>`_,
 while the current development version is accessible from
 `<https://github.com/grzegorzmazur/yacas/archive/develop.zip>`_.
 
@@ -47,11 +47,11 @@ MacOS X
 * Execute
 
   .. code-block:: bash
-                
+
      mkdir build
      cd build
      cmake -G Xcode [-Dcommon_option=value ...] ..
-                  
+
 * Open generated project in ``Xcode`` and build the Release variant
 
 Microsoft Windows
@@ -62,7 +62,7 @@ Microsoft Windows
 * Execute
 
   .. code-block:: bat
-                
+
      mkdir build
      cd build
      cmake -G "Visual Studio 14 2015 Win64" [-Dcommon_option=value ...] ..
@@ -77,7 +77,7 @@ Linux
 * Execute
 
   .. code-block:: bash
-                
+
      mkdir build
      cd build
      cmake -DCMAKE_BUILD_TYPE=Release [-Dcommon_option=value ...] ..

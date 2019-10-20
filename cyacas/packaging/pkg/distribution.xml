@@ -17,7 +17,7 @@
         <pkg-ref id="yacas-gui"/>
     </choice>
 
-    <pkg-ref id="yacas-cli" version="1.7.0" onConclusion="none">yacas-cli.pkg</pkg-ref>
-    <pkg-ref id="yacas-gui" version="1.7.0" onConclusion="none">yacas-gui.pkg</pkg-ref>
-    
+    <pkg-ref id="yacas-cli" version="1.8.0" onConclusion="none">yacas-cli.pkg</pkg-ref>
+    <pkg-ref id="yacas-gui" version="1.8.0" onConclusion="none">yacas-gui.pkg</pkg-ref>
+
 </installer-gui-script>
