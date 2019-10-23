@@ -91,10 +91,14 @@ RFormMaxPrec() := 60000;	 /* This precedence will never be bracketed. It is equa
 110 # RForm(l_IsList, _p)_ListHasFunc(l, List) <-- ConcatStrings("rbind(", RFormArgs(l), ")");
 111 # RForm(l_IsList, _p) <-- ConcatStrings("c(", RFormArgs(l), ")");
 
-// Variables are left as is, except some special ones
+// Constants
 115 # RForm(False, _p) <-- "FALSE";
 115 # RForm(True, _p) <-- "TRUE";
-115 # RForm(x_IsAtom, _p) <-- String(x);
+115 # RForm(Pi, _p) <-- "pi";
+
+// Variables
+120 # RForm(x_IsAtom, _p) <-- String(x);
+
 
 /* Replace operations */
 
@@ -110,7 +114,7 @@ LocalSymbols(rformRegularOps) [
                        {"/"," / "}, {":="," <- "}, {"=="," == "},
                        {"="," == "}, {"!="," != "}, {"<="," <= "},
                        {">="," >= "}, {"<"," < "}, {">"," > "},
-                       {"And"," & "}, {"Or"," | "}, 
+                       {"And"," & "}, {"Or"," | "},
                        { "%", " %% " }, { "^", " ^ " }, { "..", ":" }
                      };
 
@@ -124,7 +128,7 @@ LocalSymbols(rformRegularOps) [
 // bitwise operations
 
 LocalSymbols(rformBitwiserOps) [
-  rformBitwiseOps := { 
+  rformBitwiseOps := {
       {">>", "bitwShiftR"},
       {"<<", "bitwShiftL" },
       {"&", "bitAnd" },
@@ -227,7 +231,7 @@ LocalSymbols(rformMathFunctions) [
 
 120 # RForm(Until(_pred)_body, _p) <--
 	"repeat {"
-	: RIndent() : NlIndented() 
+	: RIndent() : NlIndented()
 	: RFormStatement(body)
         : "if(" : RForm(pred, RFormMaxPrec()) : ") break; "
         : RUndent() : "}";
