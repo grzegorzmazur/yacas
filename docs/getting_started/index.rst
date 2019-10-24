@@ -35,6 +35,12 @@ Common build options
    Build graphical interface for the native yacas engine. Requires Qt 5.5.
    Enabled by default.
 
+`ENABLE_CYACAS_GUI_PRIVATE_CODEMIRROR`
+   Use bundled copy of CodeMirror. Enabled by default.
+
+`ENABLE_CYACAS_GUI_PRIVATE_MATHJAX`
+   Use bundled copy of MathJax. Enabled by default.
+
 `ENABLE_CYACAS_KERNEL`
    Build native yacas kernel for Jupyter Notebook. Requires Boost, ZeroMQ and
    zmqpp. Disabled by default.
@@ -103,13 +109,14 @@ yacas-online
 
 * build yacas using emscripten
 
-  .. code-block:: bat
+  .. code-block:: bash
 
      mkdir build_js
      cd build_js
      cmake -DCMAKE_TOOLCHAIN_FILE=<EMSCRIPTEN_ROOT>/cmake/Modules/Platform/Emscripten.cmake \
      -DENABLE_CYACAS_GUI=No -DENABLE_CYACAS_KERNEL=No -DENABLE_JYACAS=No \
      -DENABLE_DOCS=No -DCMAKE_BUILD_TYPE=Release ..
+     make
      cd ..
 
   where ``<EMSCRIPTEN_ROOT>`` stands for the Emscripten root directory
