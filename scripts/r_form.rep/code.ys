@@ -95,6 +95,7 @@ RFormMaxPrec() := 60000;	 /* This precedence will never be bracketed. It is equa
 115 # RForm(False, _p) <-- "FALSE";
 115 # RForm(True, _p) <-- "TRUE";
 115 # RForm(Pi, _p) <-- "pi";
+115 # RForm(Infinity, _p) <-- "Inf";
 
 // Variables
 120 # RForm(x_IsAtom, _p) <-- String(x);
