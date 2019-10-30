@@ -20,7 +20,9 @@ build-stamp:
 	dh_testdir
 
 	# Add here commands to compile the package.
-	mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_DOCS=ON -DCMAKE_INSTALL_PREFIX=/usr .. && make
+	mkdir build && cd build
+	cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DENABLE_CYACAS_KERNEL=ON -DENABLE_DOCS=ON .. && make
+	cd ..
 	# --- end custom part for compiling
 
 	touch build-stamp
@@ -61,8 +63,31 @@ install: build
 	mkdir -p debian/yacas-dev/usr
 	mv debian/yacas/usr/lib debian/yacas-dev/usr
 	mv debian/yacas/usr/include debian/yacas-dev/usr
-	mkdir -p debian/yacas-doc/usr/share/yacas
-	mv debian/yacas/usr/share/yacas/documentation debian/yacas-doc/usr/share/yacas
+	mkdir -p debian/yacas-doc/usr/share/yacas/documentation
+	mv debian/yacas/usr/share/doc/yacas/singlehtml debian/yacas-doc/usr/share/yacas/documentation
+
+	# replace fonts in yacas-doc with symbolic links to system-wide ones
+	for f in Lato-BoldItalic.ttf Lato-Bold.ttf Lato-Italic.ttf Lato-Regular.ttf; do ln -s -f /usr/share/fonts/truetype/lato/$$f debian/yacas-doc/usr/share/yacas/documentation/singlehtml/_static/fonts/$$f; done
+	for f in RobotoSlab-Bold.ttf RobotoSlab-Regular.ttf; do ln -s -f /usr/share/fonts/truetype/roboto/slab/$$f debian/yacas-doc/usr/share/yacas/documentation/singlehtml/_static/fonts/$$f; done
+	ln -s -f /usr/share/fonts/truetype/font-awesome/fontawesome-webfont.ttf debian/yacas-doc/usr/share/yacas/documentation/singlehtml/_static/fonts/fontawesome-webfont.ttf
+
+	# replace javascript libs in yacas-doc with symbolic links to system-wide ones
+	ln -s -f /usr/share/javascript/jquery/jquery.js debian/yacas-doc/usr/share/yacas/documentation/singlehtml/_static/jquery.js
+	ln -s -f /usr/share/javascript/jquery/underscore.js debian/yacas-doc/usr/share/yacas/documentation/singlehtml/_static/underscore.js
+
+	# replace MathJax in yacas-gui with symbolic link to system-wide one
+	rm -rf debian/yacas-gui/usr/share/yacas/resources/mathjax
+	ln -s /usr/share/javascript/mathjax debian/yacas-gui/usr/share/yacas/resources/mathjax
+
+	# replace CodeMirror in yacas-gui with symbolic link to system-wide one
+	rm -rf debian/yacas-gui/usr/share/yacas/resources/codemirror
+	ln -s /usr/share/javascript/codemirror debian/yacas-gui/usr/share/yacas/resources/codemirror
+
+	# replace jquery and jquery-ui in yacas-gui with symbolic links to system-wide ones
+	ln -s -f /usr/share/javascript/jquery/jquery.min.js debian/yacas-gui/usr/share/yacas/resources/jquery/jquery.min.js
+	ln -s -f /usr/share/javascript/jquery-ui/jquery-ui.min.js debian/yacas-gui/usr/share/yacas/resources/jquery/jquery-ui.min.js
+	ln -s -f /usr/share/javascript/jquery-ui/themes/base/jquery-ui.min.css debian/yacas-gui/usr/share/yacas/resources/jquery/jquery-ui.min.css
+
 	# --- end custom part for installing
 
 # Build architecture-independent files here.

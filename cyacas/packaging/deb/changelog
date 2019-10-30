@@ -1,5 +1,5 @@
-yacas (1.8.1-1) UNRELEASED; urgency=low
+yacas (1.8.0-1) UNRELEASED; urgency=low
 
-  * Changes are none, there is only the now (Ayal Pinkus)
+  * New upstream release
 
- -- Grzegorz Mazur <teoretyk@gmail.com>  Thu, 15 Feb 2018 19:38:12 +0200
+ -- Grzegorz Mazur <teoretyk@gmail.com>  Wed, 30 Oct 15:14:48 +0200

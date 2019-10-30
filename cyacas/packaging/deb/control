@@ -1,20 +1,20 @@
 Source: yacas
-Section: math
-Priority: extra
 Maintainer: Grzegorz Mazur <teoretyk@gmail.com>
-Standards-Version: 3.9.8
+Section: contrib/math
+Priority: optional
+Standards-Version: 4.4.0
 Build-Depends: debhelper (>=9),
                cmake,
-               python-sphinx,
-               python-sphinx-rtd-theme,
-	       libqt5webkit5-dev,
+               python3-sphinx,
+               python3-sphinx-rtd-theme,
+	       	   libqt5webengine5,
                libqt5svg5-dev,
-	       libssl-dev,
-	       libzmqpp-dev,
-	       libzmq3-dev,
-	       libboost-date-time-dev,
-	       libboost-program-options-dev,
-	       libjsoncpp-dev
+	           libssl-dev,
+	           libzmqpp-dev,
+	           libzmq3-dev,
+	           libboost-date-time-dev,
+	           libboost-program-options-dev,
+	           libjsoncpp-dev
 Homepage: http://www.yacas.org
 
 Package: yacas-common
@@ -47,7 +47,7 @@ Description: Easy to use, general purpose Computer Algebra System
 
 Package: yacas-gui
 Architecture: any
-Depends: yacas-common (= ${source:Version}), yacas-doc (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}
+Depends: yacas-common (= ${source:Version}), yacas-doc (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}, libjs-jquery, libjs-jquery-ui, libjs-mathjax, fonts-mathjax, libjs-codemirror
 Description: Graphical User Interface for yacas
  Yacas is an easy to use, general purpose Computer Algebra System, a
  program for symbolic manipulation of mathematical expressions. It
@@ -75,8 +75,8 @@ Description: Yacas kernel for Jupyter
 
 Package: yacas-doc
 Architecture: all
-Section: doc
-Depends: ${misc:Depends}
+Section: contrib/doc
+Depends: ${misc:Depends}, fonts-lato, fonts-roboto-slab, fonts-glewlwyd, libjs-jquery, libjs-underscore
 Suggests: yacas-console (= ${binary:Version}), yacas-gui (= ${binary:Version})
 Description: Documentation for Yacas
  Yacas documentation. Yacas is an easy to use, general purpose
@@ -91,7 +91,7 @@ Description: Documentation for Yacas
 
 Package: yacas-dev
 Architecture: any
-Section: devel
+Section: contrib/devel
 Depends: ${misc:Depends}
 Suggests: yacas-console (= ${binary:Version}), yacas-gui (= ${binary:Version})
 Description: Development files for Yacas
