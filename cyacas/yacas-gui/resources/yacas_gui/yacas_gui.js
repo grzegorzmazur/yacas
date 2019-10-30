@@ -311,6 +311,19 @@ function printResults(result) {
         }
 
         const layout = {
+            autosize: true,
+            margin: {
+                l: 0,
+                r: 0,
+                b: 0,
+                t: 16
+            },
+            xaxis: {
+                automargin: true,
+            },
+            yaxis: {
+                automargin: true,
+            }
         };
 
         const options = {
@@ -355,6 +368,13 @@ function printResults(result) {
         }
 
         const layout = {
+            autosize: true,
+            margin: {
+                l: 0,
+                r: 0,
+                b: 8,
+                t: 16
+            }
         };
 
         const options = {
