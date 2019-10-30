@@ -680,9 +680,7 @@ function deleteCurrent() {
 }
 
 function contextHelp() {
-    console.log("help help");
     var e = document.activeElement;
-    console.log(e);
     yacas.help(e.value, e.selectionStart);
 }
 
