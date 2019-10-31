@@ -5,11 +5,15 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-CFLAGS = -g
 ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-CFLAGS += -O0
+    BUILDTYPE = Debug
 else
-CFLAGS += -O2
+    BUILDTYPE = RelWithDebInfo
+endif
+
+ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+    NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+    MAKEFLAGS += -j$(NUMJOBS)
 endif
 
 build: build-arch build-indep
@@ -20,9 +24,7 @@ build-stamp:
 	dh_testdir
 
 	# Add here commands to compile the package.
-	mkdir build && cd build
-	cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DENABLE_CYACAS_KERNEL=ON -DENABLE_DOCS=ON .. && make
-	cd ..
+	mkdir build && cd build && cmake -DCMAKE_BUILD_TYPE=$(BUILDTYPE) -DCMAKE_INSTALL_PREFIX=/usr -DENABLE_CYACAS_KERNEL=ON -DENABLE_DOCS=ON .. && make $(MAKEFLAGS)
 	# --- end custom part for compiling
 
 	touch build-stamp
