@@ -18,18 +18,20 @@ breadcrumb: true
 
 <div class="medium-8 medium-pull-4 columns" markdown="1">
 
-## Current stable version (1.7.0)
-* source code: [tgz](https://github.com/grzegorzmazur/yacas/archive/v1.7.0.tar.gz) and [zip](https://github.com/grzegorzmazur/yacas/archive/v1.7.0.zip)
-* binary packages for
-  * [Java](https://github.com/grzegorzmazur/yacas/releases/download/v1.7.0/yacas-1.7.0.jar)
-  * Microsoft Windows (7 or newer)
-    * [archive (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.7.0/yacas-1.7.0-win64.zip)
+## Current stable version (1.8.0)
+* source code: [tgz](https://github.com/grzegorzmazur/yacas/archive/v1.8.0.tar.gz) and [zip](https://github.com/grzegorzmazur/yacas/archive/v1.8.0.zip)
 
 ## Development version
   * [repository](https://github.com/grzegorzmazur/yacas/tree/develop)
   * [source code](https://github.com/grzegorzmazur/yacas/archive/develop.zip)
 
 ## Archive
+* Current stable version (1.7.0)
+  * source code: [tgz](https://github.com/grzegorzmazur/yacas/archive/v1.7.0.tar.gz) and [zip](https://github.com/grzegorzmazur/yacas/archive/v1.7.0.zip)
+  * binary packages for
+    * [Java](https://github.com/grzegorzmazur/yacas/releases/download/v1.7.0/yacas-1.7.0.jar)
+    * Microsoft Windows (7 or newer)
+      * [archive (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.7.0/yacas-1.7.0-win64.zip)
 * yacas version 1.6.1
   * source code: [tgz](https://github.com/grzegorzmazur/yacas/archive/v1.6.1.tar.gz) and [zip](https://github.com/grzegorzmazur/yacas/archive/v1.6.1.zip)
   * binary packages for
