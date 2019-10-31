@@ -96,6 +96,9 @@ RFormMaxPrec() := 60000;	 /* This precedence will never be bracketed. It is equa
 115 # RForm(True, _p) <-- "TRUE";
 115 # RForm(Pi, _p) <-- "pi";
 115 # RForm(Infinity, _p) <-- "Inf";
+// this one is a bit shady, but hopefully presence of a NaN in numerical results will draw
+// enough attention to what is actually wrong with the calculations
+115 # RForm(Undefined, _p) <-- "NaN";
 
 // Variables
 120 # RForm(x_IsAtom, _p) <-- String(x);
