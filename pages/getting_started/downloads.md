@@ -26,9 +26,10 @@ breadcrumb: true
     * [Ubuntu](https://launchpad.net/~teoretyk/+archive/ubuntu/yacas)
   * Microsoft Windows (7 or newer)
     * [archive (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.8.0/yacas-1.8.0-win64.zip)
+
 ## Development version
-  * [repository](https://github.com/grzegorzmazur/yacas/tree/master)
-  * [source code](https://github.com/grzegorzmazur/yacas/archive/master.zip)
+* [repository](https://github.com/grzegorzmazur/yacas/tree/master)
+* [source code](https://github.com/grzegorzmazur/yacas/archive/master.zip)
 
 ## Archive
 * Current stable version (1.7.0)
