@@ -58,7 +58,8 @@
         "vector": "cpp",
         "numeric": "cpp",
         "optional": "cpp",
-        "string_view": "cpp"
+        "string_view": "cpp",
+        "variant": "cpp"
     },
     "python.pythonPath": "/usr/bin/python3",
     "files.exclude": {
@@ -71,7 +72,26 @@
         "**/CVS": true
     },
     "files.trimTrailingWhitespace": true,
-    "restructuredtext.confPath": "${workspaceFolder}/docs",
     "restructuredtext.builtDocumentationPath": "${workspaceRoot}/build/docs/html",
-    "cmake.configureOnOpen": true
+    "cmake.configureOnOpen": true,
+    "workbench.colorCustomizations": {
+        "statusBar.background": "#E49427",
+        "statusBar.debuggingBackground": "#E49427",
+        "statusBar.noFolderBackground": "#E49427",
+        "statussBar.prominentBackground": "#E49427"
+    },
+    "files.watcherExclude": {
+        "**/build/**": true
+    },
+    "cmake.installPrefix": "${workspaceRoot}/build/install/${buildKit}/${buildType}",
+    "cmake.configureSettings": {
+        "Qt5Core_DIR": "/usr/lib/x86_64-linux-gnu/cmake/Qt5Core",
+        "Qt5Widgets_DIR": "/usr/lib/x86_64-linux-gnu/cmake/Qt5Widgets",
+        "Qt5WebEngine_DIR": "/usr/lib/x86_64-linux-gnu/cmake/Qt5WebEngine",
+        "Qt5WebEngineWidgets_DIR": "/usr/lib/x86_64-linux-gnu/cmake/Qt5WebEngineWidgets",
+        "Qt5Svg_DIR": "/usr/lib/x86_64-linux-gnu/cmake/Qt5Svg"
+    },
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "restructuredtext.confPath": ""
 }
