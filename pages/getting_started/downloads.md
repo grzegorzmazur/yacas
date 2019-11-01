@@ -32,7 +32,7 @@ breadcrumb: true
 * [source code](https://github.com/grzegorzmazur/yacas/archive/master.zip)
 
 ## Archive
-* Current stable version (1.7.0)
+* yacas version 1.7.0
   * source code: [tgz](https://github.com/grzegorzmazur/yacas/archive/v1.7.0.tar.gz) and [zip](https://github.com/grzegorzmazur/yacas/archive/v1.7.0.zip)
   * binary packages for
     * [Java](https://github.com/grzegorzmazur/yacas/releases/download/v1.7.0/yacas-1.7.0.jar)
