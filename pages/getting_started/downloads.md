@@ -20,10 +20,15 @@ breadcrumb: true
 
 ## Current stable version (1.8.0)
 * source code: [tgz](https://github.com/grzegorzmazur/yacas/archive/v1.8.0.tar.gz) and [zip](https://github.com/grzegorzmazur/yacas/archive/v1.8.0.zip)
-
+* binary packages for
+  * [Java](https://github.com/grzegorzmazur/yacas/releases/download/v1.8.0/yacas-1.8.0.jar)
+  * Linux
+    * [Ubuntu](https://launchpad.net/~teoretyk/+archive/ubuntu/yacas)
+  * Microsoft Windows (7 or newer)
+    * [archive (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.8.0/yacas-1.8.0-win64.zip)
 ## Development version
-  * [repository](https://github.com/grzegorzmazur/yacas/tree/develop)
-  * [source code](https://github.com/grzegorzmazur/yacas/archive/develop.zip)
+  * [repository](https://github.com/grzegorzmazur/yacas/tree/master)
+  * [source code](https://github.com/grzegorzmazur/yacas/archive/master.zip)
 
 ## Archive
 * Current stable version (1.7.0)
