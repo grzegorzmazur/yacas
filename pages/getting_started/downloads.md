@@ -23,7 +23,34 @@ breadcrumb: true
 * binary packages for
   * [Java](https://github.com/grzegorzmazur/yacas/releases/download/v1.8.0/yacas-1.8.0.jar)
   * Linux
-    * [Ubuntu](https://launchpad.net/~teoretyk/+archive/ubuntu/yacas)
+    * Ubuntu installation instructions:
+      * Open terminal (Ctrl - Alt + T)
+      * Execute
+        ```
+        sudo add-apt-repository ppa:teoretyk/yacas
+        sudo apt-get update
+        ```
+      * Execute
+        ```
+        sudo apt-get install yacas-console
+        ```
+        to install terminal interface
+      * Execute
+        ```
+        sudo apt-get install yacas-gui
+        ```
+        to install graphical interface
+      * Execute
+        ```
+        sudo apt-get install yacas-kernel
+        ```
+        to install yacas kernel for Jupyter
+      * Execute
+        ```
+        sudo apt-get install yacas-dev
+        ```
+        to install development libraries
+
   * Microsoft Windows (7 or newer)
     * [archive (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.8.0/yacas-1.8.0-win64.zip)
 
