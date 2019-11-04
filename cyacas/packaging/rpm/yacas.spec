@@ -25,7 +25,7 @@ Source:         v%{version}.tar.gz
 %if 0%{?suse_version}
 BuildRequires:  cmake gcc-c++ python-sphinx python-sphinx_rtd_theme libqt5-qtsvg-devel libQt5WebKitWidgets-devel libQt5PrintSupport-devel
 %else
-BuildRequires:  cmake gcc-c++ python-sphinx python-sphinx_rtd_theme qt5-qtwebkit-devel qt5-qtsvg-devel
+BuildRequires:  cmake gcc-c++ python3-sphinx python3-sphinx_rtd_theme qt5-qtwebengine-devel qt5-qtsvg-devel
 %endif
 %description
 Yacas is an easy to use, general purpose Computer Algebra System, a
@@ -40,7 +40,7 @@ algorithms used.
 %prep
 %setup -q
 %build
-cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_DOCS=ON -DENABLE_CYACAS_KERNEL=OFF -DCMAKE_INSTALL_PREFIX=%{_prefix} .
+cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_DOCS=ON -DENABLE_CYACAS_KERNEL=OFF -DCMAKE_INSTALL_PREFIX=%{_prefix} .
 %{__make} %{?_smp_mflags}
 %check
 %{__make} test
@@ -69,7 +69,7 @@ functionality that is already implemented in the system and the
 algorithms used.
 %files console
 %defattr(-,root,root,-)
-"/usr/bin/yacas"
+%{_bindir}/yacas
 
 %package common
 Summary:        Yacas common files
@@ -89,11 +89,11 @@ added to the library. Yacas comes with extensive documentation
 covering the scripting language, the functionality that is already
 implemented in the system and the algorithms used.
 %files common
-%dir "/usr/share/yacas"
-%dir "/usr/share/yacas/scripts"
-"/usr/share/yacas/scripts/*"
-%dir "/usr/share/yacas/tests"
-"/usr/share/yacas/tests/*"
+%dir %{_datarootdir}/yacas
+%dir %{_datarootdir}/yacas/scripts
+%{_datarootdir}/yacas/scripts/*
+%dir %{_datarootdir}/yacas/tests
+%{_datarootdir}/yacas/tests/*
 
 %package gui
 Summary:        Yacas GUI
@@ -115,14 +115,14 @@ covering the scripting language, the functionality that is already
 implemented in the system and the algorithms used.
 %files gui
 %defattr(-,root,root,-)
-"/usr/bin/yacas-gui"
-%dir "/usr/share/yacas/resources"
-"/usr/share/yacas/resources/*"
-%dir "/usr/share/icons"
-"/usr/share/icons/*"
-%dir "/usr/share/pixmaps"
-"/usr/share/pixmaps/*"
-"/usr/share/applications/yacas-gui.desktop"
+%{_bindir}/yacas-gui
+%dir %{_datarootdir}/yacas/resources
+%{_datarootdir}/yacas/resources/*
+%dir %{_datarootdir}/icons
+%{_datarootdir}/icons/*
+%dir %{_datarootdir}/pixmaps
+%{_datarootdir}/pixmaps/*
+%{_datarootdir}/applications/yacas-gui.desktop
 
 %package doc
 Summary:        Yacas documentation
@@ -143,11 +143,11 @@ scripting language, the functionality that is already implemented in
 the system and the algorithms used.
 %files doc
 %defattr(-,root,root,-)
-"/usr/share/man/man1/yacas.1.gz"
-%dir "/usr/share/yacas/documentation"
-%dir "/usr/share/yacas/documentation/singlehtml"
-%docdir "/usr/share/yacas/documentation/singlehtml"
-"/usr/share/yacas/documentation/singlehtml/*"
+%{_mandir}/man1/yacas.1.gz
+%dir %{_docdir}/yacas
+%dir %{_docdir}/yacas/singlehtml
+%docdir %{_docdir}/yacas
+%{_docdir}/yacas/singlehtml/*
 
 %package devel
 Summary:        Yacas development files
@@ -170,9 +170,9 @@ functionality that is already implemented in the system and the
 algorithms used.
 %files devel
 %defattr(-,root,root,-)
-"/usr/lib/libyacas.a"
-%dir "/usr/include/yacas"
-"/usr/include/yacas/*"
+%{_libdir}/libyacas*.a
+%dir %{_includedir}/yacas
+%{_includedir}/yacas/*
 
 %changelog
 * Thu Feb 15 2018 Grzegorz Mazur <teoretyk@gmail.com> 1.8.0-1
