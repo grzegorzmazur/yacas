@@ -13,7 +13,7 @@ from docutils.parsers.rst import directives
 
 from sphinx import addnodes
 from sphinx.roles import XRefRole
-from sphinx.locale import l_, _
+from sphinx.locale import _
 from sphinx.domains import Domain, ObjType, Index
 from sphinx.directives import ObjectDescription
 from sphinx.util.nodes import make_refnode
@@ -87,8 +87,8 @@ class YacasObject(ObjectDescription):
     }
 
     doc_field_types = [
-        Field('parameter', label=l_('Arguments'), names=('param')),
-        Field('returnvalue', label=l_('Returns'), has_arg=False,
+        Field('parameter', label=_('Arguments'), names=('param')),
+        Field('returnvalue', label=_('Returns'), has_arg=False,
               names=('returns', 'return')),
     ]
 
@@ -249,8 +249,8 @@ class YacasDomain(Domain):
     name = 'ys'
     label = 'Yacas'
     object_types = {
-        'function':     ObjType(l_('function'),      'func', 'obj'),
-        'data':         ObjType(l_('data'),          'data', 'obj'),
+        'function':     ObjType(_('function'),      'func', 'obj'),
+        'data':         ObjType(_('data'),          'data', 'obj'),
     }
 
     directives = {
