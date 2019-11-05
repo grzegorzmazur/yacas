@@ -85,7 +85,8 @@ function load() {
     });
 
     editor.on('change', function () {
-        yacas.on_contentsChanged();
+        if (yacas.hasOwnProperty('on_contentsChanged'))
+            yacas.on_contentsChanged();
     });
     $(document).contextmenu({
         delegate: ".Expression>.Out",

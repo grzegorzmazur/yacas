@@ -3,14 +3,14 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        
+
         <title>Yacas Online</title>
 
-        <link rel="stylesheet" href="codemirror/lib/codemirror.css" />
-        <link rel="stylesheet" href="codemirror/addon/hint/show-hint.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/hint/show-hint.css" />
         <link rel="stylesheet" href="yacas_gui/yacas_gui.css" />
         <link rel="stylesheet" href="mathbar/mathbar.css" />
-        <link rel="stylesheet" href="jquery/jquery-ui-1.11.2.min.css" />
+        <link rel="stylesheet" href="jquery/jquery-ui.min.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.1/vis.min.css" />
 
         <script type="text/x-mathjax-config">
@@ -27,31 +27,24 @@
                         displayAlign: "left"
             });
         </script>
-        
-        <script type="text/javascript" src="yagy_ui/yagy_ui.js"></script>
-        <script type="text/javascript" src="jquery/jquery-1.11.0.min.js"></script>
-        <script type="text/javascript" src="jquery/jquery-ui-1.11.2.min.js"></script>
+
+        <script type="text/javascript" src="yacas_gui/yacas_gui.js"></script>
+        <script type="text/javascript" src="jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="jquery/jquery-ui.min.js"></script>
         <script type="text/javascript" src="jquery/jquery.jeditable.js"></script>
         <script type="text/javascript" src="jquery/jquery.jeditable.autogrow.js"></script>
         <script type="text/javascript" src="jquery/jquery.autosize.min.js"></script>
         <script type="text/javascript" src="jquery/jquery.ui-contextmenu.min.js"></script>
-        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_CHTML"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.resize.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r83/three.min.js"></script>
-        <script type="text/javascript" src="three/Detector.js"></script>
-        <script type="text/javascript" src="three/TrackballControls.js"></script>
-        <script type="text/javascript" src="plot3d/delaunay.js"></script>
-        <script type="text/javascript" src="plot3d/plot3d.js"></script>
-        <script type="text/javascript" src="mathbar/mathBar.js"></script>  
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS_CHTML"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.49.5/plotly.min.js"></script>
+        <script type="text/javascript" src="mathbar/mathBar.js"></script>
         <script type="text/javascript" src="mathbar/functions_parser.js"></script>
-        <script type="text/javascript" src="codemirror/lib/codemirror.js"></script>
-        <script type="text/javascript" src="codemirror/mode/yacas/yacas.js"></script>
-        <script type="text/javascript" src="codemirror/addon/edit/matchbrackets.js"></script>
-        <script type="text/javascript" src="codemirror/addon/edit/closebrackets.js"></script>
-        <script type="text/javascript" src="codemirror/addon/hint/show-hint.js"></script>
-        <script type="text/javascript" src="codemirror/addon/hint/anyword-hint.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.1/vis.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/yacas/yacas.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/edit/matchbrackets.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/edit/closebrackets.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/hint/show-hint.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/hint/anyword-hint.js"></script>
 
         <script type='text/javascript'>
           String.prototype.beginsWith = function (string) {
@@ -59,7 +52,7 @@
           };
 
           var yacas;
-          
+
           var Module = {
               noInitialRun: true,
               onRuntimeInitialized: function() {
@@ -80,7 +73,7 @@
                   yacas_evaluate("Plot3DS'yagy(values_IsList, _options'hash) <-- Yagy'Plot3DS'Data(values, options'hash);");
                   yacas_evaluate("Plot3DS'outputs() := { {\"default\", \"yagy\"}, {\"data\", \"Plot3DS'data\"}, {\"gnuplot\", \"Plot3DS'gnuplot\"}, {\"yagy\", \"Plot3DS'yagy\"},};");
                   yacas_evaluate("Protect(Plot3DS'outputs);");
-                  
+
                   yacas = {
                       isWebGLEnabled: function () {
                           return true;
@@ -95,17 +88,17 @@
                           yacas_evaluate(expr);
 
                           var side_effects = yacas_side_effects();
-                          
+
                           if (side_effects !== '')
                               evaluationResult['side_effects'] = side_effects;
-                          
+
                           var result = yacas_result().trim();
 
                           var is_error = yacas_is_error();
 
                           if (!is_error)
                               result = result.substr(0, result.length - 1);
-                          
+
                           if (is_error) {
                               evaluationResult['type'] = 'Error';
                               evaluationResult['error_message'] = result;
@@ -124,11 +117,11 @@
                                   }
                                   edges.push({from: vertices.indexOf(ft[0]) + 1, to: vertices.indexOf(ft[1]) + 1, bi: bi});
                               }
-                              
+
                               evaluationResult['type'] = 'Graph';
                               evaluationResult['graph_vertices'] = vertices;
                               evaluationResult['graph_edges'] = edges;
-                              
+
                           } else if (result.beginsWith("Yagy'Plot2D'Data(")) {
                               result = result.substr(17, result.length - 18);
                               var parts = result.split("}},{{");
@@ -136,7 +129,7 @@
                               options = optionsString.substr(0, optionsString.length - 2).split('},{');
 
                               var labels = [];
-                              
+
                               for (var i = 0; i < options.length; ++i) {
                                   var match = /("[^",]+?"),(.+)/.exec(options[i]);
                                   if (match[1] === '"yname"') {
@@ -147,7 +140,7 @@
                               }
 
                               var data = [];
-                              
+
                               for (var i = 0; i < parts.length; ++i) {
                                   var part = parts[i].replace('{{{', '').replace('}}}', '');
                                   var points = part.split('},{');
@@ -171,7 +164,7 @@
                               options = optionsString.substr(0, optionsString.length - 2).split('},{');
 
                               var labels = [];
-                              
+
                               for (var i = 0; i < options.length; ++i) {
                                   var match = /("[^",]+?"),(.+)/.exec(options[i]);
                                   if (match[1] === '"zname"') {
@@ -182,7 +175,7 @@
                               }
 
                               var data = [];
-                              
+
                               for (var i = 0; i < parts.length; ++i) {
                                   var part = parts[i].replace('{{{', '').replace('}}}', '');
                                   var points = part.split('},{');
@@ -215,7 +208,7 @@
                               var isSquareMatrix = yacas_result() === 'True;';
 
                               var expressionType = 'function';
-                              
+
                               if (isNumber)
                                   expressionType = 'number';
                               else if (isConstant && !(isVector || isMatrix))
@@ -234,14 +227,14 @@
                                   variables = []
                               else
                                   variables = variables.split(',');
-                              
+
                               evaluationResult['type'] = 'Expression';
                               evaluationResult['expression'] = result;
                               evaluationResult['tex_code'] = texCode;
                               evaluationResult['expression_type'] = expressionType;
                               evaluationResult['variables'] = variables;
                           }
-                          
+
                           printResults(evaluationResult);
                       },
                       complete: function (ps) {
@@ -262,7 +255,7 @@
           };
         </script>
 
-        
+
         <script async type="text/javascript" src="yacas.js"></script>
     </head>
 
