@@ -50,6 +50,13 @@ breadcrumb: true
         sudo apt-get install yacas-dev
         ```
         to install development libraries
+    * Fedora 31 installation instructions
+      * Download required RPM files from https://github.com/grzegorzmazur/yacas/releases/tag/v1.8.0
+      * Open terminal
+      * Execute
+        ```
+        rpm -i yacas-common-1.8.0-1.fc31.x86_64.rpm yacas-doc-1.8.0-1.fc31.x86_64.rpm yacas-console-1.8.0-1.fc31.x86_64.rpm yacas-gui-1.8.0-1.fc31.x86_64.rpm
+        ```
 
   * Microsoft Windows (7 or newer)
     * [archive (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.8.0/yacas-1.8.0-win64.zip)
