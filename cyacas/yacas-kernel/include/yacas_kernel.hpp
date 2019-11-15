@@ -44,7 +44,7 @@ public:
 private:
     class Session : NonCopyable {
     public:
-        Session(const std::string& key);
+        explicit Session(const std::string& key);
 
         const HMAC_SHA256& auth() const { return _auth; };
         const boost::uuids::uuid& uuid() const { return _uuid; };

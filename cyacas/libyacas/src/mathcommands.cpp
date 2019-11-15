@@ -36,16 +36,6 @@
 #define RESULT aEnvironment.iStack[aStackTop]
 #define ARGUMENT(i) aEnvironment.iStack[aStackTop + i]
 
-class Command {
-public:
-    Command(LispEnvironment& env);
-
-    virtual void Evaluate();
-
-protected:
-    LispEnvironment& _env;
-};
-
 void LispLexCompare2(LispEnvironment& aEnvironment,
                      int aStackTop,
                      bool (*lexfunc)(const char* f1,

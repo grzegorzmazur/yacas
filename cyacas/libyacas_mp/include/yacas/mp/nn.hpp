@@ -57,7 +57,7 @@ namespace yacas {
             };
 
             struct DivisionByZeroError : public std::domain_error {
-                DivisionByZeroError(std::string_view s) :
+                explicit DivisionByZeroError(std::string_view s) :
                     std::domain_error("yacas::mp::NN: attempt to divide " +
                                       std::string(s) + " by zero")
                 {

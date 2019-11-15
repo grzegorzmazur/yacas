@@ -6,7 +6,7 @@
 namespace {
     struct IsPrefix {
 
-        IsPrefix(const std::string& p) : _p(p), _l(p.length()) {}
+        explicit IsPrefix(const std::string& p) : _p(p), _l(p.length()) {}
 
         bool operator()(const std::string& s) const
         {
