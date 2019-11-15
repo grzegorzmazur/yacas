@@ -164,8 +164,6 @@ char32_t CUnixCommandLine::GetKey()
         case 005: /* ^E  (unix end) */
             ch = eEnd;
             break;
-        case 004: /* ^D  (unix delete/end of file) */
-            ch = eCtrlD;
         case 127:
             ch = eDelete;
             break;
