@@ -571,7 +571,6 @@ void ANumberToString(std::string& aResult,
         // Remove trailing zeroes (most significant side)
         while (aResult.size() > 1 && aResult.back() == 0)
             aResult.pop_back();
-        nr = aResult.size();
 
         std::reverse(aResult.begin(), aResult.end());
 
@@ -902,7 +901,6 @@ void BaseDivide(ANumber& aQuotient,
         sub.push_back(0);
 
         PlatSignedDoubleWord carry;
-        int digit;
         { // Subtract the two
             // TODO this can be generalized!!!!
             //
@@ -911,7 +909,7 @@ void BaseDivide(ANumber& aQuotient,
 
             // First check if qv isn't too big...
             carry = 0;
-            for (digit = 0; digit <= n; digit++) {
+            for (int digit = 0; digit <= n; digit++) {
                 PlatSignedDoubleWord word;
                 word = ((PlatSignedDoubleWord)a1[digit + j]) -
                        ((PlatSignedDoubleWord)sub[digit]) +
@@ -930,7 +928,7 @@ void BaseDivide(ANumber& aQuotient,
             }
 
             carry = 0;
-            for (digit = 0; digit <= n; digit++) {
+            for (int digit = 0; digit <= n; digit++) {
                 PlatSignedDoubleWord word;
                 word = ((PlatSignedDoubleWord)a1[digit + j]) -
                        ((PlatSignedDoubleWord)sub[digit]) +
