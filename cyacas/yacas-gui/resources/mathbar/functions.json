@@ -8,7 +8,7 @@
     "functions":{
         "N":
         {
-            
+
             "parameters": [
                            {
                            "parameterName": "with_precision",
@@ -25,30 +25,30 @@
                                           }
                            ]
                            }
-                           
+
 ],
-            "parser": "numerical_value_parser"
+            "parser": "NumericalValueParser"
         },
-        
+
         "Sqrt":
             {
                 "parameters": [],
-                "parser": "square_root_parser"
+                "parser": "SquareRootParser"
             },
         "Exp":
             {
                 "parameters": [],
-                "parser": "exponential_parser"
+                "parser": "ExponentialParser"
             },
         "Ln":
             {
                 "parameters": [],
-                "parser": "natural_logarithm_parser"
+                "parser": "NaturalLogarithmParser"
             },
         "Simplify":
             {
                 "parameters": [],
-                "parser": "simplify_parser"
+                "parser": "SimplifyParser"
             },
         "Integrate":
             {
@@ -79,7 +79,7 @@
                                               ]
                                }
                                ],
-                "parser": "integrate_parser"
+                "parser": "IntegrateParser"
             },
         "Derivative":
             {
@@ -91,7 +91,7 @@
                                "text": "with respect to"
                                }
                                ],
-                "parser": "derivative_parser"
+                "parser": "DerivativeParser"
             },
         "Plot2D":
             {
@@ -110,7 +110,7 @@
                                }
                                ],
                 "text": "Plot",
-                "parser": "plot_2d_parser"
+                "parser": "Plot2dParser"
             },
         "Limit":
             {
@@ -142,7 +142,7 @@
                                               ]
                                }
                                ],
-                "parser": "limit_parser"
+                "parser": "LimitParser"
             },
         "Plot3D":
             {
@@ -153,7 +153,7 @@
                                "defaultValue": "%VARIABLE%0%",
                                "text" : ""
                                },
-                               
+
                                {
                                "parameterName": "variable_0_from",
                                "parameterType": "edit",
@@ -188,14 +188,9 @@
                                "widestValue": "00000",
                                "text": "to"
                                }
-
-                               
-                               
-                
                 ],
                 "text": "Plot",
-                "parser": "plot_3d_parser"
+                "parser": "Plot3dParser"
             }
-            
     }
     }

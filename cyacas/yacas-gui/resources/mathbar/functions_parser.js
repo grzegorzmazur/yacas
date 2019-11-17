@@ -10,7 +10,7 @@ function natural_logarithm_parser( outputValue, parameters ){
     return "Ln(" + outputValue + ")";
 }
 
-function numerical_value_parser( outputValue, parameters ){
+function NumericalValueParser( outputValue, parameters ){
     const with_precision = parameters["with_precision"];
 
     if ( with_precision ){
@@ -21,16 +21,16 @@ function numerical_value_parser( outputValue, parameters ){
     }
 }
 
-function exponential_parser( outputValue, parameters ){
+function ExponentialParser( outputValue, parameters ){
     return "Exp(" + outputValue + ")";
 }
 
 
-function simplify_parser( outputValue, parameters ){
+function SimplifyParser( outputValue, parameters ){
     return "Simplify(" + outputValue + ")";
 }
 
-function integrate_parser( outputValue, parameters ){
+function IntegrateParser( outputValue, parameters ){
     const variable = parameters["variable"];
 
     const definite = parameters["definite"];
@@ -44,19 +44,19 @@ function integrate_parser( outputValue, parameters ){
     }
 }
 
-function derivative_parser( outputValue, parameters ){
+function DerivativeParser( outputValue, parameters ){
     const variable = parameters["variable"];
     return "D("+ variable +")" + outputValue;
 }
 
-function plot_2d_parser( outputValue, parameters ){
+function Plot2dParser( outputValue, parameters ){
     const from = parameters["from"];
     const to = parameters["to"];
 
     return "Plot2D(" + outputValue + "," + from + ":" + to + ")";
 }
 
-function plot_3d_parser( outputValue, parameters ){
+function Plot3dParser( outputValue, parameters ){
     const from_0 = parameters["variable_0_from"];
     const to_0 = parameters["variable_0_to"];
     const from_1 = parameters["variable_1_from"];
@@ -65,7 +65,7 @@ function plot_3d_parser( outputValue, parameters ){
     return "Plot3DS(" + outputValue + "," + from_0 + ":" + to_0 + "," + from_1 + ":" + to_1 + ")";
 }
 
-function limit_parser( outputValue, parameters ){
+function LimitParser( outputValue, parameters ){
     const variable = parameters["variable"];
     const value = parameters["value"];
     const direction = parameters["direction"];
