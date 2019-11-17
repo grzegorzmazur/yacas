@@ -85,7 +85,7 @@ function load() {
     });
     editor.on("change", function () {
         if (yacas.hasOwnProperty("on_contentsChanged"))
-	    yacas.on_contentsChanged();
+	        yacas.on_contentsChanged();
     });
     $(document).contextmenu({
         delegate: ".Expression>.Out",
@@ -262,7 +262,7 @@ function printResults(result) {
 
         if (MathBar.supportsExpressionType(result["expression_type"], result["variables"].length)) {
 
-            var options = {};
+            let options = {};
             options["layout"] = "singleline";
             options["VIF"] = "max";
             options["type"] = result["expression_type"];
@@ -274,7 +274,7 @@ function printResults(result) {
             }
 
             var bar = new MathBar(outputID, options, function (result, outputID) {
-                parseMathBarResult(result, outputID)
+                parseMathBarResult(result, outputID);
             });
 
         }
