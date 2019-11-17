@@ -137,7 +137,7 @@ MathBar.prototype.createFunctionsDiv = function(){
             $functionsSelect.append( $("<option>", {name: this.categories[j]}).append( text ) );
         }
         
-        $label = $("<label>");
+        let $label = $("<label>");
         $label.dblclick( function(e){
                         if ( $label.find("option:selected").val() == MathBar.selectMoreText ){
                         return true;
@@ -181,7 +181,7 @@ MathBar.prototype.createMathBarTable = function(){
 
 
 MathBar.keydownEventHandler = function( event ){
-    $mathBarElement = $(this).parents(".MathBar:first");
+    let $mathBarElement = $(this).parents(".MathBar:first");
     if( event.which == 13 && event.shiftKey ){
         event.preventDefault();
         $mathBarElement[0].mathBar.Run();
@@ -198,7 +198,7 @@ MathBar.ParseFunctions = function(){
         for (let i = 0; i < funcList.length; i++){
             let ff = MathBar.functions[ funcList[i] ];
             if ( ff == undefined ){
-                console.error( "Function " + funcList[i] + " is not defined! (Function category: " +  functionType + ")");
+                console.error( "Function " + funcList[i] + " is not defined!");
             }
         }
     }
