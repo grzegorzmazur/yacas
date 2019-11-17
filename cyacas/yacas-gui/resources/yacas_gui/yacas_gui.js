@@ -1,6 +1,6 @@
 /* global CodeMirror, MathBar, MathJax, Plotly, vis, yacas */
 
-'use strict';
+"use strict";
 
 //Function stops scrolling event, and just scrool the window
 //Otherwise Code-Mirror editor kept scrolling one line up even if there was no line to scroll
@@ -50,7 +50,7 @@ function load() {
 
     $("#inputExpression").autosize();
 
-    $(window).on('resize', function (event) {
+    $(window).on("resize", function (event) {
 
         var w = $("body").width() - $("#Elements>tbody>tr>td:first-child").innerWidth() - 10; //10 is for padding in the td.Out element
         $(".resizable").each(function () {
@@ -64,29 +64,28 @@ function load() {
         return true;
     });
 
-    CodeMirror.defaults['lineNumbers'] = false;
-    CodeMirror.defaults['mode'] = {name: 'yacas'};
-    CodeMirror.defaults['matchBrackets'] = true;
-    CodeMirror.defaults['autoCloseBrackets'] = '()[]{}""';
-    CodeMirror.defaults['readOnly'] = false;
-    CodeMirror.defaults['lineWrapping'] = true;
-    CodeMirror.defaults['hintOptions'] = {hint: hint};
+    CodeMirror.defaults["lineNumbers"] = false;
+    CodeMirror.defaults["mode"] = {name: "yacas"};
+    CodeMirror.defaults["matchBrackets"] = true;
+    CodeMirror.defaults["autoCloseBrackets"] = '()[]{}""';
+    CodeMirror.defaults["readOnly"] = false;
+    CodeMirror.defaults["lineWrapping"] = true;
+    CodeMirror.defaults["hintOptions"] = {hint: hint};
 
     if (/Mac/.test(navigator.platform))
-        CodeMirror.defaults['extraKeys'] = {'Cmd-Space': 'autocomplete'};
+        CodeMirror.defaults["extraKeys"] = {"Cmd-Space": "autocomplete"};
     else
-        CodeMirror.defaults['extraKeys'] = {'Ctrl-Space': 'autocomplete'};
+        CodeMirror.defaults["extraKeys"] = {"Ctrl-Space": "autocomplete"};
 
 
-    var editor = CodeMirror.fromTextArea(document.getElementById('inputExpression'));
-    $('#inputExpression')[0].editor = editor;
+    var editor = CodeMirror.fromTextArea(document.getElementById("inputExpression"));
+    $("#inputExpression")[0].editor = editor;
     $(editor.getInputField()).keydown(function (event) {
         return submitenter(this, event);
     });
-
-    editor.on('change', function () {
-        if (yacas.hasOwnProperty('on_contentsChanged'))
-            yacas.on_contentsChanged();
+    editor.on("change", function () {
+        if (yacas.hasOwnProperty("on_contentsChanged"))
+	    yacas.on_contentsChanged();
     });
     $(document).contextmenu({
         delegate: ".Expression>.Out",
@@ -95,10 +94,10 @@ function load() {
             {title: "Copy Yacas Expression", cmd: "copyYacasExpression"}
         ],
         select: function (event, ui) {
-            const parents = ui.target.parents('.Expression');
+            const parents = ui.target.parents(".Expression");
 
             if (ui.cmd === "copyTeX") {
-                yacas.copyToClipboard($(parents[0]).children('script')[0].textContent);
+                yacas.copyToClipboard($(parents[0]).children("script")[0].textContent);
             } else if (ui.cmd === "copyYacasExpression") {
                 yacas.copyToClipboard($(parents)[0].yacasExpression);
             }
@@ -135,14 +134,14 @@ function updateInputNumber(updatedNumber) {
 
 function clearInput() {
     $("#inputExpression").val("");
-    $('#inputExpression')[0].editor.setValue("");
+    $("#inputExpression")[0].editor.setValue("");
 }
 
 
 function submitenter(input, event) {
     if (event.which === 13 && event.shiftKey) {
-        $('#inputExpression')[0].editor.save();
-        const value = $('#inputExpression')[0].editor.getValue();
+        $("#inputExpression")[0].editor.save();
+        const value = $("#inputExpression")[0].editor.getValue();
         calculate(value);
         return false;
     }
@@ -156,11 +155,11 @@ function submitenter(input, event) {
 
 function addInputEditor(lineid, number, value, rootElementID) {
 
-    var $row = $("<tr>", {class: 'In'});
+    var $row = $("<tr>", {class: "In"});
 
     var $tdnumber = $("<td>").append("in  " + number + ":");
 
-    var $textarea = $("<textarea>", {class: 'InputTextarea'}).append(value);
+    var $textarea = $("<textarea>", {class: "InputTextarea"}).append(value);
     var $tdinput = $("<td>").append($textarea);
 
     $row.append($tdnumber).append($tdinput);
@@ -174,7 +173,7 @@ function addInputEditor(lineid, number, value, rootElementID) {
     $textarea[0].editor = editor;
     editor.calculatedExpression = value;
 
-    editor.on('keydown', function (editor, event) {
+    editor.on("keydown", function (editor, event) {
 
         if (event.which === 13 && event.shiftKey) {
             editor.save();
@@ -192,7 +191,7 @@ function addInputEditor(lineid, number, value, rootElementID) {
 
     });
 
-    editor.on('keyup', function (editor, e) {
+    editor.on("keyup", function (editor, e) {
 
         var $tbody = $(editor.getTextArea()).parents("tbody");
         if ($tbody.hasClass("New"))
@@ -215,7 +214,7 @@ function addInputEditor(lineid, number, value, rootElementID) {
 function addOutput(lineid, number, rootElementID) {
     var outputID = "output_" + lineid;
 
-    var $row = $("<tr>", {class: 'Out'});
+    var $row = $("<tr>", {class: "Out"});
 
     $row.append("<td>out " + number + ":</td>");
     $row.append("<td><div id='" + outputID + "' ></div></td>");
@@ -238,7 +237,7 @@ function printResults(result) {
 
     if (result.hasOwnProperty("side_effects")) {
         var outRow = ExpressionElement.children(".Out");
-        addSideEffects(number, result["side_effects"].replace(/\n/g, '<br />'), outRow);
+        addSideEffects(number, result["side_effects"].replace(/\n/g, "<br />"), outRow);
     }
 
     var output = $("#" + outputID);
@@ -298,14 +297,14 @@ function printResults(result) {
         for (let i = 0; i < result["plot2d_data"].length; ++i) {
             let x=[];
             let y=[];
-            const d = result["plot2d_data"][i]['data'];
+            const d = result["plot2d_data"][i]["data"];
             for (let j = 0; j < d.length; ++j) {
                 x.push(d[j][0]);
                 y.push(d[j][1]);
             }
             data.push({
-                type: 'scatter',
-                name: result["plot2d_data"][i]['label'],
+                type: "scatter",
+                name: result["plot2d_data"][i]["label"],
                 x: x,
                 y: y,
             });
@@ -334,12 +333,12 @@ function printResults(result) {
         Plotly.newPlot(output[0], data, layout, options);
 
         output.resizable({
-            handles: 's,e',
+            handles: "s,e",
             minWidth: 200,
             minHeight: 200,
             resize: function (e, info) {
                 window.console.log("resize", info);
-                Plotly.relayout(output[0], {height: info['size']['height']});
+                Plotly.relayout(output[0], {height: info["size"]["height"]});
                 return true;
            }
         });
@@ -353,14 +352,14 @@ function printResults(result) {
             let x=[];
             let y=[];
             let z=[];
-            const d = result["plot3d_data"][i]['data'];
+            const d = result["plot3d_data"][i]["data"];
             for (let j = 0; j < d.length; ++j) {
                 x.push(d[j][0]);
                 y.push(d[j][1]);
                 z.push(d[j][2]);
             }
             data.push({
-                type: 'mesh3d',
+                type: "mesh3d",
                 opacity: 0.8,
                 x: x,
                 y: y,
@@ -385,11 +384,11 @@ function printResults(result) {
         Plotly.newPlot(output[0], data, layout, options);
 
         output.resizable({
-            handles: 's',
+            handles: "s",
             minWidth: 200,
             minHeight: 200,
             resize: function (e, info) {
-                Plotly.relayout(output[0], {height: info['size']['height']});
+                Plotly.relayout(output[0], {height: info["size"]["height"]});
                 return true;
            }
         });
@@ -411,9 +410,9 @@ function printResults(result) {
         var vis_edges = [];
 
         for (var i = 0; i < no_edges; ++i) {
-            var arrows = 'to';
+            var arrows = "to";
             if (edges[i].bi)
-                arrows += ',from';
+                arrows += ",from";
             vis_edges.push({from: edges[i].from, to: edges[i].to, arrows: arrows});
         }
 
@@ -450,14 +449,14 @@ function removeOldResults(number) {
 function addExpressionCells(lineID, expressionid, value, rootElementID, expression_class) {
 
 
-    $("<tbody>", {id: 'expression_' + lineID, class: expression_class}).insertBefore(rootElementID);
+    $("<tbody>", {id: "expression_" + lineID, class: expression_class}).insertBefore(rootElementID);
     //addEditable( lineID, expressionid, value, "#expression_" + lineID);
     addInputEditor(lineID, expressionid, value, "#expression_" + lineID);
     addOutput(lineID, expressionid, "#expression_" + lineID);
 }
 
 function calculateAt(value, rootElementId) {
-    addExpressionCells(numberOfLines, currentExpression, value, '#' + rootElementId, "New");
+    addExpressionCells(numberOfLines, currentExpression, value, "#" + rootElementId, "New");
 
     yacas.eval(numberOfLines, value);
 
@@ -468,7 +467,7 @@ function calculateAt(value, rootElementId) {
 }
 
 function calculate(value) {
-    calculateAt(value, 'expression_0');
+    calculateAt(value, "expression_0");
     clearInput();
 }
 
@@ -487,7 +486,7 @@ function processChange(value, number, object) {
         return;
     }
 
-    var expression_class = $("#expression_" + number).attr('class');
+    var expression_class = $("#expression_" + number).attr("class");
 
     addExpressionCells(numberOfLines, currentExpression, decodedValue, "#expression_" + number, expression_class);
 
@@ -543,12 +542,12 @@ function evaluateAll() {
 
 
 function getAllInputs() {
-    var inputs = [];
+    let inputs = [];
     $(".InputTextarea").each(function () {
         inputs.push(this.editor.getValue());
 
     });
-    inputVal = $("#inputExpression")[0].editor.getValue();
+    let inputVal = $("#inputExpression")[0].editor.getValue();
     if (inputVal !== "")
         inputs.push(inputVal);
     return inputs;
@@ -572,7 +571,7 @@ function findNextExpression(number) {
 }
 
 function previousCell() {
-    var focused = $(':focus').parents("tbody");
+    var focused = $(":focus").parents("tbody");
 
     if (focused.length === 0) {
         return;
@@ -583,7 +582,7 @@ function previousCell() {
 }
 
 function nextCell() {
-    var focused = $(':focus').parents("tbody");
+    var focused = $(":focus").parents("tbody");
 
     if (focused.length === 0) {
         return;
@@ -610,9 +609,9 @@ function goDown(number) {
 }
 
 function goto(number) {
-    if (number === '0') {
+    if (number === "0") {
         //$("#inputExpression").focus();
-        $('#inputExpression')[0].editor.focus();
+        $("#inputExpression")[0].editor.focus();
     } else {
         //$("#expression_"+number).find(".editable").click();
         $("#expression_" + number).find("textarea")[0].editor.focus();
@@ -621,7 +620,7 @@ function goto(number) {
 }
 
 function insertElement(whetherAfterOrBefore) {
-    var focused = $(':focus').parents("tbody");
+    var focused = $(":focus").parents("tbody");
 
     if (focused.length === 0) {
         return;
@@ -664,7 +663,7 @@ function insertBeforeCurrent() {
 }
 
 function deleteCurrent() {
-    var focused = $(':focus').parents("tbody");
+    var focused = $(":focus").parents("tbody");
 
     if (focused.length === 0) {
         return;
@@ -674,7 +673,7 @@ function deleteCurrent() {
     if ($(focused)[0].id === "expression_0") {
         return;
     }
-    number = $(focused)[0].id.split("_")[1];
+    const number = $(focused)[0].id.split("_")[1];
     goDown(number);
     $(focused).remove();
 
@@ -703,12 +702,12 @@ function debounce(func, wait, immediate) {
 }
 
 function exportScript() {
-    var elems = document.getElementsByClassName('InputTextarea');
+    var elems = document.getElementsByClassName("InputTextarea");
     var r = [];
     for (var i = 0; i < elems.length; ++i) {
         var s = elems[i].value;
-        if (!s.endsWith(';'))
-            s += ';';
+        if (!s.endsWith(";"))
+            s += ";";
         r.push(s)
     }
     return r;

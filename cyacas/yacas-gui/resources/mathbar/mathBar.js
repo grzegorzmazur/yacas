@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 MathBar.selectMoreText = "more";
 MathBar.functions;
@@ -37,7 +37,7 @@ function MathBar( outputID, options, callback ) {
     self.visible = false;
     self.outputValue = $("#" + outputID)[0].yacasExpression;
     
-    $button.on('keydown', function( event ){
+    $button.on("keydown", function( event ){
                  if( event.which == 13  ){
                     event.preventDefault();
                     if ( event.shiftKey ){
@@ -80,7 +80,7 @@ MathBar.prototype.drawMathBar = function(){
         $functionsSelect.selectmenu();
         $functionsSelect.on( "selectmenuselect", function( event, ui ) {
                             $mathBarElement = $(this).parents(".MathBar:first");
-                            $mathBarElement[0].mathBar.optionClicked( $('option:selected', this).attr("name"), false )} );
+                            $mathBarElement[0].mathBar.optionClicked( $("option:selected", this).attr("name"), false )} );
     }
 }
 
