@@ -106,7 +106,7 @@ MathBar.prototype.createFunctionsDiv = function(){
         let func = MathBar.functions[this.categories[i]];
         let text = func["text"];
 
-        let $input = $("<input>", { type: "radio", name: this.outputID, value: this.categories[i]})
+        let $input = $("<input>", { type: "radio", name: this.outputID, value: this.categories[i]});
 
         if ( i == 0 ) $input.prop( "checked", true );
 
