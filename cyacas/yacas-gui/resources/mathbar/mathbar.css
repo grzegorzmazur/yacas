@@ -3,53 +3,54 @@
     position:relative;
 }
 
-.inside{
-    position:absolute;
+.inside {
+    position: absolute;
     right: 2px;
     bottom: 2px;
 }
 
 
-.MathBar{
+.MathBar {
     background-color: #F5FAFF;
     border: 1px solid #C2E0FF;
-    -webkit-box-sizing:border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
     width: 100%;
     padding: 0;
 }
 
-.MathBar table{
-    table-layout:fixed;
+.MathBar table {
+    table-layout: fixed;
     width: 100%;
     border-spacing: 0px;
     padding: 2px;
 }
 
-.MathBar td{
+.MathBar td {
     font-family: sans-serif;
     padding: 0px;
 
 }
 
-.MathBar td.functions{
+.MathBar td.functions {
     vertical-align: top;
     width: 100%;
 }
 
-.MathBar .separator{
+.MathBar .separator {
     width: 1px;
     background-color:#C2E0FF;
 }
 
-.MathBar td.parameters{
-    word-wrap:break-word;
+.MathBar td.parameters {
+    word-wrap: break-word;
     vertical-align: middle;
     padding-left: 3px;
     color: #555;
 }
 
-.Expression button.MathBarButton{
-    background:url(./images/double_arrows_down_disabled.png) center center no-repeat;
+.Expression button.MathBarButton {
+    background: url(./images/double_arrows_down_disabled.png) center center no-repeat;
     background-size: 8px 8px;
     width: 12px;
     height: 12px;
@@ -58,23 +59,23 @@
 
 }
 
-.Expression:hover button.MathBarButton{
-    background:url(./images/double_arrows_down.png) center center no-repeat;
+.Expression:hover button.MathBarButton {
+    background: url(./images/double_arrows_down.png) center center no-repeat;
     background-size: 8px 8px;
 }
 
-.Expression button.MathBarButton.up{
-    background:url(./images/double_arrows_up_disabled.png) center center no-repeat;
+.Expression button.MathBarButton.up {
+    background: url(./images/double_arrows_up_disabled.png) center center no-repeat;
     background-size: 8px 8px;
 }
 
-.Expression:hover button.MathBarButton.up{
-    background:url(./images/double_arrows_up.png) center center no-repeat;
+.Expression:hover button.MathBarButton.up {
+    background: url(./images/double_arrows_up.png) center center no-repeat;
     background-size: 8px 8px;
 }
 
 
-.MathBar button.submitButton{
+.MathBar button.submitButton {
     background: url(./images/mathBar_submit_triangle_gradient_light.png) center center no-repeat;
     width: 16px;
     height: 16px;
@@ -84,7 +85,7 @@
 }
 
 
-.MathBar button.submitButton:hover{
+.MathBar button.submitButton:hover {
     background: url(./images/mathBar_submit_triangle_gradient.png) center center no-repeat;
 }
 
@@ -95,7 +96,7 @@
     white-space: nowrap;
 }
 
-.MathBar input{
+.MathBar input {
     border: 1px solid #C2E0FF;
     padding-left: 5px;
     padding-right: 2px;
@@ -105,7 +106,7 @@
     color: #246BB2;
 }
 
-.MathBar span.parameter{
+.MathBar span.parameter {
     border: 1px solid #C2E0FF;
     padding: 1px 5px;
     margin: 2px 0px 2px 5px;
@@ -115,10 +116,10 @@
 }
 
 .MathBar input[type="text"]:disabled {
-    -webkit-text-fill-color : #246BB2;
+    -webkit-text-fill-color: #246BB2;
 }
 
-.MathBar .parameters label{
+.MathBar .parameters label {
     margin-left: 2px;
     margin-right: 2px;
     margin-top: 4px;
@@ -127,7 +128,7 @@
     padding-right: 2px;
 }
 
-.MathBar label.labelDisabled{
+.MathBar label.labelDisabled {
     opacity: 0.35;
 }
 
@@ -137,23 +138,23 @@
 
 /*RADIO*/
 
-.MathBar .parameters input[type=checkbox]{
+.MathBar .parameters input[type=checkbox] {
     margin: 0px;
 }
 
-.styled_radio input[type=radio]{
+.styled_radio input[type=radio] {
     display:none;
 }
 
 .styled_radio input[type=radio]:checked + span {
     background: linear-gradient(  #47A3FF, #246BB2);
-    text-decoration:none;
+    text-decoration: none;
     color: white;
 }
 
 .styled_radio label.checked>span {
     background: linear-gradient(  #47A3FF, #246BB2);
-    text-decoration:none;
+    text-decoration: none;
     color: white;
 }
 
@@ -170,13 +171,12 @@
     color: #e7eef8;
 }
 
-.styled_radio label>span{
-    cursor:pointer;
-    display:block;
-    line-height:20px;
-    padding: 2px 6px ;
+.styled_radio label>span {
+    cursor: pointer;
+    display: block;
+    line-height: 20px;
+    padding: 2px 6px;
     -webkit-user-select: none;
-
 }
 
 .styled_radio label>span {
@@ -221,24 +221,24 @@
     background: url(./images/mathBar_combobox_triangle_white.png) right 5px center no-repeat, linear-gradient(  #47A3FF, #246BB2);
 }
 
-.MathBar select{
+.MathBar select {
     margin: 0px;
 }
 
 
-.radio_group_horizontal{
+.radio_group_horizontal {
     padding: 0px;
     margin: 0px;
     display: inline-block;
 }
 
-.radio_group_horizontal label{
+.radio_group_horizontal label {
     display: inline-block;
     text-align: center;
     padding: 0px 2px 0px 0px;
 }
 
-#MathBarStringWidthTest{
+#MathBarStringWidthTest {
     position: absolute;
     visibility: hidden;
     height: auto;
@@ -250,6 +250,5 @@
     font-size: small;
     border-spacing: 2px;
     display: none;
-
 }
 
