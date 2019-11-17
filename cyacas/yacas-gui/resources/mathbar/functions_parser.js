@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 function square_root_parser( outputValue, parameters ){
     return "Sqrt(" + outputValue + ")";
@@ -12,7 +12,7 @@ function natural_logarithm_parser( outputValue, parameters ){
 
 function numerical_value_parser( outputValue, parameters ){
     const with_precision = parameters["with_precision"];
-    
+
     if ( with_precision ){
         const precision = parameters["precision"];
         return "N("+ outputValue + "," + precision + ")";
@@ -32,9 +32,9 @@ function simplify_parser( outputValue, parameters ){
 
 function integrate_parser( outputValue, parameters ){
     const variable = parameters["variable"];
-    
+
     const definite = parameters["definite"];
-    
+
     if ( definite ){
         const to = parameters["to"];
         const from = parameters["from"];
@@ -52,7 +52,7 @@ function derivative_parser( outputValue, parameters ){
 function plot_2d_parser( outputValue, parameters ){
     const from = parameters["from"];
     const to = parameters["to"];
-    
+
     return "Plot2D(" + outputValue + "," + from + ":" + to + ")";
 }
 
