@@ -14,6 +14,9 @@ yacas
 .. image:: http://readthedocs.org/projects/yacas/badge/?version=latest
     :target: http://yacas.readthedocs.org/en/latest/?badge=latest
 
+.. image:: https://api.codacy.com/project/badge/Grade/a66fdf5a0140492f9c6eee6c5ba18bd4
+    :target: https://www.codacy.com/manual/teoretyk/yacas?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=grzegorzmazur/yacas&amp;utm_campaign=Badge_Grade
+
 Yacas (Yet Another Computer Algebra System) is a small and highly flexible
 general-purpose Computer Algebra System (CAS). The syntax uses an
 infix-operator grammar parser. The distribution contains a small library
