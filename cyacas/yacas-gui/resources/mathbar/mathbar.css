@@ -1,6 +1,6 @@
 
-.outside{
-    position:relative;
+.outside {
+    position: relative;
 }
 
 .inside {
@@ -10,8 +10,8 @@
 }
 
 .MathBar {
-    background-color: #F5FAFF;
-    border: 1px solid #C2E0FF;
+    background-color: #f5faff;
+    border: 1px solid #c2e0ff;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     width: 100%;
@@ -37,7 +37,7 @@
 
 .MathBar .separator {
     width: 1px;
-    background-color:#C2E0FF;
+    background-color: #c2e0ff;
 }
 
 .MathBar td.parameters {
@@ -76,15 +76,14 @@
     width: 16px;
     height: 16px;
     border: none;
-    cursor:pointer;
-
+    cursor: pointer;
 }
 
 .MathBar button.submitButton:hover {
     background: url(./images/mathBar_submit_triangle_gradient.png) center center no-repeat;
 }
 
-.MathBar td.submitButton{
+.MathBar td.submitButton {
     width: 16px;
     padding: 0 3px;
     margin: 0;
@@ -92,13 +91,13 @@
 }
 
 .MathBar input {
-    border: 1px solid #C2E0FF;
+    border: 1px solid #c2e0ff;
     padding-left: 5px;
     padding-right: 2px;
     margin-left: 5px;
     margin-right: 0;
     text-align: right;
-    color: #246BB2;
+    color: #246bb2;
 }
 
 .MathBar span.parameter {
@@ -107,11 +106,11 @@
     margin: 2px 0 2px 5px;
     display: inline-block;
     height: 15px;
-    color: #246BB2;
+    color: #246bb2;
 }
 
 .MathBar input[type="text"]:disabled {
-    -webkit-text-fill-color: #246BB2;
+    -webkit-text-fill-color: #246bb2;
 }
 
 .MathBar .parameters label {
@@ -127,35 +126,35 @@
     opacity: 0.35;
 }
 
-/*RADIO*/
+/* RADIO */
 
 .MathBar .parameters input[type=checkbox] {
     margin: 0;
 }
 
 .styled_radio input[type=radio] {
-    display:none;
+    display: none;
 }
 
 .styled_radio input[type=radio]:checked + span {
-    background: linear-gradient(  #47A3FF, #246BB2);
+    background: linear-gradient(  #47a3ff, #246bb2);
     text-decoration: none;
     color: white;
 }
 
 .styled_radio label.checked>span {
-    background: linear-gradient(  #47A3FF, #246BB2);
+    background: linear-gradient(  #47a3ff, #246bb2);
     text-decoration: none;
     color: white;
 }
 
 .styled_radio label>span:hover {
-    background: linear-gradient(   	white, 	#D6EBFF);
+    background: linear-gradient(   	white, 	#d6ebff);
 }
 
 .styled_radio label.checked>span:hover {
     color: #e7eef8;
-    background: linear-gradient(  #47A3FF, #246BB2);
+    background: linear-gradient(  #47a3ff, #246bb2);
 }
 
 .styled_radio input[type=radio]:checked:hover + span {
@@ -172,14 +171,14 @@
 
 .styled_radio label>span {
     background: linear-gradient(  white, 	#F3F9FF);
-    border: 1px solid #246BB2;
-    color: #246BB2;
+    border: 1px solid #246bb2;
+    color: #246bb2;
     margin: 0;
 }
 
 .parameters label>span[role=combobox] {
     background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(  white, 	white);
-    border: 1px solid #C2E0FF;
+    border: 1px solid #c2e0ff;
     padding: 1px;
     padding-left: 5px;
     margin-left: 5px;
@@ -187,28 +186,28 @@
 
 .parameters label>span[role=combobox]:not(.ui-state-disabled):hover {
     background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(   	white, 	#D6EBFF);
-    color: #246BB2;
+    color: #246bb2;
 }
 
 .MathBar .parameters .ui-state-focus  {
-    color: #246BB2;
+    color: #246bb2;
 }
 
 .MathBar .parameters .ui-state-default  {
-    color: #246BB2;
+    color: #246bb2;
     opacity: 1;
 }
 
 .styled_radio label>span[role=combobox] {
-    background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(  white, 	#F3F9FF);
+    background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(  white, 	#f3f9ff);
 }
 
 .styled_radio label>span[role=combobox]:hover {
-    background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(   	white, 	#D6EBFF);
+    background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(   	white, 	#d6ebff);
 }
 
 .styled_radio label.checked>span[role=combobox] {
-    background: url(./images/mathBar_combobox_triangle_white.png) right 5px center no-repeat, linear-gradient(  #47A3FF, #246BB2);
+    background: url(./images/mathBar_combobox_triangle_white.png) right 5px center no-repeat, linear-gradient(  #47a3ff, #246bb2);
 }
 
 .MathBar select {
