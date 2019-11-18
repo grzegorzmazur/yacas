@@ -30,4 +30,4 @@ class LispSubList extends LispObject
     iSubList.Set(aSubList);
   }
     LispPtr iSubList = new LispPtr();
-};
+}

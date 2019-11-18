@@ -40,4 +40,4 @@ class StreamGobbler extends Thread {
             return strings;
         }
     }
-};
+}

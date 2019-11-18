@@ -36,4 +36,4 @@ abstract class LispInput
     public abstract void SetPosition(int aPosition);
 
     InputStatus iStatus;
-};
+}

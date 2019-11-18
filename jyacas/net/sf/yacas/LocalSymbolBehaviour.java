@@ -37,4 +37,4 @@ class LocalSymbolBehaviour implements SubstBehaviourBase
     String[] iOriginalNames;
     String[] iNewNames;
     int iNrNames;
-};
+}

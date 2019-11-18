@@ -39,4 +39,4 @@ class LispPtr
     iNext = aNext;
   }
     LispObject iNext;
-};
+}

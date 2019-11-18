@@ -21,4 +21,4 @@ abstract class LispEvaluatorBase
     {
     }
     UserStackInformation iBasicInfo = new UserStackInformation();
-};
+}

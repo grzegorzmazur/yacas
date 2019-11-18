@@ -6,4 +6,4 @@ package net.sf.yacas;
 interface SubstBehaviourBase
 {
   public boolean Matches(LispPtr aResult, LispPtr aElement) throws Exception;
-};
+}

@@ -45,4 +45,4 @@ abstract class LispUserFunction extends EvalFuncBase
 
     boolean iFenced;
     boolean iTraced;
-};
+}

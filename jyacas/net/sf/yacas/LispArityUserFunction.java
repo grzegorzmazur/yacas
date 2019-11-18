@@ -9,4 +9,4 @@ abstract class LispArityUserFunction extends LispUserFunction
 {
     public abstract int Arity();
     public abstract boolean IsArity(int aArity);
-};
+}

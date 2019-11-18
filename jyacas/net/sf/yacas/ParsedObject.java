@@ -323,4 +323,4 @@ String toLookUp = iLookAhead.substring(len,origlen);
   String iLookAhead;
 
   public LispPtr iResult =  new LispPtr();
-};
+}

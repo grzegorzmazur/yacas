@@ -57,6 +57,4 @@ class LispPrinter
             aOutput.write("  ");
         }
     }
-};
-
-
+}

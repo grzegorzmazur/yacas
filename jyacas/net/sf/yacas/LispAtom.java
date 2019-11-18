@@ -32,4 +32,4 @@ class LispAtom extends LispObject
     iString = aString;
   }
     String iString;
-};
+}

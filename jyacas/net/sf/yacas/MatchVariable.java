@@ -49,4 +49,4 @@ class MatchVariable extends YacasParamMatcherBase
 
   /// Not used.
   protected String iString;
-};
+}

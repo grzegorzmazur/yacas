@@ -32,5 +32,4 @@ class LispIterator
     iPtr = iPtr.Get().SubList();
   }
   LispPtr iPtr;
-};
-
+}

@@ -87,4 +87,4 @@ class LispMultiUserFunction
 
     /// File to read for the definition of this function.
     LispDefFile iFileToOpen;
-};
+}

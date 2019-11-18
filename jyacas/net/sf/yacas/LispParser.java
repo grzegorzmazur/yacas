@@ -76,5 +76,4 @@ class LispParser
    public LispInput iInput;
    public LispEnvironment iEnvironment;
    public boolean iListed;
-};
-
+}

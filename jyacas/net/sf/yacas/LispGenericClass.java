@@ -30,4 +30,4 @@ class LispGenericClass extends LispObject
       iClass = aClass;
     }
     GenericClass iClass;
-};
+}

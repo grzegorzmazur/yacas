@@ -32,4 +32,4 @@ class LispDefFile
     String iFileName;
     boolean   iIsLoaded;
     HashSet<String> symbols = new HashSet<>();
-};
+}

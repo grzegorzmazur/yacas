@@ -25,4 +25,4 @@ class SubstBehaviour implements SubstBehaviourBase
     LispEnvironment iEnvironment;
     LispPtr iToMatch;
     LispPtr iToReplaceWith;
-};
+}

@@ -75,4 +75,4 @@ class LispNumber extends LispObject
     BigNumber iNumber;
     /// string representation in decimal; NULL if not yet converted from BigNumber
     String iString;
-};
+}

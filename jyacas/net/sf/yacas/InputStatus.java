@@ -43,5 +43,5 @@ class InputStatus
   }
   String iFileName;
   int  iLineNumber;
-};
+}
 

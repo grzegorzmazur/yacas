@@ -70,7 +70,7 @@ final class InfixPrinter extends LispPrinter
         } else {
             WriteToken(aOutput,aExpression.Get().Generic().TypeName());
         }
-        
+
         return;
     }
 
@@ -239,4 +239,4 @@ final class InfixPrinter extends LispPrinter
   LispOperators iBodiedOperators;
   char iPrevLastChar;
   LispEnvironment iCurrentEnvironment;
-};
+}

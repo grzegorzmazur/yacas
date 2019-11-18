@@ -153,4 +153,4 @@ class LispTokenizer {
     static boolean IsSymbolic(char c) {
         return (symbolics.indexOf(c) >= 0);
     }
-};
+}
