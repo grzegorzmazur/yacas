@@ -9,7 +9,7 @@ function MathBar( outputID, options, callback ) {
     let self = this;
 
     let $button = $("<button>", {name: outputID, class: "MathBarButton"});
-    $button.click( function(){ self.Toggle()});
+    $button.click( function(){ self.Toggle(); });
     $( "#" + outputID ).append( $("<div>", {class: "inside"}).append( $button ));
     self.button = $button;
 
@@ -80,7 +80,7 @@ MathBar.prototype.drawMathBar = function(){
         $functionsSelect.selectmenu();
         $functionsSelect.on( "selectmenuselect", function( event, ui ) {
                             $mathBarElement = $(this).parents(".MathBar:first");
-                            $mathBarElement[0].mathBar.optionClicked( $("option:selected", this).attr("name"), false )} );
+                            $mathBarElement[0].mathBar.optionClicked( $("option:selected", this).attr("name"), false ); } );
     }
 }
 
@@ -345,7 +345,7 @@ MathBar.prototype.getPropertyLabel = function( parameter ){
         value = this.defaultParameters[parameter["parameterName"]];
 
     if( value == undefined ) value = parameter["defaultValue"];
-    let text = parameter["text"]
+    let text = parameter["text"];
 
     if ( this.defaultParameters != undefined ){
         value = this.changeConstToVariables( value );
