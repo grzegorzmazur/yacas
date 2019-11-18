@@ -137,24 +137,24 @@
 }
 
 .styled_radio input[type=radio]:checked + span {
-    background: linear-gradient(  #47a3ff, #246bb2);
+    background: linear-gradient(#47a3ff, #246bb2);
     text-decoration: none;
     color: white;
 }
 
 .styled_radio label.checked>span {
-    background: linear-gradient(  #47a3ff, #246bb2);
+    background: linear-gradient(#47a3ff, #246bb2);
     text-decoration: none;
     color: white;
 }
 
 .styled_radio label>span:hover {
-    background: linear-gradient(   	white, 	#d6ebff);
+    background: linear-gradient(white, #d6ebff);
 }
 
 .styled_radio label.checked>span:hover {
     color: #e7eef8;
-    background: linear-gradient(  #47a3ff, #246bb2);
+    background: linear-gradient(#47a3ff, #246bb2);
 }
 
 .styled_radio input[type=radio]:checked:hover + span {
@@ -177,7 +177,7 @@
 }
 
 .parameters label>span[role=combobox] {
-    background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(  white, 	white);
+    background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(white, white);
     border: 1px solid #c2e0ff;
     padding: 1px;
     padding-left: 5px;
@@ -185,7 +185,7 @@
 }
 
 .parameters label>span[role=combobox]:not(.ui-state-disabled):hover {
-    background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(   	white, 	#D6EBFF);
+    background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(white, #d6ebff);
     color: #246bb2;
 }
 
@@ -198,12 +198,12 @@
     opacity: 1;
 }
 
-.styled_radio label>span[role=combobox] {
-    background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(  white, 	#f3f9ff);
+.styled_radio label> span[role=combobox] {
+    background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(white, #f3f9ff);
 }
 
-.styled_radio label>span[role=combobox]:hover {
-    background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(   	white, 	#d6ebff);
+.styled_radio label> span[role=combobox]:hover {
+    background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(white, #d6ebff);
 }
 
 .styled_radio label.checked>span[role=combobox] {
