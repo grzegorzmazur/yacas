@@ -17,6 +17,7 @@ before_install:
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y libzmq3-dev libzmqpp-dev; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y qt512webengine qt512webchannel qt512svg qt512base qt512location qt512tools libgl1-mesa-dev; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y libboost-date-time-dev libjsoncpp-dev openssl; fi
+  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y lcov; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y ant ant-optional junit; fi
   - if [ ${TRAVIS_OS_NAME} = "osx" ]; then brew update && brew install ant && brew install qt && brew install git-lfs; fi
 
@@ -40,7 +41,7 @@ before_script:
   - if [ ${TRAVIS_OS_NAME} = "osx" ]; then cmake --build . --target install --config Release; fi
   - cd ../..
   - mkdir cmake_build && cd cmake_build
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then cmake -DENABLE_CYACAS_KERNEL=Off .. ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then cmake -DENABLE_CYACAS_KERNEL=Off -DENABLE_CODE_COVERAGE=On .. ; fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then cmake -G Xcode -DCMAKE_PREFIX_PATH=`brew --prefix qt` -DENABLE_CYACAS_KERNEL=Off .. ; fi
 
 script:
@@ -51,6 +52,12 @@ script:
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then travis_wait xcodebuild -project yacas.xcodeproj -configuration Release -target ALL_BUILD; fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then xcodebuild -project yacas.xcodeproj -configuration Release -target RUN_TESTS; fi
   - cd .. && ant && ant test
+
+after_success:
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then lcov --directory . --capture --output-file coverage.info ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then lcov --list coverage.info ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports" ; fi
 
 branches:
   except:
