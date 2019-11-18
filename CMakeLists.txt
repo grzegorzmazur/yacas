@@ -15,6 +15,7 @@ option (ENABLE_CYACAS_UNIT_TESTS "build the C++ yacas engine unit tests" OFF)
 option (ENABLE_CYACAS_BENCHMARKS "build the C++ yacas engine benchmarks" OFF)
 option (ENABLE_JYACAS "build the Java yacas engine" OFF)
 option (ENABLE_DOCS "generate documentation" OFF)
+option (ENABLE_CODE_COVERAGE "enable coverage reporting" OFF)
 
 if (ENABLE_CYACAS_CONSOLE OR ENABLE_CYACAS_GUI OR ENABLE_CYACAS_KERNEL)
     set (ENABLE_CYACAS ON)

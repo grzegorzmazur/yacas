@@ -17,6 +17,21 @@ if (CMAKE_SYSTEM_NAME STREQUAL Emscripten)
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --embed-file ${PROJECT_SOURCE_DIR}/scripts@/share/yacas/scripts")
 endif ()
 
+add_library(coverage_config INTERFACE)
+
+if (ENABLE_CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    # Add required flags (GCC & LLVM/Clang)
+    target_compile_options(coverage_config INTERFACE
+      -g         # generate debug info
+      --coverage # sets all required flags
+    )
+    if (CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+        target_link_options(coverage_config INTERFACE --coverage)
+    else ()
+        target_link_libraries(coverage_config INTERFACE --coverage)
+    endif ()
+endif ()
+
 add_subdirectory (libyacas_mp)
 add_subdirectory (libyacas)
 

@@ -28,6 +28,7 @@ set (HEADERS
 add_library (libyacas_mp ${SOURCES} ${HEADERS})
 set_target_properties (libyacas_mp PROPERTIES OUTPUT_NAME "yacas_mp")
 target_include_directories (libyacas_mp PUBLIC include)
+target_link_libraries(libyacas_mp PUBLIC coverage_config)
 
 install (TARGETS libyacas_mp LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
                              ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
