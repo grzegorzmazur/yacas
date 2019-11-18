@@ -45,9 +45,8 @@ before_script:
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then cmake -G Xcode -DCMAKE_PREFIX_PATH=`brew --prefix qt` -DENABLE_CYACAS_KERNEL=Off .. ; fi
 
 script:
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then make VERBOSE=1 ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then make ; fi
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then make test ; fi
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then find . -name "*gcda" ; fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then travis_wait xcodebuild -project yacas.xcodeproj -target ALL_BUILD; fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then xcodebuild -project yacas.xcodeproj -target RUN_TESTS; fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then travis_wait xcodebuild -project yacas.xcodeproj -configuration Release -target ALL_BUILD; fi
@@ -56,9 +55,9 @@ script:
 
 after_success:
   - cd cmake_build
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then lcov --directory . --capture --output-file coverage.info ; fi
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then lcov --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info ; fi
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then lcov --list coverage.info ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then lcov --gcov-tool /usr/bin/gcov-8 --directory . --capture --output-file coverage.info ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then lcov --gcov-tool /usr/bin/gcov-8 --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then lcov --gcov-tool /usr/bin/gcov-8 --list coverage.info ; fi
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports" ; fi
 
 branches:
