@@ -1,19 +1,19 @@
 "use strict";
 
-function square_root_parser( outputValue, parameters ){
+function SquareRootParser( outputValue, parameters ){
     return "Sqrt(" + outputValue + ")";
 }
 
 
 
-function natural_logarithm_parser( outputValue, parameters ){
+function NaturalLogarithmParser( outputValue, parameters ){
     return "Ln(" + outputValue + ")";
 }
 
 function NumericalValueParser( outputValue, parameters ){
-    const with_precision = parameters["with_precision"];
+    const withPrecision = parameters["with_precision"];
 
-    if ( with_precision ){
+    if ( withPrecision ){
         const precision = parameters["precision"];
         return "N("+ outputValue + "," + precision + ")";
     }else{
@@ -57,12 +57,12 @@ function Plot2dParser( outputValue, parameters ){
 }
 
 function Plot3dParser( outputValue, parameters ){
-    const from_0 = parameters["variable_0_from"];
-    const to_0 = parameters["variable_0_to"];
-    const from_1 = parameters["variable_1_from"];
-    const to_1 = parameters["variable_1_to"];
+    const from0 = parameters["variable_0_from"];
+    const to0 = parameters["variable_0_to"];
+    const from1 = parameters["variable_1_from"];
+    const to1 = parameters["variable_1_to"];
 
-    return "Plot3DS(" + outputValue + "," + from_0 + ":" + to_0 + "," + from_1 + ":" + to_1 + ")";
+    return "Plot3DS(" + outputValue + "," + from0 + ":" + to0 + "," + from1 + ":" + to1 + ")";
 }
 
 function LimitParser( outputValue, parameters ){
