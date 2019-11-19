@@ -137,9 +137,9 @@ MathBar.prototype.createFunctionsDiv = function () {
 
         let $label = $("<label>");
         $label.dblclick(function (e) {
-            if ($label.find("option:selected").val() === MathBar.selectMoreText) {
+            if ($label.find("option:selected").val() === MathBar.selectMoreText)
                 return true;
-            }
+
             e.stopPropagation();
             this.Run();
             return false;
@@ -251,7 +251,7 @@ MathBar.ParseParameter = function (parameter) {
                 parameter["defaultValue"] = [];
                 break;
             default:
-                console.error("This paramter type is not implemented: " + type + "!");
+                console.error("This paramter type is not implemented: " + parameter["parameterType"] + "!");
         }
 
     if (parameter["parameterType"] === "edit")
@@ -314,7 +314,7 @@ MathBar.prototype.changeConstToVariables = function (text) {
 
     if (variables.length > 1)
         for (let j = 0; j < variables.length; j++) {
-            textToSearch = "%VARIABLE%" + j + "%";
+            let textToSearch = "%VARIABLE%" + j + "%";
             text = text.replace(textToSearch, variables[j]);
         }
 
