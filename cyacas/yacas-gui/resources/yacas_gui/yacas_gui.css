@@ -7,7 +7,6 @@ body {
     border-collapse: collapse;
     width: 100%;
     table-layout: fixed;
-
 }
 
 td {
@@ -58,7 +57,7 @@ td {
 
 textarea {
     width:100%;
-    font-family: courier;
+    font-family: courier, monospace;
     font-size: small;
     resize: none;
     padding: 4px;
@@ -66,7 +65,7 @@ textarea {
 }
 
 .containment {
-    width:100%;
+    width: 100%;
 }
 
 .editable {
