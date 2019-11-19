@@ -45,7 +45,7 @@ td {
 .CodeMirror {
     box-sizing: border-box;
     height: auto;
-    width: 100%
+    width: 100%;
 }
 
 .CodeMirror-focused {
@@ -63,7 +63,6 @@ textarea {
     resize: none;
     padding: 4px;
     height: 14px;
-
 }
 
 .containment {
@@ -79,15 +78,15 @@ textarea {
 }
 
 .Plot2D {
-    height:300px;
+    height: 300px;
 }
 
 .Plot3D {
-    height:300px;
+    height: 300px;
 }
 
 .Plot3DActive {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    border:2px solid #41403b;
+    border: 2px solid #41403b;
 }
