@@ -26,12 +26,16 @@ TEST(YMP_ZZTest, construction)
 {
     ASSERT_EQ(ZZ("0"), ZZ(0));
     ASSERT_EQ(ZZ("123"), ZZ(123));
+    ASSERT_EQ(ZZ(" 123"), ZZ(123));
+    ASSERT_EQ(ZZ("+123"), ZZ(123));
     ASSERT_EQ(ZZ("FF", 16), ZZ("255"));
     ASSERT_EQ(ZZ("-FF", 16), ZZ("-255"));
     ASSERT_EQ(ZZ("ff", 16), ZZ("255"));
     ASSERT_EQ(ZZ("-ff", 16), ZZ("-255"));
     ASSERT_EQ(ZZ("deadbeef", 16), ZZ("3735928559"));
     ASSERT_EQ(ZZ("-deadbeef", 16), ZZ("-3735928559"));
+    ASSERT_THROW(NN(""), NN::ParseError);
+    ASSERT_THROW(NN(" "), NN::ParseError);
     ASSERT_THROW(ZZ("deadbeef", 15), ZZ::ParseError);
 }
 

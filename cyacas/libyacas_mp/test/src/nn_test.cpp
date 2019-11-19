@@ -26,9 +26,12 @@ TEST(YMP_NNTest, construction)
 {
     ASSERT_TRUE(NN("0").is_zero());
     ASSERT_EQ(NN("123"), NN(123u));
+    ASSERT_EQ(NN(" 123"), NN(123u));
     ASSERT_EQ(NN("FF", 16), NN("255"));
     ASSERT_EQ(NN("ff", 16), NN("255"));
     ASSERT_EQ(NN("deadbeef", 16), NN("3735928559"));
+    ASSERT_THROW(NN(""), NN::ParseError);
+    ASSERT_THROW(NN(" "), NN::ParseError);
     ASSERT_THROW(NN("deadbeef", 15), NN::ParseError);
 }
 
