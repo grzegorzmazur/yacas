@@ -13,19 +13,17 @@ function MathBar( outputID, options, callback ) {
     $( "#" + outputID ).append( $("<div>", {class: "inside"}).append( $button ));
     self.button = $button;
 
-    if (options["layout"] === undefined ){
+    if (options["layout"] === undefined )
         self.layout = "singleline";
-    }else{
+    else
         self.layout = options["layout"];
-    }
 
     self.categories = MathBar.categories[ options["type"] ];
 
-    if (options["VIF"] === undefined || options["VIF"] === "max" ){
+    if (options["VIF"] === undefined || options["VIF"] === "max" )
         self.numberOfVIF = self.categories.length;
-    }else{
+    else
         self.numberOfVIF = options["VIF"];
-    }
 
     self.outputID = outputID;
     self.defaultParameters = options["defaultParameters"];
@@ -40,9 +38,8 @@ function MathBar( outputID, options, callback ) {
     $button.on("keydown", function( event ){
                  if( event.which === 13  ){
                     event.preventDefault();
-                    if ( event.shiftKey ){
+                    if ( event.shiftKey )
                         this.mathBar.Run();
-                    }
                 }
               });
 }
@@ -65,12 +62,11 @@ MathBar.prototype.drawMathBar = function(){
 
     //In case number of all functions is 1 more than VIF do not display combobox with only one function
     //but treat all of them as VIFs
-    if ( this.layout != "multiline"){
-        if ( this.numberOfVIF === this.categories.length ){
+    if ( this.layout !== "multiline"){
+        if ( this.numberOfVIF === this.categories.length )
             $functionsDiv.parent().width( $functionsDiv.width() + 1 );
-        }else{
+        else
             $functionsDiv.parent().width( $functionsDiv.width()  );
-        }
     }
 
     this.optionClicked( this.categories[0], true );
@@ -123,7 +119,7 @@ MathBar.prototype.createFunctionsDiv = function(){
         $label.dblclick( function(e){ e.stopPropagation(); this.Run(); });
     }
 
-    if ( i != this.categories.length ){
+    if ( i !== this.categories.length ){
 
         let $functionsSelect = $("<select>");
         let $option = $("<option>").append( MathBar.selectMoreText );
@@ -381,7 +377,7 @@ MathBar.prototype.getPropertyLabel = function( parameter ){
         $input.css( "width", parameter["inputWidth"]);
         $input.val( value );
 
-        if ( text != "" ){
+        if ( text !== "" ){
             $label.append( text );
         }
 
@@ -474,7 +470,7 @@ MathBar.prototype.GetPropertyValue = function( parameter, outValues ){
             }
             break;
         case "select":
-            if ( $element.val() != "") outValues[ parameterName ] = $element.val();
+            if ( $element.val() !== "") outValues[ parameterName ] = $element.val();
             else outValues[ parameterName ] = $element.text();
             break;
         default:
