@@ -1,92 +1,93 @@
-body{
-    margin: 0px;
-    overflow-y:scroll;
+body {
+    margin: 0;
+    overflow-y: scroll;
 }
 
-#Elements{
-    border-collapse:collapse;
-    width:100%;
+#Elements {
+    border-collapse: collapse;
+    width: 100%;
     table-layout: fixed;
-    
+
 }
 
-#Elements>tbody>tr>td:first-child{
+#Elements>tbody>tr>td:first-child {
     font-size: x-small;
     width: 45px;
-    background-color: #66CD00;
+    background-color: #66cd00;
     color: white;
 }
 
-.New>tr>td:first-child{
+.New>tr>td:first-child {
     background-color: LightGray !important;
     color: black !important;
 }
 
-.Error>tr>td:first-child{
+.Error>tr>td:first-child {
     background-color: red !important;
     color: white !important;
 }
 
-.Modified>tr>td:first-child{
+.Modified>tr>td:first-child {
     background-color: gold !important;
     color: black !important;
 }
 
-
-td{
+td {
     font-family: monospace;
     font-size: small;
     padding: 5px;
 }
 
-
-.Expression>tr.Out>td{
+.Expression>tr.Out>td {
     font-size: 16px;
 }
 
-
 .CodeMirror {
-    box-sizing:border-box;
+    box-sizing: border-box;
     height: auto;
     width: 100%
 }
+
 .CodeMirror-focused {
     border: 1px solid #ddd;
 }
-#expression_0 .CodeMirror{
+
+#expression_0 .CodeMirror {
     border: 1px solid #ddd;
 }
 
-textarea{
+textarea {
     width:100%;
     font-family: courier;
     font-size: small;
     resize: none;
     padding: 4px;
     height: 14px;
-    
+
 }
-.containment{
+
+.containment {
     width:100%;
-    
+
 }
-.editable{
+
+.editable {
     color: SlateGray;
 }
 
-.Error{
+.Error {
     color: red;
 }
 
-.Plot2D{
+.Plot2D {
     height:300px;
 }
 
-.Plot3D{
+.Plot3D {
     height:300px;
 }
 
-.Plot3DActive{
+.Plot3DActive {
     -webkit-box-sizing:border-box;
     border:2px solid #41403b;
 }
