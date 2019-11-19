@@ -62,12 +62,11 @@ MathBar.prototype.drawMathBar = function(){
 
     //In case number of all functions is 1 more than VIF do not display combobox with only one function
     //but treat all of them as VIFs
-    if ( this.layout !== "multiline"){
+    if ( this.layout !== "multiline")
         if ( this.numberOfVIF === this.categories.length )
             $functionsDiv.parent().width( $functionsDiv.width() + 1 );
         else
             $functionsDiv.parent().width( $functionsDiv.width()  );
-    }
 
     this.optionClicked( this.categories[0], true );
 
@@ -89,11 +88,11 @@ MathBar.prototype.createSubmitButton = function(){
 }
 
 MathBar.prototype.createFunctionsDiv = function(){
-    if ( this.numberOfVIF > this.categories.length ) this.numberOfVIF = this.categories.length;
+    if ( this.numberOfVIF > this.categories.length )
+        this.numberOfVIF = this.categories.length;
 
-    if ( this.categories.length - this.numberOfVIF === 1 ){
+    if ( this.categories.length - this.numberOfVIF === 1 )
         this.numberOfVIF++;
-    }
 
     let $functionsDiv = $("<div>", {class : "radio_group_horizontal styled_radio"});
     let i;
@@ -104,7 +103,8 @@ MathBar.prototype.createFunctionsDiv = function(){
 
         let $input = $("<input>", { type: "radio", name: this.outputID, value: this.categories[i]});
 
-        if ( i === 0 ) $input.prop( "checked", true );
+        if ( i === 0 )
+            $input.prop( "checked", true );
 
         $input.click( function(){
                      let $mathBarElement = $(this).parents(".MathBar:first");
@@ -193,31 +193,27 @@ MathBar.ParseFunctions = function(){
         let funcList = MathBar.categories[ keys[j] ];
         for (let i = 0; i < funcList.length; i++){
             let ff = MathBar.functions[ funcList[i] ];
-            if ( ff == undefined ){
+            if ( ff == undefined )
                 console.error( "Function " + funcList[i] + " is not defined!");
-            }
         }
     }
     keys = Object.keys( MathBar.functions );
     for ( let j = 0; j < keys.length; j++ ){
         let func = MathBar.functions[ keys[j]];
-        if ( func["text"] == undefined ){
+        if ( func["text"] == undefined )
             func["text"] = keys[j];
-        }
         let parameters = func["parameters"];
-        if ( parameters == undefined ){
+        if ( parameters == undefined )
             func["parameters"] = [];
-        }
-        for ( let i = 0; i < parameters.length; i++ ){
+
+        for ( let i = 0; i < parameters.length; i++ )
             MathBar.ParseParameter( parameters[i] );
-        }
-        if ( func["parser"] == undefined ){
+
+        if ( func["parser"] == undefined )
             console.error( "Parser for function: " + keys[j] + " is undefined");
-        }else{
-            if( window[func["parser"]] == undefined ){
+        else
+            if( window[func["parser"]] == undefined )
                 console.error( "Parser: " + func["parser"] + " is undefined");
-            }
-        }
     }
 }
 
@@ -227,16 +223,15 @@ MathBar.ParseParameter = function( parameter ){
         parameter["parameterName"] = "undefined";
     }
 
-    if ( parameter["text"] == undefined ){
+    if ( parameter["text"] == undefined )
         parameter["text"] = parameter["parameterName"];
-    }
 
     if ( parameter["parameterType"] == undefined ){
         parameter["parameterType"] = "edit";
         console.warning( "Lack of type of parameter: " + parameter["parameterName"] );
     }
 
-    if ( parameter["defaultValue"] == undefined ){
+    if ( parameter["defaultValue"] == undefined )
         switch( parameter["parameterType"] ){
             case "label":
                 parameter["defaultValue"] = "";
@@ -256,27 +251,23 @@ MathBar.ParseParameter = function( parameter ){
             default:
                 console.error( "This paramter type is not implemented: "+ type + "!");
         }
-    }
 
-    if ( parameter["parameterType"] === "edit" ){
-        if ( parameter["widestValue"] != undefined ){
+    if ( parameter["parameterType"] === "edit" )
+        if ( parameter["widestValue"] != undefined )
             parameter["inputWidth"] = MathBar.calculateInputWidth( parameter["widestValue"] );
-        }else{
+        else
             parameter["inputWidth"] = MathBar.calculateInputWidth( parameter["defaultValue"] ) * 3;
-        }
-    }
 
     let parameters = parameter["parameters"];
-    if ( parameters != undefined ){
-        for ( let i = 0; i < parameters.length; i++ ){
+    if ( parameters != undefined )
+        for ( let i = 0; i < parameters.length; i++ )
             MathBar.ParseParameter( parameters[i] );
-        }
-    }
 }
 
 MathBar.prototype.optionClicked = function( functionName, VIF ){
 
-    if ( this.currentOptionVIF && functionName === MathBar.selectMoreText ) return;
+    if ( this.currentOptionVIF && functionName === MathBar.selectMoreText )
+        return;
     this.currentOptionVIF = VIF;
     this.currentOption = functionName;
 
@@ -284,7 +275,8 @@ MathBar.prototype.optionClicked = function( functionName, VIF ){
     let $parametersElement = $(this.mathBarElement).find(".parameters");
     $parametersElement.html("");
 
-    if ( functionName === MathBar.selectMoreText ) return;
+    if ( functionName === MathBar.selectMoreText )
+        return;
 
     if ( !VIF ){
         $(this.mathBarElement).find( "input:checked" ).prop("checked", false);
@@ -296,9 +288,8 @@ MathBar.prototype.optionClicked = function( functionName, VIF ){
     let func = MathBar.functions[ functionName ];
     let parameters = func["parameters"];
 
-    for ( let i = 0; i < parameters.length; i++ ){
+    for ( let i = 0; i < parameters.length; i++ )
         $parametersElement.append( this.getPropertyLabel( parameters[i]) );
-    }
 
     $parametersElement.find("select").selectmenu();
 };
@@ -307,27 +298,23 @@ MathBar.prototype.changeConstToVariables = function ( text ){
 
     let variables = this.defaultParameters["variable"];
 
-    if (variables == undefined ){
+    if (variables == undefined )
         return text;
-    }
 
     if ( $.isArray( text ) ){
-        for ( let k = 0; k < text.length; k++ ){
+        for ( let k = 0; k < text.length; k++ )
             text[k] = this.changeConstToVariables( text[k]);
-        }
         return text;
     }
 
-    if ( variables.length === 1 ){
+    if ( variables.length === 1 )
         text = text.replace("%VARIABLE%", variables );
-    }
 
-    if ( variables.length > 1 ){
+    if ( variables.length > 1 )
         for ( let j = 0; j < variables.length; j++ ){
             textToSearch = "%VARIABLE%" + j + "%";
             text = text.replace( textToSearch , variables[j] );
         }
-    }
 
     return text;
 }
@@ -340,16 +327,15 @@ MathBar.prototype.getPropertyLabel = function( parameter ){
     if ( this.defaultParameters != undefined )
         value = this.defaultParameters[parameter["parameterName"]];
 
-    if( value == undefined ) value = parameter["defaultValue"];
+    if( value == undefined )
+        value = parameter["defaultValue"];
+
     let text = parameter["text"];
 
     if ( this.defaultParameters != undefined ){
         value = this.changeConstToVariables( value );
         text = this.changeConstToVariables( text );
     }
-
-
-    if ( this.defaultParameters != undefined )
 
     if ( type === "select" ){
         if ( value.length === 1 ){
@@ -485,9 +471,8 @@ MathBar.prototype.Run = function(){
     let parameters = func["parameters"];
     let outValues = [];
 
-    for ( let i = 0; i < parameters.length; i++ ){
+    for ( let i = 0; i < parameters.length; i++ )
         this.GetPropertyValue( parameters[i], outValues );
-    }
 
     let parser = func["parser"];
     let result = window[parser](this.outputValue, outValues);
@@ -516,11 +501,11 @@ MathBar.prototype.Hide = function(){
 
 MathBar.prototype.Toggle = function(){
 
-    if ( this.visible ) this.Hide();
-    else{
+    if ( this.visible )
+        this.Hide();
+    else
         if ( !this.drawn ) this.drawMathBar();
-        this.Show();
-    }
+            this.Show();
 }
 
 
@@ -544,13 +529,12 @@ MathBar.initializeFunctions = function(jsonfile){
 }
 
 MathBar.supportsExpressionType = function( expressionType, numberOfVariables ){
-    if ( numberOfVariables > 0 ){
+    if ( numberOfVariables > 0 )
         expressionType += "_" + numberOfVariables;
-    }
 
-    if( MathBar.categories[expressionType] != undefined ){
+    if( MathBar.categories[expressionType] != undefined )
         return true;
-    }
+
     return false;
 }
 
@@ -562,4 +546,3 @@ MathBar.calculateInputWidth = function( value ){
     $testDiv.hide();
     return width;
 }
-
