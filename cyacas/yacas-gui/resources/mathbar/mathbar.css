@@ -126,8 +126,6 @@
     opacity: 0.35;
 }
 
-/* RADIO */
-
 .MathBar .parameters input[type=checkbox] {
     margin: 0;
 }
@@ -167,9 +165,6 @@
     line-height: 20px;
     padding: 2px 6px;
     -webkit-user-select: none;
-}
-
-.styled_radio label>span {
     background: linear-gradient(white, #f3f9ff);
     border: 1px solid #246bb2;
     color: #246bb2;
@@ -198,11 +193,11 @@
     opacity: 1;
 }
 
-.styled_radio label> span[role=combobox] {
+.styled_radio label>span[role=combobox] {
     background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(white, #f3f9ff);
 }
 
-.styled_radio label> span[role=combobox]:hover {
+.styled_radio label>span[role=combobox]:hover {
     background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(white, #d6ebff);
 }
 
