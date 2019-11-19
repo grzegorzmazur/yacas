@@ -55,9 +55,12 @@ script:
 
 after_success:
   - cd cmake_build
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then lcov --gcov-tool /usr/bin/gcov-8 --directory . --capture --output-file coverage.info ; fi
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then lcov --gcov-tool /usr/bin/gcov-8 --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info ; fi
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then lcov --gcov-tool /usr/bin/gcov-8 --list coverage.info ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then wget https://github.com/linux-test-project/lcov/archive/v1.14.zip ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then unzip v1.14.zip ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then LCOV="`pwd`/lcov-1.14/bin/lcov" ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then $LCOV --gcov-tool /usr/bin/gcov-8 --directory . --capture --output-file coverage.info ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then $LCOV --gcov-tool /usr/bin/gcov-8 --remove coverage.info '/usr/*' "${HOME}"'/.cache/*' --output-file coverage.info ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then $LCOV --gcov-tool /usr/bin/gcov-8 --list coverage.info ; fi
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports" ; fi
 
 branches:
