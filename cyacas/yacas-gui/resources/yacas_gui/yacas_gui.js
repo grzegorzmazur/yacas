@@ -65,17 +65,17 @@ function load() {
     });
 
     CodeMirror.defaults["lineNumbers"] = false;
-    CodeMirror.defaults["mode"] = {name: "yacas"};
+    CodeMirror.defaults["mode"] = { name: "yacas" };
     CodeMirror.defaults["matchBrackets"] = true;
     CodeMirror.defaults["autoCloseBrackets"] = '()[]{}""';
     CodeMirror.defaults["readOnly"] = false;
     CodeMirror.defaults["lineWrapping"] = true;
-    CodeMirror.defaults["hintOptions"] = {hint: hint};
+    CodeMirror.defaults["hintOptions"] = { hint: hint };
 
     if (/Mac/.test(navigator.platform))
-        CodeMirror.defaults["extraKeys"] = {"Cmd-Space": "autocomplete"};
+        CodeMirror.defaults["extraKeys"] = { "Cmd-Space": "autocomplete" };
     else
-        CodeMirror.defaults["extraKeys"] = {"Ctrl-Space": "autocomplete"};
+        CodeMirror.defaults["extraKeys"] = { "Ctrl-Space": "autocomplete" };
 
 
     var editor = CodeMirror.fromTextArea(document.getElementById("inputExpression"));
@@ -85,13 +85,13 @@ function load() {
     });
     editor.on("change", function () {
         if (yacas.hasOwnProperty("on_contentsChanged"))
-	        yacas.on_contentsChanged();
+            yacas.on_contentsChanged();
     });
     $(document).contextmenu({
         delegate: ".Expression>.Out",
         menu: [
-            {title: "Copy TeX", cmd: "copyTeX"},
-            {title: "Copy Yacas Expression", cmd: "copyYacasExpression"}
+            { title: "Copy TeX", cmd: "copyTeX" },
+            { title: "Copy Yacas Expression", cmd: "copyYacasExpression" }
         ],
         select: function (event, ui) {
             const parents = ui.target.parents(".Expression");
@@ -109,16 +109,20 @@ function load() {
 
 
 function changeMathJaxScale(newScale) {
-    MathJax.Hub.Config({CommonHTML: {
-            scale: newScale}
+    MathJax.Hub.Config({
+        CommonHTML: {
+            scale: newScale
+        }
     });
     MathJax.Hub.Queue(["Rerender", MathJax.Hub]);
 
 }
 
 function changeMathJaxFont(newFont) {
-    MathJax.Hub.Config({CommonHTML: {
-            preferredFont: newFont}
+    MathJax.Hub.Config({
+        CommonHTML: {
+            preferredFont: newFont
+        }
     });
     MathJax.Hub.Queue(["Rerender", MathJax.Hub]);
 
@@ -155,11 +159,11 @@ function submitenter(input, event) {
 
 function addInputEditor(lineid, number, value, rootElementID) {
 
-    var $row = $("<tr>", {class: "In"});
+    var $row = $("<tr>", { class: "In" });
 
     var $tdnumber = $("<td>").append("in  " + number + ":");
 
-    var $textarea = $("<textarea>", {class: "InputTextarea"}).append(value);
+    var $textarea = $("<textarea>", { class: "InputTextarea" }).append(value);
     var $tdinput = $("<td>").append($textarea);
 
     $row.append($tdnumber).append($tdinput);
@@ -214,7 +218,7 @@ function addInputEditor(lineid, number, value, rootElementID) {
 function addOutput(lineid, number, rootElementID) {
     var outputID = "output_" + lineid;
 
-    var $row = $("<tr>", {class: "Out"});
+    var $row = $("<tr>", { class: "Out" });
 
     $row.append("<td>out " + number + ":</td>");
     $row.append("<td><div id='" + outputID + "' ></div></td>");
@@ -295,8 +299,8 @@ function printResults(result) {
         let data = [];
 
         for (let i = 0; i < result["plot2d_data"].length; ++i) {
-            let x=[];
-            let y=[];
+            let x = [];
+            let y = [];
             const d = result["plot2d_data"][i]["data"];
             for (let j = 0; j < d.length; ++j) {
                 x.push(d[j][0]);
@@ -338,9 +342,9 @@ function printResults(result) {
             minHeight: 200,
             resize: function (e, info) {
                 window.console.log("resize", info);
-                Plotly.relayout(output[0], {height: info["size"]["height"]});
+                Plotly.relayout(output[0], { height: info["size"]["height"] });
                 return true;
-           }
+            }
         });
 
         output.addClass("resizable");
@@ -349,9 +353,9 @@ function printResults(result) {
         let data = [];
 
         for (let i = 0; i < result["plot3d_data"].length; ++i) {
-            let x=[];
-            let y=[];
-            let z=[];
+            let x = [];
+            let y = [];
+            let z = [];
             const d = result["plot3d_data"][i]["data"];
             for (let j = 0; j < d.length; ++j) {
                 x.push(d[j][0]);
@@ -388,9 +392,9 @@ function printResults(result) {
             minWidth: 200,
             minHeight: 200,
             resize: function (e, info) {
-                Plotly.relayout(output[0], {height: info["size"]["height"]});
+                Plotly.relayout(output[0], { height: info["size"]["height"] });
                 return true;
-           }
+            }
         });
 
         output.addClass("resizable");
@@ -402,7 +406,7 @@ function printResults(result) {
         var vis_vertices = [];
 
         for (var i = 0; i < no_vertices; ++i)
-            vis_vertices.push({id: i + 1, label: vertices[i]});
+            vis_vertices.push({ id: i + 1, label: vertices[i] });
 
         var edges = result["graph_edges"];
         var no_edges = edges.length;
@@ -413,7 +417,7 @@ function printResults(result) {
             var arrows = "to";
             if (edges[i].bi)
                 arrows += ",from";
-            vis_edges.push({from: edges[i].from, to: edges[i].to, arrows: arrows});
+            vis_edges.push({ from: edges[i].from, to: edges[i].to, arrows: arrows });
         }
 
 
@@ -428,7 +432,7 @@ function printResults(result) {
 
         var width = output.width();
 
-        output.resizable({maxWidth: width, minWidth: 200, minHeight: 200});
+        output.resizable({ maxWidth: width, minWidth: 200, minHeight: 200 });
         output.addClass("resizable");
     }
 }
@@ -449,7 +453,7 @@ function removeOldResults(number) {
 function addExpressionCells(lineID, expressionid, value, rootElementID, expression_class) {
 
 
-    $("<tbody>", {id: "expression_" + lineID, class: expression_class}).insertBefore(rootElementID);
+    $("<tbody>", { id: "expression_" + lineID, class: expression_class }).insertBefore(rootElementID);
     //addEditable( lineID, expressionid, value, "#expression_" + lineID);
     addInputEditor(lineID, expressionid, value, "#expression_" + lineID);
     addOutput(lineID, expressionid, "#expression_" + lineID);
