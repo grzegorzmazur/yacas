@@ -102,6 +102,9 @@ TEST(YMP_NNTest, sqr)
 {
     NN a;
 
+    a.sqr();
+    ASSERT_EQ(a, NN::ZERO);
+
     a = NN(5);
     a.sqr();
     ASSERT_EQ(a, NN("25"));
