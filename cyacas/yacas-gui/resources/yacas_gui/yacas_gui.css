@@ -10,11 +10,10 @@ body {
 
 }
 
-#Elements>tbody>tr>td:first-child {
-    font-size: x-small;
-    width: 45px;
-    background-color: #66cd00;
-    color: white;
+td {
+    font-family: monospace;
+    font-size: small;
+    padding: 5px;
 }
 
 .New>tr>td:first-child {
@@ -32,14 +31,15 @@ body {
     color: black !important;
 }
 
-td {
-    font-family: monospace;
-    font-size: small;
-    padding: 5px;
-}
-
 .Expression>tr.Out>td {
     font-size: 16px;
+}
+
+#Elements>tbody>tr>td:first-child {
+    font-size: x-small;
+    width: 45px;
+    background-color: #66cd00;
+    color: white;
 }
 
 .CodeMirror {
@@ -68,7 +68,6 @@ textarea {
 
 .containment {
     width:100%;
-
 }
 
 .editable {
@@ -88,6 +87,7 @@ textarea {
 }
 
 .Plot3DActive {
-    -webkit-box-sizing:border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
     border:2px solid #41403b;
 }
