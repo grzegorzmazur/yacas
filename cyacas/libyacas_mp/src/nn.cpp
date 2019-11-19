@@ -127,13 +127,7 @@ namespace yacas {
 
             while (p != q && std::isalnum(*p)) {
                 const char c = *p++;
-                Limb d;
-                if (std::isdigit(c))
-                    d = c - '0';
-                else if (std::isalpha(c))
-                    d = (c | 0x20) - 'a' + 10;
-                else
-                    throw ParseError(s, std::distance(s.cbegin(), q));
+                const Limb d = std::isdigit(c) ? Limb(c - '0') : Limb((c | 0x20) - 'a' + 10);
 
                 if (d >= b)
                     throw ParseError(s, std::distance(s.cbegin(), q));
