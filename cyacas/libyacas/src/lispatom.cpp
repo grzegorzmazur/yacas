@@ -34,12 +34,7 @@ const LispString* LispAtom::String()
 
 LispSubList* LispSubList::New(LispObject* aSubList)
 {
-    LispSubList* self = new LispSubList(aSubList);
-
-    if (!self)
-        throw LispErrNotEnoughMemory();
-
-    return self;
+    return new LispSubList(aSubList);
 }
 
 // A destructor for lists that is less taxing for stacks :-)
@@ -78,12 +73,7 @@ LispSubList::~LispSubList()
 
 LispGenericClass* LispGenericClass::New(GenericClass* aClass)
 {
-    LispGenericClass* self = new LispGenericClass(aClass);
-
-    if (!self)
-        throw LispErrNotEnoughMemory();
-
-    return self;
+    return new LispGenericClass(aClass);
 }
 
 LispGenericClass::LispGenericClass(GenericClass* aClass) : iClass(aClass)
