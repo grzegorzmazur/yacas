@@ -13,6 +13,45 @@ function scrollListener(e) {
     e.preventDefault();
 }
 
+function findPreviousExpression(number) {
+    var previous = $("#expression_" + number).prev("tbody");
+    if (previous.length === 0)
+        return null; //First row
+    return previous[0].id.split("_")[1];
+
+}
+
+function findNextExpression(number) {
+    var next = $("#expression_" + number).next("tbody");
+    if (next.length === 0)
+        return null; //First row
+    return next[0].id.split("_")[1];
+
+}
+
+function goto(number) {
+    if (number === "0")
+        $("#inputExpression")[0].editor.focus();
+    else
+        $("#expression_" + number).find("textarea")[0].editor.focus();
+}
+
+function goUp(number) {
+    var prev = findPreviousExpression(number);
+    if (prev === null)
+        return false;
+    goto(prev);
+    return true;
+}
+
+function goDown(number) {
+    var next = findNextExpression(number);
+    if (next === null)
+        return false;
+    goto(next);
+    return true;
+}
+
 function submitenter(input, event) {
     if (event.which === 13 && event.shiftKey) {
         $("#inputExpression")[0].editor.save();
@@ -154,7 +193,6 @@ function clearInput() {
     $("#inputExpression")[0].editor.setValue("");
 }
 
-
 function addInputEditor(lineid, number, value, rootElementID) {
 
     var $row = $("<tr>", { class: "In" });
@@ -183,13 +221,11 @@ function addInputEditor(lineid, number, value, rootElementID) {
             processChange(editor.getValue(), editor.number, null);
         }
 
-        if (event.which === 38 && event.ctrlKey) {
+        if (event.which === 38 && event.ctrlKey)
             goUp(editor.number);
 
-        }
-        if (event.which === 40 && event.ctrlKey) {
+        if (event.which === 40 && event.ctrlKey)
             goDown(editor.number);
-        }
 
     });
 
@@ -448,13 +484,10 @@ function removeOldResults(number) {
     $("#expression_" + number).remove();
 }
 
-function addExpressionCells(lineID, expressionid, value, rootElementID, expression_class) {
-
-
-    $("<tbody>", { id: "expression_" + lineID, class: expression_class }).insertBefore(rootElementID);
-    //addEditable( lineID, expressionid, value, "#expression_" + lineID);
-    addInputEditor(lineID, expressionid, value, "#expression_" + lineID);
-    addOutput(lineID, expressionid, "#expression_" + lineID);
+function addExpressionCells(lineId, expressionId, value, rootElementId, expressionClass) {
+    $("<tbody>", { id: "expression_" + lineId, class: expressionClass }).insertBefore(rootElementId);
+    addInputEditor(lineId, expressionId, value, "#expression_" + lineId);
+    addOutput(lineId, expressionId, "#expression_" + lineId);
 }
 
 function calculateAt(value, rootElementId) {
@@ -464,8 +497,6 @@ function calculateAt(value, rootElementId) {
 
     currentExpression++;
     numberOfLines++;
-
-
 }
 
 function calculate(value) {
@@ -501,8 +532,6 @@ function processChange(value, number, object) {
 
     removeOldResults(number);
 }
-
-
 
 function evaluateCurrent() {
     var $tbody = $(document.activeElement).parents("tbody");
@@ -555,23 +584,6 @@ function getAllInputs() {
     return inputs;
 }
 
-
-function findPreviousExpression(number) {
-    var previous = $("#expression_" + number).prev("tbody");
-    if (previous.length === 0)
-        return null; //First row
-    return previous[0].id.split("_")[1];
-
-}
-
-function findNextExpression(number) {
-    var next = $("#expression_" + number).next("tbody");
-    if (next.length === 0)
-        return null; //First row
-    return next[0].id.split("_")[1];
-
-}
-
 function previousCell() {
     var focused = $(":focus").parents("tbody");
 
@@ -594,32 +606,6 @@ function nextCell() {
     goDown(number);
 }
 
-function goUp(number) {
-    var prev = findPreviousExpression(number);
-    if (prev === null)
-        return false;
-    goto(prev);
-    return true;
-}
-
-function goDown(number) {
-    var next = findNextExpression(number);
-    if (next === null)
-        return false;
-    goto(next);
-    return true;
-}
-
-function goto(number) {
-    if (number === "0") {
-        //$("#inputExpression").focus();
-        $("#inputExpression")[0].editor.focus();
-    } else {
-        //$("#expression_"+number).find(".editable").click();
-        $("#expression_" + number).find("textarea")[0].editor.focus();
-    }
-
-}
 
 function insertElement(whetherAfterOrBefore) {
     var focused = $(":focus").parents("tbody");
