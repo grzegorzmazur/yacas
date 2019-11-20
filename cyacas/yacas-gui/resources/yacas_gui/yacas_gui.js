@@ -13,6 +13,21 @@ function scrollListener(e) {
     e.preventDefault();
 }
 
+function submitenter(input, event) {
+    if (event.which === 13 && event.shiftKey) {
+        $("#inputExpression")[0].editor.save();
+        const value = $("#inputExpression")[0].editor.getValue();
+        calculate(value);
+        return false;
+    }
+    if (event.which === 38 && event.ctrlKey) {
+        goUp(0);
+        return false;
+    }
+
+    return true;
+}
+
 function hint(cm, option) {
     return new Promise(function (accept) {
         var cursor = cm.getCursor();
@@ -55,7 +70,7 @@ function load() {
         var w = $("body").width() - $("#Elements>tbody>tr>td:first-child").innerWidth() - 10; //10 is for padding in the td.Out element
         $(".resizable").each(function () {
             var maxwidth = $(this).resizable("option", "maxWidth");
-            if ($(this).width() > w || $(this).width() == maxwidth)
+            if ($(this).width() > w || $(this).width() === maxwidth)
                 $(this).width(w);
         });
         $(".resizable").resizable("option", "maxWidth", w);
@@ -96,12 +111,10 @@ function load() {
         select: function (event, ui) {
             const parents = ui.target.parents(".Expression");
 
-            if (ui.cmd === "copyTeX") {
+            if (ui.cmd === "copyTeX")
                 yacas.copyToClipboard($(parents[0]).children("script")[0].textContent);
-            } else if (ui.cmd === "copyYacasExpression") {
+            else if (ui.cmd === "copyYacasExpression")
                 yacas.copyToClipboard($(parents)[0].yacasExpression);
-            }
-
         },
         preventContextMenuForPopup: true
     });
@@ -142,21 +155,6 @@ function clearInput() {
 }
 
 
-function submitenter(input, event) {
-    if (event.which === 13 && event.shiftKey) {
-        $("#inputExpression")[0].editor.save();
-        const value = $("#inputExpression")[0].editor.getValue();
-        calculate(value);
-        return false;
-    }
-    if (event.which === 38 && event.shiftKey) {
-        if (!goUp(0))
-            return true;
-    }
-
-    return true;
-}
-
 function addInputEditor(lineid, number, value, rootElementID) {
 
     var $row = $("<tr>", { class: "In" });
@@ -185,11 +183,11 @@ function addInputEditor(lineid, number, value, rootElementID) {
             processChange(editor.getValue(), editor.number, null);
         }
 
-        if (event.which === 38 && event.shiftKey) {
+        if (event.which === 38 && event.ctrlKey) {
             goUp(editor.number);
 
         }
-        if (event.which === 40 && event.shiftKey) {
+        if (event.which === 40 && event.ctrlKey) {
             goDown(editor.number);
         }
 
