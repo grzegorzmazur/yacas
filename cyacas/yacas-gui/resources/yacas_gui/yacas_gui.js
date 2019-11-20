@@ -261,10 +261,27 @@ function addOutput(lineid, number, rootElementID) {
     $("#" + outputID).append("<img src='yacas_gui/progressbar.indicator.gif' width='20' ></img>");
 }
 
-function addSideEffects(number, side_effects, rootElementID) {
+function addSideEffects(number, sideEffects, rootElementID) {
     var row = $("<tr></tr>").insertBefore(rootElementID);
     row.append("<td></td>");
-    row.append("<td><span>" + side_effects + "</span></td>");
+    row.append("<td><span>" + sideEffects + "</span></td>");
+}
+
+function debounce(func, wait, immediate) {
+    var timeout;
+    return function () {
+        let context = this, args = arguments;
+        let later = function () {
+            timeout = null;
+            if (!immediate)
+                func.apply(context, args);
+        };
+        let callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow)
+            func.apply(context, args);
+    };
 }
 
 function printResults(result) {
@@ -291,8 +308,6 @@ function printResults(result) {
 
         output.addClass("outside");
         output.append("$$" + result["tex_code"] + "$$");
-
-
 
         renderOutput(outputID);
         output[0].yacasExpression = result["expression"];
@@ -434,37 +449,35 @@ function printResults(result) {
         output.addClass("resizable");
 
     } else if (result["type"] === "Graph") {
-        var vertices = result["graph_vertices"];
-        var no_vertices = vertices.length;
+        const vertices = result["graph_vertices"];
+        const noVertices = vertices.length;
 
-        var vis_vertices = [];
+        let visVertices = [];
 
-        for (var i = 0; i < no_vertices; ++i)
-            vis_vertices.push({ id: i + 1, label: vertices[i] });
+        for (let i = 0; i < noVertices; ++i)
+            visVertices.push({ id: i + 1, label: vertices[i] });
 
-        var edges = result["graph_edges"];
-        var no_edges = edges.length;
+        const edges = result["graph_edges"];
+        const noEdges = edges.length;
 
-        var vis_edges = [];
+        let visEdges = [];
 
-        for (var i = 0; i < no_edges; ++i) {
+        for (let i = 0; i < noEdges; ++i) {
             var arrows = "to";
             if (edges[i].bi)
                 arrows += ",from";
-            vis_edges.push({ from: edges[i].from, to: edges[i].to, arrows: arrows });
+            visEdges.push({ from: edges[i].from, to: edges[i].to, arrows: arrows });
         }
 
-
-
-        var data = {
-            nodes: vis_vertices,
-            edges: vis_edges
+        let data = {
+            nodes: visVertices,
+            edges: visEdges
         };
-        var options = {};
+        let options = {};
 
-        var network = new vis.Network(output[0], data, options);
+        let network = new vis.Network(output[0], data, options);
 
-        var width = output.width();
+        const width = output.width();
 
         output.resizable({ maxWidth: width, minWidth: 200, minHeight: 200 });
         output.addClass("resizable");
@@ -519,9 +532,9 @@ function processChange(value, number, object) {
         return;
     }
 
-    var expression_class = $("#expression_" + number).attr("class");
+    const expressionClass = $("#expression_" + number).attr("class");
 
-    addExpressionCells(numberOfLines, currentExpression, decodedValue, "#expression_" + number, expression_class);
+    addExpressionCells(numberOfLines, currentExpression, decodedValue, "#expression_" + number, expressionClass);
 
     yacas.eval(numberOfLines, decodedValue);
 
@@ -585,38 +598,35 @@ function getAllInputs() {
 }
 
 function previousCell() {
-    var focused = $(":focus").parents("tbody");
+    const focused = $(":focus").parents("tbody");
 
-    if (focused.length === 0) {
+    if (focused.length === 0)
         return;
-    }
 
-    var number = $(focused)[0].id.split("_")[1];
+    const number = $(focused)[0].id.split("_")[1];
     goUp(number);
 }
 
 function nextCell() {
-    var focused = $(":focus").parents("tbody");
+    const focused = $(":focus").parents("tbody");
 
-    if (focused.length === 0) {
+    if (focused.length === 0)
         return;
-    }
 
-    var number = $(focused)[0].id.split("_")[1];
+    const number = $(focused)[0].id.split("_")[1];
     goDown(number);
 }
 
 
 function insertElement(whetherAfterOrBefore) {
-    var focused = $(":focus").parents("tbody");
+    const focused = $(":focus").parents("tbody");
 
-    if (focused.length === 0) {
+    if (focused.length === 0)
         return;
-    }
 
-    var element = $("<tbody id='expression_" + numberOfLines + "' class='New'></tbody");
-    var value = "";
-    var clickNew = true;
+    let element = $("<tbody id='expression_" + numberOfLines + "' class='New'></tbody");
+    let value = "";
+    let clickNew = true;
 
     //Special case when inserting after last input (expression_0)
     if (whetherAfterOrBefore === "after" && $(focused)[0].id === "expression_0") {
@@ -665,23 +675,6 @@ function deleteCurrent() {
 function contextHelp() {
     let e = document.activeElement;
     yacas.help(e.value, e.selectionStart);
-}
-
-function debounce(func, wait, immediate) {
-    var timeout;
-    return function () {
-        var context = this, args = arguments;
-        var later = function () {
-            timeout = null;
-            if (!immediate)
-                func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow)
-            func.apply(context, args);
-    };
 }
 
 function exportScript() {
