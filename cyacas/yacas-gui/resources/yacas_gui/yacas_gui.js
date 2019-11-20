@@ -626,19 +626,16 @@ function insertElement(whetherAfterOrBefore) {
         clickNew = false;
     }
 
-    if (whetherAfterOrBefore === "before") {
+    if (whetherAfterOrBefore === "before")
         element.insertBefore(focused);
-    } else {
+    else
         element.insertAfter(focused);
-    }
 
-    //var editable = addEditable(numberOfLines, "", value, "#expression_" + numberOfLines);
-    var editor = addInputEditor(numberOfLines, "", value, "#expression_" + numberOfLines);
+    let editor = addInputEditor(numberOfLines, "", value, "#expression_" + numberOfLines);
 
-    if (clickNew) {
-        //editable.click();
+    if (clickNew)
         editor.focus();
-    }
+
     numberOfLines++;
 }
 
@@ -651,24 +648,22 @@ function insertBeforeCurrent() {
 }
 
 function deleteCurrent() {
-    var focused = $(":focus").parents("tbody");
+    let focused = $(":focus").parents("tbody");
 
-    if (focused.length === 0) {
+    if (focused.length === 0)
         return;
-    }
 
     //Cannot delete last input (expression_0)
-    if ($(focused)[0].id === "expression_0") {
+    if ($(focused)[0].id === "expression_0")
         return;
-    }
+
     const number = $(focused)[0].id.split("_")[1];
     goDown(number);
     $(focused).remove();
-
 }
 
 function contextHelp() {
-    var e = document.activeElement;
+    let e = document.activeElement;
     yacas.help(e.value, e.selectionStart);
 }
 
@@ -696,7 +691,7 @@ function exportScript() {
         var s = elems[i].value;
         if (!s.endsWith(";"))
             s += ";";
-        r.push(s)
+        r.push(s);
     }
     return r;
 }
