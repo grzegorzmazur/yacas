@@ -67,7 +67,7 @@ function submitenter(input, event) {
     return true;
 }
 
-function hint(cm, option) {
+function hint(cm) {
     return new Promise(function (accept) {
         var cursor = cm.getCursor();
         var line = cm.getLine(cursor.line);
@@ -104,7 +104,7 @@ function load() {
 
     $("#inputExpression").autosize();
 
-    $(window).on("resize", function (event) {
+    $(window).on("resize", function () {
 
         var w = $("body").width() - $("#Elements>tbody>tr>td:first-child").innerWidth() - 10; //10 is for padding in the td.Out element
         $(".resizable").each(function () {
@@ -229,7 +229,7 @@ function addInputEditor(lineid, number, value, rootElementID) {
 
     });
 
-    editor.on("keyup", function (editor, e) {
+    editor.on("keyup", function (editor) {
 
         var $tbody = $(editor.getTextArea()).parents("tbody");
         if ($tbody.hasClass("New"))
@@ -332,7 +332,7 @@ function printResults(result) {
 
         }
 
-        $(output).resize(debounce(function (event) {
+        $(output).resize(debounce(function () {
             var w = $(this)[0].lastWidth;
             if ($(this).width() !== w) {
                 MathJax.Hub.Rerender(this);
@@ -519,7 +519,7 @@ function parseMathBarResult(value, outputID) {
     goto(nextNumber);
 }
 
-function processChange(value, number, object) {
+function processChange(value, number) {
     var decodedValue = $("<div/>").html(value).text();
 
     if ($("#expression_" + number).hasClass("NotToCalculate")) {
