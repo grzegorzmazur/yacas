@@ -28,34 +28,34 @@ LispObject* Double(LispEnvironment& aEnvironment, double aValue)
     return LispAtom::New(aEnvironment, buf.str());
 }
 
-LispObject*
-PlatArcSin(LispEnvironment& aEnvironment, LispObject* int1, int aPrecision)
-{
-    return Double(aEnvironment, std::asin(GetDouble(int1)));
-}
+// LispObject*
+// PlatArcSin(LispEnvironment& aEnvironment, LispObject* int1, int aPrecision)
+// {
+//     return Double(aEnvironment, std::asin(GetDouble(int1)));
+// }
 
-LispObject*
-PlatLn(LispEnvironment& aEnvironment, LispObject* int1, int aPrecision)
-{
-    return Double(aEnvironment, std::log(GetDouble(int1)));
-}
+// LispObject*
+// PlatLn(LispEnvironment& aEnvironment, LispObject* int1, int aPrecision)
+// {
+//     return Double(aEnvironment, std::log(GetDouble(int1)));
+// }
 
-LispObject* PlatPower(LispEnvironment& aEnvironment,
-                      LispObject* int1,
-                      LispObject* int2,
-                      int aPrecision)
-{
-    return Double(aEnvironment, std::pow(GetDouble(int1), GetDouble(int2)));
-}
+// LispObject* PlatPower(LispEnvironment& aEnvironment,
+//                       LispObject* int1,
+//                       LispObject* int2,
+//                       int aPrecision)
+// {
+//     return Double(aEnvironment, std::pow(GetDouble(int1), GetDouble(int2)));
+// }
 
-LispObject* PlatDiv(LispEnvironment& aEnvironment,
-                    LispObject* int1,
-                    LispObject* int2,
-                    int aPrecision)
-{
-    return Double(aEnvironment,
-                  ((long)GetDouble(int1)) / ((long)GetDouble(int2)));
-}
+// LispObject* PlatDiv(LispEnvironment& aEnvironment,
+//                     LispObject* int1,
+//                     LispObject* int2,
+//                     int aPrecision)
+// {
+//     return Double(aEnvironment,
+//                   ((long)GetDouble(int1)) / ((long)GetDouble(int2)));
+// }
 
 namespace {
     static const std::size_t MAX_SMALL_PRIME = 65537;
