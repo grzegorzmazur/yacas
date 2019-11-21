@@ -58,7 +58,7 @@ MathBar.prototype.drawMathBar = function () {
 
     this.mathBarElement = $mathBarElement;
     $mathBarElement[0].mathBar = this;
-    this.Show();
+    this.show();
 
     //In case number of all functions is 1 more than VIF do not display combobox with only one function
     //but treat all of them as VIFs
@@ -73,7 +73,7 @@ MathBar.prototype.drawMathBar = function () {
     let $functionsSelect = $functionsDiv.find("select");
     if ($functionsSelect) {
         $functionsSelect.selectmenu();
-        $functionsSelect.on("selectmenuselect", function (event, ui) {
+        $functionsSelect.on("selectmenuselect", function () {
             $mathBarElement = $(this).parents(".MathBar:first");
             $mathBarElement[0].mathBar.optionClicked($("option:selected", this).attr("name"), false);
         });
@@ -189,7 +189,7 @@ MathBar.keydownEventHandler = function (event) {
 };
 
 
-MathBar.ParseFunctions = function () {
+MathBar.parseFunctions = function () {
     let keys = Object.keys(MathBar.categories);
     for (let j = 0; j < keys.length; j++) {
         let funcList = MathBar.categories[keys[j]];
@@ -209,7 +209,7 @@ MathBar.ParseFunctions = function () {
             func["parameters"] = [];
 
         for (let i = 0; i < parameters.length; i++)
-            MathBar.ParseParameter(parameters[i]);
+            MathBar.parseParameter(parameters[i]);
 
         if (func["parser"] == undefined)
             console.error("Parser for function: " + keys[j] + " is undefined");
@@ -219,7 +219,7 @@ MathBar.ParseFunctions = function () {
     }
 }
 
-MathBar.ParseParameter = function (parameter) {
+MathBar.parseParameter = function (parameter) {
     if (parameter["parameterName"] == undefined) {
         console.error("Name of parameter is undefined: " + parameter);
         parameter["parameterName"] = "undefined";
@@ -263,7 +263,7 @@ MathBar.ParseParameter = function (parameter) {
     let parameters = parameter["parameters"];
     if (parameters != undefined)
         for (let i = 0; i < parameters.length; i++)
-            MathBar.ParseParameter(parameters[i]);
+            MathBar.parseParameter(parameters[i]);
 }
 
 MathBar.prototype.optionClicked = function (functionName, VIF) {
@@ -433,7 +433,7 @@ MathBar.toggleParameters = function ($mathBarElement, parameterName, disabled) {
         $label.find("select").selectmenu("enable");
 }
 
-MathBar.prototype.GetPropertyValue = function (parameter, outValues) {
+MathBar.prototype.getPropertyValue = function (parameter, outValues) {
     let type = parameter["parameterType"];
     let parameterName = parameter["parameterName"];
 
@@ -454,7 +454,7 @@ MathBar.prototype.GetPropertyValue = function (parameter, outValues) {
 
             let conditionalParameters = parameter["parameters"];
             for (let i = 0; i < conditionalParameters.length; i++) {
-                this.GetPropertyValue(conditionalParameters[i], outValues);
+                this.getPropertyValue(conditionalParameters[i], outValues);
             }
             break;
         case "select":
@@ -466,7 +466,7 @@ MathBar.prototype.GetPropertyValue = function (parameter, outValues) {
     }
 }
 
-MathBar.prototype.Run = function () {
+MathBar.prototype.run = function () {
 
     let func = MathBar.functions[this.currentOption];
 
@@ -474,40 +474,40 @@ MathBar.prototype.Run = function () {
     let outValues = [];
 
     for (let i = 0; i < parameters.length; i++)
-        this.GetPropertyValue(parameters[i], outValues);
+        this.getPropertyValue(parameters[i], outValues);
 
     let parser = func["parser"];
     let result = window[parser](this.outputValue, outValues);
 
     this.callback(result, this.outputID);
-    this.Hide();
+    this.hide();
 }
 
-MathBar.prototype.Remove = function () {
+MathBar.prototype.remove = function () {
     this.button.mathBar = null;
     this.mathBarElement.slideUp(300, function () { this.remove(); });
     $(this.button).removeClass("up");
 }
 
-MathBar.prototype.Show = function () {
+MathBar.prototype.show = function () {
     this.visible = true;
     this.mathBarElement.slideDown(300);
     $(this.button).addClass("up");
 }
 
-MathBar.prototype.Hide = function () {
+MathBar.prototype.hide = function () {
     this.visible = false;
     this.mathBarElement.slideUp(300);
     $(this.button).removeClass("up");
 }
 
-MathBar.prototype.Toggle = function () {
+MathBar.prototype.toggle = function () {
 
     if (this.visible)
-        this.Hide();
+        this.hide();
     else
         if (!this.drawn) this.drawMathBar();
-    this.Show();
+    this.show();
 }
 
 
@@ -519,7 +519,7 @@ MathBar.initializeFunctions = function (jsonfile) {
                 const data = jQuery.parseJSON(xhttp.responseText);
                 MathBar.functions = data["functions"];
                 MathBar.categories = data["categories"];
-                MathBar.ParseFunctions();
+                MathBar.parseFunctions();
             } else {
                 console.error("Couldn't load json file");
             }
