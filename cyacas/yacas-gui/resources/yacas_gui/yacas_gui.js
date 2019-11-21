@@ -484,11 +484,6 @@ function printResults(result) {
     }
 }
 
-function ControlsChanged(element, event) {
-    var plot3d = element.target.domElement.parentElement.plot3D;
-    plot3d.renderer.render(plot3d.scene, plot3d.camera);
-}
-
 function renderOutput(outputID) {
     MathJax.Hub.Queue(["Typeset", MathJax.Hub, outputID]);
 }
