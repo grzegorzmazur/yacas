@@ -196,16 +196,6 @@ LispObject* PowerFloat(LispObject* int1,
     return FloatToString(result, aEnvironment);
 }
 
-LispObject*
-SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment, int aPrecision)
-{
-    ANumber i1(*int1->Number(aPrecision)->iNumber);
-    ANumber res(aPrecision);
-    i1.ChangePrecision(aPrecision);
-    Sqrt(res, i1);
-    return FloatToString(res, aEnvironment);
-}
-
 LispObject* ShiftLeft(LispObject* int1,
                       LispObject* int2,
                       LispEnvironment& aEnvironment,

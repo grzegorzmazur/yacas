@@ -11,7 +11,6 @@
 using namespace yacas;
 
 LispObject* GcdInteger(LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment);
-LispObject* SqrtFloat(LispObject* int1, LispEnvironment& aEnvironment,int aPrecision);
 LispObject* ModFloat( LispObject* int1, LispObject* int2, LispEnvironment& aEnvironment,
                         int aPrecision);
 

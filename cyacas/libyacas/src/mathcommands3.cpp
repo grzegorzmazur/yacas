@@ -196,11 +196,6 @@ void LispDivide(LispEnvironment& aEnvironment, int aStackTop)
     return;
 }
 
-void LispSqrt(LispEnvironment& aEnvironment, int aStackTop)
-{ // FIXME move to scripts
-    LispArithmetic1(aEnvironment, aStackTop, SqrtFloat);
-}
-
 #define UNARYFUNCTION(LispName, BigNumName)                                    \
     void LispName(LispEnvironment& aEnvironment, int aStackTop)                \
     {                                                                          \
