@@ -792,66 +792,66 @@ void BaseShiftLeft(ANumber& a, int aNrBits)
     }
 }
 
-/* Binary Greatest common divisor algorithm. */
-void BaseGcd(ANumber& aResult, ANumber& a1, ANumber& a2)
-{
-    ANumber zero(aResult.Precision());
-    ANumber u(aResult.Precision());
-    ANumber v(aResult.Precision());
-    u.CopyFrom(a1);
-    v.CopyFrom(a2);
-    u.iNegative = v.iNegative = false;
+// /* Binary Greatest common divisor algorithm. */
+// void BaseGcd(ANumber& aResult, ANumber& a1, ANumber& a2)
+// {
+//     ANumber zero(aResult.Precision());
+//     ANumber u(aResult.Precision());
+//     ANumber v(aResult.Precision());
+//     u.CopyFrom(a1);
+//     v.CopyFrom(a2);
+//     u.iNegative = v.iNegative = false;
 
-    int k = 0;
+//     int k = 0;
 
-    {
-        int i = 0;
-        PlatWord bit = 1;
-        while (u[i] == 0 && v[i] == 0)
-            i++;
-        k += WordBits * i;
-        while ((u[i] & bit) == 0 && (v[i] & bit) == 0) {
-            bit <<= 1;
-            k++;
-        }
-        BaseShiftRight(u, k);
-        BaseShiftRight(v, k);
-    }
-    ANumber t(/*???"0",*/ 10);
+//     {
+//         int i = 0;
+//         PlatWord bit = 1;
+//         while (u[i] == 0 && v[i] == 0)
+//             i++;
+//         k += WordBits * i;
+//         while ((u[i] & bit) == 0 && (v[i] & bit) == 0) {
+//             bit <<= 1;
+//             k++;
+//         }
+//         BaseShiftRight(u, k);
+//         BaseShiftRight(v, k);
+//     }
+//     ANumber t(/*???"0",*/ 10);
 
-    if (!u.IsEven()) {
-        t.CopyFrom(v);
-        t.Negate();
-    } else
-        t.CopyFrom(u);
+//     if (!u.IsEven()) {
+//         t.CopyFrom(v);
+//         t.Negate();
+//     } else
+//         t.CopyFrom(u);
 
-    while (!IsZero(t)) {
+//     while (!IsZero(t)) {
 
-        {
-            int k = 0;
-            int i = 0;
-            PlatWord bit = 1;
-            while (t[i] == 0)
-                i++;
-            k += WordBits * i;
-            while ((t[i] & bit) == 0) {
-                bit <<= 1;
-                k++;
-            }
-            BaseShiftRight(t, k);
-        }
-        if (GreaterThan(t, zero)) {
-            u.CopyFrom(t);
-        } else {
-            v.CopyFrom(t);
-            v.Negate();
-        }
-        Subtract(t, u, v);
-    }
-    aResult.CopyFrom(u);
-    aResult.iNegative = false;
-    BaseShiftLeft(aResult, k);
-}
+//         {
+//             int k = 0;
+//             int i = 0;
+//             PlatWord bit = 1;
+//             while (t[i] == 0)
+//                 i++;
+//             k += WordBits * i;
+//             while ((t[i] & bit) == 0) {
+//                 bit <<= 1;
+//                 k++;
+//             }
+//             BaseShiftRight(t, k);
+//         }
+//         if (GreaterThan(t, zero)) {
+//             u.CopyFrom(t);
+//         } else {
+//             v.CopyFrom(t);
+//             v.Negate();
+//         }
+//         Subtract(t, u, v);
+//     }
+//     aResult.CopyFrom(u);
+//     aResult.iNegative = false;
+//     BaseShiftLeft(aResult, k);
+// }
 
 void BaseDivide(ANumber& aQuotient,
                 ANumber& aRemainder,

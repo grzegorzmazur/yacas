@@ -92,7 +92,6 @@ bool GreaterThan(ANumber& a1, ANumber& a2);
 bool LessThan(ANumber& a1, ANumber& a2);
 void BaseShiftRight(ANumber& a, int aNrBits);
 void BaseShiftLeft(ANumber& a, int aNrBits);
-void BaseGcd(ANumber& aResult, ANumber& a1, ANumber& a2);
 
 void NormalizeFloat(ANumber& a2, int digitsNeeded);
 
