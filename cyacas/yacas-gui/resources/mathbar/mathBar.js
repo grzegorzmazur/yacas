@@ -42,7 +42,7 @@ function MathBar(outputID, options, callback) {
                 this.mathBar.run();
         }
     });
-};
+}
 
 MathBar.prototype.drawMathBar = function () {
     let $functionsDiv = this.createFunctionsDiv();
@@ -518,7 +518,7 @@ MathBar.initializeFunctions = function (jsonfile) {
                 console.error("Couldn't load json file");
             }
         }
-    }
+    };
 
     xhttp.open("GET", jsonfile, true);
     xhttp.send();
