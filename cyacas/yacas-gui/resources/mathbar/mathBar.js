@@ -9,7 +9,7 @@ function MathBar(outputID, options, callback) {
     let self = this;
 
     let $button = $("<button>", { name: outputID, class: "MathBarButton" });
-    $button.click(function () { self.Toggle(); });
+    $button.click(function () { self.toggle(); });
     $("#" + outputID).append($("<div>", { class: "inside" }).append($button));
     self.button = $button;
 
@@ -39,7 +39,7 @@ function MathBar(outputID, options, callback) {
         if (event.which === 13) {
             event.preventDefault();
             if (event.shiftKey)
-                this.mathBar.Run();
+                this.mathBar.run();
         }
     });
 }
@@ -84,7 +84,7 @@ MathBar.prototype.createSubmitButton = function () {
     let $submitButton = $("<button>", { class: "submitButton" });
     $submitButton.click(function () {
         let $mathBarElement = $(this).parents(".MathBar:first");
-        $mathBarElement[0].mathBar.Run();
+        $mathBarElement[0].mathBar.run();
     });
     return $submitButton;
 }
@@ -118,7 +118,7 @@ MathBar.prototype.createFunctionsDiv = function () {
         $label.append($input).append($span);
 
         $functionsDiv.append($label);
-        $label.dblclick(function (e) { e.stopPropagation(); this.Run(); });
+        $label.dblclick(function (e) { e.stopPropagation(); this.run(); });
     }
 
     if (i !== this.categories.length) {
@@ -141,7 +141,7 @@ MathBar.prototype.createFunctionsDiv = function () {
                 return true;
 
             e.stopPropagation();
-            this.Run();
+            this.run();
             return false;
         });
         $functionsDiv.append($label.append($functionsSelect));
@@ -182,7 +182,7 @@ MathBar.keydownEventHandler = function (event) {
     let $mathBarElement = $(this).parents(".MathBar:first");
     if (event.which === 13 && event.shiftKey) {
         event.preventDefault();
-        $mathBarElement[0].mathBar.Run();
+        $mathBarElement[0].mathBar.run();
         return false;
     }
     return true;
