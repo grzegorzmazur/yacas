@@ -452,8 +452,10 @@ MathBar.prototype.getPropertyValue = function (parameter, outValues) {
                 this.getPropertyValue(conditionalParameters[i], outValues);
             break;
         case "select":
-            if ($element.val() !== "") outValues[parameterName] = $element.val();
-            else outValues[parameterName] = $element.text();
+            if ($element.val() !== "")
+                outValues[parameterName] = $element.val();
+            else
+                outValues[parameterName] = $element.text();
             break;
         default:
             console.error("This paramter type is not implemented: " + type + "!");
@@ -508,7 +510,7 @@ MathBar.prototype.toggle = function () {
 MathBar.initializeFunctions = function (jsonfile) {
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
-        if (xhttp.readyState === 4) {
+        if (xhttp.readyState === 4)
             if (xhttp.status === 200 || xhttp.status === 0) {
                 const data = jQuery.parseJSON(xhttp.responseText);
                 MathBar.functions = data["functions"];
@@ -517,7 +519,6 @@ MathBar.initializeFunctions = function (jsonfile) {
             } else {
                 console.error("Couldn't load json file");
             }
-        }
     };
 
     xhttp.open("GET", jsonfile, true);
