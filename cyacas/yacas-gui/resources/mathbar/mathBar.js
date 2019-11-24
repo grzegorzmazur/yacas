@@ -195,45 +195,45 @@ MathBar.parseFunctions = function () {
         let funcList = MathBar.categories[keys[j]];
         for (let i = 0; i < funcList.length; i++) {
             let ff = MathBar.functions[funcList[i]];
-            if (ff == undefined)
+            if (ff === undefined)
                 console.error("Function " + funcList[i] + " is not defined!");
         }
     }
     keys = Object.keys(MathBar.functions);
     for (let j = 0; j < keys.length; j++) {
         let func = MathBar.functions[keys[j]];
-        if (func["text"] == undefined)
+        if (func["text"] === undefined)
             func["text"] = keys[j];
         let parameters = func["parameters"];
-        if (parameters == undefined)
+        if (parameters === undefined)
             func["parameters"] = [];
 
         for (let i = 0; i < parameters.length; i++)
             MathBar.parseParameter(parameters[i]);
 
-        if (func["parser"] == undefined)
+        if (func["parser"] === undefined)
             console.error("Parser for function: " + keys[j] + " is undefined");
         else
-            if (window[func["parser"]] == undefined)
+            if (window[func["parser"]] === undefined)
                 console.error("Parser: " + func["parser"] + " is undefined");
     }
 }
 
 MathBar.parseParameter = function (parameter) {
-    if (parameter["parameterName"] == undefined) {
+    if (parameter["parameterName"] === undefined) {
         console.error("Name of parameter is undefined: " + parameter);
         parameter["parameterName"] = "undefined";
     }
 
-    if (parameter["text"] == undefined)
+    if (parameter["text"] === undefined)
         parameter["text"] = parameter["parameterName"];
 
-    if (parameter["parameterType"] == undefined) {
+    if (parameter["parameterType"] === undefined) {
         parameter["parameterType"] = "edit";
         console.warning("Lack of type of parameter: " + parameter["parameterName"]);
     }
 
-    if (parameter["defaultValue"] == undefined)
+    if (parameter["defaultValue"] === undefined)
         switch (parameter["parameterType"]) {
             case "label":
                 parameter["defaultValue"] = "";
@@ -255,13 +255,13 @@ MathBar.parseParameter = function (parameter) {
         }
 
     if (parameter["parameterType"] === "edit")
-        if (parameter["widestValue"] != undefined)
+        if (parameter["widestValue"] !== undefined)
             parameter["inputWidth"] = MathBar.calculateInputWidth(parameter["widestValue"]);
         else
             parameter["inputWidth"] = MathBar.calculateInputWidth(parameter["defaultValue"]) * 3;
 
     let parameters = parameter["parameters"];
-    if (parameters != undefined)
+    if (parameters !== undefined)
         for (let i = 0; i < parameters.length; i++)
             MathBar.parseParameter(parameters[i]);
 }
@@ -300,7 +300,7 @@ MathBar.prototype.changeConstToVariables = function (text) {
 
     let variables = this.defaultParameters["variable"];
 
-    if (variables == undefined)
+    if (variables === undefined)
         return text;
 
     if ($.isArray(text)) {
@@ -326,15 +326,15 @@ MathBar.prototype.getPropertyLabel = function (parameter) {
     let type = parameter["parameterType"];
 
     let value = undefined;
-    if (this.defaultParameters != undefined)
+    if (this.defaultParameters !== undefined)
         value = this.defaultParameters[parameter["parameterName"]];
 
-    if (value == undefined)
+    if (value === undefined)
         value = parameter["defaultValue"];
 
     let text = parameter["text"];
 
-    if (this.defaultParameters != undefined) {
+    if (this.defaultParameters !== undefined) {
         value = this.changeConstToVariables(value);
         text = this.changeConstToVariables(text);
     }
@@ -534,7 +534,7 @@ MathBar.supportsExpressionType = function (expressionType, numberOfVariables) {
     if (numberOfVariables > 0)
         expressionType += "_" + numberOfVariables;
 
-    if (MathBar.categories[expressionType] != undefined)
+    if (MathBar.categories[expressionType] !== undefined)
         return true;
 
     return false;
