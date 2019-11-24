@@ -42,7 +42,7 @@ function MathBar(outputID, options, callback) {
                 this.mathBar.run();
         }
     });
-}
+};
 
 MathBar.prototype.drawMathBar = function () {
     let $functionsDiv = this.createFunctionsDiv();
@@ -78,7 +78,7 @@ MathBar.prototype.drawMathBar = function () {
             $mathBarElement[0].mathBar.optionClicked($("option:selected", this).attr("name"), false);
         });
     }
-}
+};
 
 MathBar.prototype.createSubmitButton = function () {
     let $submitButton = $("<button>", { class: "submitButton" });
@@ -87,7 +87,7 @@ MathBar.prototype.createSubmitButton = function () {
         $mathBarElement[0].mathBar.run();
     });
     return $submitButton;
-}
+};
 
 MathBar.prototype.createFunctionsDiv = function () {
     if (this.numberOfVIF > this.categories.length)
@@ -148,7 +148,7 @@ MathBar.prototype.createFunctionsDiv = function () {
     }
 
     return $functionsDiv;
-}
+};
 
 MathBar.prototype.createMathBarTable = function () {
 
@@ -175,7 +175,7 @@ MathBar.prototype.createMathBarTable = function () {
 
         return $("<table>").append($functionsRow).append($parametersRow);
     }
-}
+};
 
 
 MathBar.keydownEventHandler = function (event) {
@@ -217,7 +217,7 @@ MathBar.parseFunctions = function () {
             if (window[func["parser"]] === undefined)
                 console.error("Parser: " + func["parser"] + " is undefined");
     }
-}
+};
 
 MathBar.parseParameter = function (parameter) {
     if (parameter["parameterName"] === undefined) {
@@ -264,7 +264,7 @@ MathBar.parseParameter = function (parameter) {
     if (parameters !== undefined)
         for (let i = 0; i < parameters.length; i++)
             MathBar.parseParameter(parameters[i]);
-}
+};
 
 MathBar.prototype.optionClicked = function (functionName, VIF) {
 
@@ -319,7 +319,7 @@ MathBar.prototype.changeConstToVariables = function (text) {
         }
 
     return text;
-}
+};
 
 MathBar.prototype.getPropertyLabel = function (parameter) {
     let $label = $("<label>");
@@ -339,11 +339,9 @@ MathBar.prototype.getPropertyLabel = function (parameter) {
         text = this.changeConstToVariables(text);
     }
 
-    if (type === "select") {
-        if (value.length === 1) {
-            type = "label";
-            value = value[0];
-        }
+    if (type === "select" && value.length === 1) {
+        type = "label";
+        value = value[0];
     }
 
     if (type === "label") {
@@ -412,9 +410,8 @@ MathBar.prototype.getPropertyLabel = function (parameter) {
 
         let $select = $("<select>", { name: parameter["parameterName"] });
 
-        for (let i = 0; i < value.length; i++) {
+        for (let i = 0; i < value.length; i++)
             $select.append($("<option>").append(value[i]));
-        }
 
         $label.append(text).append($select);
     }
@@ -429,7 +426,7 @@ MathBar.toggleParameters = function ($mathBarElement, parameterName, disabled) {
         $label.find("select").selectmenu("disable");
     else
         $label.find("select").selectmenu("enable");
-}
+};
 
 MathBar.prototype.getPropertyValue = function (parameter, outValues) {
     let type = parameter["parameterType"];
@@ -461,7 +458,7 @@ MathBar.prototype.getPropertyValue = function (parameter, outValues) {
         default:
             console.error("This paramter type is not implemented: " + type + "!");
     }
-}
+};
 
 MathBar.prototype.run = function () {
 
@@ -478,25 +475,25 @@ MathBar.prototype.run = function () {
 
     this.callback(result, this.outputID);
     this.hide();
-}
+};
 
 MathBar.prototype.remove = function () {
     this.button.mathBar = null;
     this.mathBarElement.slideUp(300, function () { this.remove(); });
     $(this.button).removeClass("up");
-}
+};
 
 MathBar.prototype.show = function () {
     this.visible = true;
     this.mathBarElement.slideDown(300);
     $(this.button).addClass("up");
-}
+};
 
 MathBar.prototype.hide = function () {
     this.visible = false;
     this.mathBarElement.slideUp(300);
     $(this.button).removeClass("up");
-}
+};
 
 MathBar.prototype.toggle = function () {
 
@@ -505,7 +502,7 @@ MathBar.prototype.toggle = function () {
     else
         if (!this.drawn) this.drawMathBar();
     this.show();
-}
+};
 
 
 MathBar.initializeFunctions = function (jsonfile) {
@@ -525,7 +522,7 @@ MathBar.initializeFunctions = function (jsonfile) {
 
     xhttp.open("GET", jsonfile, true);
     xhttp.send();
-}
+};
 
 MathBar.supportsExpressionType = function (expressionType, numberOfVariables) {
     if (numberOfVariables > 0)
@@ -535,7 +532,7 @@ MathBar.supportsExpressionType = function (expressionType, numberOfVariables) {
         return true;
 
     return false;
-}
+};
 
 MathBar.calculateInputWidth = function (value) {
     let $testDiv = $("#MathBarStringWidthTest");
@@ -544,4 +541,4 @@ MathBar.calculateInputWidth = function (value) {
     let width = $testDiv.width() + 1;
     $testDiv.hide();
     return width;
-}
+};
