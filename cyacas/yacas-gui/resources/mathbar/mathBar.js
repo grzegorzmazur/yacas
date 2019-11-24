@@ -325,7 +325,7 @@ MathBar.prototype.getPropertyLabel = function (parameter) {
     let $label = $("<label>");
     let type = parameter["parameterType"];
 
-    let value = undefined;
+    let value;
     if (this.defaultParameters !== undefined)
         value = this.defaultParameters[parameter["parameterName"]];
 
@@ -350,11 +350,10 @@ MathBar.prototype.getPropertyLabel = function (parameter) {
         let $span = $("<span>", { class: "parameter", name: parameter["parameterName"] });
         $span.append(value);
 
-        if (text === "") {
+        if (text === "")
             $span.css("margin-left", "0px");
-        } else {
+        else
             $label.append(text);
-        }
 
         $label.append($span);
     }
@@ -365,9 +364,8 @@ MathBar.prototype.getPropertyLabel = function (parameter) {
         $input.css("width", parameter["inputWidth"]);
         $input.val(value);
 
-        if (text !== "") {
+        if (text !== "")
             $label.append(text);
-        }
 
         $label.append($input);
     }
@@ -384,7 +382,7 @@ MathBar.prototype.getPropertyLabel = function (parameter) {
         let checked = value === "true";
 
         $input.change(function () {
-            $mathBarElement = $(this).parents(".MathBar:first");
+            let $mathBarElement = $(this).parents(".MathBar:first");
             MathBar.toggleParameters($mathBarElement, parameter["parameterName"], !$(this).is(":checked"));
         });
 
@@ -425,7 +423,7 @@ MathBar.prototype.getPropertyLabel = function (parameter) {
 };
 
 MathBar.toggleParameters = function ($mathBarElement, parameterName, disabled) {
-    $label = $mathBarElement.find(".check_" + parameterName).toggleClass("labelDisabled", disabled);
+    let $label = $mathBarElement.find(".check_" + parameterName).toggleClass("labelDisabled", disabled);
     $label.find("input").prop("disabled", disabled);
     if (disabled)
         $label.find("select").selectmenu("disable");
@@ -453,9 +451,8 @@ MathBar.prototype.getPropertyValue = function (parameter, outValues) {
             outValues[parameterName] = $element.prop("checked");
 
             let conditionalParameters = parameter["parameters"];
-            for (let i = 0; i < conditionalParameters.length; i++) {
+            for (let i = 0; i < conditionalParameters.length; i++)
                 this.getPropertyValue(conditionalParameters[i], outValues);
-            }
             break;
         case "select":
             if ($element.val() !== "") outValues[parameterName] = $element.val();
