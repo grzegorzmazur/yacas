@@ -2,6 +2,10 @@
 
 "use strict";
 
+var currentExpression = 1;
+var numberOfLines = 1;
+var currentInputCell = null;
+
 //Function stops scrolling event, and just scrool the window
 //Otherwise Code-Mirror editor kept scrolling one line up even if there was no line to scroll
 function scrollListener(e) {
@@ -141,6 +145,12 @@ function load() {
         if (yacas.hasOwnProperty("on_contentsChanged"))
             yacas.on_contentsChanged();
     });
+    editor.on("focus", function (editor) {
+        currentInputCell = editor;
+    });
+
+    currentInputCell = editor;    
+
     $(document).contextmenu({
         delegate: ".Expression>.Out",
         menu: [
@@ -179,10 +189,6 @@ function changeMathJaxFont(newFont) {
     MathJax.Hub.Queue(["Rerender", MathJax.Hub]);
 
 }
-
-var currentExpression = 1;
-var numberOfLines = 1;
-
 
 function updateInputNumber(updatedNumber) {
     $("#inputCounter").html("in " + updatedNumber + ":");
@@ -244,6 +250,10 @@ function addInputEditor(lineid, number, value, rootElementID) {
         } else {
             $tbody.removeClass("Modified");
         }
+    });
+
+    editor.on("focus", function (editor) {
+        currentInputCell = editor;
     });
 
     return editor;
