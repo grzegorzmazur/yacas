@@ -6,12 +6,15 @@
         
         <title>Yacas Online</title>
 
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.19.0/codemirror.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.19.0/addon/hint/show-hint.css" />
-        <link rel="stylesheet" href="yagy_ui/yagy_ui.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/w2ui/1.4.3/w2ui.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/fontawesome.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/hint/show-hint.css" />
+        <link rel="stylesheet" href="yacas_gui/yacas_gui.css?v=14" />
         <link rel="stylesheet" href="mathbar/mathbar.css" />
-        <link rel="stylesheet" href="jquery/jquery-ui-1.11.2.min.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.12.0/vis.min.css" />
+        <link rel="stylesheet" href="jquery/jquery-ui.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.18.1/vis.min.css" />
 
         <script type="text/x-mathjax-config">
             MathJax.Hub.Config({
@@ -19,40 +22,34 @@
                             inlineMath: [["$","$"],["\\(","\\)"]],
                             displayMath: [["$$","$$"], ["\[","\]"]]
                         },
-                        "HTML-CSS": {
-                            matchFontHeight: false,
-                            linebreaks: { automatic: true }
+                        CommonHTML: {
+                            linebreaks: { automatic: true },
+                            scale: 80
                         },
                         showMathMenu: false,
                         displayAlign: "left"
             });
         </script>
         
-        <script type="text/javascript" src="yagy_ui/yagy_ui.js"></script>
-        <script type="text/javascript" src="jquery/jquery-1.11.0.min.js"></script>
-        <script type="text/javascript" src="jquery/jquery-ui-1.11.2.min.js"></script>
+        <script type="text/javascript" src="yacas_gui/yacas_gui.js?v=14"></script>
+        <script type="text/javascript" src="jquery/jquery.min.js"></script>
+        <script type="text/javascript" src="jquery/jquery-ui.min.js"></script>
         <script type="text/javascript" src="jquery/jquery.jeditable.js"></script>
         <script type="text/javascript" src="jquery/jquery.jeditable.autogrow.js"></script>
         <script type="text/javascript" src="jquery/jquery.autosize.min.js"></script>
         <script type="text/javascript" src="jquery/jquery.ui-contextmenu.min.js"></script>
-        <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.resize.min.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r82/three.min.js"></script>
-        <script type="text/javascript" src="three/Detector.js"></script>
-        <script type="text/javascript" src="three/TrackballControls.js"></script>
-        <script type="text/javascript" src="plot3d/delaunay.js"></script>
-        <script type="text/javascript" src="plot3d/plot3d.js"></script>
-        <script type="text/javascript" src="mathbar/mathBar.js"></script>  
-        <script type="text/javascript" src="mathbar/functions_parser.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.19.0/codemirror.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.19.0/mode/yacas/yacas.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.19.0/addon/edit/matchbrackets.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.19.0/addon/edit/closebrackets.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.19.0/addon/hint/show-hint.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.19.0/addon/hint/anyword-hint.js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.12.0/vis.min.js"></script>
-
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.6/MathJax.js?config=TeX-AMS_CHTML"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/1.49.5/plotly.min.js"></script>
+        <script type="text/javascript" src="mathbar/mathBar.js?v=4"></script>  
+        <script type="text/javascript" src="mathbar/functions_parser.js?v=4"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/codemirror.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/mode/yacas/yacas.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/edit/matchbrackets.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/edit/closebrackets.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/hint/show-hint.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.48.4/addon/hint/anyword-hint.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/w2ui/1.4.3/w2ui.js"></script>
+        
         <script type='text/javascript'>
           String.prototype.beginsWith = function (string) {
               return(this.indexOf(string) === 0);
@@ -267,11 +264,107 @@
     </head>
 
     <body>
+        <div id="toolbar"></div>
+        <script type="text/javascript">
+          $(document).ready(function() {
+          });
+          function download(filename, text) {
+              var element = document.createElement('a');
+              element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+              element.setAttribute('download', filename);
+              
+              element.style.display = 'none';
+              document.body.appendChild(element);
+              
+              element.click();
+              
+              document.body.removeChild(element);
+          }
+          $(function () {
+              $('#toolbar').w2toolbar({
+                  name: 'toolbar',
+                  tooltip: 'bottom',
+                  items: [
+                      // { type: 'button', id: 'new', icon: 'fa fa-file', hint: 'New' },
+                      // { type: 'button', id: 'open', icon: 'fa fa-folder-open', hint: 'Open' },
+                      // { type: 'button', id: 'save', icon: 'fa fa-save', hint: 'Save' },
+                      // { type: 'break' },
+                      { type: 'button', id: 'down', icon: 'fa fa-arrow-down', hint: 'Go down' },
+                      { type: 'button', id: 'up', icon: 'fa fa-arrow-up', hint: 'Go up' },
+                      { type: 'break' },
+                      { type: 'button', id: 'insert_below', icon: 'fa fa-caret-square-o-down', hint: 'Insert cell below' },
+                      { type: 'button', id: 'insert_above', icon: 'fa fa-caret-square-o-up', hint: 'Insert cell above' },
+                      { type: 'button', id: 'delete', icon: 'fa fa-remove', hint: 'Remove current cell' },
+                      { type: 'break' },
+                      { type: 'button', id: 'evaluate', icon: 'fa fa-play', hint: 'Evaluate current cell' },
+                      { type: 'button', id: 'evaluate_all', icon: 'fa fa-repeat', hint: 'Evaluate all' },
+		      // { type: 'button', id: 'stop', icon: 'fa fa-stop', hint: 'Stop evaluation' },
+		      // { type: 'break' },
+		      // { type: 'button', id: 'settings', icon: 'fa fa-cog', hint: 'Settings' },
+                      { type: 'break' },
+                      // { type: 'button', id: 'info', icon: 'fa fa-info-circle', hint: 'Current symbol info' },
+                      { type: 'button', id: 'help', icon: 'fa fa-life-ring', hint: 'Help' }
+                  ],
+                  onClick: function (event) {
+                      switch(event.target) {
+                      case 'new':
+                          var win = window.open(window.location.href, '_blank');
+                          win.focus();
+                          break;
+                      case 'save':
+                          currentInputCell.focus();
+                          download('yacas.ygy', JSON.stringify(getAllInputs()));
+                          break;
+                      case 'up':
+                          if (currentInputCell.number === undefined)
+                              goUp(0);
+                          else
+                              goUp(currentInputCell.number);
+                          break;
+                      case 'down':
+                          goDown(currentInputCell.number);
+                          break;
+                      case 'insert_above':
+                          currentInputCell.focus();
+                          insertBeforeCurrent();
+                          break;
+                      case 'insert_below':
+                          currentInputCell.focus();
+                          insertAfterCurrent();
+                          break;
+                      case 'delete':
+                          currentInputCell.focus();
+                          deleteCurrent();
+                          break;
+                      case 'evaluate':
+                          currentInputCell.focus();
+                          evaluateCurrent();
+                          break;
+                      case 'evaluate_all':
+                          evaluateAll();
+                          break;
+                      case 'help':
+                          var win = window.open('https://yacas.readthedocs.io/en/latest/reference_manual/index.html');
+                          win.focus();
+                          break;
+                      default:
+                          console.log('not implemented target: '+ event.target);
+                          break;
+                      };
+                      event.preventDefault();
+                  }
+              });
+          });
+        </script>
         <div>
-            <p>This is online demo of <a href="http://www.yacas.org" target="blank_">yacas</a>, a simple yet capable Computer Algebra System
-            <p>Use Shift+Enter to perform calculations
-            <p>Use Ctrl+Space for simple automatic completion
-            <p>Please note that this is only a demo, it's slower than the desktop version and doesn't allow saving or loading your calculations
+            <p><br /></p>
+            <p>This is online demo of <a href="http://www.yacas.org" target="blank_">yacas</a>, a simple yet capable Computer Algebra System</p>
+            <p>
+            <p>Please note that this is only a demo, it's slower than than the desktop version and doesn't allow saving or loading</p>
+            <p>All calculations are performed locally in your browser; yacas is a C++ application transpiled into JavaScript/WebAssembly by the magic of <a href="https://emscripten.org/">Emscripten</a></p>
+            <p>Press Shift+Enter or click <i class="fa fa-play"></i> above to perform calculations</p>
+            <p>Type Example() and press Shift+Enter to see an example; repeat to see another one</p>
+            <p>Click <i class="fa fa-life-ring"></i> above for help</p>
         </div>
         <div id="YacasAREA">
 

@@ -1,0 +1,108 @@
+body {
+    margin: 0;
+    overflow-y: scroll;
+}
+
+#Elements {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: fixed;
+}
+
+td {
+    font-family: monospace;
+    font-size: small;
+    padding: 5px;
+}
+
+.New>tr>td:first-child {
+    background-color: LightGray !important;
+    color: black !important;
+}
+
+.Error>tr>td:first-child {
+    background-color: red !important;
+    color: white !important;
+}
+
+.Modified>tr>td:first-child {
+    background-color: gold !important;
+    color: black !important;
+}
+
+.Expression>tr.Out>td {
+    font-size: 16px;
+}
+
+#Elements>tbody>tr>td:first-child {
+    font-size: x-small;
+    width: 45px;
+    background-color: #66cd00;
+    color: white;
+}
+
+.CodeMirror {
+    box-sizing: border-box;
+    height: auto;
+    width: 100%;
+}
+
+.CodeMirror-focused {
+    border: 1px solid #ddd;
+}
+
+#expression_0 .CodeMirror {
+    border: 1px solid #ddd;
+}
+
+textarea {
+    width: 100%;
+    font-family: courier, monospace;
+    font-size: small;
+    resize: none;
+    padding: 4px;
+    height: 14px;
+}
+
+.containment {
+    width: 100%;
+}
+
+.editable {
+    color: SlateGray;
+}
+
+.Error {
+    color: red;
+}
+
+.Plot2D {
+    height: 300px;
+}
+
+.Plot3D {
+    height: 300px;
+}
+
+.Plot3DActive {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    border: 2px solid #41403b;
+}
+
+.w2ui-toolbar table.w2ui-button .w2ui-tb-image > span {
+    color: #f1f1f1;
+}
+
+#toolbar {
+    padding: 10px 16px;
+    background: #555;
+    color: #808080;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    overflow-y:visible;
+    z-index: 99;
+}
