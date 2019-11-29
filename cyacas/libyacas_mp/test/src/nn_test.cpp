@@ -78,6 +78,14 @@ TEST(YMP_NNTest, to_string)
         "121932631356500531591068431703703700581771069347203169112635269");
 }
 
+TEST(YMP_NNTest, io)
+{
+    std::ostringstream os;
+
+    os << std::hex << NN("3735928559");
+
+    ASSERT_EQ(os.str(), "deadbeef");
+}
 
 TEST(YMP_NNTest, shift)
 {
@@ -96,6 +104,14 @@ TEST(YMP_NNTest, shift)
     ASSERT_EQ(
         a,
         NN("60966315678250265795534215851851850290885534673601584556317634"));
+    a <<= 37;
+    ASSERT_EQ(
+        a,
+        NN("8379146623862302403044060157846671297166126665682970886501213062979125248"));
+    a >>= 32;
+    ASSERT_EQ(
+        a,
+        NN("1950922101704008505457094907259259209308337109555250705802164288"));
 }
 
 TEST(YMP_NNTest, sqr)
@@ -399,6 +415,7 @@ TEST(YMP_NNTest, div_rem)
     a /= b;
     ASSERT_EQ(a, NN("85070591730234615865843651857942052864"));
     a = NN(3);
+    ASSERT_THROW(a %= 0, std::domain_error);
     a %= NN(2);
     ASSERT_EQ(a, NN("1"));
 
