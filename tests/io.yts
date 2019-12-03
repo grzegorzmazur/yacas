@@ -1,3 +1,8 @@
+Testing("LISP Parsing");
+
+Verify(FromString("(+ a b)") LispRead(), a + b);
+Verify(FromString("(List (Sin x) (- (Cos x)))") LispRead(), {Sin(x),-Cos(x)});
+
 Testing("Patching");
 
 Verify(PatchString("2 + 2 = <? Echo(2 + 2); ?>"), "2 + 2 = 4 " : Nl());
