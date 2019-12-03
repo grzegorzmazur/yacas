@@ -4,6 +4,7 @@ set (YACAS_TESTS
   arithmetic.yts
   association.yts
   binaryfactors.yts
+  bitops.yts
   c_tex_form.yts
   calculus.yts
   calendar.yts
