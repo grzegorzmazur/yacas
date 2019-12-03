@@ -1,7 +1,8 @@
-Testing("LISP Parsing");
+Testing("LISP parsing and printing");
 
 Verify(FromString("(+ a b)") LispRead(), a + b);
 Verify(FromString("(List (Sin x) (- (Cos x)))") LispRead(), {Sin(x),-Cos(x)});
+Verify(FromString(ToString() FullForm({Sin(x),-Cos(x)}) ) LispRead(), {Sin(x),-Cos(x)});
 
 Testing("Patching");
 
