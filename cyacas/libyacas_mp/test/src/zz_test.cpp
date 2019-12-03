@@ -34,8 +34,8 @@ TEST(YMP_ZZTest, construction)
     ASSERT_EQ(ZZ("-ff", 16), ZZ("-255"));
     ASSERT_EQ(ZZ("deadbeef", 16), ZZ("3735928559"));
     ASSERT_EQ(ZZ("-deadbeef", 16), ZZ("-3735928559"));
-    ASSERT_THROW(NN(""), NN::ParseError);
-    ASSERT_THROW(NN(" "), NN::ParseError);
+    ASSERT_THROW(ZZ(""), ZZ::ParseError);
+    ASSERT_THROW(ZZ(" "), ZZ::ParseError);
     ASSERT_THROW(ZZ("deadbeef", 15), ZZ::ParseError);
 }
 
