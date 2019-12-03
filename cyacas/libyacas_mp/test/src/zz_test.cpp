@@ -92,6 +92,18 @@ TEST(YMP_ZZTest, to_string)
     ASSERT_EQ(ZZ("-3735928559").to_string(16), "-deadbeef");
 }
 
+TEST(YMP_ZZTest, io)
+{
+    std::ostringstream os;
+
+    os << std::hex << ZZ("3735928559");
+    ASSERT_EQ(os.str(), "deadbeef");
+    os.str("");
+    os.clear();
+    os << std::oct << ZZ("3735928559");
+    ASSERT_EQ(os.str(), "33653337357");
+}
+
 TEST(YMP_ZZTest, shift)
 {
     ZZ a;

@@ -83,8 +83,11 @@ TEST(YMP_NNTest, io)
     std::ostringstream os;
 
     os << std::hex << NN("3735928559");
-
     ASSERT_EQ(os.str(), "deadbeef");
+    os.str("");
+    os.clear();
+    os << std::oct << NN("3735928559");
+    ASSERT_EQ(os.str(), "33653337357");
 }
 
 TEST(YMP_NNTest, shift)
