@@ -53,6 +53,8 @@ Function ("TeXFormBracketIf", {predicate, string})
 
 TeXFormMaxPrec() := 60000;	 /* This precedence will never be bracketed. It is equal to KMaxPrec */
 
+If (Not IsNumber(TeXForm'FuncPrec), TeXForm'FuncPrec := OpPrecedence("*"));
+
 /// main front-end
 100 # TeXForm(_x) <-- ConcatStrings("$", TeXForm(x, TeXFormMaxPrec()), "$");
 
@@ -231,7 +233,7 @@ LocalSymbols(TeXFormMathFunctions, TeXFormMathFunctions2) [
   /* Precedence of 120 because we'd like to process other functions like sqrt or exp first */
 
   // generic math functions of one argument
-  120 # TeXForm(expr_IsFunction, _p) _ (NrArgs(expr)=1 And Contains(AssocIndices(TeXFormMathFunctions), Type(expr)) ) <-- TeXFormBracketIf(p<OpPrecedence("*"), ConcatStrings(TeXFormMathFunctions[Type(expr)], TeXForm( Listify(expr)[2], OpPrecedence("*")) ) );
+  120 # TeXForm(expr_IsFunction, _p) _ (NrArgs(expr)=1 And Contains(AssocIndices(TeXFormMathFunctions), Type(expr)) ) <-- TeXFormBracketIf(p<OpPrecedence("*"), ConcatStrings(TeXFormMathFunctions[Type(expr)], TeXForm( Listify(expr)[2], TeXForm'FuncPrec) ) );
 
   /// math functions two arguments of the form $A_n(x)$
   120 # TeXForm(expr_IsFunction, _p) _ (NrArgs(expr)=2 And Contains(AssocIndices(TeXFormMathFunctions2), Type(expr)) ) <-- TeXFormBracketIf(p<OpPrecedence("*"),
