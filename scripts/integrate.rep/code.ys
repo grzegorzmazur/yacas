@@ -2,7 +2,7 @@
 RuleBase("IntegrateMultiplicative",{var,from,a,b});
 UnFence("IntegrateMultiplicative",4);
 
-10# (Integrate(_var)(expr_IsList)) 
+10# (Integrate(_var)(expr_IsList))
     <-- Map("Integrate",{FillList(var,Length(expr)),expr});
 20 # (Integrate(_var)(_expr)) <-- IntSub(var,expr,AntiDeriv(var,IntClean(var,expr)));
 
@@ -16,7 +16,7 @@ UnFence("IntegrateMultiplicative",4);
 // Integrate over a range
 //
 ////////////////////////////////////////////////
-10# (Integrate(_var,_from,_to)(expr_IsList)) 
+10# (Integrate(_var,_from,_to)(expr_IsList))
     <-- Map("Integrate",{FillList(var,Length(expr)),
                          FillList(from,Length(expr)),
 			 FillList(to,Length(expr)),
@@ -44,7 +44,7 @@ UnFence("IntegrateMultiplicative",4);
 12 # indefIntegrate(_var,_from,_to,_expr,_a,_b)_(from = -to And IsEvenFunction(expr,var)) <--
      2*indefIntegrate(var,0,to,expr,a,b);
 
-100 # indefIntegrate(_var,_from,_to,_expr,_a,_b)_(Type(AntiDeriv(var,IntClean(var,expr))) != "AntiDeriv") 
+100 # indefIntegrate(_var,_from,_to,_expr,_a,_b)_(Type(AntiDeriv(var,IntClean(var,expr))) != "AntiDeriv")
     <--
     IntegrateRange(var,expr,from,to,AntiDeriv(var,IntClean(var,expr)));
 101 # indefIntegrate(_var,_from,_to,_expr,_a,_b)
@@ -60,7 +60,7 @@ UnFence("IntegrateMultiplicative",4);
 ////////////////////////////////////////////////
 10 # IntegrateRange(_var,_expr,_from,_to,Integrate(_var)_expr2)
     <-- `Hold(Integrate(@var,@from,@to)@expr);
-    
+
 ////////////////////////////////////////////////
 //
 // Anti-derivative found, return result.
@@ -79,10 +79,10 @@ UnFence("IntegrateMultiplicative",4);
 // additive as opposed to multiplicative.
 //
 // If the expression doesn't contain the variable,
-// just return it as-is. This fixes: 
+// just return it as-is. This fixes:
 // In> Integrate(x) z^100
 ////////////////////////////////////////////////
-10 # IntClean(_var,_expr) <-- 
+10 # IntClean(_var,_expr) <--
 [
 	if( IsFreeOf(var,expr))[
 		expr;
@@ -310,7 +310,7 @@ IntFunc(x,1/(Sin(_x)*Tan(_x)),-1/Sin(x));
 IntFunc(x,Tan(_x)/Cos(_x),1/Cos(x));
 IntFunc(x,1/Sinh(_x)^2,-1/Tanh(x));
 IntFunc(x,1/Cosh(_x)^2,Tanh(x));
-IntFunc(x,1/(Sinh(_x)*Tan(_x)),-1/Sinh(x));
+IntFunc(x,1/(Sinh(_x)*Tanh(_x)),-1/Sinh(x));
 IntFunc(x,Tanh(_x)/Cosh(_x),-1/Cosh(x));
 
 IntFunc(x,1/Sqrt(m_IsFreeOf(x)-_x^2),ArcSin(x/Sqrt(m)) );
@@ -354,7 +354,7 @@ IntFunc(x,ArcSinh(_x),x*ArcSinh(x) - Sqrt(x^2 + 1) );
 IntFunc(x,ArcCosh(_x),x*ArcCosh(x) - Sqrt(x-1)*Sqrt(x+1) );
 
 
-// n^2 > x^2 
+// n^2 > x^2
 //IntFunc(x,num_IsFreeOf(var)/(-(_x)^2 + n_IsNumber),num*ArcTanh(x/Sqrt(n))/n);
 
 // x^2 > n^2

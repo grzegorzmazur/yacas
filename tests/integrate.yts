@@ -76,4 +76,6 @@ LocalSymbols(TestMatchLinearTrue,TestMatchLinearFalse) [
 
 ];
 
+Verify(Integrate(x)1/(Sinh(x)*Tanh(x)), -1/Sinh(x));
+
 Verify(IntegrateRationalFunction(1,x,x), SumLog(t,1-t,0,x));
