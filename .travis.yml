@@ -29,14 +29,14 @@ before_script:
   - git clone https://github.com/google/googletest.git
   - cd googletest
   - mkdir build && cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release ..
+  - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF ..
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo env "PATH=$PATH" cmake --build . --target install --config Release; fi
   - if [ ${TRAVIS_OS_NAME} = "osx" ]; then cmake --build . --target install --config Release; fi
   - cd ../..
   - git clone https://github.com/google/benchmark.git
   - cd benchmark
   - mkdir build && cd build
-  - cmake -DCMAKE_BUILD_TYPE=Release -DBENCHMARK_DOWNLOAD_DEPENDENCIES=On ..
+  - cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=17 -DCMAKE_CXX_STANDARD_REQUIRED=ON -DCMAKE_CXX_EXTENSIONS=OFF -DBENCHMARK_DOWNLOAD_DEPENDENCIES=On ..
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo env "PATH=$PATH" cmake --build . --target install --config Release; fi
   - if [ ${TRAVIS_OS_NAME} = "osx" ]; then cmake --build . --target install --config Release; fi
   - cd ../..
