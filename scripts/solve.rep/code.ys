@@ -21,6 +21,7 @@
 
 LocalSymbols(res)
 [
+   5  # Solve(expr_IsList, var_IsList)_(Length(expr) = 1 And Length(var) = 1 And IsAtom(Head(var))) <-- {Solve(Head(expr), Head(var))};
   10  # Solve(expr_IsList, var_IsList) <-- Solve'System(expr, var);
   20  # Solve(_expr, _var)_(Not IsAtom(var) Or IsNumber(var) Or IsString(var)) <--
         [ Assert("Solve'TypeError", "Second argument, ":(ToString() Write(var)):", is not the name of a variable") False; {}; ];
