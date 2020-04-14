@@ -168,7 +168,7 @@ LocalSymbols(rformMathFunctions) [
       {"Min","min"},
       {"Abs","abs"},
       {"Floor","floor"},
-      {"Ceil","ceil"},
+      {"Ceil","ceiling"},
       {"!","factorial"}
     };
 
