@@ -23,10 +23,10 @@ std::string XmlTokenizer::NextToken(LispInput& aInput)
 
     if (c == '<') {
         while (c != '>') {
-            c = aInput.Next();
-
             if (aInput.EndOfStream())
                 throw LispErrCommentToEndOfFile();
+
+            c = aInput.Next();
 
             s.push_back(c);
         }
