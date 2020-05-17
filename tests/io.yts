@@ -7,6 +7,7 @@ Verify(FromString(ToString() FullForm({Sin(x),-Cos(x)}) ) LispRead(), {Sin(x),-C
 Testing("OpenMath parsing");
 
 Verify(FromString("<OMOBJ> <OMI>3</OMI> </OMOBJ>") OMRead(), 3);
+Verify(FromString("<OMOBJ> <OMSTR> a </OMSTR> </OMOBJ>") OMRead(), " a ");
 
 Testing("Patching");
 

@@ -2,23 +2,23 @@
 #include "yacas/lisperror.h"
 
 #include <cctype>
+#include <iostream>
 
 std::string XmlTokenizer::NextToken(LispInput& aInput)
 {
-    char c;
-
     if (aInput.EndOfStream())
         return "";
 
+    std::string leading_spaces;
     while (std::isspace(aInput.Peek()))
-        aInput.Next();
+        leading_spaces.push_back(aInput.Next());
 
     if (aInput.EndOfStream())
         return "";
 
     std::string s;
 
-    c = aInput.Next();
+    char c = aInput.Next();
     s.push_back(c);
 
     if (c == '<') {
@@ -31,10 +31,9 @@ std::string XmlTokenizer::NextToken(LispInput& aInput)
             s.push_back(c);
         }
     } else {
-        while (aInput.Peek() != '<' && !aInput.EndOfStream()) {
-            c = aInput.Next();
-            s.push_back(c);
-        }
+        while (aInput.Peek() != '<' && !aInput.EndOfStream())
+            s.push_back(aInput.Next());
+        s = leading_spaces + s;
     }
 
     return s;
