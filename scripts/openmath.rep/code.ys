@@ -467,9 +467,9 @@ FromString(str:" EndOfFile")
   Local(expandRules, result);
   expandRules := { _(_path) <- OMPathSelect(path, function) };
   expandRules[1][2][2] := function;// the "function" variable is not expanded above.
-  
+
   mapping := (mapping /: expandRules);// "/:" has lower precedence than ":=".
-  
+
   Local(ruleMatched);
   ruleMatched := False;
   If(Type(mapping) = "|",
@@ -496,7 +496,7 @@ FromString(str:" EndOfFile")
      ruleMatched := True;
      ]
     );
-  
+
   If(ruleMatched,
      If(Type(result) = ":",
         If(Length(result) = 2,
@@ -688,3 +688,4 @@ Use("sums.rep/om.ys");
 Use("limit.rep/om.ys");
 //Use("numbers.rep/om.ys");// Sqrt is loaded before (stubs.rep) than IntNthRoot.
 Use("functional.rep/om.ys");
+Use("solve.rep/om.ys");
