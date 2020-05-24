@@ -71,7 +71,18 @@ LocalSymbols(omindent) [
      OMEcho("</OMOBJ>");
      ];
 
-10 # OMFormExpression(i_IsString)  <-- OMEcho("<OMSTR>":i:"</OMSTR>");
+10 # OMFormExpression(i_IsString)  <-- [
+  Local (p, s);
+  s := "";
+  For (p := 1, p <= Length(i), p++) [
+    Local (c);
+    c := i[p];
+    c := If (c = "<", "&lt;", c);
+    c := If (c = ">", "&gt;", c);
+    s := s : c;
+  ];
+  OMEcho("<OMSTR>":s:"</OMSTR>");
+];
 11 # OMFormExpression(i_IsInteger) <-- OMEcho("<OMI>":String(i):"</OMI>");
 12 # OMFormExpression(i_IsNumber)  <-- OMEcho("<OMF dec=\"":String(i):"\"/>");
 13 # OMFormExpression(i_IsConstant)_(OMSymbol()[ String(i) ] != Empty)
