@@ -1,7 +1,13 @@
 
 NextTest("Converting to and from OpenMath expressions");
 
-Macro(OMTest1,{expr}) 
+Verify(ToString() OMForm(3), "<OMOBJ>" : Nl() : "  <OMI>3</OMI>" : Nl() : "</OMOBJ>" : Nl());
+Verify(ToString() OMForm("<OMSTR>a\"b'c&</OMSTR>"), "<OMOBJ>" : Nl() : "  <OMSTR>&lt;OMSTR&gt;a&quot;b&apos;c&amp;&lt;/OMSTR&gt;</OMSTR>" : Nl() : "</OMOBJ>" : Nl());
+
+Verify(FromString("<OMOBJ> <OMI>3</OMI> </OMOBJ>") OMRead(), 3);
+Verify(FromString("<OMOBJ> <OMSTR> a </OMSTR> </OMOBJ>") OMRead(), " a ");
+
+Macro(OMTest1,{expr})
 [
   Local(string,result);
   string:=ToString() OMForm(@expr);

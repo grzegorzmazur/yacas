@@ -77,8 +77,11 @@ LocalSymbols(omindent) [
   For (p := 1, p <= Length(i), p++) [
     Local (c);
     c := i[p];
+    c := If (c = "&", "&amp;", c);
     c := If (c = "<", "&lt;", c);
     c := If (c = ">", "&gt;", c);
+    c := If (c = "\"", "&quot;", c);
+    c := If (c = "'", "&apos;", c);
     s := s : c;
   ];
   OMEcho("<OMSTR>":s:"</OMSTR>");
