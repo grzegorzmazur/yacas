@@ -6,6 +6,7 @@ Verify(ToString() OMForm("<OMSTR>a\"b'c&</OMSTR>"), "<OMOBJ>" : Nl() : "  <OMSTR
 
 Verify(FromString("<OMOBJ> <OMI>3</OMI> </OMOBJ>") OMRead(), 3);
 Verify(FromString("<OMOBJ> <OMSTR> a </OMSTR> </OMOBJ>") OMRead(), " a ");
+Verify(FromString("<OMOBJ><OMSTR>&lt;OMSTR&gt;a&quot;b&apos;c&amp;&lt;/OMSTR&gt;</OMSTR></OMOBJ>") OMRead(), "<OMSTR>a\"b'c&</OMSTR>");
 
 Macro(OMTest1,{expr})
 [

@@ -406,11 +406,31 @@ FromString(str:" EndOfFile")
 
 10 # ReadOMOBJ(XmlTag("OMSTR",{},"Open")) <--
 [
-  Local(result);
+  Local(result,s,i);
   OMNextToken();
   If(IsString(OMToken()), [result := OMToken(); OMNextToken();], result := "");
   MatchClose(XmlTag("OMSTR",{},"Close"));
-  result;
+  s := "";
+  For (i := 1, i <= Length(result), i++) [
+    Local(c);
+    c := result[i];
+    If (c != "&", s := s : c, [
+      Local(j,ec);
+      j := i;
+      While (j <= Length(result) And result[j] != ";")
+        j := j + 1;
+
+      ec := result[i .. j];
+      If (ec = "&amp;", s := s : "&");
+      If (ec = "&lt;", s := s : "<");
+      If (ec = "&gt;", s := s : ">");
+      If (ec = "&quot;", s := s : "\"");
+      If (ec = "&apos;", s := s : "'");
+
+      i := j;
+    ]);
+  ];
+  s;
 ];
 10 # ReadOMOBJ(XmlTag("OMSTR",{},"OpenClose")) <--
 [
