@@ -401,7 +401,13 @@ FromString(str:" EndOfFile")
 10 # ReadOMOBJ(XmlTag("OMF",{{"DEC",_dec}},"OpenClose")) <--
 [
   OMNextToken();
-  Atom(dec) + 0.0;
+  If (dec = "INF", Infinity,
+    If (dec = "-INF", -Infinity,
+      If (dec = "NaN", Undefined,
+        Atom(dec) + 0.0
+      )
+    )
+  );
 ];
 
 10 # ReadOMOBJ(XmlTag("OMSTR",{},"Open")) <--

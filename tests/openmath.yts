@@ -9,6 +9,7 @@ Verify(FromString("<OMOBJ> <OMSTR> a </OMSTR> </OMOBJ>") OMRead(), " a ");
 Verify(FromString("<OMOBJ><OMSTR>&lt;OMSTR&gt;a&quot;b&apos;c&amp;&lt;/OMSTR&gt;</OMSTR></OMOBJ>") OMRead(), "<OMSTR>a\"b'c&</OMSTR>");
 
 Verify(String(FromString("<OMOBJ xmlns=\"http://www.openmath.org/OpenMath\" version=\"2.0\" cdbase=\"http://www.openmath.org/cd\"><OMF dec=\"1\"/></OMOBJ> ")OMRead()), "1.");
+Verify(FromString("<OMOBJ><OMF dec=\"-INF\"/></OMOBJ> ")OMRead(), -Infinity);
 
 Macro(OMTest1,{expr})
 [
