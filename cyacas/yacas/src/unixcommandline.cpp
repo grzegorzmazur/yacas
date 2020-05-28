@@ -43,7 +43,7 @@ void CUnixCommandLine::ShowLine(const std::string& prompt, unsigned cursor)
 
         std::cout << "\r\x1b[K\x1b[K" << prompt << iSubLine;
 
-        if ((prompt_len + iSubLine.size()) % w.ws_col == 0)
+        if (prompt_len + iSubLine.size() != 0 && (prompt_len + iSubLine.size()) % w.ws_col == 0)
             std::cout << "\n";
 
         _last_line = (prompt_len + iSubLine.size()) / w.ws_col;

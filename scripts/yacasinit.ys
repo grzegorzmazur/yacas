@@ -71,13 +71,16 @@ RuleBase("REP",{});
 LocalSymbols(input,stringOut,result,errorString)
 Rule("REP",0,1,True)
 [
-  Local(input,stringOut,result);
+  Local(input,stringOut,result,inprompt,outprompt);
   While(Not(IsExitRequested()))
   [
+    inprompt := If (IsPromptShown(), "In> ", "");
+    outprompt := If (IsPromptShown(), "Out> ", "");
+
     Set(errorString, "");
     If(And(IsString(PrettyReader'Get()),Not(PrettyReader'Get() = "")),
-      TrapError(Set(input, FromString(ReadCmdLineString("In> "))ApplyPure(PrettyReader'Get(),{})),Set(errorString,GetCoreError())),
-      TrapError(Set(input, FromString(ConcatStrings(ReadCmdLineString("In> "),";"))Read()),Set(errorString,GetCoreError())));
+      TrapError(Set(input, FromString(ReadCmdLineString(inprompt))ApplyPure(PrettyReader'Get(),{})),Set(errorString,GetCoreError())),
+      TrapError(Set(input, FromString(ConcatStrings(ReadCmdLineString(inprompt),";"))Read()),Set(errorString,GetCoreError())));
     If(Not(errorString = ""), WriteString(errorString));
     If (Not(IsExitRequested()) And errorString="",
     [
@@ -91,7 +94,7 @@ Rule("REP",0,1,True)
       Protect(%);
       If(PrettyPrinter'Get()="",
       [
-        Write(Atom("Out> "),result);
+        Write(Atom(outprompt),result);
         NewLine();
       ],
       Apply(PrettyPrinter'Get(),{result}));
