@@ -34,12 +34,15 @@ Options
 
 **-v**
   print yacas version and exit
-  
+
 **-p**
   plain (dumb-terminal) mode
 
 **-c**
   do not print prompt
+
+**-c**
+  do not print banner
 
 **-i** *COMMAND*
   execute COMMAND and exit

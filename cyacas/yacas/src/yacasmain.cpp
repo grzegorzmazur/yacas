@@ -20,6 +20,7 @@
 //            read statement only.
 //      - p : plain mode. No fancy readline functionality.
 //      - c : inhibits printing the prompt to the console
+//      - b : inhibits printing the banner
 //   4)
 //  -i <command> : execute <command>
 //
@@ -94,6 +95,7 @@ CCommandLine* commandline = nullptr;
 bool use_stdin = false;
 bool use_plain = false;
 bool show_prompt = true;
+bool show_banner = true;
 bool use_texmacs_out = false;
 
 bool patchload = false;
@@ -443,7 +445,7 @@ void InterruptHandler(int errupt)
 
 void runconsole(const std::string& inprompt, const std::string& outprompt)
 {
-    if (show_prompt) {
+    if (show_banner) {
         if (use_texmacs_out) {
             std::cout << TEXMACS_DATA_BEGIN << "verbatim:"
                       << "This is Yacas version `" << YACAS_VERSION
@@ -561,6 +563,9 @@ int parse_options(int argc, char** argv)
                 }
                 if (std::strchr(argv[fileind], 'c')) {
                     show_prompt = false;
+                }
+                if (std::strchr(argv[fileind], 'b')) {
+                    show_banner = false;
                 }
                 if (std::strchr(argv[fileind], 'd')) {
                     std::cout << root_dir << "\n";
