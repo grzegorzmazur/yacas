@@ -134,31 +134,6 @@
     display: none;
 }
 
-.styled_radio input[type=radio]:checked+span {
-    background: linear-gradient(#47a3ff, #246bb2);
-    text-decoration: none;
-    color: white;
-}
-
-.styled_radio label.checked>span {
-    background: linear-gradient(#47a3ff, #246bb2);
-    text-decoration: none;
-    color: white;
-}
-
-.styled_radio label>span:hover {
-    background: linear-gradient(white, #d6ebff);
-}
-
-.styled_radio label.checked>span:hover {
-    color: #e7eef8;
-    background: linear-gradient(#47a3ff, #246bb2);
-}
-
-.styled_radio input[type=radio]:checked:hover+span {
-    color: #e7eef8;
-}
-
 .styled_radio label>span {
     cursor: pointer;
     display: block;
@@ -169,6 +144,31 @@
     border: 1px solid #246bb2;
     color: #246bb2;
     margin: 0;
+}
+
+.styled_radio label>span:hover {
+    background: linear-gradient(white, #d6ebff);
+}
+
+.styled_radio label.checked>span {
+    background: linear-gradient(#47a3ff, #246bb2);
+    text-decoration: none;
+    color: white;
+}
+
+.styled_radio label.checked>span:hover {
+    color: #e7eef8;
+    background: linear-gradient(#47a3ff, #246bb2);
+}
+
+.styled_radio input[type=radio]:checked+span {
+    background: linear-gradient(#47a3ff, #246bb2);
+    text-decoration: none;
+    color: white;
+}
+
+.styled_radio input[type=radio]:checked:hover+span {
+    color: #e7eef8;
 }
 
 .parameters label>span[role=combobox] {
