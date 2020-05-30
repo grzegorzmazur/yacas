@@ -41,7 +41,7 @@ Options
 **-c**
   do not print prompt
 
-**-c**
+**-b**
   do not print banner
 
 **-i** *COMMAND*
