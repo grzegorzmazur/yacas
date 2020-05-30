@@ -9,6 +9,12 @@
     bottom: 2px;
 }
 
+.radio_group_horizontal label {
+    display: inline-block;
+    text-align: center;
+    padding: 0 2px 0 0;
+}
+
 .MathBar {
     background-color: #f5faff;
     border: 1px solid #c2e0ff;
@@ -134,7 +140,15 @@
     display: none;
 }
 
-.styled_radio label>span {
+.parameters label > span[role=combobox] {
+    background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(white, white);
+    border: 1px solid #c2e0ff;
+    padding: 1px;
+    padding-left: 5px;
+    margin-left: 5px;
+}
+
+.styled_radio label > span {
     cursor: pointer;
     display: block;
     line-height: 20px;
@@ -146,52 +160,44 @@
     margin: 0;
 }
 
-.styled_radio label>span:hover {
-    background: linear-gradient(white, #d6ebff);
-}
-
-.styled_radio label.checked>span {
-    background: linear-gradient(#47a3ff, #246bb2);
-    text-decoration: none;
-    color: white;
-}
-
-.styled_radio label.checked>span:hover {
-    color: #e7eef8;
-    background: linear-gradient(#47a3ff, #246bb2);
-}
-
-.styled_radio input[type=radio]:checked+span {
-    background: linear-gradient(#47a3ff, #246bb2);
-    text-decoration: none;
-    color: white;
-}
-
-.styled_radio input[type=radio]:checked:hover+span {
-    color: #e7eef8;
-}
-
-.styled_radio label>span[role=combobox] {
+.styled_radio label > span[role=combobox] {
     background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(white, #f3f9ff);
 }
 
-.styled_radio label>span[role=combobox]:hover {
-    background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(white, #d6ebff);
+.styled_radio label > span:hover {
+    background: linear-gradient(white, #d6ebff);
 }
 
-.styled_radio label.checked>span[role=combobox] {
+.styled_radio label.checked > span {
+    background: linear-gradient(#47a3ff, #246bb2);
+    text-decoration: none;
+    color: white;
+}
+
+.styled_radio label.checked > span:hover {
+    color: #e7eef8;
+    background: linear-gradient(#47a3ff, #246bb2);
+}
+
+.styled_radio input[type=radio]:checked + span {
+    background: linear-gradient(#47a3ff, #246bb2);
+    text-decoration: none;
+    color: white;
+}
+
+.styled_radio input[type=radio]:checked:hover + span {
+    color: #e7eef8;
+}
+
+.styled_radio label.checked > span[role=combobox] {
     background: url(./images/mathBar_combobox_triangle_white.png) right 5px center no-repeat, linear-gradient(#47a3ff, #246bb2);
 }
 
-.parameters label>span[role=combobox] {
-    background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(white, white);
-    border: 1px solid #c2e0ff;
-    padding: 1px;
-    padding-left: 5px;
-    margin-left: 5px;
+.styled_radio label > span[role=combobox]:hover {
+    background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(white, #d6ebff);
 }
 
-.parameters label>span[role=combobox]:not(.ui-state-disabled):hover {
+.parameters label > span[role=combobox]:not(.ui-state-disabled):hover {
     background: url(./images/mathBar_combobox_triangle.png) right 5px center no-repeat, linear-gradient(white, #d6ebff);
     color: #246bb2;
 }
@@ -207,12 +213,6 @@
 
 .MathBar select {
     margin: 0;
-}
-
-.radio_group_horizontal label {
-    display: inline-block;
-    text-align: center;
-    padding: 0 2px 0 0;
 }
 
 .radio_group_horizontal {
