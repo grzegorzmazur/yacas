@@ -15,26 +15,26 @@ td {
     padding: 5px;
 }
 
-.New>tr>td:first-child {
-    background-color: LightGray !important;
+.New > tr > td:first-child {
+    background-color: lightgray !important;
     color: black !important;
 }
 
-.Error>tr>td:first-child {
+.Error > tr > td:first-child {
     background-color: red !important;
     color: white !important;
 }
 
-.Modified>tr>td:first-child {
+.Modified > tr > td:first-child {
     background-color: gold !important;
     color: black !important;
 }
 
-.Expression>tr.Out>td {
+.Expression > tr.Out > td {
     font-size: 16px;
 }
 
-#Elements>tbody>tr>td:first-child {
+#Elements > tbody > tr > td:first-child {
     font-size: x-small;
     width: 45px;
     background-color: #66cd00;
@@ -69,7 +69,7 @@ textarea {
 }
 
 .editable {
-    color: SlateGray;
+    color: slategray;
 }
 
 .Error {
@@ -90,7 +90,7 @@ textarea {
     border: 2px solid #41403b;
 }
 
-.w2ui-toolbar table.w2ui-button .w2ui-tb-image>span {
+.w2ui-toolbar table.w2ui-button .w2ui-tb-image > span {
     color: #f1f1f1;
 }
 
