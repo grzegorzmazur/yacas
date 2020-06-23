@@ -65,6 +65,44 @@ Rule(LoadPackages, 1, 1, True)
 Use("packages.ys");
 LoadPackages(DefFileList());
 
+LocalSymbols(input, output) [
+  input := {};
+  output := {};
+
+  RuleBase("Input'Append", {e});
+  Rule("Input'Append", 1, 0, True) [
+    DestructiveAppend(input, e);
+  ];
+
+  RuleBase("Input", {i});
+  Rule("Input", 1, 0, IsInteger(i) And i > 0) [
+    Check(i <= Length(input), "Input: wrong argument");
+    input[i];
+  ];
+
+  Rule("Input", 1, 0, IsInteger(i) And i <= 0) [
+    Echo(-i, Length(input), -i < Length(input));
+    Check(-i < Length(input), "Input: wrong argument");
+    input[Length(input) + i];
+  ];
+
+  RuleBase("Output'Append", {e});
+  Rule("Output'Append", 1, 0, True) [
+    DestructiveAppend(output, e);
+  ];
+
+  RuleBase("Output", {i});
+  Rule("Output", 1, 0, IsInteger(i) And i > 0) [
+    Check(i <= Length(output), "Output: wrong argument");
+    output[i];
+  ];
+
+  Rule("Output", 1, 0, IsInteger(i) And i <= 0) [
+    Echo(-i, Length(output), -i < Length(output));
+    Check(-i < Length(output), "Output: wrong argument");
+    output[Length(output) + i];
+  ];
+];
 
 /* The read-eval-print loop */
 RuleBase("REP",{});
@@ -92,6 +130,8 @@ Rule("REP",0,1,True)
       UnProtect(%);
       SetGlobalLazyVariable(%,result);
       Protect(%);
+      Input'Append(input);
+      Output'Append(result);
       If(PrettyPrinter'Get()="",
       [
         Write(Atom(outprompt),result);
