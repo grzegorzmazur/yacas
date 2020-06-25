@@ -102,7 +102,7 @@ Plot2D'png(values_IsList, _options'hash) <--
   ];
 
   SystemCall(Plot2D'gnuplot'command(control'file));
-  png'file;
+  File(png'file, "image/png");
 ];
 
 

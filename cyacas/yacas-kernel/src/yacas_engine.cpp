@@ -36,6 +36,14 @@ YacasEngine::YacasEngine(const std::string& scripts_path,
     _yacas.Evaluate(std::string("DefaultDirectory(\"") + scripts_path +
                     std::string("\");"));
     _yacas.Evaluate("Load(\"yacasinit.ys\");");
+    _yacas.Evaluate("Plot2D'outputs();");
+    _yacas.Evaluate("UnProtect(Plot2D'outputs);");
+    _yacas.Evaluate("Plot2D'outputs() := {{\"default\", \"png\"}, {\"png\", \"Plot2D'png\"}}");
+    _yacas.Evaluate("Protect(Plot2D'outputs);");
+    _yacas.Evaluate("Plot3DS'outputs();");
+    _yacas.Evaluate("UnProtect(Plot3DS'outputs);");
+    _yacas.Evaluate("Plot3DS'outputs() := {{\"default\", \"png\"}, {\"png\", \"Plot3DS'png\"}}");
+    _yacas.Evaluate("Protect(Plot3DS'outputs);");
 
     _socket.connect(endpoint);
 

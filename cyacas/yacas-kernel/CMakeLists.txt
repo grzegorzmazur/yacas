@@ -30,7 +30,7 @@ find_package (Boost REQUIRED date_time)
 
 include_directories (include)
 
-add_executable (yacas-kernel src/main.cpp src/yacas_kernel.cpp src/yacas_engine.cpp src/hmac_sha256.cpp)
+add_executable (yacas-kernel src/main.cpp src/yacas_kernel.cpp src/yacas_engine.cpp src/hmac_sha256.cpp src/base64.cpp)
 target_link_libraries (yacas-kernel libyacas ${ZMQPP_LIBRARY} ${ZEROMQ_LIBRARY} ${JSONCPP_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} ${Boost_LIBRARIES} pthread)
 
 install (TARGETS yacas-kernel DESTINATION ${CMAKE_INSTALL_BINDIR})

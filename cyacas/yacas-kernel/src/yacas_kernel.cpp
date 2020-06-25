@@ -23,6 +23,8 @@
  */
 
 #include "yacas_kernel.hpp"
+#include "base64.hpp"
+
 #include "yacas/yacas_version.h"
 
 #include <boost/date_time/posix_time/posix_time.hpp>
@@ -30,6 +32,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <regex>
 #include <set>
 #include <string>
 
@@ -366,17 +369,29 @@ void YacasKernel::_handle_engine(const zmqpp::message& msg)
             Json::Value content_data;
             content_data["text/plain"] = text_result;
 
-            if (_tex_output) {
-                _side_effects.clear();
-                _side_effects.str("");
+            std::regex rx("File\\(\"([^\"]+)\", *\"([^\"]+)\"\\)",
+                          std::regex_constants::ECMAScript);
+            std::smatch m;
+            if (std::regex_match(text_result, m, rx)) {
+                std::ifstream f(m[1],
+                                std::ios_base::in | std::ios_base::binary);
+                const std::vector<unsigned char> img(
+                    (std::istreambuf_iterator<char>(f)),
+                    std::istreambuf_iterator<char>());
+                content_data[m[2]] = base64_encode(img);
+            } else {
+                if (_tex_output) {
+                    _side_effects.clear();
+                    _side_effects.str("");
 
-                _yacas.Evaluate(std::string("TeXForm(Hold(") + text_result +
-                                "));");
+                    _yacas.Evaluate(std::string("TeXForm(Hold(") + text_result +
+                                    "));");
 
-                std::string tex_result = _yacas.Result();
-                tex_result = tex_result.substr(1, tex_result.size() - 3);
+                    std::string tex_result = _yacas.Result();
+                    tex_result = tex_result.substr(1, tex_result.size() - 3);
 
-                content_data["text/latex"] = tex_result;
+                    content_data["text/latex"] = tex_result;
+                }
             }
 
             Json::Value reply_content;

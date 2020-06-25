@@ -126,7 +126,7 @@ Plot3DS'png(values_IsList, _options'hash) <--
         WriteString(Nl());
   ];
   SystemCall(Plot3DS'gnuplot'command(control'file));
-  png'file;
+  File(png'file, "image/png");
 ];
 
 /// backend: write data into file.
