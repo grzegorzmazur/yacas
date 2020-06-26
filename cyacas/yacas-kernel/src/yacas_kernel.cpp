@@ -218,7 +218,7 @@ void YacasKernel::_handle_shell(const std::shared_ptr<Request>& request)
     if (msg_type == "kernel_info_request") {
         Json::Value language_info;
         language_info["name"] = "yacas";
-        language_info["version"] = "1.3.6";
+        language_info["version"] = YACAS_VERSION;
         language_info["mimetype"] = "text/x-yacas";
         language_info["file_extension"] = ".ys";
 
@@ -235,9 +235,9 @@ void YacasKernel::_handle_shell(const std::shared_ptr<Request>& request)
         help_links.append(docs);
 
         Json::Value reply_content;
-        reply_content["protocol_version"] = "5.1";
+        reply_content["protocol_version"] = "5.2";
         reply_content["implementation"] = "yacas_kernel";
-        reply_content["implementation_version"] = "0.1";
+        reply_content["implementation_version"] = "0.2";
         reply_content["language_info"] = language_info;
         reply_content["banner"] = "yacas_kernel " YACAS_VERSION;
         reply_content["help_links"] = help_links;
