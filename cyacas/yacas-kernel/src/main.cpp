@@ -23,12 +23,17 @@
  */
 
 #include "yacas_kernel.hpp"
+
 #include <jsoncpp/json/json.h>
+
+#include <boost/dll/runtime_symbol_info.hpp>
 
 #include <iostream>
 
 int main(int argc, char** argv)
 {
+    using boost::filesystem::path;
+
     if (argc < 2 || argc > 3) {
         std::cerr << "yacas_kernel: wrong number of arguments\n";
         return 1;
@@ -41,7 +46,10 @@ int main(int argc, char** argv)
         config_file >> config;
     }
 
-    std::string scripts_path = "/usr/share/yacas/scripts/";
+    std::string scripts_path =
+        (boost::dll::program_location().parent_path().parent_path() /
+         "share/yacas/scripts")
+            .native();
 
     if (argc == 3)
         scripts_path = argv[2];
