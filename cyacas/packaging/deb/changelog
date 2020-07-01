@@ -1,3 +1,9 @@
+yacas (1.9.0-1) UNRELEASED; urgency=low
+
+  * New upstream release
+
+ -- Grzegorz Mazur <teoretyk@gmail.com>  Wed,  1 Jul 2020 14:04:20 +0200
+
 yacas (1.8.0-1) UNRELEASED; urgency=low
 
   * New upstream release

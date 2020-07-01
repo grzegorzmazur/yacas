@@ -1,6 +1,6 @@
 {
     "app-id": "org.yacas.yacas-gui",
-    "branch": "1.8",
+    "branch": "1.9",
     "runtime": "org.freedesktop.Platform",
     "runtime-version": "1.6",
     "sdk": "org.freedesktop.Sdk",
@@ -91,7 +91,7 @@
             "sources": [
                 {
                     "type": "archive",
-                    "url": "https://github.com/grzegorzmazur/yacas/archive/v1.8.0.tar.gz",
+                    "url": "https://github.com/grzegorzmazur/yacas/archive/v1.9.0.tar.gz",
                     "sha256": "6b94394f705bed70a9d104967073efd6c23e9eb1a832805c4d805ef875555ae5"
                 }
             ],
