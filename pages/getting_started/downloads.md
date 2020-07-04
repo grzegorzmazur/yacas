@@ -18,10 +18,10 @@ breadcrumb: true
 
 <div class="medium-8 medium-pull-4 columns" markdown="1">
 
-## Current stable version (1.8.0)
-* source code: [tgz](https://github.com/grzegorzmazur/yacas/archive/v1.8.0.tar.gz) and [zip](https://github.com/grzegorzmazur/yacas/archive/v1.8.0.zip)
+## Current stable version (1.9.1)
+* source code: [tgz](https://github.com/grzegorzmazur/yacas/archive/v1.9.1.tar.gz) and [zip](https://github.com/grzegorzmazur/yacas/archive/v1.9.1.zip)
 * binary packages for
-  * [Java](https://github.com/grzegorzmazur/yacas/releases/download/v1.8.0/yacas-1.8.0.jar)
+  * [Java](https://github.com/grzegorzmazur/yacas/releases/download/v1.9.1/yacas-1.9.1.jar)
   * Linux
     * Ubuntu installation instructions:
       * Open terminal (Ctrl - Alt + T)
@@ -50,22 +50,54 @@ breadcrumb: true
         sudo apt-get install yacas-dev
         ```
         to install development libraries
-    * Fedora 31 installation instructions
-      * Download required RPM files from https://github.com/grzegorzmazur/yacas/releases/tag/v1.8.0
-      * Open terminal
-      * Execute
-        ```
-        rpm -i yacas-common-1.8.0-1.fc31.x86_64.rpm yacas-doc-1.8.0-1.fc31.x86_64.rpm yacas-console-1.8.0-1.fc31.x86_64.rpm yacas-gui-1.8.0-1.fc31.x86_64.rpm
-        ```
-
-  * Microsoft Windows (7 or newer)
-    * [archive (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.8.0/yacas-1.8.0-win64.zip)
 
 ## Development version
 * [repository](https://github.com/grzegorzmazur/yacas/tree/master)
 * [source code](https://github.com/grzegorzmazur/yacas/archive/master.zip)
 
 ## Archive
+* yacas version 1.8.0
+  * source code: [tgz](https://github.com/grzegorzmazur/yacas/archive/v1.8.0.tar.gz) and [zip](https://github.com/grzegorzmazur/yacas/archive/v1.8.0.zip)
+  * binary packages for
+    * [Java](https://github.com/grzegorzmazur/yacas/releases/download/v1.8.0/yacas-1.8.0.jar)
+    * Linux
+      * Ubuntu installation instructions:
+        * Open terminal (Ctrl - Alt + T)
+        * Execute
+          ```
+          sudo add-apt-repository ppa:teoretyk/yacas
+          sudo apt-get update
+          ```
+        * Execute
+          ```
+          sudo apt-get install yacas-console
+          ```
+          to install terminal interface
+        * Execute
+          ```
+          sudo apt-get install yacas-gui
+          ```
+          to install graphical interface
+        * Execute
+          ```
+          sudo apt-get install yacas-kernel
+          ```
+          to install yacas kernel for Jupyter
+        * Execute
+          ```
+          sudo apt-get install yacas-dev
+          ```
+          to install development libraries
+      * Fedora 31 installation instructions
+        * Download required RPM files from https://github.com/grzegorzmazur/yacas/releases/tag/v1.8.0
+        * Open terminal
+        * Execute
+          ```
+          rpm -i yacas-common-1.8.0-1.fc31.x86_64.rpm yacas-doc-1.8.0-1.fc31.x86_64.rpm yacas-console-1.8.0-1.fc31.x86_64.rpm yacas-gui-1.8.0-1.fc31.x86_64.rpm
+          ```
+
+    * Microsoft Windows (7 or newer)
+      * [archive (64 bit)](https://github.com/grzegorzmazur/yacas/releases/download/v1.8.0/yacas-1.8.0-win64.zip)
 * yacas version 1.7.0
   * source code: [tgz](https://github.com/grzegorzmazur/yacas/archive/v1.7.0.tar.gz) and [zip](https://github.com/grzegorzmazur/yacas/archive/v1.7.0.zip)
   * binary packages for
