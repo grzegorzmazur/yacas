@@ -7,7 +7,7 @@
 #
 
 Name:           yacas
-Version:        1.9.0
+Version:        1.9.1
 Release:        1%{?dist}
 Summary:        Easy to use, general purpose computer algebra system
 %if 0%{?suse_version}
@@ -175,7 +175,7 @@ algorithms used.
 %{_includedir}/yacas/*
 
 %changelog
-* Wed Jul  1 2020 Grzegorz Mazur <teoretyk@gmail.com> 1.9.0-1
+* Wed Jul  1 2020 Grzegorz Mazur <teoretyk@gmail.com> 1.9.1-1
 - New upstream release
 * Thu Feb 15 2018 Grzegorz Mazur <teoretyk@gmail.com> 1.8.0-1
 - Changes are none, there is only the now (Ayal Pinkus)

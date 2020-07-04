@@ -16,7 +16,9 @@ Build-Depends: debhelper (>=9),
                libssl-dev,
                libzmqpp-dev,
                libzmq3-dev,
-               libboost-all-dev,
+               libboost-date-time-dev,
+               libboost-filesystem-dev,
+               libboost-program-options-dev,
                libjsoncpp-dev
 Homepage: http://www.yacas.org
 
