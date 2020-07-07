@@ -177,10 +177,10 @@ protected:
     ///   constructed and returned.
     /// - If \a aPattern is an atom, the corresponding MatchAtom is
     ///   constructed and returned.
-    /// - If \a aPattern is a list of the form <tt>( _ var )<tt>,
+    /// - If \a aPattern is a list of the form <tt>( _ var )</tt>,
     ///   where \c var is an atom, LookUp() is called on \c var. Then
-    ///   the correspoding MatchVariable is constructed and returned.
-    /// - If \a aPattern is a list of the form <tt>( _ var expr )<tt>,
+    ///   the corresponding MatchVariable is constructed and returned.
+    /// - If \a aPattern is a list of the form <tt>( _ var expr )</tt>,
     ///   where \c var is an atom, LookUp() is called on \c var. Then,
     ///   \a expr is appended to #iPredicates. Finally, the
     ///   correspoding MatchVariable is constructed and returned.
