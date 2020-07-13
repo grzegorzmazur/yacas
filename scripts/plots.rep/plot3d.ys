@@ -128,27 +128,40 @@ Function() Plot3DS(func, xrange, yrange, options, ...);
         :(ToString()Write(options'hash["precision"]))
         :"' is not numeric"
     );
-    // loop over functions in the list
+
+    var := {};
     ForEach(func, func'list)
     [
-        // obtain name of variable
-        var := VarList(func);        // variable names in a list
-        Check(Length(var)<=2,
+        Local(v);
+        // obtain name of variables
+        v := VarList(func);
+        Check(Length(v)<=2,
             "Plot3DS: Error: expression is not a function of at most two variables: "
             :(ToString()Write(func))
         );
-        // Allow plotting of constant functions
-        If(Length(var)=0, var:={dummy, dummy});
-        If(Length(var)=1, var:={var[1], dummy});
-        // store variable name if not already done so
-        If(
-            options'hash["xname"] = "",
-            options'hash["xname"] := String(var[1])
-        );
-        If(
-            options'hash["yname"] = "",
-            options'hash["yname"] := String(var[2])
-        );
+        var := Union(var, v);
+    ];
+
+    Check(Length(var)<=2,
+        "Plot3DS: Error: list of expressions depend on more than two variables: "
+        :(ToString()Write(func'list))
+    );
+
+    // Allow plotting of constant functions
+    If(Length(var)=0, var:={dummy, dummy});
+    If(Length(var)=1, var:={var[1], dummy});
+    // store variable name if not already done so
+    If(
+        options'hash["xname"] = "",
+        options'hash["xname"] := String(var[1])
+    );
+    If(
+        options'hash["yname"] = "",
+        options'hash["yname"] := String(var[2])
+    );
+
+    ForEach(func, func'list)
+    [
         // store function name in options
         DestructiveAppend(options'hash["zname"], ToString()Write(func));
         // compute the first point to see if it's okay
