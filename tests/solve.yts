@@ -212,5 +212,7 @@ VerifySolve(PSolve(x^4+x,x), {0, -1, Exp(1/3*Pi*I), Exp(-1/3*Pi*I)});
  */
 Verify(Simplify(x[1]-4*x[2]+x[3] Where (Solve({x[1]-4*x[2]+x[3]==0},{x[2]}))),{0});
 
+// check for possible name clashes
+Verify(({a,b,var,body} Where x==1 And y==1),{a,b,var,body});
 
 /*TODO MatrixSolve */

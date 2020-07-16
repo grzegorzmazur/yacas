@@ -49,7 +49,7 @@ LocalSymbols(LocResult) [
   20 # LocPredicate(_exp) <-- False;
 
   LocChange(_exp) <-- LocResult;
-]; // LocalSymbols(LocResult) 
+]; // LocalSymbols(LocResult)
 
 UnFence("LocPredicate",1);
 UnFence("LocChange",1);
@@ -96,7 +96,7 @@ CompilePatterns(patterns) := LocPatterns(LocProcess(patterns));
   expression;
 ];
 
-
+LocalSymbols(a, b, var, body) [
 RuleBase("Where",{left,right});
 //HoldArg("Where",left);
 //HoldArg("Where",right);
@@ -136,7 +136,7 @@ UnFence("Where",2);
 
 
 60 # (_body Where _var == _value) <-- Subst(var,value)body;
-
+];
 
 
 // (a or b) and (c or d) -> (a and c) or (a and d) or (b and c) or (b and d)
