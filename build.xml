@@ -7,7 +7,7 @@
   <property name="src" location="jyacas" />
   <property name="scripts" location="scripts" />
   <property name="tests" location="tests" />
-  <property name="build" location="build" />
+  <property name="build" location="build/ant" />
   <property name="dist"  location="dist/lib" />
 
   <fileset dir="jyacas/lib" id="libs">
