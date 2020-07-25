@@ -570,11 +570,27 @@ std::string LispTokenizer::NextToken(LispInput& aInput)
         while (aInput.Peek() != '\"') {
             if (aInput.Peek() == '\\') {
                 aInput.Next();
-
                 if (aInput.EndOfStream())
                     throw LispErrParsingInput();
+                switch (aInput.Next()) {
+                    case '\"':
+                        str.push_back('\"');
+                        break;
+                    case '\\':
+                        str.push_back('\\');
+                        break;
+                    case 't':
+                        str.push_back('\t');
+                        break;
+                    case 'n':
+                        str.push_back('\n');
+                        break;
+                    default:
+                        throw LispErrParsingInput();
+                }
+            } else {
+                utf8::append(aInput.Next(), std::back_inserter(str));
             }
-            utf8::append(aInput.Next(), std::back_inserter(str));
 
             if (aInput.EndOfStream())
                 throw LispErrParsingInput();

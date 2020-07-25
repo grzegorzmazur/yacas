@@ -72,9 +72,25 @@ class LispTokenizer {
                 if (aInput.Peek() == '\\') {
                     aInput.Next();
                     LispError.Check(!aInput.EndOfStream(), LispError.KLispErrParsingInput);
+                    switch (aInput.Next()) {
+                        case '\"':
+                            str.append("\"");
+                            break;
+                        case '\\':
+                            str.append("\\");
+                            break;
+                        case 't':
+                            str.append('\t');
+                            break;
+                        case 'n':
+                            str.append('\n');
+                            break;
+                        default:
+                            LispError.Check(false, LispError.KLispErrParsingInput);
+                    }
+                } else {
+                    str.append(aInput.Next());
                 }
-
-                str.append(aInput.Next());
 
                 LispError.Check(!aInput.EndOfStream(), LispError.KLispErrParsingInput);
             }
