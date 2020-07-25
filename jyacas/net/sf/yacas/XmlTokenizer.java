@@ -6,8 +6,12 @@ class XmlTokenizer extends LispTokenizer {
 
         char c;
 
+        if (aInput.EndOfStream())
+            return aHashTable.LookUp("");
+
+        StringBuilder leadingSpaces = new StringBuilder();
         while (Character.isWhitespace(aInput.Peek()))
-            aInput.Next();
+            leadingSpaces.append(aInput.Next());
 
         if (aInput.EndOfStream())
             return aHashTable.LookUp("");
@@ -19,8 +23,8 @@ class XmlTokenizer extends LispTokenizer {
 
         if (c == '<') {
             while (c != '>') {
-                c = aInput.Next();
                 LispError.Check(!aInput.EndOfStream(), LispError.KLispErrCommentToEndOfFile);
+                c = aInput.Next();
                 token.append(c);
             }
         } else {
@@ -28,6 +32,8 @@ class XmlTokenizer extends LispTokenizer {
                 c = aInput.Next();
                 token.append(c);
             }
+            leadingSpaces.append(token);
+            token = leadingSpaces;
         }
         return aHashTable.LookUp(token.toString());
     }
