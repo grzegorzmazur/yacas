@@ -18,6 +18,8 @@ gallery:
       caption: basic autocompletion
     - image_url: screenshot-yacas_kernel_mathjax.png
       caption: yacas in jupyter
+    - image_url: syntax-highlighting.png
+      caption: editing yacas code in vscode
 ---
 
 {% include gallery %}
