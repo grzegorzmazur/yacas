@@ -216,11 +216,15 @@ void YacasKernel::_handle_shell(const std::shared_ptr<Request>& request)
     const std::string msg_type = request->header()["msg_type"].asString();
 
     if (msg_type == "kernel_info_request") {
+        Json::Value codemirror_mode;
+        codemirror_mode["name"] = "yacas";
+
         Json::Value language_info;
         language_info["name"] = "yacas";
         language_info["version"] = YACAS_VERSION;
         language_info["mimetype"] = "text/x-yacas";
         language_info["file_extension"] = ".ys";
+        language_info["codemirror_mode"] = codemirror_mode;
 
         Json::Value homepage;
         homepage["text"] = "Yacas Homepage";
@@ -235,6 +239,7 @@ void YacasKernel::_handle_shell(const std::shared_ptr<Request>& request)
         help_links.append(docs);
 
         Json::Value reply_content;
+        reply_content["status"] = "ok";
         reply_content["protocol_version"] = "5.2";
         reply_content["implementation"] = "yacas_kernel";
         reply_content["implementation_version"] = "0.2";
@@ -243,6 +248,10 @@ void YacasKernel::_handle_shell(const std::shared_ptr<Request>& request)
         reply_content["help_links"] = help_links;
 
         request->reply(_shell_socket, "kernel_info_reply", reply_content);
+
+        Json::Value status_content;
+        status_content["execution_state"] = "idle";
+        request->reply(_iopub_socket, "status", status_content);
     } else if (msg_type == "execute_request") {
 
         _execute_requests.insert(
