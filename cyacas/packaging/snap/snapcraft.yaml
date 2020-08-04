@@ -1,5 +1,5 @@
 name: yacas
-version: 1.9.1-snap1
+version: 1.9.2-snap1
 grade: stable
 base: core18
 summary: Yet Another Computer Algebra System
@@ -78,7 +78,7 @@ parts:
     - xdg-user-dirs
     - qt5-gtk-platformtheme
   yacas:
-    source: https://github.com/grzegorzmazur/yacas/archive/v1.9.1.tar.gz
+    source: https://github.com/grzegorzmazur/yacas/archive/v1.9.2.tar.gz
     plugin: cmake
     configflags:
       - -DCMAKE_BUILD_TYPE=Release

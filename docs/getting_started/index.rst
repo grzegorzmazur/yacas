@@ -17,9 +17,9 @@ Installation from sources
 Getting sources
 ---------------
 
-Version 1.9.1 can be downloaded from
-`<https://github.com/grzegorzmazur/yacas/archive/v1.9.1.zip>`_ or
-`<https://github.com/grzegorzmazur/yacas/archive/v1.9.1.tar.gz>`_,
+Version 1.9.2 can be downloaded from
+`<https://github.com/grzegorzmazur/yacas/archive/v1.9.2.zip>`_ or
+`<https://github.com/grzegorzmazur/yacas/archive/v1.9.2.tar.gz>`_,
 while the current development version is accessible from
 `<https://github.com/grzegorzmazur/yacas/archive/develop.zip>`_.
 
