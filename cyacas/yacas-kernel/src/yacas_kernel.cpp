@@ -339,8 +339,8 @@ void YacasKernel::_handle_engine(const zmqpp::message& msg)
         request->reply(_iopub_socket, "status", status_content);
 
         Json::Value execute_input_content;
-        execute_input_content["execution_count"] = request->content()["id"];
-        execute_input_content["code"] = request->content()["expr"];
+        execute_input_content["execution_count"] = content["id"];
+        execute_input_content["code"] = content["expr"];
 
         request->reply(_iopub_socket, "execute_input", execute_input_content);
     } else if (msg_type == "result") {
@@ -357,16 +357,16 @@ void YacasKernel::_handle_engine(const zmqpp::message& msg)
             Json::Value reply_content;
             reply_content["status"] = "error";
             reply_content["execution_count"] = content["id"];
-            reply_content["ename"] = Json::Value();
-            reply_content["evalue"] = Json::Value();
+            reply_content["ename"] = "";
+            reply_content["evalue"] = "";
             reply_content["traceback"].append(content["error"]);
 
             request->reply(_shell_socket, "execute_reply", reply_content);
 
             Json::Value error_content;
             error_content["execution_count"] = content["id"];
-            error_content["ename"] = Json::Value();
-            error_content["evalue"] = Json::Value();
+            error_content["ename"] = "";
+            error_content["evalue"] = "";
             error_content["traceback"].append(content["error"]);
 
             request->reply(_iopub_socket, "error", error_content);
