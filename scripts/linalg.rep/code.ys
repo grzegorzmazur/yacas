@@ -161,7 +161,7 @@ Identity(n_IsNonNegativeInteger) <--
     result;
 ];
 
-// 
+//
 // Diagonal: return a vector with the diagonal elements of the matrix
 //
 Function("Diagonal",{A})
@@ -172,7 +172,7 @@ Function("Diagonal",{A})
 	For(i:=1,i<=n,i++)
 	[
 		result[i] := A[i][i];
-	];      
+	];
 	result;
 ];
 
@@ -227,14 +227,14 @@ FrobeniusNorm(matrix_IsMatrix) <--
 	For(i:=1,i<=Length(matrix),i++)
 		For(j:=1,j<=Length(matrix[1]),j++)
 			result:=result+Abs(matrix[i][j])^2;
-	
+
 	Sqrt(result);
 
 ];
 
 
 10 # Determinant(_matrix)_(IsUpperTriangular(matrix) Or IsLowerTriangular(matrix)) <--
-[ 
+[
 	Local(result);
 	result:=1;
 	ForEach(i, Diagonal(matrix) )
@@ -243,7 +243,7 @@ FrobeniusNorm(matrix_IsMatrix) <--
 ];
 
 //
-// The fast determinant routine that does the determinant numerically, rule 20, 
+// The fast determinant routine that does the determinant numerically, rule 20,
 // divides things by the elements on the diagonal of the matrix. So if one of these
 // elements happens to be zero, the result is something like Infinity or Undefined.
 // Use the symbolic determinant in that case, as it is slower but much more robust.
@@ -315,7 +315,7 @@ GaussianDeterminant(matrix):=
 
 
 20 # SymbolicDeterminant(_matrix) <-- [
-    Local(perms,indices,result);
+    Local(i,perms,indices,result);
     Check((IsMatrix(matrix)),"Determinant: Argument must be a matrix");
     indices:=Table(i,i,1,Length(matrix),1);
     perms:=Permutations(indices);
@@ -435,7 +435,7 @@ x X y := CrossProduct(x,y);
 
 Function("VandermondeMatrix",{vector})[
 	Local(len,i,j,item,matrix);
-	len:=Length(vector);	
+	len:=Length(vector);
 	matrix:=ZeroMatrix(len,len);
 
 	For(i:=1,i<=Length(matrix),i++)[
@@ -525,7 +525,7 @@ Function("GenMatrix",{func,m,n})
   For(i:=1,i<=m,i++)
     For(j:=1,j<=n,j++)
           result[i][j]:=ApplyPure(func,{i,j});
-  
+
   result;
 ];
 HoldArg("GenMatrix",func);
@@ -546,7 +546,7 @@ WronskianMatrix(f,v):=GenMatrix({{i,j}, Deriv(v,i-1) f[j]}, Length(f), Length(f)
 // notoriously hard to manipulate numerically
 HilbertMatrix(n):=GenMatrix({{i,j}, 1/(i+j-1)}, n,n );
 HilbertMatrix(m,n):=GenMatrix({{i,j}, 1/(i+j-1)}, m,n );
-HilbertInverseMatrix(n):=GenMatrix({{i,j}, 
+HilbertInverseMatrix(n):=GenMatrix({{i,j},
 	(-1)^(i+j)*(i+j-1)*Bin(n+i-1,n-j)*Bin(n+j-1,n-i)*Bin(i+j-2,i-1)^2},n,n);
 
 HankelMatrix(n):=GenMatrix({{i,j}, If(i+j-1>n,0,i+j-1) }, n,n );
@@ -560,7 +560,7 @@ ToeplitzMatrix(N):=GenMatrix({{i,j},N[Abs(i-j)+1]}, Length(N), Length(N) );
 // to 14 decimal places
 // Leto: I am not going to document this until we actually have
 // numerical eigenvalue algorithms
-WilkinsonMatrix(N):=GenMatrix({{i,j}, 
+WilkinsonMatrix(N):=GenMatrix({{i,j},
 		If( Abs(i-j)=1,1,
 		[ If(i=j,Abs( (N-1)/2 - i+1 ),0 ); ] )}, N,N );
 
@@ -577,7 +577,7 @@ Function("PNorm",{v,p})
 		result:=result+Abs(v[i])^p;
 	];
 
-	// make it look nicer when p = 2	
+	// make it look nicer when p = 2
 	If(p=2,Sqrt(result),(result)^(1/p) );
 ];
 
@@ -596,7 +596,7 @@ Function("OrthogonalBasis",{W})[
 		Check(Not IsZero(Norm(W[k])) ,
 			"OrthogonalBasis: Input vectors must be linearly independent");
 		V[k]:=W[k]-Sum(j,1,k-1,InProduct(W[k],V[j])*V[j]/Norm(V[j])^2);
-	];	
+	];
 	V;
 ];
 // Like orthogonalization, only normalize all vectors
@@ -616,7 +616,7 @@ Function("OrthonormalBasis",{W})[
 
 LocalSymbols(x,i,n,m,aux,dim,result)
 [
-1 # Dimensions(x_IsList) <-- 
+1 # Dimensions(x_IsList) <--
     [
       Local(i,n,m,aux,dim,result);
       result:=List(Length(x));
@@ -628,7 +628,7 @@ LocalSymbols(x,i,n,m,aux,dim,result)
         n:=Length(x);
 	dim:=MapSingle(Dimensions,x);
 	m:=Min(MapSingle(Length,dim));
-	
+
 	For(i:=1,i<=m,i++)
 	[
 	    aux:=Table(dim[j][i],j,1,n,1);
@@ -684,12 +684,12 @@ Dot(t1_IsMatrix,t2_IsMatrix)_(Length(t1[1])=Length(t2)
    n:=Length(t1);
    k:=Length(t2);
    l:=Length(t2[1]);
-   result:=List();  
+   result:=List();
    For(i:=1,i<=n,i++)
       DestructiveInsert(result,1,Dot1(t1[i],t2,k,l));
    DestructiveReverse(result);
 ];
-  
+
 // vector . vector
 Dot0(_t1,_t2,_n) <--
 [
@@ -699,11 +699,11 @@ Dot0(_t1,_t2,_n) <--
       result:=result+t1[i]*t2[i];
    result;
 ];
-  
+
 // vector . matrix
 // m vector length
 // n number of matrix cols
-Dot1(_t1,_t2,_m,_n) <--   
+Dot1(_t1,_t2,_m,_n) <--
 [
    Local(i,j,result);
    result:=ZeroVector(n);
@@ -712,7 +712,7 @@ Dot1(_t1,_t2,_m,_n) <--
          result[i]:=result[i]+t1[j]*t2[j][i];
    result;
 ];
-  
+
 ]; // LocalSymbols(Dot0,Dot1)
 
 //////
@@ -800,7 +800,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 ];
 // Gaussian Elimination and Back Substitution
 // pivoting not implemented yet
-20 # MatrixSolve(matrix_IsMatrix,b_IsVector) <-- 
+20 # MatrixSolve(matrix_IsMatrix,b_IsVector) <--
 [
 	Local(aug,rowsm,rowsb,x,s);
         rowsm:=Length(matrix);
@@ -829,13 +829,13 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 			aug[i]:=aug[p];
 			aug[p]:=tmp;
 		]);
-			
-	
+
+
 		ForEach(k, (i+1) .. rowsb )[
 			s:=aug[k][i];
 			ForEach(j, i .. (rowsb+1) )[
 				aug[k][j] := aug[k][j] - (s/aug[i][i])*aug[i][j];
-				//Echo({"aug[",k,"][",j,"] =", aug[k][j]," - ", 
+				//Echo({"aug[",k,"][",j,"] =", aug[k][j]," - ",
 				//	aug[k][i],"/",aug[i][i],"*",aug[i][j]," k i =", k,i  });
 			];
 		];
@@ -861,8 +861,8 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 // This algorithm performs O(n^3) flops where A is nxn
 // Given the positive definite matrix A, a matrix R is returned such that
 // A = Transpose(R) * R
-	
-10 # Cholesky(A_IsMatrix) <-- 
+
+10 # Cholesky(A_IsMatrix) <--
 [
 	Local(matrix,n,k,j);
 	n:=Length(A);
@@ -968,7 +968,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 		ForEach(j,1 .. n)
 			If(i<j,
 				U[i][j]:=matrix[i][j],
-				If (i=j, 
+				If (i=j,
 					D[i][j]:=matrix[i][j],
 						L[i][j]:=matrix[i][j]));
 		// diagonal of L, U is always 1's
@@ -1029,7 +1029,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 		ForEach(j,1 .. n)
 			If(i<j,
 				U[i][j]:=matrix[i][j],
-				If (i=j, 
+				If (i=j,
 					D[i][j]:=matrix[i][j],
 						L[i][j]:=matrix[i][j]));
 		// diagonal of L, U is always 1's
@@ -1043,10 +1043,10 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	{P,L,D,U};
 ];
 
-// 
+//
 // DAG: (p = Pp + c) => (p = P'x + c') where P' is a lower triangular matrix
 // risks vectorR = vectorP * vectorI
-//  
+//
 10 # DAG(matrixP_IsSquareMatrix, vectorI_IsVector) <--
 [
 	Local(i,j,n,diagonals,
@@ -1062,7 +1062,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	Echo("...PLDU");
 	{matrixM,matrixL,matrixD,matrixU} := PLDU(matrixX); 			// PrettyForm(matrixM*matrixX); PrettyForm(matrixL*matrixD*matrixU);
 	Echo(".");
-	diagonals:=True; ForEach(i,1 .. n) diagonals:=diagonals And (matrixD[i][i]>0);	
+	diagonals:=True; ForEach(i,1 .. n) diagonals:=diagonals And (matrixD[i][i]>0);
 	Echo("...InvD");
 	matrixInvD:=Inverse(matrixJ*matrixD*matrixJ); 				// PrettyForm(matrixInvD);
 	Echo(".");
