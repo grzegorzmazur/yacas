@@ -344,7 +344,7 @@ namespace yacas {
 
         inline NN& NN::operator|=(const NN& b)
         {
-            const unsigned n = b._limbs.size();
+            const unsigned n = static_cast<unsigned>(b._limbs.size());
 
             if (_limbs.size() < n)
                 _limbs.resize(n, 0);
@@ -360,12 +360,12 @@ namespace yacas {
 
         inline NN& NN::operator&=(const NN& b)
         {
-            const unsigned n = b._limbs.size();
+            const unsigned n = static_cast<unsigned>(b._limbs.size());
 
             if (_limbs.size() > n)
                 _limbs.resize(n);
 
-            const unsigned m = _limbs.size();
+            const unsigned m = static_cast<unsigned>(_limbs.size());
 
             Limb* __restrict p = _limbs.data();
             const Limb* __restrict q = b._limbs.data();
@@ -380,12 +380,12 @@ namespace yacas {
 
         inline NN& NN::operator^=(const NN& b)
         {
-            const unsigned n = b._limbs.size();
+            const unsigned n = static_cast<unsigned>(b._limbs.size());
 
             if (_limbs.size() > n)
                 _limbs.resize(n);
 
-            const unsigned m = _limbs.size();
+            const unsigned m = static_cast<unsigned>(_limbs.size());
 
             Limb* __restrict p = _limbs.data();
             const Limb* __restrict q = b._limbs.data();
@@ -406,9 +406,9 @@ namespace yacas {
 #ifdef _MSC_VER
             unsigned long index = 0;
             _BitScanReverse(&index, _limbs.back());
-            return _limbs.size() * LIMB_BITS - (31 - index);
+            return static_cast<unsigned>(_limbs.size() * LIMB_BITS - (31 - index));
 #else
-            return _limbs.size() * LIMB_BITS - __builtin_clz(_limbs.back());
+            return static_cast<unsigned>(_limbs.size() * LIMB_BITS - __builtin_clz(_limbs.back()));
 #endif
         }
 

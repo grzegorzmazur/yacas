@@ -220,8 +220,8 @@ inline void BaseIntNumber(std::string& aTarget, PlatSignedDoubleWord aNumber, Pl
 
 inline
 void BaseAddMultiply(std::string& aTarget, const std::string& x, const std::string& y, PlatDoubleWord aBase) {
-    const unsigned nrx = x.size();
-    const unsigned nry = y.size();
+    const unsigned nrx = static_cast<unsigned>(x.size());
+    const unsigned nry = static_cast<unsigned>(y.size());
     GrowDigits(aTarget, nrx + nry + 1);
 
     std::string::value_type *targetPtr = &aTarget[0];

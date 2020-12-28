@@ -302,7 +302,7 @@ namespace yacas {
                 return;
             }
 
-            const unsigned n = _limbs.size();
+            const unsigned n = static_cast<unsigned>(_limbs.size());
             _limbs.push_back(0);
             Limb* __restrict p = _limbs.data();
 
@@ -336,7 +336,7 @@ namespace yacas {
             if (a == 0)
                 throw DivisionByZeroError(to_string());
 
-            const unsigned n = _limbs.size();
+            const unsigned n = static_cast<unsigned>(_limbs.size());
             Limbs q(n);
 
             Limb2 t = 0;
@@ -347,14 +347,14 @@ namespace yacas {
             for (unsigned i = 0; i < n; ++i) {
                 t <<= LIMB_BITS;
                 t += *p--;
-                *qp-- = t / a;
+                *qp-- = static_cast<Limb>(t / a);
                 t %= a;
             }
 
             _limbs = std::move(q);
             drop_zeros();
 
-            return t;
+            return static_cast<Limb>(t);
         }
 
         void NN::add(const NN& a, unsigned shift)
@@ -454,8 +454,8 @@ namespace yacas {
 
         void NN::mul_bc(const NN& a)
         {
-            const unsigned m = _limbs.size();
-            const unsigned n = a._limbs.size();
+            const unsigned m = static_cast<unsigned>(_limbs.size());
+            const unsigned n = static_cast<unsigned>(a._limbs.size());
 
             Limbs result(m + n, 0);
 
@@ -480,7 +480,7 @@ namespace yacas {
 
         void NN::sqr()
         {
-            const unsigned n = _limbs.size();
+            const unsigned n = static_cast<unsigned>(_limbs.size());
 
             if (n < MUL_TOOM22_THRESHOLD)
                 sqr_bc();
@@ -495,7 +495,7 @@ namespace yacas {
             if (_limbs.empty())
                 return;
 
-            const unsigned n = _limbs.size();
+            const unsigned n = static_cast<unsigned>(_limbs.size());
 
             Limbs c(2 * n, 0);
 
@@ -513,7 +513,7 @@ namespace yacas {
 
         void NN::sqr_toom22()
         {
-            const unsigned n = _limbs.size();
+            const unsigned n = static_cast<unsigned>(_limbs.size());
 
             assert(n >= 2);
 
@@ -548,7 +548,7 @@ namespace yacas {
 
         void NN::sqr_toom33()
         {
-            const unsigned n = _limbs.size();
+            const unsigned n = static_cast<unsigned>(_limbs.size());
 
             assert(n >= 3);
 
@@ -699,8 +699,8 @@ namespace yacas {
             B <<= k;
             A <<= k;
 
-            const unsigned n = B._limbs.size();
-            const unsigned m = A._limbs.size() - n;
+            const unsigned n = static_cast<unsigned>(B._limbs.size());
+            const unsigned m = static_cast<unsigned>(A._limbs.size() - n);
 
             B._limbs.insert(B._limbs.begin(), m, 0);
 
@@ -734,7 +734,7 @@ namespace yacas {
 
                 qs /= B_leading_digit;
 
-                _limbs[j] = std::min(qs, static_cast<Limb2>(LIMB_MAX));
+                _limbs[j] = static_cast<Limb>(std::min(qs, static_cast<Limb2>(LIMB_MAX)));
 
                 NN T;
 
