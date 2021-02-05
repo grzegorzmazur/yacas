@@ -314,7 +314,7 @@ GaussianDeterminant(matrix):=
 ];
 
 
-20 # SymbolicDeterminant(_matrix) <-- [
+20 # SymbolicDeterminant(_matrix) <-- LocalSymbols(i) [
     Local(i,perms,indices,result);
     Check((IsMatrix(matrix)),"Determinant: Argument must be a matrix");
     indices:=Table(i,i,1,Length(matrix),1);

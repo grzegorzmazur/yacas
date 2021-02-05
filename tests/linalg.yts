@@ -86,6 +86,7 @@ Verify(Determinant({{2,3},{3,1}}),-7);
 Verify( Determinant(ToeplitzMatrix(1 .. 10)), -2816 );
 // check that Determinant gives correct symbolic result
 TestYacas(Determinant({{a,b},{c,d}}),a*d-b*c);
+TestYacas(Determinant({{a, b, c}, {d, e, f}, {g, h, i}}), a*e*i-a*f*h+c*d*h-b*d*i+b*f*g-c*e*g);
 
 Testing("Matrix product");
 Verify({{a,b},{c,d}} * {{e,f},{g,h}}, {{a*e+b*g,a*f+b*h},{c*e+d*g,c*f+d*h}});
@@ -124,7 +125,7 @@ Verify(TrapError({{a,b,x},{c,d,y}} * {{e,f},{g,h}}, True), True);
 
 [
   Local(A);
-  Verify( IsSymmetric(Identity(10)), True ); 
+  Verify( IsSymmetric(Identity(10)), True );
   Verify( IsOrthogonal(2*Identity(10)), False );
   A := {{1,2,2},{2,1,-2},{-2,2,-1}};
   Verify( IsOrthogonal(A/3), True );
@@ -158,7 +159,7 @@ Verify( Norm({1,2,3}), Sqrt(14) );
 
 Verify( OrthogonalBasis({{1,1,0},{2,0,1},{2,2,1}}) , {{1,1,0},{1,-1,1},{-1/3,1/3,2/3}} );
 Verify( OrthogonalBasis({{1,0,1,0},{1,1,1,0},{0,1,0,1}}), {{1,0,1,0},{0,1,0,0},{0,0,0,1}} );
-Verify( OrthonormalBasis({{1,0,1,0},{1,1,1,0},{0,1,0,1}}), 
+Verify( OrthonormalBasis({{1,0,1,0},{1,1,1,0},{0,1,0,1}}),
 	{{Sqrt(1/2),0,Sqrt(1/2),0},{0,1,0,0},{0,0,0,1}} );
 Verify( OrthonormalBasis({{1,1,1},{0,1,1},{0,0,1}}),
 	{{Sqrt(1/3),Sqrt(1/3),Sqrt(1/3)},
