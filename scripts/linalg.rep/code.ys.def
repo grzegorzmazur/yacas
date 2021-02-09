@@ -52,4 +52,6 @@ LDU
 PLDU
 DAG
 NormaliseMDP
+Vectorize
+HalfVectorize
 }

@@ -1133,3 +1133,14 @@ NormaliseMDP(matrixP_IsSquareMatrix, vectorI_IsVector) <--
 	Echo(".");
 	{vectorR, vectorP1, vectorP2, matrixP1, vectorC, matrixP2, vectorI2};
 ];
+
+10 # Vectorize(A_IsMatrix) <-- "Concat" @ Transpose(A);
+
+10 # HalfVectorize(A_IsSymmetric) <-- LocalSymbols(i, j) [
+	Local(v);
+	v := {};
+	For(i:=1, i <= Length(A), i++)
+		For(j:=1, j <= i, j++)
+			DestructiveAppend(v, A[j][i]);
+	v;
+];
