@@ -1140,7 +1140,7 @@ NormaliseMDP(matrixP_IsSquareMatrix, vectorI_IsVector) <--
 	Local(v);
 	v := {};
 	For(i:=1, i <= Length(A), i++)
-		For(j:=1, j <= i, j++)
+		For(j:=i, j <= Length(A), j++)
 			DestructiveAppend(v, A[j][i]);
 	v;
 ];

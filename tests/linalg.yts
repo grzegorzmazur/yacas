@@ -190,3 +190,5 @@ Verify( OrthonormalBasis({{1,1,1},{0,1,1},{0,0,1}}),
   {L,U} := LU(A);
   Verify( L*U, A );
 ];
+
+Verify(HalfVectorize({{1,2,3},{2,4,5},{3,5,6}}), {1,2,3,4,5,6});
