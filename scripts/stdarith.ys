@@ -44,7 +44,7 @@
 //  220 # + x_IsList          <-- MapSingle("+",x);	// this rule is never active
 
 220 # (xlist_IsList + ylist_IsList)_(Length(xlist)=Length(ylist)) <-- Map("+",{xlist,ylist});
-    
+
 SumListSide(_x, y_IsList) <--
 [
    Local(i,result);
@@ -113,7 +113,7 @@ LocalSymbols(x)
 /* TODO move to this precedence everywhere? */
 LocalSymbols(x,y,xarg,yarg)
 [
-  10 # ((x_IsList) - (y_IsList))_(Length(x)=Length(y)) <-- 
+  10 # ((x_IsList) - (y_IsList))_(Length(x)=Length(y)) <--
   [
     Map({{xarg,yarg},xarg-yarg},{x,y});
   ];
@@ -152,7 +152,7 @@ LocalSymbols(x,y,xarg,yarg)
 100 # (_f  * _x)_(f= -1)  <-- -x;
 100 # (_x  * _f)_(f= -1)  <-- -x;
 
-95 # x_IsMatrix * y_IsMatrix <-- 
+95 # x_IsMatrix * y_IsMatrix <--
 [
    Check(Length(x[1]) = Length(y), "matrix product: incompatible matrix sizes");
    Local(i,j,k,row,result);
@@ -168,7 +168,7 @@ LocalSymbols(x,y,xarg,yarg)
 ];
 
 
-96 # x_IsMatrix * y_IsList <-- 
+96 # x_IsMatrix * y_IsList <--
 [
    Local(i,result);
    result:={};
@@ -239,7 +239,7 @@ LocalSymbols(x,y,xarg,yarg)
 /* Note: this rule MUST be past all the transformations on
  * matrices, since they are lists also.
  */
-230 # (aLeft_IsList * aRight_IsList)_(Length(aLeft)=Length(aRight)) <-- 
+230 # (aLeft_IsList * aRight_IsList)_(Length(aLeft)=Length(aRight)) <--
 	 Map("*",{aLeft,aRight});
 // fractions
 242 # (x_IsInteger / y_IsInteger) * (v_IsInteger / w_IsInteger) <-- (x*v)/(y*w);
@@ -271,8 +271,8 @@ LocalSymbols(x,y,xarg,yarg)
 52 # x_IsNegativeNumber / 0 <-- -Infinity;
 55 # (_x / y_IsNumber)_(IsZero(y)) <-- Undefined;
 55 # 0 / _x <-- 0;
-60 # (x_IsNumber / y_IsNumber)_(InNumericMode() /* Sorry, Serge Or
-                                Not(IsInteger(x) And IsInteger(y)) */ ) <--
+60 # (x_IsNumber / y_IsNumber)_(InNumericMode() Or
+                                Not(IsInteger(x) Or IsInteger(y))) <--
     MathDivide(x,y);
 
 // unnecessary rule (see #100 below). TODO: REMOVE
@@ -313,7 +313,7 @@ LocalSymbols(x,y,xarg,yarg)
        Set(gcd,MathGcd(x,y));
        (MathDiv(x,gcd)*p)/(MathDiv(y,gcd)*q);
      ];
-    
+
 
 90 # x_IsInfinity / y_IsInfinity <-- Undefined;
 95  # x_IsInfinity / y_IsNumber <-- Sign(y)*x;
@@ -331,7 +331,7 @@ LocalSymbols(x,y,xarg,yarg)
 200 # (_x / _y)/ _z <-- x/(y*z);
 230 # _x / (_y / _z) <-- (x*z)/y;
 
-240 # (xlist_IsList / ylist_IsList)_(Length(xlist)=Length(ylist)) <-- 
+240 # (xlist_IsList / ylist_IsList)_(Length(xlist)=Length(ylist)) <--
 	 Map("/",{xlist,ylist});
 
 
@@ -362,7 +362,7 @@ LocalSymbols(x,y,xarg,yarg)
 /* Faster version of raising power to 0.5 */
 50 # _x ^ (1/2) <-- Sqrt(x);
 50 # (x_IsPositiveNumber ^ (1/2))_IsInteger(MathSqrt(x)) <-- MathSqrt(x);
-58 # 1 ^ n_IsInfinity <-- Undefined; 
+58 # 1 ^ n_IsInfinity <-- Undefined;
 59 # _x ^ 1 <-- x;
 59 # 1 ^ _n <-- 1;
 59 # x_IsZero ^ y_IsZero <-- Undefined;
@@ -412,9 +412,9 @@ LocalSymbols(x,y,xarg,yarg)
 
 
 200 # x_IsMatrix ^ n_IsPositiveInteger <-- x*(x^(n-1));
-204 # (xlist_IsList ^ nlist_IsList)_(Length(xlist)=Length(nlist)) <-- 
+204 # (xlist_IsList ^ nlist_IsList)_(Length(xlist)=Length(nlist)) <--
 	 Map("^",{xlist,nlist});
-205 # (xlist_IsList ^ n_IsConstant)_(Not(IsList(n))) <-- 
+205 # (xlist_IsList ^ n_IsConstant)_(Not(IsList(n))) <--
 	 Map({{xx},xx^n},{xlist});
 206 # (_x ^ n_IsList)_(Not(IsList(x))) <-- Map({{xx},x^xx},{n});
 249 # x_IsInfinity ^ 0 <-- Undefined;
