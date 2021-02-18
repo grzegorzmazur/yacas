@@ -10,7 +10,7 @@ sudo: required
 osx_image: xcode12.2
 
 before_install:
-  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo add-apt-repository --yes ppa:beineri/opt-qt-5.12.2-xenial; fi
+  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo add-apt-repository --yes ppa:beineri/opt-qt-5.12.2-bionic; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get -qq update; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y gcc-8 g++-8; fi
