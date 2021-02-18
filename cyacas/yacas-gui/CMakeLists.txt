@@ -76,7 +76,7 @@ if (APPLE)
     # add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E remove_directory $<TARGET_FILE_DIR:yacas-gui>/../Frameworks/yacas_mp.framework)
     # add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory $<TARGET_FILE_DIR:libyacas_mp_framework>/../../.. $<TARGET_FILE_DIR:yacas-gui>/../Frameworks)
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${PROJECT_SOURCE_DIR}/scripts $<TARGET_FILE_DIR:yacas-gui>/../Resources/scripts)
-    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${_qt5Core_install_prefix}/bin/macdeployqt $<TARGET_FILE_DIR:yacas-gui>/../.. -always-overwrite)
+    add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${_qt5Core_install_prefix}/bin/macdeployqt $<TARGET_FILE_DIR:yacas-gui>/../.. -always-overwrite -codesign=-)
 
     add_custom_command (TARGET yacas-gui POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/resources/webchannel $<TARGET_FILE_DIR:yacas-gui>/../Resources/webchannel)
 
