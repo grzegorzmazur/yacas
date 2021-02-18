@@ -5,11 +5,10 @@
 LispUserFunction* LispMultiUserFunction::UserFunc(int aArity)
 {
     // Find function body with the right arity
-    const std::size_t nrc = iFunctions.size();
-    for (std::size_t i = 0; i < nrc; ++i) {
-        assert(iFunctions[i]);
-        if (iFunctions[i]->IsArity(aArity))
-            return iFunctions[i];
+    for (LispArityUserFunction* p: iFunctions) {
+        assert(p);
+        if (p->IsArity(aArity))
+            return p;
     }
 
     // if function not found, just unaccept!
