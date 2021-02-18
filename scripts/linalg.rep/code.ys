@@ -401,12 +401,21 @@ Minor(matrix,i,j) := CoFactor(matrix,i,j)*(-1)^(i+j);
 // Inverse by PLDU decomposition  (PA = LDU) => (A^-1 = U^-1 D^-1 L^-1 P)
 100 # Inverse(A_IsSquareMatrix) <--
 [
-	Local(P,L,D,U,InvU,InvD,InvL,Inv);
+	Local(P,L,D,U,InvU,InvD,InvL,Inv,n,i,j,k,l);
 	{P,L,D,U} := PLDU(A);
 	InvU:=Inverse(U);
-	InvD:=Inverse(D);
+	InvD:=Diagonal(Inverse(D));
 	InvL:=Inverse(L);
-	Inv:=InvU * InvD * InvL * P;
+
+	n := Length(A);
+	Inv:=ZeroMatrix(n,n);
+
+	For (i := 1, i <= n, i++)
+		For (j := 1, j <= n, j++)
+			For (k := i, k <= n, k++)
+				For (l := 1, l <= k, l++)
+					If (P[l][j] = 1,
+						Inv[i][j] := Inv[i][j] +  InvU[i][k] * InvD[k] * InvL[k][l]);
 	Inv;
 ];
 
