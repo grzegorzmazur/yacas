@@ -41,7 +41,7 @@ before_script:
   - cd ../..
   - mkdir cmake_build && cd cmake_build
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then cmake -DENABLE_CYACAS_KERNEL=Off -DENABLE_CYACAS_UNIT_TESTS=On -DENABLE_CODE_COVERAGE=On .. ; fi
-  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then cmake -G Xcode -DCMAKE_PREFIX_PATH=`brew --prefix qt` -DENABLE_CYACAS_KERNEL=Off .. ; fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then cmake -G Xcode -DCMAKE_PREFIX_PATH=`brew --prefix qt` -DENABLE_CYACAS_KERNEL=Off -DENABLE_CYACAS_GUI=Off .. ; fi
 
 script:
   - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then make ; fi
