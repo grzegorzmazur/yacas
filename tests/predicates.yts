@@ -206,3 +206,21 @@ Verify(IsSquareMatrix({{a,b},{c,d},{e,f}}),False);
 Verify(IsSquareMatrix({{a,b,c},{d,e,f},{g,h,i}}),True);
 Verify(IsSquareMatrix({{a,b,c},{d,e,f}}),False);
 Verify(IsSquareMatrix({{{a,b}},{{c,d}}}), False);
+
+Testing("Function parity");
+Verify(IsOddFunction(0,x), True);
+Verify(IsOddFunction(1,x), False);
+Verify(IsOddFunction(x,x), True);
+Verify(IsOddFunction(2*x,x), True);
+Verify(IsOddFunction(1/x,x), True);
+Verify(IsOddFunction(2/x,x), True);
+Verify(IsOddFunction(2*1/x,x), True);
+Verify(IsOddFunction(x^2,x), False);
+
+Verify(IsEvenFunction(0,x), True);
+Verify(IsEvenFunction(1,x), True);
+Verify(IsEvenFunction(x,x), False);
+Verify(IsEvenFunction(2*x,x), False);
+Verify(IsEvenFunction(1/x,x), False);
+Verify(IsEvenFunction(2/x,x), False);
+Verify(IsEvenFunction(2*1/x,x), False);

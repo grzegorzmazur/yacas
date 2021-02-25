@@ -142,8 +142,8 @@ IsNonZeroInteger(x) := (IsInteger(x) And x != 0);
 IsEven(n) := IsInteger(n) And ( BitAnd(n,1)  = 0 );
 IsOdd(n)  := IsInteger(n) And ( BitAnd(n,1)  != 0 );
 
-IsEvenFunction(f,x):= (f = Eval(Subst(x,-x)f));
-IsOddFunction(f,x):= (f = Eval(-Subst(x,-x)f));
+IsEvenFunction(f,x):= (f - Eval(Subst(x,-x)f) = 0);
+IsOddFunction(f,x):= (f - Eval(-Subst(x,-x)f) = 0);
 
 
 10 # IsInfinity(Infinity) <-- True;
