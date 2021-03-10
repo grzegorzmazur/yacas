@@ -12,7 +12,7 @@ Preferences::Preferences(const QApplication& app)
 #endif
     _default_scripts_path = dir.canonicalPath() + "/";
 
-    dir = app.applicationDirPath();
+    dir.setPath(app.applicationDirPath());
 #ifdef __APPLE__
     dir.cd("../Resources");
 #else

@@ -153,5 +153,5 @@ void YacasEngine::_update_symbols()
     for (auto& op : _yacas->getDefEnv().getEnv().UserFunctions())
         ss.insert(QString::fromStdString(*op.first));
 
-    _symbols = QStringList::fromSet(ss);
+    _symbols = QStringList(ss.begin(), ss.end());
 }
