@@ -1008,9 +1008,10 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	ForEach(i,1 ..(n-1))[
 		// look for the max number in the column below (i,i)
 		j:=i;
-		ForEach(k,i+1 .. n) [
-		   If(matrix[i][i]=0 And Not(Type(matrix[k][i])=''), j:=k);
-                ];
+		If(matrix[i][i]=0,
+			ForEach(k,i+1 .. n)
+				If(Not(matrix[k][i]=0), j:=k)
+		);
 		If(j>i, [
 		   // swap the rows i and j
 		   ForEach(k,1 .. n) [
