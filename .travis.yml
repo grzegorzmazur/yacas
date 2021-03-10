@@ -10,12 +10,12 @@ sudo: required
 osx_image: xcode12.2
 
 before_install:
-  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo add-apt-repository --yes ppa:beineri/opt-qt-5.12.2-bionic; fi
+  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo add-apt-repository --yes ppa:beineri/opt-qt-5.14.2-bionic; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get -qq update; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y gcc-8 g++-8; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y libzmq3-dev libzmqpp-dev; fi
-  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y qt512webengine qt512webchannel qt512svg qt512base qt512location qt512tools libgl1-mesa-dev; fi
+  - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y qt514webengine qt514webchannel qt514svg qt514base qt514location qt514tools libgl1-mesa-dev; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y libboost-date-time-dev libjsoncpp-dev openssl; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y lcov; fi
   - if [ ${TRAVIS_OS_NAME} = "linux" ]; then sudo apt-get install -y ant ant-optional junit; fi
