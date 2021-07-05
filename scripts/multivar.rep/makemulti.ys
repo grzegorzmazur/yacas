@@ -2,7 +2,7 @@
 /* code pertaining to creating the internal format for multivariate
    polynomials (the inverse of NormalForm
 
-- MultiExpressionList(x) 
+- MultiExpressionList(x)
   extract all variable-like sub-expressions from the main expression,
   including functions, which can then get treated as if they were
   a variable.
@@ -24,7 +24,7 @@ MultiExpressionList(_expr) <-- VarList(expr,"IsMultiExpression");
 //10 # IsMultiExpression(x_IsConstant) <-- False;
 10 # IsMultiExpression(x_IsMultiConstant) <-- False;
 
-//TODO: shouldn't this be more global? The problem right now is 
+//TODO: shouldn't this be more global? The problem right now is
 // that IsConstant/IsVariable take Pi to be a constant...
 IsMultiConstant(_n) <-- (VarList(n,"IsVr")={});
 10 # IsVr(n_IsNumber) <-- False;
@@ -74,7 +74,7 @@ LocalSymbols(x,y,z,vars,gcd,a,a)  [
      <-- MakeMultiNomial((x*z) / y,vars_IsList);
   20 #  MakeMultiNomial((_x / _y) / _z,vars_IsList)
      <-- MakeMultiNomial((x*z) / y,vars_IsList);
-  25 #  MakeMultiNomial(_x / y_IsConstant,vars_IsList)
+  25 #  MakeMultiNomial(_x / y_IsConstant,vars_IsList)_(Not IsConstant(x))
      <-- MakeMultiNomial(1/y,vars)*MakeMultiNomial(x,vars);
   30 #  MakeMultiNomial(_x / _y,vars_IsList) <--
         [
