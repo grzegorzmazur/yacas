@@ -133,25 +133,26 @@ void YacasEngine::_update_symbols()
 {
     QMutexLocker lock(&_symbols_mtx);
 
-    QSet<QString> ss;
+    _symbols.clear();
 
     for (auto op : _yacas->getDefEnv().getEnv().PreFix())
-        ss.insert(QString::fromStdString(*op.first));
+        _symbols.push_back(QString::fromStdString(*op.first));
 
     for (auto op : _yacas->getDefEnv().getEnv().InFix())
-        ss.insert(QString::fromStdString(*op.first));
+        _symbols.push_back(QString::fromStdString(*op.first));
 
     for (auto op : _yacas->getDefEnv().getEnv().PostFix())
-        ss.insert(QString::fromStdString(*op.first));
+        _symbols.push_back(QString::fromStdString(*op.first));
 
     for (auto op : _yacas->getDefEnv().getEnv().Bodied())
-        ss.insert(QString::fromStdString(*op.first));
+        _symbols.push_back(QString::fromStdString(*op.first));
 
     for (auto op : _yacas->getDefEnv().getEnv().CoreCommands())
-        ss.insert(QString::fromStdString(*op.first));
+        _symbols.push_back(QString::fromStdString(*op.first));
 
     for (auto& op : _yacas->getDefEnv().getEnv().UserFunctions())
-        ss.insert(QString::fromStdString(*op.first));
+        _symbols.push_back(QString::fromStdString(*op.first));
 
-    _symbols = QStringList(ss.begin(), ss.end());
+    _symbols.removeDuplicates();
+    _symbols.sort();
 }
