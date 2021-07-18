@@ -271,12 +271,12 @@ GaussianDeterminant(matrix):=
   ];
 
   // gaussian elimination
-  ForEach(i, 1 .. (n-1) )
+  For(i:=1,i<n,i++)
   [
-    ForEach(k, (i+1) .. n )
+    For(k:=(i+1),k<=n,k++)
     [
       s:=matrix[k][i];
-      ForEach(j, i .. n )
+      For(j:=i,j<=n,j++)
       [
         matrix[k][j] := matrix[k][j] - (s/matrix[i][i])*matrix[i][j];
         //Echo({"matrix[",k,"][",j,"] =", aug[k][j]," - ",
@@ -304,7 +304,7 @@ GaussianDeterminant(matrix):=
   Local(result);
   If(Equals(Length(matrix),1),matrix[1][1],[
     result:=0;
-    ForEach(i,1 .. Length(matrix))
+    For(i:=1,i <= Length(matrix),i++)
       //Consider only non-zero entries
       If(Not(Equals(matrix[1][i],0)),
         //Transpose and Drop eliminate row 1, column i
@@ -333,8 +333,8 @@ Function("Sparsity",{matrix})
 	nonzero:=0;
 	rows:=Length(matrix);
 	cols:=Length(matrix[1]);
-	ForEach(i, 1 .. rows )
-		ForEach(j, 1 .. cols )
+	For(i:=1,i<=rows,i++)
+		For(j:=1,j <= cols,j++)
 			If(matrix[i][j] != 0, nonzero:=nonzero+1 );
 
 	N(1 - nonzero/(rows*cols));
@@ -367,7 +367,7 @@ Minor(matrix,i,j) := CoFactor(matrix,i,j)*(-1)^(i+j);
 	n:=Length(A);
 	Inv:=Identity(n);
 
-        ForEach(i,1 .. n)
+        For(i:=1,i<=n,i++)
         	Inv[i][i] := 1/A[i][i];
 	Inv;
 ];
@@ -378,8 +378,8 @@ Minor(matrix,i,j) := CoFactor(matrix,i,j)*(-1)^(i+j);
 	l:=Length(A);
 	Inv:=ZeroMatrix(l,l);
 
-	ForEach(m, 1 .. l)
-		ForEach (n, 1 .. m)
+	For(m:=1,m <= l,m++)
+		For(n:=1, n <= m,n++)
 			Inv[m][n] := (KroneckerDelta(m, n) - Sum(i, 1, m-1, A[m][i] * Inv[i][n])) / A[m][m];
 
 	Inv;
@@ -391,8 +391,8 @@ Minor(matrix,i,j) := CoFactor(matrix,i,j)*(-1)^(i+j);
 	l:=Length(A);
 	Inv:=ZeroMatrix(l,l);
 
-	ForEach(m, l .. 1)
-		ForEach (n, m .. l)
+	For(m:=l,1 <= m,m--)
+		For(n:=m,n <= l,n++)
 			Inv[m][n] := (KroneckerDelta(m, n) - Sum(i, m + 1, l, A[m][i] * Inv[i][n])) / A[m][m];
 
 	Inv;
@@ -468,9 +468,9 @@ Function("SylvesterMatrix",{poly1, poly2, var})
   q:={};
   result:=ZeroMatrix(m,m);
 
-  For(i:=y,i>=0,i--)
+  For(i:=y,0 <= i,i--)
     DestructiveAppend(p,Coef(poly1,var,i));
-  For(i:=z,i>=0,i--)
+  For(i:=z,0 <= i,i--)
     DestructiveAppend(q,Coef(poly2,var,i));
 
   For(i:=1,i<=z,i++)
@@ -757,7 +757,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	rowsb:=Length(b);
 	Check(rowsm=rowsb,"MatrixSolve: Matrix and vector must have same number of rows");
 	x:=ZeroVector(rowsb);
-	ForEach(i,1 .. rowsb)
+	For(i:=1,i <= rowsb,i++)
 		x[i]:=b[i]/matrix[i][i];
 	x;
 ];
@@ -774,9 +774,9 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	x[rowsb]:=b[rowsb]/matrix[rowsb][rowsb];
 	If(InVerboseMode(),Echo({"set x[",rowsb,"] = ",b[rowsb]/matrix[rowsb][rowsb]}));
 
-	ForEach(i,(rowsb-1) .. 1 )[
+	For(i:=(rowsb-1),1 <= i ,i--)[
 		s:=b[i];
-		ForEach(j,i+1 .. rowsb )[
+		For(j:=i+1, j <= rowsb, j++ )[
 			s:= s - matrix[i][j]*x[j];
 		];
 		x[i]:= s/matrix[i][i];
@@ -797,9 +797,9 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	x[1]:=b[1]/matrix[1][1];
 	If(InVerboseMode(),Echo({"set x[1] = ",b[1]/matrix[1][1]}));
 
-	ForEach(i,2 .. rowsb )[
+	For(i:=2,i <= rowsb, i++ )[
 		s:=b[i];
-		ForEach(j,1 .. (i-1) )[
+		For(j:=1, j < i, j++ )[
 			s:= s - matrix[i][j]*x[j];
 		];
 		x[i]:= s/matrix[i][i];
@@ -819,14 +819,14 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	x:=ZeroVector(rowsb);
 
 	// create augmented matrix
-	ForEach(i, 1 .. rowsb )
-		ForEach(j, 1 .. rowsb )
+	For(i:=1,i <= rowsb,i++)
+		For(j:=1, j <= rowsb,j++)
 			aug[i][j] := matrix[i][j];
-	ForEach(i, 1 .. rowsb )
+	For(i:=1, i <= rowsb, i++)
 		aug[i][rowsb+1] := b[i];
 
 	// gaussian elimination
-	ForEach(i, 1 .. (rowsb-1) )[
+	For(i:=1, i < rowsb, i++ )[
 		// If our pivot element is 0 we need to switch
 		// this row with a row that has a nonzero element
 		If(aug[i][i] = 0, [
@@ -840,9 +840,9 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 		]);
 
 
-		ForEach(k, (i+1) .. rowsb )[
+		For(k:=(i+1), k <= rowsb, k++ )[
 			s:=aug[k][i];
-			ForEach(j, i .. (rowsb+1) )[
+			For(j:=i, j <= (rowsb+1), j++ )[
 				aug[k][j] := aug[k][j] - (s/aug[i][i])*aug[i][j];
 				//Echo({"aug[",k,"][",j,"] =", aug[k][j]," - ",
 				//	aug[k][i],"/",aug[i][i],"*",aug[i][j]," k i =", k,i  });
@@ -853,9 +853,9 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	x[rowsb]:=aug[rowsb][rowsb+1]/aug[rowsb][rowsb];
 	If(InVerboseMode(),Echo({"set x[",rowsb,"] = ",x[rowsb] }));
 
-	ForEach(i,(rowsb-1) .. 1 )[
+	For(i:=(rowsb-1), 1 <= i,i--)[
 		s:=aug[i][rowsb+1];
-		ForEach(j,i+1 .. rowsb)[
+		For(j:=i+1, j <= rowsb, j++)[
 			s := s - aug[i][j]*x[j];
 		];
 		x[i]:=s/aug[i][i];
@@ -878,27 +878,27 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	matrix:=ZeroMatrix(n);
 
 	// copy entries of A into matrix
-        ForEach(i,1 .. n)
-                ForEach(j,1 .. n)
+        For(i:=1, i <= n, i++ )
+                For(j:=1, j <= n,j++)
 			matrix[i][j] := A[i][j];
 
 	// in place algorithm for cholesky decomp
-	ForEach(i,1 .. n)[
-		For(k:=1,k<=(i-1),k++)
+	For(i:=1, i <= n, i++)[
+		For(k:=1, k < i ,k++)
 			matrix[i][i] := matrix[i][i] - matrix[k][i]^2;
 		Check( matrix[i][i] > 0, "Cholesky: Matrix is not positive definite");
 		matrix[i][i] := Sqrt(matrix[i][i]);
 		//Echo({"matrix[",i,"][",i,"] = ", matrix[i][i] });
 		For(j:=i+1,j<=n,j++)[
-			For(k:=1,k<=(i-1),k++)
+			For(k:=1, k < i ,k++)
 				matrix[i][j]:= matrix[i][j] - matrix[k][i]*matrix[k][j];
 			matrix[i][j] := matrix[i][j]/matrix[i][i];
 			//Echo({"matrix[",i,"][",j,"] = ", matrix[i][j] });
 		];
 	];
 	// cholesky factorization is upper triangular
-	ForEach(i,1 .. n)
-		ForEach(j,1 .. n)
+	For(i:=1, i <= n, i++)
+		For(j:= 1, j <= n, j++)
 			If(i>j,matrix[i][j] := 0);
 	matrix;
 ];
@@ -915,24 +915,24 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	U:=ZeroMatrix(n,n);
 	matrix:=ZeroMatrix(n,n);
 
-        ForEach(i,1 .. n)
-                ForEach(j,1 .. n)
+        For(i:=1, i <= n, i++)
+                For(j:=1,j <= n,j++)
                         matrix[i][j] := A[i][j];
 
 	// loop over pivot rows
-	ForEach(i,1 ..(n-1))[
+	For(i:=1, i < n, i++)[
 		// loop over column below the pivot
-		ForEach(k,i+1 .. n)[
+		For(k:=i+1, k <= n, k++)[
 			// compute multiplier and store it in L
 			matrix[k][i] := matrix[k][i] / matrix[i][i];
 			// loop over elements in row k
-			ForEach(j,i+1 .. n)[
+			For(j:=i+1,j<=n,j++)[
 				matrix[k][j] := matrix[k][j] - matrix[k][i]*matrix[i][j];
 			];
 		];
 	];
-	ForEach(i,1 .. n)[
-		ForEach(j,1 .. n)[
+	For(i:=1,i <= n, i++)[
+		For(j:=1, j <= n, j++)[
 			If(i<=j,U[i][j]:=matrix[i][j],L[i][j]:=matrix[i][j]);
 		];
 		// diagonal of L is always 1's
@@ -955,26 +955,26 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	U:=ZeroMatrix(n,n);
 	matrix:=ZeroMatrix(n,n);
 
-        ForEach(i,1 .. n)
-                ForEach(j,1 .. n)
+        For(i:=1, i <= n, i++)
+                For(j:=1, j <=n, j++)
                         matrix[i][j] := A[i][j];
 
 	// loop over pivot rows
-	ForEach(i,1 ..(n-1))[
+	For(i:=1, i < n, i++)[
 		// loop over column below the pivot
-		ForEach(k,i+1 .. n)[
+		For(k:=i+1,k <= n, k++)[
 			// compute multiplier and store it in L
 			matrix[k][i] := matrix[k][i] / matrix[i][i];
 			// loop over elements in row k
-			ForEach(j,i+1 .. n)
+			For(j:=i+1,j <= n,j++)
 				matrix[k][j] := matrix[k][j] - matrix[k][i]*matrix[i][j];
 		];
 		// in place normalise the i-th row of U
-		ForEach(j,i+1 .. n)
+		For(j:=i+1, j<= n,j++)
 			matrix[i][j] := matrix[i][j] / matrix[i][i];
 	];
-	ForEach(i,1 .. n)[
-		ForEach(j,1 .. n)
+	For(i:=1,i <= n, i++)[
+		For(j:=1, j <= n, j++)
 			If(i<j,
 				U[i][j]:=matrix[i][j],
 				If (i=j,
@@ -1000,21 +1000,21 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	U:=ZeroMatrix(n,n);
 	matrix:=ZeroMatrix(n,n);
 
-        ForEach(i,1 .. n)
-                ForEach(j,1 .. n)
+        For(i:=1, i <=n, i++)
+                For(j:=1, j <= n, j++)
                         matrix[i][j] := A[i][j];
 
 	// loop over pivot rows
-	ForEach(i,1 ..(n-1))[
+	For(i:=1, i < n, i++)[
 		// look for the max number in the column below (i,i)
 		j:=i;
 		If(matrix[i][i]=0,
-			ForEach(k,i+1 .. n)
+			For(k:=i+1, k <= n, k++)
 				If(Not(matrix[k][i]=0), j:=k)
 		);
 		If(j>i, [
 		   // swap the rows i and j
-		   ForEach(k,1 .. n) [
+		   For(k:=1, k <= n, k++) [
 			tmp:= matrix[i][k];
 			matrix[i][k]:= matrix[j][k];
 			matrix[j][k]:= tmp;
@@ -1024,19 +1024,19 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 		   ];
 		]);
 		// loop over column below the pivot
-		ForEach(k,i+1 .. n)[
+		For(k:=i+1, k <= n, k++)[
 			// compute multiplier and store it in L
 			matrix[k][i] := matrix[k][i] / matrix[i][i];
 			// loop over elements in row k
-			ForEach(j,i+1 .. n)
+			For(j:=i+1, j <= n, j++)
 				matrix[k][j] := matrix[k][j] - matrix[k][i]*matrix[i][j];
 		];
 		// in place normalise the i-th row of U
-		ForEach(j,i+1 .. n)
+		For(j:=i+1, j <= n, j++)
 			matrix[i][j] := matrix[i][j] / matrix[i][i];
 	];
-	ForEach(i,1 .. n)[
-		ForEach(j,1 .. n)
+	For(i:=1, i <= n, i++)[
+		For(j:=1, j <= n, j++)
 			If(i<j,
 				U[i][j]:=matrix[i][j],
 				If (i=j,
@@ -1067,12 +1067,12 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	vectorC:=matrixI[1];
 	vectorR:=ZeroVector(n);
 	matrixJ:=ZeroMatrix(n,n);
-        ForEach(i,1 .. n) matrixJ[i][n+1-i]:=1; // J is the anti-identity matrix
+        For(i:=1, i <=n, i++) matrixJ[i][n+1-i]:=1; // J is the anti-identity matrix
 	matrixX:=matrixJ*(matrixI-matrixP)*matrixJ; 				// PrettyForm(matrixX);
 	Echo("...PLDU");
 	{matrixM,matrixL,matrixD,matrixU} := PLDU(matrixX); 			// PrettyForm(matrixM*matrixX); PrettyForm(matrixL*matrixD*matrixU);
 	Echo(".");
-	diagonals:=True; ForEach(i,1 .. n) diagonals:=diagonals And (matrixD[i][i]>0);
+	diagonals:=True; For(i:=1, i <= n, i++) diagonals:=diagonals And (matrixD[i][i]>0);	
 	Echo("...InvD");
 	matrixInvD:=Inverse(matrixJ*matrixD*matrixJ); 				// PrettyForm(matrixInvD);
 	Echo(".");
@@ -1099,7 +1099,7 @@ MatrixPower(x_IsSquareMatrix, n_IsNegativeInteger) <--
 	vectorP:=matrixInvL*vectorC1; 						// PrettyForm(vectorP);
 	Echo(".");
 	Echo("...r");
-        ForEach(i,1 .. n) vectorR[i]:=vectorP[i]*vectorI[i]; 			// PrettyForm(vectorR);
+        For(i:=1, i<= n, i++) vectorR[i]:=vectorP[i]*vectorI[i]; 			// PrettyForm(vectorR);
 	Echo(".");
 	{vectorR, vectorP, matrixP1, vectorC1, diagonals};
 ];
@@ -1119,13 +1119,13 @@ NormaliseMDP(matrixP_IsSquareMatrix, vectorI_IsVector) <--
 
 	Echo("...P''");
 	// normalise to MDP
-	ForEach(j,1 .. n) [
+	For(j:=1, j <= n, j++) [
 	  sum:=0;
-	  ForEach(i,1 .. n) [
+	  For(i:=1, i <= n, i++) [
 		sum:=sum + matrixP1[i][j];
 	  ];
 	  If(Not(sum=0), [
-		  ForEach(i,1 .. n) [
+		  For(i:=1, i <= n, i++) [
 			matrixP2[i][j] := matrixP1[i][j] / sum;
 		  ];
 	  ]);
@@ -1137,7 +1137,7 @@ NormaliseMDP(matrixP_IsSquareMatrix, vectorI_IsVector) <--
 	vectorP2 := DAG(matrixP2, vectorI)[2];
 	Echo(".");
 	Echo("...I'");
-	ForEach(i,1 .. n) [
+	For(i:=1, i <= n, i++) [
 	  vectorI2[i] := vectorI[i]* vectorP1[i]/vectorP2[i];
 	];
 	Echo(".");

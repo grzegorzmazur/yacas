@@ -103,7 +103,7 @@ Internal'BernoulliArray1(n_IsEven) _ (n>=2) <--
 			[
 				denom := 4;	// = 4^1
 				sum := 0;
-				For(j:=1, j<=k-1, j++)
+				For(j:=1, j<k, j++)
 				[
 					sum := sum + C[2*(k-j)+1]/denom/f[j];	// + C[k-j]/(2*j)! /4^j
 					denom := denom * 4;
