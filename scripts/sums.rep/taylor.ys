@@ -234,7 +234,7 @@ Taylor'LPS'Coeffs(_lps, _n1, _n2) <--
                c2 := Taylor'LPS'Coeffs(lps[4][2], lps[4][2][1], 
                                        n2 - lps[4][1][1]);
                tmp := lps[2];
-	       ForEach(k, (Length(lps[2])+1) .. Length(c1))
+	       For(k:=(Length(lps[2])+1),k<=Length(c1),k++)
 	          tmp := Append(tmp, Sum(j, 1, k, c1[j]*c2[k+1-j]));
 	       lps[2] := tmp;
             ]);
@@ -276,7 +276,7 @@ Taylor'LPS'Coeffs(_lps, _n1, _n2) <--
 	    If (tmp = {}, tmp := {1/c1[1]});
 	    If (Length(c1)>1, 
 	    [
-               ForEach(k, (Length(tmp)+1) .. Length(c1))
+               For(k:=(Length(tmp)+1),k<=Length(c1),k++)
                [
 	          n := -Sum(j, 1, k-1, c1[k+1-j]*tmp[j]) / c1[1];
 	          tmp := Append(tmp, n);
