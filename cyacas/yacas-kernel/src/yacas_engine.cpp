@@ -22,15 +22,16 @@
  * Created on November 7, 2015, 12:52 PM
  */
 
-#include <jsoncpp/json/writer.h>
-
 #include "yacas_engine.hpp"
 
+#include <jsoncpp/json/writer.h>
+#include <zmq_addon.hpp>
+
 YacasEngine::YacasEngine(const std::string& scripts_path,
-                         const zmqpp::context& ctx,
+                         zmq::context_t& ctx,
                          const std::string& endpoint) :
     _yacas(_side_effects),
-    _socket(ctx, zmqpp::socket_type::pair),
+    _socket(ctx, zmq::socket_type::pair),
     _shutdown(false)
 {
     _yacas.Evaluate(std::string("DefaultDirectory(\"") + scripts_path +
@@ -90,11 +91,11 @@ void YacasEngine::_worker()
         Json::Value calculate_content;
         calculate_content["id"] = Json::Value::UInt64(ti.id);
         calculate_content["expr"] = ti.expr;
-        zmqpp::message status_msg;
-        status_msg << "calculate"
-                   << Json::writeString(Json::StreamWriterBuilder(),
-                                        calculate_content);
-        _socket.send(status_msg);
+        zmq::multipart_t status_msg;
+        status_msg.addstr("calculate");
+        status_msg.addstr(Json::writeString(Json::StreamWriterBuilder(),
+                                        calculate_content));
+        status_msg.send(_socket);
 
         _side_effects.clear();
         _side_effects.str("");
@@ -111,10 +112,10 @@ void YacasEngine::_worker()
 
         result_content["side_effects"] = _side_effects.str();
 
-        zmqpp::message result_msg;
-        result_msg << "result"
-                   << Json::writeString(Json::StreamWriterBuilder(),
-                                        result_content);
-        _socket.send(result_msg);
+        zmq::multipart_t result_msg;
+        result_msg.addstr("result");
+        result_msg.addstr(Json::writeString(Json::StreamWriterBuilder(),
+                                        result_content));
+        result_msg.send(_socket);
     }
 }

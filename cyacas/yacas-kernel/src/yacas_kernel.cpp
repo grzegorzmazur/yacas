@@ -30,8 +30,6 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/uuid/uuid_io.hpp>
 
-#include <fstream>
-#include <iostream>
 #include <regex>
 #include <set>
 #include <string>
@@ -48,12 +46,12 @@ namespace {
 YacasKernel::YacasKernel(const std::string& scripts_path,
                          const Json::Value& config) :
     _session(config["key"].asString()),
-    _hb_socket(_ctx, zmqpp::socket_type::reply),
-    _iopub_socket(_ctx, zmqpp::socket_type::publish),
-    _control_socket(_ctx, zmqpp::socket_type::router),
-    _stdin_socket(_ctx, zmqpp::socket_type::router),
-    _shell_socket(_ctx, zmqpp::socket_type::router),
-    _engine_socket(_ctx, zmqpp::socket_type::pair),
+    _hb_socket(_ctx, zmq::socket_type::rep),
+    _iopub_socket(_ctx, zmq::socket_type::pub),
+    _control_socket(_ctx, zmq::socket_type::router),
+    _stdin_socket(_ctx, zmq::socket_type::router),
+    _shell_socket(_ctx, zmq::socket_type::router),
+    _engine_socket(_ctx, zmq::socket_type::pair),
     _execution_count(1),
     _engine(scripts_path, _ctx, "inproc://engine"),
     _tex_output(true),
@@ -82,33 +80,35 @@ YacasKernel::YacasKernel(const std::string& scripts_path,
 
 void YacasKernel::run()
 {
-    zmqpp::poller poller;
-
-    poller.add(_hb_socket);
-    poller.add(_control_socket);
-    poller.add(_stdin_socket);
-    poller.add(_shell_socket);
-    poller.add(_iopub_socket);
-    poller.add(_engine_socket);
+    std::vector<zmq::pollitem_t> items{
+        {_hb_socket, 0, ZMQ_POLLIN, 0},
+        {_control_socket, 0, ZMQ_POLLIN, 0},
+        {_stdin_socket, 0, ZMQ_POLLIN, 0},
+        {_shell_socket, 0, ZMQ_POLLIN, 0},
+        {_iopub_socket, 0, ZMQ_POLLIN, 0},
+        {_engine_socket, 0, ZMQ_POLLIN, 0}
+    };
 
     for (;;) {
-        poller.poll();
+        zmq::poll(items);
 
-        if (poller.has_input(_hb_socket)) {
-            zmqpp::message msg;
-            _hb_socket.receive(msg);
+        std::cerr << "toratoratora" << std::endl;
+
+        if (items[0].revents & ZMQ_POLLIN) { // heartbeat
+            zmq::message_t msg;
+            _hb_socket.recv(msg);
             _hb_socket.send(msg);
         }
 
-        if (poller.has_input(_shell_socket)) {
-            zmqpp::message msg;
-            _shell_socket.receive(msg);
+        if (items[3].revents & ZMQ_POLLIN) { // shell
+            zmq::multipart_t msg;
+            msg.recv(_shell_socket);
             _handle_shell(std::make_shared<Request>(_session, msg));
         }
 
-        if (poller.has_input(_control_socket)) {
-            zmqpp::message msg;
-            _control_socket.receive(msg);
+        if (items[1].revents & ZMQ_POLLIN) { // control
+            zmq::multipart_t msg;
+            msg.recv(_control_socket);
             Request request(_session, msg);
 
             if (request.header()["msg_type"].asString() == "shutdown_request")
@@ -118,14 +118,14 @@ void YacasKernel::run()
         if (_shutdown)
             return;
 
-        if (poller.has_input(_stdin_socket)) {
-            zmqpp::message msg;
-            _stdin_socket.receive(msg);
+        if (items[2].revents & ZMQ_POLLIN) { // stdin
+            zmq::message_t msg;
+            _stdin_socket.recv(msg);
         }
 
-        if (poller.has_input(_engine_socket)) {
-            zmqpp::message msg;
-            _engine_socket.receive(msg);
+        if (items[5].revents & ZMQ_POLLIN) { // engine
+            zmq::multipart_t msg;
+            msg.recv(_engine_socket);
             _handle_engine(msg);
         }
     }
@@ -138,17 +138,13 @@ YacasKernel::Session::Session(const std::string& key) :
 }
 
 YacasKernel::Request::Request(const Session& session,
-                              const zmqpp::message& msg) :
+                              const zmq::multipart_t& msg) :
     _session(session)
 {
-    std::string header_buf;
-    msg.get(header_buf, 3);
-    std::string parent_header_buf;
-    msg.get(parent_header_buf, 4);
-    std::string metadata_buf;
-    msg.get(metadata_buf, 5);
-    std::string content_buf;
-    msg.get(content_buf, 6);
+    const std::string header_buf{msg.peekstr(3)};
+    const std::string parent_header_buf{msg.peekstr(4)};
+    const std::string metadata_buf{msg.peekstr(5)};
+    const std::string content_buf{msg.peekstr(6)};
 
     HMAC_SHA256 auth(_session.auth());
 
@@ -157,13 +153,12 @@ YacasKernel::Request::Request(const Session& session,
     auth.update(metadata_buf);
     auth.update(content_buf);
 
-    std::string signature_buf;
-    msg.get(signature_buf, 2);
+    std::string signature_buf{msg.peekstr(2)};
 
     if (auth.hexdigest() != signature_buf)
         throw std::runtime_error("invalid signature");
 
-    msg.get(_identities_buf, 0);
+    _identities_buf = msg.peekstr(0);
 
     Json::Reader reader;
 
@@ -172,7 +167,7 @@ YacasKernel::Request::Request(const Session& session,
     reader.parse(metadata_buf, _metadata);
 }
 
-void YacasKernel::Request::reply(zmqpp::socket& socket,
+void YacasKernel::Request::reply(zmq::socket_t& socket,
                                  const std::string& msg_type,
                                  const Json::Value& content) const
 {
@@ -199,16 +194,17 @@ void YacasKernel::Request::reply(zmqpp::socket& socket,
     auth.update(metadata_buf);
     auth.update(content_buf);
 
-    zmqpp::message msg;
-    msg.add(_identities_buf);
-    msg.add("<IDS|MSG>");
-    msg.add(auth.hexdigest());
-    msg.add(header_buf);
-    msg.add(parent_header_buf);
-    msg.add(metadata_buf);
-    msg.add(content_buf);
+    zmq::multipart_t msg;
 
-    socket.send(msg);
+    msg.addstr(_identities_buf);
+    msg.addstr("<IDS|MSG>");
+    msg.addstr(auth.hexdigest());
+    msg.addstr(header_buf);
+    msg.addstr(parent_header_buf);
+    msg.addstr(metadata_buf);
+    msg.addstr(content_buf);
+
+    msg.send(socket);
 }
 
 void YacasKernel::_handle_shell(const std::shared_ptr<Request>& request)
@@ -316,13 +312,10 @@ void YacasKernel::_handle_shell(const std::shared_ptr<Request>& request)
     }
 }
 
-void YacasKernel::_handle_engine(const zmqpp::message& msg)
+void YacasKernel::_handle_engine(const zmq::multipart_t& msg)
 {
-    std::string msg_type;
-    msg.get(msg_type, 0);
-
-    std::string content_buf;
-    msg.get(content_buf, 1);
+    std::string msg_type{msg.peekstr(0)};
+    std::string content_buf{msg.peekstr(1)};
 
     Json::Value content;
     Json::Reader().parse(content_buf, content);

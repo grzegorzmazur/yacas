@@ -27,7 +27,7 @@
 
 #include "yacas/yacas.h"
 
-#include <zmqpp/zmqpp.hpp>
+#include <zmq.hpp>
 
 #include <atomic>
 #include <condition_variable>
@@ -40,7 +40,7 @@
 class YacasEngine {
 public:
     YacasEngine(const std::string& scripts_path,
-                const zmqpp::context& ctx,
+                zmq::context_t& ctx,
                 const std::string& endpoint = "inproc://engine");
 
     ~YacasEngine();
@@ -65,7 +65,7 @@ private:
 
     std::thread* _worker_thread;
 
-    zmqpp::socket _socket;
+    zmq::socket_t _socket;
 
     std::atomic<bool> _shutdown;
 };

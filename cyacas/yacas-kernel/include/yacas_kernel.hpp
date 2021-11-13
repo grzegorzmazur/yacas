@@ -30,8 +30,8 @@
 
 #include <boost/uuid/random_generator.hpp>
 #include <jsoncpp/json/json.h>
-#include <zmqpp/zmqpp.hpp>
-
+#include <zmq.hpp>
+#include <zmq_addon.hpp>
 #include <map>
 #include <sstream>
 
@@ -60,12 +60,12 @@ private:
 
     class Request : NonCopyable {
     public:
-        Request(const Session& session, const zmqpp::message& msg);
+        Request(const Session& session, const zmq::multipart_t& msg);
 
         const Json::Value& header() const { return _header; }
         const Json::Value& content() const { return _content; }
 
-        void reply(zmqpp::socket&,
+        void reply(zmq::socket_t&,
                    const std::string& type,
                    const Json::Value& content) const;
 
@@ -78,19 +78,19 @@ private:
     };
 
     void _handle_shell(const std::shared_ptr<Request>& request);
-    void _handle_engine(const zmqpp::message& msg);
+    void _handle_engine(const zmq::multipart_t& msg);
 
     Session _session;
 
-    zmqpp::context _ctx;
+    zmq::context_t _ctx;
 
-    zmqpp::socket _hb_socket;
-    zmqpp::socket _iopub_socket;
-    zmqpp::socket _control_socket;
-    zmqpp::socket _stdin_socket;
-    zmqpp::socket _shell_socket;
+    zmq::socket_t _hb_socket;
+    zmq::socket_t _iopub_socket;
+    zmq::socket_t _control_socket;
+    zmq::socket_t _stdin_socket;
+    zmq::socket_t _shell_socket;
 
-    zmqpp::socket _engine_socket;
+    zmq::socket_t _engine_socket;
 
     unsigned long _execution_count;
 
