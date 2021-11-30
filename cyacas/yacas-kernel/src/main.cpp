@@ -51,8 +51,13 @@ int main(int argc, char** argv)
          "share/yacas/scripts")
             .native();
 
-    if (argc == 3)
+    if (argc == 3) {
         scripts_path = argv[2];
+        if (scripts_path.front() == '"')
+            scripts_path.erase(0, 1);
+        if (scripts_path.back() == '"')
+            scripts_path.pop_back();
+    }
 
     if (scripts_path.back() != '/')
         scripts_path.push_back('/');
