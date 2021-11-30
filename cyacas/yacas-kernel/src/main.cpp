@@ -24,7 +24,7 @@
 
 #include "yacas_kernel.hpp"
 
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 
 #include <boost/dll/runtime_symbol_info.hpp>
 
