@@ -20,8 +20,9 @@
 find_path (ZEROMQ_INCLUDE_DIR zmq.hpp)
 find_library (ZEROMQ_LIBRARY NAMES zmq)
 
-find_path (JSONCPP_INCLUDE_DIR json.h)
-find_library (JSONCPP_LIBRARY NAMES jsoncpp)
+# https://github.com/open-source-parsers/jsoncpp/wiki/Building#another-approach-for-cmake
+find_package(jsoncpp REQUIRED)
+get_target_property(JSON_INC_PATH jsoncpp_lib INTERFACE_INCLUDE_DIRECTORIES)
 
 find_package (OpenSSL)
 find_package (Boost REQUIRED date_time filesystem)
@@ -29,6 +30,6 @@ find_package (Boost REQUIRED date_time filesystem)
 include_directories (include)
 
 add_executable (yacas-kernel src/main.cpp src/yacas_kernel.cpp src/yacas_engine.cpp src/hmac_sha256.cpp src/base64.cpp)
-target_link_libraries (yacas-kernel libyacas ${ZEROMQ_LIBRARY} ${JSONCPP_LIBRARY} ${OPENSSL_CRYPTO_LIBRARY} ${Boost_LIBRARIES} pthread ${CMAKE_DL_LIBS})
+target_link_libraries (yacas-kernel libyacas ${ZEROMQ_LIBRARY} jsoncpp_lib ${OPENSSL_CRYPTO_LIBRARY} ${Boost_LIBRARIES} pthread ${CMAKE_DL_LIBS})
 
 install (TARGETS yacas-kernel DESTINATION ${CMAKE_INSTALL_BINDIR})

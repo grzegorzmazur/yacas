@@ -29,7 +29,7 @@
 #include "yacas_engine.hpp"
 
 #include <boost/uuid/random_generator.hpp>
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 #include <zmq.hpp>
 #include <zmq_addon.hpp>
 #include <map>
