@@ -40,8 +40,8 @@ TIMEFILE=/tmp/time-yacas.$$
 VERSIONF=/tmp/version-yacas-$$.ys
 LOGFILE=yacas-logfile.txt
 echo "Print(Version());" > $VERSIONF
-VERSION=`$CMD $VERSIONF`
-COMMENT=`$CMD $VERSIONF`
+VERSION=`bash -c "$CMD $VERSIONF"`
+COMMENT=`bash -c "$CMD $VERSIONF"`
 #DATECMD="date \"+%F %T\""
 #echo "$DATECMD"
 #rm $VERSIONF
@@ -103,9 +103,9 @@ if [ $FAILURES -eq 0 ]; then
 else
     PASSFAIL=Fail
 fi
-REAL=`$CMD -i "Print(RoundTo($REALTOT,2));"`
-USER=`$CMD -i "Print(RoundTo($USERTOT,2));"`
-SYSS=`$CMD -i "Print(RoundTo($SYSSTOT,2));"`
+REAL=`bash -c "$CMD -i \"Print(RoundTo($REALTOT,2));\""`
+USER=`bash -c "$CMD -i \"Print(RoundTo($USERTOT,2));\""`
+SYSS=`bash -c "$CMD -i \"Print(RoundTo($SYSSTOT,2));\""`
 LOGLINE="{\"Total\", $VERSION, \"`date "+%F %T"`\", $REAL, $USER, $SYSS, $PASSFAIL},"
 echo "$LOGLINE" | tee -a $LOGFILE
 
