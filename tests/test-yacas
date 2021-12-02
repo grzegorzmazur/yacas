@@ -35,16 +35,14 @@ FAILED_TESTS=""  # list of failed tests
 FAILURES=0       # number of failed tests
 TOTALTESTS=0     # total number of tests
 
-TESTFILE=/tmp/test-yacas.$$
-TIMEFILE=/tmp/time-yacas.$$
-VERSIONF=/tmp/version-yacas-$$.ys
+TESTFILE=`mktemp`
+TIMEFILE=`mktemp`
+VERSIONF=`mktemp`
 LOGFILE=yacas-logfile.txt
 echo "Print(Version());" > $VERSIONF
 VERSION=`bash -c "$CMD $VERSIONF"`
 COMMENT=`bash -c "$CMD $VERSIONF"`
-#DATECMD="date \"+%F %T\""
-#echo "$DATECMD"
-#rm $VERSIONF
+rm $VERSIONF
 
 echo "/*" >> $LOGFILE
 echo "Command = \"$CMD\""      | tee -a $LOGFILE
