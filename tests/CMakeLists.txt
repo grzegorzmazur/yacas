@@ -62,7 +62,7 @@ install (PROGRAMS ${TEST_YACAS_CMD} DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/yac
 if (ENABLE_CYACAS_CONSOLE)
     foreach (_test ${YACAS_TESTS})
         if (WIN32)
-            add_test (NAME cyacas-${_test} WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND "$tests/test-yacas.bat" "$<TARGET_FILE:yacas> -pc --rootdir scripts" "tests" "${_test}")
+            add_test (NAME cyacas-${_test} WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND "tests/test-yacas.bat" "$<TARGET_FILE:yacas> -pc --rootdir scripts" "tests" "${_test}")
         elseif (APPLE)
             add_test (NAME cyacas-${_test} WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} COMMAND "tests/test-yacas" "$<TARGET_FILE:yacas> -pc --rootdir scripts" "tests" "${_test}")
         else ()
