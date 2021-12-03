@@ -96,8 +96,9 @@ void YacasKernel::run()
 
         if (items[0].revents & ZMQ_POLLIN) { // heartbeat
             zmq::message_t msg;
-            _hb_socket.recv(msg);
-            _hb_socket.send(msg);
+            while (!_hb_socket.recv(msg))
+                ;
+            _hb_socket.send(msg, zmq::send_flags::none);
         }
 
         if (items[3].revents & ZMQ_POLLIN) { // shell
@@ -120,7 +121,8 @@ void YacasKernel::run()
 
         if (items[2].revents & ZMQ_POLLIN) { // stdin
             zmq::message_t msg;
-            _stdin_socket.recv(msg);
+            while (!_stdin_socket.recv(msg))
+                ;
         }
 
         if (items[5].revents & ZMQ_POLLIN) { // engine
