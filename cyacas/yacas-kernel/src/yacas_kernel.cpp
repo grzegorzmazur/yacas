@@ -160,11 +160,9 @@ YacasKernel::Request::Request(const Session& session,
 
     _identities_buf = msg.peekstr(0);
 
-    Json::Reader reader;
-
-    reader.parse(header_buf, _header);
-    reader.parse(content_buf, _content);
-    reader.parse(metadata_buf, _metadata);
+    std::istringstream{header_buf} >> _header;
+    std::istringstream{content_buf} >> _content;
+    std::istringstream{metadata_buf} >> _metadata;
 }
 
 void YacasKernel::Request::reply(zmq::socket_t& socket,
@@ -314,11 +312,11 @@ void YacasKernel::_handle_shell(const std::shared_ptr<Request>& request)
 
 void YacasKernel::_handle_engine(const zmq::multipart_t& msg)
 {
-    std::string msg_type{msg.peekstr(0)};
-    std::string content_buf{msg.peekstr(1)};
+    const std::string msg_type{msg.peekstr(0)};
+    const std::string content_buf{msg.peekstr(1)};
 
     Json::Value content;
-    Json::Reader().parse(content_buf, content);
+    std::istringstream{content_buf} >> content;
 
     std::shared_ptr<YacasKernel::Request> request =
         _execute_requests[content["id"].asUInt64()];
