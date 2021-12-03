@@ -92,8 +92,6 @@ void YacasKernel::run()
     for (;;) {
         zmq::poll(items);
 
-        std::cerr << "toratoratora" << std::endl;
-
         if (items[0].revents & ZMQ_POLLIN) { // heartbeat
             zmq::message_t msg;
             while (!_hb_socket.recv(msg))
