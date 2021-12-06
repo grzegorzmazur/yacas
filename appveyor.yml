@@ -5,21 +5,6 @@ branches:
 
 skip_tags: true
 
-clone_script:
-  - ps: >-
-      if(-not $env:appveyor_pull_request_number) {
-        $env:GIT_LFS_SKIP_SMUDGE = 1
-        git clone -q --branch=$env:appveyor_repo_branch https://github.com/$env:appveyor_repo_name $env:appveyor_build_folder
-        git checkout -qf $env:appveyor_repo_commit
-        git lfs pull
-      } else {
-        $env:GIT_LFS_SKIP_SMUDGE = 1
-        git clone -q https://github.com/$env:appveyor_repo_name $env:appveyor_build_folder
-        git fetch -q origin +refs/pull/$env:appveyor_pull_request_number/merge:
-        git checkout -qf FETCH_HEAD
-        git lfs pull
-      }
-
 platform:
   - x64
 
