@@ -36,8 +36,11 @@ before_build:
   - sh: cd $APPVEYOR_BUILD_FOLDER
   - sh: cmake -H. -Bbuild -DENABLE_CYACAS_KERNEL=Off -DENABLE_CYACAS_UNIT_TESTS=Off -DENABLE_CYACAS_BENCHMARKS=Off -DENABLE_CYACAS_GUI=$ENABLE_CYACAS_GUI -DCMAKE_PREFIX_PATH="$QTDIR" -DCMAKE_INSTALL_PREFIX=$APPVEYOR_BUILD_FOLDER/install
 
-build:
-  project: build\INSTALL.vcxproj
+build_script:
+  - cmd: cd %APPVEYOR_BUILD_FOLDER%\build
+  - cmd: cmake --build . --config Release --target install
+  - sh: cd $APPVEYOR_BUILD_FOLDER/build
+  - sh: cmake --build . --config Release --target install
 
 test_script:
   - cmd: msbuild "build\RUN_TESTS.vcxproj" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
