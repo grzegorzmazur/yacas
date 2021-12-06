@@ -23,11 +23,11 @@ environment:
       QTDIR: C:\Qt\5.15.2\msvc2022_64
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu2004
       CMAKE_GENERATOR: "Ninja"
-      ENABLE_CYACAS_GUI: On
+      ENABLE_CYACAS_GUI: Off
       QTDIR: $HOME/Qt/5.15.2/gcc_64/bin
     - APPVEYOR_BUILD_WORKER_IMAGE: macos-bigsur
       CMAKE_GENERATOR: "Xcode"
-      ENABLE_CYACAS_GUI: On
+      ENABLE_CYACAS_GUI: Off
       QTDIR: $HOME/Qt/5.15.2/clang_64/bin
 
 before_build:
