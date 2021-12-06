@@ -44,9 +44,9 @@ build_script:
 
 test_script:
   - cmd: cd %APPVEYOR_BUILD_FOLDER%\build
-  - cmd: ctest
+  - cmd: ctest -C Release
   - sh: cd $APPVEYOR_BUILD_FOLDER/build
-  - sh: ctest
+  - sh: ctest -C Release
 
 after_build:
   - cmd: 7z a yacas.zip %APPVEYOR_BUILD_FOLDER%\install\*
