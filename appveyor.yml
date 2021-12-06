@@ -50,6 +50,7 @@ test_script:
 
 after_build:
   - cmd: 7z a yacas.zip %APPVEYOR_BUILD_FOLDER%\install\*
+  - sh: zip yacas.zip $APPVEYOR_BUILD_FOLDER/install/*
 
 artifacts:
   - path: yacas.zip
