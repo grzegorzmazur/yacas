@@ -26,7 +26,7 @@ environment:
       ENABLE_CYACAS_GUI: On
       QTDIR: $HOME/Qt/5.15.2/gcc_64/bin
     - APPVEYOR_BUILD_WORKER_IMAGE: macos-bigsur
-      CMAKE_GENERATOR: "Ninja"
+      CMAKE_GENERATOR: "Xcode"
       ENABLE_CYACAS_GUI: On
       QTDIR: $HOME/Qt/5.15.2/clang_64/bin
 
@@ -43,7 +43,7 @@ test_script:
   - cmd: msbuild "build\RUN_TESTS.vcxproj" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 after_build:
-  - cmd: 7z a yacas.zip c:\projects\yacas\install\*
+  - cmd: 7z a yacas.zip %APPVEYOR_BUILD_FOLDER%\install\*
 
 artifacts:
   - path: yacas.zip
