@@ -11,10 +11,6 @@ platform:
 configuration:
   - Release
 
-image:
-  - Visual Studio 2019
-  - Visual Studio 2022
-
 environment:
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
