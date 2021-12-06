@@ -5,9 +5,6 @@ yacas
 .. image:: https://img.shields.io/badge/license-LGPL--2.1%2B-blue.svg
     :target: ./COPYING
 
-.. image:: https://travis-ci.org/grzegorzmazur/yacas.svg?branch=master
-    :target: https://travis-ci.org/grzegorzmazur/yacas
-
 .. image:: https://ci.appveyor.com/api/projects/status/r8gm1gdk61qe4rgd?svg=true
     :target: https://ci.appveyor.com/project/grzegorzmazur/yacas
 
