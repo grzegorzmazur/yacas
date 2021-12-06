@@ -43,7 +43,10 @@ build_script:
   - sh: cmake --build . --config Release --target install
 
 test_script:
-  - cmd: msbuild "build\RUN_TESTS.vcxproj" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmd: cd %APPVEYOR_BUILD_FOLDER%\build
+  - cmd: cmake --build . --config Release --target test
+  - sh: cd $APPVEYOR_BUILD_FOLDER/build
+  - sh: cmake --build . --config Release --target test
 
 after_build:
   - cmd: 7z a yacas.zip %APPVEYOR_BUILD_FOLDER%\install\*
