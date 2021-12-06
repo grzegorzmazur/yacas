@@ -26,12 +26,18 @@ platform:
 configuration:
   - Release
 
-image: Visual Studio 2019
+image:
+  - Visual Studio 2019
+  - Visual Studio 2022
 
 environment:
   matrix:
-    - CMAKE_GENERATOR: "Visual Studio 16 2019"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      CMAKE_GENERATOR: "Visual Studio 16 2019"
       QTDIR: C:\Qt\5.15.2\msvc2019_64
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+      CMAKE_GENERATOR: "Visual Studio 16 2022"
+      QTDIR: C:\Qt\5.15.2\msvc2022_64
 
 before_build:
   - cd c:\projects\yacas
