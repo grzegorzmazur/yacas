@@ -49,10 +49,12 @@ test_script:
   - sh: ctest -C Release
 
 after_build:
-  - cmd: 7z a yacas.zip %APPVEYOR_BUILD_FOLDER%\install\*
-  - sh: zip -r yacas.zip $APPVEYOR_BUILD_FOLDER/install/*
+  - cmd: cd ..\install
+  - cmd: 7z a yacas.zip *
+  - sh: cd ../install
+  - sh: zip -r yacas.zip *
 
 artifacts:
-  - path: yacas.zip
+  - path: install/yacas.zip
     name: yacas
 
