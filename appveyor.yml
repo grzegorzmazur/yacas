@@ -30,9 +30,19 @@ environment:
       ENABLE_CYACAS_GUI: Off
       QTDIR: $HOME/Qt/5.15.2/clang_64/bin
 
+
+install:
+  - cmd: cd c:\tools\vcpkg
+  - cmd: vcpkg install boost
+  - cmd: vcpkg install zeromq
+  - cmd: vcpkg install jsoncpp
+  - cmd: vcpkg integrate install
+
+cache: c:\tools\vcpkg\installed\
+
 before_build:
   - cmd: cd %APPVEYOR_BUILD_FOLDER%
-  - cmd: cmake -H. -Bbuild -G "%CMAKE_GENERATOR%" -DENABLE_CYACAS_KERNEL=Off -DENABLE_CYACAS_UNIT_TESTS=Off -DENABLE_CYACAS_BENCHMARKS=Off -DENABLE_CYACAS_GUI=%ENABLE_CYACAS_GUI% -DCMAKE_PREFIX_PATH="%QTDIR%" -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%\install
+  - cmd: cmake -H. -Bbuild -G "%CMAKE_GENERATOR%" -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DENABLE_CYACAS_KERNEL=Off -DENABLE_CYACAS_UNIT_TESTS=Off -DENABLE_CYACAS_BENCHMARKS=Off -DENABLE_CYACAS_GUI=%ENABLE_CYACAS_GUI% -DCMAKE_PREFIX_PATH="%QTDIR%" -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%\install
   - sh: cd $APPVEYOR_BUILD_FOLDER
   - sh: cmake -H. -Bbuild -G $CMAKE_GENERATOR -DCMAKE_BUILD_TYPE=Release -DENABLE_CYACAS_KERNEL=Off -DENABLE_CYACAS_UNIT_TESTS=Off -DENABLE_CYACAS_BENCHMARKS=Off -DENABLE_CYACAS_GUI=$ENABLE_CYACAS_GUI -DCMAKE_PREFIX_PATH="$QTDIR" -DCMAKE_INSTALL_PREFIX=$APPVEYOR_BUILD_FOLDER/install
 
