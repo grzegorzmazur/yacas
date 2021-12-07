@@ -33,9 +33,9 @@ environment:
 
 install:
   - cmd: cd c:\tools\vcpkg
-  - cmd: vcpkg install boost
-  - cmd: vcpkg install zeromq
-  - cmd: vcpkg install jsoncpp
+  - cmd: vcpkg install boost:x64-windows
+  - cmd: vcpkg install zeromq:x64-windows
+  - cmd: vcpkg install jsoncpp:x64-windows
   - cmd: vcpkg integrate install
 
 cache: c:\tools\vcpkg\installed\
