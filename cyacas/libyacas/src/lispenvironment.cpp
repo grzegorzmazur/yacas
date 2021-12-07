@@ -255,7 +255,7 @@ void LispEnvironment::GlobalVariables(LispPtr& aResult)
     LispIterator tail(vars);
     ++tail;
 
-    for (const auto p: iGlobals) {
+    for (const auto& p: iGlobals) {
         if (p.first->front() == '$' || p.first->front() == '%')
             continue;
         *tail = LispAtom::New(*this, *p.first);
