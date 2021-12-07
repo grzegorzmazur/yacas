@@ -54,7 +54,7 @@ int main(int argc, char* argv[])
 void addSplashScreen(MainWindow* widget)
 {
     QPixmap si(":/resources/img/splash.png");
-    QSplashScreen ss(widget, si, Qt::WindowStaysOnTopHint);
+    QSplashScreen ss(si, Qt::WindowStaysOnTopHint);
     ss.setMask(si.mask());
     ss.showFullScreen();
     QTimer::singleShot(3000, &ss, SLOT(close()));
