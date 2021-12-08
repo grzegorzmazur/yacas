@@ -37,7 +37,7 @@ add_executable (yacas-kernel src/main.cpp src/yacas_kernel.cpp src/yacas_engine.
 if (UNIX)
     target_link_libraries (yacas-kernel libyacas ${ZEROMQ_LIBRARY} jsoncpp_lib ${OPENSSL_CRYPTO_LIBRARY} ${Boost_LIBRARIES} pthread ${CMAKE_DL_LIBS})
 else ()
-    target_add_include_directories (yacas-kernel PRIVATE ${ZeroMQ_INCLUDE_DIRS})
+    target_include_directories (yacas-kernel PRIVATE ${ZeroMQ_INCLUDE_DIRS})
     target_link_libraries (yacas-kernel libyacas ${ZeroMQ_LIBRARIE} jsoncpp_lib ${OPENSSL_CRYPTO_LIBRARY} ${Boost_LIBRARIES})
 endif ()
 
