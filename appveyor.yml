@@ -30,13 +30,14 @@ environment:
       ENABLE_CYACAS_GUI: Off
       QTDIR: $HOME/Qt/5.15.2/clang_64/bin
 
-
 install:
-  - cmd: cd c:\tools\vcpkg
-  - cmd: vcpkg install boost:x64-windows
-  - cmd: vcpkg install zeromq:x64-windows
-  - cmd: vcpkg install jsoncpp:x64-windows
-  - cmd: vcpkg integrate install
+  - cmd: if not exist C:\Tools\vcpkg\installed\x64-windows\bin (
+            cd c:\tools\vcpkg &
+            vcpkg install boost:x64-windows &
+            vcpkg install zeromq:x64-windows &
+            vcpkg install jsoncpp:x64-windows &
+            vcpkg integrate install
+         )
 
 cache: c:\tools\vcpkg\installed\
 
@@ -67,4 +68,3 @@ after_build:
 artifacts:
   - path: install/yacas.zip
     name: yacas
-
