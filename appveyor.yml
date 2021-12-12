@@ -44,7 +44,7 @@ install:
             vcpkg install cppzmq:x64-windows &
             vcpkg integrate install
          )
-  - sh: if ["$APPVEYOR_BUILD_WORKER_IMAGE" == "Ubuntu2004"]; then
+  - sh: if [ "$APPVEYOR_BUILD_WORKER_IMAGE" == "Ubuntu2004" ]; then
             sudo apt-get update -qq;
             sudo apt-get install -qq libboost-all-dev libssl-dev libjsoncpp-dev libzmq3-dev libcppzmq-dev;
         fi
