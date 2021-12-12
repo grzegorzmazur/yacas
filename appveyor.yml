@@ -45,7 +45,8 @@ install:
             vcpkg integrate install
          )
 
-cache: c:\tools\vcpkg\installed\
+cache:
+  - c:\tools\vcpkg\installed\ -> appveyor.yml
 
 before_build:
   - cmd: cd %APPVEYOR_BUILD_FOLDER%
