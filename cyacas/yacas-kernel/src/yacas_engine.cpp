@@ -24,7 +24,7 @@
 
 #include "yacas_engine.hpp"
 
-#include <jsoncpp/json/writer.h>
+#include <json/writer.h>
 #include <zmq_addon.hpp>
 
 YacasEngine::YacasEngine(const std::string& scripts_path,

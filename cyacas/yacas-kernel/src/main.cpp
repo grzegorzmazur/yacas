@@ -48,8 +48,7 @@ int main(int argc, char** argv)
 
     std::string scripts_path =
         (boost::dll::program_location().parent_path().parent_path() /
-         "share/yacas/scripts")
-            .native();
+         "share/yacas/scripts").string();
 
     if (argc == 3) {
         scripts_path = argv[2];
