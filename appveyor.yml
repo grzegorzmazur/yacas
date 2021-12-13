@@ -51,7 +51,7 @@ install:
   - sh: if [ "$APPVEYOR_BUILD_WORKER_IMAGE" == "macos-bigsur" ]; then
             brew update;
             brew upgrade;
-            brew install boost libjsoncpp zeromq;
+            brew install boost jsoncpp zeromq;
         fi
 cache:
   - c:\tools\vcpkg\installed\ -> appveyor.yml
