@@ -49,9 +49,9 @@ install:
             sudo apt-get install -qq libboost-all-dev libssl-dev libjsoncpp-dev libzmq3-dev;
         fi
   - sh: if [ "$APPVEYOR_BUILD_WORKER_IMAGE" == "macos-bigsur" ]; then
-            sudo brew update;
-            sudo brew upgrade;
-            sudo brew install boost libjsoncpp zeromq;
+            brew update;
+            brew upgrade;
+            brew install boost libjsoncpp zeromq;
         fi
 cache:
   - c:\tools\vcpkg\installed\ -> appveyor.yml
