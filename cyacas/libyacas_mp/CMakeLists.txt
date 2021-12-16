@@ -18,11 +18,13 @@
 
 set (SOURCES
   src/nn.cpp
-  src/zz.cpp)
+  src/zz.cpp
+  src/rr.cpp)
 
 set (HEADERS
   include/yacas/mp/nn.hpp
-  include/yacas/mp/zz.hpp)
+  include/yacas/mp/zz.hpp
+  include/yacas/mp/rr.hpp)
 
 
 add_library (libyacas_mp ${SOURCES} ${HEADERS})
