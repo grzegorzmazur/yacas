@@ -1,9 +1,9 @@
 10 # LaplaceTransform(_var1,_var2, _expr )	<-- LapTran(var1,var2,expr);
 
-// Linearity properties 
+// Linearity properties
 10 # LapTran(_var1,_var2,_x + _y)      		<-- LapTran(var1,var2,x) + LapTran(var1,var2,y);
 10 # LapTran(_var1,_var2,_x - _y)		<-- LapTran(var1,var2,x) - LapTran(var1,var2,y);
-10 # LapTran(_var1,_var2,    - _y)       	<-- LapTran(var1,var2,y);
+10 # LapTran(_var1,_var2,    - _y)       	<-- - LapTran(var1,var2,y);
 10 # LapTran(_var1,_var2, c_IsConstant*_y)	<-- c*LapTran(var1,var2,y);
 10 # LapTran(_var1,_var2, _y*c_IsConstant)	<-- c*LapTran(var1,var2,y);
 10 # LapTran(_var1,_var2, _y/c_IsConstant) 	<-- LapTran(var1,var2,y)/c;
