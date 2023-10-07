@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.10)
 
-foreach (p CMP0048 CMP0054 CMP0071)
+foreach (p CMP0048 CMP0054 CMP0071 CMP0135)
     if (POLICY ${p})
         cmake_policy(SET ${p} NEW)
     endif ()
