@@ -99,8 +99,8 @@ Using Yacas from the calculation center
 
 As mentioned earlier, you can type in commands on the command line in
 the calculation center. Typically, you would enter one statement per
-line, for example, click on ``Sin(Pi/2);``. The has a memory, and
-remembers results from calculations performed before.  For example, if
+line, for example, click on ``Sin(Pi/2);``. The command line has a memory, 
+and remembers results from calculations performed before.  For example, if
 you define a function on a line (or set a variable to a value), the
 defined function (or variable) are available to be used in following
 lines. A session can be restarted (forgetting all previous definitions
