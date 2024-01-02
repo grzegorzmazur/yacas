@@ -28,7 +28,7 @@ set (HEADERS
 
 
 add_library (libyacas_mp ${SOURCES} ${HEADERS})
-set_target_properties (libyacas_mp PROPERTIES OUTPUT_NAME "yacas_mp")
+set_target_properties (libyacas_mp PROPERTIES OUTPUT_NAME "yacas_mp"  INTERPROCEDURAL_OPTIMIZATION ${IPO_SUPPORTED})
 target_include_directories (libyacas_mp PUBLIC include)
 target_link_libraries(libyacas_mp PUBLIC coverage_config)
 

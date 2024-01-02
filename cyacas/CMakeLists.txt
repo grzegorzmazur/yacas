@@ -17,6 +17,9 @@ if (CMAKE_SYSTEM_NAME STREQUAL Emscripten)
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --embed-file ${PROJECT_SOURCE_DIR}/scripts@/share/yacas/scripts")
 endif ()
 
+include(CheckIPOSupported)
+check_ipo_supported(RESULT IPO_SUPPORTED)
+
 add_library(coverage_config INTERFACE)
 
 if (ENABLE_CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
