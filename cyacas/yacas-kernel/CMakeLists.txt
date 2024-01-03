@@ -32,6 +32,8 @@ find_package (Boost REQUIRED date_time filesystem)
 
 add_executable (yacas-kernel src/main.cpp src/yacas_kernel.cpp src/yacas_engine.cpp src/hmac_sha256.cpp src/base64.cpp)
 
+set_target_properties (yacas-kernel PROPERTIES  INTERPROCEDURAL_OPTIMIZATION ${IPO_SUPPORTED})
+
 target_include_directories (yacas-kernel PRIVATE include)
 target_include_directories (yacas-kernel PRIVATE ${ZeroMQ_INCLUDE_DIRS})
 target_include_directories (yacas-kernel PRIVATE ${JSON_INC_PATH})

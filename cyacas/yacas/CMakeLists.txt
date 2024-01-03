@@ -25,6 +25,7 @@ if (${CMAKE_SYSTEM_NAME} STREQUAL "Emscripten")
 endif ()
 
 add_executable (yacas ${YACAS_SOURCES} ${YACAS_HEADERS})
+set_target_properties (yacas PROPERTIES  INTERPROCEDURAL_OPTIMIZATION ${IPO_SUPPORTED})
 
 if (APPLE)
     set_target_properties(yacas PROPERTIES INSTALL_RPATH "@loader_path/../lib")

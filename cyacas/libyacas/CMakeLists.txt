@@ -90,7 +90,7 @@ set (HEADERS
   include/yacas/yacas.h)
 
 add_library (libyacas ${SOURCES} ${HEADERS})
-set_target_properties (libyacas PROPERTIES OUTPUT_NAME "yacas")
+set_target_properties (libyacas PROPERTIES OUTPUT_NAME "yacas" INTERPROCEDURAL_OPTIMIZATION ${IPO_SUPPORTED})
 target_include_directories (libyacas PUBLIC include "${CMAKE_CURRENT_BINARY_DIR}/config")
 target_link_libraries (libyacas PUBLIC libyacas_mp coverage_config)
 
