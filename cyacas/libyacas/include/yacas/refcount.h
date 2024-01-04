@@ -5,7 +5,7 @@
 
 //------------------------------------------------------------------------------
 // RefPtr - Smart pointer for (intrusive) reference counting.
-// Simply, an object's reference count is the number of RefPtrs refering to it.
+// Simply, an object's reference count is the number of RefPtrs referring to it.
 // The RefPtr will delete the referenced object when the count reaches zero.
 
 /*TODO: this might be improved a little by having RefPtr wrap the object being
