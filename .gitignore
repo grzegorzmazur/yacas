@@ -16,3 +16,5 @@ CMakeCache.txt
 .DS_Store
 .vscode/ipch/*
 *.pyc
+.vs/
+out/
