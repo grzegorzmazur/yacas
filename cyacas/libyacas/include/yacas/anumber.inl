@@ -364,7 +364,7 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
         sub.push_back(0);
 
         PlatSignedDoubleWord carry;
-        int digit;
+
         {//Subtract the two
             //TODO this can be generalized!!!!
             //
@@ -373,7 +373,7 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
 
             // First check if qv isn't too big...
             carry = 0;
-            for (digit=0;digit<=n;digit++)
+            for (int digit=0;digit<=n;digit++)
             {
                 PlatSignedDoubleWord word;
                 word = ((PlatSignedDoubleWord)a1[digit+j]) -
@@ -395,7 +395,7 @@ inline void WordBaseDivide(T& aQuotient, T& aRemainder, T& a1, T& a2)
             }
 
             carry = 0;
-            for (digit=0;digit<=n;digit++)
+            for (int digit=0;digit<=n;digit++)
             {
                 PlatSignedDoubleWord word;
                 word = ((PlatSignedDoubleWord)a1[digit+j]) -
