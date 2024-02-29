@@ -109,11 +109,7 @@ void ANumber::Negate()
 inline
 bool ANumber::IsZero() const
 {
-    for (const PlatWord& a: *this)
-        if (a != 0)
-            return false;
-
-    return true;
+    return std::all_of(begin(), end(), [](PlatWord a) {return a == 0;});
 }
 
 inline
