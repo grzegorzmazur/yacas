@@ -46,8 +46,8 @@ private:
 class LispArityUserFunction : public LispUserFunction
 {
 public:
-    virtual int Arity() const = 0;
-    virtual bool IsArity(int aArity) const = 0;
+    virtual unsigned Arity() const = 0;
+    virtual bool IsArity(unsigned aArity) const = 0;
 };
 
 

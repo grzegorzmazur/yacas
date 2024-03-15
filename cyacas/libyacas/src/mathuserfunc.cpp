@@ -70,8 +70,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,
                                      LispEnvironment& aEnvironment,
                                      LispPtr& aArguments) const
 {
-    const int arity = Arity();
-    int i;
+    const unsigned arity = Arity();
 
     if (Traced()) {
         LispPtr tr(LispSubList::New(aArguments));
@@ -87,7 +86,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,
                                                     : new LispPtr[arity]);
 
     // Walk over all arguments, evaluating them as necessary
-    for (i = 0; i < arity; i++, ++iter) {
+    for (unsigned i = 0; i < arity; ++i, ++iter) {
         if (!iter.getObj())
             throw LispErrWrongNumberOfArgs();
 
@@ -102,7 +101,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,
 
     if (Traced()) {
         LispIterator iter(aArguments);
-        for (i = 0; i < arity; i++)
+        for (unsigned i = 0; i < arity; ++i)
             TraceShowArg(aEnvironment, *++iter, arguments[i]);
     }
 
@@ -110,7 +109,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,
     LispLocalFrame frame(aEnvironment, Fenced());
 
     // define the local variables.
-    for (i = 0; i < arity; i++) {
+    for (unsigned i = 0; i < arity; ++i) {
         const LispString* variable = iParameters[i].iParameter;
         // set the variable to the new value
         aEnvironment.NewLocal(variable, arguments[i]);
@@ -146,7 +145,7 @@ void BranchingUserFunction::Evaluate(LispPtr& aResult,
             full->Nixed() = nullptr;
         } else {
             full->Nixed() = arguments[0];
-            for (i = 0; i < arity - 1; i++)
+            for (unsigned i = 0; i < arity - 1; ++i)
                 arguments[i]->Nixed() = arguments[i + 1];
         }
         aResult = LispSubList::New(full);
@@ -169,12 +168,12 @@ void BranchingUserFunction::HoldArgument(const LispString* aVariable)
     }
 }
 
-int BranchingUserFunction::Arity() const
+unsigned BranchingUserFunction::Arity() const
 {
     return iParameters.size();
 }
 
-bool BranchingUserFunction::IsArity(int aArity) const
+bool BranchingUserFunction::IsArity(unsigned aArity) const
 {
     return Arity() == aArity;
 }
@@ -267,7 +266,7 @@ ListedBranchingUserFunction::ListedBranchingUserFunction(LispPtr& aParameters) :
 {
 }
 
-bool ListedBranchingUserFunction::IsArity(int aArity) const
+bool ListedBranchingUserFunction::IsArity(unsigned aArity) const
 {
     // nr arguments handled is bound by a minimum: the number of arguments
     // to this function.
@@ -319,8 +318,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,
                                  LispEnvironment& aEnvironment,
                                  LispPtr& aArguments) const
 {
-    const int arity = Arity();
-    int i;
+    const unsigned arity = Arity();
 
     if (Traced()) {
         LispPtr tr(LispSubList::New(aArguments));
@@ -336,7 +334,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,
                                                     : new LispPtr[arity]);
 
     // Walk over all arguments, evaluating them as necessary
-    for (i = 0; i < arity; i++, ++iter) {
+    for (unsigned i = 0; i < arity; ++i, ++iter) {
         if (!iter.getObj())
             throw LispErrWrongNumberOfArgs();
 
@@ -350,7 +348,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,
         LispIterator iter(aArguments);
         // TODO: ideally we would only need an iterator here
         ++iter;
-        for (i = 0; i < arity; i++) {
+        for (unsigned i = 0; i < arity; ++i) {
             TraceShowArg(aEnvironment, *iter, arguments[i]);
             ++iter;
         }
@@ -362,7 +360,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,
         LispLocalFrame frame(aEnvironment, false);
 
         // define the local variables.
-        for (i = 0; i < arity; i++) {
+        for (unsigned i = 0; i < arity; ++i) {
             const LispString* variable = iParameters[i].iParameter;
             // set the variable to the new value
             aEnvironment.NewLocal(variable, arguments[i]);
@@ -404,7 +402,7 @@ void MacroUserFunction::Evaluate(LispPtr& aResult,
             full->Nixed() = nullptr;
         } else {
             full->Nixed() = arguments[0];
-            for (i = 0; i < arity - 1; i++) {
+            for (unsigned i = 0; i + 1 < arity; ++i) {
                 arguments[i]->Nixed() = arguments[i + 1];
             }
         }
@@ -422,7 +420,7 @@ ListedMacroUserFunction::ListedMacroUserFunction(LispPtr& aParameters) :
 {
 }
 
-bool ListedMacroUserFunction::IsArity(int aArity) const
+bool ListedMacroUserFunction::IsArity(unsigned aArity) const
 {
     return Arity() <= aArity;
 }
