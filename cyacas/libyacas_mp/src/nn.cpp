@@ -2,7 +2,7 @@
  *
  * This file is part of yacas.
  * Yacas is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesset General Public License as
+ * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 2.1
  * of the License, or (at your option) any later version.
  *
@@ -208,7 +208,7 @@ namespace yacas {
                 return;
 
             Limb c = 0;
-            for (Limbs::iterator i = _limbs.begin(); i != _limbs.end(); ++i) {
+            for (LimbsVector::iterator i = _limbs.begin(); i != _limbs.end(); ++i) {
                 const Limb2 t = static_cast<Limb2>(*i) << n;
                 *i = static_cast<Limb>(t) + c;
                 c = static_cast<Limb>(t >> LIMB_BITS);
@@ -229,7 +229,7 @@ namespace yacas {
                 return;
 
             Limb c = 0;
-            for (Limbs::reverse_iterator i = _limbs.rbegin();
+            for (LimbsVector::reverse_iterator i = _limbs.rbegin();
                  i != _limbs.rend();
                  ++i) {
                 const Limb t = *i << (LIMB_BITS - n);
@@ -337,7 +337,7 @@ namespace yacas {
                 throw DivisionByZeroError(to_string());
 
             const unsigned n = static_cast<unsigned>(_limbs.size());
-            Limbs q(n);
+            LimbsVector q(n, 0);
 
             Limb2 t = 0;
 
@@ -457,7 +457,7 @@ namespace yacas {
             const unsigned m = static_cast<unsigned>(_limbs.size());
             const unsigned n = static_cast<unsigned>(a._limbs.size());
 
-            Limbs result(m + n, 0);
+            LimbsVector result(m + n, 0);
 
             Limb* __restrict r = result.data();
 
@@ -497,7 +497,7 @@ namespace yacas {
 
             const unsigned n = static_cast<unsigned>(_limbs.size());
 
-            Limbs c(2 * n, 0);
+            LimbsVector c(2 * n, 0);
 
             const Limb* __restrict p = _limbs.data();
             Limb* __restrict r = c.data();

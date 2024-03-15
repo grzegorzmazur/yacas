@@ -17,11 +17,13 @@
 #
 
 set (SOURCES
+  src/limbs_vector.cpp
   src/nn.cpp
   src/zz.cpp
   src/rr.cpp)
 
 set (HEADERS
+  include/yacas/mp/limbs_vector.hpp
   include/yacas/mp/nn.hpp
   include/yacas/mp/zz.hpp
   include/yacas/mp/rr.hpp)

@@ -29,6 +29,8 @@
 #include <string_view>
 #include <vector>
 
+#include "limbs_vector.hpp"
+
 namespace yacas {
     namespace mp {
         class NN {
@@ -123,7 +125,7 @@ namespace yacas {
             void set(unsigned long bit);
             void clear(unsigned long bit);
 
-            const std::vector<Limb>& limbs() const;
+            const LimbsVector& limbs() const;
 
         private:
             static constexpr int LIMB_BITS = sizeof(Limb) * CHAR_BIT;
@@ -133,9 +135,7 @@ namespace yacas {
 
             static constexpr Limb2 BASE = static_cast<Limb2>(LIMB_MAX) + 1;
 
-            typedef std::vector<Limb> Limbs;
-
-            Limbs _limbs;
+            LimbsVector _limbs;
 
             template <typename Iter> NN(Iter b, Iter e)
             {
@@ -257,10 +257,10 @@ namespace yacas {
             if (_limbs.size() > n._limbs.size())
                 return false;
 
-            return std::lexicographical_compare(_limbs.rbegin(),
-                                                _limbs.rend(),
-                                                n._limbs.rbegin(),
-                                                n._limbs.rend());
+            return std::lexicographical_compare(_limbs.crbegin(),
+                                                _limbs.crend(),
+                                                n._limbs.crbegin(),
+                                                n._limbs.crend());
         }
 
         inline bool NN::operator>(const NN& n) const { return n < *this; }
@@ -469,7 +469,7 @@ namespace yacas {
                 _limbs.pop_back();
         }
 
-        inline const std::vector<NN::Limb>& NN::limbs() const { return _limbs; }
+        inline const LimbsVector& NN::limbs() const { return _limbs; }
 
         inline ::std::ostream& operator<<(::std::ostream& os, const NN& n)
         {

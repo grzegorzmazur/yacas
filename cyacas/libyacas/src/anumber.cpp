@@ -95,7 +95,7 @@ ANumber::ANumber(const std::string& aString, int aPrecision, int aBase) :
 }
 
 ANumber::ANumber(const yacas::mp::ZZ& zz, int aPrecision):
-    std::vector<PlatWord>(zz.to_NN().limbs()),
+    std::vector<PlatWord>(zz.to_NN().limbs().cbegin(), zz.to_NN().limbs().cend()),
     iExp(0),
     iNegative(zz.is_negative()),
     iPrecision(aPrecision),
