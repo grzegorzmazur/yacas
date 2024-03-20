@@ -55,17 +55,13 @@ namespace yacas {
 
             bool operator==(int) const;
             bool operator!=(int) const;
-            bool operator<(int) const;
-            bool operator>(int) const;
-            bool operator<=(int) const;
-            bool operator>=(int) const;
 
-            bool operator==(const ZZ&) const;
-            bool operator!=(const ZZ&) const;
-            bool operator<(const ZZ&) const;
-            bool operator>(const ZZ&) const;
-            bool operator<=(const ZZ&) const;
-            bool operator>=(const ZZ&) const;
+            std::strong_ordering operator<=>(int) const noexcept;
+
+            bool operator==(const ZZ&) const noexcept = default;
+
+            /// @brief Ordering comparison.
+            std::strong_ordering operator<=>(const ZZ&) const noexcept;
 
             ZZ& operator+=(int);
             ZZ& operator-=(int);
@@ -146,85 +142,22 @@ namespace yacas {
 
         inline bool ZZ::operator!=(int i) const
         {
-            if (_neg != (i < 0))
-                return true;
-
-            return _nn != std::abs(i);
+            return !(*this == i);
         }
 
-        inline bool ZZ::operator<(int i) const
-        {
-            if (_neg && i >= 0)
-                return true;
-
-            if (!_neg && i < 0)
-                return false;
-
-            return _nn < std::abs(i);
-        }
-
-        inline bool ZZ::operator>(int i) const
-        {
-            if (_neg && i >= 0)
-                return false;
-
-            if (!_neg && i < 0)
-                return true;
-
-            return _nn > std::abs(i);
-        }
-
-        inline bool ZZ::operator<=(int i) const
-        {
-            if (_neg && i >= 0)
-                return true;
-
-            if (!_neg && i < 0)
-                return false;
-
-            return _nn <= std::abs(i);
-        }
-
-        inline bool ZZ::operator>=(int i) const
-        {
-            if (_neg && i >= 0)
-                return false;
-
-            if (!_neg && i < 0)
-                return true;
-
-            return _nn >= std::abs(i);
-        }
-
-        inline bool ZZ::operator==(const ZZ& z) const
-        {
-            return _neg == z._neg && _nn == z._nn;
-        }
-
-        inline bool ZZ::operator!=(const ZZ& z) const
-        {
-            return _neg != z._neg || _nn != z._nn;
-        }
-
-        inline bool ZZ::operator<(const ZZ& z) const
+        inline std::strong_ordering ZZ::operator<=>(const ZZ& z) const noexcept
         {
             if (_neg && !z._neg)
-                return true;
+                return std::strong_ordering::less;
 
             if (!_neg && z._neg)
-                return false;
+                return std::strong_ordering::greater;
 
             if (_neg && z._neg)
-                return z._nn < _nn;
+                return z._nn <=> _nn;
 
-            return _nn < z._nn;
+            return _nn <=> z._nn;
         }
-
-        inline bool ZZ::operator>(const ZZ& z) const { return z < *this; }
-
-        inline bool ZZ::operator<=(const ZZ& z) const { return !(*this > z); }
-
-        inline bool ZZ::operator>=(const ZZ& z) const { return !(*this < z); }
 
         inline ZZ& ZZ::operator+=(int i)
         {

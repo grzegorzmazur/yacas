@@ -75,19 +75,14 @@ namespace yacas {
 
             template <class RndEngine> NN(unsigned no_bits, RndEngine& engine);
 
-            bool operator==(Limb) const;
-            bool operator!=(Limb) const;
-            bool operator<(Limb) const;
-            bool operator>(Limb) const;
-            bool operator<=(Limb) const;
-            bool operator>=(Limb) const;
+            bool operator==(Limb) const noexcept;
+            bool operator!=(Limb) const noexcept;
+            std::strong_ordering operator<=>(Limb) const noexcept;
 
-            bool operator==(const NN&) const;
-            bool operator!=(const NN&) const;
-            bool operator<(const NN&) const;
-            bool operator>(const NN&) const;
-            bool operator<=(const NN&) const;
-            bool operator>=(const NN&) const;
+            /// @brief Equality comparison.
+            bool operator==(const NN&) const noexcept = default;
+            /// @brief Ordering comparison.
+            std::strong_ordering operator<=>(const NN&) const noexcept;
 
             NN& operator+=(Limb);
             NN& operator-=(Limb);
@@ -214,60 +209,50 @@ namespace yacas {
             drop_zeros();
         }
 
-        inline bool NN::operator==(Limb n) const
+        inline bool NN::operator==(Limb n) const noexcept
         {
             return _limbs.size() == 1 && _limbs.front() == n;
         }
 
-        inline bool NN::operator!=(Limb n) const
+        inline bool NN::operator!=(Limb n) const noexcept
         {
-            return _limbs.size() != 1 || _limbs.front() != n;
+            return !(*this == n);
         }
 
-        inline bool NN::operator<(Limb n) const
+        inline std::strong_ordering NN::operator<=>(Limb n) const noexcept
         {
-            return _limbs.empty() || (_limbs.size() == 1 && _limbs.front() < n);
+            if (_limbs.size() == 1) {
+                if (_limbs.front() < n)
+                    return std::strong_ordering::less;
+                if (_limbs.front() > n)
+                    return std::strong_ordering::greater;
+                return std::strong_ordering::equal;
+            }
+
+            if (_limbs.empty()) {
+                if (n == 0)
+                    return std::strong_ordering::equal;
+                else
+                    return std::strong_ordering::less;
+            }
+
+            return std::strong_ordering::greater;
         }
 
-        inline bool NN::operator>(Limb n) const
-        {
-            return _limbs.size() > 1 ||
-                   (_limbs.size() == 1 && _limbs.front() > n);
-        }
 
-        inline bool NN::operator<=(Limb n) const { return !(*this > n); }
-
-        inline bool NN::operator>=(Limb n) const { return !(*this < n); }
-
-        inline bool NN::operator==(const NN& n) const
-        {
-            return _limbs == n._limbs;
-        }
-
-        inline bool NN::operator!=(const NN& n) const
-        {
-            return _limbs != n._limbs;
-        }
-
-        inline bool NN::operator<(const NN& n) const
+        inline std::strong_ordering NN::operator<=>(const NN& n) const noexcept
         {
             if (_limbs.size() < n._limbs.size())
-                return true;
+                return std::strong_ordering::less;
 
             if (_limbs.size() > n._limbs.size())
-                return false;
+                return std::strong_ordering::greater;
 
-            return std::lexicographical_compare(_limbs.crbegin(),
-                                                _limbs.crend(),
-                                                n._limbs.crbegin(),
-                                                n._limbs.crend());
+            return std::lexicographical_compare_three_way(_limbs.crbegin(),
+                                                          _limbs.crend(),
+                                                          n._limbs.crbegin(),
+                                                          n._limbs.crend());
         }
-
-        inline bool NN::operator>(const NN& n) const { return n < *this; }
-
-        inline bool NN::operator<=(const NN& n) const { return !(*this > n); }
-
-        inline bool NN::operator>=(const NN& n) const { return !(*this < n); }
 
         inline NN& NN::operator+=(Limb n)
         {
