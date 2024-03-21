@@ -69,10 +69,17 @@ namespace yacas {
             NN() = default;
 
             explicit NN(Limb);
+
+            /// @brief Construct from a vector of limbs.
             explicit NN(const std::vector<Limb>&);
 
+            /// @brief Construct from a string.
+            /// @param s The string to parse.
+            /// @param b The base of the number.
+            /// @throw ParseError if the string cannot be parsed.
             explicit NN(std::string_view, unsigned b = 10);
 
+            /// @brief Construct a random number with a given number of bits.
             template <class RndEngine> NN(unsigned no_bits, RndEngine& engine);
 
             bool operator==(Limb) const noexcept;
@@ -108,18 +115,26 @@ namespace yacas {
             void clear();
 
             unsigned to_unsigned() const;
+
+            /// @brief Return the number as a string.
             std::string to_string(unsigned base = 10) const;
 
             void sqr();
             void pow(unsigned);
 
+            /// @brief Return the number of bits.
             unsigned long no_bits() const;
+            /// @brief Return the number of decimal digits.
             unsigned long no_digits() const;
 
+            /// @brief Test a bit.
             bool test(unsigned long bit) const;
+            /// @brief Set a bit.
             void set(unsigned long bit);
+            /// @brief Clear a bit.
             void clear(unsigned long bit);
 
+            /// @brief Return the limbs.
             const LimbsVector& limbs() const;
 
         private:
