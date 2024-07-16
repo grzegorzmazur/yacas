@@ -49,3 +49,7 @@ endif ()
 if (ENABLE_CYACAS_KERNEL)
     add_subdirectory (yacas-kernel)
 endif ()
+
+if (ENABLE_CYACAS_XEUS)
+    add_subdirectory (xeus-yacas)
+endif ()
