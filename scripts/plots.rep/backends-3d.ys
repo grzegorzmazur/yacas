@@ -63,8 +63,6 @@ Plot3DS'gnuplot(values_IsList, _options'hash) <--
         Write(1+options'hash["xpoints"]*2^(options'hash["depth"] - options'hash["used depth"]));
         WriteString(",");
         Write(1+options'hash["ypoints"]*2^(options'hash["depth"] - options'hash["used depth"]));
-        WriteString(",");
-        Write(4);       // gnuplot's "norm" for its primitive interpolation
         WriteString(Nl());
         // 'plot "data1" title "y(x)" with lines, "data2" title "z(x)" with lines'
         WriteString("splot ");
@@ -114,8 +112,8 @@ Plot3DS'png(values_IsList, _options'hash) <--
         Write(1+options'hash["xpoints"]*2^(options'hash["depth"] - options'hash["used depth"]));
         WriteString(",");
         Write(1+options'hash["ypoints"]*2^(options'hash["depth"] - options'hash["used depth"]));
-        WriteString(",");
-        Write(4);       // gnuplot's "norm" for its primitive interpolation
+        // WriteString(",");
+        // Write(4);       // gnuplot's "norm" for its primitive interpolation
         WriteString(Nl());
         WriteString("splot ");
         For(item:=1, item<=Length(values), item++)
