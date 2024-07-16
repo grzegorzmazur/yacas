@@ -38,6 +38,8 @@ extensions = [
     'yacasdomain'
 ]
 
+bibtex_bibfiles = "book_of_algorithms/references.bib"
+
 todo_include_todos = True
 
 # Add any paths that contain templates here, relative to this directory.
