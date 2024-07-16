@@ -70,12 +70,12 @@ public:
    *  Casually having a copy-constructor on CDeletingArrayGrower should be avoided, to make sure it is
    *  not used accidentally.
    */
-  inline LispMultiUserFunction(const LispMultiUserFunction& aOther) : iFunctions(), iFileToOpen(nullptr)
+  inline LispMultiUserFunction([[maybe_unused]] const LispMultiUserFunction& aOther) : iFunctions(), iFileToOpen(nullptr)
   {
     assert(aOther.iFileToOpen == 0);
     assert(aOther.iFunctions.size() == 0);
   }
-  inline LispMultiUserFunction& operator=(const LispMultiUserFunction& aOther)
+  inline LispMultiUserFunction& operator=([[maybe_unused]] const LispMultiUserFunction& aOther)
   {
     // copy constructor not written yet, hence the assert
     assert(aOther.iFileToOpen == 0);

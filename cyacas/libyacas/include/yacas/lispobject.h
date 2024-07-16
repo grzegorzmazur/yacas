@@ -58,7 +58,7 @@ public: //Derivables
 
   /** If this is a number, return a BigNumber representation
    */
-  virtual BigNumber* Number(int aPrecision) { return nullptr; }
+  virtual BigNumber* Number([[maybe_unused]] int aPrecision) { return nullptr; }
 
   virtual LispObject* Copy() const = 0;
 
@@ -71,12 +71,13 @@ protected:
    iNext()
   {
   }
-  inline LispObject(const LispObject& other) :
+  inline LispObject([[maybe_unused]] const LispObject& other) :
+  RefCount(),
   iNext()
   {
   }
 
-  inline LispObject& operator=(const LispObject& other)
+  inline LispObject& operator=([[maybe_unused]] const LispObject& other)
   {
     return *this;
   }

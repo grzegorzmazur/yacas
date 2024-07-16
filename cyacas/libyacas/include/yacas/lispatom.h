@@ -87,12 +87,7 @@ private:
 public:
   LispGenericClass(const LispGenericClass& other) : LispObject(other), iClass(other.iClass) { iClass->iReferenceCount++; }
 private:
-  LispGenericClass& operator=(const LispGenericClass& other)
-  {
-    // copy constructor not written yet, hence the assert
-    assert(0);
-    return *this;
-  }
+  LispGenericClass& operator=(const LispGenericClass& other) = delete;
 private:
     GenericClass* iClass;
 };

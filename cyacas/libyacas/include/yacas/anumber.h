@@ -35,7 +35,7 @@ public:
     ANumber(const yacas::mp::ZZ&, int aPrecision);
     explicit ANumber(int aPrecision);
     //TODO the properties of this object are set in the member initialization list, but then immediately overwritten by the CopyFrom. We can make this slightly cleaner by only initializing once.
-    inline ANumber(const ANumber& aOther) : iExp(0),iNegative(false),iPrecision(0),iTensExp(0)
+    inline ANumber(const ANumber& aOther) : std::vector<PlatWord>(), iExp(0),iNegative(false),iPrecision(0),iTensExp(0)
     {
       CopyFrom(aOther);
     }

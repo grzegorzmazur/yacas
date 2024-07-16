@@ -22,16 +22,16 @@ private:
     unsigned _no_initialized_blocks;
 
     std::uint8_t* _pool;
-    
+
     std::uint8_t* _next_free_block;
-    
+
     MemPool* _next_pool;
 };
 
 template <typename T>
 class FastAlloc {
 public:
-    static void* operator new(std::size_t size) { return _pool.alloc(); }
+    static void* operator new(std::size_t) { return _pool.alloc(); }
     static void operator delete(void* p) { _pool.free(p); }
 private:
     static MemPool _pool;
