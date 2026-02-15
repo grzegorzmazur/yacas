@@ -9,6 +9,7 @@ Plot2D'outputs() := {
     {"data", "Plot2D'data"},
     {"gnuplot", "Plot2D'gnuplot"},
     {"png", "Plot2D'png"},
+    {"svg", "Plot2D'svg"},
     {"java", "Plot2D'java"},
 };
 
@@ -103,6 +104,46 @@ Plot2D'png(values_IsList, _options'hash) <--
 
   SystemCall(Plot2D'gnuplot'command(control'file));
   File(png'file, "image/png");
+];
+
+
+/// backend: use gnuplot to generate svg
+Plot2D'svg(values_IsList, _options'hash) <--
+[
+  Local(item, dirBase, filename'list, control'file, svg'file);
+  filename'list := Plot2D'datafile(values, options'hash);
+  control'file := TmpFile();
+  svg'file := If (options'hash["filename"] != Empty, options'hash["filename"], TmpFile());
+  ToFile(control'file)
+  [
+        WriteString("set output \"" : StringReplace("\\", "\\\\", svg'file) : "\"" : Nl());
+        WriteString("set terminal svg" : Nl());
+        WriteString("set xrange [");
+        Write(options'hash["xrange"][1]);
+        WriteString(" : ");
+        Write(options'hash["xrange"][2]);
+        WriteString("]" : Nl());
+        If(
+                options'hash["yrange"] != Empty,
+                [
+                        WriteString("set yrange [");
+                        Write(options'hash["yrange"][1]);
+                        WriteString(" : ");
+                        Write(options'hash["yrange"][2]);
+                        WriteString("]" : Nl());
+                ]
+        );
+        WriteString("plot ");
+        For(item:=1, item<=Length(values), item++)
+        [
+                WriteString("\"" : StringReplace("\\", "\\\\", filename'list[item]) : "\" smooth csplines title \"" : options'hash["yname"][item] : "\" with lines");
+                If(item<Length(values), WriteString(", "));
+        ];
+        WriteString(Nl());
+  ];
+
+  SystemCall(Plot2D'gnuplot'command(control'file));
+  File(svg'file, "image/svg+xml");
 ];
 
 
